@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -17,6 +18,9 @@ interface FilterControlsProps {
   onKeywordChange: (value: string) => void;
   onClearFilters: () => void;
 }
+
+const ALL_ENTITIES_PLACEHOLDER = "__ALL_ENTITIES__";
+const ALL_YEARS_PLACEHOLDER = "__ALL_YEARS__";
 
 export function FilterControls({
   entities,
@@ -38,12 +42,17 @@ export function FilterControls({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-end">
         <div>
           <Label htmlFor="entity-filter" className="text-sm font-medium text-foreground mb-1 block">UN Entity</Label>
-          <Select value={selectedEntity} onValueChange={onEntityChange}>
+          <Select 
+            value={selectedEntity === '' ? ALL_ENTITIES_PLACEHOLDER : selectedEntity} 
+            onValueChange={(value) => {
+              onEntityChange(value === ALL_ENTITIES_PLACEHOLDER ? '' : value);
+            }}
+          >
             <SelectTrigger id="entity-filter" className="w-full">
               <SelectValue placeholder="All Entities" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Entities</SelectItem>
+              <SelectItem value={ALL_ENTITIES_PLACEHOLDER}>All Entities</SelectItem>
               {entities.map((entity) => (
                 <SelectItem key={entity} value={entity}>
                   {entity}
@@ -55,12 +64,17 @@ export function FilterControls({
 
         <div>
           <Label htmlFor="year-filter" className="text-sm font-medium text-foreground mb-1 block">Year</Label>
-          <Select value={selectedYear} onValueChange={onYearChange}>
+          <Select 
+            value={selectedYear === '' ? ALL_YEARS_PLACEHOLDER : selectedYear} 
+            onValueChange={(value) => {
+              onYearChange(value === ALL_YEARS_PLACEHOLDER ? '' : value);
+            }}
+          >
             <SelectTrigger id="year-filter" className="w-full">
               <SelectValue placeholder="All Years" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Years</SelectItem>
+              <SelectItem value={ALL_YEARS_PLACEHOLDER}>All Years</SelectItem>
               {years.map((year) => (
                 <SelectItem key={year} value={String(year)}>
                   {year}
