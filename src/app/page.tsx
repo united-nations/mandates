@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import type { Mandate } from '@/types';
 import { useDebounce } from '@/hooks/use-debounce'; 
 import { MandateList } from '@/components/mandate-list';
@@ -14,18 +14,15 @@ export default function MandateNavigatorPage() {
   const [mandates, setMandates] = useState<Mandate[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   
-  // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [totalItems, setTotalItems] = useState(0);
 
-  // Filter state
   const [selectedEntity, setSelectedEntity] = useState('');
   const [selectedPriorityArea, setSelectedPriorityArea] = useState('');
   const [keyword, setKeyword] = useState('');
   const debouncedKeyword = useDebounce(keyword, 300);
 
-  // Metadata for filters
   const [entityOptions, setEntityOptions] = useState<string[]>([]);
   const [priorityAreaOptions, setPriorityAreaOptions] = useState<string[]>([]);
 
@@ -49,8 +46,8 @@ export default function MandateNavigatorPage() {
         page: String(currentPage),
         limit: '100',
     });
-    if (selectedEntity && selectedEntity !== 'all') params.append('entity', selectedEntity);
-    if (selectedPriorityArea && selectedPriorityArea !== 'all') params.append('priority_area', selectedPriorityArea);
+    if (selectedEntity) params.append('entity', selectedEntity);
+    if (selectedPriorityArea) params.append('priority_area', selectedPriorityArea);
     if (debouncedKeyword) params.append('keyword', debouncedKeyword);
 
     try {
@@ -73,22 +70,12 @@ export default function MandateNavigatorPage() {
     fetchMandates();
   }, [fetchMandates]);
 
-  // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
   }, [selectedEntity, selectedPriorityArea, debouncedKeyword]);
-
-
-  const handleClearFilters = () => {
-    setSelectedEntity('');
-    setSelectedPriorityArea('');
-    setKeyword('');
-  };
   
   const LoadingSkeleton = () => (
     <div className="space-y-4">
-        <Skeleton className="h-12 w-full" />
-        <Skeleton className="h-12 w-full" />
         <Skeleton className="h-12 w-full" />
         <Skeleton className="h-12 w-full" />
         <Skeleton className="h-12 w-full" />
@@ -111,41 +98,38 @@ export default function MandateNavigatorPage() {
         <section>
             <h2 className="text-2xl font-semibold text-foreground mb-4">Data Overview</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Card className="shadow-sm">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium text-muted-foreground">Total Mandates</CardTitle>
-                    <FileText className="h-5 w-5 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                    <div className="text-3xl font-bold text-foreground">
-                    {isLoading && totalItems === 0 ? <Skeleton className="h-8 w-32" /> : totalItems.toLocaleString()}
-                    </div>
-                    <p className="text-xs text-muted-foreground">Across all entities and priority areas</p>
-                </CardContent>
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium text-muted-foreground">Total Mandates</CardTitle>
+                      <FileText className="h-5 w-5 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                      <div className="text-3xl font-bold text-foreground">
+                      {isLoading && totalItems === 0 ? <Skeleton className="h-8 w-32" /> : totalItems.toLocaleString()}
+                      </div>
+                  </CardContent>
                 </Card>
-                <Card className="shadow-sm">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium text-muted-foreground">UN Entities</CardTitle>
-                    <Users className="h-5 w-5 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                    <div className="text-3xl font-bold text-foreground">
-                        {entityOptions.length > 0 ? entityOptions.length.toLocaleString() : <Skeleton className="h-8 w-16" />}
-                    </div>
-                    <p className="text-xs text-muted-foreground">Entities represented in the dataset</p>
-                </CardContent>
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium text-muted-foreground">UN Entities</CardTitle>
+                      <Users className="h-5 w-5 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                      <div className="text-3xl font-bold text-foreground">
+                          {entityOptions.length > 0 ? entityOptions.length.toLocaleString() : <Skeleton className="h-8 w-16" />}
+                      </div>
+                  </CardContent>
                 </Card>
-                <Card className="shadow-sm">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium text-muted-foreground">Priority Areas</CardTitle>
-                    <ListChecks className="h-5 w-5 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                    <div className="text-3xl font-bold text-foreground">
-                        {priorityAreaOptions.length > 0 ? priorityAreaOptions.length.toLocaleString() : <Skeleton className="h-8 w-16" />}
-                    </div>
-                    <p className="text-xs text-muted-foreground">Thematic areas covered</p>
-                </CardContent>
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium text-muted-foreground">Priority Areas</CardTitle>
+                      <ListChecks className="h-5 w-5 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                      <div className="text-3xl font-bold text-foreground">
+                          {priorityAreaOptions.length > 0 ? priorityAreaOptions.length.toLocaleString() : <Skeleton className="h-8 w-16" />}
+                      </div>
+                  </CardContent>
                 </Card>
             </div>
         </section>
@@ -160,13 +144,12 @@ export default function MandateNavigatorPage() {
             onEntityChange={(value) => setSelectedEntity(value === 'all' ? '' : value)}
             onPriorityAreaChange={(value) => setSelectedPriorityArea(value === 'all' ? '' : value)}
             onKeywordChange={setKeyword}
-            onClearFilters={handleClearFilters}
             disabled={isLoading}
           />
         </section>
 
         <section>
-          <Card className="shadow-sm">
+          <Card>
             <CardHeader>
               <CardTitle className="text-2xl font-semibold text-foreground">
                 Mandates ({isLoading ? '...' : totalItems.toLocaleString()})
