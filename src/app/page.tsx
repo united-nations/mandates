@@ -40,6 +40,8 @@ export default function MandateNavigatorPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [activeMandate, setActiveMandate] = useState<Mandate | null>(null);
 
+  const [recentYearCount, setRecentYearCount] = useState<number | null>(null);
+
   // Fetch metadata for filters on component mount
   useEffect(() => {
     async function fetchMetadata() {
@@ -90,6 +92,26 @@ export default function MandateNavigatorPage() {
     setCurrentPage(1);
   }, [selectedEntity, selectedYear, debouncedKeyword, itemsPerPage]);
 
+  const mostRecentYear = useMemo(() => {
+    return yearOptions.length > 0 ? yearOptions[0] : new Date().getFullYear();
+  }, [yearOptions]);
+
+  useEffect(() => {
+    if (yearOptions.length > 0) {
+      const fetchRecentYearCount = async () => {
+        try {
+          const response = await fetch(`/api/mandates?year=${mostRecentYear}&limit=1`);
+          const data = await response.json();
+          setRecentYearCount(data.totalItems || 0);
+        } catch (error) {
+          console.error("Failed to fetch recent year count:", error);
+          setRecentYearCount(0);
+        }
+      };
+      fetchRecentYearCount();
+    }
+  }, [yearOptions, mostRecentYear]);
+
   const handleViewDetails = (mandate: Mandate) => {
     setActiveMandate(mandate);
     setIsDialogOpen(true);
@@ -114,10 +136,6 @@ export default function MandateNavigatorPage() {
   
   const uniqueEntitiesCount = useMemo(() => entityOptions.length, [entityOptions]);
   
-  const mostRecentYear = useMemo(() => {
-    return yearOptions.length > 0 ? yearOptions[0] : new Date().getFullYear();
-  }, [yearOptions]);
-
   const LoadingSkeleton = () => (
     <div className="space-y-4">
         <Skeleton className="h-10 w-full" />
@@ -175,9 +193,9 @@ export default function MandateNavigatorPage() {
               </CardHeader>
               <CardContent>
                  <div className="text-3xl font-bold text-foreground">
-                    ...
+                    {recentYearCount !== null ? recentYearCount.toLocaleString() : <Skeleton className="h-8 w-24" />}
                 </div>
-                <p className="text-xs text-muted-foreground">Documents from recent year</p>
+                <p className="text-xs text-muted-foreground">Documents from most recent year</p>
               </CardContent>
             </Card>
           </div>
