@@ -1,29 +1,64 @@
-
 'use client';
 
 import type { Mandate } from '@/types';
 import { TableRow, TableCell } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { ExternalLink, Info } from 'lucide-react';
 import Link from 'next/link';
 
 interface MandateTableRowProps {
   mandate: Mandate;
-  onViewOperativeParagraphs: (mandateId: string) => void;
+  onViewDetails: (mandateId: string) => void;
 }
 
-export function MandateTableRow({ mandate, onViewOperativeParagraphs }: MandateTableRowProps) {
+export function MandateTableRow({ mandate, onViewDetails }: MandateTableRowProps) {
   return (
     <TableRow>
-      <TableCell className="font-medium">{mandate.programmePlanSection}</TableCell>
-      <TableCell>{mandate.unEntity}</TableCell>
+      {/* Section */}
+      <TableCell className="font-medium truncate max-w-[250px]">
+        {mandate.partInDocument}
+      </TableCell>
+
+      {/* Entity */}
+      <TableCell>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="font-semibold cursor-default">{mandate.entity}</span>
+            </TooltipTrigger>
+            {mandate.entityLong && mandate.entityLong !== mandate.entity && (
+              <TooltipContent>
+                <p>{mandate.entityLong}</p>
+              </TooltipContent>
+            )}
+          </Tooltip>
+        </TooltipProvider>
+      </TableCell>
+
+      {/* Document Title */}
       <TableCell>{mandate.title}</TableCell>
-      <TableCell className="text-center">{mandate.year}</TableCell>
+
+      {/* Year */}
       <TableCell className="text-center">
-        {mandate.documentUrl ? (
+        {mandate.year > 0 ? mandate.year : '-'}
+      </TableCell>
+
+      {/* Link */}
+      <TableCell className="text-center">
+        {mandate.linkId ? (
           <Button variant="ghost" size="icon" asChild>
-            <Link href={mandate.documentUrl} target="_blank" rel="noopener noreferrer" aria-label={`View document for ${mandate.title}`}>
+            <Link
+              href={mandate.linkId}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`View document for ${mandate.title}`}
+            >
               <ExternalLink className="h-4 w-4" />
             </Link>
           </Button>
@@ -31,9 +66,11 @@ export function MandateTableRow({ mandate, onViewOperativeParagraphs }: MandateT
           <span className="text-muted-foreground">-</span>
         )}
       </TableCell>
+
+      {/* Actions */}
       <TableCell className="text-right">
         <Button
-          onClick={() => onViewOperativeParagraphs(mandate.id)}
+          onClick={() => onViewDetails(mandate.id)}
           variant="default"
           size="sm"
           aria-label={`View details for ${mandate.title}`}
