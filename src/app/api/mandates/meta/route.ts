@@ -1,44 +1,36 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { promises as fs } from 'fs';
+import type { Mandate } from '@/types';
 
-// This is a simplified version of the logic in the main mandates route.
-// In a real application, this logic would be shared in a utility file.
 let uniqueEntities: string[] = [];
-let uniqueYears: number[] = [];
-
-const extractYear = (publicationDate?: string, printingDate?: string): number => {
-    const dateStr = publicationDate || printingDate || '';
-    const yearMatch = dateStr.match(/(\d{4})/);
-    return yearMatch ? parseInt(yearMatch[1], 10) : 0;
-};
+let uniquePriorityAreas: string[] = [];
 
 async function getMetadata() {
-  if (uniqueEntities.length > 0 && uniqueYears.length > 0) {
-    return { uniqueEntities, uniqueYears };
+  if (uniqueEntities.length > 0 && uniquePriorityAreas.length > 0) {
+    return { uniqueEntities, uniquePriorityAreas };
   }
 
   const jsonDirectory = path.join(process.cwd(), 'data');
-  const fileContents = await fs.readFile(path.join(jsonDirectory, '250610_ppb2025_mandates_with_metadata.json'), 'utf8');
-  const rawData = JSON.parse(fileContents) as any[];
+  const fileContents = await fs.readFile(path.join(jsonDirectory, 'ppb2026_all_mandates_with_content.json'), 'utf8');
+  const rawData = JSON.parse(fileContents) as Mandate[];
 
   const entities = new Set<string>();
-  const years = new Set<number>();
+  const priorityAreas = new Set<string>();
 
   for (const item of rawData) {
-    if (item.entity) {
-      entities.add(item.entity);
+    if (item.entities) {
+      item.entities.forEach(e => entities.add(e));
     }
-    const year = extractYear(item.publication_date?.[0], item.printing_date?.[0]);
-    if (year > 0) {
-        years.add(year);
+    if (item.priority_area) {
+        priorityAreas.add(item.priority_area);
     }
   }
 
   uniqueEntities = Array.from(entities).sort();
-  uniqueYears = Array.from(years).sort((a, b) => b - a);
+  uniquePriorityAreas = Array.from(priorityAreas).sort();
   
-  return { uniqueEntities, uniqueYears };
+  return { uniqueEntities, uniquePriorityAreas };
 }
 
 export async function GET() {
