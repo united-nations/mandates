@@ -1,12 +1,14 @@
+
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
 import type { Mandate } from '@/types';
 import { mockMandates, uniqueEntities, uniqueYears } from '@/data/mock-mandates';
-import { MandateListItem } from '@/components/mandate-list-item';
 import { FilterControls } from '@/components/filter-controls';
 import { OperativeParagraphsDialog } from '@/components/operative-paragraphs-dialog';
-import { BarChart, ListChecks } from 'lucide-react'; // Using ListChecks instead of a generic list icon
+import { MandateTable } from '@/components/mandate-table'; // New table component
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Globe, FileText, Users, CalendarDays, ListChecks } from 'lucide-react';
 
 export default function MandateNavigatorPage() {
   const [allMandates] = useState<Mandate[]>(mockMandates);
@@ -36,10 +38,10 @@ export default function MandateNavigatorPage() {
         (m) =>
           m.title.toLowerCase().includes(lowerKeyword) ||
           m.summary.toLowerCase().includes(lowerKeyword) ||
+          m.programmePlanSection.toLowerCase().includes(lowerKeyword) || // Search in new field
           (m.keywords && m.keywords.some(k => k.toLowerCase().includes(lowerKeyword)))
       );
     }
-
     setFilteredMandates(mandates);
   }, [selectedEntity, selectedYear, keyword, allMandates]);
 
@@ -65,49 +67,96 @@ export default function MandateNavigatorPage() {
   const entityOptions = useMemo(() => uniqueEntities, []);
   const yearOptions = useMemo(() => uniqueYears, []);
 
+  const totalMandatesCount = allMandates.length;
+  const uniqueEntitiesCount = uniqueEntities.length;
+  
+  const mostRecentYear = useMemo(() => {
+    if (yearOptions.length > 0) {
+      return yearOptions[0]; // uniqueYears is sorted descending
+    }
+    return new Date().getFullYear(); // Fallback, though should not be needed
+  }, [yearOptions]);
+
+  const mandatesInMostRecentYearCount = useMemo(() => {
+    if (mostRecentYear) {
+      return allMandates.filter(m => m.year === mostRecentYear).length;
+    }
+    return 0;
+  }, [allMandates, mostRecentYear]);
+
+
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <header className="py-8 px-4 md:px-8 bg-primary shadow-md">
-        <div className="container mx-auto">
-          <h1 className="text-4xl md:text-5xl font-headline text-primary-foreground text-center">
-            Mandate Navigator
+      <header className="py-6 px-4 md:px-8 border-b border-border">
+        <div className="container mx-auto flex items-center gap-3">
+          <Globe className="h-8 w-8 text-primary" />
+          <h1 className="text-3xl font-semibold text-foreground">
+            UN Mandate Explorer
           </h1>
-          <p className="text-center text-lg text-primary-foreground/90 mt-2 font-body">
-            Explore UN Entities and the mandate documents they cite.
-          </p>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 md:px-8 py-8">
-        <FilterControls
-          entities={entityOptions}
-          years={yearOptions}
-          selectedEntity={selectedEntity}
-          selectedYear={selectedYear}
-          keyword={keyword}
-          onEntityChange={setSelectedEntity}
-          onYearChange={setSelectedYear}
-          onKeywordChange={setKeyword}
-          onClearFilters={handleClearFilters}
-        />
+      <main className="container mx-auto px-4 md:px-8 py-8 space-y-8">
+        {/* Data Overview Section */}
+        <section>
+          <h2 className="text-2xl font-semibold text-foreground mb-4">Data Overview</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card className="shadow-sm">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">Total Mandates</CardTitle>
+                <FileText className="h-5 w-5 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-foreground">{totalMandatesCount}</div>
+                <p className="text-xs text-muted-foreground">Currently tracked mandates</p>
+              </CardContent>
+            </Card>
+            <Card className="shadow-sm">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">Unique UN Entities</CardTitle>
+                <Users className="h-5 w-5 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-foreground">{uniqueEntitiesCount}</div>
+                <p className="text-xs text-muted-foreground">Entities with mandates</p>
+              </CardContent>
+            </Card>
+            <Card className="shadow-sm">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">Mandates in {mostRecentYear}</CardTitle>
+                <ListChecks className="h-5 w-5 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-foreground">{mandatesInMostRecentYearCount}</div>
+                <p className="text-xs text-muted-foreground">In the most recent year</p>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
 
-        {filteredMandates.length > 0 ? (
-          <div className="grid grid-cols-1 gap-6">
-            {filteredMandates.map((mandate) => (
-              <MandateListItem
-                key={mandate.id}
-                mandate={mandate}
-                onViewOperativeParagraphs={handleViewOperativeParagraphs}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12">
-            <ListChecks size={64} className="mx-auto text-muted-foreground mb-4" />
-            <p className="text-xl text-muted-foreground font-body">No mandates found matching your criteria.</p>
-            <p className="text-sm text-muted-foreground/80 font-body mt-2">Try adjusting your filters or clearing them to see all mandates.</p>
-          </div>
-        )}
+        {/* Filter Mandates Section */}
+        <section>
+          <FilterControls
+            entities={entityOptions}
+            years={yearOptions}
+            selectedEntity={selectedEntity}
+            selectedYear={selectedYear}
+            keyword={keyword}
+            onEntityChange={setSelectedEntity}
+            onYearChange={setSelectedYear}
+            onKeywordChange={setKeyword}
+            onClearFilters={handleClearFilters}
+          />
+        </section>
+
+        {/* Mandate List Section */}
+        <section>
+          <h2 className="text-2xl font-semibold text-foreground mb-4">Mandate List</h2>
+          <MandateTable
+            mandates={filteredMandates}
+            onViewOperativeParagraphs={handleViewOperativeParagraphs}
+          />
+        </section>
       </main>
 
       <OperativeParagraphsDialog
@@ -115,12 +164,8 @@ export default function MandateNavigatorPage() {
         isOpen={isDialogOpen}
         onClose={handleCloseDialog}
       />
-
-      <footer className="py-8 mt-12 border-t border-border bg-card text-center">
-        <p className="text-sm text-muted-foreground font-body">
-          &copy; {new Date().getFullYear()} Mandate Navigator. For informational purposes only.
-        </p>
-      </footer>
+      
+      {/* Footer removed as per screenshot */}
     </div>
   );
 }

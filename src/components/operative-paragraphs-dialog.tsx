@@ -1,3 +1,4 @@
+
 import type { Mandate } from '@/types';
 import {
   Dialog,
@@ -23,10 +24,10 @@ export function OperativeParagraphsDialog({ mandate, isOpen, onClose }: Operativ
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px] md:max-w-[800px] lg:max-w-[1000px] max-h-[90vh] flex flex-col">
+      <DialogContent className="sm:max-w-[600px] md:max-w-[800px] lg:max-w-[1000px] max-h-[90vh] flex flex-col bg-card text-card-foreground">
         <DialogHeader>
-          <DialogTitle className="font-headline text-2xl text-primary flex items-center">
-            <BookOpenText size={28} className="mr-3" />
+          <DialogTitle className="text-2xl text-primary flex items-center">
+            <BookOpenText size={24} className="mr-3" /> {/* Icon size adjusted slightly */}
             Operative Paragraphs: {mandate.title}
           </DialogTitle>
           <DialogDescription className="text-sm text-muted-foreground pt-1">
@@ -57,7 +58,7 @@ export function OperativeParagraphsDialog({ mandate, isOpen, onClose }: Operativ
             <p className="text-muted-foreground">No operative paragraphs available for this mandate.</p>
           )}
         </ScrollArea>
-        <DialogFooter className="pt-4">
+        <DialogFooter className="pt-4 mt-auto"> {/* Added mt-auto for sticky footer */}
           <Button onClick={onClose} variant="outline">Close</Button>
         </DialogFooter>
       </DialogContent>

@@ -8,4 +8,5 @@ export interface Mandate {
   summary: string;
   keywords: string[];
   operativeParagraphs: string[];
+  programmePlanSection: string; // Added new field
 }

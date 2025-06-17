@@ -1,10 +1,11 @@
+
 import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: 'Mandate Navigator',
-  description: 'Explore UN Mandates and their operative paragraphs.',
+  title: 'UN Mandate Explorer', // Updated title
+  description: 'Explore UN Mandates, their operative paragraphs and related data.', // Updated description
 };
 
 export default function RootLayout({
@@ -17,10 +18,11 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Belleza&display=swap" rel="stylesheet" />
-        <link href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet" />
+        {/* Updated to Inter font */}
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
       </head>
-      <body className="font-body antialiased">
+      {/* Updated body to use font-sans from Tailwind config (which is now Inter) */}
+      <body className="font-sans antialiased">
         {children}
         <Toaster />
       </body>

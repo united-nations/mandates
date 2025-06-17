@@ -14,6 +14,7 @@ export const mockMandates: Mandate[] = [
       'Urges parties to armed conflict to take all feasible measures to protect children from recruitment and use in hostilities.',
       'Requests the Secretary-General to appoint a Special Representative on Children and Armed Conflict.',
     ],
+    programmePlanSection: 'Peace and Security',
   },
   {
     id: 'M002',
@@ -28,6 +29,7 @@ export const mockMandates: Mandate[] = [
       'Encourages Member States to invest in strengthening their core public health capacities.',
       'Stresses the importance of equitable access to vaccines, therapeutics, and diagnostics.',
     ],
+    programmePlanSection: 'Health Security',
   },
   {
     id: 'M003',
@@ -42,6 +44,7 @@ export const mockMandates: Mandate[] = [
       'Calls for increased support to host countries and communities.',
       'Encourages the expansion of resettlement opportunities and complementary pathways for admission of refugees.',
     ],
+    programmePlanSection: 'Humanitarian Affairs',
   },
   {
     id: 'M004',
@@ -56,6 +59,7 @@ export const mockMandates: Mandate[] = [
       'Calls for unimpeded humanitarian access to populations in need of food assistance.',
       'Emphasizes the role of climate change adaptation in ensuring long-term food security.',
     ],
+    programmePlanSection: 'Food Security',
   },
   {
     id: 'M005',
@@ -70,6 +74,7 @@ export const mockMandates: Mandate[] = [
       'Promotes partnerships between governments, the private sector, and civil society to foster innovation for development.',
       'Stresses the need for capacity building in developing countries to harness technological advancements.',
     ],
+    programmePlanSection: 'Development Assistance',
   },
   {
     id: 'M006',
@@ -83,6 +88,7 @@ export const mockMandates: Mandate[] = [
       'Urges businesses to respect human rights in the development and deployment of digital technologies.',
       'Emphasizes the importance of digital literacy and access to information for all.',
     ],
+    programmePlanSection: 'Human Rights',
   },
    {
     id: 'M007',
@@ -96,6 +102,51 @@ export const mockMandates: Mandate[] = [
       'Calls for increased financial flows for climate adaptation and mitigation in developing countries.',
       'Highlights the importance of biodiversity conservation and ecosystem restoration.',
     ],
+    programmePlanSection: 'Environmental Sustainability',
+  },
+  { // Example data to match screenshot more closely
+    id: 'M008',
+    title: 'Resolution 2673 (2023) on the situation in Region A',
+    unEntity: 'DPPA',
+    year: 2023,
+    documentUrl: 'https://example.com/doc/M008',
+    summary: 'Details measures concerning peace and security in Region A.',
+    keywords: ['peace', 'security', 'resolution'],
+    operativeParagraphs: ['Paragraph A1', 'Paragraph A2'],
+    programmePlanSection: 'Peace and Security',
+  },
+  {
+    id: 'M009',
+    title: 'Resolution 78/123 on strengthening humanitarian assistance',
+    unEntity: 'OCHA',
+    year: 2024,
+    documentUrl: 'https://example.com/doc/M009',
+    summary: 'Focuses on enhancing the coordination and delivery of humanitarian aid.',
+    keywords: ['humanitarian', 'assistance', 'coordination'],
+    operativeParagraphs: ['Paragraph B1', 'Paragraph B2'],
+    programmePlanSection: 'Humanitarian Affairs',
+  },
+  {
+    id: 'M010',
+    title: 'Resolution E/RES/2023/15 on promoting sustainable development',
+    unEntity: 'OHRLLS',
+    year: 2023,
+    documentUrl: 'https://example.com/doc/M010',
+    summary: 'Outlines strategies for promoting sustainable development in least developed countries.',
+    keywords: ['sustainable development', 'LDCs'],
+    operativeParagraphs: ['Paragraph C1', 'Paragraph C2'],
+    programmePlanSection: 'Development Assistance',
+  },
+  {
+    id: 'M011',
+    title: 'Resolution 49/1 on the promotion and protection of human rights',
+    unEntity: 'OHCHR',
+    year: 2022,
+    documentUrl: 'https://example.com/doc/M011',
+    summary: 'Reaffirms commitments to human rights principles and calls for their universal application.',
+    keywords: ['human rights', 'protection', 'promotion'],
+    operativeParagraphs: ['Paragraph D1', 'Paragraph D2'],
+    programmePlanSection: 'Human Rights',
   }
 ];
 
