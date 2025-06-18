@@ -11,7 +11,7 @@ async function getMandates(): Promise<Mandate[]> {
   }
 
   const jsonDirectory = path.join(process.cwd(), 'data');
-  const fileContents = await fs.readFile(path.join(jsonDirectory, 'ppb2026_all_mandates_with_content.json'), 'utf8');
+  const fileContents = await fs.readFile(path.join(jsonDirectory, 'ppb2026_unique_mandates_with_metadata.json'), 'utf8');
   
   const rawData = JSON.parse(fileContents) as Mandate[];
 
