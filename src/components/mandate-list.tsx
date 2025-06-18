@@ -4,8 +4,6 @@ import { useState } from 'react';
 import type { Mandate } from '@/types';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { motion } from 'framer-motion';
 
 const priorityAreaColors: { [key: string]: string } = {
@@ -26,6 +24,7 @@ const getPriorityAreaColor = (area: string) => {
 
 interface MandateListProps {
   mandates: Mandate[];
+  onMandateClick: (mandate: Mandate) => void;
 }
 
 const EntityBadges = ({ entities }: { entities: string[] }) => {
@@ -40,7 +39,7 @@ const EntityBadges = ({ entities }: { entities: string[] }) => {
   );
 };
 
-export function MandateList({ mandates }: MandateListProps) {
+export function MandateList({ mandates, onMandateClick }: MandateListProps) {
   const maxEntities = mandates.length > 0 ? Math.max(...mandates.map(m => m.num_entities), 0) : 0;
 
   return (
@@ -53,10 +52,11 @@ export function MandateList({ mandates }: MandateListProps) {
         return (
         <motion.div
           key={mandate.symbol}
-          className="p-4 border rounded-lg shadow-sm bg-card"
+          className="p-4 border rounded-lg shadow-sm bg-card hover:bg-muted/50 transition-colors cursor-pointer"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: index * 0.05 }}
+          onClick={() => onMandateClick(mandate)}
         >
           <div className="flex items-start justify-between gap-4">
             <div className="flex-grow">
@@ -78,27 +78,9 @@ export function MandateList({ mandates }: MandateListProps) {
 
             {/* Details Button on the right */}
             <div className="flex-shrink-0">
-              {mandate.operative_paragraphs && mandate.operative_paragraphs.length > 0 && (
-                 <Dialog>
-                    <DialogTrigger asChild>
-                       <Button variant="outline" size="sm">
-                          Details
-                       </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-3xl">
-                       <DialogHeader>
-                          <DialogTitle>{mandate.title || 'Untitled Mandate'}</DialogTitle>
-                       </DialogHeader>
-                       <div className="prose max-h-[60vh] overflow-y-auto p-2">
-                          <ul className="list-disc pl-5">
-                             {mandate.operative_paragraphs?.map((p, i) => (
-                                <li key={i} className="mb-2">{p}</li>
-                             ))}
-                          </ul>
-                       </div>
-                    </DialogContent>
-                 </Dialog>
-              )}
+               <Button variant="outline" size="sm">
+                  Details
+               </Button>
             </div>
           </div>
         </motion.div>

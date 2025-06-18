@@ -11,6 +11,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Globe, FileText, Users, ListChecks, BookCopy, Building } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { MandateDetails } from '@/components/mandate-details';
 
 export default function MandateNavigatorPage() {
   const [mandates, setMandates] = useState<Mandate[]>([]);
@@ -33,6 +34,8 @@ export default function MandateNavigatorPage() {
   const [totalCitations, setTotalCitations] = useState(0);
   const [uniqueBodiesCount, setUniqueBodiesCount] = useState(0);
   const [uniqueBodies, setUniqueBodies] = useState<string[]>([]);
+
+  const [selectedMandate, setSelectedMandate] = useState<Mandate | null>(null);
 
   useEffect(() => {
     async function fetchMetadata() {
@@ -228,7 +231,7 @@ export default function MandateNavigatorPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {isLoading ? <LoadingSkeleton /> : <MandateList mandates={mandates} />}
+              {isLoading ? <LoadingSkeleton /> : <MandateList mandates={mandates} onMandateClick={setSelectedMandate} />}
             </CardContent>
             <PaginationControls
               currentPage={currentPage}
@@ -241,6 +244,15 @@ export default function MandateNavigatorPage() {
           </Card>
         </section>
       </main>
+      <MandateDetails
+        mandate={selectedMandate}
+        open={selectedMandate !== null}
+        onOpenChange={(open) => {
+          if (!open) {
+            setSelectedMandate(null);
+          }
+        }}
+      />
     </div>
   );
 }
