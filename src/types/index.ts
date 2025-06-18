@@ -7,4 +7,6 @@ export interface Mandate {
   full_document_symbol: string | null;
   title: string | null;
   operative_paragraphs: string[] | null;
+  num_citations?: number;
+  body?: string;
 }

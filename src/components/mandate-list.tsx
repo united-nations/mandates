@@ -29,20 +29,13 @@ interface MandateListProps {
 }
 
 const EntityBadges = ({ entities }: { entities: string[] }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const maxVisible = 7;
-  const visibleEntities = isExpanded ? entities : entities.slice(0, maxVisible);
-
   return (
     <div className="flex flex-wrap gap-1">
-      {visibleEntities.map(entity => (
-        <Badge key={entity} variant="secondary">{entity}</Badge>
+      {entities
+        .filter(entity => entity !== null)
+        .map(entity => (
+          <Badge key={entity} variant="secondary">{entity}</Badge>
       ))}
-      {entities.length > maxVisible && (
-        <Button variant="link" size="sm" className="h-auto p-0" onClick={() => setIsExpanded(!isExpanded)}>
-          {isExpanded ? 'Show less' : `+${entities.length - maxVisible} more`}
-        </Button>
-      )}
     </div>
   );
 };
@@ -52,7 +45,12 @@ export function MandateList({ mandates }: MandateListProps) {
 
   return (
     <div className="space-y-4">
-      {mandates.map((mandate, index) => (
+      {mandates.map((mandate, index) => {
+        const titleParts = mandate.title ? mandate.title.split(': ') : ['Untitled Mandate'];
+        const mainTitle = titleParts[0];
+        const subTitle = titleParts.length > 1 ? titleParts.slice(1).join(': ') : null;
+        
+        return (
         <motion.div
           key={mandate.symbol}
           className="p-4 border rounded-lg shadow-sm bg-card"
@@ -64,31 +62,16 @@ export function MandateList({ mandates }: MandateListProps) {
             <div className="flex-grow">
               {/* Line 1: Priority Area and Symbol */}
               <div className="flex items-center gap-3 mb-1">
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <div className={`w-4 h-4 rounded-full flex-shrink-0 ${getPriorityAreaColor(mandate.priority_area)}`}></div>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>{mandate.priority_area}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
                 <p className="text-sm text-muted-foreground font-mono truncate">{mandate.full_document_symbol || mandate.symbol}</p>
               </div>
 
               {/* Line 2: Title */}
-              <h3 className="text-base font-semibold mb-3">{mandate.title || 'Untitled Mandate'}</h3>
+              <h3 className="text-base font-semibold">{mainTitle}</h3>
+              {subTitle && <h4 className="text-base text-muted-foreground mb-3">{subTitle}</h4>}
               
               {/* Line 3: Citations */}
               <div className="w-full md:w-2/3">
-                 <div className="text-sm font-medium">{mandate.num_entities} citations</div>
-                 <div className="w-full bg-muted rounded-full h-2.5 my-2">
-                    <div 
-                       className="bg-primary h-2.5 rounded-full" 
-                       style={{ width: `${maxEntities > 0 ? (mandate.num_entities / maxEntities) * 100 : 0}%` }}
-                    ></div>
-                 </div>
+                 <div className="text-sm font-medium mb-2">Cited by {mandate.num_citations}x by {mandate.num_entities} entities</div>
                  <EntityBadges entities={mandate.entities} />
               </div>
             </div>
@@ -119,7 +102,7 @@ export function MandateList({ mandates }: MandateListProps) {
             </div>
           </div>
         </motion.div>
-      ))}
+      )})}
     </div>
   );
 } 
