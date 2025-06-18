@@ -374,24 +374,18 @@ function MandateNavigator() {
         </section>
 
         <section>
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-2xl font-semibold text-foreground">
-                Mandates ({isLoading ? '...' : totalItems.toLocaleString()})
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {isLoading ? <LoadingSkeleton /> : <MandateList mandates={mandates} onMandateClick={setSelectedMandate} />}
-            </CardContent>
-            <PaginationControls
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-              totalItems={totalItems}
-              pageSize={pageSize}
-              onPageSizeChange={handlePageSizeChange}
-            />
-          </Card>
+          <h2 className="text-2xl font-semibold text-foreground mb-4">
+            Mandates ({isLoading ? '...' : totalItems.toLocaleString()})
+          </h2>
+          {isLoading ? <LoadingSkeleton /> : <MandateList mandates={mandates} onMandateClick={setSelectedMandate} />}
+          <PaginationControls
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            totalItems={totalItems}
+            pageSize={pageSize}
+            onPageSizeChange={handlePageSizeChange}
+          />
         </section>
       </main>
       <MandateDetails

@@ -2,7 +2,13 @@
 
 import { useState } from 'react';
 import type { Mandate } from '@/types';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
@@ -26,21 +32,21 @@ export function MandateDetails({ mandate, open, onOpenChange }: MandateDetailsPr
     : null;
 
   return (
-    <Sheet open={open} onOpenChange={(isOpen) => {
+    <Dialog open={open} onOpenChange={(isOpen) => {
         onOpenChange(isOpen);
         if (!isOpen) {
             setIsPdfVisible(false);
         }
     }}>
-      <SheetContent className="w-full sm:max-w-3xl p-0">
-        <ScrollArea className="h-full">
+      <DialogContent className="max-w-4xl w-full p-0 light">
+        <ScrollArea className="max-h-[90vh]">
           <div className="p-6">
-            <SheetHeader className="mb-6">
-              <SheetTitle className="text-2xl font-bold">{mandate.title || 'Mandate Details'}</SheetTitle>
-              <SheetDescription>
+            <DialogHeader className="mb-6 text-left">
+              <DialogTitle className="text-2xl font-bold">{mandate.title || 'Mandate Details'}</DialogTitle>
+              <DialogDescription>
                 {displaySymbol}
-              </SheetDescription>
-            </SheetHeader>
+              </DialogDescription>
+            </DialogHeader>
             
             {pdfUrl && (
               <Accordion type="single" collapsible onValueChange={(value) => setIsPdfVisible(value === 'pdf-viewer')}>
@@ -118,7 +124,7 @@ export function MandateDetails({ mandate, open, onOpenChange }: MandateDetailsPr
             </div>
           </div>
         </ScrollArea>
-      </SheetContent>
-    </Sheet>
+      </DialogContent>
+    </Dialog>
   );
 } 
