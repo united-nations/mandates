@@ -51,6 +51,12 @@ function MandateNavigator() {
   const [selectedMandate, setSelectedMandate] = useState<Mandate | null>(null);
   const [parentContext, setParentContext] = useState<ParentContext | null>(null);
 
+  const [sourceDocumentsPopover, setSourceDocumentsPopover] = useState(false);
+  const [unOrgansPopover, setUnOrgansPopover] = useState(false);
+  const [unEntitiesPopover, setUnEntitiesPopover] = useState(false);
+  const [programmesPopover, setProgrammesPopover] = useState(false);
+  const [citationsPopover, setCitationsPopover] = useState(false);
+
   useEffect(() => {
     // Sync keyword input with URL param
     if (keywordFromParams !== keyword) {
@@ -272,110 +278,118 @@ function MandateNavigator() {
     <div className="min-h-screen bg-background text-foreground">
       <header className="py-6 px-4 md:px-8 border-b border-border">
         <div className="container mx-auto flex items-center gap-3">
-          <Globe className="h-8 w-8 text-primary" />
-          <h1 className="text-3xl font-semibold text-foreground">
-            UN Mandate Explorer
-          </h1>
+          <div className="flex-1">
+            <div className="flex items-center space-x-2">
+              <h1 className="text-2xl font-semibold text-foreground">Mandate Source Registry</h1>
+            </div>
+          </div>
         </div>
       </header>
 
       <main className="container mx-auto px-4 md:px-8 py-8 space-y-8">
         
-        <section>
-            <h2 className="text-2xl font-semibold text-foreground mb-4">Data Overview</h2>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Card className="cursor-pointer">
-                      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                          <CardTitle className="text-sm font-medium text-muted-foreground">Documents</CardTitle>
-                          <FileText className="h-5 w-5 text-muted-foreground" />
-                      </CardHeader>
-                      <CardContent>
-                          <div className="text-3xl font-bold text-foreground">
-                          {totalDocuments > 0 ? totalDocuments.toLocaleString() : <Skeleton className="h-8 w-32" />}
-                          </div>
-                      </CardContent>
+        <section className="mb-8">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+              <Popover open={sourceDocumentsPopover} onOpenChange={setSourceDocumentsPopover}>
+                <PopoverTrigger asChild>
+                  <div onMouseEnter={() => setSourceDocumentsPopover(true)} onMouseLeave={() => setSourceDocumentsPopover(false)} className="h-full">
+                    <Card className="flex flex-col h-full">
+                        <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-16">
+                            <CardTitle className="text-sm font-medium text-muted-foreground">Source Documents</CardTitle>
+                            <FileText className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent className="flex-grow flex items-end">
+                            <div className="text-3xl font-bold text-foreground">
+                                {totalDocuments > 0 ? totalDocuments.toLocaleString() : <Skeleton className="h-8 w-16" />}
+                            </div>
+                        </CardContent>
                     </Card>
-                  </PopoverTrigger>
-                  <PopoverContent>
-                    <div className="p-4 text-sm">
-                      A total of {totalDocuments.toLocaleString()} documents are cited as mandates within the proposed programme budget for 2026.
-                    </div>
-                  </PopoverContent>
-                </Popover>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Card className="cursor-pointer">
-                      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                          <CardTitle className="text-sm font-medium text-muted-foreground">Citations</CardTitle>
-                          <BookCopy className="h-5 w-5 text-muted-foreground" />
+                  </div>
+                </PopoverTrigger>
+                <PopoverContent>
+                  <p>The total number of unique source documents in the registry.</p>
+                </PopoverContent>
+              </Popover>
+              <Popover open={unOrgansPopover} onOpenChange={setUnOrgansPopover}>
+                <PopoverTrigger asChild>
+                  <div onMouseEnter={() => setUnOrgansPopover(true)} onMouseLeave={() => setUnOrgansPopover(false)} className="h-full">
+                    <Card className="flex flex-col h-full">
+                      <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-16">
+                          <CardTitle className="text-sm font-medium text-muted-foreground">UN Organs</CardTitle>
+                          <Building className="h-4 w-4 text-muted-foreground" />
                       </CardHeader>
-                      <CardContent>
-                          <div className="text-3xl font-bold text-foreground">
-                              {totalCitations > 0 ? totalCitations.toLocaleString() : <Skeleton className="h-8 w-16" />}
-                          </div>
-                      </CardContent>
-                    </Card>
-                  </PopoverTrigger>
-                  <PopoverContent>
-                    <div className="p-4 text-sm">
-                      There are {totalCitations.toLocaleString()} references to one of the {totalDocuments.toLocaleString()} mandated documents within the proposed programme budget for 2026.
-                    </div>
-                  </PopoverContent>
-                </Popover>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Card className="cursor-pointer">
-                      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                          <CardTitle className="text-sm font-medium text-muted-foreground">Entities</CardTitle>
-                          <Users className="h-5 w-5 text-muted-foreground" />
-                      </CardHeader>
-                      <CardContent>
-                          <div className="text-3xl font-bold text-foreground">
-                              {totalEntities > 0 ? totalEntities.toLocaleString() : <Skeleton className="h-8 w-16" />}
-                          </div>
-                      </CardContent>
-                    </Card>
-                  </PopoverTrigger>
-                  <PopoverContent>
-                    <div className="p-4">
-                      <p className="text-sm mb-4">{totalEntities.toLocaleString()} distinct UN entities are responsible for citing these documents.</p>
-                      <ScrollArea className="h-72">
-                        <h4 className="mb-4 text-sm font-medium leading-none">Entities</h4>
-                        {entityOptions.map((entity) => (
-                          <div key={entity} className="text-sm py-1">{entity}</div>
-                        ))}
-                      </ScrollArea>
-                    </div>
-                  </PopoverContent>
-                </Popover>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Card className="cursor-pointer">
-                      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                          <CardTitle className="text-sm font-medium text-muted-foreground">Organs</CardTitle>
-                          <Building className="h-5 w-5 text-muted-foreground" />
-                      </CardHeader>
-                      <CardContent>
+                      <CardContent className="flex-grow flex items-end">
                           <div className="text-3xl font-bold text-foreground">
                               {uniqueBodiesCount > 0 ? uniqueBodiesCount.toLocaleString() : <Skeleton className="h-8 w-16" />}
                           </div>
                       </CardContent>
                     </Card>
-                  </PopoverTrigger>
-                  <PopoverContent>
-                    <div className="p-4">
-                      <p className="text-sm mb-4">{uniqueBodiesCount.toLocaleString()} distinct UN organs have issued the documents that are cited as mandates.</p>
-                      <ScrollArea className="h-72">
-                        <h4 className="mb-4 text-sm font-medium leading-none">Organs</h4>
-                        {uniqueBodies.map((body) => (
-                          <div key={body} className="text-sm py-1">{body}</div>
-                        ))}
-                      </ScrollArea>
-                    </div>
-                  </PopoverContent>
-                </Popover>
+                  </div>
+                </PopoverTrigger>
+                <PopoverContent>
+                  <p>The number of distinct UN organs that have issued the documents.</p>
+                </PopoverContent>
+              </Popover>
+              <Popover open={unEntitiesPopover} onOpenChange={setUnEntitiesPopover}>
+                <PopoverTrigger asChild>
+                  <div onMouseEnter={() => setUnEntitiesPopover(true)} onMouseLeave={() => setUnEntitiesPopover(false)} className="h-full">
+                    <Card className="flex flex-col h-full">
+                        <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-16">
+                            <CardTitle className="text-sm font-medium text-muted-foreground">UN Entities</CardTitle>
+                            <Users className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent className="flex-grow flex items-end">
+                            <div className="text-3xl font-bold text-foreground">
+                                {totalEntities > 0 ? totalEntities.toLocaleString() : <Skeleton className="h-8 w-16" />}
+                            </div>
+                        </CardContent>
+                    </Card>
+                  </div>
+                </PopoverTrigger>
+                <PopoverContent>
+                  <p>The number of distinct UN entities mentioned in the documents.</p>
+                </PopoverContent>
+              </Popover>
+              <Popover open={programmesPopover} onOpenChange={setProgrammesPopover}>
+                <PopoverTrigger asChild>
+                  <div onMouseEnter={() => setProgrammesPopover(true)} onMouseLeave={() => setProgrammesPopover(false)} className="h-full">
+                    <Card className="flex flex-col h-full">
+                      <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-16">
+                        <CardTitle className="text-sm font-medium text-muted-foreground">Programmes</CardTitle>
+                        <BookCopy className="h-4 w-4 text-muted-foreground" />
+                      </CardHeader>
+                      <CardContent className="flex-grow flex items-end">
+                        <div className="text-3xl font-bold text-foreground">
+                          <Skeleton className="h-8 w-16" />
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </PopoverTrigger>
+                <PopoverContent>
+                  <p>The number of distinct programmes mentioned in the documents.</p>
+                </PopoverContent>
+              </Popover>
+              <Popover open={citationsPopover} onOpenChange={setCitationsPopover}>
+                <PopoverTrigger asChild>
+                  <div onMouseEnter={() => setCitationsPopover(true)} onMouseLeave={() => setCitationsPopover(false)} className="h-full">
+                    <Card className="flex flex-col h-full">
+                        <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-16">
+                            <CardTitle className="text-sm font-medium text-muted-foreground">Citations</CardTitle>
+                            <ListChecks className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent className="flex-grow flex items-end">
+                            <div className="text-3xl font-bold text-foreground">
+                                {totalCitations > 0 ? totalCitations.toLocaleString() : <Skeleton className="h-8 w-16" />}
+                            </div>
+                        </CardContent>
+                    </Card>
+                  </div>
+                </PopoverTrigger>
+                <PopoverContent>
+                  <p>The total number of citations found across all documents.</p>
+                </PopoverContent>
+              </Popover>
             </div>
         </section>
 
