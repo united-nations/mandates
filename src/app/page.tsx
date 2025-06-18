@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import type { Mandate } from '@/types';
 import { useDebounce } from '@/hooks/use-debounce'; 
@@ -14,7 +14,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { MandateDetails } from '@/components/mandate-details';
 
-export default function MandateNavigatorPage() {
+function MandateNavigator() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -404,5 +404,33 @@ export default function MandateNavigatorPage() {
         }}
       />
     </div>
+  );
+}
+
+const FullPageSkeleton = () => (
+  <div className="min-h-screen bg-background text-foreground">
+    <header className="py-6 px-4 md:px-8 border-b border-border">
+      <div className="container mx-auto flex items-center gap-3">
+        <Globe className="h-8 w-8 text-primary" />
+        <h1 className="text-3xl font-semibold text-foreground">
+          UN Mandate Explorer
+        </h1>
+      </div>
+    </header>
+    <main className="container mx-auto px-4 md:px-8 py-8 space-y-8">
+      <div className="space-y-4">
+        <Skeleton className="h-40 w-full" />
+        <Skeleton className="h-20 w-full" />
+        <Skeleton className="h-64 w-full" />
+      </div>
+    </main>
+  </div>
+);
+
+export default function MandateNavigatorPage() {
+  return (
+    <Suspense fallback={<FullPageSkeleton />}>
+      <MandateNavigator />
+    </Suspense>
   );
 }
