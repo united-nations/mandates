@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import type { Mandate } from '@/types';
 import { useDebounce } from '@/hooks/use-debounce'; 
 import { MandateList } from '@/components/mandate-list';
@@ -14,18 +15,24 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { MandateDetails } from '@/components/mandate-details';
 
 export default function MandateNavigatorPage() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   const [mandates, setMandates] = useState<Mandate[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(30);
+  const currentPage = Number(searchParams.get('page') || '1');
+  const pageSize = Number(searchParams.get('limit') || '30');
+  const selectedEntity = searchParams.get('entity') || '';
+  const selectedPriorityArea = searchParams.get('priority_area') || '';
+  const keywordFromParams = searchParams.get('keyword') || '';
+
+  const [keyword, setKeyword] = useState(keywordFromParams);
+  const debouncedKeyword = useDebounce(keyword, 300);
+  
   const [totalPages, setTotalPages] = useState(0);
   const [totalItems, setTotalItems] = useState(0);
-
-  const [selectedEntity, setSelectedEntity] = useState('');
-  const [selectedPriorityArea, setSelectedPriorityArea] = useState('');
-  const [keyword, setKeyword] = useState('');
-  const debouncedKeyword = useDebounce(keyword, 300);
 
   const [entityOptions, setEntityOptions] = useState<string[]>([]);
   const [priorityAreaOptions, setPriorityAreaOptions] = useState<string[]>([]);
@@ -36,6 +43,91 @@ export default function MandateNavigatorPage() {
   const [uniqueBodies, setUniqueBodies] = useState<string[]>([]);
 
   const [selectedMandate, setSelectedMandate] = useState<Mandate | null>(null);
+
+  useEffect(() => {
+    // Sync keyword input with URL param
+    if (keywordFromParams !== keyword) {
+      setKeyword(keywordFromParams);
+    }
+  }, [keywordFromParams]);
+
+  useEffect(() => {
+    const FRAME_ORG = 'https://un80analytics.azurewebsites.net';
+
+    if (window.parent === window) {
+      return;
+    }
+
+    const post = (type: string, data = {}) => {
+      // Allow posting to any parent origin, as per the example script.
+      // The parent is responsible for verifying the origin.
+      window.parent.postMessage({ type, ...data }, '*');
+    };
+
+    const reportHeight = () => {
+      post('setHeight', { height: document.documentElement.scrollHeight });
+    };
+
+    const reportParams = () => {
+      post('syncParams', { params: window.location.search });
+    };
+
+    // Initial report
+    reportHeight();
+    reportParams();
+
+    // Report height on resize
+    const resizeObserver = new ResizeObserver(reportHeight);
+    resizeObserver.observe(document.documentElement);
+
+    // Report params on URL changes
+    window.addEventListener('popstate', reportParams);
+    window.addEventListener('hashchange', reportParams);
+
+    // Report params on internal navigation (clicks on links)
+    const handleDocClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const anchor = target.closest('a[href]');
+      if (anchor && (anchor as HTMLAnchorElement).origin === window.location.origin) {
+        setTimeout(reportParams, 50);
+      }
+    };
+    document.addEventListener('click', handleDocClick);
+
+    // Listen for messages from parent
+    const handleMessage = (e: MessageEvent) => {
+      // The sample child script does not check origin, assuming it's embedded by a trusted parent.
+      // if (e.origin !== FRAME_ORG) return;
+      
+      const { type, params } = e.data || {};
+      
+      if (type === 'init' && typeof params === 'string' && params !== window.location.search) {
+        const url = new URL(window.location.href);
+        url.search = params;
+        window.history.replaceState(null, '', url.toString());
+        // The Next.js router might not pick up history.replaceState, 
+        // but popstate should fire and update URL, which should trigger data-fetching useEffects
+        // Let's manually trigger a re-render by using the router.
+        router.replace(url.toString(), { scroll: false });
+        reportParams();
+        reportHeight();
+      }
+      
+      if (type === 'pingHeight') {
+        reportHeight();
+      }
+    };
+    window.addEventListener('message', handleMessage);
+
+    // Cleanup
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener('popstate', reportParams);
+      window.removeEventListener('hashchange', reportParams);
+      document.removeEventListener('click', handleDocClick);
+      window.removeEventListener('message', handleMessage);
+    };
+  }, [router]);
 
   useEffect(() => {
     async function fetchMetadata() {
@@ -87,9 +179,53 @@ export default function MandateNavigatorPage() {
   }, [fetchMandates]);
 
   useEffect(() => {
-    setCurrentPage(1);
-  }, [selectedEntity, selectedPriorityArea, debouncedKeyword, pageSize]);
+    if (debouncedKeyword !== keywordFromParams) {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set('page', '1');
+      if (debouncedKeyword) {
+        params.set('keyword', debouncedKeyword);
+      } else {
+        params.delete('keyword');
+      }
+      router.push(`${pathname}?${params.toString()}`, { scroll: false });
+    }
+  }, [debouncedKeyword, keywordFromParams, pathname, router, searchParams]);
   
+  const handlePageChange = (page: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('page', String(page));
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
+  const handlePageSizeChange = (size: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('limit', String(size));
+    params.set('page', '1');
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+  
+  const handleEntityChange = (entity: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('page', '1');
+    if (entity && entity !== 'all') {
+      params.set('entity', entity);
+    } else {
+      params.delete('entity');
+    }
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
+  const handlePriorityAreaChange = (priorityArea: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('page', '1');
+    if (priorityArea && priorityArea !== 'all') {
+      params.set('priority_area', priorityArea);
+    } else {
+      params.delete('priority_area');
+    }
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
   const LoadingSkeleton = () => (
     <div className="space-y-4">
         <Skeleton className="h-12 w-full" />
@@ -97,6 +233,20 @@ export default function MandateNavigatorPage() {
         <Skeleton className="h-12 w-full" />
     </div>
   );
+
+  useEffect(() => {
+    // When mandates data changes, the height of the document might change.
+    if (!isLoading) {
+      const reportHeight = () => {
+        if (window.parent !== window) {
+          window.parent.postMessage({ type: 'setHeight', height: document.documentElement.scrollHeight }, '*');
+        }
+      };
+      // A small delay to allow the DOM to update
+      const timer = setTimeout(reportHeight, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [mandates, isLoading]);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -216,8 +366,8 @@ export default function MandateNavigatorPage() {
             selectedEntity={selectedEntity}
             selectedPriorityArea={selectedPriorityArea}
             keyword={keyword}
-            onEntityChange={(value) => setSelectedEntity(value === 'all' ? '' : value)}
-            onPriorityAreaChange={(value) => setSelectedPriorityArea(value === 'all' ? '' : value)}
+            onEntityChange={handleEntityChange}
+            onPriorityAreaChange={handlePriorityAreaChange}
             onKeywordChange={setKeyword}
             disabled={isLoading}
           />
@@ -236,10 +386,10 @@ export default function MandateNavigatorPage() {
             <PaginationControls
               currentPage={currentPage}
               totalPages={totalPages}
-              onPageChange={setCurrentPage}
+              onPageChange={handlePageChange}
               totalItems={totalItems}
               pageSize={pageSize}
-              onPageSizeChange={setPageSize}
+              onPageSizeChange={handlePageSizeChange}
             />
           </Card>
         </section>
