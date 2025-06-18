@@ -55,3 +55,61 @@ This will start the application on `http://localhost:9002`.
 - `npm run typecheck`: Runs the TypeScript compiler to check for type errors.
 - `npm run genkit:dev`: Starts the Genkit development server.
 - `npm run genkit:watch`: Starts the Genkit development server in watch mode.
+
+## Config for page outside the iframe
+
+```html
+<iframe
+  id="analytics"
+  src="https://un80analytics.azurewebsites.net"
+  style="width:100%; border:none; overflow:hidden;"
+  sandbox="allow-downloads allow-forms allow-popups allow-scripts allow-same-origin"
+  scrolling="no">
+</iframe>
+
+<script>
+(() => {
+  const FRAME_ID = 'analytics';
+  const FRAME_ORG = 'https://un80analytics.azurewebsites.net';
+  const frame = document.getElementById(FRAME_ID);
+
+  function sendPositionContext() {
+    if (!frame.contentWindow) return;
+    const iframeRect = frame.getBoundingClientRect();
+    const context = {
+      type: 'parentContext',
+      scrollY: window.scrollY,
+      viewportHeight: window.innerHeight,
+      iframeTop: iframeRect.top + window.scrollY,
+    };
+    frame.contentWindow.postMessage(context, FRAME_ORG);
+  }
+
+  if (location.search && !frame.src.includes('?')) {
+    frame.src += location.search;
+  }
+
+  window.addEventListener('message', (e) => {
+    if (e.origin !== FRAME_ORG) return;
+    const { type, height, params } = e.data || {};
+    if (type === 'setHeight' && Number.isFinite(height)) frame.style.height = `${height}px`;
+    if (type === 'syncParams' && typeof params === 'string' && params !== location.search) {
+      history.replaceState(null, '', `${location.pathname}${params}${location.hash}`);
+    }
+    if (type === 'requestParentContext') sendPositionContext();
+  });
+
+  frame.addEventListener('load', () => {
+    frame.contentWindow?.postMessage({ type: 'init', params: location.search }, FRAME_ORG);
+    sendPositionContext();
+  });
+
+  window.addEventListener('resize', () => {
+    frame.contentWindow?.postMessage({ type: 'pingHeight' }, FRAME_ORG);
+    sendPositionContext();
+  }, { passive: true });
+
+  window.addEventListener('scroll', sendPositionContext, { passive: true });
+})();
+</script>
+```
