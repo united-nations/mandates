@@ -14,6 +14,12 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { MandateDetails } from '@/components/mandate-details';
 
+interface ParentContext {
+  scrollY: number;
+  viewportHeight: number;
+  iframeTop: number;
+}
+
 function MandateNavigator() {
   const router = useRouter();
   const pathname = usePathname();
@@ -43,6 +49,7 @@ function MandateNavigator() {
   const [uniqueBodies, setUniqueBodies] = useState<string[]>([]);
 
   const [selectedMandate, setSelectedMandate] = useState<Mandate | null>(null);
+  const [parentContext, setParentContext] = useState<ParentContext | null>(null);
 
   useEffect(() => {
     // Sync keyword input with URL param
@@ -99,7 +106,7 @@ function MandateNavigator() {
       // The sample child script does not check origin, assuming it's embedded by a trusted parent.
       // if (e.origin !== FRAME_ORG) return;
       
-      const { type, params } = e.data || {};
+      const { type, params, ...context } = e.data || {};
       
       if (type === 'init' && typeof params === 'string' && params !== window.location.search) {
         const url = new URL(window.location.href);
@@ -116,8 +123,21 @@ function MandateNavigator() {
       if (type === 'pingHeight') {
         reportHeight();
       }
+
+      if (type === 'parentContext') {
+        const { scrollY, viewportHeight, iframeTop } = context;
+        if (typeof scrollY === 'number' && typeof viewportHeight === 'number' && typeof iframeTop === 'number') {
+          setParentContext({ scrollY, viewportHeight, iframeTop });
+        }
+      }
     };
     window.addEventListener('message', handleMessage);
+
+    // When in an iframe, ask the parent for context.
+    // The parent should listen for this message and respond with a 'parentContext' message.
+    if (window.parent !== window) {
+      window.parent.postMessage({ type: 'requestParentContext' }, '*');
+    }
 
     // Cleanup
     return () => {
@@ -396,6 +416,7 @@ function MandateNavigator() {
             setSelectedMandate(null);
           }
         }}
+        parentContext={parentContext}
       />
     </div>
   );

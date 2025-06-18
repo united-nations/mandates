@@ -13,19 +13,40 @@ import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
+interface ParentContext {
+  scrollY: number;
+  viewportHeight: number;
+  iframeTop: number;
+}
+
 interface MandateDetailsProps {
   mandate: Mandate | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  parentContext: ParentContext | null;
 }
 
-export function MandateDetails({ mandate, open, onOpenChange }: MandateDetailsProps) {
+export function MandateDetails({ mandate, open, onOpenChange, parentContext }: MandateDetailsProps) {
   const [isPdfVisible, setIsPdfVisible] = useState(false);
 
   if (!mandate) {
     return null;
   }
   
+  const dialogStyle: React.CSSProperties = {};
+  if (parentContext) {
+    const { scrollY, viewportHeight, iframeTop } = parentContext;
+    // Calculate the center of the parent's viewport
+    const viewportCenter = scrollY + viewportHeight / 2;
+    // Position the dialog's top edge at that center, relative to the iframe's top.
+    const topInIframe = viewportCenter - iframeTop;
+
+    dialogStyle.position = 'absolute';
+    dialogStyle.top = `${topInIframe}px`;
+    // We want to be centered horizontally, and since top is now the center, also centered vertically.
+    dialogStyle.transform = 'translate(-50%, -50%)';
+  }
+
   const displaySymbol = mandate.full_document_symbol || mandate.symbol;
   const pdfUrl = mandate.full_document_symbol
     ? `https://documents.un.org/api/symbol/access?s=${mandate.full_document_symbol}&l=en&t=pdf`
@@ -38,7 +59,7 @@ export function MandateDetails({ mandate, open, onOpenChange }: MandateDetailsPr
             setIsPdfVisible(false);
         }
     }}>
-      <DialogContent className="max-w-4xl w-full p-0 light">
+      <DialogContent className="max-w-4xl w-full p-0 light" style={parentContext ? dialogStyle : undefined}>
         <ScrollArea className="max-h-[90vh]">
           <div className="p-6">
             <DialogHeader className="mb-6 text-left">
