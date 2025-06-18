@@ -23,14 +23,14 @@ jobs:
       uses: docker/login-action@v2
       with:
         registry: https://un80devdboardregistry.azurecr.io/
-        username: ${{ secrets.AzureAppService_ContainerUsername_b3e7d4871537407d99831eb19c999ad7 }}
-        password: ${{ secrets.AzureAppService_ContainerPassword_18ae9f1f3dcf4cb8a798ee1d8a049c2a }}
+        username: ${{ secrets.AzureAppService_ContainerUsername_9181cfea71d742b9b08e108e0f8da71c }}
+        password: ${{ secrets.AzureAppService_ContainerPassword_b2b9d3508ee34890bc175cc843d0406d }}
 
     - name: Build and push container image to registry
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: un80devdboardregistry.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_b3e7d4871537407d99831eb19c999ad7 }}/UN80DashboardImage:${{ github.sha }}
+        tags: un80devdboardregistry.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_9181cfea71d742b9b08e108e0f8da71c }}/un80image:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:
@@ -47,5 +47,5 @@ jobs:
       with:
         app-name: 'UN80-Dboard2-Dev'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_5d1e76b99a8147fbbc9c2bf19b0efbb2 }}
-        images: 'un80devdboardregistry.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_b3e7d4871537407d99831eb19c999ad7 }}/UN80DashboardImage:${{ github.sha }}'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_60f24e914ddf4d9388e7e38f3d2b7cc7 }}
+        images: 'un80devdboardregistry.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_9181cfea71d742b9b08e108e0f8da71c }}/un80image:${{ github.sha }}'
