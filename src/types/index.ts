@@ -1,12 +1,10 @@
-
+// This file is being completely replaced with a new interface.
 export interface Mandate {
-  id: string;
-  title: string;
-  unEntity: string;
-  year: number;
-  documentUrl?: string;
-  summary: string;
-  keywords: string[];
-  operativeParagraphs: string[];
-  programmePlanSection: string; // Added new field
+  symbol: string;
+  num_entities: number;
+  entities: string[];
+  priority_area: string;
+  full_document_symbol: string | null;
+  title: string | null;
+  operative_paragraphs: string[] | null;
 }

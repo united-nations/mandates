@@ -1,111 +1,120 @@
-
 'use client';
 
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Filter, Search, XCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { X } from 'lucide-react';
 
 interface FilterControlsProps {
   entities: string[];
-  years: number[];
+  priorityAreas: string[];
   selectedEntity: string;
-  selectedYear: string;
+  selectedPriorityArea: string;
   keyword: string;
   onEntityChange: (value: string) => void;
-  onYearChange: (value: string) => void;
+  onPriorityAreaChange: (value: string) => void;
   onKeywordChange: (value: string) => void;
-  onClearFilters: () => void;
+  disabled?: boolean;
 }
-
-const ALL_ENTITIES_PLACEHOLDER = "__ALL_ENTITIES__";
-const ALL_YEARS_PLACEHOLDER = "__ALL_YEARS__";
 
 export function FilterControls({
   entities,
-  years,
+  priorityAreas,
   selectedEntity,
-  selectedYear,
+  selectedPriorityArea,
   keyword,
   onEntityChange,
-  onYearChange,
+  onPriorityAreaChange,
   onKeywordChange,
-  onClearFilters,
+  disabled,
 }: FilterControlsProps) {
+  const showActiveFilters = selectedPriorityArea || selectedEntity;
+
   return (
-    <div className="p-6 bg-card rounded-lg shadow border border-border">
-      <h2 className="text-xl font-semibold text-foreground mb-4 flex items-center">
-        <Filter size={20} className="mr-2 text-primary" />
-        Filter Mandates
-      </h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1fr_1fr_2fr_auto] gap-4 items-end">
-        <div>
-          <Label htmlFor="entity-filter" className="text-sm font-medium text-foreground mb-1 block">UN Entity</Label>
-          <Select
-            value={selectedEntity === '' ? ALL_ENTITIES_PLACEHOLDER : selectedEntity}
-            onValueChange={(value) => {
-              onEntityChange(value === ALL_ENTITIES_PLACEHOLDER ? '' : value);
-            }}
-          >
-            <SelectTrigger id="entity-filter" className="w-full bg-input">
-              <SelectValue placeholder="All Entities" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value={ALL_ENTITIES_PLACEHOLDER}>All Entities</SelectItem>
-              {entities.map((entity) => (
-                <SelectItem key={entity} value={entity}>
-                  {entity}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+    <div className="p-4 bg-card border rounded-lg shadow-sm space-y-4">
+      <div className="flex flex-col md:flex-row gap-4">
+        <div className="relative flex-grow">
+          <Input
+            placeholder="Search by keyword, symbol, or entity..."
+            value={keyword}
+            onChange={(e) => onKeywordChange(e.target.value)}
+            disabled={disabled}
+            className="pr-10"
+          />
+          {keyword && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="absolute right-0 top-1/2 -translate-y-1/2 h-full px-3"
+              onClick={() => onKeywordChange('')}
+              disabled={disabled}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          )}
         </div>
 
-        <div>
-          <Label htmlFor="year-filter" className="text-sm font-medium text-foreground mb-1 block">Year</Label>
-          <Select
-            value={selectedYear === '' ? ALL_YEARS_PLACEHOLDER : selectedYear}
-            onValueChange={(value) => {
-              onYearChange(value === ALL_YEARS_PLACEHOLDER ? '' : value);
-            }}
-          >
-            <SelectTrigger id="year-filter" className="w-full bg-input">
-              <SelectValue placeholder="All Years" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value={ALL_YEARS_PLACEHOLDER}>All Years</SelectItem>
-              {years.map((year) => (
-                <SelectItem key={year} value={String(year)}>
-                  {year}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+        <Select onValueChange={onPriorityAreaChange} value={selectedPriorityArea} disabled={disabled}>
+          <SelectTrigger className="w-full md:w-[280px]">
+            <SelectValue placeholder="Filter by Priority Area" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Priority Areas</SelectItem>
+            {priorityAreas.map((area) => (
+              <SelectItem key={area} value={area}>
+                {area}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-        <div className="lg:col-span-1"> {/* Adjusted for new grid */}
-          <Label htmlFor="keyword-filter" className="text-sm font-medium text-foreground mb-1 block">Keyword Search (Title/Content)</Label>
-          <div className="relative">
-            <Input
-              id="keyword-filter"
-              type="text"
-              placeholder="Enter keywords..."
-              value={keyword}
-              onChange={(e) => onKeywordChange(e.target.value)}
-              className="w-full pl-10 bg-input"
-            />
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          </div>
-        </div>
-        
-        <div>
-          <Button onClick={onClearFilters} variant="outline" className="w-full">
-            <XCircle size={16} className="mr-2" />
-            Clear Filters
-          </Button>
-        </div>
+        <Select onValueChange={onEntityChange} value={selectedEntity} disabled={disabled}>
+          <SelectTrigger className="w-full md:w-[280px]">
+            <SelectValue placeholder="Filter by Entity" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Entities</SelectItem>
+            {entities.map((entity) => (
+              <SelectItem key={entity} value={entity}>
+                {entity}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
+
+      {showActiveFilters && (
+        <div className="flex items-center gap-2 flex-wrap">
+          <p className="text-sm font-medium">Active filters:</p>
+          {selectedPriorityArea && (
+            <Badge variant="secondary" className="flex items-center gap-1.5 pl-2 pr-1 py-1">
+              {selectedPriorityArea}
+              <button
+                onClick={() => onPriorityAreaChange('')}
+                disabled={disabled}
+                className="rounded-full hover:bg-muted-foreground/20 p-0.5"
+                aria-label={`Remove ${selectedPriorityArea} filter`}
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </Badge>
+          )}
+          {selectedEntity && (
+            <Badge variant="secondary" className="flex items-center gap-1.5 pl-2 pr-1 py-1">
+              {selectedEntity}
+              <button
+                onClick={() => onEntityChange('')}
+                disabled={disabled}
+                className="rounded-full hover:bg-muted-foreground/20 p-0.5"
+                aria-label={`Remove ${selectedEntity} filter`}
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </Badge>
+          )}
+        </div>
+      )}
     </div>
   );
-}
+} 

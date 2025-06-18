@@ -1,89 +1,86 @@
-
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import type { Mandate } from '@/types';
-import { mockMandates, uniqueEntities, uniqueYears } from '@/data/mock-mandates';
+import { useDebounce } from '@/hooks/use-debounce'; 
+import { MandateList } from '@/components/mandate-list';
 import { FilterControls } from '@/components/filter-controls';
-import { OperativeParagraphsDialog } from '@/components/operative-paragraphs-dialog';
-import { MandateTable } from '@/components/mandate-table'; // New table component
+import { PaginationControls } from '@/components/pagination-controls';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Globe, FileText, Users, CalendarDays, ListChecks } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Globe, FileText, Users, ListChecks } from 'lucide-react';
 
 export default function MandateNavigatorPage() {
-  const [allMandates] = useState<Mandate[]>(mockMandates);
-  const [filteredMandates, setFilteredMandates] = useState<Mandate[]>(allMandates);
+  const [mandates, setMandates] = useState<Mandate[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalItems, setTotalItems] = useState(0);
 
   const [selectedEntity, setSelectedEntity] = useState('');
-  const [selectedYear, setSelectedYear] = useState('');
+  const [selectedPriorityArea, setSelectedPriorityArea] = useState('');
   const [keyword, setKeyword] = useState('');
+  const debouncedKeyword = useDebounce(keyword, 300);
 
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [activeMandate, setActiveMandate] = useState<Mandate | null>(null);
+  const [entityOptions, setEntityOptions] = useState<string[]>([]);
+  const [priorityAreaOptions, setPriorityAreaOptions] = useState<string[]>([]);
 
   useEffect(() => {
-    let mandates = allMandates;
-
-    if (selectedEntity) {
-      mandates = mandates.filter((m) => m.unEntity === selectedEntity);
+    async function fetchMetadata() {
+      try {
+        const response = await fetch('/api/mandates/meta');
+        const data = await response.json();
+        setEntityOptions(data.uniqueEntities || []);
+        setPriorityAreaOptions(data.uniquePriorityAreas || []);
+      } catch (error) {
+        console.error("Failed to fetch metadata:", error);
+      }
     }
+    fetchMetadata();
+  }, []);
 
-    if (selectedYear) {
-      mandates = mandates.filter((m) => m.year === parseInt(selectedYear, 10));
+  const fetchMandates = useCallback(async () => {
+    setIsLoading(true);
+    const params = new URLSearchParams({
+        page: String(currentPage),
+        limit: '100',
+    });
+    if (selectedEntity) params.append('entity', selectedEntity);
+    if (selectedPriorityArea) params.append('priority_area', selectedPriorityArea);
+    if (debouncedKeyword) params.append('keyword', debouncedKeyword);
+
+    try {
+      const response = await fetch(`/api/mandates?${params.toString()}`);
+      const data = await response.json();
+      setMandates(data.items || []);
+      setTotalItems(data.totalItems || 0);
+      setTotalPages(data.totalPages || 0);
+    } catch (error) {
+      console.error("Failed to fetch mandates:", error);
+      setMandates([]);
+      setTotalItems(0);
+      setTotalPages(0);
+    } finally {
+      setIsLoading(false);
     }
-
-    if (keyword.trim() !== '') {
-      const lowerKeyword = keyword.toLowerCase();
-      mandates = mandates.filter(
-        (m) =>
-          m.title.toLowerCase().includes(lowerKeyword) ||
-          m.summary.toLowerCase().includes(lowerKeyword) ||
-          m.programmePlanSection.toLowerCase().includes(lowerKeyword) || // Search in new field
-          (m.keywords && m.keywords.some(k => k.toLowerCase().includes(lowerKeyword)))
-      );
-    }
-    setFilteredMandates(mandates);
-  }, [selectedEntity, selectedYear, keyword, allMandates]);
-
-  const handleViewOperativeParagraphs = (mandateId: string) => {
-    const mandate = allMandates.find(m => m.id === mandateId);
-    if (mandate) {
-      setActiveMandate(mandate);
-      setIsDialogOpen(true);
-    }
-  };
-
-  const handleCloseDialog = () => {
-    setIsDialogOpen(false);
-    setActiveMandate(null);
-  };
+  }, [currentPage, selectedEntity, selectedPriorityArea, debouncedKeyword]);
   
-  const handleClearFilters = () => {
-    setSelectedEntity('');
-    setSelectedYear('');
-    setKeyword('');
-  };
+  useEffect(() => {
+    fetchMandates();
+  }, [fetchMandates]);
 
-  const entityOptions = useMemo(() => uniqueEntities, []);
-  const yearOptions = useMemo(() => uniqueYears, []);
-
-  const totalMandatesCount = allMandates.length;
-  const uniqueEntitiesCount = uniqueEntities.length;
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedEntity, selectedPriorityArea, debouncedKeyword]);
   
-  const mostRecentYear = useMemo(() => {
-    if (yearOptions.length > 0) {
-      return yearOptions[0]; // uniqueYears is sorted descending
-    }
-    return new Date().getFullYear(); // Fallback, though should not be needed
-  }, [yearOptions]);
-
-  const mandatesInMostRecentYearCount = useMemo(() => {
-    if (mostRecentYear) {
-      return allMandates.filter(m => m.year === mostRecentYear).length;
-    }
-    return 0;
-  }, [allMandates, mostRecentYear]);
-
+  const LoadingSkeleton = () => (
+    <div className="space-y-4">
+        <Skeleton className="h-12 w-full" />
+        <Skeleton className="h-12 w-full" />
+        <Skeleton className="h-12 w-full" />
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -97,75 +94,79 @@ export default function MandateNavigatorPage() {
       </header>
 
       <main className="container mx-auto px-4 md:px-8 py-8 space-y-8">
-        {/* Data Overview Section */}
+        
         <section>
-          <h2 className="text-2xl font-semibold text-foreground mb-4">Data Overview</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="shadow-sm">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">Total Mandates</CardTitle>
-                <FileText className="h-5 w-5 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold text-foreground">{totalMandatesCount}</div>
-                <p className="text-xs text-muted-foreground">Currently tracked mandates</p>
-              </CardContent>
-            </Card>
-            <Card className="shadow-sm">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">Unique UN Entities</CardTitle>
-                <Users className="h-5 w-5 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold text-foreground">{uniqueEntitiesCount}</div>
-                <p className="text-xs text-muted-foreground">Entities with mandates</p>
-              </CardContent>
-            </Card>
-            <Card className="shadow-sm">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">Mandates in {mostRecentYear}</CardTitle>
-                <ListChecks className="h-5 w-5 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold text-foreground">{mandatesInMostRecentYearCount}</div>
-                <p className="text-xs text-muted-foreground">In the most recent year</p>
-              </CardContent>
-            </Card>
-          </div>
+            <h2 className="text-2xl font-semibold text-foreground mb-4">Data Overview</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium text-muted-foreground">Total Mandates</CardTitle>
+                      <FileText className="h-5 w-5 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                      <div className="text-3xl font-bold text-foreground">
+                      {isLoading && totalItems === 0 ? <Skeleton className="h-8 w-32" /> : totalItems.toLocaleString()}
+                      </div>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium text-muted-foreground">UN Entities</CardTitle>
+                      <Users className="h-5 w-5 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                      <div className="text-3xl font-bold text-foreground">
+                          {entityOptions.length > 0 ? entityOptions.length.toLocaleString() : <Skeleton className="h-8 w-16" />}
+                      </div>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium text-muted-foreground">Priority Areas</CardTitle>
+                      <ListChecks className="h-5 w-5 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                      <div className="text-3xl font-bold text-foreground">
+                          {priorityAreaOptions.length > 0 ? priorityAreaOptions.length.toLocaleString() : <Skeleton className="h-8 w-16" />}
+                      </div>
+                  </CardContent>
+                </Card>
+            </div>
         </section>
 
-        {/* Filter Mandates Section */}
         <section>
           <FilterControls
             entities={entityOptions}
-            years={yearOptions}
+            priorityAreas={priorityAreaOptions}
             selectedEntity={selectedEntity}
-            selectedYear={selectedYear}
+            selectedPriorityArea={selectedPriorityArea}
             keyword={keyword}
-            onEntityChange={setSelectedEntity}
-            onYearChange={setSelectedYear}
+            onEntityChange={(value) => setSelectedEntity(value === 'all' ? '' : value)}
+            onPriorityAreaChange={(value) => setSelectedPriorityArea(value === 'all' ? '' : value)}
             onKeywordChange={setKeyword}
-            onClearFilters={handleClearFilters}
+            disabled={isLoading}
           />
         </section>
 
-        {/* Mandate List Section */}
         <section>
-          <h2 className="text-2xl font-semibold text-foreground mb-4">Mandate List</h2>
-          <MandateTable
-            mandates={filteredMandates}
-            onViewOperativeParagraphs={handleViewOperativeParagraphs}
-          />
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-2xl font-semibold text-foreground">
+                Mandates ({isLoading ? '...' : totalItems.toLocaleString()})
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {isLoading ? <LoadingSkeleton /> : <MandateList mandates={mandates} />}
+            </CardContent>
+            <PaginationControls
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+              totalItems={totalItems}
+            />
+          </Card>
         </section>
       </main>
-
-      <OperativeParagraphsDialog
-        mandate={activeMandate}
-        isOpen={isDialogOpen}
-        onClose={handleCloseDialog}
-      />
-      
-      {/* Footer removed as per screenshot */}
     </div>
   );
 }
