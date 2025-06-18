@@ -22,15 +22,15 @@ jobs:
     - name: Log in to registry
       uses: docker/login-action@v2
       with:
-        registry: https://mcr.microsoft.com/
-        username: ${{ secrets.AzureAppService_ContainerUsername_00df6085aa284574bf38fbf7b9a7cf73 }}
-        password: ${{ secrets.AzureAppService_ContainerPassword_f567f9871cb24482a0f7ecc9f9e33066 }}
+        registry: https://un80devdboardregistry.azurecr.io/
+        username: ${{ secrets.AzureAppService_ContainerUsername_b3e7d4871537407d99831eb19c999ad7 }}
+        password: ${{ secrets.AzureAppService_ContainerPassword_18ae9f1f3dcf4cb8a798ee1d8a049c2a }}
 
     - name: Build and push container image to registry
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: mcr.microsoft.com/${{ secrets.AzureAppService_ContainerUsername_00df6085aa284574bf38fbf7b9a7cf73 }}/appsvc/staticsite:${{ github.sha }}
+        tags: un80devdboardregistry.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_b3e7d4871537407d99831eb19c999ad7 }}/UN80DashboardImage:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:
@@ -47,5 +47,5 @@ jobs:
       with:
         app-name: 'UN80-Dboard2-Dev'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_2fcb6da7b5f542e3b7ee61b84327ab08 }}
-        images: 'mcr.microsoft.com/${{ secrets.AzureAppService_ContainerUsername_00df6085aa284574bf38fbf7b9a7cf73 }}/appsvc/staticsite:${{ github.sha }}'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_5d1e76b99a8147fbbc9c2bf19b0efbb2 }}
+        images: 'un80devdboardregistry.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_b3e7d4871537407d99831eb19c999ad7 }}/UN80DashboardImage:${{ github.sha }}'
