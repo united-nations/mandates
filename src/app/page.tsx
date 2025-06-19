@@ -9,7 +9,7 @@ import { FilterControls } from '@/components/filter-controls';
 import { PaginationControls } from '@/components/pagination-controls';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Globe, FileText, Users, ListChecks, BookCopy, Building } from 'lucide-react';
+import { Archive, Landmark, Building, Target, Quote } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { MandateDetails } from '@/components/mandate-details';
@@ -358,21 +358,21 @@ function MandateNavigator() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <main className="w-full max-w-none mx-auto px-4 md:px-6 py-8 space-y-8">
+      <main className="w-full py-6 space-y-6">
         
-        <section className="mb-8">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+        <section className="mb-6 px-4">
+          <div className="grid gap-3 grid-cols-5">
               <Popover open={sourceDocumentsPopover} onOpenChange={setSourceDocumentsPopover}>
                 <PopoverTrigger asChild>
                   <div onMouseEnter={() => setSourceDocumentsPopover(true)} onMouseLeave={() => setSourceDocumentsPopover(false)} className="h-full">
                     <Card className="flex flex-col h-full">
-                        <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-16">
+                        <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-14">
                             <CardTitle className="text-sm font-medium text-muted-foreground">Source Documents</CardTitle>
-                            <FileText className="h-4 w-4 text-muted-foreground" />
+                            <Archive className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent className="flex-grow flex items-end">
-                            <div className="text-3xl font-bold text-foreground">
-                                {isLoading ? <Skeleton className="h-8 w-16" /> : (totalItems > 0 ? totalItems.toLocaleString() : '0')}
+                            <div className="text-2xl font-bold text-foreground">
+                                {isLoading ? <Skeleton className="h-6 w-12" /> : (totalItems > 0 ? totalItems.toLocaleString() : '0')}
                             </div>
                         </CardContent>
                     </Card>
@@ -386,13 +386,13 @@ function MandateNavigator() {
                 <PopoverTrigger asChild>
                   <div onMouseEnter={() => setUnOrgansPopover(true)} onMouseLeave={() => setUnOrgansPopover(false)} className="h-full">
                     <Card className="flex flex-col h-full">
-                      <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-16">
+                      <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-14">
                           <CardTitle className="text-sm font-medium text-muted-foreground">UN Organs</CardTitle>
-                          <Building className="h-4 w-4 text-muted-foreground" />
+                          <Landmark className="h-4 w-4 text-muted-foreground" />
                       </CardHeader>
                       <CardContent className="flex-grow flex items-end">
-                          <div className="text-3xl font-bold text-foreground">
-                              {isLoading ? <Skeleton className="h-8 w-16" /> : (uniqueOrgans > 0 ? uniqueOrgans.toLocaleString() : '0')}
+                          <div className="text-2xl font-bold text-foreground">
+                              {isLoading ? <Skeleton className="h-6 w-12" /> : (uniqueOrgans > 0 ? uniqueOrgans.toLocaleString() : '0')}
                           </div>
                       </CardContent>
                     </Card>
@@ -406,13 +406,13 @@ function MandateNavigator() {
                 <PopoverTrigger asChild>
                   <div onMouseEnter={() => setUnEntitiesPopover(true)} onMouseLeave={() => setUnEntitiesPopover(false)} className="h-full">
                     <Card className="flex flex-col h-full">
-                        <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-16">
+                        <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-14">
                             <CardTitle className="text-sm font-medium text-muted-foreground">UN Entities</CardTitle>
-                            <Users className="h-4 w-4 text-muted-foreground" />
+                            <Building className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent className="flex-grow flex items-end">
-                            <div className="text-3xl font-bold text-foreground">
-                                {isLoading ? <Skeleton className="h-8 w-16" /> : (uniqueEntities > 0 ? uniqueEntities.toLocaleString() : '0')}
+                            <div className="text-2xl font-bold text-foreground">
+                                {isLoading ? <Skeleton className="h-6 w-12" /> : (uniqueEntities > 0 ? uniqueEntities.toLocaleString() : '0')}
                             </div>
                         </CardContent>
                     </Card>
@@ -426,13 +426,13 @@ function MandateNavigator() {
                 <PopoverTrigger asChild>
                   <div onMouseEnter={() => setProgrammesPopover(true)} onMouseLeave={() => setProgrammesPopover(false)} className="h-full">
                     <Card className="flex flex-col h-full">
-                      <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-16">
+                      <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-14">
                         <CardTitle className="text-sm font-medium text-muted-foreground">Programmes</CardTitle>
-                        <BookCopy className="h-4 w-4 text-muted-foreground" />
+                        <Target className="h-4 w-4 text-muted-foreground" />
                       </CardHeader>
                       <CardContent className="flex-grow flex items-end">
-                        <div className="text-3xl font-bold text-foreground">
-                          {isLoading ? <Skeleton className="h-8 w-16" /> : (uniqueProgrammes > 0 ? uniqueProgrammes.toLocaleString() : '0')}
+                        <div className="text-2xl font-bold text-foreground">
+                          {isLoading ? <Skeleton className="h-6 w-12" /> : (uniqueProgrammes > 0 ? uniqueProgrammes.toLocaleString() : '0')}
                         </div>
                       </CardContent>
                     </Card>
@@ -446,13 +446,13 @@ function MandateNavigator() {
                 <PopoverTrigger asChild>
                   <div onMouseEnter={() => setCitationsPopover(true)} onMouseLeave={() => setCitationsPopover(false)} className="h-full">
                     <Card className="flex flex-col h-full">
-                        <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-16">
+                        <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-14">
                             <CardTitle className="text-sm font-medium text-muted-foreground">Citations</CardTitle>
-                            <ListChecks className="h-4 w-4 text-muted-foreground" />
+                            <Quote className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent className="flex-grow flex items-end">
-                            <div className="text-3xl font-bold text-foreground">
-                                {isLoading ? <Skeleton className="h-8 w-16" /> : (totalCitations > 0 ? totalCitations.toLocaleString() : '0')}
+                            <div className="text-2xl font-bold text-foreground">
+                                {isLoading ? <Skeleton className="h-6 w-12" /> : (totalCitations > 0 ? totalCitations.toLocaleString() : '0')}
                             </div>
                         </CardContent>
                     </Card>
@@ -465,122 +465,130 @@ function MandateNavigator() {
           </div>
         </section>
 
-        <FilterControls
-          keyword={keyword}
-          onKeywordChange={onKeywordChange}
-          entityOptions={entityOptions}
-          selectedEntity={selectedEntity}
-          onEntityChange={onEntityChange}
-          organOptions={organOptions}
-          selectedOrgan={selectedOrgan}
-          onOrganChange={onOrganChange}
-          priorityAreaOptions={priorityAreaOptions}
-          selectedPriorityArea={selectedPriorityArea}
-          onPriorityAreaChange={handlePriorityAreaChange}
-          programme={programme}
-          yearRange={yearRange}
-          yearDistribution={yearDistribution}
-          selectedYearRange={selectedYearRange}
-          budgetDocument={budgetDocument}
-          section={section}
-          onProgrammeChange={onProgrammeChange}
-          onYearRangeChange={handleYearRangeChange}
-          onBudgetDocumentChange={onBudgetDocumentChange}
-          onSectionChange={onSectionChange}
-          programmeOptions={programmeOptions}
-          sectionOptions={sectionOptions}
-          pillarOptions={pillarOptions}
-          selectedPillar={pillar}
-          onPillarChange={onPillarChange}
-        />
+        <div className="px-4">
+          <FilterControls
+            keyword={keyword}
+            onKeywordChange={onKeywordChange}
+            entityOptions={entityOptions}
+            selectedEntity={selectedEntity}
+            onEntityChange={onEntityChange}
+            organOptions={organOptions}
+            selectedOrgan={selectedOrgan}
+            onOrganChange={onOrganChange}
+            priorityAreaOptions={priorityAreaOptions}
+            selectedPriorityArea={selectedPriorityArea}
+            onPriorityAreaChange={handlePriorityAreaChange}
+            programme={programme}
+            yearRange={yearRange}
+            yearDistribution={yearDistribution}
+            selectedYearRange={selectedYearRange}
+            budgetDocument={budgetDocument}
+            section={section}
+            onProgrammeChange={onProgrammeChange}
+            onYearRangeChange={handleYearRangeChange}
+            onBudgetDocumentChange={onBudgetDocumentChange}
+            onSectionChange={onSectionChange}
+            programmeOptions={programmeOptions}
+            sectionOptions={sectionOptions}
+            pillarOptions={pillarOptions}
+            selectedPillar={pillar}
+            onPillarChange={onPillarChange}
+          />
+        </div>
 
-        <SearchResultsSummary
-          totalResults={totalItems}
-          searchKeyword={keywordFromParams}
-          appliedFilters={{
-            entity: selectedEntity !== 'all' ? selectedEntity : undefined,
-            organ: selectedOrgan !== 'all' ? selectedOrgan : undefined,
-            priority_area: selectedPriorityArea !== 'all' ? selectedPriorityArea : undefined,
-            programme: programme || undefined,
-            pillar: pillar !== 'all' ? pillar : undefined,
-            year: (startYearFromParams && endYearFromParams && yearRange && (parseInt(startYearFromParams, 10) !== yearRange.min || parseInt(endYearFromParams, 10) !== yearRange.max)) ? `${selectedYearRange?.[0]}-${selectedYearRange?.[1]}` : undefined,
-            budget_document: budgetDocument !== 'all' ? budgetDocument : undefined,
-            section: section || undefined,
-          }}
-          onClearSearch={() => onKeywordChange('')}
-          onClearFilter={(filterKey) => {
-            switch (filterKey) {
-              case 'entity':
-                onEntityChange('all');
-                break;
-              case 'organ':
-                onOrganChange('all');
-                break;
-              case 'priority_area':
-                handlePriorityAreaChange('all');
-                break;
-              case 'programme':
-                onProgrammeChange('');
-                break;
-              case 'pillar':
-                onPillarChange('all');
-                break;
-              case 'year':
-                const newParams = new URLSearchParams(searchParams.toString());
-                newParams.delete('start_year');
-                newParams.delete('end_year');
-                newParams.set('page', '1');
-                router.push(`${pathname}?${newParams.toString()}`, { scroll: false });
-                break;
-              case 'budget_document':
-                onBudgetDocumentChange('all');
-                break;
-              case 'section':
-                onSectionChange('');
-                break;
-            }
-          }}
-          isLoading={isLoading}
-        />
+        <div className="px-4">
+          <SearchResultsSummary
+            totalResults={totalItems}
+            searchKeyword={keywordFromParams}
+            appliedFilters={{
+              entity: selectedEntity !== 'all' ? selectedEntity : undefined,
+              organ: selectedOrgan !== 'all' ? selectedOrgan : undefined,
+              priority_area: selectedPriorityArea !== 'all' ? selectedPriorityArea : undefined,
+              programme: programme || undefined,
+              pillar: pillar !== 'all' ? pillar : undefined,
+              year: (startYearFromParams && endYearFromParams && yearRange && (parseInt(startYearFromParams, 10) !== yearRange.min || parseInt(endYearFromParams, 10) !== yearRange.max)) ? `${selectedYearRange?.[0]}-${selectedYearRange?.[1]}` : undefined,
+              budget_document: budgetDocument !== 'all' ? budgetDocument : undefined,
+              section: section || undefined,
+            }}
+            onClearSearch={() => onKeywordChange('')}
+            onClearFilter={(filterKey) => {
+              switch (filterKey) {
+                case 'entity':
+                  onEntityChange('all');
+                  break;
+                case 'organ':
+                  onOrganChange('all');
+                  break;
+                case 'priority_area':
+                  handlePriorityAreaChange('all');
+                  break;
+                case 'programme':
+                  onProgrammeChange('');
+                  break;
+                case 'pillar':
+                  onPillarChange('all');
+                  break;
+                case 'year':
+                  const newParams = new URLSearchParams(searchParams.toString());
+                  newParams.delete('start_year');
+                  newParams.delete('end_year');
+                  newParams.set('page', '1');
+                  router.push(`${pathname}?${newParams.toString()}`, { scroll: false });
+                  break;
+                case 'budget_document':
+                  onBudgetDocumentChange('all');
+                  break;
+                case 'section':
+                  onSectionChange('');
+                  break;
+              }
+            }}
+            isLoading={isLoading}
+          />
+        </div>
 
-        <div className="border-t border-border pt-4">
-          <div className="mt-4">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold tracking-tight">Mandate Source Documents</h2>
-              <div className="flex items-center space-x-2">
-                <label htmlFor="sort-by" className="text-sm font-medium">Sort by</label>
-                <Select value={sortBy} onValueChange={handleSortChange}>
-                  <SelectTrigger className="w-[200px]" id="sort-by">
-                    <SelectValue placeholder="Sort by..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {keywordFromParams ? <SelectItem value="default">Relevance</SelectItem> : null}
-                    <SelectItem value="citations_desc">Citations (High to Low)</SelectItem>
-                    <SelectItem value="year_desc">Year (Newest First)</SelectItem>
-                    <SelectItem value="year_asc">Year (Oldest First)</SelectItem>
-                  </SelectContent>
-                </Select>
+        <div className="px-4">
+          <div className="border-t border-border pt-4">
+            <div className="mt-4">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-2xl font-bold tracking-tight">Mandate Source Documents</h2>
+                <div className="flex items-center space-x-2">
+                  <label htmlFor="sort-by" className="text-sm font-medium">Sort by</label>
+                  <Select value={sortBy} onValueChange={handleSortChange}>
+                    <SelectTrigger className="w-[200px]" id="sort-by">
+                      <SelectValue placeholder="Sort by..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {keywordFromParams ? <SelectItem value="default">Relevance</SelectItem> : null}
+                      <SelectItem value="citations_desc">Citations (High to Low)</SelectItem>
+                      <SelectItem value="year_desc">Year (Newest First)</SelectItem>
+                      <SelectItem value="year_asc">Year (Oldest First)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
+              {isLoading ? (
+                <LoadingSkeleton />
+              ) : (
+                <MandateList
+                  mandates={mandates}
+                  onMandateClick={setSelectedMandate}
+                />
+              )}
             </div>
-            {isLoading ? (
-              <LoadingSkeleton />
-            ) : (
-              <MandateList
-                mandates={mandates}
-                onMandateClick={setSelectedMandate}
-              />
-            )}
           </div>
         </div>
 
-        <PaginationControls
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
-          pageSize={pageSize}
-          onPageSizeChange={handlePageSizeChange}
-          totalItems={totalItems}
-        />
+        <div className="px-4">
+          <PaginationControls
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            pageSize={pageSize}
+            onPageSizeChange={handlePageSizeChange}
+            totalItems={totalItems}
+          />
+        </div>
       </main>
 
       <MandateDetails
