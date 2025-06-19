@@ -35,6 +35,9 @@ export function MandateDetails({ mandate, open, onOpenChange, parentContext }: M
     return null;
   }
   
+  const validEntities = mandate.entities ? mandate.entities.filter(e => e && e.trim()) : [];
+  const programmes = ['Programme A', 'Programme B']; // Placeholder
+
   const dialogStyle: React.CSSProperties = {};
   if (parentContext) {
     const { scrollY, iframeTop } = parentContext;
@@ -78,7 +81,7 @@ export function MandateDetails({ mandate, open, onOpenChange, parentContext }: M
             <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
               {/* Column 1: AI Summary */}
               <div className="space-y-4 md:col-span-4">
-                <h3 className="text-lg font-semibold flex items-center gap-2"><FileText className="h-5 w-5" />Doc Summary (GenAI)</h3>
+                <h3 className="text-lg font-semibold flex items-center gap-2"><FileText className="h-5 w-5" />Document Summary (GenAI)</h3>
                 <p className="text-sm text-muted-foreground italic">
                     (AI summary of the mandate will be displayed here. This is a placeholder.)
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.
@@ -94,7 +97,7 @@ export function MandateDetails({ mandate, open, onOpenChange, parentContext }: M
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold mb-2 flex items-center gap-2"><FileText className="h-5 w-5" />Doc Type</h3>
+                  <h3 className="text-lg font-semibold mb-2 flex items-center gap-2"><FileText className="h-5 w-5" />Document Type</h3>
                   <div className="flex flex-wrap gap-2">
                     <Badge variant="secondary">Placeholder Type</Badge>
                   </div>
@@ -106,7 +109,7 @@ export function MandateDetails({ mandate, open, onOpenChange, parentContext }: M
                   </div>
                 </div>
                  <div>
-                  <h3 className="text-lg font-semibold mb-2 flex items-center gap-2"><FileCheck className="h-5 w-5" />Budget Doc</h3>
+                  <h3 className="text-lg font-semibold mb-2 flex items-center gap-2"><FileCheck className="h-5 w-5" />Budget Document</h3>
                   <div className="flex flex-wrap gap-2">
                     <Badge variant="outline">Not Available</Badge>
                   </div>
@@ -116,10 +119,10 @@ export function MandateDetails({ mandate, open, onOpenChange, parentContext }: M
               {/* Column 3: Entities and Programmes */}
               <div className="space-y-4 md:col-span-5">
                 <div>
-                  <h3 className="text-lg font-semibold mb-2 flex items-center gap-2"><Users className="h-5 w-5" />List of Entities</h3>
+                  <h3 className="text-lg font-semibold mb-2 flex items-center gap-2"><Users className="h-5 w-5" />List of Entities ({validEntities.length})</h3>
                   <div className="flex flex-wrap gap-2">
-                    {mandate.entities && mandate.entities.filter(e => e && e.trim()).length > 0 ? (
-                      mandate.entities.filter(e => e && e.trim()).map((entity, index) => (
+                    {validEntities.length > 0 ? (
+                      validEntities.map((entity, index) => (
                         <Badge key={index}>{entity}</Badge>
                       ))
                     ) : (
@@ -128,10 +131,11 @@ export function MandateDetails({ mandate, open, onOpenChange, parentContext }: M
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold mb-2 flex items-center gap-2"><List className="h-5 w-5" />List of Programmes</h3>
+                  <h3 className="text-lg font-semibold mb-2 flex items-center gap-2"><List className="h-5 w-5" />List of Programmes ({programmes.length})</h3>
                    <div className="flex flex-wrap gap-2">
-                    <Badge variant="outline">Programme A</Badge>
-                    <Badge variant="outline">Programme B</Badge>
+                    {programmes.map((programme, index) => (
+                      <Badge key={index} variant="outline">{programme}</Badge>
+                    ))}
                   </div>
                 </div>
               </div>
