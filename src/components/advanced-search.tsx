@@ -19,7 +19,6 @@ interface AdvancedSearchProps {
   onSectionChange: (value: string) => void;
   onPriorityAreaChange: (value: string) => void;
   onPillarChange: (value: string) => void;
-  disabled?: boolean;
 }
 
 export function AdvancedSearch({
@@ -37,7 +36,6 @@ export function AdvancedSearch({
   onSectionChange,
   onPriorityAreaChange,
   onPillarChange,
-  disabled,
 }: AdvancedSearchProps) {
 
   const programmeItems = programmeOptions.map(p => ({ value: p, label: p }));
@@ -52,7 +50,6 @@ export function AdvancedSearch({
             <Select 
               value={budgetDocument} 
               onValueChange={onBudgetDocumentChange}
-              disabled={disabled}
             >
               <SelectTrigger id="budget-document">
                 <SelectValue placeholder="Select document" />
@@ -75,7 +72,6 @@ export function AdvancedSearch({
               placeholder='Filter by programme'
               searchPlaceholder='Search programmes'
               emptyPlaceholder='No programmes found'
-              disabled={disabled}
             />
           </div>
           <div className="space-y-2">
@@ -87,7 +83,6 @@ export function AdvancedSearch({
               placeholder='Filter by section'
               searchPlaceholder='Search sections'
               emptyPlaceholder='No sections found'
-              disabled={disabled}
             />
           </div>
         </div>
@@ -98,7 +93,6 @@ export function AdvancedSearch({
             <Select 
               value={selectedPriorityArea} 
               onValueChange={onPriorityAreaChange}
-              disabled={disabled}
             >
               <SelectTrigger id="priority-area">
                 <SelectValue placeholder="Select area" />
@@ -117,7 +111,6 @@ export function AdvancedSearch({
             <Select 
               value={selectedPillar} 
               onValueChange={onPillarChange}
-              disabled={disabled}
             >
               <SelectTrigger id="pillar">
                 <SelectValue placeholder="Select pillar" />

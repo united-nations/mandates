@@ -11,6 +11,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { EntityName } from './ui/entity-name';
 
 const priorityAreaColors: { [key: string]: string } = {
   'Maintenance of international peace and security': 'bg-blue-500',
@@ -39,7 +40,9 @@ const EntityBadges = ({ entities }: { entities: string[] }) => {
       {entities
         .filter(entity => entity !== null)
         .map(entity => (
-          <Badge key={entity} variant="secondary">{entity}</Badge>
+          <Badge key={entity} variant="secondary">
+            <EntityName entityName={entity} />
+          </Badge>
       ))}
     </div>
   );

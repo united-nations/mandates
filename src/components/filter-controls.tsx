@@ -36,7 +36,6 @@ interface FilterControlsProps {
   onYearRangeChange: (value: [number, number]) => void;
   onBudgetDocumentChange: (value: string) => void;
   onSectionChange: (value: string) => void;
-  disabled?: boolean;
 }
 
 export function FilterControls({
@@ -66,7 +65,6 @@ export function FilterControls({
   onYearRangeChange,
   onBudgetDocumentChange,
   onSectionChange,
-  disabled,
 }: FilterControlsProps) {
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
 
@@ -88,7 +86,6 @@ export function FilterControls({
             placeholder="Search for any keyword..."
             value={keyword}
             onChange={(e) => onKeywordChange(e.target.value)}
-            disabled={disabled}
             className="pr-10"
           />
           {keyword && (
@@ -97,14 +94,13 @@ export function FilterControls({
               size="sm"
               className="absolute right-0 top-1/2 -translate-y-1/2 h-full px-3"
               onClick={() => onKeywordChange('')}
-              disabled={disabled}
             >
               <X className="h-4 w-4" />
             </Button>
           )}
         </div>
 
-        <Select onValueChange={onOrganChange} value={selectedOrgan} disabled={disabled}>
+        <Select onValueChange={onOrganChange} value={selectedOrgan}>
           <SelectTrigger>
             <SelectValue placeholder="Filter by UN Organ" />
           </SelectTrigger>
@@ -119,7 +115,7 @@ export function FilterControls({
           </SelectContent>
         </Select>
 
-        <Select onValueChange={onEntityChange} value={selectedEntity} disabled={disabled}>
+        <Select onValueChange={onEntityChange} value={selectedEntity}>
           <SelectTrigger>
             <SelectValue placeholder="Filter by UN Entity" />
           </SelectTrigger>
@@ -159,7 +155,6 @@ export function FilterControls({
           pillarOptions={pillarOptions}
           selectedPillar={selectedPillar}
           onPillarChange={onPillarChange}
-          disabled={disabled}
         />
         {yearRange && selectedYearRange && (
           <div className="pt-2">

@@ -40,6 +40,7 @@ export function Combobox({
     disabled = false
 }: ComboboxProps) {
   const [open, setOpen] = React.useState(false)
+  const [commandValue, setCommandValue] = React.useState('');
 
   // Trim and compare values in a case-insensitive manner
   const selectedOption = options.find(
@@ -70,7 +71,7 @@ export function Combobox({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-        <Command>
+        <Command value={commandValue} onValueChange={setCommandValue}>
           <CommandInput placeholder={searchPlaceholder} />
           <CommandList>
             <CommandEmpty>{emptyPlaceholder}</CommandEmpty>
@@ -82,7 +83,6 @@ export function Combobox({
                   value={option.value.trim()}
                   onSelect={handleSelect}
                   className="truncate"
-                  disabled={false}
                 >
                   <Check
                     className={cn(

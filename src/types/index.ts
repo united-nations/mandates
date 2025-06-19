@@ -83,4 +83,11 @@ export interface Mandate {
   // Search-related fields
   searchScore?: number;
   highlightedTitle?: string;
-} 
+}
+
+export type Entity = {
+  long_name: string;
+  short_name: string | null;
+  principal_organ: string[];
+  category: string;
+}; 

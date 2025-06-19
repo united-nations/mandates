@@ -188,8 +188,6 @@ function MandateNavigator() {
         setEntityOptions(data.uniqueEntities || []);
         setOrganOptions(data.uniqueBodies || []);
         setPriorityAreaOptions(data.uniquePriorityAreas || []);
-        setProgrammeOptions(data.uniqueProgrammes || []);
-        setSectionOptions(data.uniqueSections || []);
         setPillarOptions(data.uniquePillars || []);
         
         if (data.yearRange) {
@@ -247,6 +245,13 @@ function MandateNavigator() {
       setUniqueEntities(data.uniqueEntitiesCount || 0);
       setTotalCitations(data.totalCitations || 0);
       setUniqueProgrammes(data.uniqueProgrammesCount || 0);
+
+      if (data.uniqueProgrammes) {
+        setProgrammeOptions(data.uniqueProgrammes);
+      }
+      if (data.uniqueSections) {
+        setSectionOptions(data.uniqueSections);
+      }
     } catch (error) {
       console.error("Failed to fetch mandates:", error);
       setMandates([]);

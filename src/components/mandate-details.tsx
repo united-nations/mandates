@@ -13,6 +13,8 @@ import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from './ui/button';
 import { FileText, Building, Calendar, Link, Users, FileCheck, List } from 'lucide-react';
+import { EntityName } from './ui/entity-name';
+import { TooltipProvider } from './ui/tooltip';
 
 
 interface ParentContext {
@@ -119,15 +121,19 @@ export function MandateDetails({ mandate, open, onOpenChange, parentContext }: M
               <div className="space-y-4 md:col-span-5">
                 <div>
                   <h3 className="text-lg font-semibold mb-2 flex items-center gap-2"><Users className="h-5 w-5" />List of Entities ({validEntities.length})</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {validEntities.length > 0 ? (
-                      validEntities.map((entity, index) => (
-                        <Badge key={index}>{entity}</Badge>
-                      ))
-                    ) : (
-                      <Badge variant="outline">No entities listed</Badge>
-                    )}
-                  </div>
+                  <TooltipProvider>
+                    <div className="flex flex-wrap gap-2">
+                      {validEntities.length > 0 ? (
+                        validEntities.map((entity, index) => (
+                          <Badge key={index}>
+                            <EntityName entityName={entity} />
+                          </Badge>
+                        ))
+                      ) : (
+                        <Badge variant="outline">No entities listed</Badge>
+                      )}
+                    </div>
+                  </TooltipProvider>
                 </div>
               </div>
             </div>

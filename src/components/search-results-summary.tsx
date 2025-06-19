@@ -3,6 +3,8 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Search, X, Filter } from 'lucide-react';
+import { EntityName } from './ui/entity-name';
+import { TooltipProvider } from './ui/tooltip';
 
 interface SearchResultsSummaryProps {
   totalResults: number;
@@ -90,7 +92,10 @@ export function SearchResultsSummary({
 
         {appliedFilters.entity && appliedFilters.entity !== 'all' && (
           <Badge variant="secondary" className="flex items-center gap-1">
-            Entity: {appliedFilters.entity}
+            Entity:&nbsp;
+            <TooltipProvider>
+              <EntityName entityName={appliedFilters.entity} />
+            </TooltipProvider>
             <Button
               variant="ghost"
               size="sm"

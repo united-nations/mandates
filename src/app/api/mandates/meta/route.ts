@@ -11,8 +11,6 @@ let totalCitations = 0;
 let uniqueBodiesCount = 0;
 let uniqueBodies: string[] = [];
 let uniqueProgrammesCount = 0;
-let uniqueProgrammes: string[] = [];
-let uniqueSections: string[] = [];
 let uniquePillars: string[] = [];
 let yearRange: { min: number; max: number } | null = null;
 let yearDistribution: { [year: string]: number } = {};
@@ -28,8 +26,6 @@ async function getMetadata() {
       uniqueBodiesCount,
       uniqueBodies,
       uniqueProgrammesCount,
-      uniqueProgrammes,
-      uniqueSections,
       uniquePillars,
       yearRange,
       yearDistribution,
@@ -44,7 +40,6 @@ async function getMetadata() {
   const priorityAreas = new Set<string>();
   const bodies = new Set<string>();
   const programmes = new Set<string>();
-  const sections = new Set<string>();
   const pillars = new Set<string>();
   let citationsSum = 0;
   const localYearDistribution: { [year: string]: number } = {};
@@ -67,9 +62,6 @@ async function getMetadata() {
         if (citation.programme_title) {
           programmes.add(citation.programme_title);
         }
-        if (citation.section_title) {
-          sections.add(citation.section_title);
-        }
       }
     }
     citationsSum += item.num_citations || 0;
@@ -89,8 +81,6 @@ async function getMetadata() {
   uniqueBodiesCount = bodies.size;
   uniqueBodies = Array.from(bodies).sort();
   uniqueProgrammesCount = programmes.size;
-  uniqueProgrammes = Array.from(programmes).sort();
-  uniqueSections = Array.from(sections).sort();
   uniquePillars = Array.from(pillars).sort();
   yearDistribution = localYearDistribution;
   const years = Object.keys(yearDistribution).map(Number);
@@ -110,8 +100,6 @@ async function getMetadata() {
     uniqueBodiesCount,
     uniqueBodies,
     uniqueProgrammesCount,
-    uniqueProgrammes,
-    uniqueSections,
     uniquePillars,
     yearRange,
     yearDistribution,

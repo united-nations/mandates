@@ -189,16 +189,22 @@ export async function GET(request: Request) {
     const allFilteredBodies = filteredMandates.flatMap(mandate => mandate.issuing_body_or_bodies);
     const uniqueBodiesCount = new Set(allFilteredBodies).size;
     const allFilteredProgrammes = new Set<string>();
+    const allFilteredSections = new Set<string>();
     for (const mandate of filteredMandates) {
         if (mandate.citation_info) {
             for (const citation of mandate.citation_info) {
                 if(citation.programme_title) {
                     allFilteredProgrammes.add(citation.programme_title);
                 }
+                if(citation.section_title) {
+                    allFilteredSections.add(citation.section_title);
+                }
             }
         }
     }
     const uniqueProgrammesCount = allFilteredProgrammes.size;
+    const uniqueProgrammes = Array.from(allFilteredProgrammes).sort();
+    const uniqueSections = Array.from(allFilteredSections).sort();
 
     // Apply pagination
     const totalPages = Math.ceil(totalItems / limit);
@@ -214,6 +220,8 @@ export async function GET(request: Request) {
       uniqueEntitiesCount,
       uniqueBodiesCount,
       uniqueProgrammesCount,
+      uniqueProgrammes,
+      uniqueSections,
     });
   } catch (error) {
     console.error('Failed to load mandate data:', error);
