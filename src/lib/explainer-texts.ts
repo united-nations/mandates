@@ -67,7 +67,7 @@ export const explainerTexts = {
     },
     unEntities: {
       title: "UN Entities",
-      description: "The distinct Secretariat entities mentioned in the documents. These are the departments, offices, and regional commissions within the UN Secretariat that implement the mandated work."
+      description: "The distinct Secretariat entities that cite these documents. These are the departments, offices, and regional commissions within the UN Secretariat that reference these mandate documents in their budget submissions."
     },
     programmes: {
       title: "Programmes",
@@ -75,7 +75,7 @@ export const explainerTexts = {
     },
     citations: {
       title: "Citations",
-      description: "The total number of times these source documents are cited in budget documents. High citation counts may indicate important mandates, but can also suggest duplicated or overlapping implementation that the UN80 review aims to identify and streamline."
+      description: "The total number of times these source documents are cited by Secretariat entities in budget documents. High citation counts may indicate important mandates, but can also suggest duplicated or overlapping implementation that the UN80 review aims to identify and streamline."
     }
   },
 
@@ -129,7 +129,7 @@ export const explainerTexts = {
   // Mandate List
   mandateList: {
     sectionTitle: "Mandate Source Documents",
-    sectionTooltip: "Each document shown below contains formal mandates that instruct UN Secretariat entities to perform specific tasks. Click on any document to see detailed information about what the mandate is about and which entities are implementing it..",
+          sectionTooltip: "Each document shown below contains formal mandates that instruct UN Secretariat entities to perform specific tasks. Click on any document to see detailed information about what the mandate is about and which entities cite it in their budget submissions.",
     documentSymbol: "Document symbol - the official UN identifier for this source document",
     issuingOrgan: {
       title: "Issuing Organ",
@@ -137,7 +137,7 @@ export const explainerTexts = {
     },
     year: "Year this mandate document was issued",
     searchRelevance: "Search relevance score - how closely this document matches your search terms",
-    citationCount: "Citation count shows how often this mandate appears in Secretariat budget documents. While this may indicate importance, high citation counts can also suggest duplicated or overlapping implementation that the UN80 review aims to identify and streamline."
+    citationCount: "Citation count shows how often this mandate document is cited by Secretariat entities in their budget submissions. While this may indicate importance, high citation counts can also suggest duplicated or overlapping implementation that the UN80 review aims to identify and streamline."
   },
 
   // Search Results
