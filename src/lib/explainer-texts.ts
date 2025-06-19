@@ -4,16 +4,18 @@
  */
 
 export const explainerTexts = {
-  // Page metadata
-  pageMetadata: {
-    title: "UN80 Mandate Registry",
-    description: "Explore UN mandate source documents as part of the UN80 mandate-implementation review. Currently covering the UN Secretariat, this registry will be expanded to other UN entities. Search, filter, and analyze distinct mandates to identify duplications, redundancies, and implementation patterns."
-  },
-
   // Main page and overview
   mainHeader: {
     title: "UN80 Mandate Registry",
     description: "Explore the collection of UN mandate source documents as part of the UN80 mandate-implementation review. Currently covering the UN Secretariat with plans to expand to other UN entities, this registry helps identify duplications, redundancies, and opportunities for greater synergy in mandate implementation. This dashboard will be continuously updated, expanded, and enhanced."
+  },
+
+  // Page metadata (reuses mainHeader content)
+  get pageMetadata() {
+    return {
+      title: this.mainHeader.title,
+      description: this.mainHeader.description
+    };
   },
 
   // About UN80 Dialog
@@ -36,15 +38,15 @@ export const explainerTexts = {
       },
       unEntities: {
         title: "UN Entities", 
-        description: "The various organizational units within the UN. This registry currently covers the UN Secretariat (departments, offices, and regional commissions) and will be expanded to include other UN entities that implement mandates."
+        description: "The various organizational units within the UN. This registry currently covers the UN Secretariat and will be expanded to include other UN entities that implement mandates."
       },
       mandates: {
         title: "Mandates",
-        description: "Formal instructions contained in resolutions, decisions or treaties that direct UN entities to perform specific tasks. The review examines how these mandates are implemented, not the mandates themselves."
+        description: "Formal instructions contained in resolutions, decisions or treaties that direct UN entities to perform specific tasks."
       },
       sourceDocuments: {
         title: "Source Documents",
-        description: "The specific resolution, decision, treaty article or Charter paragraph that created the mandate (e.g., A/RES/79/257 or S/RES/2720). Each mandate is traceable to its authorizing source."
+        description: "The specific resolution, decision, treaty article or Charter paragraph that created the mandate (e.g., A/RES/79/257 or S/RES/2720)."
       }
     },
     howItHelps: {
@@ -69,7 +71,7 @@ export const explainerTexts = {
     },
     programmes: {
       title: "Programmes",
-      description: "The distinct thematic programmes in the UN Secretariat budget structure where mandated work is organized and funded. Each programme groups related activities and objectives."
+      description: "The distinct thematic programmes in the UN Secretariat budget structure where mandated work is organized and funded."
     },
     citations: {
       title: "Citations",
@@ -87,12 +89,12 @@ export const explainerTexts = {
     unOrgan: {
       label: "UN Organ",
       placeholder: "Filter by issuing organ...",
-      tooltip: "Filter by which UN organ issued the mandate to the Secretariat. These are the decision-making bodies like the General Assembly, Security Council, or ECOSOC that create mandates through resolutions."
+      tooltip: "Filter by which UN organ issued the mandate to the Secretariat. These are the decision-making bodies that create mandates through resolutions."
     },
     unEntity: {
       label: "UN Entity",
       placeholder: "Filter by implementing entity...",
-      tooltip: "Filter by which Secretariat entity implements the mandate. These are the departments, offices, and regional commissions within the UN Secretariat that carry out the mandated work."
+      tooltip: "Filter by which Secretariat entity implements the mandate."
     },
     yearRange: {
       label: "Filter by Year Range",
@@ -105,29 +107,29 @@ export const explainerTexts = {
     section: {
       label: "Section",
       placeholder: "Filter by budget section...",
-      tooltip: "Filter by specific sections within Secretariat budget documents. Sections group related programmes and activities within the UN Secretariat's organizational structure."
+      tooltip: "Filter by specific sections within Secretariat budget documents."
     },
     programme: {
       label: "Programme",
       placeholder: "Filter by thematic programme...",
-      tooltip: "Filter by thematic programmes in the UN Secretariat budget where mandated work is organized. Each programme has specific objectives and resource allocations within the Secretariat."
+      tooltip: "Filter by thematic programmes in the UN Secretariat budget where mandated work is organized."
     },
     budgetDocument: {
       label: "Budget Document",
       placeholder: "Select budget document type...",
-      tooltip: "Filter by the specific budget document type. Different UN budget documents cover different aspects of Secretariat operations - regular programmes vs. peacekeeping operations."
+      tooltip: "Filter by the specific budget document type."
     },
     priorityArea: {
       label: "Priority Area", 
       placeholder: "Select priority area...",
-      tooltip: "Filter by UN priority areas - the major thematic categories that organize Secretariat work such as peace and security, human rights, or sustainable development."
+      tooltip: "Filter by priority areas according to the plan outline of the 2026 proposed programme budget."
     }
   },
 
   // Mandate List
   mandateList: {
     sectionTitle: "Mandate Source Documents",
-    sectionTooltip: "Each document shown below contains formal mandates that instruct UN Secretariat entities to perform specific tasks. Click on any document to see detailed information about its mandates and implementation within the Secretariat.",
+    sectionTooltip: "Each document shown below contains formal mandates that instruct UN Secretariat entities to perform specific tasks. Click on any document to see detailed information about what the mandate is about and which entities are implementing it..",
     documentSymbol: "Document symbol - the official UN identifier for this source document",
     issuingOrgan: {
       title: "Issuing Organ",
