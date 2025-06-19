@@ -125,7 +125,7 @@ function MandateNavigator() {
     };
 
     const reportHeight = () => {
-      post('setHeight', { height: document.documentElement.scrollHeight });
+      post('setHeight', { height: document.documentElement.scrollHeight + 200 });
     };
 
     const reportParams = () => {
@@ -374,7 +374,7 @@ function MandateNavigator() {
     if (!isLoading) {
       const reportHeight = () => {
         if (window.parent !== window) {
-          window.parent.postMessage({ type: 'setHeight', height: document.documentElement.scrollHeight }, '*');
+          window.parent.postMessage({ type: 'setHeight', height: document.documentElement.scrollHeight + 200 }, '*');
         }
       };
       // A small delay to allow the DOM to update
