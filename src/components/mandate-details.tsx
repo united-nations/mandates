@@ -46,7 +46,7 @@ export function MandateDetails({ mandate, open, onOpenChange, parentContext }: M
     dialogStyle.transform = 'translate(-50%, -50%)';
   }
 
-  const displaySymbol = mandate.full_document_symbol || mandate.symbol_x;
+  const displaySymbol = mandate.full_document_symbol || mandate.symbol;
   const pdfUrl = mandate.full_document_symbol
     ? `https://documents.un.org/api/symbol/access?s=${mandate.full_document_symbol}&l=en&t=pdf`
     : null;

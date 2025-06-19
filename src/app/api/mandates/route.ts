@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { promises as fs } from 'fs';
-import type { Mandate } from '@/types';
+import type { Mandate, CitationInfo } from '@/types';
 
 let mandates: Mandate[] = [];
 
@@ -18,7 +18,7 @@ async function getMandates(): Promise<Mandate[]> {
   const transformedData = rawData.map((item: any) => ({
     ...item,
     document_title: item.title,
-    document_symbol: item.symbol_x,
+    document_symbol: item.symbol,
     issuing_body_or_bodies: item.body ? [item.body] : [],
     mentions: item.entities,
   }));
@@ -114,11 +114,9 @@ export async function GET(request: Request) {
     }
 
     if (programme) {
-      // Assuming 'programme' is a field in the mandate object. If not, this needs adjustment.
-      // For now, let's assume a text search on a 'programme' field.
       const lowerProgramme = programme.toLowerCase();
-      filteredMandates = filteredMandates.filter((m) => 
-        (m as any).programme && (m as any).programme.toLowerCase().includes(lowerProgramme)
+      filteredMandates = filteredMandates.filter((m) =>
+        m.citation_info?.some((c: CitationInfo) => c.programme_title?.toLowerCase().includes(lowerProgramme))
       );
     }
 
@@ -153,6 +151,17 @@ export async function GET(request: Request) {
     const uniqueEntitiesCount = new Set(allFilteredEntities).size;
     const allFilteredBodies = filteredMandates.flatMap(mandate => mandate.issuing_body_or_bodies);
     const uniqueBodiesCount = new Set(allFilteredBodies).size;
+    const allFilteredProgrammes = new Set<string>();
+    for (const mandate of filteredMandates) {
+        if (mandate.citation_info) {
+            for (const citation of mandate.citation_info) {
+                if(citation.programme_title) {
+                    allFilteredProgrammes.add(citation.programme_title);
+                }
+            }
+        }
+    }
+    const uniqueProgrammesCount = allFilteredProgrammes.size;
 
     // Apply pagination
     const totalPages = Math.ceil(totalItems / limit);
@@ -167,6 +176,7 @@ export async function GET(request: Request) {
       totalCitations,
       uniqueEntitiesCount,
       uniqueBodiesCount,
+      uniqueProgrammesCount,
     });
   } catch (error) {
     console.error('Failed to load mandate data:', error);

@@ -10,6 +10,8 @@ let totalEntities = 0;
 let totalCitations = 0;
 let uniqueBodiesCount = 0;
 let uniqueBodies: string[] = [];
+let uniqueProgrammesCount = 0;
+let uniqueProgrammes: string[] = [];
 
 async function getMetadata() {
   if (uniqueEntities.length > 0) {
@@ -21,6 +23,8 @@ async function getMetadata() {
       totalCitations,
       uniqueBodiesCount,
       uniqueBodies,
+      uniqueProgrammesCount,
+      uniqueProgrammes,
     };
   }
 
@@ -31,17 +35,25 @@ async function getMetadata() {
   const entities = new Set<string>();
   const priorityAreas = new Set<string>();
   const bodies = new Set<string>();
+  const programmes = new Set<string>();
   let citationsSum = 0;
 
   for (const item of rawData) {
     if (item.entities) {
-      item.entities.forEach(e => entities.add(e));
+      item.entities.forEach((e: string) => entities.add(e));
     }
     if (item.priority_area) {
         priorityAreas.add(item.priority_area);
     }
     if (item.body) {
         bodies.add(item.body);
+    }
+    if (item.citation_info && Array.isArray(item.citation_info)) {
+      for (const citation of item.citation_info) {
+        if (citation.programme_title) {
+          programmes.add(citation.programme_title);
+        }
+      }
     }
     citationsSum += item.num_citations || 0;
   }
@@ -53,6 +65,8 @@ async function getMetadata() {
   totalCitations = citationsSum;
   uniqueBodiesCount = bodies.size;
   uniqueBodies = Array.from(bodies).sort();
+  uniqueProgrammesCount = programmes.size;
+  uniqueProgrammes = Array.from(programmes).sort();
 
   return { 
     uniqueEntities, 
@@ -61,7 +75,9 @@ async function getMetadata() {
     totalEntities,
     totalCitations,
     uniqueBodiesCount,
-    uniqueBodies
+    uniqueBodies,
+    uniqueProgrammesCount,
+    uniqueProgrammes,
   };
 }
 

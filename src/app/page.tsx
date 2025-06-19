@@ -49,6 +49,7 @@ function MandateNavigator() {
   const [uniqueOrgans, setUniqueOrgans] = useState(0);
   const [uniqueEntities, setUniqueEntities] = useState(0);
   const [totalCitations, setTotalCitations] = useState(0);
+  const [uniqueProgrammes, setUniqueProgrammes] = useState(0);
 
   const [entityOptions, setEntityOptions] = useState<string[]>([]);
   const [organOptions, setOrganOptions] = useState<string[]>([]);
@@ -176,6 +177,7 @@ function MandateNavigator() {
         setUniqueOrgans(data.uniqueBodiesCount || 0);
         setUniqueEntities(data.totalEntities || 0);
         setTotalCitations(data.totalCitations || 0);
+        setUniqueProgrammes(data.uniqueProgrammesCount || 0);
       } catch (error) {
         console.error("Failed to fetch metadata:", error);
       }
@@ -209,6 +211,7 @@ function MandateNavigator() {
       setUniqueOrgans(data.uniqueBodiesCount || 0);
       setUniqueEntities(data.uniqueEntitiesCount || 0);
       setTotalCitations(data.totalCitations || 0);
+      setUniqueProgrammes(data.uniqueProgrammesCount || 0);
     } catch (error) {
       console.error("Failed to fetch mandates:", error);
       setMandates([]);
@@ -380,7 +383,7 @@ function MandateNavigator() {
                       </CardHeader>
                       <CardContent className="flex-grow flex items-end">
                         <div className="text-3xl font-bold text-foreground">
-                          <Skeleton className="h-8 w-16" />
+                          {isLoading ? <Skeleton className="h-8 w-16" /> : (uniqueProgrammes > 0 ? uniqueProgrammes.toLocaleString() : '0')}
                         </div>
                       </CardContent>
                     </Card>
