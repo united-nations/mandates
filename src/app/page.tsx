@@ -125,7 +125,7 @@ function MandateNavigator() {
     };
 
     const reportHeight = () => {
-      post('setHeight', { height: document.documentElement.scrollHeight + 200 });
+      post('setHeight', { height: document.documentElement.scrollHeight });
     };
 
     const reportParams = () => {
