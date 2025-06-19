@@ -56,11 +56,6 @@ const searchFields: SearchField[] = [
     getValue: (mandate: Mandate) => mandate.document_symbol || mandate.full_document_symbol || ''
   },
   {
-    name: 'ai_summary',
-    weight: 7.0,
-    getValue: (mandate: Mandate) => mandate.ai_summary || ''
-  },
-  {
     name: 'subject_headings',
     weight: 6.0,
     getValue: (mandate: Mandate) => mandate.subject_headings || []
@@ -170,7 +165,6 @@ function performEnhancedTextSearch(mandates: Mandate[], query: string): SearchRe
     const fieldDisplayNames: { [key: string]: string } = {
       title: 'Title',
       document_symbol: 'Document Symbol',
-      ai_summary: 'Summary',
       subject_headings: 'Subject Headings',
       abstract: 'Abstract',
       issuing_body: 'Issuing Body',

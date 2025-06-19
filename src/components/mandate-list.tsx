@@ -192,12 +192,13 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
                     {/* Show highlighted snippets from other fields */}
                     {mandate.highlightedFields && Object.entries(mandate.highlightedFields).map(([field, content]) => {
                       if (field === 'title') return null; // Already shown in title
+                      if (field === 'ai_summary') return null; // Skip AI summary field
                       
                       // Ensure content is a string
                       const contentStr = typeof content === 'string' ? content : '';
                       
-                      // For AI summary, show the full content; for others, truncate if too long
-                      const shouldTruncate = field !== 'ai_summary' && contentStr.length > 200;
+                      // Truncate if too long
+                      const shouldTruncate = contentStr.length > 200;
                       const displayContent = shouldTruncate 
                         ? contentStr.substring(0, 200) + '...' 
                         : contentStr;
@@ -205,7 +206,6 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
                       // Create better field names for display
                       const getFieldDisplayName = (fieldName: string) => {
                         const displayNames: { [key: string]: string } = {
-                          'ai_summary': 'Summary',
                           'subject_headings': 'Subject Headings',
                           'abstract': 'Abstract',
                           'issuing_body': 'Issuing Body',
@@ -225,12 +225,9 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
                       };
                       
                       return (
-                        <div key={field} className={`text-sm ${field === 'ai_summary' ? 'bg-accent/20 p-3 rounded-md border' : ''}`}>
+                        <div key={field} className="text-sm">
                           <span className="font-medium text-muted-foreground">{getFieldDisplayName(field)}:</span>{' '}
-                          <span 
-                            dangerouslySetInnerHTML={{ __html: displayContent }}
-                            className={field === 'ai_summary' ? 'block mt-1 text-foreground' : ''}
-                          />
+                          <span dangerouslySetInnerHTML={{ __html: displayContent }} />
                         </div>
                       );
                     })}

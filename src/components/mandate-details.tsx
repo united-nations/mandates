@@ -210,10 +210,8 @@ export function MandateDetails({ mandate, open, onOpenChange, parentContext }: M
                   </Badge>
                 </h3>
                 <div className="p-3 bg-muted/30 rounded-lg">
-                  <p className="text-sm leading-relaxed">
-                    {mandate.ai_summary 
-                      ? mandate.ai_summary 
-                      : <span className="text-muted-foreground italic">AI summary for this document is not available yet.</span>}
+                  <p className="text-sm leading-relaxed text-muted-foreground italic">
+                    Summaries are coming soon.
                   </p>
                 </div>
               </div>
