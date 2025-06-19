@@ -358,7 +358,7 @@ function MandateNavigator() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <main className="container mx-auto px-4 md:px-8 py-8 space-y-8">
+      <main className="w-full max-w-none mx-auto px-4 md:px-6 py-8 space-y-8">
         
         <section className="mb-8">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
