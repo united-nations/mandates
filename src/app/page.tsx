@@ -492,7 +492,6 @@ function MandateNavigator() {
           pillarOptions={pillarOptions}
           selectedPillar={pillar}
           onPillarChange={onPillarChange}
-          disabled={isLoading}
         />
 
         <SearchResultsSummary

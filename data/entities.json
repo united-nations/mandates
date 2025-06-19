@@ -1,921 +1,350 @@
 [
-    {
-      "long_name": "General Assembly",
-      "short_name": "GA",
-      "principal_organ": [],
-      "category": "Principal Organ"
-    },
-    {
-      "long_name": "Security Council",
-      "short_name": "SC",
-      "principal_organ": [],
-      "category": "Principal Organ"
-    },
-    {
-      "long_name": "Economic and Social Council",
-      "short_name": "ECOSOC",
-      "principal_organ": [],
-      "category": "Principal Organ"
-    },
-    {
-      "long_name": "Secretariat",
-      "short_name": "Secretariat",
-      "principal_organ": [],
-      "category": "Principal Organ"
-    },
-    {
-      "long_name": "International Court of Justice",
-      "short_name": "ICJ",
-      "principal_organ": [],
-      "category": "Principal Organ"
-    },
-    {
-      "long_name": "Trusteeship Council",
-      "short_name": "Trusteeship Council",
-      "principal_organ": [],
-      "category": "Principal Organ"
-    },
-    {
-      "long_name": "Disarmament Commission",
-      "short_name": null,
-      "principal_organ": [
-        "General Assembly"
-      ],
-      "category": "Subsidiary Organs"
-    },
-    {
-      "long_name": "Human Rights Council",
-      "short_name": null,
-      "principal_organ": [
-        "General Assembly"
-      ],
-      "category": "Subsidiary Organs"
-    },
-    {
-      "long_name": "International Law Commission",
-      "short_name": null,
-      "principal_organ": [
-        "General Assembly"
-      ],
-      "category": "Subsidiary Organs"
-    },
-    {
-      "long_name": "Joint Inspection Unit",
-      "short_name": "JIU",
-      "principal_organ": [
-        "General Assembly"
-      ],
-      "category": "Subsidiary Organs"
-    },
-    {
-      "long_name": "Main Committees of the General Assembly",
-      "short_name": null,
-      "principal_organ": [
-        "General Assembly"
-      ],
-      "category": "Subsidiary Organs"
-    },
-    {
-      "long_name": "Standing committees and ad hoc bodies (GA)",
-      "short_name": null,
-      "principal_organ": [
-        "General Assembly"
-      ],
-      "category": "Subsidiary Organs"
-    },
-    {
-      "long_name": "United Nations Development Programme",
-      "short_name": "UNDP",
-      "principal_organ": [
-        "General Assembly",
-        "Economic and Social Council"
-      ],
-      "category": "Funds and Programmes"
-    },
-    {
-      "long_name": "United Nations Capital Development Fund",
-      "short_name": "UNCDF",
-      "principal_organ": [
-        "General Assembly",
-        "Economic and Social Council"
-      ],
-      "category": "Funds and Programmes"
-    },
-    {
-      "long_name": "United Nations Volunteers",
-      "short_name": "UNV",
-      "principal_organ": [
-        "General Assembly",
-        "Economic and Social Council"
-      ],
-      "category": "Funds and Programmes"
-    },
-    {
-      "long_name": "United Nations Environment Programme",
-      "short_name": "UNEP",
-      "principal_organ": [
-        "General Assembly",
-        "Economic and Social Council"
-      ],
-      "category": "Funds and Programmes"
-    },
-    {
-      "long_name": "United Nations Population Fund",
-      "short_name": "UNFPA",
-      "principal_organ": [
-        "General Assembly",
-        "Economic and Social Council"
-      ],
-      "category": "Funds and Programmes"
-    },
-    {
-      "long_name": "United Nations Human Settlements Programme",
-      "short_name": "UN-HABITAT",
-      "principal_organ": [
-        "General Assembly",
-        "Economic and Social Council"
-      ],
-      "category": "Funds and Programmes"
-    },
-    {
-      "long_name": "United Nations Children’s Fund",
-      "short_name": "UNICEF",
-      "principal_organ": [
-        "General Assembly",
-        "Economic and Social Council"
-      ],
-      "category": "Funds and Programmes"
-    },
-    {
-      "long_name": "World Food Programme",
-      "short_name": "WFP",
-      "principal_organ": [
-        "General Assembly",
-        "Economic and Social Council"
-      ],
-      "category": "Funds and Programmes"
-    },
-    {
-      "long_name": "Economic Commission for Africa",
-      "short_name": "ECA",
-      "principal_organ": [
-        "Economic and Social Council",
-        "Secretariat"
-      ],
-      "category": "Regional Commissions"
-    },
-    {
-      "long_name": "Economic Commission for Europe",
-      "short_name": "ECE",
-      "principal_organ": [
-        "Economic and Social Council",
-        "Secretariat"
-      ],
-      "category": "Regional Commissions"
-    },
-    {
-      "long_name": "Economic Commission for Latin America and the Caribbean",
-      "short_name": "ECLAC",
-      "principal_organ": [
-        "Economic and Social Council",
-        "Secretariat"
-      ],
-      "category": "Regional Commissions"
-    },
-    {
-      "long_name": "Economic and Social Commission for Asia and the Pacific",
-      "short_name": "ESCAP",
-      "principal_organ": [
-        "Economic and Social Council",
-        "Secretariat"
-      ],
-      "category": "Regional Commissions"
-    },
-    {
-      "long_name": "Economic and Social Commission for Western Asia",
-      "short_name": "ESCWA",
-      "principal_organ": [
-        "Economic and Social Council",
-        "Secretariat"
-      ],
-      "category": "Regional Commissions"
-    },
-    {
-      "long_name": "Commission on Crime Prevention and Criminal Justice",
-      "short_name": null,
-      "principal_organ": [
-        "Economic and Social Council"
-      ],
-      "category": "Functional Commissions"
-    },
-    {
-      "long_name": "Commission on Narcotic Drugs",
-      "short_name": null,
-      "principal_organ": [
-        "Economic and Social Council"
-      ],
-      "category": "Functional Commissions"
-    },
-    {
-      "long_name": "Commission on Population and Development",
-      "short_name": null,
-      "principal_organ": [
-        "Economic and Social Council"
-      ],
-      "category": "Functional Commissions"
-    },
-    {
-      "long_name": "Commission on Science and Technology for Development",
-      "short_name": null,
-      "principal_organ": [
-        "Economic and Social Council"
-      ],
-      "category": "Functional Commissions"
-    },
-    {
-      "long_name": "Commission for Social Development",
-      "short_name": null,
-      "principal_organ": [
-        "Economic and Social Council"
-      ],
-      "category": "Functional Commissions"
-    },
-    {
-      "long_name": "Statistical Commission",
-      "short_name": null,
-      "principal_organ": [
-        "Economic and Social Council"
-      ],
-      "category": "Functional Commissions"
-    },
-    {
-      "long_name": "Commission on the Status of Women",
-      "short_name": null,
-      "principal_organ": [
-        "Economic and Social Council"
-      ],
-      "category": "Functional Commissions"
-    },
-    {
-      "long_name": "United Nations Forum on Forests",
-      "short_name": null,
-      "principal_organ": [
-        "Economic and Social Council"
-      ],
-      "category": "Functional Commissions"
-    },
-    {
-      "long_name": "International Residual Mechanism for Criminal Tribunals",
-      "short_name": null,
-      "principal_organ": [
-        "Security Council"
-      ],
-      "category": "Other Bodies"
-    },
-    {
-      "long_name": "Military Staff Committee",
-      "short_name": null,
-      "principal_organ": [
-        "Security Council"
-      ],
-      "category": "Other Bodies"
-    },
-    {
-      "long_name": "Counter-Terrorism Committee",
-      "short_name": null,
-      "principal_organ": [
-        "Security Council"
-      ],
-      "category": "Subsidiary Organs"
-    },
-    {
-      "long_name": "Peacekeeping operations and political missions",
-      "short_name": null,
-      "principal_organ": [
-        "Security Council"
-      ],
-      "category": "Subsidiary Organs"
-    },
-    {
-      "long_name": "Sanctions committees (ad hoc)",
-      "short_name": null,
-      "principal_organ": [
-        "Security Council"
-      ],
-      "category": "Subsidiary Organs"
-    },
-    {
-      "long_name": "Standing committees and ad hoc bodies (SC)",
-      "short_name": null,
-      "principal_organ": [
-        "Security Council"
-      ],
-      "category": "Subsidiary Organs"
-    },
-    {
-      "long_name": "Executive Office of the Secretary-General",
-      "short_name": "EOSG",
-      "principal_organ": [
-        "Secretariat"
-      ],
-      "category": "Departments and Offices"
-    },
-    {
-      "long_name": "Development Coordination Office",
-      "short_name": "DCO",
-      "principal_organ": [
-        "Secretariat"
-      ],
-      "category": "Departments and Offices"
-    },
-    {
-      "long_name": "Department of Economic and Social Affairs",
-      "short_name": "DESA",
-      "principal_organ": [
-        "Secretariat"
-      ],
-      "category": "Departments and Offices"
-    },
-    {
-      "long_name": "Department for General Assembly and Conference Management",
-      "short_name": "DGACM",
-      "principal_organ": [
-        "Secretariat"
-      ],
-      "category": "Departments and Offices"
-    },
-    {
-      "long_name": "Department of Global Communications",
-      "short_name": "DGC",
-      "principal_organ": [
-        "Secretariat"
-      ],
-      "category": "Departments and Offices"
-    },
-    {
-      "long_name": "Department of Management Strategy, Policy and Compliance",
-      "short_name": "DMSPC",
-      "principal_organ": [
-        "Secretariat"
-      ],
-      "category": "Departments and Offices"
-    },
-    {
-      "long_name": "Department of Operational Support",
-      "short_name": "DOS",
-      "principal_organ": [
-        "Secretariat"
-      ],
-      "category": "Departments and Offices"
-    },
-    {
-      "long_name": "Department of Peace Operations",
-      "short_name": "DPO",
-      "principal_organ": [
-        "Secretariat"
-      ],
-      "category": "Departments and Offices"
-    },
-    {
-      "long_name": "Department of Political and Peacebuilding Affairs",
-      "short_name": "DPPA",
-      "principal_organ": [
-        "Secretariat"
-      ],
-      "category": "Departments and Offices"
-    },
-    {
-      "long_name": "Department of Safety and Security",
-      "short_name": "DSS",
-      "principal_organ": [
-        "Secretariat"
-      ],
-      "category": "Departments and Offices"
-    },
-    {
-      "long_name": "Office for the Coordination of Humanitarian Affairs",
-      "short_name": "OCHA",
-      "principal_organ": [
-        "Secretariat"
-      ],
-      "category": "Departments and Offices"
-    },
-    {
-      "long_name": "Office of Counter-Terrorism",
-      "short_name": "OCT",
-      "principal_organ": [
-        "Secretariat"
-      ],
-      "category": "Departments and Offices"
-    },
-    {
-      "long_name": "Office for Disarmament Affairs",
-      "short_name": "ODA",
-      "principal_organ": [
-        "Secretariat"
-      ],
-      "category": "Departments and Offices"
-    },
-    {
-      "long_name": "Office of the United Nations High Commissioner for Human Rights",
-      "short_name": "OHCHR",
-      "principal_organ": [
-        "Secretariat"
-      ],
-      "category": "Departments and Offices"
-    },
-    {
-      "long_name": "Office of Internal Oversight Services",
-      "short_name": "OIOS",
-      "principal_organ": [
-        "Secretariat"
-      ],
-      "category": "Departments and Offices"
-    },
-    {
-      "long_name": "Office of Legal Affairs",
-      "short_name": "OLA",
-      "principal_organ": [
-        "Secretariat"
-      ],
-      "category": "Departments and Offices"
-    },
-    {
-      "long_name": "Office of the Special Adviser on Africa",
-      "short_name": "OSAA",
-      "principal_organ": [
-        "Secretariat"
-      ],
-      "category": "Departments and Offices"
-    },
-    {
-      "long_name": "Office of the Special Representative on Children and Armed Conflict",
-      "short_name": "SRSG/CAAC",
-      "principal_organ": [
-        "Secretariat"
-      ],
-      "category": "Departments and Offices"
-    },
-    {
-      "long_name": "Office of the Special Representative on Sexual Violence in Conflict",
-      "short_name": "SRSG/SVC",
-      "principal_organ": [
-        "Secretariat"
-      ],
-      "category": "Departments and Offices"
-    },
-    {
-      "long_name": "Office of the Special Representative on Violence Against Children",
-      "short_name": "SRSG/VAC",
-      "principal_organ": [
-        "Secretariat"
-      ],
-      "category": "Departments and Offices"
-    },
-    {
-      "long_name": "United Nations Office for Disaster Risk Reduction",
-      "short_name": "UNDRR",
-      "principal_organ": [
-        "Secretariat"
-      ],
-      "category": "Departments and Offices"
-    },
-    {
-      "long_name": "United Nations Office on Drugs and Crime",
-      "short_name": "UNODC",
-      "principal_organ": [
-        "Secretariat"
-      ],
-      "category": "Departments and Offices"
-    },
-    {
-      "long_name": "United Nations Office at Geneva",
-      "short_name": "UNOG",
-      "principal_organ": [
-        "Secretariat"
-      ],
-      "category": "Departments and Offices"
-    },
-    {
-      "long_name": "Office of the High Representative for the LDCs, LLDCs and SIDS",
-      "short_name": "UN-OHRLLS",
-      "principal_organ": [
-        "Secretariat"
-      ],
-      "category": "Departments and Offices"
-    },
-    {
-      "long_name": "United Nations Office at Nairobi",
-      "short_name": "UNON",
-      "principal_organ": [
-        "Secretariat"
-      ],
-      "category": "Departments and Offices"
-    },
-    {
-      "long_name": "United Nations Office for Partnerships",
-      "short_name": "UNOP",
-      "principal_organ": [
-        "Secretariat"
-      ],
-      "category": "Departments and Offices"
-    },
-    {
-      "long_name": "United Nations Office at Vienna",
-      "short_name": "UNOV",
-      "principal_organ": [
-        "Secretariat"
-      ],
-      "category": "Departments and Offices"
-    },
-    {
-      "long_name": "United Nations Institute for Disarmament Research",
-      "short_name": "UNIDIR",
-      "principal_organ": [
-        "General Assembly",
-        "Economic and Social Council"
-      ],
-      "category": "Research and Training"
-    },
-    {
-      "long_name": "United Nations Institute for Training and Research",
-      "short_name": "UNITAR",
-      "principal_organ": [
-        "General Assembly",
-        "Economic and Social Council"
-      ],
-      "category": "Research and Training"
-    },
-    {
-      "long_name": "United Nations System Staff College",
-      "short_name": "UNSSC",
-      "principal_organ": [
-        "General Assembly",
-        "Economic and Social Council"
-      ],
-      "category": "Research and Training"
-    },
-    {
-      "long_name": "United Nations University",
-      "short_name": "UNU",
-      "principal_organ": [
-        "General Assembly",
-        "Economic and Social Council"
-      ],
-      "category": "Research and Training"
-    },
-    {
-      "long_name": "United Nations Interregional Crime and Justice Research Institute",
-      "short_name": "UNICRI",
-      "principal_organ": [
-        "General Assembly",
-        "Economic and Social Council"
-      ],
-      "category": "Research and Training"
-    },
-    {
-      "long_name": "United Nations Research Institute for Social Development",
-      "short_name": "UNRISD",
-      "principal_organ": [
-        "General Assembly",
-        "Economic and Social Council"
-      ],
-      "category": "Research and Training"
-    },
-    {
-      "long_name": "International Trade Centre",
-      "short_name": "ITC",
-      "principal_organ": [
-        "General Assembly",
-        "Economic and Social Council"
-      ],
-      "category": "Other Entities"
-    },
-    {
-      "long_name": "United Nations Conference on Trade and Development",
-      "short_name": "UNCTAD",
-      "principal_organ": [
-        "General Assembly",
-        "Economic and Social Council"
-      ],
-      "category": "Other Entities"
-    },
-    {
-      "long_name": "Office of the United Nations High Commissioner for Refugees",
-      "short_name": "UNHCR",
-      "principal_organ": [
-        "General Assembly",
-        "Economic and Social Council"
-      ],
-      "category": "Other Entities"
-    },
-    {
-      "long_name": "United Nations Office for Project Services",
-      "short_name": "UNOPS",
-      "principal_organ": [
-        "General Assembly",
-        "Economic and Social Council"
-      ],
-      "category": "Other Entities"
-    },
-    {
-      "long_name": "United Nations Relief and Works Agency for Palestine Refugees",
-      "short_name": "UNRWA",
-      "principal_organ": [
-        "General Assembly",
-        "Economic and Social Council"
-      ],
-      "category": "Other Entities"
-    },
-    {
-      "long_name": "UN Entity for Gender Equality & Women’s Empowerment",
-      "short_name": "UN-Women",
-      "principal_organ": [
-        "General Assembly",
-        "Economic and Social Council"
-      ],
-      "category": "Other Entities"
-    },
-    {
-      "long_name": "Food and Agriculture Organization of the United Nations",
-      "short_name": "FAO",
-      "principal_organ": [
-        "Economic and Social Council"
-      ],
-      "category": "Specialized Agencies"
-    },
-    {
-      "long_name": "International Civil Aviation Organization",
-      "short_name": "ICAO",
-      "principal_organ": [
-        "Economic and Social Council"
-      ],
-      "category": "Specialized Agencies"
-    },
-    {
-      "long_name": "International Fund for Agricultural Development",
-      "short_name": "IFAD",
-      "principal_organ": [
-        "Economic and Social Council"
-      ],
-      "category": "Specialized Agencies"
-    },
-    {
-      "long_name": "International Labour Organization",
-      "short_name": "ILO",
-      "principal_organ": [
-        "Economic and Social Council"
-      ],
-      "category": "Specialized Agencies"
-    },
-    {
-      "long_name": "International Monetary Fund",
-      "short_name": "IMF",
-      "principal_organ": [
-        "Economic and Social Council"
-      ],
-      "category": "Specialized Agencies"
-    },
-    {
-      "long_name": "International Maritime Organization",
-      "short_name": "IMO",
-      "principal_organ": [
-        "Economic and Social Council"
-      ],
-      "category": "Specialized Agencies"
-    },
-    {
-      "long_name": "International Telecommunication Union",
-      "short_name": "ITU",
-      "principal_organ": [
-        "Economic and Social Council"
-      ],
-      "category": "Specialized Agencies"
-    },
-    {
-      "long_name": "UN Educational, Scientific and Cultural Organization",
-      "short_name": "UNESCO",
-      "principal_organ": [
-        "Economic and Social Council"
-      ],
-      "category": "Specialized Agencies"
-    },
-    {
-      "long_name": "UN Industrial Development Organization",
-      "short_name": "UNIDO",
-      "principal_organ": [
-        "Economic and Social Council"
-      ],
-      "category": "Specialized Agencies"
-    },
-    {
-      "long_name": "World Tourism Organization",
-      "short_name": "UNWTO",
-      "principal_organ": [
-        "Economic and Social Council"
-      ],
-      "category": "Specialized Agencies"
-    },
-    {
-      "long_name": "Universal Postal Union",
-      "short_name": "UPU",
-      "principal_organ": [
-        "Economic and Social Council"
-      ],
-      "category": "Specialized Agencies"
-    },
-    {
-      "long_name": "World Health Organization",
-      "short_name": "WHO",
-      "principal_organ": [
-        "Economic and Social Council"
-      ],
-      "category": "Specialized Agencies"
-    },
-    {
-      "long_name": "World Intellectual Property Organization",
-      "short_name": "WIPO",
-      "principal_organ": [
-        "Economic and Social Council"
-      ],
-      "category": "Specialized Agencies"
-    },
-    {
-      "long_name": "World Meteorological Organization",
-      "short_name": "WMO",
-      "principal_organ": [
-        "Economic and Social Council"
-      ],
-      "category": "Specialized Agencies"
-    },
-    {
-      "long_name": "International Bank for Reconstruction and Development",
-      "short_name": "IBRD",
-      "principal_organ": [
-        "Economic and Social Council"
-      ],
-      "category": "World Bank Group"
-    },
-    {
-      "long_name": "International Development Association",
-      "short_name": "IDA",
-      "principal_organ": [
-        "Economic and Social Council"
-      ],
-      "category": "World Bank Group"
-    },
-    {
-      "long_name": "International Finance Corporation",
-      "short_name": "IFC",
-      "principal_organ": [
-        "Economic and Social Council"
-      ],
-      "category": "World Bank Group"
-    },
-    {
-      "long_name": "Committee for Development Policy",
-      "short_name": null,
-      "principal_organ": [
-        "Economic and Social Council"
-      ],
-      "category": "Other Bodies"
-    },
-    {
-      "long_name": "Committee of Experts on Public Administration",
-      "short_name": null,
-      "principal_organ": [
-        "Economic and Social Council"
-      ],
-      "category": "Other Bodies"
-    },
-    {
-      "long_name": "Committee on Non-Governmental Organizations",
-      "short_name": null,
-      "principal_organ": [
-        "Economic and Social Council"
-      ],
-      "category": "Other Bodies"
-    },
-    {
-      "long_name": "Permanent Forum on Indigenous Issues",
-      "short_name": null,
-      "principal_organ": [
-        "Economic and Social Council"
-      ],
-      "category": "Other Bodies"
-    },
-    {
-      "long_name": "Joint UN Programme on HIV/AIDS",
-      "short_name": "UNAIDS",
-      "principal_organ": [
-        "Economic and Social Council"
-      ],
-      "category": "Other Bodies"
-    },
-    {
-      "long_name": "UN Group of Experts on Geographical Names",
-      "short_name": "UNGEGN",
-      "principal_organ": [
-        "Economic and Social Council"
-      ],
-      "category": "Other Bodies"
-    },
-    {
-      "long_name": "UN Committee of Experts on Global Geospatial Information Management",
-      "short_name": "UN-GGIM",
-      "principal_organ": [
-        "Economic and Social Council"
-      ],
-      "category": "Other Bodies"
-    },
-    {
-      "long_name": "Peacebuilding Commission",
-      "short_name": null,
-      "principal_organ": [
-        "General Assembly",
-        "Security Council"
-      ],
-      "category": "Peacebuilding Commission"
-    },
-    {
-      "long_name": "High-level Political Forum on Sustainable Development",
-      "short_name": "HLPF",
-      "principal_organ": [
-        "General Assembly",
-        "Economic and Social Council"
-      ],
-      "category": "HLPF"
-    },
-    {
-      "long_name": "CTBTO Preparatory Commission",
-      "short_name": "CTBTO Preparatory Commission",
-      "principal_organ": [
-        "General Assembly",
-        "Security Council"
-      ],
-      "category": "Related Organizations"
-    },
-    {
-      "long_name": "International Atomic Energy Agency",
-      "short_name": "IAEA",
-      "principal_organ": [
-        "General Assembly",
-        "Security Council"
-      ],
-      "category": "Related Organizations"
-    },
-    {
-      "long_name": "International Criminal Court",
-      "short_name": "ICC",
-      "principal_organ": [
-        "General Assembly",
-        "Security Council"
-      ],
-      "category": "Related Organizations"
-    },
-    {
-      "long_name": "International Organization for Migration",
-      "short_name": "IOM",
-      "principal_organ": [
-        "General Assembly",
-        "Security Council"
-      ],
-      "category": "Related Organizations"
-    },
-    {
-      "long_name": "International Seabed Authority",
-      "short_name": "ISA",
-      "principal_organ": [
-        "General Assembly",
-        "Security Council"
-      ],
-      "category": "Related Organizations"
-    },
-    {
-      "long_name": "International Tribunal for the Law of the Sea",
-      "short_name": "ITLOS",
-      "principal_organ": [
-        "General Assembly",
-        "Security Council"
-      ],
-      "category": "Related Organizations"
-    },
-    {
-      "long_name": "Organization for the Prohibition of Chemical Weapons",
-      "short_name": "OPCW",
-      "principal_organ": [
-        "General Assembly",
-        "Security Council"
-      ],
-      "category": "Related Organizations"
-    },
-    {
-      "long_name": "World Trade Organization",
-      "short_name": "WTO",
-      "principal_organ": [
-        "General Assembly",
-        "Security Council"
-      ],
-      "category": "Related Organizations"
-    }
-  ]
+  {
+    "long_name": "Department for General Assembly and Conference Management",
+    "short_name": "DGACM",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "Department of Economic and Social Affairs",
+    "short_name": "DESA",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "Department of Global Communications",
+    "short_name": "DGC",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "Department of Management Strategy, Policy and Compliance",
+    "short_name": "DMSPC",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "Department of Operational Support",
+    "short_name": "DOS",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "Department of Peace Operations",
+    "short_name": "DPO",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "Department of Political and Peacebuilding Affairs",
+    "short_name": "DPPA",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "Department of Safety and Security",
+    "short_name": "DSS",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "Development Account",
+    "short_name": "DA",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "Economic Commission for Africa",
+    "short_name": "ECA",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "Economic Commission for Europe",
+    "short_name": "ECE",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "Economic Commission for Latin America and the Caribbean",
+    "short_name": "ECLAC",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "Economic and Social Commission for Asia and the Pacific",
+    "short_name": "ESCAP",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "Economic and Social Commission for Western Asia",
+    "short_name": "ESCWA",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "Ethics Office",
+    "short_name": "EO",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "Independent Investigative Mechanism for Myanmar",
+    "short_name": "IIMM",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "International Civil Service Commission",
+    "short_name": "ICSC",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "International Trade Centre",
+    "short_name": "ITC",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "International, Impartial and Independent Mechanism to Assist in the Investigation and Prosecution of Persons Responsible for the Most Serious Crimes under International Law Committed in the Syrian Arab Republic since March 2011",
+    "short_name": "IIIM",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "Joint Inspection Unit",
+    "short_name": "JIU",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "Office for Disarmament Affairs",
+    "short_name": "ODA",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "Office for Outer Space Affairs",
+    "short_name": "OOSA",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "Office for the Coordination of Humanitarian Affairs",
+    "short_name": "OCHA",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "Office of Administration of Justice",
+    "short_name": "OAJ",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "Office of Counter-Terrorism",
+    "short_name": "OCT",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "Office of Data Protection and Privacy",
+    "short_name": "ODPP",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "Office of Information and Communications Technology",
+    "short_name": "OICT",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "Office of Internal Oversight Services",
+    "short_name": "OIOS",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "Office of Legal Affairs",
+    "short_name": "OLA",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "Office of the High Representative for the Least Developed Countries, Landlocked Developing Countries and Small Island Developing States",
+    "short_name": "UN-OHRLLS",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "Office of the Special Adviser on Africa",
+    "short_name": "OSAA",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "Office of the Special Representative of the Secretary-General for Children and Armed Conflict",
+    "short_name": "OSRSG-CAAC",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "Office of the Special Representative of the Secretary-General on Sexual Violence in Conflict",
+    "short_name": "OSRSG-SVC",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "Office of the Special Representative of the Secretary-General on Violence against Children",
+    "short_name": "OSRSG-VAC",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "Office of the United Nations High Commissioner for Human Rights",
+    "short_name": "OHCHR",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "Office of the United Nations High Commissioner for Refugees",
+    "short_name": "UNHCR",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "Office of the United Nations Ombudsman and Mediation Services",
+    "short_name": "OMS",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "Office of the United Nations Special Coordinator for the Middle East Peace Process",
+    "short_name": "UNSCO",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "Office of the United Nations Special Coordinator on Improving the United Nations Response to Sexual Exploitation and Abuse",
+    "short_name": "OSC-SEA",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "Office of the Victims' Rights Advocate",
+    "short_name": "VRA",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "Resident coordinator system",
+    "short_name": "RCS",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "United Nations Conference on Trade and Development",
+    "short_name": "UNCTAD",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "United Nations Entity for Gender Equality and the Empowerment of Women",
+    "short_name": "UN-Women",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "United Nations Environment Programme",
+    "short_name": "UNEP",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "United Nations Human Settlements Programme",
+    "short_name": "UN-Habitat",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "United Nations Military Observer Group in India and Pakistan",
+    "short_name": "UNMOGIP",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "United Nations Office at Geneva",
+    "short_name": "UNOG",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "United Nations Office at Nairobi",
+    "short_name": "UNON",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "United Nations Office at Vienna",
+    "short_name": "UNOV",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "United Nations Office for Disaster Risk Reduction",
+    "short_name": "UNDRR",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "United Nations Office on Drugs and Crime",
+    "short_name": "UNODC",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "United Nations Office to the African Union",
+    "short_name": "UNOAU",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "United Nations Register of Damage Caused by the Construction of the Wall in the Occupied Palestinian Territory",
+    "short_name": "UNRoD",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "United Nations Relief and Works Agency for Palestine Refugees in the Near East",
+    "short_name": "UNRWA",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "United Nations Sustainable Development Group System-wide Evaluation Office",
+    "short_name": "SWEO",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "United Nations System Chief Executives Board for Coordination",
+    "short_name": "CEB",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "United Nations Truce Supervision Organization",
+    "short_name": "UNTSO",
+    "principal_organ": [],
+    "category": "Unknown"
+  },
+  {
+    "long_name": "United Nations Youth Office",
+    "short_name": "UNYO",
+    "principal_organ": [],
+    "category": "Unknown"
+  }
+] 
