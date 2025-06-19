@@ -29,6 +29,9 @@ async function getMandates(): Promise<Mandate[]> {
 
   mandates = transformedData;
   
+  console.log('--- MANDATE DATA STRUCTURE ---');
+  console.log(JSON.stringify(mandates[0], null, 2));
+  
   return mandates;
 }
 
@@ -140,14 +143,18 @@ export async function GET(request: Request) {
     }
 
     if (budgetDocument && budgetDocument !== 'all') {
-      // This assumes a field like 'budget_document_source' exists.
-      filteredMandates = filteredMandates.filter((m) => 
-        (m as any).budget_document_source === budgetDocument
-      );
+      if (budgetDocument === 'ppb2026') {
+        filteredMandates = filteredMandates.filter((m) =>
+          m.citation_info?.some((c) => c.origin_document === 'PPB 2026')
+        );
+      } else if (budgetDocument === 'pko') {
+        filteredMandates = filteredMandates.filter((m) =>
+          m.citation_info?.some((c) => c.origin_document?.startsWith('PKM'))
+        );
+      }
     }
 
     if (section) {
-      // This assumes a field like 'document_section' exists.
       const lowerSection = section.toLowerCase();
       filteredMandates = filteredMandates.filter((m) => 
         m.citation_info?.some((c: CitationInfo) => c.section_title?.toLowerCase().includes(lowerSection))

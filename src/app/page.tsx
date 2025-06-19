@@ -356,6 +356,11 @@ function MandateNavigator() {
     setKeyword(value);
   };
 
+  const budgetDocumentDisplayNames: { [key: string]: string } = {
+    ppb2026: 'Proposed Programme Budget for 2026',
+    pko: 'Budget of Peacekeeping Operations 2025/26',
+  };
+
   const LoadingSkeleton = () => (
     <div className="space-y-4">
         <Skeleton className="h-12 w-full" />
@@ -543,7 +548,7 @@ function MandateNavigator() {
               programme: programme || undefined,
               pillar: pillar !== 'all' ? pillar : undefined,
               year: (startYearFromParams && endYearFromParams && yearRange && (parseInt(startYearFromParams, 10) !== yearRange.min || parseInt(endYearFromParams, 10) !== yearRange.max)) ? `${selectedYearRange?.[0]}-${selectedYearRange?.[1]}` : undefined,
-              budget_document: budgetDocument !== 'all' ? budgetDocument : undefined,
+              budget_document: budgetDocument && budgetDocument !== 'all' ? budgetDocumentDisplayNames[budgetDocument] : undefined,
               section: section || undefined,
             }}
             onClearSearch={() => onKeywordChange('')}

@@ -57,9 +57,8 @@ export function AdvancedSearch({
               <SelectContent>
                 <SelectItem value="all">All Documents</SelectItem>
                 <SelectSeparator />
-                <SelectItem value="ppb2026">Proposed Programme Budget for 2026 (DRAFT)</SelectItem>
-                <SelectItem value="pko2025-26">Budget of Peacekeeping Operations for 2025/26</SelectItem>
-                <SelectItem value="plan2026-28">Plan Outline 2026-28</SelectItem>
+                <SelectItem value="ppb2026">Proposed Programme Budget for 2026</SelectItem>
+                <SelectItem value="pko">Budget of Peacekeeping Operations 2025/26</SelectItem>
               </SelectContent>
             </Select>
           </div>
