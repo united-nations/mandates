@@ -118,8 +118,8 @@ export function MandateDetails({ mandate, open, onOpenChange, parentContext }: M
                 <div>
                   <h3 className="text-lg font-semibold mb-2 flex items-center gap-2"><Users className="h-5 w-5" />List of Entities</h3>
                   <div className="flex flex-wrap gap-2">
-                    {mandate.entities && mandate.entities.length > 0 ? (
-                      mandate.entities.map((entity, index) => (
+                    {mandate.entities && mandate.entities.filter(e => e && e.trim()).length > 0 ? (
+                      mandate.entities.filter(e => e && e.trim()).map((entity, index) => (
                         <Badge key={index}>{entity}</Badge>
                       ))
                     ) : (
