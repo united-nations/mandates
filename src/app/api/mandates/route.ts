@@ -94,7 +94,8 @@ export async function GET(request: Request) {
     const keyword = searchParams.get('keyword');
     const organ = searchParams.get('organ');
     const programme = searchParams.get('programme');
-    const year = searchParams.get('year');
+    const startYear = searchParams.get('start_year');
+    const endYear = searchParams.get('end_year');
     const budgetDocument = searchParams.get('budget_document');
     const section = searchParams.get('section');
     const pillar = searchParams.get('pillar');
@@ -127,8 +128,15 @@ export async function GET(request: Request) {
       );
     }
 
-    if (year) {
-      filteredMandates = filteredMandates.filter((m) => m.year === year);
+    if (startYear && endYear) {
+      const start = parseInt(startYear, 10);
+      const end = parseInt(endYear, 10);
+      if (!isNaN(start) && !isNaN(end)) {
+        filteredMandates = filteredMandates.filter((m) => {
+          const mandateYear = parseInt(m.year, 10);
+          return mandateYear >= start && mandateYear <= end;
+        });
+      }
     }
 
     if (budgetDocument && budgetDocument !== 'all') {

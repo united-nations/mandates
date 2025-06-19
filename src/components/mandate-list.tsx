@@ -35,12 +35,16 @@ interface MandateListProps {
 }
 
 const EntityBadges = ({ entities }: { entities: string[] }) => {
+  const validEntities = entities.filter(entity => entity !== null);
+
+  if (validEntities.length === 0) {
+    return null;
+  }
+
   return (
-    <div className="flex flex-wrap gap-1">
-      {entities
-        .filter(entity => entity !== null)
-        .map(entity => (
-          <Badge key={entity} variant="secondary">
+    <div className="flex flex-wrap gap-1 items-center">
+      {validEntities.map(entity => (
+          <Badge key={entity} variant="secondary" className="font-normal">
             <EntityName entityName={entity} showUnderline={false} />
           </Badge>
       ))}
@@ -49,8 +53,6 @@ const EntityBadges = ({ entities }: { entities: string[] }) => {
 };
 
 export function MandateList({ mandates, onMandateClick }: MandateListProps) {
-  const maxEntities = mandates.length > 0 ? Math.max(...mandates.map(m => m.num_entities), 0) : 0;
-
   return (
     <TooltipProvider>
       <div className="space-y-4">
@@ -60,66 +62,69 @@ export function MandateList({ mandates, onMandateClick }: MandateListProps) {
           const subTitle = titleParts.length > 1 ? titleParts.slice(1).join(': ') : null;
           
           return (
-          <Tooltip key={mandate.document_symbol} delayDuration={100}>
-            <TooltipTrigger asChild>
-              <motion.div
-                className="p-4 border rounded-lg shadow-sm bg-card hover:bg-muted/50 transition-colors cursor-pointer"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.05 }}
-                onClick={() => onMandateClick(mandate)}
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-grow">
-                    {/* Line 1: Priority Area and Symbol */}
-                    <div className="flex items-center gap-3 mb-1">
-                      <p className="text-sm text-muted-foreground font-mono truncate">{mandate.full_document_symbol || mandate.document_symbol}</p>
-                      {mandate.year && (
-                        <Badge variant="outline" className="text-xs">
-                          {mandate.year}
-                        </Badge>
-                      )}
-                    </div>
-
-                    {/* Line 2: Title */}
-                    <div className="mb-1">
-                      {mandate.highlightedTitle ? (
-                        <h3 
-                          className="text-base font-semibold max-w-5xl" 
-                          dangerouslySetInnerHTML={{ __html: mandate.highlightedTitle }}
-                        />
-                      ) : (
-                        <h3 className="text-base font-semibold max-w-5xl">{mainTitle}</h3>
-                      )}
-                      {subTitle && <h4 className="text-base text-muted-foreground max-w-5xl">{subTitle}</h4>}
-                    </div>
-                    
-                    {mandate.match_details && mandate.match_details.length > 0 && (
-                      <div className="text-xs text-muted-foreground mt-1 mb-2">
-                        Match in: {mandate.match_details.join(', ')}
-                      </div>
+            <motion.div
+              key={mandate.document_symbol}
+              className="p-4 border rounded-lg shadow-sm bg-card hover:bg-muted/50 transition-colors cursor-pointer"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: index * 0.05 }}
+              onClick={() => onMandateClick(mandate)}
+            >
+              <div className="flex flex-col gap-3">
+                {/* Top row: Meta info and Details button */}
+                <div className="flex justify-between items-start">
+                  <div className="flex items-center gap-3 text-sm text-muted-foreground flex-wrap">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <p className="font-mono truncate max-w-[250px] sm:max-w-xs md:max-w-sm">
+                          {mandate.full_document_symbol || mandate.document_symbol}
+                        </p>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{mandate.full_document_symbol || mandate.document_symbol}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                    {mandate.year && (
+                      <Badge variant="outline" className="text-xs shrink-0">
+                        {mandate.year}
+                      </Badge>
                     )}
-
-                    {/* Line 3: Citations */}
-                    <div className="w-full md:w-2/3">
-                       <div className="text-sm font-medium mb-2">Cited {mandate.num_citations} times by {mandate.num_entities} entities</div>
-                       <EntityBadges entities={mandate.entities} />
-                    </div>
                   </div>
-
-                  {/* Details Button on the right */}
-                  <div className="flex-shrink-0">
-                     <Button size="sm" className="bg-gray-700 text-white hover:bg-gray-800 dark:bg-gray-600 dark:hover:bg-gray-700">
-                        Details
-                     </Button>
-                  </div>
+                  <Button size="sm" variant="outline" className="shrink-0">
+                      Details
+                  </Button>
                 </div>
-              </motion.div>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Click for more details</p>
-            </TooltipContent>
-          </Tooltip>
+
+                {/* Title */}
+                <div>
+                  {mandate.highlightedTitle ? (
+                    <h3 
+                      className="text-base font-semibold max-w-5xl" 
+                      dangerouslySetInnerHTML={{ __html: mandate.highlightedTitle }}
+                    />
+                  ) : (
+                    <h3 className="text-base font-semibold max-w-5xl">{mainTitle}</h3>
+                  )}
+                  {subTitle && <h4 className="text-sm text-muted-foreground max-w-5xl mt-1">{subTitle}</h4>}
+                </div>
+                
+                {mandate.match_details && mandate.match_details.length > 0 && (
+                  <div className="text-xs text-muted-foreground">
+                    <span className="font-medium">Match in:</span> {mandate.match_details.join(', ')}
+                  </div>
+                )}
+
+                {/* Citations and Entities */}
+                {(mandate.num_citations > 0 || (mandate.entities && mandate.entities.length > 0)) && (
+                  <div className="pt-3 border-t">
+                     <p className="text-sm font-medium mb-2">
+                      Cited {mandate.num_citations} time{mandate.num_citations !== 1 ? 's' : ''} by {mandate.num_entities} entit{mandate.num_entities !== 1 ? 'ies' : 'y'}
+                    </p>
+                    <EntityBadges entities={mandate.entities || []} />
+                  </div>
+                )}
+              </div>
+            </motion.div>
         )})}
       </div>
     </TooltipProvider>

@@ -233,7 +233,7 @@ function MandateNavigator() {
       }
     }
     fetchMetadata();
-  }, [startYearFromParams, endYearFromParams]);
+  }, []);
 
   const fetchMandates = useCallback(async () => {
     setIsLoading(true);
