@@ -41,7 +41,7 @@ const EntityBadges = ({ entities }: { entities: string[] }) => {
         .filter(entity => entity !== null)
         .map(entity => (
           <Badge key={entity} variant="secondary">
-            <EntityName entityName={entity} />
+            <EntityName entityName={entity} showUnderline={false} />
           </Badge>
       ))}
     </div>

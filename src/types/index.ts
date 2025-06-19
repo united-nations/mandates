@@ -86,8 +86,6 @@ export interface Mandate {
 }
 
 export type Entity = {
-  long_name: string;
-  short_name: string | null;
-  principal_organ: string[];
-  category: string;
+  entity: string;
+  entity_long: string;
 }; 

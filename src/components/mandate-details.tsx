@@ -195,55 +195,49 @@ export function MandateDetails({ mandate, open, onOpenChange, parentContext }: M
                  </h3>
                  
                                   {Object.keys(hierarchicalCitations).length > 0 ? (
-                   <div className="space-y-2">
+                   <div className="space-y-1 text-sm">
                      {Object.entries(hierarchicalCitations).map(([programmeKey, programmeData]) => {
                        const totalCitations = Object.values(programmeData.entities).reduce((sum, entity) => sum + entity.total, 0);
                        
                        return (
-                         <div key={programmeKey} className="border border-gray-200 rounded-lg bg-gray-50/50">
+                         <div key={programmeKey}>
                            {/* Programme Level */}
-                           <div className="flex items-center gap-3 px-3 py-2 border-b border-gray-200 bg-gray-100/70">
-                             <div className="w-2 h-2 bg-gray-600 rounded-full flex-shrink-0"></div>
-                             <span className="font-medium text-sm text-gray-900 flex-1">{programmeKey}</span>
-                             <Badge variant="outline" className="text-xs bg-gray-200 text-gray-700 border-gray-300">{totalCitations}</Badge>
+                           <div className="flex items-center gap-2 py-1">
+                             <div className="w-1.5 h-1.5 bg-gray-700 rounded-full flex-shrink-0"></div>
+                             <span className="font-medium text-gray-900 flex-1">{programmeKey}</span>
+                             <span className="text-xs text-gray-500 font-medium">{totalCitations}</span>
                            </div>
                            
                            {/* Entity Level */}
-                           <div className="px-3 py-1">
-                             {Object.entries(programmeData.entities).map(([entityName, entityData]) => {
-                               // Filter out meaningless subprogrammes
-                               const meaningfulSubprogrammes = Object.entries(entityData.subprogrammes).filter(([subprogramme]) => {
-                                 const lower = subprogramme.toLowerCase();
-                                 return !lower.includes('all subprogrammes') && 
-                                        !lower.includes('no subprogramme') &&
-                                        lower !== 'no subprogramme' &&
-                                        lower !== 'all subprogrammes';
-                               });
-                               
-                               return (
-                                 <div key={entityName} className="py-1">
-                                   <div className="flex items-center gap-2 py-1">
-                                     <div className="w-1.5 h-1.5 bg-gray-500 rounded-full flex-shrink-0"></div>
-                                     <span className="text-sm text-gray-800 flex-1 font-medium">{entityName}</span>
-                                     <Badge variant="secondary" className="text-xs bg-gray-200 text-gray-600 border-gray-300">{entityData.total}</Badge>
-                                   </div>
-                                   
-                                   {/* Subprogramme Level - only show meaningful ones */}
-                                   {meaningfulSubprogrammes.length > 0 && (
-                                     <div className="ml-6 mt-1 space-y-1">
-                                       {meaningfulSubprogrammes.map(([subprogramme, count]) => (
-                                         <div key={subprogramme} className="flex items-center gap-2 py-0.5">
-                                           <div className="w-1 h-1 bg-gray-400 rounded-full flex-shrink-0"></div>
-                                           <span className="text-xs text-gray-600 flex-1">{subprogramme}</span>
-                                           <span className="text-xs text-gray-500 font-medium">{count}</span>
-                                         </div>
-                                       ))}
-                                     </div>
-                                   )}
+                           {Object.entries(programmeData.entities).map(([entityName, entityData]) => {
+                             // Filter out meaningless subprogrammes
+                             const meaningfulSubprogrammes = Object.entries(entityData.subprogrammes).filter(([subprogramme]) => {
+                               const lower = subprogramme.toLowerCase();
+                               return !lower.includes('all subprogrammes') && 
+                                      !lower.includes('no subprogramme') &&
+                                      lower !== 'no subprogramme' &&
+                                      lower !== 'all subprogrammes';
+                             });
+                             
+                             return (
+                               <div key={entityName}>
+                                 <div className="flex items-center gap-2 py-0.5 ml-4">
+                                   <div className="w-1 h-1 bg-gray-500 rounded-full flex-shrink-0"></div>
+                                   <span className="text-gray-800 flex-1">{entityName}</span>
+                                   <span className="text-xs text-gray-500 font-medium">{entityData.total}</span>
                                  </div>
-                               );
-                             })}
-                           </div>
+                                 
+                                 {/* Subprogramme Level - only show meaningful ones */}
+                                 {meaningfulSubprogrammes.map(([subprogramme, count]) => (
+                                   <div key={subprogramme} className="flex items-center gap-2 py-0.5 ml-8">
+                                     <div className="w-0.5 h-0.5 bg-gray-400 rounded-full flex-shrink-0"></div>
+                                     <span className="text-xs text-gray-600 flex-1">{subprogramme}</span>
+                                     <span className="text-xs text-gray-500">{count}</span>
+                                   </div>
+                                 ))}
+                               </div>
+                             );
+                           })}
                          </div>
                        );
                      })}
