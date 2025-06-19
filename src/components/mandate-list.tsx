@@ -55,7 +55,7 @@ const EntityBadges = ({ entities }: { entities: string[] }) => {
 export function MandateList({ mandates, onMandateClick }: MandateListProps) {
   return (
     <TooltipProvider>
-      <div className="space-y-4">
+      <div className="space-y-6">
         {mandates.map((mandate, index) => {
           const titleParts = mandate.title ? mandate.title.split(': ') : ['Untitled Mandate'];
           const mainTitle = titleParts[0];
@@ -64,7 +64,7 @@ export function MandateList({ mandates, onMandateClick }: MandateListProps) {
           return (
             <motion.div
               key={mandate.document_symbol}
-              className="p-4 border rounded-lg shadow-sm bg-card hover:bg-muted/50 transition-colors cursor-pointer"
+              className="p-6 border rounded-lg shadow-sm bg-card hover:bg-muted/50 transition-colors cursor-pointer"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: index * 0.05 }}
@@ -116,7 +116,7 @@ export function MandateList({ mandates, onMandateClick }: MandateListProps) {
 
                 {/* Citations and Entities */}
                 {(mandate.num_citations > 0 || (mandate.entities && mandate.entities.length > 0)) && (
-                  <div className="pt-3 border-t">
+                  <div className="pt-2">
                      <p className="text-sm font-medium mb-2">
                       Cited {mandate.num_citations} time{mandate.num_citations !== 1 ? 's' : ''} by {mandate.num_entities} entit{mandate.num_entities !== 1 ? 'ies' : 'y'}
                     </p>
