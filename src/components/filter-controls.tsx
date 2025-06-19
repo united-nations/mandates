@@ -2,16 +2,15 @@
 
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectSeparator, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { X, ChevronDown, ChevronUp } from 'lucide-react';
 import { AdvancedSearch } from '@/components/advanced-search';
 import { YearSlider } from './year-slider';
+import { SearchableDropdown, SearchableDropdownOption } from '@/components/ui/searchable-dropdown';
 
 interface FilterControlsProps {
-  entityOptions: string[];
-  organOptions: string[];
+  entityOptions: SearchableDropdownOption[];
+  organOptions: SearchableDropdownOption[];
   priorityAreaOptions: string[];
   programmeOptions: string[];
   sectionOptions: string[];
@@ -68,16 +67,6 @@ export function FilterControls({
 }: FilterControlsProps) {
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
 
-  const topOrgans = ['General Assembly', 'Security Council', 'Economic and Social Council'];
-  const sortedOrgans = [...organOptions].sort((a, b) => {
-    const aIsTop = topOrgans.includes(a);
-    const bIsTop = topOrgans.includes(b);
-    if (aIsTop && !bIsTop) return -1;
-    if (!aIsTop && bIsTop) return 1;
-    if (aIsTop && bIsTop) return topOrgans.indexOf(a) - topOrgans.indexOf(b);
-    return a.localeCompare(b);
-  });
-
   return (
     <div className="p-4 bg-card border rounded-lg shadow-sm space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -100,35 +89,23 @@ export function FilterControls({
           )}
         </div>
 
-        <Select onValueChange={onOrganChange} value={selectedOrgan}>
-          <SelectTrigger>
-            <SelectValue placeholder="Filter by UN Organ" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All UN Organs</SelectItem>
-            <SelectSeparator />
-            {sortedOrgans.map((organ) => (
-              <SelectItem key={organ} value={organ}>
-                {organ}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <SearchableDropdown
+          options={organOptions}
+          value={selectedOrgan}
+          onChange={onOrganChange}
+          placeholder="Filter by UN Organ"
+          searchPlaceholder="Search organs..."
+          emptyPlaceholder="No organs found."
+        />
 
-        <Select onValueChange={onEntityChange} value={selectedEntity}>
-          <SelectTrigger>
-            <SelectValue placeholder="Filter by UN Entity" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All UN Entities</SelectItem>
-            <SelectSeparator />
-            {entityOptions.map((entity) => (
-              <SelectItem key={entity} value={entity}>
-                {entity}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <SearchableDropdown
+          options={entityOptions}
+          value={selectedEntity}
+          onChange={onEntityChange}
+          placeholder="Filter by UN Entity"
+          searchPlaceholder="Search entities..."
+          emptyPlaceholder="No entities found."
+        />
       </div>
 
       <div className="flex justify-start">

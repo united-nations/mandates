@@ -21,11 +21,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { SearchableDropdownOption } from '@/components/ui/searchable-dropdown';
 
 interface ParentContext {
   scrollY: number;
   viewportHeight: number;
   iframeTop: number;
+}
+
+interface Entity {
+  "Entity Short Name": string;
+  "Entity Name": string;
 }
 
 function MandateNavigator() {
@@ -61,6 +67,7 @@ function MandateNavigator() {
   const [totalCitations, setTotalCitations] = useState(0);
   const [uniqueProgrammes, setUniqueProgrammes] = useState(0);
 
+  const [allEntities, setAllEntities] = useState<Entity[]>([]);
   const [entityOptions, setEntityOptions] = useState<string[]>([]);
   const [organOptions, setOrganOptions] = useState<string[]>([]);
   const [priorityAreaOptions, setPriorityAreaOptions] = useState<string[]>([]);
@@ -88,6 +95,21 @@ function MandateNavigator() {
       setKeyword(keywordFromParams);
     }
   }, [keywordFromParams]);
+
+  useEffect(() => {
+    async function fetchAllEntities() {
+      try {
+        const res = await fetch('/api/entities');
+        if (res.ok) {
+          const data = await res.json();
+          setAllEntities(data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch all entities:", error);
+      }
+    }
+    fetchAllEntities();
+  }, []);
 
   useEffect(() => {
     const FRAME_ORG = 'https://un80analytics.azurewebsites.net';
@@ -356,6 +378,20 @@ function MandateNavigator() {
     }
   }, [mandates, isLoading]);
 
+  const entityDropdownOptions: SearchableDropdownOption[] = entityOptions.map(shortName => {
+    const entityDetail = allEntities.find(e => e["Entity Short Name"] === shortName);
+    return {
+        value: shortName,
+        label: shortName,
+        description: entityDetail ? entityDetail["Entity Name"] : undefined
+    };
+  });
+
+  const organDropdownOptions: SearchableDropdownOption[] = organOptions.map(organ => ({
+    value: organ,
+    label: organ,
+  }));
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <main className="w-full py-6 space-y-6">
@@ -469,10 +505,10 @@ function MandateNavigator() {
           <FilterControls
             keyword={keyword}
             onKeywordChange={onKeywordChange}
-            entityOptions={entityOptions}
+            entityOptions={entityDropdownOptions}
             selectedEntity={selectedEntity}
             onEntityChange={onEntityChange}
-            organOptions={organOptions}
+            organOptions={organDropdownOptions}
             selectedOrgan={selectedOrgan}
             onOrganChange={onOrganChange}
             priorityAreaOptions={priorityAreaOptions}

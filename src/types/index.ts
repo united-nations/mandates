@@ -70,6 +70,7 @@ export interface Mandate {
   operative_paragraphs?: string[] | null;
   programme?: string;
   text?: string;
+  ai_summary?: string;
   
   // The fields below are not in the JSON file, but are added during processing.
   // They are kept here to support search and filtering functionality.

@@ -8,8 +8,14 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 
+export interface SearchableDropdownOption {
+  value: string;
+  label: string;
+  description?: string;
+}
+
 interface SearchableDropdownProps {
-  options: string[];
+  options: SearchableDropdownOption[];
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
@@ -31,24 +37,29 @@ export function SearchableDropdown({
   const [searchTerm, setSearchTerm] = useState('');
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const inputRef = useRef<HTMLInputElement>(null);
-  const optionRefs = useRef<HTMLButtonElement[]>([]);
+  const optionRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
-  const filteredOptions = options.filter((option) =>
-    option.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredOptions = options.filter(
+    (option) =>
+      (option.label && option.label.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (option.description && option.description.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   useEffect(() => {
-    if (open && inputRef.current) {
-      inputRef.current.focus();
+    if (open) {
+      setHighlightedIndex(-1);
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
+    } else {
+        setSearchTerm('');
     }
   }, [open]);
 
-  // Reset highlighted index when filtered options change
   useEffect(() => {
     setHighlightedIndex(-1);
   }, [searchTerm]);
 
-  // Scroll highlighted option into view
   useEffect(() => {
     if (highlightedIndex >= 0 && optionRefs.current[highlightedIndex]) {
       optionRefs.current[highlightedIndex]?.scrollIntoView({
@@ -61,14 +72,10 @@ export function SearchableDropdown({
   const handleSelect = (selectedValue: string) => {
     onChange(selectedValue);
     setOpen(false);
-    setSearchTerm('');
-    setHighlightedIndex(-1);
   };
 
   const handleClear = () => {
     onChange('');
-    setSearchTerm('');
-    setHighlightedIndex(-1);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -77,32 +84,31 @@ export function SearchableDropdown({
     switch (e.key) {
       case 'ArrowDown':
         e.preventDefault();
-        setHighlightedIndex((prev) => 
+        setHighlightedIndex((prev) =>
           prev < filteredOptions.length - 1 ? prev + 1 : 0
         );
         break;
       case 'ArrowUp':
         e.preventDefault();
-        setHighlightedIndex((prev) => 
+        setHighlightedIndex((prev) =>
           prev > 0 ? prev - 1 : filteredOptions.length - 1
         );
         break;
       case 'Enter':
         e.preventDefault();
         if (highlightedIndex >= 0 && filteredOptions[highlightedIndex]) {
-          handleSelect(filteredOptions[highlightedIndex]);
+          handleSelect(filteredOptions[highlightedIndex].value);
         }
         break;
       case 'Escape':
         e.preventDefault();
         setOpen(false);
-        setSearchTerm('');
-        setHighlightedIndex(-1);
         break;
     }
   };
-
-  const displayValue = value || placeholder;
+  
+  const selectedOption = options.find((option) => option.value === value);
+  const displayValue = selectedOption ? selectedOption.label : placeholder;
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -111,15 +117,13 @@ export function SearchableDropdown({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={cn("w-full justify-between", className)}
+          className={cn("w-full justify-between", !value && "text-muted-foreground", className)}
         >
-          <span className={cn("truncate", !value && "text-muted-foreground")}>
-            {displayValue}
-          </span>
-          <div className="flex items-center gap-1">
-            {value && (
+          <span className="truncate">{displayValue}</span>
+          <div className="flex items-center">
+             {value && (
               <X
-                className="h-4 w-4 shrink-0 opacity-50 hover:opacity-100"
+                className="h-4 w-4 shrink-0 opacity-50 hover:opacity-100 mr-2"
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -127,11 +131,15 @@ export function SearchableDropdown({
                 }}
               />
             )}
-            <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
+            <ChevronDown className="h-4 w-4 opacity-50" />
           </div>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+      <PopoverContent 
+        className="w-[--radix-popover-trigger-width] p-0 z-50 overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2" 
+        align="start"
+        sideOffset={4}
+      >
         <div className="flex flex-col">
           <div className="p-2 border-b">
             <Input
@@ -140,38 +148,45 @@ export function SearchableDropdown({
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               onKeyDown={handleKeyDown}
-              className="h-8"
+              className="h-9"
             />
           </div>
           <ScrollArea className="max-h-60">
             <div className="p-1">
               {filteredOptions.length === 0 ? (
-                <div className="py-2 px-2 text-sm text-muted-foreground">
+                <div className="py-2 px-4 text-center text-sm text-muted-foreground">
                   {emptyPlaceholder}
                 </div>
               ) : (
                 filteredOptions.map((option, index) => (
                   <Button
-                    key={option}
+                    key={option.value}
                     ref={(el) => {
                       if (el) optionRefs.current[index] = el;
                     }}
                     variant="ghost"
                     size="sm"
                     className={cn(
-                      "w-full justify-start font-normal",
+                      "w-full justify-start font-normal h-auto py-2",
                       highlightedIndex === index && "bg-accent text-accent-foreground"
                     )}
-                    onClick={() => handleSelect(option)}
+                    onClick={() => handleSelect(option.value)}
                     onMouseEnter={() => setHighlightedIndex(index)}
                   >
-                    <Check
-                      className={cn(
-                        "mr-2 h-4 w-4",
-                        value === option ? "opacity-100" : "opacity-0"
+                     <Check
+                        className={cn(
+                          "mr-2 h-4 w-4 shrink-0",
+                          value === option.value ? "opacity-100" : "opacity-0"
+                        )}
+                      />
+                    <div className="flex flex-col items-start">
+                      <span className="font-medium truncate">{option.label}</span>
+                      {option.description && (
+                        <span className="text-xs text-muted-foreground text-left truncate">
+                          {option.description}
+                        </span>
                       )}
-                    />
-                    <span className="truncate">{option}</span>
+                    </div>
                   </Button>
                 ))
               )}

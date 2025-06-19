@@ -38,6 +38,9 @@ export function AdvancedSearch({
   onPillarChange,
 }: AdvancedSearchProps) {
 
+  const programmeDropdownOptions = programmeOptions.map(p => ({ value: p, label: p }));
+  const sectionDropdownOptions = sectionOptions.map(s => ({ value: s, label: s }));
+
   return (
     <div className="border-t pt-4 mt-4 space-y-4">
         {/* Row 1 */}
@@ -63,7 +66,7 @@ export function AdvancedSearch({
           <div className="space-y-2">
             <Label>Programme</Label>
             <SearchableDropdown 
-              options={programmeOptions}
+              options={programmeDropdownOptions}
               value={programme}
               onChange={onProgrammeChange}
               placeholder='Filter by programme'
@@ -74,7 +77,7 @@ export function AdvancedSearch({
           <div className="space-y-2">
             <Label>Section</Label>
              <SearchableDropdown 
-              options={sectionOptions}
+              options={sectionDropdownOptions}
               value={section}
               onChange={onSectionChange}
               placeholder='Filter by section'

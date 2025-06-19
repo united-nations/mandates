@@ -21,6 +21,7 @@ async function getMandates(): Promise<Mandate[]> {
     document_symbol: item.symbol,
     issuing_body_or_bodies: item.body ? [item.body] : [],
     mentions: item.entities,
+    ai_summary: item.ai_summary || null,
   }));
 
   // Sort by num_entities descending initially
