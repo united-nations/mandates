@@ -69,8 +69,8 @@ export function FilterControls({
 
   return (
     <div className="p-4 bg-card border rounded-lg shadow-sm space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div className="relative lg:col-span-1">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="relative">
           <Input
             placeholder="Search for any keyword..."
             value={keyword}
