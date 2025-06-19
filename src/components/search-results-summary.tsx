@@ -13,12 +13,10 @@ interface SearchResultsSummaryProps {
   appliedFilters: {
     entity?: string;
     organ?: string;
-    priority_area?: string;
     programme?: string;
     pillar?: string;
     year?: string;
     budget_document?: string;
-    section?: string;
   };
   onClearSearch: () => void;
   onClearFilter: (filterKey: string) => void;
@@ -129,20 +127,6 @@ export function SearchResultsSummary({
             </Badge>
           )}
 
-          {appliedFilters.priority_area && appliedFilters.priority_area !== 'all' && (
-            <Badge variant="secondary" className="flex items-center gap-1">
-              Priority: {appliedFilters.priority_area}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-4 w-4 p-0 hover:bg-transparent"
-                onClick={() => onClearFilter('priority_area')}
-              >
-                <X className="h-3 w-3" />
-              </Button>
-            </Badge>
-          )}
-
           {appliedFilters.programme && (
             <Badge variant="secondary" className="flex items-center gap-1">
               Programme: {appliedFilters.programme}
@@ -193,20 +177,6 @@ export function SearchResultsSummary({
                 size="sm"
                 className="h-4 w-4 p-0 hover:bg-transparent"
                 onClick={() => onClearFilter('budget_document')}
-              >
-                <X className="h-3 w-3" />
-              </Button>
-            </Badge>
-          )}
-
-          {appliedFilters.section && (
-            <Badge variant="secondary" className="flex items-center gap-1">
-              Section: {appliedFilters.section}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-4 w-4 p-0 hover:bg-transparent"
-                onClick={() => onClearFilter('section')}
               >
                 <X className="h-3 w-3" />
               </Button>

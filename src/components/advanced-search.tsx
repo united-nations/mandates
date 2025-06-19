@@ -10,65 +10,40 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { YearSlider } from './year-slider';
 import { explainerTexts } from '@/lib/explainer-texts';
 
 interface AdvancedSearchProps {
   programme: string;
   budgetDocument: string;
-  section: string;
-  priorityAreaOptions: string[];
   programmeOptions: string[];
-  sectionOptions: string[];
-  selectedPriorityArea: string;
+  yearRange: { min: number; max: number } | null;
+  yearDistribution: { [year: string]: number };
+  selectedYearRange: [number, number] | null;
   onProgrammeChange: (value: string) => void;
   onBudgetDocumentChange: (value: string) => void;
-  onSectionChange: (value: string) => void;
-  onPriorityAreaChange: (value: string) => void;
+  onYearRangeChange: (value: [number, number]) => void;
 }
 
 export function AdvancedSearch({
   programme,
   budgetDocument,
-  section,
-  priorityAreaOptions,
   programmeOptions,
-  sectionOptions,
-  selectedPriorityArea,
+  yearRange,
+  yearDistribution,
+  selectedYearRange,
   onProgrammeChange,
   onBudgetDocumentChange,
-  onSectionChange,
-  onPriorityAreaChange,
+  onYearRangeChange,
 }: AdvancedSearchProps) {
 
   const programmeDropdownOptions = programmeOptions.map(p => ({ value: p, label: p }));
-  const sectionDropdownOptions = sectionOptions.map(s => ({ value: s, label: s }));
 
   return (
     <TooltipProvider>
       <div className="border-t pt-4 mt-4 space-y-4">
-          {/* Row 1 */}
+          {/* Row 1: Programme and Budget Document */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <Label>{explainerTexts.advancedFilters.section.label}</Label>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <HelpCircle className="h-3 w-3 text-muted-foreground cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs">
-                    <p>{explainerTexts.advancedFilters.section.tooltip}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </div>
-               <SearchableDropdown 
-                options={sectionDropdownOptions}
-                value={section}
-                onChange={onSectionChange}
-                placeholder={explainerTexts.advancedFilters.section.placeholder}
-                searchPlaceholder='Search sections'
-                emptyPlaceholder='No sections found'
-              />
-            </div>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <Label>{explainerTexts.advancedFilters.programme.label}</Label>
@@ -90,9 +65,6 @@ export function AdvancedSearch({
                 emptyPlaceholder='No programmes found'
               />
             </div>
-          </div>
-          {/* Row 2 */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <Label htmlFor="budget-document">{explainerTexts.advancedFilters.budgetDocument.label}</Label>
@@ -120,35 +92,30 @@ export function AdvancedSearch({
                 </SelectContent>
               </Select>
             </div>
+          </div>
+          
+          {/* Row 2: Year Range */}
+          {yearRange && selectedYearRange && (
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <Label htmlFor="priority-area">{explainerTexts.advancedFilters.priorityArea.label}</Label>
+                <Label className="text-sm font-medium">{explainerTexts.filters.yearRange.label}</Label>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <HelpCircle className="h-3 w-3 text-muted-foreground cursor-help" />
                   </TooltipTrigger>
                   <TooltipContent className="max-w-xs">
-                    <p>{explainerTexts.advancedFilters.priorityArea.tooltip}</p>
+                    <p>{explainerTexts.filters.yearRange.tooltip}</p>
                   </TooltipContent>
                 </Tooltip>
               </div>
-              <Select 
-                value={selectedPriorityArea} 
-                onValueChange={onPriorityAreaChange}
-              >
-                <SelectTrigger id="priority-area">
-                  <SelectValue placeholder={explainerTexts.advancedFilters.priorityArea.placeholder} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Priority Areas</SelectItem>
-                  <SelectSeparator />
-                  {priorityAreaOptions.map((area) => (
-                    <SelectItem key={area} value={area}>{area}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <YearSlider
+                yearDistribution={yearDistribution}
+                yearRange={yearRange}
+                value={selectedYearRange}
+                onChange={onYearRangeChange}
+              />
             </div>
-          </div>
+          )}
       </div>
     </TooltipProvider>
   );

@@ -19,53 +19,41 @@ import { explainerTexts } from '@/lib/explainer-texts';
 interface FilterControlsProps {
   entityOptions: SearchableDropdownOption[];
   organOptions: SearchableDropdownOption[];
-  priorityAreaOptions: string[];
   programmeOptions: string[];
-  sectionOptions: string[];
   selectedEntity: string;
   selectedOrgan: string;
-  selectedPriorityArea: string;
   keyword: string;
   onEntityChange: (value: string) => void;
   onOrganChange: (value: string) => void;
-  onPriorityAreaChange: (value: string) => void;
   onKeywordChange: (value: string) => void;
   programme: string;
   yearRange: { min: number; max: number } | null;
   yearDistribution: { [year: string]: number };
   selectedYearRange: [number, number] | null;
   budgetDocument: string;
-  section: string;
   onProgrammeChange: (value: string) => void;
   onYearRangeChange: (value: [number, number]) => void;
   onBudgetDocumentChange: (value: string) => void;
-  onSectionChange: (value: string) => void;
 }
 
 export function FilterControls({
   entityOptions,
   organOptions,
-  priorityAreaOptions,
   programmeOptions,
-  sectionOptions,
   selectedEntity,
   selectedOrgan,
-  selectedPriorityArea,
   keyword,
   onEntityChange,
   onOrganChange,
-  onPriorityAreaChange,
   onKeywordChange,
   programme,
   yearRange,
   yearDistribution,
   selectedYearRange,
   budgetDocument,
-  section,
   onProgrammeChange,
   onYearRangeChange,
   onBudgetDocumentChange,
-  onSectionChange,
 }: FilterControlsProps) {
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
 
@@ -159,42 +147,17 @@ export function FilterControls({
         </div>
 
         {showAdvancedSearch && (
-          <>
           <AdvancedSearch
             programme={programme}
             budgetDocument={budgetDocument}
-            section={section}
             onProgrammeChange={onProgrammeChange}
             onBudgetDocumentChange={onBudgetDocumentChange}
-            onSectionChange={onSectionChange}
-            priorityAreaOptions={priorityAreaOptions}
-            selectedPriorityArea={selectedPriorityArea}
-            onPriorityAreaChange={onPriorityAreaChange}
             programmeOptions={programmeOptions}
-            sectionOptions={sectionOptions}
+            yearRange={yearRange}
+            yearDistribution={yearDistribution}
+            selectedYearRange={selectedYearRange}
+            onYearRangeChange={onYearRangeChange}
           />
-          {yearRange && selectedYearRange && (
-            <div className="pt-2">
-                <div className="flex items-center gap-2 mb-2">
-                  <h3 className="text-sm font-medium text-muted-foreground">{explainerTexts.filters.yearRange.label}</h3>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <HelpCircle className="h-3 w-3 text-muted-foreground cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p>{explainerTexts.filters.yearRange.tooltip}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </div>
-                <YearSlider
-                    yearDistribution={yearDistribution}
-                    yearRange={yearRange}
-                    value={selectedYearRange}
-                    onChange={onYearRangeChange}
-                />
-            </div>
-          )}
-          </>
         )}
       </div>
     </TooltipProvider>

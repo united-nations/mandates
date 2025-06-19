@@ -70,13 +70,11 @@ function MandateNavigator() {
   const pageSize = Number(searchParams.get('limit') || '10');
   const selectedEntity = searchParams.get('entity') || '';
   const selectedOrgan = searchParams.get('organ') || '';
-  const selectedPriorityArea = searchParams.get('priority_area') || '';
   const keywordFromParams = searchParams.get('keyword') || '';
   const programme = searchParams.get('programme') || '';
   const startYearFromParams = searchParams.get('start_year');
   const endYearFromParams = searchParams.get('end_year');
   const budgetDocument = searchParams.get('budget_document') || '';
-  const section = searchParams.get('section') || '';
   const sortBy = searchParams.get('sort_by') || (keywordFromParams ? 'default' : 'citations_desc');
 
   const [keyword, setKeyword] = useState(keywordFromParams);
@@ -94,9 +92,7 @@ function MandateNavigator() {
   const [allOrgans, setAllOrgans] = useState<Organ[]>([]);
   const [entityOptions, setEntityOptions] = useState<EntityWithCount[]>([]);
   const [organOptions, setOrganOptions] = useState<BodyWithCount[]>([]);
-  const [priorityAreaOptions, setPriorityAreaOptions] = useState<string[]>([]);
   const [programmeOptions, setProgrammeOptions] = useState<string[]>([]);
-  const [sectionOptions, setSectionOptions] = useState<string[]>([]);
 
   const [yearDistribution, setYearDistribution] = useState<{ [year: string]: number }>({});
   const [yearRange, setYearRange] = useState<{ min: number; max: number } | null>(null);
@@ -118,6 +114,15 @@ function MandateNavigator() {
       setKeyword(keywordFromParams);
     }
   }, [keywordFromParams]);
+
+  useEffect(() => {
+    // Sync selectedYearRange with URL params when they change
+    if (yearRange) {
+      const startYear = startYearFromParams ? parseInt(startYearFromParams, 10) : yearRange.min;
+      const endYear = endYearFromParams ? parseInt(endYearFromParams, 10) : yearRange.max;
+      setSelectedYearRange([startYear, endYear]);
+    }
+  }, [startYearFromParams, endYearFromParams, yearRange]);
 
   useEffect(() => {
     async function fetchAllEntities() {
@@ -247,7 +252,6 @@ function MandateNavigator() {
         const data = await response.json();
         setEntityOptions(data.uniqueEntities || []);
         setOrganOptions(data.uniqueBodiesWithCount || []);
-        setPriorityAreaOptions(data.uniquePriorityAreas || []);
         
         if (data.yearRange) {
           setYearRange(data.yearRange);
@@ -280,13 +284,11 @@ function MandateNavigator() {
     });
     if (selectedEntity) params.append('entity', selectedEntity);
     if (selectedOrgan) params.append('organ', selectedOrgan);
-    if (selectedPriorityArea) params.append('priority_area', selectedPriorityArea);
     if (keywordFromParams) params.append('keyword', keywordFromParams);
     if (programme) params.append('programme', programme);
     if (startYearFromParams) params.append('start_year', startYearFromParams);
     if (endYearFromParams) params.append('end_year', endYearFromParams);
     if (budgetDocument) params.append('budget_document', budgetDocument);
-    if (section) params.append('section', section);
     if (sortBy && sortBy !== 'default') {
         params.append('sort_by', sortBy);
     }
@@ -307,9 +309,6 @@ function MandateNavigator() {
       if (data.uniqueProgrammes) {
         setProgrammeOptions(data.uniqueProgrammes);
       }
-      if (data.uniqueSections) {
-        setSectionOptions(data.uniqueSections);
-      }
     } catch (error) {
       console.error("Failed to fetch mandates:", error);
       setMandates([]);
@@ -318,7 +317,7 @@ function MandateNavigator() {
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, pageSize, selectedEntity, selectedOrgan, selectedPriorityArea, keywordFromParams, programme, startYearFromParams, endYearFromParams, budgetDocument, section, sortBy]);
+  }, [currentPage, pageSize, selectedEntity, selectedOrgan, keywordFromParams, programme, startYearFromParams, endYearFromParams, budgetDocument, sortBy]);
   
   useEffect(() => {
     fetchMandates();
@@ -382,10 +381,8 @@ function MandateNavigator() {
 
   const onEntityChange = (value: string) => handleFilterChange('entity', value);
   const onOrganChange = (value: string) => handleFilterChange('organ', value);
-  const handlePriorityAreaChange = (value: string) => handleFilterChange('priority_area', value);
   const onProgrammeChange = (value: string) => handleFilterChange('programme', value);
   const onBudgetDocumentChange = (value: string) => handleFilterChange('budget_document', value);
-  const onSectionChange = (value: string) => handleFilterChange('section', value);
 
   const onKeywordChange = (value: string) => {
     setKeyword(value);
@@ -666,21 +663,15 @@ function MandateNavigator() {
               organOptions={organDropdownOptions}
               selectedOrgan={selectedOrgan}
               onOrganChange={onOrganChange}
-              priorityAreaOptions={priorityAreaOptions}
-              selectedPriorityArea={selectedPriorityArea}
-              onPriorityAreaChange={handlePriorityAreaChange}
               programme={programme}
               yearRange={yearRange}
               yearDistribution={yearDistribution}
               selectedYearRange={selectedYearRange}
               budgetDocument={budgetDocument}
-              section={section}
               onProgrammeChange={onProgrammeChange}
               onYearRangeChange={handleYearRangeChange}
               onBudgetDocumentChange={onBudgetDocumentChange}
-              onSectionChange={onSectionChange}
               programmeOptions={programmeOptions}
-              sectionOptions={sectionOptions}
             />
           </div>
 
@@ -691,11 +682,9 @@ function MandateNavigator() {
               appliedFilters={{
                 entity: selectedEntity !== 'all' ? selectedEntity : undefined,
                 organ: selectedOrgan !== 'all' ? selectedOrgan : undefined,
-                priority_area: selectedPriorityArea !== 'all' ? selectedPriorityArea : undefined,
                 programme: programme || undefined,
-                year: (startYearFromParams && endYearFromParams && yearRange && (parseInt(startYearFromParams, 10) !== yearRange.min || parseInt(endYearFromParams, 10) !== yearRange.max)) ? `${selectedYearRange?.[0]}-${selectedYearRange?.[1]}` : undefined,
+                year: (startYearFromParams && endYearFromParams && yearRange && (parseInt(startYearFromParams, 10) !== yearRange.min || parseInt(endYearFromParams, 10) !== yearRange.max)) ? `${startYearFromParams}-${endYearFromParams}` : undefined,
                 budget_document: budgetDocument && budgetDocument !== 'all' ? budgetDocumentDisplayNames[budgetDocument] : undefined,
-                section: section || undefined,
               }}
               onClearSearch={() => onKeywordChange('')}
               onClearFilter={(filterKey) => {
@@ -705,9 +694,6 @@ function MandateNavigator() {
                     break;
                   case 'organ':
                     onOrganChange('all');
-                    break;
-                  case 'priority_area':
-                    handlePriorityAreaChange('all');
                     break;
                   case 'programme':
                     onProgrammeChange('');
@@ -721,9 +707,6 @@ function MandateNavigator() {
                     break;
                   case 'budget_document':
                     onBudgetDocumentChange('all');
-                    break;
-                  case 'section':
-                    onSectionChange('');
                     break;
                 }
               }}
