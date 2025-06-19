@@ -74,6 +74,11 @@ export function MandateList({ mandates, onMandateClick }: MandateListProps) {
                     {/* Line 1: Priority Area and Symbol */}
                     <div className="flex items-center gap-3 mb-1">
                       <p className="text-sm text-muted-foreground font-mono truncate">{mandate.full_document_symbol || mandate.document_symbol}</p>
+                      {mandate.year && (
+                        <Badge variant="outline" className="text-xs">
+                          {mandate.year}
+                        </Badge>
+                      )}
                     </div>
 
                     {/* Line 2: Title */}
