@@ -68,7 +68,6 @@ function MandateNavigator() {
   const endYearFromParams = searchParams.get('end_year');
   const budgetDocument = searchParams.get('budget_document') || '';
   const section = searchParams.get('section') || '';
-  const pillar = searchParams.get('pillar') || '';
   const sortBy = searchParams.get('sort_by') || (keywordFromParams ? 'default' : 'citations_desc');
 
   const [keyword, setKeyword] = useState(keywordFromParams);
@@ -89,7 +88,6 @@ function MandateNavigator() {
   const [priorityAreaOptions, setPriorityAreaOptions] = useState<string[]>([]);
   const [programmeOptions, setProgrammeOptions] = useState<string[]>([]);
   const [sectionOptions, setSectionOptions] = useState<string[]>([]);
-  const [pillarOptions, setPillarOptions] = useState<string[]>([]);
 
   const [yearDistribution, setYearDistribution] = useState<{ [year: string]: number }>({});
   const [yearRange, setYearRange] = useState<{ min: number; max: number } | null>(null);
@@ -241,7 +239,6 @@ function MandateNavigator() {
         setEntityOptions(data.uniqueEntities || []);
         setOrganOptions(data.uniqueBodiesWithCount || []);
         setPriorityAreaOptions(data.uniquePriorityAreas || []);
-        setPillarOptions(data.uniquePillars || []);
         
         if (data.yearRange) {
           setYearRange(data.yearRange);
@@ -281,7 +278,6 @@ function MandateNavigator() {
     if (endYearFromParams) params.append('end_year', endYearFromParams);
     if (budgetDocument) params.append('budget_document', budgetDocument);
     if (section) params.append('section', section);
-    if (pillar) params.append('pillar', pillar);
     if (sortBy && sortBy !== 'default') {
         params.append('sort_by', sortBy);
     }
@@ -313,7 +309,7 @@ function MandateNavigator() {
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, pageSize, selectedEntity, selectedOrgan, selectedPriorityArea, keywordFromParams, programme, startYearFromParams, endYearFromParams, budgetDocument, section, pillar, sortBy]);
+  }, [currentPage, pageSize, selectedEntity, selectedOrgan, selectedPriorityArea, keywordFromParams, programme, startYearFromParams, endYearFromParams, budgetDocument, section, sortBy]);
   
   useEffect(() => {
     fetchMandates();
@@ -381,7 +377,6 @@ function MandateNavigator() {
   const onProgrammeChange = (value: string) => handleFilterChange('programme', value);
   const onBudgetDocumentChange = (value: string) => handleFilterChange('budget_document', value);
   const onSectionChange = (value: string) => handleFilterChange('section', value);
-  const onPillarChange = (value: string) => handleFilterChange('pillar', value);
 
   const onKeywordChange = (value: string) => {
     setKeyword(value);
@@ -579,9 +574,6 @@ function MandateNavigator() {
             onSectionChange={onSectionChange}
             programmeOptions={programmeOptions}
             sectionOptions={sectionOptions}
-            pillarOptions={pillarOptions}
-            selectedPillar={pillar}
-            onPillarChange={onPillarChange}
           />
         </div>
 
@@ -594,7 +586,6 @@ function MandateNavigator() {
               organ: selectedOrgan !== 'all' ? selectedOrgan : undefined,
               priority_area: selectedPriorityArea !== 'all' ? selectedPriorityArea : undefined,
               programme: programme || undefined,
-              pillar: pillar !== 'all' ? pillar : undefined,
               year: (startYearFromParams && endYearFromParams && yearRange && (parseInt(startYearFromParams, 10) !== yearRange.min || parseInt(endYearFromParams, 10) !== yearRange.max)) ? `${selectedYearRange?.[0]}-${selectedYearRange?.[1]}` : undefined,
               budget_document: budgetDocument && budgetDocument !== 'all' ? budgetDocumentDisplayNames[budgetDocument] : undefined,
               section: section || undefined,
@@ -613,9 +604,6 @@ function MandateNavigator() {
                   break;
                 case 'programme':
                   onProgrammeChange('');
-                  break;
-                case 'pillar':
-                  onPillarChange('all');
                   break;
                 case 'year':
                   const newParams = new URLSearchParams(searchParams.toString());

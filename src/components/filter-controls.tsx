@@ -14,16 +14,13 @@ interface FilterControlsProps {
   priorityAreaOptions: string[];
   programmeOptions: string[];
   sectionOptions: string[];
-  pillarOptions: string[];
   selectedEntity: string;
   selectedOrgan: string;
   selectedPriorityArea: string;
-  selectedPillar: string;
   keyword: string;
   onEntityChange: (value: string) => void;
   onOrganChange: (value: string) => void;
   onPriorityAreaChange: (value: string) => void;
-  onPillarChange: (value: string) => void;
   onKeywordChange: (value: string) => void;
   programme: string;
   yearRange: { min: number; max: number } | null;
@@ -43,16 +40,13 @@ export function FilterControls({
   priorityAreaOptions,
   programmeOptions,
   sectionOptions,
-  pillarOptions,
   selectedEntity,
   selectedOrgan,
   selectedPriorityArea,
-  selectedPillar,
   keyword,
   onEntityChange,
   onOrganChange,
   onPriorityAreaChange,
-  onPillarChange,
   onKeywordChange,
   programme,
   yearRange,
@@ -129,9 +123,6 @@ export function FilterControls({
           onPriorityAreaChange={onPriorityAreaChange}
           programmeOptions={programmeOptions}
           sectionOptions={sectionOptions}
-          pillarOptions={pillarOptions}
-          selectedPillar={selectedPillar}
-          onPillarChange={onPillarChange}
         />
         {yearRange && selectedYearRange && (
           <div className="pt-2">

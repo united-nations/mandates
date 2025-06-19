@@ -11,14 +11,11 @@ interface AdvancedSearchProps {
   priorityAreaOptions: string[];
   programmeOptions: string[];
   sectionOptions: string[];
-  pillarOptions: string[];
   selectedPriorityArea: string;
-  selectedPillar: string;
   onProgrammeChange: (value: string) => void;
   onBudgetDocumentChange: (value: string) => void;
   onSectionChange: (value: string) => void;
   onPriorityAreaChange: (value: string) => void;
-  onPillarChange: (value: string) => void;
 }
 
 export function AdvancedSearch({
@@ -28,14 +25,11 @@ export function AdvancedSearch({
   priorityAreaOptions,
   programmeOptions,
   sectionOptions,
-  pillarOptions,
   selectedPriorityArea,
-  selectedPillar,
   onProgrammeChange,
   onBudgetDocumentChange,
   onSectionChange,
   onPriorityAreaChange,
-  onPillarChange,
 }: AdvancedSearchProps) {
 
   const programmeDropdownOptions = programmeOptions.map(p => ({ value: p, label: p }));
@@ -44,7 +38,32 @@ export function AdvancedSearch({
   return (
     <div className="border-t pt-4 mt-4 space-y-4">
         {/* Row 1 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label>Section</Label>
+             <SearchableDropdown 
+              options={sectionDropdownOptions}
+              value={section}
+              onChange={onSectionChange}
+              placeholder='Filter by section'
+              searchPlaceholder='Search sections'
+              emptyPlaceholder='No sections found'
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Programme</Label>
+            <SearchableDropdown 
+              options={programmeDropdownOptions}
+              value={programme}
+              onChange={onProgrammeChange}
+              placeholder='Filter by programme'
+              searchPlaceholder='Search programmes'
+              emptyPlaceholder='No programmes found'
+            />
+          </div>
+        </div>
+        {/* Row 2 */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="budget-document">Budget Document</Label>
             <Select 
@@ -63,31 +82,6 @@ export function AdvancedSearch({
             </Select>
           </div>
           <div className="space-y-2">
-            <Label>Programme</Label>
-            <SearchableDropdown 
-              options={programmeDropdownOptions}
-              value={programme}
-              onChange={onProgrammeChange}
-              placeholder='Filter by programme'
-              searchPlaceholder='Search programmes'
-              emptyPlaceholder='No programmes found'
-            />
-          </div>
-          <div className="space-y-2">
-            <Label>Section</Label>
-             <SearchableDropdown 
-              options={sectionDropdownOptions}
-              value={section}
-              onChange={onSectionChange}
-              placeholder='Filter by section'
-              searchPlaceholder='Search sections'
-              emptyPlaceholder='No sections found'
-            />
-          </div>
-        </div>
-        {/* Row 2 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div className="space-y-2">
             <Label htmlFor="priority-area">Priority Area</Label>
             <Select 
               value={selectedPriorityArea} 
@@ -101,24 +95,6 @@ export function AdvancedSearch({
                 <SelectSeparator />
                 {priorityAreaOptions.map((area) => (
                   <SelectItem key={area} value={area}>{area}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="pillar">Pillar</Label>
-            <Select 
-              value={selectedPillar} 
-              onValueChange={onPillarChange}
-            >
-              <SelectTrigger id="pillar">
-                <SelectValue placeholder="Select pillar" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Pillars</SelectItem>
-                <SelectSeparator />
-                {pillarOptions.map((pillar) => (
-                  <SelectItem key={pillar} value={pillar}>{pillar}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
