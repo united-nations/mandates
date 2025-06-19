@@ -2,7 +2,13 @@
 export interface Mandate {
   symbol_x: string;
   num_citations: number;
+  // Fields from the JSON file
+  symbol_x: string;
+  num_citations: number;
   num_entities: number;
+  entities: string[];
+  link_x?: string | null;
+  full_document_symbol?: string | null;
   entities: (string | null)[];
   link_x: string;
   full_document_symbol: string;
@@ -54,4 +60,26 @@ export interface Mandate {
   action_note_date: string[];
   related_documents: string[];
   vote_summary: string[];
+  year: string;
+  body: string;
+  pillar: string;
+  entity_long: string;
+  origin_document: string;
+  part_in_document: string;
+  entity: string;
+  title: string;
+  operative_paragraphs?: string[] | null;
+  programme?: string;
+  text?: string;
+
+  // Transformed fields
+  document_title: string;
+  document_symbol: string;
+  issuing_body_or_bodies: string[];
+  mentions: string[];
+  match_details?: string[];
+  
+  // Search-related fields
+  searchScore?: number;
+  highlightedTitle?: string;
 }

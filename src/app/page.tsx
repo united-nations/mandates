@@ -13,6 +13,7 @@ import { Globe, FileText, Users, ListChecks, BookCopy, Building } from 'lucide-r
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { MandateDetails } from '@/components/mandate-details';
+import { SearchResultsSummary } from '@/components/search-results-summary';
 
 interface ParentContext {
   scrollY: number;
@@ -31,8 +32,13 @@ function MandateNavigator() {
   const currentPage = Number(searchParams.get('page') || '1');
   const pageSize = Number(searchParams.get('limit') || '30');
   const selectedEntity = searchParams.get('entity') || '';
+  const selectedOrgan = searchParams.get('organ') || '';
   const selectedPriorityArea = searchParams.get('priority_area') || '';
   const keywordFromParams = searchParams.get('keyword') || '';
+  const programme = searchParams.get('programme') || '';
+  const year = searchParams.get('year') || '';
+  const budgetDocument = searchParams.get('budget_document') || '';
+  const section = searchParams.get('section') || '';
 
   const [keyword, setKeyword] = useState(keywordFromParams);
   const debouncedKeyword = useDebounce(keyword, 300);
@@ -40,15 +46,16 @@ function MandateNavigator() {
   const [totalPages, setTotalPages] = useState(0);
   const [totalItems, setTotalItems] = useState(0);
 
-  const [entityOptions, setEntityOptions] = useState<string[]>([]);
-  const [priorityAreaOptions, setPriorityAreaOptions] = useState<string[]>([]);
-  const [totalDocuments, setTotalDocuments] = useState(0);
-  const [totalEntities, setTotalEntities] = useState(0);
+  const [uniqueOrgans, setUniqueOrgans] = useState(0);
+  const [uniqueEntities, setUniqueEntities] = useState(0);
   const [totalCitations, setTotalCitations] = useState(0);
-  const [uniqueBodiesCount, setUniqueBodiesCount] = useState(0);
-  const [uniqueBodies, setUniqueBodies] = useState<string[]>([]);
+
+  const [entityOptions, setEntityOptions] = useState<string[]>([]);
+  const [organOptions, setOrganOptions] = useState<string[]>([]);
+  const [priorityAreaOptions, setPriorityAreaOptions] = useState<string[]>([]);
 
   const [selectedMandate, setSelectedMandate] = useState<Mandate | null>(null);
+
   const [parentContext, setParentContext] = useState<ParentContext | null>(null);
 
   const [sourceDocumentsPopover, setSourceDocumentsPopover] = useState(false);
@@ -161,12 +168,14 @@ function MandateNavigator() {
         const response = await fetch('/api/mandates/meta');
         const data = await response.json();
         setEntityOptions(data.uniqueEntities || []);
+        setOrganOptions(data.uniqueBodies || []);
         setPriorityAreaOptions(data.uniquePriorityAreas || []);
-        setTotalDocuments(data.totalDocuments || 0);
-        setTotalEntities(data.totalEntities || 0);
+        
+        // Set initial summary stats for the whole dataset
+        setTotalItems(data.totalDocuments || 0);
+        setUniqueOrgans(data.uniqueBodiesCount || 0);
+        setUniqueEntities(data.totalEntities || 0);
         setTotalCitations(data.totalCitations || 0);
-        setUniqueBodiesCount(data.uniqueBodiesCount || 0);
-        setUniqueBodies(data.uniqueBodies || []);
       } catch (error) {
         console.error("Failed to fetch metadata:", error);
       }
@@ -181,8 +190,13 @@ function MandateNavigator() {
         limit: String(pageSize),
     });
     if (selectedEntity) params.append('entity', selectedEntity);
+    if (selectedOrgan) params.append('organ', selectedOrgan);
     if (selectedPriorityArea) params.append('priority_area', selectedPriorityArea);
-    if (debouncedKeyword) params.append('keyword', debouncedKeyword);
+    if (keywordFromParams) params.append('keyword', keywordFromParams);
+    if (programme) params.append('programme', programme);
+    if (year) params.append('year', year);
+    if (budgetDocument) params.append('budget_document', budgetDocument);
+    if (section) params.append('section', section);
 
     try {
       const response = await fetch(`/api/mandates?${params.toString()}`);
@@ -190,6 +204,11 @@ function MandateNavigator() {
       setMandates(data.items || []);
       setTotalItems(data.totalItems || 0);
       setTotalPages(data.totalPages || 0);
+      
+      // Update summary stats with filtered results
+      setUniqueOrgans(data.uniqueBodiesCount || 0);
+      setUniqueEntities(data.uniqueEntitiesCount || 0);
+      setTotalCitations(data.totalCitations || 0);
     } catch (error) {
       console.error("Failed to fetch mandates:", error);
       setMandates([]);
@@ -198,7 +217,7 @@ function MandateNavigator() {
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, pageSize, selectedEntity, selectedPriorityArea, debouncedKeyword]);
+  }, [currentPage, pageSize, selectedEntity, selectedOrgan, selectedPriorityArea, keywordFromParams, programme, year, budgetDocument, section]);
   
   useEffect(() => {
     fetchMandates();
@@ -230,26 +249,27 @@ function MandateNavigator() {
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
   
-  const handleEntityChange = (entity: string) => {
+  const handleFilterChange = (key: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set('page', '1');
-    if (entity && entity !== 'all') {
-      params.set('entity', entity);
+    if (value && value !== 'all') {
+      params.set(key, value);
     } else {
-      params.delete('entity');
+      params.delete(key);
     }
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
-  const handlePriorityAreaChange = (priorityArea: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set('page', '1');
-    if (priorityArea && priorityArea !== 'all') {
-      params.set('priority_area', priorityArea);
-    } else {
-      params.delete('priority_area');
-    }
-    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  const onEntityChange = (value: string) => handleFilterChange('entity', value);
+  const onOrganChange = (value: string) => handleFilterChange('organ', value);
+  const handlePriorityAreaChange = (value: string) => handleFilterChange('priority_area', value);
+  const onProgrammeChange = (value: string) => handleFilterChange('programme', value);
+  const onYearChange = (value: string) => handleFilterChange('year', value);
+  const onBudgetDocumentChange = (value: string) => handleFilterChange('budget_document', value);
+  const onSectionChange = (value: string) => handleFilterChange('section', value);
+
+  const onKeywordChange = (value: string) => {
+    setKeyword(value);
   };
 
   const LoadingSkeleton = () => (
@@ -300,14 +320,14 @@ function MandateNavigator() {
                         </CardHeader>
                         <CardContent className="flex-grow flex items-end">
                             <div className="text-3xl font-bold text-foreground">
-                                {totalDocuments > 0 ? totalDocuments.toLocaleString() : <Skeleton className="h-8 w-16" />}
+                                {isLoading ? <Skeleton className="h-8 w-16" /> : (totalItems > 0 ? totalItems.toLocaleString() : '0')}
                             </div>
                         </CardContent>
                     </Card>
                   </div>
                 </PopoverTrigger>
                 <PopoverContent>
-                  <p>The total number of unique source documents in the registry.</p>
+                  <p className="text-sm">The total number of unique source documents in the registry.</p>
                 </PopoverContent>
               </Popover>
               <Popover open={unOrgansPopover} onOpenChange={setUnOrgansPopover}>
@@ -320,14 +340,14 @@ function MandateNavigator() {
                       </CardHeader>
                       <CardContent className="flex-grow flex items-end">
                           <div className="text-3xl font-bold text-foreground">
-                              {uniqueBodiesCount > 0 ? uniqueBodiesCount.toLocaleString() : <Skeleton className="h-8 w-16" />}
+                              {isLoading ? <Skeleton className="h-8 w-16" /> : (uniqueOrgans > 0 ? uniqueOrgans.toLocaleString() : '0')}
                           </div>
                       </CardContent>
                     </Card>
                   </div>
                 </PopoverTrigger>
                 <PopoverContent>
-                  <p>The number of distinct UN organs that have issued the documents.</p>
+                  <p className="text-sm">The number of distinct UN organs that have issued the documents.</p>
                 </PopoverContent>
               </Popover>
               <Popover open={unEntitiesPopover} onOpenChange={setUnEntitiesPopover}>
@@ -340,14 +360,14 @@ function MandateNavigator() {
                         </CardHeader>
                         <CardContent className="flex-grow flex items-end">
                             <div className="text-3xl font-bold text-foreground">
-                                {totalEntities > 0 ? totalEntities.toLocaleString() : <Skeleton className="h-8 w-16" />}
+                                {isLoading ? <Skeleton className="h-8 w-16" /> : (uniqueEntities > 0 ? uniqueEntities.toLocaleString() : '0')}
                             </div>
                         </CardContent>
                     </Card>
                   </div>
                 </PopoverTrigger>
                 <PopoverContent>
-                  <p>The number of distinct UN entities mentioned in the documents.</p>
+                  <p className="text-sm">The number of distinct UN entities mentioned in the documents.</p>
                 </PopoverContent>
               </Popover>
               <Popover open={programmesPopover} onOpenChange={setProgrammesPopover}>
@@ -367,7 +387,7 @@ function MandateNavigator() {
                   </div>
                 </PopoverTrigger>
                 <PopoverContent>
-                  <p>The number of distinct programmes mentioned in the documents.</p>
+                  <p className="text-sm">The number of distinct programmes associated with the documents.</p>
                 </PopoverContent>
               </Popover>
               <Popover open={citationsPopover} onOpenChange={setCitationsPopover}>
@@ -380,53 +400,111 @@ function MandateNavigator() {
                         </CardHeader>
                         <CardContent className="flex-grow flex items-end">
                             <div className="text-3xl font-bold text-foreground">
-                                {totalCitations > 0 ? totalCitations.toLocaleString() : <Skeleton className="h-8 w-16" />}
+                                {isLoading ? <Skeleton className="h-8 w-16" /> : (totalCitations > 0 ? totalCitations.toLocaleString() : '0')}
                             </div>
                         </CardContent>
                     </Card>
                   </div>
                 </PopoverTrigger>
                 <PopoverContent>
-                  <p>The total number of citations found across all documents.</p>
+                  <p className="text-sm">The total number of citations (mentions of entities) within the documents.</p>
                 </PopoverContent>
               </Popover>
-            </div>
+          </div>
         </section>
 
-        <section>
-          <FilterControls
-            entities={entityOptions}
-            priorityAreas={priorityAreaOptions}
-            selectedEntity={selectedEntity}
-            selectedPriorityArea={selectedPriorityArea}
-            keyword={keyword}
-            onEntityChange={handleEntityChange}
-            onPriorityAreaChange={handlePriorityAreaChange}
-            onKeywordChange={setKeyword}
-            disabled={isLoading}
-          />
-        </section>
+        <FilterControls
+          keyword={keyword}
+          onKeywordChange={onKeywordChange}
+          entityOptions={entityOptions}
+          selectedEntity={selectedEntity}
+          onEntityChange={onEntityChange}
+          organOptions={organOptions}
+          selectedOrgan={selectedOrgan}
+          onOrganChange={onOrganChange}
+          priorityAreaOptions={priorityAreaOptions}
+          selectedPriorityArea={selectedPriorityArea}
+          onPriorityAreaChange={handlePriorityAreaChange}
+          programme={programme}
+          year={year}
+          budgetDocument={budgetDocument}
+          section={section}
+          onProgrammeChange={onProgrammeChange}
+          onYearChange={onYearChange}
+          onBudgetDocumentChange={onBudgetDocumentChange}
+          onSectionChange={onSectionChange}
+        />
 
-        <section>
-          <h2 className="text-2xl font-semibold text-foreground mb-4">
-            Mandates ({isLoading ? '...' : totalItems.toLocaleString()})
-          </h2>
-          {isLoading ? <LoadingSkeleton /> : <MandateList mandates={mandates} onMandateClick={setSelectedMandate} />}
-          <PaginationControls
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-            totalItems={totalItems}
-            pageSize={pageSize}
-            onPageSizeChange={handlePageSizeChange}
-          />
-        </section>
+        <SearchResultsSummary
+          totalResults={totalItems}
+          searchKeyword={keywordFromParams}
+          appliedFilters={{
+            entity: selectedEntity !== 'all' ? selectedEntity : undefined,
+            organ: selectedOrgan !== 'all' ? selectedOrgan : undefined,
+            priority_area: selectedPriorityArea !== 'all' ? selectedPriorityArea : undefined,
+            programme: programme || undefined,
+            year: year || undefined,
+            budget_document: budgetDocument !== 'all' ? budgetDocument : undefined,
+            section: section || undefined,
+          }}
+          onClearSearch={() => onKeywordChange('')}
+          onClearFilter={(filterKey) => {
+            switch (filterKey) {
+              case 'entity':
+                onEntityChange('all');
+                break;
+              case 'organ':
+                onOrganChange('all');
+                break;
+              case 'priority_area':
+                handlePriorityAreaChange('all');
+                break;
+              case 'programme':
+                onProgrammeChange('');
+                break;
+              case 'year':
+                onYearChange('');
+                break;
+              case 'budget_document':
+                onBudgetDocumentChange('all');
+                break;
+              case 'section':
+                onSectionChange('');
+                break;
+            }
+          }}
+          isLoading={isLoading}
+        />
+
+        <div className="border-t border-border pt-4">
+          <div className="mt-4">
+            <h2 className="text-2xl font-bold tracking-tight mb-4">Mandate Source Documents</h2>
+            {isLoading ? (
+              <LoadingSkeleton />
+            ) : (
+              <MandateList
+                mandates={mandates}
+                onMandateClick={setSelectedMandate}
+              />
+            )}
+          </div>
+        </div>
+
+        <PaginationControls
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+          pageSize={pageSize}
+          onPageSizeChange={handlePageSizeChange}
+          totalItems={totalItems}
+        />
       </main>
+
       <MandateDetails
         mandate={selectedMandate}
-        open={selectedMandate !== null}
-        onOpenChange={(open) => {
-          if (!open) {
+        open={!!selectedMandate}
+        onOpenChange={(isOpen) => {
+          if (!isOpen) {
             setSelectedMandate(null);
           }
         }}
@@ -436,29 +514,9 @@ function MandateNavigator() {
   );
 }
 
-const FullPageSkeleton = () => (
-  <div className="min-h-screen bg-background text-foreground">
-    <header className="py-6 px-4 md:px-8 border-b border-border">
-      <div className="container mx-auto flex items-center gap-3">
-        <Globe className="h-8 w-8 text-primary" />
-        <h1 className="text-3xl font-semibold text-foreground">
-          UN Mandate Explorer
-        </h1>
-      </div>
-    </header>
-    <main className="container mx-auto px-4 md:px-8 py-8 space-y-8">
-      <div className="space-y-4">
-        <Skeleton className="h-40 w-full" />
-        <Skeleton className="h-20 w-full" />
-        <Skeleton className="h-64 w-full" />
-      </div>
-    </main>
-  </div>
-);
-
-export default function MandateNavigatorPage() {
+export default function Page() {
   return (
-    <Suspense fallback={<FullPageSkeleton />}>
+    <Suspense fallback={<div>Loading...</div>}>
       <MandateNavigator />
     </Suspense>
   );

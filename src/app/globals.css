@@ -113,3 +113,34 @@ h1, h2, h3, h4, h5, h6 {
     font-feature-settings: "rlig" 1, "calt" 1; 
   }
 }
+
+/* Search highlighting styles */
+mark {
+  background-color: hsl(var(--accent) / 0.3);
+  color: hsl(var(--accent-foreground));
+  padding: 0 2px;
+  border-radius: 2px;
+  font-weight: 600;
+}
+
+.dark mark {
+  background-color: hsl(var(--accent) / 0.4);
+  color: hsl(var(--accent-foreground));
+}
+
+/* Search result animations */
+.search-result-enter {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.search-result-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+/* Search input focus improvements */
+.search-input:focus {
+  box-shadow: 0 0 0 2px hsl(var(--ring));
+}
