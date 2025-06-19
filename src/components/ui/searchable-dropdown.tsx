@@ -173,8 +173,8 @@ export function SearchableDropdown({
                     onClick={() => handleSelect(option.value)}
                     onMouseEnter={() => setHighlightedIndex(index)}
                   >
-                    <div className="flex flex-col items-start">
-                      <span className="font-medium whitespace-normal">{option.label}</span>
+                    <div className="flex flex-col items-start text-left flex-1 min-w-0">
+                      <span className="font-medium whitespace-normal text-left">{option.label}</span>
                       {option.description && (
                         <span className="text-xs text-muted-foreground text-left whitespace-normal">
                           {option.description}

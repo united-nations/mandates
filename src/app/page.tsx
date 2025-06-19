@@ -30,8 +30,8 @@ interface ParentContext {
 }
 
 interface Entity {
-  "Entity Short Name": string;
-  "Entity Name": string;
+  entity: string;
+  entity_long: string;
 }
 
 function MandateNavigator() {
@@ -384,11 +384,12 @@ function MandateNavigator() {
   }, [mandates, isLoading]);
 
   const entityDropdownOptions: SearchableDropdownOption[] = entityOptions.map(shortName => {
-    const entityDetail = allEntities.find(e => e["Entity Short Name"] === shortName);
+    const entityDetail = allEntities.find(e => e.entity === shortName);
+    const longName = entityDetail ? entityDetail.entity_long : undefined;
     return {
         value: shortName,
-        label: shortName,
-        description: entityDetail ? entityDetail["Entity Name"] : undefined
+        label: longName ? `${shortName} – ${longName}` : shortName,
+        description: undefined // Remove description since we're showing it in the label
     };
   });
 
