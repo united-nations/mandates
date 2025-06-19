@@ -98,7 +98,7 @@ export async function GET(request: Request) {
     const section = searchParams.get('section');
     const pillar = searchParams.get('pillar');
     const page = parseInt(searchParams.get('page') || '1', 10);
-    const limit = parseInt(searchParams.get('limit') || '30', 10);
+    const limit = parseInt(searchParams.get('limit') || '10', 10);
     const sortBy = searchParams.get('sort_by');
 
     let filteredMandates: Mandate[] = allMandates;

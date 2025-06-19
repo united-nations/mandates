@@ -1,6 +1,6 @@
 'use client';
 
-import { Combobox } from './ui/combobox';
+import { SearchableDropdown } from './ui/searchable-dropdown';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectSeparator } from '@/components/ui/select';
 
@@ -38,9 +38,6 @@ export function AdvancedSearch({
   onPillarChange,
 }: AdvancedSearchProps) {
 
-  const programmeItems = programmeOptions.map(p => ({ value: p, label: p }));
-  const sectionItems = sectionOptions.map(s => ({ value: s, label: s }));
-
   return (
     <div className="border-t pt-4 mt-4 space-y-4">
         {/* Row 1 */}
@@ -65,8 +62,8 @@ export function AdvancedSearch({
           </div>
           <div className="space-y-2">
             <Label>Programme</Label>
-            <Combobox 
-              options={programmeItems}
+            <SearchableDropdown 
+              options={programmeOptions}
               value={programme}
               onChange={onProgrammeChange}
               placeholder='Filter by programme'
@@ -76,8 +73,8 @@ export function AdvancedSearch({
           </div>
           <div className="space-y-2">
             <Label>Section</Label>
-             <Combobox 
-              options={sectionItems}
+             <SearchableDropdown 
+              options={sectionOptions}
               value={section}
               onChange={onSectionChange}
               placeholder='Filter by section'

@@ -37,7 +37,7 @@ function MandateNavigator() {
   const [isLoading, setIsLoading] = useState(true);
   
   const currentPage = Number(searchParams.get('page') || '1');
-  const pageSize = Number(searchParams.get('limit') || '30');
+  const pageSize = Number(searchParams.get('limit') || '10');
   const selectedEntity = searchParams.get('entity') || '';
   const selectedOrgan = searchParams.get('organ') || '';
   const selectedPriorityArea = searchParams.get('priority_area') || '';

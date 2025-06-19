@@ -75,7 +75,7 @@ export function SearchSuggestions({ onSuggestionClick, isVisible }: SearchSugges
               <Badge
                 key={index}
                 variant="secondary"
-                className="cursor-pointer hover:bg-accent"
+                className="cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors duration-200 active:scale-95"
                 onClick={() => handleSuggestionClick(search)}
               >
                 {search}
@@ -95,7 +95,7 @@ export function SearchSuggestions({ onSuggestionClick, isVisible }: SearchSugges
             <Badge
               key={index}
               variant="outline"
-              className="cursor-pointer hover:bg-accent"
+              className="cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors duration-200 active:scale-95"
               onClick={() => handleSuggestionClick(search)}
             >
               {search}
