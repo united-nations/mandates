@@ -39,11 +39,11 @@ export function MandateDetails({ mandate, open, onOpenChange, parentContext }: M
 
   const dialogStyle: React.CSSProperties = {};
   if (parentContext) {
-    const { scrollY, iframeTop } = parentContext;
+    const { scrollY, iframeTop, viewportHeight } = parentContext;
     dialogStyle.position = 'absolute';
-    dialogStyle.top = `${scrollY + 20 - iframeTop}px`;
+    dialogStyle.top = `${scrollY + (viewportHeight / 2) - iframeTop}px`;
     dialogStyle.left = '50%';
-    dialogStyle.transform = 'translateX(-50%)';
+    dialogStyle.transform = 'translate(-50%, -50%)';
   }
 
   const displaySymbol = mandate.full_document_symbol || mandate.symbol_x;
