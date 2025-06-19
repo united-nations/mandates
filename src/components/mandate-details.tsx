@@ -36,7 +36,6 @@ export function MandateDetails({ mandate, open, onOpenChange, parentContext }: M
   }
   
   const validEntities = mandate.entities ? mandate.entities.filter(e => e && e.trim()) : [];
-  const programmes = ['Programme A', 'Programme B']; // Placeholder
 
   const dialogStyle: React.CSSProperties = {};
   if (parentContext) {
@@ -47,7 +46,7 @@ export function MandateDetails({ mandate, open, onOpenChange, parentContext }: M
     dialogStyle.transform = 'translateX(-50%)';
   }
 
-  const displaySymbol = mandate.full_document_symbol || mandate.symbol;
+  const displaySymbol = mandate.full_document_symbol || mandate.symbol_x;
   const pdfUrl = mandate.full_document_symbol
     ? `https://documents.un.org/api/symbol/access?s=${mandate.full_document_symbol}&l=en&t=pdf`
     : null;
@@ -77,7 +76,7 @@ export function MandateDetails({ mandate, open, onOpenChange, parentContext }: M
         </div>
 
         {/* Content */}
-        <ScrollArea className="flex-grow mt-6">
+        <ScrollArea className="flex-grow mt-4">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
               {/* Column 1: AI Summary */}
               <div className="space-y-4 md:col-span-4">
@@ -93,30 +92,30 @@ export function MandateDetails({ mandate, open, onOpenChange, parentContext }: M
                 <div>
                   <h3 className="text-lg font-semibold mb-2 flex items-center gap-2"><Building className="h-5 w-5" />Organ</h3>
                   <div className="flex flex-wrap gap-2">
-                    <Badge variant="secondary">Placeholder Organ</Badge>
+                    {mandate.body ? <Badge variant="secondary">{mandate.body}</Badge> : <Badge variant="outline">Not available</Badge>}
                   </div>
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold mb-2 flex items-center gap-2"><FileText className="h-5 w-5" />Document Type</h3>
                   <div className="flex flex-wrap gap-2">
-                    <Badge variant="secondary">Placeholder Type</Badge>
+                    {mandate.collection_level3 && mandate.collection_level3.length > 0 ? <Badge variant="secondary">{mandate.collection_level3[0]}</Badge> : <Badge variant="outline">Not available</Badge>}
                   </div>
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold mb-2 flex items-center gap-2"><Calendar className="h-5 w-5" />Year</h3>
                   <div className="flex flex-wrap gap-2">
-                    <Badge variant="secondary">Placeholder Year</Badge>
+                    {mandate.year ? <Badge variant="secondary">{mandate.year}</Badge> : <Badge variant="outline">Not available</Badge>}
                   </div>
                 </div>
                  <div>
                   <h3 className="text-lg font-semibold mb-2 flex items-center gap-2"><FileCheck className="h-5 w-5" />Budget Document</h3>
                   <div className="flex flex-wrap gap-2">
-                    <Badge variant="outline">Not Available</Badge>
+                    {mandate.origin_document ? <Badge variant="secondary">{mandate.origin_document}</Badge> : <Badge variant="outline">Not Available</Badge>}
                   </div>
                 </div>
               </div>
 
-              {/* Column 3: Entities and Programmes */}
+              {/* Column 3: Entities */}
               <div className="space-y-4 md:col-span-5">
                 <div>
                   <h3 className="text-lg font-semibold mb-2 flex items-center gap-2"><Users className="h-5 w-5" />List of Entities ({validEntities.length})</h3>
@@ -128,14 +127,6 @@ export function MandateDetails({ mandate, open, onOpenChange, parentContext }: M
                     ) : (
                       <Badge variant="outline">No entities listed</Badge>
                     )}
-                  </div>
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold mb-2 flex items-center gap-2"><List className="h-5 w-5" />List of Programmes ({programmes.length})</h3>
-                   <div className="flex flex-wrap gap-2">
-                    {programmes.map((programme, index) => (
-                      <Badge key={index} variant="outline">{programme}</Badge>
-                    ))}
                   </div>
                 </div>
               </div>
