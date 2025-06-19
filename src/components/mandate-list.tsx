@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/tooltip";
 import { EntityName } from './ui/entity-name';
 import { FileText, Calendar, Landmark, Target } from 'lucide-react';
+import { explainerTexts } from '@/lib/explainer-texts';
 
 interface Organ {
   short: string;
@@ -116,10 +117,18 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
                 </div>
 
                 <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                  <div className="flex items-center gap-1.5">
-                    <FileText className="h-3 w-3" />
-                    <span className="font-medium">{mandate.document_symbol}</span>
-                  </div>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="flex items-center gap-1.5">
+                        <FileText className="h-3 w-3" />
+                        <span className="font-medium">{mandate.document_symbol}</span>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{explainerTexts.mandateList.documentSymbol}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                  
                   {mandate.body && (
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -129,16 +138,27 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
                         </div>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>{getOrganLongName(mandate.body)}</p>
+                        <div className="space-y-1">
+                          <p className="font-medium">{explainerTexts.mandateList.issuingOrgan.title}</p>
+                          <p>{getOrganLongName(mandate.body)}</p>
+                          <p className="text-xs text-muted-foreground">{explainerTexts.mandateList.issuingOrgan.description}</p>
+                        </div>
                       </TooltipContent>
                     </Tooltip>
                   )}
                    
                   {mandate.year && (
-                    <div className="flex items-center gap-1.5">
-                      <Calendar className="h-3 w-3" />
-                      <span className="font-medium">{mandate.year}</span>
-                    </div>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="flex items-center gap-1.5">
+                          <Calendar className="h-3 w-3" />
+                          <span className="font-medium">{mandate.year}</span>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{explainerTexts.mandateList.year}</p>
+                      </TooltipContent>
+                    </Tooltip>
                   )}
 
                   {/* Show search score for debugging/information */}
@@ -151,7 +171,7 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
                         </div>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>Search relevance score</p>
+                        <p>{explainerTexts.mandateList.searchRelevance}</p>
                       </TooltipContent>
                     </Tooltip>
                   )}
@@ -220,9 +240,16 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
                 {/* Citations and Entities */}
                 {(mandate.num_citations > 0 || (mandate.entities && mandate.entities.length > 0)) && (
                   <div className="pt-2 border-t border-border/30">
-                    <p className="text-xs font-medium mb-2 text-muted-foreground">
-                      Cited {mandate.num_citations} time{mandate.num_citations !== 1 ? 's' : ''} by {mandate.num_entities} entit{mandate.num_entities !== 1 ? 'ies' : 'y'}
-                    </p>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <p className="text-xs font-medium mb-2 text-muted-foreground cursor-help">
+                          Cited {mandate.num_citations} time{mandate.num_citations !== 1 ? 's' : ''} by {mandate.num_entities} entit{mandate.num_entities !== 1 ? 'ies' : 'y'}
+                        </p>
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-xs">
+                        <p>{explainerTexts.mandateList.citationCount}</p>
+                      </TooltipContent>
+                    </Tooltip>
                     <EntityBadges entities={mandate.entities || []} />
                   </div>
                 )}

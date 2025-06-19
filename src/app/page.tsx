@@ -9,11 +9,13 @@ import { FilterControls } from '@/components/filter-controls';
 import { PaginationControls } from '@/components/pagination-controls';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Archive, Landmark, Building, Target, Quote } from 'lucide-react';
+import { Archive, Landmark, Building, Target, Quote, Info, HelpCircle } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { MandateDetails } from '@/components/mandate-details';
 import { SearchResultsSummary } from '@/components/search-results-summary';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import {
   Select,
   SelectContent,
@@ -21,7 +23,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { SearchableDropdownOption } from '@/components/ui/searchable-dropdown';
+import { explainerTexts } from '@/lib/explainer-texts';
 
 interface ParentContext {
   scrollY: number;
@@ -441,245 +450,354 @@ function MandateNavigator() {
   });
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <main className="w-full py-6 space-y-6">
-        
-        <section className="mb-6 px-4">
-          <div className="grid gap-3 grid-cols-1 sm:grid-cols-5">
-              <Popover open={sourceDocumentsPopover} onOpenChange={setSourceDocumentsPopover}>
-                <PopoverTrigger asChild>
-                  <div onMouseEnter={() => setSourceDocumentsPopover(true)} onMouseLeave={() => setSourceDocumentsPopover(false)} className="h-full">
-                    <Card className="flex flex-col h-full">
-                        <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-14">
-                            <CardTitle className="text-sm font-medium text-muted-foreground">Source Documents</CardTitle>
-                            <Archive className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent className="flex-grow flex items-end">
-                            <div className="text-2xl font-bold text-foreground">
-                                {isLoading ? <Skeleton className="h-6 w-12" /> : (totalItems > 0 ? totalItems.toLocaleString() : '0')}
-                            </div>
-                        </CardContent>
-                    </Card>
-                  </div>
-                </PopoverTrigger>
-                <PopoverContent>
-                  <p className="text-sm">The total number of unique source documents in the registry.</p>
-                </PopoverContent>
-              </Popover>
-              <Popover open={unOrgansPopover} onOpenChange={setUnOrgansPopover}>
-                <PopoverTrigger asChild>
-                  <div onMouseEnter={() => setUnOrgansPopover(true)} onMouseLeave={() => setUnOrgansPopover(false)} className="h-full">
-                    <Card className="flex flex-col h-full">
-                      <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-14">
-                          <CardTitle className="text-sm font-medium text-muted-foreground">UN Organs</CardTitle>
-                          <Landmark className="h-4 w-4 text-muted-foreground" />
-                      </CardHeader>
-                      <CardContent className="flex-grow flex items-end">
-                          <div className="text-2xl font-bold text-foreground">
-                              {isLoading ? <Skeleton className="h-6 w-12" /> : (uniqueOrgans > 0 ? uniqueOrgans.toLocaleString() : '0')}
-                          </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-                </PopoverTrigger>
-                <PopoverContent>
-                  <p className="text-sm">The number of distinct UN organs that have issued the documents.</p>
-                </PopoverContent>
-              </Popover>
-              <Popover open={unEntitiesPopover} onOpenChange={setUnEntitiesPopover}>
-                <PopoverTrigger asChild>
-                  <div onMouseEnter={() => setUnEntitiesPopover(true)} onMouseLeave={() => setUnEntitiesPopover(false)} className="h-full">
-                    <Card className="flex flex-col h-full">
-                        <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-14">
-                            <CardTitle className="text-sm font-medium text-muted-foreground">UN Entities</CardTitle>
-                            <Building className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent className="flex-grow flex items-end">
-                            <div className="text-2xl font-bold text-foreground">
-                                {isLoading ? <Skeleton className="h-6 w-12" /> : (uniqueEntities > 0 ? uniqueEntities.toLocaleString() : '0')}
-                            </div>
-                        </CardContent>
-                    </Card>
-                  </div>
-                </PopoverTrigger>
-                <PopoverContent>
-                  <p className="text-sm">The number of distinct UN entities mentioned in the documents.</p>
-                </PopoverContent>
-              </Popover>
-              <Popover open={programmesPopover} onOpenChange={setProgrammesPopover}>
-                <PopoverTrigger asChild>
-                  <div onMouseEnter={() => setProgrammesPopover(true)} onMouseLeave={() => setProgrammesPopover(false)} className="h-full">
-                    <Card className="flex flex-col h-full">
-                      <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-14">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">Programmes</CardTitle>
-                        <Target className="h-4 w-4 text-muted-foreground" />
-                      </CardHeader>
-                      <CardContent className="flex-grow flex items-end">
-                        <div className="text-2xl font-bold text-foreground">
-                          {isLoading ? <Skeleton className="h-6 w-12" /> : (uniqueProgrammes > 0 ? uniqueProgrammes.toLocaleString() : '0')}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-                </PopoverTrigger>
-                <PopoverContent>
-                  <p className="text-sm">The number of distinct programmes associated with the documents.</p>
-                </PopoverContent>
-              </Popover>
-              <Popover open={citationsPopover} onOpenChange={setCitationsPopover}>
-                <PopoverTrigger asChild>
-                  <div onMouseEnter={() => setCitationsPopover(true)} onMouseLeave={() => setCitationsPopover(false)} className="h-full">
-                    <Card className="flex flex-col h-full">
-                        <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-14">
-                            <CardTitle className="text-sm font-medium text-muted-foreground">Citations</CardTitle>
-                            <Quote className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent className="flex-grow flex items-end">
-                            <div className="text-2xl font-bold text-foreground">
-                                {isLoading ? <Skeleton className="h-6 w-12" /> : (totalCitations > 0 ? totalCitations.toLocaleString() : '0')}
-                            </div>
-                        </CardContent>
-                    </Card>
-                  </div>
-                </PopoverTrigger>
-                <PopoverContent>
-                  <p className="text-sm">The total number of citations (mentions of entities) within the documents.</p>
-                </PopoverContent>
-              </Popover>
-          </div>
-        </section>
-
-        <div className="px-4">
-          <FilterControls
-            keyword={keyword}
-            onKeywordChange={onKeywordChange}
-            entityOptions={entityDropdownOptions}
-            selectedEntity={selectedEntity}
-            onEntityChange={onEntityChange}
-            organOptions={organDropdownOptions}
-            selectedOrgan={selectedOrgan}
-            onOrganChange={onOrganChange}
-            priorityAreaOptions={priorityAreaOptions}
-            selectedPriorityArea={selectedPriorityArea}
-            onPriorityAreaChange={handlePriorityAreaChange}
-            programme={programme}
-            yearRange={yearRange}
-            yearDistribution={yearDistribution}
-            selectedYearRange={selectedYearRange}
-            budgetDocument={budgetDocument}
-            section={section}
-            onProgrammeChange={onProgrammeChange}
-            onYearRangeChange={handleYearRangeChange}
-            onBudgetDocumentChange={onBudgetDocumentChange}
-            onSectionChange={onSectionChange}
-            programmeOptions={programmeOptions}
-            sectionOptions={sectionOptions}
-          />
-        </div>
-
-        <div className="px-4">
-          <SearchResultsSummary
-            totalResults={totalItems}
-            searchKeyword={keywordFromParams}
-            appliedFilters={{
-              entity: selectedEntity !== 'all' ? selectedEntity : undefined,
-              organ: selectedOrgan !== 'all' ? selectedOrgan : undefined,
-              priority_area: selectedPriorityArea !== 'all' ? selectedPriorityArea : undefined,
-              programme: programme || undefined,
-              year: (startYearFromParams && endYearFromParams && yearRange && (parseInt(startYearFromParams, 10) !== yearRange.min || parseInt(endYearFromParams, 10) !== yearRange.max)) ? `${selectedYearRange?.[0]}-${selectedYearRange?.[1]}` : undefined,
-              budget_document: budgetDocument && budgetDocument !== 'all' ? budgetDocumentDisplayNames[budgetDocument] : undefined,
-              section: section || undefined,
-            }}
-            onClearSearch={() => onKeywordChange('')}
-            onClearFilter={(filterKey) => {
-              switch (filterKey) {
-                case 'entity':
-                  onEntityChange('all');
-                  break;
-                case 'organ':
-                  onOrganChange('all');
-                  break;
-                case 'priority_area':
-                  handlePriorityAreaChange('all');
-                  break;
-                case 'programme':
-                  onProgrammeChange('');
-                  break;
-                case 'year':
-                  const newParams = new URLSearchParams(searchParams.toString());
-                  newParams.delete('start_year');
-                  newParams.delete('end_year');
-                  newParams.set('page', '1');
-                  router.push(`${pathname}?${newParams.toString()}`, { scroll: false });
-                  break;
-                case 'budget_document':
-                  onBudgetDocumentChange('all');
-                  break;
-                case 'section':
-                  onSectionChange('');
-                  break;
-              }
-            }}
-            isLoading={isLoading}
-          />
-        </div>
-
-        <div className="px-4">
-          <div className="border-t border-border pt-4">
-            <div className="mt-4">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-bold tracking-tight">Mandate Source Documents</h2>
-                <div className="flex items-center space-x-2">
-                  <label htmlFor="sort-by" className="text-sm font-medium">Sort by</label>
-                  <Select value={sortBy} onValueChange={handleSortChange}>
-                    <SelectTrigger className="w-[200px]" id="sort-by">
-                      <SelectValue placeholder="Sort by..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {keywordFromParams ? <SelectItem value="default">Relevance</SelectItem> : null}
-                      <SelectItem value="citations_desc">Citations (High to Low)</SelectItem>
-                      <SelectItem value="year_desc">Year (Newest First)</SelectItem>
-                      <SelectItem value="year_asc">Year (Oldest First)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+    <TooltipProvider>
+      <div className="min-h-screen bg-background text-foreground">
+        <main className="w-full py-6 space-y-6">
+          
+          {/* Header with context info */}
+          <section className="px-4 pb-4 border-b border-border">
+            <div className="flex items-start justify-between">
+              <div>
+                <h1 className="text-3xl font-bold tracking-tight text-foreground mb-2">
+                  {explainerTexts.mainHeader.title}
+                </h1>
+                <p className="text-muted-foreground max-w-3xl">
+                  {explainerTexts.mainHeader.description}
+                </p>
               </div>
-              {isLoading ? (
-                <LoadingSkeleton />
-              ) : (
-                <MandateList
-                  mandates={mandates}
-                  onMandateClick={setSelectedMandate}
-                  organsData={allOrgans}
-                />
-              )}
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline" size="sm" className="flex items-center gap-2">
+                    <HelpCircle className="h-4 w-4" />
+                    About UN80
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle className="flex items-center gap-2">
+                      <Info className="h-5 w-5" />
+                      {explainerTexts.aboutDialog.title}
+                    </DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4 text-sm">
+                    <div>
+                      <h3 className="font-semibold mb-2">{explainerTexts.aboutDialog.whatIsUn80.title}</h3>
+                      <p>{explainerTexts.aboutDialog.whatIsUn80.description}</p>
+                      <ol className="list-decimal list-inside mt-2 space-y-1 ml-4">
+                        {explainerTexts.aboutDialog.whatIsUn80.workStreams.map((stream, index) => (
+                          <li key={index}>{stream}</li>
+                        ))}
+                      </ol>
+                    </div>
+                    
+                    <div>
+                      <h3 className="font-semibold mb-2">{explainerTexts.aboutDialog.keyTerms.title}</h3>
+                      <div className="grid gap-3">
+                        <div className="border rounded p-3">
+                          <h4 className="font-medium">{explainerTexts.aboutDialog.keyTerms.unOrgans.title}</h4>
+                          <p className="text-muted-foreground">{explainerTexts.aboutDialog.keyTerms.unOrgans.description}</p>
+                        </div>
+                        <div className="border rounded p-3">
+                          <h4 className="font-medium">{explainerTexts.aboutDialog.keyTerms.unEntities.title}</h4>
+                          <p className="text-muted-foreground">{explainerTexts.aboutDialog.keyTerms.unEntities.description}</p>
+                        </div>
+                        <div className="border rounded p-3">
+                          <h4 className="font-medium">{explainerTexts.aboutDialog.keyTerms.mandates.title}</h4>
+                          <p className="text-muted-foreground">{explainerTexts.aboutDialog.keyTerms.mandates.description}</p>
+                        </div>
+                        <div className="border rounded p-3">
+                          <h4 className="font-medium">{explainerTexts.aboutDialog.keyTerms.sourceDocuments.title}</h4>
+                          <p className="text-muted-foreground">{explainerTexts.aboutDialog.keyTerms.sourceDocuments.description}</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <h3 className="font-semibold mb-2">{explainerTexts.aboutDialog.howItHelps.title}</h3>
+                      <p>{explainerTexts.aboutDialog.howItHelps.description}</p>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </div>
+          </section>
+
+          <section className="mb-6 px-4">
+            <div className="grid gap-3 grid-cols-1 sm:grid-cols-5">
+                <Popover open={sourceDocumentsPopover} onOpenChange={setSourceDocumentsPopover}>
+                  <PopoverTrigger asChild>
+                    <div onMouseEnter={() => setSourceDocumentsPopover(true)} onMouseLeave={() => setSourceDocumentsPopover(false)} className="h-full">
+                      <Card className="flex flex-col h-full cursor-help">
+                          <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-14">
+                              <CardTitle className="text-sm font-medium text-muted-foreground">{explainerTexts.dataCards.sourceDocuments.title}</CardTitle>
+                              <Archive className="h-4 w-4 text-muted-foreground" />
+                          </CardHeader>
+                          <CardContent className="flex-grow flex items-end">
+                              <div className="text-2xl font-bold text-foreground">
+                                  {isLoading ? <Skeleton className="h-6 w-12" /> : (totalItems > 0 ? totalItems.toLocaleString() : '0')}
+                              </div>
+                          </CardContent>
+                      </Card>
+                    </div>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80">
+                    <div className="space-y-2">
+                      <p className="font-medium">{explainerTexts.dataCards.sourceDocuments.title}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {explainerTexts.dataCards.sourceDocuments.description}
+                      </p>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+                
+                <Popover open={unOrgansPopover} onOpenChange={setUnOrgansPopover}>
+                  <PopoverTrigger asChild>
+                    <div onMouseEnter={() => setUnOrgansPopover(true)} onMouseLeave={() => setUnOrgansPopover(false)} className="h-full">
+                      <Card className="flex flex-col h-full cursor-help">
+                        <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-14">
+                            <CardTitle className="text-sm font-medium text-muted-foreground">{explainerTexts.dataCards.unOrgans.title}</CardTitle>
+                            <Landmark className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent className="flex-grow flex items-end">
+                            <div className="text-2xl font-bold text-foreground">
+                                {isLoading ? <Skeleton className="h-6 w-12" /> : (uniqueOrgans > 0 ? uniqueOrgans.toLocaleString() : '0')}
+                            </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80">
+                    <div className="space-y-2">
+                      <p className="font-medium">{explainerTexts.dataCards.unOrgans.title}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {explainerTexts.dataCards.unOrgans.description}
+                      </p>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+                
+                <Popover open={unEntitiesPopover} onOpenChange={setUnEntitiesPopover}>
+                  <PopoverTrigger asChild>
+                    <div onMouseEnter={() => setUnEntitiesPopover(true)} onMouseLeave={() => setUnEntitiesPopover(false)} className="h-full">
+                      <Card className="flex flex-col h-full cursor-help">
+                          <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-14">
+                              <CardTitle className="text-sm font-medium text-muted-foreground">{explainerTexts.dataCards.unEntities.title}</CardTitle>
+                              <Building className="h-4 w-4 text-muted-foreground" />
+                          </CardHeader>
+                          <CardContent className="flex-grow flex items-end">
+                              <div className="text-2xl font-bold text-foreground">
+                                  {isLoading ? <Skeleton className="h-6 w-12" /> : (uniqueEntities > 0 ? uniqueEntities.toLocaleString() : '0')}
+                              </div>
+                          </CardContent>
+                      </Card>
+                    </div>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80">
+                    <div className="space-y-2">
+                      <p className="font-medium">{explainerTexts.dataCards.unEntities.title}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {explainerTexts.dataCards.unEntities.description}
+                      </p>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+                
+                <Popover open={programmesPopover} onOpenChange={setProgrammesPopover}>
+                  <PopoverTrigger asChild>
+                    <div onMouseEnter={() => setProgrammesPopover(true)} onMouseLeave={() => setProgrammesPopover(false)} className="h-full">
+                      <Card className="flex flex-col h-full cursor-help">
+                        <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-14">
+                          <CardTitle className="text-sm font-medium text-muted-foreground">{explainerTexts.dataCards.programmes.title}</CardTitle>
+                          <Target className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent className="flex-grow flex items-end">
+                          <div className="text-2xl font-bold text-foreground">
+                            {isLoading ? <Skeleton className="h-6 w-12" /> : (uniqueProgrammes > 0 ? uniqueProgrammes.toLocaleString() : '0')}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80">
+                    <div className="space-y-2">
+                      <p className="font-medium">{explainerTexts.dataCards.programmes.title}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {explainerTexts.dataCards.programmes.description}
+                      </p>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+                
+                <Popover open={citationsPopover} onOpenChange={setCitationsPopover}>
+                  <PopoverTrigger asChild>
+                    <div onMouseEnter={() => setCitationsPopover(true)} onMouseLeave={() => setCitationsPopover(false)} className="h-full">
+                      <Card className="flex flex-col h-full cursor-help">
+                          <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-14">
+                              <CardTitle className="text-sm font-medium text-muted-foreground">{explainerTexts.dataCards.citations.title}</CardTitle>
+                              <Quote className="h-4 w-4 text-muted-foreground" />
+                          </CardHeader>
+                          <CardContent className="flex-grow flex items-end">
+                              <div className="text-2xl font-bold text-foreground">
+                                  {isLoading ? <Skeleton className="h-6 w-12" /> : (totalCitations > 0 ? totalCitations.toLocaleString() : '0')}
+                              </div>
+                          </CardContent>
+                      </Card>
+                    </div>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80">
+                    <div className="space-y-2">
+                      <p className="font-medium">{explainerTexts.dataCards.citations.title}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {explainerTexts.dataCards.citations.description}
+                      </p>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+            </div>
+          </section>
+
+          <div className="px-4">
+            <FilterControls
+              keyword={keyword}
+              onKeywordChange={onKeywordChange}
+              entityOptions={entityDropdownOptions}
+              selectedEntity={selectedEntity}
+              onEntityChange={onEntityChange}
+              organOptions={organDropdownOptions}
+              selectedOrgan={selectedOrgan}
+              onOrganChange={onOrganChange}
+              priorityAreaOptions={priorityAreaOptions}
+              selectedPriorityArea={selectedPriorityArea}
+              onPriorityAreaChange={handlePriorityAreaChange}
+              programme={programme}
+              yearRange={yearRange}
+              yearDistribution={yearDistribution}
+              selectedYearRange={selectedYearRange}
+              budgetDocument={budgetDocument}
+              section={section}
+              onProgrammeChange={onProgrammeChange}
+              onYearRangeChange={handleYearRangeChange}
+              onBudgetDocumentChange={onBudgetDocumentChange}
+              onSectionChange={onSectionChange}
+              programmeOptions={programmeOptions}
+              sectionOptions={sectionOptions}
+            />
+          </div>
+
+          <div className="px-4">
+            <SearchResultsSummary
+              totalResults={totalItems}
+              searchKeyword={keywordFromParams}
+              appliedFilters={{
+                entity: selectedEntity !== 'all' ? selectedEntity : undefined,
+                organ: selectedOrgan !== 'all' ? selectedOrgan : undefined,
+                priority_area: selectedPriorityArea !== 'all' ? selectedPriorityArea : undefined,
+                programme: programme || undefined,
+                year: (startYearFromParams && endYearFromParams && yearRange && (parseInt(startYearFromParams, 10) !== yearRange.min || parseInt(endYearFromParams, 10) !== yearRange.max)) ? `${selectedYearRange?.[0]}-${selectedYearRange?.[1]}` : undefined,
+                budget_document: budgetDocument && budgetDocument !== 'all' ? budgetDocumentDisplayNames[budgetDocument] : undefined,
+                section: section || undefined,
+              }}
+              onClearSearch={() => onKeywordChange('')}
+              onClearFilter={(filterKey) => {
+                switch (filterKey) {
+                  case 'entity':
+                    onEntityChange('all');
+                    break;
+                  case 'organ':
+                    onOrganChange('all');
+                    break;
+                  case 'priority_area':
+                    handlePriorityAreaChange('all');
+                    break;
+                  case 'programme':
+                    onProgrammeChange('');
+                    break;
+                  case 'year':
+                    const newParams = new URLSearchParams(searchParams.toString());
+                    newParams.delete('start_year');
+                    newParams.delete('end_year');
+                    newParams.set('page', '1');
+                    router.push(`${pathname}?${newParams.toString()}`, { scroll: false });
+                    break;
+                  case 'budget_document':
+                    onBudgetDocumentChange('all');
+                    break;
+                  case 'section':
+                    onSectionChange('');
+                    break;
+                }
+              }}
+              isLoading={isLoading}
+            />
+          </div>
+
+          <div className="px-4">
+            <div className="border-t border-border pt-4">
+              <div className="mt-4">
+                <div className="flex justify-between items-center mb-4">
+                  <div className="flex items-center gap-3">
+                    <h2 className="text-2xl font-bold tracking-tight">{explainerTexts.mandateList.sectionTitle}</h2>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-xs">
+                        <p>{explainerTexts.mandateList.sectionTooltip}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <label htmlFor="sort-by" className="text-sm font-medium">Sort by</label>
+                    <Select value={sortBy} onValueChange={handleSortChange}>
+                      <SelectTrigger className="w-[200px]" id="sort-by">
+                        <SelectValue placeholder="Sort by..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {keywordFromParams ? <SelectItem value="default">Relevance</SelectItem> : null}
+                        <SelectItem value="citations_desc">Citations (High to Low)</SelectItem>
+                        <SelectItem value="year_desc">Year (Newest First)</SelectItem>
+                        <SelectItem value="year_asc">Year (Oldest First)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                {isLoading ? (
+                  <LoadingSkeleton />
+                ) : (
+                  <MandateList
+                    mandates={mandates}
+                    onMandateClick={setSelectedMandate}
+                    organsData={allOrgans}
+                  />
+                )}
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="px-4">
-          <PaginationControls
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-            pageSize={pageSize}
-            onPageSizeChange={handlePageSizeChange}
-            totalItems={totalItems}
-          />
-        </div>
-      </main>
+          <div className="px-4">
+            <PaginationControls
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+              pageSize={pageSize}
+              onPageSizeChange={handlePageSizeChange}
+              totalItems={totalItems}
+            />
+          </div>
+        </main>
 
-      <MandateDetails
-        mandate={selectedMandate}
-        open={!!selectedMandate}
-        onOpenChange={(isOpen) => {
-          if (!isOpen) {
-            setSelectedMandate(null);
-          }
-        }}
-        parentContext={parentContext}
-      />
-    </div>
+        <MandateDetails
+          mandate={selectedMandate}
+          open={!!selectedMandate}
+          onOpenChange={(isOpen) => {
+            if (!isOpen) {
+              setSelectedMandate(null);
+            }
+          }}
+          parentContext={parentContext}
+        />
+      </div>
+    </TooltipProvider>
   );
 }
 
