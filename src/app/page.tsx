@@ -13,6 +13,7 @@ import { Globe, FileText, Users, ListChecks, BookCopy, Building } from 'lucide-r
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { MandateDetails } from '@/components/mandate-details';
+import { SearchResultsSummary } from '@/components/search-results-summary';
 
 interface ParentContext {
   scrollY: number;
@@ -191,7 +192,7 @@ function MandateNavigator() {
     if (selectedEntity) params.append('entity', selectedEntity);
     if (selectedOrgan) params.append('organ', selectedOrgan);
     if (selectedPriorityArea) params.append('priority_area', selectedPriorityArea);
-    if (debouncedKeyword) params.append('keyword', debouncedKeyword);
+    if (keywordFromParams) params.append('keyword', keywordFromParams);
     if (programme) params.append('programme', programme);
     if (year) params.append('year', year);
     if (budgetDocument) params.append('budget_document', budgetDocument);
@@ -216,7 +217,7 @@ function MandateNavigator() {
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, pageSize, selectedEntity, selectedOrgan, selectedPriorityArea, debouncedKeyword, programme, year, budgetDocument, section]);
+  }, [currentPage, pageSize, selectedEntity, selectedOrgan, selectedPriorityArea, keywordFromParams, programme, year, budgetDocument, section]);
   
   useEffect(() => {
     fetchMandates();
@@ -432,6 +433,47 @@ function MandateNavigator() {
           onYearChange={onYearChange}
           onBudgetDocumentChange={onBudgetDocumentChange}
           onSectionChange={onSectionChange}
+        />
+
+        <SearchResultsSummary
+          totalResults={totalItems}
+          searchKeyword={keywordFromParams}
+          appliedFilters={{
+            entity: selectedEntity !== 'all' ? selectedEntity : undefined,
+            organ: selectedOrgan !== 'all' ? selectedOrgan : undefined,
+            priority_area: selectedPriorityArea !== 'all' ? selectedPriorityArea : undefined,
+            programme: programme || undefined,
+            year: year || undefined,
+            budget_document: budgetDocument !== 'all' ? budgetDocument : undefined,
+            section: section || undefined,
+          }}
+          onClearSearch={() => onKeywordChange('')}
+          onClearFilter={(filterKey) => {
+            switch (filterKey) {
+              case 'entity':
+                onEntityChange('all');
+                break;
+              case 'organ':
+                onOrganChange('all');
+                break;
+              case 'priority_area':
+                handlePriorityAreaChange('all');
+                break;
+              case 'programme':
+                onProgrammeChange('');
+                break;
+              case 'year':
+                onYearChange('');
+                break;
+              case 'budget_document':
+                onBudgetDocumentChange('all');
+                break;
+              case 'section':
+                onSectionChange('');
+                break;
+            }
+          }}
+          isLoading={isLoading}
         />
 
         <div className="border-t border-border pt-8">

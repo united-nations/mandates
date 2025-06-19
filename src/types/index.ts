@@ -17,6 +17,8 @@ export interface Mandate {
   entity: string;
   title: string;
   operative_paragraphs?: string[] | null;
+  programme?: string;
+  text?: string;
 
   // Transformed fields
   document_title: string;
@@ -24,4 +26,8 @@ export interface Mandate {
   issuing_body_or_bodies: string[];
   mentions: string[];
   match_details?: string[];
+  
+  // Search-related fields
+  searchScore?: number;
+  highlightedTitle?: string;
 }

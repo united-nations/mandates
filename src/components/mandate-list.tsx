@@ -74,12 +74,21 @@ export function MandateList({ mandates, onMandateClick }: MandateListProps) {
                     </div>
 
                     {/* Line 2: Title */}
-                    <h3 className="text-base font-semibold">{mainTitle}</h3>
-                    {subTitle && <h4 className="text-base text-muted-foreground mb-3">{subTitle}</h4>}
+                    <div className="mb-1">
+                      {mandate.highlightedTitle ? (
+                        <h3 
+                          className="text-base font-semibold" 
+                          dangerouslySetInnerHTML={{ __html: mandate.highlightedTitle }}
+                        />
+                      ) : (
+                        <h3 className="text-base font-semibold">{mainTitle}</h3>
+                      )}
+                      {subTitle && <h4 className="text-base text-muted-foreground">{subTitle}</h4>}
+                    </div>
                     
                     {mandate.match_details && mandate.match_details.length > 0 && (
                       <div className="text-xs text-muted-foreground mt-1 mb-2">
-                        Keyword match in: {mandate.match_details.join(', ')}
+                        Match in: {mandate.match_details.join(', ')}
                       </div>
                     )}
 

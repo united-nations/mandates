@@ -31,6 +31,58 @@ async function getMandates(): Promise<Mandate[]> {
   return mandates;
 }
 
+interface SearchResult extends Mandate {
+  searchScore: number;
+  match_details: string[];
+  highlightedTitle?: string;
+}
+
+function performTextSearch(mandates: Mandate[], query: string): SearchResult[] {
+  if (!query.trim()) {
+    return mandates as SearchResult[];
+  }
+  
+  const lowerQuery = query.toLowerCase().trim();
+  
+  const searchResults: SearchResult[] = mandates.map(mandate => {
+    let totalScore = 0;
+    const matchDetails: string[] = [];
+    
+    // Search in title (high priority)
+    const title = mandate.title || mandate.document_title || '';
+    if (title && title.toLowerCase().includes(lowerQuery)) {
+      totalScore += 10;
+      matchDetails.push('Title');
+    }
+    
+    // Search in document symbol (medium priority)
+    const symbol = mandate.document_symbol || mandate.full_document_symbol || '';
+    if (symbol && symbol.toLowerCase().includes(lowerQuery)) {
+      totalScore += 8;
+      matchDetails.push('Document Symbol');
+    }
+    
+    // Create highlighted title
+    let highlightedTitle = title;
+    if (totalScore > 0 && title) {
+      const regex = new RegExp(`(${lowerQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+      highlightedTitle = title.replace(regex, '<mark>$1</mark>');
+    }
+    
+    return {
+      ...mandate,
+      searchScore: totalScore,
+      match_details: matchDetails,
+      highlightedTitle: totalScore > 0 ? highlightedTitle : undefined
+    };
+  });
+  
+  // Filter out results with no matches and sort by score
+  return searchResults
+    .filter(result => result.searchScore > 0)
+    .sort((a, b) => b.searchScore - a.searchScore);
+}
+
 export async function GET(request: Request) {
   try {
     const allMandates = await getMandates();
@@ -90,24 +142,8 @@ export async function GET(request: Request) {
     }
 
     if (keyword) {
-      const lowerKeyword = keyword.toLowerCase();
-      filteredMandates = filteredMandates.reduce((acc: Mandate[], m: Mandate) => {
-        const match_details: string[] = [];
-        const titleMatch = m.document_title && m.document_title.toLowerCase().includes(lowerKeyword);
-        const symbolMatch = m.document_symbol && m.document_symbol.toLowerCase().includes(lowerKeyword);
-        const bodyMatch = m.issuing_body_or_bodies && m.issuing_body_or_bodies.some(b => b.toLowerCase().includes(lowerKeyword));
-        const entityMatch = m.mentions && m.mentions.some(e => e.toLowerCase().includes(lowerKeyword));
-
-        if (titleMatch) match_details.push('Title');
-        if (symbolMatch) match_details.push('Symbol');
-        if (bodyMatch) match_details.push('Issuing Body');
-        if (entityMatch) match_details.push('Mentioned Entities');
-
-        if (match_details.length > 0) {
-            acc.push({ ...m, match_details });
-        }
-        return acc;
-    }, []);
+      const searchResults = performTextSearch(filteredMandates, keyword);
+      filteredMandates = searchResults;
     }
     
     // Calculate summary stats on filtered mandates
