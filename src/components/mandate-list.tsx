@@ -11,6 +11,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { EntityName } from './ui/entity-name';
+import { FileText, Calendar, Landmark, Target } from 'lucide-react';
+
+interface Organ {
+  short: string;
+  long: string;
+}
 
 const priorityAreaColors: { [key: string]: string } = {
   'Maintenance of international peace and security': 'bg-blue-500',
@@ -31,88 +38,198 @@ const getPriorityAreaColor = (area: string) => {
 interface MandateListProps {
   mandates: Mandate[];
   onMandateClick: (mandate: Mandate) => void;
+  organsData: Organ[];
 }
 
 const EntityBadges = ({ entities }: { entities: string[] }) => {
+  const validEntities = entities.filter(entity => entity !== null);
+
+  if (validEntities.length === 0) {
+    return null;
+  }
+
   return (
-    <div className="flex flex-wrap gap-1">
-      {entities
-        .filter(entity => entity !== null)
-        .map(entity => (
-          <Badge key={entity} variant="secondary">{entity}</Badge>
+    <div className="flex flex-wrap gap-1 items-center">
+      {validEntities.map(entity => (
+          <Badge key={entity} variant="secondary" className="font-normal">
+            <EntityName entityName={entity} showUnderline={false} />
+          </Badge>
       ))}
     </div>
   );
 };
 
-export function MandateList({ mandates, onMandateClick }: MandateListProps) {
-  const maxEntities = mandates.length > 0 ? Math.max(...mandates.map(m => m.num_entities), 0) : 0;
+// Component to safely render HTML content with highlighting
+const HighlightedContent = ({ content, fallback }: { content?: string; fallback: string }) => {
+  if (content && content !== fallback) {
+    return (
+      <span dangerouslySetInnerHTML={{ __html: content }} />
+    );
+  }
+  return <span>{fallback}</span>;
+};
 
+export function MandateList({ mandates, onMandateClick, organsData }: MandateListProps) {
+  // Helper function to find organ data by matching both short and long names
+  const findOrganData = (organName: string): Organ | undefined => {
+    return organsData.find(organ => 
+      organ.short === organName || organ.long === organName
+    );
+  };
+
+  // Helper function to get the long name for display
+  const getOrganLongName = (organName: string): string => {
+    const organData = findOrganData(organName);
+    return organData ? organData.long : organName;
+  };
   return (
     <TooltipProvider>
       <div className="space-y-4">
         {mandates.map((mandate, index) => {
-          const titleParts = mandate.title ? mandate.title.split(': ') : ['Untitled Mandate'];
-          const mainTitle = titleParts[0];
-          const subTitle = titleParts.length > 1 ? titleParts.slice(1).join(': ') : null;
+          const hasSearchMatches = mandate.match_details && mandate.match_details.length > 0;
+          const searchScore = mandate.searchScore || 0;
           
           return (
-          <Tooltip key={mandate.document_symbol} delayDuration={100}>
-            <TooltipTrigger asChild>
-              <motion.div
-                className="p-4 border rounded-lg shadow-sm bg-card hover:bg-muted/50 transition-colors cursor-pointer"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.05 }}
-                onClick={() => onMandateClick(mandate)}
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-grow">
-                    {/* Line 1: Priority Area and Symbol */}
-                    <div className="flex items-center gap-3 mb-1">
-                      <p className="text-sm text-muted-foreground font-mono truncate">{mandate.full_document_symbol || mandate.document_symbol}</p>
-                    </div>
+            <motion.div
+              key={mandate.document_symbol}
+              className={`relative p-4 border rounded-lg shadow-sm bg-card hover:bg-muted/50 transition-colors cursor-pointer ${
+                hasSearchMatches ? 'ring-2 ring-primary/20 bg-accent/5' : ''
+              }`}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: index * 0.05 }}
+              onClick={() => onMandateClick(mandate)}
+            >
+              <div className="flex flex-col gap-3">
+                {/* Details button - positioned absolute */}
+                <Button size="sm" variant="outline" className="absolute top-3 right-3 shrink-0 text-xs px-2 py-1 h-7">
+                  Details
+                </Button>
 
-                    {/* Line 2: Title */}
-                    <div className="mb-1">
-                      {mandate.highlightedTitle ? (
-                        <h3 
-                          className="text-base font-semibold max-w-5xl" 
-                          dangerouslySetInnerHTML={{ __html: mandate.highlightedTitle }}
-                        />
-                      ) : (
-                        <h3 className="text-base font-semibold max-w-5xl">{mainTitle}</h3>
-                      )}
-                      {subTitle && <h4 className="text-base text-muted-foreground max-w-5xl">{subTitle}</h4>}
+                <div className="pr-16">
+                  <h3 className="text-base font-semibold leading-tight">
+                    <HighlightedContent 
+                      content={mandate.highlightedTitle || mandate.highlightedFields?.title} 
+                      fallback={mandate.title || 'Untitled'} 
+                    />
+                  </h3>
+                </div>
+
+                <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                  <div className="flex items-center gap-1.5">
+                    <FileText className="h-3 w-3" />
+                    <span className="font-medium">{mandate.document_symbol}</span>
+                  </div>
+                  {mandate.body && (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="flex items-center gap-1.5">
+                          <Landmark className="h-3 w-3" />
+                          <span className="font-medium">{mandate.body}</span>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{getOrganLongName(mandate.body)}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  )}
+                   
+                  {mandate.year && (
+                    <div className="flex items-center gap-1.5">
+                      <Calendar className="h-3 w-3" />
+                      <span className="font-medium">{mandate.year}</span>
+                    </div>
+                  )}
+
+                  {/* Show search score for debugging/information */}
+                  {searchScore > 0 && (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="flex items-center gap-1.5">
+                          <Target className="h-3 w-3" />
+                          <span className="font-medium">{Math.round(searchScore * 100)}% match</span>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Search relevance score</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  )}
+                </div>
+                
+                {/* Match details and highlighted content */}
+                {hasSearchMatches && (
+                  <div className="text-xs space-y-2">
+                    <div className="flex flex-wrap gap-1 items-center">
+                      <span className="font-medium text-muted-foreground">Matches found in:</span>
+                      {mandate.match_details!.map((detail, idx) => (
+                        <Badge key={idx} variant="outline" className="text-xs">
+                          {detail}
+                        </Badge>
+                      ))}
                     </div>
                     
-                    {mandate.match_details && mandate.match_details.length > 0 && (
-                      <div className="text-xs text-muted-foreground mt-1 mb-2">
-                        Match in: {mandate.match_details.join(', ')}
-                      </div>
-                    )}
-
-                    {/* Line 3: Citations */}
-                    <div className="w-full md:w-2/3">
-                       <div className="text-sm font-medium mb-2">Cited {mandate.num_citations} times by {mandate.num_entities} entities</div>
-                       <EntityBadges entities={mandate.entities} />
-                    </div>
+                    {/* Show highlighted snippets from other fields */}
+                    {mandate.highlightedFields && Object.entries(mandate.highlightedFields).map(([field, content]) => {
+                      if (field === 'title') return null; // Already shown in title
+                      
+                      // Ensure content is a string
+                      const contentStr = typeof content === 'string' ? content : '';
+                      
+                      // For AI summary, show the full content; for others, truncate if too long
+                      const shouldTruncate = field !== 'ai_summary' && contentStr.length > 200;
+                      const displayContent = shouldTruncate 
+                        ? contentStr.substring(0, 200) + '...' 
+                        : contentStr;
+                      
+                      // Create better field names for display
+                      const getFieldDisplayName = (fieldName: string) => {
+                        const displayNames: { [key: string]: string } = {
+                          'ai_summary': 'Summary',
+                          'subject_headings': 'Subject Headings',
+                          'abstract': 'Abstract',
+                          'issuing_body': 'Issuing Body',
+                          'entities': 'Entities',
+                          'priority_area': 'Priority Area',
+                          'pillar': 'Pillar',
+                          'programme_titles': 'Programme Titles',
+                          'section_titles': 'Section Titles',
+                          'descriptions': 'Descriptions',
+                          'operative_paragraphs': 'Operative Paragraphs',
+                          'note': 'Notes',
+                          'subtitle': 'Subtitle',
+                          'uniform_title': 'Uniform Title',
+                          'translated_title': 'Translated Title'
+                        };
+                        return displayNames[fieldName] || fieldName.replace('_', ' ');
+                      };
+                      
+                      return (
+                        <div key={field} className={`text-sm ${field === 'ai_summary' ? 'bg-accent/20 p-3 rounded-md border' : ''}`}>
+                          <span className="font-medium text-muted-foreground">{getFieldDisplayName(field)}:</span>{' '}
+                          <span 
+                            dangerouslySetInnerHTML={{ __html: displayContent }}
+                            className={field === 'ai_summary' ? 'block mt-1 text-foreground' : ''}
+                          />
+                        </div>
+                      );
+                    })}
                   </div>
+                )}
 
-                  {/* Details Button on the right */}
-                  <div className="flex-shrink-0">
-                     <Button size="sm" className="bg-gray-700 text-white hover:bg-gray-800 dark:bg-gray-600 dark:hover:bg-gray-700">
-                        Details
-                     </Button>
+                {/* Citations and Entities */}
+                {(mandate.num_citations > 0 || (mandate.entities && mandate.entities.length > 0)) && (
+                  <div className="pt-2 border-t border-border/30">
+                    <p className="text-xs font-medium mb-2 text-muted-foreground">
+                      Cited {mandate.num_citations} time{mandate.num_citations !== 1 ? 's' : ''} by {mandate.num_entities} entit{mandate.num_entities !== 1 ? 'ies' : 'y'}
+                    </p>
+                    <EntityBadges entities={mandate.entities || []} />
                   </div>
-                </div>
-              </motion.div>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Click for more details</p>
-            </TooltipContent>
-          </Tooltip>
-        )})}
+                )}
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
     </TooltipProvider>
   );

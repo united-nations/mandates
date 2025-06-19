@@ -3,6 +3,8 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Search, X, Filter } from 'lucide-react';
+import { EntityName } from './ui/entity-name';
+import { TooltipProvider } from './ui/tooltip';
 
 interface SearchResultsSummaryProps {
   totalResults: number;
@@ -12,6 +14,7 @@ interface SearchResultsSummaryProps {
     organ?: string;
     priority_area?: string;
     programme?: string;
+    pillar?: string;
     year?: string;
     budget_document?: string;
     section?: string;
@@ -89,7 +92,10 @@ export function SearchResultsSummary({
 
         {appliedFilters.entity && appliedFilters.entity !== 'all' && (
           <Badge variant="secondary" className="flex items-center gap-1">
-            Entity: {appliedFilters.entity}
+            Entity:&nbsp;
+            <TooltipProvider>
+              <EntityName entityName={appliedFilters.entity} />
+            </TooltipProvider>
             <Button
               variant="ghost"
               size="sm"
@@ -137,6 +143,20 @@ export function SearchResultsSummary({
               size="sm"
               className="h-4 w-4 p-0 hover:bg-transparent"
               onClick={() => onClearFilter('programme')}
+            >
+              <X className="h-3 w-3" />
+            </Button>
+          </Badge>
+        )}
+
+        {appliedFilters.pillar && appliedFilters.pillar !== 'all' && (
+          <Badge variant="secondary" className="flex items-center gap-1">
+            Pillar: {appliedFilters.pillar}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-4 w-4 p-0 hover:bg-transparent"
+              onClick={() => onClearFilter('pillar')}
             >
               <X className="h-3 w-3" />
             </Button>

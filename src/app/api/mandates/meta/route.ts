@@ -3,24 +3,44 @@ import path from 'path';
 import { promises as fs } from 'fs';
 import type { Mandate } from '@/types';
 
-let uniqueEntities: string[] = [];
+interface EntityWithCount {
+  name: string;
+  count: number;
+}
+
+interface BodyWithCount {
+  name: string;
+  count: number;
+}
+
+let uniqueEntities: EntityWithCount[] = [];
+let uniqueBodiesWithCount: BodyWithCount[] = [];
 let uniquePriorityAreas: string[] = [];
 let totalDocuments = 0;
 let totalEntities = 0;
 let totalCitations = 0;
 let uniqueBodiesCount = 0;
 let uniqueBodies: string[] = [];
+let uniqueProgrammesCount = 0;
+let uniquePillars: string[] = [];
+let yearRange: { min: number; max: number } | null = null;
+let yearDistribution: { [year: string]: number } = {};
 
 async function getMetadata() {
   if (uniqueEntities.length > 0) {
     return { 
       uniqueEntities, 
+      uniqueBodies: uniqueBodiesWithCount.map(b => b.name),
+      uniqueBodiesWithCount,
       uniquePriorityAreas,
       totalDocuments,
       totalEntities,
       totalCitations,
-      uniqueBodiesCount,
-      uniqueBodies,
+      uniqueBodiesCount: uniqueBodiesWithCount.length,
+      uniqueProgrammesCount,
+      uniquePillars,
+      yearRange,
+      yearDistribution,
     };
   }
 
@@ -28,40 +48,86 @@ async function getMetadata() {
   const fileContents = await fs.readFile(path.join(jsonDirectory, 'ppb2026_unique_mandates_with_metadata.json'), 'utf8');
   const rawData = JSON.parse(fileContents) as Mandate[];
 
-  const entities = new Set<string>();
+  const entityCounts: { [key: string]: number } = {};
+  const bodyCounts: { [key: string]: number } = {};
   const priorityAreas = new Set<string>();
   const bodies = new Set<string>();
+  const programmes = new Set<string>();
+  const pillars = new Set<string>();
   let citationsSum = 0;
+  const localYearDistribution: { [year: string]: number } = {};
 
   for (const item of rawData) {
     if (item.entities) {
-      item.entities.forEach(e => entities.add(e));
+      item.entities.forEach((e: string) => {
+        if (e) {
+          entityCounts[e] = (entityCounts[e] || 0) + (item.num_citations || 0);
+        }
+      });
     }
     if (item.priority_area) {
         priorityAreas.add(item.priority_area);
     }
     if (item.body) {
-        bodies.add(item.body);
+        bodyCounts[item.body] = (bodyCounts[item.body] || 0) + (item.num_citations || 0);
+    }
+    if (item.pillar) {
+        pillars.add(item.pillar);
+    }
+    if (item.citation_info && Array.isArray(item.citation_info)) {
+      for (const citation of item.citation_info) {
+        if (citation.programme_title) {
+          programmes.add(citation.programme_title);
+        }
+      }
     }
     citationsSum += item.num_citations || 0;
+    if (item.year) {
+        const year = parseInt(item.year, 10);
+        if (!isNaN(year)) {
+            localYearDistribution[year] = (localYearDistribution[year] || 0) + 1;
+        }
+    }
   }
 
-  uniqueEntities = Array.from(entities).sort();
+  uniqueEntities = Object.entries(entityCounts)
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => b.count - a.count);
+    
+  uniqueBodiesWithCount = Object.entries(bodyCounts)
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => b.count - a.count);
+
   uniquePriorityAreas = Array.from(priorityAreas).sort();
   totalDocuments = rawData.length;
-  totalEntities = entities.size;
+  totalEntities = Object.keys(entityCounts).length;
   totalCitations = citationsSum;
-  uniqueBodiesCount = bodies.size;
-  uniqueBodies = Array.from(bodies).sort();
+  uniqueBodiesCount = uniqueBodiesWithCount.length;
+  uniqueBodies = uniqueBodiesWithCount.map(b => b.name);
+  uniqueProgrammesCount = programmes.size;
+  uniquePillars = Array.from(pillars).sort();
+  yearDistribution = localYearDistribution;
+  const years = Object.keys(yearDistribution).map(Number);
+  if (years.length > 0) {
+    yearRange = {
+        min: Math.min(...years),
+        max: Math.max(...years),
+    };
+  }
 
   return { 
-    uniqueEntities, 
+    uniqueEntities,
+    uniqueBodies: uniqueBodiesWithCount.map(b => b.name),
+    uniqueBodiesWithCount,
     uniquePriorityAreas,
     totalDocuments,
     totalEntities,
     totalCitations,
-    uniqueBodiesCount,
-    uniqueBodies
+    uniqueBodiesCount: uniqueBodiesWithCount.length,
+    uniqueProgrammesCount,
+    uniquePillars,
+    yearRange,
+    yearDistribution,
   };
 }
 

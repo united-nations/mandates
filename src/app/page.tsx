@@ -9,16 +9,44 @@ import { FilterControls } from '@/components/filter-controls';
 import { PaginationControls } from '@/components/pagination-controls';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Globe, FileText, Users, ListChecks, BookCopy, Building } from 'lucide-react';
+import { Archive, Landmark, Building, Target, Quote } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { MandateDetails } from '@/components/mandate-details';
 import { SearchResultsSummary } from '@/components/search-results-summary';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { SearchableDropdownOption } from '@/components/ui/searchable-dropdown';
 
 interface ParentContext {
   scrollY: number;
   viewportHeight: number;
   iframeTop: number;
+}
+
+interface Entity {
+  entity: string;
+  entity_long: string;
+}
+
+interface EntityWithCount {
+  name: string;
+  count: number;
+}
+
+interface BodyWithCount {
+  name: string;
+  count: number;
+}
+
+interface Organ {
+  short: string;
+  long: string;
 }
 
 function MandateNavigator() {
@@ -30,15 +58,18 @@ function MandateNavigator() {
   const [isLoading, setIsLoading] = useState(true);
   
   const currentPage = Number(searchParams.get('page') || '1');
-  const pageSize = Number(searchParams.get('limit') || '30');
+  const pageSize = Number(searchParams.get('limit') || '10');
   const selectedEntity = searchParams.get('entity') || '';
   const selectedOrgan = searchParams.get('organ') || '';
   const selectedPriorityArea = searchParams.get('priority_area') || '';
   const keywordFromParams = searchParams.get('keyword') || '';
   const programme = searchParams.get('programme') || '';
-  const year = searchParams.get('year') || '';
+  const startYearFromParams = searchParams.get('start_year');
+  const endYearFromParams = searchParams.get('end_year');
   const budgetDocument = searchParams.get('budget_document') || '';
   const section = searchParams.get('section') || '';
+  const pillar = searchParams.get('pillar') || '';
+  const sortBy = searchParams.get('sort_by') || (keywordFromParams ? 'default' : 'citations_desc');
 
   const [keyword, setKeyword] = useState(keywordFromParams);
   const debouncedKeyword = useDebounce(keyword, 300);
@@ -49,10 +80,20 @@ function MandateNavigator() {
   const [uniqueOrgans, setUniqueOrgans] = useState(0);
   const [uniqueEntities, setUniqueEntities] = useState(0);
   const [totalCitations, setTotalCitations] = useState(0);
+  const [uniqueProgrammes, setUniqueProgrammes] = useState(0);
 
-  const [entityOptions, setEntityOptions] = useState<string[]>([]);
-  const [organOptions, setOrganOptions] = useState<string[]>([]);
+  const [allEntities, setAllEntities] = useState<Entity[]>([]);
+  const [allOrgans, setAllOrgans] = useState<Organ[]>([]);
+  const [entityOptions, setEntityOptions] = useState<EntityWithCount[]>([]);
+  const [organOptions, setOrganOptions] = useState<BodyWithCount[]>([]);
   const [priorityAreaOptions, setPriorityAreaOptions] = useState<string[]>([]);
+  const [programmeOptions, setProgrammeOptions] = useState<string[]>([]);
+  const [sectionOptions, setSectionOptions] = useState<string[]>([]);
+  const [pillarOptions, setPillarOptions] = useState<string[]>([]);
+
+  const [yearDistribution, setYearDistribution] = useState<{ [year: string]: number }>({});
+  const [yearRange, setYearRange] = useState<{ min: number; max: number } | null>(null);
+  const [selectedYearRange, setSelectedYearRange] = useState<[number, number] | null>(null);
 
   const [selectedMandate, setSelectedMandate] = useState<Mandate | null>(null);
 
@@ -70,6 +111,36 @@ function MandateNavigator() {
       setKeyword(keywordFromParams);
     }
   }, [keywordFromParams]);
+
+  useEffect(() => {
+    async function fetchAllEntities() {
+      try {
+        const res = await fetch('/api/entities');
+        if (res.ok) {
+          const data = await res.json();
+          setAllEntities(data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch all entities:", error);
+      }
+    }
+    fetchAllEntities();
+  }, []);
+
+  useEffect(() => {
+    async function fetchAllOrgans() {
+      try {
+        const res = await fetch('/api/organs');
+        if (res.ok) {
+          const data = await res.json();
+          setAllOrgans(data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch organs data:", error);
+      }
+    }
+    fetchAllOrgans();
+  }, []);
 
   useEffect(() => {
     const FRAME_ORG = 'https://un80analytics.azurewebsites.net';
@@ -168,14 +239,26 @@ function MandateNavigator() {
         const response = await fetch('/api/mandates/meta');
         const data = await response.json();
         setEntityOptions(data.uniqueEntities || []);
-        setOrganOptions(data.uniqueBodies || []);
+        setOrganOptions(data.uniqueBodiesWithCount || []);
         setPriorityAreaOptions(data.uniquePriorityAreas || []);
+        setPillarOptions(data.uniquePillars || []);
+        
+        if (data.yearRange) {
+          setYearRange(data.yearRange);
+          const startYear = startYearFromParams ? parseInt(startYearFromParams, 10) : data.yearRange.min;
+          const endYear = endYearFromParams ? parseInt(endYearFromParams, 10) : data.yearRange.max;
+          setSelectedYearRange([startYear, endYear]);
+        }
+        if (data.yearDistribution) {
+            setYearDistribution(data.yearDistribution);
+        }
         
         // Set initial summary stats for the whole dataset
         setTotalItems(data.totalDocuments || 0);
         setUniqueOrgans(data.uniqueBodiesCount || 0);
         setUniqueEntities(data.totalEntities || 0);
         setTotalCitations(data.totalCitations || 0);
+        setUniqueProgrammes(data.uniqueProgrammesCount || 0);
       } catch (error) {
         console.error("Failed to fetch metadata:", error);
       }
@@ -194,9 +277,14 @@ function MandateNavigator() {
     if (selectedPriorityArea) params.append('priority_area', selectedPriorityArea);
     if (keywordFromParams) params.append('keyword', keywordFromParams);
     if (programme) params.append('programme', programme);
-    if (year) params.append('year', year);
+    if (startYearFromParams) params.append('start_year', startYearFromParams);
+    if (endYearFromParams) params.append('end_year', endYearFromParams);
     if (budgetDocument) params.append('budget_document', budgetDocument);
     if (section) params.append('section', section);
+    if (pillar) params.append('pillar', pillar);
+    if (sortBy && sortBy !== 'default') {
+        params.append('sort_by', sortBy);
+    }
 
     try {
       const response = await fetch(`/api/mandates?${params.toString()}`);
@@ -209,6 +297,14 @@ function MandateNavigator() {
       setUniqueOrgans(data.uniqueBodiesCount || 0);
       setUniqueEntities(data.uniqueEntitiesCount || 0);
       setTotalCitations(data.totalCitations || 0);
+      setUniqueProgrammes(data.uniqueProgrammesCount || 0);
+
+      if (data.uniqueProgrammes) {
+        setProgrammeOptions(data.uniqueProgrammes);
+      }
+      if (data.uniqueSections) {
+        setSectionOptions(data.uniqueSections);
+      }
     } catch (error) {
       console.error("Failed to fetch mandates:", error);
       setMandates([]);
@@ -217,7 +313,7 @@ function MandateNavigator() {
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, pageSize, selectedEntity, selectedOrgan, selectedPriorityArea, keywordFromParams, programme, year, budgetDocument, section]);
+  }, [currentPage, pageSize, selectedEntity, selectedOrgan, selectedPriorityArea, keywordFromParams, programme, startYearFromParams, endYearFromParams, budgetDocument, section, pillar, sortBy]);
   
   useEffect(() => {
     fetchMandates();
@@ -231,6 +327,10 @@ function MandateNavigator() {
         params.set('keyword', debouncedKeyword);
       } else {
         params.delete('keyword');
+        // When clearing search, if sort was relevance, reset to default (citations)
+        if (params.get('sort_by') === 'default') {
+          params.set('sort_by', 'citations_desc');
+        }
       }
       router.push(`${pathname}?${params.toString()}`, { scroll: false });
     }
@@ -260,16 +360,36 @@ function MandateNavigator() {
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
+  const handleYearRangeChange = (newRange: [number, number]) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('page', '1');
+    params.set('start_year', String(newRange[0]));
+    params.set('end_year', String(newRange[1]));
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
+  const handleSortChange = (value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('page', '1');
+    params.set('sort_by', value);
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
   const onEntityChange = (value: string) => handleFilterChange('entity', value);
   const onOrganChange = (value: string) => handleFilterChange('organ', value);
   const handlePriorityAreaChange = (value: string) => handleFilterChange('priority_area', value);
   const onProgrammeChange = (value: string) => handleFilterChange('programme', value);
-  const onYearChange = (value: string) => handleFilterChange('year', value);
   const onBudgetDocumentChange = (value: string) => handleFilterChange('budget_document', value);
   const onSectionChange = (value: string) => handleFilterChange('section', value);
+  const onPillarChange = (value: string) => handleFilterChange('pillar', value);
 
   const onKeywordChange = (value: string) => {
     setKeyword(value);
+  };
+
+  const budgetDocumentDisplayNames: { [key: string]: string } = {
+    ppb2026: 'Proposed Programme Budget for 2026',
+    pko: 'Budget of Peacekeeping Operations 2025/26',
   };
 
   const LoadingSkeleton = () => (
@@ -285,7 +405,7 @@ function MandateNavigator() {
     if (!isLoading) {
       const reportHeight = () => {
         if (window.parent !== window) {
-          window.parent.postMessage({ type: 'setHeight', height: document.documentElement.scrollHeight }, '*');
+          window.parent.postMessage({ type: 'setHeight', height: document.documentElement.scrollHeight + 200 }, '*');
         }
       };
       // A small delay to allow the DOM to update
@@ -294,33 +414,54 @@ function MandateNavigator() {
     }
   }, [mandates, isLoading]);
 
+  // Helper function to find organ data by matching both short and long names
+  const findOrganData = (organName: string): Organ | undefined => {
+    return allOrgans.find(organ => 
+      organ.short === organName || organ.long === organName
+    );
+  };
+
+  const entityDropdownOptions: SearchableDropdownOption[] = entityOptions.map(entity => {
+    const entityDetail = allEntities.find(e => e.entity === entity.name);
+    const longName = entityDetail ? entityDetail.entity_long : undefined;
+    return {
+        value: entity.name,
+        label: longName ? `${entity.name} – ${longName}` : entity.name,
+    };
+  });
+
+  const organDropdownOptions: SearchableDropdownOption[] = organOptions.map(organ => {
+    const organData = findOrganData(organ.name);
+    if (organData) {
+      return {
+        value: organ.name,
+        label: `${organData.short} – ${organData.long}`,
+      };
+    }
+    // Fallback to original name if not found in organs.json
+    return {
+      value: organ.name,
+      label: organ.name,
+    };
+  });
+
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <header className="py-6 px-4 md:px-8 border-b border-border">
-        <div className="container mx-auto flex items-center gap-3">
-          <div className="flex-1">
-            <div className="flex items-center space-x-2">
-              <h1 className="text-2xl font-semibold text-foreground">Mandate Source Registry</h1>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <main className="container mx-auto px-4 md:px-8 py-8 space-y-8">
+      <main className="w-full py-6 space-y-6">
         
-        <section className="mb-8">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+        <section className="mb-6 px-4">
+          <div className="grid gap-3 grid-cols-1 sm:grid-cols-5">
               <Popover open={sourceDocumentsPopover} onOpenChange={setSourceDocumentsPopover}>
                 <PopoverTrigger asChild>
                   <div onMouseEnter={() => setSourceDocumentsPopover(true)} onMouseLeave={() => setSourceDocumentsPopover(false)} className="h-full">
                     <Card className="flex flex-col h-full">
-                        <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-16">
+                        <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-14">
                             <CardTitle className="text-sm font-medium text-muted-foreground">Source Documents</CardTitle>
-                            <FileText className="h-4 w-4 text-muted-foreground" />
+                            <Archive className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent className="flex-grow flex items-end">
-                            <div className="text-3xl font-bold text-foreground">
-                                {isLoading ? <Skeleton className="h-8 w-16" /> : (totalItems > 0 ? totalItems.toLocaleString() : '0')}
+                            <div className="text-2xl font-bold text-foreground">
+                                {isLoading ? <Skeleton className="h-6 w-12" /> : (totalItems > 0 ? totalItems.toLocaleString() : '0')}
                             </div>
                         </CardContent>
                     </Card>
@@ -334,13 +475,13 @@ function MandateNavigator() {
                 <PopoverTrigger asChild>
                   <div onMouseEnter={() => setUnOrgansPopover(true)} onMouseLeave={() => setUnOrgansPopover(false)} className="h-full">
                     <Card className="flex flex-col h-full">
-                      <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-16">
+                      <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-14">
                           <CardTitle className="text-sm font-medium text-muted-foreground">UN Organs</CardTitle>
-                          <Building className="h-4 w-4 text-muted-foreground" />
+                          <Landmark className="h-4 w-4 text-muted-foreground" />
                       </CardHeader>
                       <CardContent className="flex-grow flex items-end">
-                          <div className="text-3xl font-bold text-foreground">
-                              {isLoading ? <Skeleton className="h-8 w-16" /> : (uniqueOrgans > 0 ? uniqueOrgans.toLocaleString() : '0')}
+                          <div className="text-2xl font-bold text-foreground">
+                              {isLoading ? <Skeleton className="h-6 w-12" /> : (uniqueOrgans > 0 ? uniqueOrgans.toLocaleString() : '0')}
                           </div>
                       </CardContent>
                     </Card>
@@ -354,13 +495,13 @@ function MandateNavigator() {
                 <PopoverTrigger asChild>
                   <div onMouseEnter={() => setUnEntitiesPopover(true)} onMouseLeave={() => setUnEntitiesPopover(false)} className="h-full">
                     <Card className="flex flex-col h-full">
-                        <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-16">
+                        <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-14">
                             <CardTitle className="text-sm font-medium text-muted-foreground">UN Entities</CardTitle>
-                            <Users className="h-4 w-4 text-muted-foreground" />
+                            <Building className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent className="flex-grow flex items-end">
-                            <div className="text-3xl font-bold text-foreground">
-                                {isLoading ? <Skeleton className="h-8 w-16" /> : (uniqueEntities > 0 ? uniqueEntities.toLocaleString() : '0')}
+                            <div className="text-2xl font-bold text-foreground">
+                                {isLoading ? <Skeleton className="h-6 w-12" /> : (uniqueEntities > 0 ? uniqueEntities.toLocaleString() : '0')}
                             </div>
                         </CardContent>
                     </Card>
@@ -374,13 +515,13 @@ function MandateNavigator() {
                 <PopoverTrigger asChild>
                   <div onMouseEnter={() => setProgrammesPopover(true)} onMouseLeave={() => setProgrammesPopover(false)} className="h-full">
                     <Card className="flex flex-col h-full">
-                      <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-16">
+                      <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-14">
                         <CardTitle className="text-sm font-medium text-muted-foreground">Programmes</CardTitle>
-                        <BookCopy className="h-4 w-4 text-muted-foreground" />
+                        <Target className="h-4 w-4 text-muted-foreground" />
                       </CardHeader>
                       <CardContent className="flex-grow flex items-end">
-                        <div className="text-3xl font-bold text-foreground">
-                          <Skeleton className="h-8 w-16" />
+                        <div className="text-2xl font-bold text-foreground">
+                          {isLoading ? <Skeleton className="h-6 w-12" /> : (uniqueProgrammes > 0 ? uniqueProgrammes.toLocaleString() : '0')}
                         </div>
                       </CardContent>
                     </Card>
@@ -394,13 +535,13 @@ function MandateNavigator() {
                 <PopoverTrigger asChild>
                   <div onMouseEnter={() => setCitationsPopover(true)} onMouseLeave={() => setCitationsPopover(false)} className="h-full">
                     <Card className="flex flex-col h-full">
-                        <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-16">
+                        <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-14">
                             <CardTitle className="text-sm font-medium text-muted-foreground">Citations</CardTitle>
-                            <ListChecks className="h-4 w-4 text-muted-foreground" />
+                            <Quote className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent className="flex-grow flex items-end">
-                            <div className="text-3xl font-bold text-foreground">
-                                {isLoading ? <Skeleton className="h-8 w-16" /> : (totalCitations > 0 ? totalCitations.toLocaleString() : '0')}
+                            <div className="text-2xl font-bold text-foreground">
+                                {isLoading ? <Skeleton className="h-6 w-12" /> : (totalCitations > 0 ? totalCitations.toLocaleString() : '0')}
                             </div>
                         </CardContent>
                     </Card>
@@ -413,91 +554,131 @@ function MandateNavigator() {
           </div>
         </section>
 
-        <FilterControls
-          keyword={keyword}
-          onKeywordChange={onKeywordChange}
-          entityOptions={entityOptions}
-          selectedEntity={selectedEntity}
-          onEntityChange={onEntityChange}
-          organOptions={organOptions}
-          selectedOrgan={selectedOrgan}
-          onOrganChange={onOrganChange}
-          priorityAreaOptions={priorityAreaOptions}
-          selectedPriorityArea={selectedPriorityArea}
-          onPriorityAreaChange={handlePriorityAreaChange}
-          programme={programme}
-          year={year}
-          budgetDocument={budgetDocument}
-          section={section}
-          onProgrammeChange={onProgrammeChange}
-          onYearChange={onYearChange}
-          onBudgetDocumentChange={onBudgetDocumentChange}
-          onSectionChange={onSectionChange}
-        />
+        <div className="px-4">
+          <FilterControls
+            keyword={keyword}
+            onKeywordChange={onKeywordChange}
+            entityOptions={entityDropdownOptions}
+            selectedEntity={selectedEntity}
+            onEntityChange={onEntityChange}
+            organOptions={organDropdownOptions}
+            selectedOrgan={selectedOrgan}
+            onOrganChange={onOrganChange}
+            priorityAreaOptions={priorityAreaOptions}
+            selectedPriorityArea={selectedPriorityArea}
+            onPriorityAreaChange={handlePriorityAreaChange}
+            programme={programme}
+            yearRange={yearRange}
+            yearDistribution={yearDistribution}
+            selectedYearRange={selectedYearRange}
+            budgetDocument={budgetDocument}
+            section={section}
+            onProgrammeChange={onProgrammeChange}
+            onYearRangeChange={handleYearRangeChange}
+            onBudgetDocumentChange={onBudgetDocumentChange}
+            onSectionChange={onSectionChange}
+            programmeOptions={programmeOptions}
+            sectionOptions={sectionOptions}
+            pillarOptions={pillarOptions}
+            selectedPillar={pillar}
+            onPillarChange={onPillarChange}
+          />
+        </div>
 
-        <SearchResultsSummary
-          totalResults={totalItems}
-          searchKeyword={keywordFromParams}
-          appliedFilters={{
-            entity: selectedEntity !== 'all' ? selectedEntity : undefined,
-            organ: selectedOrgan !== 'all' ? selectedOrgan : undefined,
-            priority_area: selectedPriorityArea !== 'all' ? selectedPriorityArea : undefined,
-            programme: programme || undefined,
-            year: year || undefined,
-            budget_document: budgetDocument !== 'all' ? budgetDocument : undefined,
-            section: section || undefined,
-          }}
-          onClearSearch={() => onKeywordChange('')}
-          onClearFilter={(filterKey) => {
-            switch (filterKey) {
-              case 'entity':
-                onEntityChange('all');
-                break;
-              case 'organ':
-                onOrganChange('all');
-                break;
-              case 'priority_area':
-                handlePriorityAreaChange('all');
-                break;
-              case 'programme':
-                onProgrammeChange('');
-                break;
-              case 'year':
-                onYearChange('');
-                break;
-              case 'budget_document':
-                onBudgetDocumentChange('all');
-                break;
-              case 'section':
-                onSectionChange('');
-                break;
-            }
-          }}
-          isLoading={isLoading}
-        />
+        <div className="px-4">
+          <SearchResultsSummary
+            totalResults={totalItems}
+            searchKeyword={keywordFromParams}
+            appliedFilters={{
+              entity: selectedEntity !== 'all' ? selectedEntity : undefined,
+              organ: selectedOrgan !== 'all' ? selectedOrgan : undefined,
+              priority_area: selectedPriorityArea !== 'all' ? selectedPriorityArea : undefined,
+              programme: programme || undefined,
+              pillar: pillar !== 'all' ? pillar : undefined,
+              year: (startYearFromParams && endYearFromParams && yearRange && (parseInt(startYearFromParams, 10) !== yearRange.min || parseInt(endYearFromParams, 10) !== yearRange.max)) ? `${selectedYearRange?.[0]}-${selectedYearRange?.[1]}` : undefined,
+              budget_document: budgetDocument && budgetDocument !== 'all' ? budgetDocumentDisplayNames[budgetDocument] : undefined,
+              section: section || undefined,
+            }}
+            onClearSearch={() => onKeywordChange('')}
+            onClearFilter={(filterKey) => {
+              switch (filterKey) {
+                case 'entity':
+                  onEntityChange('all');
+                  break;
+                case 'organ':
+                  onOrganChange('all');
+                  break;
+                case 'priority_area':
+                  handlePriorityAreaChange('all');
+                  break;
+                case 'programme':
+                  onProgrammeChange('');
+                  break;
+                case 'pillar':
+                  onPillarChange('all');
+                  break;
+                case 'year':
+                  const newParams = new URLSearchParams(searchParams.toString());
+                  newParams.delete('start_year');
+                  newParams.delete('end_year');
+                  newParams.set('page', '1');
+                  router.push(`${pathname}?${newParams.toString()}`, { scroll: false });
+                  break;
+                case 'budget_document':
+                  onBudgetDocumentChange('all');
+                  break;
+                case 'section':
+                  onSectionChange('');
+                  break;
+              }
+            }}
+            isLoading={isLoading}
+          />
+        </div>
 
-        <div className="border-t border-border pt-4">
-          <div className="mt-4">
-            <h2 className="text-2xl font-bold tracking-tight mb-4">Mandate Source Documents</h2>
-            {isLoading ? (
-              <LoadingSkeleton />
-            ) : (
-              <MandateList
-                mandates={mandates}
-                onMandateClick={setSelectedMandate}
-              />
-            )}
+        <div className="px-4">
+          <div className="border-t border-border pt-4">
+            <div className="mt-4">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-2xl font-bold tracking-tight">Mandate Source Documents</h2>
+                <div className="flex items-center space-x-2">
+                  <label htmlFor="sort-by" className="text-sm font-medium">Sort by</label>
+                  <Select value={sortBy} onValueChange={handleSortChange}>
+                    <SelectTrigger className="w-[200px]" id="sort-by">
+                      <SelectValue placeholder="Sort by..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {keywordFromParams ? <SelectItem value="default">Relevance</SelectItem> : null}
+                      <SelectItem value="citations_desc">Citations (High to Low)</SelectItem>
+                      <SelectItem value="year_desc">Year (Newest First)</SelectItem>
+                      <SelectItem value="year_asc">Year (Oldest First)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              {isLoading ? (
+                <LoadingSkeleton />
+              ) : (
+                <MandateList
+                  mandates={mandates}
+                  onMandateClick={setSelectedMandate}
+                  organsData={allOrgans}
+                />
+              )}
+            </div>
           </div>
         </div>
 
-        <PaginationControls
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
-          pageSize={pageSize}
-          onPageSizeChange={handlePageSizeChange}
-          totalItems={totalItems}
-        />
+        <div className="px-4">
+          <PaginationControls
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            pageSize={pageSize}
+            onPageSizeChange={handlePageSizeChange}
+            totalItems={totalItems}
+          />
+        </div>
       </main>
 
       <MandateDetails
