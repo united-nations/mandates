@@ -125,12 +125,17 @@ export function MandateDetails({ mandate, open, onOpenChange, parentContext }: M
   const validEntities = mandate.entities ? mandate.entities.filter(e => e && e.trim()) : [];
 
   const dialogStyle: React.CSSProperties = {};
+  
   if (parentContext) {
     const { scrollY, iframeTop, viewportHeight } = parentContext;
     dialogStyle.position = 'absolute';
     dialogStyle.top = `${scrollY + (viewportHeight / 2) - iframeTop}px`;
     dialogStyle.left = '50%';
     dialogStyle.transform = 'translate(-50%, -50%)';
+    
+    // Use 85% of viewport height, with min 400px and max 800px
+    const calculatedHeight = Math.min(Math.max(viewportHeight * 0.85, 400), 800);
+    dialogStyle.maxHeight = `${calculatedHeight}px`;
   }
 
   const displaySymbol = mandate.full_document_symbol || mandate.symbol;
@@ -140,7 +145,10 @@ export function MandateDetails({ mandate, open, onOpenChange, parentContext }: M
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-5xl w-full light flex flex-col max-h-[600px] p-4" style={parentContext ? dialogStyle : undefined}>
+      <DialogContent 
+        className="max-w-5xl w-full light flex flex-col max-h-[600px] p-4" 
+        style={dialogStyle}
+      >
         {/* Header */}
         <div className="border-b pb-4">
             <p className="text-sm font-medium text-muted-foreground">Mandate Document</p>

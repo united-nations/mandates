@@ -12,6 +12,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { EntityName } from './ui/entity-name';
+import { FileText, Calendar, Building } from 'lucide-react';
 
 const priorityAreaColors: { [key: string]: string } = {
   'Maintenance of international peace and security': 'bg-blue-500',
@@ -55,57 +56,52 @@ const EntityBadges = ({ entities }: { entities: string[] }) => {
 export function MandateList({ mandates, onMandateClick }: MandateListProps) {
   return (
     <TooltipProvider>
-      <div className="space-y-6">
+      <div className="space-y-4">
         {mandates.map((mandate, index) => {
-          const titleParts = mandate.title ? mandate.title.split(': ') : ['Untitled Mandate'];
-          const mainTitle = titleParts[0];
-          const subTitle = titleParts.length > 1 ? titleParts.slice(1).join(': ') : null;
-          
           return (
             <motion.div
               key={mandate.document_symbol}
-              className="p-6 border rounded-lg shadow-sm bg-card hover:bg-muted/50 transition-colors cursor-pointer"
+              className="relative p-4 border rounded-lg shadow-sm bg-card hover:bg-muted/50 transition-colors cursor-pointer"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: index * 0.05 }}
               onClick={() => onMandateClick(mandate)}
             >
               <div className="flex flex-col gap-3">
-                {/* Top row: Meta info and Details button */}
-                <div className="flex justify-between items-start">
-                  <div className="flex items-center gap-3 text-sm text-muted-foreground flex-wrap">
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <p className="font-mono truncate max-w-[250px] sm:max-w-xs md:max-w-sm">
-                          {mandate.full_document_symbol || mandate.document_symbol}
-                        </p>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>{mandate.full_document_symbol || mandate.document_symbol}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                    {mandate.year && (
-                      <Badge variant="outline" className="text-xs shrink-0">
-                        {mandate.year}
-                      </Badge>
-                    )}
-                  </div>
-                  <Button size="sm" variant="outline" className="shrink-0">
-                      Details
-                  </Button>
-                </div>
+                {/* Details button - positioned absolute */}
+                <Button size="sm" variant="outline" className="absolute top-3 right-3 shrink-0 text-xs px-2 py-1 h-7">
+                  Details
+                </Button>
 
-                {/* Title */}
-                <div>
+                <div className="pr-16">
                   {mandate.highlightedTitle ? (
                     <h3 
-                      className="text-base font-semibold max-w-5xl" 
+                      className="text-base font-semibold leading-tight" 
                       dangerouslySetInnerHTML={{ __html: mandate.highlightedTitle }}
                     />
                   ) : (
-                    <h3 className="text-base font-semibold max-w-5xl">{mainTitle}</h3>
+                    <h3 className="text-base font-semibold leading-tight">{mandate.title}</h3>
                   )}
-                  {subTitle && <h4 className="text-sm text-muted-foreground max-w-5xl mt-1">{subTitle}</h4>}
+                </div>
+
+                <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                <div className="flex items-center gap-1.5">
+                     <FileText className="h-3 w-3" />
+                     <span className="font-medium">{mandate.document_symbol}</span>
+                   </div>
+                  {mandate.body && (
+                    <div className="flex items-center gap-1.5">
+                      <Building className="h-3 w-3" />
+                      <span className="font-medium">{mandate.body}</span>
+                    </div>
+                  )}
+                   
+                  {mandate.year && (
+                    <div className="flex items-center gap-1.5">
+                      <Calendar className="h-3 w-3" />
+                      <span className="font-medium">{mandate.year}</span>
+                    </div>
+                  )}
                 </div>
                 
                 {mandate.match_details && mandate.match_details.length > 0 && (
@@ -116,8 +112,8 @@ export function MandateList({ mandates, onMandateClick }: MandateListProps) {
 
                 {/* Citations and Entities */}
                 {(mandate.num_citations > 0 || (mandate.entities && mandate.entities.length > 0)) && (
-                  <div className="pt-2">
-                     <p className="text-sm font-medium mb-2">
+                  <div className="pt-2 border-t border-border/30">
+                    <p className="text-xs font-medium mb-2 text-muted-foreground">
                       Cited {mandate.num_citations} time{mandate.num_citations !== 1 ? 's' : ''} by {mandate.num_entities} entit{mandate.num_entities !== 1 ? 'ies' : 'y'}
                     </p>
                     <EntityBadges entities={mandate.entities || []} />
