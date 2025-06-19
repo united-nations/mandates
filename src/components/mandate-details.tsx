@@ -142,19 +142,17 @@ export function MandateDetails({ mandate, open, onOpenChange, parentContext }: M
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-5xl w-full light flex flex-col max-h-[600px] p-4" style={parentContext ? dialogStyle : undefined}>
         {/* Header */}
-        <div className="flex justify-between items-start border-b pb-4">
-            <div className="flex-grow">
-                <p className="text-sm font-medium text-muted-foreground">Mandate Document</p>
-                <DialogTitle className="text-2xl font-bold mt-1">{mandate.title || 'Mandate Details'}</DialogTitle>
-                <DialogDescription className="mt-1">
-                    {displaySymbol}
-                </DialogDescription>
-            </div>
+        <div className="border-b pb-4">
+            <p className="text-sm font-medium text-muted-foreground">Mandate Document</p>
+            <DialogTitle className="text-2xl font-bold mt-1">{mandate.title || 'Mandate Details'}</DialogTitle>
+            <DialogDescription className="mt-1">
+                {displaySymbol}
+            </DialogDescription>
             {pdfUrl && (
-                <Button asChild variant="outline" size="sm" className="ml-4 flex-shrink-0">
-                    <a href={pdfUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5">
-                        <Link className="h-3.5 w-3.5" />
-                        View Document
+                <Button asChild className="mt-4">
+                    <a href={pdfUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2">
+                        <FileText className="h-4 w-4" />
+                        View PDF
                     </a>
                 </Button>
             )}
