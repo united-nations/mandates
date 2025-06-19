@@ -3,7 +3,12 @@ import path from 'path';
 import { promises as fs } from 'fs';
 import type { Mandate } from '@/types';
 
-let uniqueEntities: string[] = [];
+interface EntityWithCount {
+  name: string;
+  count: number;
+}
+
+let uniqueEntities: EntityWithCount[] = [];
 let uniquePriorityAreas: string[] = [];
 let totalDocuments = 0;
 let totalEntities = 0;
@@ -36,7 +41,7 @@ async function getMetadata() {
   const fileContents = await fs.readFile(path.join(jsonDirectory, 'ppb2026_unique_mandates_with_metadata.json'), 'utf8');
   const rawData = JSON.parse(fileContents) as Mandate[];
 
-  const entities = new Set<string>();
+  const entityCounts: { [key: string]: number } = {};
   const priorityAreas = new Set<string>();
   const bodies = new Set<string>();
   const programmes = new Set<string>();
@@ -46,7 +51,11 @@ async function getMetadata() {
 
   for (const item of rawData) {
     if (item.entities) {
-      item.entities.forEach((e: string) => entities.add(e));
+      item.entities.forEach((e: string) => {
+        if (e) {
+          entityCounts[e] = (entityCounts[e] || 0) + (item.num_citations || 0);
+        }
+      });
     }
     if (item.priority_area) {
         priorityAreas.add(item.priority_area);
@@ -73,10 +82,13 @@ async function getMetadata() {
     }
   }
 
-  uniqueEntities = Array.from(entities).sort();
+  uniqueEntities = Object.entries(entityCounts)
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => b.count - a.count);
+    
   uniquePriorityAreas = Array.from(priorityAreas).sort();
   totalDocuments = rawData.length;
-  totalEntities = entities.size;
+  totalEntities = Object.keys(entityCounts).length;
   totalCitations = citationsSum;
   uniqueBodiesCount = bodies.size;
   uniqueBodies = Array.from(bodies).sort();

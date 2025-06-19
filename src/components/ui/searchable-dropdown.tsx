@@ -151,7 +151,7 @@ export function SearchableDropdown({
               className="h-9"
             />
           </div>
-          <ScrollArea className="max-h-60">
+          <ScrollArea className="max-h-60 overflow-y-auto">
             <div className="p-1">
               {filteredOptions.length === 0 ? (
                 <div className="py-2 px-4 text-center text-sm text-muted-foreground">
@@ -167,26 +167,23 @@ export function SearchableDropdown({
                     variant="ghost"
                     size="sm"
                     className={cn(
-                      "w-full justify-start font-normal h-auto py-2",
+                      "w-full justify-between font-normal h-auto py-2",
                       highlightedIndex === index && "bg-accent text-accent-foreground"
                     )}
                     onClick={() => handleSelect(option.value)}
                     onMouseEnter={() => setHighlightedIndex(index)}
                   >
-                     <Check
-                        className={cn(
-                          "mr-2 h-4 w-4 shrink-0",
-                          value === option.value ? "opacity-100" : "opacity-0"
-                        )}
-                      />
                     <div className="flex flex-col items-start">
-                      <span className="font-medium truncate">{option.label}</span>
+                      <span className="font-medium whitespace-normal">{option.label}</span>
                       {option.description && (
-                        <span className="text-xs text-muted-foreground text-left truncate">
+                        <span className="text-xs text-muted-foreground text-left whitespace-normal">
                           {option.description}
                         </span>
                       )}
                     </div>
+                    {value === option.value && (
+                      <Check className="h-4 w-4 shrink-0" />
+                    )}
                   </Button>
                 ))
               )}
