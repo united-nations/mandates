@@ -1,4 +1,3 @@
-
 import type {Config} from 'tailwindcss';
 import defaultTheme from 'tailwindcss/defaultTheme';
 
@@ -12,9 +11,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter', ...defaultTheme.fontFamily.sans],
-        body: ['Inter', ...defaultTheme.fontFamily.sans], // Use Inter for body
-        headline: ['Inter', ...defaultTheme.fontFamily.sans], // Use Inter for headline
+        sans: ['Roboto', ...defaultTheme.fontFamily.sans],
+        body: ['Roboto', ...defaultTheme.fontFamily.sans], // Use Roboto for body
+        headline: ['Roboto', ...defaultTheme.fontFamily.sans], // Use Roboto for headline
         code: ['monospace'],
       },
       colors: {

@@ -1,42 +1,76 @@
 'use client';
 
+import { useState } from 'react';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectSeparator, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { X } from 'lucide-react';
+import { X, ChevronDown, ChevronUp } from 'lucide-react';
+import { AdvancedSearch } from '@/components/advanced-search';
 
 interface FilterControlsProps {
-  entities: string[];
-  priorityAreas: string[];
+  entityOptions: string[];
+  organOptions: string[];
+  priorityAreaOptions: string[];
   selectedEntity: string;
+  selectedOrgan: string;
   selectedPriorityArea: string;
   keyword: string;
   onEntityChange: (value: string) => void;
+  onOrganChange: (value: string) => void;
   onPriorityAreaChange: (value: string) => void;
   onKeywordChange: (value: string) => void;
+  programme: string;
+  year: string;
+  budgetDocument: string;
+  section: string;
+  onProgrammeChange: (value: string) => void;
+  onYearChange: (value: string) => void;
+  onBudgetDocumentChange: (value: string) => void;
+  onSectionChange: (value: string) => void;
   disabled?: boolean;
 }
 
 export function FilterControls({
-  entities,
-  priorityAreas,
+  entityOptions,
+  organOptions,
+  priorityAreaOptions,
   selectedEntity,
+  selectedOrgan,
   selectedPriorityArea,
   keyword,
   onEntityChange,
+  onOrganChange,
   onPriorityAreaChange,
   onKeywordChange,
+  programme,
+  year,
+  budgetDocument,
+  section,
+  onProgrammeChange,
+  onYearChange,
+  onBudgetDocumentChange,
+  onSectionChange,
   disabled,
 }: FilterControlsProps) {
-  const showActiveFilters = selectedPriorityArea || selectedEntity;
+  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
+
+  const topOrgans = ['General Assembly', 'Security Council', 'Economic and Social Council'];
+  const sortedOrgans = [...organOptions].sort((a, b) => {
+    const aIsTop = topOrgans.includes(a);
+    const bIsTop = topOrgans.includes(b);
+    if (aIsTop && !bIsTop) return -1;
+    if (!aIsTop && bIsTop) return 1;
+    if (aIsTop && bIsTop) return topOrgans.indexOf(a) - topOrgans.indexOf(b);
+    return a.localeCompare(b);
+  });
 
   return (
     <div className="p-4 bg-card border rounded-lg shadow-sm space-y-4">
-      <div className="flex flex-col md:flex-row gap-4">
-        <div className="relative flex-grow">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="relative lg:col-span-1">
           <Input
-            placeholder="Search by keyword, symbol, or entity..."
+            placeholder="Search for any keyword..."
             value={keyword}
             onChange={(e) => onKeywordChange(e.target.value)}
             disabled={disabled}
@@ -55,27 +89,29 @@ export function FilterControls({
           )}
         </div>
 
-        <Select onValueChange={onPriorityAreaChange} value={selectedPriorityArea} disabled={disabled}>
-          <SelectTrigger className="w-full md:w-[280px]">
-            <SelectValue placeholder="Filter by Priority Area" />
+        <Select onValueChange={onOrganChange} value={selectedOrgan} disabled={disabled}>
+          <SelectTrigger>
+            <SelectValue placeholder="Filter by UN Organ" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Priority Areas</SelectItem>
-            {priorityAreas.map((area) => (
-              <SelectItem key={area} value={area}>
-                {area}
+            <SelectItem value="all">All UN Organs</SelectItem>
+            <SelectSeparator />
+            {sortedOrgans.map((organ) => (
+              <SelectItem key={organ} value={organ}>
+                {organ}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
 
         <Select onValueChange={onEntityChange} value={selectedEntity} disabled={disabled}>
-          <SelectTrigger className="w-full md:w-[280px]">
-            <SelectValue placeholder="Filter by Entity" />
+          <SelectTrigger>
+            <SelectValue placeholder="Filter by UN Entity" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Entities</SelectItem>
-            {entities.map((entity) => (
+            <SelectItem value="all">All UN Entities</SelectItem>
+            <SelectSeparator />
+            {entityOptions.map((entity) => (
               <SelectItem key={entity} value={entity}>
                 {entity}
               </SelectItem>
@@ -84,37 +120,29 @@ export function FilterControls({
         </Select>
       </div>
 
-      {showActiveFilters && (
-        <div className="flex items-center gap-2 flex-wrap">
-          <p className="text-sm font-medium">Active filters:</p>
-          {selectedPriorityArea && (
-            <Badge variant="secondary" className="flex items-center gap-1.5 pl-2 pr-1 py-1">
-              {selectedPriorityArea}
-              <button
-                onClick={() => onPriorityAreaChange('')}
-                disabled={disabled}
-                className="rounded-full hover:bg-muted-foreground/20 p-0.5"
-                aria-label={`Remove ${selectedPriorityArea} filter`}
-              >
-                <X className="h-3 w-3" />
-              </button>
-            </Badge>
-          )}
-          {selectedEntity && (
-            <Badge variant="secondary" className="flex items-center gap-1.5 pl-2 pr-1 py-1">
-              {selectedEntity}
-              <button
-                onClick={() => onEntityChange('')}
-                disabled={disabled}
-                className="rounded-full hover:bg-muted-foreground/20 p-0.5"
-                aria-label={`Remove ${selectedEntity} filter`}
-              >
-                <X className="h-3 w-3" />
-              </button>
-            </Badge>
-          )}
-        </div>
+      <div className="flex justify-start">
+        <Button variant="link" onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}>
+          {showAdvancedSearch ? 'Hide Advanced Filter' : 'Show Advanced Filter'}
+          {showAdvancedSearch ? <ChevronUp className="h-4 w-4 ml-2" /> : <ChevronDown className="h-4 w-4 ml-2" />}
+        </Button>
+      </div>
+
+      {showAdvancedSearch && (
+        <AdvancedSearch
+          programme={programme}
+          year={year}
+          budgetDocument={budgetDocument}
+          section={section}
+          onProgrammeChange={onProgrammeChange}
+          onYearChange={onYearChange}
+          onBudgetDocumentChange={onBudgetDocumentChange}
+          onSectionChange={onSectionChange}
+          priorityAreaOptions={priorityAreaOptions}
+          selectedPriorityArea={selectedPriorityArea}
+          onPriorityAreaChange={onPriorityAreaChange}
+          disabled={disabled}
+        />
       )}
     </div>
   );
-} 
+}
