@@ -8,7 +8,13 @@ interface EntityWithCount {
   count: number;
 }
 
+interface BodyWithCount {
+  name: string;
+  count: number;
+}
+
 let uniqueEntities: EntityWithCount[] = [];
+let uniqueBodiesWithCount: BodyWithCount[] = [];
 let uniquePriorityAreas: string[] = [];
 let totalDocuments = 0;
 let totalEntities = 0;
@@ -24,12 +30,13 @@ async function getMetadata() {
   if (uniqueEntities.length > 0) {
     return { 
       uniqueEntities, 
+      uniqueBodies: uniqueBodiesWithCount.map(b => b.name),
+      uniqueBodiesWithCount,
       uniquePriorityAreas,
       totalDocuments,
       totalEntities,
       totalCitations,
-      uniqueBodiesCount,
-      uniqueBodies,
+      uniqueBodiesCount: uniqueBodiesWithCount.length,
       uniqueProgrammesCount,
       uniquePillars,
       yearRange,
@@ -42,6 +49,7 @@ async function getMetadata() {
   const rawData = JSON.parse(fileContents) as Mandate[];
 
   const entityCounts: { [key: string]: number } = {};
+  const bodyCounts: { [key: string]: number } = {};
   const priorityAreas = new Set<string>();
   const bodies = new Set<string>();
   const programmes = new Set<string>();
@@ -61,7 +69,7 @@ async function getMetadata() {
         priorityAreas.add(item.priority_area);
     }
     if (item.body) {
-        bodies.add(item.body);
+        bodyCounts[item.body] = (bodyCounts[item.body] || 0) + (item.num_citations || 0);
     }
     if (item.pillar) {
         pillars.add(item.pillar);
@@ -86,12 +94,16 @@ async function getMetadata() {
     .map(([name, count]) => ({ name, count }))
     .sort((a, b) => b.count - a.count);
     
+  uniqueBodiesWithCount = Object.entries(bodyCounts)
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => b.count - a.count);
+
   uniquePriorityAreas = Array.from(priorityAreas).sort();
   totalDocuments = rawData.length;
   totalEntities = Object.keys(entityCounts).length;
   totalCitations = citationsSum;
-  uniqueBodiesCount = bodies.size;
-  uniqueBodies = Array.from(bodies).sort();
+  uniqueBodiesCount = uniqueBodiesWithCount.length;
+  uniqueBodies = uniqueBodiesWithCount.map(b => b.name);
   uniqueProgrammesCount = programmes.size;
   uniquePillars = Array.from(pillars).sort();
   yearDistribution = localYearDistribution;
@@ -104,13 +116,14 @@ async function getMetadata() {
   }
 
   return { 
-    uniqueEntities, 
+    uniqueEntities,
+    uniqueBodies: uniqueBodiesWithCount.map(b => b.name),
+    uniqueBodiesWithCount,
     uniquePriorityAreas,
     totalDocuments,
     totalEntities,
     totalCitations,
-    uniqueBodiesCount,
-    uniqueBodies,
+    uniqueBodiesCount: uniqueBodiesWithCount.length,
     uniqueProgrammesCount,
     uniquePillars,
     yearRange,

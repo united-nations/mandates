@@ -34,6 +34,21 @@ interface Entity {
   entity_long: string;
 }
 
+interface EntityWithCount {
+  name: string;
+  count: number;
+}
+
+interface BodyWithCount {
+  name: string;
+  count: number;
+}
+
+interface Organ {
+  short: string;
+  long: string;
+}
+
 function MandateNavigator() {
   const router = useRouter();
   const pathname = usePathname();
@@ -68,8 +83,9 @@ function MandateNavigator() {
   const [uniqueProgrammes, setUniqueProgrammes] = useState(0);
 
   const [allEntities, setAllEntities] = useState<Entity[]>([]);
-  const [entityOptions, setEntityOptions] = useState<string[]>([]);
-  const [organOptions, setOrganOptions] = useState<string[]>([]);
+  const [allOrgans, setAllOrgans] = useState<Organ[]>([]);
+  const [entityOptions, setEntityOptions] = useState<EntityWithCount[]>([]);
+  const [organOptions, setOrganOptions] = useState<BodyWithCount[]>([]);
   const [priorityAreaOptions, setPriorityAreaOptions] = useState<string[]>([]);
   const [programmeOptions, setProgrammeOptions] = useState<string[]>([]);
   const [sectionOptions, setSectionOptions] = useState<string[]>([]);
@@ -109,6 +125,21 @@ function MandateNavigator() {
       }
     }
     fetchAllEntities();
+  }, []);
+
+  useEffect(() => {
+    async function fetchAllOrgans() {
+      try {
+        const res = await fetch('/api/organs');
+        if (res.ok) {
+          const data = await res.json();
+          setAllOrgans(data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch organs data:", error);
+      }
+    }
+    fetchAllOrgans();
   }, []);
 
   useEffect(() => {
@@ -207,8 +238,8 @@ function MandateNavigator() {
       try {
         const response = await fetch('/api/mandates/meta');
         const data = await response.json();
-        setEntityOptions(data.uniqueEntities.map((e: { name: string, count: number }) => e.name) || []);
-        setOrganOptions(data.uniqueBodies || []);
+        setEntityOptions(data.uniqueEntities || []);
+        setOrganOptions(data.uniqueBodiesWithCount || []);
         setPriorityAreaOptions(data.uniquePriorityAreas || []);
         setPillarOptions(data.uniquePillars || []);
         
@@ -383,20 +414,36 @@ function MandateNavigator() {
     }
   }, [mandates, isLoading]);
 
-  const entityDropdownOptions: SearchableDropdownOption[] = entityOptions.map(shortName => {
-    const entityDetail = allEntities.find(e => e.entity === shortName);
+  // Helper function to find organ data by matching both short and long names
+  const findOrganData = (organName: string): Organ | undefined => {
+    return allOrgans.find(organ => 
+      organ.short === organName || organ.long === organName
+    );
+  };
+
+  const entityDropdownOptions: SearchableDropdownOption[] = entityOptions.map(entity => {
+    const entityDetail = allEntities.find(e => e.entity === entity.name);
     const longName = entityDetail ? entityDetail.entity_long : undefined;
     return {
-        value: shortName,
-        label: longName ? `${shortName} – ${longName}` : shortName,
-        description: undefined // Remove description since we're showing it in the label
+        value: entity.name,
+        label: longName ? `${entity.name} – ${longName}` : entity.name,
     };
   });
 
-  const organDropdownOptions: SearchableDropdownOption[] = organOptions.map(organ => ({
-    value: organ,
-    label: organ,
-  }));
+  const organDropdownOptions: SearchableDropdownOption[] = organOptions.map(organ => {
+    const organData = findOrganData(organ.name);
+    if (organData) {
+      return {
+        value: organ.name,
+        label: `${organData.short} – ${organData.long}`,
+      };
+    }
+    // Fallback to original name if not found in organs.json
+    return {
+      value: organ.name,
+      label: organ.name,
+    };
+  });
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -615,6 +662,7 @@ function MandateNavigator() {
                 <MandateList
                   mandates={mandates}
                   onMandateClick={setSelectedMandate}
+                  organsData={allOrgans}
                 />
               )}
             </div>

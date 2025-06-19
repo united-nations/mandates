@@ -14,6 +14,11 @@ import {
 import { EntityName } from './ui/entity-name';
 import { FileText, Calendar, Landmark, Target } from 'lucide-react';
 
+interface Organ {
+  short: string;
+  long: string;
+}
+
 const priorityAreaColors: { [key: string]: string } = {
   'Maintenance of international peace and security': 'bg-blue-500',
   'Promotion of sustained economic growth and sustainable development': 'bg-green-500',
@@ -33,6 +38,7 @@ const getPriorityAreaColor = (area: string) => {
 interface MandateListProps {
   mandates: Mandate[];
   onMandateClick: (mandate: Mandate) => void;
+  organsData: Organ[];
 }
 
 const EntityBadges = ({ entities }: { entities: string[] }) => {
@@ -63,7 +69,19 @@ const HighlightedContent = ({ content, fallback }: { content?: string; fallback:
   return <span>{fallback}</span>;
 };
 
-export function MandateList({ mandates, onMandateClick }: MandateListProps) {
+export function MandateList({ mandates, onMandateClick, organsData }: MandateListProps) {
+  // Helper function to find organ data by matching both short and long names
+  const findOrganData = (organName: string): Organ | undefined => {
+    return organsData.find(organ => 
+      organ.short === organName || organ.long === organName
+    );
+  };
+
+  // Helper function to get the long name for display
+  const getOrganLongName = (organName: string): string => {
+    const organData = findOrganData(organName);
+    return organData ? organData.long : organName;
+  };
   return (
     <TooltipProvider>
       <div className="space-y-4">
@@ -103,10 +121,17 @@ export function MandateList({ mandates, onMandateClick }: MandateListProps) {
                     <span className="font-medium">{mandate.document_symbol}</span>
                   </div>
                   {mandate.body && (
-                    <div className="flex items-center gap-1.5">
-                      <Landmark className="h-3 w-3" />
-                      <span className="font-medium">{mandate.body}</span>
-                    </div>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="flex items-center gap-1.5">
+                          <Landmark className="h-3 w-3" />
+                          <span className="font-medium">{mandate.body}</span>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{getOrganLongName(mandate.body)}</p>
+                      </TooltipContent>
+                    </Tooltip>
                   )}
                    
                   {mandate.year && (
