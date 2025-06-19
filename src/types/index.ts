@@ -84,6 +84,7 @@ export interface Mandate {
   // Search-related fields
   searchScore?: number;
   highlightedTitle?: string;
+  highlightedFields?: { [key: string]: string };
 }
 
 export type Entity = {

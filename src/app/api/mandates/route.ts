@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import path from 'path';
 import { promises as fs } from 'fs';
 import type { Mandate, CitationInfo } from '@/types';
+import { fuzzySearch, type SearchField, type FuzzyResult } from '@/lib/fuzzy-search';
 
 let mandates: Mandate[] = [];
 
@@ -39,52 +40,165 @@ interface SearchResult extends Mandate {
   searchScore: number;
   match_details: string[];
   highlightedTitle?: string;
+  highlightedFields?: { [key: string]: string };
 }
 
-function performTextSearch(mandates: Mandate[], query: string): SearchResult[] {
+// Define searchable fields with weights
+const searchFields: SearchField[] = [
+  {
+    name: 'title',
+    weight: 10.0,
+    getValue: (mandate: Mandate) => mandate.title || mandate.document_title || ''
+  },
+  {
+    name: 'document_symbol',
+    weight: 8.0,
+    getValue: (mandate: Mandate) => mandate.document_symbol || mandate.full_document_symbol || ''
+  },
+  {
+    name: 'ai_summary',
+    weight: 7.0,
+    getValue: (mandate: Mandate) => mandate.ai_summary || ''
+  },
+  {
+    name: 'subject_headings',
+    weight: 6.0,
+    getValue: (mandate: Mandate) => mandate.subject_headings || []
+  },
+  {
+    name: 'abstract',
+    weight: 5.0,
+    getValue: (mandate: Mandate) => mandate.abstract || []
+  },
+  {
+    name: 'issuing_body',
+    weight: 5.0,
+    getValue: (mandate: Mandate) => mandate.body || mandate.issuing_body_or_bodies || []
+  },
+  {
+    name: 'entities',
+    weight: 4.0,
+    getValue: (mandate: Mandate) => mandate.entities || mandate.mentions || []
+  },
+  {
+    name: 'priority_area',
+    weight: 4.0,
+    getValue: (mandate: Mandate) => mandate.priority_area || ''
+  },
+  {
+    name: 'pillar',
+    weight: 3.0,
+    getValue: (mandate: Mandate) => mandate.pillar || ''
+  },
+  {
+    name: 'programme_titles',
+    weight: 3.0,
+    getValue: (mandate: Mandate) => 
+      mandate.citation_info?.map(c => c.programme_title).filter(Boolean) || []
+  },
+  {
+    name: 'section_titles',
+    weight: 3.0,
+    getValue: (mandate: Mandate) => 
+      mandate.citation_info?.map(c => c.section_title).filter(Boolean) || []
+  },
+  {
+    name: 'descriptions',
+    weight: 2.0,
+    getValue: (mandate: Mandate) => 
+      mandate.citation_info?.map(c => c.description).filter(Boolean) || []
+  },
+  {
+    name: 'operative_paragraphs',
+    weight: 2.0,
+    getValue: (mandate: Mandate) => mandate.operative_paragraphs || []
+  },
+  {
+    name: 'note',
+    weight: 1.5,
+    getValue: (mandate: Mandate) => mandate.note || []
+  },
+  {
+    name: 'subtitle',
+    weight: 1.5,
+    getValue: (mandate: Mandate) => mandate.subtitle || ''
+  },
+  {
+    name: 'uniform_title',
+    weight: 1.0,
+    getValue: (mandate: Mandate) => mandate.uniform_title || []
+  },
+  {
+    name: 'translated_title',
+    weight: 1.0,
+    getValue: (mandate: Mandate) => mandate.translated_title || []
+  }
+];
+
+function performEnhancedTextSearch(mandates: Mandate[], query: string): SearchResult[] {
   if (!query.trim()) {
     return mandates as SearchResult[];
   }
   
-  const lowerQuery = query.toLowerCase().trim();
-  
-  const searchResults: SearchResult[] = mandates.map(mandate => {
-    let totalScore = 0;
-    const matchDetails: string[] = [];
-    
-    // Search in title (high priority)
-    const title = mandate.title || mandate.document_title || '';
-    if (title && title.toLowerCase().includes(lowerQuery)) {
-      totalScore += 10;
-      matchDetails.push('Title');
+  const fuzzyResults: FuzzyResult<Mandate>[] = fuzzySearch(
+    mandates,
+    query,
+    searchFields,
+    {
+      threshold: 0.1,
+      maxDistance: 2,
+      includeScore: true,
+      includeMatches: true,
+      minMatchCharLength: 2,
+      shouldSort: true,
+      tokenize: true,
+      matchAllTokens: false
     }
+  );
+
+  return fuzzyResults.map(result => {
+    const matchedFields = new Set<string>();
     
-    // Search in document symbol (medium priority)
-    const symbol = mandate.document_symbol || mandate.full_document_symbol || '';
-    if (symbol && symbol.toLowerCase().includes(lowerQuery)) {
-      totalScore += 8;
-      matchDetails.push('Document Symbol');
-    }
-    
-    // Create highlighted title
-    let highlightedTitle = title;
-    if (totalScore > 0 && title) {
-      const regex = new RegExp(`(${lowerQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-      highlightedTitle = title.replace(regex, '<mark>$1</mark>');
-    }
-    
+    // Collect which fields had matches
+    result.matches.forEach(match => {
+      if (match.key) {
+        matchedFields.add(match.key);
+      }
+    });
+
+    // Create friendly field names for display
+    const fieldDisplayNames: { [key: string]: string } = {
+      title: 'Title',
+      document_symbol: 'Document Symbol',
+      ai_summary: 'Summary',
+      subject_headings: 'Subject Headings',
+      abstract: 'Abstract',
+      issuing_body: 'Issuing Body',
+      entities: 'Entities',
+      priority_area: 'Priority Area',
+      pillar: 'Pillar',
+      programme_titles: 'Programme Titles',
+      section_titles: 'Section Titles',
+      descriptions: 'Descriptions',
+      operative_paragraphs: 'Operative Paragraphs',
+      note: 'Notes',
+      subtitle: 'Subtitle',
+      uniform_title: 'Uniform Title',
+      translated_title: 'Translated Title'
+    };
+
+    const match_details = Array.from(matchedFields).map(field => 
+      fieldDisplayNames[field] || field
+    );
+
     return {
-      ...mandate,
-      searchScore: totalScore,
-      match_details: matchDetails,
-      highlightedTitle: totalScore > 0 ? highlightedTitle : undefined
+      ...result.item,
+      searchScore: result.score,
+      match_details,
+      highlightedTitle: result.highlightedFields.title || undefined,
+      highlightedFields: result.highlightedFields
     };
   });
-  
-  // Filter out results with no matches and sort by score
-  return searchResults
-    .filter(result => result.searchScore > 0)
-    .sort((a, b) => b.searchScore - a.searchScore);
 }
 
 export async function GET(request: Request) {
@@ -162,7 +276,7 @@ export async function GET(request: Request) {
     }
 
     if (keyword) {
-      const searchResults = performTextSearch(filteredMandates, keyword);
+      const searchResults = performEnhancedTextSearch(filteredMandates, keyword);
       filteredMandates = searchResults;
     }
     

@@ -72,7 +72,7 @@ export function FilterControls({
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="relative">
           <Input
-            placeholder="Search for any keyword..."
+            placeholder="Search in all fields (titles, summaries, entities, etc.)..."
             value={keyword}
             onChange={(e) => onKeywordChange(e.target.value)}
             className="pr-10"
