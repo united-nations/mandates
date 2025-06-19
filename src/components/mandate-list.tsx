@@ -12,7 +12,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { EntityName } from './ui/entity-name';
-import { FileText, Calendar, Building, Target } from 'lucide-react';
+import { FileText, Calendar, Landmark, Target } from 'lucide-react';
 
 const priorityAreaColors: { [key: string]: string } = {
   'Maintenance of international peace and security': 'bg-blue-500',
@@ -104,7 +104,7 @@ export function MandateList({ mandates, onMandateClick }: MandateListProps) {
                   </div>
                   {mandate.body && (
                     <div className="flex items-center gap-1.5">
-                      <Building className="h-3 w-3" />
+                      <Landmark className="h-3 w-3" />
                       <span className="font-medium">{mandate.body}</span>
                     </div>
                   )}

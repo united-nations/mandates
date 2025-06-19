@@ -72,7 +72,7 @@ export function FilterControls({
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="relative">
           <Input
-            placeholder="Search in all fields (titles, summaries, entities, etc.)..."
+            placeholder="Keyword search"
             value={keyword}
             onChange={(e) => onKeywordChange(e.target.value)}
             className="pr-10"
@@ -110,7 +110,7 @@ export function FilterControls({
 
       <div className="flex justify-start">
         <Button variant="link" onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}>
-          {showAdvancedSearch ? 'Hide Advanced Filter' : 'Show Advanced Filter'}
+          {showAdvancedSearch ? 'Hide Advanced Filters' : 'Show Advanced Filters'}
           {showAdvancedSearch ? <ChevronUp className="h-4 w-4 ml-2" /> : <ChevronDown className="h-4 w-4 ml-2" />}
         </Button>
       </div>

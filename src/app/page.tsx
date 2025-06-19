@@ -403,7 +403,7 @@ function MandateNavigator() {
       <main className="w-full py-6 space-y-6">
         
         <section className="mb-6 px-4">
-          <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
+          <div className="grid gap-3 grid-cols-1 sm:grid-cols-5">
               <Popover open={sourceDocumentsPopover} onOpenChange={setSourceDocumentsPopover}>
                 <PopoverTrigger asChild>
                   <div onMouseEnter={() => setSourceDocumentsPopover(true)} onMouseLeave={() => setSourceDocumentsPopover(false)} className="h-full">
