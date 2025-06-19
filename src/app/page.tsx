@@ -327,7 +327,7 @@ function MandateNavigator() {
                   </div>
                 </PopoverTrigger>
                 <PopoverContent>
-                  <p>The total number of unique source documents in the registry.</p>
+                  <p className="text-sm">The total number of unique source documents in the registry.</p>
                 </PopoverContent>
               </Popover>
               <Popover open={unOrgansPopover} onOpenChange={setUnOrgansPopover}>
@@ -476,8 +476,8 @@ function MandateNavigator() {
           isLoading={isLoading}
         />
 
-        <div className="border-t border-border pt-8">
-          <div className="mt-8">
+        <div className="border-t border-border pt-4">
+          <div className="mt-4">
             <h2 className="text-2xl font-bold tracking-tight mb-4">Mandate Source Documents</h2>
             {isLoading ? (
               <LoadingSkeleton />

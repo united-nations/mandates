@@ -77,13 +77,13 @@ export function MandateList({ mandates, onMandateClick }: MandateListProps) {
                     <div className="mb-1">
                       {mandate.highlightedTitle ? (
                         <h3 
-                          className="text-base font-semibold" 
+                          className="text-base font-semibold max-w-5xl" 
                           dangerouslySetInnerHTML={{ __html: mandate.highlightedTitle }}
                         />
                       ) : (
-                        <h3 className="text-base font-semibold">{mainTitle}</h3>
+                        <h3 className="text-base font-semibold max-w-5xl">{mainTitle}</h3>
                       )}
-                      {subTitle && <h4 className="text-base text-muted-foreground">{subTitle}</h4>}
+                      {subTitle && <h4 className="text-base text-muted-foreground max-w-5xl">{subTitle}</h4>}
                     </div>
                     
                     {mandate.match_details && mandate.match_details.length > 0 && (

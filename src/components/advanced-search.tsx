@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectSeparator } from '@/components/ui/select';
@@ -33,6 +34,28 @@ export function AdvancedSearch({
   onPriorityAreaChange,
   disabled,
 }: AdvancedSearchProps) {
+  const [programmeValue, setProgrammeValue] = useState(programme);
+  const [yearValue, setYearValue] = useState(year);
+  const [sectionValue, setSectionValue] = useState(section);
+
+  useEffect(() => {
+    setProgrammeValue(programme);
+  }, [programme]);
+
+  useEffect(() => {
+    setYearValue(year);
+  }, [year]);
+
+  useEffect(() => {
+    setSectionValue(section);
+  }, [section]);
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>, callback: (value: string) => void, value: string) => {
+    if (event.key === 'Enter') {
+      callback(value);
+    }
+  };
+
   return (
     <div className="border-t pt-4 mt-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -40,9 +63,10 @@ export function AdvancedSearch({
             <Label htmlFor="programme">Programme</Label>
             <Input 
               id="programme" 
-              placeholder="Enter programme" 
-              value={programme}
-              onChange={(e) => onProgrammeChange(e.target.value)}
+              placeholder="Enter programme and press Enter" 
+              value={programmeValue}
+              onChange={(e) => setProgrammeValue(e.target.value)}
+              onKeyDown={(e) => handleKeyDown(e, onProgrammeChange, programmeValue)}
               disabled={disabled}
             />
           </div>
@@ -50,9 +74,10 @@ export function AdvancedSearch({
             <Label htmlFor="year">Year</Label>
             <Input 
               id="year" 
-              placeholder="Enter year" 
-              value={year}
-              onChange={(e) => onYearChange(e.target.value)}
+              placeholder="Enter year and press Enter" 
+              value={yearValue}
+              onChange={(e) => setYearValue(e.target.value)}
+              onKeyDown={(e) => handleKeyDown(e, onYearChange, yearValue)}
               disabled={disabled}
             />
           </div>
@@ -98,9 +123,10 @@ export function AdvancedSearch({
             <Label htmlFor="section">Section</Label>
             <Input 
               id="section" 
-              placeholder="Enter section" 
-              value={section}
-              onChange={(e) => onSectionChange(e.target.value)}
+              placeholder="Enter section and press Enter" 
+              value={sectionValue}
+              onChange={(e) => setSectionValue(e.target.value)}
+              onKeyDown={(e) => handleKeyDown(e, onSectionChange, sectionValue)}
               disabled={disabled}
             />
           </div>
