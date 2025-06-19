@@ -12,6 +12,10 @@ let uniqueBodiesCount = 0;
 let uniqueBodies: string[] = [];
 let uniqueProgrammesCount = 0;
 let uniqueProgrammes: string[] = [];
+let uniqueSections: string[] = [];
+let uniquePillars: string[] = [];
+let yearRange: { min: number; max: number } | null = null;
+let yearDistribution: { [year: string]: number } = {};
 
 async function getMetadata() {
   if (uniqueEntities.length > 0) {
@@ -25,6 +29,10 @@ async function getMetadata() {
       uniqueBodies,
       uniqueProgrammesCount,
       uniqueProgrammes,
+      uniqueSections,
+      uniquePillars,
+      yearRange,
+      yearDistribution,
     };
   }
 
@@ -36,7 +44,10 @@ async function getMetadata() {
   const priorityAreas = new Set<string>();
   const bodies = new Set<string>();
   const programmes = new Set<string>();
+  const sections = new Set<string>();
+  const pillars = new Set<string>();
   let citationsSum = 0;
+  const localYearDistribution: { [year: string]: number } = {};
 
   for (const item of rawData) {
     if (item.entities) {
@@ -48,14 +59,26 @@ async function getMetadata() {
     if (item.body) {
         bodies.add(item.body);
     }
+    if (item.pillar) {
+        pillars.add(item.pillar);
+    }
     if (item.citation_info && Array.isArray(item.citation_info)) {
       for (const citation of item.citation_info) {
         if (citation.programme_title) {
           programmes.add(citation.programme_title);
         }
+        if (citation.section_title) {
+          sections.add(citation.section_title);
+        }
       }
     }
     citationsSum += item.num_citations || 0;
+    if (item.year) {
+        const year = parseInt(item.year, 10);
+        if (!isNaN(year)) {
+            localYearDistribution[year] = (localYearDistribution[year] || 0) + 1;
+        }
+    }
   }
 
   uniqueEntities = Array.from(entities).sort();
@@ -67,6 +90,16 @@ async function getMetadata() {
   uniqueBodies = Array.from(bodies).sort();
   uniqueProgrammesCount = programmes.size;
   uniqueProgrammes = Array.from(programmes).sort();
+  uniqueSections = Array.from(sections).sort();
+  uniquePillars = Array.from(pillars).sort();
+  yearDistribution = localYearDistribution;
+  const years = Object.keys(yearDistribution).map(Number);
+  if (years.length > 0) {
+    yearRange = {
+        min: Math.min(...years),
+        max: Math.max(...years),
+    };
+  }
 
   return { 
     uniqueEntities, 
@@ -78,6 +111,10 @@ async function getMetadata() {
     uniqueBodies,
     uniqueProgrammesCount,
     uniqueProgrammes,
+    uniqueSections,
+    uniquePillars,
+    yearRange,
+    yearDistribution,
   };
 }
 

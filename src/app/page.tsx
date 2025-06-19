@@ -14,6 +14,13 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { MandateDetails } from '@/components/mandate-details';
 import { SearchResultsSummary } from '@/components/search-results-summary';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface ParentContext {
   scrollY: number;
@@ -36,9 +43,12 @@ function MandateNavigator() {
   const selectedPriorityArea = searchParams.get('priority_area') || '';
   const keywordFromParams = searchParams.get('keyword') || '';
   const programme = searchParams.get('programme') || '';
-  const year = searchParams.get('year') || '';
+  const startYearFromParams = searchParams.get('start_year');
+  const endYearFromParams = searchParams.get('end_year');
   const budgetDocument = searchParams.get('budget_document') || '';
   const section = searchParams.get('section') || '';
+  const pillar = searchParams.get('pillar') || '';
+  const sortBy = searchParams.get('sort_by') || (keywordFromParams ? 'default' : 'citations_desc');
 
   const [keyword, setKeyword] = useState(keywordFromParams);
   const debouncedKeyword = useDebounce(keyword, 300);
@@ -54,6 +64,13 @@ function MandateNavigator() {
   const [entityOptions, setEntityOptions] = useState<string[]>([]);
   const [organOptions, setOrganOptions] = useState<string[]>([]);
   const [priorityAreaOptions, setPriorityAreaOptions] = useState<string[]>([]);
+  const [programmeOptions, setProgrammeOptions] = useState<string[]>([]);
+  const [sectionOptions, setSectionOptions] = useState<string[]>([]);
+  const [pillarOptions, setPillarOptions] = useState<string[]>([]);
+
+  const [yearDistribution, setYearDistribution] = useState<{ [year: string]: number }>({});
+  const [yearRange, setYearRange] = useState<{ min: number; max: number } | null>(null);
+  const [selectedYearRange, setSelectedYearRange] = useState<[number, number] | null>(null);
 
   const [selectedMandate, setSelectedMandate] = useState<Mandate | null>(null);
 
@@ -171,6 +188,19 @@ function MandateNavigator() {
         setEntityOptions(data.uniqueEntities || []);
         setOrganOptions(data.uniqueBodies || []);
         setPriorityAreaOptions(data.uniquePriorityAreas || []);
+        setProgrammeOptions(data.uniqueProgrammes || []);
+        setSectionOptions(data.uniqueSections || []);
+        setPillarOptions(data.uniquePillars || []);
+        
+        if (data.yearRange) {
+          setYearRange(data.yearRange);
+          const startYear = startYearFromParams ? parseInt(startYearFromParams, 10) : data.yearRange.min;
+          const endYear = endYearFromParams ? parseInt(endYearFromParams, 10) : data.yearRange.max;
+          setSelectedYearRange([startYear, endYear]);
+        }
+        if (data.yearDistribution) {
+            setYearDistribution(data.yearDistribution);
+        }
         
         // Set initial summary stats for the whole dataset
         setTotalItems(data.totalDocuments || 0);
@@ -183,7 +213,7 @@ function MandateNavigator() {
       }
     }
     fetchMetadata();
-  }, []);
+  }, [startYearFromParams, endYearFromParams]);
 
   const fetchMandates = useCallback(async () => {
     setIsLoading(true);
@@ -196,9 +226,14 @@ function MandateNavigator() {
     if (selectedPriorityArea) params.append('priority_area', selectedPriorityArea);
     if (keywordFromParams) params.append('keyword', keywordFromParams);
     if (programme) params.append('programme', programme);
-    if (year) params.append('year', year);
+    if (startYearFromParams) params.append('start_year', startYearFromParams);
+    if (endYearFromParams) params.append('end_year', endYearFromParams);
     if (budgetDocument) params.append('budget_document', budgetDocument);
     if (section) params.append('section', section);
+    if (pillar) params.append('pillar', pillar);
+    if (sortBy && sortBy !== 'default') {
+        params.append('sort_by', sortBy);
+    }
 
     try {
       const response = await fetch(`/api/mandates?${params.toString()}`);
@@ -220,7 +255,7 @@ function MandateNavigator() {
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, pageSize, selectedEntity, selectedOrgan, selectedPriorityArea, keywordFromParams, programme, year, budgetDocument, section]);
+  }, [currentPage, pageSize, selectedEntity, selectedOrgan, selectedPriorityArea, keywordFromParams, programme, startYearFromParams, endYearFromParams, budgetDocument, section, pillar, sortBy]);
   
   useEffect(() => {
     fetchMandates();
@@ -234,6 +269,10 @@ function MandateNavigator() {
         params.set('keyword', debouncedKeyword);
       } else {
         params.delete('keyword');
+        // When clearing search, if sort was relevance, reset to default (citations)
+        if (params.get('sort_by') === 'default') {
+          params.set('sort_by', 'citations_desc');
+        }
       }
       router.push(`${pathname}?${params.toString()}`, { scroll: false });
     }
@@ -263,13 +302,28 @@ function MandateNavigator() {
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
+  const handleYearRangeChange = (newRange: [number, number]) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('page', '1');
+    params.set('start_year', String(newRange[0]));
+    params.set('end_year', String(newRange[1]));
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
+  const handleSortChange = (value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('page', '1');
+    params.set('sort_by', value);
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
   const onEntityChange = (value: string) => handleFilterChange('entity', value);
   const onOrganChange = (value: string) => handleFilterChange('organ', value);
   const handlePriorityAreaChange = (value: string) => handleFilterChange('priority_area', value);
   const onProgrammeChange = (value: string) => handleFilterChange('programme', value);
-  const onYearChange = (value: string) => handleFilterChange('year', value);
   const onBudgetDocumentChange = (value: string) => handleFilterChange('budget_document', value);
   const onSectionChange = (value: string) => handleFilterChange('section', value);
+  const onPillarChange = (value: string) => handleFilterChange('pillar', value);
 
   const onKeywordChange = (value: string) => {
     setKeyword(value);
@@ -299,16 +353,6 @@ function MandateNavigator() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <header className="py-6 px-4 md:px-8 border-b border-border">
-        <div className="container mx-auto flex items-center gap-3">
-          <div className="flex-1">
-            <div className="flex items-center space-x-2">
-              <h1 className="text-2xl font-semibold text-foreground">Mandate Source Registry</h1>
-            </div>
-          </div>
-        </div>
-      </header>
-
       <main className="container mx-auto px-4 md:px-8 py-8 space-y-8">
         
         <section className="mb-8">
@@ -429,13 +473,21 @@ function MandateNavigator() {
           selectedPriorityArea={selectedPriorityArea}
           onPriorityAreaChange={handlePriorityAreaChange}
           programme={programme}
-          year={year}
+          yearRange={yearRange}
+          yearDistribution={yearDistribution}
+          selectedYearRange={selectedYearRange}
           budgetDocument={budgetDocument}
           section={section}
           onProgrammeChange={onProgrammeChange}
-          onYearChange={onYearChange}
+          onYearRangeChange={handleYearRangeChange}
           onBudgetDocumentChange={onBudgetDocumentChange}
           onSectionChange={onSectionChange}
+          programmeOptions={programmeOptions}
+          sectionOptions={sectionOptions}
+          pillarOptions={pillarOptions}
+          selectedPillar={pillar}
+          onPillarChange={onPillarChange}
+          disabled={isLoading}
         />
 
         <SearchResultsSummary
@@ -446,7 +498,8 @@ function MandateNavigator() {
             organ: selectedOrgan !== 'all' ? selectedOrgan : undefined,
             priority_area: selectedPriorityArea !== 'all' ? selectedPriorityArea : undefined,
             programme: programme || undefined,
-            year: year || undefined,
+            pillar: pillar !== 'all' ? pillar : undefined,
+            year: (startYearFromParams && endYearFromParams && yearRange && (parseInt(startYearFromParams, 10) !== yearRange.min || parseInt(endYearFromParams, 10) !== yearRange.max)) ? `${selectedYearRange?.[0]}-${selectedYearRange?.[1]}` : undefined,
             budget_document: budgetDocument !== 'all' ? budgetDocument : undefined,
             section: section || undefined,
           }}
@@ -465,8 +518,15 @@ function MandateNavigator() {
               case 'programme':
                 onProgrammeChange('');
                 break;
+              case 'pillar':
+                onPillarChange('all');
+                break;
               case 'year':
-                onYearChange('');
+                const newParams = new URLSearchParams(searchParams.toString());
+                newParams.delete('start_year');
+                newParams.delete('end_year');
+                newParams.set('page', '1');
+                router.push(`${pathname}?${newParams.toString()}`, { scroll: false });
                 break;
               case 'budget_document':
                 onBudgetDocumentChange('all');
@@ -481,7 +541,23 @@ function MandateNavigator() {
 
         <div className="border-t border-border pt-4">
           <div className="mt-4">
-            <h2 className="text-2xl font-bold tracking-tight mb-4">Mandate Source Documents</h2>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold tracking-tight">Mandate Source Documents</h2>
+              <div className="flex items-center space-x-2">
+                <label htmlFor="sort-by" className="text-sm font-medium">Sort by</label>
+                <Select value={sortBy} onValueChange={handleSortChange}>
+                  <SelectTrigger className="w-[200px]" id="sort-by">
+                    <SelectValue placeholder="Sort by..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {keywordFromParams ? <SelectItem value="default">Relevance</SelectItem> : null}
+                    <SelectItem value="citations_desc">Citations (High to Low)</SelectItem>
+                    <SelectItem value="year_desc">Year (Newest First)</SelectItem>
+                    <SelectItem value="year_asc">Year (Oldest First)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
             {isLoading ? (
               <LoadingSkeleton />
             ) : (

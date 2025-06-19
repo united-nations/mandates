@@ -1,105 +1,52 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Input } from '@/components/ui/input';
+import { Combobox } from './ui/combobox';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectSeparator } from '@/components/ui/select';
 
 interface AdvancedSearchProps {
   programme: string;
-  year: string;
   budgetDocument: string;
   section: string;
   priorityAreaOptions: string[];
+  programmeOptions: string[];
+  sectionOptions: string[];
+  pillarOptions: string[];
   selectedPriorityArea: string;
+  selectedPillar: string;
   onProgrammeChange: (value: string) => void;
-  onYearChange: (value: string) => void;
   onBudgetDocumentChange: (value: string) => void;
   onSectionChange: (value: string) => void;
   onPriorityAreaChange: (value: string) => void;
+  onPillarChange: (value: string) => void;
   disabled?: boolean;
 }
 
 export function AdvancedSearch({
   programme,
-  year,
   budgetDocument,
   section,
   priorityAreaOptions,
+  programmeOptions,
+  sectionOptions,
+  pillarOptions,
   selectedPriorityArea,
+  selectedPillar,
   onProgrammeChange,
-  onYearChange,
   onBudgetDocumentChange,
   onSectionChange,
   onPriorityAreaChange,
+  onPillarChange,
   disabled,
 }: AdvancedSearchProps) {
-  const [programmeValue, setProgrammeValue] = useState(programme);
-  const [yearValue, setYearValue] = useState(year);
-  const [sectionValue, setSectionValue] = useState(section);
 
-  useEffect(() => {
-    setProgrammeValue(programme);
-  }, [programme]);
-
-  useEffect(() => {
-    setYearValue(year);
-  }, [year]);
-
-  useEffect(() => {
-    setSectionValue(section);
-  }, [section]);
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>, callback: (value: string) => void, value: string) => {
-    if (event.key === 'Enter') {
-      callback(value);
-    }
-  };
+  const programmeItems = programmeOptions.map(p => ({ value: p, label: p }));
+  const sectionItems = sectionOptions.map(s => ({ value: s, label: s }));
 
   return (
-    <div className="border-t pt-4 mt-4">
+    <div className="border-t pt-4 mt-4 space-y-4">
+        {/* Row 1 */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="programme">Programme</Label>
-            <Input 
-              id="programme" 
-              placeholder="Enter programme and press Enter" 
-              value={programmeValue}
-              onChange={(e) => setProgrammeValue(e.target.value)}
-              onKeyDown={(e) => handleKeyDown(e, onProgrammeChange, programmeValue)}
-              disabled={disabled}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="year">Year</Label>
-            <Input 
-              id="year" 
-              placeholder="Enter year and press Enter" 
-              value={yearValue}
-              onChange={(e) => setYearValue(e.target.value)}
-              onKeyDown={(e) => handleKeyDown(e, onYearChange, yearValue)}
-              disabled={disabled}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="priority-area">Priority Area</Label>
-            <Select 
-              value={selectedPriorityArea} 
-              onValueChange={onPriorityAreaChange}
-              disabled={disabled}
-            >
-              <SelectTrigger id="priority-area">
-                <SelectValue placeholder="Select area" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Priority Areas</SelectItem>
-                <SelectSeparator />
-                {priorityAreaOptions.map((area) => (
-                  <SelectItem key={area} value={area}>{area}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
           <div className="space-y-2">
             <Label htmlFor="budget-document">Budget Document</Label>
             <Select 
@@ -120,15 +67,69 @@ export function AdvancedSearch({
             </Select>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="section">Section</Label>
-            <Input 
-              id="section" 
-              placeholder="Enter section and press Enter" 
-              value={sectionValue}
-              onChange={(e) => setSectionValue(e.target.value)}
-              onKeyDown={(e) => handleKeyDown(e, onSectionChange, sectionValue)}
+            <Label>Programme</Label>
+            <Combobox 
+              options={programmeItems}
+              value={programme}
+              onChange={onProgrammeChange}
+              placeholder='Filter by programme'
+              searchPlaceholder='Search programmes'
+              emptyPlaceholder='No programmes found'
               disabled={disabled}
             />
+          </div>
+          <div className="space-y-2">
+            <Label>Section</Label>
+             <Combobox 
+              options={sectionItems}
+              value={section}
+              onChange={onSectionChange}
+              placeholder='Filter by section'
+              searchPlaceholder='Search sections'
+              emptyPlaceholder='No sections found'
+              disabled={disabled}
+            />
+          </div>
+        </div>
+        {/* Row 2 */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="priority-area">Priority Area</Label>
+            <Select 
+              value={selectedPriorityArea} 
+              onValueChange={onPriorityAreaChange}
+              disabled={disabled}
+            >
+              <SelectTrigger id="priority-area">
+                <SelectValue placeholder="Select area" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Priority Areas</SelectItem>
+                <SelectSeparator />
+                {priorityAreaOptions.map((area) => (
+                  <SelectItem key={area} value={area}>{area}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="pillar">Pillar</Label>
+            <Select 
+              value={selectedPillar} 
+              onValueChange={onPillarChange}
+              disabled={disabled}
+            >
+              <SelectTrigger id="pillar">
+                <SelectValue placeholder="Select pillar" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Pillars</SelectItem>
+                <SelectSeparator />
+                {pillarOptions.map((pillar) => (
+                  <SelectItem key={pillar} value={pillar}>{pillar}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
     </div>

@@ -96,8 +96,10 @@ export async function GET(request: Request) {
     const year = searchParams.get('year');
     const budgetDocument = searchParams.get('budget_document');
     const section = searchParams.get('section');
+    const pillar = searchParams.get('pillar');
     const page = parseInt(searchParams.get('page') || '1', 10);
     const limit = parseInt(searchParams.get('limit') || '30', 10);
+    const sortBy = searchParams.get('sort_by');
 
     let filteredMandates: Mandate[] = allMandates;
 
@@ -106,11 +108,15 @@ export async function GET(request: Request) {
     }
 
     if (entity) {
-      filteredMandates = filteredMandates.filter((m) => m.mentions.includes(entity));
+      filteredMandates = filteredMandates.filter((m) => m.mentions?.includes(entity));
+    }
+
+    if (pillar && pillar !== 'all') {
+      filteredMandates = filteredMandates.filter((m) => m.pillar === pillar);
     }
 
     if (organ) {
-      filteredMandates = filteredMandates.filter((m) => m.issuing_body_or_bodies.includes(organ));
+      filteredMandates = filteredMandates.filter((m) => m.issuing_body_or_bodies?.includes(organ));
     }
 
     if (programme) {
@@ -135,7 +141,7 @@ export async function GET(request: Request) {
       // This assumes a field like 'document_section' exists.
       const lowerSection = section.toLowerCase();
       filteredMandates = filteredMandates.filter((m) => 
-        (m as any).document_section && (m as any).document_section.toLowerCase().includes(lowerSection)
+        m.citation_info?.some((c: CitationInfo) => c.section_title?.toLowerCase().includes(lowerSection))
       );
     }
 
@@ -144,6 +150,37 @@ export async function GET(request: Request) {
       filteredMandates = searchResults;
     }
     
+    // Sorting logic
+    if (sortBy && sortBy !== 'default') {
+        const [sortField, sortDirection] = sortBy.split('_');
+        const sortOrder = sortDirection === 'asc' ? 1 : -1;
+
+        filteredMandates.sort((a, b) => {
+            let valA: any, valB: any;
+            if (sortField === 'citations') {
+                valA = a.num_citations || 0;
+                valB = b.num_citations || 0;
+            } else if (sortField === 'year') {
+                valA = parseInt(a.year, 10) || 0;
+                valB = parseInt(b.year, 10) || 0;
+            } else {
+                return 0;
+            }
+            if (valA < valB) return -1 * sortOrder;
+            if (valA > valB) return 1 * sortOrder;
+            
+            // secondary sort for tie-breaking
+            if (sortField === 'year') {
+                return (b.num_citations || 0) - (a.num_citations || 0);
+            }
+            if (sortField === 'citations') {
+                return (parseInt(b.year, 10) || 0) - (parseInt(a.year, 10) || 0);
+            }
+
+            return 0;
+        });
+    }
+
     // Calculate summary stats on filtered mandates
     const totalItems = filteredMandates.length;
     const totalCitations = filteredMandates.reduce((acc, mandate) => acc + (mandate.num_citations || 0), 0);

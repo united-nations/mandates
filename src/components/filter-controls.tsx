@@ -7,25 +7,33 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { X, ChevronDown, ChevronUp } from 'lucide-react';
 import { AdvancedSearch } from '@/components/advanced-search';
+import { YearSlider } from './year-slider';
 
 interface FilterControlsProps {
   entityOptions: string[];
   organOptions: string[];
   priorityAreaOptions: string[];
+  programmeOptions: string[];
+  sectionOptions: string[];
+  pillarOptions: string[];
   selectedEntity: string;
   selectedOrgan: string;
   selectedPriorityArea: string;
+  selectedPillar: string;
   keyword: string;
   onEntityChange: (value: string) => void;
   onOrganChange: (value: string) => void;
   onPriorityAreaChange: (value: string) => void;
+  onPillarChange: (value: string) => void;
   onKeywordChange: (value: string) => void;
   programme: string;
-  year: string;
+  yearRange: { min: number; max: number } | null;
+  yearDistribution: { [year: string]: number };
+  selectedYearRange: [number, number] | null;
   budgetDocument: string;
   section: string;
   onProgrammeChange: (value: string) => void;
-  onYearChange: (value: string) => void;
+  onYearRangeChange: (value: [number, number]) => void;
   onBudgetDocumentChange: (value: string) => void;
   onSectionChange: (value: string) => void;
   disabled?: boolean;
@@ -35,20 +43,27 @@ export function FilterControls({
   entityOptions,
   organOptions,
   priorityAreaOptions,
+  programmeOptions,
+  sectionOptions,
+  pillarOptions,
   selectedEntity,
   selectedOrgan,
   selectedPriorityArea,
+  selectedPillar,
   keyword,
   onEntityChange,
   onOrganChange,
   onPriorityAreaChange,
+  onPillarChange,
   onKeywordChange,
   programme,
-  year,
+  yearRange,
+  yearDistribution,
+  selectedYearRange,
   budgetDocument,
   section,
   onProgrammeChange,
-  onYearChange,
+  onYearRangeChange,
   onBudgetDocumentChange,
   onSectionChange,
   disabled,
@@ -128,20 +143,36 @@ export function FilterControls({
       </div>
 
       {showAdvancedSearch && (
+        <>
         <AdvancedSearch
           programme={programme}
-          year={year}
           budgetDocument={budgetDocument}
           section={section}
           onProgrammeChange={onProgrammeChange}
-          onYearChange={onYearChange}
           onBudgetDocumentChange={onBudgetDocumentChange}
           onSectionChange={onSectionChange}
           priorityAreaOptions={priorityAreaOptions}
           selectedPriorityArea={selectedPriorityArea}
           onPriorityAreaChange={onPriorityAreaChange}
+          programmeOptions={programmeOptions}
+          sectionOptions={sectionOptions}
+          pillarOptions={pillarOptions}
+          selectedPillar={selectedPillar}
+          onPillarChange={onPillarChange}
           disabled={disabled}
         />
+        {yearRange && selectedYearRange && (
+          <div className="pt-2">
+              <h3 className="text-sm font-medium text-muted-foreground mb-1">Filter by Year Range</h3>
+              <YearSlider
+                  yearDistribution={yearDistribution}
+                  yearRange={yearRange}
+                  value={selectedYearRange}
+                  onChange={onYearRangeChange}
+              />
+          </div>
+        )}
+        </>
       )}
     </div>
   );
