@@ -92,6 +92,7 @@ export function AdvancedSearch({
                   <SelectSeparator />
                   <SelectItem value="ppb2026">Proposed Programme Budget for 2026</SelectItem>
                   <SelectItem value="pko">Budget of Peacekeeping Operations 2025/26</SelectItem>
+                  <SelectItem value="PPB 2026/Plan Outline">Plan Outline</SelectItem>
                 </SelectContent>
               </Select>
             </div>

@@ -46,8 +46,10 @@ export function MandateDetails({ mandate, open, onOpenChange }: MandateDetailsPr
   const [isPdfVisible, setIsPdfVisible] = useState(false);
 
   const budgetDocumentDisplayNames: { [key: string]: string } = {
-    ppb2026: 'Proposed Programme Budget for 2026',
-    pko: 'Budget of Peacekeeping Operations 2025/26',
+    'ppb2026': 'Proposed Programme Budget for 2026',
+    'PPB 2026': 'Proposed Programme Budget for 2026',
+    'pko': 'Budget of Peacekeeping Operations 2025/26',
+    'PPB 2026/Plan Outline': 'Plan Outline',
   };
 
   const entityCounts = useMemo(() => {
@@ -159,8 +161,7 @@ export function MandateDetails({ mandate, open, onOpenChange }: MandateDetailsPr
                   {budgetDocuments.length > 0 ? (
                     <div className="flex flex-wrap gap-1">
                       {budgetDocuments.map((doc, index) => {
-                        const docKey = doc.replace(/\s/g, '').toLowerCase();
-                        const displayName = budgetDocumentDisplayNames[docKey] || doc;
+                        const displayName = budgetDocumentDisplayNames[doc] || doc;
                         return (
                           <Badge key={index} variant="stronger" className="text-xs">
                             {displayName}

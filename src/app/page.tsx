@@ -385,8 +385,10 @@ function MandateNavigator() {
   };
 
   const budgetDocumentDisplayNames: { [key: string]: string } = {
-    ppb2026: 'Proposed Programme Budget for 2026',
-    pko: 'Budget of Peacekeeping Operations 2025/26',
+    'ppb2026': 'Proposed Programme Budget for 2026',
+    'PPB 2026': 'Proposed Programme Budget for 2026',
+    'pko': 'Budget of Peacekeeping Operations 2025/26',
+    'PPB 2026/Plan Outline': 'Plan Outline',
   };
 
   const LoadingSkeleton = () => (

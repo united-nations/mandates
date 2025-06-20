@@ -58,7 +58,7 @@ export const explainerTexts = {
         'Search for specific terms. Use this to find mandate source documents related to particular topics or activities.'
     },
     unOrgan: {
-      label: 'Organ',
+      label: 'UN Organ/Other Body',
       placeholder: 'Filter by UN Organ or Other Body...',
       searchPlaceholder: 'Search organs...',
       emptyPlaceholder: 'No organs found.',

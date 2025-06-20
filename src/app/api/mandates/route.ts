@@ -151,7 +151,9 @@ export async function GET(request: Request) {
     }
 
     if (budgetDocument && budgetDocument !== 'all') {
-      filteredMandates = filteredMandates.filter((m) => m.origin_document === budgetDocument);
+      filteredMandates = filteredMandates.filter((m) => 
+        m.citation_info?.some((citation: CitationInfo) => citation.origin_document === budgetDocument)
+      );
     }
 
     if (keyword) {
