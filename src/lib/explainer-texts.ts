@@ -69,7 +69,7 @@ export const explainerTexts = {
     },
     unEntity: {
       label: 'UN Entity',
-      placeholder: 'Filter by implementing entity...',
+      placeholder: 'Filter by citing entity...',
       searchPlaceholder: 'Search entities...',
       emptyPlaceholder: 'No entities found.',
       tooltip: 'Filter by entity citing the documents. These are the departments, offices, funds and programmes, regional commissions, peacekeeping operations, political missions, and other entities within the UN Secretariat that reference these mandate documents in their budget submissions.'
