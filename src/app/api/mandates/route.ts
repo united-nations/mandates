@@ -15,24 +15,7 @@ async function getMandates(): Promise<Mandate[]> {
   const fileContents = await fs.readFile(path.join(jsonDirectory, 'ppb2026_unique_mandates_with_metadata.json'), 'utf8');
   
   const rawData = JSON.parse(fileContents);
-
-  const transformedData = rawData.map((item: any) => ({
-    ...item,
-    document_title: item.title,
-    document_symbol: item.symbol,
-    issuing_body_or_bodies: item.body ? [item.body] : [],
-    mentions: item.entities,
-    ai_summary: item.ai_summary || null,
-  }));
-
-  // Sort by num_entities descending initially
-  transformedData.sort((a: any, b: any) => b.num_entities - a.num_entities);
-
-  mandates = transformedData;
-  
-  console.log('--- MANDATE DATA STRUCTURE ---');
-  console.log(JSON.stringify(mandates[0], null, 2));
-  
+  mandates = rawData.sort((a: any, b: any) => b.num_entities - a.num_entities);
   return mandates;
 }
 
@@ -47,8 +30,12 @@ interface SearchResult extends Mandate {
 const searchFields: SearchField[] = [
   {
     name: 'title',
-    getValue: (mandate: Mandate) => mandate.title || mandate.document_title || ''
-  }
+    getValue: (mandate: Mandate) => mandate.title || '',
+  },
+  {
+    name: 'document_symbol',
+    getValue: (mandate: Mandate) => mandate.document_symbol || '',
+  },
 ];
 
 function performEnhancedTextSearch(mandates: Mandate[], query: string): SearchResult[] {

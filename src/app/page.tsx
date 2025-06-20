@@ -82,7 +82,7 @@ function MandateNavigator() {
   const selectedOrgansFromParams = searchParams.get('organs')?.split(',').filter(Boolean) || [];
 
   const [keyword, setKeyword] = useState(keywordFromParams);
-  const debouncedKeyword = useDebounce(keyword, 300);
+  const debouncedKeyword = useDebounce(keyword, 500);
   
   // New multiselect state
   const [selectedEntities, setSelectedEntities] = useState<string[]>(selectedEntitiesFromParams);
