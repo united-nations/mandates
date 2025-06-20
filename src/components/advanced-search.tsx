@@ -3,7 +3,7 @@
 import { SearchableDropdown } from './ui/searchable-dropdown';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectSeparator } from '@/components/ui/select';
-import { HelpCircle, Calendar } from 'lucide-react';
+import { HelpCircle, Calendar, Target, Receipt } from 'lucide-react';
 import {
   Tooltip,
   TooltipContent,
@@ -46,6 +46,7 @@ export function AdvancedSearch({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <div className="flex items-center gap-2">
+                <Target className="h-4 w-4 text-muted-foreground" />
                 <Label className="text-base font-medium">{explainerTexts.advancedFilters.programme.label}</Label>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -68,6 +69,7 @@ export function AdvancedSearch({
             </div>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
+                <Receipt className="h-4 w-4 text-muted-foreground" />
                 <Label htmlFor="budget-document" className="text-base font-medium">{explainerTexts.advancedFilters.budgetDocument.label}</Label>
                 <Tooltip>
                   <TooltipTrigger asChild>
