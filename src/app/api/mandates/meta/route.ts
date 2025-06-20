@@ -68,7 +68,7 @@ async function getMetadata() {
     if (item.priority_area) {
         priorityAreas.add(item.priority_area);
     }
-    if (item.body) {
+    if (item.body && item.body !== 'UNCLOS' && item.body !== 'Charter' && item.body !== 'Other' && item.body !== "Conference of the Parties to the United Nations Convention against Transnational Organized Crime") {
         bodyCounts[item.body] = (bodyCounts[item.body] || 0) + (item.num_citations || 0);
     }
     if (item.pillar) {
