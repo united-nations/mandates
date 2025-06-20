@@ -110,11 +110,11 @@ export async function GET(request: Request) {
     if (entities.length > 1) {
       // Multiple entities - use OR logic (mandate must mention at least one)
       filteredMandates = filteredMandates.filter((m) => 
-        entities.some(ent => m.mentions?.includes(ent))
+        entities.some(ent => m.entities?.includes(ent))
       );
     } else if (entity) {
       // Single entity (legacy)
-      filteredMandates = filteredMandates.filter((m) => m.mentions?.includes(entity));
+      filteredMandates = filteredMandates.filter((m) => m.entities?.includes(entity));
     }
 
     if (pillar && pillar !== 'all') {
@@ -125,11 +125,11 @@ export async function GET(request: Request) {
     if (organs.length > 1) {
       // Multiple organs - use OR logic (mandate must be issued by at least one)
       filteredMandates = filteredMandates.filter((m) => 
-        organs.some(org => m.issuing_body_or_bodies?.includes(org))
+        organs.includes(m.body)
       );
     } else if (organ) {
       // Single organ (legacy)
-      filteredMandates = filteredMandates.filter((m) => m.issuing_body_or_bodies?.includes(organ));
+      filteredMandates = filteredMandates.filter((m) => m.body === organ);
     }
 
     if (programme) {
@@ -209,10 +209,10 @@ export async function GET(request: Request) {
     // Calculate summary stats on filtered mandates
     const totalItems = filteredMandates.length;
     const totalCitations = filteredMandates.reduce((acc, mandate) => acc + (mandate.num_citations || 0), 0);
-    const allFilteredEntities = filteredMandates.flatMap(mandate => mandate.mentions);
-    const uniqueEntitiesCount = new Set(allFilteredEntities).size;
-    const allFilteredBodies = filteredMandates.flatMap(mandate => mandate.issuing_body_or_bodies);
-    const uniqueBodiesCount = new Set(allFilteredBodies).size;
+    const allFilteredEntities = filteredMandates.flatMap(mandate => mandate.entities || []);
+    const uniqueEntitiesCount = new Set(allFilteredEntities.filter(Boolean)).size;
+    const allFilteredBodies = filteredMandates.map(mandate => mandate.body);
+    const uniqueBodiesCount = new Set(allFilteredBodies.filter(Boolean)).size;
     const allFilteredProgrammes = new Set<string>();
     const allFilteredSections = new Set<string>();
     for (const mandate of filteredMandates) {
