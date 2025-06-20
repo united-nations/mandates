@@ -124,14 +124,17 @@ export function SearchableDropdown({
           <span className="truncate">{displayValue}</span>
           <div className="flex items-center">
              {value && (
-              <X
-                className="h-4 w-4 shrink-0 opacity-50 hover:opacity-100 mr-2"
+              <button
+                type="button"
+                className="p-1 rounded-sm hover:bg-muted transition-colors"
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
                   handleClear();
                 }}
-              />
+              >
+                <X className="h-3 w-3 opacity-50 hover:opacity-100" />
+              </button>
             )}
             <ChevronDown className="h-4 w-4 opacity-50" />
           </div>
