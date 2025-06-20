@@ -38,6 +38,7 @@ export interface Mandate {
   uniform_title: string[] | null;
   title: string | null;
   subtitle: string | null;
+  description: string | null;
   statement_of_responsibility: string[] | null;
   translated_title: string[] | null;
   publish_place: string[] | null;
@@ -90,4 +91,4 @@ export interface Mandate {
 export type Entity = {
   entity: string;
   entity_long: string;
-}; 
+};

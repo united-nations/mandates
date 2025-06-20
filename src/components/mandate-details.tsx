@@ -118,7 +118,7 @@ export function MandateDetails({ mandate, open, onOpenChange, parentContext }: M
         {/* Header */}
         <div className="border-b pb-4">
             <p className="text-sm font-medium text-muted-foreground">Mandate Document</p>
-            <DialogTitle className="text-2xl font-bold mt-1">{mandate.title || 'Mandate Details'}</DialogTitle>
+            <DialogTitle className="text-2xl font-bold mt-1">{mandate.title || mandate.description || 'Mandate Details'}</DialogTitle>
             <DialogDescription className="mt-1">
                 {displaySymbol}
             </DialogDescription>

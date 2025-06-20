@@ -63,10 +63,10 @@ export function FilterControls({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <Label htmlFor="keyword-search" className="text-sm font-medium">{explainerTexts.filters.keywordSearch.label}</Label>
+              <Label htmlFor="keyword-search" className="text-base font-medium">{explainerTexts.filters.keywordSearch.label}</Label>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <HelpCircle className="h-3 w-3 text-muted-foreground cursor-help" />
+                  <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
                 </TooltipTrigger>
                 <TooltipContent className="max-w-xs">
                   <p>{explainerTexts.filters.keywordSearch.tooltip}</p>
@@ -79,7 +79,7 @@ export function FilterControls({
                 placeholder={explainerTexts.filters.keywordSearch.placeholder}
                 value={keyword}
                 onChange={(e) => onKeywordChange(e.target.value)}
-                className="pr-10"
+                className="pr-10 text-sm h-11"
               />
               {keyword && (
                 <Button
@@ -96,10 +96,10 @@ export function FilterControls({
 
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <Label className="text-sm font-medium">{explainerTexts.filters.unOrgan.label}</Label>
+              <Label className="text-base font-medium">{explainerTexts.filters.unOrgan.label}</Label>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <HelpCircle className="h-3 w-3 text-muted-foreground cursor-help" />
+                  <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
                 </TooltipTrigger>
                 <TooltipContent className="max-w-xs">
                   <p>{explainerTexts.filters.unOrgan.tooltip}</p>
@@ -111,17 +111,18 @@ export function FilterControls({
               value={selectedOrgan}
               onChange={onOrganChange}
               placeholder={explainerTexts.filters.unOrgan.placeholder}
-              searchPlaceholder="Search organs..."
-              emptyPlaceholder="No organs found."
+              searchPlaceholder={explainerTexts.filters.unOrgan.searchPlaceholder}
+              emptyPlaceholder={explainerTexts.filters.unOrgan.emptyPlaceholder}
+              className="text-sm h-11"
             />
           </div>
 
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <Label className="text-sm font-medium">{explainerTexts.filters.unEntity.label}</Label>
+              <Label className="text-base font-medium">{explainerTexts.filters.unEntity.label}</Label>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <HelpCircle className="h-3 w-3 text-muted-foreground cursor-help" />
+                  <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
                 </TooltipTrigger>
                 <TooltipContent className="max-w-xs">
                   <p>{explainerTexts.filters.unEntity.tooltip}</p>
@@ -133,8 +134,9 @@ export function FilterControls({
               value={selectedEntity}
               onChange={onEntityChange}
               placeholder={explainerTexts.filters.unEntity.placeholder}
-              searchPlaceholder="Search entities..."
-              emptyPlaceholder="No entities found."
+              searchPlaceholder={explainerTexts.filters.unEntity.searchPlaceholder}
+              emptyPlaceholder={explainerTexts.filters.unEntity.emptyPlaceholder}
+              className="text-sm h-11"
             />
           </div>
         </div>

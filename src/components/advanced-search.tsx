@@ -46,10 +46,10 @@ export function AdvancedSearch({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <Label>{explainerTexts.advancedFilters.programme.label}</Label>
+                <Label className="text-base font-medium">{explainerTexts.advancedFilters.programme.label}</Label>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <HelpCircle className="h-3 w-3 text-muted-foreground cursor-help" />
+                    <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
                   </TooltipTrigger>
                   <TooltipContent className="max-w-xs">
                     <p>{explainerTexts.advancedFilters.programme.tooltip}</p>
@@ -61,16 +61,17 @@ export function AdvancedSearch({
                 value={programme}
                 onChange={onProgrammeChange}
                 placeholder={explainerTexts.advancedFilters.programme.placeholder}
-                searchPlaceholder='Search programmes'
-                emptyPlaceholder='No programmes found'
+                searchPlaceholder={explainerTexts.advancedFilters.programme.searchPlaceholder}
+                emptyPlaceholder={explainerTexts.advancedFilters.programme.emptyPlaceholder}
+                className="text-sm h-11"
               />
             </div>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <Label htmlFor="budget-document">{explainerTexts.advancedFilters.budgetDocument.label}</Label>
+                <Label htmlFor="budget-document" className="text-base font-medium">{explainerTexts.advancedFilters.budgetDocument.label}</Label>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <HelpCircle className="h-3 w-3 text-muted-foreground cursor-help" />
+                    <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
                   </TooltipTrigger>
                   <TooltipContent className="max-w-xs">
                     <p>{explainerTexts.advancedFilters.budgetDocument.tooltip}</p>
@@ -81,7 +82,7 @@ export function AdvancedSearch({
                 value={budgetDocument} 
                 onValueChange={onBudgetDocumentChange}
               >
-                <SelectTrigger id="budget-document">
+                <SelectTrigger id="budget-document" className="text-sm h-11">
                   <SelectValue placeholder={explainerTexts.advancedFilters.budgetDocument.placeholder} />
                 </SelectTrigger>
                 <SelectContent>
@@ -98,10 +99,10 @@ export function AdvancedSearch({
           {yearRange && selectedYearRange && (
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <Label className="text-sm font-medium">{explainerTexts.filters.yearRange.label}</Label>
+                <Label className="text-base font-medium">{explainerTexts.filters.yearRange.label}</Label>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <HelpCircle className="h-3 w-3 text-muted-foreground cursor-help" />
+                    <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
                   </TooltipTrigger>
                   <TooltipContent className="max-w-xs">
                     <p>{explainerTexts.filters.yearRange.tooltip}</p>

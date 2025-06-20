@@ -12,7 +12,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { EntityName } from './ui/entity-name';
-import { FileText, Calendar, Landmark, Target } from 'lucide-react';
+import { FileText, Calendar, Landmark, Target, Info } from 'lucide-react';
 import { explainerTexts } from '@/lib/explainer-texts';
 
 interface Organ {
@@ -43,7 +43,7 @@ interface MandateListProps {
 }
 
 const EntityBadges = ({ entities }: { entities: string[] }) => {
-  const validEntities = entities.filter(entity => entity !== null);
+  const validEntities = entities.filter(entity => entity !== null).sort();
 
   if (validEntities.length === 0) {
     return null;
@@ -89,10 +89,11 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
         {mandates.map((mandate, index) => {
           const hasSearchMatches = mandate.match_details && mandate.match_details.length > 0;
           const searchScore = mandate.searchScore || 0;
+          const displaySymbol = mandate.full_document_symbol || mandate.symbol;
           
           return (
             <motion.div
-              key={mandate.document_symbol}
+              key={mandate.full_document_symbol || mandate.document_symbol}
               className={`relative p-4 border rounded-lg shadow-sm bg-card hover:bg-muted/50 transition-colors cursor-pointer ${
                 hasSearchMatches ? 'ring-2 ring-primary/20 bg-accent/5' : ''
               }`}
@@ -103,7 +104,8 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
             >
               <div className="flex flex-col gap-3">
                 {/* Details button - positioned absolute */}
-                <Button size="sm" variant="outline" className="absolute top-3 right-3 shrink-0 text-xs px-2 py-1 h-7">
+                <Button className="absolute top-3 right-3 shrink-0 inline-flex items-center gap-2">
+                  <Info className="h-4 w-4" />
                   Details
                 </Button>
 
@@ -111,17 +113,17 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
                   <h3 className="text-base font-semibold leading-tight">
                     <HighlightedContent 
                       content={mandate.highlightedTitle || mandate.highlightedFields?.title} 
-                      fallback={mandate.title || 'Untitled'} 
+                      fallback={mandate.title || mandate.description || 'Untitled'} 
                     />
                   </h3>
                 </div>
 
-                <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                <div className="flex items-center gap-4 text-sm text-muted-foreground">
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div className="flex items-center gap-1.5">
-                        <FileText className="h-3 w-3" />
-                        <span className="font-medium">{mandate.document_symbol}</span>
+                        <FileText className="h-4 w-4" />
+                        <span className="font-medium">{displaySymbol}</span>
                       </div>
                     </TooltipTrigger>
                     <TooltipContent>
@@ -133,7 +135,7 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <div className="flex items-center gap-1.5">
-                          <Landmark className="h-3 w-3" />
+                          <Landmark className="h-4 w-4" />
                           <span className="font-medium">{mandate.body}</span>
                         </div>
                       </TooltipTrigger>
@@ -147,11 +149,11 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
                     </Tooltip>
                   )}
                    
-                  {mandate.year && (
+                  {mandate.year && mandate.year !== '-' && (
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <div className="flex items-center gap-1.5">
-                          <Calendar className="h-3 w-3" />
+                          <Calendar className="h-4 w-4" />
                           <span className="font-medium">{mandate.year}</span>
                         </div>
                       </TooltipTrigger>
@@ -166,7 +168,7 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <div className="flex items-center gap-1.5">
-                          <Target className="h-3 w-3" />
+                          <Target className="h-4 w-4" />
                           <span className="font-medium">{Math.round(searchScore * 100)}% match</span>
                         </div>
                       </TooltipTrigger>
@@ -179,11 +181,11 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
                 
                 {/* Match details and highlighted content */}
                 {hasSearchMatches && (
-                  <div className="text-xs space-y-2">
+                  <div className="text-sm space-y-2">
                     <div className="flex flex-wrap gap-1 items-center">
                       <span className="font-medium text-muted-foreground">Matches found in:</span>
                       {mandate.match_details!.map((detail, idx) => (
-                        <Badge key={idx} variant="outline" className="text-xs">
+                        <Badge key={idx} variant="outline">
                           {detail}
                         </Badge>
                       ))}
@@ -239,7 +241,7 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
                   <div className="pt-2 border-t border-border/30">
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <p className="text-xs font-medium mb-2 text-muted-foreground cursor-help">
+                        <p className="text-sm font-medium mb-2 text-muted-foreground cursor-help">
                           Cited {mandate.num_citations} time{mandate.num_citations !== 1 ? 's' : ''} by {mandate.num_entities} entit{mandate.num_entities !== 1 ? 'ies' : 'y'}
                         </p>
                       </TooltipTrigger>
