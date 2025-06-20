@@ -445,10 +445,10 @@ function MandateNavigator() {
   return (
     <TooltipProvider>
       <div className="min-h-screen bg-background text-foreground">
-        <main className="w-full py-6 space-y-6 px-8 sm:px-12 lg:px-16">
+        <main className="w-full max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto py-6 space-y-6 px-8 sm:px-12 lg:px-16">
           
           {/* Header with context info */}
-          <section className="pb-4">
+          <section className="pb-2">
             <div className="flex items-start justify-between">
               <div>
                 <div className="flex items-baseline gap-x-2 mb-6 mt-2">
@@ -457,12 +457,12 @@ function MandateNavigator() {
                   </h1>
                   <p className="text-sm text-muted-foreground">{explainerTexts.mainHeader.versionTag}</p>
                 </div>
-                <div className="text-muted-foreground space-y-2 mt-2">
+                <div className="text-muted-foreground space-y-1 mt-2 text-justify">
                   {explainerTexts.mainHeader.description.map((paragraph, index) => (
                     <p key={index}>{paragraph}</p>
                   ))}
                 </div>
-                <p className="text-sm text-muted-foreground mt-4 italic">{explainerTexts.mainHeader.disclaimer}</p>
+                <p className="text-sm text-muted-foreground mt-2 italic text-justify">{explainerTexts.mainHeader.disclaimer}</p>
               </div>
 
             </div>
