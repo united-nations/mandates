@@ -17,9 +17,12 @@ interface SearchResultsSummaryProps {
     pillar?: string;
     year?: string;
     budget_document?: string;
+    entities?: string[];
+    organs?: string[];
   };
   onClearSearch: () => void;
   onClearFilter: (filterKey: string) => void;
+  onClearMultiSelectFilter?: (filterKey: string, value: string) => void;
   isLoading: boolean;
 }
 
@@ -29,9 +32,15 @@ export function SearchResultsSummary({
   appliedFilters,
   onClearSearch,
   onClearFilter,
+  onClearMultiSelectFilter,
   isLoading
 }: SearchResultsSummaryProps) {
-  const hasFilters = Object.values(appliedFilters).some(value => value && value !== 'all');
+  const hasFilters = Object.values(appliedFilters).some(value => {
+    if (Array.isArray(value)) {
+      return value.length > 0;
+    }
+    return value && value !== 'all';
+  });
   const hasSearch = searchKeyword && searchKeyword.trim().length > 0;
 
   if (!hasSearch && !hasFilters) return null;
@@ -63,7 +72,8 @@ export function SearchResultsSummary({
               onClick={() => {
                 if (hasSearch) onClearSearch();
                 Object.keys(appliedFilters).forEach(key => {
-                  if (appliedFilters[key as keyof typeof appliedFilters]) {
+                  const value = appliedFilters[key as keyof typeof appliedFilters];
+                  if (value) {
                     onClearFilter(key);
                   }
                 });
@@ -90,6 +100,7 @@ export function SearchResultsSummary({
             </Badge>
           )}
 
+          {/* Single select entity (legacy) */}
           {appliedFilters.entity && appliedFilters.entity !== 'all' && (
             <Badge variant="secondary" className="flex items-center gap-1">
               Entity:&nbsp;
@@ -105,6 +116,23 @@ export function SearchResultsSummary({
             </Badge>
           )}
 
+          {/* Multi-select entities */}
+          {appliedFilters.entities && appliedFilters.entities.map((entity) => (
+            <Badge key={entity} variant="secondary" className="flex items-center gap-1">
+              Entity:&nbsp;
+              <EntityName entityName={entity} />
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-4 w-4 p-0 hover:bg-transparent"
+                onClick={() => onClearMultiSelectFilter?.('entities', entity)}
+              >
+                <X className="h-3 w-3" />
+              </Button>
+            </Badge>
+          ))}
+
+          {/* Single select organ (legacy) */}
           {appliedFilters.organ && appliedFilters.organ !== 'all' && (
             <Badge variant="secondary" className="flex items-center gap-1">
               Organ: {appliedFilters.organ}
@@ -118,6 +146,21 @@ export function SearchResultsSummary({
               </Button>
             </Badge>
           )}
+
+          {/* Multi-select organs */}
+          {appliedFilters.organs && appliedFilters.organs.map((organ) => (
+            <Badge key={organ} variant="secondary" className="flex items-center gap-1">
+              Organ: {organ}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-4 w-4 p-0 hover:bg-transparent"
+                onClick={() => onClearMultiSelectFilter?.('organs', organ)}
+              >
+                <X className="h-3 w-3" />
+              </Button>
+            </Badge>
+          ))}
 
           {appliedFilters.programme && (
             <Badge variant="secondary" className="flex items-center gap-1">

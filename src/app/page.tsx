@@ -77,9 +77,17 @@ function MandateNavigator() {
   const budgetDocument = searchParams.get('budget_document') || '';
   const sortBy = searchParams.get('sort_by') || (keywordFromParams ? 'default' : 'citations_desc');
 
+  // New multiselect state - get comma-separated values from URL
+  const selectedEntitiesFromParams = searchParams.get('entities')?.split(',').filter(Boolean) || [];
+  const selectedOrgansFromParams = searchParams.get('organs')?.split(',').filter(Boolean) || [];
+
   const [keyword, setKeyword] = useState(keywordFromParams);
   const debouncedKeyword = useDebounce(keyword, 300);
   
+  // New multiselect state
+  const [selectedEntities, setSelectedEntities] = useState<string[]>(selectedEntitiesFromParams);
+  const [selectedOrgans, setSelectedOrgans] = useState<string[]>(selectedOrgansFromParams);
+
   const [totalPages, setTotalPages] = useState(0);
   const [totalItems, setTotalItems] = useState(0);
 
@@ -114,6 +122,20 @@ function MandateNavigator() {
       setKeyword(keywordFromParams);
     }
   }, [keywordFromParams]);
+
+  useEffect(() => {
+    // Sync multiselect state with URL params
+    const entitiesFromUrl = searchParams.get('entities')?.split(',').filter(Boolean) || [];
+    const organsFromUrl = searchParams.get('organs')?.split(',').filter(Boolean) || [];
+    
+    if (JSON.stringify(entitiesFromUrl) !== JSON.stringify(selectedEntities)) {
+      setSelectedEntities(entitiesFromUrl);
+    }
+    
+    if (JSON.stringify(organsFromUrl) !== JSON.stringify(selectedOrgans)) {
+      setSelectedOrgans(organsFromUrl);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     // Sync selectedYearRange with URL params when they change
@@ -282,8 +304,20 @@ function MandateNavigator() {
         page: String(currentPage),
         limit: String(pageSize),
     });
-    if (selectedEntity) params.append('entity', selectedEntity);
-    if (selectedOrgan) params.append('organ', selectedOrgan);
+    
+    // Use multiselect values if available, otherwise fall back to single values
+    if (selectedEntities.length > 0) {
+      selectedEntities.forEach(entity => params.append('entity', entity));
+    } else if (selectedEntity) {
+      params.append('entity', selectedEntity);
+    }
+    
+    if (selectedOrgans.length > 0) {
+      selectedOrgans.forEach(organ => params.append('organ', organ));
+    } else if (selectedOrgan) {
+      params.append('organ', selectedOrgan);
+    }
+    
     if (keywordFromParams) params.append('keyword', keywordFromParams);
     if (programme) params.append('programme', programme);
     if (startYearFromParams) params.append('start_year', startYearFromParams);
@@ -317,7 +351,7 @@ function MandateNavigator() {
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, pageSize, selectedEntity, selectedOrgan, keywordFromParams, programme, startYearFromParams, endYearFromParams, budgetDocument, sortBy]);
+  }, [currentPage, pageSize, selectedEntity, selectedOrgan, selectedEntities, selectedOrgans, keywordFromParams, programme, startYearFromParams, endYearFromParams, budgetDocument, sortBy]);
   
   useEffect(() => {
     fetchMandates();
@@ -386,6 +420,46 @@ function MandateNavigator() {
 
   const onKeywordChange = (value: string) => {
     setKeyword(value);
+  };
+
+  // Multiselect handlers
+  const handleEntitiesChange = (values: string[]) => {
+    setSelectedEntities(values);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('page', '1');
+    if (values.length > 0) {
+      params.set('entities', values.join(','));
+    } else {
+      params.delete('entities');
+    }
+    // Clear single entity param when using multiselect
+    params.delete('entity');
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
+  const handleOrgansChange = (values: string[]) => {
+    setSelectedOrgans(values);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('page', '1');
+    if (values.length > 0) {
+      params.set('organs', values.join(','));
+    } else {
+      params.delete('organs');
+    }
+    // Clear single organ param when using multiselect
+    params.delete('organ');
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
+  // Handler for clearing individual multiselect items
+  const handleClearMultiSelectFilter = (filterKey: string, value: string) => {
+    if (filterKey === 'entities') {
+      const newEntities = selectedEntities.filter(entity => entity !== value);
+      handleEntitiesChange(newEntities);
+    } else if (filterKey === 'organs') {
+      const newOrgans = selectedOrgans.filter(organ => organ !== value);
+      handleOrgansChange(newOrgans);
+    }
   };
 
   const budgetDocumentDisplayNames: { [key: string]: string } = {
@@ -621,6 +695,11 @@ function MandateNavigator() {
               onYearRangeChange={handleYearRangeChange}
               onBudgetDocumentChange={onBudgetDocumentChange}
               programmeOptions={programmeOptions}
+              selectedEntities={selectedEntities}
+              selectedOrgans={selectedOrgans}
+              onEntitiesChange={handleEntitiesChange}
+              onOrgansChange={handleOrgansChange}
+              useMultiSelect={true}
             />
           </div>
 
@@ -631,6 +710,8 @@ function MandateNavigator() {
               appliedFilters={{
                 entity: selectedEntity !== 'all' ? selectedEntity : undefined,
                 organ: selectedOrgan !== 'all' ? selectedOrgan : undefined,
+                entities: selectedEntities.length > 0 ? selectedEntities : undefined,
+                organs: selectedOrgans.length > 0 ? selectedOrgans : undefined,
                 programme: programme || undefined,
                 year: (startYearFromParams && endYearFromParams && yearRange && (parseInt(startYearFromParams, 10) !== yearRange.min || parseInt(endYearFromParams, 10) !== yearRange.max)) ? `${startYearFromParams}-${endYearFromParams}` : undefined,
                 budget_document: budgetDocument && budgetDocument !== 'all' ? budgetDocumentDisplayNames[budgetDocument] : undefined,
@@ -643,6 +724,12 @@ function MandateNavigator() {
                     break;
                   case 'organ':
                     onOrganChange('all');
+                    break;
+                  case 'entities':
+                    handleEntitiesChange([]);
+                    break;
+                  case 'organs':
+                    handleOrgansChange([]);
                     break;
                   case 'programme':
                     onProgrammeChange('');
@@ -659,6 +746,7 @@ function MandateNavigator() {
                     break;
                 }
               }}
+              onClearMultiSelectFilter={handleClearMultiSelectFilter}
               isLoading={isLoading}
             />
           </div>

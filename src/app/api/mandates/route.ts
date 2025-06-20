@@ -104,8 +104,10 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
 
     const entity = searchParams.get('entity');
+    const entities = searchParams.getAll('entity'); // Get multiple entity values
     const keyword = searchParams.get('keyword');
     const organ = searchParams.get('organ');
+    const organs = searchParams.getAll('organ'); // Get multiple organ values
     const programme = searchParams.get('programme');
     const startYear = searchParams.get('start_year');
     const endYear = searchParams.get('end_year');
@@ -117,7 +119,14 @@ export async function GET(request: Request) {
 
     let filteredMandates: Mandate[] = allMandates;
 
-    if (entity) {
+    // Handle entity filtering - use multiselect if available, otherwise fall back to single
+    if (entities.length > 1) {
+      // Multiple entities - use OR logic (mandate must mention at least one)
+      filteredMandates = filteredMandates.filter((m) => 
+        entities.some(ent => m.mentions?.includes(ent))
+      );
+    } else if (entity) {
+      // Single entity (legacy)
       filteredMandates = filteredMandates.filter((m) => m.mentions?.includes(entity));
     }
 
@@ -125,7 +134,14 @@ export async function GET(request: Request) {
       filteredMandates = filteredMandates.filter((m) => m.pillar === pillar);
     }
 
-    if (organ) {
+    // Handle organ filtering - use multiselect if available, otherwise fall back to single
+    if (organs.length > 1) {
+      // Multiple organs - use OR logic (mandate must be issued by at least one)
+      filteredMandates = filteredMandates.filter((m) => 
+        organs.some(org => m.issuing_body_or_bodies?.includes(org))
+      );
+    } else if (organ) {
+      // Single organ (legacy)
       filteredMandates = filteredMandates.filter((m) => m.issuing_body_or_bodies?.includes(organ));
     }
 
