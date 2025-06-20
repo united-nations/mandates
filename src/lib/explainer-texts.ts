@@ -83,17 +83,21 @@ export const explainerTexts = {
   filters: {
     keywordSearch: {
       label: "Keyword Search",
-      placeholder: "Search for topics, activities, or terms...",
-      tooltip: "Search within document titles, summaries, and content for specific terms. Use this to find mandates related to particular topics or activities within the UN Secretariat."
+      placeholder: "Search for titles and documents...",
+      tooltip: "Search for specific terms. Use this to find mandates related to particular topics or activities within the UN Secretariat."
     },
     unOrgan: {
       label: "UN Organ",
       placeholder: "Filter by issuing organ...",
+      searchPlaceholder: "Search organs...",
+      emptyPlaceholder: "No organs found.",
       tooltip: "Filter by which UN organ issued the mandate to the Secretariat. These are the decision-making bodies that create mandates through resolutions."
     },
     unEntity: {
       label: "UN Entity",
       placeholder: "Filter by implementing entity...",
+      searchPlaceholder: "Search entities...",
+      emptyPlaceholder: "No entities found.",
       tooltip: "Filter by which Secretariat entity implements the mandate."
     },
     yearRange: {
@@ -112,6 +116,8 @@ export const explainerTexts = {
     programme: {
       label: "Programme",
       placeholder: "Filter by thematic programme...",
+      searchPlaceholder: "Search programmes...",
+      emptyPlaceholder: "No programmes found.",
       tooltip: "Filter by thematic programmes in the UN Secretariat budget where mandated work is organized."
     },
     budgetDocument: {
@@ -126,6 +132,20 @@ export const explainerTexts = {
     }
   },
 
+  // Sorting and UI Elements
+  sorting: {
+    placeholder: "Sort by...",
+  },
+
+  // Common UI placeholders
+  ui: {
+    select: {
+      default: "Select an option...",
+      search: "Search...",
+      empty: "No options found.",
+    }
+  },
+
   // Mandate List
   mandateList: {
     sectionTitle: "Mandate Source Documents",
@@ -133,7 +153,7 @@ export const explainerTexts = {
     documentSymbol: "Document symbol - the official UN identifier for this source document",
     issuingOrgan: {
       title: "Issuing Organ",
-      description: "The UN organ that created this mandate through a resolution or decision"
+      description: "The UN organ that issued this source document."
     },
     year: "Year this mandate document was issued",
     searchRelevance: "Search relevance score - how closely this document matches your search terms",

@@ -1,18 +1,13 @@
-// Fuzzy search utility with multi-field support and highlighting
+// Simplified search utility with multi-field support and highlighting
 export interface FuzzySearchOptions {
-  threshold?: number;
-  maxDistance?: number;
-  includeScore?: boolean;
   includeMatches?: boolean;
   minMatchCharLength?: number;
-  shouldSort?: boolean;
   tokenize?: boolean;
   matchAllTokens?: boolean;
 }
 
 export interface SearchField {
   name: string;
-  weight: number;
   getValue?: (item: any) => string | string[] | null | undefined;
 }
 
@@ -30,38 +25,12 @@ export interface FuzzyResult<T> {
   highlightedFields: { [key: string]: string };
 }
 
-// Calculate Levenshtein distance between two strings
-function levenshteinDistance(a: string, b: string): number {
-  const matrix = [];
-  for (let i = 0; i <= b.length; i++) {
-    matrix[i] = [i];
-  }
-  for (let j = 0; j <= a.length; j++) {
-    matrix[0][j] = j;
-  }
-  for (let i = 1; i <= b.length; i++) {
-    for (let j = 1; j <= a.length; j++) {
-      if (b.charAt(i - 1) === a.charAt(j - 1)) {
-        matrix[i][j] = matrix[i - 1][j - 1];
-      } else {
-        matrix[i][j] = Math.min(
-          matrix[i - 1][j - 1] + 1,
-          matrix[i][j - 1] + 1,
-          matrix[i - 1][j] + 1
-        );
-      }
-    }
-  }
-  return matrix[b.length][a.length];
-}
-
-// Find all matches of a pattern in text with fuzzy matching
-function findFuzzyMatches(text: string, pattern: string, maxDistance: number = 2): FuzzyMatch[] {
+// Find all matches of a pattern in text
+function findFuzzyMatches(text: string, pattern: string): FuzzyMatch[] {
   const matches: FuzzyMatch[] = [];
   const normalizedText = text.toLowerCase();
   const normalizedPattern = pattern.toLowerCase();
   
-  // Exact matches first
   let index = normalizedText.indexOf(normalizedPattern);
   while (index !== -1) {
     matches.push({
@@ -72,34 +41,6 @@ function findFuzzyMatches(text: string, pattern: string, maxDistance: number = 2
     });
     index = normalizedText.indexOf(normalizedPattern, index + 1);
   }
-  
-  // If we have exact matches, prioritize them
-  if (matches.length > 0) {
-    return matches;
-  }
-  
-  // Fuzzy matches for shorter patterns
-  if (pattern.length <= 50) {
-    const words = normalizedText.split(/\s+/);
-    for (let i = 0; i < words.length; i++) {
-      const word = words[i];
-      const distance = levenshteinDistance(normalizedPattern, word);
-      const similarity = 1 - (distance / Math.max(normalizedPattern.length, word.length));
-      
-      if (distance <= maxDistance && similarity >= 0.6) {
-        const wordStart = normalizedText.indexOf(word, i === 0 ? 0 : normalizedText.indexOf(words[i - 1]) + words[i - 1].length);
-        if (wordStart !== -1) {
-          matches.push({
-            indices: [[wordStart, wordStart + word.length - 1]],
-            value: text.substring(wordStart, wordStart + word.length),
-            key: '',
-            score: similarity
-          });
-        }
-      }
-    }
-  }
-  
   return matches;
 }
 
@@ -148,12 +89,12 @@ export function highlightMatches(text: string, matches: FuzzyMatch[], className:
 function tokenizeQuery(query: string): string[] {
   return query
     .toLowerCase()
-    .replace(/[^\w\s]/g, ' ')
+    .replace(/[^\w\s\/-]/g, ' ') // Allow slashes
     .split(/\s+/)
     .filter(token => token.length > 0);
 }
 
-// Main fuzzy search function
+// Main search function
 export function fuzzySearch<T>(
   items: T[],
   query: string,
@@ -161,12 +102,8 @@ export function fuzzySearch<T>(
   options: FuzzySearchOptions = {}
 ): FuzzyResult<T>[] {
   const {
-    threshold = 0.3,
-    maxDistance = 2,
-    includeScore = true,
     includeMatches = true,
     minMatchCharLength = 1,
-    shouldSort = true,
     tokenize = true,
     matchAllTokens = false
   } = options;
@@ -177,10 +114,9 @@ export function fuzzySearch<T>(
   const results: FuzzyResult<T>[] = [];
   
   for (const item of items) {
-    let totalScore = 0;
-    let matchCount = 0;
     const allMatches: FuzzyMatch[] = [];
     const highlightedFields: { [key: string]: string } = {};
+    const matchedTokens = new Set<string>();
     
     for (const field of fields) {
       const value = field.getValue ? field.getValue(item) : (item as any)[field.name];
@@ -192,26 +128,19 @@ export function fuzzySearch<T>(
       for (const val of values) {
         if (typeof val !== 'string') continue;
         
-        let fieldScore = 0;
         let fieldMatches: FuzzyMatch[] = [];
         
         for (const token of tokens) {
           if (token.length < minMatchCharLength) continue;
           
-          const matches = findFuzzyMatches(val, token, maxDistance);
+          const matches = findFuzzyMatches(val, token);
           if (matches.length > 0) {
+            matchedTokens.add(token);
             fieldMatches = fieldMatches.concat(matches);
-            fieldScore += Math.max(...matches.map(m => m.score));
-            matchCount++;
           }
         }
         
         if (fieldMatches.length > 0) {
-          // Apply field weight
-          fieldScore *= field.weight;
-          totalScore += fieldScore;
-          
-          // Store matches with field info
           fieldMatches.forEach(match => {
             match.key = field.name;
             allMatches.push(match);
@@ -223,22 +152,16 @@ export function fuzzySearch<T>(
       }
     }
     
-    // Calculate final score
-    const finalScore = totalScore / Math.max(1, matchCount);
-    
-    // Apply threshold and token matching rules
-    if (finalScore >= threshold && (!matchAllTokens || matchCount >= tokens.length)) {
+    const matchCondition = matchAllTokens ? matchedTokens.size >= tokens.length : matchedTokens.size > 0;
+
+    if (matchCondition) {
       results.push({
         item,
-        score: finalScore,
+        score: 0, // Score is not used for ranking
         matches: includeMatches ? allMatches : [],
         highlightedFields
       });
     }
-  }
-  
-  if (shouldSort) {
-    results.sort((a, b) => b.score - a.score);
   }
   
   return results;
@@ -283,4 +206,4 @@ export function generateSearchSuggestions(items: any[], fields: SearchField[]): 
     .filter(s => s.length >= 3)
     .sort()
     .slice(0, 100); // Limit suggestions
-} 
+}

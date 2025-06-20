@@ -525,13 +525,13 @@ function MandateNavigator() {
                   <PopoverTrigger asChild>
                     <div onMouseEnter={() => setSourceDocumentsPopover(true)} onMouseLeave={() => setSourceDocumentsPopover(false)} className="h-full">
                       <Card className="flex flex-col h-full cursor-help">
-                          <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-14">
-                              <CardTitle className="text-sm font-medium text-muted-foreground">{explainerTexts.dataCards.sourceDocuments.title}</CardTitle>
-                              <Archive className="h-4 w-4 text-muted-foreground" />
+                          <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-16">
+                              <CardTitle className="text-base font-medium text-muted-foreground">{explainerTexts.dataCards.sourceDocuments.title}</CardTitle>
+                              <Archive className="h-5 w-5 text-muted-foreground" />
                           </CardHeader>
                           <CardContent className="flex-grow flex items-end">
-                              <div className="text-2xl font-bold text-foreground">
-                                  {isLoading ? <Skeleton className="h-6 w-12" /> : (totalItems > 0 ? totalItems.toLocaleString() : '0')}
+                              <div className="text-3xl font-bold text-foreground">
+                                  {isLoading ? <Skeleton className="h-8 w-16" /> : (totalItems > 0 ? totalItems.toLocaleString() : '0')}
                               </div>
                           </CardContent>
                       </Card>
@@ -551,13 +551,13 @@ function MandateNavigator() {
                   <PopoverTrigger asChild>
                     <div onMouseEnter={() => setUnOrgansPopover(true)} onMouseLeave={() => setUnOrgansPopover(false)} className="h-full">
                       <Card className="flex flex-col h-full cursor-help">
-                        <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-14">
-                            <CardTitle className="text-sm font-medium text-muted-foreground">{explainerTexts.dataCards.unOrgans.title}</CardTitle>
-                            <Landmark className="h-4 w-4 text-muted-foreground" />
+                        <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-16">
+                            <CardTitle className="text-base font-medium text-muted-foreground">{explainerTexts.dataCards.unOrgans.title}</CardTitle>
+                            <Landmark className="h-5 w-5 text-muted-foreground" />
                         </CardHeader>
                         <CardContent className="flex-grow flex items-end">
-                            <div className="text-2xl font-bold text-foreground">
-                                {isLoading ? <Skeleton className="h-6 w-12" /> : (uniqueOrgans > 0 ? uniqueOrgans.toLocaleString() : '0')}
+                            <div className="text-3xl font-bold text-foreground">
+                                {isLoading ? <Skeleton className="h-8 w-12" /> : (uniqueOrgans > 0 ? uniqueOrgans.toLocaleString() : '0')}
                             </div>
                         </CardContent>
                       </Card>
@@ -577,13 +577,13 @@ function MandateNavigator() {
                   <PopoverTrigger asChild>
                     <div onMouseEnter={() => setUnEntitiesPopover(true)} onMouseLeave={() => setUnEntitiesPopover(false)} className="h-full">
                       <Card className="flex flex-col h-full cursor-help">
-                          <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-14">
-                              <CardTitle className="text-sm font-medium text-muted-foreground">{explainerTexts.dataCards.unEntities.title}</CardTitle>
-                              <Building className="h-4 w-4 text-muted-foreground" />
+                          <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-16">
+                              <CardTitle className="text-base font-medium text-muted-foreground">{explainerTexts.dataCards.unEntities.title}</CardTitle>
+                              <Building className="h-5 w-5 text-muted-foreground" />
                           </CardHeader>
                           <CardContent className="flex-grow flex items-end">
-                              <div className="text-2xl font-bold text-foreground">
-                                  {isLoading ? <Skeleton className="h-6 w-12" /> : (uniqueEntities > 0 ? uniqueEntities.toLocaleString() : '0')}
+                              <div className="text-3xl font-bold text-foreground">
+                                  {isLoading ? <Skeleton className="h-8 w-16" /> : (uniqueEntities > 0 ? uniqueEntities.toLocaleString() : '0')}
                               </div>
                           </CardContent>
                       </Card>
@@ -603,13 +603,13 @@ function MandateNavigator() {
                   <PopoverTrigger asChild>
                     <div onMouseEnter={() => setProgrammesPopover(true)} onMouseLeave={() => setProgrammesPopover(false)} className="h-full">
                       <Card className="flex flex-col h-full cursor-help">
-                        <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-14">
-                          <CardTitle className="text-sm font-medium text-muted-foreground">{explainerTexts.dataCards.programmes.title}</CardTitle>
-                          <Target className="h-4 w-4 text-muted-foreground" />
+                        <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-16">
+                          <CardTitle className="text-base font-medium text-muted-foreground">{explainerTexts.dataCards.programmes.title}</CardTitle>
+                          <Target className="h-5 w-5 text-muted-foreground" />
                         </CardHeader>
                         <CardContent className="flex-grow flex items-end">
-                          <div className="text-2xl font-bold text-foreground">
-                            {isLoading ? <Skeleton className="h-6 w-12" /> : (uniqueProgrammes > 0 ? uniqueProgrammes.toLocaleString() : '0')}
+                          <div className="text-3xl font-bold text-foreground">
+                            {isLoading ? <Skeleton className="h-8 w-12" /> : (uniqueProgrammes > 0 ? uniqueProgrammes.toLocaleString() : '0')}
                           </div>
                         </CardContent>
                       </Card>
@@ -629,13 +629,13 @@ function MandateNavigator() {
                   <PopoverTrigger asChild>
                     <div onMouseEnter={() => setCitationsPopover(true)} onMouseLeave={() => setCitationsPopover(false)} className="h-full">
                       <Card className="flex flex-col h-full cursor-help">
-                          <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-14">
-                              <CardTitle className="text-sm font-medium text-muted-foreground">{explainerTexts.dataCards.citations.title}</CardTitle>
-                              <Quote className="h-4 w-4 text-muted-foreground" />
+                          <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-16">
+                              <CardTitle className="text-base font-medium text-muted-foreground">{explainerTexts.dataCards.citations.title}</CardTitle>
+                              <Quote className="h-5 w-5 text-muted-foreground" />
                           </CardHeader>
                           <CardContent className="flex-grow flex items-end">
-                              <div className="text-2xl font-bold text-foreground">
-                                  {isLoading ? <Skeleton className="h-6 w-12" /> : (totalCitations > 0 ? totalCitations.toLocaleString() : '0')}
+                              <div className="text-3xl font-bold text-foreground">
+                                  {isLoading ? <Skeleton className="h-8 w-20" /> : (totalCitations > 0 ? totalCitations.toLocaleString() : '0')}
                               </div>
                           </CardContent>
                       </Card>
@@ -733,7 +733,7 @@ function MandateNavigator() {
                     <label htmlFor="sort-by" className="text-sm font-medium">Sort by</label>
                     <Select value={sortBy} onValueChange={handleSortChange}>
                       <SelectTrigger className="w-[200px]" id="sort-by">
-                        <SelectValue placeholder="Sort by..." />
+                        <SelectValue placeholder={explainerTexts.sorting.placeholder} />
                       </SelectTrigger>
                       <SelectContent>
                         {keywordFromParams ? <SelectItem value="default">Relevance</SelectItem> : null}

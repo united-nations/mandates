@@ -8,6 +8,8 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 
+import { explainerTexts } from '@/lib/explainer-texts';
+
 export interface SearchableDropdownOption {
   value: string;
   label: string;
@@ -28,9 +30,9 @@ export function SearchableDropdown({
   options,
   value,
   onChange,
-  placeholder = 'Select an option',
-  searchPlaceholder = 'Search...',
-  emptyPlaceholder = 'No options found',
+  placeholder = explainerTexts.ui.select.default,
+  searchPlaceholder = explainerTexts.ui.select.search,
+  emptyPlaceholder = explainerTexts.ui.select.empty,
   className,
 }: SearchableDropdownProps) {
   const [open, setOpen] = useState(false);
