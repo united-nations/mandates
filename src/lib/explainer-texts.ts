@@ -25,6 +25,7 @@ export const explainerTexts = {
 
   // Data Cards (Summary Statistics)
   dataCards: {
+    sectionTitle: "Mandate Source Documents",
     sourceDocuments: {
       title: 'Source Documents',
       description:
@@ -109,7 +110,7 @@ export const explainerTexts = {
 
   // Mandate List
   mandateList: {
-    sectionTitle: 'Mandate Source Documents',
+    sectionTitle: 'Document List',
     sectionTooltip:
       'Each document shown below contains formal mandates that instruct UN entities to perform specific tasks. Click on any document to see detailed information about what the mandate is about and which entities cite it in their budget submissions.',
     documentSymbol:

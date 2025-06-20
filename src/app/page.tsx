@@ -464,8 +464,10 @@ function MandateNavigator() {
 
             </div>
           </section>
-
+        
+        
           <section className="mb-6">
+            <h2 className="text-2xl font-bold tracking-tight mb-4">{explainerTexts.dataCards.sectionTitle}</h2>
             <div className="grid gap-3 grid-cols-1 sm:grid-cols-4">
                 <Popover open={sourceDocumentsPopover} onOpenChange={setSourceDocumentsPopover}>
                   <PopoverTrigger asChild>
@@ -638,15 +640,7 @@ function MandateNavigator() {
             <div className="mt-4">
               <div className="flex justify-between items-center mb-4">
                 <div className="flex items-center gap-3">
-                  <h2 className="text-2xl font-bold tracking-tight">Document List</h2>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p>{explainerTexts.mandateList.sectionTooltip}</p>
-                    </TooltipContent>
-                  </Tooltip>
+                  <h2 className="text-2xl font-bold tracking-tight">{explainerTexts.mandateList.sectionTitle}</h2>
                 </div>
                 <div className="flex items-center space-x-2">
                   <label htmlFor="sort-by" className="text-sm font-medium">Sort by</label>
