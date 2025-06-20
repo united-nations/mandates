@@ -105,7 +105,7 @@ export async function GET(request: Request) {
     let filteredMandates: Mandate[] = allMandates;
 
     if (entity) {
-      filteredMandates = filteredMandates.filter((m) => m.mentions?.includes(entity));
+      filteredMandates = filteredMandates.filter((m) => m.entities?.includes(entity));
     }
 
     if (pillar && pillar !== 'all') {
@@ -113,7 +113,7 @@ export async function GET(request: Request) {
     }
 
     if (organ) {
-      filteredMandates = filteredMandates.filter((m) => m.issuing_body_or_bodies?.includes(organ));
+      filteredMandates = filteredMandates.filter((m) => m.body === organ);
     }
 
     if (programme) {
