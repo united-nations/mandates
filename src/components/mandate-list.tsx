@@ -83,12 +83,31 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
     const organData = findOrganData(organName);
     return organData ? organData.long : organName;
   };
+
+  // Helper function to check if mandate is referenced in Plan Outline
+  const isReferencedInPlanOutline = (mandate: Mandate): boolean => {
+    return mandate.citation_info?.some(citation => 
+      citation.origin_document === 'PPB 2026/Plan Outline'
+    ) || false;
+  };
+
+  // Helper function to get citation display text
+  const getCitationDisplayText = (mandate: Mandate): string => {
+    const isPlanOutline = isReferencedInPlanOutline(mandate);
+    const hasEntities = mandate.num_entities > 0;
+    
+    if (isPlanOutline && !hasEntities) {
+      return "Referenced in Plan Outline, but not cited by any entities";
+    }
+    
+    return `Cited ${mandate.num_citations} time${mandate.num_citations !== 1 ? 's' : ''} by ${mandate.num_entities} entit${mandate.num_entities !== 1 ? 'ies' : 'y'}`;
+  };
   return (
     <TooltipProvider>
       <div className="space-y-4">
         {mandates.map((mandate, index) => {
-          const hasSearchMatches = mandate.match_details && mandate.match_details.length > 0;
-          const searchScore = mandate.searchScore || 0;
+          const hasSearchMatches = (mandate as any).match_details && (mandate as any).match_details.length > 0;
+          const searchScore = (mandate as any).searchScore || 0;
           const displaySymbol = mandate.full_document_symbol || mandate.symbol;
           
           return (
@@ -112,7 +131,7 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
                 <div className="pr-32">
                   <h3 className="text-base font-semibold leading-tight break-words hyphens-auto">
                     <HighlightedContent 
-                      content={mandate.highlightedTitle || mandate.highlightedFields?.title} 
+                      content={(mandate as any).highlightedTitle || (mandate as any).highlightedFields?.title} 
                       fallback={mandate.title || mandate.description || 'Untitled'} 
                     />
                   </h3>
@@ -241,7 +260,7 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <p className="text-sm font-medium mb-2 text-muted-foreground cursor-help">
-                          Cited {mandate.num_citations} time{mandate.num_citations !== 1 ? 's' : ''} by {mandate.num_entities} entit{mandate.num_entities !== 1 ? 'ies' : 'y'}
+                          {getCitationDisplayText(mandate)}
                         </p>
                       </TooltipTrigger>
                       <TooltipContent className="max-w-xs">
