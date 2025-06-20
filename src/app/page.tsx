@@ -445,26 +445,27 @@ function MandateNavigator() {
   return (
     <TooltipProvider>
       <div className="min-h-screen bg-background text-foreground">
-        <main className="w-full py-6 space-y-6">
+        <main className="w-full py-6 space-y-6 px-8 sm:px-12 lg:px-16">
           
           {/* Header with context info */}
-          <section className="px-4 pb-4 border-b border-border">
+          <section className="pb-4">
             <div className="flex items-start justify-between">
               <div>
                 <h1 className="text-3xl font-bold tracking-tight text-foreground mb-2">
                   {explainerTexts.mainHeader.title}
                 </h1>
-                <div className="text-muted-foreground max-w-3xl space-y-3">
+                <div className="text-muted-foreground space-y-2">
                   {explainerTexts.mainHeader.description.map((paragraph, index) => (
                     <p key={index}>{paragraph}</p>
                   ))}
                 </div>
+                <p className="text-sm text-muted-foreground mt-4">{explainerTexts.mainHeader.disclaimer}</p>
               </div>
 
             </div>
           </section>
 
-          <section className="mb-6 px-4">
+          <section className="mb-6">
             <div className="grid gap-3 grid-cols-1 sm:grid-cols-4">
                 <Popover open={sourceDocumentsPopover} onOpenChange={setSourceDocumentsPopover}>
                   <PopoverTrigger asChild>
@@ -572,7 +573,7 @@ function MandateNavigator() {
             </div>
           </section>
 
-          <div className="px-4">
+          <div>
             <FilterControls
               keyword={keyword}
               onKeywordChange={onKeywordChange}
@@ -594,7 +595,7 @@ function MandateNavigator() {
             />
           </div>
 
-          <div className="px-4">
+          <div>
             <SearchResultsSummary
               totalResults={totalItems}
               searchKeyword={keywordFromParams}
@@ -632,51 +633,49 @@ function MandateNavigator() {
               isLoading={isLoading}
             />
           </div>
-
-          <div className="px-4">
-            <div className="border-t border-border pt-4">
-              <div className="mt-4">
-                <div className="flex justify-between items-center mb-4">
-                  <div className="flex items-center gap-3">
-                    <h2 className="text-2xl font-bold tracking-tight">{explainerTexts.mandateList.sectionTitle}</h2>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
-                      </TooltipTrigger>
-                      <TooltipContent className="max-w-xs">
-                        <p>{explainerTexts.mandateList.sectionTooltip}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <label htmlFor="sort-by" className="text-sm font-medium">Sort by</label>
-                    <Select value={sortBy} onValueChange={handleSortChange}>
-                      <SelectTrigger className="w-[200px]" id="sort-by">
-                        <SelectValue placeholder={explainerTexts.sorting.placeholder} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {keywordFromParams ? <SelectItem value="default">Relevance</SelectItem> : null}
-                        <SelectItem value="citations_desc">Citations (High to Low)</SelectItem>
-                        <SelectItem value="year_desc">Year (Newest First)</SelectItem>
-                        <SelectItem value="year_asc">Year (Oldest First)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+          
+          <div>
+            <div className="mt-4">
+              <div className="flex justify-between items-center mb-4">
+                <div className="flex items-center gap-3">
+                  <h2 className="text-2xl font-bold tracking-tight">Document List</h2>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs">
+                      <p>{explainerTexts.mandateList.sectionTooltip}</p>
+                    </TooltipContent>
+                  </Tooltip>
                 </div>
-                {isLoading ? (
-                  <LoadingSkeleton />
-                ) : (
-                  <MandateList
-                    mandates={mandates}
-                    onMandateClick={setSelectedMandate}
-                    organsData={allOrgans}
-                  />
-                )}
+                <div className="flex items-center space-x-2">
+                  <label htmlFor="sort-by" className="text-sm font-medium">Sort by</label>
+                  <Select value={sortBy} onValueChange={handleSortChange}>
+                    <SelectTrigger className="w-[200px]" id="sort-by">
+                      <SelectValue placeholder={explainerTexts.sorting.placeholder} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {keywordFromParams ? <SelectItem value="default">Relevance</SelectItem> : null}
+                      <SelectItem value="citations_desc">Citations (High to Low)</SelectItem>
+                      <SelectItem value="year_desc">Year (Newest First)</SelectItem>
+                      <SelectItem value="year_asc">Year (Oldest First)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
+              {isLoading ? (
+                <LoadingSkeleton />
+              ) : (
+                <MandateList
+                  mandates={mandates}
+                  onMandateClick={setSelectedMandate}
+                  organsData={allOrgans}
+                />
+              )}
             </div>
           </div>
 
-          <div className="px-4">
+          <div>
             <PaginationControls
               currentPage={currentPage}
               totalPages={totalPages}
