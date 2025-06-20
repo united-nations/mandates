@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { X, ChevronDown, ChevronUp, HelpCircle, FileText, Landmark, Building } from 'lucide-react';
 import { AdvancedSearch } from '@/components/advanced-search';
 import { YearSlider } from './year-slider';
-import { SearchableDropdown, SearchableDropdownOption, MultiSelectSearchableDropdown } from '@/components/ui/searchable-dropdown';
+import { SearchableDropdown, SearchableDropdownOption } from '@/components/ui/searchable-dropdown';
 import {
   Tooltip,
   TooltipContent,
@@ -34,11 +34,6 @@ interface FilterControlsProps {
   onProgrammeChange: (value: string) => void;
   onYearRangeChange: (value: [number, number]) => void;
   onBudgetDocumentChange: (value: string) => void;
-  selectedEntities?: string[];
-  selectedOrgans?: string[];
-  onEntitiesChange?: (values: string[]) => void;
-  onOrgansChange?: (values: string[]) => void;
-  useMultiSelect?: boolean;
 }
 
 export function FilterControls({
@@ -59,25 +54,8 @@ export function FilterControls({
   onProgrammeChange,
   onYearRangeChange,
   onBudgetDocumentChange,
-  selectedEntities = [],
-  selectedOrgans = [],
-  onEntitiesChange,
-  onOrgansChange,
-  useMultiSelect = true,
 }: FilterControlsProps) {
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
-
-  const handleEntityMultiSelectChange = (values: string[]) => {
-    if (onEntitiesChange) {
-      onEntitiesChange(values);
-    }
-  };
-
-  const handleOrganMultiSelectChange = (values: string[]) => {
-    if (onOrgansChange) {
-      onOrgansChange(values);
-    }
-  };
 
   return (
     <TooltipProvider>
@@ -130,27 +108,15 @@ export function FilterControls({
                 </TooltipContent>
               </Tooltip>
             </div>
-            {useMultiSelect ? (
-              <MultiSelectSearchableDropdown
-                options={organOptions}
-                values={selectedOrgans}
-                onChange={handleOrganMultiSelectChange}
-                placeholder={explainerTexts.filters.unOrgan.placeholder}
-                searchPlaceholder={explainerTexts.filters.unOrgan.searchPlaceholder}
-                emptyPlaceholder={explainerTexts.filters.unOrgan.emptyPlaceholder}
-                className="text-sm h-11"
-              />
-            ) : (
-              <SearchableDropdown
-                options={organOptions}
-                value={selectedOrgan}
-                onChange={onOrganChange}
-                placeholder={explainerTexts.filters.unOrgan.placeholder}
-                searchPlaceholder={explainerTexts.filters.unOrgan.searchPlaceholder}
-                emptyPlaceholder={explainerTexts.filters.unOrgan.emptyPlaceholder}
-                className="text-sm h-11"
-              />
-            )}
+            <SearchableDropdown
+              options={organOptions}
+              value={selectedOrgan}
+              onChange={onOrganChange}
+              placeholder={explainerTexts.filters.unOrgan.placeholder}
+              searchPlaceholder={explainerTexts.filters.unOrgan.searchPlaceholder}
+              emptyPlaceholder={explainerTexts.filters.unOrgan.emptyPlaceholder}
+              className="text-sm h-11"
+            />
           </div>
 
           <div className="space-y-2">
@@ -166,27 +132,15 @@ export function FilterControls({
                 </TooltipContent>
               </Tooltip>
             </div>
-            {useMultiSelect ? (
-              <MultiSelectSearchableDropdown
-                options={entityOptions}
-                values={selectedEntities}
-                onChange={handleEntityMultiSelectChange}
-                placeholder={explainerTexts.filters.unEntity.placeholder}
-                searchPlaceholder={explainerTexts.filters.unEntity.searchPlaceholder}
-                emptyPlaceholder={explainerTexts.filters.unEntity.emptyPlaceholder}
-                className="text-sm h-11"
-              />
-            ) : (
-              <SearchableDropdown
-                options={entityOptions}
-                value={selectedEntity}
-                onChange={onEntityChange}
-                placeholder={explainerTexts.filters.unEntity.placeholder}
-                searchPlaceholder={explainerTexts.filters.unEntity.searchPlaceholder}
-                emptyPlaceholder={explainerTexts.filters.unEntity.emptyPlaceholder}
-                className="text-sm h-11"
-              />
-            )}
+            <SearchableDropdown
+              options={entityOptions}
+              value={selectedEntity}
+              onChange={onEntityChange}
+              placeholder={explainerTexts.filters.unEntity.placeholder}
+              searchPlaceholder={explainerTexts.filters.unEntity.searchPlaceholder}
+              emptyPlaceholder={explainerTexts.filters.unEntity.emptyPlaceholder}
+              className="text-sm h-11"
+            />
           </div>
         </div>
 

@@ -55,9 +55,9 @@ export const explainerTexts = {
   filters: {
     keywordSearch: {
       label: 'Keyword Search',
-      placeholder: 'Search for titles, document symbols, descriptions...',
+      placeholder: 'Search for titles and documents...',
       tooltip:
-        'Search for specific terms across titles, document symbols, descriptions, and other key fields. Use this to find mandates related to particular topics, document references, or activities within the UN Secretariat.'
+        'Search for specific terms. Use this to find mandates related to particular topics or activities within the UN Secretariat.'
     },
     unOrgan: {
       label: 'Organ',
