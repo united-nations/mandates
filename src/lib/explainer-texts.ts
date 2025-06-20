@@ -57,7 +57,7 @@ export const explainerTexts = {
       label: 'Keyword Search',
       placeholder: 'Search for titles and documents...',
       tooltip:
-        'Search for specific terms. Use this to find mandates related to particular topics or activities within the UN Secretariat.'
+        'Search for specific terms. Use this to find mandate source documents related to particular topics or activities within the UN Secretariat.'
     },
     unOrgan: {
       label: 'Organ',
