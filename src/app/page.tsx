@@ -476,7 +476,7 @@ function MandateNavigator() {
                   <PopoverTrigger asChild>
                     <div onMouseEnter={() => setSourceDocumentsPopover(true)} onMouseLeave={() => setSourceDocumentsPopover(false)} className="h-full">
                       <Card className="flex flex-col h-full cursor-help bg-dashboard-card">
-                          <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-16">
+                          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 h-16">
                               <CardTitle className="text-lg font-medium text-secondary-foreground">{explainerTexts.dataCards.sourceDocuments.title}</CardTitle>
                               <FileText className="h-5 w-5 text-secondary-foreground" />
                           </CardHeader>
@@ -502,7 +502,7 @@ function MandateNavigator() {
                   <PopoverTrigger asChild>
                     <div onMouseEnter={() => setUnOrgansPopover(true)} onMouseLeave={() => setUnOrgansPopover(false)} className="h-full">
                       <Card className="flex flex-col h-full cursor-help bg-dashboard-card">
-                        <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-16">
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 h-16">
                             <CardTitle className="text-lg font-medium text-secondary-foreground">{explainerTexts.dataCards.unOrgans.title}</CardTitle>
                             <Landmark className="h-5 w-5 text-secondary-foreground" />
                         </CardHeader>
@@ -528,7 +528,7 @@ function MandateNavigator() {
                   <PopoverTrigger asChild>
                     <div onMouseEnter={() => setUnEntitiesPopover(true)} onMouseLeave={() => setUnEntitiesPopover(false)} className="h-full">
                       <Card className="flex flex-col h-full cursor-help bg-dashboard-card">
-                          <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-16">
+                          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 h-16">
                               <CardTitle className="text-lg font-medium text-secondary-foreground">{explainerTexts.dataCards.unEntities.title}</CardTitle>
                               <Building className="h-5 w-5 text-secondary-foreground" />
                           </CardHeader>
@@ -554,7 +554,7 @@ function MandateNavigator() {
                   <PopoverTrigger asChild>
                     <div onMouseEnter={() => setCitationsPopover(true)} onMouseLeave={() => setCitationsPopover(false)} className="h-full">
                       <Card className="flex flex-col h-full cursor-help bg-dashboard-card">
-                          <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-16">
+                          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 h-16">
                               <CardTitle className="text-lg font-medium text-secondary-foreground">{explainerTexts.dataCards.citations.title}</CardTitle>
                               <Quote className="h-5 w-5 text-secondary-foreground" />
                           </CardHeader>
