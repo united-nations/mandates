@@ -180,7 +180,7 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
                 </div>
                 
                 {/* Match details and highlighted content */}
-                {hasSearchMatches && (
+                {/* {hasSearchMatches && (
                   <div className="text-sm space-y-2">
                     <div className="flex flex-wrap gap-1 items-center">
                       <span className="font-medium text-muted-foreground">Matches found in:</span>
@@ -191,7 +191,6 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
                       ))}
                     </div>
                     
-                    {/* Show highlighted snippets from other fields */}
                     {mandate.highlightedFields && Object.entries(mandate.highlightedFields).map(([field, content]) => {
                       if (field === 'title') return null; // Already shown in title
                       if (field === 'ai_summary') return null; // Skip AI summary field
@@ -234,7 +233,7 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
                       );
                     })}
                   </div>
-                )}
+                )} */}
 
                 {/* Citations and Entities */}
                 {(mandate.num_citations > 0 || (mandate.entities && mandate.entities.length > 0)) && (

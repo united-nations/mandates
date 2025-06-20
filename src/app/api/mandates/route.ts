@@ -43,90 +43,11 @@ interface SearchResult extends Mandate {
   highlightedFields?: { [key: string]: string };
 }
 
-// Define searchable fields with weights
+// Define searchable fields
 const searchFields: SearchField[] = [
   {
     name: 'title',
-    weight: 10.0,
     getValue: (mandate: Mandate) => mandate.title || mandate.document_title || ''
-  },
-  {
-    name: 'document_symbol',
-    weight: 8.0,
-    getValue: (mandate: Mandate) => mandate.document_symbol || mandate.full_document_symbol || ''
-  },
-  {
-    name: 'subject_headings',
-    weight: 6.0,
-    getValue: (mandate: Mandate) => mandate.subject_headings || []
-  },
-  {
-    name: 'abstract',
-    weight: 5.0,
-    getValue: (mandate: Mandate) => mandate.abstract || []
-  },
-  {
-    name: 'issuing_body',
-    weight: 5.0,
-    getValue: (mandate: Mandate) => mandate.body || mandate.issuing_body_or_bodies || []
-  },
-  {
-    name: 'entities',
-    weight: 4.0,
-    getValue: (mandate: Mandate) => mandate.entities || mandate.mentions || []
-  },
-  {
-    name: 'priority_area',
-    weight: 4.0,
-    getValue: (mandate: Mandate) => mandate.priority_area || ''
-  },
-  {
-    name: 'pillar',
-    weight: 3.0,
-    getValue: (mandate: Mandate) => mandate.pillar || ''
-  },
-  {
-    name: 'programme_titles',
-    weight: 3.0,
-    getValue: (mandate: Mandate) => 
-      mandate.citation_info?.map(c => c.programme_title).filter(Boolean) || []
-  },
-  {
-    name: 'section_titles',
-    weight: 3.0,
-    getValue: (mandate: Mandate) => 
-      mandate.citation_info?.map(c => c.section_title).filter(Boolean) || []
-  },
-  {
-    name: 'descriptions',
-    weight: 2.0,
-    getValue: (mandate: Mandate) => 
-      mandate.citation_info?.map(c => c.description).filter(Boolean) || []
-  },
-  {
-    name: 'operative_paragraphs',
-    weight: 2.0,
-    getValue: (mandate: Mandate) => mandate.operative_paragraphs || []
-  },
-  {
-    name: 'note',
-    weight: 1.5,
-    getValue: (mandate: Mandate) => mandate.note || []
-  },
-  {
-    name: 'subtitle',
-    weight: 1.5,
-    getValue: (mandate: Mandate) => mandate.subtitle || ''
-  },
-  {
-    name: 'uniform_title',
-    weight: 1.0,
-    getValue: (mandate: Mandate) => mandate.uniform_title || []
-  },
-  {
-    name: 'translated_title',
-    weight: 1.0,
-    getValue: (mandate: Mandate) => mandate.translated_title || []
   }
 ];
 
@@ -140,12 +61,8 @@ function performEnhancedTextSearch(mandates: Mandate[], query: string): SearchRe
     query,
     searchFields,
     {
-      threshold: 0.1,
-      maxDistance: 2,
-      includeScore: true,
       includeMatches: true,
       minMatchCharLength: 2,
-      shouldSort: true,
       tokenize: true,
       matchAllTokens: false
     }
@@ -164,20 +81,7 @@ function performEnhancedTextSearch(mandates: Mandate[], query: string): SearchRe
     // Create friendly field names for display
     const fieldDisplayNames: { [key: string]: string } = {
       title: 'Title',
-      document_symbol: 'Document Symbol',
-      subject_headings: 'Subject Headings',
-      abstract: 'Abstract',
-      issuing_body: 'Issuing Body',
-      entities: 'Entities',
-      pillar: 'Pillar',
-      programme_titles: 'Programme Titles',
-      section_titles: 'Section Titles',
-      descriptions: 'Descriptions',
-      operative_paragraphs: 'Operative Paragraphs',
-      note: 'Notes',
-      subtitle: 'Subtitle',
-      uniform_title: 'Uniform Title',
-      translated_title: 'Translated Title'
+      document_symbol: 'Document Symbol'
     };
 
     const match_details = Array.from(matchedFields).map(field => 
@@ -186,7 +90,7 @@ function performEnhancedTextSearch(mandates: Mandate[], query: string): SearchRe
 
     return {
       ...result.item,
-      searchScore: result.score,
+      searchScore: 0, // Score is not used
       match_details,
       highlightedTitle: result.highlightedFields.title || undefined,
       highlightedFields: result.highlightedFields
