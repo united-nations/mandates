@@ -17,7 +17,7 @@
     },
     {
         "short": "UNEA",
-        "long": "Environment Assembly"
+        "long": "United Nations Environment Assembly"
     },
     {
         "short": "ESCAP",
@@ -36,8 +36,8 @@
         "long": "Economic Commission for Africa"
     },
     {
-        "short": "UN-Habitat",
-        "long": "Human Settlements Programme"
+        "short": "UNHA and Other",
+        "long": "UN-Habitat Assembly and Other"
     },
     {
         "short": "ECE",
@@ -50,10 +50,6 @@
     {
         "short": "CSW",
         "long": "Commission on the Status of Women"
-    },
-    {
-        "short": "UNEP",
-        "long": "Environment Programme"
     },
     {
         "short": "UN Charter",
