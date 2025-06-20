@@ -2,9 +2,9 @@
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Search, X, Filter, HelpCircle } from 'lucide-react';
+import { Search, X, Filter } from 'lucide-react';
 import { EntityName } from './ui/entity-name';
-import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from './ui/tooltip';
+
 import { explainerTexts } from '@/lib/explainer-texts';
 
 interface SearchResultsSummaryProps {
@@ -37,8 +37,7 @@ export function SearchResultsSummary({
   if (!hasSearch && !hasFilters) return null;
 
   return (
-    <TooltipProvider>
-      <div className="bg-muted/50 border rounded-lg p-4 mb-6">
+    <div className="bg-muted/50 border rounded-lg p-4 mb-6">
         <div className="flex items-center justify-between gap-4 mb-3">
           <div className="flex items-center gap-2">
             <Search className="h-4 w-4 text-muted-foreground" />
@@ -47,21 +46,14 @@ export function SearchResultsSummary({
                 'Searching...'
               ) : (
                 <>
-                  {totalResults.toLocaleString()} {explainerTexts.searchResults.foundText}{totalResults !== 1 ? 's' : ''} found
+                  {totalResults.toLocaleString()} mandate source document{totalResults !== 1 ? 's' : ''} found
                   {hasSearch && hasFilters && ' with search and filters'}
                   {hasSearch && !hasFilters && ' for your search'}
                   {!hasSearch && hasFilters && ' with filters'}
                 </>
               )}
             </span>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <HelpCircle className="h-3 w-3 text-muted-foreground cursor-help" />
-              </TooltipTrigger>
-              <TooltipContent className="max-w-xs">
-                <p>{explainerTexts.searchResults.tooltip}</p>
-              </TooltipContent>
-            </Tooltip>
+
           </div>
           
           {(hasSearch || hasFilters) && (
@@ -184,6 +176,5 @@ export function SearchResultsSummary({
           )}
         </div>
       </div>
-    </TooltipProvider>
   );
 }
