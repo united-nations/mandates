@@ -8,9 +8,9 @@ export const explainerTexts = {
   mainHeader: {
     title: 'UN Mandate Source Registry',
     versionTag: "(beta version)",
-    description: [
-      'The Mandate Source Registry has been developed under the UN80 Initiative to enhance transparency and support informed dialogue on mandate coherence and implementation. It compiles UN mandate source documents cited by UN Entities in support of resource requirements presented in the Proposed Programme Budget for 2026.',
-      'This initial version provides access to mandate source documents cited by UN Entities in support of resource requirements presented in the Proposed Programme Budget for 2026 and the Peacekeeping Budget for 2025/2026. The Registry will be iteratively expanded in the coming weeks to integrate mandates assigned to other UN Entities and to include operative paragraphs from relevant documents',
+    shortDescription: 'The Mandate Source Registry has been developed as part of the UN80 Initiative to enhance transparency and support informed dialogue on mandate coherence and implementation. It compiles UN mandate source documents cited by UN Entities in support of resource requirements.',
+    fullDescription: [
+      'This initial version provides access to mandate source documents cited by UN Entities in support of resource requirements presented in the Proposed Programme Budget for 2026 and the Peacekeeping Budget for 2025/2026. The Registry will be iteratively expanded in the coming weeks to integrate mandates assigned to other UN System Entities and to include operative paragraphs from relevant documents',
       'This Registry serves as a technical reference to assist Member States in assessing current mandate implementation arrangements across the UN System.',
     ],
     disclaimer: 'As the list of UN Entities in this registry is derived from the budget submissions to the General Assembly, it includes Entities that are independent of the Secretariat and the Secretary-General.  The inclusion of these Entities here is for reference only and is not intended to indicate that they are within the scope of the UN80 Initiative.'
@@ -20,7 +20,7 @@ export const explainerTexts = {
   get pageMetadata () {
     return {
       title: this.mainHeader.title,
-      description: this.mainHeader.description
+      description: this.mainHeader.shortDescription
     }
     },
 
@@ -58,7 +58,7 @@ export const explainerTexts = {
         'Search for specific terms. Use this to find mandate source documents related to particular topics or activities.'
     },
     unOrgan: {
-      label: 'UN Organ/Other Body',
+      label: 'UN Organ & Other Body',
       placeholder: 'Filter by UN Organ or Other Body...',
       searchPlaceholder: 'Search organs...',
       emptyPlaceholder: 'No organs found.',

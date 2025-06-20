@@ -460,19 +460,27 @@ function MandateNavigator() {
                   <p className="text-sm text-muted-foreground">{explainerTexts.mainHeader.versionTag}</p>
                 </div>
                 <div className="text-muted-foreground mt-2 text-justify">
-                  {explainerTexts.mainHeader.description.map((paragraph, index) => (
-                    <p key={index} className="leading-tight mb-3 last:mb-0">{paragraph}</p>
-                  ))}
+                  <p className="leading-tight mb-3">
+                    {explainerTexts.mainHeader.shortDescription}{' '}
+                    <Button
+                      variant="link"
+                      className="p-0 h-auto text-primary hover:text-primary/80 text-sm inline"
+                      onClick={() => {
+                        const element = document.getElementById('about-section');
+                        element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                      }}
+                    >
+                      Read More...
+                    </Button>
+                  </p>
                 </div>
-                <p className="text-sm text-muted-foreground mt-2 italic text-justify">{explainerTexts.mainHeader.disclaimer}</p>
               </div>
-
             </div>
           </section>
         
         
           <section className="mb-6">
-            <h2 className="text-2xl font-bold tracking-tight mb-4">{explainerTexts.dataCards.sectionTitle}</h2>
+            <h2 className="text-2xl font-bold tracking-tight mb-3">{explainerTexts.dataCards.sectionTitle}</h2>
             <div className="grid gap-3 grid-cols-1 sm:grid-cols-4">
                 <Popover open={sourceDocumentsPopover} onOpenChange={setSourceDocumentsPopover}>
                   <PopoverTrigger asChild>
@@ -642,8 +650,8 @@ function MandateNavigator() {
           </div>
           
           <div>
-            <div className="mt-4">
-              <div className="flex justify-between items-center mb-4">
+            <div className="mt-6 pt-4">
+              <div className="flex justify-between items-center mb-2">
                 <div className="flex items-center gap-3">
                   <h2 className="text-2xl font-bold tracking-tight">{explainerTexts.mandateList.sectionTitle}</h2>
                 </div>
@@ -684,6 +692,23 @@ function MandateNavigator() {
               totalItems={totalItems}
             />
           </div>
+
+
+          <section id="about-section" className="mt-16 pt-8">
+            <div className="space-y-6 border-t pt-6">
+              <h2 className="text-2xl font-bold tracking-tight">About the Registry</h2>
+              <div className="text-muted-foreground space-y-4 text-justify">
+                {explainerTexts.mainHeader.fullDescription.map((paragraph, index) => (
+                  <p key={index} className="leading-relaxed">{paragraph}</p>
+                ))}
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground italic text-justify leading-relaxed">
+                  {explainerTexts.mainHeader.disclaimer}
+                </p>
+              </div>
+            </div>
+          </section>
         </main>
 
         <MandateDetails

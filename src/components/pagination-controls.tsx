@@ -26,7 +26,7 @@ export function PaginationControls({
   const pageSizeOptions = [10, 20, 30, 50, 100, 1000];
 
   return (
-    <div className="flex items-center justify-between p-4 border-t">
+    <div className="flex items-center justify-between p-2 pt-1">
       <div className="flex items-center space-x-2">
           <div className="text-sm text-muted-foreground">Rows per page</div>
           <Select
