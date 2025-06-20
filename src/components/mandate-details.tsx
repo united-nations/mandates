@@ -116,9 +116,7 @@ export function MandateDetails({ mandate, open, onOpenChange }: MandateDetailsPr
   
   const hasSubjects = mandate.subject_headings && mandate.subject_headings.length > 0;
   const displaySymbol = mandate.full_document_symbol || mandate.symbol;
-  const pdfUrl = mandate.full_document_symbol
-    ? `https://documents.un.org/api/symbol/access?s=${mandate.full_document_symbol}&l=en&t=pdf`
-    : null;
+  const pdfUrl = mandate.link;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -132,12 +130,17 @@ export function MandateDetails({ mandate, open, onOpenChange }: MandateDetailsPr
             <DialogDescription className="mt-1">
                 {displaySymbol}
             </DialogDescription>
-            {pdfUrl && (
+            {pdfUrl ? (
                 <Button asChild className="mt-4">
                     <a href={pdfUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2">
                         <FileText className="h-4 w-4" />
                         View PDF
                     </a>
+                </Button>
+            ) : (
+                <Button disabled className="mt-4 inline-flex items-center gap-2">
+                    <FileText className="h-4 w-4" />
+                    View PDF
                 </Button>
             )}
         </div>
