@@ -56,11 +56,6 @@ const searchFields: SearchField[] = [
     getValue: (mandate: Mandate) => mandate.document_symbol || mandate.full_document_symbol || ''
   },
   {
-    name: 'ai_summary',
-    weight: 7.0,
-    getValue: (mandate: Mandate) => mandate.ai_summary || ''
-  },
-  {
     name: 'subject_headings',
     weight: 6.0,
     getValue: (mandate: Mandate) => mandate.subject_headings || []
@@ -170,12 +165,10 @@ function performEnhancedTextSearch(mandates: Mandate[], query: string): SearchRe
     const fieldDisplayNames: { [key: string]: string } = {
       title: 'Title',
       document_symbol: 'Document Symbol',
-      ai_summary: 'Summary',
       subject_headings: 'Subject Headings',
       abstract: 'Abstract',
       issuing_body: 'Issuing Body',
       entities: 'Entities',
-      priority_area: 'Priority Area',
       pillar: 'Pillar',
       programme_titles: 'Programme Titles',
       section_titles: 'Section Titles',
@@ -207,24 +200,18 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
 
     const entity = searchParams.get('entity');
-    const priorityArea = searchParams.get('priority_area');
     const keyword = searchParams.get('keyword');
     const organ = searchParams.get('organ');
     const programme = searchParams.get('programme');
     const startYear = searchParams.get('start_year');
     const endYear = searchParams.get('end_year');
     const budgetDocument = searchParams.get('budget_document');
-    const section = searchParams.get('section');
     const pillar = searchParams.get('pillar');
     const page = parseInt(searchParams.get('page') || '1', 10);
     const limit = parseInt(searchParams.get('limit') || '10', 10);
     const sortBy = searchParams.get('sort_by');
 
     let filteredMandates: Mandate[] = allMandates;
-
-    if (priorityArea) {
-      filteredMandates = filteredMandates.filter((m) => m.priority_area === priorityArea);
-    }
 
     if (entity) {
       filteredMandates = filteredMandates.filter((m) => m.mentions?.includes(entity));
@@ -248,31 +235,32 @@ export async function GET(request: Request) {
     if (startYear && endYear) {
       const start = parseInt(startYear, 10);
       const end = parseInt(endYear, 10);
-      if (!isNaN(start) && !isNaN(end)) {
-        filteredMandates = filteredMandates.filter((m) => {
-          const mandateYear = parseInt(m.year, 10);
-          return mandateYear >= start && mandateYear <= end;
-        });
-      }
+      
+      // Get the original year range from metadata
+      const years = allMandates
+        .map(m => parseInt(m.year?.toString() || '0', 10))
+        .filter(year => !isNaN(year) && year > 0);
+      const originalMin = Math.min(...years);
+      const originalMax = Math.max(...years);
+      
+      // If the filter is at original range, include documents with missing/invalid years
+      const isOriginalRange = start === originalMin && end === originalMax;
+      
+      filteredMandates = filteredMandates.filter((m) => {
+        const year = parseInt(m.year?.toString() || '0', 10);
+        
+        // If year is invalid/missing and we're at original range, include it
+        if (isOriginalRange && (isNaN(year) || year <= 0)) {
+          return true;
+        }
+        
+        // Otherwise, only include if year is valid and within range
+        return !isNaN(year) && year > 0 && year >= start && year <= end;
+      });
     }
 
     if (budgetDocument && budgetDocument !== 'all') {
-      if (budgetDocument === 'ppb2026') {
-        filteredMandates = filteredMandates.filter((m) =>
-          m.citation_info?.some((c) => c.origin_document === 'PPB 2026')
-        );
-      } else if (budgetDocument === 'pko') {
-        filteredMandates = filteredMandates.filter((m) =>
-          m.citation_info?.some((c) => c.origin_document?.startsWith('PKM'))
-        );
-      }
-    }
-
-    if (section) {
-      const lowerSection = section.toLowerCase();
-      filteredMandates = filteredMandates.filter((m) => 
-        m.citation_info?.some((c: CitationInfo) => c.section_title?.toLowerCase().includes(lowerSection))
-      );
+      filteredMandates = filteredMandates.filter((m) => m.origin_document === budgetDocument);
     }
 
     if (keyword) {

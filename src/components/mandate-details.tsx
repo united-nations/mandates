@@ -12,7 +12,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from './ui/button';
-import { FileText, Building, Calendar, Link, Users, FileCheck, List, Target, Columns, Sparkles } from 'lucide-react';
+import { FileText, Building, Calendar, Link, Users, FileCheck, Target, Columns, Sparkles } from 'lucide-react';
 import { EntityName } from './ui/entity-name';
 import { TooltipProvider } from './ui/tooltip';
 
@@ -27,19 +27,6 @@ interface MandateDetailsProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   parentContext: ParentContext | null;
-}
-
-interface HierarchicalCitation {
-  programme: string | null;
-  programme_title: string | null;
-  entities: {
-    [entityName: string]: {
-      subprogrammes: {
-        [subprogramme: string]: number;
-      };
-      total: number;
-    };
-  };
 }
 
 const toTitleCase = (str: string) => {
@@ -60,45 +47,6 @@ const MetadataItem = ({ label, children }: { label: string, children: React.Reac
 export function MandateDetails({ mandate, open, onOpenChange, parentContext }: MandateDetailsProps) {
   const [isPdfVisible, setIsPdfVisible] = useState(false);
 
-  const hierarchicalCitations = useMemo(() => {
-    if (!mandate || !mandate.citation_info) return {};
-
-    const grouped: { [key: string]: HierarchicalCitation } = {};
-
-    mandate.citation_info.forEach((citation: CitationInfo) => {
-      const programmeDisplay = citation.programme && citation.programme_title 
-        ? `${citation.programme} - ${citation.programme_title}`
-        : citation.programme_title || citation.programme?.toString() || 'No Programme';
-      const programmeKey = programmeDisplay;
-      const entityName = citation.entity_long || citation.entity || 'Unknown Entity';
-      const subprogramme = citation['sub-programme'] || 'No Subprogramme';
-
-      if (!grouped[programmeKey]) {
-        grouped[programmeKey] = {
-          programme: citation.programme?.toString() || null,
-          programme_title: citation.programme_title || null,
-          entities: {}
-        };
-      }
-
-      if (!grouped[programmeKey].entities[entityName]) {
-        grouped[programmeKey].entities[entityName] = {
-          subprogrammes: {},
-          total: 0
-        };
-      }
-
-      if (!grouped[programmeKey].entities[entityName].subprogrammes[subprogramme]) {
-        grouped[programmeKey].entities[entityName].subprogrammes[subprogramme] = 0;
-      }
-
-      grouped[programmeKey].entities[entityName].subprogrammes[subprogramme]++;
-      grouped[programmeKey].entities[entityName].total++;
-    });
-
-    return grouped;
-  }, [mandate]);
-
   const entityCounts = useMemo(() => {
     if (!mandate || !mandate.citation_info) return [];
 
@@ -116,6 +64,24 @@ export function MandateDetails({ mandate, open, onOpenChange, parentContext }: M
     });
 
     return Object.entries(counts).sort(([, a], [, b]) => b.count - a.count);
+  }, [mandate]);
+
+  const programmeCounts = useMemo(() => {
+    if (!mandate || !mandate.citation_info) return [];
+
+    const counts: { [key: string]: number } = {};
+
+    mandate.citation_info.forEach(citation => {
+      const programmeTitle = citation.programme_title;
+      if (programmeTitle) {
+        if (!counts[programmeTitle]) {
+          counts[programmeTitle] = 0;
+        }
+        counts[programmeTitle]++;
+      }
+    });
+
+    return Object.entries(counts).sort(([, a], [, b]) => b - a);
   }, [mandate]);
 
   if (!mandate) {
@@ -184,9 +150,6 @@ export function MandateDetails({ mandate, open, onOpenChange, parentContext }: M
                 <MetadataItem label="Budget Document">
                   {mandate.origin_document ? <Badge variant="secondary" className="text-xs">{mandate.origin_document}</Badge> : <span className="text-muted-foreground">Not Available</span>}
                 </MetadataItem>
-                <MetadataItem label="Priority Area">
-                  {mandate.priority_area ? <Badge variant="secondary" className="text-xs">{mandate.priority_area}</Badge> : <span className="text-muted-foreground">Not available</span>}
-                </MetadataItem>
                 {mandate.subject_headings && mandate.subject_headings.length > 0 && (
                   <MetadataItem label="Subject Headings">
                     <div className="flex flex-wrap gap-1">
@@ -210,10 +173,8 @@ export function MandateDetails({ mandate, open, onOpenChange, parentContext }: M
                   </Badge>
                 </h3>
                 <div className="p-3 bg-muted/30 rounded-lg">
-                  <p className="text-sm leading-relaxed">
-                    {mandate.ai_summary 
-                      ? mandate.ai_summary 
-                      : <span className="text-muted-foreground italic">AI summary for this document is not available yet.</span>}
+                  <p className="text-sm leading-relaxed text-muted-foreground italic">
+                    Summaries are coming soon.
                   </p>
                 </div>
               </div>
@@ -237,67 +198,23 @@ export function MandateDetails({ mandate, open, onOpenChange, parentContext }: M
                 </div>
               )}
 
-              {/* Hierarchical Citations */}
-              <div className="space-y-2">
-                <h3 className="text-base font-semibold flex items-center gap-2">
-                  <List className="h-4 w-4" />
-                  Citations by Programme
-                </h3>
-                
-                {Object.keys(hierarchicalCitations).length > 0 ? (
-                  <div className="space-y-1 text-sm">
-                    {Object.entries(hierarchicalCitations).map(([programmeKey, programmeData]) => {
-                      const totalCitations = Object.values(programmeData.entities).reduce((sum, entity) => sum + entity.total, 0);
-                      
-                      return (
-                        <div key={programmeKey}>
-                          {/* Programme Level */}
-                          <div className="flex items-center gap-2 py-1">
-                            <div className="w-1.5 h-1.5 bg-gray-700 rounded-full flex-shrink-0"></div>
-                            <span className="font-medium text-gray-900 flex-1">{programmeKey}</span>
-                            <span className="text-xs text-gray-500 font-medium">{totalCitations}</span>
-                          </div>
-                          
-                          {/* Entity Level */}
-                          {Object.entries(programmeData.entities).map(([entityName, entityData]) => {
-                            // Filter out meaningless subprogrammes
-                            const meaningfulSubprogrammes = Object.entries(entityData.subprogrammes).filter(([subprogramme]) => {
-                              const lower = subprogramme.toLowerCase();
-                              return !lower.includes('all subprogrammes') && 
-                                     !lower.includes('no subprogramme') &&
-                                     lower !== 'no subprogramme' &&
-                                     lower !== 'all subprogrammes';
-                            });
-                            
-                            return (
-                              <div key={entityName}>
-                                <div className="flex items-center gap-2 py-0.5 ml-4">
-                                  <div className="w-1 h-1 bg-gray-500 rounded-full flex-shrink-0"></div>
-                                  <span className="text-gray-800 flex-1">{entityName}</span>
-                                  <span className="text-xs text-gray-500 font-medium">{entityData.total}</span>
-                                </div>
-                                
-                                {/* Subprogramme Level - only show meaningful ones */}
-                                {meaningfulSubprogrammes.map(([subprogramme, count]) => (
-                                  <div key={subprogramme} className="flex items-center gap-2 py-0.5 ml-8">
-                                    <div className="w-0.5 h-0.5 bg-gray-400 rounded-full flex-shrink-0"></div>
-                                    <span className="text-xs text-gray-600 flex-1">{subprogramme}</span>
-                                    <span className="text-xs text-gray-500">{count}</span>
-                                  </div>
-                                ))}
-                              </div>
-                            );
-                          })}
-                        </div>
-                      );
-                    })}
+              {/* Programme Counts */}
+              {programmeCounts.length > 0 && (
+                <div className="space-y-2">
+                  <h3 className="text-base font-semibold flex items-center gap-2">
+                    <Target className="h-4 w-4" />
+                    Programmes Citing this Document ({programmeCounts.reduce((sum, [, count]) => sum + count, 0)} total)
+                  </h3>
+                  <div className="space-y-1.5 text-xs">
+                    {programmeCounts.map(([programmeTitle, count]) => (
+                      <div key={programmeTitle} className="flex items-center gap-2">
+                        <span className="w-8 text-right text-muted-foreground">{count}x</span>
+                        <Badge variant="secondary" className="text-xs">{programmeTitle}</Badge>
+                      </div>
+                    ))}
                   </div>
-                ) : (
-                  <div className="text-center py-8 text-muted-foreground">
-                    No citation information available
-                  </div>
-                )}
-              </div>
+                </div>
+              )}
             </div>
         </ScrollArea>
       </DialogContent>

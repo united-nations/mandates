@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
+import { explainerTexts } from '@/lib/explainer-texts';
 
 export const metadata: Metadata = {
-  title: 'UN Mandate Explorer', // Updated title
-  description: 'Explore UN Mandates, their operative paragraphs and related data.', // Updated description
+  title: explainerTexts.pageMetadata.title,
+  description: explainerTexts.pageMetadata.description,
 };
 
 export default function RootLayout({
