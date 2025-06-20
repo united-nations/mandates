@@ -102,6 +102,14 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
     
     return `Cited ${mandate.num_citations} time${mandate.num_citations !== 1 ? 's' : ''} by ${mandate.num_entities} entit${mandate.num_entities !== 1 ? 'ies' : 'y'}`;
   };
+
+  // Helper function to truncate document symbol if too long
+  const getTruncatedSymbol = (symbol: string): string => {
+    if (symbol.length > 20) {
+      return symbol.substring(0, 20) + '...';
+    }
+    return symbol;
+  };
   return (
     <TooltipProvider>
       <div className="space-y-4">
@@ -142,11 +150,14 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
                     <TooltipTrigger asChild>
                       <div className="flex items-center gap-1.5">
                         <FileText className="h-4 w-4" />
-                        <span className="font-medium">{displaySymbol}</span>
+                        <span className="font-medium">{getTruncatedSymbol(displaySymbol)}</span>
                       </div>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>{explainerTexts.mandateList.documentSymbol}</p>
+                      <div className="space-y-1">
+                        <p className="font-medium">{displaySymbol}</p>
+                        <p className="text-xs text-muted-foreground">{explainerTexts.mandateList.documentSymbol}</p>
+                      </div>
                     </TooltipContent>
                   </Tooltip>
                   
