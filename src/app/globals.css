@@ -12,11 +12,14 @@ h1, h2, h3, h4, h5, h6 {
 
 @layer base {
   :root {
-    --background: 0 0% 100%; /* white */
-    --foreground: 220 15% 25%; /* Dark cool gray for text */
+    --background: 0 0% 100%;
+    --foreground: 220 15% 25%;
 
-    --card: 220 20% 97%; /* Very light cool gray, almost white */
+    --card: 220 20% 97%;
     --card-foreground: 220 15% 25%;
+
+    --dashboard-card: 220 15% 92%;
+    --dashboard-card-foreground: 220 15% 25%;
 
     --popover: 220 20% 97%; /* Very light cool gray, almost white */
     --popover-foreground: 220 15% 25%;
@@ -64,6 +67,8 @@ h1, h2, h3, h4, h5, h6 {
 
     --card: 220 15% 15%;
     --card-foreground: 220 10% 85%;
+
+    --dashboard-card: 220 10% 80%; /* set the color of filters and data cards */
 
     --popover: 220 15% 15%;
     --popover-foreground: 220 10% 85%;

@@ -472,9 +472,9 @@ function MandateNavigator() {
                 <Popover open={sourceDocumentsPopover} onOpenChange={setSourceDocumentsPopover}>
                   <PopoverTrigger asChild>
                     <div onMouseEnter={() => setSourceDocumentsPopover(true)} onMouseLeave={() => setSourceDocumentsPopover(false)} className="h-full">
-                      <Card className="flex flex-col h-full cursor-help">
+                      <Card className="flex flex-col h-full cursor-help bg-dashboard-card">
                           <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-16">
-                              <CardTitle className="text-base font-medium text-muted-foreground">{explainerTexts.dataCards.sourceDocuments.title}</CardTitle>
+                              <CardTitle className="text-lg font-medium text-muted-foreground">{explainerTexts.dataCards.sourceDocuments.title}</CardTitle>
                               <FileText className="h-5 w-5 text-muted-foreground" />
                           </CardHeader>
                           <CardContent className="flex-grow flex items-end">
@@ -498,9 +498,9 @@ function MandateNavigator() {
                 <Popover open={unOrgansPopover} onOpenChange={setUnOrgansPopover}>
                   <PopoverTrigger asChild>
                     <div onMouseEnter={() => setUnOrgansPopover(true)} onMouseLeave={() => setUnOrgansPopover(false)} className="h-full">
-                      <Card className="flex flex-col h-full cursor-help">
+                      <Card className="flex flex-col h-full cursor-help bg-dashboard-card">
                         <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-16">
-                            <CardTitle className="text-base font-medium text-muted-foreground">{explainerTexts.dataCards.unOrgans.title}</CardTitle>
+                            <CardTitle className="text-lg font-medium text-muted-foreground">{explainerTexts.dataCards.unOrgans.title}</CardTitle>
                             <Landmark className="h-5 w-5 text-muted-foreground" />
                         </CardHeader>
                         <CardContent className="flex-grow flex items-end">
@@ -524,9 +524,9 @@ function MandateNavigator() {
                 <Popover open={unEntitiesPopover} onOpenChange={setUnEntitiesPopover}>
                   <PopoverTrigger asChild>
                     <div onMouseEnter={() => setUnEntitiesPopover(true)} onMouseLeave={() => setUnEntitiesPopover(false)} className="h-full">
-                      <Card className="flex flex-col h-full cursor-help">
+                      <Card className="flex flex-col h-full cursor-help bg-dashboard-card">
                           <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-16">
-                              <CardTitle className="text-base font-medium text-muted-foreground">{explainerTexts.dataCards.unEntities.title}</CardTitle>
+                              <CardTitle className="text-lg font-medium text-muted-foreground">{explainerTexts.dataCards.unEntities.title}</CardTitle>
                               <Building className="h-5 w-5 text-muted-foreground" />
                           </CardHeader>
                           <CardContent className="flex-grow flex items-end">
@@ -550,9 +550,9 @@ function MandateNavigator() {
                 <Popover open={citationsPopover} onOpenChange={setCitationsPopover}>
                   <PopoverTrigger asChild>
                     <div onMouseEnter={() => setCitationsPopover(true)} onMouseLeave={() => setCitationsPopover(false)} className="h-full">
-                      <Card className="flex flex-col h-full cursor-help">
+                      <Card className="flex flex-col h-full cursor-help bg-dashboard-card">
                           <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-16">
-                              <CardTitle className="text-base font-medium text-muted-foreground">{explainerTexts.dataCards.citations.title}</CardTitle>
+                              <CardTitle className="text-lg font-medium text-muted-foreground">{explainerTexts.dataCards.citations.title}</CardTitle>
                               <Quote className="h-5 w-5 text-muted-foreground" />
                           </CardHeader>
                           <CardContent className="flex-grow flex items-end">

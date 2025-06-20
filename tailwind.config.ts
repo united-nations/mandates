@@ -23,6 +23,10 @@ export default {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
+        'dashboard-card': {
+          DEFAULT: 'hsl(var(--dashboard-card))',
+          foreground: 'hsl(var(--dashboard-card-foreground))',
+        },
         popover: {
           DEFAULT: 'hsl(var(--popover))',
           foreground: 'hsl(var(--popover-foreground))',

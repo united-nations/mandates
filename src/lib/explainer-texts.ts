@@ -8,7 +8,7 @@ export const explainerTexts = {
   mainHeader: {
     title: 'UN Mandate Source Registry (beta version)',
     description: [
-      'The Mandate Source Registry has been developed under the UN80 initiative to enhance transparency and support informed dialogue on mandate coherence and implementation. It compiles UN mandate source documents cited by UN entities in support of resource requirements presented in the Proposed Programme Budget for 2026.',
+      'The Mandate Source Registry has been developed under the UN80 Initiative to enhance transparency and support informed dialogue on mandate coherence and implementation. It compiles UN mandate source documents cited by UN entities in support of resource requirements presented in the Proposed Programme Budget for 2026.',
       'This initial version provides access to mandate source documents cited by UN entities in support of resource requirements presented in the Proposed Programme Budget for 2026 and the Peacekeeping Budget for 2025/2026. The Registry will be iteratively expanded in the coming weeks to integrate mandates assigned to other UN entities and to include operative paragraphs from relevant documents',
       'This Registry serves as a technical reference to assist Member States in assessing current mandate implementation arrangements across the UN system.',
     ],
@@ -52,7 +52,7 @@ export const explainerTexts = {
   filters: {
     keywordSearch: {
       label: 'Keyword Search',
-      placeholder: 'Search for titles and documents...',
+      placeholder: 'Search for document titles...',
       tooltip:
         'Search for specific terms. Use this to find mandate source documents related to particular topics or activities.'
     },
