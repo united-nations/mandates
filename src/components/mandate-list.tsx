@@ -109,8 +109,8 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
                   Details
                 </Button>
 
-                <div className="pr-16">
-                  <h3 className="text-base font-semibold leading-tight">
+                <div className="pr-32">
+                  <h3 className="text-base font-semibold leading-tight break-words hyphens-auto">
                     <HighlightedContent 
                       content={mandate.highlightedTitle || mandate.highlightedFields?.title} 
                       fallback={mandate.title || mandate.description || 'Untitled'} 
