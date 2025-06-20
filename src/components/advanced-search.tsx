@@ -3,7 +3,7 @@
 import { SearchableDropdown } from './ui/searchable-dropdown';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectSeparator } from '@/components/ui/select';
-import { HelpCircle } from 'lucide-react';
+import { HelpCircle, Calendar } from 'lucide-react';
 import {
   Tooltip,
   TooltipContent,
@@ -99,13 +99,14 @@ export function AdvancedSearch({
           {yearRange && selectedYearRange && (
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <Label className="text-base font-medium">{explainerTexts.filters.yearRange.label}</Label>
+                <Calendar className="h-4 w-4 text-muted-foreground" />
+                <Label className="text-base font-medium">{explainerTexts.advancedFilters.yearRange.label}</Label>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
                   </TooltipTrigger>
                   <TooltipContent className="max-w-xs">
-                    <p>{explainerTexts.filters.yearRange.tooltip}</p>
+                    <p>{explainerTexts.advancedFilters.yearRange.tooltip}</p>
                   </TooltipContent>
                 </Tooltip>
               </div>

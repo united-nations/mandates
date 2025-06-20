@@ -9,13 +9,13 @@ import { FilterControls } from '@/components/filter-controls';
 import { PaginationControls } from '@/components/pagination-controls';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Archive, Landmark, Building, Target, Quote, Info, HelpCircle } from 'lucide-react';
+import { FileText, Landmark, Building, Target, Quote, HelpCircle } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { MandateDetails } from '@/components/mandate-details';
 import { SearchResultsSummary } from '@/components/search-results-summary';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+
 import {
   Select,
   SelectContent,
@@ -458,64 +458,13 @@ function MandateNavigator() {
                 <h1 className="text-3xl font-bold tracking-tight text-foreground mb-2">
                   {explainerTexts.mainHeader.title}
                 </h1>
-                <p className="text-muted-foreground max-w-3xl">
-                  {explainerTexts.mainHeader.description}
-                </p>
+                <div className="text-muted-foreground max-w-3xl space-y-3">
+                  {explainerTexts.mainHeader.description.map((paragraph, index) => (
+                    <p key={index}>{paragraph}</p>
+                  ))}
+                </div>
               </div>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button variant="outline" size="sm" className="flex items-center gap-2">
-                    <HelpCircle className="h-4 w-4" />
-                    About UN80
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-                  <DialogHeader>
-                    <DialogTitle className="flex items-center gap-2">
-                      <Info className="h-5 w-5" />
-                      {explainerTexts.aboutDialog.title}
-                    </DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-4 text-sm">
-                    <div>
-                      <h3 className="font-semibold mb-2">{explainerTexts.aboutDialog.whatIsUn80.title}</h3>
-                      <p>{explainerTexts.aboutDialog.whatIsUn80.description}</p>
-                      <ol className="list-decimal list-inside mt-2 space-y-1 ml-4">
-                        {explainerTexts.aboutDialog.whatIsUn80.workStreams.map((stream, index) => (
-                          <li key={index}>{stream}</li>
-                        ))}
-                      </ol>
-                    </div>
-                    
-                    <div>
-                      <h3 className="font-semibold mb-2">{explainerTexts.aboutDialog.keyTerms.title}</h3>
-                      <div className="grid gap-3">
-                        <div className="border rounded p-3">
-                          <h4 className="font-medium">{explainerTexts.aboutDialog.keyTerms.unOrgans.title}</h4>
-                          <p className="text-muted-foreground">{explainerTexts.aboutDialog.keyTerms.unOrgans.description}</p>
-                        </div>
-                        <div className="border rounded p-3">
-                          <h4 className="font-medium">{explainerTexts.aboutDialog.keyTerms.unEntities.title}</h4>
-                          <p className="text-muted-foreground">{explainerTexts.aboutDialog.keyTerms.unEntities.description}</p>
-                        </div>
-                        <div className="border rounded p-3">
-                          <h4 className="font-medium">{explainerTexts.aboutDialog.keyTerms.mandates.title}</h4>
-                          <p className="text-muted-foreground">{explainerTexts.aboutDialog.keyTerms.mandates.description}</p>
-                        </div>
-                        <div className="border rounded p-3">
-                          <h4 className="font-medium">{explainerTexts.aboutDialog.keyTerms.sourceDocuments.title}</h4>
-                          <p className="text-muted-foreground">{explainerTexts.aboutDialog.keyTerms.sourceDocuments.description}</p>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <h3 className="font-semibold mb-2">{explainerTexts.aboutDialog.howItHelps.title}</h3>
-                      <p>{explainerTexts.aboutDialog.howItHelps.description}</p>
-                    </div>
-                  </div>
-                </DialogContent>
-              </Dialog>
+
             </div>
           </section>
 
@@ -527,7 +476,7 @@ function MandateNavigator() {
                       <Card className="flex flex-col h-full cursor-help">
                           <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-16">
                               <CardTitle className="text-base font-medium text-muted-foreground">{explainerTexts.dataCards.sourceDocuments.title}</CardTitle>
-                              <Archive className="h-5 w-5 text-muted-foreground" />
+                              <FileText className="h-5 w-5 text-muted-foreground" />
                           </CardHeader>
                           <CardContent className="flex-grow flex items-end">
                               <div className="text-3xl font-bold text-foreground">
