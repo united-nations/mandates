@@ -124,8 +124,9 @@ export function MandateDetails({ mandate, open, onOpenChange }: MandateDetailsPr
         className="max-w-5xl w-full light flex flex-col max-h-[85vh] p-6" 
       >
         {/* Header */}
-        <div className="pb-6">
-            <DialogTitle className="text-3xl font-bold">{mandate.title || 'Mandate Details'}</DialogTitle>
+        <div className="border-b pb-4">
+            <p className="text-sm font-medium text-muted-foreground">Mandate Document</p>
+            <DialogTitle className="text-2xl font-bold mt-1">{mandate.title || mandate.description}</DialogTitle>
             <DialogDescription className="mt-1">
                 {displaySymbol}
             </DialogDescription>
