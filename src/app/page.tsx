@@ -457,9 +457,9 @@ function MandateNavigator() {
                   </h1>
                   <p className="text-sm text-muted-foreground">{explainerTexts.mainHeader.versionTag}</p>
                 </div>
-                <div className="text-muted-foreground space-y-1 mt-2 text-justify">
+                <div className="text-muted-foreground mt-2 text-justify">
                   {explainerTexts.mainHeader.description.map((paragraph, index) => (
-                    <p key={index}>{paragraph}</p>
+                    <p key={index} className="leading-tight mb-3 last:mb-0">{paragraph}</p>
                   ))}
                 </div>
                 <p className="text-sm text-muted-foreground mt-2 italic text-justify">{explainerTexts.mainHeader.disclaimer}</p>

@@ -9,11 +9,11 @@ export const explainerTexts = {
     title: 'UN Mandate Source Registry',
     versionTag: "(beta version)",
     description: [
-      'The Mandate Source Registry has been developed under the UN80 Initiative to enhance transparency and support informed dialogue on mandate coherence and implementation. It compiles UN mandate source documents cited by UN entities in support of resource requirements presented in the Proposed Programme Budget for 2026.',
-      'This initial version provides access to mandate source documents cited by UN entities in support of resource requirements presented in the Proposed Programme Budget for 2026 and the Peacekeeping Budget for 2025/2026. The Registry will be iteratively expanded in the coming weeks to integrate mandates assigned to other UN entities and to include operative paragraphs from relevant documents',
-      'This Registry serves as a technical reference to assist Member States in assessing current mandate implementation arrangements across the UN system.',
+      'The Mandate Source Registry has been developed under the UN80 Initiative to enhance transparency and support informed dialogue on mandate coherence and implementation. It compiles UN mandate source documents cited by UN Entities in support of resource requirements presented in the Proposed Programme Budget for 2026.',
+      'This initial version provides access to mandate source documents cited by UN Entities in support of resource requirements presented in the Proposed Programme Budget for 2026 and the Peacekeeping Budget for 2025/2026. The Registry will be iteratively expanded in the coming weeks to integrate mandates assigned to other UN Entities and to include operative paragraphs from relevant documents',
+      'This Registry serves as a technical reference to assist Member States in assessing current mandate implementation arrangements across the UN System.',
     ],
-    disclaimer: 'As the list of UN Entities in this registry is derived from the budget submissions to the General Assembly, it includes entities that are independent of the Secretariat and the Secretary-General.  The inclusion of these entities here is for reference only and is not intended to indicate that they are within the scope of the UN80 Initiative.'
+    disclaimer: 'As the list of UN Entities in this registry is derived from the budget submissions to the General Assembly, it includes Entities that are independent of the Secretariat and the Secretary-General.  The inclusion of these Entities here is for reference only and is not intended to indicate that they are within the scope of the UN80 Initiative.'
   },
 
   // Page metadata (reuses mainHeader content)
@@ -30,22 +30,22 @@ export const explainerTexts = {
     sourceDocuments: {
       title: 'Source Documents',
       description:
-        "The total number of unique resolutions, decisions, presidential statements, and other formal documents containing mandates for UN entities."
+        "The total number of unique resolutions, decisions, presidential statements, and other formal documents containing mandates for UN Entities."
     },
     unOrgans: {
       title: 'UN Organs & Other Bodies',
       description:
-        'The competent principal organs (including the General Assembly, the Security Council, and the Economic and Social Council) and subsidiary organs of the United Nations and other bodies that have given mandates to UN entities.'
+        'The competent principal organs (including the General Assembly, the Security Council, and the Economic and Social Council) and subsidiary organs of the United Nations and other bodies that have given mandates to UN Entities.'
     },
     unEntities: {
       title: 'UN Entities',
       description:
-        'The UN entities that cite, in their budget submissions, documents containing mandates.'
+        'The UN Entities that cite, in their budget submissions, documents containing mandates.'
     },
     citations: {
       title: 'Citations',
       description:
-        'The total number of times these source documents are cited by UN entities in their budget documents.'
+        'The total number of times these source documents are cited by UN Entities in their budget documents.'
     }
   },
 
@@ -63,13 +63,13 @@ export const explainerTexts = {
       searchPlaceholder: 'Search organs...',
       emptyPlaceholder: 'No organs found.',
       tooltip:
-        'Filter by the organs and other bodies that have given mandates to UN entities. These include the six principal UN organs, their subsidiary organs, and other governing bodies that issue mandates through resolutions and other documents.'
+        'Filter by the organs and other bodies that have given mandates to UN Entities. These include the six principal UN organs, their subsidiary organs, and other governing bodies that issue mandates through resolutions and other documents.'
     },
     unEntity: {
       label: 'UN Entity',
       placeholder: 'Filter by UN Entity citing a document...',
-      searchPlaceholder: 'Search entities...',
-      emptyPlaceholder: 'No entities found.',
+      searchPlaceholder: 'Search Entities...',
+      emptyPlaceholder: 'No Entities found.',
       tooltip: 'Filter by entity citing the documents in their budget submissions.'
     },
   },
@@ -81,7 +81,7 @@ export const explainerTexts = {
       placeholder: 'Filter by Programme...',
       searchPlaceholder: 'Search Programmes...',
       emptyPlaceholder: 'No Programmes found.',
-      tooltip: 'Filter by specific Programmes in the budget structure of UN entities.'
+      tooltip: 'Filter by specific Programmes in the budget structure of UN Entities.'
     },
     budgetDocument: {
       label: 'Budget Document',
@@ -113,7 +113,7 @@ export const explainerTexts = {
   mandateList: {
     sectionTitle: 'Document List',
     sectionTooltip:
-      'Each document shown below contains formal mandates that instruct UN entities to perform specific tasks. Click on any document to see detailed information about what the mandate is about and which entities cite it in their budget submissions.',
+      'Each document shown below contains formal mandates that instruct UN Entities to perform specific tasks. Click on any document to see detailed information about what the mandate is about and which Entities cite it in their budget submissions.',
     documentSymbol:
       'Document symbol - the official UN identifier for this source document',
     issuingOrgan: {
@@ -124,6 +124,6 @@ export const explainerTexts = {
     searchRelevance:
       'Search relevance score - how closely this document matches your search terms',
     citationCount:
-      'Citation count shows how often this mandate document is cited by UN entities in their budget submissions. While this may indicate importance, high citation counts can also suggest duplicated or overlapping implementation that the UN80 review aims to identify and streamline.'
+      'Citation count shows how often this mandate document is cited by UN Entities in their budget submissions. While this may indicate importance, high citation counts can also suggest duplicated or overlapping implementation that the UN80 review aims to identify and streamline.'
   }
 } as const
