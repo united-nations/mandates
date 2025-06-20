@@ -58,8 +58,7 @@ export function SearchResultsSummary({
           
           {(hasSearch || hasFilters) && (
             <Button
-              variant="outline"
-              size="sm"
+              className="shrink-0 inline-flex items-center gap-2"
               onClick={() => {
                 if (hasSearch) onClearSearch();
                 Object.keys(appliedFilters).forEach(key => {
@@ -68,8 +67,8 @@ export function SearchResultsSummary({
                   }
                 });
               }}
-              className="text-xs"
             >
+              <X className="h-4 w-4" />
               Clear All
             </Button>
           )}
