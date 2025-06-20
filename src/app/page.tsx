@@ -78,7 +78,7 @@ function MandateNavigator() {
   const sortBy = searchParams.get('sort_by') || (keywordFromParams ? 'default' : 'citations_desc');
 
   const [keyword, setKeyword] = useState(keywordFromParams);
-  const debouncedKeyword = useDebounce(keyword, 300);
+  const debouncedKeyword = useDebounce(keyword, 500);
   
   const [totalPages, setTotalPages] = useState(0);
   const [totalItems, setTotalItems] = useState(0);
@@ -86,7 +86,6 @@ function MandateNavigator() {
   const [uniqueOrgans, setUniqueOrgans] = useState(0);
   const [uniqueEntities, setUniqueEntities] = useState(0);
   const [totalCitations, setTotalCitations] = useState(0);
-  const [uniqueProgrammes, setUniqueProgrammes] = useState(0);
 
   const [allEntities, setAllEntities] = useState<Entity[]>([]);
   const [allOrgans, setAllOrgans] = useState<Organ[]>([]);
@@ -105,7 +104,6 @@ function MandateNavigator() {
   const [sourceDocumentsPopover, setSourceDocumentsPopover] = useState(false);
   const [unOrgansPopover, setUnOrgansPopover] = useState(false);
   const [unEntitiesPopover, setUnEntitiesPopover] = useState(false);
-  const [programmesPopover, setProgrammesPopover] = useState(false);
   const [citationsPopover, setCitationsPopover] = useState(false);
 
   useEffect(() => {
@@ -268,7 +266,6 @@ function MandateNavigator() {
         setUniqueOrgans(data.uniqueBodiesCount || 0);
         setUniqueEntities(data.totalEntities || 0);
         setTotalCitations(data.totalCitations || 0);
-        setUniqueProgrammes(data.uniqueProgrammesCount || 0);
       } catch (error) {
         console.error("Failed to fetch metadata:", error);
       }
@@ -304,7 +301,6 @@ function MandateNavigator() {
       setUniqueOrgans(data.uniqueBodiesCount || 0);
       setUniqueEntities(data.uniqueEntitiesCount || 0);
       setTotalCitations(data.totalCitations || 0);
-      setUniqueProgrammes(data.uniqueProgrammesCount || 0);
 
       if (data.uniqueProgrammes) {
         setProgrammeOptions(data.uniqueProgrammes);
@@ -469,7 +465,7 @@ function MandateNavigator() {
           </section>
 
           <section className="mb-6 px-4">
-            <div className="grid gap-3 grid-cols-1 sm:grid-cols-5">
+            <div className="grid gap-3 grid-cols-1 sm:grid-cols-4">
                 <Popover open={sourceDocumentsPopover} onOpenChange={setSourceDocumentsPopover}>
                   <PopoverTrigger asChild>
                     <div onMouseEnter={() => setSourceDocumentsPopover(true)} onMouseLeave={() => setSourceDocumentsPopover(false)} className="h-full">
@@ -543,32 +539,6 @@ function MandateNavigator() {
                       <p className="font-medium">{explainerTexts.dataCards.unEntities.title}</p>
                       <p className="text-sm text-muted-foreground">
                         {explainerTexts.dataCards.unEntities.description}
-                      </p>
-                    </div>
-                  </PopoverContent>
-                </Popover>
-                
-                <Popover open={programmesPopover} onOpenChange={setProgrammesPopover}>
-                  <PopoverTrigger asChild>
-                    <div onMouseEnter={() => setProgrammesPopover(true)} onMouseLeave={() => setProgrammesPopover(false)} className="h-full">
-                      <Card className="flex flex-col h-full cursor-help">
-                        <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-16">
-                          <CardTitle className="text-base font-medium text-muted-foreground">{explainerTexts.dataCards.programmes.title}</CardTitle>
-                          <Target className="h-5 w-5 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent className="flex-grow flex items-end">
-                          <div className="text-3xl font-bold text-foreground">
-                            {isLoading ? <Skeleton className="h-8 w-12" /> : (uniqueProgrammes > 0 ? uniqueProgrammes.toLocaleString() : '0')}
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-80">
-                    <div className="space-y-2">
-                      <p className="font-medium">{explainerTexts.dataCards.programmes.title}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {explainerTexts.dataCards.programmes.description}
                       </p>
                     </div>
                   </PopoverContent>
@@ -726,7 +696,6 @@ function MandateNavigator() {
               setSelectedMandate(null);
             }
           }}
-          parentContext={parentContext}
         />
       </div>
     </TooltipProvider>

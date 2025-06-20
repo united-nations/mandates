@@ -32,17 +32,12 @@ export const explainerTexts = {
     unOrgans: {
       title: 'Organs',
       description:
-        'The distinct organs that have issued mandate documents to UN entities. These include the six principal UN organs, their subsidiary organs, and other governing bodies that issue mandates through resolutions and other documents.'
+        'The organs and other bodies that have given mandates to UN entities. These include the six principal organs, their subsidiary organs, and other governing bodies that issue mandates through resolutions and other documents.'
     },
     unEntities: {
       title: 'UN Entities',
       description:
-        'The distinct UN entities that cite mandate source documents. These are the departments, offices, funds and programmes, regional commissions, peacekeeping operations, political missions, and other entities within the UN Secretariat that reference these mandate documents in their budget submissions.'
-    },
-    programmes: {
-      title: 'Programmes',
-      description:
-        ''
+        'The UN entities that cite, in their budget submissions, documents containing mandates.'
     },
     citations: {
       title: 'Citations',
@@ -57,7 +52,7 @@ export const explainerTexts = {
       label: 'Keyword Search',
       placeholder: 'Search for titles and documents...',
       tooltip:
-        'Search for specific terms. Use this to find mandates related to particular topics or activities within the UN Secretariat.'
+        'Search for specific terms. Use this to find mandate source documents related to particular topics or activities.'
     },
     unOrgan: {
       label: 'Organ',
@@ -65,14 +60,14 @@ export const explainerTexts = {
       searchPlaceholder: 'Search organs...',
       emptyPlaceholder: 'No organs found.',
       tooltip:
-        'Filter by the distinct organs that have issued mandate documents to UN entities. These include the six principal UN organs, their subsidiary organs, and other governing bodies that issue mandates through resolutions and other documents.'
+        'Filter by the organs and other bodies that have given mandates to UN entities. These include the six principal UN organs, their subsidiary organs, and other governing bodies that issue mandates through resolutions and other documents.'
     },
     unEntity: {
       label: 'UN Entity',
-      placeholder: 'Filter by implementing entity...',
+      placeholder: 'Filter by citing entity...',
       searchPlaceholder: 'Search entities...',
       emptyPlaceholder: 'No entities found.',
-      tooltip: 'Filter by entity citing the documents. These are the departments, offices, funds and programmes, regional commissions, peacekeeping operations, political missions, and other entities within the UN Secretariat that reference these mandate documents in their budget submissions.'
+      tooltip: 'Filter by entity citing the documents in their budget submissions.'
     },
   },
 
@@ -83,7 +78,7 @@ export const explainerTexts = {
       placeholder: 'Filter by programme...',
       searchPlaceholder: 'Search programmes...',
       emptyPlaceholder: 'No programmes found.',
-      tooltip: 'Filter by specific programmes within Secretariat budget documents.'
+      tooltip: 'Filter by specific programmes in the budget structure of UN entities.'
     },
     budgetDocument: {
       label: 'Budget Document',
@@ -93,7 +88,7 @@ export const explainerTexts = {
     yearRange: {
       label: 'Filter by Year Range',
       tooltip:
-        'Filter documents by the year they were issued. Use this to focus on recent mandate sources or track how mandate patterns have evolved over time within the Secretariat.'
+        'Filter documents by the year they were issued. Use this to focus on recent mandate sources or track how mandate patterns have evolved over time.'
     }
   },
 
@@ -115,7 +110,7 @@ export const explainerTexts = {
   mandateList: {
     sectionTitle: 'Mandate Source Documents',
     sectionTooltip:
-      'Each document shown below contains formal mandates that instruct UN Secretariat entities to perform specific tasks. Click on any document to see detailed information about what the mandate is about and which entities cite it in their budget submissions.',
+      'Each document shown below contains formal mandates that instruct UN entities to perform specific tasks. Click on any document to see detailed information about what the mandate is about and which entities cite it in their budget submissions.',
     documentSymbol:
       'Document symbol - the official UN identifier for this source document',
     issuingOrgan: {
@@ -126,6 +121,6 @@ export const explainerTexts = {
     searchRelevance:
       'Search relevance score - how closely this document matches your search terms',
     citationCount:
-      'Citation count shows how often this mandate document is cited by Secretariat entities in their budget submissions. While this may indicate importance, high citation counts can also suggest duplicated or overlapping implementation that the UN80 review aims to identify and streamline.'
+      'Citation count shows how often this mandate document is cited by UN entities in their budget submissions. While this may indicate importance, high citation counts can also suggest duplicated or overlapping implementation that the UN80 review aims to identify and streamline.'
   }
 } as const

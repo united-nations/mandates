@@ -15,24 +15,7 @@ async function getMandates(): Promise<Mandate[]> {
   const fileContents = await fs.readFile(path.join(jsonDirectory, 'ppb2026_unique_mandates_with_metadata.json'), 'utf8');
   
   const rawData = JSON.parse(fileContents);
-
-  const transformedData = rawData.map((item: any) => ({
-    ...item,
-    document_title: item.title,
-    document_symbol: item.symbol,
-    issuing_body_or_bodies: item.body ? [item.body] : [],
-    mentions: item.entities,
-    ai_summary: item.ai_summary || null,
-  }));
-
-  // Sort by num_entities descending initially
-  transformedData.sort((a: any, b: any) => b.num_entities - a.num_entities);
-
-  mandates = transformedData;
-  
-  console.log('--- MANDATE DATA STRUCTURE ---');
-  console.log(JSON.stringify(mandates[0], null, 2));
-  
+  mandates = rawData.sort((a: any, b: any) => b.num_entities - a.num_entities);
   return mandates;
 }
 
@@ -47,8 +30,12 @@ interface SearchResult extends Mandate {
 const searchFields: SearchField[] = [
   {
     name: 'title',
-    getValue: (mandate: Mandate) => mandate.title || mandate.document_title || ''
-  }
+    getValue: (mandate: Mandate) => mandate.title || '',
+  },
+  {
+    name: 'document_symbol',
+    getValue: (mandate: Mandate) => mandate.document_symbol || '',
+  },
 ];
 
 function performEnhancedTextSearch(mandates: Mandate[], query: string): SearchResult[] {
@@ -118,7 +105,7 @@ export async function GET(request: Request) {
     let filteredMandates: Mandate[] = allMandates;
 
     if (entity) {
-      filteredMandates = filteredMandates.filter((m) => m.mentions?.includes(entity));
+      filteredMandates = filteredMandates.filter((m) => m.entities?.includes(entity));
     }
 
     if (pillar && pillar !== 'all') {
@@ -126,7 +113,7 @@ export async function GET(request: Request) {
     }
 
     if (organ) {
-      filteredMandates = filteredMandates.filter((m) => m.issuing_body_or_bodies?.includes(organ));
+      filteredMandates = filteredMandates.filter((m) => m.body === organ);
     }
 
     if (programme) {
@@ -206,10 +193,10 @@ export async function GET(request: Request) {
     // Calculate summary stats on filtered mandates
     const totalItems = filteredMandates.length;
     const totalCitations = filteredMandates.reduce((acc, mandate) => acc + (mandate.num_citations || 0), 0);
-    const allFilteredEntities = filteredMandates.flatMap(mandate => mandate.mentions);
-    const uniqueEntitiesCount = new Set(allFilteredEntities).size;
-    const allFilteredBodies = filteredMandates.flatMap(mandate => mandate.issuing_body_or_bodies);
-    const uniqueBodiesCount = new Set(allFilteredBodies).size;
+    const allFilteredEntities = filteredMandates.flatMap(mandate => mandate.entities || []);
+    const uniqueEntitiesCount = new Set(allFilteredEntities.filter(Boolean)).size;
+    const allFilteredBodies = filteredMandates.map(mandate => mandate.body);
+    const uniqueBodiesCount = new Set(allFilteredBodies.filter(Boolean)).size;
     const allFilteredProgrammes = new Set<string>();
     const allFilteredSections = new Set<string>();
     for (const mandate of filteredMandates) {
