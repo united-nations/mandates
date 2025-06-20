@@ -16,36 +16,39 @@ import { FileText, Building, Calendar, Link, Users, FileCheck, Target, Columns, 
 import { EntityName } from './ui/entity-name';
 import { TooltipProvider } from './ui/tooltip';
 
-interface ParentContext {
-  scrollY: number;
-  viewportHeight: number;
-  iframeTop: number;
-}
-
 interface MandateDetailsProps {
   mandate: Mandate | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  parentContext: ParentContext | null;
 }
 
 const toTitleCase = (str: string) => {
   if (!str) return '';
-  return str.replace(
-    /\w\S*/g,
-    (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-  );
+  const smallWords = new Set(['a', 'an', 'and', 'as', 'at', 'but', 'by', 'for', 'in', 'of', 'on', 'or', 'the', 'to', 'vs']);
+  
+  return str.replace(/\w+/g, (word, index) => {
+    const lowerWord = word.toLowerCase();
+    if (index > 0 && smallWords.has(lowerWord)) {
+      return lowerWord;
+    }
+    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+  });
 };
 
-const MetadataItem = ({ label, children }: { label: string, children: React.ReactNode }) => (
-  <div className="flex items-start text-xs py-1">
-    <p className="w-28 font-medium text-muted-foreground flex-shrink-0">{label}</p>
-    <div className="flex-grow">{children}</div>
-  </div>
+const MetadataItem = ({ label, children }: { label: React.ReactNode, children: React.ReactNode }) => (
+    <div className="flex items-start text-xs py-1">
+        <div className="w-28 font-medium text-muted-foreground flex-shrink-0">{label}</div>
+        <div className="flex-grow">{children}</div>
+    </div>
 );
 
-export function MandateDetails({ mandate, open, onOpenChange, parentContext }: MandateDetailsProps) {
+export function MandateDetails({ mandate, open, onOpenChange }: MandateDetailsProps) {
   const [isPdfVisible, setIsPdfVisible] = useState(false);
+
+  const budgetDocumentDisplayNames: { [key: string]: string } = {
+    ppb2026: 'Proposed Programme Budget for 2026',
+    pko: 'Budget of Peacekeeping Operations 2025/26',
+  };
 
   const entityCounts = useMemo(() => {
     if (!mandate || !mandate.citation_info) return [];
@@ -63,7 +66,12 @@ export function MandateDetails({ mandate, open, onOpenChange, parentContext }: M
         }
     });
 
-    return Object.entries(counts).sort(([, a], [, b]) => b.count - a.count);
+    return Object.entries(counts).sort(([shortNameA, dataA], [shortNameB, dataB]) => {
+      if (dataB.count !== dataA.count) {
+        return dataB.count - dataA.count;
+      }
+      return shortNameA.localeCompare(shortNameB);
+    });
   }, [mandate]);
 
   const programmeCounts = useMemo(() => {
@@ -81,29 +89,30 @@ export function MandateDetails({ mandate, open, onOpenChange, parentContext }: M
       }
     });
 
-    return Object.entries(counts).sort(([, a], [, b]) => b - a);
+    return Object.entries(counts).sort(([titleA, countA], [titleB, countB]) => {
+      if (countB !== countA) {
+        return countB - countA;
+      }
+      return titleA.localeCompare(titleB);
+    });
+  }, [mandate]);
+
+  const budgetDocuments = useMemo(() => {
+    if (!mandate || !mandate.citation_info) return [];
+    const uniqueDocs = new Set<string>();
+    mandate.citation_info.forEach(citation => {
+      if (citation.origin_document) {
+        uniqueDocs.add(citation.origin_document);
+      }
+    });
+    return Array.from(uniqueDocs);
   }, [mandate]);
 
   if (!mandate) {
     return null;
   }
   
-  const validEntities = mandate.entities ? mandate.entities.filter(e => e && e.trim()) : [];
-
-  const dialogStyle: React.CSSProperties = {};
-  
-  if (parentContext) {
-    const { scrollY, iframeTop, viewportHeight } = parentContext;
-    dialogStyle.position = 'absolute';
-    dialogStyle.top = `${scrollY + (viewportHeight / 2) - iframeTop}px`;
-    dialogStyle.left = '50%';
-    dialogStyle.transform = 'translate(-50%, -50%)';
-    
-    // Use 85% of viewport height, with min 400px and max 800px
-    const calculatedHeight = Math.min(Math.max(viewportHeight * 0.85, 400), 800);
-    dialogStyle.maxHeight = `${calculatedHeight}px`;
-  }
-
+  const hasSubjects = mandate.subject_headings && mandate.subject_headings.length > 0;
   const displaySymbol = mandate.full_document_symbol || mandate.symbol;
   const pdfUrl = mandate.full_document_symbol
     ? `https://documents.un.org/api/symbol/access?s=${mandate.full_document_symbol}&l=en&t=pdf`
@@ -112,13 +121,11 @@ export function MandateDetails({ mandate, open, onOpenChange, parentContext }: M
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent 
-        className="max-w-5xl w-full light flex flex-col max-h-[600px] p-4" 
-        style={dialogStyle}
+        className="max-w-5xl w-full light flex flex-col max-h-[85vh] p-6" 
       >
         {/* Header */}
-        <div className="border-b pb-4">
-            <p className="text-sm font-medium text-muted-foreground">Mandate Document</p>
-            <DialogTitle className="text-2xl font-bold mt-1">{mandate.title || 'Mandate Details'}</DialogTitle>
+        <div className="pb-6">
+            <DialogTitle className="text-3xl font-bold">{mandate.title || 'Mandate Details'}</DialogTitle>
             <DialogDescription className="mt-1">
                 {displaySymbol}
             </DialogDescription>
@@ -139,19 +146,39 @@ export function MandateDetails({ mandate, open, onOpenChange, parentContext }: M
               {/* Compact Metadata List */}
               <div className="space-y-1 p-3 border rounded-lg">
                 <MetadataItem label="Organ">
-                  {mandate.body ? <Badge variant="secondary" className="text-xs">{mandate.body}</Badge> : <span className="text-muted-foreground">Not available</span>}
+                  {mandate.body ? <Badge variant="stronger" className="text-xs">{mandate.body}</Badge> : <span className="text-muted-foreground">—</span>}
                 </MetadataItem>
                 <MetadataItem label="Document Type">
-                  {mandate.collection_level3 && mandate.collection_level3.length > 0 ? <Badge variant="secondary" className="text-xs">{mandate.collection_level3[0]}</Badge> : <span className="text-muted-foreground">Not available</span>}
+                  {mandate.collection_level3 && mandate.collection_level3.length > 0 ? <Badge variant="stronger" className="text-xs">{mandate.collection_level3[0]}</Badge> : <span className="text-muted-foreground">—</span>}
                 </MetadataItem>
                 <MetadataItem label="Year">
-                  {mandate.year ? <Badge variant="secondary" className="text-xs">{mandate.year}</Badge> : <span className="text-muted-foreground">Not available</span>}
+                  {mandate.year ? <Badge variant="stronger" className="text-xs">{mandate.year}</Badge> : <span className="text-muted-foreground">—</span>}
                 </MetadataItem>
                 <MetadataItem label="Budget Document">
-                  {mandate.origin_document ? <Badge variant="secondary" className="text-xs">{mandate.origin_document}</Badge> : <span className="text-muted-foreground">Not Available</span>}
+                  {budgetDocuments.length > 0 ? (
+                    <div className="flex flex-wrap gap-1">
+                      {budgetDocuments.map((doc, index) => {
+                        const docKey = doc.replace(/\s/g, '').toLowerCase();
+                        const displayName = budgetDocumentDisplayNames[docKey] || doc;
+                        return (
+                          <Badge key={index} variant="stronger" className="text-xs">
+                            {displayName}
+                          </Badge>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <span className="text-muted-foreground">—</span>
+                  )}
                 </MetadataItem>
                 {mandate.subject_headings && mandate.subject_headings.length > 0 && (
-                  <MetadataItem label="Subject Headings">
+                  <MetadataItem 
+                    label={
+                      <a href="https://metadata.un.org/thesaurus/" target="_blank" rel="noopener noreferrer" className="hover:underline">
+                        UN Library Subjects
+                      </a>
+                    }
+                  >
                     <div className="flex flex-wrap gap-1">
                       {mandate.subject_headings.map((heading, index) => (
                         <Badge key={index} variant="outline" className="text-xs font-normal">
@@ -166,15 +193,12 @@ export function MandateDetails({ mandate, open, onOpenChange, parentContext }: M
               {/* AI Summary */}
               <div className="space-y-2">
                 <h3 className="text-base font-semibold flex items-center gap-2">
-                  <span>Summary</span>
-                  <Badge variant="outline" className="flex items-center gap-1 text-xs font-normal border-primary/50 text-primary bg-primary/10">
-                    <Sparkles className="h-3 w-3" />
-                    AI-generated
-                  </Badge>
+                  <FileText className="h-4 w-4" />
+                  <span>Document Summary</span>
                 </h3>
                 <div className="p-3 bg-muted/30 rounded-lg">
                   <p className="text-sm leading-relaxed text-muted-foreground italic">
-                    Summaries are coming soon.
+                    Document summaries and operative paragraphs are coming soon.
                   </p>
                 </div>
               </div>
@@ -183,8 +207,8 @@ export function MandateDetails({ mandate, open, onOpenChange, parentContext }: M
               {entityCounts.length > 0 && (
                 <div className="space-y-2">
                   <h3 className="text-base font-semibold flex items-center gap-2">
-                    <Users className="h-4 w-4" />
-                    Entities Citing this Document ({entityCounts.reduce((sum, [, data]) => sum + data.count, 0)} total)
+                    <Building className="h-4 w-4" />
+                    Entities Citing this Document ({entityCounts.length} total)
                   </h3>
                   <div className="space-y-1.5 text-xs">
                     {entityCounts.map(([shortName, data]) => (
@@ -203,13 +227,13 @@ export function MandateDetails({ mandate, open, onOpenChange, parentContext }: M
                 <div className="space-y-2">
                   <h3 className="text-base font-semibold flex items-center gap-2">
                     <Target className="h-4 w-4" />
-                    Programmes Citing this Document ({programmeCounts.reduce((sum, [, count]) => sum + count, 0)} total)
+                    Programmes Citing this Document ({programmeCounts.length} total)
                   </h3>
                   <div className="space-y-1.5 text-xs">
                     {programmeCounts.map(([programmeTitle, count]) => (
                       <div key={programmeTitle} className="flex items-center gap-2">
                         <span className="w-8 text-right text-muted-foreground">{count}x</span>
-                        <Badge variant="secondary" className="text-xs">{programmeTitle}</Badge>
+                        <Badge variant="secondary" className="text-xs">{toTitleCase(programmeTitle)}</Badge>
                       </div>
                     ))}
                   </div>
