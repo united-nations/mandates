@@ -140,7 +140,7 @@ export function MandateDetails({ mandate, open, onOpenChange }: MandateDetailsPr
         </div>
 
         {/* Content */}
-        <ScrollArea className="flex-grow mt-3 overflow-y-auto">
+        <ScrollArea className="flex-grow overflow-y-auto">
             <div className="space-y-6 pr-2">
 
               {/* Compact Metadata List */}
