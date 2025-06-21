@@ -155,7 +155,7 @@ export function MandateDetails({ mandate, open, onOpenChange }: MandateDetailsPr
                   {mandate.body ? <Badge variant="stronger" className="text-xs">{mandate.body}</Badge> : <span className="text-muted-foreground">—</span>}
                 </MetadataItem>
                 <MetadataItem label="Document Type">
-                  {mandate.collection_level3 && mandate.collection_level3.length > 0 ? <Badge variant="stronger" className="text-xs">{mandate.collection_level3[0]}</Badge> : <span className="text-muted-foreground">—</span>}
+                  {mandate.type ? <Badge variant="stronger" className="text-xs">{mandate.type}</Badge> : <span className="text-muted-foreground">—</span>}
                 </MetadataItem>
                 <MetadataItem label="Year">
                   {mandate.year ? <Badge variant="stronger" className="text-xs">{mandate.year}</Badge> : <span className="text-muted-foreground">—</span>}

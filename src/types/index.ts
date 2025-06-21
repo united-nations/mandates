@@ -28,6 +28,7 @@ export interface Mandate {
   citation_info: CitationInfo[];
   origin_document: string;
   part_in_document: string;
+  type: string;
   entity: string;
   document_symbol: string | null;
   classification_code: string[] | null;
