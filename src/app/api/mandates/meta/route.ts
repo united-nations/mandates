@@ -92,11 +92,30 @@ async function getMetadata() {
 
   uniqueEntities = Object.entries(entityCounts)
     .map(([name, count]) => ({ name, count }))
-    .sort((a, b) => b.count - a.count);
+    .sort((a, b) => a.name.localeCompare(b.name));
     
   uniqueBodiesWithCount = Object.entries(bodyCounts)
     .map(([name, count]) => ({ name, count }))
-    .sort((a, b) => b.count - a.count);
+    .sort((a, b) => {
+      // Priority order for main organs
+      const priority = ["General Assembly", "Security Council", "ECOSOC"];
+      const aIndex = priority.indexOf(a.name);
+      const bIndex = priority.indexOf(b.name);
+      
+      // If both are in priority list, sort by priority order
+      if (aIndex !== -1 && bIndex !== -1) {
+        return aIndex - bIndex;
+      }
+      
+      // If only a is in priority list, a comes first
+      if (aIndex !== -1) return -1;
+      
+      // If only b is in priority list, b comes first
+      if (bIndex !== -1) return 1;
+      
+      // If neither is in priority list, sort alphabetically
+      return a.name.localeCompare(b.name);
+    });
 
   uniquePriorityAreas = Array.from(priorityAreas).sort();
   totalDocuments = rawData.length;

@@ -8,10 +8,9 @@ export const explainerTexts = {
   mainHeader: {
     title: 'UN Mandate Source Registry',
     versionTag: "(beta version)",
-    shortDescription: 'The Mandate Source Registry has been developed as part of the UN80 Initiative to enhance transparency and support informed dialogue on mandate coherence and implementation. It compiles UN mandate source documents cited by UN Entities in support of resource requirements.',
+    shortDescription: 'Developed as part of the UN80 Initiative, this registry serves as a transparency tool for understanding UN mandates and programmes. It compiles the source documents that UN entities cite when explaining why their programmes exist and why they require resources, enabling better dialogue on mandate implementation.',
     fullDescription: [
-      'This initial version provides access to mandate source documents cited by UN Entities in support of resource requirements presented in the Proposed Programme Budget for 2026 and the Peacekeeping Budget for 2025/2026. The Registry will be iteratively expanded in the coming weeks to integrate mandates assigned to other UN System Entities and to include operative paragraphs from relevant documents',
-      'This Registry serves as a technical reference to assist Member States in assessing current mandate implementation arrangements across the UN System.',
+      "This beta version of the registry provides access to mandate source documents cited by UN Entities in support of resource requirements in the UN's Proposed Programme Budget for 2026 and the Peacekeeping Budget for 2025/2026. The Registry will be iteratively expanded in the coming weeks to integrate mandates related to other UN System Entities and to include the operative paragraphs from relevant documents. The Registry serves as a technical reference to assist Member States in assessing current mandate implementation arrangements across the UN System."
     ],
     disclaimer: 'As the list of UN Entities in this registry is derived from the budget submissions to the General Assembly, it includes Entities that are independent of the Secretariat and the Secretary-General.  The inclusion of these Entities here is for reference only and is not intended to indicate that they are within the scope of the UN80 Initiative.'
   },
@@ -52,10 +51,10 @@ export const explainerTexts = {
   // Filter Controls
   filters: {
     keywordSearch: {
-      label: 'Keyword Search',
+      label: 'Keyword Search (beta)',
       placeholder: 'Search for document titles...',
       tooltip:
-        'Search for specific terms. Use this to find mandate source documents related to particular topics or activities.'
+        'Search for specific terms to find mandate source documents.'
     },
     unOrgan: {
       label: 'UN Organ & Other Body',

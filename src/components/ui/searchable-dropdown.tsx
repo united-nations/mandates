@@ -43,6 +43,7 @@ export function SearchableDropdown({
 
   const filteredOptions = options.filter(
     (option) =>
+      option.value === "---divider---" || // Always include dividers
       (option.label && option.label.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (option.description && option.description.toLowerCase().includes(searchTerm.toLowerCase()))
   );
@@ -86,15 +87,27 @@ export function SearchableDropdown({
     switch (e.key) {
       case 'ArrowDown':
         e.preventDefault();
-        setHighlightedIndex((prev) =>
-          prev < filteredOptions.length - 1 ? prev + 1 : 0
-        );
+        setHighlightedIndex((prev) => {
+          let next = prev < filteredOptions.length - 1 ? prev + 1 : 0;
+          // Skip dividers
+          while (next < filteredOptions.length && filteredOptions[next]?.value === "---divider---") {
+            next = next < filteredOptions.length - 1 ? next + 1 : 0;
+            if (next === prev) break; // Prevent infinite loop
+          }
+          return next;
+        });
         break;
       case 'ArrowUp':
         e.preventDefault();
-        setHighlightedIndex((prev) =>
-          prev > 0 ? prev - 1 : filteredOptions.length - 1
-        );
+        setHighlightedIndex((prev) => {
+          let next = prev > 0 ? prev - 1 : filteredOptions.length - 1;
+          // Skip dividers
+          while (next >= 0 && filteredOptions[next]?.value === "---divider---") {
+            next = next > 0 ? next - 1 : filteredOptions.length - 1;
+            if (next === prev) break; // Prevent infinite loop
+          }
+          return next;
+        });
         break;
       case 'Enter':
         e.preventDefault();
@@ -156,41 +169,53 @@ export function SearchableDropdown({
               className="h-9"
             />
           </div>
-          <ScrollArea className="max-h-60 overflow-y-auto">
+          <ScrollArea className="max-h-80 overflow-y-auto">
             <div className="p-1">
               {filteredOptions.length === 0 ? (
                 <div className="py-2 px-4 text-center text-sm text-muted-foreground">
                   {emptyPlaceholder}
                 </div>
               ) : (
-                filteredOptions.map((option, index) => (
-                  <Button
-                    key={option.value}
-                    ref={(el) => {
-                      if (el) optionRefs.current[index] = el;
-                    }}
-                    variant="ghost"
-                    size="sm"
-                    className={cn(
-                      "w-full justify-between font-normal h-auto py-2",
-                      highlightedIndex === index && "bg-accent text-accent-foreground"
-                    )}
-                    onClick={() => handleSelect(option.value)}
-                    onMouseEnter={() => setHighlightedIndex(index)}
-                  >
-                    <div className="flex flex-col items-start text-left flex-1 min-w-0">
-                      <span className="font-medium whitespace-normal text-left">{option.label}</span>
-                      {option.description && (
-                        <span className="text-xs text-muted-foreground text-left whitespace-normal">
-                          {option.description}
-                        </span>
+                filteredOptions.map((option, index) => {
+                  // Handle very light divider
+                  if (option.value === "---divider---") {
+                    return (
+                      <div
+                        key={option.value}
+                        className="mx-2 my-1.5 border-b border-border/30"
+                      />
+                    );
+                  }
+                  
+                  return (
+                    <Button
+                      key={option.value}
+                      ref={(el) => {
+                        if (el) optionRefs.current[index] = el;
+                      }}
+                      variant="ghost"
+                      size="sm"
+                      className={cn(
+                        "w-full justify-between font-normal h-auto py-2",
+                        highlightedIndex === index && "bg-accent text-accent-foreground"
                       )}
-                    </div>
-                    {value === option.value && (
-                      <Check className="h-4 w-4 shrink-0" />
-                    )}
-                  </Button>
-                ))
+                      onClick={() => handleSelect(option.value)}
+                      onMouseEnter={() => setHighlightedIndex(index)}
+                    >
+                      <div className="flex flex-col items-start text-left flex-1 min-w-0">
+                        <span className="font-medium whitespace-normal text-left">{option.label}</span>
+                        {option.description && (
+                          <span className="text-xs text-muted-foreground text-left whitespace-normal">
+                            {option.description}
+                          </span>
+                        )}
+                      </div>
+                      {value === option.value && (
+                        <Check className="h-4 w-4 shrink-0" />
+                      )}
+                    </Button>
+                  );
+                })
               )}
             </div>
           </ScrollArea>

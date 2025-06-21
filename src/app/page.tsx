@@ -429,19 +429,38 @@ function MandateNavigator() {
     };
   });
 
-  const organDropdownOptions: SearchableDropdownOption[] = organOptions.map(organ => {
+  const organDropdownOptions: SearchableDropdownOption[] = [];
+  const priorityOrgans = ["General Assembly", "Security Council", "ECOSOC"];
+  
+  organOptions.forEach((organ, index) => {
     const organData = findOrganData(organ.name);
-    if (organData) {
-      return {
+    
+    // For General Assembly and Security Council, just show the name
+    if (organ.name === "General Assembly" || organ.name === "Security Council") {
+      organDropdownOptions.push({
+        value: organ.name,
+        label: organ.name,
+      });
+    } else {
+      // For all other organs, show "short – long" format
+      const option = organData ? {
         value: organ.name,
         label: `${organData.short} – ${organData.long}`,
+      } : {
+        value: organ.name,
+        label: organ.name,
       };
+      organDropdownOptions.push(option);
     }
-    // Fallback to original name if not found in organs.json
-    return {
-      value: organ.name,
-      label: organ.name,
-    };
+    
+    // Add a very light divider after ECOSOC (the third priority organ)
+    if (index === 2 && priorityOrgans.includes(organ.name)) {
+      organDropdownOptions.push({
+        value: "---divider---",
+        label: "",
+        description: "",
+      });
+    }
   });
 
   return (
