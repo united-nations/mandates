@@ -15,6 +15,7 @@ import { Button } from './ui/button';
 import { FileText, Building, Calendar, Link, Users, FileCheck, Target, Columns, Sparkles, ChevronLeft } from 'lucide-react';
 import { EntityName } from './ui/entity-name';
 import { TooltipProvider } from './ui/tooltip';
+import { toTitleCase } from '@/lib/utils';
 
 interface MandateDetailsProps {
   mandate: Mandate | null;
@@ -22,19 +23,6 @@ interface MandateDetailsProps {
   onOpenChange: (open: boolean) => void;
   allEntities?: { entity: string; entity_long: string }[];
 }
-
-const toTitleCase = (str: string) => {
-  if (!str) return '';
-  const smallWords = new Set(['a', 'an', 'and', 'as', 'at', 'but', 'by', 'for', 'in', 'of', 'on', 'or', 'the', 'to', 'vs']);
-  
-  return str.replace(/\w+/g, (word, index) => {
-    const lowerWord = word.toLowerCase();
-    if (index > 0 && smallWords.has(lowerWord)) {
-      return lowerWord;
-    }
-    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-  });
-};
 
 const MetadataItem = ({ label, children }: { label: React.ReactNode, children: React.ReactNode }) => (
     <div className="flex items-baseline text-xs py-1">

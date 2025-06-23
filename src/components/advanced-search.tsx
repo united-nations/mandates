@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/tooltip";
 import { YearSlider } from './year-slider';
 import { explainerTexts } from '@/lib/explainer-texts';
+import { toTitleCase } from '@/lib/utils';
 
 interface AdvancedSearchProps {
   programme: string;
@@ -37,7 +38,10 @@ export function AdvancedSearch({
   onYearRangeChange,
 }: AdvancedSearchProps) {
 
-  const programmeDropdownOptions = programmeOptions.map(p => ({ value: p, label: p }));
+  const programmeDropdownOptions = programmeOptions.map(p => ({ 
+    value: p, 
+    label: toTitleCase(p) 
+  }));
 
   return (
     <TooltipProvider>
