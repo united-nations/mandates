@@ -26,7 +26,7 @@ interface MandateDetailsProps {
 
 const MetadataItem = ({ label, children }: { label: React.ReactNode, children: React.ReactNode }) => (
     <div className="flex items-baseline text-xs py-1">
-        <div className="w-28 font-medium text-muted-foreground flex-shrink-0">{label}</div>
+        <div className="w-28 font-medium text-muted-foreground flex-shrink-0 pr-3">{label}</div>
         <div className="flex-grow">{children}</div>
     </div>
 );
