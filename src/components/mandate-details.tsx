@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import type { Mandate, CitationInfo } from '@/types';
 import {
   Dialog,
@@ -12,7 +12,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from './ui/button';
-import { FileText, Building, Calendar, Link, Users, FileCheck, Target, Columns, Sparkles } from 'lucide-react';
+import { FileText, Building, Calendar, Link, Users, FileCheck, Target, Columns, Sparkles, ChevronLeft } from 'lucide-react';
 import { EntityName } from './ui/entity-name';
 import { TooltipProvider } from './ui/tooltip';
 
@@ -44,6 +44,11 @@ const MetadataItem = ({ label, children }: { label: React.ReactNode, children: R
 
 export function MandateDetails({ mandate, open, onOpenChange }: MandateDetailsProps) {
   const [isPdfVisible, setIsPdfVisible] = useState(false);
+  const [showSwipeHint, setShowSwipeHint] = useState(true);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const touchStartX = useRef<number>(0);
+  const touchStartY = useRef<number>(0);
+  const isDragging = useRef<boolean>(false);
 
   const budgetDocumentDisplayNames: { [key: string]: string } = {
     'ppb2026': 'Proposed Programme Budget for 2026',
@@ -51,6 +56,66 @@ export function MandateDetails({ mandate, open, onOpenChange }: MandateDetailsPr
     'pko': 'Budget of Peacekeeping Operations 2025/26',
     'PPB 2026/Plan Outline': 'Plan Outline',
   };
+
+  // Swipe gesture handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length !== 1) return;
+    
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+    isDragging.current = false;
+    
+    // Hide swipe hint on first interaction
+    if (showSwipeHint) {
+      setShowSwipeHint(false);
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length !== 1) return;
+    
+    const currentX = e.touches[0].clientX;
+    const currentY = e.touches[0].clientY;
+    const deltaX = currentX - touchStartX.current;
+    const deltaY = currentY - touchStartY.current;
+    
+    // Only start dragging if horizontal movement is greater than vertical
+    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 10) {
+      isDragging.current = true;
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!isDragging.current) return;
+    
+    const touchEndX = e.changedTouches[0].clientX;
+    const deltaX = touchEndX - touchStartX.current;
+    const threshold = 100; // Minimum swipe distance
+    
+    // Swipe right to close (left-to-right swipe)
+    if (deltaX > threshold) {
+      onOpenChange(false);
+    }
+    
+    isDragging.current = false;
+  };
+
+  // Auto-hide swipe hint after 3 seconds
+  useEffect(() => {
+    if (open && showSwipeHint) {
+      const timer = setTimeout(() => {
+        setShowSwipeHint(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [open, showSwipeHint]);
+
+  // Reset swipe hint when dialog opens
+  useEffect(() => {
+    if (open) {
+      setShowSwipeHint(true);
+    }
+  }, [open]);
 
   const entityCounts = useMemo(() => {
     if (!mandate || !mandate.citation_info) return [];
@@ -121,10 +186,25 @@ export function MandateDetails({ mandate, open, onOpenChange }: MandateDetailsPr
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent 
-        className="max-w-5xl w-full light flex flex-col max-h-[85vh] p-6" 
+        ref={contentRef}
+        className="max-w-5xl w-full light flex flex-col max-h-[85vh] p-6"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
         {/* Header */}
         <div className="border-b pb-4">
+            {/* Mobile swipe indicator - only show on small screens */}
+            {showSwipeHint && (
+              <div className="flex items-center justify-between mb-2 sm:hidden animate-in fade-in duration-300">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <ChevronLeft className="h-3 w-3" />
+                  <span>Swipe right to close</span>
+                </div>
+                <div className="w-8 h-1 bg-muted rounded-full"></div>
+              </div>
+            )}
+            
             <p className="text-sm font-medium text-muted-foreground">Mandate Document</p>
             <DialogTitle className="text-2xl font-bold mt-1">{mandate.title || mandate.description}</DialogTitle>
             <DialogDescription className="mt-1">
