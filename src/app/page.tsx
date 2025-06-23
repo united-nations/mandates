@@ -2,8 +2,7 @@
 
 import { useState, useEffect, useCallback, Suspense } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import type { Mandate } from '@/types';
-import { useDebounce } from '@/hooks/use-debounce'; 
+import type { Mandate } from '@/types'; 
 import { MandateList } from '@/components/mandate-list';
 import { FilterControls } from '@/components/filter-controls';
 import { PaginationControls } from '@/components/pagination-controls';
@@ -78,7 +77,7 @@ function MandateNavigator() {
   const sortBy = searchParams.get('sort_by') || (keywordFromParams ? 'default' : 'citations_desc');
 
   const [keyword, setKeyword] = useState(keywordFromParams);
-  const debouncedKeyword = useDebounce(keyword, 500);
+  // Remove debounced search - we'll search on Enter instead
   
   const [totalPages, setTotalPages] = useState(0);
   const [totalItems, setTotalItems] = useState(0);
@@ -105,13 +104,6 @@ function MandateNavigator() {
   const [unOrgansPopover, setUnOrgansPopover] = useState(false);
   const [unEntitiesPopover, setUnEntitiesPopover] = useState(false);
   const [citationsPopover, setCitationsPopover] = useState(false);
-
-  useEffect(() => {
-    // Sync keyword input with URL param
-    if (keywordFromParams !== keyword) {
-      setKeyword(keywordFromParams);
-    }
-  }, [keywordFromParams]);
 
   useEffect(() => {
     // Sync selectedYearRange with URL params when they change
@@ -320,21 +312,11 @@ function MandateNavigator() {
   }, [fetchMandates]);
 
   useEffect(() => {
-    if (debouncedKeyword !== keywordFromParams) {
-      const params = new URLSearchParams(searchParams.toString());
-      params.set('page', '1');
-      if (debouncedKeyword) {
-        params.set('keyword', debouncedKeyword);
-      } else {
-        params.delete('keyword');
-        // When clearing search, if sort was relevance, reset to default (citations)
-        if (params.get('sort_by') === 'default') {
-          params.set('sort_by', 'citations_desc');
-        }
-      }
-      router.push(`${pathname}?${params.toString()}`, { scroll: false });
+    // Only sync keyword input with URL param changes (not trigger search)
+    if (keywordFromParams !== keyword) {
+      setKeyword(keywordFromParams);
     }
-  }, [debouncedKeyword, keywordFromParams, pathname, router, searchParams]);
+  }, [keywordFromParams]); // Remove 'keyword' from dependencies to prevent infinite loop
   
   const handlePageChange = (page: number) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -382,6 +364,21 @@ function MandateNavigator() {
 
   const onKeywordChange = (value: string) => {
     setKeyword(value);
+  };
+
+  const onKeywordSearch = (searchTerm: string = keyword) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('page', '1');
+    if (searchTerm.trim()) {
+      params.set('keyword', searchTerm.trim());
+    } else {
+      params.delete('keyword');
+      // When clearing search, if sort was relevance, reset to default (citations)
+      if (params.get('sort_by') === 'default') {
+        params.set('sort_by', 'citations_desc');
+      }
+    }
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
   const budgetDocumentDisplayNames: { [key: string]: string } = {
@@ -613,6 +610,7 @@ function MandateNavigator() {
             <FilterControls
               keyword={keyword}
               onKeywordChange={onKeywordChange}
+              onKeywordSearch={onKeywordSearch}
               entityOptions={entityDropdownOptions}
               selectedEntity={selectedEntity}
               onEntityChange={onEntityChange}
@@ -642,7 +640,10 @@ function MandateNavigator() {
                 year: (startYearFromParams && endYearFromParams && yearRange && (parseInt(startYearFromParams, 10) !== yearRange.min || parseInt(endYearFromParams, 10) !== yearRange.max)) ? `${startYearFromParams}-${endYearFromParams}` : undefined,
                 budget_document: budgetDocument && budgetDocument !== 'all' ? budgetDocumentDisplayNames[budgetDocument] : undefined,
               }}
-              onClearSearch={() => onKeywordChange('')}
+              onClearSearch={() => {
+                onKeywordChange('');
+                onKeywordSearch('');
+              }}
               onClearFilter={(filterKey) => {
                 switch (filterKey) {
                   case 'entity':
