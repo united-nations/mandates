@@ -565,7 +565,7 @@ function MandateNavigator() {
                           </CardHeader>
                           <CardContent className="flex-grow flex items-end">
                               <div className="text-3xl font-bold text-foreground">
-                                  {isLoading ? <Skeleton className="h-8 w-16" /> : (uniqueEntities > 0 ? uniqueEntities.toLocaleString() : '0')}
+                                  {isLoading ? <Skeleton className="h-8 w-16" /> : (selectedEntity ? '1' : (uniqueEntities > 0 ? uniqueEntities.toLocaleString() : '0'))}
                               </div>
                           </CardContent>
                       </Card>
@@ -586,7 +586,9 @@ function MandateNavigator() {
                     <div onMouseEnter={() => setCitationsPopover(true)} onMouseLeave={() => setCitationsPopover(false)} className="h-full">
                       <Card className="flex flex-col h-full cursor-help bg-dashboard-card">
                           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 h-16">
-                              <CardTitle className="text-lg font-medium text-secondary-foreground">{explainerTexts.dataCards.citations.title}</CardTitle>
+                              <CardTitle className="text-lg font-medium text-secondary-foreground">
+                                {selectedEntity ? explainerTexts.dataCards.citationsByEntity.title : explainerTexts.dataCards.citations.title}
+                              </CardTitle>
                               <Quote className="h-5 w-5 text-secondary-foreground" />
                           </CardHeader>
                           <CardContent className="flex-grow flex items-end">
@@ -599,9 +601,11 @@ function MandateNavigator() {
                   </PopoverTrigger>
                   <PopoverContent className="w-80">
                     <div className="space-y-2">
-                      <p className="font-medium">{explainerTexts.dataCards.citations.title}</p>
+                      <p className="font-medium">
+                        {selectedEntity ? explainerTexts.dataCards.citationsByEntity.title : explainerTexts.dataCards.citations.title}
+                      </p>
                       <p className="text-sm text-muted-foreground">
-                        {explainerTexts.dataCards.citations.description}
+                        {selectedEntity ? explainerTexts.dataCards.citationsByEntity.description : explainerTexts.dataCards.citations.description}
                       </p>
                     </div>
                   </PopoverContent>
