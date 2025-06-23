@@ -54,7 +54,7 @@ export const explainerTexts = {
       label: 'Keyword Search (beta)',
       placeholder: 'Search for document titles...',
       tooltip:
-        'Search for specific terms to find mandate source documents.'
+        'Search for specific terms to find mandate source documents. Press Enter or click the search button to search.'
     },
     unOrgan: {
       label: 'UN Organ & Other Body',
