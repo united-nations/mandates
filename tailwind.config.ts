@@ -17,6 +17,7 @@ export default {
         code: ['monospace'],
       },
       colors: {
+        'un-blue': '#009edb', // Official UN Blue color
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         card: {

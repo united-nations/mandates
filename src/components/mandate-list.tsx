@@ -12,7 +12,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { EntityName } from './ui/entity-name';
-import { FileText, Calendar, Landmark, Target, Info } from 'lucide-react';
+import { FileText, Calendar, Landmark, Target, Info, Search } from 'lucide-react';
 import { explainerTexts } from '@/lib/explainer-texts';
 
 interface Organ {
@@ -202,8 +202,8 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <div className="flex items-center gap-1.5">
-                          <Target className="h-3 w-3 sm:h-4 sm:w-4" />
-                          <span className="font-medium">{Math.round(searchScore * 100)}% match</span>
+                          <Search className="h-3 w-3 sm:h-4 sm:w-4" />
+                          <span className="font-medium">{Math.round((1 - searchScore) * 100)}% match</span>
                         </div>
                       </TooltipTrigger>
                       <TooltipContent>

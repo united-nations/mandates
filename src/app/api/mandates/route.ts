@@ -26,16 +26,34 @@ interface SearchResult extends Mandate {
   highlightedFields?: { [key: string]: string };
 }
 
-// Define searchable fields
+// Define searchable fields with weights for better relevance
+// These fields match exactly what's displayed in the UI
 const searchFields: SearchField[] = [
   {
     name: 'title',
+    weight: 2.0, // Higher weight for titles
     getValue: (mandate: Mandate) => mandate.title || '',
   },
   {
-    name: 'document_symbol',
-    getValue: (mandate: Mandate) => mandate.document_symbol || '',
+    name: 'uniform_title',
+    weight: 2.0, // Same weight as title since it's used as title for Security Council
+    getValue: (mandate: Mandate) => {
+      if (mandate.body === "Security Council" && mandate.uniform_title && mandate.uniform_title.length > 0) {
+        return mandate.uniform_title[0];
+      }
+      return '';
+    },
   },
+  {
+    name: 'description', 
+    weight: 1.8, // High weight since it's used as fallback title
+    getValue: (mandate: Mandate) => mandate.description || '',
+  },
+  {
+    name: 'document_symbol',
+    weight: 1.5, // Medium weight for document symbols
+    getValue: (mandate: Mandate) => mandate.document_symbol || '',
+  }
 ];
 
 function performEnhancedTextSearch(mandates: Mandate[], query: string): SearchResult[] {
@@ -48,10 +66,11 @@ function performEnhancedTextSearch(mandates: Mandate[], query: string): SearchRe
     query,
     searchFields,
     {
+      threshold: 0.4, // Allow some fuzziness but not too much
       includeMatches: true,
       minMatchCharLength: 2,
-      tokenize: true,
-      matchAllTokens: false
+      findAllMatches: true,
+      ignoreLocation: true // Don't penalize matches based on position
     }
   );
 
@@ -68,20 +87,38 @@ function performEnhancedTextSearch(mandates: Mandate[], query: string): SearchRe
     // Create friendly field names for display
     const fieldDisplayNames: { [key: string]: string } = {
       title: 'Title',
-      document_symbol: 'Document Symbol'
+      uniform_title: 'Title (Uniform)',
+      document_symbol: 'Document Symbol',
+      description: 'Description'
     };
 
     const match_details = Array.from(matchedFields).map(field => 
       fieldDisplayNames[field] || field
     );
 
-    return {
+    // Handle title fallback for highlighting to match UI display logic
+    let highlightedTitle: string | undefined;
+    
+    if (result.item.body === "Security Council" && result.item.uniform_title && result.item.uniform_title.length > 0) {
+      // For Security Council: prefer uniform_title highlighting, fallback to title, then description
+      highlightedTitle = result.highlightedFields.uniform_title || 
+                        result.highlightedFields.title || 
+                        result.highlightedFields.description;
+    } else {
+      // For other documents: prefer title, fallback to description
+      highlightedTitle = result.highlightedFields.title || 
+                        result.highlightedFields.description;
+    }
+
+    const searchResult = {
       ...result.item,
-      searchScore: 0, // Score is not used
+      searchScore: result.score, // Now we have a real relevance score
       match_details,
-      highlightedTitle: result.highlightedFields.title || undefined,
+      highlightedTitle,
       highlightedFields: result.highlightedFields
     };
+    
+    return searchResult;
   });
 }
 

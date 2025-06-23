@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { X, ChevronDown, ChevronUp, HelpCircle, FileText, Landmark, Building } from 'lucide-react';
+import { X, ChevronDown, ChevronUp, HelpCircle, FileText, Landmark, Building, Search } from 'lucide-react';
 import { AdvancedSearch } from '@/components/advanced-search';
 import { YearSlider } from './year-slider';
 import { SearchableDropdown, SearchableDropdownOption } from '@/components/ui/searchable-dropdown';
@@ -26,6 +26,7 @@ interface FilterControlsProps {
   onEntityChange: (value: string) => void;
   onOrganChange: (value: string) => void;
   onKeywordChange: (value: string) => void;
+  onKeywordSearch?: (value?: string) => void; // New prop for Enter-based search
   programme: string;
   yearRange: { min: number; max: number } | null;
   yearDistribution: { [year: string]: number };
@@ -46,6 +47,7 @@ export function FilterControls({
   onEntityChange,
   onOrganChange,
   onKeywordChange,
+  onKeywordSearch,
   programme,
   yearRange,
   yearDistribution,
@@ -74,24 +76,42 @@ export function FilterControls({
                 </TooltipContent>
               </Tooltip>
             </div>
-            <div className="relative">
+            <div className="relative flex">
               <Input
                 id="keyword-search"
                 placeholder={explainerTexts.filters.keywordSearch.placeholder}
                 value={keyword}
                 onChange={(e) => onKeywordChange(e.target.value)}
-                className="pr-10 text-sm h-11"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    onKeywordSearch?.(keyword);
+                  }
+                }}
+                className="pr-20 text-sm h-11"
               />
-              {keyword && (
+              <div className="absolute right-0 top-0 h-full flex">
+                {keyword && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-full px-2"
+                    onClick={() => onKeywordChange('')}
+                    title="Clear search"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                )}
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="absolute right-0 top-1/2 -translate-y-1/2 h-full px-3"
-                  onClick={() => onKeywordChange('')}
+                  className="h-full px-3 text-muted-foreground hover:text-foreground"
+                  onClick={() => onKeywordSearch?.(keyword)}
+                  title="Search (or press Enter)"
                 >
-                  <X className="h-4 w-4" />
+                  <Search className="h-4 w-4" />
                 </Button>
-              )}
+              </div>
             </div>
           </div>
 
