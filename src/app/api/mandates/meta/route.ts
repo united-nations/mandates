@@ -16,6 +16,7 @@ interface BodyWithCount {
 let uniqueEntities: EntityWithCount[] = [];
 let uniqueBodiesWithCount: BodyWithCount[] = [];
 let uniquePriorityAreas: string[] = [];
+let uniqueSubjects: string[] = [];
 let totalDocuments = 0;
 let totalEntities = 0;
 let totalCitations = 0;
@@ -33,6 +34,7 @@ async function getMetadata() {
       uniqueBodies: uniqueBodiesWithCount.map(b => b.name),
       uniqueBodiesWithCount,
       uniquePriorityAreas,
+      uniqueSubjects,
       totalDocuments,
       totalEntities,
       totalCitations,
@@ -54,6 +56,7 @@ async function getMetadata() {
   const bodies = new Set<string>();
   const programmes = new Set<string>();
   const pillars = new Set<string>();
+  const subjects = new Set<string>();
   let citationsSum = 0;
   const localYearDistribution: { [year: string]: number } = {};
 
@@ -73,6 +76,13 @@ async function getMetadata() {
     }
     if (item.pillar) {
         pillars.add(item.pillar);
+    }
+    if (item.subject_headings && Array.isArray(item.subject_headings)) {
+      item.subject_headings.forEach((subject: string) => {
+        if (subject && subject.trim()) {
+          subjects.add(subject.trim());
+        }
+      });
     }
     if (item.citation_info && Array.isArray(item.citation_info)) {
       for (const citation of item.citation_info) {
@@ -118,6 +128,7 @@ async function getMetadata() {
     });
 
   uniquePriorityAreas = Array.from(priorityAreas).sort();
+  uniqueSubjects = Array.from(subjects).sort();
   totalDocuments = rawData.length;
   totalEntities = Object.keys(entityCounts).length;
   totalCitations = citationsSum;
@@ -139,6 +150,7 @@ async function getMetadata() {
     uniqueBodies: uniqueBodiesWithCount.map(b => b.name),
     uniqueBodiesWithCount,
     uniquePriorityAreas,
+    uniqueSubjects,
     totalDocuments,
     totalEntities,
     totalCitations,
@@ -155,7 +167,7 @@ export async function GET() {
     const metadata = await getMetadata();
     return NextResponse.json(metadata);
   } catch (error) {
-    console.error('Failed to load mandate metadata:', error);
+    console.error('Failed to load metadata:', error);
     return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
   }
 } 

@@ -131,6 +131,7 @@ export async function GET(request: Request) {
     const keyword = searchParams.get('keyword');
     const organ = searchParams.get('organ');
     const programme = searchParams.get('programme');
+    const subject = searchParams.get('subject');
     const startYear = searchParams.get('start_year');
     const endYear = searchParams.get('end_year');
     const budgetDocument = searchParams.get('budget_document');
@@ -157,6 +158,14 @@ export async function GET(request: Request) {
       const lowerProgramme = programme.toLowerCase();
       filteredMandates = filteredMandates.filter((m) =>
         m.citation_info?.some((c: CitationInfo) => c.programme_title?.toLowerCase().includes(lowerProgramme))
+      );
+    }
+
+    if (subject) {
+      filteredMandates = filteredMandates.filter((m) =>
+        m.subject_headings?.some((subjectHeading: string) => 
+          subjectHeading?.toLowerCase().includes(subject.toLowerCase())
+        )
       );
     }
 
