@@ -482,7 +482,7 @@ function MandateNavigator() {
                     {explainerTexts.mainHeader.shortDescription}{' '}
                     <Button
                       variant="link"
-                      className="p-0 h-auto text-primary hover:text-primary/80 text-sm inline"
+                      className="p-0 h-auto text-un-blue hover:text-shuttle-gray text-sm inline"
                       onClick={() => {
                         const element = document.getElementById('about-section');
                         element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
