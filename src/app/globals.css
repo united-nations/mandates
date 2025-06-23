@@ -12,6 +12,7 @@ h1, h2, h3, h4, h5, h6 {
 
 @layer base {
   :root {
+    --un-blue: #009edb; /* Official UN Blue color */
     --background: 0 0% 100%;
     --foreground: 220 15% 25%;
 
@@ -119,39 +120,49 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-/* Enhanced search highlighting styles */
+/* Enhanced search highlighting styles using UN Blue */
 .search-highlight {
-  display: inline-block;
-  padding: 1px 3px;
-  border-radius: 3px;
+  background-color: rgba(0, 158, 219, 0.15); /* UN Blue with transparency */
+  color: #009edb; /* UN Blue */
+  padding: 2px 4px;
+  border-radius: 4px;
   font-weight: 600;
+  border: 1px solid rgba(0, 158, 219, 0.3);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   transition: all 0.2s ease;
-  border: 1px solid transparent;
 }
 
 .search-highlight-exact {
-  background-color: #fef3c7;
-  color: #92400e;
-  border-color: #fcd34d;
+  background-color: rgba(0, 158, 219, 0.25); /* Stronger UN Blue for exact matches */
+  color: #009edb; /* UN Blue */
+  border-color: rgba(0, 158, 219, 0.5);
+  font-weight: 700;
 }
 
 .search-highlight-fuzzy {
-  background-color: #dbeafe;
-  color: #1e40af;
-  border-color: #93c5fd;
+  background-color: rgba(0, 158, 219, 0.12); /* Lighter UN Blue for fuzzy matches */
+  color: #009edb; /* UN Blue */
+  border-color: rgba(0, 158, 219, 0.25);
+  font-weight: 600;
 }
 
 /* Dark mode variants */
+.dark .search-highlight {
+  background-color: rgba(0, 158, 219, 0.3);
+  color: #87ceeb; /* Light blue for dark mode */
+  border-color: rgba(0, 158, 219, 0.5);
+}
+
 .dark .search-highlight-exact {
-  background-color: rgba(245, 158, 11, 0.2);
-  color: #fcd34d;
-  border-color: rgba(245, 158, 11, 0.3);
+  background-color: rgba(0, 158, 219, 0.4);
+  color: #add8e6; /* Lighter blue for exact matches in dark mode */
+  border-color: rgba(0, 158, 219, 0.6);
 }
 
 .dark .search-highlight-fuzzy {
-  background-color: rgba(59, 130, 246, 0.2);
-  color: #93c5fd;
-  border-color: rgba(59, 130, 246, 0.3);
+  background-color: rgba(0, 158, 219, 0.25);
+  color: #b0e0e6; /* Powder blue for fuzzy matches in dark mode */
+  border-color: rgba(0, 158, 219, 0.4);
 }
 
 /* Legacy mark support for backward compatibility */

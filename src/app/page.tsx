@@ -2,8 +2,7 @@
 
 import { useState, useEffect, useCallback, Suspense } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import type { Mandate } from '@/types';
-import { useDebounce } from '@/hooks/use-debounce'; 
+import type { Mandate } from '@/types'; 
 import { MandateList } from '@/components/mandate-list';
 import { FilterControls } from '@/components/filter-controls';
 import { PaginationControls } from '@/components/pagination-controls';
@@ -76,10 +75,10 @@ function MandateNavigator() {
   const startYearFromParams = searchParams.get('start_year');
   const endYearFromParams = searchParams.get('end_year');
   const budgetDocument = searchParams.get('budget_document') || '';
-  const sortBy = searchParams.get('sort_by') || (keywordFromParams ? 'default' : 'citations_desc');
+  const sortBy = searchParams.get('sort_by') || (keywordFromParams ? 'default' : 'citing_entities_desc');
 
   const [keyword, setKeyword] = useState(keywordFromParams);
-  const debouncedKeyword = useDebounce(keyword, 500);
+  // Remove debounced search - we'll search on Enter instead
   
   const [totalPages, setTotalPages] = useState(0);
   const [totalItems, setTotalItems] = useState(0);
@@ -107,13 +106,6 @@ function MandateNavigator() {
   const [unOrgansPopover, setUnOrgansPopover] = useState(false);
   const [unEntitiesPopover, setUnEntitiesPopover] = useState(false);
   const [citationsPopover, setCitationsPopover] = useState(false);
-
-  useEffect(() => {
-    // Sync keyword input with URL param
-    if (keywordFromParams !== keyword) {
-      setKeyword(keywordFromParams);
-    }
-  }, [keywordFromParams]);
 
   useEffect(() => {
     // Sync selectedYearRange with URL params when they change
@@ -324,21 +316,11 @@ function MandateNavigator() {
   }, [fetchMandates]);
 
   useEffect(() => {
-    if (debouncedKeyword !== keywordFromParams) {
-      const params = new URLSearchParams(searchParams.toString());
-      params.set('page', '1');
-      if (debouncedKeyword) {
-        params.set('keyword', debouncedKeyword);
-      } else {
-        params.delete('keyword');
-        // When clearing search, if sort was relevance, reset to default (citations)
-        if (params.get('sort_by') === 'default') {
-          params.set('sort_by', 'citations_desc');
-        }
-      }
-      router.push(`${pathname}?${params.toString()}`, { scroll: false });
+    // Only sync keyword input with URL param changes (not trigger search)
+    if (keywordFromParams !== keyword) {
+      setKeyword(keywordFromParams);
     }
-  }, [debouncedKeyword, keywordFromParams, pathname, router, searchParams]);
+  }, [keywordFromParams]); // Remove 'keyword' from dependencies to prevent infinite loop
   
   const handlePageChange = (page: number) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -387,6 +369,21 @@ function MandateNavigator() {
 
   const onKeywordChange = (value: string) => {
     setKeyword(value);
+  };
+
+  const onKeywordSearch = (searchTerm: string = keyword) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('page', '1');
+    if (searchTerm.trim()) {
+      params.set('keyword', searchTerm.trim());
+    } else {
+      params.delete('keyword');
+      // When clearing search, if sort was relevance, reset to default (citing entities)
+      if (params.get('sort_by') === 'default') {
+        params.set('sort_by', 'citing_entities_desc');
+      }
+    }
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
   const budgetDocumentDisplayNames: { [key: string]: string } = {
@@ -570,7 +567,7 @@ function MandateNavigator() {
                           </CardHeader>
                           <CardContent className="flex-grow flex items-end">
                               <div className="text-3xl font-bold text-foreground">
-                                  {isLoading ? <Skeleton className="h-8 w-16" /> : (uniqueEntities > 0 ? uniqueEntities.toLocaleString() : '0')}
+                                  {isLoading ? <Skeleton className="h-8 w-16" /> : (selectedEntity ? '1' : (uniqueEntities > 0 ? uniqueEntities.toLocaleString() : '0'))}
                               </div>
                           </CardContent>
                       </Card>
@@ -591,7 +588,9 @@ function MandateNavigator() {
                     <div onMouseEnter={() => setCitationsPopover(true)} onMouseLeave={() => setCitationsPopover(false)} className="h-full">
                       <Card className="flex flex-col h-full cursor-help bg-dashboard-card">
                           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 h-16">
-                              <CardTitle className="text-lg font-medium text-secondary-foreground">{explainerTexts.dataCards.citations.title}</CardTitle>
+                              <CardTitle className="text-lg font-medium text-secondary-foreground">
+                                {selectedEntity ? explainerTexts.dataCards.citationsByEntity.title : explainerTexts.dataCards.citations.title}
+                              </CardTitle>
                               <Quote className="h-5 w-5 text-secondary-foreground" />
                           </CardHeader>
                           <CardContent className="flex-grow flex items-end">
@@ -604,9 +603,11 @@ function MandateNavigator() {
                   </PopoverTrigger>
                   <PopoverContent className="w-80">
                     <div className="space-y-2">
-                      <p className="font-medium">{explainerTexts.dataCards.citations.title}</p>
+                      <p className="font-medium">
+                        {selectedEntity ? explainerTexts.dataCards.citationsByEntity.title : explainerTexts.dataCards.citations.title}
+                      </p>
                       <p className="text-sm text-muted-foreground">
-                        {explainerTexts.dataCards.citations.description}
+                        {selectedEntity ? explainerTexts.dataCards.citationsByEntity.description : explainerTexts.dataCards.citations.description}
                       </p>
                     </div>
                   </PopoverContent>
@@ -618,6 +619,7 @@ function MandateNavigator() {
             <FilterControls
               keyword={keyword}
               onKeywordChange={onKeywordChange}
+              onKeywordSearch={onKeywordSearch}
               entityOptions={entityDropdownOptions}
               selectedEntity={selectedEntity}
               onEntityChange={onEntityChange}
@@ -651,7 +653,10 @@ function MandateNavigator() {
                 year: (startYearFromParams && endYearFromParams && yearRange && (parseInt(startYearFromParams, 10) !== yearRange.min || parseInt(endYearFromParams, 10) !== yearRange.max)) ? `${startYearFromParams}-${endYearFromParams}` : undefined,
                 budget_document: budgetDocument && budgetDocument !== 'all' ? budgetDocumentDisplayNames[budgetDocument] : undefined,
               }}
-              onClearSearch={() => onKeywordChange('')}
+              onClearSearch={() => {
+                onKeywordChange('');
+                onKeywordSearch('');
+              }}
               onClearFilter={(filterKey) => {
                 switch (filterKey) {
                   case 'entity':
@@ -688,18 +693,18 @@ function MandateNavigator() {
                 <div className="flex items-center gap-3">
                   <h2 className="text-xl sm:text-2xl font-bold tracking-tight">{explainerTexts.mandateList.sectionTitle}</h2>
                 </div>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center justify-end space-x-2 flex-shrink-0 sm:ml-auto">
                   <label htmlFor="sort-by" className="text-sm font-medium whitespace-nowrap">Sort by</label>
                   <Select value={sortBy} onValueChange={handleSortChange}>
-                    <SelectTrigger className="w-full sm:w-[200px] min-w-[180px]" id="sort-by">
+                    <SelectTrigger className="w-full sm:w-[290px] min-w-[220px]" id="sort-by">
                       <SelectValue placeholder={explainerTexts.sorting.placeholder} />
                     </SelectTrigger>
                     <SelectContent>
-                      {keywordFromParams ? <SelectItem value="default">Relevance</SelectItem> : null}
-                      <SelectItem value="citations_desc">Citations (High to Low)</SelectItem>
-                      <SelectItem value="citations_asc">Citations (Low to High)</SelectItem>
+                      {keywordFromParams ? <SelectItem value="default">Search Relevance</SelectItem> : null}
                       <SelectItem value="citing_entities_desc">Number of citing entities (High to Low)</SelectItem>
                       <SelectItem value="citing_entities_asc">Number of citing entities (Low to High)</SelectItem>
+                      <SelectItem value="citations_desc">Citations (High to Low)</SelectItem>
+                      <SelectItem value="citations_asc">Citations (Low to High)</SelectItem>
                       <SelectItem value="year_desc">Year (Newest First)</SelectItem>
                       <SelectItem value="year_asc">Year (Oldest First)</SelectItem>
                     </SelectContent>
