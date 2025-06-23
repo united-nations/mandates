@@ -74,7 +74,7 @@ function MandateNavigator() {
   const startYearFromParams = searchParams.get('start_year');
   const endYearFromParams = searchParams.get('end_year');
   const budgetDocument = searchParams.get('budget_document') || '';
-  const sortBy = searchParams.get('sort_by') || (keywordFromParams ? 'default' : 'citations_desc');
+  const sortBy = searchParams.get('sort_by') || (keywordFromParams ? 'default' : 'citing_entities_desc');
 
   const [keyword, setKeyword] = useState(keywordFromParams);
   // Remove debounced search - we'll search on Enter instead
@@ -373,9 +373,9 @@ function MandateNavigator() {
       params.set('keyword', searchTerm.trim());
     } else {
       params.delete('keyword');
-      // When clearing search, if sort was relevance, reset to default (citations)
+      // When clearing search, if sort was relevance, reset to default (citing entities)
       if (params.get('sort_by') === 'default') {
-        params.set('sort_by', 'citations_desc');
+        params.set('sort_by', 'citing_entities_desc');
       }
     }
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
@@ -681,18 +681,18 @@ function MandateNavigator() {
                 <div className="flex items-center gap-3">
                   <h2 className="text-xl sm:text-2xl font-bold tracking-tight">{explainerTexts.mandateList.sectionTitle}</h2>
                 </div>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center justify-end space-x-2 flex-shrink-0 sm:ml-auto">
                   <label htmlFor="sort-by" className="text-sm font-medium whitespace-nowrap">Sort by</label>
                   <Select value={sortBy} onValueChange={handleSortChange}>
-                    <SelectTrigger className="w-full sm:w-[200px] min-w-[180px]" id="sort-by">
+                    <SelectTrigger className="w-full sm:w-[290px] min-w-[220px]" id="sort-by">
                       <SelectValue placeholder={explainerTexts.sorting.placeholder} />
                     </SelectTrigger>
                     <SelectContent>
                       {keywordFromParams ? <SelectItem value="default">Search Relevance</SelectItem> : null}
-                      <SelectItem value="citations_desc">Citations (High to Low)</SelectItem>
-                      <SelectItem value="citations_asc">Citations (Low to High)</SelectItem>
                       <SelectItem value="citing_entities_desc">Number of citing entities (High to Low)</SelectItem>
                       <SelectItem value="citing_entities_asc">Number of citing entities (Low to High)</SelectItem>
+                      <SelectItem value="citations_desc">Citations (High to Low)</SelectItem>
+                      <SelectItem value="citations_asc">Citations (Low to High)</SelectItem>
                       <SelectItem value="year_desc">Year (Newest First)</SelectItem>
                       <SelectItem value="year_asc">Year (Oldest First)</SelectItem>
                     </SelectContent>
