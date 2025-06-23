@@ -472,11 +472,13 @@ function MandateNavigator() {
           <section className="pb-2">
             <div className="flex items-start justify-between">
               <div>
-                <div className="flex items-baseline gap-x-2 mb-6 mt-2">
-                  <h1 className="text-4xl font-bold tracking-tight text-foreground">
-                    {explainerTexts.mainHeader.title}
-                  </h1>
-                  <p className="text-sm text-muted-foreground">{explainerTexts.mainHeader.versionTag}</p>
+                <div className="mb-6 mt-2">
+                  <div className="flex flex-col sm:flex-row sm:items-baseline sm:gap-x-2">
+                    <h1 className="text-4xl font-bold tracking-tight text-foreground">
+                      {explainerTexts.mainHeader.title}
+                    </h1>
+                    <p className="text-xs sm:text-sm text-muted-foreground mt-1 sm:mt-0">{explainerTexts.mainHeader.versionTag}</p>
+                  </div>
                 </div>
                 <div className="text-muted-foreground mt-2 text-justify">
                   <p className="leading-tight mb-3">
