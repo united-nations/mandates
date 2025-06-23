@@ -57,31 +57,8 @@ export function AdvancedSearch({
   return (
     <TooltipProvider>
       <div className="border-t pt-4 mt-4 space-y-4">
-          {/* Row 1: Programme, Subjects, Budget Document */}
+          {/* Row 1: UN Subjects, Programme, Budget Document */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <Target className="h-4 w-4 text-muted-foreground" />
-                <Label className="text-base font-medium">{explainerTexts.advancedFilters.programme.label}</Label>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs">
-                    <p>{explainerTexts.advancedFilters.programme.tooltip}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </div>
-              <SearchableDropdown 
-                options={programmeDropdownOptions}
-                value={programme}
-                onChange={onProgrammeChange}
-                placeholder={explainerTexts.advancedFilters.programme.placeholder}
-                searchPlaceholder={explainerTexts.advancedFilters.programme.searchPlaceholder}
-                emptyPlaceholder={explainerTexts.advancedFilters.programme.emptyPlaceholder}
-                className="text-sm h-11"
-              />
-            </div>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <BookOpen className="h-4 w-4 text-muted-foreground" />
@@ -102,6 +79,29 @@ export function AdvancedSearch({
                 placeholder={explainerTexts.advancedFilters.subjects.placeholder}
                 searchPlaceholder={explainerTexts.advancedFilters.subjects.searchPlaceholder}
                 emptyPlaceholder={explainerTexts.advancedFilters.subjects.emptyPlaceholder}
+                className="text-sm h-11"
+              />
+            </div>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Target className="h-4 w-4 text-muted-foreground" />
+                <Label className="text-base font-medium">{explainerTexts.advancedFilters.programme.label}</Label>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-xs">
+                    <p>{explainerTexts.advancedFilters.programme.tooltip}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+              <SearchableDropdown 
+                options={programmeDropdownOptions}
+                value={programme}
+                onChange={onProgrammeChange}
+                placeholder={explainerTexts.advancedFilters.programme.placeholder}
+                searchPlaceholder={explainerTexts.advancedFilters.programme.searchPlaceholder}
+                emptyPlaceholder={explainerTexts.advancedFilters.programme.emptyPlaceholder}
                 className="text-sm h-11"
               />
             </div>
