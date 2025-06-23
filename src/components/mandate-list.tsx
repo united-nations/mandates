@@ -140,7 +140,11 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
                   <h3 className="text-sm sm:text-base font-semibold leading-tight break-words hyphens-auto">
                     <HighlightedContent 
                       content={(mandate as any).highlightedTitle || (mandate as any).highlightedFields?.title} 
-                      fallback={mandate.title || mandate.description || 'Untitled'} 
+                      fallback={
+                        mandate.body === "Security Council" && mandate.uniform_title && mandate.uniform_title.length > 0
+                          ? mandate.uniform_title[0]
+                          : mandate.title || mandate.description || 'Untitled'
+                      } 
                     />
                   </h3>
                 </div>

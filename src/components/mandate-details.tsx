@@ -206,7 +206,11 @@ export function MandateDetails({ mandate, open, onOpenChange }: MandateDetailsPr
             )}
             
             <p className="text-sm font-medium text-muted-foreground">Mandate Document</p>
-            <DialogTitle className="text-2xl font-bold mt-1">{mandate.title || mandate.description}</DialogTitle>
+            <DialogTitle className="text-2xl font-bold mt-1">
+              {mandate.body === "Security Council" && mandate.uniform_title && mandate.uniform_title.length > 0
+                ? mandate.uniform_title[0]
+                : mandate.title || mandate.description}
+            </DialogTitle>
             <DialogDescription className="mt-1">
                 {displaySymbol}
             </DialogDescription>
