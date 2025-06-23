@@ -123,6 +123,6 @@ export const explainerTexts = {
     searchRelevance:
       'Search relevance score - how closely this document matches your search terms',
     citationCount:
-      'Citation count shows how often this mandate document is cited by UN Entities in their budget submissions. While this may indicate importance, high citation counts can also suggest duplicated or overlapping implementation that the UN80 review aims to identify and streamline.'
+      'Citation count shows how often this mandate document is cited by UN Entities in their budget submissions.'
   }
 } as const
