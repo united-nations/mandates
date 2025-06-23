@@ -52,7 +52,7 @@ const EntityBadges = ({ entities }: { entities: string[] }) => {
   return (
     <div className="flex flex-wrap gap-1 items-center">
       {validEntities.map(entity => (
-          <Badge key={entity} variant="secondary" className="font-normal">
+          <Badge key={entity} variant="secondary" className="font-normal text-xs">
             <EntityName entityName={entity} showUnderline={false} />
           </Badge>
       ))}
@@ -121,7 +121,7 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
           return (
             <motion.div
               key={mandate.full_document_symbol || mandate.document_symbol}
-              className={`relative p-4 border rounded-lg shadow-sm bg-card hover:bg-muted/50 transition-colors cursor-pointer ${
+              className={`relative p-3 sm:p-4 border rounded-lg shadow-sm bg-card hover:bg-muted/50 transition-colors cursor-pointer ${
                 hasSearchMatches ? 'ring-2 ring-primary/20 bg-accent/5' : ''
               }`}
               initial={{ opacity: 0, y: 20 }}
@@ -130,14 +130,14 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
               onClick={() => onMandateClick(mandate)}
             >
               <div className="flex flex-col gap-3">
-                {/* Details button - positioned absolute */}
-                <Button className="absolute top-3 right-3 shrink-0 inline-flex items-center gap-2">
-                  <Info className="h-4 w-4" />
-                  Details
+                {/* Details button - positioned absolute, smaller on mobile */}
+                <Button className="absolute top-2 sm:top-3 right-2 sm:right-3 shrink-0 inline-flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 py-1 sm:px-3 sm:py-2 h-auto">
+                  <Info className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="text-xs sm:text-sm">Details</span>
                 </Button>
 
-                <div className="pr-32">
-                  <h3 className="text-base font-semibold leading-tight break-words hyphens-auto">
+                <div className="pr-16 sm:pr-32">
+                  <h3 className="text-sm sm:text-base font-semibold leading-tight break-words hyphens-auto">
                     <HighlightedContent 
                       content={(mandate as any).highlightedTitle || (mandate as any).highlightedFields?.title} 
                       fallback={mandate.title || mandate.description || 'Untitled'} 
@@ -145,11 +145,11 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
                   </h3>
                 </div>
 
-                <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-muted-foreground">
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div className="flex items-center gap-1.5">
-                        <FileText className="h-4 w-4" />
+                        <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
                         <span className="font-medium">{getTruncatedSymbol(displaySymbol)}</span>
                       </div>
                     </TooltipTrigger>
@@ -165,7 +165,7 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <div className="flex items-center gap-1.5">
-                          <Landmark className="h-4 w-4" />
+                          <Landmark className="h-3 w-3 sm:h-4 sm:w-4" />
                           <span className="font-medium">{mandate.body}</span>
                         </div>
                       </TooltipTrigger>
@@ -183,7 +183,7 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <div className="flex items-center gap-1.5">
-                          <Calendar className="h-4 w-4" />
+                          <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
                           <span className="font-medium">{mandate.year}</span>
                         </div>
                       </TooltipTrigger>
@@ -198,7 +198,7 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <div className="flex items-center gap-1.5">
-                          <Target className="h-4 w-4" />
+                          <Target className="h-3 w-3 sm:h-4 sm:w-4" />
                           <span className="font-medium">{Math.round(searchScore * 100)}% match</span>
                         </div>
                       </TooltipTrigger>
@@ -270,7 +270,7 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
                   <div className="pt-2 border-t border-border/30">
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <p className="text-sm font-medium mb-2 text-muted-foreground cursor-help">
+                        <p className="text-xs sm:text-sm font-medium mb-2 text-muted-foreground cursor-help">
                           {getCitationDisplayText(mandate)}
                         </p>
                       </TooltipTrigger>
