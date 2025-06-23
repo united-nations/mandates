@@ -258,7 +258,20 @@ export async function GET(request: Request) {
 
     // Calculate summary stats on filtered mandates
     const totalItems = filteredMandates.length;
-    const totalCitations = filteredMandates.reduce((acc, mandate) => acc + (mandate.num_citations || 0), 0);
+    
+    // Calculate total citations - if filtering by entity, only count citations from that entity
+    let totalCitations: number;
+    if (entity) {
+      // When filtering by entity, count only citations from that specific entity
+      totalCitations = filteredMandates.reduce((acc, mandate) => {
+        const entityCitations = mandate.citation_info?.filter(citation => citation.entity === entity).length || 0;
+        return acc + entityCitations;
+      }, 0);
+    } else {
+      // When not filtering by entity, count all citations
+      totalCitations = filteredMandates.reduce((acc, mandate) => acc + (mandate.num_citations || 0), 0);
+    }
+    
     const allFilteredEntities = filteredMandates.flatMap(mandate => mandate.entities || []);
     const uniqueEntitiesCount = new Set(allFilteredEntities.filter(Boolean)).size;
     const allFilteredBodies = filteredMandates.map(mandate => mandate.body);

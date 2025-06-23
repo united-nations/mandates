@@ -45,6 +45,11 @@ export const explainerTexts = {
       title: 'Citations',
       description:
         'The total number of times these source documents are cited by UN Entities in their budget documents.'
+    },
+    citationsByEntity: {
+      title: 'Citations by Entity',
+      description:
+        'The total number of times these source documents are cited by the selected UN Entity in their budget documents.'
     }
   },
 
