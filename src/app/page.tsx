@@ -72,6 +72,7 @@ function MandateNavigator() {
   const selectedOrgan = searchParams.get('organ') || '';
   const keywordFromParams = searchParams.get('keyword') || '';
   const programme = searchParams.get('programme') || '';
+  const subject = searchParams.get('subject') || '';
   const startYearFromParams = searchParams.get('start_year');
   const endYearFromParams = searchParams.get('end_year');
   const budgetDocument = searchParams.get('budget_document') || '';
@@ -92,6 +93,7 @@ function MandateNavigator() {
   const [entityOptions, setEntityOptions] = useState<EntityWithCount[]>([]);
   const [organOptions, setOrganOptions] = useState<BodyWithCount[]>([]);
   const [programmeOptions, setProgrammeOptions] = useState<string[]>([]);
+  const [subjectOptions, setSubjectOptions] = useState<string[]>([]);
 
   const [yearDistribution, setYearDistribution] = useState<{ [year: string]: number }>({});
   const [yearRange, setYearRange] = useState<{ min: number; max: number } | null>(null);
@@ -250,6 +252,7 @@ function MandateNavigator() {
         const data = await response.json();
         setEntityOptions(data.uniqueEntities || []);
         setOrganOptions(data.uniqueBodiesWithCount || []);
+        setSubjectOptions(data.uniqueSubjects || []);
         
         if (data.yearRange) {
           setYearRange(data.yearRange);
@@ -283,6 +286,7 @@ function MandateNavigator() {
     if (selectedOrgan) params.append('organ', selectedOrgan);
     if (keywordFromParams) params.append('keyword', keywordFromParams);
     if (programme) params.append('programme', programme);
+    if (subject) params.append('subject', subject);
     if (startYearFromParams) params.append('start_year', startYearFromParams);
     if (endYearFromParams) params.append('end_year', endYearFromParams);
     if (budgetDocument) params.append('budget_document', budgetDocument);
@@ -313,7 +317,7 @@ function MandateNavigator() {
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, pageSize, selectedEntity, selectedOrgan, keywordFromParams, programme, startYearFromParams, endYearFromParams, budgetDocument, sortBy]);
+  }, [currentPage, pageSize, selectedEntity, selectedOrgan, keywordFromParams, programme, subject, startYearFromParams, endYearFromParams, budgetDocument, sortBy]);
   
   useEffect(() => {
     fetchMandates();
@@ -378,6 +382,7 @@ function MandateNavigator() {
   const onEntityChange = (value: string) => handleFilterChange('entity', value);
   const onOrganChange = (value: string) => handleFilterChange('organ', value);
   const onProgrammeChange = (value: string) => handleFilterChange('programme', value);
+  const onSubjectChange = (value: string) => handleFilterChange('subject', value);
   const onBudgetDocumentChange = (value: string) => handleFilterChange('budget_document', value);
 
   const onKeywordChange = (value: string) => {
@@ -620,14 +625,17 @@ function MandateNavigator() {
               selectedOrgan={selectedOrgan}
               onOrganChange={onOrganChange}
               programme={programme}
+              subject={subject}
               yearRange={yearRange}
               yearDistribution={yearDistribution}
               selectedYearRange={selectedYearRange}
               budgetDocument={budgetDocument}
               onProgrammeChange={onProgrammeChange}
+              onSubjectChange={onSubjectChange}
               onYearRangeChange={handleYearRangeChange}
               onBudgetDocumentChange={onBudgetDocumentChange}
               programmeOptions={programmeOptions}
+              subjectOptions={subjectOptions}
             />
           </div>
 
@@ -639,6 +647,7 @@ function MandateNavigator() {
                 entity: selectedEntity !== 'all' ? selectedEntity : undefined,
                 organ: selectedOrgan !== 'all' ? selectedOrgan : undefined,
                 programme: programme || undefined,
+                subject: subject || undefined,
                 year: (startYearFromParams && endYearFromParams && yearRange && (parseInt(startYearFromParams, 10) !== yearRange.min || parseInt(endYearFromParams, 10) !== yearRange.max)) ? `${startYearFromParams}-${endYearFromParams}` : undefined,
                 budget_document: budgetDocument && budgetDocument !== 'all' ? budgetDocumentDisplayNames[budgetDocument] : undefined,
               }}
@@ -653,6 +662,9 @@ function MandateNavigator() {
                     break;
                   case 'programme':
                     onProgrammeChange('');
+                    break;
+                  case 'subject':
+                    onSubjectChange('');
                     break;
                   case 'year':
                     const newParams = new URLSearchParams(searchParams.toString());

@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Search, X, Filter } from 'lucide-react';
 import { EntityName } from './ui/entity-name';
+import { toTitleCase } from '@/lib/utils';
 
 import { explainerTexts } from '@/lib/explainer-texts';
 
@@ -14,6 +15,7 @@ interface SearchResultsSummaryProps {
     entity?: string;
     organ?: string;
     programme?: string;
+    subject?: string;
     pillar?: string;
     year?: string;
     budget_document?: string;
@@ -126,6 +128,20 @@ export function SearchResultsSummary({
                 size="sm"
                 className="h-4 w-4 p-0 hover:bg-transparent"
                 onClick={() => onClearFilter('programme')}
+              >
+                <X className="h-3 w-3" />
+              </Button>
+            </Badge>
+          )}
+
+          {appliedFilters.subject && (
+            <Badge variant="secondary" className="flex items-center gap-1">
+              Subject: {toTitleCase(appliedFilters.subject)}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-4 w-4 p-0 hover:bg-transparent"
+                onClick={() => onClearFilter('subject')}
               >
                 <X className="h-3 w-3" />
               </Button>

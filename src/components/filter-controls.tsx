@@ -20,6 +20,7 @@ interface FilterControlsProps {
   entityOptions: SearchableDropdownOption[];
   organOptions: SearchableDropdownOption[];
   programmeOptions: string[];
+  subjectOptions: string[];
   selectedEntity: string;
   selectedOrgan: string;
   keyword: string;
@@ -27,11 +28,13 @@ interface FilterControlsProps {
   onOrganChange: (value: string) => void;
   onKeywordChange: (value: string) => void;
   programme: string;
+  subject: string;
   yearRange: { min: number; max: number } | null;
   yearDistribution: { [year: string]: number };
   selectedYearRange: [number, number] | null;
   budgetDocument: string;
   onProgrammeChange: (value: string) => void;
+  onSubjectChange: (value: string) => void;
   onYearRangeChange: (value: [number, number]) => void;
   onBudgetDocumentChange: (value: string) => void;
 }
@@ -40,6 +43,7 @@ export function FilterControls({
   entityOptions,
   organOptions,
   programmeOptions,
+  subjectOptions,
   selectedEntity,
   selectedOrgan,
   keyword,
@@ -47,11 +51,13 @@ export function FilterControls({
   onOrganChange,
   onKeywordChange,
   programme,
+  subject,
   yearRange,
   yearDistribution,
   selectedYearRange,
   budgetDocument,
   onProgrammeChange,
+  onSubjectChange,
   onYearRangeChange,
   onBudgetDocumentChange,
 }: FilterControlsProps) {
@@ -154,10 +160,13 @@ export function FilterControls({
         {showAdvancedSearch && (
           <AdvancedSearch
             programme={programme}
+            subject={subject}
             budgetDocument={budgetDocument}
             onProgrammeChange={onProgrammeChange}
+            onSubjectChange={onSubjectChange}
             onBudgetDocumentChange={onBudgetDocumentChange}
             programmeOptions={programmeOptions}
+            subjectOptions={subjectOptions}
             yearRange={yearRange}
             yearDistribution={yearDistribution}
             selectedYearRange={selectedYearRange}
