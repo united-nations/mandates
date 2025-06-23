@@ -688,7 +688,7 @@ function MandateNavigator() {
                       <SelectValue placeholder={explainerTexts.sorting.placeholder} />
                     </SelectTrigger>
                     <SelectContent>
-                      {keywordFromParams ? <SelectItem value="default">Relevance</SelectItem> : null}
+                      {keywordFromParams ? <SelectItem value="default">Search Relevance</SelectItem> : null}
                       <SelectItem value="citations_desc">Citations (High to Low)</SelectItem>
                       <SelectItem value="citations_asc">Citations (Low to High)</SelectItem>
                       <SelectItem value="citing_entities_desc">Number of citing entities (High to Low)</SelectItem>

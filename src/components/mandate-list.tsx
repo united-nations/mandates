@@ -197,20 +197,7 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
                     </Tooltip>
                   )}
 
-                  {/* Show search score for debugging/information */}
-                  {searchScore > 0 && (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <div className="flex items-center gap-1.5">
-                          <Search className="h-3 w-3 sm:h-4 sm:w-4" />
-                          <span className="font-medium">{Math.round((1 - searchScore) * 100)}% match</span>
-                        </div>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>{explainerTexts.mandateList.searchRelevance}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  )}
+
                 </div>
                 
                 {/* Match details and highlighted content */}
