@@ -88,33 +88,52 @@ function convertFuseResults<T>(fuseResults: FuseResult<T>[], query: string): Fuz
     if (result.matches) {
       result.matches.forEach((match: any) => {
         if (match.indices && match.key) {
-          // Filter out poor quality matches
+          // Very strict filtering - reject most fuzzy matches
           const validIndices = match.indices.filter((indices: [number, number]) => {
             const matchLength = indices[1] - indices[0] + 1;
             const matchStart = indices[0];
             const matchText = (match.value || '').slice(matchStart, indices[1] + 1);
+            const text = match.value || '';
             
-            // Reject matches shorter than 3 characters
-            if (matchLength < 3) return false;
+            // Reject very short matches
+            if (matchLength < 4) return false;
             
-            // For single character queries, be very strict
-            if (query.length === 1 && matchLength === 1) return false;
-            
-            // For short queries (2-3 chars), require longer matches or exact word matches
-            if (query.length <= 3 && matchLength < Math.min(query.length, 3)) {
-              // Allow if it's a complete word match
-              const text = match.value || '';
-              const isWordBoundary = (matchStart === 0 || !/\w/.test(text[matchStart - 1])) &&
-                                   (indices[1] + 1 >= text.length || !/\w/.test(text[indices[1] + 1]));
-              if (!isWordBoundary) return false;
+            // For multi-word queries, require substantial overlap
+            if (query.includes(' ')) {
+              const queryWords = query.toLowerCase().split(/\s+/);
+              const matchedWord = matchText.toLowerCase();
+              // Only accept if the match contains a substantial part of a query word
+              const hasSubstantialMatch = queryWords.some(word => 
+                word.length >= 3 && matchedWord.includes(word.slice(0, Math.max(3, Math.floor(word.length * 0.7))))
+              );
+              if (!hasSubstantialMatch) return false;
             }
             
-            // Reject single letter matches unless they're at word boundaries with exact query match
-            if (matchLength === 1) {
-              const text = match.value || '';
-              const isWordBoundary = (matchStart === 0 || !/\w/.test(text[matchStart - 1])) &&
-                                   (indices[1] + 1 >= text.length || !/\w/.test(text[indices[1] + 1]));
-              return isWordBoundary && matchText.toLowerCase() === query.toLowerCase();
+            // For single word queries, be very strict about character overlap
+            if (!query.includes(' ')) {
+              const queryLower = query.toLowerCase();
+              const matchLower = matchText.toLowerCase();
+              
+              // Require at least 70% character overlap for shorter queries
+              if (queryLower.length <= 6) {
+                const overlap = Math.min(queryLower.length, matchLower.length);
+                const requiredOverlap = Math.ceil(queryLower.length * 0.7);
+                if (overlap < requiredOverlap) return false;
+              }
+              
+              // For longer queries, require exact substring or very close match
+              if (queryLower.length > 6 && !matchLower.includes(queryLower.slice(0, 4))) {
+                return false;
+              }
+            }
+            
+            // Check if this is at word boundaries (preferred)
+            const isWordBoundary = (matchStart === 0 || !/\w/.test(text[matchStart - 1])) &&
+                                 (indices[1] + 1 >= text.length || !/\w/.test(text[indices[1] + 1]));
+            
+            // If not at word boundary, require very high similarity
+            if (!isWordBoundary && matchLength < query.length * 0.8) {
+              return false;
             }
             
             return true;
@@ -188,12 +207,12 @@ export function fuzzySearch<T>(
   if (!query.trim()) return [];
   
   const {
-    threshold = 0.1, // Even stricter threshold to reduce false positives
+    threshold = 0.05, // Much stricter threshold - almost exact matches only
     includeScore = true,
     includeMatches = true,
-    minMatchCharLength = 3, // Require at least 3 characters to match
-    findAllMatches = true,
-    ignoreLocation = false // Consider position for better relevance
+    minMatchCharLength = 4, // Require at least 4 characters to match
+    findAllMatches = false, // Only find best matches to reduce noise
+    ignoreLocation = true // Ignore location for more flexible matching
   } = options;
   
   // Convert our SearchField format to Fuse.js format
@@ -212,6 +231,7 @@ export function fuzzySearch<T>(
   // First, try exact/substring matches for better results
   const exactMatches: FuzzyResult<T>[] = [];
   const queryLower = query.toLowerCase();
+  const queryWords = queryLower.split(/\s+/).filter(word => word.length >= 2);
   
   items.forEach(item => {
     const matches: FuzzyMatch[] = [];
@@ -229,28 +249,65 @@ export function fuzzySearch<T>(
         if (typeof val !== 'string') return;
         
         const valLower = val.toLowerCase();
-        const index = valLower.indexOf(queryLower);
         
-        if (index !== -1) {
+        // Check for exact phrase match first
+        const exactIndex = valLower.indexOf(queryLower);
+        if (exactIndex !== -1) {
           hasMatch = true;
-          // Score based on match position and length
-          const score = index === 0 ? 0.001 : // Perfect start match
-                       index / val.length * 0.1; // Position-based score
+          const score = exactIndex === 0 ? 0.001 : exactIndex / val.length * 0.1;
           bestScore = Math.min(bestScore, score);
           
           const match: FuzzyMatch = {
-            indices: [[index, index + query.length - 1]],
+            indices: [[exactIndex, exactIndex + query.length - 1]],
             value: val,
             key: field.name,
             score
           };
           matches.push(match);
           
-          // Create highlighted version for exact matches
           highlightedFields[field.name] = val.replace(
             new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'),
             '<mark class="search-highlight search-highlight-exact">$1</mark>'
           );
+          return; // Found exact match, no need to check word matches
+        }
+        
+        // Check for individual word matches only if all query words are present
+        if (queryWords.length > 1) {
+          const foundWords = queryWords.filter(word => valLower.includes(word));
+          
+          // Only proceed if we find most of the words (at least 70%)
+          if (foundWords.length >= Math.ceil(queryWords.length * 0.7)) {
+            hasMatch = true;
+            let highlightedVal = val;
+            const wordMatches: [number, number][] = [];
+            
+            foundWords.forEach(word => {
+              const wordIndex = valLower.indexOf(word);
+              if (wordIndex !== -1) {
+                wordMatches.push([wordIndex, wordIndex + word.length - 1]);
+                // Highlight individual words
+                highlightedVal = highlightedVal.replace(
+                  new RegExp(`(${word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'),
+                  '<mark class="search-highlight search-highlight-fuzzy">$1</mark>'
+                );
+              }
+            });
+            
+            if (wordMatches.length > 0) {
+              const score = 0.3 + (foundWords.length / queryWords.length) * 0.2;
+              bestScore = Math.min(bestScore, score);
+              
+              const match: FuzzyMatch = {
+                indices: wordMatches,
+                value: val,
+                key: field.name,
+                score
+              };
+              matches.push(match);
+              highlightedFields[field.name] = highlightedVal;
+            }
+          }
         }
       });
     });
@@ -265,40 +322,17 @@ export function fuzzySearch<T>(
     }
   });
   
-  // If we have good exact matches, return them
+  // Return exact/word matches if we have them - skip fuzzy search entirely
   if (exactMatches.length > 0) {
     const results = exactMatches.sort((a, b) => a.score - b.score);
     setCachedResults(cacheKey, results);
     return results;
   }
   
-  // Fall back to fuzzy search only if no exact matches, with stricter filtering
-  const fuseOptions: IFuseOptions<T> = {
-    keys: fuseKeys,
-    threshold,
-    includeScore,
-    includeMatches,
-    minMatchCharLength,
-    findAllMatches,
-    ignoreLocation,
-    // Disable extended search for simpler, more predictable matching
-    useExtendedSearch: false,
-    // Better distance calculation - stricter
-    distance: 30, // Reduced from 50 for stricter matching
-    // Sort results by score (best matches first)
-    sortFn: (a: any, b: any) => a.score - b.score,
-    // Prefer matches at word boundaries
-    ignoreFieldNorm: false,
-    // Weight matches by position
-    fieldNormWeight: 1
-  };
-  
-  const fuse = new Fuse(items, fuseOptions);
-  const fuseResults = fuse.search(query);
-  const results = convertFuseResults(fuseResults, query);
-  
-  setCachedResults(cacheKey, results);
-  return results;
+  // Skip fuzzy search entirely to avoid scattered character matching
+  // Return empty results if no exact/word matches found
+  setCachedResults(cacheKey, []);
+  return [];
 }
 
 // Generate search suggestions based on content
