@@ -743,6 +743,7 @@ function MandateNavigator() {
               setSelectedMandate(null);
             }
           }}
+          allEntities={allEntities}
         />
       </div>
     </TooltipProvider>

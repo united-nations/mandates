@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect, useRef } from 'react';
+import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import type { Mandate, CitationInfo } from '@/types';
 import {
   Dialog,
@@ -20,6 +20,7 @@ interface MandateDetailsProps {
   mandate: Mandate | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  allEntities?: { entity: string; entity_long: string }[];
 }
 
 const toTitleCase = (str: string) => {
@@ -42,7 +43,7 @@ const MetadataItem = ({ label, children }: { label: React.ReactNode, children: R
     </div>
 );
 
-export function MandateDetails({ mandate, open, onOpenChange }: MandateDetailsProps) {
+export function MandateDetails({ mandate, open, onOpenChange, allEntities = [] }: MandateDetailsProps) {
   const [isPdfVisible, setIsPdfVisible] = useState(false);
   const [showSwipeHint, setShowSwipeHint] = useState(true);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -117,6 +118,12 @@ export function MandateDetails({ mandate, open, onOpenChange }: MandateDetailsPr
     }
   }, [open]);
 
+  // Create entity lookup function
+  const getEntityLongName = useCallback((shortName: string): string => {
+    const entity = allEntities.find(e => e.entity === shortName);
+    return entity?.entity_long || shortName;
+  }, [allEntities]);
+
   const entityCounts = useMemo(() => {
     if (!mandate || !mandate.citation_info) return [];
 
@@ -124,10 +131,13 @@ export function MandateDetails({ mandate, open, onOpenChange }: MandateDetailsPr
 
     mandate.citation_info.forEach(citation => {
         const shortName = citation.entity;
-        const longName = citation.entity_long || citation.entity;
         if (shortName) {
             if (!counts[shortName]) {
-                counts[shortName] = { longName, count: 0 };
+                // Use lookup function instead of citation data
+                counts[shortName] = { 
+                  longName: getEntityLongName(shortName), 
+                  count: 0 
+                };
             }
             counts[shortName].count++;
         }
@@ -139,7 +149,7 @@ export function MandateDetails({ mandate, open, onOpenChange }: MandateDetailsPr
       }
       return shortNameA.localeCompare(shortNameB);
     });
-  }, [mandate]);
+  }, [mandate, getEntityLongName]);
 
   const programmeCounts = useMemo(() => {
     if (!mandate || !mandate.citation_info) return [];
