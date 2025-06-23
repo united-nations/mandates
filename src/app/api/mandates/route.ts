@@ -163,43 +163,60 @@ export async function GET(request: Request) {
     
     // Sorting logic
     if (sortBy && sortBy !== 'default') {
-        const [sortField, sortDirection] = sortBy.split('_');
-        const sortOrder = sortDirection === 'asc' ? 1 : -1;
-
-        filteredMandates.sort((a, b) => {
-            if (sortField === 'year') {
-                const yearA = a.year ? parseInt(a.year, 10) : null;
-                const yearB = b.year ? parseInt(b.year, 10) : null;
-                const aHasValidYear = yearA !== null && !isNaN(yearA) && yearA > 0;
-                const bHasValidYear = yearB !== null && !isNaN(yearB) && yearB > 0;
-
-                if (aHasValidYear && !bHasValidYear) return -1;
-                if (!aHasValidYear && bHasValidYear) return 1;
-
-                if (aHasValidYear && bHasValidYear) {
-                    if (yearA < yearB) return -1 * sortOrder;
-                    if (yearA > yearB) return 1 * sortOrder;
-                }
-
-                // If years are same or both are invalid, use secondary sort on citations
-                return (b.num_citations || 0) - (a.num_citations || 0);
-            }
+        if (sortBy === 'citing_entities_desc' || sortBy === 'citing_entities_asc') {
+            const sortOrder = sortBy === 'citing_entities_asc' ? 1 : -1;
             
-            if (sortField === 'citations') {
-                const valA = a.num_citations || 0;
-                const valB = b.num_citations || 0;
+            filteredMandates.sort((a, b) => {
+                const valA = a.num_entities || 0;
+                const valB = b.num_entities || 0;
                 
                 if (valA < valB) return -1 * sortOrder;
                 if (valA > valB) return 1 * sortOrder;
                 
-                // secondary sort for tie-breaking
-                const yearB_val = parseInt(b.year, 10) || 0;
-                const yearA_val = parseInt(a.year, 10) || 0;
-                if (yearB_val !== yearA_val) return yearB_val - yearA_val;
-            }
+                // secondary sort for tie-breaking - use citations
+                const citationsA = a.num_citations || 0;
+                const citationsB = b.num_citations || 0;
+                return citationsB - citationsA;
+            });
+        } else {
+            const [sortField, sortDirection] = sortBy.split('_');
+            const sortOrder = sortDirection === 'asc' ? 1 : -1;
 
-            return 0;
-        });
+            filteredMandates.sort((a, b) => {
+                if (sortField === 'year') {
+                    const yearA = a.year ? parseInt(a.year, 10) : null;
+                    const yearB = b.year ? parseInt(b.year, 10) : null;
+                    const aHasValidYear = yearA !== null && !isNaN(yearA) && yearA > 0;
+                    const bHasValidYear = yearB !== null && !isNaN(yearB) && yearB > 0;
+
+                    if (aHasValidYear && !bHasValidYear) return -1;
+                    if (!aHasValidYear && bHasValidYear) return 1;
+
+                    if (aHasValidYear && bHasValidYear) {
+                        if (yearA < yearB) return -1 * sortOrder;
+                        if (yearA > yearB) return 1 * sortOrder;
+                    }
+
+                    // If years are same or both are invalid, use secondary sort on citations
+                    return (b.num_citations || 0) - (a.num_citations || 0);
+                }
+                
+                if (sortField === 'citations') {
+                    const valA = a.num_citations || 0;
+                    const valB = b.num_citations || 0;
+                    
+                    if (valA < valB) return -1 * sortOrder;
+                    if (valA > valB) return 1 * sortOrder;
+                    
+                    // secondary sort for tie-breaking
+                    const yearB_val = parseInt(b.year, 10) || 0;
+                    const yearA_val = parseInt(a.year, 10) || 0;
+                    if (yearB_val !== yearA_val) return yearB_val - yearA_val;
+                }
+
+                return 0;
+            });
+        }
     }
 
     // Calculate summary stats on filtered mandates
