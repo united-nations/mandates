@@ -137,17 +137,25 @@ export function SearchableDropdown({
           <span className="truncate">{displayValue}</span>
           <div className="flex items-center">
              {value && (
-              <button
-                type="button"
-                className="p-1 rounded-sm hover:bg-muted transition-colors"
+              <div
+                role="button"
+                tabIndex={0}
+                className="p-1 rounded-sm hover:bg-muted transition-colors cursor-pointer"
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
                   handleClear();
                 }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleClear();
+                  }
+                }}
               >
                 <X className="h-3 w-3 opacity-50 hover:opacity-100" />
-              </button>
+              </div>
             )}
             <ChevronDown className="h-4 w-4 opacity-50" />
           </div>
