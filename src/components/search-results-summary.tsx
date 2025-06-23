@@ -58,6 +58,7 @@ export function SearchResultsSummary({
           
           {(hasSearch || hasFilters) && (
             <Button
+              variant="clear"
               className="shrink-0 inline-flex items-center gap-2"
               onClick={() => {
                 if (hasSearch) onClearSearch();

@@ -213,14 +213,14 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [] }
                 {displaySymbol}
             </DialogDescription>
             {pdfUrl ? (
-                <Button asChild className="mt-4">
+                <Button asChild variant="primary" className="mt-4">
                     <a href={pdfUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2">
                         <FileText className="h-4 w-4" />
                         View PDF
                     </a>
                 </Button>
             ) : (
-                <Button disabled className="mt-4 inline-flex items-center gap-2">
+                <Button disabled variant="primary" className="mt-4 inline-flex items-center gap-2">
                     <FileText className="h-4 w-4" />
                     View PDF
                 </Button>
