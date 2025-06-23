@@ -301,10 +301,10 @@ export function MandateDetails({ mandate, open, onOpenChange }: MandateDetailsPr
                   </h3>
                   <div className="space-y-1.5 text-xs">
                     {entityCounts.map(([shortName, data]) => (
-                      <div key={shortName} className="flex items-start gap-2 sm:items-center">
-                        <span className="w-8 text-right text-muted-foreground font-mono flex-shrink-0 mt-0.5 sm:mt-0">{data.count}x</span>
+                      <div key={shortName} className="flex gap-2">
+                        <span className="w-8 text-right text-muted-foreground font-mono flex-shrink-0 leading-[1.5] py-1">{data.count}x</span>
                         <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 min-w-0 flex-1">
-                          <Badge variant="secondary" className="text-xs w-fit">{shortName}</Badge>
+                          <Badge variant="secondary" className="text-xs w-fit px-2 py-1">{shortName}</Badge>
                           <span className="text-muted-foreground break-words">{data.longName}</span>
                         </div>
                       </div>
@@ -322,10 +322,15 @@ export function MandateDetails({ mandate, open, onOpenChange }: MandateDetailsPr
                   </h3>
                   <div className="space-y-1.5 text-xs">
                     {programmeCounts.map(([programmeTitle, count]) => (
-                      <div key={programmeTitle} className="flex items-start gap-2 sm:items-center">
-                        <span className="w-8 text-right text-muted-foreground font-mono flex-shrink-0 mt-0.5 sm:mt-0">{count}x</span>
+                      <div key={programmeTitle} className="flex items-center gap-2">
+                        <span className="w-8 text-right text-muted-foreground font-mono flex-shrink-0">{count}x</span>
                         <div className="min-w-0 flex-1">
-                          <Badge variant="secondary" className="text-xs w-fit">{toTitleCase(programmeTitle)}</Badge>
+                          <Badge 
+                            variant="secondary" 
+                            className="text-xs px-2 py-1 whitespace-normal leading-relaxed inline-block max-w-full"
+                          >
+                            {toTitleCase(programmeTitle)}
+                          </Badge>
                         </div>
                       </div>
                     ))}
