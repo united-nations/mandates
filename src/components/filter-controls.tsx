@@ -70,9 +70,11 @@ export function FilterControls({
       <div className="p-4 rounded-lg shadow-sm space-y-4" style={{ backgroundColor: '#F6F7F8' }}>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Search className="h-4 w-4 text-muted-foreground" />
-              <Label htmlFor="keyword-search" className="text-base font-medium">{explainerTexts.filters.keywordSearch.label}</Label>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Label htmlFor="keyword-search" className="text-base font-medium">{explainerTexts.filters.keywordSearch.label}</Label>
+                <Search className="h-4 w-4 text-muted-foreground" />
+              </div>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
@@ -122,9 +124,11 @@ export function FilterControls({
           </div>
 
           <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Landmark className="h-4 w-4 text-muted-foreground" />
-              <Label className="text-base font-medium">{explainerTexts.filters.unOrgan.label}</Label>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Label className="text-base font-medium">{explainerTexts.filters.unOrgan.label}</Label>
+                <Landmark className="h-4 w-4 text-muted-foreground" />
+              </div>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
@@ -146,9 +150,11 @@ export function FilterControls({
           </div>
 
           <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Building className="h-4 w-4 text-muted-foreground" />
-              <Label className="text-base font-medium">{explainerTexts.filters.unEntity.label}</Label>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Label className="text-base font-medium">{explainerTexts.filters.unEntity.label}</Label>
+                <Building className="h-4 w-4 text-muted-foreground" />
+              </div>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
