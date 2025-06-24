@@ -19,6 +19,7 @@ interface SearchResultsSummaryProps {
     pillar?: string;
     year?: string;
     budget_document?: string;
+    cross_entity?: string;
   };
   onClearSearch: () => void;
   onClearFilter: (filterKey: string) => void;
@@ -185,6 +186,21 @@ export function SearchResultsSummary({
                 size="sm"
                 className="h-4 w-4 p-0 hover:bg-transparent"
                 onClick={() => onClearFilter('budget_document')}
+              >
+                <X className="h-3 w-3" />
+              </Button>
+            </Badge>
+          )}
+
+          {appliedFilters.cross_entity && (
+            <Badge variant="secondary" className="flex items-center gap-1">
+              Shared with:&nbsp;
+              <EntityName entityName={appliedFilters.cross_entity} />
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-4 w-4 p-0 hover:bg-transparent"
+                onClick={() => onClearFilter('cross_entity')}
               >
                 <X className="h-3 w-3" />
               </Button>

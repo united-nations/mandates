@@ -136,6 +136,7 @@ export async function GET(request: Request) {
     const endYear = searchParams.get('end_year');
     const budgetDocument = searchParams.get('budget_document');
     const pillar = searchParams.get('pillar');
+    const crossEntity = searchParams.get('cross_entity');
     const page = parseInt(searchParams.get('page') || '1', 10);
     const limit = parseInt(searchParams.get('limit') || '10', 10);
     const sortBy = searchParams.get('sort_by');
@@ -144,6 +145,13 @@ export async function GET(request: Request) {
 
     if (entity) {
       filteredMandates = filteredMandates.filter((m) => m.entities?.includes(entity));
+    }
+
+    // Filter for cross-entity (mandates that are cited by both entity and crossEntity)
+    if (crossEntity && entity) {
+      filteredMandates = filteredMandates.filter((m) => 
+        m.entities?.includes(entity) && m.entities?.includes(crossEntity)
+      );
     }
 
     if (pillar && pillar !== 'all') {
