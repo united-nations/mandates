@@ -8,11 +8,12 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
+  DialogClose,
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from './ui/button';
-import { FileText, Building, Calendar, Link, Users, FileCheck, Target, Columns, Sparkles } from 'lucide-react';
+import { FileText, Building, Calendar, Link, Users, FileCheck, Target, Columns, Sparkles, X } from 'lucide-react';
 import { EntityName } from './ui/entity-name';
 import { TooltipProvider } from './ui/tooltip';
 import { toTitleCase } from '@/lib/utils';
@@ -119,10 +120,10 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [] }
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent 
-        className="max-w-5xl w-full light flex flex-col max-h-[85vh] p-6"
+        className="max-w-5xl w-full light flex flex-col max-h-[85vh] p-6 [&>button]:h-10 [&>button]:w-10 [&>button]:border-2 [&>button]:border-trout [&>button]:hover:border-shuttle-gray [&>button]:text-trout [&>button]:hover:text-shuttle-gray [&>button]:flex [&>button]:items-center [&>button]:justify-center"
       >
         {/* Header */}
-        <div className="border-b pb-4">
+        <div className="border-b pb-4 pr-12">
             <p className="text-sm font-medium text-muted-foreground">Mandate Document</p>
             <DialogTitle className="text-2xl font-bold mt-1">
               {mandate.body === "Security Council" && mandate.uniform_title && mandate.uniform_title.length > 0
@@ -133,7 +134,7 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [] }
                 {displaySymbol}
             </DialogDescription>
             {pdfUrl ? (
-                <Button asChild variant="primary" className="mt-4">
+                <Button asChild className="mt-4 bg-un-blue text-white hover:bg-un-blue/90 transition-colors">
                     <a href={pdfUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2">
                         <FileText className="h-4 w-4" />
                         View PDF
