@@ -32,6 +32,7 @@ interface FilterControlsProps {
   onSubjectChange: (value: string) => void;
   onYearRangeChange: (value: [number, number]) => void;
   onBudgetDocumentChange: (value: string) => void;
+  disableEntityFilter?: boolean;
 }
 
 export function FilterControls({
@@ -56,6 +57,7 @@ export function FilterControls({
   onSubjectChange,
   onYearRangeChange,
   onBudgetDocumentChange,
+  disableEntityFilter = false,
 }: FilterControlsProps) {
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
   const [openTooltip, setOpenTooltip] = useState<string | null>(null);
@@ -103,7 +105,7 @@ export function FilterControls({
 
   return (
     <div className="p-6 rounded-lg shadow-sm space-y-4" style={{ backgroundColor: '#F6F7F8' }}>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className={`grid grid-cols-1 gap-6 ${disableEntityFilter ? 'md:grid-cols-2' : 'md:grid-cols-3'}`}>
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -178,28 +180,30 @@ export function FilterControls({
           />
         </div>
 
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Label className="text-base font-medium">{explainerTexts.filters.unEntity.label}</Label>
-              <Building className="h-4 w-4 text-muted-foreground" />
+        {!disableEntityFilter && (
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Label className="text-base font-medium">{explainerTexts.filters.unEntity.label}</Label>
+                <Building className="h-4 w-4 text-muted-foreground" />
+              </div>
+              <TooltipButton 
+                tooltipId="unEntity"
+                ariaLabel="More information about UN entity filter"
+                tooltipText={explainerTexts.filters.unEntity.tooltip}
+              />
             </div>
-            <TooltipButton 
-              tooltipId="unEntity"
-              ariaLabel="More information about UN entity filter"
-              tooltipText={explainerTexts.filters.unEntity.tooltip}
+            <SearchableDropdown
+              options={entityOptions}
+              value={selectedEntity}
+              onChange={onEntityChange}
+              placeholder={explainerTexts.filters.unEntity.placeholder}
+              searchPlaceholder={explainerTexts.filters.unEntity.searchPlaceholder}
+              emptyPlaceholder={explainerTexts.filters.unEntity.emptyPlaceholder}
+              className="text-sm h-11"
             />
           </div>
-          <SearchableDropdown
-            options={entityOptions}
-            value={selectedEntity}
-            onChange={onEntityChange}
-            placeholder={explainerTexts.filters.unEntity.placeholder}
-            searchPlaceholder={explainerTexts.filters.unEntity.searchPlaceholder}
-            emptyPlaceholder={explainerTexts.filters.unEntity.emptyPlaceholder}
-            className="text-sm h-11"
-          />
-        </div>
+        )}
       </div>
 
       <div className="flex">

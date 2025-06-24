@@ -14,6 +14,7 @@ import {
 import { EntityName } from './ui/entity-name';
 import { FileText, Calendar, Landmark, Target, Info, Search } from 'lucide-react';
 import { explainerTexts } from '@/lib/explainer-texts';
+import Link from 'next/link';
 
 interface Organ {
   short: string;
@@ -37,9 +38,11 @@ const EntityBadges = ({ entities }: { entities: string[] }) => {
   return (
     <div className="flex flex-wrap gap-1 items-center">
       {validEntities.map(entity => (
-          <Badge key={entity} variant="secondary" className="font-bold text-xs !bg-un-blue/75 !text-white hover:!bg-un-blue/60">
+        <Link key={entity} href={`/entity/${encodeURIComponent(entity)}`}>
+          <Badge variant="secondary" className="font-bold text-xs !bg-un-blue/75 !text-white hover:!bg-un-blue/60 cursor-pointer transition-colors">
             <EntityName entityName={entity} showUnderline={false} />
           </Badge>
+        </Link>
       ))}
     </div>
   );

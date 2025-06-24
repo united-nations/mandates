@@ -16,6 +16,7 @@ import { FileText, Building, Calendar, Link, Users, FileCheck, Target, Columns, 
 import { EntityName } from './ui/entity-name';
 import { TooltipProvider } from './ui/tooltip';
 import { toTitleCase } from '@/lib/utils';
+import NextLink from 'next/link';
 
 interface MandateDetailsProps {
   mandate: Mandate | null;
@@ -253,7 +254,9 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [] }
                       <div key={shortName} className="flex gap-2">
                         <span className="text-muted-foreground font-mono flex-shrink-0 leading-[1.5] py-1">{data.count}x</span>
                         <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 min-w-0 flex-1">
-                          <Badge variant="secondary" className="text-xs w-fit px-2 py-1 !bg-un-blue !text-white hover:!bg-un-blue/90">{shortName}</Badge>
+                          <NextLink href={`/entity/${encodeURIComponent(shortName)}`}>
+                            <Badge variant="secondary" className="text-xs w-fit px-2 py-1 !bg-un-blue !text-white hover:!bg-un-blue/90 cursor-pointer transition-colors">{shortName}</Badge>
+                          </NextLink>
                           <span className="text-muted-foreground break-words">{data.longName}</span>
                         </div>
                       </div>
