@@ -622,14 +622,14 @@ function MandateNavigator() {
           
           <div>
             <div className="mt-6 pt-4">
-              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4">
+              <div className="flex flex-col gap-3 mb-4 sm:flex-row sm:justify-between sm:items-center">
                 <div className="flex items-center gap-3">
                   <h2 className="text-xl sm:text-2xl font-bold tracking-tight">{explainerTexts.mandateList.sectionTitle}</h2>
                 </div>
-                <div className="flex items-center justify-end space-x-2 flex-shrink-0 sm:ml-auto">
-                  <label htmlFor="sort-by" className="text-sm font-medium whitespace-nowrap">Sort by</label>
+                <div className="flex items-center gap-2 w-full sm:w-auto sm:flex-shrink-0">
+                  <label htmlFor="sort-by" className="text-sm font-medium text-nowrap">Sort by</label>
                   <Select value={sortBy} onValueChange={handleSortChange}>
-                    <SelectTrigger className="w-full sm:w-[290px] min-w-[220px]" id="sort-by">
+                    <SelectTrigger className="flex-1 sm:w-[290px] min-w-0" id="sort-by">
                       <SelectValue placeholder={explainerTexts.sorting.placeholder} />
                     </SelectTrigger>
                     <SelectContent>
