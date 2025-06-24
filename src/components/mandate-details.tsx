@@ -8,11 +8,12 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
+  DialogClose,
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from './ui/button';
-import { FileText, Building, Calendar, Link, Users, FileCheck, Target, Columns, Sparkles } from 'lucide-react';
+import { FileText, Building, Calendar, Link, Users, FileCheck, Target, Columns, Sparkles, X } from 'lucide-react';
 import { EntityName } from './ui/entity-name';
 import { TooltipProvider } from './ui/tooltip';
 import { toTitleCase } from '@/lib/utils';
@@ -119,10 +120,10 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [] }
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent 
-        className="max-w-5xl w-full light flex flex-col max-h-[85vh] p-6"
+        className="max-w-5xl w-full light flex flex-col max-h-[85vh] p-6 [&>button]:h-10 [&>button]:w-10 [&>button]:border-2 [&>button]:border-trout [&>button]:hover:border-shuttle-gray [&>button]:text-trout [&>button]:hover:text-shuttle-gray [&>button]:flex [&>button]:items-center [&>button]:justify-center [&>button]:focus:outline-none [&>button]:focus:ring-0"
       >
         {/* Header */}
-        <div className="border-b pb-4">
+        <div className="border-b pb-4 pr-12">
             <p className="text-sm font-medium text-muted-foreground">Mandate Document</p>
             <DialogTitle className="text-2xl font-bold mt-1">
               {mandate.body === "Security Council" && mandate.uniform_title && mandate.uniform_title.length > 0
@@ -133,7 +134,7 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [] }
                 {displaySymbol}
             </DialogDescription>
             {pdfUrl ? (
-                <Button asChild variant="primary" className="mt-4">
+                <Button asChild className="mt-4 bg-un-blue text-white hover:bg-un-blue/90 transition-colors">
                     <a href={pdfUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2">
                         <FileText className="h-4 w-4" />
                         View PDF
@@ -149,10 +150,18 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [] }
 
         {/* Content */}
         <ScrollArea className="flex-grow overflow-y-auto">
-            <div className="space-y-6 pr-2">
+            <div className="space-y-4 pr-2">
+
+              {/* AI Summary */}
+              <div className="space-y-1">
+                <h3 className="text-base font-semibold flex items-center gap-2">
+                  <FileText className="h-4 w-4" />
+                  <span>Document Summary</span>
+                </h3>
+              </div>
 
               {/* Compact Metadata List */}
-              <div className="space-y-1 p-3 border rounded-lg">
+              <div className="space-y-1 rounded-lg">
                 <MetadataItem label="Organ">
                   {mandate.body ? <Badge variant="stronger" className="text-xs">{mandate.body}</Badge> : <span className="text-muted-foreground">—</span>}
                 </MetadataItem>
@@ -186,9 +195,9 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [] }
                       </a>
                     }
                   >
-                    <div className="flex flex-wrap gap-1">
+                    <div className="flex flex-wrap gap-1 pt-2">
                       {mandate.subject_headings.map((heading, index) => (
-                        <Badge key={index} variant="outline" className="text-xs font-normal">
+                        <Badge key={index} variant="outline" className="text-xs font-normal !border-un-blue">
                           {toTitleCase(heading)}
                         </Badge>
                       ))}
@@ -197,17 +206,11 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [] }
                 )}
               </div>
 
-              {/* AI Summary */}
-              <div className="space-y-2">
-                <h3 className="text-base font-semibold flex items-center gap-2">
-                  <FileText className="h-4 w-4" />
-                  <span>Document Summary</span>
-                </h3>
-                <div className="p-3 bg-muted/30 rounded-lg">
-                  <p className="text-sm leading-relaxed text-muted-foreground italic">
-                    Document summaries and operative paragraphs are coming soon.
-                  </p>
-                </div>
+              {/* AI Summary Content */}
+              <div className="bg-muted/30 rounded-lg p-3">
+                <p className="text-sm leading-relaxed text-muted-foreground italic">
+                  Document summaries and operative paragraphs are coming soon.
+                </p>
               </div>
 
               {/* Entities Mentioned */}
@@ -220,9 +223,9 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [] }
                   <div className="space-y-1.5 text-xs">
                     {entityCounts.map(([shortName, data]) => (
                       <div key={shortName} className="flex gap-2">
-                        <span className="w-8 text-right text-muted-foreground font-mono flex-shrink-0 leading-[1.5] py-1">{data.count}x</span>
+                        <span className="text-muted-foreground font-mono flex-shrink-0 leading-[1.5] py-1">{data.count}x</span>
                         <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 min-w-0 flex-1">
-                          <Badge variant="secondary" className="text-xs w-fit px-2 py-1">{shortName}</Badge>
+                          <Badge variant="secondary" className="text-xs w-fit px-2 py-1 !bg-un-blue !text-white hover:!bg-un-blue/90">{shortName}</Badge>
                           <span className="text-muted-foreground break-words">{data.longName}</span>
                         </div>
                       </div>
@@ -241,7 +244,7 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [] }
                   <div className="space-y-1.5 text-xs">
                     {programmeCounts.map(([programmeTitle, count]) => (
                       <div key={programmeTitle} className="flex items-center gap-2">
-                        <span className="w-8 text-right text-muted-foreground font-mono flex-shrink-0">{count}x</span>
+                        <span className="text-muted-foreground font-mono flex-shrink-0">{count}x</span>
                         <div className="min-w-0 flex-1">
                           <Badge 
                             variant="secondary" 

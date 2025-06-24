@@ -14,6 +14,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { MandateDetails } from '@/components/mandate-details';
 import { SearchResultsSummary } from '@/components/search-results-summary';
 import { Button } from '@/components/ui/button';
+import { DataCard } from '@/components/data-card';
 
 import {
   Select,
@@ -505,113 +506,45 @@ function MandateNavigator() {
           <section className="mb-6">
             <h2 className="text-2xl font-bold tracking-tight mb-3">{explainerTexts.dataCards.sectionTitle}</h2>
             <div className="grid gap-3 grid-cols-1 sm:grid-cols-4">
-                <Popover open={sourceDocumentsPopover} onOpenChange={setSourceDocumentsPopover}>
-                  <PopoverTrigger asChild>
-                    <div onMouseEnter={() => setSourceDocumentsPopover(true)} onMouseLeave={() => setSourceDocumentsPopover(false)} className="h-full">
-                      <Card className="flex flex-col h-full cursor-help bg-dashboard-card">
-                          <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 min-h-16">
-                              <CardTitle className="text-lg font-medium text-secondary-foreground leading-tight">{explainerTexts.dataCards.sourceDocuments.title}</CardTitle>
-                              <FileText className="h-5 w-5 text-secondary-foreground flex-shrink-0" />
-                          </CardHeader>
-                          <CardContent className="flex-grow flex items-center justify-start pt-2">
-                              <div className="text-3xl font-bold text-foreground">
-                                  {isLoading ? <Skeleton className="h-8 w-16" /> : (totalItems > 0 ? totalItems.toLocaleString() : '0')}
-                              </div>
-                          </CardContent>
-                      </Card>
-                    </div>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-80">
-                    <div className="space-y-2">
-                      <p className="font-medium">{explainerTexts.dataCards.sourceDocuments.title}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {explainerTexts.dataCards.sourceDocuments.description}
-                      </p>
-                    </div>
-                  </PopoverContent>
-                </Popover>
-                
-                <Popover open={unOrgansPopover} onOpenChange={setUnOrgansPopover}>
-                  <PopoverTrigger asChild>
-                    <div onMouseEnter={() => setUnOrgansPopover(true)} onMouseLeave={() => setUnOrgansPopover(false)} className="h-full">
-                      <Card className="flex flex-col h-full cursor-help bg-dashboard-card">
-                        <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 min-h-16">
-                            <CardTitle className="text-lg font-medium text-secondary-foreground leading-tight">{explainerTexts.dataCards.unOrgans.title}</CardTitle>
-                            <Landmark className="h-5 w-5 text-secondary-foreground flex-shrink-0" />
-                        </CardHeader>
-                        <CardContent className="flex-grow flex items-center justify-start pt-2">
-                            <div className="text-3xl font-bold text-foreground">
-                                {isLoading ? <Skeleton className="h-8 w-12" /> : (uniqueOrgans > 0 ? uniqueOrgans.toLocaleString() : '0')}
-                            </div>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-80">
-                    <div className="space-y-2">
-                      <p className="font-medium">{explainerTexts.dataCards.unOrgans.title}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {explainerTexts.dataCards.unOrgans.description}
-                      </p>
-                    </div>
-                  </PopoverContent>
-                </Popover>
-                
-                <Popover open={unEntitiesPopover} onOpenChange={setUnEntitiesPopover}>
-                  <PopoverTrigger asChild>
-                    <div onMouseEnter={() => setUnEntitiesPopover(true)} onMouseLeave={() => setUnEntitiesPopover(false)} className="h-full">
-                      <Card className="flex flex-col h-full cursor-help bg-dashboard-card">
-                          <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 min-h-16">
-                              <CardTitle className="text-lg font-medium text-secondary-foreground leading-tight">{explainerTexts.dataCards.unEntities.title}</CardTitle>
-                              <Building className="h-5 w-5 text-secondary-foreground flex-shrink-0" />
-                          </CardHeader>
-                          <CardContent className="flex-grow flex items-center justify-start pt-2">
-                              <div className="text-3xl font-bold text-foreground">
-                                  {isLoading ? <Skeleton className="h-8 w-16" /> : (selectedEntity ? '1' : (uniqueEntities > 0 ? uniqueEntities.toLocaleString() : '0'))}
-                              </div>
-                          </CardContent>
-                      </Card>
-                    </div>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-80">
-                    <div className="space-y-2">
-                      <p className="font-medium">{explainerTexts.dataCards.unEntities.title}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {explainerTexts.dataCards.unEntities.description}
-                      </p>
-                    </div>
-                  </PopoverContent>
-                </Popover>
-                
-                <Popover open={citationsPopover} onOpenChange={setCitationsPopover}>
-                  <PopoverTrigger asChild>
-                    <div onMouseEnter={() => setCitationsPopover(true)} onMouseLeave={() => setCitationsPopover(false)} className="h-full">
-                      <Card className="flex flex-col h-full cursor-help bg-dashboard-card">
-                          <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 min-h-16">
-                              <CardTitle className="text-lg font-medium text-secondary-foreground leading-tight">
-                                {selectedEntity ? explainerTexts.dataCards.citationsByEntity.title : explainerTexts.dataCards.citations.title}
-                              </CardTitle>
-                              <Quote className="h-5 w-5 text-secondary-foreground flex-shrink-0" />
-                          </CardHeader>
-                          <CardContent className="flex-grow flex items-center justify-start pt-2">
-                              <div className="text-3xl font-bold text-foreground">
-                                  {isLoading ? <Skeleton className="h-8 w-20" /> : (totalCitations > 0 ? totalCitations.toLocaleString() : '0')}
-                              </div>
-                          </CardContent>
-                      </Card>
-                    </div>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-80">
-                    <div className="space-y-2">
-                      <p className="font-medium">
-                        {selectedEntity ? explainerTexts.dataCards.citationsByEntity.title : explainerTexts.dataCards.citations.title}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {selectedEntity ? explainerTexts.dataCards.citationsByEntity.description : explainerTexts.dataCards.citations.description}
-                      </p>
-                    </div>
-                  </PopoverContent>
-                </Popover>
+              <DataCard
+                title={explainerTexts.dataCards.sourceDocuments.title}
+                value={totalItems > 0 ? totalItems : '0'}
+                icon={FileText}
+                description={explainerTexts.dataCards.sourceDocuments.description}
+                isLoading={isLoading}
+                isOpen={sourceDocumentsPopover}
+                onOpenChange={setSourceDocumentsPopover}
+              />
+              
+              <DataCard
+                title={explainerTexts.dataCards.unOrgans.title}
+                value={uniqueOrgans > 0 ? uniqueOrgans : '0'}
+                icon={Landmark}
+                description={explainerTexts.dataCards.unOrgans.description}
+                isLoading={isLoading}
+                isOpen={unOrgansPopover}
+                onOpenChange={setUnOrgansPopover}
+              />
+              
+              <DataCard
+                title={explainerTexts.dataCards.unEntities.title}
+                value={selectedEntity ? '1' : (uniqueEntities > 0 ? uniqueEntities : '0')}
+                icon={Building}
+                description={explainerTexts.dataCards.unEntities.description}
+                isLoading={isLoading}
+                isOpen={unEntitiesPopover}
+                onOpenChange={setUnEntitiesPopover}
+              />
+              
+              <DataCard
+                title={selectedEntity ? explainerTexts.dataCards.citationsByEntity.title : explainerTexts.dataCards.citations.title}
+                value={totalCitations > 0 ? totalCitations : '0'}
+                icon={Quote}
+                description={selectedEntity ? explainerTexts.dataCards.citationsByEntity.description : explainerTexts.dataCards.citations.description}
+                isLoading={isLoading}
+                isOpen={citationsPopover}
+                onOpenChange={setCitationsPopover}
+              />
             </div>
           </section>
 

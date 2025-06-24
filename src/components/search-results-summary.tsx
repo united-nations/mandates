@@ -39,7 +39,7 @@ export function SearchResultsSummary({
   if (!hasSearch && !hasFilters) return null;
 
   return (
-    <div className="bg-muted/50 border rounded-lg p-4 mb-6">
+    <div className="rounded-lg p-4 mb-6" style={{ backgroundColor: '#F6F7F8' }}>
         <div className="flex items-center justify-between gap-4 mb-3">
           <div className="flex items-center gap-2">
             <Search className="h-4 w-4 text-muted-foreground" />

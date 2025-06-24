@@ -67,7 +67,7 @@ export function FilterControls({
 
   return (
     <TooltipProvider>
-      <div className="p-4 bg-dashboard-card border rounded-lg shadow-sm space-y-4">
+      <div className="p-4 rounded-lg shadow-sm space-y-4" style={{ backgroundColor: '#F6F7F8' }}>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="space-y-2">
             <div className="flex items-center gap-2">
