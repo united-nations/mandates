@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { X, ChevronDown, ChevronUp, HelpCircle, FileText, Landmark, Building, Search } from 'lucide-react';
+import { X, ChevronDown, ChevronUp, HelpCircle, Search, Landmark, Building } from 'lucide-react';
 import { AdvancedSearch } from '@/components/advanced-search';
 import { YearSlider } from './year-slider';
 import { SearchableDropdown, SearchableDropdownOption } from '@/components/ui/searchable-dropdown';
@@ -20,6 +20,7 @@ interface FilterControlsProps {
   entityOptions: SearchableDropdownOption[];
   organOptions: SearchableDropdownOption[];
   programmeOptions: string[];
+  subjectOptions: string[];
   selectedEntity: string;
   selectedOrgan: string;
   keyword: string;
@@ -28,11 +29,13 @@ interface FilterControlsProps {
   onKeywordChange: (value: string) => void;
   onKeywordSearch?: (value?: string) => void; // New prop for Enter-based search
   programme: string;
+  subject: string;
   yearRange: { min: number; max: number } | null;
   yearDistribution: { [year: string]: number };
   selectedYearRange: [number, number] | null;
   budgetDocument: string;
   onProgrammeChange: (value: string) => void;
+  onSubjectChange: (value: string) => void;
   onYearRangeChange: (value: [number, number]) => void;
   onBudgetDocumentChange: (value: string) => void;
 }
@@ -41,6 +44,7 @@ export function FilterControls({
   entityOptions,
   organOptions,
   programmeOptions,
+  subjectOptions,
   selectedEntity,
   selectedOrgan,
   keyword,
@@ -49,11 +53,13 @@ export function FilterControls({
   onKeywordChange,
   onKeywordSearch,
   programme,
+  subject,
   yearRange,
   yearDistribution,
   selectedYearRange,
   budgetDocument,
   onProgrammeChange,
+  onSubjectChange,
   onYearRangeChange,
   onBudgetDocumentChange,
 }: FilterControlsProps) {
@@ -65,7 +71,7 @@ export function FilterControls({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <FileText className="h-4 w-4 text-muted-foreground" />
+              <Search className="h-4 w-4 text-muted-foreground" />
               <Label htmlFor="keyword-search" className="text-base font-medium">{explainerTexts.filters.keywordSearch.label}</Label>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -174,10 +180,13 @@ export function FilterControls({
         {showAdvancedSearch && (
           <AdvancedSearch
             programme={programme}
+            subject={subject}
             budgetDocument={budgetDocument}
             onProgrammeChange={onProgrammeChange}
+            onSubjectChange={onSubjectChange}
             onBudgetDocumentChange={onBudgetDocumentChange}
             programmeOptions={programmeOptions}
+            subjectOptions={subjectOptions}
             yearRange={yearRange}
             yearDistribution={yearDistribution}
             selectedYearRange={selectedYearRange}

@@ -71,6 +71,7 @@ function MandateNavigator() {
   const selectedOrgan = searchParams.get('organ') || '';
   const keywordFromParams = searchParams.get('keyword') || '';
   const programme = searchParams.get('programme') || '';
+  const subject = searchParams.get('subject') || '';
   const startYearFromParams = searchParams.get('start_year');
   const endYearFromParams = searchParams.get('end_year');
   const budgetDocument = searchParams.get('budget_document') || '';
@@ -91,6 +92,7 @@ function MandateNavigator() {
   const [entityOptions, setEntityOptions] = useState<EntityWithCount[]>([]);
   const [organOptions, setOrganOptions] = useState<BodyWithCount[]>([]);
   const [programmeOptions, setProgrammeOptions] = useState<string[]>([]);
+  const [subjectOptions, setSubjectOptions] = useState<string[]>([]);
 
   const [yearDistribution, setYearDistribution] = useState<{ [year: string]: number }>({});
   const [yearRange, setYearRange] = useState<{ min: number; max: number } | null>(null);
@@ -242,6 +244,7 @@ function MandateNavigator() {
         const data = await response.json();
         setEntityOptions(data.uniqueEntities || []);
         setOrganOptions(data.uniqueBodiesWithCount || []);
+        setSubjectOptions(data.uniqueSubjects || []);
         
         if (data.yearRange) {
           setYearRange(data.yearRange);
@@ -275,6 +278,7 @@ function MandateNavigator() {
     if (selectedOrgan) params.append('organ', selectedOrgan);
     if (keywordFromParams) params.append('keyword', keywordFromParams);
     if (programme) params.append('programme', programme);
+    if (subject) params.append('subject', subject);
     if (startYearFromParams) params.append('start_year', startYearFromParams);
     if (endYearFromParams) params.append('end_year', endYearFromParams);
     if (budgetDocument) params.append('budget_document', budgetDocument);
@@ -305,7 +309,7 @@ function MandateNavigator() {
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, pageSize, selectedEntity, selectedOrgan, keywordFromParams, programme, startYearFromParams, endYearFromParams, budgetDocument, sortBy]);
+  }, [currentPage, pageSize, selectedEntity, selectedOrgan, keywordFromParams, programme, subject, startYearFromParams, endYearFromParams, budgetDocument, sortBy]);
   
   useEffect(() => {
     fetchMandates();
@@ -360,6 +364,7 @@ function MandateNavigator() {
   const onEntityChange = (value: string) => handleFilterChange('entity', value);
   const onOrganChange = (value: string) => handleFilterChange('organ', value);
   const onProgrammeChange = (value: string) => handleFilterChange('programme', value);
+  const onSubjectChange = (value: string) => handleFilterChange('subject', value);
   const onBudgetDocumentChange = (value: string) => handleFilterChange('budget_document', value);
 
   const onKeywordChange = (value: string) => {
@@ -477,7 +482,7 @@ function MandateNavigator() {
                     <p className="text-xs sm:text-sm text-muted-foreground mt-1 sm:mt-0">{explainerTexts.mainHeader.versionTag}</p>
                   </div>
                 </div>
-                <div className="text-muted-foreground mt-2 text-justify">
+                <div className="text-muted-foreground mt-2 sm:text-justify">
                   <p className="leading-tight mb-3">
                     {explainerTexts.mainHeader.shortDescription}{' '}
                     <Button
@@ -504,11 +509,11 @@ function MandateNavigator() {
                   <PopoverTrigger asChild>
                     <div onMouseEnter={() => setSourceDocumentsPopover(true)} onMouseLeave={() => setSourceDocumentsPopover(false)} className="h-full">
                       <Card className="flex flex-col h-full cursor-help bg-dashboard-card">
-                          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 h-16">
-                              <CardTitle className="text-lg font-medium text-secondary-foreground">{explainerTexts.dataCards.sourceDocuments.title}</CardTitle>
-                              <FileText className="h-5 w-5 text-secondary-foreground" />
+                          <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 min-h-16">
+                              <CardTitle className="text-lg font-medium text-secondary-foreground leading-tight">{explainerTexts.dataCards.sourceDocuments.title}</CardTitle>
+                              <FileText className="h-5 w-5 text-secondary-foreground flex-shrink-0" />
                           </CardHeader>
-                          <CardContent className="flex-grow flex items-end">
+                          <CardContent className="flex-grow flex items-center justify-start pt-2">
                               <div className="text-3xl font-bold text-foreground">
                                   {isLoading ? <Skeleton className="h-8 w-16" /> : (totalItems > 0 ? totalItems.toLocaleString() : '0')}
                               </div>
@@ -530,11 +535,11 @@ function MandateNavigator() {
                   <PopoverTrigger asChild>
                     <div onMouseEnter={() => setUnOrgansPopover(true)} onMouseLeave={() => setUnOrgansPopover(false)} className="h-full">
                       <Card className="flex flex-col h-full cursor-help bg-dashboard-card">
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 h-16">
-                            <CardTitle className="text-lg font-medium text-secondary-foreground">{explainerTexts.dataCards.unOrgans.title}</CardTitle>
-                            <Landmark className="h-5 w-5 text-secondary-foreground" />
+                        <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 min-h-16">
+                            <CardTitle className="text-lg font-medium text-secondary-foreground leading-tight">{explainerTexts.dataCards.unOrgans.title}</CardTitle>
+                            <Landmark className="h-5 w-5 text-secondary-foreground flex-shrink-0" />
                         </CardHeader>
-                        <CardContent className="flex-grow flex items-end">
+                        <CardContent className="flex-grow flex items-center justify-start pt-2">
                             <div className="text-3xl font-bold text-foreground">
                                 {isLoading ? <Skeleton className="h-8 w-12" /> : (uniqueOrgans > 0 ? uniqueOrgans.toLocaleString() : '0')}
                             </div>
@@ -556,11 +561,11 @@ function MandateNavigator() {
                   <PopoverTrigger asChild>
                     <div onMouseEnter={() => setUnEntitiesPopover(true)} onMouseLeave={() => setUnEntitiesPopover(false)} className="h-full">
                       <Card className="flex flex-col h-full cursor-help bg-dashboard-card">
-                          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 h-16">
-                              <CardTitle className="text-lg font-medium text-secondary-foreground">{explainerTexts.dataCards.unEntities.title}</CardTitle>
-                              <Building className="h-5 w-5 text-secondary-foreground" />
+                          <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 min-h-16">
+                              <CardTitle className="text-lg font-medium text-secondary-foreground leading-tight">{explainerTexts.dataCards.unEntities.title}</CardTitle>
+                              <Building className="h-5 w-5 text-secondary-foreground flex-shrink-0" />
                           </CardHeader>
-                          <CardContent className="flex-grow flex items-end">
+                          <CardContent className="flex-grow flex items-center justify-start pt-2">
                               <div className="text-3xl font-bold text-foreground">
                                   {isLoading ? <Skeleton className="h-8 w-16" /> : (selectedEntity ? '1' : (uniqueEntities > 0 ? uniqueEntities.toLocaleString() : '0'))}
                               </div>
@@ -582,13 +587,13 @@ function MandateNavigator() {
                   <PopoverTrigger asChild>
                     <div onMouseEnter={() => setCitationsPopover(true)} onMouseLeave={() => setCitationsPopover(false)} className="h-full">
                       <Card className="flex flex-col h-full cursor-help bg-dashboard-card">
-                          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 h-16">
-                              <CardTitle className="text-lg font-medium text-secondary-foreground">
+                          <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 min-h-16">
+                              <CardTitle className="text-lg font-medium text-secondary-foreground leading-tight">
                                 {selectedEntity ? explainerTexts.dataCards.citationsByEntity.title : explainerTexts.dataCards.citations.title}
                               </CardTitle>
-                              <Quote className="h-5 w-5 text-secondary-foreground" />
+                              <Quote className="h-5 w-5 text-secondary-foreground flex-shrink-0" />
                           </CardHeader>
-                          <CardContent className="flex-grow flex items-end">
+                          <CardContent className="flex-grow flex items-center justify-start pt-2">
                               <div className="text-3xl font-bold text-foreground">
                                   {isLoading ? <Skeleton className="h-8 w-20" /> : (totalCitations > 0 ? totalCitations.toLocaleString() : '0')}
                               </div>
@@ -622,14 +627,17 @@ function MandateNavigator() {
               selectedOrgan={selectedOrgan}
               onOrganChange={onOrganChange}
               programme={programme}
+              subject={subject}
               yearRange={yearRange}
               yearDistribution={yearDistribution}
               selectedYearRange={selectedYearRange}
               budgetDocument={budgetDocument}
               onProgrammeChange={onProgrammeChange}
+              onSubjectChange={onSubjectChange}
               onYearRangeChange={handleYearRangeChange}
               onBudgetDocumentChange={onBudgetDocumentChange}
               programmeOptions={programmeOptions}
+              subjectOptions={subjectOptions}
             />
           </div>
 
@@ -641,6 +649,7 @@ function MandateNavigator() {
                 entity: selectedEntity !== 'all' ? selectedEntity : undefined,
                 organ: selectedOrgan !== 'all' ? selectedOrgan : undefined,
                 programme: programme || undefined,
+                subject: subject || undefined,
                 year: (startYearFromParams && endYearFromParams && yearRange && (parseInt(startYearFromParams, 10) !== yearRange.min || parseInt(endYearFromParams, 10) !== yearRange.max)) ? `${startYearFromParams}-${endYearFromParams}` : undefined,
                 budget_document: budgetDocument && budgetDocument !== 'all' ? budgetDocumentDisplayNames[budgetDocument] : undefined,
               }}
@@ -658,6 +667,9 @@ function MandateNavigator() {
                     break;
                   case 'programme':
                     onProgrammeChange('');
+                    break;
+                  case 'subject':
+                    onSubjectChange('');
                     break;
                   case 'year':
                     const newParams = new URLSearchParams(searchParams.toString());
@@ -726,13 +738,13 @@ function MandateNavigator() {
           <section id="about-section" className="mt-16 pt-8">
             <div className="space-y-6 border-t pt-6">
               <h2 className="text-2xl font-bold tracking-tight">About the Registry</h2>
-              <div className="text-muted-foreground space-y-4 text-justify">
+              <div className="text-muted-foreground space-y-4 sm:text-justify">
                 {explainerTexts.mainHeader.fullDescription.map((paragraph, index) => (
                   <p key={index} className="leading-relaxed">{paragraph}</p>
                 ))}
               </div>
               <div>
-                <p className="text-sm text-muted-foreground italic text-justify leading-relaxed">
+                <p className="text-sm text-muted-foreground italic sm:text-justify leading-relaxed">
                   {explainerTexts.mainHeader.disclaimer}
                 </p>
               </div>

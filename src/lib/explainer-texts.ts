@@ -87,6 +87,13 @@ export const explainerTexts = {
       emptyPlaceholder: 'No Programmes found.',
       tooltip: 'Filter by specific Programmes in the budget structure of UN Entities.'
     },
+    subjects: {
+      label: 'UN Library Subjects',
+      placeholder: 'Filter by Subject...',
+      searchPlaceholder: 'Search Subjects...',
+      emptyPlaceholder: 'No Subjects found.',
+      tooltip: 'Filter by subject headings from the UN Bibliographic Information System. These describe the main topics and themes of each document.'
+    },
     budgetDocument: {
       label: 'Budget Document',
       placeholder: 'Select budget document type...',

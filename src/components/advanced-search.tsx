@@ -3,7 +3,7 @@
 import { SearchableDropdown } from './ui/searchable-dropdown';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectSeparator } from '@/components/ui/select';
-import { HelpCircle, Calendar, Target, Receipt } from 'lucide-react';
+import { HelpCircle, Calendar, Target, Receipt, BookOpen } from 'lucide-react';
 import {
   Tooltip,
   TooltipContent,
@@ -16,24 +16,30 @@ import { toTitleCase } from '@/lib/utils';
 
 interface AdvancedSearchProps {
   programme: string;
+  subject: string;
   budgetDocument: string;
   programmeOptions: string[];
+  subjectOptions: string[];
   yearRange: { min: number; max: number } | null;
   yearDistribution: { [year: string]: number };
   selectedYearRange: [number, number] | null;
   onProgrammeChange: (value: string) => void;
+  onSubjectChange: (value: string) => void;
   onBudgetDocumentChange: (value: string) => void;
   onYearRangeChange: (value: [number, number]) => void;
 }
 
 export function AdvancedSearch({
   programme,
+  subject,
   budgetDocument,
   programmeOptions,
+  subjectOptions,
   yearRange,
   yearDistribution,
   selectedYearRange,
   onProgrammeChange,
+  onSubjectChange,
   onBudgetDocumentChange,
   onYearRangeChange,
 }: AdvancedSearchProps) {
@@ -43,11 +49,39 @@ export function AdvancedSearch({
     label: toTitleCase(p) 
   }));
 
+  const subjectDropdownOptions = subjectOptions.map(s => ({ 
+    value: s, 
+    label: toTitleCase(s) 
+  }));
+
   return (
     <TooltipProvider>
       <div className="border-t pt-4 mt-4 space-y-4">
-          {/* Row 1: Programme and Budget Document */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Row 1: UN Subjects, Programme, Budget Document */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <BookOpen className="h-4 w-4 text-muted-foreground" />
+                <Label className="text-base font-medium">{explainerTexts.advancedFilters.subjects.label}</Label>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-xs">
+                    <p>{explainerTexts.advancedFilters.subjects.tooltip}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+              <SearchableDropdown 
+                options={subjectDropdownOptions}
+                value={subject}
+                onChange={onSubjectChange}
+                placeholder={explainerTexts.advancedFilters.subjects.placeholder}
+                searchPlaceholder={explainerTexts.advancedFilters.subjects.searchPlaceholder}
+                emptyPlaceholder={explainerTexts.advancedFilters.subjects.emptyPlaceholder}
+                className="text-sm h-11"
+              />
+            </div>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <Target className="h-4 w-4 text-muted-foreground" />
@@ -101,7 +135,6 @@ export function AdvancedSearch({
               </Select>
             </div>
           </div>
-          
           {/* Row 2: Year Range */}
           {yearRange && selectedYearRange && (
             <div className="space-y-2">

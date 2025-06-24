@@ -139,7 +139,7 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
                   <span className="text-xs sm:text-sm">Details</span>
                 </Button>
 
-                <div className="pr-16 sm:pr-32">
+                <div className="pr-20 sm:pr-32">
                   <h3 className="text-sm sm:text-base font-semibold leading-tight break-words hyphens-auto">
                     <HighlightedContent 
                       content={(mandate as any).highlightedTitle || (mandate as any).highlightedFields?.title} 
