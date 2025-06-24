@@ -37,7 +37,7 @@ const EntityBadges = ({ entities }: { entities: string[] }) => {
   return (
     <div className="flex flex-wrap gap-1 items-center">
       {validEntities.map(entity => (
-          <Badge key={entity} variant="secondary" className="font-normal text-xs">
+          <Badge key={entity} variant="secondary" className="font-bold text-xs !bg-un-blue/75 !text-white hover:!bg-un-blue/60">
             <EntityName entityName={entity} showUnderline={false} />
           </Badge>
       ))}
@@ -118,7 +118,7 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
                 {/* Details button - positioned absolute, smaller on mobile */}
                 <Button 
                   variant="details"
-                  className="absolute top-2 sm:top-3 right-2 sm:right-3 shrink-0 inline-flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 py-1 sm:px-3 sm:py-2 h-auto"
+                  className="absolute top-2 sm:top-3 right-2 sm:right-3 shrink-0 inline-flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 py-1 sm:px-3 sm:py-2 h-auto !bg-trout !text-white hover:!bg-trout/90"
                 >
                   <Info className="h-3 w-3 sm:h-4 sm:w-4" />
                   <span className="text-xs sm:text-sm">Details</span>
