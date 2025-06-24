@@ -197,8 +197,15 @@ export async function GET(request: Request) {
     }
 
     if (budgetDocument && budgetDocument !== 'all') {
+      // Map dropdown values to actual origin_document values in the data
+      const budgetDocumentMapping: { [key: string]: (citation: CitationInfo) => boolean } = {
+        'ppb2026': (citation) => citation.origin_document === 'PPB 2026',
+        'pko': (citation) => typeof citation.origin_document === 'string' && citation.origin_document.startsWith('PKM 25/26'),
+        'PPB 2026/Plan Outline': (citation) => citation.origin_document === 'PPB 2026/Plan Outline',
+      };
+      const matchFn = budgetDocumentMapping[budgetDocument] || ((citation) => citation.origin_document === budgetDocument);
       filteredMandates = filteredMandates.filter((m) => 
-        m.citation_info?.some((citation: CitationInfo) => citation.origin_document === budgetDocument)
+        m.citation_info?.some(matchFn)
       );
     }
 
