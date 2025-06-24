@@ -482,7 +482,7 @@ function MandateNavigator() {
                     <p className="text-xs sm:text-sm text-muted-foreground mt-1 sm:mt-0">{explainerTexts.mainHeader.versionTag}</p>
                   </div>
                 </div>
-                <div className="text-muted-foreground mt-2 text-justify">
+                <div className="text-muted-foreground mt-2 sm:text-justify">
                   <p className="leading-tight mb-3">
                     {explainerTexts.mainHeader.shortDescription}{' '}
                     <Button
@@ -738,13 +738,13 @@ function MandateNavigator() {
           <section id="about-section" className="mt-16 pt-8">
             <div className="space-y-6 border-t pt-6">
               <h2 className="text-2xl font-bold tracking-tight">About the Registry</h2>
-              <div className="text-muted-foreground space-y-4 text-justify">
+              <div className="text-muted-foreground space-y-4 sm:text-justify">
                 {explainerTexts.mainHeader.fullDescription.map((paragraph, index) => (
                   <p key={index} className="leading-relaxed">{paragraph}</p>
                 ))}
               </div>
               <div>
-                <p className="text-sm text-muted-foreground italic text-justify leading-relaxed">
+                <p className="text-sm text-muted-foreground italic sm:text-justify leading-relaxed">
                   {explainerTexts.mainHeader.disclaimer}
                 </p>
               </div>
