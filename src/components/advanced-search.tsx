@@ -56,9 +56,9 @@ export function AdvancedSearch({
 
   return (
     <TooltipProvider>
-      <div className="border-t pt-4 mt-4 space-y-4">
+      <div className="border-t pt-6 mt-6 space-y-4">
           {/* Row 1: UN Subjects, Programme, Budget Document */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -67,7 +67,7 @@ export function AdvancedSearch({
                 </div>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
+                    <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help -ml-1" />
                   </TooltipTrigger>
                   <TooltipContent className="max-w-xs">
                     <p>{explainerTexts.advancedFilters.subjects.tooltip}</p>
@@ -92,7 +92,7 @@ export function AdvancedSearch({
                 </div>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
+                    <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help -ml-1" />
                   </TooltipTrigger>
                   <TooltipContent className="max-w-xs">
                     <p>{explainerTexts.advancedFilters.programme.tooltip}</p>
@@ -117,7 +117,7 @@ export function AdvancedSearch({
                 </div>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
+                    <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help -ml-1" />
                   </TooltipTrigger>
                   <TooltipContent className="max-w-xs">
                     <p>{explainerTexts.advancedFilters.budgetDocument.tooltip}</p>
@@ -151,7 +151,7 @@ export function AdvancedSearch({
                 </div>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
+                    <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help -ml-1" />
                   </TooltipTrigger>
                   <TooltipContent className="max-w-xs">
                     <p>{explainerTexts.advancedFilters.yearRange.tooltip}</p>

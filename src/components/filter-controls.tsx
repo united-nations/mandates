@@ -67,8 +67,8 @@ export function FilterControls({
 
   return (
     <TooltipProvider>
-      <div className="p-4 rounded-lg shadow-sm space-y-4" style={{ backgroundColor: '#F6F7F8' }}>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="p-6 rounded-lg shadow-sm space-y-4" style={{ backgroundColor: '#F6F7F8' }}>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -77,7 +77,7 @@ export function FilterControls({
               </div>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
+                  <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help -ml-1" />
                 </TooltipTrigger>
                 <TooltipContent className="max-w-xs">
                   <p>{explainerTexts.filters.keywordSearch.tooltip}</p>
@@ -131,7 +131,7 @@ export function FilterControls({
               </div>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
+                  <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help -ml-1" />
                 </TooltipTrigger>
                 <TooltipContent className="max-w-xs">
                   <p>{explainerTexts.filters.unOrgan.tooltip}</p>
@@ -157,7 +157,7 @@ export function FilterControls({
               </div>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
+                  <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help -ml-1" />
                 </TooltipTrigger>
                 <TooltipContent className="max-w-xs">
                   <p>{explainerTexts.filters.unEntity.tooltip}</p>
@@ -176,8 +176,8 @@ export function FilterControls({
           </div>
         </div>
 
-        <div className="flex justify-start">
-          <Button variant="link" onClick={() => setShowAdvancedSearch(!showAdvancedSearch)} className="flex items-center gap-2">
+        <div className="flex">
+          <Button variant="link" onClick={() => setShowAdvancedSearch(!showAdvancedSearch)} className="flex items-center gap-2 px-0 text-left">
             {showAdvancedSearch ? 'Hide Advanced Filters' : 'Show Advanced Filters'}
             {showAdvancedSearch ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
           </Button>

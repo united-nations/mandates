@@ -56,14 +56,14 @@ export function YearSlider({ yearDistribution, yearRange, value, onChange }: Yea
     <div>
       <div className="relative h-16">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data} margin={{ top: 5, right: 10, left: 10, bottom: 0 }} barGap={2}>
+          <BarChart data={data} margin={{ top: 5, right: 0, left: 0, bottom: 0 }} barGap={2}>
             <XAxis dataKey="year" axisLine={false} tickLine={false} tick={false} />
             <Bar dataKey="displayHeight" fill="hsl(var(--primary))" shape={
               (barProps: any) => <CustomizedBar {...barProps} yearRange={yearRange} selectedRange={localValue} />
             } isAnimationActive={false} />
           </BarChart>
         </ResponsiveContainer>
-        <div className="absolute bottom-0 left-0 right-0 px-[10px]">
+        <div className="absolute bottom-0 left-0 right-0">
           <Slider
             min={yearRange.min}
             max={yearRange.max}
@@ -75,7 +75,7 @@ export function YearSlider({ yearDistribution, yearRange, value, onChange }: Yea
           />
         </div>
       </div>
-      <div className="flex justify-between text-sm text-muted-foreground mt-2 px-[10px]">
+      <div className="flex justify-between text-sm text-muted-foreground mt-2">
         <span>{localValue[0]}</span>
         <span>{localValue[1]}</span>
       </div>
