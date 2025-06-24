@@ -15,6 +15,7 @@ import { MandateDetails } from '@/components/mandate-details';
 import { SearchResultsSummary } from '@/components/search-results-summary';
 import { Button } from '@/components/ui/button';
 import { DataCard } from '@/components/data-card';
+import Clarity from '@microsoft/clarity';
 
 import {
   Select,
@@ -107,6 +108,10 @@ function MandateNavigator() {
   const [unOrgansPopover, setUnOrgansPopover] = useState(false);
   const [unEntitiesPopover, setUnEntitiesPopover] = useState(false);
   const [citationsPopover, setCitationsPopover] = useState(false);
+
+  useEffect(() => {
+    Clarity.init("s4kksugeb9");
+  }, []);
 
   useEffect(() => {
     // Sync selectedYearRange with URL params when they change
