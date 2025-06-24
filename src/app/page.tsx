@@ -509,11 +509,11 @@ function MandateNavigator() {
                   <PopoverTrigger asChild>
                     <div onMouseEnter={() => setSourceDocumentsPopover(true)} onMouseLeave={() => setSourceDocumentsPopover(false)} className="h-full">
                       <Card className="flex flex-col h-full cursor-help bg-dashboard-card">
-                          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 h-16">
-                              <CardTitle className="text-lg font-medium text-secondary-foreground">{explainerTexts.dataCards.sourceDocuments.title}</CardTitle>
-                              <FileText className="h-5 w-5 text-secondary-foreground" />
+                          <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 min-h-16">
+                              <CardTitle className="text-lg font-medium text-secondary-foreground leading-tight">{explainerTexts.dataCards.sourceDocuments.title}</CardTitle>
+                              <FileText className="h-5 w-5 text-secondary-foreground flex-shrink-0" />
                           </CardHeader>
-                          <CardContent className="flex-grow flex items-end">
+                          <CardContent className="flex-grow flex items-center justify-start pt-2">
                               <div className="text-3xl font-bold text-foreground">
                                   {isLoading ? <Skeleton className="h-8 w-16" /> : (totalItems > 0 ? totalItems.toLocaleString() : '0')}
                               </div>
@@ -535,11 +535,11 @@ function MandateNavigator() {
                   <PopoverTrigger asChild>
                     <div onMouseEnter={() => setUnOrgansPopover(true)} onMouseLeave={() => setUnOrgansPopover(false)} className="h-full">
                       <Card className="flex flex-col h-full cursor-help bg-dashboard-card">
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 h-16">
-                            <CardTitle className="text-lg font-medium text-secondary-foreground">{explainerTexts.dataCards.unOrgans.title}</CardTitle>
-                            <Landmark className="h-5 w-5 text-secondary-foreground" />
+                        <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 min-h-16">
+                            <CardTitle className="text-lg font-medium text-secondary-foreground leading-tight">{explainerTexts.dataCards.unOrgans.title}</CardTitle>
+                            <Landmark className="h-5 w-5 text-secondary-foreground flex-shrink-0" />
                         </CardHeader>
-                        <CardContent className="flex-grow flex items-end">
+                        <CardContent className="flex-grow flex items-center justify-start pt-2">
                             <div className="text-3xl font-bold text-foreground">
                                 {isLoading ? <Skeleton className="h-8 w-12" /> : (uniqueOrgans > 0 ? uniqueOrgans.toLocaleString() : '0')}
                             </div>
@@ -561,11 +561,11 @@ function MandateNavigator() {
                   <PopoverTrigger asChild>
                     <div onMouseEnter={() => setUnEntitiesPopover(true)} onMouseLeave={() => setUnEntitiesPopover(false)} className="h-full">
                       <Card className="flex flex-col h-full cursor-help bg-dashboard-card">
-                          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 h-16">
-                              <CardTitle className="text-lg font-medium text-secondary-foreground">{explainerTexts.dataCards.unEntities.title}</CardTitle>
-                              <Building className="h-5 w-5 text-secondary-foreground" />
+                          <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 min-h-16">
+                              <CardTitle className="text-lg font-medium text-secondary-foreground leading-tight">{explainerTexts.dataCards.unEntities.title}</CardTitle>
+                              <Building className="h-5 w-5 text-secondary-foreground flex-shrink-0" />
                           </CardHeader>
-                          <CardContent className="flex-grow flex items-end">
+                          <CardContent className="flex-grow flex items-center justify-start pt-2">
                               <div className="text-3xl font-bold text-foreground">
                                   {isLoading ? <Skeleton className="h-8 w-16" /> : (selectedEntity ? '1' : (uniqueEntities > 0 ? uniqueEntities.toLocaleString() : '0'))}
                               </div>
@@ -587,13 +587,13 @@ function MandateNavigator() {
                   <PopoverTrigger asChild>
                     <div onMouseEnter={() => setCitationsPopover(true)} onMouseLeave={() => setCitationsPopover(false)} className="h-full">
                       <Card className="flex flex-col h-full cursor-help bg-dashboard-card">
-                          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 h-16">
-                              <CardTitle className="text-lg font-medium text-secondary-foreground">
+                          <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 min-h-16">
+                              <CardTitle className="text-lg font-medium text-secondary-foreground leading-tight">
                                 {selectedEntity ? explainerTexts.dataCards.citationsByEntity.title : explainerTexts.dataCards.citations.title}
                               </CardTitle>
-                              <Quote className="h-5 w-5 text-secondary-foreground" />
+                              <Quote className="h-5 w-5 text-secondary-foreground flex-shrink-0" />
                           </CardHeader>
-                          <CardContent className="flex-grow flex items-end">
+                          <CardContent className="flex-grow flex items-center justify-start pt-2">
                               <div className="text-3xl font-bold text-foreground">
                                   {isLoading ? <Skeleton className="h-8 w-20" /> : (totalCitations > 0 ? totalCitations.toLocaleString() : '0')}
                               </div>
