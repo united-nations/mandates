@@ -208,7 +208,7 @@ export function SearchableDropdown({
                       size="sm"
                       className={cn(
                         "w-full justify-between font-normal h-auto py-2",
-                        highlightedIndex === index && "bg-accent text-accent-foreground"
+                        highlightedIndex === index && "!bg-un-blue/10 !text-un-blue"
                       )}
                       onClick={() => handleSelect(option.value)}
                       onMouseEnter={() => setHighlightedIndex(index)}
@@ -234,4 +234,4 @@ export function SearchableDropdown({
       </PopoverContent>
     </Popover>
   );
-} 
+}

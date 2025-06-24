@@ -32,7 +32,7 @@ export const explainerTexts = {
         "The total number of unique resolutions, decisions, presidential statements, and other formal documents containing mandates for UN Entities."
     },
     unOrgans: {
-      title: 'UN Organs & Other Bodies',
+      title: 'UN Organs & Bodies',
       description:
         'The competent principal organs (including the General Assembly, the Security Council, and the Economic and Social Council) and subsidiary organs of the United Nations and other bodies that have given mandates to UN Entities.'
     },
@@ -62,7 +62,7 @@ export const explainerTexts = {
         'Search for specific terms to find mandate source documents. Press Enter or click the search button to search.'
     },
     unOrgan: {
-      label: 'UN Organ & Other Body',
+      label: 'UN Organ & Body',
       placeholder: 'Filter by UN Organ or Other Body...',
       searchPlaceholder: 'Search organs...',
       emptyPlaceholder: 'No organs found.',

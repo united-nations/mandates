@@ -17,6 +17,7 @@ export default {
         code: ['monospace'],
       },
       colors: {
+        'card-gray': "F6F7F8",
         'un-blue': '#009edb', // Official UN Blue color
         // Custom color palette
         'trout': '#495057',

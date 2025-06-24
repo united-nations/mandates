@@ -20,21 +20,6 @@ interface Organ {
   long: string;
 }
 
-const priorityAreaColors: { [key: string]: string } = {
-  'Maintenance of international peace and security': 'bg-blue-500',
-  'Promotion of sustained economic growth and sustainable development': 'bg-green-500',
-  'Development of Africa': 'bg-yellow-500',
-  'Promotion and protection of human rights': 'bg-red-500',
-  'Effective coordination of humanitarian assistance efforts': 'bg-purple-500',
-  'Justice and international law': 'bg-indigo-500',
-  'Disarmament': 'bg-pink-500',
-  // Add more if there are others, or a default
-  'default': 'bg-gray-500',
-};
-
-const getPriorityAreaColor = (area: string) => {
-  return priorityAreaColors[area] || priorityAreaColors.default;
-}
 
 interface MandateListProps {
   mandates: Mandate[];
@@ -121,7 +106,7 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
           return (
             <motion.div
               key={mandate.full_document_symbol || mandate.document_symbol}
-              className={`relative p-3 sm:p-4 border rounded-lg shadow-sm bg-card hover:bg-muted/50 transition-colors cursor-pointer ${
+              className={`relative p-3 sm:p-4 rounded-lg bg-[#F6F7F8] hover:bg-un-blue/10 hover:border hover:border-un-blue transition-all cursor-pointer ${
                 hasSearchMatches ? 'ring-2 ring-primary/20 bg-accent/5' : ''
               }`}
               initial={{ opacity: 0, y: 20 }}

@@ -34,7 +34,7 @@ h1, h2, h3, h4, h5, h6 {
     --muted: 220 15% 88%;
     --muted-foreground: 220 10% 50%;
 
-    --accent: 220 30% 40%; /* A slightly lighter/brighter primary for hover/accent */
+    --accent: 196 100% 43%; /* UN Blue for hover/accent */
     --accent-foreground: 0 0% 100%; 
 
     --destructive: 0 70% 50%;
@@ -42,7 +42,7 @@ h1, h2, h3, h4, h5, h6 {
 
     --border: 220 15% 85%; /* Softer gray border */
     --input: 0 0% 100%; /* White input backgrounds */
-    --ring: 220 30% 50%; /* Primary color for focus rings */
+    --ring: 196 100% 43%; /* UN Blue for focus rings */
 
     --radius: 0.5rem;
 
@@ -83,7 +83,7 @@ h1, h2, h3, h4, h5, h6 {
     --muted: 220 15% 20%;
     --muted-foreground: 220 10% 60%;
 
-    --accent: 220 30% 50%;
+    --accent: 196 100% 43%; /* UN Blue for hover/accent */
     --accent-foreground: 220 10% 95%;
 
     --destructive: 0 60% 45%;
@@ -91,7 +91,7 @@ h1, h2, h3, h4, h5, h6 {
 
     --border: 220 15% 30%;
     --input: 220 15% 20%;
-    --ring: 220 30% 60%;
+    --ring: 196 100% 43%; /* UN Blue for focus rings */
 
     --chart-1: 220 30% 60%;
     --chart-2: 200 40% 60%;
