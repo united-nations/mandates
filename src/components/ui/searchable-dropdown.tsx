@@ -43,6 +43,7 @@ export function SearchableDropdown({
 
   const filteredOptions = options.filter(
     (option) =>
+      option.value === "---divider---" || // Always include dividers
       (option.label && option.label.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (option.description && option.description.toLowerCase().includes(searchTerm.toLowerCase()))
   );
@@ -86,15 +87,27 @@ export function SearchableDropdown({
     switch (e.key) {
       case 'ArrowDown':
         e.preventDefault();
-        setHighlightedIndex((prev) =>
-          prev < filteredOptions.length - 1 ? prev + 1 : 0
-        );
+        setHighlightedIndex((prev) => {
+          let next = prev < filteredOptions.length - 1 ? prev + 1 : 0;
+          // Skip dividers
+          while (next < filteredOptions.length && filteredOptions[next]?.value === "---divider---") {
+            next = next < filteredOptions.length - 1 ? next + 1 : 0;
+            if (next === prev) break; // Prevent infinite loop
+          }
+          return next;
+        });
         break;
       case 'ArrowUp':
         e.preventDefault();
-        setHighlightedIndex((prev) =>
-          prev > 0 ? prev - 1 : filteredOptions.length - 1
-        );
+        setHighlightedIndex((prev) => {
+          let next = prev > 0 ? prev - 1 : filteredOptions.length - 1;
+          // Skip dividers
+          while (next >= 0 && filteredOptions[next]?.value === "---divider---") {
+            next = next > 0 ? next - 1 : filteredOptions.length - 1;
+            if (next === prev) break; // Prevent infinite loop
+          }
+          return next;
+        });
         break;
       case 'Enter':
         e.preventDefault();
@@ -124,14 +137,25 @@ export function SearchableDropdown({
           <span className="truncate">{displayValue}</span>
           <div className="flex items-center">
              {value && (
-              <X
-                className="h-4 w-4 shrink-0 opacity-50 hover:opacity-100 mr-2"
+              <div
+                role="button"
+                tabIndex={0}
+                className="p-1 rounded-sm hover:bg-muted transition-colors cursor-pointer"
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
                   handleClear();
                 }}
-              />
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleClear();
+                  }
+                }}
+              >
+                <X className="h-3 w-3 opacity-50 hover:opacity-100" />
+              </div>
             )}
             <ChevronDown className="h-4 w-4 opacity-50" />
           </div>
@@ -139,8 +163,11 @@ export function SearchableDropdown({
       </PopoverTrigger>
       <PopoverContent 
         className="w-[--radix-popover-trigger-width] p-0 z-50 overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2" 
+        side="bottom"
         align="start"
         sideOffset={4}
+        avoidCollisions={false}
+        sticky="always"
       >
         <div className="flex flex-col">
           <div className="p-2 border-b">
@@ -153,41 +180,53 @@ export function SearchableDropdown({
               className="h-9"
             />
           </div>
-          <ScrollArea className="max-h-60 overflow-y-auto">
+          <ScrollArea className="max-h-80 overflow-y-auto">
             <div className="p-1">
               {filteredOptions.length === 0 ? (
                 <div className="py-2 px-4 text-center text-sm text-muted-foreground">
                   {emptyPlaceholder}
                 </div>
               ) : (
-                filteredOptions.map((option, index) => (
-                  <Button
-                    key={option.value}
-                    ref={(el) => {
-                      if (el) optionRefs.current[index] = el;
-                    }}
-                    variant="ghost"
-                    size="sm"
-                    className={cn(
-                      "w-full justify-between font-normal h-auto py-2",
-                      highlightedIndex === index && "bg-accent text-accent-foreground"
-                    )}
-                    onClick={() => handleSelect(option.value)}
-                    onMouseEnter={() => setHighlightedIndex(index)}
-                  >
-                    <div className="flex flex-col items-start text-left flex-1 min-w-0">
-                      <span className="font-medium whitespace-normal text-left">{option.label}</span>
-                      {option.description && (
-                        <span className="text-xs text-muted-foreground text-left whitespace-normal">
-                          {option.description}
-                        </span>
+                filteredOptions.map((option, index) => {
+                  // Handle very light divider
+                  if (option.value === "---divider---") {
+                    return (
+                      <div
+                        key={option.value}
+                        className="mx-2 my-1.5 border-b border-border/30"
+                      />
+                    );
+                  }
+                  
+                  return (
+                    <Button
+                      key={option.value}
+                      ref={(el) => {
+                        if (el) optionRefs.current[index] = el;
+                      }}
+                      variant="ghost"
+                      size="sm"
+                      className={cn(
+                        "w-full justify-between font-normal h-auto py-2",
+                        highlightedIndex === index && "!bg-un-blue/10 !text-un-blue"
                       )}
-                    </div>
-                    {value === option.value && (
-                      <Check className="h-4 w-4 shrink-0" />
-                    )}
-                  </Button>
-                ))
+                      onClick={() => handleSelect(option.value)}
+                      onMouseEnter={() => setHighlightedIndex(index)}
+                    >
+                      <div className="flex flex-col items-start text-left flex-1 min-w-0">
+                        <span className="font-medium whitespace-normal text-left">{option.label}</span>
+                        {option.description && (
+                          <span className="text-xs text-muted-foreground text-left whitespace-normal">
+                            {option.description}
+                          </span>
+                        )}
+                      </div>
+                      {value === option.value && (
+                        <Check className="h-4 w-4 shrink-0" />
+                      )}
+                    </Button>
+                  );
+                })
               )}
             </div>
           </ScrollArea>
@@ -195,4 +234,4 @@ export function SearchableDropdown({
       </PopoverContent>
     </Popover>
   );
-} 
+}

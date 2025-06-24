@@ -26,14 +26,15 @@ export function PaginationControls({
   const pageSizeOptions = [10, 20, 30, 50, 100, 1000];
 
   return (
-    <div className="flex items-center justify-between p-4 border-t">
-      <div className="flex items-center space-x-2">
+    <div className="flex flex-col space-y-3 p-2 pt-1 md:flex-row md:items-center md:justify-between md:space-y-0">
+      {/* First row: Page size selector */}
+      <div className="flex items-center justify-center space-x-2 md:justify-start">
           <div className="text-sm text-muted-foreground">Rows per page</div>
           <Select
             value={String(pageSize)}
             onValueChange={(value) => onPageSizeChange(Number(value))}
           >
-            <SelectTrigger className="w-[80px]">
+            <SelectTrigger className="w-[70px]">
               <SelectValue placeholder={pageSize} />
             </SelectTrigger>
             <SelectContent>
@@ -45,42 +46,49 @@ export function PaginationControls({
           </Select>
       </div>
 
-      <div className="text-sm text-muted-foreground">
-        Page {currentPage} of {totalPages} ({totalItems.toLocaleString()} items)
-      </div>
-      <div className="flex items-center space-x-2">
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => onPageChange(1)}
-          disabled={currentPage === 1}
-        >
-          <ChevronsLeft className="h-4 w-4" />
-        </Button>
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => onPageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-        >
-          <ChevronLeft className="h-4 w-4" />
-        </Button>
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => onPageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-        >
-          <ChevronRight className="h-4 w-4" />
-        </Button>
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => onPageChange(totalPages)}
-          disabled={currentPage === totalPages}
-        >
-          <ChevronsRight className="h-4 w-4" />
-        </Button>
+      {/* Second row: Page info and navigation */}
+      <div className="flex flex-col items-center space-y-2 md:flex-row md:space-y-0 md:space-x-4">
+        <div className="text-sm text-muted-foreground text-center">
+          Page {currentPage} of {totalPages} ({totalItems.toLocaleString()} items)
+        </div>
+        <div className="flex items-center space-x-1">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onPageChange(1)}
+            disabled={currentPage === 1}
+            className="h-8 w-8 p-0"
+          >
+            <ChevronsLeft className="h-3 w-3" />
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onPageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="h-8 w-8 p-0"
+          >
+            <ChevronLeft className="h-3 w-3" />
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onPageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="h-8 w-8 p-0"
+          >
+            <ChevronRight className="h-3 w-3" />
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onPageChange(totalPages)}
+            disabled={currentPage === totalPages}
+            className="h-8 w-8 p-0"
+          >
+            <ChevronsRight className="h-3 w-3" />
+          </Button>
+        </div>
       </div>
     </div>
   );

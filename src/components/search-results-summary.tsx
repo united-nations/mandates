@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Search, X, Filter } from 'lucide-react';
 import { EntityName } from './ui/entity-name';
+import { toTitleCase } from '@/lib/utils';
 
 import { explainerTexts } from '@/lib/explainer-texts';
 
@@ -14,6 +15,7 @@ interface SearchResultsSummaryProps {
     entity?: string;
     organ?: string;
     programme?: string;
+    subject?: string;
     pillar?: string;
     year?: string;
     budget_document?: string;
@@ -37,7 +39,7 @@ export function SearchResultsSummary({
   if (!hasSearch && !hasFilters) return null;
 
   return (
-    <div className="bg-muted/50 border rounded-lg p-4 mb-6">
+    <div className="rounded-lg p-4 mb-6" style={{ backgroundColor: '#F6F7F8' }}>
         <div className="flex items-center justify-between gap-4 mb-3">
           <div className="flex items-center gap-2">
             <Search className="h-4 w-4 text-muted-foreground" />
@@ -58,8 +60,8 @@ export function SearchResultsSummary({
           
           {(hasSearch || hasFilters) && (
             <Button
-              variant="outline"
-              size="sm"
+              variant="clear"
+              className="shrink-0 inline-flex items-center gap-2"
               onClick={() => {
                 if (hasSearch) onClearSearch();
                 Object.keys(appliedFilters).forEach(key => {
@@ -68,8 +70,8 @@ export function SearchResultsSummary({
                   }
                 });
               }}
-              className="text-xs"
             >
+              <X className="h-4 w-4" />
               Clear All
             </Button>
           )}
@@ -127,6 +129,20 @@ export function SearchResultsSummary({
                 size="sm"
                 className="h-4 w-4 p-0 hover:bg-transparent"
                 onClick={() => onClearFilter('programme')}
+              >
+                <X className="h-3 w-3" />
+              </Button>
+            </Badge>
+          )}
+
+          {appliedFilters.subject && (
+            <Badge variant="secondary" className="flex items-center gap-1">
+              Subject: {toTitleCase(appliedFilters.subject)}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-4 w-4 p-0 hover:bg-transparent"
+                onClick={() => onClearFilter('subject')}
               >
                 <X className="h-3 w-3" />
               </Button>

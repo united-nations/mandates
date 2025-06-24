@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import type { Mandate, CitationInfo } from '@/types';
 import {
   Dialog,
@@ -8,47 +8,70 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
+  DialogClose,
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from './ui/button';
-import { FileText, Building, Calendar, Link, Users, FileCheck, Target, Columns, Sparkles } from 'lucide-react';
+import { FileText, Building, Calendar, Link, Users, FileCheck, Target, Columns, Sparkles, X } from 'lucide-react';
 import { EntityName } from './ui/entity-name';
 import { TooltipProvider } from './ui/tooltip';
+import { toTitleCase } from '@/lib/utils';
 
 interface MandateDetailsProps {
   mandate: Mandate | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  allEntities?: { entity: string; entity_long: string }[];
 }
-
-const toTitleCase = (str: string) => {
-  if (!str) return '';
-  const smallWords = new Set(['a', 'an', 'and', 'as', 'at', 'but', 'by', 'for', 'in', 'of', 'on', 'or', 'the', 'to', 'vs']);
-  
-  return str.replace(/\w+/g, (word, index) => {
-    const lowerWord = word.toLowerCase();
-    if (index > 0 && smallWords.has(lowerWord)) {
-      return lowerWord;
-    }
-    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-  });
-};
 
 const MetadataItem = ({ label, children }: { label: React.ReactNode, children: React.ReactNode }) => (
     <div className="flex items-baseline text-xs py-1">
-        <div className="w-28 font-medium text-muted-foreground flex-shrink-0">{label}</div>
+        <div className="w-28 font-medium text-muted-foreground flex-shrink-0 pr-3">{label}</div>
         <div className="flex-grow">{children}</div>
     </div>
 );
 
-export function MandateDetails({ mandate, open, onOpenChange }: MandateDetailsProps) {
+export function MandateDetails({ mandate, open, onOpenChange, allEntities = [] }: MandateDetailsProps) {
   const [isPdfVisible, setIsPdfVisible] = useState(false);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
+  // Minimum distance for swipe
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    
+    // Close dialog on right swipe
+    if (isRightSwipe) {
+      onOpenChange(false);
+    }
+  };
 
   const budgetDocumentDisplayNames: { [key: string]: string } = {
-    ppb2026: 'Proposed Programme Budget for 2026',
-    pko: 'Budget of Peacekeeping Operations 2025/26',
+    'ppb2026': 'Proposed Programme Budget for 2026',
+    'PPB 2026': 'Proposed Programme Budget for 2026',
+    'pko': 'Budget of Peacekeeping Operations 2025/26',
+    'PPB 2026/Plan Outline': 'Plan Outline',
   };
+
+  // Create entity lookup function
+  const getEntityLongName = useCallback((shortName: string): string => {
+    const entity = allEntities.find(e => e.entity === shortName);
+    return entity?.entity_long || shortName;
+  }, [allEntities]);
 
   const entityCounts = useMemo(() => {
     if (!mandate || !mandate.citation_info) return [];
@@ -57,10 +80,13 @@ export function MandateDetails({ mandate, open, onOpenChange }: MandateDetailsPr
 
     mandate.citation_info.forEach(citation => {
         const shortName = citation.entity;
-        const longName = citation.entity_long || citation.entity;
         if (shortName) {
             if (!counts[shortName]) {
-                counts[shortName] = { longName, count: 0 };
+                // Use lookup function instead of citation data
+                counts[shortName] = { 
+                  longName: getEntityLongName(shortName), 
+                  count: 0 
+                };
             }
             counts[shortName].count++;
         }
@@ -72,7 +98,7 @@ export function MandateDetails({ mandate, open, onOpenChange }: MandateDetailsPr
       }
       return shortNameA.localeCompare(shortNameB);
     });
-  }, [mandate]);
+  }, [mandate, getEntityLongName]);
 
   const programmeCounts = useMemo(() => {
     if (!mandate || !mandate.citation_info) return [];
@@ -114,43 +140,61 @@ export function MandateDetails({ mandate, open, onOpenChange }: MandateDetailsPr
   
   const hasSubjects = mandate.subject_headings && mandate.subject_headings.length > 0;
   const displaySymbol = mandate.full_document_symbol || mandate.symbol;
-  const pdfUrl = mandate.full_document_symbol
-    ? `https://documents.un.org/api/symbol/access?s=${mandate.full_document_symbol}&l=en&t=pdf`
-    : null;
+  const pdfUrl = mandate.link;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent 
-        className="max-w-5xl w-full light flex flex-col max-h-[85vh] p-6" 
+        className="w-full md:max-w-5xl light flex flex-col h-screen md:max-h-[85vh] md:h-auto md:p-6 px-3 pt-20 pb-3 md:m-4 m-0 md:rounded-lg rounded-none [&>button]:h-8 [&>button]:w-8 md:[&>button]:h-10 md:[&>button]:w-10 [&>button]:border-2 [&>button]:border-trout [&>button]:hover:border-shuttle-gray [&>button]:text-trout [&>button]:hover:text-shuttle-gray [&>button]:flex [&>button]:items-center [&>button]:justify-center [&>button]:focus:outline-none [&>button]:focus:ring-0 [&>button]:!top-12 md:[&>button]:!top-6"
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
       >
         {/* Header */}
-        <div className="border-b pb-4">
-            <p className="text-sm font-medium text-muted-foreground">Mandate Document</p>
-            <DialogTitle className="text-2xl font-bold mt-1">{mandate.title || mandate.description}</DialogTitle>
-            <DialogDescription className="mt-1">
+        <div className="border-b pr-12 pb-2 md:pb-4">
+            <p className="text-xs md:text-sm font-medium text-muted-foreground">Mandate Document</p>
+            <DialogTitle className="text-lg md:text-2xl font-bold mt-1 leading-tight">
+              {mandate.body === "Security Council" && mandate.uniform_title && mandate.uniform_title.length > 0
+                ? mandate.uniform_title[0]
+                : mandate.title || mandate.description}
+            </DialogTitle>
+            <DialogDescription className="mt-0.5 md:mt-1 text-xs md:text-sm">
                 {displaySymbol}
             </DialogDescription>
-            {pdfUrl && (
-                <Button asChild className="mt-4">
-                    <a href={pdfUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2">
-                        <FileText className="h-4 w-4" />
+            {pdfUrl ? (
+                <Button asChild className="mt-1.5 md:mt-4 h-7 md:h-10 text-xs md:text-sm bg-un-blue text-white hover:bg-un-blue/90 transition-colors">
+                    <a href={pdfUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 md:gap-2">
+                        <FileText className="h-3 w-3 md:h-4 md:w-4" />
                         View PDF
                     </a>
+                </Button>
+            ) : (
+                <Button disabled variant="primary" className="mt-1.5 md:mt-4 h-7 md:h-10 text-xs md:text-sm inline-flex items-center gap-1.5 md:gap-2">
+                    <FileText className="h-3 w-3 md:h-4 md:w-4" />
+                    View PDF
                 </Button>
             )}
         </div>
 
         {/* Content */}
-        <ScrollArea className="flex-grow overflow-y-auto">
-            <div className="space-y-6 pr-2">
+        <div className="flex-grow overflow-y-auto overflow-x-hidden">
+            <div className="space-y-4 pr-2">
+
+              {/* AI Summary */}
+              <div className="space-y-1">
+                <h3 className="text-base font-semibold flex items-center gap-2">
+                  <FileText className="h-4 w-4" />
+                  <span>Document Summary</span>
+                </h3>
+              </div>
 
               {/* Compact Metadata List */}
-              <div className="space-y-1 p-3 border rounded-lg">
+              <div className="space-y-1 rounded-lg">
                 <MetadataItem label="Organ">
                   {mandate.body ? <Badge variant="stronger" className="text-xs">{mandate.body}</Badge> : <span className="text-muted-foreground">—</span>}
                 </MetadataItem>
                 <MetadataItem label="Document Type">
-                  {mandate.collection_level3 && mandate.collection_level3.length > 0 ? <Badge variant="stronger" className="text-xs">{mandate.collection_level3[0]}</Badge> : <span className="text-muted-foreground">—</span>}
+                  {mandate.type ? <Badge variant="stronger" className="text-xs">{mandate.type}</Badge> : <span className="text-muted-foreground">—</span>}
                 </MetadataItem>
                 <MetadataItem label="Year">
                   {mandate.year ? <Badge variant="stronger" className="text-xs">{mandate.year}</Badge> : <span className="text-muted-foreground">—</span>}
@@ -159,8 +203,7 @@ export function MandateDetails({ mandate, open, onOpenChange }: MandateDetailsPr
                   {budgetDocuments.length > 0 ? (
                     <div className="flex flex-wrap gap-1">
                       {budgetDocuments.map((doc, index) => {
-                        const docKey = doc.replace(/\s/g, '').toLowerCase();
-                        const displayName = budgetDocumentDisplayNames[docKey] || doc;
+                        const displayName = budgetDocumentDisplayNames[doc] || doc;
                         return (
                           <Badge key={index} variant="stronger" className="text-xs">
                             {displayName}
@@ -180,9 +223,9 @@ export function MandateDetails({ mandate, open, onOpenChange }: MandateDetailsPr
                       </a>
                     }
                   >
-                    <div className="flex flex-wrap gap-1">
+                    <div className="flex flex-wrap gap-1 pt-2">
                       {mandate.subject_headings.map((heading, index) => (
-                        <Badge key={index} variant="outline" className="text-xs font-normal">
+                        <Badge key={index} variant="outline" className="text-xs font-normal !border-un-blue">
                           {toTitleCase(heading)}
                         </Badge>
                       ))}
@@ -191,17 +234,11 @@ export function MandateDetails({ mandate, open, onOpenChange }: MandateDetailsPr
                 )}
               </div>
 
-              {/* AI Summary */}
-              <div className="space-y-2">
-                <h3 className="text-base font-semibold flex items-center gap-2">
-                  <FileText className="h-4 w-4" />
-                  <span>Document Summary</span>
-                </h3>
-                <div className="p-3 bg-muted/30 rounded-lg">
-                  <p className="text-sm leading-relaxed text-muted-foreground italic">
-                    Document summaries and operative paragraphs are coming soon.
-                  </p>
-                </div>
+              {/* AI Summary Content */}
+              <div className="bg-muted/30 rounded-lg p-3">
+                <p className="text-sm leading-relaxed text-muted-foreground italic">
+                  Document summaries and operative paragraphs are coming soon.
+                </p>
               </div>
 
               {/* Entities Mentioned */}
@@ -213,10 +250,12 @@ export function MandateDetails({ mandate, open, onOpenChange }: MandateDetailsPr
                   </h3>
                   <div className="space-y-1.5 text-xs">
                     {entityCounts.map(([shortName, data]) => (
-                      <div key={shortName} className="flex items-center gap-2">
-                        <span className="w-8 text-right text-muted-foreground">{data.count}x</span>
-                        <Badge variant="secondary" className="text-xs">{shortName}</Badge>
-                        <span className="text-muted-foreground">{data.longName}</span>
+                      <div key={shortName} className="flex gap-2">
+                        <span className="text-muted-foreground font-mono flex-shrink-0 leading-[1.5] py-1">{data.count}x</span>
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 min-w-0 flex-1">
+                          <Badge variant="secondary" className="text-xs w-fit px-2 py-1 !bg-un-blue !text-white hover:!bg-un-blue/90">{shortName}</Badge>
+                          <span className="text-muted-foreground break-words">{data.longName}</span>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -233,15 +272,22 @@ export function MandateDetails({ mandate, open, onOpenChange }: MandateDetailsPr
                   <div className="space-y-1.5 text-xs">
                     {programmeCounts.map(([programmeTitle, count]) => (
                       <div key={programmeTitle} className="flex items-center gap-2">
-                        <span className="w-8 text-right text-muted-foreground">{count}x</span>
-                        <Badge variant="secondary" className="text-xs">{toTitleCase(programmeTitle)}</Badge>
+                        <span className="text-muted-foreground font-mono flex-shrink-0">{count}x</span>
+                        <div className="min-w-0 flex-1">
+                          <Badge 
+                            variant="secondary" 
+                            className="text-xs px-2 py-1 whitespace-normal leading-relaxed inline-block max-w-full"
+                          >
+                            {toTitleCase(programmeTitle)}
+                          </Badge>
+                        </div>
                       </div>
                     ))}
                   </div>
                 </div>
               )}
             </div>
-        </ScrollArea>
+        </div>
       </DialogContent>
     </Dialog>
   );

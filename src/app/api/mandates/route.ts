@@ -26,16 +26,34 @@ interface SearchResult extends Mandate {
   highlightedFields?: { [key: string]: string };
 }
 
-// Define searchable fields
+// Define searchable fields with weights for better relevance
+// These fields match exactly what's displayed in the UI
 const searchFields: SearchField[] = [
   {
     name: 'title',
+    weight: 2.0, // Higher weight for titles
     getValue: (mandate: Mandate) => mandate.title || '',
   },
   {
-    name: 'document_symbol',
-    getValue: (mandate: Mandate) => mandate.document_symbol || '',
+    name: 'uniform_title',
+    weight: 2.0, // Same weight as title since it's used as title for Security Council
+    getValue: (mandate: Mandate) => {
+      if (mandate.body === "Security Council" && mandate.uniform_title && mandate.uniform_title.length > 0) {
+        return mandate.uniform_title[0];
+      }
+      return '';
+    },
   },
+  {
+    name: 'description', 
+    weight: 1.8, // High weight since it's used as fallback title
+    getValue: (mandate: Mandate) => mandate.description || '',
+  },
+  {
+    name: 'document_symbol',
+    weight: 1.5, // Medium weight for document symbols
+    getValue: (mandate: Mandate) => mandate.document_symbol || '',
+  }
 ];
 
 function performEnhancedTextSearch(mandates: Mandate[], query: string): SearchResult[] {
@@ -48,10 +66,11 @@ function performEnhancedTextSearch(mandates: Mandate[], query: string): SearchRe
     query,
     searchFields,
     {
+      threshold: 0.4, // Allow some fuzziness but not too much
       includeMatches: true,
       minMatchCharLength: 2,
-      tokenize: true,
-      matchAllTokens: false
+      findAllMatches: true,
+      ignoreLocation: true // Don't penalize matches based on position
     }
   );
 
@@ -68,20 +87,38 @@ function performEnhancedTextSearch(mandates: Mandate[], query: string): SearchRe
     // Create friendly field names for display
     const fieldDisplayNames: { [key: string]: string } = {
       title: 'Title',
-      document_symbol: 'Document Symbol'
+      uniform_title: 'Title (Uniform)',
+      document_symbol: 'Document Symbol',
+      description: 'Description'
     };
 
     const match_details = Array.from(matchedFields).map(field => 
       fieldDisplayNames[field] || field
     );
 
-    return {
+    // Handle title fallback for highlighting to match UI display logic
+    let highlightedTitle: string | undefined;
+    
+    if (result.item.body === "Security Council" && result.item.uniform_title && result.item.uniform_title.length > 0) {
+      // For Security Council: prefer uniform_title highlighting, fallback to title, then description
+      highlightedTitle = result.highlightedFields.uniform_title || 
+                        result.highlightedFields.title || 
+                        result.highlightedFields.description;
+    } else {
+      // For other documents: prefer title, fallback to description
+      highlightedTitle = result.highlightedFields.title || 
+                        result.highlightedFields.description;
+    }
+
+    const searchResult = {
       ...result.item,
-      searchScore: 0, // Score is not used
+      searchScore: result.score, // Now we have a real relevance score
       match_details,
-      highlightedTitle: result.highlightedFields.title || undefined,
+      highlightedTitle,
       highlightedFields: result.highlightedFields
     };
+    
+    return searchResult;
   });
 }
 
@@ -94,6 +131,7 @@ export async function GET(request: Request) {
     const keyword = searchParams.get('keyword');
     const organ = searchParams.get('organ');
     const programme = searchParams.get('programme');
+    const subject = searchParams.get('subject');
     const startYear = searchParams.get('start_year');
     const endYear = searchParams.get('end_year');
     const budgetDocument = searchParams.get('budget_document');
@@ -120,6 +158,14 @@ export async function GET(request: Request) {
       const lowerProgramme = programme.toLowerCase();
       filteredMandates = filteredMandates.filter((m) =>
         m.citation_info?.some((c: CitationInfo) => c.programme_title?.toLowerCase().includes(lowerProgramme))
+      );
+    }
+
+    if (subject) {
+      filteredMandates = filteredMandates.filter((m) =>
+        m.subject_headings?.some((subjectHeading: string) => 
+          subjectHeading?.toLowerCase().includes(subject.toLowerCase())
+        )
       );
     }
 
@@ -151,7 +197,16 @@ export async function GET(request: Request) {
     }
 
     if (budgetDocument && budgetDocument !== 'all') {
-      filteredMandates = filteredMandates.filter((m) => m.origin_document === budgetDocument);
+      // Map dropdown values to actual origin_document values in the data
+      const budgetDocumentMapping: { [key: string]: (citation: CitationInfo) => boolean } = {
+        'ppb2026': (citation) => citation.origin_document === 'PPB 2026',
+        'pko': (citation) => typeof citation.origin_document === 'string' && citation.origin_document.startsWith('PKM 25/26'),
+        'PPB 2026/Plan Outline': (citation) => citation.origin_document === 'PPB 2026/Plan Outline',
+      };
+      const matchFn = budgetDocumentMapping[budgetDocument] || ((citation) => citation.origin_document === budgetDocument);
+      filteredMandates = filteredMandates.filter((m) => 
+        m.citation_info?.some(matchFn)
+      );
     }
 
     if (keyword) {
@@ -161,48 +216,78 @@ export async function GET(request: Request) {
     
     // Sorting logic
     if (sortBy && sortBy !== 'default') {
-        const [sortField, sortDirection] = sortBy.split('_');
-        const sortOrder = sortDirection === 'asc' ? 1 : -1;
-
-        filteredMandates.sort((a, b) => {
-            if (sortField === 'year') {
-                const yearA = a.year ? parseInt(a.year, 10) : null;
-                const yearB = b.year ? parseInt(b.year, 10) : null;
-                const aHasValidYear = yearA !== null && !isNaN(yearA) && yearA > 0;
-                const bHasValidYear = yearB !== null && !isNaN(yearB) && yearB > 0;
-
-                if (aHasValidYear && !bHasValidYear) return -1;
-                if (!aHasValidYear && bHasValidYear) return 1;
-
-                if (aHasValidYear && bHasValidYear) {
-                    if (yearA < yearB) return -1 * sortOrder;
-                    if (yearA > yearB) return 1 * sortOrder;
-                }
-
-                // If years are same or both are invalid, use secondary sort on citations
-                return (b.num_citations || 0) - (a.num_citations || 0);
-            }
+        if (sortBy === 'citing_entities_desc' || sortBy === 'citing_entities_asc') {
+            const sortOrder = sortBy === 'citing_entities_asc' ? 1 : -1;
             
-            if (sortField === 'citations') {
-                const valA = a.num_citations || 0;
-                const valB = b.num_citations || 0;
+            filteredMandates.sort((a, b) => {
+                const valA = a.num_entities || 0;
+                const valB = b.num_entities || 0;
                 
                 if (valA < valB) return -1 * sortOrder;
                 if (valA > valB) return 1 * sortOrder;
                 
-                // secondary sort for tie-breaking
-                const yearB_val = parseInt(b.year, 10) || 0;
-                const yearA_val = parseInt(a.year, 10) || 0;
-                if (yearB_val !== yearA_val) return yearB_val - yearA_val;
-            }
+                // secondary sort for tie-breaking - use citations
+                const citationsA = a.num_citations || 0;
+                const citationsB = b.num_citations || 0;
+                return citationsB - citationsA;
+            });
+        } else {
+            const [sortField, sortDirection] = sortBy.split('_');
+            const sortOrder = sortDirection === 'asc' ? 1 : -1;
 
-            return 0;
-        });
+            filteredMandates.sort((a, b) => {
+                if (sortField === 'year') {
+                    const yearA = a.year ? parseInt(a.year, 10) : null;
+                    const yearB = b.year ? parseInt(b.year, 10) : null;
+                    const aHasValidYear = yearA !== null && !isNaN(yearA) && yearA > 0;
+                    const bHasValidYear = yearB !== null && !isNaN(yearB) && yearB > 0;
+
+                    if (aHasValidYear && !bHasValidYear) return -1;
+                    if (!aHasValidYear && bHasValidYear) return 1;
+
+                    if (aHasValidYear && bHasValidYear) {
+                        if (yearA < yearB) return -1 * sortOrder;
+                        if (yearA > yearB) return 1 * sortOrder;
+                    }
+
+                    // If years are same or both are invalid, use secondary sort on citations
+                    return (b.num_citations || 0) - (a.num_citations || 0);
+                }
+                
+                if (sortField === 'citations') {
+                    const valA = a.num_citations || 0;
+                    const valB = b.num_citations || 0;
+                    
+                    if (valA < valB) return -1 * sortOrder;
+                    if (valA > valB) return 1 * sortOrder;
+                    
+                    // secondary sort for tie-breaking
+                    const yearB_val = parseInt(b.year, 10) || 0;
+                    const yearA_val = parseInt(a.year, 10) || 0;
+                    if (yearB_val !== yearA_val) return yearB_val - yearA_val;
+                }
+
+                return 0;
+            });
+        }
     }
 
     // Calculate summary stats on filtered mandates
     const totalItems = filteredMandates.length;
-    const totalCitations = filteredMandates.reduce((acc, mandate) => acc + (mandate.num_citations || 0), 0);
+    
+    // Calculate total citations - if filtering by entity, only count citations from that entity
+    let totalCitations: number;
+    if (entity) {
+      // When filtering by entity, count only citations from that specific entity
+      totalCitations = filteredMandates.reduce((acc, mandate) => {
+        const entityCitations = mandate.citation_info?.filter(citation => citation.entity === entity).length || 0;
+        return acc + entityCitations;
+      }, 0);
+    } else {
+      // When not filtering by entity, count all citations
+      totalCitations = filteredMandates.reduce((acc, mandate) => acc + (mandate.num_citations || 0), 0);
+    }
+    
     const allFilteredEntities = filteredMandates.flatMap(mandate => mandate.entities || []);
     const uniqueEntitiesCount = new Set(allFilteredEntities.filter(Boolean)).size;
     const allFilteredBodies = filteredMandates.map(mandate => mandate.body);

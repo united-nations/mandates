@@ -12,11 +12,15 @@ interface YearSliderProps {
 }
 
 const CustomizedBar = (props: any) => {
-    const { x, y, width, height, payload, fill } = props;
+    const { x, y, width, height, payload, fill, yearRange, selectedRange } = props;
+    // Determine if this bar is within the selected range
+    const yearNum = parseInt(payload.year, 10);
+    const isSelected = yearNum >= selectedRange[0] && yearNum <= selectedRange[1];
+    const barFill = isSelected ? '#009edb' : '#E2E4EA';
     if (payload.count === 0) {
         return <rect x={x + width / 4} y={y + height -1} width={width / 2} height={1} fill="hsl(var(--muted-foreground))" opacity={0.3} />;
     }
-    return <rect x={x} y={y} width={width} height={height} fill={fill} />;
+    return <rect x={x} y={y} width={width} height={height} fill={barFill} />;
 };
 
 export function YearSlider({ yearDistribution, yearRange, value, onChange }: YearSliderProps) {
@@ -52,12 +56,14 @@ export function YearSlider({ yearDistribution, yearRange, value, onChange }: Yea
     <div>
       <div className="relative h-16">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data} margin={{ top: 5, right: 10, left: 10, bottom: 0 }} barGap={2}>
+          <BarChart data={data} margin={{ top: 5, right: 0, left: 0, bottom: 0 }} barGap={2}>
             <XAxis dataKey="year" axisLine={false} tickLine={false} tick={false} />
-            <Bar dataKey="displayHeight" fill="hsl(var(--primary))" shape={<CustomizedBar />} isAnimationActive={false} />
+            <Bar dataKey="displayHeight" fill="hsl(var(--primary))" shape={
+              (barProps: any) => <CustomizedBar {...barProps} yearRange={yearRange} selectedRange={localValue} />
+            } isAnimationActive={false} />
           </BarChart>
         </ResponsiveContainer>
-        <div className="absolute bottom-0 left-0 right-0 px-[10px]">
+        <div className="absolute bottom-0 left-0 right-0">
           <Slider
             min={yearRange.min}
             max={yearRange.max}
@@ -65,14 +71,14 @@ export function YearSlider({ yearDistribution, yearRange, value, onChange }: Yea
             value={localValue}
             onValueChange={(val: number[]) => setLocalValue(val as [number, number])}
             onValueCommit={(val) => handleCommit(val as [number, number])}
-            className="w-full"
+            className="w-full [&_.bg-primary]:!bg-un-blue [&_[data-radix-slider-range]]:!bg-un-blue [&_[data-radix-slider-thumb]]:!border-un-blue [&_.border-primary]:!border-un-blue"
           />
         </div>
       </div>
-      <div className="flex justify-between text-sm text-muted-foreground mt-2 px-[10px]">
+      <div className="flex justify-between text-sm text-muted-foreground mt-2">
         <span>{localValue[0]}</span>
         <span>{localValue[1]}</span>
       </div>
     </div>
   );
-} 
+}

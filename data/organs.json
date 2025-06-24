@@ -1,94 +1,94 @@
 [
-    {
-        "short": "GA",
-        "long": "General Assembly"
-    },
-    {
-        "short": "HRC",
-        "long": "Human Rights Council"
-    },
-    {
-        "short": "ECOSOC",
-        "long": "Economic and Social Council"
-    },
-    {
-        "short": "UNSC",
-        "long": "Security Council"
-    },
-    {
-        "short": "UNEA",
-        "long": "Environment Assembly"
-    },
-    {
-        "short": "ESCAP",
-        "long": "Economic and Social Commission for Asia and the Pacific"
-    },
-    {
-        "short": "CND",
-        "long": "Commission on Narcotic Drugs"
-    },
-    {
-        "short": "ECLAC",
-        "long": "Economic Commission for Latin America and the Caribbean"
-    },
-    {
-        "short": "ECA",
-        "long": "Economic Commission for Africa"
-    },
-    {
-        "short": "UN-Habitat",
-        "long": "Human Settlements Programme"
-    },
-    {
-        "short": "ECE",
-        "long": "Economic Commission for Europe"
-    },
-    {
-        "short": "ESCWA",
-        "long": "Economic and Social Commission for Western Asia"
-    },
-    {
-        "short": "CSW",
-        "long": "Commission on the Status of Women"
-    },
-    {
-        "short": "UNEP",
-        "long": "Environment Programme"
-    },
-    {
-        "short": "UN Charter",
-        "long": "Charter of the United Nations"
-    },
-    {
-        "short": "UNCLOS",
-        "long": "Convention on the Law of the Sea"
-    },
-    {
-        "short": "COP-UNTOC",
-        "long": "Conference of the Parties to the United Nations Convention against Transnational Organized Crime"
-    },
-    {
-        "short": "CPD",
-        "long": "Commission on Population and Development"
-    },
-    {
-        "short": "CCPCJ",
-        "long": "Commission on Crime Prevention and Criminal Justice"
-    },
-    {
-        "short": "WTO",
-        "long": "World Trade Organization"
-    },
-    {
-        "short": "UNCTAD",
-        "long": "United Nations Conference on Trade and Development"
-    },
-    {
-        "short": "INCB",
-        "long": "International Narcotics Control Board"
-    },
-    {
-        "short": "CSD",
-        "long": "Commission on Sustainable Development"
-    }
+  {
+    "short":"CCPCJ",
+    "long":"Commission on Crime Prevention and Criminal Justice"
+  },
+  {
+    "short":"CND",
+    "long":"Commission on Narcotic Drugs"
+  },
+  {
+    "short":"CPD",
+    "long":"Commission on Population and Development"
+  },
+  {
+    "short":"CSD",
+    "long":"Commission on Sustainable Development"
+  },
+  {
+    "short":"CSW",
+    "long":"Commission on the Status of Women"
+  },
+  {
+    "short":"Charter",
+    "long":"Charter of the United Nations"
+  },
+  {
+    "short":"ECA",
+    "long":"Economic Commission for Africa"
+  },
+  {
+    "short":"ECE",
+    "long":"Economic Commission for Europe"
+  },
+  {
+    "short":"ECLAC",
+    "long":"Economic Commission for Latin America and the Caribbean"
+  },
+  {
+    "short":"ECOSOC",
+    "long":"Economic and Social Council"
+  },
+  {
+    "short":"ESCAP",
+    "long":"Economic and Social Commission for Asia and the Pacific"
+  },
+  {
+    "short":"ESCWA",
+    "long":"Economic and Social Commission for Western Asia"
+  },
+  {
+    "short":"General Assembly",
+    "long":"General Assembly"
+  },
+  {
+    "short":"Human Rights Council",
+    "long":"Human Rights Council"
+  },
+  {
+    "short":"INCB",
+    "long":"International Narcotics Control Board"
+  },
+  {
+    "short":"Other",
+    "long":"Other United Nations Bodies"
+  },
+  {
+    "short":"Security Council",
+    "long":"Security Council"
+  },
+  {
+    "short":"UNCLOS",
+    "long":"United Nations Convention on the Law of the Sea"
+  },
+  {
+    "short":"UNCTAD",
+    "long":"United Nations Conference on Trade and Development"
+  },
+  {
+    "short":"UNEA",
+    "long":"United Nations Environment Assembly"
+  },
+  {
+    "short":"UNHA and Other",
+    "long":"United Nations Humanitarian Affairs and Other Related Bodies"
+  },
+  {
+    "short":"UNTOC COP",
+    "long":"Conference of the Parties to the United Nations Convention against Transnational Organized Crime"
+  },
+  {
+    "short":"WTO",
+    "long":"World Trade Organization"
+  }
 ]

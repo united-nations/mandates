@@ -2,8 +2,7 @@
 
 import { useState, useEffect, useCallback, Suspense } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import type { Mandate } from '@/types';
-import { useDebounce } from '@/hooks/use-debounce'; 
+import type { Mandate } from '@/types'; 
 import { MandateList } from '@/components/mandate-list';
 import { FilterControls } from '@/components/filter-controls';
 import { PaginationControls } from '@/components/pagination-controls';
@@ -15,6 +14,8 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { MandateDetails } from '@/components/mandate-details';
 import { SearchResultsSummary } from '@/components/search-results-summary';
 import { Button } from '@/components/ui/button';
+import { DataCard } from '@/components/data-card';
+import Clarity from '@microsoft/clarity';
 
 import {
   Select,
@@ -72,13 +73,14 @@ function MandateNavigator() {
   const selectedOrgan = searchParams.get('organ') || '';
   const keywordFromParams = searchParams.get('keyword') || '';
   const programme = searchParams.get('programme') || '';
+  const subject = searchParams.get('subject') || '';
   const startYearFromParams = searchParams.get('start_year');
   const endYearFromParams = searchParams.get('end_year');
   const budgetDocument = searchParams.get('budget_document') || '';
-  const sortBy = searchParams.get('sort_by') || (keywordFromParams ? 'default' : 'citations_desc');
+  const sortBy = searchParams.get('sort_by') || (keywordFromParams ? 'default' : 'citing_entities_desc');
 
   const [keyword, setKeyword] = useState(keywordFromParams);
-  const debouncedKeyword = useDebounce(keyword, 500);
+  // Remove debounced search - we'll search on Enter instead
   
   const [totalPages, setTotalPages] = useState(0);
   const [totalItems, setTotalItems] = useState(0);
@@ -92,6 +94,7 @@ function MandateNavigator() {
   const [entityOptions, setEntityOptions] = useState<EntityWithCount[]>([]);
   const [organOptions, setOrganOptions] = useState<BodyWithCount[]>([]);
   const [programmeOptions, setProgrammeOptions] = useState<string[]>([]);
+  const [subjectOptions, setSubjectOptions] = useState<string[]>([]);
 
   const [yearDistribution, setYearDistribution] = useState<{ [year: string]: number }>({});
   const [yearRange, setYearRange] = useState<{ min: number; max: number } | null>(null);
@@ -107,11 +110,8 @@ function MandateNavigator() {
   const [citationsPopover, setCitationsPopover] = useState(false);
 
   useEffect(() => {
-    // Sync keyword input with URL param
-    if (keywordFromParams !== keyword) {
-      setKeyword(keywordFromParams);
-    }
-  }, [keywordFromParams]);
+    Clarity.init("s4kksugeb9");
+  }, []);
 
   useEffect(() => {
     // Sync selectedYearRange with URL params when they change
@@ -250,6 +250,7 @@ function MandateNavigator() {
         const data = await response.json();
         setEntityOptions(data.uniqueEntities || []);
         setOrganOptions(data.uniqueBodiesWithCount || []);
+        setSubjectOptions(data.uniqueSubjects || []);
         
         if (data.yearRange) {
           setYearRange(data.yearRange);
@@ -283,6 +284,7 @@ function MandateNavigator() {
     if (selectedOrgan) params.append('organ', selectedOrgan);
     if (keywordFromParams) params.append('keyword', keywordFromParams);
     if (programme) params.append('programme', programme);
+    if (subject) params.append('subject', subject);
     if (startYearFromParams) params.append('start_year', startYearFromParams);
     if (endYearFromParams) params.append('end_year', endYearFromParams);
     if (budgetDocument) params.append('budget_document', budgetDocument);
@@ -313,28 +315,18 @@ function MandateNavigator() {
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, pageSize, selectedEntity, selectedOrgan, keywordFromParams, programme, startYearFromParams, endYearFromParams, budgetDocument, sortBy]);
+  }, [currentPage, pageSize, selectedEntity, selectedOrgan, keywordFromParams, programme, subject, startYearFromParams, endYearFromParams, budgetDocument, sortBy]);
   
   useEffect(() => {
     fetchMandates();
   }, [fetchMandates]);
 
   useEffect(() => {
-    if (debouncedKeyword !== keywordFromParams) {
-      const params = new URLSearchParams(searchParams.toString());
-      params.set('page', '1');
-      if (debouncedKeyword) {
-        params.set('keyword', debouncedKeyword);
-      } else {
-        params.delete('keyword');
-        // When clearing search, if sort was relevance, reset to default (citations)
-        if (params.get('sort_by') === 'default') {
-          params.set('sort_by', 'citations_desc');
-        }
-      }
-      router.push(`${pathname}?${params.toString()}`, { scroll: false });
+    // Only sync keyword input with URL param changes (not trigger search)
+    if (keywordFromParams !== keyword) {
+      setKeyword(keywordFromParams);
     }
-  }, [debouncedKeyword, keywordFromParams, pathname, router, searchParams]);
+  }, [keywordFromParams]); // Remove 'keyword' from dependencies to prevent infinite loop
   
   const handlePageChange = (page: number) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -378,15 +370,33 @@ function MandateNavigator() {
   const onEntityChange = (value: string) => handleFilterChange('entity', value);
   const onOrganChange = (value: string) => handleFilterChange('organ', value);
   const onProgrammeChange = (value: string) => handleFilterChange('programme', value);
+  const onSubjectChange = (value: string) => handleFilterChange('subject', value);
   const onBudgetDocumentChange = (value: string) => handleFilterChange('budget_document', value);
 
   const onKeywordChange = (value: string) => {
     setKeyword(value);
   };
 
+  const onKeywordSearch = (searchTerm: string = keyword) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('page', '1');
+    if (searchTerm.trim()) {
+      params.set('keyword', searchTerm.trim());
+    } else {
+      params.delete('keyword');
+      // When clearing search, if sort was relevance, reset to default (citing entities)
+      if (params.get('sort_by') === 'default') {
+        params.set('sort_by', 'citing_entities_desc');
+      }
+    }
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
   const budgetDocumentDisplayNames: { [key: string]: string } = {
-    ppb2026: 'Proposed Programme Budget for 2026',
-    pko: 'Budget of Peacekeeping Operations 2025/26',
+    'ppb2026': 'Proposed Programme Budget for 2026',
+    'PPB 2026': 'Proposed Programme Budget for 2026',
+    'pko': 'Budget of Peacekeeping Operations 2025/26',
+    'PPB 2026/Plan Outline': 'Plan Outline',
   };
 
   const LoadingSkeleton = () => (
@@ -427,155 +437,127 @@ function MandateNavigator() {
     };
   });
 
-  const organDropdownOptions: SearchableDropdownOption[] = organOptions.map(organ => {
+  const organDropdownOptions: SearchableDropdownOption[] = [];
+  const priorityOrgans = ["General Assembly", "Security Council", "ECOSOC"];
+  
+  organOptions.forEach((organ, index) => {
     const organData = findOrganData(organ.name);
-    if (organData) {
-      return {
+    
+    // For General Assembly and Security Council, just show the name
+    if (organ.name === "General Assembly" || organ.name === "Security Council") {
+      organDropdownOptions.push({
+        value: organ.name,
+        label: organ.name,
+      });
+    } else {
+      // For all other organs, show "short – long" format
+      const option = organData ? {
         value: organ.name,
         label: `${organData.short} – ${organData.long}`,
+      } : {
+        value: organ.name,
+        label: organ.name,
       };
+      organDropdownOptions.push(option);
     }
-    // Fallback to original name if not found in organs.json
-    return {
-      value: organ.name,
-      label: organ.name,
-    };
+    
+    // Add a very light divider after ECOSOC (the third priority organ)
+    if (index === 2 && priorityOrgans.includes(organ.name)) {
+      organDropdownOptions.push({
+        value: "---divider---",
+        label: "",
+        description: "",
+      });
+    }
   });
 
   return (
     <TooltipProvider>
       <div className="min-h-screen bg-background text-foreground">
-        <main className="w-full py-6 space-y-6">
+        <main className="w-full max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto py-6 space-y-6 px-8 sm:px-12 lg:px-16">
           
           {/* Header with context info */}
-          <section className="px-4 pb-4 border-b border-border">
+          <section className="pb-2">
             <div className="flex items-start justify-between">
               <div>
-                <h1 className="text-3xl font-bold tracking-tight text-foreground mb-2">
-                  {explainerTexts.mainHeader.title}
-                </h1>
-                <div className="text-muted-foreground max-w-3xl space-y-3">
-                  {explainerTexts.mainHeader.description.map((paragraph, index) => (
-                    <p key={index}>{paragraph}</p>
-                  ))}
+                <div className="mb-6 mt-2">
+                  <div className="flex flex-col sm:flex-row sm:items-baseline sm:gap-x-2">
+                    <h1 className="text-4xl font-bold tracking-tight text-foreground">
+                      {explainerTexts.mainHeader.title}
+                    </h1>
+                    <p className="text-xs sm:text-sm text-muted-foreground mt-1 sm:mt-0">{explainerTexts.mainHeader.versionTag}</p>
+                  </div>
+                </div>
+                <div className="text-muted-foreground mt-2 sm:text-justify">
+                  <p className="leading-tight mb-3">
+                    {explainerTexts.mainHeader.shortDescription}{' '}
+                    <Button
+                      variant="link"
+                      className="p-0 h-auto text-un-blue hover:text-shuttle-gray text-sm inline"
+                      onClick={() => {
+                        const element = document.getElementById('about-section');
+                        element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                      }}
+                    >
+                      Read More...
+                    </Button>
+                  </p>
                 </div>
               </div>
-
             </div>
           </section>
-
-          <section className="mb-6 px-4">
+        
+        
+          <section className="mb-6">
+            <h2 className="text-2xl font-bold tracking-tight mb-3">{explainerTexts.dataCards.sectionTitle}</h2>
             <div className="grid gap-3 grid-cols-1 sm:grid-cols-4">
-                <Popover open={sourceDocumentsPopover} onOpenChange={setSourceDocumentsPopover}>
-                  <PopoverTrigger asChild>
-                    <div onMouseEnter={() => setSourceDocumentsPopover(true)} onMouseLeave={() => setSourceDocumentsPopover(false)} className="h-full">
-                      <Card className="flex flex-col h-full cursor-help">
-                          <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-16">
-                              <CardTitle className="text-base font-medium text-muted-foreground">{explainerTexts.dataCards.sourceDocuments.title}</CardTitle>
-                              <FileText className="h-5 w-5 text-muted-foreground" />
-                          </CardHeader>
-                          <CardContent className="flex-grow flex items-end">
-                              <div className="text-3xl font-bold text-foreground">
-                                  {isLoading ? <Skeleton className="h-8 w-16" /> : (totalItems > 0 ? totalItems.toLocaleString() : '0')}
-                              </div>
-                          </CardContent>
-                      </Card>
-                    </div>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-80">
-                    <div className="space-y-2">
-                      <p className="font-medium">{explainerTexts.dataCards.sourceDocuments.title}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {explainerTexts.dataCards.sourceDocuments.description}
-                      </p>
-                    </div>
-                  </PopoverContent>
-                </Popover>
-                
-                <Popover open={unOrgansPopover} onOpenChange={setUnOrgansPopover}>
-                  <PopoverTrigger asChild>
-                    <div onMouseEnter={() => setUnOrgansPopover(true)} onMouseLeave={() => setUnOrgansPopover(false)} className="h-full">
-                      <Card className="flex flex-col h-full cursor-help">
-                        <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-16">
-                            <CardTitle className="text-base font-medium text-muted-foreground">{explainerTexts.dataCards.unOrgans.title}</CardTitle>
-                            <Landmark className="h-5 w-5 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent className="flex-grow flex items-end">
-                            <div className="text-3xl font-bold text-foreground">
-                                {isLoading ? <Skeleton className="h-8 w-12" /> : (uniqueOrgans > 0 ? uniqueOrgans.toLocaleString() : '0')}
-                            </div>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-80">
-                    <div className="space-y-2">
-                      <p className="font-medium">{explainerTexts.dataCards.unOrgans.title}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {explainerTexts.dataCards.unOrgans.description}
-                      </p>
-                    </div>
-                  </PopoverContent>
-                </Popover>
-                
-                <Popover open={unEntitiesPopover} onOpenChange={setUnEntitiesPopover}>
-                  <PopoverTrigger asChild>
-                    <div onMouseEnter={() => setUnEntitiesPopover(true)} onMouseLeave={() => setUnEntitiesPopover(false)} className="h-full">
-                      <Card className="flex flex-col h-full cursor-help">
-                          <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-16">
-                              <CardTitle className="text-base font-medium text-muted-foreground">{explainerTexts.dataCards.unEntities.title}</CardTitle>
-                              <Building className="h-5 w-5 text-muted-foreground" />
-                          </CardHeader>
-                          <CardContent className="flex-grow flex items-end">
-                              <div className="text-3xl font-bold text-foreground">
-                                  {isLoading ? <Skeleton className="h-8 w-16" /> : (uniqueEntities > 0 ? uniqueEntities.toLocaleString() : '0')}
-                              </div>
-                          </CardContent>
-                      </Card>
-                    </div>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-80">
-                    <div className="space-y-2">
-                      <p className="font-medium">{explainerTexts.dataCards.unEntities.title}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {explainerTexts.dataCards.unEntities.description}
-                      </p>
-                    </div>
-                  </PopoverContent>
-                </Popover>
-                
-                <Popover open={citationsPopover} onOpenChange={setCitationsPopover}>
-                  <PopoverTrigger asChild>
-                    <div onMouseEnter={() => setCitationsPopover(true)} onMouseLeave={() => setCitationsPopover(false)} className="h-full">
-                      <Card className="flex flex-col h-full cursor-help">
-                          <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 h-16">
-                              <CardTitle className="text-base font-medium text-muted-foreground">{explainerTexts.dataCards.citations.title}</CardTitle>
-                              <Quote className="h-5 w-5 text-muted-foreground" />
-                          </CardHeader>
-                          <CardContent className="flex-grow flex items-end">
-                              <div className="text-3xl font-bold text-foreground">
-                                  {isLoading ? <Skeleton className="h-8 w-20" /> : (totalCitations > 0 ? totalCitations.toLocaleString() : '0')}
-                              </div>
-                          </CardContent>
-                      </Card>
-                    </div>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-80">
-                    <div className="space-y-2">
-                      <p className="font-medium">{explainerTexts.dataCards.citations.title}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {explainerTexts.dataCards.citations.description}
-                      </p>
-                    </div>
-                  </PopoverContent>
-                </Popover>
+              <DataCard
+                title={explainerTexts.dataCards.sourceDocuments.title}
+                value={totalItems > 0 ? totalItems : '0'}
+                icon={FileText}
+                description={explainerTexts.dataCards.sourceDocuments.description}
+                isLoading={isLoading}
+                isOpen={sourceDocumentsPopover}
+                onOpenChange={setSourceDocumentsPopover}
+              />
+              
+              <DataCard
+                title={explainerTexts.dataCards.unOrgans.title}
+                value={uniqueOrgans > 0 ? uniqueOrgans : '0'}
+                icon={Landmark}
+                description={explainerTexts.dataCards.unOrgans.description}
+                isLoading={isLoading}
+                isOpen={unOrgansPopover}
+                onOpenChange={setUnOrgansPopover}
+              />
+              
+              <DataCard
+                title={explainerTexts.dataCards.unEntities.title}
+                value={selectedEntity ? '1' : (uniqueEntities > 0 ? uniqueEntities : '0')}
+                icon={Building}
+                description={explainerTexts.dataCards.unEntities.description}
+                isLoading={isLoading}
+                isOpen={unEntitiesPopover}
+                onOpenChange={setUnEntitiesPopover}
+              />
+              
+              <DataCard
+                title={selectedEntity ? explainerTexts.dataCards.citationsByEntity.title : explainerTexts.dataCards.citations.title}
+                value={totalCitations > 0 ? totalCitations : '0'}
+                icon={Quote}
+                description={selectedEntity ? explainerTexts.dataCards.citationsByEntity.description : explainerTexts.dataCards.citations.description}
+                isLoading={isLoading}
+                isOpen={citationsPopover}
+                onOpenChange={setCitationsPopover}
+              />
             </div>
           </section>
 
-          <div className="px-4">
+          <div>
             <FilterControls
               keyword={keyword}
               onKeywordChange={onKeywordChange}
+              onKeywordSearch={onKeywordSearch}
               entityOptions={entityDropdownOptions}
               selectedEntity={selectedEntity}
               onEntityChange={onEntityChange}
@@ -583,18 +565,21 @@ function MandateNavigator() {
               selectedOrgan={selectedOrgan}
               onOrganChange={onOrganChange}
               programme={programme}
+              subject={subject}
               yearRange={yearRange}
               yearDistribution={yearDistribution}
               selectedYearRange={selectedYearRange}
               budgetDocument={budgetDocument}
               onProgrammeChange={onProgrammeChange}
+              onSubjectChange={onSubjectChange}
               onYearRangeChange={handleYearRangeChange}
               onBudgetDocumentChange={onBudgetDocumentChange}
               programmeOptions={programmeOptions}
+              subjectOptions={subjectOptions}
             />
           </div>
 
-          <div className="px-4">
+          <div>
             <SearchResultsSummary
               totalResults={totalItems}
               searchKeyword={keywordFromParams}
@@ -602,10 +587,14 @@ function MandateNavigator() {
                 entity: selectedEntity !== 'all' ? selectedEntity : undefined,
                 organ: selectedOrgan !== 'all' ? selectedOrgan : undefined,
                 programme: programme || undefined,
+                subject: subject || undefined,
                 year: (startYearFromParams && endYearFromParams && yearRange && (parseInt(startYearFromParams, 10) !== yearRange.min || parseInt(endYearFromParams, 10) !== yearRange.max)) ? `${startYearFromParams}-${endYearFromParams}` : undefined,
                 budget_document: budgetDocument && budgetDocument !== 'all' ? budgetDocumentDisplayNames[budgetDocument] : undefined,
               }}
-              onClearSearch={() => onKeywordChange('')}
+              onClearSearch={() => {
+                onKeywordChange('');
+                onKeywordSearch('');
+              }}
               onClearFilter={(filterKey) => {
                 switch (filterKey) {
                   case 'entity':
@@ -616,6 +605,9 @@ function MandateNavigator() {
                     break;
                   case 'programme':
                     onProgrammeChange('');
+                    break;
+                  case 'subject':
+                    onSubjectChange('');
                     break;
                   case 'year':
                     const newParams = new URLSearchParams(searchParams.toString());
@@ -632,51 +624,44 @@ function MandateNavigator() {
               isLoading={isLoading}
             />
           </div>
-
-          <div className="px-4">
-            <div className="border-t border-border pt-4">
-              <div className="mt-4">
-                <div className="flex justify-between items-center mb-4">
-                  <div className="flex items-center gap-3">
-                    <h2 className="text-2xl font-bold tracking-tight">{explainerTexts.mandateList.sectionTitle}</h2>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
-                      </TooltipTrigger>
-                      <TooltipContent className="max-w-xs">
-                        <p>{explainerTexts.mandateList.sectionTooltip}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <label htmlFor="sort-by" className="text-sm font-medium">Sort by</label>
-                    <Select value={sortBy} onValueChange={handleSortChange}>
-                      <SelectTrigger className="w-[200px]" id="sort-by">
-                        <SelectValue placeholder={explainerTexts.sorting.placeholder} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {keywordFromParams ? <SelectItem value="default">Relevance</SelectItem> : null}
-                        <SelectItem value="citations_desc">Citations (High to Low)</SelectItem>
-                        <SelectItem value="year_desc">Year (Newest First)</SelectItem>
-                        <SelectItem value="year_asc">Year (Oldest First)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+          
+          <div>
+            <div className="mt-6 pt-4">
+              <div className="flex flex-col gap-3 mb-4 sm:flex-row sm:justify-between sm:items-center">
+                <div className="flex items-center gap-3">
+                  <h2 className="text-xl sm:text-2xl font-bold tracking-tight">{explainerTexts.mandateList.sectionTitle}</h2>
                 </div>
-                {isLoading ? (
-                  <LoadingSkeleton />
-                ) : (
-                  <MandateList
-                    mandates={mandates}
-                    onMandateClick={setSelectedMandate}
-                    organsData={allOrgans}
-                  />
-                )}
+                <div className="flex items-center gap-2 w-full sm:w-auto sm:flex-shrink-0">
+                  <label htmlFor="sort-by" className="text-sm font-medium text-nowrap">Sort by</label>
+                  <Select value={sortBy} onValueChange={handleSortChange}>
+                    <SelectTrigger className="flex-1 sm:w-[290px] min-w-0" id="sort-by">
+                      <SelectValue placeholder={explainerTexts.sorting.placeholder} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {keywordFromParams ? <SelectItem value="default">Search Relevance</SelectItem> : null}
+                      <SelectItem value="citing_entities_desc">Number of citing entities (High to Low)</SelectItem>
+                      <SelectItem value="citing_entities_asc">Number of citing entities (Low to High)</SelectItem>
+                      <SelectItem value="citations_desc">Citations (High to Low)</SelectItem>
+                      <SelectItem value="citations_asc">Citations (Low to High)</SelectItem>
+                      <SelectItem value="year_desc">Year (Newest First)</SelectItem>
+                      <SelectItem value="year_asc">Year (Oldest First)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
+              {isLoading ? (
+                <LoadingSkeleton />
+              ) : (
+                <MandateList
+                  mandates={mandates}
+                  onMandateClick={setSelectedMandate}
+                  organsData={allOrgans}
+                />
+              )}
             </div>
           </div>
 
-          <div className="px-4">
+          <div>
             <PaginationControls
               currentPage={currentPage}
               totalPages={totalPages}
@@ -686,6 +671,23 @@ function MandateNavigator() {
               totalItems={totalItems}
             />
           </div>
+
+
+          <section id="about-section" className="mt-16 pt-8">
+            <div className="space-y-6 border-t pt-6">
+              <h2 className="text-2xl font-bold tracking-tight">About the Registry</h2>
+              <div className="text-muted-foreground space-y-4 sm:text-justify">
+                {explainerTexts.mainHeader.fullDescription.map((paragraph, index) => (
+                  <p key={index} className="leading-relaxed">{paragraph}</p>
+                ))}
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground italic sm:text-justify leading-relaxed">
+                  {explainerTexts.mainHeader.disclaimer}
+                </p>
+              </div>
+            </div>
+          </section>
         </main>
 
         <MandateDetails
@@ -696,6 +698,7 @@ function MandateNavigator() {
               setSelectedMandate(null);
             }
           }}
+          allEntities={allEntities}
         />
       </div>
     </TooltipProvider>

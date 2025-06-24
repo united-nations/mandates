@@ -1,294 +1,626 @@
 [
-    {
-        "entity": "CEB",
-        "entity_long": "United Nations System Chief Executives Board for Coordination"
-    },
-    {
-        "entity": "DA",
-        "entity_long": "Development Account"
-    },
-    {
-        "entity": "DESA",
-        "entity_long": "Department of Economic and Social Affairs"
-    },
-    {
-        "entity": "DGACM",
-        "entity_long": "Department for General Assembly and Conference Management"
-    },
-    {
-        "entity": "DGC",
-        "entity_long": "Department of Global Communications"
-    },
-    {
-        "entity": "DMSPC",
-        "entity_long": "Department of Management Strategy, Policy and Compliance"
-    },
-    {
-        "entity": "DOS",
-        "entity_long": "Department of Operational Support"
-    },
-    {
-        "entity": "DPO",
-        "entity_long": "Department of Peace Operations"
-    },
-    {
-        "entity": "DPPA",
-        "entity_long": "Department of Political and Peacebuilding Affairs"
-    },
-    {
-        "entity": "DSS",
-        "entity_long": "Department of Safety and Security"
-    },
-    {
-        "entity": "ECA",
-        "entity_long": "Economic Commission for Africa"
-    },
-    {
-        "entity": "ECE",
-        "entity_long": "Economic Commission for Europe"
-    },
-    {
-        "entity": "ECLAC",
-        "entity_long": "Economic Commission for Latin America and the Caribbean"
-    },
-    {
-        "entity": "EO",
-        "entity_long": "Ethics Office"
-    },
-    {
-        "entity": "ESCAP",
-        "entity_long": "Economic and Social Commission for Asia and the Pacific"
-    },
-    {
-        "entity": "ESCWA",
-        "entity_long": "Economic and Social Commission for Western Asia"
-    },
-    {
-        "entity": "ICJ",
-        "entity_long": "International Court of Justice"
-    },
-    {
-        "entity": "ICSC",
-        "entity_long": "International Civil Service Commission"
-    },
-    {
-        "entity": "IIIM",
-        "entity_long": "International, Impartial and Independent Mechanism to Assist in the Investigation and Prosecution of Persons Responsible for the Most Serious Crimes under International Law Committed in the Syrian Arab Republic since March 2011"
-    },
-    {
-        "entity": "IIMM",
-        "entity_long": "Independent Investigative Mechanism for Myanmar"
-    },
-    {
-        "entity": "ITC",
-        "entity_long": "International Trade Centre"
-    },
-    {
-        "entity": "JIU",
-        "entity_long": "Joint Inspection Unit"
-    },
-    {
-        "entity": "MINURSO",
-        "entity_long": "United Nations Mission for the Referendum in Western Sahara"
-    },
-    {
-        "entity": "MINUSCA",
-        "entity_long": "United Nations Multidimensional Integrated Stabilization Mission in the Central African Republic"
-    },
-    {
-        "entity": "MONUSCO",
-        "entity_long": "United Nations Organization Stabilization Mission in the Democratic Republic of the Congo"
-    },
-    {
-        "entity": "OAJ",
-        "entity_long": "Office of Administration of Justice"
-    },
-    {
-        "entity": "OCHA",
-        "entity_long": "Office for the Coordination of Humanitarian Affairs"
-    },
-    {
-        "entity": "OCT",
-        "entity_long": "Office of Counter-Terrorism"
-    },
-    {
-        "entity": "ODA",
-        "entity_long": "Office for Disarmament Affairs"
-    },
-    {
-        "entity": "ODET",
-        "entity_long": "Office of Digital and Emerging Technologies"
-    },
-    {
-        "entity": "ODPP",
-        "entity_long": "Office of Data Protection and Privacy"
-    },
-    {
-        "entity": "OHCHR",
-        "entity_long": "Office of the United Nations High Commissioner for Human Rights"
-    },
-    {
-        "entity": "OICT",
-        "entity_long": "Office of Information and Communications Technology"
-    },
-    {
-        "entity": "OIOS",
-        "entity_long": "Office of Internal Oversight Services"
-    },
-    {
-        "entity": "OLA",
-        "entity_long": "Office of Legal Affairs"
-    },
-    {
-        "entity": "OMS",
-        "entity_long": "Office of the United Nations Ombudsman and Mediation Services"
-    },
-    {
-        "entity": "OOSA",
-        "entity_long": "Office for Outer Space Affairs"
-    },
-    {
-        "entity": "OSAA",
-        "entity_long": "Office of the Special Adviser on Africa"
-    },
-    {
-        "entity": "OSC-SEA",
-        "entity_long": "Office of the United Nations Special Coordinator on Improving the United Nations Response to Sexual Exploitation and Abuse"
-    },
-    {
-        "entity": "OSESG-FG",
-        "entity_long": "Office of the Special Envoy of the Secretary-General for Future Generations"
-    },
-    {
-        "entity": "OSRSG-CAAC",
-        "entity_long": "Office of the Special Representative of the Secretary-General for Children and Armed Conflict"
-    },
-    {
-        "entity": "OSRSG-SVC",
-        "entity_long": "Office of the Special Representative of the Secretary-General on Sexual Violence in Conflict"
-    },
-    {
-        "entity": "OSRSG-VAC",
-        "entity_long": "Office of the Special Representative of the Secretary-General on Violence against Children"
-    },
-    {
-        "entity": "RCS",
-        "entity_long": "Resident coordinator system"
-    },
-    {
-        "entity": "RSCE",
-        "entity_long": "Regional Service Centre in Entebbe"
-    },
-    {
-        "entity": "UN-Habitat",
-        "entity_long": "United Nations Human Settlements Programme"
-    },
-    {
-        "entity": "UN-OHRLLS",
-        "entity_long": "Office of the High Representative for the Least Developed Countries, Landlocked Developing Countries and Small Island Developing States"
-    },
-    {
-        "entity": "UN-Women",
-        "entity_long": "United Nations Entity for Gender Equality and the Empowerment of Women"
-    },
-    {
-        "entity": "UNAOC",
-        "entity_long": "United Nations Alliance of Civilizations"
-    },
-    {
-        "entity": "UNCTAD",
-        "entity_long": "United Nations Conference on Trade and Development"
-    },
-    {
-        "entity": "UNDOF",
-        "entity_long": "United Nations Disengagement Observer Force"
-    },
-    {
-        "entity": "UNDRR",
-        "entity_long": "United Nations Office for Disaster Risk Reduction"
-    },
-    {
-        "entity": "UNEP",
-        "entity_long": "United Nations Environment Programme"
-    },
-    {
-        "entity": "UNFICYP",
-        "entity_long": "United Nations Peacekeeping Force in Cyprus"
-    },
-    {
-        "entity": "UNHCR",
-        "entity_long": "Office of the United Nations High Commissioner for Refugees"
-    },
-    {
-        "entity": "UNIFIL",
-        "entity_long": "United Nations Interim Force in Lebanon"
-    },
-    {
-        "entity": "UNISFA",
-        "entity_long": "United Nations Interim Security Force for Abyei"
-    },
-    {
-        "entity": "UNLB",
-        "entity_long": "United Nations Logistics Base at Brindisi"
-    },
-    {
-        "entity": "UNMIK",
-        "entity_long": "United Nations Interim Administration Mission in Kosovo"
-    },
-    {
-        "entity": "UNMISS",
-        "entity_long": "United Nations Mission in South Sudan"
-    },
-    {
-        "entity": "UNMOGIP",
-        "entity_long": "United Nations Military Observer Group in India and Pakistan"
-    },
-    {
-        "entity": "UNOAU",
-        "entity_long": "United Nations Office to the African Union"
-    },
-    {
-        "entity": "UNODC",
-        "entity_long": "United Nations Office on Drugs and Crime"
-    },
-    {
-        "entity": "UNOG",
-        "entity_long": "United Nations Office at Geneva"
-    },
-    {
-        "entity": "UNON",
-        "entity_long": "United Nations Office at Nairobi"
-    },
-    {
-        "entity": "UNOV",
-        "entity_long": "United Nations Office at Vienna"
-    },
-    {
-        "entity": "UNRWA",
-        "entity_long": "United Nations Relief and Works Agency for Palestine Refugees in the Near East"
-    },
-    {
-        "entity": "UNRoD",
-        "entity_long": "United Nations Register of Damage Caused by the Construction of the Wall in the Occupied Palestinian Territory"
-    },
-    {
-        "entity": "UNSCO",
-        "entity_long": "Office of the United Nations Special Coordinator for the Middle East Peace Process"
-    },
-    {
-        "entity": "UNSOS",
-        "entity_long": "United Nations Support Office in Somalia"
-    },
-    {
-        "entity": "UNTSO",
-        "entity_long": "United Nations Truce Supervision Organization"
-    },
-    {
-        "entity": "UNYO",
-        "entity_long": "United Nations Youth Office"
-    },
-    {
-        "entity": "VRA",
-        "entity_long": "Office of the Victims\\u2019 Rights Advocate"
-    }
+  {
+    "entity":"ASMT",
+    "entity_long":"Analytical Support and Sanctions Monitoring Team pursuant to resolutions 1526 (2004) and 2253 (2015) concerning Islamic State in Iraq and the Levant (Da\u2019esh), Al-Qaida and the Taliban and associated individuals and entities"
+  },
+  {
+    "entity":"BINUH",
+    "entity_long":"United Nations Integrated Office in Haiti"
+  },
+  {
+    "entity":"CEB",
+    "entity_long":"United Nations System Chief Executives Board for Coordination"
+  },
+  {
+    "entity":"CNMC",
+    "entity_long":"United Nations support for the Cameroon-Nigeria Mixed Commission"
+  },
+  {
+    "entity":"CTBTO",
+    "entity_long":"Preparatory Commission for the Comprehensive Nuclear-Test-Ban Treaty Organization"
+  },
+  {
+    "entity":"CTED",
+    "entity_long":"Counter-Terrorism Committee Executive Directorate"
+  },
+  {
+    "entity":"DA",
+    "entity_long":"Development Account"
+  },
+  {
+    "entity":"DESA",
+    "entity_long":"Department of Economic and Social Affairs"
+  },
+  {
+    "entity":"DGACM",
+    "entity_long":"Department for General Assembly and Conference Management"
+  },
+  {
+    "entity":"DGC",
+    "entity_long":"Department of Global Communications"
+  },
+  {
+    "entity":"DMSPC",
+    "entity_long":"Department of Management Strategy, Policy and Compliance"
+  },
+  {
+    "entity":"DOS",
+    "entity_long":"Department of Operational Support"
+  },
+  {
+    "entity":"DPO",
+    "entity_long":"Department of Peace Operations"
+  },
+  {
+    "entity":"DPPA",
+    "entity_long":"Department of Political and Peacebuilding Affairs"
+  },
+  {
+    "entity":"DSS",
+    "entity_long":"Department of Safety and Security"
+  },
+  {
+    "entity":"ECA",
+    "entity_long":"Economic Commission for Africa"
+  },
+  {
+    "entity":"ECE",
+    "entity_long":"Economic Commission for Europe"
+  },
+  {
+    "entity":"ECLAC",
+    "entity_long":"Economic Commission for Latin America and the Caribbean"
+  },
+  {
+    "entity":"EO",
+    "entity_long":"Ethics Office"
+  },
+  {
+    "entity":"EOSG",
+    "entity_long":"Executive Office of the Secretary-General"
+  },
+  {
+    "entity":"ESCAP",
+    "entity_long":"Economic and Social Commission for Asia and the Pacific"
+  },
+  {
+    "entity":"ESCWA",
+    "entity_long":"Economic and Social Commission for Western Asia"
+  },
+  {
+    "entity":"FAO",
+    "entity_long":"Food and Agriculture Organization"
+  },
+  {
+    "entity":"GoE-DRC",
+    "entity_long":"Group of Experts on the Democratic Republic of the Congo"
+  },
+  {
+    "entity":"IAEA",
+    "entity_long":"International Atomic Energy Agency"
+  },
+  {
+    "entity":"ICAO",
+    "entity_long":"International Civil Aviation Organization"
+  },
+  {
+    "entity":"ICC",
+    "entity_long":"International Criminal Court"
+  },
+  {
+    "entity":"ICJ",
+    "entity_long":"International Court of Justice"
+  },
+  {
+    "entity":"ICSC",
+    "entity_long":"International Civil Service Commission"
+  },
+  {
+    "entity":"IFAD",
+    "entity_long":"International Fund for Agricultural Development"
+  },
+  {
+    "entity":"IIIM",
+    "entity_long":"International, Impartial and Independent Mechanism to Assist in the Investigation and Prosecution of Persons Responsible for the Most Serious Crimes under International Law Committed in the Syrian Arab Republic since March 2011"
+  },
+  {
+    "entity":"IIMM",
+    "entity_long":"Independent Investigative Mechanism for Myanmar"
+  },
+  {
+    "entity":"ILO",
+    "entity_long":"International Labor Organization"
+  },
+  {
+    "entity":"IMF",
+    "entity_long":"International Monetary Fund"
+  },
+  {
+    "entity":"IMO",
+    "entity_long":"International Maritime Organization"
+  },
+  {
+    "entity":"IOM",
+    "entity_long":"International Organization for Migration"
+  },
+  {
+    "entity":"ISA",
+    "entity_long":"International Seabed Authority"
+  },
+  {
+    "entity":"ITC",
+    "entity_long":"International Trade Centre"
+  },
+  {
+    "entity":"ITLOS",
+    "entity_long":"International Tribunal for the Law of the Sea"
+  },
+  {
+    "entity":"ITU",
+    "entity_long":"International Telecommunication Union"
+  },
+  {
+    "entity":"JIU",
+    "entity_long":"Joint Inspection Unit"
+  },
+  {
+    "entity":"MINURSO",
+    "entity_long":"United Nations Mission for the Referendum in Western Sahara"
+  },
+  {
+    "entity":"MINUSCA",
+    "entity_long":"United Nations Multidimensional Integrated Stabilization Mission in the Central African Republic"
+  },
+  {
+    "entity":"MONUSCO",
+    "entity_long":"United Nations Organization Stabilization Mission in the Democratic Republic of the Congo"
+  },
+  {
+    "entity":"OAJ",
+    "entity_long":"Office of Administration of Justice"
+  },
+  {
+    "entity":"OCHA",
+    "entity_long":"Office for the Coordination of Humanitarian Affairs"
+  },
+  {
+    "entity":"OCT",
+    "entity_long":"Office of Counter-Terrorism"
+  },
+  {
+    "entity":"ODA",
+    "entity_long":"Office for Disarmament Affairs"
+  },
+  {
+    "entity":"ODET",
+    "entity_long":"Office for Digital and Emerging Technologies"
+  },
+  {
+    "entity":"ODPP",
+    "entity_long":"Office of Data Protection and Privacy"
+  },
+  {
+    "entity":"OFP-Delisting",
+    "entity_long":"Office of the Focal Point for Delisting"
+  },
+  {
+    "entity":"OHCHR",
+    "entity_long":"Office of the United Nations High Commissioner for Human Rights"
+  },
+  {
+    "entity":"OICT",
+    "entity_long":"Office of Information and Communications Technology"
+  },
+  {
+    "entity":"OIOS",
+    "entity_long":"Office of Internal Oversight Services"
+  },
+  {
+    "entity":"OLA",
+    "entity_long":"Office of Legal Affairs"
+  },
+  {
+    "entity":"OMBUD-RES1904",
+    "entity_long":"Office of the Ombudsperson established pursuant to Security Council resolution 1904 (2009)"
+  },
+  {
+    "entity":"OMS",
+    "entity_long":"Office of the United Nations Ombudsman and Mediation Services"
+  },
+  {
+    "entity":"OOSA",
+    "entity_long":"Office for Outer Space Affairs"
+  },
+  {
+    "entity":"OPCW",
+    "entity_long":"Organisation for the Prohibition of Chemical Weapons"
+  },
+  {
+    "entity":"OSAA",
+    "entity_long":"Office of the Special Adviser on Africa"
+  },
+  {
+    "entity":"OSASG-CYP",
+    "entity_long":"Office of the Special Adviser to the Secretary-General on Cyprus"
+  },
+  {
+    "entity":"OSASG-PG",
+    "entity_long":"Office of the Special Adviser to the Secretary-General on the Prevention of Genocide"
+  },
+  {
+    "entity":"OSC-SEA",
+    "entity_long":"Office of the United Nations Special Coordinator on Improving the United Nations Response to Sexual Exploitation and Abuse"
+  },
+  {
+    "entity":"OSESG-FG",
+    "entity_long":"Office of the Special Envoy of the Secretary-General for Future Generations"
+  },
+  {
+    "entity":"OSESG-GL",
+    "entity_long":"Office of the Special Envoy of the Secretary-General for the Great Lakes Region"
+  },
+  {
+    "entity":"OSESG-HA",
+    "entity_long":"Office of the Special Envoy of the Secretary-General for the Horn of Africa"
+  },
+  {
+    "entity":"OSESG-Myanmar",
+    "entity_long":"Office of the Special Envoy of the Secretary-General on Myanmar"
+  },
+  {
+    "entity":"OSESG-SCRES1559",
+    "entity_long":"Office of the Special Envoy of the Secretary-General for the implementation of Security Council resolution 1559 (2004)"
+  },
+  {
+    "entity":"OSESG-Syria",
+    "entity_long":"Office of the Special Envoy of the Secretary-General for Syria"
+  },
+  {
+    "entity":"OSESG-Yemen",
+    "entity_long":"Office of the Special Envoy of the Secretary-General for Yemen"
+  },
+  {
+    "entity":"OSRSG-CAAC",
+    "entity_long":"Office of the Special Representative of the Secretary-General for Children and Armed Conflict"
+  },
+  {
+    "entity":"OSRSG-SVC",
+    "entity_long":"Office of the Special Representative of the Secretary-General on Sexual Violence in Conflict"
+  },
+  {
+    "entity":"OSRSG-VAC",
+    "entity_long":"Office of the Special Representative of the Secretary-General on Violence against Children"
+  },
+  {
+    "entity":"Other",
+    "entity_long":"Other"
+  },
+  {
+    "entity":"Other",
+    "entity_long":"Other"
+  },
+  {
+    "entity":"Other",
+    "entity_long":"Other"
+  },
+  {
+    "entity":"Other",
+    "entity_long":"Other"
+  },
+  {
+    "entity":"PESG-Sudan",
+    "entity_long":"Office of the Personal Envoy of the Secretary-General for the Sudan"
+  },
+  {
+    "entity":"PESG-WS",
+    "entity_long":"Personal Envoy of the Secretary-General for Western Sahara"
+  },
+  {
+    "entity":"PoE-CAR",
+    "entity_long":"Panel of Experts on the Central African Republic"
+  },
+  {
+    "entity":"PoE-Haiti",
+    "entity_long":"Panel of Experts on Haiti"
+  },
+  {
+    "entity":"PoE-Libya",
+    "entity_long":"Panel of Experts on Libya"
+  },
+  {
+    "entity":"PoE-RES2713",
+    "entity_long":"Panel of Experts pursuant to resolution 2713 (2023)"
+  },
+  {
+    "entity":"PoE-RES2745",
+    "entity_long":"Panel of Experts pursuant to resolution 2745 (2024)"
+  },
+  {
+    "entity":"PoE-S.Sudan",
+    "entity_long":"Panel of Experts on South Sudan"
+  },
+  {
+    "entity":"PoE-Sudan",
+    "entity_long":"Panel of Experts on the Sudan"
+  },
+  {
+    "entity":"PoE-Yemen",
+    "entity_long":"Panel of Experts on Yemen"
+  },
+  {
+    "entity":"RCS",
+    "entity_long":"Resident Coordinator System"
+  },
+  {
+    "entity":"RSCE",
+    "entity_long":"United Nations Regional Service Centre in Entebbe"
+  },
+  {
+    "entity":"SC-RES1540",
+    "entity_long":"Support to the Security Council Committee established pursuant to resolution 1540 (2004) on the non-proliferation of all weapons of mass destruction"
+  },
+  {
+    "entity":"SC-RES1718",
+    "entity_long":"Support to the Security Council Committee established pursuant to resolution 1718 (2006)"
+  },
+  {
+    "entity":"SC-RES2331",
+    "entity_long":"Implementation of Security Council resolution 2231 (2015)"
+  },
+  {
+    "entity":"SWEO",
+    "entity_long":"United Nations Sustainable Development Group System-wide Evaluation Office"
+  },
+  {
+    "entity":"UN Tourism",
+    "entity_long":"World Tourism Organization"
+  },
+  {
+    "entity":"UN-Habitat",
+    "entity_long":"United Nations Human Settlements Programme"
+  },
+  {
+    "entity":"UN-OHRLLS",
+    "entity_long":"Office of the High Representative for the Least Developed Countries, Landlocked Developing Countries and Small Island Developing States"
+  },
+  {
+    "entity":"UN-Women",
+    "entity_long":"United Nations Entity for Gender Equality and the Empowerment of Women"
+  },
+  {
+    "entity":"UNAIDS",
+    "entity_long":"Joint United Nations Programme on HIV\/AIDS"
+  },
+  {
+    "entity":"UNAMA",
+    "entity_long":"United Nations Assistance Mission in Afghanistan"
+  },
+  {
+    "entity":"UNAMI",
+    "entity_long":"United Nations Assistance Mission for Iraq"
+  },
+  {
+    "entity":"UNAOC",
+    "entity_long":"United Nations Alliance of Civilizations"
+  },
+  {
+    "entity":"UNCTAD",
+    "entity_long":"United Nations Conference on Trade and Development"
+  },
+  {
+    "entity":"UNDOF",
+    "entity_long":"United Nations Disengagement Observer Force"
+  },
+  {
+    "entity":"UNDP",
+    "entity_long":"United Nations Development Programme"
+  },
+  {
+    "entity":"UNDRR",
+    "entity_long":"United Nations Office for Disaster Risk Reduction"
+  },
+  {
+    "entity":"UNEP",
+    "entity_long":"United Nations Environment Programme"
+  },
+  {
+    "entity":"UNESCO",
+    "entity_long":"United Nations Educational, Scientific and Cultural Organization"
+  },
+  {
+    "entity":"UNFCCC",
+    "entity_long":"United Nations Framework Convention on Climate Change Secretariat"
+  },
+  {
+    "entity":"UNFICYP",
+    "entity_long":"United Nations Peacekeeping Force in Cyprus"
+  },
+  {
+    "entity":"UNFPA",
+    "entity_long":"United Nations Population Fund"
+  },
+  {
+    "entity":"UNGC",
+    "entity_long":"United Nations Global Compact"
+  },
+  {
+    "entity":"UNGEGN",
+    "entity_long":"United Nations Group of Experts on Geographical Names"
+  },
+  {
+    "entity":"UNGGIM",
+    "entity_long":"Committee of Experts on Global Geospatial Information Management"
+  },
+  {
+    "entity":"UNHCR",
+    "entity_long":"Office of the United Nations High Commissioner for Refugees"
+  },
+  {
+    "entity":"UNICEF",
+    "entity_long":"United Nations Children's Fund"
+  },
+  {
+    "entity":"UNIDIR",
+    "entity_long":"United Nations Institute for Disarmament Research"
+  },
+  {
+    "entity":"UNIDO",
+    "entity_long":"United Nations Industrial Development Organization"
+  },
+  {
+    "entity":"UNIFIL",
+    "entity_long":"United Nations Interim Force in Lebanon"
+  },
+  {
+    "entity":"UNISFA",
+    "entity_long":"United Nations Interim Security Force for Abyei"
+  },
+  {
+    "entity":"UNITAR",
+    "entity_long":"United Nations Institute for Training and Research"
+  },
+  {
+    "entity":"UNLB",
+    "entity_long":"United Nations Logistics Base at Brindisi"
+  },
+  {
+    "entity":"UNMHA",
+    "entity_long":"United Nations Mission to Support the Hudaydah Agreement"
+  },
+  {
+    "entity":"UNMIK",
+    "entity_long":"United Nations Interim Administration Mission in Kosovo"
+  },
+  {
+    "entity":"UNMISS",
+    "entity_long":"United Nations Mission in South Sudan"
+  },
+  {
+    "entity":"UNMOGIP",
+    "entity_long":"United Nations Military Observer Group in India and Pakistan"
+  },
+  {
+    "entity":"UNOAU",
+    "entity_long":"United Nations Office to the African Union"
+  },
+  {
+    "entity":"UNOCA",
+    "entity_long":"United Nations Regional Office for Central Africa"
+  },
+  {
+    "entity":"UNODC",
+    "entity_long":"United Nations Office on Drugs and Crime"
+  },
+  {
+    "entity":"UNOG",
+    "entity_long":"United Nations Office at Geneva"
+  },
+  {
+    "entity":"UNON",
+    "entity_long":"United Nations Office at Nairobi"
+  },
+  {
+    "entity":"UNOPS",
+    "entity_long":"United Nations Office for Project Services"
+  },
+  {
+    "entity":"UNOV",
+    "entity_long":"United Nations Office at Vienna"
+  },
+  {
+    "entity":"UNOWAS",
+    "entity_long":"United Nations Office for West Africa and the Sahel"
+  },
+  {
+    "entity":"UNRCCA",
+    "entity_long":"United Nations Regional Centre for Preventive Diplomacy for Central Asia"
+  },
+  {
+    "entity":"UNRGID",
+    "entity_long":"Office of the United Nations Representative to the Geneva International Discussions"
+  },
+  {
+    "entity":"UNRWA",
+    "entity_long":"United Nations Relief and Works Agency for Palestine Refugees in the Near East"
+  },
+  {
+    "entity":"UNRoD",
+    "entity_long":"United Nations Register of Damage Caused by the Construction of the Wall in the Occupied Palestinian Territory"
+  },
+  {
+    "entity":"UNSCO",
+    "entity_long":"Office of the United Nations Special Coordinator for the Middle East Peace Process"
+  },
+  {
+    "entity":"UNSCOL",
+    "entity_long":"Office of the United Nations Special Coordinator for Lebanon"
+  },
+  {
+    "entity":"UNSMIL",
+    "entity_long":"United Nations Support Mission in Libya"
+  },
+  {
+    "entity":"UNSOM",
+    "entity_long":"United Nations Assistance Mission in Somalia"
+  },
+  {
+    "entity":"UNSOS",
+    "entity_long":"United Nations Support Office in Somalia"
+  },
+  {
+    "entity":"UNSSC",
+    "entity_long":"United Nations System Staff College"
+  },
+  {
+    "entity":"UNTMIS",
+    "entity_long":"United Nations Transitional Assistance Mission in Somalia"
+  },
+  {
+    "entity":"UNTSO",
+    "entity_long":"United Nations Truce Supervision Organization"
+  },
+  {
+    "entity":"UNU",
+    "entity_long":"United Nations University"
+  },
+  {
+    "entity":"UNVMC",
+    "entity_long":"United Nations Verification Mission in Colombia"
+  },
+  {
+    "entity":"UNYO",
+    "entity_long":"United Nations Youth Office"
+  },
+  {
+    "entity":"UPU",
+    "entity_long":"Universal Postal Union"
+  },
+  {
+    "entity":"VRA",
+    "entity_long":"Office of the Victims' Rights Advocate"
+  },
+  {
+    "entity":"WFP",
+    "entity_long":"World Food Programme"
+  },
+  {
+    "entity":"WHO",
+    "entity_long":"World Health Organization"
+  },
+  {
+    "entity":"WIPO",
+    "entity_long":"World Intellectual Property Organization"
+  },
+  {
+    "entity":"WMO",
+    "entity_long":"World Meteorological Organization"
+  },
+  {
+    "entity":"WTO",
+    "entity_long":"World Trade Organization"
+  },
+  {
+    "entity":"World Bank",
+    "entity_long":"World Bank"
+  }
 ]
