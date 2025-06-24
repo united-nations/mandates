@@ -18,6 +18,14 @@ export default {
       },
       colors: {
         'un-blue': '#009edb', // Official UN Blue color
+        // Custom color palette
+        'trout': '#495057',
+        'shuttle-gray': '#596B7D',
+        'camouflage-green': '#7D8471',
+        'pale-oyster': '#9B8B7A',
+        'smoky': '#6C5B7B',
+        'au-chico': '#A0665C',
+        'faded-jade': '#4A7C7E',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         card: {

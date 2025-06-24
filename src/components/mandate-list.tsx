@@ -131,7 +131,10 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
             >
               <div className="flex flex-col gap-3">
                 {/* Details button - positioned absolute, smaller on mobile */}
-                <Button className="absolute top-2 sm:top-3 right-2 sm:right-3 shrink-0 inline-flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 py-1 sm:px-3 sm:py-2 h-auto">
+                <Button 
+                  variant="details"
+                  className="absolute top-2 sm:top-3 right-2 sm:right-3 shrink-0 inline-flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 py-1 sm:px-3 sm:py-2 h-auto"
+                >
                   <Info className="h-3 w-3 sm:h-4 sm:w-4" />
                   <span className="text-xs sm:text-sm">Details</span>
                 </Button>
