@@ -11,7 +11,6 @@ import {
   DialogClose,
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from './ui/button';
 import { FileText, Building, Calendar, Link, Users, FileCheck, Target, Columns, Sparkles, X } from 'lucide-react';
 import { EntityName } from './ui/entity-name';
@@ -34,6 +33,32 @@ const MetadataItem = ({ label, children }: { label: React.ReactNode, children: R
 
 export function MandateDetails({ mandate, open, onOpenChange, allEntities = [] }: MandateDetailsProps) {
   const [isPdfVisible, setIsPdfVisible] = useState(false);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
+  // Minimum distance for swipe
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    
+    // Close dialog on right swipe
+    if (isRightSwipe) {
+      onOpenChange(false);
+    }
+  };
 
   const budgetDocumentDisplayNames: { [key: string]: string } = {
     'ppb2026': 'Proposed Programme Budget for 2026',
@@ -120,36 +145,39 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [] }
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent 
-        className="max-w-5xl w-full light flex flex-col max-h-[85vh] p-6 [&>button]:h-10 [&>button]:w-10 [&>button]:border-2 [&>button]:border-trout [&>button]:hover:border-shuttle-gray [&>button]:text-trout [&>button]:hover:text-shuttle-gray [&>button]:flex [&>button]:items-center [&>button]:justify-center [&>button]:focus:outline-none [&>button]:focus:ring-0"
+        className="w-full md:max-w-5xl light flex flex-col h-screen md:max-h-[85vh] md:h-auto md:p-6 px-3 pt-20 pb-3 md:m-4 m-0 md:rounded-lg rounded-none [&>button]:h-8 [&>button]:w-8 md:[&>button]:h-10 md:[&>button]:w-10 [&>button]:border-2 [&>button]:border-trout [&>button]:hover:border-shuttle-gray [&>button]:text-trout [&>button]:hover:text-shuttle-gray [&>button]:flex [&>button]:items-center [&>button]:justify-center [&>button]:focus:outline-none [&>button]:focus:ring-0 [&>button]:!top-12 md:[&>button]:!top-6"
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
       >
         {/* Header */}
-        <div className="border-b pb-4 pr-12">
-            <p className="text-sm font-medium text-muted-foreground">Mandate Document</p>
-            <DialogTitle className="text-2xl font-bold mt-1">
+        <div className="border-b pr-12 pb-2 md:pb-4">
+            <p className="text-xs md:text-sm font-medium text-muted-foreground">Mandate Document</p>
+            <DialogTitle className="text-lg md:text-2xl font-bold mt-1 leading-tight">
               {mandate.body === "Security Council" && mandate.uniform_title && mandate.uniform_title.length > 0
                 ? mandate.uniform_title[0]
                 : mandate.title || mandate.description}
             </DialogTitle>
-            <DialogDescription className="mt-1">
+            <DialogDescription className="mt-0.5 md:mt-1 text-xs md:text-sm">
                 {displaySymbol}
             </DialogDescription>
             {pdfUrl ? (
-                <Button asChild className="mt-4 bg-un-blue text-white hover:bg-un-blue/90 transition-colors">
-                    <a href={pdfUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2">
-                        <FileText className="h-4 w-4" />
+                <Button asChild className="mt-1.5 md:mt-4 h-7 md:h-10 text-xs md:text-sm bg-un-blue text-white hover:bg-un-blue/90 transition-colors">
+                    <a href={pdfUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 md:gap-2">
+                        <FileText className="h-3 w-3 md:h-4 md:w-4" />
                         View PDF
                     </a>
                 </Button>
             ) : (
-                <Button disabled variant="primary" className="mt-4 inline-flex items-center gap-2">
-                    <FileText className="h-4 w-4" />
+                <Button disabled variant="primary" className="mt-1.5 md:mt-4 h-7 md:h-10 text-xs md:text-sm inline-flex items-center gap-1.5 md:gap-2">
+                    <FileText className="h-3 w-3 md:h-4 md:w-4" />
                     View PDF
                 </Button>
             )}
         </div>
 
         {/* Content */}
-        <ScrollArea className="flex-grow overflow-y-auto">
+        <div className="flex-grow overflow-y-auto overflow-x-hidden">
             <div className="space-y-4 pr-2">
 
               {/* AI Summary */}
@@ -259,7 +287,7 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [] }
                 </div>
               )}
             </div>
-        </ScrollArea>
+        </div>
       </DialogContent>
     </Dialog>
   );
