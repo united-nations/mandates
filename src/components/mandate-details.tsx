@@ -120,7 +120,7 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [] }
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent 
-        className="max-w-5xl w-full light flex flex-col max-h-[85vh] p-6 [&>button]:h-10 [&>button]:w-10 [&>button]:border-2 [&>button]:border-trout [&>button]:hover:border-shuttle-gray [&>button]:text-trout [&>button]:hover:text-shuttle-gray [&>button]:flex [&>button]:items-center [&>button]:justify-center"
+        className="max-w-5xl w-full light flex flex-col max-h-[85vh] p-6 [&>button]:h-10 [&>button]:w-10 [&>button]:border-2 [&>button]:border-trout [&>button]:hover:border-shuttle-gray [&>button]:text-trout [&>button]:hover:text-shuttle-gray [&>button]:flex [&>button]:items-center [&>button]:justify-center [&>button]:focus:outline-none [&>button]:focus:ring-0"
       >
         {/* Header */}
         <div className="border-b pb-4 pr-12">

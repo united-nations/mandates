@@ -106,7 +106,7 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
           return (
             <motion.div
               key={mandate.full_document_symbol || mandate.document_symbol}
-              className={`relative p-3 sm:p-4 rounded-lg bg-[#F6F7F8] hover:bg-un-blue/10 hover:border hover:border-un-blue transition-all cursor-pointer ${
+              className={`relative p-3 sm:p-4 rounded-lg bg-[#F6F7F8] hover:bg-un-blue/10 transition-all cursor-pointer ${
                 hasSearchMatches ? 'ring-2 ring-primary/20 bg-accent/5' : ''
               }`}
               initial={{ opacity: 0, y: 20 }}
