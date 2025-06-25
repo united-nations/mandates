@@ -8,8 +8,15 @@ import Clarity from '@microsoft/clarity'
 import { MandateExplorer } from '@/components/mandate-explorer'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { explainerTexts } from '@/lib/explainer-texts'
-import { Building } from 'lucide-react'
+import { Building, Search } from 'lucide-react'
 import Link from 'next/link'
+import { Input } from '@/components/ui/input'
+import { EntityListSidebar } from '@/components/entity-list-sidebar'
+import { OrganListSidebar } from '@/components/organ-list-sidebar'
+import { Overlay } from '@/components/ui/overlay'
+import { EntityOverlayContent } from '@/components/entity-overlay-content'
+import { OrganOverlayContent } from '@/components/organ-overlay-content'
+import { MandateSearchBox } from '@/components/mandate-search-box'
 
 interface ParentContext {
   scrollY: number
@@ -20,6 +27,8 @@ interface ParentContext {
 function MandateNavigator () {
   const router = useRouter()
   const [parentContext, setParentContext] = useState<ParentContext | null>(null)
+  const [selectedEntity, setSelectedEntity] = useState<string | null>(null)
+  const [selectedOrgan, setSelectedOrgan] = useState<string | null>(null)
 
   // Initialize Microsoft Clarity
   useEffect(() => {
@@ -141,9 +150,9 @@ function MandateNavigator () {
                     <h1 className='text-4xl font-bold tracking-tight text-foreground'>
                       {explainerTexts.mainHeader.title}
                     </h1>
-                    <p className='text-xs sm:text-sm text-muted-foreground mt-1 sm:mt-0'>
+                    <span className='inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-un-blue/10 text-un-blue border border-un-blue/20 mt-1 sm:mt-0'>
                       {explainerTexts.mainHeader.versionTag}
-                    </p>
+                    </span>
                   </div>
                 </div>
                 <div className='text-muted-foreground mt-2 sm:text-justify'>
@@ -166,20 +175,18 @@ function MandateNavigator () {
                 </div>
               </div>
 
-              {/* Navigation */}
-              <div className='flex-shrink-0 ml-6'>
-                <Link href='/entities'>
-                  <Button variant='outline' className='flex items-center gap-2'>
-                    <Building className='h-4 w-4' />
-                    Browse All Entities
-                  </Button>
-                </Link>
+              {/* Search in top right */}
+              <div className='flex-shrink-0 ml-6 w-80'>
+                <MandateSearchBox />
               </div>
             </div>
           </section>
 
           {/* Mandate Explorer */}
-          <MandateExplorer />
+          <MandateExplorer 
+            entityListSidebar={<EntityListSidebar onEntityClick={setSelectedEntity} />}
+            organListSidebar={<OrganListSidebar onOrganClick={setSelectedOrgan} />}
+          />
 
           <section id='about-section' className='mt-16 pt-8'>
             <div className='space-y-6 border-t pt-6'>
@@ -203,6 +210,28 @@ function MandateNavigator () {
             </div>
           </section>
         </main>
+        
+        {/* Overlays */}
+        <Overlay
+          isOpen={!!selectedEntity}
+          onClose={() => setSelectedEntity(null)}
+          title={selectedEntity || ''}
+          wide
+        >
+          {selectedEntity && (
+            <EntityOverlayContent entityName={selectedEntity} />
+          )}
+        </Overlay>
+        
+        <Overlay
+          isOpen={!!selectedOrgan}
+          onClose={() => setSelectedOrgan(null)}
+          title={selectedOrgan || ''}
+        >
+          {selectedOrgan && (
+            <OrganOverlayContent organName={selectedOrgan} />
+          )}
+        </Overlay>
       </div>
     </TooltipProvider>
   )

@@ -3,40 +3,38 @@
 import { Suspense, useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Building } from 'lucide-react';
+import { ArrowLeft, Landmark } from 'lucide-react';
 import Link from 'next/link';
-import { EntityName } from '@/components/ui/entity-name';
 import { MandateExplorer } from '@/components/mandate-explorer';
-import { CrossCitations } from '@/components/cross-citations';
 import { TooltipProvider } from '@/components/ui/tooltip';
 
-interface Entity {
-  entity: string;
-  entity_long: string;
+interface Organ {
+  short: string;
+  long: string;
 }
 
-function EntityViewContent() {
+function OrganViewContent() {
   const params = useParams();
-  const entityName = decodeURIComponent(params.entity as string);
-  const [entityLongName, setEntityLongName] = useState<string>('');
+  const organName = decodeURIComponent(params.organ as string);
+  const [organLongName, setOrganLongName] = useState<string>('');
 
   useEffect(() => {
-    async function fetchEntityDetails() {
+    async function fetchOrganDetails() {
       try {
-        const res = await fetch('/api/entities');
+        const res = await fetch('/api/organs');
         if (res.ok) {
           const data = await res.json();
-          const entity = data.find((e: Entity) => e.entity === entityName);
-          if (entity) {
-            setEntityLongName(entity.entity_long);
+          const organ = data.find((o: Organ) => o.short === organName || o.long === organName);
+          if (organ) {
+            setOrganLongName(organ.long);
           }
         }
       } catch (error) {
-        console.error("Failed to fetch entity details:", error);
+        console.error("Failed to fetch organ details:", error);
       }
     }
-    fetchEntityDetails();
-  }, [entityName]);
+    fetchOrganDetails();
+  }, [organName]);
 
   return (
     <TooltipProvider>
@@ -58,34 +56,34 @@ function EntityViewContent() {
                 
                 <div className="mb-6 mt-2">
                   <div className="flex items-center gap-3 mb-2">
-                    <Building className="h-8 w-8 text-un-blue" />
+                    <Landmark className="h-8 w-8 text-un-blue" />
                     <h1 className="text-4xl font-bold tracking-tight text-foreground">
-                      {entityLongName || entityName}
+                      {organLongName || organName}
                     </h1>
                   </div>
-                  {entityLongName && entityLongName !== entityName && (
+                  {organLongName && organLongName !== organName && (
                     <div className="text-muted-foreground">
-                      <span className="font-mono text-sm bg-muted px-2 py-1 rounded">{entityName}</span>
+                      <span className="font-mono text-sm bg-muted px-2 py-1 rounded">{organName}</span>
                     </div>
                   )}
                 </div>
                 
                 <div className="text-muted-foreground mt-2 sm:text-justify">
                   <p className="leading-tight mb-3">
-                    Exploring mandates and cross-citations for <strong>{entityLongName || entityName}</strong>. This view shows all source documents that this entity cites, 
-                    along with other entities that cite the same mandates.
+                    Exploring mandate documents issued by <strong>{organLongName || organName}</strong>. This view shows all source documents 
+                    issued by this organ/body, which establish mandates for UN entities.
                   </p>
                 </div>
               </div>
             </div>
           </section>
 
-          {/* Mandate Explorer with preset entity filter */}
+          {/* Mandate Explorer with preset organ filter */}
           <section>
             <MandateExplorer 
-              presetEntity={entityName}
+              presetOrgan={organName}
               showEntityCard={false}
-              mandateListTitle={`Documents Cited by ${entityLongName || entityName}`}
+              mandateListTitle={`Documents Issued by ${organLongName || organName}`}
             />
           </section>
         </main>
@@ -94,10 +92,10 @@ function EntityViewContent() {
   );
 }
 
-export default function EntityPage() {
+export default function OrganPage() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <EntityViewContent />
+      <OrganViewContent />
     </Suspense>
   );
 } 

@@ -45,19 +45,27 @@ interface Organ {
 interface MandateExplorerProps {
   // Optional pre-set entity filter
   presetEntity?: string;
+  // Optional pre-set organ filter
+  presetOrgan?: string;
   // Whether to show the entity data card (false for entity-specific views)
   showEntityCard?: boolean;
   // Additional CSS classes
   className?: string;
   // Custom title for the mandate list section
   mandateListTitle?: string;
+  // Optional sidebar components for entities and organs
+  entityListSidebar?: React.ReactNode;
+  organListSidebar?: React.ReactNode;
 }
 
 export function MandateExplorer({ 
   presetEntity, 
+  presetOrgan,
   showEntityCard = true, 
   className = '',
-  mandateListTitle
+  mandateListTitle,
+  entityListSidebar,
+  organListSidebar
 }: MandateExplorerProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -69,7 +77,7 @@ export function MandateExplorer({
   const currentPage = Number(searchParams.get('page') || '1');
   const pageSize = Number(searchParams.get('limit') || '10');
   const selectedEntity = presetEntity || searchParams.get('entity') || '';
-  const selectedOrgan = searchParams.get('organ') || '';
+  const selectedOrgan = presetOrgan || searchParams.get('organ') || '';
   const keywordFromParams = searchParams.get('keyword') || '';
   const programme = searchParams.get('programme') || '';
   const subject = searchParams.get('subject') || '';
@@ -418,33 +426,6 @@ export function MandateExplorer({
     <div className={className}>
       {dataCardsSection}
 
-      <div className="mb-6">
-        <FilterControls
-          keyword={keyword}
-          onKeywordChange={onKeywordChange}
-          onKeywordSearch={onKeywordSearch}
-          entityOptions={entityDropdownOptions}
-          selectedEntity={selectedEntity}
-          onEntityChange={onEntityChange}
-          organOptions={organDropdownOptions}
-          selectedOrgan={selectedOrgan}
-          onOrganChange={onOrganChange}
-          programme={programme}
-          subject={subject}
-          yearRange={yearRange}
-          yearDistribution={yearDistribution}
-          selectedYearRange={selectedYearRange}
-          budgetDocument={budgetDocument}
-          onProgrammeChange={onProgrammeChange}
-          onSubjectChange={onSubjectChange}
-          onYearRangeChange={handleYearRangeChange}
-          onBudgetDocumentChange={onBudgetDocumentChange}
-          programmeOptions={programmeOptions}
-          subjectOptions={subjectOptions}
-          disableEntityFilter={!!presetEntity}
-        />
-      </div>
-
       <div>
         <SearchResultsSummary
           totalResults={totalItems}
@@ -500,60 +481,102 @@ export function MandateExplorer({
       
       <div>
         <div className="mt-6 pt-4">
-          {/* Main content with mandates list and cross-citations */}
-          <div className="flex flex-col lg:flex-row gap-6">
-            {/* Mandates List */}
-            <div className="flex-1">
-              <div className="mb-4">
-                <h2 className="text-xl sm:text-2xl font-bold tracking-tight mb-3">
-                  {crossEntity && presetEntity 
-                    ? `Shared Documents` 
-                    : mandateListTitle || explainerTexts.mandateList.sectionTitle
-                  }
-                </h2>
-                <div className="flex items-center gap-2 w-fit">
-                  <label htmlFor="sort-by" className="text-sm font-medium text-nowrap">Sort by</label>
-                  <Select value={sortBy} onValueChange={handleSortChange}>
-                    <SelectTrigger className="w-[290px]" id="sort-by">
-                      <SelectValue placeholder={explainerTexts.sorting.placeholder} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {keywordFromParams ? <SelectItem value="default">Search Relevance</SelectItem> : null}
-                      <SelectItem value="citing_entities_desc">Number of citing entities (High to Low)</SelectItem>
-                      <SelectItem value="citing_entities_asc">Number of citing entities (Low to High)</SelectItem>
-                      <SelectItem value="citations_desc">Citations (High to Low)</SelectItem>
-                      <SelectItem value="citations_asc">Citations (Low to High)</SelectItem>
-                      <SelectItem value="year_desc">Year (Newest First)</SelectItem>
-                      <SelectItem value="year_asc">Year (Oldest First)</SelectItem>
-                    </SelectContent>
-                  </Select>
+          {/* Main content with mandates list, cross-citations, and sidebars */}
+          <div className="flex flex-col xl:flex-row gap-6">
+            {/* Main mandates content */}
+            <div className="flex-1 min-w-0">
+              <div className="flex flex-col lg:flex-row gap-6">
+                {/* Mandates List */}
+                <div className="flex-1">
+                  <div className="mb-6">
+                    <h2 className="text-xl sm:text-2xl font-bold tracking-tight mb-4">
+                      {crossEntity && presetEntity 
+                        ? `Shared Documents` 
+                        : mandateListTitle || explainerTexts.mandateList.sectionTitle
+                      }
+                    </h2>
+                    
+                    {/* Advanced Filters below heading */}
+                    <div className="mb-4">
+                      <FilterControls
+                        keyword={keyword}
+                        onKeywordChange={onKeywordChange}
+                        onKeywordSearch={onKeywordSearch}
+                        entityOptions={entityDropdownOptions}
+                        selectedEntity={selectedEntity}
+                        onEntityChange={onEntityChange}
+                        organOptions={organDropdownOptions}
+                        selectedOrgan={selectedOrgan}
+                        onOrganChange={onOrganChange}
+                        programme={programme}
+                        subject={subject}
+                        yearRange={yearRange}
+                        yearDistribution={yearDistribution}
+                        selectedYearRange={selectedYearRange}
+                        budgetDocument={budgetDocument}
+                        onProgrammeChange={onProgrammeChange}
+                        onSubjectChange={onSubjectChange}
+                        onYearRangeChange={handleYearRangeChange}
+                        onBudgetDocumentChange={onBudgetDocumentChange}
+                        programmeOptions={programmeOptions}
+                        subjectOptions={subjectOptions}
+                        disableEntityFilter={!!presetEntity}
+                      />
+                    </div>
+                    
+                    <div className="flex items-center gap-2 w-fit">
+                      <label htmlFor="sort-by" className="text-sm font-medium text-nowrap">Sort by</label>
+                      <Select value={sortBy} onValueChange={handleSortChange}>
+                        <SelectTrigger className="w-[290px]" id="sort-by">
+                          <SelectValue placeholder={explainerTexts.sorting.placeholder} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {keywordFromParams ? <SelectItem value="default">Search Relevance</SelectItem> : null}
+                          <SelectItem value="citing_entities_desc">Number of citing entities (High to Low)</SelectItem>
+                          <SelectItem value="citing_entities_asc">Number of citing entities (Low to High)</SelectItem>
+                          <SelectItem value="citations_desc">Citations (High to Low)</SelectItem>
+                          <SelectItem value="citations_asc">Citations (Low to High)</SelectItem>
+                          <SelectItem value="year_desc">Year (Newest First)</SelectItem>
+                          <SelectItem value="year_asc">Year (Oldest First)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  
+                  {isLoading ? (
+                    <LoadingSkeleton />
+                  ) : (
+                    <MandateList
+                      mandates={mandates}
+                      onMandateClick={setSelectedMandate}
+                      organsData={allOrgans}
+                    />
+                  )}
                 </div>
+                
+                {/* Cross-Citations Section - only show when there's a preset entity */}
+                {presetEntity && (
+                  <div className="w-full lg:w-80 flex-shrink-0">
+                    <CrossCitations 
+                      currentEntity={presetEntity}
+                      onEntityFilter={(entity) => {
+                        // Add the selected entity as an additional filter
+                        const params = new URLSearchParams(searchParams.toString());
+                        params.set('page', '1');
+                        params.set('cross_entity', entity);
+                        router.push(`${pathname}?${params.toString()}`, { scroll: false });
+                      }}
+                    />
+                  </div>
+                )}
               </div>
-              
-              {isLoading ? (
-                <LoadingSkeleton />
-              ) : (
-                <MandateList
-                  mandates={mandates}
-                  onMandateClick={setSelectedMandate}
-                  organsData={allOrgans}
-                />
-              )}
             </div>
             
-            {/* Cross-Citations Section - only show when there's a preset entity */}
-            {presetEntity && (
-              <div className="w-full lg:w-80 flex-shrink-0">
-                <CrossCitations 
-                  currentEntity={presetEntity}
-                  onEntityFilter={(entity) => {
-                    // Add the selected entity as an additional filter
-                    const params = new URLSearchParams(searchParams.toString());
-                    params.set('page', '1');
-                    params.set('cross_entity', entity);
-                    router.push(`${pathname}?${params.toString()}`, { scroll: false });
-                  }}
-                />
+            {/* Entity and Organ Lists Sidebar - only show on main page */}
+            {(entityListSidebar || organListSidebar) && !presetEntity && !presetOrgan && (
+              <div className="xl:w-80 flex-shrink-0 space-y-6">
+                {entityListSidebar}
+                {organListSidebar}
               </div>
             )}
           </div>
