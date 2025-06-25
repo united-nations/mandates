@@ -88,6 +88,7 @@ function MandateNavigator() {
   const [uniqueOrgans, setUniqueOrgans] = useState(0);
   const [uniqueEntities, setUniqueEntities] = useState(0);
   const [totalCitations, setTotalCitations] = useState(0);
+  const [filteredOrganBreakdown, setFilteredOrganBreakdown] = useState<BodyWithCount[]>([]);
 
   const [allEntities, setAllEntities] = useState<Entity[]>([]);
   const [allOrgans, setAllOrgans] = useState<Organ[]>([]);
@@ -303,6 +304,7 @@ function MandateNavigator() {
       setUniqueOrgans(data.uniqueBodiesCount || 0);
       setUniqueEntities(data.uniqueEntitiesCount || 0);
       setTotalCitations(data.totalCitations || 0);
+      setFilteredOrganBreakdown(data.organBreakdown || []);
 
       if (data.uniqueProgrammes) {
         setProgrammeOptions(data.uniqueProgrammes);
@@ -428,6 +430,23 @@ function MandateNavigator() {
     );
   };
 
+  // Helper function to check if any filters are active
+  const hasActiveFilters = () => {
+    return !!(selectedEntity || selectedOrgan || keywordFromParams || programme || subject || 
+              startYearFromParams || endYearFromParams || budgetDocument);
+  };
+
+  // Helper function to get organ chart data from API response
+  const getOrganChartData = () => {
+    return filteredOrganBreakdown.map(organ => {
+      const organData = findOrganData(organ.name);
+      return {
+        name: organData?.short || organ.name,
+        count: organ.count
+      };
+    });
+  };
+
   const entityDropdownOptions: SearchableDropdownOption[] = entityOptions.map(entity => {
     const entityDetail = allEntities.find(e => e.entity === entity.name);
     const longName = entityDetail ? entityDetail.entity_long : undefined;
@@ -529,6 +548,8 @@ function MandateNavigator() {
                 isLoading={isLoading}
                 isOpen={unOrgansPopover}
                 onOpenChange={setUnOrgansPopover}
+                chartData={hasActiveFilters() ? getOrganChartData() : undefined}
+                showChart={hasActiveFilters()}
               />
               
               <DataCard
@@ -543,7 +564,8 @@ function MandateNavigator() {
               
               <DataCard
                 title={selectedEntity ? explainerTexts.dataCards.citationsByEntity.title : explainerTexts.dataCards.citations.title}
-                value={totalCitations > 0 ? totalCitations : '0'}
+                value={totalCitations > 0 ? totalCitations : '0'
+                }
                 icon={Quote}
                 description={selectedEntity ? explainerTexts.dataCards.citationsByEntity.description : explainerTexts.dataCards.citations.description}
                 isLoading={isLoading}
