@@ -145,7 +145,7 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [] }
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent 
-        className="w-full md:max-w-5xl light flex flex-col h-screen md:max-h-[85vh] md:h-auto md:p-6 px-3 pt-20 pb-3 md:m-4 m-0 md:rounded-lg rounded-none [&>button]:h-8 [&>button]:w-8 md:[&>button]:h-10 md:[&>button]:w-10 [&>button]:border-2 [&>button]:border-trout [&>button]:hover:border-shuttle-gray [&>button]:text-trout [&>button]:hover:text-shuttle-gray [&>button]:flex [&>button]:items-center [&>button]:justify-center [&>button]:focus:outline-none [&>button]:focus:ring-0 [&>button]:!top-12 md:[&>button]:!top-6"
+        className="w-full md:max-w-5xl light flex flex-col h-screen md:max-h-[85vh] md:h-auto md:p-6 px-3 pt-20 pb-3 md:m-4 m-0 md:rounded-lg rounded-none focus:outline-none focus:ring-0"
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
