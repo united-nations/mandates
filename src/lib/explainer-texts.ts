@@ -63,7 +63,7 @@ export const explainerTexts = {
     },
     unOrgan: {
       label: 'UN Organ & Body',
-      placeholder: 'Filter by UN Organ or Other Body...',
+      placeholder: 'Filter by UN Organ or Body...',
       searchPlaceholder: 'Search organs...',
       emptyPlaceholder: 'No organs found.',
       tooltip:
