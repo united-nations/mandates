@@ -721,6 +721,7 @@ function MandateNavigator() {
             }
           }}
           allEntities={allEntities}
+          onEntityChange={onEntityChange}
         />
       </div>
     </TooltipProvider>

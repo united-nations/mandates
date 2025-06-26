@@ -22,6 +22,7 @@ interface MandateDetailsProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   allEntities?: { entity: string; entity_long: string }[];
+  onEntityChange?: (entityName: string) => void;
 }
 
 const MetadataItem = ({ label, children }: { label: React.ReactNode, children: React.ReactNode }) => (
@@ -31,7 +32,7 @@ const MetadataItem = ({ label, children }: { label: React.ReactNode, children: R
     </div>
 );
 
-export function MandateDetails({ mandate, open, onOpenChange, allEntities = [] }: MandateDetailsProps) {
+export function MandateDetails({ mandate, open, onOpenChange, allEntities = [], onEntityChange }: MandateDetailsProps) {
   const [isPdfVisible, setIsPdfVisible] = useState(false);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
@@ -253,7 +254,18 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [] }
                       <div key={shortName} className="flex gap-2">
                         <span className="text-muted-foreground font-mono flex-shrink-0 leading-[1.5] py-1">{data.count}x</span>
                         <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 min-w-0 flex-1">
-                          <Badge variant="secondary" className="text-xs w-fit px-2 py-1 !bg-un-blue !text-white hover:!bg-un-blue/90">{shortName}</Badge>
+                          <Badge 
+                            variant="secondary" 
+                            className="text-xs w-fit px-2 py-1 !bg-un-blue !text-white hover:!bg-un-blue/90 cursor-pointer transition-colors"
+                            onClick={() => {
+                              // Open filtered results in a new window
+                              const url = new URL(window.location.href);
+                              url.searchParams.set('entity', shortName);
+                              window.open(url.toString(), '_blank');
+                            }}
+                          >
+                            {shortName}
+                          </Badge>
                           <span className="text-muted-foreground break-words">{data.longName}</span>
                         </div>
                       </div>
