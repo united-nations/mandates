@@ -94,7 +94,7 @@ export function EntityListSidebar({ onEntityClick }: EntityListSidebarProps) {
             <LoadingSkeleton />
           ) : (
             <div className="space-y-1">
-              {filteredEntities.slice(0, 50).map((entity) => (
+              {filteredEntities.map((entity) => (
                 <div
                   key={entity.name}
                   className="flex items-center justify-between p-2 rounded-sm hover:bg-muted/30 cursor-pointer group border-b border-muted/30 last:border-b-0"
@@ -109,9 +109,9 @@ export function EntityListSidebar({ onEntityClick }: EntityListSidebarProps) {
                     </div>
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0">
-                    <span className="relative flex items-center min-w-[60px]">
-                      <span className="text-xs font-mono text-un-blue z-10 pr-2">{entity.count}</span>
-                      <span className="absolute left-0 top-1/2 -translate-y-1/2 h-2 rounded bg-un-blue/20" style={{ width: `${Math.max(10, (entity.count / maxCount) * 50)}%`, minWidth: 10 }} />
+                    <span className="flex items-center min-w-[70px]">
+                      <span className="block h-1 rounded bg-un-blue/20" style={{ width: `${Math.max(10, (entity.count / maxCount) * 40)}px`, minWidth: 10, marginRight: 8 }} />
+                      <span className="text-xs font-mono text-un-blue" style={{ minWidth: 18, textAlign: 'right' }}>{entity.count}</span>
                     </span>
                     <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity text-un-blue" />
                   </div>
@@ -125,12 +125,6 @@ export function EntityListSidebar({ onEntityClick }: EntityListSidebarProps) {
             </div>
           )}
         </div>
-        
-        {filteredEntities.length > 50 && (
-          <div className="text-xs text-muted-foreground text-center pt-2 border-t border-muted/30">
-            Showing top 50 of {filteredEntities.length} entities
-          </div>
-        )}
       </div>
     </div>
   )

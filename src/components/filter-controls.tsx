@@ -272,7 +272,7 @@ export function FilterControls({
                   </Badge>
                 )}
 
-                {appliedFilters.entity && appliedFilters.entity !== 'all' && (
+                {appliedFilters.entity && appliedFilters.entity !== 'all' && !disableEntityFilter && (
                   <Badge variant="secondary" className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 text-slate-800 border border-slate-200 hover:bg-slate-200">
                     <Building className="h-3 w-3" />
                     <span className="text-sm font-medium">

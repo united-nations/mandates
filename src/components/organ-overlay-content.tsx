@@ -70,21 +70,18 @@ export function OrganOverlayContent({ organName }: OrganOverlayContentProps) {
                 </p>
               </div>
             </div>
-            {/* Mandate Explorer with preset organ/entity filter */}
+            {/* Data cards could go here if needed */}
+            {/* MandateExplorer with integrated cross-citations sidebar */}
             <MandateExplorer 
               presetEntity={effectiveEntity}
               presetOrgan={effectiveOrgan}
               showEntityCard={false}
               mandateListTitle={`Documents Issued by ${organLongName || organName}`}
+              crossCitationsSidebar={
+                <div className="w-full lg:w-80 flex-shrink-0 border-l-2 border-un-blue/20 pl-4" />
+              }
             />
           </div>
-          {/* Consolidated Filter Sidebar */}
-          <ConsolidatedFilterSidebar 
-            onEntityClick={setSelectedEntity} 
-            onOrganClick={setSelectedOrgan} 
-            selectedEntity={effectiveEntity} 
-            selectedOrgan={effectiveOrgan} 
-          />
         </div>
       </div>
     </TooltipProvider>

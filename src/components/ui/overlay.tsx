@@ -34,37 +34,29 @@ export function Overlay({ isOpen, onClose, children, title, wide = false }: Over
 
   return (
     <div className="fixed inset-0 z-50">
-      {/* Backdrop */}
-      <div 
-        className={`absolute inset-0 bg-black/50 transition-opacity duration-300 ${
-          isOpen ? 'opacity-100' : 'opacity-0'
-        }`}
-        onClick={onClose}
-      />
-      
       {/* Overlay Panel */}
       <div 
-        className={`absolute bottom-0 left-0 right-0 w-full h-[90vh] bg-background shadow-xl transform transition-transform duration-300 ease-in-out ${
+        className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-4xl lg:max-w-6xl xl:max-w-7xl h-full bg-background shadow-xl transition-transform duration-300 ease-in-out ${
           isOpen ? 'translate-y-0' : 'translate-y-full'
-        }`}
+        } mx-auto`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b">
+        <div className="flex items-center relative border-b px-8 sm:px-12 lg:px-16 py-6">
           {title && (
-            <h2 className="text-xl font-semibold">{title}</h2>
+            <h2 className="text-xl font-semibold truncate pr-8">{title}</h2>
           )}
           <Button
             variant="ghost"
             size="sm"
             onClick={onClose}
-            className="ml-auto"
+            className="absolute right-8 sm:right-12 lg:right-16 top-1/2 -translate-y-1/2"
           >
             <X className="h-4 w-4" />
           </Button>
         </div>
         
         {/* Content */}
-        <div className="h-[calc(100vh-80px)] overflow-y-auto">
+        <div className="h-[calc(100vh-80px)] overflow-y-auto px-8 sm:px-12 lg:px-16">
           {children}
         </div>
       </div>

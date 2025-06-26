@@ -79,14 +79,6 @@ export function OrganListSidebar({ onOrganClick }: OrganListSidebarProps) {
     )
   }
 
-  const getOrganDisplayName = (organName: string): string => {
-    const organData = findOrganData(organName)
-    if (organName === "General Assembly" || organName === "Security Council") {
-      return organName
-    }
-    return organData ? `${organData.short} – ${organData.long}` : organName
-  }
-
   const LoadingSkeleton = () => (
     <div className="space-y-2">
       {[...Array(8)].map((_, i) => (
@@ -134,13 +126,13 @@ export function OrganListSidebar({ onOrganClick }: OrganListSidebarProps) {
                 >
                   <div className="min-w-0 flex-1">
                     <div className="text-sm font-medium truncate">
-                      {getOrganDisplayName(organ.name)}
+                      {findOrganData(organ.name)?.short || organ.name}
                     </div>
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0">
-                    <span className="relative flex items-center min-w-[60px]">
-                      <span className="text-xs font-mono text-un-blue z-10 pr-2">{organ.count}</span>
-                      <span className="absolute left-0 top-1/2 -translate-y-1/2 h-2 rounded bg-un-blue/20" style={{ width: `${Math.max(10, (organ.count / maxCount) * 50)}%`, minWidth: 10 }} />
+                    <span className="flex items-center min-w-[70px]">
+                      <span className="block h-1 rounded bg-un-blue/20" style={{ width: `${Math.max(10, (organ.count / maxCount) * 40)}px`, minWidth: 10, marginRight: 8 }} />
+                      <span className="text-xs font-mono text-un-blue" style={{ minWidth: 18, textAlign: 'right' }}>{organ.count}</span>
                     </span>
                     <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity text-un-blue" />
                   </div>

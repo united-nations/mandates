@@ -1,10 +1,11 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Building } from 'lucide-react'
+import { Building, Users } from 'lucide-react'
 import { MandateExplorer } from '@/components/mandate-explorer'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { ConsolidatedFilterSidebar } from './consolidated-filter-sidebar'
+import { CrossCitations } from './cross-citations'
 
 interface Entity {
   entity: string
@@ -70,22 +71,25 @@ export function EntityOverlayContent({ entityName }: EntityOverlayContentProps) 
                 </p>
               </div>
             </div>
-            {/* Mandate Explorer with preset entity/organ filter */}
+            {/* Data cards could go here if needed */}
+            {/* MandateExplorer with integrated cross-citations sidebar */}
             <MandateExplorer 
               presetEntity={effectiveEntity}
               presetOrgan={effectiveOrgan}
               showEntityCard={false}
               showCrossCitations={false}
               mandateListTitle={`Documents Cited by ${entityLongName || entityName}`}
+              crossCitationsSidebar={
+                <ConsolidatedFilterSidebar 
+                  onEntityClick={setSelectedEntity} 
+                  onOrganClick={setSelectedOrgan} 
+                  selectedEntity={effectiveEntity} 
+                  selectedOrgan={effectiveOrgan} 
+                  currentEntity={effectiveEntity}
+                />
+              }
             />
           </div>
-          {/* Consolidated Filter Sidebar */}
-          <ConsolidatedFilterSidebar 
-            onEntityClick={setSelectedEntity} 
-            onOrganClick={setSelectedOrgan} 
-            selectedEntity={effectiveEntity} 
-            selectedOrgan={effectiveOrgan} 
-          />
         </div>
       </div>
     </TooltipProvider>
