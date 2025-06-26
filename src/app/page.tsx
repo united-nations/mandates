@@ -296,6 +296,7 @@ function MandateNavigator() {
     try {
       const response = await fetch(`/api/mandates?${params.toString()}`);
       const data = await response.json();
+      
       setMandates(data.items || []);
       setTotalItems(data.totalItems || 0);
       setTotalPages(data.totalPages || 0);
@@ -314,6 +315,10 @@ function MandateNavigator() {
       setMandates([]);
       setTotalItems(0);
       setTotalPages(0);
+      setUniqueOrgans(0);
+      setUniqueEntities(0);
+      setTotalCitations(0);
+      setFilteredOrganBreakdown([]);
     } finally {
       setIsLoading(false);
     }
