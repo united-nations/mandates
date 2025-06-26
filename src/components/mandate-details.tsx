@@ -288,7 +288,13 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [], 
                         <div className="min-w-0 flex-1">
                           <Badge 
                             variant="secondary" 
-                            className="text-xs px-2 py-1 whitespace-normal leading-relaxed inline-block max-w-full"
+                            className="text-xs px-2 py-1 whitespace-normal leading-relaxed inline-block max-w-full cursor-pointer hover:bg-secondary/80 transition-colors"
+                            onClick={() => {
+                              // Open filtered results in a new window
+                              const url = new URL(window.location.href);
+                              url.searchParams.set('programme', programmeTitle);
+                              window.open(url.toString(), '_blank');
+                            }}
                           >
                             {toTitleCase(programmeTitle)}
                           </Badge>
