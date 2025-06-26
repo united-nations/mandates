@@ -226,7 +226,17 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [], 
                   >
                     <div className="flex flex-wrap gap-1 pt-2">
                       {mandate.subject_headings.map((heading, index) => (
-                        <Badge key={index} variant="outline" className="text-xs font-normal !border-un-blue">
+                        <Badge 
+                          key={index} 
+                          variant="outline" 
+                          className="text-xs font-normal !border-un-blue cursor-pointer hover:bg-un-blue/10 transition-colors"
+                          onClick={() => {
+                            // Open filtered results in a new window with only the subject filter
+                            const url = new URL(window.location.origin + window.location.pathname);
+                            url.searchParams.set('subject', heading);
+                            window.open(url.toString(), '_blank');
+                          }}
+                        >
                           {toTitleCase(heading)}
                         </Badge>
                       ))}
@@ -258,8 +268,8 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [], 
                             variant="secondary" 
                             className="text-xs w-fit px-2 py-1 !bg-un-blue !text-white hover:!bg-un-blue/90 cursor-pointer transition-colors"
                             onClick={() => {
-                              // Open filtered results in a new window
-                              const url = new URL(window.location.href);
+                              // Open filtered results in a new window with only the entity filter
+                              const url = new URL(window.location.origin + window.location.pathname);
                               url.searchParams.set('entity', shortName);
                               window.open(url.toString(), '_blank');
                             }}
@@ -290,8 +300,8 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [], 
                             variant="secondary" 
                             className="text-xs px-2 py-1 whitespace-normal leading-relaxed inline-block max-w-full cursor-pointer hover:bg-secondary/80 transition-colors"
                             onClick={() => {
-                              // Open filtered results in a new window
-                              const url = new URL(window.location.href);
+                              // Open filtered results in a new window with only the programme filter
+                              const url = new URL(window.location.origin + window.location.pathname);
                               url.searchParams.set('programme', programmeTitle);
                               window.open(url.toString(), '_blank');
                             }}
