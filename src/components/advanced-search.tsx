@@ -92,14 +92,14 @@ export function AdvancedSearch({
   );
 
   return (
-    <div className="border-t pt-6 mt-6 space-y-4">
+    <div className="space-y-6">
         {/* Row 1: UN Subjects, Programme, Budget Document */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="space-y-2">
+          <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Label className="text-base font-medium">{explainerTexts.advancedFilters.subjects.label}</Label>
-                <BookOpen className="h-4 w-4 text-muted-foreground" />
+                <Label className="text-sm font-semibold text-slate-700">{explainerTexts.advancedFilters.subjects.label}</Label>
+                <BookOpen className="h-4 w-4 text-slate-500" />
               </div>
               <TooltipButton 
                 tooltipId="subjects"
@@ -114,14 +114,14 @@ export function AdvancedSearch({
               placeholder={explainerTexts.advancedFilters.subjects.placeholder}
               searchPlaceholder={explainerTexts.advancedFilters.subjects.searchPlaceholder}
               emptyPlaceholder={explainerTexts.advancedFilters.subjects.emptyPlaceholder}
-              className="text-sm h-11"
+              className="text-sm h-11 border-slate-300 focus:border-blue-500 focus:ring-blue-500 bg-white shadow-sm"
             />
           </div>
-          <div className="space-y-2">
+          <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Label className="text-base font-medium">{explainerTexts.advancedFilters.programme.label}</Label>
-                <Target className="h-4 w-4 text-muted-foreground" />
+                <Label className="text-sm font-semibold text-slate-700">{explainerTexts.advancedFilters.programme.label}</Label>
+                <Target className="h-4 w-4 text-slate-500" />
               </div>
               <TooltipButton 
                 tooltipId="programme"
@@ -136,14 +136,14 @@ export function AdvancedSearch({
               placeholder={explainerTexts.advancedFilters.programme.placeholder}
               searchPlaceholder={explainerTexts.advancedFilters.programme.searchPlaceholder}
               emptyPlaceholder={explainerTexts.advancedFilters.programme.emptyPlaceholder}
-              className="text-sm h-11"
+              className="text-sm h-11 border-slate-300 focus:border-blue-500 focus:ring-blue-500 bg-white shadow-sm"
             />
           </div>
-          <div className="space-y-2">
+          <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Label htmlFor="budget-document" className="text-base font-medium">{explainerTexts.advancedFilters.budgetDocument.label}</Label>
-                <Receipt className="h-4 w-4 text-muted-foreground" />
+                <Label htmlFor="budget-document" className="text-sm font-semibold text-slate-700">{explainerTexts.advancedFilters.budgetDocument.label}</Label>
+                <Receipt className="h-4 w-4 text-slate-500" />
               </div>
               <TooltipButton 
                 tooltipId="budgetDocument"
@@ -155,7 +155,7 @@ export function AdvancedSearch({
               value={budgetDocument} 
               onValueChange={onBudgetDocumentChange}
             >
-              <SelectTrigger id="budget-document" className="text-sm h-11">
+              <SelectTrigger id="budget-document" className="text-sm h-11 border-slate-300 focus:border-blue-500 focus:ring-blue-500 bg-white shadow-sm">
                 <SelectValue placeholder={explainerTexts.advancedFilters.budgetDocument.placeholder} />
               </SelectTrigger>
               <SelectContent>
@@ -170,11 +170,11 @@ export function AdvancedSearch({
         </div>
         {/* Row 2: Year Range */}
         {yearRange && selectedYearRange && (
-          <div className="space-y-2">
+          <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Label className="text-base font-medium">{explainerTexts.advancedFilters.yearRange.label}</Label>
-                <Calendar className="h-4 w-4 text-muted-foreground" />
+                <Label className="text-sm font-semibold text-slate-700">{explainerTexts.advancedFilters.yearRange.label}</Label>
+                <Calendar className="h-4 w-4 text-slate-500" />
               </div>
               <TooltipButton 
                 tooltipId="yearRange"
@@ -182,12 +182,14 @@ export function AdvancedSearch({
                 tooltipText={explainerTexts.advancedFilters.yearRange.tooltip}
               />
             </div>
-            <YearSlider
-              yearDistribution={yearDistribution}
-              yearRange={yearRange}
-              value={selectedYearRange}
-              onChange={onYearRangeChange}
-            />
+            <div className="bg-white border border-slate-300 rounded-lg p-4 shadow-sm">
+              <YearSlider
+                yearDistribution={yearDistribution}
+                yearRange={yearRange}
+                value={selectedYearRange}
+                onChange={onYearRangeChange}
+              />
+            </div>
           </div>
         )}
     </div>
