@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Building, Users } from 'lucide-react'
+import { Building, Users, Link as LinkIcon, Landmark } from 'lucide-react'
 import { MandateExplorer } from '@/components/mandate-explorer'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { ConsolidatedFilterSidebar } from './consolidated-filter-sidebar'
@@ -10,6 +10,8 @@ import { CrossCitations } from './cross-citations'
 interface Entity {
   entity: string
   entity_long: string
+  url?: string
+  principal_organ?: string
 }
 
 interface EntityOverlayContentProps {
@@ -18,6 +20,8 @@ interface EntityOverlayContentProps {
 
 export function EntityOverlayContent({ entityName }: EntityOverlayContentProps) {
   const [entityLongName, setEntityLongName] = useState<string>('')
+  const [entityUrl, setEntityUrl] = useState<string | null>(null)
+  const [principalOrgan, setPrincipalOrgan] = useState<string | null>(null)
   const [selectedEntity, setSelectedEntity] = useState<string | null>(null)
   const [selectedOrgan, setSelectedOrgan] = useState<string | null>(null)
 
@@ -30,6 +34,8 @@ export function EntityOverlayContent({ entityName }: EntityOverlayContentProps) 
           const entity = data.find((e: Entity) => e.entity === entityName)
           if (entity) {
             setEntityLongName(entity.entity_long)
+            setEntityUrl(entity.url || null)
+            setPrincipalOrgan(entity.principal_organ || null)
           }
         }
       } catch (error) {
@@ -58,16 +64,29 @@ export function EntityOverlayContent({ entityName }: EntityOverlayContentProps) 
                     {entityLongName || entityName}
                   </h1>
                 </div>
-                {entityLongName && entityLongName !== entityName && (
-                  <div className="text-muted-foreground">
-                    <span className="font-mono text-sm bg-muted px-2 py-1 rounded">{entityName}</span>
+                {/* Show URL and Principal Organ if available */}
+                {(entityUrl || principalOrgan) && (
+                  <div className="mt-2 space-y-2 bg-muted/40 rounded px-3 py-2">
+                    {entityUrl && (
+                      <div className="flex items-center gap-2 text-sm">
+                        <LinkIcon className="h-4 w-4 text-un-blue" />
+                        <span className="font-semibold">Website:</span>
+                        <a href={entityUrl} target="_blank" rel="noopener noreferrer" className="text-un-blue underline break-all hover:text-un-blue/80 transition-colors">{entityUrl.replace(/^https?:\/\//, '')}</a>
+                      </div>
+                    )}
+                    {principalOrgan && (
+                      <div className="flex items-center gap-2 text-sm">
+                        <Landmark className="h-4 w-4 text-un-blue" />
+                        <span className="font-semibold">Principal Organ:</span>
+                        <span>{principalOrgan} <span className="text-xs text-muted-foreground"></span></span>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
               <div className="text-muted-foreground mt-2 sm:text-justify">
                 <p className="leading-tight mb-3">
-                  Exploring mandates and cross-citations for <strong>{entityLongName || entityName}</strong>. 
-                  This view shows all source documents that this entity cites, along with other entities that cite the same mandates.
+                  Mandates and cross-citations for <strong>{entityLongName || entityName}</strong>.
                 </p>
               </div>
             </div>

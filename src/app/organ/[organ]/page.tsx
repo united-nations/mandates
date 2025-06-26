@@ -84,6 +84,7 @@ function OrganViewContent() {
               presetOrgan={organName}
               showEntityCard={false}
               mandateListTitle={`Documents Issued by ${organLongName || organName}`}
+              hideImplicitFilterChip={true}
             />
           </section>
         </main>

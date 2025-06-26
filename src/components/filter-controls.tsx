@@ -49,6 +49,8 @@ interface FilterControlsProps {
   };
   onClearFilter: (filterKey: string) => void;
   onClearSearch: () => void;
+  // New prop to hide implicit entity/organ filter chip
+  hideImplicitFilterChip?: boolean;
 }
 
 export function FilterControls({
@@ -77,6 +79,7 @@ export function FilterControls({
   appliedFilters,
   onClearFilter,
   onClearSearch,
+  hideImplicitFilterChip = false,
 }: FilterControlsProps) {
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
   const [openTooltip, setOpenTooltip] = useState<string | null>(null);
@@ -122,7 +125,17 @@ export function FilterControls({
     </div>
   );
 
-  const hasFilters = Object.values(appliedFilters).some(value => value && value !== 'all');
+  // Compute which filters to show as chips
+  const filteredAppliedFilters = { ...appliedFilters };
+  if (hideImplicitFilterChip) {
+    if (filteredAppliedFilters.entity && disableEntityFilter) {
+      delete filteredAppliedFilters.entity;
+    }
+    if (filteredAppliedFilters.organ && disableEntityFilter) {
+      delete filteredAppliedFilters.organ;
+    }
+  }
+  const hasFilters = Object.values(filteredAppliedFilters).some(value => value && value !== 'all');
   const hasSearch = keyword && keyword.trim().length > 0;
 
   return (
@@ -236,7 +249,7 @@ export function FilterControls({
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-semibold text-slate-700">Active Filters</span>
                   <span className="text-xs text-slate-500 bg-slate-100 px-2 py-1 rounded-full">
-                    {(hasSearch ? 1 : 0) + Object.values(appliedFilters).filter(v => v && v !== 'all').length}
+                    {(hasSearch ? 1 : 0) + Object.values(filteredAppliedFilters).filter(v => v && v !== 'all').length}
                   </span>
                 </div>
                 <Button
@@ -244,8 +257,8 @@ export function FilterControls({
                   className="shrink-0 inline-flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-100"
                   onClick={() => {
                     if (hasSearch) onClearSearch();
-                    Object.keys(appliedFilters).forEach(key => {
-                      if (appliedFilters[key as keyof typeof appliedFilters]) {
+                    Object.keys(filteredAppliedFilters).forEach(key => {
+                      if (filteredAppliedFilters[key as keyof typeof filteredAppliedFilters]) {
                         onClearFilter(key);
                       }
                     });
@@ -272,12 +285,13 @@ export function FilterControls({
                   </Badge>
                 )}
 
-                {appliedFilters.entity && appliedFilters.entity !== 'all' && !disableEntityFilter && (
+                {/* Only show entity chip if not hidden */}
+                {filteredAppliedFilters.entity && filteredAppliedFilters.entity !== 'all' && !disableEntityFilter && (
                   <Badge variant="secondary" className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 text-slate-800 border border-slate-200 hover:bg-slate-200">
                     <Building className="h-3 w-3" />
                     <span className="text-sm font-medium">
                       Entity:&nbsp;
-                      <EntityName entityName={appliedFilters.entity} />
+                      <EntityName entityName={filteredAppliedFilters.entity} />
                     </span>
                     <Button
                       variant="ghost"
@@ -290,10 +304,11 @@ export function FilterControls({
                   </Badge>
                 )}
 
-                {appliedFilters.organ && appliedFilters.organ !== 'all' && (
+                {/* Only show organ chip if not hidden */}
+                {filteredAppliedFilters.organ && filteredAppliedFilters.organ !== 'all' && (
                   <Badge variant="secondary" className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 text-slate-800 border border-slate-200 hover:bg-slate-200">
                     <Landmark className="h-3 w-3" />
-                    <span className="text-sm font-medium">Organ: {appliedFilters.organ}</span>
+                    <span className="text-sm font-medium">Organ: {filteredAppliedFilters.organ}</span>
                     <Button
                       variant="ghost"
                       size="sm"
@@ -305,10 +320,10 @@ export function FilterControls({
                   </Badge>
                 )}
 
-                {appliedFilters.programme && (
+                {filteredAppliedFilters.programme && (
                   <Badge variant="secondary" className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 text-slate-800 border border-slate-200 hover:bg-slate-200">
                     <Target className="h-3 w-3" />
-                    <span className="text-sm font-medium">Programme: {appliedFilters.programme}</span>
+                    <span className="text-sm font-medium">Programme: {filteredAppliedFilters.programme}</span>
                     <Button
                       variant="ghost"
                       size="sm"
@@ -320,10 +335,10 @@ export function FilterControls({
                   </Badge>
                 )}
 
-                {appliedFilters.subject && (
+                {filteredAppliedFilters.subject && (
                   <Badge variant="secondary" className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 text-slate-800 border border-slate-200 hover:bg-slate-200">
                     <BookOpen className="h-3 w-3" />
-                    <span className="text-sm font-medium">Subject: {toTitleCase(appliedFilters.subject)}</span>
+                    <span className="text-sm font-medium">Subject: {toTitleCase(filteredAppliedFilters.subject)}</span>
                     <Button
                       variant="ghost"
                       size="sm"
@@ -335,10 +350,10 @@ export function FilterControls({
                   </Badge>
                 )}
 
-                {appliedFilters.year && (
+                {filteredAppliedFilters.year && (
                   <Badge variant="secondary" className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 text-slate-800 border border-slate-200 hover:bg-slate-200">
                     <Calendar className="h-3 w-3" />
-                    <span className="text-sm font-medium">Year: {appliedFilters.year}</span>
+                    <span className="text-sm font-medium">Year: {filteredAppliedFilters.year}</span>
                     <Button
                       variant="ghost"
                       size="sm"
@@ -350,10 +365,10 @@ export function FilterControls({
                   </Badge>
                 )}
 
-                {appliedFilters.budget_document && appliedFilters.budget_document !== 'all' && (
+                {filteredAppliedFilters.budget_document && filteredAppliedFilters.budget_document !== 'all' && (
                   <Badge variant="secondary" className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 text-slate-800 border border-slate-200 hover:bg-slate-200">
                     <Receipt className="h-3 w-3" />
-                    <span className="text-sm font-medium">Budget: {appliedFilters.budget_document}</span>
+                    <span className="text-sm font-medium">Budget: {filteredAppliedFilters.budget_document}</span>
                     <Button
                       variant="ghost"
                       size="sm"
@@ -365,12 +380,12 @@ export function FilterControls({
                   </Badge>
                 )}
 
-                {appliedFilters.cross_entity && (
+                {filteredAppliedFilters.cross_entity && (
                   <Badge variant="secondary" className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 text-slate-800 border border-slate-200 hover:bg-slate-200">
                     <Building className="h-3 w-3" />
                     <span className="text-sm font-medium">
                       Shared with:&nbsp;
-                      <EntityName entityName={appliedFilters.cross_entity} />
+                      <EntityName entityName={filteredAppliedFilters.cross_entity} />
                     </span>
                     <Button
                       variant="ghost"

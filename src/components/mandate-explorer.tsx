@@ -60,6 +60,8 @@ interface MandateExplorerProps {
   showCrossCitations?: boolean
   // Custom cross-citations sidebar for overlays
   crossCitationsSidebar?: React.ReactNode
+  // New prop to hide implicit filter chip
+  hideImplicitFilterChip?: boolean
 }
 
 export function MandateExplorer ({
@@ -71,7 +73,8 @@ export function MandateExplorer ({
   entityListSidebar,
   organListSidebar,
   showCrossCitations = true,
-  crossCitationsSidebar
+  crossCitationsSidebar,
+  hideImplicitFilterChip = false
 }: MandateExplorerProps) {
   const router = useRouter()
   const pathname = usePathname()
@@ -614,6 +617,7 @@ export function MandateExplorer ({
                           onKeywordChange('')
                           onKeywordSearch('')
                         }}
+                        hideImplicitFilterChip={hideImplicitFilterChip}
                       />
                     </div>
 
