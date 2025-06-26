@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Filter, ArrowRight, Building, Landmark, Users } from 'lucide-react'
+import { Link as LinkIcon, ArrowRight, Building, Landmark, Users } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
 import { EntityName } from '@/components/ui/entity-name'
@@ -84,11 +84,11 @@ export function ConsolidatedFilterSidebar({
   return (
     <div className="w-full lg:w-80 flex-shrink-0 border-l-2 border-un-blue/20 pl-4">
       <div className="mb-6">
-        <div className="flex items-center gap-2 mb-3 text-un-blue font-semibold text-base">
-          <Filter className="h-4 w-4" />
-          Cross-citations
+        <div className="flex items-center gap-2 mb-2">
+          <LinkIcon className="h-5 w-5 text-un-blue" />
+          <h3 className="text-lg font-semibold">Cross-citations</h3>
         </div>
-        <p className="text-xs text-muted-foreground mb-4">
+        <p className="text-sm text-muted-foreground mb-4">
           Entities/organs that share mandates with this selection
         </p>
         <div className="max-h-96 overflow-y-auto">

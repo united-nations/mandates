@@ -19,9 +19,12 @@ interface Organ {
 
 interface OrganListSidebarProps {
   onOrganClick: (organName: string) => void
+  currentEntity?: string
+  currentOrgan?: string
+  organCrossCitations?: { organ: string; sharedMandatesCount: number }[]
 }
 
-export function OrganListSidebar({ onOrganClick }: OrganListSidebarProps) {
+export function OrganListSidebar({ onOrganClick, currentEntity, currentOrgan, organCrossCitations }: OrganListSidebarProps) {
   const [organs, setOrgans] = useState<BodyWithCount[]>([])
   const [allOrgans, setAllOrgans] = useState<Organ[]>([])
   const [filteredOrgans, setFilteredOrgans] = useState<BodyWithCount[]>([])
@@ -31,26 +34,40 @@ export function OrganListSidebar({ onOrganClick }: OrganListSidebarProps) {
 
   useEffect(() => {
     async function fetchData() {
+      setIsLoading(true)
       try {
-        const [metaResponse, organsResponse] = await Promise.all([
-          fetch('/api/mandates/meta'),
-          fetch('/api/organs')
-        ])
-        
-        if (metaResponse.ok) {
-          const metaData = await metaResponse.json()
-          const organsData = (metaData.uniqueBodiesWithCount || []).sort((a: BodyWithCount, b: BodyWithCount) => 
-            b.count - a.count
-          )
-          setOrgans(organsData)
-          setFilteredOrgans(organsData)
-          setMaxCount(Math.max(...organsData.map((o: BodyWithCount) => o.count), 1))
+        let organsData: BodyWithCount[] = []
+        if (organCrossCitations && organCrossCitations.length > 0) {
+          organsData = organCrossCitations.map(item => ({ name: item.organ, count: item.sharedMandatesCount }))
+        } else if (currentEntity) {
+          // Fetch cross-citations for the current entity and extract organ counts
+          const res = await fetch(`/api/entities/${encodeURIComponent(currentEntity)}/cross-citations`)
+          if (res.ok) {
+            const crossCitations = await res.json()
+            organsData = crossCitations
+              .filter((item: any) => item.organ)
+              .map((item: any) => ({ name: item.organ, count: item.sharedMandatesCount }))
+              .sort((a: BodyWithCount, b: BodyWithCount) => b.count - a.count)
+          }
         }
-        
-        if (organsResponse.ok) {
-          const organsData = await organsResponse.json()
-          setAllOrgans(organsData)
+        if ((!organCrossCitations || organsData.length === 0) && (!currentEntity || organsData.length === 0)) {
+          // Fallback to all organs
+          const [metaResponse, organsResponse] = await Promise.all([
+            fetch('/api/mandates/meta'),
+            fetch('/api/organs')
+          ])
+          if (metaResponse.ok) {
+            const metaData = await metaResponse.json()
+            organsData = (metaData.uniqueBodiesWithCount || []).sort((a: BodyWithCount, b: BodyWithCount) => b.count - a.count)
+          }
+          if (organsResponse.ok) {
+            const organsList = await organsResponse.json()
+            setAllOrgans(organsList)
+          }
         }
+        setOrgans(organsData)
+        setFilteredOrgans(organsData)
+        setMaxCount(Math.max(...organsData.map((o: BodyWithCount) => o.count), 1))
       } catch (error) {
         console.error('Failed to fetch organs:', error)
       } finally {
@@ -58,7 +75,7 @@ export function OrganListSidebar({ onOrganClick }: OrganListSidebarProps) {
       }
     }
     fetchData()
-  }, [])
+  }, [currentEntity, organCrossCitations])
 
   useEffect(() => {
     if (!searchTerm.trim()) {

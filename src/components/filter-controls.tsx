@@ -241,33 +241,36 @@ export function FilterControls({
       )}
 
       {/* Filter Chips - Enhanced styling */}
-      {(hasSearch || hasFilters) && (
+      {(hasSearch || hasFilters) && (!hideImplicitFilterChip || Object.values(filteredAppliedFilters).length > 0) && (
         <div className="border-t border-slate-200 bg-white/50">
           <div className="p-6 pt-4">
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-semibold text-slate-700">Active Filters</span>
-                  <span className="text-xs text-slate-500 bg-slate-100 px-2 py-1 rounded-full">
-                    {(hasSearch ? 1 : 0) + Object.values(filteredAppliedFilters).filter(v => v && v !== 'all').length}
-                  </span>
+              {/* Only show Active Filters label, count, and Clear All if there are visible chips or search */}
+              {(hasSearch || Object.values(filteredAppliedFilters).filter(v => v && v !== 'all').length > 0) && (
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-semibold text-slate-700">Active Filters</span>
+                    <span className="text-xs text-slate-500 bg-slate-100 px-2 py-1 rounded-full">
+                      {(hasSearch ? 1 : 0) + Object.values(filteredAppliedFilters).filter(v => v && v !== 'all').length}
+                    </span>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    className="shrink-0 inline-flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                    onClick={() => {
+                      if (hasSearch) onClearSearch();
+                      Object.keys(filteredAppliedFilters).forEach(key => {
+                        if (filteredAppliedFilters[key as keyof typeof filteredAppliedFilters]) {
+                          onClearFilter(key);
+                        }
+                      });
+                    }}
+                  >
+                    <X className="h-4 w-4" />
+                    Clear All
+                  </Button>
                 </div>
-                <Button
-                  variant="ghost"
-                  className="shrink-0 inline-flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-                  onClick={() => {
-                    if (hasSearch) onClearSearch();
-                    Object.keys(filteredAppliedFilters).forEach(key => {
-                      if (filteredAppliedFilters[key as keyof typeof filteredAppliedFilters]) {
-                        onClearFilter(key);
-                      }
-                    });
-                  }}
-                >
-                  <X className="h-4 w-4" />
-                  Clear All
-                </Button>
-              </div>
+              )}
               
               <div className="flex flex-wrap gap-2">
                 {hasSearch && (

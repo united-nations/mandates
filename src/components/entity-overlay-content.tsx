@@ -6,6 +6,7 @@ import { MandateExplorer } from '@/components/mandate-explorer'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { ConsolidatedFilterSidebar } from './consolidated-filter-sidebar'
 import { CrossCitations } from './cross-citations'
+import { OrganListSidebar } from '@/components/organ-list-sidebar'
 
 interface Entity {
   entity: string
@@ -24,6 +25,7 @@ export function EntityOverlayContent({ entityName }: EntityOverlayContentProps) 
   const [principalOrgan, setPrincipalOrgan] = useState<string | null>(null)
   const [selectedEntity, setSelectedEntity] = useState<string | null>(null)
   const [selectedOrgan, setSelectedOrgan] = useState<string | null>(null)
+  const [organCrossCitations, setOrganCrossCitations] = useState<any[]>([])
 
   useEffect(() => {
     async function fetchEntityDetails() {
@@ -48,6 +50,24 @@ export function EntityOverlayContent({ entityName }: EntityOverlayContentProps) 
   // When a filter is selected, update the MandateExplorer props
   const effectiveEntity = selectedEntity || entityName
   const effectiveOrgan = selectedOrgan || undefined
+
+  // Fetch organ cross-citations for the current entity
+  useEffect(() => {
+    async function fetchOrganCrossCitations() {
+      if (effectiveEntity) {
+        const res = await fetch(`/api/entities/${encodeURIComponent(effectiveEntity)}/cross-citations`)
+        if (res.ok) {
+          const data = await res.json()
+          setOrganCrossCitations(data.filter((item: any) => item.organ))
+        } else {
+          setOrganCrossCitations([])
+        }
+      } else {
+        setOrganCrossCitations([])
+      }
+    }
+    fetchOrganCrossCitations()
+  }, [effectiveEntity])
 
   return (
     <TooltipProvider>
@@ -99,13 +119,16 @@ export function EntityOverlayContent({ entityName }: EntityOverlayContentProps) 
               showCrossCitations={false}
               mandateListTitle={`Documents Cited by ${entityLongName || entityName}`}
               crossCitationsSidebar={
-                <ConsolidatedFilterSidebar 
-                  onEntityClick={setSelectedEntity} 
-                  onOrganClick={setSelectedOrgan} 
-                  selectedEntity={effectiveEntity} 
-                  selectedOrgan={effectiveOrgan} 
-                  currentEntity={effectiveEntity}
-                />
+                <div className="flex flex-col gap-4">
+                  <ConsolidatedFilterSidebar 
+                    onEntityClick={setSelectedEntity} 
+                    onOrganClick={setSelectedOrgan} 
+                    selectedEntity={effectiveEntity} 
+                    selectedOrgan={effectiveOrgan} 
+                    currentEntity={effectiveEntity}
+                  />
+                  <OrganListSidebar onOrganClick={setSelectedOrgan} currentEntity={effectiveEntity} organCrossCitations={organCrossCitations} />
+                </div>
               }
             />
           </div>
