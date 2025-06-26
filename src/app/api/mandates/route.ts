@@ -164,7 +164,7 @@ export async function GET(request: Request) {
     if (subject) {
       filteredMandates = filteredMandates.filter((m) =>
         m.subject_headings?.some((subjectHeading: string) => 
-          subjectHeading?.toLowerCase().includes(subject.toLowerCase())
+          subjectHeading?.toLowerCase().trim() === subject.toLowerCase().trim()
         )
       );
     }

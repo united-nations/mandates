@@ -206,7 +206,17 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [], 
                       {budgetDocuments.map((doc, index) => {
                         const displayName = budgetDocumentDisplayNames[doc] || doc;
                         return (
-                          <Badge key={index} variant="stronger" className="text-xs">
+                          <Badge 
+                            key={index} 
+                            variant="stronger" 
+                            className="text-xs cursor-pointer hover:bg-primary/80 transition-colors"
+                            onClick={() => {
+                              // Open filtered results in a new window with only the budget document filter
+                              const url = new URL(window.location.origin + window.location.pathname);
+                              url.searchParams.set('budget_document', doc);
+                              window.open(url.toString(), '_blank');
+                            }}
+                          >
                             {displayName}
                           </Badge>
                         );
@@ -233,7 +243,8 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [], 
                           onClick={() => {
                             // Open filtered results in a new window with only the subject filter
                             const url = new URL(window.location.origin + window.location.pathname);
-                            url.searchParams.set('subject', heading);
+                            // Properly encode the subject heading to handle special characters
+                            url.searchParams.set('subject', heading.trim());
                             window.open(url.toString(), '_blank');
                           }}
                         >
