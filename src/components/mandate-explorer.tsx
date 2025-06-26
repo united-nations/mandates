@@ -56,6 +56,8 @@ interface MandateExplorerProps {
   // Optional sidebar components for entities and organs
   entityListSidebar?: React.ReactNode;
   organListSidebar?: React.ReactNode;
+  // Whether to show the cross-citations section (false for entity detail pages)
+  showCrossCitations?: boolean;
 }
 
 export function MandateExplorer({ 
@@ -65,7 +67,8 @@ export function MandateExplorer({
   className = '',
   mandateListTitle,
   entityListSidebar,
-  organListSidebar
+  organListSidebar,
+  showCrossCitations = true
 }: MandateExplorerProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -427,59 +430,6 @@ export function MandateExplorer({
       {dataCardsSection}
 
       <div>
-        <SearchResultsSummary
-          totalResults={totalItems}
-          searchKeyword={keywordFromParams}
-          appliedFilters={{
-            entity: selectedEntity !== 'all' ? selectedEntity : undefined,
-            organ: selectedOrgan !== 'all' ? selectedOrgan : undefined,
-            programme: programme || undefined,
-            subject: subject || undefined,
-            year: (startYearFromParams && endYearFromParams && yearRange && (parseInt(startYearFromParams, 10) !== yearRange.min || parseInt(endYearFromParams, 10) !== yearRange.max)) ? `${startYearFromParams}-${endYearFromParams}` : undefined,
-            budget_document: budgetDocument && budgetDocument !== 'all' ? budgetDocumentDisplayNames[budgetDocument] : undefined,
-            cross_entity: crossEntity || undefined,
-          }}
-          onClearSearch={() => {
-            onKeywordChange('');
-            onKeywordSearch('');
-          }}
-          onClearFilter={(filterKey) => {
-            switch (filterKey) {
-              case 'entity':
-                if (!presetEntity) onEntityChange('all');
-                break;
-              case 'organ':
-                onOrganChange('all');
-                break;
-              case 'programme':
-                onProgrammeChange('');
-                break;
-              case 'subject':
-                onSubjectChange('');
-                break;
-              case 'year':
-                const newParams = new URLSearchParams(searchParams.toString());
-                newParams.delete('start_year');
-                newParams.delete('end_year');
-                newParams.set('page', '1');
-                router.push(`${pathname}?${newParams.toString()}`, { scroll: false });
-                break;
-              case 'budget_document':
-                onBudgetDocumentChange('all');
-                break;
-              case 'cross_entity':
-                const crossEntityParams = new URLSearchParams(searchParams.toString());
-                crossEntityParams.delete('cross_entity');
-                crossEntityParams.set('page', '1');
-                router.push(`${pathname}?${crossEntityParams.toString()}`, { scroll: false });
-                break;
-            }
-          }}
-          isLoading={isLoading}
-        />
-      </div>
-      
-      <div>
         <div className="mt-6 pt-4">
           {/* Main content with mandates list, cross-citations, and sidebars */}
           <div className="flex flex-col xl:flex-row gap-6">
@@ -521,6 +471,51 @@ export function MandateExplorer({
                         programmeOptions={programmeOptions}
                         subjectOptions={subjectOptions}
                         disableEntityFilter={!!presetEntity}
+                        appliedFilters={{
+                          entity: selectedEntity !== 'all' ? selectedEntity : undefined,
+                          organ: selectedOrgan !== 'all' ? selectedOrgan : undefined,
+                          programme: programme || undefined,
+                          subject: subject || undefined,
+                          year: (startYearFromParams && endYearFromParams && yearRange && (parseInt(startYearFromParams, 10) !== yearRange.min || parseInt(endYearFromParams, 10) !== yearRange.max)) ? `${startYearFromParams}-${endYearFromParams}` : undefined,
+                          budget_document: budgetDocument && budgetDocument !== 'all' ? budgetDocumentDisplayNames[budgetDocument] : undefined,
+                          cross_entity: crossEntity || undefined,
+                        }}
+                        onClearFilter={(filterKey) => {
+                          switch (filterKey) {
+                            case 'entity':
+                              if (!presetEntity) onEntityChange('all');
+                              break;
+                            case 'organ':
+                              onOrganChange('all');
+                              break;
+                            case 'programme':
+                              onProgrammeChange('');
+                              break;
+                            case 'subject':
+                              onSubjectChange('');
+                              break;
+                            case 'year':
+                              const newParams = new URLSearchParams(searchParams.toString());
+                              newParams.delete('start_year');
+                              newParams.delete('end_year');
+                              newParams.set('page', '1');
+                              router.push(`${pathname}?${newParams.toString()}`, { scroll: false });
+                              break;
+                            case 'budget_document':
+                              onBudgetDocumentChange('all');
+                              break;
+                            case 'cross_entity':
+                              const crossEntityParams = new URLSearchParams(searchParams.toString());
+                              crossEntityParams.delete('cross_entity');
+                              crossEntityParams.set('page', '1');
+                              router.push(`${pathname}?${crossEntityParams.toString()}`, { scroll: false });
+                              break;
+                          }
+                        }}
+                        onClearSearch={() => {
+                          onKeywordChange('');
+                          onKeywordSearch('');
+                        }}
                       />
                     </div>
                     
@@ -555,7 +550,7 @@ export function MandateExplorer({
                 </div>
                 
                 {/* Cross-Citations Section - only show when there's a preset entity */}
-                {presetEntity && (
+                {presetEntity && showCrossCitations && (
                   <div className="w-full lg:w-80 flex-shrink-0">
                     <CrossCitations 
                       currentEntity={presetEntity}

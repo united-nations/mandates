@@ -22,6 +22,7 @@ export function EntityListSidebar({ onEntityClick }: EntityListSidebarProps) {
   const [filteredEntities, setFilteredEntities] = useState<EntityWithCount[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
+  const [maxCount, setMaxCount] = useState(1)
 
   useEffect(() => {
     async function fetchEntities() {
@@ -33,6 +34,7 @@ export function EntityListSidebar({ onEntityClick }: EntityListSidebarProps) {
         )
         setEntities(entitiesData)
         setFilteredEntities(entitiesData)
+        setMaxCount(Math.max(...entitiesData.map(e => e.count), 1))
       } catch (error) {
         console.error('Failed to fetch entities:', error)
       } finally {
@@ -107,8 +109,9 @@ export function EntityListSidebar({ onEntityClick }: EntityListSidebarProps) {
                     </div>
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0">
-                    <span className="text-xs font-mono text-muted-foreground bg-muted/50 px-2 py-1 rounded">
-                      {entity.count}
+                    <span className="relative flex items-center min-w-[60px]">
+                      <span className="text-xs font-mono text-un-blue z-10 pr-2">{entity.count}</span>
+                      <span className="absolute left-0 top-1/2 -translate-y-1/2 h-2 rounded bg-un-blue/20" style={{ width: `${Math.max(10, (entity.count / maxCount) * 50)}%`, minWidth: 10 }} />
                     </span>
                     <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity text-un-blue" />
                   </div>

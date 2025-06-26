@@ -44,8 +44,8 @@ export function Overlay({ isOpen, onClose, children, title, wide = false }: Over
       
       {/* Overlay Panel */}
       <div 
-        className={`absolute top-0 right-0 h-full w-full ${wide ? 'max-w-5xl' : 'max-w-4xl'} bg-background shadow-xl transform transition-transform duration-300 ease-in-out ${
-          isOpen ? 'translate-x-0' : 'translate-x-full'
+        className={`absolute bottom-0 left-0 right-0 w-full h-[90vh] bg-background shadow-xl transform transition-transform duration-300 ease-in-out ${
+          isOpen ? 'translate-y-0' : 'translate-y-full'
         }`}
       >
         {/* Header */}

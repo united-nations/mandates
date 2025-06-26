@@ -27,6 +27,7 @@ export function OrganListSidebar({ onOrganClick }: OrganListSidebarProps) {
   const [filteredOrgans, setFilteredOrgans] = useState<BodyWithCount[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
+  const [maxCount, setMaxCount] = useState(1)
 
   useEffect(() => {
     async function fetchData() {
@@ -43,6 +44,7 @@ export function OrganListSidebar({ onOrganClick }: OrganListSidebarProps) {
           )
           setOrgans(organsData)
           setFilteredOrgans(organsData)
+          setMaxCount(Math.max(...organsData.map((o: BodyWithCount) => o.count), 1))
         }
         
         if (organsResponse.ok) {
@@ -136,8 +138,9 @@ export function OrganListSidebar({ onOrganClick }: OrganListSidebarProps) {
                     </div>
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0">
-                    <span className="text-xs font-mono text-muted-foreground bg-muted/50 px-2 py-1 rounded">
-                      {organ.count}
+                    <span className="relative flex items-center min-w-[60px]">
+                      <span className="text-xs font-mono text-un-blue z-10 pr-2">{organ.count}</span>
+                      <span className="absolute left-0 top-1/2 -translate-y-1/2 h-2 rounded bg-un-blue/20" style={{ width: `${Math.max(10, (organ.count / maxCount) * 50)}%`, minWidth: 10 }} />
                     </span>
                     <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity text-un-blue" />
                   </div>

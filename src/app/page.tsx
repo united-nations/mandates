@@ -16,7 +16,6 @@ import { OrganListSidebar } from '@/components/organ-list-sidebar'
 import { Overlay } from '@/components/ui/overlay'
 import { EntityOverlayContent } from '@/components/entity-overlay-content'
 import { OrganOverlayContent } from '@/components/organ-overlay-content'
-import { MandateSearchBox } from '@/components/mandate-search-box'
 
 interface ParentContext {
   scrollY: number
@@ -146,11 +145,11 @@ function MandateNavigator () {
             <div className='flex items-start justify-between'>
               <div className='flex-1'>
                 <div className='mb-6 mt-2'>
-                  <div className='flex flex-col sm:flex-row sm:items-baseline sm:gap-x-2'>
+                  <div className='flex items-center gap-x-2'>
                     <h1 className='text-4xl font-bold tracking-tight text-foreground'>
                       {explainerTexts.mainHeader.title}
                     </h1>
-                    <span className='inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-un-blue/10 text-un-blue border border-un-blue/20 mt-1 sm:mt-0'>
+                    <span className='inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200'>
                       {explainerTexts.mainHeader.versionTag}
                     </span>
                   </div>
@@ -173,11 +172,6 @@ function MandateNavigator () {
                     </Button>
                   </p>
                 </div>
-              </div>
-
-              {/* Search in top right */}
-              <div className='flex-shrink-0 ml-6 w-80'>
-                <MandateSearchBox />
               </div>
             </div>
           </section>
@@ -227,6 +221,7 @@ function MandateNavigator () {
           isOpen={!!selectedOrgan}
           onClose={() => setSelectedOrgan(null)}
           title={selectedOrgan || ''}
+          wide
         >
           {selectedOrgan && (
             <OrganOverlayContent organName={selectedOrgan} />
