@@ -245,7 +245,10 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [], 
                     }
                   >
                     <div className="flex flex-wrap gap-1 pt-2">
-                      {mandate.subject_headings.map((heading, index) => (
+                      {mandate.subject_headings
+                        .slice()
+                        .sort((a, b) => a.localeCompare(b))
+                        .map((heading, index) => (
                         <Badge 
                           key={index} 
                           variant="outline" 
