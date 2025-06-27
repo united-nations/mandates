@@ -192,7 +192,23 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [], 
               {/* Compact Metadata List */}
               <div className="space-y-1 rounded-lg">
                 <MetadataItem label="Organ">
-                  {mandate.body ? <Badge variant="stronger" className="text-xs">{mandate.body}</Badge> : <span className="text-muted-foreground">—</span>}
+                  {mandate.body ? (
+                    <Badge 
+                      variant="stronger" 
+                      className="text-xs cursor-pointer hover:bg-primary/80 transition-colors"
+                      onClick={() => {
+                        // Open filtered results in a new window with only the organ filter
+                        const url = new URL(window.location.origin + window.location.pathname);
+                        url.searchParams.set('page', '1');
+                        url.searchParams.set('organ', mandate.body);
+                        window.open(url.toString(), '_blank');
+                      }}
+                    >
+                      {mandate.body}
+                    </Badge>
+                  ) : (
+                    <span className="text-muted-foreground">—</span>
+                  )}
                 </MetadataItem>
                 <MetadataItem label="Document Type">
                   {mandate.type ? <Badge variant="stronger" className="text-xs">{mandate.type}</Badge> : <span className="text-muted-foreground">—</span>}
@@ -209,13 +225,7 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [], 
                           <Badge 
                             key={index} 
                             variant="stronger" 
-                            className="text-xs cursor-pointer hover:bg-primary/80 transition-colors"
-                            onClick={() => {
-                              // Open filtered results in a new window with only the budget document filter
-                              const url = new URL(window.location.origin + window.location.pathname);
-                              url.searchParams.set('budget_document', doc);
-                              window.open(url.toString(), '_blank');
-                            }}
+                            className="text-xs"
                           >
                             {displayName}
                           </Badge>
@@ -243,7 +253,7 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [], 
                           onClick={() => {
                             // Open filtered results in a new window with only the subject filter
                             const url = new URL(window.location.origin + window.location.pathname);
-                            // Properly encode the subject heading to handle special characters
+                            url.searchParams.set('page', '1');
                             url.searchParams.set('subject', heading.trim());
                             window.open(url.toString(), '_blank');
                           }}
@@ -281,6 +291,7 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [], 
                             onClick={() => {
                               // Open filtered results in a new window with only the entity filter
                               const url = new URL(window.location.origin + window.location.pathname);
+                              url.searchParams.set('page', '1');
                               url.searchParams.set('entity', shortName);
                               window.open(url.toString(), '_blank');
                             }}
@@ -313,6 +324,7 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [], 
                             onClick={() => {
                               // Open filtered results in a new window with only the programme filter
                               const url = new URL(window.location.origin + window.location.pathname);
+                              url.searchParams.set('page', '1');
                               url.searchParams.set('programme', programmeTitle);
                               window.open(url.toString(), '_blank');
                             }}

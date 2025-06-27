@@ -537,7 +537,7 @@ function MandateNavigator() {
             <div className="grid gap-3 grid-cols-1 sm:grid-cols-4">
               <DataCard
                 title={explainerTexts.dataCards.sourceDocuments.title}
-                value={totalItems > 0 ? totalItems : '0'}
+                value={totalItems}
                 icon={FileText}
                 description={explainerTexts.dataCards.sourceDocuments.description}
                 isLoading={isLoading}
@@ -547,7 +547,7 @@ function MandateNavigator() {
               
               <DataCard
                 title={explainerTexts.dataCards.unOrgans.title}
-                value={uniqueOrgans > 0 ? uniqueOrgans : '0'}
+                value={uniqueOrgans}
                 icon={Landmark}
                 description={explainerTexts.dataCards.unOrgans.description}
                 isLoading={isLoading}
@@ -559,7 +559,7 @@ function MandateNavigator() {
               
               <DataCard
                 title={explainerTexts.dataCards.unEntities.title}
-                value={selectedEntity ? '1' : (uniqueEntities > 0 ? uniqueEntities : '0')}
+                value={selectedEntity ? 1 : uniqueEntities}
                 icon={Building}
                 description={explainerTexts.dataCards.unEntities.description}
                 isLoading={isLoading}
@@ -569,8 +569,7 @@ function MandateNavigator() {
               
               <DataCard
                 title={selectedEntity ? explainerTexts.dataCards.citationsByEntity.title : explainerTexts.dataCards.citations.title}
-                value={totalCitations > 0 ? totalCitations : '0'
-                }
+                value={totalCitations}
                 icon={Quote}
                 description={selectedEntity ? explainerTexts.dataCards.citationsByEntity.description : explainerTexts.dataCards.citations.description}
                 isLoading={isLoading}
