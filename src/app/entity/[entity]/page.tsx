@@ -1,24 +1,44 @@
 'use client';
 
 import { Suspense, useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Building } from 'lucide-react';
+import { ArrowLeft, Building, Link as LinkIcon, Landmark } from 'lucide-react';
 import Link from 'next/link';
 import { EntityName } from '@/components/ui/entity-name';
 import { MandateExplorer } from '@/components/mandate-explorer';
-import { CrossCitations } from '@/components/cross-citations';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import { ConsolidatedFilterSidebar } from '@/components/consolidated-filter-sidebar';
+import { Badge } from '@/components/ui/badge';
 
 interface Entity {
   entity: string;
   entity_long: string;
+  url?: string;
+  principal_organ?: string;
 }
 
-function EntityViewContent() {
+const MetadataItem = ({ label, children, icon: Icon }: { label: React.ReactNode, children: React.ReactNode, icon?: React.ElementType }) => (
+    <div className="flex items-start text-sm py-2 border-b last:border-b-0">
+        {Icon && <Icon className="h-4 w-4 text-muted-foreground mr-3 mt-0.5 flex-shrink-0" />}
+        <div className="w-32 font-medium text-muted-foreground flex-shrink-0">{label}</div>
+        <div className="flex-grow text-foreground">{children}</div>
+    </div>
+);
+
+function EntityPageContent() {
   const params = useParams();
+  const router = useRouter();
   const entityName = decodeURIComponent(params.entity as string);
-  const [entityLongName, setEntityLongName] = useState<string>('');
+
+  const [entityDetails, setEntityDetails] = useState<{
+    longName: string;
+    url: string | null;
+    principalOrgan: string | null;
+  } | null>(null);
+
+  const [selectedEntity, setSelectedEntity] = useState<string | null>(null);
+  const [selectedOrgan, setSelectedOrgan] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchEntityDetails() {
@@ -28,66 +48,88 @@ function EntityViewContent() {
           const data = await res.json();
           const entity = data.find((e: Entity) => e.entity === entityName);
           if (entity) {
-            setEntityLongName(entity.entity_long);
+            setEntityDetails({
+              longName: entity.entity_long,
+              url: entity.url || null,
+              principalOrgan: entity.principal_organ || null,
+            });
           }
         }
       } catch (error) {
         console.error("Failed to fetch entity details:", error);
       }
     }
-    fetchEntityDetails();
+    if (entityName) {
+      fetchEntityDetails();
+    }
   }, [entityName]);
+
+  // When a filter is selected, update the MandateExplorer props
+  const effectiveEntity = selectedEntity || entityName;
+  const effectiveOrgan = selectedOrgan || undefined;
 
   return (
     <TooltipProvider>
       <div className="min-h-screen bg-background text-foreground">
         <main className="w-full max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto py-6 space-y-6 px-8 sm:px-12 lg:px-16">
-          
-          {/* Header */}
-          <section className="pb-2">
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <div className="mb-2">
-                  <Link href="/">
-                    <Button variant="outline" size="sm" className="mb-4">
-                      <ArrowLeft className="h-4 w-4 mr-2" />
-                      Back to Main View
-                    </Button>
-                  </Link>
-                </div>
-                
-                <div className="mb-6 mt-2">
-                  <div className="flex items-center gap-3 mb-2">
-                    <Building className="h-8 w-8 text-un-blue" />
-                    <h1 className="text-4xl font-bold tracking-tight text-foreground">
-                      {entityLongName || entityName}
-                    </h1>
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              <div className="mb-2">
+                <Button variant="outline" size="sm" className="mb-4" onClick={() => router.push('/')}>
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Back to Main View
+                </Button>
+              </div>
+              
+              <div className="mb-6 mt-2">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="p-3 bg-muted rounded-md">
+                    <Building className="h-6 w-6 text-un-blue" />
                   </div>
-                  {entityLongName && entityLongName !== entityName && (
-                    <div className="text-muted-foreground">
-                      <span className="font-mono text-sm bg-muted px-2 py-1 rounded">{entityName}</span>
+                  <div>
+                    <h1 className="text-2xl lg:text-3xl font-bold tracking-tight text-foreground">
+                      {entityDetails?.longName || entityName}
+                    </h1>
+                    <Badge variant="outline" className="mt-1">{entityName}</Badge>
+                  </div>
+                </div>
+
+                {entityDetails && (entityDetails.url || entityDetails.principalOrgan) && (
+                    <div className="space-y-1">
+                      {entityDetails.url && (
+                          <MetadataItem label="Website" icon={LinkIcon}>
+                              <a href={entityDetails.url} target="_blank" rel="noopener noreferrer" className="text-un-blue underline break-all hover:text-un-blue/80 transition-colors">{entityDetails.url.replace(/^https?:\/\//, '')}</a>
+                          </MetadataItem>
+                      )}
+                      {entityDetails.principalOrgan && (
+                          <MetadataItem label="Principal Organ" icon={Landmark}>
+                              <Badge variant="secondary">{entityDetails.principalOrgan}</Badge>
+                          </MetadataItem>
+                      )}
                     </div>
-                  )}
-                </div>
-                
-                <div className="text-muted-foreground mt-2 sm:text-justify">
-                  <p className="leading-tight mb-3">
-                    Exploring mandates and cross-citations for <strong>{entityLongName || entityName}</strong>. This view shows all source documents that this entity cites, 
-                    along with other entities that cite the same mandates.
-                  </p>
-                </div>
+                )}
               </div>
             </div>
-          </section>
+          </div>
 
-          {/* Mandate Explorer with preset entity filter */}
-          <section>
-            <MandateExplorer 
-              presetEntity={entityName}
-              showEntityCard={false}
-              mandateListTitle={`Documents Cited by ${entityLongName || entityName}`}
-            />
-          </section>
+          <MandateExplorer 
+            presetEntity={effectiveEntity}
+            presetOrgan={effectiveOrgan}
+            showEntityCard={false}
+            showCrossCitations={false}
+            mandateListTitle={`Documents Cited by ${entityDetails?.longName || entityName}`}
+            crossCitationsSidebar={
+              <div className="flex flex-col gap-4">
+                <ConsolidatedFilterSidebar 
+                  onEntityClick={setSelectedEntity} 
+                  onOrganClick={setSelectedOrgan} 
+                  selectedEntity={effectiveEntity} 
+                  selectedOrgan={effectiveOrgan} 
+                  currentEntity={effectiveEntity}
+                />
+              </div>
+            }
+          />
         </main>
       </div>
     </TooltipProvider>
@@ -97,7 +139,7 @@ function EntityViewContent() {
 export default function EntityPage() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <EntityViewContent />
+      <EntityPageContent />
     </Suspense>
   );
 } 

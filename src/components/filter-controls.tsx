@@ -35,7 +35,6 @@ interface FilterControlsProps {
   onSubjectChange: (value: string) => void;
   onYearRangeChange: (value: [number, number]) => void;
   onBudgetDocumentChange: (value: string) => void;
-  disableEntityFilter?: boolean;
   // New props for filter chips
   appliedFilters: {
     entity?: string;
@@ -75,7 +74,6 @@ export function FilterControls({
   onSubjectChange,
   onYearRangeChange,
   onBudgetDocumentChange,
-  disableEntityFilter = false,
   appliedFilters,
   onClearFilter,
   onClearSearch,
@@ -128,10 +126,10 @@ export function FilterControls({
   // Compute which filters to show as chips
   const filteredAppliedFilters = { ...appliedFilters };
   if (hideImplicitFilterChip) {
-    if (filteredAppliedFilters.entity && disableEntityFilter) {
+    if (filteredAppliedFilters.entity) {
       delete filteredAppliedFilters.entity;
     }
-    if (filteredAppliedFilters.organ && disableEntityFilter) {
+    if (filteredAppliedFilters.organ) {
       delete filteredAppliedFilters.organ;
     }
   }
@@ -289,7 +287,7 @@ export function FilterControls({
                 )}
 
                 {/* Only show entity chip if not hidden */}
-                {filteredAppliedFilters.entity && filteredAppliedFilters.entity !== 'all' && !disableEntityFilter && (
+                {filteredAppliedFilters.entity && filteredAppliedFilters.entity !== 'all' && (
                   <Badge variant="secondary" className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 text-slate-800 border border-slate-200 hover:bg-slate-200">
                     <Building className="h-3 w-3" />
                     <span className="text-sm font-medium">

@@ -61,8 +61,6 @@ interface MandateExplorerProps {
   showCrossCitations?: boolean
   // Custom cross-citations sidebar for overlays
   crossCitationsSidebar?: React.ReactNode
-  // New prop to hide implicit filter chip
-  hideImplicitFilterChip?: boolean
   // Handlers for collapsible sidebars
   onEntityClick?: (entityName: string) => void
   onOrganClick?: (organName: string) => void
@@ -78,7 +76,6 @@ export function MandateExplorer ({
   organListSidebar,
   showCrossCitations = true,
   crossCitationsSidebar,
-  hideImplicitFilterChip = false,
   onEntityClick,
   onOrganClick
 }: MandateExplorerProps) {
@@ -252,9 +249,6 @@ export function MandateExplorer ({
       }
     } catch (error) {
       console.error('Failed to fetch mandates:', error)
-      setMandates([])
-      setTotalItems(0)
-      setTotalPages(0)
     } finally {
       setIsLoading(false)
     }
@@ -277,13 +271,6 @@ export function MandateExplorer ({
     fetchMandates()
   }, [fetchMandates])
 
-  useEffect(() => {
-    // Only sync keyword input with URL param changes (not trigger search)
-    if (keywordFromParams !== keyword) {
-      setKeyword(keywordFromParams)
-    }
-  }, [keywordFromParams])
-
   const handlePageChange = (page: number) => {
     const params = new URLSearchParams(searchParams.toString())
     params.set('page', String(page))
@@ -293,39 +280,31 @@ export function MandateExplorer ({
   const handlePageSizeChange = (size: number) => {
     const params = new URLSearchParams(searchParams.toString())
     params.set('limit', String(size))
-    params.set('page', '1')
+    params.set('page', '1') // Reset to page 1
     router.push(`${pathname}?${params.toString()}`, { scroll: false })
   }
 
   const handleFilterChange = (key: string, value: string) => {
-    // If we have a preset entity, don't allow changing the entity filter
-    if (key === 'entity' && presetEntity) {
-      return
-    }
-
     const params = new URLSearchParams(searchParams.toString())
-    params.set('page', '1')
     if (value && value !== 'all') {
       params.set(key, value)
     } else {
       params.delete(key)
     }
+    params.set('page', '1') // Reset to page 1
     router.push(`${pathname}?${params.toString()}`, { scroll: false })
   }
 
   const handleYearRangeChange = (newRange: [number, number]) => {
     const params = new URLSearchParams(searchParams.toString())
-    params.set('page', '1')
     params.set('start_year', String(newRange[0]))
     params.set('end_year', String(newRange[1]))
+    params.set('page', '1') // Reset to page 1
     router.push(`${pathname}?${params.toString()}`, { scroll: false })
   }
 
   const handleSortChange = (value: string) => {
-    const params = new URLSearchParams(searchParams.toString())
-    params.set('page', '1')
-    params.set('sort_by', value)
-    router.push(`${pathname}?${params.toString()}`, { scroll: false })
+    handleFilterChange('sort_by', value)
   }
 
   const onEntityChange = (value: string) => handleFilterChange('entity', value)
@@ -343,158 +322,105 @@ export function MandateExplorer ({
 
   const onKeywordSearch = (searchTerm: string = keyword) => {
     const params = new URLSearchParams(searchParams.toString())
-    params.set('page', '1')
-    if (searchTerm.trim()) {
-      params.set('keyword', searchTerm.trim())
+    if (searchTerm) {
+      params.set('keyword', searchTerm)
     } else {
       params.delete('keyword')
-      // When clearing search, if sort was relevance, reset to default (citing entities)
-      if (params.get('sort_by') === 'default') {
-        params.set('sort_by', 'citing_entities_desc')
-      }
     }
+    params.set('page', '1')
     router.push(`${pathname}?${params.toString()}`, { scroll: false })
-  }
-
-  const budgetDocumentDisplayNames: { [key: string]: string } = {
-    ppb2026: 'Proposed Programme Budget for 2026',
-    'PPB 2026': 'Proposed Programme Budget for 2026',
-    pko: 'Budget of Peacekeeping Operations 2025/26',
-    'PPB 2026/Plan Outline': 'Plan Outline'
   }
 
   const LoadingSkeleton = () => (
     <div className='space-y-4'>
-      <Skeleton className='h-12 w-full' />
-      <Skeleton className='h-12 w-full' />
-      <Skeleton className='h-12 w-full' />
+      <Skeleton className='h-8 w-3/4' />
+      <Skeleton className='h-24 w-full' />
+      <Skeleton className='h-24 w-full' />
+      <Skeleton className='h-24 w-full' />
     </div>
   )
 
-  // Helper function to find organ data by matching both short and long names
   const findOrganData = (organName: string): Organ | undefined => {
     return allOrgans.find(
       organ => organ.short === organName || organ.long === organName
     )
   }
 
+  const getEntityLongName = (entityShortName: string) => {
+    return allEntities.find(e => e.entity === entityShortName)?.entity_long
+  }
+
   const entityDropdownOptions: SearchableDropdownOption[] = entityOptions.map(
-    entity => {
-      const entityDetail = allEntities.find(e => e.entity === entity.name)
-      const longName = entityDetail ? entityDetail.entity_long : undefined
-      return {
-        value: entity.name,
-        label: longName ? `${entity.name} – ${longName}` : entity.name
-      }
-    }
+    entity => ({
+      value: entity.name,
+      label: `${getEntityLongName(entity.name) || entity.name} (${
+        entity.count
+      })`
+    })
   )
 
-  const organDropdownOptions: SearchableDropdownOption[] = []
-  const priorityOrgans = ['General Assembly', 'Security Council', 'ECOSOC']
+  const organDropdownOptions: SearchableDropdownOption[] = organOptions.map(
+    organ => ({
+      value: organ.name,
+      label: `${findOrganData(organ.name)?.long || organ.name} (${organ.count})`
+    })
+  )
 
-  organOptions.forEach((organ, index) => {
-    const organData = findOrganData(organ.name)
-
-    // For General Assembly and Security Council, just show the name
-    if (
-      organ.name === 'General Assembly' ||
-      organ.name === 'Security Council'
-    ) {
-      organDropdownOptions.push({
-        value: organ.name,
-        label: organ.name
-      })
-    } else {
-      // For all other organs, show "short – long" format
-      const option = organData
-        ? {
-            value: organ.name,
-            label: `${organData.short} – ${organData.long}`
-          }
-        : {
-            value: organ.name,
-            label: organ.name
-          }
-      organDropdownOptions.push(option)
-    }
-
-    // Add a very light divider after ECOSOC (the third priority organ)
-    if (index === 2 && priorityOrgans.includes(organ.name)) {
-      organDropdownOptions.push({
-        value: '---divider---',
-        label: '',
-        description: ''
-      })
-    }
-  })
+  const budgetDocumentDisplayNames: { [key: string]: string } = {
+    ppb: 'Programme Plan & Budget',
+    regular_budget: 'Regular Budget'
+  }
 
   const dataCardsSection = (
-    <section className='mb-6'>
-      <div
-        className={`grid gap-3 ${
-          showEntityCard
-            ? 'grid-cols-1 sm:grid-cols-4'
-            : 'grid-cols-1 sm:grid-cols-3'
-        }`}
-      >
-        <DataCard
-          title={explainerTexts.dataCards.sourceDocuments.title}
-          value={totalItems > 0 ? totalItems : '0'}
-          icon={FileText}
-          description={explainerTexts.dataCards.sourceDocuments.description}
-          isLoading={isLoading}
-          isOpen={sourceDocumentsPopover}
-          onOpenChange={setSourceDocumentsPopover}
-        />
-
-        <DataCard
-          title={explainerTexts.dataCards.unOrgans.title}
-          value={uniqueOrgans > 0 ? uniqueOrgans : '0'}
-          icon={Landmark}
-          description={explainerTexts.dataCards.unOrgans.description}
-          isLoading={isLoading}
-          isOpen={unOrgansPopover}
-          onOpenChange={setUnOrgansPopover}
-        />
-
-        {showEntityCard && (
-          <DataCard
-            title={explainerTexts.dataCards.unEntities.title}
-            value={
-              selectedEntity ? '1' : uniqueEntities > 0 ? uniqueEntities : '0'
-            }
-            icon={Building}
-            description={explainerTexts.dataCards.unEntities.description}
-            isLoading={isLoading}
-            isOpen={unEntitiesPopover}
-            onOpenChange={setUnEntitiesPopover}
-          />
-        )}
-
-        <DataCard
-          title={
-            selectedEntity
-              ? explainerTexts.dataCards.citationsByEntity.title
-              : explainerTexts.dataCards.citations.title
-          }
-          value={totalCitations > 0 ? totalCitations : '0'}
-          icon={Quote}
-          description={
-            selectedEntity
-              ? explainerTexts.dataCards.citationsByEntity.description
-              : explainerTexts.dataCards.citations.description
-          }
-          isLoading={isLoading}
-          isOpen={citationsPopover}
-          onOpenChange={setCitationsPopover}
-        />
-      </div>
-    </section>
+    <>
+      <DataCard
+        title={explainerTexts.dataCards.sourceDocuments.title}
+        value={totalItems}
+        icon={FileText}
+        popoverContent={explainerTexts.dataCards.sourceDocuments.content}
+        isPopoverOpen={sourceDocumentsPopover}
+        onPopoverOpenChange={setSourceDocumentsPopover}
+        isLoading={isLoading}
+      />
+      <DataCard
+        title={explainerTexts.dataCards.unOrgans.title}
+        value={uniqueOrgans}
+        icon={Landmark}
+        popoverContent={explainerTexts.dataCards.unOrgans.content}
+        isPopoverOpen={unOrgansPopover}
+        onPopoverOpenChange={setUnOrgansPopover}
+        isLoading={isLoading}
+      />
+      <DataCard
+        title={explainerTexts.dataCards.unEntities.title}
+        value={uniqueEntities}
+        icon={Building}
+        popoverContent={explainerTexts.dataCards.unEntities.content}
+        isPopoverOpen={unEntitiesPopover}
+        onPopoverOpenChange={setUnEntitiesPopover}
+        isLoading={isLoading}
+      />
+      <DataCard
+        title={explainerTexts.dataCards.citations.title}
+        value={totalCitations}
+        icon={Quote}
+        popoverContent={explainerTexts.dataCards.citations.content}
+        isPopoverOpen={citationsPopover}
+        onPopoverOpenChange={setCitationsPopover}
+        isLoading={isLoading}
+      />
+    </>
   )
 
   return (
     <div className={className}>
-      {dataCardsSection}
+      {/* Summary Cards */}
+      <section
+        aria-labelledby='summary-heading'
+        className='grid grid-cols-2 lg:grid-cols-4 gap-4'
+      >
+        {dataCardsSection}
+      </section>
 
       <div>
         <div className='mt-6 pt-4'>
@@ -514,7 +440,7 @@ export function MandateExplorer ({
             <div className='flex-1 min-w-0'>
               <div className="flex items-center mb-3 gap-3">
                 <h2 className='text-2xl font-bold tracking-tight'>
-                  {explainerTexts.dataCards.sectionTitle}
+                  {mandateListTitle || explainerTexts.dataCards.sectionTitle}
                 </h2>
                 {/* Detail page subtitle: cited by/issued by */}
                 {((presetEntity && !presetOrgan) ||
@@ -562,7 +488,6 @@ export function MandateExplorer ({
                         onBudgetDocumentChange={onBudgetDocumentChange}
                         programmeOptions={programmeOptions}
                         subjectOptions={subjectOptions}
-                        disableEntityFilter={!!presetEntity}
                         appliedFilters={{
                           entity:
                             selectedEntity !== 'all'
@@ -590,7 +515,7 @@ export function MandateExplorer ({
                         onClearFilter={filterKey => {
                           switch (filterKey) {
                             case 'entity':
-                              if (!presetEntity) onEntityChange('all')
+                              onEntityChange('all')
                               break
                             case 'organ':
                               onOrganChange('all')
@@ -633,7 +558,6 @@ export function MandateExplorer ({
                           onKeywordChange('')
                           onKeywordSearch('')
                         }}
-                        hideImplicitFilterChip={hideImplicitFilterChip}
                       />
                     </div>
 

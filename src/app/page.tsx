@@ -13,9 +13,6 @@ import Link from 'next/link'
 import { Input } from '@/components/ui/input'
 import { EntityListSidebar } from '@/components/entity-list-sidebar'
 import { OrganListSidebar } from '@/components/organ-list-sidebar'
-import { Overlay } from '@/components/ui/overlay'
-import { EntityOverlayContent } from '@/components/entity-overlay-content'
-import { OrganOverlayContent } from '@/components/organ-overlay-content'
 
 interface ParentContext {
   scrollY: number
@@ -26,8 +23,6 @@ interface ParentContext {
 function MandateNavigator () {
   const router = useRouter()
   const [parentContext, setParentContext] = useState<ParentContext | null>(null)
-  const [selectedEntity, setSelectedEntity] = useState<string | null>(null)
-  const [selectedOrgan, setSelectedOrgan] = useState<string | null>(null)
 
   // Initialize Microsoft Clarity
   useEffect(() => {
@@ -136,6 +131,14 @@ function MandateNavigator () {
     }
   }, [router])
 
+  const handleEntityClick = (entityName: string) => {
+    router.push(`/entity/${encodeURIComponent(entityName)}`)
+  }
+
+  const handleOrganClick = (organName: string) => {
+    router.push(`/organ/${encodeURIComponent(organName)}`)
+  }
+
   return (
     <TooltipProvider>
       <div className='min-h-screen bg-background text-foreground'>
@@ -178,10 +181,10 @@ function MandateNavigator () {
 
           {/* Mandate Explorer */}
           <MandateExplorer 
-            entityListSidebar={<EntityListSidebar onEntityClick={setSelectedEntity} />}
-            organListSidebar={<OrganListSidebar onOrganClick={setSelectedOrgan} />}
-            onEntityClick={setSelectedEntity}
-            onOrganClick={setSelectedOrgan}
+            entityListSidebar={<EntityListSidebar onEntityClick={handleEntityClick} />}
+            organListSidebar={<OrganListSidebar onOrganClick={handleOrganClick} />}
+            onEntityClick={handleEntityClick}
+            onOrganClick={handleOrganClick}
           />
 
           <section id='about-section' className='mt-16 pt-8'>
@@ -206,29 +209,6 @@ function MandateNavigator () {
             </div>
           </section>
         </main>
-        
-        {/* Overlays */}
-        <Overlay
-          isOpen={!!selectedEntity}
-          onClose={() => setSelectedEntity(null)}
-          title={selectedEntity || ''}
-          wide
-        >
-          {selectedEntity && (
-            <EntityOverlayContent entityName={selectedEntity} />
-          )}
-        </Overlay>
-        
-        <Overlay
-          isOpen={!!selectedOrgan}
-          onClose={() => setSelectedOrgan(null)}
-          title={selectedOrgan || ''}
-          wide
-        >
-          {selectedOrgan && (
-            <OrganOverlayContent organName={selectedOrgan} />
-          )}
-        </Overlay>
       </div>
     </TooltipProvider>
   )
