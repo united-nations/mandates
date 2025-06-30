@@ -112,11 +112,12 @@ export function ConsolidatedFilterSidebar({
                         <span className="flex-1 truncate text-left text-sm">
                           <EntityName entityName={citation.entity} showUnderline={false} />
                         </span>
-                        <span className="flex items-center min-w-[70px]">
-                          <span className="block h-1 rounded bg-un-blue/20" style={{ width: `${Math.max(10, (citation.sharedMandatesCount / maxEntityCount) * 40)}px`, minWidth: 10, marginRight: 8 }} />
-                          <span className="text-xs font-mono text-un-blue" style={{ minWidth: 18, textAlign: 'right' }}>{citation.sharedMandatesCount}</span>
+                        <span className="flex items-center w-full max-w-[100px]">
+                          <span className="text-xs font-mono text-un-blue text-right pr-2 min-w-[28px] max-w-[32px] flex-shrink-0 justify-end flex">{citation.sharedMandatesCount}</span>
+                          <span className="relative flex-1 h-2 bg-un-blue/10 rounded">
+                            <span className="absolute left-0 top-0 h-2 rounded bg-un-blue/60" style={{ width: `${(citation.sharedMandatesCount / maxEntityCount) * 100}%`, minWidth: 2 }} />
+                          </span>
                         </span>
-                        <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity text-un-blue" />
                       </button>
                     ))}
                   </div>
@@ -139,11 +140,12 @@ export function ConsolidatedFilterSidebar({
                         onClick={() => onOrganClick(citation.organ)}
                       >
                         <span className="flex-1 truncate text-left text-sm">{citation.organ}</span>
-                        <span className="flex items-center min-w-[70px]">
-                          <span className="block h-1 rounded bg-un-blue/20" style={{ width: `${Math.max(10, (citation.sharedMandatesCount / maxOrganCount) * 40)}px`, minWidth: 10, marginRight: 8 }} />
-                          <span className="text-xs font-mono text-un-blue" style={{ minWidth: 18, textAlign: 'right' }}>{citation.sharedMandatesCount}</span>
+                        <span className="flex items-center w-full max-w-[100px]">
+                          <span className="text-xs font-mono text-un-blue text-right pr-2 min-w-[28px] max-w-[32px] flex-shrink-0 justify-end flex">{citation.sharedMandatesCount}</span>
+                          <span className="relative flex-1 h-2 bg-un-blue/10 rounded">
+                            <span className="absolute left-0 top-0 h-2 rounded bg-un-blue/60" style={{ width: `${(citation.sharedMandatesCount / maxOrganCount) * 100}%`, minWidth: 2 }} />
+                          </span>
                         </span>
-                        <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity text-un-blue" />
                       </button>
                     ))}
                   </div>

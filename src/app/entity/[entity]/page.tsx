@@ -86,7 +86,6 @@ function EntityViewContent() {
               presetEntity={entityName}
               showEntityCard={false}
               mandateListTitle={`Documents Cited by ${entityLongName || entityName}`}
-              hideImplicitFilterChip={true}
             />
           </section>
         </main>

@@ -127,7 +127,6 @@ export function EntityOverlayContent({ entityName }: EntityOverlayContentProps) 
                     selectedOrgan={effectiveOrgan} 
                     currentEntity={effectiveEntity}
                   />
-                  <OrganListSidebar onOrganClick={setSelectedOrgan} currentEntity={effectiveEntity} organCrossCitations={organCrossCitations} />
                 </div>
               }
             />
