@@ -61,10 +61,11 @@ async function getMetadata() {
   const localYearDistribution: { [year: string]: number } = {};
 
   for (const item of rawData) {
-    if (item.entities) {
-      item.entities.forEach((e: string) => {
-        if (e) {
-          entityCounts[e] = (entityCounts[e] || 0) + (item.num_citations || 0);
+    // Count citations per entity based on citation_info
+    if (item.citation_info && Array.isArray(item.citation_info)) {
+      item.citation_info.forEach((citation: any) => {
+        if (citation.entity) {
+          entityCounts[citation.entity] = (entityCounts[citation.entity] || 0) + 1;
         }
       });
     }
