@@ -202,10 +202,14 @@ export function MandateExplorer ({
         }
 
         // Set initial summary stats for the whole dataset
-        setTotalItems(data.totalDocuments || 0)
-        setUniqueOrgans(data.uniqueBodiesCount || 0)
-        setUniqueEntities(data.totalEntities || 0)
-        setTotalCitations(data.totalCitations || 0)
+        // Only set these if we're not filtering by a preset entity/organ
+        // to avoid flickering on entity/organ detail pages
+        if (!presetEntity && !presetOrgan) {
+          setTotalItems(data.totalDocuments || 0)
+          setUniqueOrgans(data.uniqueBodiesCount || 0)
+          setUniqueEntities(data.totalEntities || 0)
+          setTotalCitations(data.totalCitations || 0)
+        }
       } catch (error) {
         console.error('Failed to fetch metadata:', error)
       }
@@ -377,36 +381,36 @@ export function MandateExplorer ({
         title={explainerTexts.dataCards.sourceDocuments.title}
         value={totalItems}
         icon={FileText}
-        popoverContent={explainerTexts.dataCards.sourceDocuments.content}
-        isPopoverOpen={sourceDocumentsPopover}
-        onPopoverOpenChange={setSourceDocumentsPopover}
+        description={explainerTexts.dataCards.sourceDocuments.description}
+        isOpen={sourceDocumentsPopover}
+        onOpenChange={setSourceDocumentsPopover}
         isLoading={isLoading}
       />
       <DataCard
         title={explainerTexts.dataCards.unOrgans.title}
         value={uniqueOrgans}
         icon={Landmark}
-        popoverContent={explainerTexts.dataCards.unOrgans.content}
-        isPopoverOpen={unOrgansPopover}
-        onPopoverOpenChange={setUnOrgansPopover}
+        description={explainerTexts.dataCards.unOrgans.description}
+        isOpen={unOrgansPopover}
+        onOpenChange={setUnOrgansPopover}
         isLoading={isLoading}
       />
       <DataCard
         title={explainerTexts.dataCards.unEntities.title}
         value={uniqueEntities}
         icon={Building}
-        popoverContent={explainerTexts.dataCards.unEntities.content}
-        isPopoverOpen={unEntitiesPopover}
-        onPopoverOpenChange={setUnEntitiesPopover}
+        description={explainerTexts.dataCards.unEntities.description}
+        isOpen={unEntitiesPopover}
+        onOpenChange={setUnEntitiesPopover}
         isLoading={isLoading}
       />
       <DataCard
         title={explainerTexts.dataCards.citations.title}
         value={totalCitations}
         icon={Quote}
-        popoverContent={explainerTexts.dataCards.citations.content}
-        isPopoverOpen={citationsPopover}
-        onPopoverOpenChange={setCitationsPopover}
+        description={explainerTexts.dataCards.citations.description}
+        isOpen={citationsPopover}
+        onOpenChange={setCitationsPopover}
         isLoading={isLoading}
       />
     </>

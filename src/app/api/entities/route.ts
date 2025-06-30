@@ -3,7 +3,14 @@ import entities from '../../../../data/entities.json';
 import fs from 'fs';
 import path from 'path';
 
-export async function GET() {
+// Cache for merged entities data
+let cachedEntities: any[] | null = null;
+
+async function getMergedEntities() {
+  if (cachedEntities) {
+    return cachedEntities;
+  }
+
   // Dynamically import csv-parse
   const { parse } = await import('csv-parse/sync');
 
@@ -30,5 +37,17 @@ export async function GET() {
     };
   });
 
-  return NextResponse.json(merged);
+  // Cache the result
+  cachedEntities = merged;
+  return merged;
+}
+
+export async function GET() {
+  try {
+    const mergedEntities = await getMergedEntities();
+    return NextResponse.json(mergedEntities);
+  } catch (error) {
+    console.error('Failed to load entities:', error);
+    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+  }
 } 

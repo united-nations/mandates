@@ -10,6 +10,7 @@ import { MandateExplorer } from '@/components/mandate-explorer';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { ConsolidatedFilterSidebar } from '@/components/consolidated-filter-sidebar';
 import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface Entity {
   entity: string;
@@ -36,27 +37,30 @@ function EntityPageContent() {
     url: string | null;
     principalOrgan: string | null;
   } | null>(null);
+  const [isLoadingEntityDetails, setIsLoadingEntityDetails] = useState(true);
 
   const [selectedEntity, setSelectedEntity] = useState<string | null>(null);
   const [selectedOrgan, setSelectedOrgan] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchEntityDetails() {
+      setIsLoadingEntityDetails(true);
       try {
-        const res = await fetch('/api/entities');
+        const res = await fetch(`/api/entities/${encodeURIComponent(entityName)}`);
         if (res.ok) {
-          const data = await res.json();
-          const entity = data.find((e: Entity) => e.entity === entityName);
-          if (entity) {
-            setEntityDetails({
-              longName: entity.entity_long,
-              url: entity.url || null,
-              principalOrgan: entity.principal_organ || null,
-            });
-          }
+          const entity = await res.json();
+          setEntityDetails({
+            longName: entity.entity_long,
+            url: entity.url || null,
+            principalOrgan: entity.principal_organ || null,
+          });
+        } else if (res.status === 404) {
+          console.warn(`Entity "${entityName}" not found`);
         }
       } catch (error) {
         console.error("Failed to fetch entity details:", error);
+      } finally {
+        setIsLoadingEntityDetails(false);
       }
     }
     if (entityName) {
@@ -87,14 +91,29 @@ function EntityPageContent() {
                     <Building className="h-6 w-6 text-un-blue" />
                   </div>
                   <div>
-                    <h1 className="text-2xl lg:text-3xl font-bold tracking-tight text-foreground">
-                      {entityDetails?.longName || entityName}
-                    </h1>
-                    <Badge variant="outline" className="mt-1">{entityName}</Badge>
+                    {isLoadingEntityDetails ? (
+                      <>
+                        <Skeleton className="h-8 w-64 mb-2" />
+                        <Skeleton className="h-6 w-20" />
+                      </>
+                    ) : (
+                      <>
+                        <h1 className="text-2xl lg:text-3xl font-bold tracking-tight text-foreground">
+                          {entityDetails?.longName || entityName}
+                        </h1>
+                        <Badge variant="outline" className="mt-1">{entityName}</Badge>
+                      </>
+                    )}
                   </div>
                 </div>
 
-                {entityDetails && (entityDetails.url || entityDetails.principalOrgan) && (
+                {isLoadingEntityDetails ? (
+                  <div className="space-y-2 mt-4">
+                    <Skeleton className="h-6 w-48" />
+                    <Skeleton className="h-6 w-32" />
+                  </div>
+                ) : (
+                  entityDetails && (entityDetails.url || entityDetails.principalOrgan) && (
                     <div className="space-y-1">
                       {entityDetails.url && (
                           <MetadataItem label="Website" icon={LinkIcon}>
@@ -107,6 +126,7 @@ function EntityPageContent() {
                           </MetadataItem>
                       )}
                     </div>
+                  )
                 )}
               </div>
             </div>
@@ -117,7 +137,7 @@ function EntityPageContent() {
             presetOrgan={effectiveOrgan}
             showEntityCard={false}
             showCrossCitations={false}
-            mandateListTitle={`Documents Cited by ${entityDetails?.longName || entityName}`}
+            mandateListTitle={`Documents Cited by ${isLoadingEntityDetails ? entityName : (entityDetails?.longName || entityName)}`}
             crossCitationsSidebar={
               <div className="flex flex-col gap-4">
                 <ConsolidatedFilterSidebar 
