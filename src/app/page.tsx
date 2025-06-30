@@ -180,6 +180,8 @@ function MandateNavigator () {
           <MandateExplorer 
             entityListSidebar={<EntityListSidebar onEntityClick={setSelectedEntity} />}
             organListSidebar={<OrganListSidebar onOrganClick={setSelectedOrgan} />}
+            onEntityClick={setSelectedEntity}
+            onOrganClick={setSelectedOrgan}
           />
 
           <section id='about-section' className='mt-16 pt-8'>

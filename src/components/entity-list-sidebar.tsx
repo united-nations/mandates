@@ -15,9 +15,11 @@ interface EntityWithCount {
 
 interface EntityListSidebarProps {
   onEntityClick: (entityName: string) => void
+  hideHeader?: boolean
+  borderless?: boolean
 }
 
-export function EntityListSidebar({ onEntityClick }: EntityListSidebarProps) {
+export function EntityListSidebar({ onEntityClick, hideHeader = false, borderless = false }: EntityListSidebarProps) {
   const [entities, setEntities] = useState<EntityWithCount[]>([])
   const [filteredEntities, setFilteredEntities] = useState<EntityWithCount[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -67,16 +69,18 @@ export function EntityListSidebar({ onEntityClick }: EntityListSidebarProps) {
   )
 
   return (
-    <div className="border-l-2 border-un-blue/20 pl-4">
-      <div className="mb-4">
-        <div className="flex items-center gap-2 mb-2">
-          <Building className="h-5 w-5 text-un-blue" />
-          <h3 className="text-lg font-semibold">UN Entities</h3>
+    <div className={borderless ? '' : 'border-l-2 border-un-blue/20 pl-4'}>
+      {!hideHeader && (
+        <div className="mb-4">
+          <div className="flex items-center gap-2 mb-2">
+            <Building className="h-5 w-5 text-un-blue" />
+            <h3 className="text-lg font-semibold">UN Entities</h3>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Entities that cite mandate documents
+          </p>
         </div>
-        <p className="text-sm text-muted-foreground">
-          Entities that cite mandate documents
-        </p>
-      </div>
+      )}
       
       <div className="space-y-3">
         <div className="relative">
@@ -84,7 +88,7 @@ export function EntityListSidebar({ onEntityClick }: EntityListSidebarProps) {
           <Input
             placeholder="Search entities..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
             className="pl-10 h-9 text-sm border-0 border-b border-muted bg-transparent focus-visible:ring-0 focus-visible:border-un-blue rounded-none"
           />
         </div>

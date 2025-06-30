@@ -22,9 +22,11 @@ interface OrganListSidebarProps {
   currentEntity?: string
   currentOrgan?: string
   organCrossCitations?: { organ: string; sharedMandatesCount: number }[]
+  hideHeader?: boolean
+  borderless?: boolean
 }
 
-export function OrganListSidebar({ onOrganClick, currentEntity, currentOrgan, organCrossCitations }: OrganListSidebarProps) {
+export function OrganListSidebar({ onOrganClick, currentEntity, currentOrgan, organCrossCitations, hideHeader = false, borderless = false }: OrganListSidebarProps) {
   const [organs, setOrgans] = useState<BodyWithCount[]>([])
   const [allOrgans, setAllOrgans] = useState<Organ[]>([])
   const [filteredOrgans, setFilteredOrgans] = useState<BodyWithCount[]>([])
@@ -108,16 +110,18 @@ export function OrganListSidebar({ onOrganClick, currentEntity, currentOrgan, or
   )
 
   return (
-    <div className="border-l-2 border-un-blue/20 pl-4">
-      <div className="mb-4">
-        <div className="flex items-center gap-2 mb-2">
-          <Landmark className="h-5 w-5 text-un-blue" />
-          <h3 className="text-lg font-semibold">UN Organs</h3>
+    <div className={borderless ? '' : 'border-l-2 border-un-blue/20 pl-4'}>
+      {!hideHeader && (
+        <div className="mb-4">
+          <div className="flex items-center gap-2 mb-2">
+            <Landmark className="h-5 w-5 text-un-blue" />
+            <h3 className="text-lg font-semibold">UN Organs</h3>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Bodies that issue mandate documents
+          </p>
         </div>
-        <p className="text-sm text-muted-foreground">
-          Bodies that issue mandate documents
-        </p>
-      </div>
+      )}
       
       <div className="space-y-3">
         <div className="relative">
@@ -125,7 +129,7 @@ export function OrganListSidebar({ onOrganClick, currentEntity, currentOrgan, or
           <Input
             placeholder="Search organs..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
             className="pl-10 h-9 text-sm border-0 border-b border-muted bg-transparent focus-visible:ring-0 focus-visible:border-un-blue rounded-none"
           />
         </div>

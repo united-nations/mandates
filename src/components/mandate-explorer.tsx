@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/select'
 import { SearchableDropdownOption } from '@/components/ui/searchable-dropdown'
 import { explainerTexts } from '@/lib/explainer-texts'
+import { CollapsibleSidebars } from '@/components/collapsible-sidebars'
 
 interface Entity {
   entity: string
@@ -62,6 +63,9 @@ interface MandateExplorerProps {
   crossCitationsSidebar?: React.ReactNode
   // New prop to hide implicit filter chip
   hideImplicitFilterChip?: boolean
+  // Handlers for collapsible sidebars
+  onEntityClick?: (entityName: string) => void
+  onOrganClick?: (organName: string) => void
 }
 
 export function MandateExplorer ({
@@ -74,7 +78,9 @@ export function MandateExplorer ({
   organListSidebar,
   showCrossCitations = true,
   crossCitationsSidebar,
-  hideImplicitFilterChip = false
+  hideImplicitFilterChip = false,
+  onEntityClick,
+  onOrganClick
 }: MandateExplorerProps) {
   const router = useRouter()
   const pathname = usePathname()
@@ -492,8 +498,18 @@ export function MandateExplorer ({
 
       <div>
         <div className='mt-6 pt-4'>
+          {/* Collapsible sidebars for smaller screens - only show on main page */}
+          {(entityListSidebar || organListSidebar) &&
+            !presetEntity &&
+            !presetOrgan && (
+                             <CollapsibleSidebars
+                 onEntityClick={onEntityClick || (() => {})}
+                 onOrganClick={onOrganClick || (() => {})}
+               />
+            )}
+          
           {/* Main content with mandates list, cross-citations, and sidebars */}
-          <div className='flex flex-col xl:flex-row gap-6'>
+          <div className='flex flex-col lg:flex-row gap-6'>
             {/* Main mandates content */}
             <div className='flex-1 min-w-0'>
               <div className="flex items-center mb-3 gap-3">
@@ -713,11 +729,11 @@ export function MandateExplorer ({
               </div>
             </div>
 
-            {/* Entity and Organ Lists Sidebar - only show on main page */}
+            {/* Entity and Organ Lists Sidebar - only show on main page and larger screens */}
             {(entityListSidebar || organListSidebar) &&
               !presetEntity &&
               !presetOrgan && (
-                <div className='xl:w-80 flex-shrink-0 space-y-6'>
+                <div className='hidden lg:block lg:w-80 flex-shrink-0 space-y-6'>
                   {entityListSidebar}
                   {organListSidebar}
                 </div>
