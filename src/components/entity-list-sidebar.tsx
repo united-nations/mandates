@@ -31,9 +31,16 @@ export function EntityListSidebar({ onEntityClick, hideHeader = false, borderles
       try {
         const response = await fetch('/api/mandates/meta')
         const data = await response.json()
-        const entitiesData = (data.uniqueEntities || []).sort((a: EntityWithCount, b: EntityWithCount) => 
-          b.count - a.count
-        )
+        // Deduplicate by name (case-insensitive)
+        const seen = new Set<string>()
+        const entitiesData = (data.uniqueEntities || [])
+          .filter((e: EntityWithCount) => {
+            const key = e.name.trim().toLowerCase()
+            if (seen.has(key)) return false
+            seen.add(key)
+            return true
+          })
+          .sort((a: EntityWithCount, b: EntityWithCount) => b.count - a.count)
         setEntities(entitiesData)
         setFilteredEntities(entitiesData)
         setMaxCount(Math.max(...entitiesData.map(e => e.count), 1))
@@ -108,16 +115,14 @@ export function EntityListSidebar({ onEntityClick, hideHeader = false, borderles
                     <div className="text-sm font-medium truncate">
                       {entity.name}
                     </div>
-                    <div className="text-xs text-muted-foreground truncate">
-                      <EntityName entityName={entity.name} showUnderline={false} />
-                    </div>
                   </div>
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    <span className="flex items-center min-w-[70px]">
-                      <span className="block h-1 rounded bg-un-blue/20" style={{ width: `${Math.max(10, (entity.count / maxCount) * 40)}px`, minWidth: 10, marginRight: 8 }} />
-                      <span className="text-xs font-mono text-un-blue" style={{ minWidth: 18, textAlign: 'right' }}>{entity.count}</span>
+                  <div className="flex items-center gap-2 flex-shrink-0 w-32">
+                    <span className="flex items-center w-full">
+                      <span className="text-xs font-mono text-un-blue text-right pr-2 min-w-[28px] max-w-[32px] flex-shrink-0 justify-end flex">{entity.count}</span>
+                      <span className="relative flex-1 h-2 bg-un-blue/10 rounded">
+                        <span className="absolute left-0 top-0 h-2 rounded bg-un-blue/60" style={{ width: `${(entity.count / maxCount) * 100}%`, minWidth: 2 }} />
+                      </span>
                     </span>
-                    <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity text-un-blue" />
                   </div>
                 </div>
               ))}

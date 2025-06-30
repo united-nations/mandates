@@ -67,6 +67,14 @@ export function OrganListSidebar({ onOrganClick, currentEntity, currentOrgan, or
             setAllOrgans(organsList)
           }
         }
+        // Deduplicate by name (case-insensitive)
+        const seen = new Set<string>()
+        organsData = organsData.filter((o: BodyWithCount) => {
+          const key = o.name.trim().toLowerCase()
+          if (seen.has(key)) return false
+          seen.add(key)
+          return true
+        })
         setOrgans(organsData)
         setFilteredOrgans(organsData)
         setMaxCount(Math.max(...organsData.map((o: BodyWithCount) => o.count), 1))
@@ -150,12 +158,13 @@ export function OrganListSidebar({ onOrganClick, currentEntity, currentOrgan, or
                       {findOrganData(organ.name)?.short || organ.name}
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    <span className="flex items-center min-w-[70px]">
-                      <span className="block h-1 rounded bg-un-blue/20" style={{ width: `${Math.max(10, (organ.count / maxCount) * 40)}px`, minWidth: 10, marginRight: 8 }} />
-                      <span className="text-xs font-mono text-un-blue" style={{ minWidth: 18, textAlign: 'right' }}>{organ.count}</span>
+                  <div className="flex items-center gap-2 flex-shrink-0 w-32">
+                    <span className="flex items-center w-full">
+                      <span className="text-xs font-mono text-un-blue text-right pr-2 min-w-[28px] max-w-[32px] flex-shrink-0 justify-end flex">{organ.count}</span>
+                      <span className="relative flex-1 h-2 bg-un-blue/10 rounded">
+                        <span className="absolute left-0 top-0 h-2 rounded bg-un-blue/60" style={{ width: `${(organ.count / maxCount) * 100}%`, minWidth: 2 }} />
+                      </span>
                     </span>
-                    <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity text-un-blue" />
                   </div>
                 </div>
               ))}
