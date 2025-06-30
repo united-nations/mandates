@@ -6,11 +6,8 @@ import type { Mandate } from '@/types';
 import { MandateList } from '@/components/mandate-list';
 import { FilterControls } from '@/components/filter-controls';
 import { PaginationControls } from '@/components/pagination-controls';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { FileText, Landmark, Building, Target, Quote, HelpCircle } from 'lucide-react';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { FileText, Landmark, Building, Quote, MessageCircle } from 'lucide-react';
 import { MandateDetails } from '@/components/mandate-details';
 import { SearchResultsSummary } from '@/components/search-results-summary';
 import { Button } from '@/components/ui/button';
@@ -25,10 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  Tooltip,
-  TooltipContent,
   TooltipProvider,
-  TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { SearchableDropdownOption } from '@/components/ui/searchable-dropdown';
 import { explainerTexts } from '@/lib/explainer-texts';
@@ -727,6 +721,23 @@ function MandateNavigator() {
           allEntities={allEntities}
           onEntityChange={onEntityChange}
         />
+
+        {/* Fixed Feedback Button */}
+        <Button
+          asChild
+          className="fixed bottom-6 right-6 z-50 shadow-lg hover:shadow-xl transition-shadow"
+          size="default"
+        >
+          <a
+            href="https://forms.office.com/Pages/ResponsePage.aspx?id=2zWeD09UYE-9zF6kFubccKWYVHshXnBMlwUt34IXB2ZUQko4SUdLUVVQSE5BRU1UOTQ1WFRLV0JXRiQlQCN0PWcu"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2"
+          >
+            <MessageCircle className="h-4 w-4" />
+            Give Feedback
+          </a>
+        </Button>
       </div>
     </TooltipProvider>
   );
