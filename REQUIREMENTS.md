@@ -37,6 +37,7 @@ of todos and sub-todos and their progress. Do not modify this paragraph but use 
 - ✅ Updated MandateExplorer component to conditionally hide organs data card when `isOrganPage` is true
 - ✅ Correctly configured organ page with entityListSidebar prop only (no crossCitationsSidebar)
 - ✅ Fixed sidebar visibility logic to show entity sidebar on organ pages (both desktop and mobile)
+- ✅ Fixed data card flickering/lag issue when switching between main/entity/organ pages by implementing proper state reset on page context changes and AbortController to prevent race conditions from multiple rapid API calls
 - ✅ Fixed cross-citations components to filter out null entities (frontend-only fix)
 - ✅ Removed redundant cross-citation-filter.tsx file (duplicate of consolidated-filter-sidebar.tsx)
 - ✅ Updated entity sidebar on organ pages to show counts specific to the current organ

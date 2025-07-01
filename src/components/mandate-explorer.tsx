@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import type { Mandate } from '@/types'
 import { MandateList } from '@/components/mandate-list'
 import { FilterControls } from '@/components/filter-controls'
@@ -109,8 +109,57 @@ export function MandateExplorer ({
   const pageSize = Number(filters.limit || '10')
   const sortBy = filters.sort_by || (filters.keyword ? 'default' : 'citing_entities_desc')
 
+  // Ref to track current abort controller
+  const abortControllerRef = useRef<AbortController | null>(null)
+
+  // Reset data when page context changes to prevent stale data
+  const prevPageContext = useRef({ 
+    isEntityPage: false, 
+    isOrganPage: false, 
+    isMainPage: true, 
+    currentEntityName: '', 
+    currentOrganName: '' 
+  })
+  
+  useEffect(() => {
+    const prev = prevPageContext.current
+    const hasPageTypeChanged = prev.isEntityPage !== isEntityPage || 
+                               prev.isOrganPage !== isOrganPage || 
+                               prev.isMainPage !== isMainPage
+    const hasEntityChanged = prev.currentEntityName !== currentEntityName
+    const hasOrganChanged = prev.currentOrganName !== currentOrganName
+    
+    if (hasPageTypeChanged || hasEntityChanged || hasOrganChanged) {
+      setTotalItems(0)
+      setUniqueOrgans(0)
+      setUniqueEntities(0)
+      setTotalCitations(0)
+      setTotalPages(0)
+      setMandates([])
+      setIsLoading(true)
+      
+      // Update ref
+      prevPageContext.current = {
+        isEntityPage,
+        isOrganPage,
+        isMainPage,
+        currentEntityName: currentEntityName || '',
+        currentOrganName: currentOrganName || ''
+      }
+    }
+  }, [isEntityPage, isOrganPage, isMainPage, currentEntityName, currentOrganName])
+
   // Fetch mandates whenever filters change
   const fetchMandates = useCallback(async () => {
+    // Cancel previous request if it exists
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort()
+    }
+    
+    // Create new abort controller for this request
+    const abortController = new AbortController()
+    abortControllerRef.current = abortController
+    
     setIsLoading(true)
     try {
       const params = new URLSearchParams()
@@ -127,7 +176,15 @@ export function MandateExplorer ({
       params.set('limit', pageSize.toString())
       params.set('sort_by', sortBy)
 
-      const response = await fetch(`/api/mandates?${params.toString()}`)
+      const response = await fetch(`/api/mandates?${params.toString()}`, {
+        signal: abortController.signal
+      })
+      
+      // If request was aborted, don't process the response
+      if (abortController.signal.aborted) {
+        return
+      }
+      
       const data = await response.json()
 
       setMandates(data.items || [])
@@ -141,15 +198,31 @@ export function MandateExplorer ({
         setYearDistribution(data.metadata.yearDistribution)
       }
     } catch (error) {
+      // Ignore abort errors
+      if (error instanceof Error && error.name === 'AbortError') {
+        return
+      }
       console.error('Failed to fetch mandates:', error)
     } finally {
-      setIsLoading(false)
+      // Only set loading to false if this request wasn't aborted
+      if (!abortController.signal.aborted) {
+        setIsLoading(false)
+      }
     }
   }, [filters, currentPage, pageSize, sortBy])
 
   useEffect(() => {
     fetchMandates()
   }, [fetchMandates])
+
+  // Cleanup: abort any pending requests when component unmounts
+  useEffect(() => {
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort()
+      }
+    }
+  }, [])
 
   useEffect(() => {
     async function fetchAllEntities () {
