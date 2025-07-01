@@ -163,8 +163,46 @@ async function getMetadata() {
   };
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url);
+    const organ = searchParams.get('organ');
+    
+    // If organ filter is provided, calculate organ-specific metadata
+    if (organ) {
+      const jsonDirectory = path.join(process.cwd(), 'data');
+      const fileContents = await fs.readFile(path.join(jsonDirectory, 'ppb2026_unique_mandates_with_metadata.json'), 'utf8');
+      const rawData = JSON.parse(fileContents) as Mandate[];
+      
+      // Filter mandates for the specific organ
+      const organMandates = rawData.filter(mandate => mandate.body === organ);
+      
+      // Calculate entity counts from organ-specific mandates
+      const entityCounts: { [key: string]: number } = {};
+      
+      for (const item of organMandates) {
+        if (item.citation_info && Array.isArray(item.citation_info)) {
+          item.citation_info.forEach((citation: any) => {
+            if (citation.entity) {
+              entityCounts[citation.entity] = (entityCounts[citation.entity] || 0) + 1;
+            }
+          });
+        }
+      }
+      
+      const organSpecificEntities = Object.entries(entityCounts)
+        .map(([name, count]) => ({ name, count }))
+        .sort((a, b) => b.count - a.count); // Sort by count descending
+      
+      return NextResponse.json({
+        uniqueEntities: organSpecificEntities,
+        totalDocuments: organMandates.length,
+        totalEntities: Object.keys(entityCounts).length,
+        totalCitations: organMandates.reduce((sum, m) => sum + (m.num_citations || 0), 0),
+      });
+    }
+    
+    // Return cached metadata for general requests
     const metadata = await getMetadata();
     return NextResponse.json(metadata);
   } catch (error) {
