@@ -61,19 +61,24 @@ async function getMetadata() {
   const localYearDistribution: { [year: string]: number } = {};
 
   for (const item of rawData) {
-    // Count citations per entity based on citation_info
+    // Count documents per entity based on citation_info
     if (item.citation_info && Array.isArray(item.citation_info)) {
+      const entitiesInThisDocument = new Set<string>();
       item.citation_info.forEach((citation: any) => {
         if (citation.entity) {
-          entityCounts[citation.entity] = (entityCounts[citation.entity] || 0) + 1;
+          entitiesInThisDocument.add(citation.entity);
         }
+      });
+      // Count this document once per entity that cites it
+      entitiesInThisDocument.forEach(entity => {
+        entityCounts[entity] = (entityCounts[entity] || 0) + 1;
       });
     }
     if (item.priority_area) {
         priorityAreas.add(item.priority_area);
     }
     if (item.body && item.body !== 'UNCLOS' && item.body !== 'Charter' && item.body !== 'Other' && item.body !== "Conference of the Parties to the United Nations Convention against Transnational Organized Crime") {
-        bodyCounts[item.body] = (bodyCounts[item.body] || 0) + (item.num_citations || 0);
+        bodyCounts[item.body] = (bodyCounts[item.body] || 0) + 1;
     }
     if (item.pillar) {
         pillars.add(item.pillar);
@@ -177,15 +182,20 @@ export async function GET(request: Request) {
       // Filter mandates for the specific organ
       const organMandates = rawData.filter(mandate => mandate.body === organ);
       
-      // Calculate entity counts from organ-specific mandates
+      // Calculate entity counts from organ-specific mandates (count documents, not citations)
       const entityCounts: { [key: string]: number } = {};
       
       for (const item of organMandates) {
         if (item.citation_info && Array.isArray(item.citation_info)) {
+          const entitiesInThisDocument = new Set<string>();
           item.citation_info.forEach((citation: any) => {
             if (citation.entity) {
-              entityCounts[citation.entity] = (entityCounts[citation.entity] || 0) + 1;
+              entitiesInThisDocument.add(citation.entity);
             }
+          });
+          // Count this document once per entity that cites it
+          entitiesInThisDocument.forEach(entity => {
+            entityCounts[entity] = (entityCounts[entity] || 0) + 1;
           });
         }
       }
