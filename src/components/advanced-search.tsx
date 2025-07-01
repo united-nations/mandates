@@ -169,7 +169,7 @@ export function AdvancedSearch({
           </div>
         </div>
         {/* Row 2: Year Range */}
-        {yearRange && selectedYearRange && (
+        {yearRange && (
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -182,11 +182,11 @@ export function AdvancedSearch({
                 tooltipText={explainerTexts.advancedFilters.yearRange.tooltip}
               />
             </div>
-            <div className="bg-white border border-slate-300 rounded-lg p-4 shadow-sm">
+            <div className="p-4">
               <YearSlider
                 yearDistribution={yearDistribution}
                 yearRange={yearRange}
-                value={selectedYearRange}
+                value={selectedYearRange || [yearRange.min, yearRange.max]}
                 onChange={onYearRangeChange}
               />
             </div>
