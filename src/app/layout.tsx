@@ -3,6 +3,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { explainerTexts } from '@/lib/explainer-texts';
 import { GoogleAnalytics } from '@next/third-parties/google';
+import { FilterProvider } from '@/contexts/FilterContext';
 
 export const metadata: Metadata = {
   title: explainerTexts.pageMetadata.title,
@@ -23,8 +24,10 @@ export default function RootLayout({
       </head>
       {/* Updated body to use font-sans from Tailwind config (which is now Roboto) */}
       <body className="font-sans antialiased">
-        {children}
-        <Toaster />
+        <FilterProvider>
+          {children}
+          <Toaster />
+        </FilterProvider>
       </body>
       <GoogleAnalytics gaId="G-HYTYJM0JGC" />
     </html>

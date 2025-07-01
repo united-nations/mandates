@@ -131,14 +131,6 @@ function MandateNavigator () {
     }
   }, [router])
 
-  const handleEntityClick = (entityName: string) => {
-    router.push(`/entity/${encodeURIComponent(entityName)}`)
-  }
-
-  const handleOrganClick = (organName: string) => {
-    router.push(`/organ/${encodeURIComponent(organName)}`)
-  }
-
   return (
     <TooltipProvider>
       <div className='min-h-screen bg-background text-foreground'>
@@ -181,10 +173,8 @@ function MandateNavigator () {
 
           {/* Mandate Explorer */}
           <MandateExplorer 
-            entityListSidebar={<EntityListSidebar onEntityClick={handleEntityClick} />}
-            organListSidebar={<OrganListSidebar onOrganClick={handleOrganClick} />}
-            onEntityClick={handleEntityClick}
-            onOrganClick={handleOrganClick}
+            entityListSidebar={<EntityListSidebar />}
+            organListSidebar={<OrganListSidebar />}
           />
 
           <section id='about-section' className='mt-16 pt-8'>

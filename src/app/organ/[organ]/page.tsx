@@ -4,10 +4,10 @@ import { Suspense, useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Landmark } from 'lucide-react';
-import Link from 'next/link';
 import { MandateExplorer } from '@/components/mandate-explorer';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { ConsolidatedFilterSidebar } from '@/components/consolidated-filter-sidebar';
+import { EntityListSidebar } from '@/components/entity-list-sidebar';
 import { Badge } from '@/components/ui/badge';
 
 interface Organ {
@@ -21,8 +21,6 @@ function OrganPageContent() {
   const organName = decodeURIComponent(params.organ as string);
 
   const [organLongName, setOrganLongName] = useState<string>('');
-  const [selectedEntity, setSelectedEntity] = useState<string | null>(null);
-  const [selectedOrgan, setSelectedOrgan] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchOrganDetails() {
@@ -43,9 +41,6 @@ function OrganPageContent() {
       fetchOrganDetails();
     }
   }, [organName]);
-
-  const effectiveEntity = selectedEntity || undefined;
-  const effectiveOrgan = selectedOrgan || organName;
 
   return (
     <TooltipProvider>
@@ -90,11 +85,14 @@ function OrganPageContent() {
           </div>
 
           <MandateExplorer 
-            presetEntity={effectiveEntity}
-            presetOrgan={effectiveOrgan}
-            showEntityCard={true}
             mandateListTitle={`Documents Issued by ${organLongName || organName}`}
-            crossCitationsSidebar={null}
+            showCrossCitations={false}
+            crossCitationsSidebar={
+              <div className="flex flex-col gap-6">
+                <ConsolidatedFilterSidebar />
+                <EntityListSidebar />
+              </div>
+            }
           />
         </main>
       </div>

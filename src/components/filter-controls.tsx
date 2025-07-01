@@ -12,44 +12,15 @@ import { Badge } from '@/components/ui/badge';
 import { EntityName } from './ui/entity-name';
 import { toTitleCase } from '@/lib/utils';
 import { explainerTexts } from '@/lib/explainer-texts';
+import { useFilters } from '@/contexts/FilterContext';
 
 interface FilterControlsProps {
   entityOptions: SearchableDropdownOption[];
   organOptions: SearchableDropdownOption[];
   programmeOptions: string[];
   subjectOptions: string[];
-  selectedEntity: string;
-  selectedOrgan: string;
-  keyword: string;
-  onEntityChange: (value: string) => void;
-  onOrganChange: (value: string) => void;
-  onKeywordChange: (value: string) => void;
-  onKeywordSearch?: (value?: string) => void; // New prop for Enter-based search
-  programme: string;
-  subject: string;
   yearRange: { min: number; max: number } | null;
   yearDistribution: { [year: string]: number };
-  selectedYearRange: [number, number] | null;
-  budgetDocument: string;
-  onProgrammeChange: (value: string) => void;
-  onSubjectChange: (value: string) => void;
-  onYearRangeChange: (value: [number, number]) => void;
-  onBudgetDocumentChange: (value: string) => void;
-  // New props for filter chips
-  appliedFilters: {
-    entity?: string;
-    organ?: string;
-    programme?: string;
-    subject?: string;
-    pillar?: string;
-    year?: string;
-    budget_document?: string;
-    cross_entity?: string;
-  };
-  onClearFilter: (filterKey: string) => void;
-  onClearSearch: () => void;
-  // New prop to hide implicit entity/organ filter chip
-  hideImplicitFilterChip?: boolean;
 }
 
 export function FilterControls({
@@ -57,28 +28,19 @@ export function FilterControls({
   organOptions,
   programmeOptions,
   subjectOptions,
-  selectedEntity,
-  selectedOrgan,
-  keyword,
-  onEntityChange,
-  onOrganChange,
-  onKeywordChange,
-  onKeywordSearch,
-  programme,
-  subject,
   yearRange,
   yearDistribution,
-  selectedYearRange,
-  budgetDocument,
-  onProgrammeChange,
-  onSubjectChange,
-  onYearRangeChange,
-  onBudgetDocumentChange,
-  appliedFilters,
-  onClearFilter,
-  onClearSearch,
-  hideImplicitFilterChip = false,
 }: FilterControlsProps) {
+  const { 
+    filters, 
+    setFilter, 
+    clearFilter, 
+    clearAllFilters, 
+    getDisplayFilters,
+    isEntityPage,
+    isOrganPage 
+  } = useFilters();
+  
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
   const [openTooltip, setOpenTooltip] = useState<string | null>(null);
 
@@ -123,18 +85,25 @@ export function FilterControls({
     </div>
   );
 
-  // Compute which filters to show as chips
-  const filteredAppliedFilters = { ...appliedFilters };
-  if (hideImplicitFilterChip) {
-    if (filteredAppliedFilters.entity) {
-      delete filteredAppliedFilters.entity;
-    }
-    if (filteredAppliedFilters.organ) {
-      delete filteredAppliedFilters.organ;
-    }
-  }
-  const hasFilters = Object.values(filteredAppliedFilters).some(value => value && value !== 'all');
-  const hasSearch = keyword && keyword.trim().length > 0;
+  // Get filters that should be displayed as chips (context-aware)
+  const displayFilters = getDisplayFilters();
+  const hasFilters = Object.values(displayFilters).some(value => value && value !== 'all');
+  const hasSearch = filters.keyword && filters.keyword.trim().length > 0;
+
+  // Convert year range to display format
+  const yearRangeDisplay = filters.start_year && filters.end_year 
+    ? `${filters.start_year}-${filters.end_year}`
+    : null;
+
+  const handleYearRangeChange = (range: [number, number]) => {
+    setFilter('start_year', range[0].toString());
+    setFilter('end_year', range[1].toString());
+  };
+
+  const selectedYearRange: [number, number] | null = 
+    filters.start_year && filters.end_year 
+      ? [parseInt(filters.start_year), parseInt(filters.end_year)]
+      : null;
 
   return (
     <div className="bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200 rounded-xl shadow-sm overflow-hidden">
@@ -163,23 +132,23 @@ export function FilterControls({
               <Input
                 id="keyword-search"
                 placeholder={explainerTexts.filters.keywordSearch.placeholder}
-                value={keyword}
-                onChange={(e) => onKeywordChange(e.target.value)}
+                value={filters.keyword || ''}
+                onChange={(e) => setFilter('keyword', e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
                     e.preventDefault();
-                    onKeywordSearch?.(keyword);
+                    // Keyword filter is automatically applied via context
                   }
                 }}
                 className="pr-20 text-sm h-12 border-slate-300 focus:border-blue-500 focus:ring-blue-500 bg-white shadow-sm"
               />
               <div className="absolute right-0 top-0 h-full flex">
-                {keyword && (
+                {filters.keyword && (
                   <Button
                     variant="ghost"
                     size="sm"
                     className="h-full px-3 hover:bg-slate-100"
-                    onClick={() => onKeywordChange('')}
+                    onClick={() => clearFilter('keyword')}
                     title="Clear search"
                   >
                     <X className="h-4 w-4" />
@@ -189,7 +158,12 @@ export function FilterControls({
                   variant="ghost"
                   size="sm"
                   className="h-full px-4 text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-                  onClick={() => onKeywordSearch?.(keyword)}
+                  onClick={() => {
+                    // Trigger search by setting keyword filter
+                    if (filters.keyword) {
+                      setFilter('keyword', filters.keyword);
+                    }
+                  }}
                   title="Search (or press Enter)"
                 >
                   <Search className="h-4 w-4" />
@@ -221,48 +195,41 @@ export function FilterControls({
         <div className="border-t border-slate-200 bg-white/50">
           <div className="p-6 pt-4">
             <AdvancedSearch
-              programme={programme}
-              subject={subject}
-              budgetDocument={budgetDocument}
-              onProgrammeChange={onProgrammeChange}
-              onSubjectChange={onSubjectChange}
-              onBudgetDocumentChange={onBudgetDocumentChange}
+              programme={filters.programme || ''}
+              subject={filters.subject || ''}
+              budgetDocument={filters.budget_document || ''}
+              onProgrammeChange={(value) => setFilter('programme', value)}
+              onSubjectChange={(value) => setFilter('subject', value)}
+              onBudgetDocumentChange={(value) => setFilter('budget_document', value)}
               programmeOptions={programmeOptions}
               subjectOptions={subjectOptions}
               yearRange={yearRange}
               yearDistribution={yearDistribution}
               selectedYearRange={selectedYearRange}
-              onYearRangeChange={onYearRangeChange}
+              onYearRangeChange={handleYearRangeChange}
             />
           </div>
         </div>
       )}
 
       {/* Filter Chips - Enhanced styling */}
-      {(hasSearch || hasFilters) && (!hideImplicitFilterChip || Object.values(filteredAppliedFilters).length > 0) && (
+      {(hasSearch || hasFilters) && (
         <div className="border-t border-slate-200 bg-white/50">
           <div className="p-6 pt-4">
             <div className="space-y-4">
               {/* Only show Active Filters label, count, and Clear All if there are visible chips or search */}
-              {(hasSearch || Object.values(filteredAppliedFilters).filter(v => v && v !== 'all').length > 0) && (
+              {(hasSearch || Object.values(displayFilters).filter(v => v && v !== 'all').length > 0) && (
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-semibold text-slate-700">Active Filters</span>
                     <span className="text-xs text-slate-500 bg-slate-100 px-2 py-1 rounded-full">
-                      {(hasSearch ? 1 : 0) + Object.values(filteredAppliedFilters).filter(v => v && v !== 'all').length}
+                      {(hasSearch ? 1 : 0) + Object.values(displayFilters).filter(v => v && v !== 'all').length}
                     </span>
                   </div>
                   <Button
                     variant="ghost"
                     className="shrink-0 inline-flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-                    onClick={() => {
-                      if (hasSearch) onClearSearch();
-                      Object.keys(filteredAppliedFilters).forEach(key => {
-                        if (filteredAppliedFilters[key as keyof typeof filteredAppliedFilters]) {
-                          onClearFilter(key);
-                        }
-                      });
-                    }}
+                    onClick={clearAllFilters}
                   >
                     <X className="h-4 w-4" />
                     Clear All
@@ -274,125 +241,128 @@ export function FilterControls({
                 {hasSearch && (
                   <Badge variant="default" className="flex items-center gap-2 px-3 py-1.5 bg-blue-100 text-blue-800 border border-blue-200 hover:bg-blue-200">
                     <Search className="h-3 w-3" />
-                    <span className="text-sm font-medium">"{keyword}"</span>
+                    <span className="text-sm font-medium">"{filters.keyword}"</span>
                     <Button
                       variant="ghost"
                       size="sm"
                       className="h-4 w-4 p-0 hover:bg-blue-300 rounded-full"
-                      onClick={onClearSearch}
+                      onClick={() => clearFilter('keyword')}
                     >
                       <X className="h-3 w-3" />
                     </Button>
                   </Badge>
                 )}
 
-                {/* Only show entity chip if not hidden */}
-                {filteredAppliedFilters.entity && filteredAppliedFilters.entity !== 'all' && (
+                {/* Entity chip - only show if not on entity page or if it's an additional filter */}
+                {displayFilters.entity && displayFilters.entity !== 'all' && (
                   <Badge variant="secondary" className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 text-slate-800 border border-slate-200 hover:bg-slate-200">
                     <Building className="h-3 w-3" />
                     <span className="text-sm font-medium">
                       Entity:&nbsp;
-                      <EntityName entityName={filteredAppliedFilters.entity} />
+                      <EntityName entityName={displayFilters.entity} />
                     </span>
                     <Button
                       variant="ghost"
                       size="sm"
                       className="h-4 w-4 p-0 hover:bg-slate-300 rounded-full"
-                      onClick={() => onClearFilter('entity')}
+                      onClick={() => clearFilter('entity')}
                     >
                       <X className="h-3 w-3" />
                     </Button>
                   </Badge>
                 )}
 
-                {/* Only show organ chip if not hidden */}
-                {filteredAppliedFilters.organ && filteredAppliedFilters.organ !== 'all' && (
+                {/* Organ chip - only show if not on organ page or if it's an additional filter */}
+                {displayFilters.organ && displayFilters.organ !== 'all' && (
                   <Badge variant="secondary" className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 text-slate-800 border border-slate-200 hover:bg-slate-200">
                     <Landmark className="h-3 w-3" />
-                    <span className="text-sm font-medium">Organ: {filteredAppliedFilters.organ}</span>
+                    <span className="text-sm font-medium">Organ: {displayFilters.organ}</span>
                     <Button
                       variant="ghost"
                       size="sm"
                       className="h-4 w-4 p-0 hover:bg-slate-300 rounded-full"
-                      onClick={() => onClearFilter('organ')}
+                      onClick={() => clearFilter('organ')}
                     >
                       <X className="h-3 w-3" />
                     </Button>
                   </Badge>
                 )}
 
-                {filteredAppliedFilters.programme && (
+                {displayFilters.programme && (
                   <Badge variant="secondary" className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 text-slate-800 border border-slate-200 hover:bg-slate-200">
                     <Target className="h-3 w-3" />
-                    <span className="text-sm font-medium">Programme: {filteredAppliedFilters.programme}</span>
+                    <span className="text-sm font-medium">Programme: {displayFilters.programme}</span>
                     <Button
                       variant="ghost"
                       size="sm"
                       className="h-4 w-4 p-0 hover:bg-slate-300 rounded-full"
-                      onClick={() => onClearFilter('programme')}
+                      onClick={() => clearFilter('programme')}
                     >
                       <X className="h-3 w-3" />
                     </Button>
                   </Badge>
                 )}
 
-                {filteredAppliedFilters.subject && (
+                {displayFilters.subject && (
                   <Badge variant="secondary" className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 text-slate-800 border border-slate-200 hover:bg-slate-200">
                     <BookOpen className="h-3 w-3" />
-                    <span className="text-sm font-medium">Subject: {toTitleCase(filteredAppliedFilters.subject)}</span>
+                    <span className="text-sm font-medium">Subject: {toTitleCase(displayFilters.subject)}</span>
                     <Button
                       variant="ghost"
                       size="sm"
                       className="h-4 w-4 p-0 hover:bg-slate-300 rounded-full"
-                      onClick={() => onClearFilter('subject')}
+                      onClick={() => clearFilter('subject')}
                     >
                       <X className="h-3 w-3" />
                     </Button>
                   </Badge>
                 )}
 
-                {filteredAppliedFilters.year && (
+                {yearRangeDisplay && (
                   <Badge variant="secondary" className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 text-slate-800 border border-slate-200 hover:bg-slate-200">
                     <Calendar className="h-3 w-3" />
-                    <span className="text-sm font-medium">Year: {filteredAppliedFilters.year}</span>
+                    <span className="text-sm font-medium">Year: {yearRangeDisplay}</span>
                     <Button
                       variant="ghost"
                       size="sm"
                       className="h-4 w-4 p-0 hover:bg-slate-300 rounded-full"
-                      onClick={() => onClearFilter('year')}
+                      onClick={() => {
+                        clearFilter('start_year');
+                        clearFilter('end_year');
+                      }}
                     >
                       <X className="h-3 w-3" />
                     </Button>
                   </Badge>
                 )}
 
-                {filteredAppliedFilters.budget_document && filteredAppliedFilters.budget_document !== 'all' && (
+                {displayFilters.budget_document && displayFilters.budget_document !== 'all' && (
                   <Badge variant="secondary" className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 text-slate-800 border border-slate-200 hover:bg-slate-200">
                     <Receipt className="h-3 w-3" />
-                    <span className="text-sm font-medium">Budget: {filteredAppliedFilters.budget_document}</span>
+                    <span className="text-sm font-medium">Budget: {displayFilters.budget_document}</span>
                     <Button
                       variant="ghost"
                       size="sm"
                       className="h-4 w-4 p-0 hover:bg-slate-300 rounded-full"
-                      onClick={() => onClearFilter('budget_document')}
+                      onClick={() => clearFilter('budget_document')}
                     >
                       <X className="h-3 w-3" />
                     </Button>
                   </Badge>
                 )}
 
-                {filteredAppliedFilters.cross_entity && (
+                {displayFilters.cross_entity && (
                   <Badge variant="secondary" className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 text-slate-800 border border-slate-200 hover:bg-slate-200">
                     <Building className="h-3 w-3" />
                     <span className="text-sm font-medium">
                       Shared with:&nbsp;
-                      <EntityName entityName={filteredAppliedFilters.cross_entity} />
+                      <EntityName entityName={displayFilters.cross_entity} />
                     </span>
                     <Button
                       variant="ghost"
                       size="sm"
                       className="h-4 w-4 p-0 hover:bg-slate-300 rounded-full"
-                      onClick={() => onClearFilter('cross_entity')}
+                      onClick={() => clearFilter('cross_entity')}
                     >
                       <X className="h-3 w-3" />
                     </Button>

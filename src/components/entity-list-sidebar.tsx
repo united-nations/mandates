@@ -1,12 +1,12 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-
+import { useRouter } from 'next/navigation'
 import { Input } from '@/components/ui/input'
-
-import { Building, Search, ArrowRight } from 'lucide-react'
+import { Building, Search } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { EntityName } from '@/components/ui/entity-name'
+import { useFilters } from '@/contexts/FilterContext'
 
 interface EntityWithCount {
   name: string
@@ -14,12 +14,14 @@ interface EntityWithCount {
 }
 
 interface EntityListSidebarProps {
-  onEntityClick: (entityName: string) => void
   hideHeader?: boolean
   borderless?: boolean
 }
 
-export function EntityListSidebar({ onEntityClick, hideHeader = false, borderless = false }: EntityListSidebarProps) {
+export function EntityListSidebar({ hideHeader = false, borderless = false }: EntityListSidebarProps) {
+  const router = useRouter();
+  const { filters, setFilter, isOrganPage, isMainPage, currentOrganName } = useFilters();
+  
   const [entities, setEntities] = useState<EntityWithCount[]>([])
   const [filteredEntities, setFilteredEntities] = useState<EntityWithCount[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -29,13 +31,22 @@ export function EntityListSidebar({ onEntityClick, hideHeader = false, borderles
   useEffect(() => {
     async function fetchEntities() {
       try {
-        const response = await fetch('/api/mandates/meta')
+        let url = '/api/mandates/meta';
+        
+        // If on organ page, get entity counts specific to that organ
+        if (isOrganPage && currentOrganName) {
+          const params = new URLSearchParams({ organ: currentOrganName });
+          url = `/api/mandates/meta?${params.toString()}`;
+        }
+        
+        const response = await fetch(url)
         const data = await response.json()
+        
         // Deduplicate by name (case-insensitive)
         const seen = new Set<string>()
         const entitiesData = (data.uniqueEntities || [])
-          .filter((e: EntityWithCount) => {
-            const key = e.name.trim().toLowerCase()
+          .filter((entity: EntityWithCount) => {
+            const key = entity.name.trim().toLowerCase()
             if (seen.has(key)) return false
             seen.add(key)
             return true
@@ -43,7 +54,7 @@ export function EntityListSidebar({ onEntityClick, hideHeader = false, borderles
           .sort((a: EntityWithCount, b: EntityWithCount) => b.count - a.count)
         setEntities(entitiesData)
         setFilteredEntities(entitiesData)
-        setMaxCount(Math.max(...entitiesData.map(e => e.count), 1))
+        setMaxCount(Math.max(...entitiesData.map((entity: EntityWithCount) => entity.count), 1))
       } catch (error) {
         console.error('Failed to fetch entities:', error)
       } finally {
@@ -51,7 +62,7 @@ export function EntityListSidebar({ onEntityClick, hideHeader = false, borderles
       }
     }
     fetchEntities()
-  }, [])
+  }, [isOrganPage, currentOrganName])
 
   useEffect(() => {
     if (!searchTerm.trim()) {
@@ -63,6 +74,16 @@ export function EntityListSidebar({ onEntityClick, hideHeader = false, borderles
       setFilteredEntities(filtered)
     }
   }, [searchTerm, entities])
+
+  const handleEntityClick = (entityName: string) => {
+    if (isMainPage) {
+      // Navigate to entity page (fresh, no filters preserved)
+      router.push(`/entity/${encodeURIComponent(entityName)}`);
+    } else if (isOrganPage) {
+      // Set entity filter on organ page
+      setFilter('entity', entityName);
+    }
+  };
 
   const LoadingSkeleton = () => (
     <div className="space-y-2">
@@ -84,7 +105,10 @@ export function EntityListSidebar({ onEntityClick, hideHeader = false, borderles
             <h3 className="text-lg font-semibold">UN Entities</h3>
           </div>
           <p className="text-sm text-muted-foreground">
-            Entities that cite mandate documents
+            {isOrganPage 
+              ? `Entities that cite ${currentOrganName} mandate documents`
+              : 'Entities that cite mandate documents'
+            }
           </p>
         </div>
       )}
@@ -108,12 +132,14 @@ export function EntityListSidebar({ onEntityClick, hideHeader = false, borderles
               {filteredEntities.map((entity) => (
                 <div
                   key={entity.name}
-                  className="flex items-center justify-between p-2 rounded-sm hover:bg-muted/30 cursor-pointer group border-b border-muted/30 last:border-b-0"
-                  onClick={() => onEntityClick(entity.name)}
+                  className={`flex items-center justify-between p-2 rounded-sm hover:bg-muted/30 cursor-pointer group border-b border-muted/30 last:border-b-0 ${
+                    filters.entity === entity.name ? 'bg-un-blue/10 border-un-blue/30' : ''
+                  }`}
+                  onClick={() => handleEntityClick(entity.name)}
                 >
                   <div className="min-w-0 flex-1">
                     <div className="text-sm font-medium truncate">
-                      {entity.name}
+                      <EntityName entityName={entity.name} />
                     </div>
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0 w-32">

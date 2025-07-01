@@ -1,11 +1,11 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-
+import { useRouter } from 'next/navigation'
 import { Input } from '@/components/ui/input'
-
-import { Landmark, Search, ArrowRight } from 'lucide-react'
+import { Landmark, Search } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useFilters } from '@/contexts/FilterContext'
 
 interface BodyWithCount {
   name: string
@@ -18,15 +18,14 @@ interface Organ {
 }
 
 interface OrganListSidebarProps {
-  onOrganClick: (organName: string) => void
-  currentEntity?: string
-  currentOrgan?: string
-  organCrossCitations?: { organ: string; sharedMandatesCount: number }[]
   hideHeader?: boolean
   borderless?: boolean
 }
 
-export function OrganListSidebar({ onOrganClick, currentEntity, currentOrgan, organCrossCitations, hideHeader = false, borderless = false }: OrganListSidebarProps) {
+export function OrganListSidebar({ hideHeader = false, borderless = false }: OrganListSidebarProps) {
+  const router = useRouter();
+  const { filters, setFilter, isEntityPage, isMainPage, currentEntityName } = useFilters();
+  
   const [organs, setOrgans] = useState<BodyWithCount[]>([])
   const [allOrgans, setAllOrgans] = useState<Organ[]>([])
   const [filteredOrgans, setFilteredOrgans] = useState<BodyWithCount[]>([])
@@ -39,45 +38,60 @@ export function OrganListSidebar({ onOrganClick, currentEntity, currentOrgan, or
       setIsLoading(true)
       try {
         let organsData: BodyWithCount[] = []
-        if (organCrossCitations && organCrossCitations.length > 0) {
-          organsData = organCrossCitations.map(item => ({ name: item.organ, count: item.sharedMandatesCount }))
-        } else if (currentEntity) {
-          // Fetch cross-citations for the current entity and extract organ counts
-          const res = await fetch(`/api/entities/${encodeURIComponent(currentEntity)}/cross-citations`)
+        
+        if (isEntityPage && currentEntityName) {
+          // Fetch mandates for the current entity to get organ counts
+          const params = new URLSearchParams({
+            entity: currentEntityName,
+            limit: '1000' // Get all mandates to count organs accurately
+          })
+          const res = await fetch(`/api/mandates?${params.toString()}`)
           if (res.ok) {
-            const crossCitations = await res.json()
-            organsData = crossCitations
-              .filter((item: any) => item.organ)
-              .map((item: any) => ({ name: item.organ, count: item.sharedMandatesCount }))
+            const data = await res.json()
+            const organCounts: { [key: string]: number } = {}
+            
+            // Count mandates by organ - the API returns items, not mandates
+            const mandates = data.items || data.mandates || []
+            mandates.forEach((mandate: any) => {
+              if (mandate.body) {
+                organCounts[mandate.body] = (organCounts[mandate.body] || 0) + 1
+              }
+            })
+            
+            organsData = Object.entries(organCounts)
+              .map(([name, count]) => ({ name, count }))
               .sort((a: BodyWithCount, b: BodyWithCount) => b.count - a.count)
           }
         }
-        if ((!organCrossCitations || organsData.length === 0) && (!currentEntity || organsData.length === 0)) {
+        
+        // Always fetch organ details for name mapping
+        const organsResponse = await fetch('/api/organs')
+        if (organsResponse.ok) {
+          const organsList = await organsResponse.json()
+          setAllOrgans(organsList)
+        }
+        
+        if (!isEntityPage || organsData.length === 0) {
           // Fallback to all organs
-          const [metaResponse, organsResponse] = await Promise.all([
-            fetch('/api/mandates/meta'),
-            fetch('/api/organs')
-          ])
+          const metaResponse = await fetch('/api/mandates/meta')
           if (metaResponse.ok) {
             const metaData = await metaResponse.json()
             organsData = (metaData.uniqueBodiesWithCount || []).sort((a: BodyWithCount, b: BodyWithCount) => b.count - a.count)
           }
-          if (organsResponse.ok) {
-            const organsList = await organsResponse.json()
-            setAllOrgans(organsList)
-          }
         }
+        
         // Deduplicate by name (case-insensitive)
         const seen = new Set<string>()
-        organsData = organsData.filter((o: BodyWithCount) => {
-          const key = o.name.trim().toLowerCase()
+        organsData = organsData.filter((organ: BodyWithCount) => {
+          const key = organ.name.trim().toLowerCase()
           if (seen.has(key)) return false
           seen.add(key)
           return true
         })
+        
         setOrgans(organsData)
         setFilteredOrgans(organsData)
-        setMaxCount(Math.max(...organsData.map((o: BodyWithCount) => o.count), 1))
+        setMaxCount(Math.max(...organsData.map((organ: BodyWithCount) => organ.count), 1))
       } catch (error) {
         console.error('Failed to fetch organs:', error)
       } finally {
@@ -85,7 +99,7 @@ export function OrganListSidebar({ onOrganClick, currentEntity, currentOrgan, or
       }
     }
     fetchData()
-  }, [currentEntity, organCrossCitations])
+  }, [isEntityPage, currentEntityName])
 
   useEffect(() => {
     if (!searchTerm.trim()) {
@@ -105,6 +119,16 @@ export function OrganListSidebar({ onOrganClick, currentEntity, currentOrgan, or
       organ.short === organName || organ.long === organName
     )
   }
+
+  const handleOrganClick = (organName: string) => {
+    if (isMainPage) {
+      // Navigate to organ page (fresh, no filters preserved)
+      router.push(`/organ/${encodeURIComponent(organName)}`);
+    } else if (isEntityPage) {
+      // Set organ filter on entity page
+      setFilter('organ', organName);
+    }
+  };
 
   const LoadingSkeleton = () => (
     <div className="space-y-2">
@@ -126,7 +150,10 @@ export function OrganListSidebar({ onOrganClick, currentEntity, currentOrgan, or
             <h3 className="text-lg font-semibold">UN Organs</h3>
           </div>
           <p className="text-sm text-muted-foreground">
-            Bodies that issue mandate documents
+            {isEntityPage 
+              ? `Bodies that issue mandate documents cited by ${currentEntityName}`
+              : 'Bodies that issue mandate documents'
+            }
           </p>
         </div>
       )}
@@ -150,8 +177,10 @@ export function OrganListSidebar({ onOrganClick, currentEntity, currentOrgan, or
               {filteredOrgans.map((organ) => (
                 <div
                   key={organ.name}
-                  className="flex items-center justify-between p-2 rounded-sm hover:bg-muted/30 cursor-pointer group border-b border-muted/30 last:border-b-0"
-                  onClick={() => onOrganClick(organ.name)}
+                  className={`flex items-center justify-between p-2 rounded-sm hover:bg-muted/30 cursor-pointer group border-b border-muted/30 last:border-b-0 ${
+                    filters.organ === organ.name ? 'bg-un-blue/10 border-un-blue/30' : ''
+                  }`}
+                  onClick={() => handleOrganClick(organ.name)}
                 >
                   <div className="min-w-0 flex-1">
                     <div className="text-sm font-medium truncate">

@@ -1,14 +1,14 @@
 'use client';
 
 import { Suspense, useState, useEffect } from 'react';
-import { useParams, useRouter, useSearchParams, usePathname } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Building, Link as LinkIcon, Landmark } from 'lucide-react';
-import Link from 'next/link';
 import { EntityName } from '@/components/ui/entity-name';
 import { MandateExplorer } from '@/components/mandate-explorer';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { ConsolidatedFilterSidebar } from '@/components/consolidated-filter-sidebar';
+import { OrganListSidebar } from '@/components/organ-list-sidebar';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -30,8 +30,6 @@ const MetadataItem = ({ label, children, icon: Icon }: { label: React.ReactNode,
 function EntityPageContent() {
   const params = useParams();
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
   const entityName = decodeURIComponent(params.entity as string);
 
   const [entityDetails, setEntityDetails] = useState<{
@@ -40,9 +38,6 @@ function EntityPageContent() {
     principalOrgan: string | null;
   } | null>(null);
   const [isLoadingEntityDetails, setIsLoadingEntityDetails] = useState(true);
-
-  const [selectedEntity, setSelectedEntity] = useState<string | null>(null);
-  const [selectedOrgan, setSelectedOrgan] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchEntityDetails() {
@@ -69,18 +64,6 @@ function EntityPageContent() {
       fetchEntityDetails();
     }
   }, [entityName]);
-
-  // When a filter is selected, update the MandateExplorer props
-  const effectiveEntity = selectedEntity || entityName;
-  const effectiveOrgan = selectedOrgan || undefined;
-
-  // Handler to add a cross-entity filter (intersection)
-  const handleCrossEntityClick = (other: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set('page', '1');
-    params.set('cross_entity', other);
-    router.push(`${pathname}?${params.toString()}`, { scroll: false });
-  };
 
   return (
     <TooltipProvider>
@@ -143,20 +126,12 @@ function EntityPageContent() {
           </div>
 
           <MandateExplorer 
-            presetEntity={effectiveEntity}
-            presetOrgan={effectiveOrgan}
-            showEntityCard={false}
-            showCrossCitations={false}
             mandateListTitle={`Documents Cited by ${isLoadingEntityDetails ? entityName : (entityDetails?.longName || entityName)}`}
+            showCrossCitations={false}
             crossCitationsSidebar={
-              <div className="flex flex-col gap-4">
-                <ConsolidatedFilterSidebar 
-                  onEntityClick={handleCrossEntityClick} 
-                  onOrganClick={setSelectedOrgan} 
-                  selectedEntity={effectiveEntity} 
-                  selectedOrgan={effectiveOrgan} 
-                  currentEntity={effectiveEntity}
-                />
+              <div className="flex flex-col gap-6">
+                <ConsolidatedFilterSidebar />
+                <OrganListSidebar />
               </div>
             }
           />

@@ -1,15 +1,13 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import type { Mandate } from '@/types'
 import { MandateList } from '@/components/mandate-list'
 import { FilterControls } from '@/components/filter-controls'
 import { PaginationControls } from '@/components/pagination-controls'
 import { Skeleton } from '@/components/ui/skeleton'
-import { FileText, Landmark, Building, Target, Quote } from 'lucide-react'
+import { FileText, Landmark, Building, Quote } from 'lucide-react'
 import { MandateDetails } from '@/components/mandate-details'
-import { SearchResultsSummary } from '@/components/search-results-summary'
 import { DataCard } from '@/components/data-card'
 import { CrossCitations } from '@/components/cross-citations'
 import {
@@ -22,6 +20,7 @@ import {
 import { SearchableDropdownOption } from '@/components/ui/searchable-dropdown'
 import { explainerTexts } from '@/lib/explainer-texts'
 import { CollapsibleSidebars } from '@/components/collapsible-sidebars'
+import { useFilters } from '@/contexts/FilterContext'
 
 interface Entity {
   entity: string
@@ -44,12 +43,6 @@ interface Organ {
 }
 
 interface MandateExplorerProps {
-  // Optional pre-set entity filter
-  presetEntity?: string
-  // Optional pre-set organ filter
-  presetOrgan?: string
-  // Whether to show the entity data card (false for entity-specific views)
-  showEntityCard?: boolean
   // Additional CSS classes
   className?: string
   // Custom title for the mandate list section
@@ -61,51 +54,30 @@ interface MandateExplorerProps {
   showCrossCitations?: boolean
   // Custom cross-citations sidebar for overlays
   crossCitationsSidebar?: React.ReactNode
-  // Handlers for collapsible sidebars
-  onEntityClick?: (entityName: string) => void
-  onOrganClick?: (organName: string) => void
 }
 
 export function MandateExplorer ({
-  presetEntity,
-  presetOrgan,
-  showEntityCard = true,
   className = '',
   mandateListTitle,
   entityListSidebar,
   organListSidebar,
   showCrossCitations = true,
-  crossCitationsSidebar,
-  onEntityClick,
-  onOrganClick
+  crossCitationsSidebar
 }: MandateExplorerProps) {
-  const router = useRouter()
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
+  const { 
+    filters, 
+    setFilter, 
+    isEntityPage, 
+    isOrganPage, 
+    isMainPage,
+    currentEntityName, 
+    currentOrganName 
+  } = useFilters();
 
   const [mandates, setMandates] = useState<Mandate[]>([])
   const [isLoading, setIsLoading] = useState(true)
-
-  const currentPage = Number(searchParams.get('page') || '1')
-  const pageSize = Number(searchParams.get('limit') || '10')
-  const selectedEntity = presetEntity || searchParams.get('entity') || ''
-  const selectedOrgan = presetOrgan || searchParams.get('organ') || ''
-  const keywordFromParams = searchParams.get('keyword') || ''
-  const programme = searchParams.get('programme') || ''
-  const subject = searchParams.get('subject') || ''
-  const startYearFromParams = searchParams.get('start_year')
-  const endYearFromParams = searchParams.get('end_year')
-  const budgetDocument = searchParams.get('budget_document') || ''
-  const crossEntity = searchParams.get('cross_entity') || ''
-  const sortBy =
-    searchParams.get('sort_by') ||
-    (keywordFromParams ? 'default' : 'citing_entities_desc')
-
-  const [keyword, setKeyword] = useState(keywordFromParams)
-
   const [totalPages, setTotalPages] = useState(0)
   const [totalItems, setTotalItems] = useState(0)
-
   const [uniqueOrgans, setUniqueOrgans] = useState(0)
   const [uniqueEntities, setUniqueEntities] = useState(0)
   const [totalCitations, setTotalCitations] = useState(0)
@@ -124,9 +96,6 @@ export function MandateExplorer ({
     min: number
     max: number
   } | null>(null)
-  const [selectedYearRange, setSelectedYearRange] = useState<
-    [number, number] | null
-  >(null)
 
   const [selectedMandate, setSelectedMandate] = useState<Mandate | null>(null)
 
@@ -135,18 +104,52 @@ export function MandateExplorer ({
   const [unEntitiesPopover, setUnEntitiesPopover] = useState(false)
   const [citationsPopover, setCitationsPopover] = useState(false)
 
-  useEffect(() => {
-    // Sync selectedYearRange with URL params when they change
-    if (yearRange) {
-      const startYear = startYearFromParams
-        ? parseInt(startYearFromParams, 10)
-        : yearRange.min
-      const endYear = endYearFromParams
-        ? parseInt(endYearFromParams, 10)
-        : yearRange.max
-      setSelectedYearRange([startYear, endYear])
+  // Get current page and page size from filters
+  const currentPage = Number(filters.page || '1')
+  const pageSize = Number(filters.limit || '10')
+  const sortBy = filters.sort_by || (filters.keyword ? 'default' : 'citing_entities_desc')
+
+  // Fetch mandates whenever filters change
+  const fetchMandates = useCallback(async () => {
+    setIsLoading(true)
+    try {
+      const params = new URLSearchParams()
+      
+      // Add all filters to params
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value && value !== 'all') {
+          params.set(key, value)
+        }
+      })
+      
+      // Set defaults
+      params.set('page', currentPage.toString())
+      params.set('limit', pageSize.toString())
+      params.set('sort_by', sortBy)
+
+      const response = await fetch(`/api/mandates?${params.toString()}`)
+      const data = await response.json()
+
+      setMandates(data.items || [])
+      setTotalPages(data.totalPages || 0)
+      setTotalItems(data.totalItems || 0)
+      setUniqueOrgans(data.metadata?.uniqueOrgans || 0)
+      setUniqueEntities(data.metadata?.uniqueEntities || 0)
+      setTotalCitations(data.metadata?.totalCitations || 0)
+
+      if (data.metadata?.yearDistribution) {
+        setYearDistribution(data.metadata.yearDistribution)
+      }
+    } catch (error) {
+      console.error('Failed to fetch mandates:', error)
+    } finally {
+      setIsLoading(false)
     }
-  }, [startYearFromParams, endYearFromParams, yearRange])
+  }, [filters, currentPage, pageSize, sortBy])
+
+  useEffect(() => {
+    fetchMandates()
+  }, [fetchMandates])
 
   useEffect(() => {
     async function fetchAllEntities () {
@@ -186,29 +189,13 @@ export function MandateExplorer ({
         setEntityOptions(data.uniqueEntities || [])
         setOrganOptions(data.uniqueBodiesWithCount || [])
         setSubjectOptions(data.uniqueSubjects || [])
+        setProgrammeOptions(data.uniqueProgrammes || [])
 
         if (data.yearRange) {
           setYearRange(data.yearRange)
-          const startYear = startYearFromParams
-            ? parseInt(startYearFromParams, 10)
-            : data.yearRange.min
-          const endYear = endYearFromParams
-            ? parseInt(endYearFromParams, 10)
-            : data.yearRange.max
-          setSelectedYearRange([startYear, endYear])
         }
         if (data.yearDistribution) {
           setYearDistribution(data.yearDistribution)
-        }
-
-        // Set initial summary stats for the whole dataset
-        // Only set these if we're not filtering by a preset entity/organ
-        // to avoid flickering on entity/organ detail pages
-        if (!presetEntity && !presetOrgan) {
-          setTotalItems(data.totalDocuments || 0)
-          setUniqueOrgans(data.uniqueBodiesCount || 0)
-          setUniqueEntities(data.totalEntities || 0)
-          setTotalCitations(data.totalCitations || 0)
         }
       } catch (error) {
         console.error('Failed to fetch metadata:', error)
@@ -217,122 +204,17 @@ export function MandateExplorer ({
     fetchMetadata()
   }, [])
 
-  const fetchMandates = useCallback(async () => {
-    setIsLoading(true)
-    const params = new URLSearchParams({
-      page: String(currentPage),
-      limit: String(pageSize)
-    })
-    if (selectedEntity) params.append('entity', selectedEntity)
-    if (selectedOrgan) params.append('organ', selectedOrgan)
-    if (keywordFromParams) params.append('keyword', keywordFromParams)
-    if (programme) params.append('programme', programme)
-    if (subject) params.append('subject', subject)
-    if (startYearFromParams) params.append('start_year', startYearFromParams)
-    if (endYearFromParams) params.append('end_year', endYearFromParams)
-    if (budgetDocument) params.append('budget_document', budgetDocument)
-    if (crossEntity) params.append('cross_entity', crossEntity)
-    if (sortBy && sortBy !== 'default') {
-      params.append('sort_by', sortBy)
-    }
-
-    try {
-      const response = await fetch(`/api/mandates?${params.toString()}`)
-      const data = await response.json()
-      setMandates(data.items || [])
-      setTotalItems(data.totalItems || 0)
-      setTotalPages(data.totalPages || 0)
-
-      // Update summary stats with filtered results
-      setUniqueOrgans(data.uniqueBodiesCount || 0)
-      setUniqueEntities(data.uniqueEntitiesCount || 0)
-      setTotalCitations(data.totalCitations || 0)
-
-      if (data.uniqueProgrammes) {
-        setProgrammeOptions(data.uniqueProgrammes)
-      }
-    } catch (error) {
-      console.error('Failed to fetch mandates:', error)
-    } finally {
-      setIsLoading(false)
-    }
-  }, [
-    currentPage,
-    pageSize,
-    selectedEntity,
-    selectedOrgan,
-    keywordFromParams,
-    programme,
-    subject,
-    startYearFromParams,
-    endYearFromParams,
-    budgetDocument,
-    crossEntity,
-    sortBy
-  ])
-
-  useEffect(() => {
-    fetchMandates()
-  }, [fetchMandates])
-
   const handlePageChange = (page: number) => {
-    const params = new URLSearchParams(searchParams.toString())
-    params.set('page', String(page))
-    router.push(`${pathname}?${params.toString()}`, { scroll: false })
+    setFilter('page', page.toString())
   }
 
   const handlePageSizeChange = (size: number) => {
-    const params = new URLSearchParams(searchParams.toString())
-    params.set('limit', String(size))
-    params.set('page', '1') // Reset to page 1
-    router.push(`${pathname}?${params.toString()}`, { scroll: false })
-  }
-
-  const handleFilterChange = (key: string, value: string) => {
-    const params = new URLSearchParams(searchParams.toString())
-    if (value && value !== 'all') {
-      params.set(key, value)
-    } else {
-      params.delete(key)
-    }
-    params.set('page', '1') // Reset to page 1
-    router.push(`${pathname}?${params.toString()}`, { scroll: false })
-  }
-
-  const handleYearRangeChange = (newRange: [number, number]) => {
-    const params = new URLSearchParams(searchParams.toString())
-    params.set('start_year', String(newRange[0]))
-    params.set('end_year', String(newRange[1]))
-    params.set('page', '1') // Reset to page 1
-    router.push(`${pathname}?${params.toString()}`, { scroll: false })
+    setFilter('limit', size.toString())
+    setFilter('page', '1') // Reset to first page
   }
 
   const handleSortChange = (value: string) => {
-    handleFilterChange('sort_by', value)
-  }
-
-  const onEntityChange = (value: string) => handleFilterChange('entity', value)
-  const onOrganChange = (value: string) => handleFilterChange('organ', value)
-  const onProgrammeChange = (value: string) =>
-    handleFilterChange('programme', value)
-  const onSubjectChange = (value: string) =>
-    handleFilterChange('subject', value)
-  const onBudgetDocumentChange = (value: string) =>
-    handleFilterChange('budget_document', value)
-
-  const onKeywordChange = (value: string) => {
-    setKeyword(value)
-  }
-
-  const onKeywordSearch = (searchTerm: string = keyword) => {
-    const params = new URLSearchParams(searchParams.toString())
-    if (searchTerm) {
-      params.set('keyword', searchTerm)
-    } else {
-      params.delete('keyword')
-    }
-    params.set('page', '1')
-    router.push(`${pathname}?${params.toString()}`, { scroll: false })
+    setFilter('sort_by', value)
   }
 
   const LoadingSkeleton = () => (
@@ -370,11 +252,6 @@ export function MandateExplorer ({
     })
   )
 
-  const budgetDocumentDisplayNames: { [key: string]: string } = {
-    ppb: 'Programme Plan & Budget',
-    regular_budget: 'Regular Budget'
-  }
-
   const dataCardsSection = (
     <>
       <DataCard
@@ -395,15 +272,18 @@ export function MandateExplorer ({
         onOpenChange={setUnOrgansPopover}
         isLoading={isLoading}
       />
-      <DataCard
-        title={explainerTexts.dataCards.unEntities.title}
-        value={uniqueEntities}
-        icon={Building}
-        description={explainerTexts.dataCards.unEntities.description}
-        isOpen={unEntitiesPopover}
-        onOpenChange={setUnEntitiesPopover}
-        isLoading={isLoading}
-      />
+      {/* Only show entity card on main page or organ page */}
+      {!isEntityPage && (
+        <DataCard
+          title={explainerTexts.dataCards.unEntities.title}
+          value={uniqueEntities}
+          icon={Building}
+          description={explainerTexts.dataCards.unEntities.description}
+          isOpen={unEntitiesPopover}
+          onOpenChange={setUnEntitiesPopover}
+          isLoading={isLoading}
+        />
+      )}
       <DataCard
         title={explainerTexts.dataCards.citations.title}
         value={totalCitations}
@@ -429,14 +309,9 @@ export function MandateExplorer ({
       <div>
         <div className='mt-6 pt-4'>
           {/* Collapsible sidebars for smaller screens - only show on main page */}
-          {(entityListSidebar || organListSidebar) &&
-            !presetEntity &&
-            !presetOrgan && (
-                             <CollapsibleSidebars
-                 onEntityClick={onEntityClick || (() => {})}
-                 onOrganClick={onOrganClick || (() => {})}
-               />
-            )}
+          {(entityListSidebar || organListSidebar) && isMainPage && (
+            <CollapsibleSidebars />
+          )}
           
           {/* Main content with mandates list, cross-citations, and sidebars */}
           <div className='flex flex-col lg:flex-row gap-6'>
@@ -447,21 +322,16 @@ export function MandateExplorer ({
                   {mandateListTitle || explainerTexts.dataCards.sectionTitle}
                 </h2>
                 {/* Detail page subtitle: cited by/issued by */}
-                {((presetEntity && !presetOrgan) ||
-                  (presetOrgan && !presetEntity)) && (
+                {isEntityPage && (
                   <span className='text-sm text-muted-foreground font-medium'>
-                    {presetEntity && !presetOrgan && (
-                      <>
-                        cited by{' '}
-                        <span className='font-semibold'>{presetEntity}</span>
-                      </>
-                    )}
-                    {presetOrgan && !presetEntity && (
-                      <>
-                        issued by{' '}
-                        <span className='font-semibold'>{presetOrgan}</span>
-                      </>
-                    )}
+                    cited by{' '}
+                    <span className='font-semibold'>{currentEntityName}</span>
+                  </span>
+                )}
+                {isOrganPage && (
+                  <span className='text-sm text-muted-foreground font-medium'>
+                    issued by{' '}
+                    <span className='font-semibold'>{currentOrganName}</span>
                   </span>
                 )}
               </div>
@@ -471,98 +341,12 @@ export function MandateExplorer ({
                   <div className='mb-6'>
                     <div className='mb-4'>
                       <FilterControls
-                        keyword={keyword}
-                        onKeywordChange={onKeywordChange}
-                        onKeywordSearch={onKeywordSearch}
                         entityOptions={entityDropdownOptions}
-                        selectedEntity={selectedEntity}
-                        onEntityChange={onEntityChange}
                         organOptions={organDropdownOptions}
-                        selectedOrgan={selectedOrgan}
-                        onOrganChange={onOrganChange}
-                        programme={programme}
-                        subject={subject}
-                        yearRange={yearRange}
-                        yearDistribution={yearDistribution}
-                        selectedYearRange={selectedYearRange}
-                        budgetDocument={budgetDocument}
-                        onProgrammeChange={onProgrammeChange}
-                        onSubjectChange={onSubjectChange}
-                        onYearRangeChange={handleYearRangeChange}
-                        onBudgetDocumentChange={onBudgetDocumentChange}
                         programmeOptions={programmeOptions}
                         subjectOptions={subjectOptions}
-                        appliedFilters={{
-                          entity:
-                            selectedEntity !== 'all'
-                              ? selectedEntity
-                              : undefined,
-                          organ:
-                            selectedOrgan !== 'all' ? selectedOrgan : undefined,
-                          programme: programme || undefined,
-                          subject: subject || undefined,
-                          year:
-                            startYearFromParams &&
-                            endYearFromParams &&
-                            yearRange &&
-                            (parseInt(startYearFromParams, 10) !==
-                              yearRange.min ||
-                              parseInt(endYearFromParams, 10) !== yearRange.max)
-                              ? `${startYearFromParams}-${endYearFromParams}`
-                              : undefined,
-                          budget_document:
-                            budgetDocument && budgetDocument !== 'all'
-                              ? budgetDocumentDisplayNames[budgetDocument]
-                              : undefined,
-                          cross_entity: crossEntity || undefined
-                        }}
-                        onClearFilter={filterKey => {
-                          switch (filterKey) {
-                            case 'entity':
-                              onEntityChange('all')
-                              break
-                            case 'organ':
-                              onOrganChange('all')
-                              break
-                            case 'programme':
-                              onProgrammeChange('')
-                              break
-                            case 'subject':
-                              onSubjectChange('')
-                              break
-                            case 'year':
-                              const newParams = new URLSearchParams(
-                                searchParams.toString()
-                              )
-                              newParams.delete('start_year')
-                              newParams.delete('end_year')
-                              newParams.set('page', '1')
-                              router.push(
-                                `${pathname}?${newParams.toString()}`,
-                                { scroll: false }
-                              )
-                              break
-                            case 'budget_document':
-                              onBudgetDocumentChange('all')
-                              break
-                            case 'cross_entity':
-                              const crossEntityParams = new URLSearchParams(
-                                searchParams.toString()
-                              )
-                              crossEntityParams.delete('cross_entity')
-                              crossEntityParams.set('page', '1')
-                              router.push(
-                                `${pathname}?${crossEntityParams.toString()}`,
-                                { scroll: false }
-                              )
-                              break
-                          }
-                        }}
-                        onClearSearch={() => {
-                          onKeywordChange('')
-                          onKeywordSearch('')
-                        }}
-                        hideImplicitFilterChip={!!presetEntity || !!presetOrgan}
+                        yearRange={yearRange}
+                        yearDistribution={yearDistribution}
                       />
                     </div>
 
@@ -580,7 +364,7 @@ export function MandateExplorer ({
                           />
                         </SelectTrigger>
                         <SelectContent>
-                          {keywordFromParams ? (
+                          {filters.keyword ? (
                             <SelectItem value='default'>
                               Search Relevance
                             </SelectItem>
@@ -630,27 +414,21 @@ export function MandateExplorer ({
                     </>
                   )}
                 </div>
+                
                 {/* Render custom cross-citations sidebar if provided */}
                 {crossCitationsSidebar && (
                   <div className='w-full lg:w-80 flex-shrink-0'>
                     {crossCitationsSidebar}
                   </div>
                 )}
-                {/* Cross-Citations Section - only show when there's a preset entity and not using custom sidebar */}
-                {presetEntity && showCrossCitations && !crossCitationsSidebar && (
+                
+                {/* Cross-Citations Section - only show when on entity page and not using custom sidebar */}
+                {isEntityPage && showCrossCitations && !crossCitationsSidebar && currentEntityName && (
                   <div className='w-full lg:w-80 flex-shrink-0'>
                     <CrossCitations
-                      currentEntity={presetEntity}
+                      currentEntity={currentEntityName}
                       onEntityFilter={entity => {
-                        // Add the selected entity as an additional filter
-                        const params = new URLSearchParams(
-                          searchParams.toString()
-                        )
-                        params.set('page', '1')
-                        params.set('cross_entity', entity)
-                        router.push(`${pathname}?${params.toString()}`, {
-                          scroll: false
-                        })
+                        setFilter('cross_entity', entity)
                       }}
                     />
                   </div>
@@ -659,14 +437,12 @@ export function MandateExplorer ({
             </div>
 
             {/* Entity and Organ Lists Sidebar - only show on main page and larger screens */}
-            {(entityListSidebar || organListSidebar) &&
-              !presetEntity &&
-              !presetOrgan && (
-                <div className='hidden lg:block lg:w-80 flex-shrink-0 space-y-6'>
-                  {entityListSidebar}
-                  {organListSidebar}
-                </div>
-              )}
+            {(entityListSidebar || organListSidebar) && isMainPage && (
+              <div className='hidden lg:block lg:w-80 flex-shrink-0 space-y-6'>
+                {entityListSidebar}
+                {organListSidebar}
+              </div>
+            )}
           </div>
         </div>
       </div>

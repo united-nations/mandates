@@ -54,7 +54,9 @@ export async function GET(
             if (!organCitations[m.body]) {
               organCitations[m.body] = new Set<string>();
             }
-            organCitations[m.body].add(mandate.document_symbol);
+            if (mandate.document_symbol) {
+              organCitations[m.body].add(mandate.document_symbol);
+            }
           }
         });
       }
