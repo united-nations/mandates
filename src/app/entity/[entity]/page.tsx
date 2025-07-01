@@ -1,7 +1,7 @@
 'use client';
 
 import { Suspense, useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Building, Link as LinkIcon, Landmark } from 'lucide-react';
 import Link from 'next/link';
@@ -30,6 +30,8 @@ const MetadataItem = ({ label, children, icon: Icon }: { label: React.ReactNode,
 function EntityPageContent() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
   const entityName = decodeURIComponent(params.entity as string);
 
   const [entityDetails, setEntityDetails] = useState<{
@@ -71,6 +73,14 @@ function EntityPageContent() {
   // When a filter is selected, update the MandateExplorer props
   const effectiveEntity = selectedEntity || entityName;
   const effectiveOrgan = selectedOrgan || undefined;
+
+  // Handler to add a cross-entity filter (intersection)
+  const handleCrossEntityClick = (other: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('page', '1');
+    params.set('cross_entity', other);
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  };
 
   return (
     <TooltipProvider>
@@ -141,7 +151,7 @@ function EntityPageContent() {
             crossCitationsSidebar={
               <div className="flex flex-col gap-4">
                 <ConsolidatedFilterSidebar 
-                  onEntityClick={setSelectedEntity} 
+                  onEntityClick={handleCrossEntityClick} 
                   onOrganClick={setSelectedOrgan} 
                   selectedEntity={effectiveEntity} 
                   selectedOrgan={effectiveOrgan} 

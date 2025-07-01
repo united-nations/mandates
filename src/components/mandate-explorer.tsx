@@ -562,6 +562,7 @@ export function MandateExplorer ({
                           onKeywordChange('')
                           onKeywordSearch('')
                         }}
+                        hideImplicitFilterChip={!!presetEntity || !!presetOrgan}
                       />
                     </div>
 
