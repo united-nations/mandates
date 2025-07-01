@@ -126,7 +126,6 @@ function EntityPageContent() {
           </div>
 
           <MandateExplorer 
-            mandateListTitle={`Documents Cited by ${isLoadingEntityDetails ? entityName : (entityDetails?.longName || entityName)}`}
             showCrossCitations={false}
             crossCitationsSidebar={
               <div className="flex flex-col gap-6">
