@@ -41,7 +41,15 @@ export function ConsolidatedFilterSidebar() {
         if (isEntityPage && currentEntityName) {
           const res = await fetch(`/api/entities/${encodeURIComponent(currentEntityName)}/cross-citations`)
           if (res.ok) {
-            setEntityCrossCitations(await res.json())
+            const data = await res.json()
+            // Filter out null, undefined, or empty string entities
+            const filteredData = data.filter((citation: CrossCitationEntity) => 
+              citation.entity && 
+              citation.entity.trim() !== '' && 
+              citation.entity !== 'null' &&
+              citation.entity !== 'undefined'
+            );
+            setEntityCrossCitations(filteredData)
           }
         } else {
           setEntityCrossCitations([])
@@ -49,7 +57,15 @@ export function ConsolidatedFilterSidebar() {
         if (isOrganPage && currentOrganName) {
           const res = await fetch(`/api/organs/${encodeURIComponent(currentOrganName)}/cross-citations`)
           if (res.ok) {
-            setOrganCrossCitations(await res.json())
+            const data = await res.json()
+            // Filter out null, undefined, or empty string organs
+            const filteredData = data.filter((citation: CrossCitationOrgan) => 
+              citation.organ && 
+              citation.organ.trim() !== '' && 
+              citation.organ !== 'null' &&
+              citation.organ !== 'undefined'
+            );
+            setOrganCrossCitations(filteredData)
           }
         } else {
           setOrganCrossCitations([])

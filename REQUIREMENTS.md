@@ -30,37 +30,11 @@ Pages:
 Scratchpad for AI. AI should change this at start and end of every activity: Keep a detailed list 
 of todos and sub-todos and their progress. Do not modify this paragraph but use the space below.
 
-## CRITICAL FIX: Sidebar Click Behavior (HIGH PRIORITY)
-
-### Issue Identified:
-Currently all sidebar clicks set filters, but according to requirements:
-- **Main page**: Entity/Organ clicks should NAVIGATE to respective pages
-- **Entity/Organ pages**: Entity/Organ clicks should SET FILTERS
-
-### Phase 4: Fix Sidebar Click Behavior
-- [x] 4.1 Update EntityListSidebar component
-  - [x] 4.1.1 Add context-aware click behavior (navigate on main page, filter on organ page)
-  - [x] 4.1.2 Use router.push() for navigation on main page
-  - [x] 4.1.3 Use setFilter() for filtering on organ page
-- [x] 4.2 Update OrganListSidebar component  
-  - [x] 4.2.1 Add context-aware click behavior (navigate on main page, filter on entity page)
-  - [x] 4.2.2 Use router.push() for navigation on main page
-  - [x] 4.2.3 Use setFilter() for filtering on entity page
-- [x] 4.3 Update ConsolidatedFilterSidebar component
-  - [x] 4.3.1 Ensure cross-citations always set filters (correct current behavior)
-  - [x] 4.3.2 Verify it only appears on entity/organ pages (not main page)
-- [x] 4.4 Test behavior on all pages
-  - [x] 4.4.1 Main page: entity/organ clicks navigate to pages
-  - [x] 4.4.2 Entity page: cross-citation clicks set entity filters, organ clicks set organ filters  
-  - [x] 4.4.3 Organ page: entity clicks set entity filters
-
-### ✅ PHASE 4 COMPLETED: Context-Aware Sidebar Behavior
-- **Main page**: Entity/Organ clicks now navigate to fresh pages (no filter preservation)
-- **Entity page**: Cross-citation clicks set entity filters, organ clicks set organ filters
-- **Organ page**: Entity clicks set entity filters  
-- **Visual feedback**: Filter chips appear immediately when filters are set
-- **ConsolidatedFilterSidebar**: Correctly only appears on entity/organ pages, always sets filters
-
-### Final Status: ALL CRITICAL ISSUES RESOLVED ✅
-The original request to "bring the organ sidebar to the entity page and ensure filters are working" has been fully implemented with a robust, maintainable architecture.
+## Completed
+- ✅ Modified organ page to hide organs data card
+- ✅ Removed cross-citations sidebar from organ page (no second sidebar)
+- ✅ Kept entity list sidebar on organ page as required
+- ✅ Updated MandateExplorer component to conditionally hide organs data card when `isOrganPage` is true
+- ✅ Correctly configured organ page with entityListSidebar prop only (no crossCitationsSidebar)
+- ✅ Fixed sidebar visibility logic to show entity sidebar on organ pages (both desktop and mobile)
 

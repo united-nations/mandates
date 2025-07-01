@@ -328,6 +328,12 @@ export async function GET(request: Request) {
       totalItems,
       totalPages,
       currentPage: page,
+      metadata: {
+        uniqueEntities: uniqueEntitiesCount,
+        uniqueOrgans: uniqueBodiesCount,
+        totalCitations: totalCitations,
+      },
+      // Legacy fields for backward compatibility
       totalCitations,
       uniqueEntitiesCount,
       uniqueBodiesCount,

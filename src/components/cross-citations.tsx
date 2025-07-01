@@ -34,7 +34,14 @@ export function CrossCitations({ currentEntity, className, onEntityFilter }: Cro
         const response = await fetch(`/api/entities/${encodeURIComponent(currentEntity)}/cross-citations`);
         if (response.ok) {
           const data = await response.json();
-          setCrossCitations(data);
+          // Filter out null, undefined, or empty string entities
+          const filteredData = data.filter((citation: CrossCitation) => 
+            citation.entity && 
+            citation.entity.trim() !== '' && 
+            citation.entity !== 'null' &&
+            citation.entity !== 'undefined'
+          );
+          setCrossCitations(filteredData);
         }
       } catch (error) {
         console.error('Failed to fetch cross-citations:', error);

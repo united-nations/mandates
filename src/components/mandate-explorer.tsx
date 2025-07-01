@@ -263,15 +263,18 @@ export function MandateExplorer ({
         onOpenChange={setSourceDocumentsPopover}
         isLoading={isLoading}
       />
-      <DataCard
-        title={explainerTexts.dataCards.unOrgans.title}
-        value={uniqueOrgans}
-        icon={Landmark}
-        description={explainerTexts.dataCards.unOrgans.description}
-        isOpen={unOrgansPopover}
-        onOpenChange={setUnOrgansPopover}
-        isLoading={isLoading}
-      />
+      {/* Only show organs card on main page and entity page */}
+      {!isOrganPage && (
+        <DataCard
+          title={explainerTexts.dataCards.unOrgans.title}
+          value={uniqueOrgans}
+          icon={Landmark}
+          description={explainerTexts.dataCards.unOrgans.description}
+          isOpen={unOrgansPopover}
+          onOpenChange={setUnOrgansPopover}
+          isLoading={isLoading}
+        />
+      )}
       {/* Only show entity card on main page or organ page */}
       {!isEntityPage && (
         <DataCard
@@ -308,8 +311,8 @@ export function MandateExplorer ({
 
       <div>
         <div className='mt-6 pt-4'>
-          {/* Collapsible sidebars for smaller screens - only show on main page */}
-          {(entityListSidebar || organListSidebar) && isMainPage && (
+          {/* Collapsible sidebars for smaller screens - show on main page and entity sidebar on organ page */}
+          {(((entityListSidebar || organListSidebar) && isMainPage) || (entityListSidebar && isOrganPage)) && (
             <CollapsibleSidebars />
           )}
           
@@ -436,11 +439,12 @@ export function MandateExplorer ({
               </div>
             </div>
 
-            {/* Entity and Organ Lists Sidebar - only show on main page and larger screens */}
-            {(entityListSidebar || organListSidebar) && isMainPage && (
+            {/* Entity and Organ Lists Sidebar - show on main page and entity sidebar on organ page */}
+            {(((entityListSidebar || organListSidebar) && isMainPage) || (entityListSidebar && isOrganPage)) && (
               <div className='hidden lg:block lg:w-80 flex-shrink-0 space-y-6'>
                 {entityListSidebar}
-                {organListSidebar}
+                {/* Only show organ sidebar on main page */}
+                {isMainPage && organListSidebar}
               </div>
             )}
           </div>

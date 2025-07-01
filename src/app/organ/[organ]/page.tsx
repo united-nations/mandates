@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, Landmark } from 'lucide-react';
 import { MandateExplorer } from '@/components/mandate-explorer';
 import { TooltipProvider } from '@/components/ui/tooltip';
-import { ConsolidatedFilterSidebar } from '@/components/consolidated-filter-sidebar';
 import { EntityListSidebar } from '@/components/entity-list-sidebar';
 import { Badge } from '@/components/ui/badge';
 
@@ -87,12 +86,7 @@ function OrganPageContent() {
           <MandateExplorer 
             mandateListTitle={`Documents Issued by ${organLongName || organName}`}
             showCrossCitations={false}
-            crossCitationsSidebar={
-              <div className="flex flex-col gap-6">
-                <ConsolidatedFilterSidebar />
-                <EntityListSidebar />
-              </div>
-            }
+            entityListSidebar={<EntityListSidebar />}
           />
         </main>
       </div>
