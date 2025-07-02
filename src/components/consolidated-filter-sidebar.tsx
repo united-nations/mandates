@@ -106,7 +106,12 @@ export function ConsolidatedFilterSidebar() {
           <h3 className="text-lg font-semibold">Cross-citations</h3>
         </div>
         <p className="text-sm text-muted-foreground mb-4">
-          Entities/organs that share mandates with this selection
+          {isEntityPage && currentEntityName 
+            ? `Entities that share mandates with ${currentEntityName}`
+            : isOrganPage && currentOrganName
+            ? `Organs that share mandates with ${currentOrganName}`
+            : "Entities/organs that share mandates with this selection"
+          }
         </p>
         <div className="max-h-96 overflow-y-auto">
           {isLoading ? (
