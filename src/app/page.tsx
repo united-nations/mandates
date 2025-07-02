@@ -196,6 +196,33 @@ function MandateNavigator () {
                   {explainerTexts.mainHeader.disclaimer}
                 </p>
               </div>
+
+              {/* UN Links Section */}
+              <div className="mt-12">
+                <h2 className="text-lg font-semibold mb-4">Explore More Transparency Resources</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {/* Card 2: open.un.org */}
+                  <a href="https://open.un.org/" target="_blank" rel="noopener noreferrer" className="block rounded-lg border border-muted p-3 hover:shadow-lg transition flex flex-col items-center text-center">
+                    <img src="/screenshots/open.un.org.png" alt="open.un.org screenshot" className="rounded-md w-full h-32 object-cover mb-3" />
+                    <div className="font-medium text-un-blue text-base mb-1">UN Transparency Portal</div>
+                  </a>
+                  {/* Card 3: unsceb.org/financial-statistics */}
+                  <a href="https://unsceb.org/financial-statistics" target="_blank" rel="noopener noreferrer" className="block rounded-lg border border-muted p-3 hover:shadow-lg transition flex flex-col items-center text-center">
+                    <img src="/screenshots/unsceb.org.png" alt="unsceb.org/financial-statistics screenshot" className="rounded-md w-full h-32 object-cover mb-3" />
+                    <div className="font-medium text-un-blue text-base mb-1">CEB Financial Statistics</div>
+                  </a>
+                  {/* Card 4: financingun.report */}
+                  <a href="https://financingun.report/un-financing/explore-data" target="_blank" rel="noopener noreferrer" className="block rounded-lg border border-muted p-3 hover:shadow-lg transition flex flex-col items-center text-center">
+                    <img src="/screenshots/financingun.report.png" alt="financingun.report screenshot" className="rounded-md w-full h-32 object-cover mb-3" />
+                    <div className="font-medium text-un-blue text-base mb-1">"Financing the UN" Report</div>
+                  </a>
+                  {/* Card 1: results.un.org */}
+                  <a href="https://results.un.org/" target="_blank" rel="noopener noreferrer" className="block rounded-lg border border-muted p-3 hover:shadow-lg transition flex flex-col items-center text-center">
+                    <img src="/screenshots/results.un.org.png" alt="results.un.org screenshot" className="rounded-md w-full h-32 object-cover mb-3" />
+                    <div className="font-medium text-un-blue text-base mb-1">Programme Budget Results</div>
+                  </a>
+                </div>
+              </div>
             </div>
           </section>
         </main>
