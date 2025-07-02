@@ -45,8 +45,6 @@ interface Organ {
 interface MandateExplorerProps {
   // Additional CSS classes
   className?: string
-  // Custom title for the mandate list section
-  mandateListTitle?: string
   // Optional sidebar components for entities and organs
   entityListSidebar?: React.ReactNode
   organListSidebar?: React.ReactNode
@@ -58,21 +56,20 @@ interface MandateExplorerProps {
 
 export function MandateExplorer ({
   className = '',
-  mandateListTitle,
   entityListSidebar,
   organListSidebar,
   showCrossCitations = true,
   crossCitationsSidebar
 }: MandateExplorerProps) {
-  const { 
-    filters, 
-    setFilter, 
-    isEntityPage, 
-    isOrganPage, 
+  const {
+    filters,
+    setFilter,
+    isEntityPage,
+    isOrganPage,
     isMainPage,
-    currentEntityName, 
-    currentOrganName 
-  } = useFilters();
+    currentEntityName,
+    currentOrganName
+  } = useFilters()
 
   const [mandates, setMandates] = useState<Mandate[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -107,28 +104,30 @@ export function MandateExplorer ({
   // Get current page and page size from filters
   const currentPage = Number(filters.page || '1')
   const pageSize = Number(filters.limit || '10')
-  const sortBy = filters.sort_by || (filters.keyword ? 'default' : 'citing_entities_desc')
+  const sortBy =
+    filters.sort_by || (filters.keyword ? 'default' : 'citing_entities_desc')
 
   // Ref to track current abort controller
   const abortControllerRef = useRef<AbortController | null>(null)
 
   // Reset data when page context changes to prevent stale data
-  const prevPageContext = useRef({ 
-    isEntityPage: false, 
-    isOrganPage: false, 
-    isMainPage: true, 
-    currentEntityName: '', 
-    currentOrganName: '' 
+  const prevPageContext = useRef({
+    isEntityPage: false,
+    isOrganPage: false,
+    isMainPage: true,
+    currentEntityName: '',
+    currentOrganName: ''
   })
-  
+
   useEffect(() => {
     const prev = prevPageContext.current
-    const hasPageTypeChanged = prev.isEntityPage !== isEntityPage || 
-                               prev.isOrganPage !== isOrganPage || 
-                               prev.isMainPage !== isMainPage
+    const hasPageTypeChanged =
+      prev.isEntityPage !== isEntityPage ||
+      prev.isOrganPage !== isOrganPage ||
+      prev.isMainPage !== isMainPage
     const hasEntityChanged = prev.currentEntityName !== currentEntityName
     const hasOrganChanged = prev.currentOrganName !== currentOrganName
-    
+
     if (hasPageTypeChanged || hasEntityChanged || hasOrganChanged) {
       setTotalItems(0)
       setUniqueOrgans(0)
@@ -137,7 +136,7 @@ export function MandateExplorer ({
       setTotalPages(0)
       setMandates([])
       setIsLoading(true)
-      
+
       // Update ref
       prevPageContext.current = {
         isEntityPage,
@@ -147,7 +146,13 @@ export function MandateExplorer ({
         currentOrganName: currentOrganName || ''
       }
     }
-  }, [isEntityPage, isOrganPage, isMainPage, currentEntityName, currentOrganName])
+  }, [
+    isEntityPage,
+    isOrganPage,
+    isMainPage,
+    currentEntityName,
+    currentOrganName
+  ])
 
   // Fetch mandates whenever filters change
   const fetchMandates = useCallback(async () => {
@@ -155,22 +160,22 @@ export function MandateExplorer ({
     if (abortControllerRef.current) {
       abortControllerRef.current.abort()
     }
-    
+
     // Create new abort controller for this request
     const abortController = new AbortController()
     abortControllerRef.current = abortController
-    
+
     setIsLoading(true)
     try {
       const params = new URLSearchParams()
-      
+
       // Add all filters to params
       Object.entries(filters).forEach(([key, value]) => {
         if (value && value !== 'all') {
           params.set(key, value)
         }
       })
-      
+
       // Set defaults
       params.set('page', currentPage.toString())
       params.set('limit', pageSize.toString())
@@ -179,12 +184,12 @@ export function MandateExplorer ({
       const response = await fetch(`/api/mandates?${params.toString()}`, {
         signal: abortController.signal
       })
-      
+
       // If request was aborted, don't process the response
       if (abortController.signal.aborted) {
         return
       }
-      
+
       const data = await response.json()
 
       setMandates(data.items || [])
@@ -385,31 +390,20 @@ export function MandateExplorer ({
       <div>
         <div className='mt-6 pt-4'>
           {/* Collapsible sidebars for smaller screens - show on main page and entity sidebar on organ page */}
-          {(((entityListSidebar || organListSidebar) && isMainPage) || (entityListSidebar && isOrganPage)) && (
-            <CollapsibleSidebars />
-          )}
-          
+          {(((entityListSidebar || organListSidebar) && isMainPage) ||
+            (entityListSidebar && isOrganPage)) && <CollapsibleSidebars />}
+
           {/* Main content with mandates list, cross-citations, and sidebars */}
           <div className='flex flex-col lg:flex-row gap-6'>
             {/* Main mandates content */}
             <div className='flex-1 min-w-0'>
-              <div className="flex items-center mb-3 gap-3">
+              <div className='flex items-center mb-3 gap-3'>
                 <h2 className='text-2xl font-bold tracking-tight'>
-                  {mandateListTitle || explainerTexts.dataCards.sectionTitle}
+                  {explainerTexts.dataCards.sectionTitle}
+                  {/* Detail page title: cited by/issued by */}
+                  {isEntityPage && <> cited by {currentEntityName}</>}
+                  {isOrganPage && <> issued by {currentOrganName}</>}
                 </h2>
-                {/* Detail page subtitle: cited by/issued by */}
-                {isEntityPage && (
-                  <span className='text-sm text-muted-foreground font-medium'>
-                    cited by{' '}
-                    <span className='font-semibold'>{currentEntityName}</span>
-                  </span>
-                )}
-                {isOrganPage && (
-                  <span className='text-sm text-muted-foreground font-medium'>
-                    issued by{' '}
-                    <span className='font-semibold'>{currentOrganName}</span>
-                  </span>
-                )}
               </div>
               <div className='flex flex-col lg:flex-row gap-6'>
                 {/* Mandates List */}
@@ -490,30 +484,34 @@ export function MandateExplorer ({
                     </>
                   )}
                 </div>
-                
+
                 {/* Render custom cross-citations sidebar if provided */}
                 {crossCitationsSidebar && (
                   <div className='w-full lg:w-80 flex-shrink-0'>
                     {crossCitationsSidebar}
                   </div>
                 )}
-                
+
                 {/* Cross-Citations Section - only show when on entity page and not using custom sidebar */}
-                {isEntityPage && showCrossCitations && !crossCitationsSidebar && currentEntityName && (
-                  <div className='w-full lg:w-80 flex-shrink-0'>
-                    <CrossCitations
-                      currentEntity={currentEntityName}
-                      onEntityFilter={entity => {
-                        setFilter('cross_entity', entity)
-                      }}
-                    />
-                  </div>
-                )}
+                {isEntityPage &&
+                  showCrossCitations &&
+                  !crossCitationsSidebar &&
+                  currentEntityName && (
+                    <div className='w-full lg:w-80 flex-shrink-0'>
+                      <CrossCitations
+                        currentEntity={currentEntityName}
+                        onEntityFilter={entity => {
+                          setFilter('cross_entity', entity)
+                        }}
+                      />
+                    </div>
+                  )}
               </div>
             </div>
 
             {/* Entity and Organ Lists Sidebar - show on main page and entity sidebar on organ page */}
-            {(((entityListSidebar || organListSidebar) && isMainPage) || (entityListSidebar && isOrganPage)) && (
+            {(((entityListSidebar || organListSidebar) && isMainPage) ||
+              (entityListSidebar && isOrganPage)) && (
               <div className='hidden lg:block lg:w-80 flex-shrink-0 space-y-6'>
                 {entityListSidebar}
                 {/* Only show organ sidebar on main page */}
