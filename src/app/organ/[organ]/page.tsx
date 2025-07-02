@@ -64,11 +64,8 @@ function OrganPageContent() {
                     </div>
                     <div>
                       <h1 className="text-2xl lg:text-3xl font-bold tracking-tight text-foreground">
-                        {organLongName || organName}
+                        {organLongName && organLongName !== organName ? `${organName}: ${organLongName}` : organName}
                       </h1>
-                      {organLongName && organLongName !== organName && (
-                        <Badge variant="outline" className="mt-1">{organName}</Badge>
-                      )}
                     </div>
                   </div>
                 </div>
@@ -84,7 +81,6 @@ function OrganPageContent() {
           </div>
 
           <MandateExplorer 
-            mandateListTitle={`Documents Issued by ${organLongName || organName}`}
             showCrossCitations={false}
             entityListSidebar={<EntityListSidebar />}
           />

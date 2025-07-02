@@ -92,9 +92,8 @@ function EntityPageContent() {
                     ) : (
                       <>
                         <h1 className="text-2xl lg:text-3xl font-bold tracking-tight text-foreground">
-                          {entityDetails?.longName || entityName}
+                          {entityDetails?.longName ? `${entityName}: ${entityDetails.longName}` : entityName}
                         </h1>
-                        <Badge variant="outline" className="mt-1">{entityName}</Badge>
                       </>
                     )}
                   </div>
