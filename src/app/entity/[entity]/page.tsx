@@ -37,6 +37,9 @@ function EntityPageContent() {
     entityLong: string;
     url: string | null;
     principalOrgan: string | null;
+    description: string | null;
+    annualReportLink: string | null;
+    transparencyPortalLink: string | null;
   } | null>(null);
   const [isLoadingEntityDetails, setIsLoadingEntityDetails] = useState(true);
 
@@ -52,6 +55,9 @@ function EntityPageContent() {
             entityLong: entity['Entity-Long'],
             url: entity['Entity URL'] || null,
             principalOrgan: entity['UN Principal Organ'] || null,
+            description: entity['description'] || null,
+            annualReportLink: entity['annual_report_link'] || null,
+            transparencyPortalLink: entity['transparency_portal_link'] || null,
           });
         } else if (res.status === 404) {
           console.warn(`Entity "${entityName}" not found`);
@@ -106,15 +112,36 @@ function EntityPageContent() {
                     <Skeleton className="h-6 w-48" />
                   </div>
                 ) : (
-                  entityDetails && entityDetails.url && (
+                  entityDetails && (
                     <div className="space-y-1">
-                      <MetadataItem label="Website" icon={LinkIcon}>
+                      {entityDetails.url && (
+                        <MetadataItem label="Website" icon={LinkIcon}>
                           <a href={entityDetails.url} target="_blank" rel="noopener noreferrer" className="text-un-blue underline break-all hover:text-un-blue/80 transition-colors">
                             {entityDetails.url.replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/$/, '')}
                           </a>
-                      </MetadataItem>
+                        </MetadataItem>
+                      )}
+                      {/* {entityDetails.annualReportLink && (
+                        <MetadataItem label="Annual Report" icon={LinkIcon}>
+                          <a href={entityDetails.annualReportLink} target="_blank" rel="noopener noreferrer" className="text-un-blue underline break-all hover:text-un-blue/80 transition-colors">
+                            {entityDetails.annualReportLink.replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/$/, '')}
+                          </a>
+                        </MetadataItem>
+                      )} */}
+                      {entityDetails.transparencyPortalLink && (
+                        <MetadataItem label="Transparency Portal" icon={LinkIcon}>
+                          <a href={entityDetails.transparencyPortalLink} target="_blank" rel="noopener noreferrer" className="text-un-blue underline break-all hover:text-un-blue/80 transition-colors">
+                            {entityDetails.transparencyPortalLink.replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/$/, '')}
+                          </a>
+                        </MetadataItem>
+                      )}
                     </div>
                   )
+                )}
+                {!isLoadingEntityDetails && entityDetails && entityDetails.description && (
+                  <div className="mt-4 text-base text-muted-foreground whitespace-pre-line">
+                    {entityDetails.description}
+                  </div>
                 )}
               </div>
             </div>
