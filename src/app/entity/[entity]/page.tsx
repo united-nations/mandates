@@ -20,10 +20,10 @@ interface Entity {
 }
 
 const MetadataItem = ({ label, children, icon: Icon }: { label: React.ReactNode, children: React.ReactNode, icon?: React.ElementType }) => (
-    <div className="flex items-start text-sm py-2 border-b last:border-b-0">
-        {Icon && <Icon className="h-4 w-4 text-muted-foreground mr-3 mt-0.5 flex-shrink-0" />}
-        <div className="w-32 font-medium text-muted-foreground flex-shrink-0">{label}</div>
-        <div className="flex-grow text-foreground">{children}</div>
+    <div className="flex items-center gap-3 text-sm py-1.5">
+        {Icon && <Icon className="h-4 w-4 text-muted-foreground flex-shrink-0" />}
+        <div className="font-medium text-muted-foreground">{label}:</div>
+        <div className="text-foreground">{children}</div>
     </div>
 );
 
@@ -109,7 +109,9 @@ function EntityPageContent() {
                     <div className="space-y-1">
                       {entityDetails.url && (
                           <MetadataItem label="Website" icon={LinkIcon}>
-                              <a href={entityDetails.url} target="_blank" rel="noopener noreferrer" className="text-un-blue underline break-all hover:text-un-blue/80 transition-colors">{entityDetails.url.replace(/^https?:\/\//, '')}</a>
+                              <a href={entityDetails.url} target="_blank" rel="noopener noreferrer" className="text-un-blue underline break-all hover:text-un-blue/80 transition-colors">
+                                {entityDetails.url.replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/$/, '')}
+                              </a>
                           </MetadataItem>
                       )}
                       {entityDetails.principalOrgan && (

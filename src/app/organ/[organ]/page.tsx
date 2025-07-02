@@ -69,13 +69,6 @@ function OrganPageContent() {
                     </div>
                   </div>
                 </div>
-                
-                <div className="text-muted-foreground mt-2 sm:text-justify">
-                  <p className="leading-tight mb-3">
-                    Exploring mandate documents issued by <strong>{organLongName || organName}</strong>. This view shows all source documents 
-                    issued by this organ/body, which establish mandates for UN entities.
-                  </p>
-                </div>
               </div>
             </div>
           </div>
