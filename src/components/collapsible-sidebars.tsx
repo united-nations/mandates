@@ -1,17 +1,11 @@
 'use client'
 
-import { useState } from 'react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { EntityListSidebar } from '@/components/entity-list-sidebar'
 import { OrganListSidebar } from '@/components/organ-list-sidebar'
 import { Building, Landmark } from 'lucide-react'
 
-interface CollapsibleSidebarsProps {
-  onEntityClick: (entityName: string) => void
-  onOrganClick: (organName: string) => void
-}
-
-export function CollapsibleSidebars({ onEntityClick, onOrganClick }: CollapsibleSidebarsProps) {
+export function CollapsibleSidebars() {
   return (
     <div className="lg:hidden mb-6 border rounded-lg">
       <Accordion type="multiple" className="w-full">
@@ -23,7 +17,7 @@ export function CollapsibleSidebars({ onEntityClick, onOrganClick }: Collapsible
             </div>
           </AccordionTrigger>
           <AccordionContent className="px-4 pb-4">
-            <EntityListSidebar onEntityClick={onEntityClick} hideHeader={true} borderless={true} />
+            <EntityListSidebar hideHeader={true} borderless={true} />
           </AccordionContent>
         </AccordionItem>
         
@@ -35,7 +29,7 @@ export function CollapsibleSidebars({ onEntityClick, onOrganClick }: Collapsible
             </div>
           </AccordionTrigger>
           <AccordionContent className="px-4 pb-4">
-            <OrganListSidebar onOrganClick={onOrganClick} hideHeader={true} borderless={true} />
+            <OrganListSidebar hideHeader={true} borderless={true} />
           </AccordionContent>
         </AccordionItem>
       </Accordion>

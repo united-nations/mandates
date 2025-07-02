@@ -393,6 +393,13 @@ export function MandateExplorer ({
           {(((entityListSidebar || organListSidebar) && isMainPage) ||
             (entityListSidebar && isOrganPage)) && <CollapsibleSidebars />}
 
+          {/* Collapsible sidebars for entity/organ pages - show above main content */}
+          {(isEntityPage || isOrganPage) && (
+            <div className="lg:hidden mb-6 max-w-md">
+              {crossCitationsSidebar}
+            </div>
+          )}
+
           {/* Main content with mandates list, cross-citations, and sidebars */}
           <div className='flex flex-col lg:flex-row gap-6'>
             {/* Main mandates content */}
@@ -487,7 +494,7 @@ export function MandateExplorer ({
 
                 {/* Render custom cross-citations sidebar if provided */}
                 {crossCitationsSidebar && (
-                  <div className='w-full lg:w-80 flex-shrink-0'>
+                  <div className='w-full lg:w-80 flex-shrink-0 hidden lg:block'>
                     {crossCitationsSidebar}
                   </div>
                 )}
