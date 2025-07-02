@@ -106,7 +106,7 @@ export function FilterControls({
       : null;
 
   return (
-    <div className="bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+    <div className="bg-gradient-to-br from-slate-50 to-slate-100 border-0 shadow-none rounded-xl overflow-hidden">
       {/* Header section with search */}
       <div className="p-6 pb-4">
         <div className="space-y-4">
