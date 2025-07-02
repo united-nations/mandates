@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Landmark, Search } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useFilters } from '@/contexts/FilterContext'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
 interface BodyWithCount {
   name: string
@@ -141,6 +142,23 @@ export function OrganListSidebar({ hideHeader = false, borderless = false }: Org
     </div>
   )
 
+  // Add OrganName component
+  function OrganName({ organName, allOrgans, showUnderline = true }: { organName: string, allOrgans: Organ[], showUnderline?: boolean }) {
+    const found = allOrgans.find((o) => o.short === organName || o.long === organName);
+    const longName = found ? found.long : null;
+    if (!longName || longName === organName) return <>{organName}</>;
+    return (
+      <Tooltip>
+        <TooltipTrigger className={showUnderline ? 'underline decoration-dotted cursor-help' : 'cursor-help'}>
+          {organName}
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{longName}</p>
+        </TooltipContent>
+      </Tooltip>
+    );
+  }
+
   return (
     <div className={borderless ? '' : 'border-l-2 border-un-blue/20 pl-4'}>
       {!hideHeader && (
@@ -184,7 +202,8 @@ export function OrganListSidebar({ hideHeader = false, borderless = false }: Org
                 >
                   <div className="min-w-0 flex-1">
                     <div className="text-sm font-medium truncate">
-                      {findOrganData(organ.name)?.short || organ.name}
+                      {/* Use OrganName for abbreviation explainer */}
+                      <OrganName organName={findOrganData(organ.name)?.short || organ.name} allOrgans={allOrgans} showUnderline={true} />
                     </div>
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0 w-32">
