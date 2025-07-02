@@ -6,7 +6,13 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import type { Entity } from '@/types';
+
+interface Entity {
+  'Entity': string;
+  'Entity-Long': string;
+  'Entity URL'?: string;
+  'UN Principal Organ'?: string;
+}
 
 interface EntityNameProps {
   entityName: string;
@@ -26,13 +32,13 @@ export function EntityName({ entityName, showUnderline = true }: EntityNameProps
 
   useEffect(() => {
     getEntities().then(entities => {
-      const foundEntity = entities.find(e => e.entity === entityName || e.entity_long === entityName);
-      setEntity(foundEntity || { entity: entityName, entity_long: entityName });
+      const foundEntity = entities.find(e => e['Entity'] === entityName || e['Entity-Long'] === entityName);
+      setEntity(foundEntity || { 'Entity': entityName, 'Entity-Long': entityName });
     });
   }, [entityName]);
 
-  const displayName = entity?.entity || entityName;
-  const longName = entity?.entity_long || entityName;
+  const displayName = entity?.['Entity'] || entityName;
+  const longName = entity?.['Entity-Long'] || entityName;
 
   if (displayName === longName) {
     return <>{displayName}</>;

@@ -33,7 +33,8 @@ function EntityPageContent() {
   const entityName = decodeURIComponent(params.entity as string);
 
   const [entityDetails, setEntityDetails] = useState<{
-    longName: string;
+    entity: string;
+    entityLong: string;
     url: string | null;
     principalOrgan: string | null;
   } | null>(null);
@@ -47,9 +48,10 @@ function EntityPageContent() {
         if (res.ok) {
           const entity = await res.json();
           setEntityDetails({
-            longName: entity.entity_long,
-            url: entity.url || null,
-            principalOrgan: entity.principal_organ || null,
+            entity: entity['Entity'],
+            entityLong: entity['Entity-Long'],
+            url: entity['Entity URL'] || null,
+            principalOrgan: entity['UN Principal Organ'] || null,
           });
         } else if (res.status === 404) {
           console.warn(`Entity "${entityName}" not found`);
@@ -92,7 +94,7 @@ function EntityPageContent() {
                     ) : (
                       <>
                         <h1 className="text-2xl lg:text-3xl font-bold tracking-tight text-foreground">
-                          {entityDetails?.longName ? `${entityName}: ${entityDetails.longName}` : entityName}
+                          {entityDetails?.entityLong ? `${entityDetails.entity}: ${entityDetails.entityLong}` : entityDetails?.entity || entityName}
                         </h1>
                       </>
                     )}

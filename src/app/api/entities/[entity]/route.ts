@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import entities from '../../../../../data/entities.json';
 import fs from 'fs';
 import path from 'path';
 
@@ -22,7 +21,6 @@ async function getDetailsMap() {
     skip_empty_lines: true,
   });
 
-  // Create a lookup for details by Entity short name
   cachedDetailsMap = Object.fromEntries(
     details.map((row: any) => [row['Entity'], row])
   );
@@ -33,25 +31,14 @@ async function getDetailsMap() {
 export async function GET(request: Request, { params }: { params: { entity: string } }) {
   try {
     const entityName = decodeURIComponent(params.entity);
-    
-    // Find the entity in the base entities data
-    const entity = entities.find((e: any) => e.entity === entityName);
-    
-    if (!entity) {
+    const detailsMap = await getDetailsMap();
+    const detail = detailsMap[entityName];
+
+    if (!detail) {
       return NextResponse.json({ message: 'Entity not found' }, { status: 404 });
     }
 
-    // Get additional details from CSV
-    const detailsMap = await getDetailsMap();
-    const detail = detailsMap[entity.entity];
-    
-    const mergedEntity = {
-      ...entity,
-      url: detail?.['Entity URL'] || null,
-      principal_organ: detail?.['UN Principal Organ'] || null,
-    };
-
-    return NextResponse.json(mergedEntity);
+    return NextResponse.json(detail);
   } catch (error) {
     console.error('Failed to load entity:', error);
     return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });

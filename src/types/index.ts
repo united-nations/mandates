@@ -81,6 +81,9 @@ export interface Mandate {
 }
 
 export type Entity = {
-  entity: string;
-  entity_long: string;
+  'Entity': string;
+  'Entity-Long': string;
+  'Entity URL'?: string;
+  'UN Principal Organ'?: string;
+  [key: string]: any;
 };

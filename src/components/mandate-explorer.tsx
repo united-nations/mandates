@@ -311,15 +311,13 @@ export function MandateExplorer ({
   }
 
   const getEntityLongName = (entityShortName: string) => {
-    return allEntities.find(e => e.entity === entityShortName)?.entity_long
+    return (allEntities.find((e: any) => e['Entity'] === entityShortName)?.['Entity-Long']) as string | undefined;
   }
 
   const entityDropdownOptions: SearchableDropdownOption[] = entityOptions.map(
     entity => ({
       value: entity.name,
-      label: `${getEntityLongName(entity.name) || entity.name} (${
-        entity.count
-      })`
+      label: `${getEntityLongName(entity.name) || entity.name} (${entity.count})`
     })
   )
 
