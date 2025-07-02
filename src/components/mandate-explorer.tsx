@@ -382,7 +382,11 @@ export function MandateExplorer ({
       {/* Summary Cards */}
       <section
         aria-labelledby='summary-heading'
-        className='grid grid-cols-2 lg:grid-cols-4 gap-4'
+        className={`grid gap-4 ${
+          isEntityPage || isOrganPage 
+            ? 'grid-cols-1 sm:grid-cols-3' 
+            : 'grid-cols-2 lg:grid-cols-4'
+        }`}
       >
         {dataCardsSection}
       </section>
