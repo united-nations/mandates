@@ -102,23 +102,15 @@ function EntityPageContent() {
                 {isLoadingEntityDetails ? (
                   <div className="space-y-2 mt-4">
                     <Skeleton className="h-6 w-48" />
-                    <Skeleton className="h-6 w-32" />
                   </div>
                 ) : (
-                  entityDetails && (entityDetails.url || entityDetails.principalOrgan) && (
+                  entityDetails && entityDetails.url && (
                     <div className="space-y-1">
-                      {entityDetails.url && (
-                          <MetadataItem label="Website" icon={LinkIcon}>
-                              <a href={entityDetails.url} target="_blank" rel="noopener noreferrer" className="text-un-blue underline break-all hover:text-un-blue/80 transition-colors">
-                                {entityDetails.url.replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/$/, '')}
-                              </a>
-                          </MetadataItem>
-                      )}
-                      {entityDetails.principalOrgan && (
-                          <MetadataItem label="Principal Organ" icon={Landmark}>
-                              <Badge variant="secondary">{entityDetails.principalOrgan}</Badge>
-                          </MetadataItem>
-                      )}
+                      <MetadataItem label="Website" icon={LinkIcon}>
+                          <a href={entityDetails.url} target="_blank" rel="noopener noreferrer" className="text-un-blue underline break-all hover:text-un-blue/80 transition-colors">
+                            {entityDetails.url.replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/$/, '')}
+                          </a>
+                      </MetadataItem>
                     </div>
                   )
                 )}
