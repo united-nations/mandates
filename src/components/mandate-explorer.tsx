@@ -366,10 +366,10 @@ export function MandateExplorer ({
         />
       )}
       <DataCard
-        title={explainerTexts.dataCards.citations.title}
+        title={isEntityPage ? explainerTexts.dataCards.citationsByEntity.title : explainerTexts.dataCards.citations.title}
         value={totalCitations}
         icon={Quote}
-        description={explainerTexts.dataCards.citations.description}
+        description={isEntityPage ? explainerTexts.dataCards.citationsByEntity.description : explainerTexts.dataCards.citations.description}
         isOpen={citationsPopover}
         onOpenChange={setCitationsPopover}
         isLoading={isLoading}
