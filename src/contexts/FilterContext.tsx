@@ -103,7 +103,8 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
     }
     
     // Navigate with new params
-    router.push(`${pathname}?${newParams.toString()}`, { scroll: false })
+    const newUrl = `${pathname}?${newParams.toString()}`;
+    router.push(newUrl, { scroll: false })
   }
   
   // Clear a single filter

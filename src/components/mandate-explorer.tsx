@@ -184,7 +184,9 @@ export function MandateExplorer ({
       params.set('limit', pageSize.toString())
       params.set('sort_by', sortBy)
 
-      const response = await fetch(`/api/mandates?${params.toString()}`, {
+      const apiUrl = `/api/mandates?${params.toString()}`;
+
+      const response = await fetch(apiUrl, {
         signal: abortController.signal
       })
 
@@ -285,18 +287,9 @@ export function MandateExplorer ({
     fetchMetadata()
   }, [])
 
-  const handlePageChange = (page: number) => {
-    setFilter('page', page.toString())
-  }
-
-  const handlePageSizeChange = (size: number) => {
-    setFilter('limit', size.toString())
-    setFilter('page', '1') // Reset to first page
-  }
-
-  const handleSortChange = (value: string) => {
+  const handleSortChange = useCallback((value: string) => {
     setFilter('sort_by', value)
-  }
+  }, [setFilter])
 
   const LoadingSkeleton = () => (
     <div className='space-y-4'>
@@ -497,9 +490,7 @@ export function MandateExplorer ({
                           <PaginationControls
                             currentPage={currentPage}
                             totalPages={totalPages}
-                            onPageChange={handlePageChange}
                             pageSize={pageSize}
-                            onPageSizeChange={handlePageSizeChange}
                             totalItems={totalItems}
                           />
                         </div>
