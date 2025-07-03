@@ -26,6 +26,7 @@ let uniqueProgrammesCount = 0;
 let uniquePillars: string[] = [];
 let yearRange: { min: number; max: number } | null = null;
 let yearDistribution: { [year: string]: number } = {};
+let uniqueProgrammes: string[] = [];
 
 async function getMetadata() {
   if (uniqueEntities.length > 0) {
@@ -40,6 +41,7 @@ async function getMetadata() {
       totalCitations,
       uniqueBodiesCount: uniqueBodiesWithCount.length,
       uniqueProgrammesCount,
+      uniqueProgrammes,
       uniquePillars,
       yearRange,
       yearDistribution,
@@ -141,6 +143,7 @@ async function getMetadata() {
   uniqueBodiesCount = uniqueBodiesWithCount.length;
   uniqueBodies = uniqueBodiesWithCount.map(b => b.name);
   uniqueProgrammesCount = programmes.size;
+  uniqueProgrammes = Array.from(programmes).sort();
   uniquePillars = Array.from(pillars).sort();
   yearDistribution = localYearDistribution;
   const years = Object.keys(yearDistribution).map(Number);
@@ -162,6 +165,7 @@ async function getMetadata() {
     totalCitations,
     uniqueBodiesCount: uniqueBodiesWithCount.length,
     uniqueProgrammesCount,
+    uniqueProgrammes,
     uniquePillars,
     yearRange,
     yearDistribution,
