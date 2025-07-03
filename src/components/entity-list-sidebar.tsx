@@ -103,6 +103,10 @@ export function EntityListSidebar({ hideHeader = false, borderless = false }: En
     if (isMainPage) {
       // Navigate to entity page (fresh, no filters preserved)
       router.push(`/entity/${encodeURIComponent(entityName)}`);
+      // Jump to top after navigation
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+      }, 100);
     } else if (isOrganPage) {
       // Set entity filter on organ page
       setFilter('entity', entityName);

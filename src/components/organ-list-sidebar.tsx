@@ -125,6 +125,10 @@ export function OrganListSidebar({ hideHeader = false, borderless = false }: Org
     if (isMainPage) {
       // Navigate to organ page using the organ name (which should now be short names)
       router.push(`/organ/${encodeURIComponent(organName)}`);
+      // Jump to top after navigation
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+      }, 100);
     } else if (isEntityPage) {
       // Set organ filter on entity page
       setFilter('organ', organName);
