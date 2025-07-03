@@ -3,7 +3,7 @@
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { explainerTexts } from '@/lib/explainer-texts';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, FileText } from 'lucide-react';
+import { ArrowLeft, FileText, ArrowRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 export default function MethodologyPage() {
@@ -35,6 +35,10 @@ export default function MethodologyPage() {
             <p className="text-sm text-muted-foreground italic sm:text-justify leading-relaxed">
               {explainerTexts.mainHeader.disclaimer}
             </p>
+            <Button variant="outline" size="sm" className="mt-6" onClick={() => router.push('/resources')}>
+              More Resources
+              <ArrowRight className="h-4 w-4 ml-2" />
+            </Button>
           </div>
         </main>
       </div>
