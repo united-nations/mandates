@@ -132,7 +132,7 @@ export function SearchableDropdown({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={cn("w-full justify-between", !value && "text-muted-foreground", className)}
+          className={cn("w-full justify-between bg-white", !value && "text-muted-foreground", className)}
         >
           <span className="truncate">{displayValue}</span>
           <div className="flex items-center">
