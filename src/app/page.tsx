@@ -135,15 +135,15 @@ function MandateNavigator () {
       <div className='min-h-screen bg-background text-foreground'>
         <main className='w-full max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto space-y-6 px-8 sm:px-12 lg:px-16'>
           {/* Header with context info */}
-          <div className='text-muted-foreground mt-2 sm:text-justify'>
+          <div className='text-muted-foreground mt-2 sm:text-justify max-w-[792px] text-left'>
             <p className='leading-tight mb-0'>
-              {explainerTexts.mainHeader.shortDescription}{' '}
+              {explainerTexts.mainHeader.shortDescription}{' '}<br />
               <Link
                 href='/methodology'
                 className='font-bold text-un-blue hover:text-shuttle-gray text-sm inline transition-colors'
                 style={{ textDecoration: 'none' }}
               >
-                Read More...
+                Read More
               </Link>
             </p>
           </div>
