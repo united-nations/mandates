@@ -20,7 +20,7 @@ interface Entity {
 }
 
 const MetadataItem = ({ label, children, icon: Icon }: { label: React.ReactNode, children: React.ReactNode, icon?: React.ElementType }) => (
-    <div className="flex items-center gap-3 text-sm py-1.5">
+    <div className="flex items-center gap-2 text-sm py-1">
         {Icon && <Icon className="h-4 w-4 text-muted-foreground flex-shrink-0" />}
         <div className="font-medium text-muted-foreground">{label}:</div>
         <div className="text-foreground">{children}</div>
@@ -80,37 +80,32 @@ function EntityPageContent() {
           <div className="flex items-start justify-between">
             <div className="flex-1">
               <div className="mb-2">
-                <Button variant="outline" size="sm" className="mb-4" onClick={() => router.push('/')}>
+                <Button size="sm" className="mb-4 bg-un-blue text-white hover:bg-un-blue/90 transition-colors" onClick={() => router.push('/')}>
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Back to Main View
                 </Button>
               </div>
               
               <div className="mb-6 mt-2">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="p-3 bg-muted rounded-md">
-                    <Building className="h-6 w-6 text-un-blue" />
-                  </div>
-                  <div>
-                    {isLoadingEntityDetails ? (
-                      <>
-                        <Skeleton className="h-8 w-64 mb-2" />
-                        <Skeleton className="h-6 w-20" />
-                      </>
-                    ) : (
-                      <>
-                        <h1 className="text-2xl lg:text-3xl font-bold tracking-tight text-foreground">
-                          {entityDetails?.entityLong ? (
-                            <>
-                              <span className="text-un-blue">{entityDetails.entity}:</span> {entityDetails.entityLong}
-                            </>
-                          ) : (
-                            <span className="text-un-blue">{entityDetails?.entity || entityName}</span>
-                          )}
-                        </h1>
-                      </>
-                    )}
-                  </div>
+                <div className="mb-2">
+                  {isLoadingEntityDetails ? (
+                    <>
+                      <Skeleton className="h-8 w-64 mb-2" />
+                      <Skeleton className="h-6 w-20" />
+                    </>
+                  ) : (
+                    <>
+                      <h1 className="text-2xl lg:text-3xl font-medium tracking-tight text-foreground">
+                        {entityDetails?.entityLong ? (
+                          <>
+                            <span className="text-foreground">{entityDetails.entity}:</span> {entityDetails.entityLong}
+                          </>
+                        ) : (
+                          <span className="text-foreground">{entityDetails?.entity || entityName}</span>
+                        )}
+                      </h1>
+                    </>
+                  )}
                 </div>
 
                 {isLoadingEntityDetails ? (
@@ -119,7 +114,7 @@ function EntityPageContent() {
                   </div>
                 ) : (
                   entityDetails && (
-                    <div className="space-y-1">
+                    <div className="space-y-0">
                       {entityDetails.url && (
                         <MetadataItem label="Website" icon={LinkIcon}>
                           <a href={entityDetails.url} target="_blank" rel="noopener noreferrer" className="text-un-blue underline break-all hover:text-un-blue/80 transition-colors">
@@ -143,11 +138,6 @@ function EntityPageContent() {
                       )}
                     </div>
                   )
-                )}
-                {!isLoadingEntityDetails && entityDetails && entityDetails.description && (
-                  <div className="mt-4 text-base text-muted-foreground whitespace-pre-line">
-                    {entityDetails.description}
-                  </div>
                 )}
               </div>
             </div>
