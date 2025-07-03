@@ -37,7 +37,7 @@ export function PaginationControls({
             <SelectTrigger className="w-[70px]">
               <SelectValue placeholder={pageSize} />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="max-h-[200px] overflow-y-auto">
               {pageSizeOptions.map(size => (
                 <SelectItem key={size} value={String(size)}>{size}</SelectItem>
               ))}

@@ -133,7 +133,7 @@ function MandateNavigator () {
   return (
     <TooltipProvider>
       <div className='min-h-screen bg-background text-foreground'>
-        <main className='w-full max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto space-y-6 px-8 sm:px-12 lg:px-16'>
+        <main className='w-full max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto space-y-6 px-8 sm:px-12 lg:px-16 pb-48'>
           {/* Header with context info */}
           <div className='text-muted-foreground mt-2 sm:text-justify max-w-[792px] text-left'>
             <p className='leading-tight mb-0'>
