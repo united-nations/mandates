@@ -311,13 +311,17 @@ export function MandateExplorer ({
   }
 
   const getEntityLongName = (entityShortName: string) => {
-    return (allEntities.find((e: any) => e['Entity'] === entityShortName)?.['Entity-Long']) as string | undefined;
+    return allEntities.find((e: any) => e['Entity'] === entityShortName)?.[
+      'Entity-Long'
+    ] as string | undefined
   }
 
   const entityDropdownOptions: SearchableDropdownOption[] = entityOptions.map(
     entity => ({
       value: entity.name,
-      label: `${getEntityLongName(entity.name) || entity.name} (${entity.count})`
+      label: `${getEntityLongName(entity.name) || entity.name} (${
+        entity.count
+      })`
     })
   )
 
@@ -341,8 +345,12 @@ export function MandateExplorer ({
       />
       {/* Always show organs card; on organ page show short name, else show count */}
       <DataCard
-        title={isOrganPage ? 'UN Organ / Body' : explainerTexts.dataCards.unOrgans.title}
-        value={isOrganPage ? (currentOrganName || '') : uniqueOrgans}
+        title={
+          isOrganPage
+            ? 'UN Organ / Body'
+            : explainerTexts.dataCards.unOrgans.title
+        }
+        value={isOrganPage ? currentOrganName || '' : uniqueOrgans}
         icon={Landmark}
         description={explainerTexts.dataCards.unOrgans.description}
         isOpen={unOrgansPopover}
@@ -351,8 +359,10 @@ export function MandateExplorer ({
       />
       {/* Always show entity card; on entity page show short name, else show count */}
       <DataCard
-        title={isEntityPage ? 'Entity' : explainerTexts.dataCards.unEntities.title}
-        value={isEntityPage ? (currentEntityName || '') : uniqueEntities}
+        title={
+          isEntityPage ? 'Entity' : explainerTexts.dataCards.unEntities.title
+        }
+        value={isEntityPage ? currentEntityName || '' : uniqueEntities}
         icon={Building}
         description={explainerTexts.dataCards.unEntities.description}
         isOpen={unEntitiesPopover}
@@ -360,10 +370,18 @@ export function MandateExplorer ({
         isLoading={isLoading && !isEntityPage}
       />
       <DataCard
-        title={isEntityPage ? explainerTexts.dataCards.citationsByEntity.title : explainerTexts.dataCards.citations.title}
+        title={
+          isEntityPage
+            ? explainerTexts.dataCards.citationsByEntity.title
+            : explainerTexts.dataCards.citations.title
+        }
         value={totalCitations}
         icon={Quote}
-        description={isEntityPage ? explainerTexts.dataCards.citationsByEntity.description : explainerTexts.dataCards.citations.description}
+        description={
+          isEntityPage
+            ? explainerTexts.dataCards.citationsByEntity.description
+            : explainerTexts.dataCards.citations.description
+        }
         isOpen={citationsPopover}
         onOpenChange={setCitationsPopover}
         isLoading={isLoading}
@@ -389,7 +407,7 @@ export function MandateExplorer ({
 
           {/* Collapsible sidebars for entity/organ pages - show above main content */}
           {(isEntityPage || isOrganPage) && (
-            <div className="lg:hidden mb-6 max-w-md">
+            <div className='lg:hidden mb-6 max-w-md'>
               {crossCitationsSidebar}
             </div>
           )}
@@ -398,92 +416,86 @@ export function MandateExplorer ({
           <div className='flex flex-col lg:flex-row gap-6'>
             {/* Main mandates content */}
             <div className='flex-1 min-w-0'>
-              <div className='flex items-center mb-3 gap-3'>
+              <div className='mb-4'>
+                <FilterControls
+                  entityOptions={entityDropdownOptions}
+                  organOptions={organDropdownOptions}
+                  programmeOptions={programmeOptions}
+                  subjectOptions={subjectOptions}
+                  yearRange={yearRange}
+                  yearDistribution={yearDistribution}
+                />
+              </div>
+              <div className='flex items-center mb-3 gap-3 justify-between flex-wrap'>
                 <h2 className='text-2xl font-bold tracking-tight'>
                   {explainerTexts.dataCards.sectionTitle}
                   {/* Detail page title: cited by/issued by */}
                   {isEntityPage && <> cited by {currentEntityName}</>}
                   {isOrganPage && <> issued by {currentOrganName}</>}
                 </h2>
+                <div className='flex items-center gap-2 w-fit mt-2 sm:mt-0'>
+                  <label
+                    htmlFor='sort-by'
+                    className='text-sm font-medium text-nowrap'
+                  >
+                    Sort by
+                  </label>
+                  <Select value={sortBy} onValueChange={handleSortChange}>
+                    <SelectTrigger className='w-[220px]' id='sort-by'>
+                      <SelectValue
+                        placeholder={explainerTexts.sorting.placeholder}
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {filters.keyword ? (
+                        <SelectItem value='default'>
+                          Search Relevance
+                        </SelectItem>
+                      ) : null}
+                      <SelectItem value='citing_entities_desc'>
+                        Number of citing entities ↓
+                      </SelectItem>
+                      <SelectItem value='citing_entities_asc'>
+                        Number of citing entities ↑
+                      </SelectItem>
+                      <SelectItem value='citations_desc'>
+                        Citations ↓
+                      </SelectItem>
+                      <SelectItem value='citations_asc'>
+                        Citations ↑
+                      </SelectItem>
+                      <SelectItem value='year_desc'>Year ↓</SelectItem>
+                      <SelectItem value='year_asc'>Year ↑</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
               <div className='flex flex-col lg:flex-row gap-6'>
                 {/* Mandates List */}
                 <div className='flex-1'>
                   <div className='mb-6'>
-                    <div className='mb-4'>
-                      <FilterControls
-                        entityOptions={entityDropdownOptions}
-                        organOptions={organDropdownOptions}
-                        programmeOptions={programmeOptions}
-                        subjectOptions={subjectOptions}
-                        yearRange={yearRange}
-                        yearDistribution={yearDistribution}
-                      />
-                    </div>
-
-                    <div className='flex items-center gap-2 w-fit'>
-                      <label
-                        htmlFor='sort-by'
-                        className='text-sm font-medium text-nowrap'
-                      >
-                        Sort by
-                      </label>
-                      <Select value={sortBy} onValueChange={handleSortChange}>
-                        <SelectTrigger className='w-[220px]' id='sort-by'>
-                          <SelectValue
-                            placeholder={explainerTexts.sorting.placeholder}
-                          />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {filters.keyword ? (
-                            <SelectItem value='default'>
-                              Search Relevance
-                            </SelectItem>
-                          ) : null}
-                          <SelectItem value='citing_entities_desc'>
-                            Number of citing entities ↓
-                          </SelectItem>
-                          <SelectItem value='citing_entities_asc'>
-                            Number of citing entities ↑
-                          </SelectItem>
-                          <SelectItem value='citations_desc'>
-                            Citations ↓
-                          </SelectItem>
-                          <SelectItem value='citations_asc'>
-                            Citations ↑
-                          </SelectItem>
-                          <SelectItem value='year_desc'>
-                            Year ↓
-                          </SelectItem>
-                          <SelectItem value='year_asc'>
-                            Year ↑
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-
-                  {isLoading ? (
-                    <LoadingSkeleton />
-                  ) : (
-                    <>
-                      <MandateList
-                        mandates={mandates}
-                        onMandateClick={setSelectedMandate}
-                        organsData={allOrgans}
-                      />
-                      <div className='mt-4'>
-                        <PaginationControls
-                          currentPage={currentPage}
-                          totalPages={totalPages}
-                          onPageChange={handlePageChange}
-                          pageSize={pageSize}
-                          onPageSizeChange={handlePageSizeChange}
-                          totalItems={totalItems}
+                    {isLoading ? (
+                      <LoadingSkeleton />
+                    ) : (
+                      <>
+                        <MandateList
+                          mandates={mandates}
+                          onMandateClick={setSelectedMandate}
+                          organsData={allOrgans}
                         />
-                      </div>
-                    </>
-                  )}
+                        <div className='mt-4'>
+                          <PaginationControls
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={handlePageChange}
+                            pageSize={pageSize}
+                            onPageSizeChange={handlePageSizeChange}
+                            totalItems={totalItems}
+                          />
+                        </div>
+                      </>
+                    )}
+                  </div>
                 </div>
 
                 {/* Render custom cross-citations sidebar if provided */}
