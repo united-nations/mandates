@@ -3,12 +3,20 @@
 import { Suspense, useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Landmark } from 'lucide-react';
+import { ArrowLeft, Landmark, Link as LinkIcon } from 'lucide-react';
 import { MandateExplorer } from '@/components/mandate-explorer';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { EntityListSidebar } from '@/components/entity-list-sidebar';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
+
+const MetadataItem = ({ label, children, icon: Icon }: { label: React.ReactNode, children: React.ReactNode, icon?: React.ElementType }) => (
+    <div className="flex items-center gap-2 text-sm py-1">
+        {Icon && <Icon className="h-4 w-4 text-muted-foreground flex-shrink-0" />}
+        <div className="font-medium text-muted-foreground">{label}:</div>
+        <div className="text-foreground">{children}</div>
+    </div>
+);
 
 function OrganPageContent() {
   const params = useParams();
@@ -80,6 +88,35 @@ function OrganPageContent() {
                       </>
                     )}
                   </div>
+
+                  {isLoadingOrganDetails ? (
+                    <div className="space-y-2 mt-4">
+                      <Skeleton className="h-6 w-48" />
+                    </div>
+                  ) : (
+                    organDetails && (
+                      <div className="space-y-0">
+                        {organDetails.website && (
+                          <MetadataItem label="Website" icon={LinkIcon}>
+                            <a href={organDetails.website} target="_blank" rel="noopener noreferrer" className="text-un-blue underline hover:text-un-blue/80 transition-colors">
+                              {(() => {
+                                const cleanUrl = organDetails.website.replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/$/, '');
+                                const domain = cleanUrl.split('/')[0];
+                                
+                                // If URL is short enough, show it all
+                                if (cleanUrl.length <= 35) {
+                                  return cleanUrl;
+                                }
+                                
+                                // Otherwise show domain + ...
+                                return `${domain}/...`;
+                              })()}
+                            </a>
+                          </MetadataItem>
+                        )}
+                      </div>
+                    )
+                  )}
                 </div>
               </div>
             </div>
