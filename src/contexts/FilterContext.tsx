@@ -19,6 +19,11 @@ export interface FilterType {
   limit?: string
 }
 
+interface Organ {
+  short: string
+  long: string
+}
+
 interface FilterContextType {
   filters: FilterType
   setFilter: (key: keyof FilterType, value: string | undefined) => void

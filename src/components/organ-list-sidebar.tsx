@@ -123,7 +123,7 @@ export function OrganListSidebar({ hideHeader = false, borderless = false }: Org
 
   const handleOrganClick = (organName: string) => {
     if (isMainPage) {
-      // Navigate to organ page (fresh, no filters preserved)
+      // Navigate to organ page using the organ name (which should now be short names)
       router.push(`/organ/${encodeURIComponent(organName)}`);
     } else if (isEntityPage) {
       // Set organ filter on entity page
@@ -144,16 +144,17 @@ export function OrganListSidebar({ hideHeader = false, borderless = false }: Org
 
   // Add OrganName component
   function OrganName({ organName, allOrgans, showUnderline = true }: { organName: string, allOrgans: Organ[], showUnderline?: boolean }) {
-    const found = allOrgans.find((o) => o.short === organName || o.long === organName);
+    // Since data now uses short names, organName should be the short name
+    const found = allOrgans.find((o) => o.short === organName);
     const longName = found ? found.long : null;
-    if (!longName || longName === organName) return <>{organName}</>;
+    
     return (
       <Tooltip>
         <TooltipTrigger className={showUnderline ? 'underline decoration-dotted cursor-help' : 'cursor-help'}>
           {organName}
         </TooltipTrigger>
         <TooltipContent>
-          <p>{longName}</p>
+          <p>{longName || organName}</p>
         </TooltipContent>
       </Tooltip>
     );
@@ -202,8 +203,8 @@ export function OrganListSidebar({ hideHeader = false, borderless = false }: Org
                 >
                   <div className="min-w-0 flex-1">
                     <div className="text-sm font-medium truncate">
-                      {/* Use OrganName for abbreviation explainer */}
-                      <OrganName organName={findOrganData(organ.name)?.short || organ.name} allOrgans={allOrgans} showUnderline={true} />
+                      {/* organ.name is already the short name from the data */}
+                      <OrganName organName={organ.name} allOrgans={allOrgans} showUnderline={true} />
                     </div>
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0 w-32">

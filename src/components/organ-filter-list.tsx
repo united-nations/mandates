@@ -48,11 +48,9 @@ export function OrganFilterList({ onOrganClick, selectedOrgan }: OrganFilterList
   }, [])
 
   const getOrganDisplayName = (organName: string): string => {
-    const organData = allOrgans.find(organ => organ.short === organName || organ.long === organName)
-    if (organName === "General Assembly" || organName === "Security Council") {
-      return organName
-    }
-    return organData ? `${organData.short} – ${organData.long}` : organName
+    // Since data now uses short names, just return the short name
+    // The organName should already be the short name from the updated data
+    return organName
   }
 
   return (

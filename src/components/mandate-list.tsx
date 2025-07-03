@@ -132,7 +132,7 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
                     <HighlightedContent 
                       content={(mandate as any).highlightedTitle || (mandate as any).highlightedFields?.title} 
                       fallback={
-                        mandate.body === "Security Council" && mandate.uniform_title && mandate.uniform_title.length > 0
+                        mandate.body === "SC" && mandate.uniform_title && mandate.uniform_title.length > 0
                           ? mandate.uniform_title[0]
                           : mandate.title || mandate.description || 'Untitled'
                       } 

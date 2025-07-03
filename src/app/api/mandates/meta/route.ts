@@ -115,8 +115,8 @@ async function getMetadata() {
   uniqueBodiesWithCount = Object.entries(bodyCounts)
     .map(([name, count]) => ({ name, count }))
     .sort((a, b) => {
-      // Priority order for main organs
-      const priority = ["General Assembly", "Security Council", "ECOSOC"];
+      // Priority order for main organs using short names
+      const priority = ["GA", "SC", "ECOSOC"];
       const aIndex = priority.indexOf(a.name);
       const bIndex = priority.indexOf(b.name);
       

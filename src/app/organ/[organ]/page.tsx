@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useState, useEffect } from 'react';
+import { Suspense } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Landmark } from 'lucide-react';
@@ -9,37 +9,10 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import { EntityListSidebar } from '@/components/entity-list-sidebar';
 import { Badge } from '@/components/ui/badge';
 
-interface Organ {
-  short: string;
-  long: string;
-}
-
 function OrganPageContent() {
   const params = useParams();
   const router = useRouter();
   const organName = decodeURIComponent(params.organ as string);
-
-  const [organLongName, setOrganLongName] = useState<string>('');
-
-  useEffect(() => {
-    async function fetchOrganDetails() {
-      try {
-        const res = await fetch('/api/organs');
-        if (res.ok) {
-          const data = await res.json();
-          const organ = data.find((o: Organ) => o.short === organName || o.long === organName);
-          if (organ) {
-            setOrganLongName(organ.long);
-          }
-        }
-      } catch (error) {
-        console.error("Failed to fetch organ details:", error);
-      }
-    }
-    if (organName) {
-      fetchOrganDetails();
-    }
-  }, [organName]);
 
   return (
     <TooltipProvider>
@@ -64,13 +37,7 @@ function OrganPageContent() {
                     </div>
                     <div>
                       <h1 className="text-2xl lg:text-3xl font-bold tracking-tight text-foreground">
-                        {organLongName && organLongName !== organName ? (
-                          <>
-                            <span className="text-un-blue">{organName}:</span> {organLongName}
-                          </>
-                        ) : (
-                          <span className="text-un-blue">{organName}</span>
-                        )}
+                        <span className="text-un-blue">{organName}</span>
                       </h1>
                     </div>
                   </div>
