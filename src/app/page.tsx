@@ -8,11 +8,12 @@ import Clarity from '@microsoft/clarity'
 import { MandateExplorer } from '@/components/mandate-explorer'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { explainerTexts } from '@/lib/explainer-texts'
-import { Building, Search } from 'lucide-react'
+import { Building, Search, Menu } from 'lucide-react'
 import Link from 'next/link'
 import { Input } from '@/components/ui/input'
 import { EntityListSidebar } from '@/components/entity-list-sidebar'
 import { OrganListSidebar } from '@/components/organ-list-sidebar'
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu'
 
 interface ParentContext {
   scrollY: number
@@ -139,32 +140,19 @@ function MandateNavigator () {
           <section className='pb-2'>
             <div className='flex items-start justify-between'>
               <div className='flex-1'>
-                <div className='mb-6 mt-2'>
-                  <div className='flex items-center gap-x-2'>
-                    <h1 className='text-4xl font-bold tracking-tight text-foreground'>
-                      {explainerTexts.mainHeader.title}
-                    </h1>
-                    <span className='inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200'>
-                      {explainerTexts.mainHeader.versionTag}
-                    </span>
-                  </div>
+                <div className='mb-10 mt-2'>
+                  {/* Removed duplicate title and version tag, now in layout */}
                 </div>
                 <div className='text-muted-foreground mt-2 sm:text-justify'>
-                  <p className='leading-tight mb-3'>
+                  <p className='leading-tight mb-0'>
                     {explainerTexts.mainHeader.shortDescription}{' '}
-                    <Button
-                      variant='link'
-                      className='p-0 h-auto text-un-blue hover:text-shuttle-gray text-sm inline'
-                      onClick={() => {
-                        const element = document.getElementById('about-section')
-                        element?.scrollIntoView({
-                          behavior: 'smooth',
-                          block: 'start'
-                        })
-                      }}
+                    <Link
+                      href="/methodology"
+                      className='font-bold text-un-blue hover:text-shuttle-gray text-sm inline transition-colors'
+                      style={{ textDecoration: 'none' }}
                     >
                       Read More...
-                    </Button>
+                    </Link>
                   </p>
                 </div>
               </div>
@@ -176,50 +164,6 @@ function MandateNavigator () {
             entityListSidebar={<EntityListSidebar />}
             organListSidebar={<OrganListSidebar />}
           />
-
-          <section id='about-section' className='mt-16 pt-8'>
-            <div className='space-y-6 border-t pt-6'>
-              <h2 className='text-2xl font-bold tracking-tight'>
-                About the Registry
-              </h2>
-              <div className='text-muted-foreground space-y-4 sm:text-justify'>
-                {explainerTexts.mainHeader.fullDescription.map(
-                  (paragraph, index) => (
-                    <p key={index} className='leading-relaxed'>
-                      {paragraph}
-                    </p>
-                  )
-                )}
-              </div>
-              <div>
-                <p className='text-sm text-muted-foreground italic sm:text-justify leading-relaxed'>
-                  {explainerTexts.mainHeader.disclaimer}
-                </p>
-              </div>
-
-              {/* UN Links Section */}
-              <div className="mt-12">
-                <h2 className="text-lg font-semibold mb-4">Explore More Transparency Resources</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                  {/* Card 1: open.un.org */}
-                  <a href="https://open.un.org/" target="_blank" rel="noopener noreferrer" className="block rounded-lg border border-muted p-3 hover:shadow-lg transition flex flex-col items-center text-center">
-                    <img src="/screenshots/open.un.org.png" alt="open.un.org screenshot" className="rounded-md w-full h-32 object-cover mb-3" />
-                    <div className="font-medium text-un-blue text-base mb-1">UN Transparency Portal</div>
-                  </a>
-                  {/* Card 2: unsceb.org/financial-statistics */}
-                  <a href="https://unsceb.org/financial-statistics" target="_blank" rel="noopener noreferrer" className="block rounded-lg border border-muted p-3 hover:shadow-lg transition flex flex-col items-center text-center">
-                    <img src="/screenshots/unsceb.org.png" alt="unsceb.org/financial-statistics screenshot" className="rounded-md w-full h-32 object-cover mb-3" />
-                    <div className="font-medium text-un-blue text-base mb-1">CEB Financial Statistics</div>
-                  </a>
-                  {/* Card 3: results.un.org */}
-                  <a href="https://results.un.org/" target="_blank" rel="noopener noreferrer" className="block rounded-lg border border-muted p-3 hover:shadow-lg transition flex flex-col items-center text-center">
-                    <img src="/screenshots/results.un.org.png" alt="results.un.org screenshot" className="rounded-md w-full h-32 object-cover mb-3" />
-                    <div className="font-medium text-un-blue text-base mb-1">Programme Budget Results</div>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </section>
         </main>
       </div>
     </TooltipProvider>
