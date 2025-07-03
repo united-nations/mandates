@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { X, ChevronDown, ChevronUp, HelpCircle, Search, Building, Landmark, Target, BookOpen, Calendar, Receipt } from 'lucide-react';
+import { X, ChevronDown, ChevronUp, HelpCircle, Search, Building, Landmark, Target, BookOpen, Calendar, Receipt, FileText } from 'lucide-react';
 import { AdvancedSearch } from '@/components/advanced-search';
 import { YearSlider } from './year-slider';
 import { SearchableDropdown, SearchableDropdownOption } from '@/components/ui/searchable-dropdown';
@@ -106,93 +106,50 @@ export function FilterControls({
       : null;
 
   return (
-    <div className="bg-gradient-to-br from-slate-50 to-slate-100 border-0 shadow-none rounded-xl overflow-hidden">
-      {/* Header section with search */}
-      <div className="p-6 pb-4">
-        <div className="space-y-4">
-          {/* Keyword Search - Enhanced layout */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-x-2">
-                  <Label htmlFor="keyword-search" className="text-base font-semibold text-slate-900">{explainerTexts.filters.keywordSearch.label}</Label>
-                  <span className='inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200'>
-                    {explainerTexts.filters.keywordSearch.betaTag}
-                  </span>
-                </div>
-                <Search className="h-4 w-4 text-slate-500" />
-              </div>
-              <TooltipButton 
-                tooltipId="keywordSearch"
-                ariaLabel="More information about keyword search"
-                tooltipText={explainerTexts.filters.keywordSearch.tooltip}
-              />
-            </div>
-            <div className="relative">
-              <Input
-                id="keyword-search"
-                placeholder={explainerTexts.filters.keywordSearch.placeholder}
-                value={filters.keyword || ''}
-                onChange={(e) => setFilter('keyword', e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault();
-                    // Keyword filter is automatically applied via context
-                  }
-                }}
-                className="pr-20 text-sm h-12 border-slate-300 focus:border-blue-500 focus:ring-blue-500 bg-white shadow-sm"
-              />
-              <div className="absolute right-0 top-0 h-full flex">
-                {filters.keyword && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-full px-3 hover:bg-slate-100"
-                    onClick={() => clearFilter('keyword')}
-                    title="Clear search"
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                )}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-full px-4 text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-                  onClick={() => {
-                    // Trigger search by setting keyword filter
-                    if (filters.keyword) {
-                      setFilter('keyword', filters.keyword);
-                    }
-                  }}
-                  title="Search (or press Enter)"
-                >
-                  <Search className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-          </div>
-
-          {/* Advanced Filters Toggle - Enhanced styling */}
-          <div className="flex items-center pt-2">
-            <Button 
-              variant="ghost" 
-              onClick={() => setShowAdvancedSearch(!showAdvancedSearch)} 
-              className="flex items-center gap-2 px-0 text-left text-slate-600 hover:text-slate-900 hover:bg-transparent"
+    <div className="">
+      {/* Search bar and advanced toggle in a row */}
+      <div className="flex items-center gap-2 mb-4">
+        <div className="relative grow">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            id="keyword-search"
+            placeholder={explainerTexts.filters.keywordSearch.placeholder}
+            value={filters.keyword || ''}
+            onChange={(e) => setFilter('keyword', e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+              }
+            }}
+            className="pl-10 h-9 text-sm border-0 border-b border-muted bg-transparent focus-visible:ring-0 focus-visible:border-un-blue rounded-none"
+          />
+          {filters.keyword && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 p-0 hover:bg-blue-100 rounded-full"
+              onClick={() => clearFilter('keyword')}
+              title="Clear search"
             >
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-medium">
-                  {showAdvancedSearch ? 'Hide Advanced Filters' : 'Show Advanced Filters'}
-                </span>
-                {showAdvancedSearch ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-              </div>
+              <X className="h-4 w-4" />
             </Button>
-          </div>
+          )}
         </div>
+        <Button
+          variant="ghost"
+          onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}
+          className="flex-shrink-0 flex items-center gap-2 px-2 text-left text-slate-600 hover:text-slate-900 hover:bg-transparent whitespace-nowrap"
+        >
+          <span className="text-sm font-medium">
+            {showAdvancedSearch ? 'Hide Advanced Filters' : 'Show Advanced Filters'}
+          </span>
+          {showAdvancedSearch ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+        </Button>
       </div>
 
       {/* Advanced Filters - Enhanced container */}
       {showAdvancedSearch && (
-        <div className="border-t border-slate-200 bg-white/50">
+        <div className="bg-white/50">
           <div className="p-6 pt-4">
             <AdvancedSearch
               programme={filters.programme || ''}
@@ -214,7 +171,7 @@ export function FilterControls({
 
       {/* Filter Chips - Enhanced styling */}
       {(hasSearch || hasFilters) && (
-        <div className="border-t border-slate-200 bg-white/50">
+        <div className="border border-slate-200 rounded-md">
           <div className="p-6 pt-4">
             <div className="space-y-4">
               {/* Only show Active Filters label, count, and Clear All if there are visible chips or search */}

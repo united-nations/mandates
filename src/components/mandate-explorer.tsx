@@ -312,7 +312,7 @@ export function MandateExplorer ({
 
   const getEntityLongName = (entityShortName: string) => {
     return allEntities.find((e: any) => e['Entity'] === entityShortName)?.[
-      'Entity-Long'
+      'entity_long'
     ] as string | undefined
   }
 
@@ -402,8 +402,7 @@ export function MandateExplorer ({
       <div>
         <div className='mt-6 pt-4'>
           {/* Collapsible sidebars for smaller screens - show on main page and entity sidebar on organ page */}
-          {(((entityListSidebar || organListSidebar) && isMainPage) ||
-            (entityListSidebar && isOrganPage)) && <CollapsibleSidebars />}
+          {isMainPage && <CollapsibleSidebars />}
 
           {/* Collapsible sidebars for entity/organ pages - show above main content */}
           {(isEntityPage || isOrganPage) && (
@@ -416,7 +415,55 @@ export function MandateExplorer ({
           <div className='flex flex-col lg:flex-row gap-6'>
             {/* Main mandates content */}
             <div className='flex-1 min-w-0'>
+              {/* Section Title with Icon and Sort Controls + FilterControls */}
               <div className='mb-4'>
+                <div className='flex items-center gap-3 justify-between flex-wrap mb-2'>
+                  <div className='flex items-center gap-2'>
+                    <FileText className='h-6 w-6 text-un-blue' />
+                    <h2 className='text-2xl font-bold tracking-tight'>
+                      {explainerTexts.dataCards.sectionTitle}
+                      {/* Detail page title: cited by/issued by */}
+                      {isEntityPage && <> cited by {currentEntityName}</>}
+                      {isOrganPage && <> issued by {currentOrganName}</>}
+                    </h2>
+                  </div>
+                  <div className='flex items-center gap-2 w-fit mt-2 sm:mt-0'>
+                    <label
+                      htmlFor='sort-by'
+                      className='text-sm font-medium text-nowrap'
+                    >
+                      Sort by
+                    </label>
+                    <Select value={sortBy} onValueChange={handleSortChange}>
+                      <SelectTrigger className='w-[220px]' id='sort-by'>
+                        <SelectValue
+                          placeholder={explainerTexts.sorting.placeholder}
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {filters.keyword ? (
+                          <SelectItem value='default'>
+                            Search Relevance
+                          </SelectItem>
+                        ) : null}
+                        <SelectItem value='citing_entities_desc'>
+                          Number of citing entities ↓
+                        </SelectItem>
+                        <SelectItem value='citing_entities_asc'>
+                          Number of citing entities ↑
+                        </SelectItem>
+                        <SelectItem value='citations_desc'>
+                          Citations ↓
+                        </SelectItem>
+                        <SelectItem value='citations_asc'>
+                          Citations ↑
+                        </SelectItem>
+                        <SelectItem value='year_desc'>Year ↓</SelectItem>
+                        <SelectItem value='year_asc'>Year ↑</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
                 <FilterControls
                   entityOptions={entityDropdownOptions}
                   organOptions={organDropdownOptions}
@@ -425,50 +472,6 @@ export function MandateExplorer ({
                   yearRange={yearRange}
                   yearDistribution={yearDistribution}
                 />
-              </div>
-              <div className='flex items-center mb-3 gap-3 justify-between flex-wrap'>
-                <h2 className='text-2xl font-bold tracking-tight'>
-                  {explainerTexts.dataCards.sectionTitle}
-                  {/* Detail page title: cited by/issued by */}
-                  {isEntityPage && <> cited by {currentEntityName}</>}
-                  {isOrganPage && <> issued by {currentOrganName}</>}
-                </h2>
-                <div className='flex items-center gap-2 w-fit mt-2 sm:mt-0'>
-                  <label
-                    htmlFor='sort-by'
-                    className='text-sm font-medium text-nowrap'
-                  >
-                    Sort by
-                  </label>
-                  <Select value={sortBy} onValueChange={handleSortChange}>
-                    <SelectTrigger className='w-[220px]' id='sort-by'>
-                      <SelectValue
-                        placeholder={explainerTexts.sorting.placeholder}
-                      />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {filters.keyword ? (
-                        <SelectItem value='default'>
-                          Search Relevance
-                        </SelectItem>
-                      ) : null}
-                      <SelectItem value='citing_entities_desc'>
-                        Number of citing entities ↓
-                      </SelectItem>
-                      <SelectItem value='citing_entities_asc'>
-                        Number of citing entities ↑
-                      </SelectItem>
-                      <SelectItem value='citations_desc'>
-                        Citations ↓
-                      </SelectItem>
-                      <SelectItem value='citations_asc'>
-                        Citations ↑
-                      </SelectItem>
-                      <SelectItem value='year_desc'>Year ↓</SelectItem>
-                      <SelectItem value='year_asc'>Year ↑</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
               </div>
               <div className='flex flex-col lg:flex-row gap-6'>
                 {/* Mandates List */}
@@ -497,40 +500,14 @@ export function MandateExplorer ({
                     )}
                   </div>
                 </div>
-
-                {/* Render custom cross-citations sidebar if provided */}
-                {crossCitationsSidebar && (
-                  <div className='w-full lg:w-80 flex-shrink-0 hidden lg:block'>
-                    {crossCitationsSidebar}
-                  </div>
-                )}
-
-                {/* Cross-Citations Section - only show when on entity page and not using custom sidebar */}
-                {isEntityPage &&
-                  showCrossCitations &&
-                  !crossCitationsSidebar &&
-                  currentEntityName && (
-                    <div className='w-full lg:w-80 flex-shrink-0'>
-                      <CrossCitations
-                        currentEntity={currentEntityName}
-                        onEntityFilter={entity => {
-                          setFilter('cross_entity', entity)
-                        }}
-                      />
-                    </div>
-                  )}
               </div>
             </div>
 
-            {/* Entity and Organ Lists Sidebar - show on main page and entity sidebar on organ page */}
-            {(((entityListSidebar || organListSidebar) && isMainPage) ||
-              (entityListSidebar && isOrganPage)) && (
-              <div className='hidden lg:block lg:w-80 flex-shrink-0 space-y-6'>
-                {entityListSidebar}
-                {/* Only show organ sidebar on main page */}
-                {isMainPage && organListSidebar}
-              </div>
-            )}
+            <div className='hidden lg:block lg:w-80 flex-shrink-0 space-y-6'>
+              {(isEntityPage || isOrganPage) && crossCitationsSidebar}
+              {isMainPage && entityListSidebar}
+              {isMainPage && organListSidebar}
+            </div>
           </div>
         </div>
       </div>
