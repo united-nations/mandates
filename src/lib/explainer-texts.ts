@@ -60,7 +60,7 @@ export const explainerTexts = {
       betaTag: 'beta',
       placeholder: 'Search for document titles...',
       tooltip:
-        'Search for specific terms to find mandate source documents. Press Enter or click the search button to search.'
+        'Search for specific terms to find mandate source documents. Press Enter to search.'
     },
     unOrgan: {
       label: 'UN Organ & Body',

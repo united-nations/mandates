@@ -46,6 +46,12 @@ export function FilterControls({
   } = useFilters();
   
   const [openTooltip, setOpenTooltip] = useState<string | null>(null);
+  const [searchInput, setSearchInput] = useState(filters.keyword || '');
+
+  // Sync search input with filters when filters change externally (e.g., clear all)
+  useEffect(() => {
+    setSearchInput(filters.keyword || '');
+  }, [filters.keyword]);
 
   // Close tooltip when clicking outside
   useEffect(() => {
@@ -64,6 +70,13 @@ export function FilterControls({
 
   const toggleTooltip = (tooltipId: string) => {
     setOpenTooltip(openTooltip === tooltipId ? null : tooltipId);
+  };
+
+  const handleSearch = () => {
+    const trimmedValue = searchInput.trim();
+    if (trimmedValue !== (filters.keyword || '').trim()) {
+      setFilter('keyword', trimmedValue || undefined);
+    }
   };
 
   const TooltipButton = ({ tooltipId, ariaLabel, tooltipText }: { 
@@ -138,24 +151,28 @@ export function FilterControls({
           <Input
             id="keyword-search"
             placeholder={explainerTexts.filters.keywordSearch.placeholder}
-            value={filters.keyword || ''}
-            onChange={(e) => setFilter('keyword', e.target.value)}
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 e.preventDefault();
+                handleSearch();
               }
             }}
-            className="pl-10 h-9 text-sm border-0 border-b border-muted bg-transparent focus-visible:ring-0 focus-visible:border-un-blue rounded-none"
+            className="pl-10 pr-10 h-9 text-sm border-0 border-b border-muted bg-transparent focus-visible:ring-0 focus-visible:border-un-blue rounded-none"
           />
-          {filters.keyword && (
+          {(searchInput || filters.keyword) && (
             <Button
               variant="ghost"
               size="sm"
               className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 p-0 hover:bg-blue-100 rounded-full"
-              onClick={() => clearFilter('keyword')}
+              onClick={() => {
+                setSearchInput('');
+                clearFilter('keyword');
+              }}
               title="Clear search"
             >
-              <X className="h-4 w-4" />
+              <X className="h-3 w-3" />
             </Button>
           )}
         </div>
