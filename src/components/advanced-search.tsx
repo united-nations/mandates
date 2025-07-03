@@ -114,7 +114,7 @@ export function AdvancedSearch({
               placeholder={explainerTexts.advancedFilters.subjects.placeholder}
               searchPlaceholder={explainerTexts.advancedFilters.subjects.searchPlaceholder}
               emptyPlaceholder={explainerTexts.advancedFilters.subjects.emptyPlaceholder}
-              className="text-sm h-11 border-slate-300 focus:border-blue-500 focus:ring-blue-500 bg-white shadow-sm"
+              className="text-sm h-11 border-slate-300 focus:border-blue-500 focus:ring-blue-500 bg-white"
             />
           </div>
           <div className="space-y-3">
@@ -136,7 +136,7 @@ export function AdvancedSearch({
               placeholder={explainerTexts.advancedFilters.programme.placeholder}
               searchPlaceholder={explainerTexts.advancedFilters.programme.searchPlaceholder}
               emptyPlaceholder={explainerTexts.advancedFilters.programme.emptyPlaceholder}
-              className="text-sm h-11 border-slate-300 focus:border-blue-500 focus:ring-blue-500 bg-white shadow-sm"
+              className="text-sm h-11 border-slate-300 focus:border-blue-500 focus:ring-blue-500 bg-white"
             />
           </div>
           <div className="space-y-3">
@@ -155,7 +155,7 @@ export function AdvancedSearch({
               value={budgetDocument} 
               onValueChange={onBudgetDocumentChange}
             >
-              <SelectTrigger id="budget-document" className="text-sm h-11 border-slate-300 focus:border-blue-500 focus:ring-blue-500 bg-white shadow-sm">
+              <SelectTrigger id="budget-document" className="text-sm h-11 border-slate-300 focus:border-blue-500 focus:ring-blue-500 bg-white">
                 <SelectValue placeholder={explainerTexts.advancedFilters.budgetDocument.placeholder} />
               </SelectTrigger>
               <SelectContent>

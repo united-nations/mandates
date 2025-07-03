@@ -78,7 +78,7 @@ export function FilterControls({
         <HelpCircle className="h-4 w-4 text-muted-foreground" />
       </button>
       {openTooltip === tooltipId && (
-        <div className="absolute right-0 top-6 z-50 w-64 p-3 bg-popover border rounded-md shadow-md text-sm text-popover-foreground">
+        <div className="absolute right-0 top-6 z-50 w-64 p-3 bg-popover border rounded-md text-sm text-popover-foreground">
           <p>{tooltipText}</p>
         </div>
       )}
