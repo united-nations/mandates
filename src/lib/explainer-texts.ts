@@ -85,20 +85,20 @@ export const explainerTexts = {
       label: 'Programme',
       placeholder: 'Filter by Programme...',
       searchPlaceholder: 'Search Programmes...',
-      emptyPlaceholder: 'No Programmes found.',
-      tooltip: 'Filter by specific Programmes in the budget structure of UN Entities.'
+      emptyPlaceholder: 'No programmes found.',
+      tooltip: 'Filter by programmes in the proposed programme budget.'
     },
     subjects: {
       label: 'UN Library Subjects',
       placeholder: 'Filter by Subject...',
-      searchPlaceholder: 'Search Subjects...',
-      emptyPlaceholder: 'No Subjects found.',
+      searchPlaceholder: 'Search subjects...',
+      emptyPlaceholder: 'No subjects found.',
       tooltip: 'Filter by subject headings from the UN Bibliographic Information System. These describe the main topics and themes of each document.'
     },
     budgetDocument: {
       label: 'Budget Document',
-      placeholder: 'Select budget document type...',
-      tooltip: 'Filter by the specific budget document type.'
+      placeholder: 'Select Budget Document Type...',
+      tooltip: 'Filter by the budget document where the entity cites the mandate.'
     },
     yearRange: {
       label: 'Year Range',
