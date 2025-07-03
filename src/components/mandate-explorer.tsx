@@ -428,19 +428,11 @@ export function MandateExplorer ({
                     </h2>
                   </div>
                   <div className='flex items-center gap-2 w-fit mt-2 sm:mt-0'>
-                    <label
-                      htmlFor='sort-by'
-                      className='text-sm font-medium text-nowrap'
-                    >
-                      Sort by
-                    </label>
                     <Select value={sortBy} onValueChange={handleSortChange}>
-                      <SelectTrigger className='w-[220px]' id='sort-by'>
-                        <SelectValue
-                          placeholder={explainerTexts.sorting.placeholder}
-                        />
+                      <SelectTrigger className='w-[80px]' id='sort-by'>
+                        Sort
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent align='end'>
                         {filters.keyword ? (
                           <SelectItem value='default'>
                             Search Relevance
