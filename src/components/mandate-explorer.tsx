@@ -339,30 +339,26 @@ export function MandateExplorer ({
         onOpenChange={setSourceDocumentsPopover}
         isLoading={isLoading}
       />
-      {/* Only show organs card on main page and entity page */}
-      {!isOrganPage && (
-        <DataCard
-          title={explainerTexts.dataCards.unOrgans.title}
-          value={uniqueOrgans}
-          icon={Landmark}
-          description={explainerTexts.dataCards.unOrgans.description}
-          isOpen={unOrgansPopover}
-          onOpenChange={setUnOrgansPopover}
-          isLoading={isLoading}
-        />
-      )}
-      {/* Only show entity card on main page or organ page */}
-      {!isEntityPage && (
-        <DataCard
-          title={explainerTexts.dataCards.unEntities.title}
-          value={uniqueEntities}
-          icon={Building}
-          description={explainerTexts.dataCards.unEntities.description}
-          isOpen={unEntitiesPopover}
-          onOpenChange={setUnEntitiesPopover}
-          isLoading={isLoading}
-        />
-      )}
+      {/* Always show organs card; on organ page show short name, else show count */}
+      <DataCard
+        title={isOrganPage ? 'UN Organ / Body' : explainerTexts.dataCards.unOrgans.title}
+        value={isOrganPage ? (currentOrganName || '') : uniqueOrgans}
+        icon={Landmark}
+        description={explainerTexts.dataCards.unOrgans.description}
+        isOpen={unOrgansPopover}
+        onOpenChange={setUnOrgansPopover}
+        isLoading={isLoading && !isOrganPage}
+      />
+      {/* Always show entity card; on entity page show short name, else show count */}
+      <DataCard
+        title={isEntityPage ? 'Entity' : explainerTexts.dataCards.unEntities.title}
+        value={isEntityPage ? (currentEntityName || '') : uniqueEntities}
+        icon={Building}
+        description={explainerTexts.dataCards.unEntities.description}
+        isOpen={unEntitiesPopover}
+        onOpenChange={setUnEntitiesPopover}
+        isLoading={isLoading && !isEntityPage}
+      />
       <DataCard
         title={isEntityPage ? explainerTexts.dataCards.citationsByEntity.title : explainerTexts.dataCards.citations.title}
         value={totalCitations}
@@ -380,11 +376,7 @@ export function MandateExplorer ({
       {/* Summary Cards */}
       <section
         aria-labelledby='summary-heading'
-        className={`grid gap-4 ${
-          isEntityPage || isOrganPage 
-            ? 'grid-cols-1 sm:grid-cols-3' 
-            : 'grid-cols-2 lg:grid-cols-4'
-        }`}
+        className={`grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4`}
       >
         {dataCardsSection}
       </section>
