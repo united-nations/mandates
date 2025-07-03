@@ -13,7 +13,12 @@ import Link from 'next/link'
 import { Input } from '@/components/ui/input'
 import { EntityListSidebar } from '@/components/entity-list-sidebar'
 import { OrganListSidebar } from '@/components/organ-list-sidebar'
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem
+} from '@/components/ui/dropdown-menu'
 
 interface ParentContext {
   scrollY: number
@@ -135,32 +140,23 @@ function MandateNavigator () {
   return (
     <TooltipProvider>
       <div className='min-h-screen bg-background text-foreground'>
-        <main className='w-full max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto py-6 space-y-6 px-8 sm:px-12 lg:px-16'>
+        <main className='w-full max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto space-y-6 px-8 sm:px-12 lg:px-16'>
           {/* Header with context info */}
-          <section className='pb-2'>
-            <div className='flex items-start justify-between'>
-              <div className='flex-1'>
-                <div className='mb-10 mt-2'>
-                  {/* Removed duplicate title and version tag, now in layout */}
-                </div>
-                <div className='text-muted-foreground mt-2 sm:text-justify'>
-                  <p className='leading-tight mb-0'>
-                    {explainerTexts.mainHeader.shortDescription}{' '}
-                    <Link
-                      href="/methodology"
-                      className='font-bold text-un-blue hover:text-shuttle-gray text-sm inline transition-colors'
-                      style={{ textDecoration: 'none' }}
-                    >
-                      Read More...
-                    </Link>
-                  </p>
-                </div>
-              </div>
-            </div>
-          </section>
+          <div className='text-muted-foreground mt-2 sm:text-justify'>
+            <p className='leading-tight mb-0'>
+              {explainerTexts.mainHeader.shortDescription}{' '}
+              <Link
+                href='/methodology'
+                className='font-bold text-un-blue hover:text-shuttle-gray text-sm inline transition-colors'
+                style={{ textDecoration: 'none' }}
+              >
+                Read More...
+              </Link>
+            </p>
+          </div>
 
           {/* Mandate Explorer */}
-          <MandateExplorer 
+          <MandateExplorer
             entityListSidebar={<EntityListSidebar />}
             organListSidebar={<OrganListSidebar />}
           />
