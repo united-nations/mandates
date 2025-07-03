@@ -429,7 +429,7 @@ export function MandateExplorer ({
                         Sort by
                       </label>
                       <Select value={sortBy} onValueChange={handleSortChange}>
-                        <SelectTrigger className='w-[290px]' id='sort-by'>
+                        <SelectTrigger className='w-[220px]' id='sort-by'>
                           <SelectValue
                             placeholder={explainerTexts.sorting.placeholder}
                           />
@@ -441,22 +441,22 @@ export function MandateExplorer ({
                             </SelectItem>
                           ) : null}
                           <SelectItem value='citing_entities_desc'>
-                            Number of citing entities (High to Low)
+                            Number of citing entities ↓
                           </SelectItem>
                           <SelectItem value='citing_entities_asc'>
-                            Number of citing entities (Low to High)
+                            Number of citing entities ↑
                           </SelectItem>
                           <SelectItem value='citations_desc'>
-                            Citations (High to Low)
+                            Citations ↓
                           </SelectItem>
                           <SelectItem value='citations_asc'>
-                            Citations (Low to High)
+                            Citations ↑
                           </SelectItem>
                           <SelectItem value='year_desc'>
-                            Year (Newest First)
+                            Year ↓
                           </SelectItem>
                           <SelectItem value='year_asc'>
-                            Year (Oldest First)
+                            Year ↑
                           </SelectItem>
                         </SelectContent>
                       </Select>
