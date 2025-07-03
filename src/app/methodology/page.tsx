@@ -20,6 +20,7 @@ export default function MethodologyPage() {
               </p>
             ))}
           </div>
+          <img src="/methodology.svg" alt="Methodology" className="w-full" />
           <hr className="my-8 border-muted" />
           <div>
             <p className="text-sm text-muted-foreground italic sm:text-justify leading-relaxed">
