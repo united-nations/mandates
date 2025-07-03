@@ -168,7 +168,7 @@ export function EntityListSidebar({ hideHeader = false, borderless = false }: En
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0 w-32">
                     <span className="flex items-center w-full">
-                      <span className="text-xs font-mono text-un-blue text-right pr-2 min-w-[28px] max-w-[32px] flex-shrink-0 justify-end flex">{entity.count}</span>
+                      <span className="text-xs font-mono text-un-blue text-right pr-2 min-w-[28px] max-w-[32px] flex-shrink-0 justify-end flex">{entity.count.toLocaleString()}</span>
                       <span className="relative flex-1 h-2 bg-un-blue/10 rounded">
                         <span className="absolute left-0 top-0 h-2 rounded bg-un-blue/60" style={{ width: `${(entity.count / maxCount) * 100}%`, minWidth: 2 }} />
                       </span>
