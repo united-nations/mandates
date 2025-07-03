@@ -107,7 +107,7 @@ export function ConsolidatedFilterSidebar() {
         </div>
         <p className="text-sm text-muted-foreground mb-4">
           {isEntityPage && currentEntityName 
-            ? `Entities that share mandates with ${currentEntityName}`
+            ? `Entities that share mandate citations with ${currentEntityName}`
             : isOrganPage && currentOrganName
             ? `Organs that share mandates with ${currentOrganName}`
             : "Entities/organs that share mandates with this selection"

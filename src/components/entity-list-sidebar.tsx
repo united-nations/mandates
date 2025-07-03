@@ -130,8 +130,8 @@ export function EntityListSidebar({ hideHeader = false, borderless = false }: En
           </div>
           <p className="text-sm text-muted-foreground">
             {isOrganPage 
-              ? `Entities that cite ${currentOrganName} mandate documents`
-              : 'Entities that cite mandate documents'
+              ? `Entities citing ${currentOrganName} mandate documents`
+              : 'Entities citing mandate documents'
             }
           </p>
         </div>

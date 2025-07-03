@@ -169,8 +169,8 @@ export function OrganListSidebar({ hideHeader = false, borderless = false }: Org
           </div>
           <p className="text-sm text-muted-foreground">
             {isEntityPage 
-              ? `Bodies that issue mandate documents cited by ${currentEntityName}`
-              : 'Bodies that issue mandate documents'
+              ? `Bodies issuing mandate documents cited by ${currentEntityName}`
+              : 'Bodies issuing mandate documents'
             }
           </p>
         </div>
