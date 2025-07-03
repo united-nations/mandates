@@ -6,7 +6,7 @@ import { MandateList } from '@/components/mandate-list'
 import { FilterControls } from '@/components/filter-controls'
 import { PaginationControls } from '@/components/pagination-controls'
 import { Skeleton } from '@/components/ui/skeleton'
-import { FileText, Landmark, Building, Quote } from 'lucide-react'
+import { FileText, Landmark, Building, Quote, ChevronUp, ChevronDown } from 'lucide-react'
 import { MandateDetails } from '@/components/mandate-details'
 import { DataCard } from '@/components/data-card'
 import { CrossCitations } from '@/components/cross-citations'
@@ -21,6 +21,7 @@ import { SearchableDropdownOption } from '@/components/ui/searchable-dropdown'
 import { explainerTexts } from '@/lib/explainer-texts'
 import { CollapsibleSidebars } from '@/components/collapsible-sidebars'
 import { useFilters } from '@/contexts/FilterContext'
+import { Button } from '@/components/ui/button'
 
 interface Entity {
   entity: string
@@ -100,6 +101,8 @@ export function MandateExplorer ({
   const [unOrgansPopover, setUnOrgansPopover] = useState(false)
   const [unEntitiesPopover, setUnEntitiesPopover] = useState(false)
   const [citationsPopover, setCitationsPopover] = useState(false)
+
+  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false)
 
   // Get current page and page size from filters
   const currentPage = Number(filters.page || '1')
@@ -427,7 +430,17 @@ export function MandateExplorer ({
                       {isOrganPage && <> issued by {currentOrganName}</>}
                     </h2>
                   </div>
-                  <div className='flex items-center gap-2 w-fit mt-2 sm:mt-0'>
+                  <div className='flex items-center gap-2 ml-auto'>
+                    <Button
+                      variant="ghost"
+                      onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}
+                      className="flex-shrink-0 flex items-center gap-2 px-2 text-left text-slate-600 hover:text-slate-900 hover:bg-transparent whitespace-nowrap"
+                    >
+                      <span className="text-sm font-medium">
+                        {showAdvancedSearch ? 'Hide Advanced Filters' : 'Show Advanced Filters'}
+                      </span>
+                      {showAdvancedSearch ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                    </Button>
                     <Select value={sortBy} onValueChange={handleSortChange}>
                       <SelectTrigger className='w-[80px]' id='sort-by'>
                         Sort
@@ -463,6 +476,8 @@ export function MandateExplorer ({
                   subjectOptions={subjectOptions}
                   yearRange={yearRange}
                   yearDistribution={yearDistribution}
+                  showAdvancedSearch={showAdvancedSearch}
+                  setShowAdvancedSearch={setShowAdvancedSearch}
                 />
               </div>
               <div className='flex flex-col lg:flex-row gap-6'>

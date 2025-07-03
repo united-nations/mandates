@@ -21,6 +21,8 @@ interface FilterControlsProps {
   subjectOptions: string[];
   yearRange: { min: number; max: number } | null;
   yearDistribution: { [year: string]: number };
+  showAdvancedSearch: boolean;
+  setShowAdvancedSearch: (show: boolean) => void;
 }
 
 export function FilterControls({
@@ -30,6 +32,8 @@ export function FilterControls({
   subjectOptions,
   yearRange,
   yearDistribution,
+  showAdvancedSearch,
+  setShowAdvancedSearch,
 }: FilterControlsProps) {
   const { 
     filters, 
@@ -41,7 +45,6 @@ export function FilterControls({
     isOrganPage 
   } = useFilters();
   
-  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
   const [openTooltip, setOpenTooltip] = useState<string | null>(null);
 
   // Close tooltip when clicking outside
@@ -107,7 +110,28 @@ export function FilterControls({
 
   return (
     <div className="">
-      {/* Search bar and advanced toggle in a row */}
+      {/* Advanced Filters - Enhanced container (now above search bar) */}
+      {showAdvancedSearch && (
+        <div className="bg-white/50">
+          <div className="p-6 pt-4">
+            <AdvancedSearch
+              programme={filters.programme || ''}
+              subject={filters.subject || ''}
+              budgetDocument={filters.budget_document || ''}
+              onProgrammeChange={(value) => setFilter('programme', value)}
+              onSubjectChange={(value) => setFilter('subject', value)}
+              onBudgetDocumentChange={(value) => setFilter('budget_document', value)}
+              programmeOptions={programmeOptions}
+              subjectOptions={subjectOptions}
+              yearRange={yearRange}
+              yearDistribution={yearDistribution}
+              selectedYearRange={selectedYearRange}
+              onYearRangeChange={handleYearRangeChange}
+            />
+          </div>
+        </div>
+      )}
+      {/* Search bar only in a row */}
       <div className="flex items-center gap-2 mb-4">
         <div className="relative grow">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -135,39 +159,7 @@ export function FilterControls({
             </Button>
           )}
         </div>
-        <Button
-          variant="ghost"
-          onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}
-          className="flex-shrink-0 flex items-center gap-2 px-2 text-left text-slate-600 hover:text-slate-900 hover:bg-transparent whitespace-nowrap"
-        >
-          <span className="text-sm font-medium">
-            {showAdvancedSearch ? 'Hide Advanced Filters' : 'Show Advanced Filters'}
-          </span>
-          {showAdvancedSearch ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-        </Button>
       </div>
-
-      {/* Advanced Filters - Enhanced container */}
-      {showAdvancedSearch && (
-        <div className="bg-white/50">
-          <div className="p-6 pt-4">
-            <AdvancedSearch
-              programme={filters.programme || ''}
-              subject={filters.subject || ''}
-              budgetDocument={filters.budget_document || ''}
-              onProgrammeChange={(value) => setFilter('programme', value)}
-              onSubjectChange={(value) => setFilter('subject', value)}
-              onBudgetDocumentChange={(value) => setFilter('budget_document', value)}
-              programmeOptions={programmeOptions}
-              subjectOptions={subjectOptions}
-              yearRange={yearRange}
-              yearDistribution={yearDistribution}
-              selectedYearRange={selectedYearRange}
-              onYearRangeChange={handleYearRangeChange}
-            />
-          </div>
-        </div>
-      )}
 
       {/* Filter Chips - Enhanced styling */}
       {(hasSearch || hasFilters) && (
