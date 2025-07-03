@@ -172,7 +172,7 @@ export async function GET(request: Request) {
     if (subject) {
       filteredMandates = filteredMandates.filter((m) =>
         m.subject_headings?.some((subjectHeading: string) => 
-          subjectHeading?.toLowerCase().includes(subject.toLowerCase())
+          subjectHeading?.toLowerCase().trim() === subject.toLowerCase().trim()
         )
       );
     }
@@ -300,6 +300,19 @@ export async function GET(request: Request) {
     const uniqueEntitiesCount = new Set(allFilteredEntities.filter(Boolean)).size;
     const allFilteredBodies = filteredMandates.map(mandate => mandate.body);
     const uniqueBodiesCount = new Set(allFilteredBodies.filter(Boolean)).size;
+    
+    // Calculate organ breakdown for chart
+    const organCounts: { [key: string]: number } = {};
+    allFilteredBodies.forEach(body => {
+      if (body) {
+        organCounts[body] = (organCounts[body] || 0) + 1;
+      }
+    });
+    const organBreakdown = Object.entries(organCounts).map(([name, count]) => ({
+      name,
+      count
+    }));
+    
     const allFilteredProgrammes = new Set<string>();
     const allFilteredSections = new Set<string>();
     for (const mandate of filteredMandates) {
@@ -337,6 +350,7 @@ export async function GET(request: Request) {
       totalCitations,
       uniqueEntitiesCount,
       uniqueBodiesCount,
+      organBreakdown,
       uniqueProgrammesCount,
       uniqueProgrammes,
       uniqueSections,

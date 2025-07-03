@@ -8,17 +8,10 @@ import Clarity from '@microsoft/clarity'
 import { MandateExplorer } from '@/components/mandate-explorer'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { explainerTexts } from '@/lib/explainer-texts'
-import { Building, Search, Menu } from 'lucide-react'
+import { MessageCircle } from 'lucide-react'
 import Link from 'next/link'
-import { Input } from '@/components/ui/input'
 import { EntityListSidebar } from '@/components/entity-list-sidebar'
 import { OrganListSidebar } from '@/components/organ-list-sidebar'
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem
-} from '@/components/ui/dropdown-menu'
 
 interface ParentContext {
   scrollY: number
@@ -161,6 +154,23 @@ function MandateNavigator () {
             organListSidebar={<OrganListSidebar />}
           />
         </main>
+
+        {/* Fixed Feedback Button */}
+        <Button
+          asChild
+          className="fixed bottom-6 right-6 z-50 shadow-lg hover:shadow-xl transition-shadow"
+          size="default"
+        >
+          <a
+            href="https://forms.office.com/Pages/ResponsePage.aspx?id=2zWeD09UYE-9zF6kFubccKWYVHshXnBMlwUt34IXB2ZUQko4SUdLUVVQSE5BRU1UOTQ1WFRLV0JXRiQlQCN0PWcu"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2"
+          >
+            <MessageCircle className="h-4 w-4" />
+            Give Feedback
+          </a>
+        </Button>
       </div>
     </TooltipProvider>
   )

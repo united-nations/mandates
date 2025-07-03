@@ -23,6 +23,7 @@ interface MandateDetailsProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   allEntities?: { entity: string; entity_long: string }[];
+  onEntityChange?: (entityName: string) => void;
 }
 
 const MetadataItem = ({ label, children }: { label: React.ReactNode, children: React.ReactNode }) => (
@@ -32,7 +33,7 @@ const MetadataItem = ({ label, children }: { label: React.ReactNode, children: R
     </div>
 );
 
-export function MandateDetails({ mandate, open, onOpenChange, allEntities = [] }: MandateDetailsProps) {
+export function MandateDetails({ mandate, open, onOpenChange, allEntities = [], onEntityChange }: MandateDetailsProps) {
   const [isPdfVisible, setIsPdfVisible] = useState(false);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
@@ -146,7 +147,7 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [] }
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent 
-        className="w-full md:max-w-5xl light flex flex-col h-screen md:max-h-[85vh] md:h-auto md:p-6 px-3 pt-20 pb-3 md:m-4 m-0 md:rounded-lg rounded-none [&>button]:h-8 [&>button]:w-8 md:[&>button]:h-10 md:[&>button]:w-10 [&>button]:border-2 [&>button]:border-trout [&>button]:hover:border-shuttle-gray [&>button]:text-trout [&>button]:hover:text-shuttle-gray [&>button]:flex [&>button]:items-center [&>button]:justify-center [&>button]:focus:outline-none [&>button]:focus:ring-0 [&>button]:!top-12 md:[&>button]:!top-6"
+        className="w-full md:max-w-5xl light flex flex-col h-screen md:max-h-[85vh] md:h-auto md:p-6 px-3 pt-20 pb-3 md:m-4 m-0 md:rounded-lg rounded-none focus:outline-none focus:ring-0"
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
@@ -192,7 +193,23 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [] }
               {/* Compact Metadata List */}
               <div className="space-y-1 rounded-lg">
                 <MetadataItem label="Organ">
-                  {mandate.body ? <Badge variant="stronger" className="text-xs">{mandate.body}</Badge> : <span className="text-muted-foreground">—</span>}
+                  {mandate.body ? (
+                    <Badge 
+                      variant="stronger" 
+                      className="text-xs cursor-pointer hover:bg-primary/80 transition-colors"
+                      onClick={() => {
+                        // Open filtered results in a new window with only the organ filter
+                        const url = new URL(window.location.origin + window.location.pathname);
+                        url.searchParams.set('page', '1');
+                        url.searchParams.set('organ', mandate.body);
+                        window.open(url.toString(), '_blank');
+                      }}
+                    >
+                      {mandate.body}
+                    </Badge>
+                  ) : (
+                    <span className="text-muted-foreground">—</span>
+                  )}
                 </MetadataItem>
                 <MetadataItem label="Document Type">
                   {mandate.type ? <Badge variant="stronger" className="text-xs">{mandate.type}</Badge> : <span className="text-muted-foreground">—</span>}
@@ -206,7 +223,11 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [] }
                       {budgetDocuments.map((doc, index) => {
                         const displayName = budgetDocumentDisplayNames[doc] || doc;
                         return (
-                          <Badge key={index} variant="stronger" className="text-xs">
+                          <Badge 
+                            key={index} 
+                            variant="stronger" 
+                            className="text-xs"
+                          >
                             {displayName}
                           </Badge>
                         );
@@ -225,8 +246,22 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [] }
                     }
                   >
                     <div className="flex flex-wrap gap-1 pt-2">
-                      {mandate.subject_headings.map((heading, index) => (
-                        <Badge key={index} variant="outline" className="text-xs font-normal !border-un-blue">
+                      {mandate.subject_headings
+                        .slice()
+                        .sort((a, b) => a.localeCompare(b))
+                        .map((heading, index) => (
+                        <Badge 
+                          key={index} 
+                          variant="outline" 
+                          className="text-xs font-normal !border-un-blue cursor-pointer hover:bg-un-blue/10 transition-colors"
+                          onClick={() => {
+                            // Open filtered results in a new window with only the subject filter
+                            const url = new URL(window.location.origin + window.location.pathname);
+                            url.searchParams.set('page', '1');
+                            url.searchParams.set('subject', heading.trim());
+                            window.open(url.toString(), '_blank');
+                          }}
+                        >
                           {toTitleCase(heading)}
                         </Badge>
                       ))}
@@ -254,9 +289,19 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [] }
                       <div key={shortName} className="flex gap-2">
                         <span className="text-muted-foreground font-mono flex-shrink-0 leading-[1.5] py-1">{data.count}x</span>
                         <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 min-w-0 flex-1">
-                          <NextLink href={`/entity/${encodeURIComponent(shortName)}`}>
-                            <Badge variant="secondary" className="text-xs w-fit px-2 py-1 !bg-un-blue !text-white hover:!bg-un-blue/90 cursor-pointer transition-colors">{shortName}</Badge>
-                          </NextLink>
+                          <Badge 
+                            variant="secondary" 
+                            className="text-xs w-fit px-2 py-1 !bg-un-blue !text-white hover:!bg-un-blue/90 cursor-pointer transition-colors"
+                            onClick={() => {
+                              // Open filtered results in a new window with only the entity filter
+                              const url = new URL(window.location.origin + window.location.pathname);
+                              url.searchParams.set('page', '1');
+                              url.searchParams.set('entity', shortName);
+                              window.open(url.toString(), '_blank');
+                            }}
+                          >
+                            {shortName}
+                          </Badge>
                           <span className="text-muted-foreground break-words">{data.longName}</span>
                         </div>
                       </div>
@@ -279,7 +324,14 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [] }
                         <div className="min-w-0 flex-1">
                           <Badge 
                             variant="secondary" 
-                            className="text-xs px-2 py-1 whitespace-normal leading-relaxed inline-block max-w-full"
+                            className="text-xs px-2 py-1 whitespace-normal leading-relaxed inline-block max-w-full cursor-pointer hover:bg-secondary/80 transition-colors"
+                            onClick={() => {
+                              // Open filtered results in a new window with only the programme filter
+                              const url = new URL(window.location.origin + window.location.pathname);
+                              url.searchParams.set('page', '1');
+                              url.searchParams.set('programme', programmeTitle);
+                              window.open(url.toString(), '_blank');
+                            }}
                           >
                             {toTitleCase(programmeTitle)}
                           </Badge>
