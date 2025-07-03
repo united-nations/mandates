@@ -48,11 +48,11 @@
     "long":"Economic and Social Commission for Western Asia"
   },
   {
-    "short":"General Assembly",
+    "short":"GA",
     "long":"General Assembly"
   },
   {
-    "short":"Human Rights Council",
+    "short":"HRC",
     "long":"Human Rights Council"
   },
   {
@@ -64,7 +64,7 @@
     "long":"Other United Nations Bodies"
   },
   {
-    "short":"Security Council",
+    "short":"SC",
     "long":"Security Council"
   },
   {
@@ -81,7 +81,7 @@
   },
   {
     "short":"UNHA and Other",
-    "long":"United Nations Humanitarian Affairs and Other Related Bodies"
+    "long":"United Nations Habitat Assembly and Other Related Bodies"
   },
   {
     "short":"UNTOC COP",
