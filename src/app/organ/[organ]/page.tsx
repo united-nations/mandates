@@ -64,7 +64,13 @@ function OrganPageContent() {
                     </div>
                     <div>
                       <h1 className="text-2xl lg:text-3xl font-bold tracking-tight text-foreground">
-                        {organLongName && organLongName !== organName ? `${organName}: ${organLongName}` : organName}
+                        {organLongName && organLongName !== organName ? (
+                          <>
+                            <span className="text-un-blue">{organName}:</span> {organLongName}
+                          </>
+                        ) : (
+                          <span className="text-un-blue">{organName}</span>
+                        )}
                       </h1>
                     </div>
                   </div>

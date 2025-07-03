@@ -100,7 +100,13 @@ function EntityPageContent() {
                     ) : (
                       <>
                         <h1 className="text-2xl lg:text-3xl font-bold tracking-tight text-foreground">
-                          {entityDetails?.entityLong ? `${entityDetails.entity}: ${entityDetails.entityLong}` : entityDetails?.entity || entityName}
+                          {entityDetails?.entityLong ? (
+                            <>
+                              <span className="text-un-blue">{entityDetails.entity}:</span> {entityDetails.entityLong}
+                            </>
+                          ) : (
+                            <span className="text-un-blue">{entityDetails?.entity || entityName}</span>
+                          )}
                         </h1>
                       </>
                     )}
