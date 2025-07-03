@@ -81,7 +81,11 @@ function OrganPageContent() {
 
           <MandateExplorer 
             showCrossCitations={false}
-            entityListSidebar={<EntityListSidebar />}
+            crossCitationsSidebar={
+              <div className="flex flex-col gap-6">
+                <EntityListSidebar />
+              </div>
+            }
           />
         </main>
       </div>
