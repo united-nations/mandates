@@ -13,6 +13,11 @@ interface EntityWithCount {
   count: number
 }
 
+interface EntityDetails {
+  Entity: string
+  'Entity-Long': string
+}
+
 interface EntityListSidebarProps {
   hideHeader?: boolean
   borderless?: boolean
@@ -27,6 +32,7 @@ export function EntityListSidebar({ hideHeader = false, borderless = false }: En
   const [isLoading, setIsLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [maxCount, setMaxCount] = useState(1)
+  const [allEntities, setAllEntities] = useState<EntityDetails[]>([])
 
   useEffect(() => {
     async function fetchEntities() {
@@ -65,15 +71,33 @@ export function EntityListSidebar({ hideHeader = false, borderless = false }: En
   }, [isOrganPage, currentOrganName])
 
   useEffect(() => {
+    async function fetchAllEntities() {
+      try {
+        const res = await fetch('/api/entities')
+        if (res.ok) {
+          const data = await res.json()
+          setAllEntities(data)
+        }
+      } catch (error) {
+        console.error('Failed to fetch all entities:', error)
+      }
+    }
+    fetchAllEntities()
+  }, [])
+
+  useEffect(() => {
     if (!searchTerm.trim()) {
       setFilteredEntities(entities)
     } else {
-      const filtered = entities.filter(entity =>
-        entity.name.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+      const lowerSearch = searchTerm.toLowerCase()
+      const filtered = entities.filter(entity => {
+        const shortName = entity.name.toLowerCase()
+        const longName = (allEntities.find(e => e.Entity === entity.name)?.['Entity-Long'] || '').toLowerCase()
+        return shortName.includes(lowerSearch) || longName.includes(lowerSearch)
+      })
       setFilteredEntities(filtered)
     }
-  }, [searchTerm, entities])
+  }, [searchTerm, entities, allEntities])
 
   const handleEntityClick = (entityName: string) => {
     if (isMainPage) {
