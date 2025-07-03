@@ -198,11 +198,8 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [], 
                       variant="stronger" 
                       className="text-xs cursor-pointer hover:bg-primary/80 transition-colors"
                       onClick={() => {
-                        // Open filtered results in a new window with only the organ filter
-                        const url = new URL(window.location.origin + window.location.pathname);
-                        url.searchParams.set('page', '1');
-                        url.searchParams.set('organ', mandate.body);
-                        window.open(url.toString(), '_blank');
+                        // Navigate to organ detail page
+                        window.location.href = `/organ/${encodeURIComponent(mandate.body)}`;
                       }}
                     >
                       {mandate.body}
@@ -293,11 +290,8 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [], 
                             variant="secondary" 
                             className="text-xs w-fit px-2 py-1 !bg-un-blue !text-white hover:!bg-un-blue/90 cursor-pointer transition-colors"
                             onClick={() => {
-                              // Open filtered results in a new window with only the entity filter
-                              const url = new URL(window.location.origin + window.location.pathname);
-                              url.searchParams.set('page', '1');
-                              url.searchParams.set('entity', shortName);
-                              window.open(url.toString(), '_blank');
+                              // Navigate to entity detail page
+                              window.location.href = `/entity/${encodeURIComponent(shortName)}`;
                             }}
                           >
                             {shortName}
