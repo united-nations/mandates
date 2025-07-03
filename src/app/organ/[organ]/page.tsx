@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Landmark } from 'lucide-react';
@@ -8,11 +8,41 @@ import { MandateExplorer } from '@/components/mandate-explorer';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { EntityListSidebar } from '@/components/entity-list-sidebar';
 import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
 
 function OrganPageContent() {
   const params = useParams();
   const router = useRouter();
   const organName = decodeURIComponent(params.organ as string);
+
+  const [organDetails, setOrganDetails] = useState<{
+    short: string;
+    long: string;
+    website?: string;
+  } | null>(null);
+  const [isLoadingOrganDetails, setIsLoadingOrganDetails] = useState(true);
+
+  useEffect(() => {
+    async function fetchOrganDetails() {
+      setIsLoadingOrganDetails(true);
+      try {
+        const res = await fetch(`/api/organs/${encodeURIComponent(organName)}`);
+        if (res.ok) {
+          const organ = await res.json();
+          setOrganDetails(organ);
+        } else if (res.status === 404) {
+          console.warn(`Organ "${organName}" not found`);
+        }
+      } catch (error) {
+        console.error("Failed to fetch organ details:", error);
+      } finally {
+        setIsLoadingOrganDetails(false);
+      }
+    }
+    if (organName) {
+      fetchOrganDetails();
+    }
+  }, [organName]);
 
   return (
     <TooltipProvider>
@@ -24,22 +54,31 @@ function OrganPageContent() {
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="mb-2">
-                  <Button variant="outline" size="sm" className="mb-4" onClick={() => router.push('/')}>
+                  <Button size="sm" className="mb-4 bg-un-blue text-white hover:bg-un-blue/90 transition-colors" onClick={() => router.push('/')}>
                     <ArrowLeft className="h-4 w-4 mr-2" />
                     Back to Main View
                   </Button>
                 </div>
                 
                 <div className="mb-6 mt-2">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="p-3 bg-muted rounded-md">
-                      <Landmark className="h-6 w-6 text-un-blue" />
-                    </div>
-                    <div>
-                      <h1 className="text-2xl lg:text-3xl font-bold tracking-tight text-foreground">
-                        <span className="text-un-blue">{organName}</span>
-                      </h1>
-                    </div>
+                  <div className="mb-2">
+                    {isLoadingOrganDetails ? (
+                      <>
+                        <Skeleton className="h-8 w-64 mb-2" />
+                      </>
+                    ) : (
+                      <>
+                        <h1 className="text-2xl lg:text-3xl font-medium tracking-tight text-foreground">
+                          {organDetails?.long ? (
+                            <>
+                              <span className="text-foreground">{organDetails.short}:</span> {organDetails.long}
+                            </>
+                          ) : (
+                            <span className="text-foreground">{organDetails?.short || organName}</span>
+                          )}
+                        </h1>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
