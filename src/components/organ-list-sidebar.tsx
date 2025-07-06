@@ -40,29 +40,36 @@ export function OrganListSidebar({ hideHeader = false, borderless = false }: Org
       try {
         let organsData: BodyWithCount[] = []
         
-        if (isEntityPage && currentEntityName) {
-          // Fetch mandates for the current entity to get organ counts
-          const params = new URLSearchParams({
-            entity: currentEntityName,
-            limit: '1000' // Get all mandates to count organs accurately
-          })
-          const res = await fetch(`/api/mandates?${params.toString()}`)
-          if (res.ok) {
-            const data = await res.json()
-            const organCounts: { [key: string]: number } = {}
-            
-            // Count mandates by organ - the API returns items, not mandates
-            const mandates = data.items || data.mandates || []
-            mandates.forEach((mandate: any) => {
-              if (mandate.body) {
-                organCounts[mandate.body] = (organCounts[mandate.body] || 0) + 1
-              }
-            })
-            
-            organsData = Object.entries(organCounts)
-              .map(([name, count]) => ({ name, count }))
-              .sort((a: BodyWithCount, b: BodyWithCount) => b.count - a.count)
+        // Build parameters with all current filters (excluding organ filter to get counts for all organs)
+        const params = new URLSearchParams()
+        
+        // Add all filters except organ (since we want counts for all organs)
+        Object.entries(filters).forEach(([key, value]) => {
+          if (key !== 'organ' && key !== 'page' && key !== 'limit' && key !== 'sort_by' && value && value !== 'all') {
+            params.set(key, value)
           }
+        })
+        
+        // Always set a high limit to get accurate counts
+        params.set('limit', '1000')
+        
+        // Fetch mandates with current filters to calculate organ counts
+        const res = await fetch(`/api/mandates?${params.toString()}`)
+        if (res.ok) {
+          const data = await res.json()
+          const organCounts: { [key: string]: number } = {}
+          
+          // Count mandates by organ - the API returns items, not mandates
+          const mandates = data.items || data.mandates || []
+          mandates.forEach((mandate: any) => {
+            if (mandate.body) {
+              organCounts[mandate.body] = (organCounts[mandate.body] || 0) + 1
+            }
+          })
+          
+          organsData = Object.entries(organCounts)
+            .map(([name, count]) => ({ name, count }))
+            .sort((a: BodyWithCount, b: BodyWithCount) => b.count - a.count)
         }
         
         // Always fetch organ details for name mapping
@@ -72,9 +79,17 @@ export function OrganListSidebar({ hideHeader = false, borderless = false }: Org
           setAllOrgans(organsList)
         }
         
-        if (!isEntityPage || organsData.length === 0) {
-          // Fallback to all organs
-          const metaResponse = await fetch('/api/mandates/meta')
+        // If no organs found with current filters, fallback to meta endpoint with same filters
+        if (organsData.length === 0) {
+          const metaParams = new URLSearchParams(params)
+          metaParams.delete('limit') // Meta endpoint doesn't need limit
+          
+          let metaUrl = '/api/mandates/meta'
+          if (metaParams.toString()) {
+            metaUrl += `?${metaParams.toString()}`
+          }
+          
+          const metaResponse = await fetch(metaUrl)
           if (metaResponse.ok) {
             const metaData = await metaResponse.json()
             organsData = (metaData.uniqueBodiesWithCount || []).sort((a: BodyWithCount, b: BodyWithCount) => b.count - a.count)
@@ -100,7 +115,7 @@ export function OrganListSidebar({ hideHeader = false, borderless = false }: Org
       }
     }
     fetchData()
-  }, [isEntityPage, currentEntityName])
+  }, [filters, isEntityPage, currentEntityName])
 
   useEffect(() => {
     if (!searchTerm.trim()) {

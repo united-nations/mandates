@@ -1,33 +1,21 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
-
-interface Organ {
-  short: string;
-  long: string;
-  website?: string;
-}
+import { DataService } from '@/lib/api/data-service';
+import { ApiUtils, ApiError } from '@/lib/api/api-utils';
 
 export async function GET(
   request: Request,
   { params }: { params: { organ: string } }
 ) {
-  try {
-    const organName = decodeURIComponent(params.organ);
+  return ApiUtils.handleAsync(async () => {
+    const organName = ApiUtils.sanitizeName(params.organ);
+    const organs = await DataService.getOrgans();
     
-    const filePath = path.join(process.cwd(), 'data', 'organs.json');
-    const fileContents = fs.readFileSync(filePath, 'utf8');
-    const organs: Organ[] = JSON.parse(fileContents);
-    
-    const organ = organs.find(o => o.short === organName);
+    const organ = organs.find((o: any) => o.short === organName);
     
     if (!organ) {
-      return NextResponse.json({ error: 'Organ not found' }, { status: 404 });
+      throw new ApiError('Organ not found', 404);
     }
     
-    return NextResponse.json(organ);
-  } catch (error) {
-    console.error('Error reading organ data:', error);
-    return NextResponse.json({ error: 'Failed to load organ data' }, { status: 500 });
-  }
+    return organ;
+  }, 'Failed to load organ data');
 }

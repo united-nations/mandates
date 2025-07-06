@@ -17,24 +17,33 @@ interface Entity {
 interface EntityNameProps {
   entityName: string;
   showUnderline?: boolean;
+  asChild?: boolean;
 }
 
-let entitiesPromise: Promise<Entity[]> | null = null;
-const getEntities = () => {
-  if (!entitiesPromise) {
-    entitiesPromise = fetch('/api/entities').then(res => res.json());
-  }
-  return entitiesPromise;
-};
-
-export function EntityName({ entityName, showUnderline = true }: EntityNameProps) {
+export function EntityName({ entityName, showUnderline = true, asChild = false }: EntityNameProps) {
   const [entity, setEntity] = useState<Entity | null>(null);
 
   useEffect(() => {
-    getEntities().then(entities => {
-      const foundEntity = entities.find(e => e['Entity'] === entityName || e['Entity-Long'] === entityName);
-      setEntity(foundEntity || { 'Entity': entityName, 'Entity-Long': entityName });
-    });
+    async function fetchEntity() {
+      try {
+        const url = `/api/entities/${encodeURIComponent(entityName)}`;
+        const res = await fetch(url);
+        if (res.ok) {
+          const data = await res.json();
+          setEntity(data);
+        } else {
+          // Fallback to default entity structure if not found
+          setEntity({ 'Entity': entityName, 'Entity-Long': entityName });
+        }
+      } catch (error) {
+        console.error('EntityName: Error fetching entity:', error);
+        setEntity({ 'Entity': entityName, 'Entity-Long': entityName });
+      }
+    }
+
+    if (entityName) {
+      fetchEntity();
+    }
   }, [entityName]);
 
   const displayName = entity?.['Entity'] || entityName;
@@ -42,6 +51,15 @@ export function EntityName({ entityName, showUnderline = true }: EntityNameProps
 
   if (displayName === longName) {
     return <>{displayName}</>;
+  }
+
+  // If used inside interactive elements, don't render tooltip trigger
+  if (asChild) {
+    return (
+      <span className={showUnderline ? "underline decoration-dotted" : ""} title={longName}>
+        {displayName}
+      </span>
+    );
   }
 
   return (
@@ -54,4 +72,4 @@ export function EntityName({ entityName, showUnderline = true }: EntityNameProps
         </TooltipContent>
       </Tooltip>
   );
-} 
+}

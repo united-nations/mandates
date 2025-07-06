@@ -134,7 +134,7 @@ export function ConsolidatedFilterSidebar() {
                         onClick={() => handleEntityClick(citation.entity)}
                       >
                         <span className="flex-1 truncate text-left text-sm">
-                          <EntityName entityName={citation.entity} showUnderline={false} />
+                          <EntityName entityName={citation.entity} showUnderline={false} asChild={true} />
                         </span>
                         <span className="flex items-center w-full max-w-[100px]">
                           <span className="text-xs font-mono text-un-blue text-right pr-2 min-w-[28px] max-w-[32px] flex-shrink-0 justify-end flex">{citation.sharedMandatesCount}</span>

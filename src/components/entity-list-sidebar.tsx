@@ -37,12 +37,19 @@ export function EntityListSidebar({ hideHeader = false, borderless = false }: En
   useEffect(() => {
     async function fetchEntities() {
       try {
-        let url = '/api/mandates/meta';
+        // Build parameters with all current filters (excluding entity filter to get counts for all entities)
+        const params = new URLSearchParams()
         
-        // If on organ page, get entity counts specific to that organ
-        if (isOrganPage && currentOrganName) {
-          const params = new URLSearchParams({ organ: currentOrganName });
-          url = `/api/mandates/meta?${params.toString()}`;
+        // Add all filters except entity (since we want counts for all entities)
+        Object.entries(filters).forEach(([key, value]) => {
+          if (key !== 'entity' && key !== 'page' && key !== 'limit' && key !== 'sort_by' && value && value !== 'all') {
+            params.set(key, value)
+          }
+        })
+        
+        let url = '/api/mandates/meta'
+        if (params.toString()) {
+          url += `?${params.toString()}`
         }
         
         const response = await fetch(url)
@@ -68,7 +75,7 @@ export function EntityListSidebar({ hideHeader = false, borderless = false }: En
       }
     }
     fetchEntities()
-  }, [isOrganPage, currentOrganName])
+  }, [filters])
 
   useEffect(() => {
     async function fetchAllEntities() {
@@ -167,7 +174,7 @@ export function EntityListSidebar({ hideHeader = false, borderless = false }: En
                 >
                   <div className="min-w-0 flex-1">
                     <div className="text-sm font-medium truncate">
-                      <EntityName entityName={entity.name} />
+                      <EntityName entityName={entity.name} asChild={true} />
                     </div>
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0 w-32">
