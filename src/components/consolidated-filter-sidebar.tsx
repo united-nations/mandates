@@ -39,7 +39,17 @@ export function ConsolidatedFilterSidebar() {
       setIsLoading(true)
       try {
         if (isEntityPage && currentEntityName) {
-          const res = await fetch(`/api/entities/${encodeURIComponent(currentEntityName)}/cross-citations`)
+          // Build URL with current filters (excluding entity and cross_entity filters)
+          const queryParams = new URLSearchParams();
+          Object.entries(filters).forEach(([key, value]) => {
+            if (value && key !== 'entity' && key !== 'cross_entity') {
+              queryParams.set(key, value);
+            }
+          });
+          const queryString = queryParams.toString();
+          const url = `/api/entities/${encodeURIComponent(currentEntityName)}/cross-citations${queryString ? `?${queryString}` : ''}`;
+          
+          const res = await fetch(url)
           if (res.ok) {
             const data = await res.json()
             // Filter out null, undefined, or empty string entities
@@ -55,7 +65,17 @@ export function ConsolidatedFilterSidebar() {
           setEntityCrossCitations([])
         }
         if (isOrganPage && currentOrganName) {
-          const res = await fetch(`/api/organs/${encodeURIComponent(currentOrganName)}/cross-citations`)
+          // Build URL with current filters (excluding organ filter)
+          const queryParams = new URLSearchParams();
+          Object.entries(filters).forEach(([key, value]) => {
+            if (value && key !== 'organ') {
+              queryParams.set(key, value);
+            }
+          });
+          const queryString = queryParams.toString();
+          const url = `/api/organs/${encodeURIComponent(currentOrganName)}/cross-citations${queryString ? `?${queryString}` : ''}`;
+          
+          const res = await fetch(url)
           if (res.ok) {
             const data = await res.json()
             // Filter out null, undefined, or empty string organs
@@ -78,7 +98,7 @@ export function ConsolidatedFilterSidebar() {
       }
     }
     fetchCrossCitations()
-  }, [isEntityPage, isOrganPage, currentEntityName, currentOrganName])
+  }, [isEntityPage, isOrganPage, currentEntityName, currentOrganName, filters])
 
   const handleEntityClick = (entityName: string) => {
     setFilter('cross_entity', entityName);

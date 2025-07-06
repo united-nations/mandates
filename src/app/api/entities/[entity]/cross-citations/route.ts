@@ -11,8 +11,19 @@ export async function GET(
     const { entity } = await params;
     const targetEntity = ApiUtils.sanitizeName(entity);
     
+    // Parse filters from URL parameters
+    const { searchParams } = new URL(request.url);
+    const filterParams = ApiUtils.parseFilterParams(searchParams);
+    
+    // Get all mandates and apply filters (except for the target entity filter)
     const allMandates = await DataService.getMandates();
-    const crossCitations = FilterEngine.getCrossCitations(allMandates, targetEntity);
+    const filteredResult = FilterEngine.filterMandates(allMandates, {
+      ...filterParams,
+      entity: undefined, // Don't filter by entity for cross-citations
+      cross_entity: undefined, // Don't filter by cross_entity for cross-citations
+    });
+    
+    const crossCitations = FilterEngine.getCrossCitations(filteredResult.filteredMandates, targetEntity);
     
     return crossCitations;
   }, 'Failed to fetch cross-citations');
