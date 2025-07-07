@@ -194,11 +194,11 @@ export function FilterControls({
                   </div>
                   <Button
                     variant="ghost"
-                    className="shrink-0 inline-flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                    className="shrink-0 inline-flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 py-1 sm:px-2.5 sm:py-1.5 h-auto !bg-trout !text-white hover:!bg-trout/90"
                     onClick={clearAllFilters}
                   >
-                    <X className="h-4 w-4" />
-                    Clear All
+                    <X className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="text-xs sm:text-sm">Clear All</span>
                   </Button>
                 </div>
               )}
