@@ -205,13 +205,13 @@ export function FilterControls({
               
               <div className="flex flex-wrap gap-2">
                 {hasSearch && (
-                  <Badge variant="default" className="flex items-center gap-2 px-3 py-1.5 bg-blue-100 text-blue-800 border border-blue-200 hover:bg-blue-200">
+                  <Badge variant="secondary" className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 text-slate-800 border border-slate-200 hover:bg-slate-200">
                     <Search className="h-3 w-3" />
                     <span className="text-sm font-medium">"{filters.keyword}"</span>
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-4 w-4 p-0 hover:bg-blue-300 rounded-full"
+                      className="h-4 w-4 p-0 hover:bg-slate-300 rounded-full"
                       onClick={() => clearFilter('keyword')}
                     >
                       <X className="h-3 w-3" />
