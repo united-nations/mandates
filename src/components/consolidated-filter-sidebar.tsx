@@ -119,7 +119,7 @@ export function ConsolidatedFilterSidebar() {
   const maxOrganCount = filteredOrgans.length > 0 ? Math.max(...filteredOrgans.map(o => o.sharedMandatesCount)) : 1;
 
   return (
-    <div className="w-full lg:w-80 flex-shrink-0 border-l-2 border-un-blue/20 pl-4">
+    <div className="w-full lg:w-80 flex-shrink-0 border-l-2 border-gray-200 pl-4">
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-2">
           <LinkIcon className="h-5 w-5 text-un-blue" />
