@@ -4,7 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { explainerTexts } from '@/lib/explainer-texts';
 import { GoogleAnalytics } from '@next/third-parties/google';
 import { FilterProvider } from '@/contexts/FilterContext';
-import { Menu } from 'lucide-react';
+import { Menu, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
@@ -67,6 +67,24 @@ export default function RootLayout({
             </div>
           </header>
           {children}
+          
+          {/* Fixed Feedback Button */}
+          <Button
+            asChild
+            className="fixed bottom-6 right-6 z-50 shadow-lg hover:shadow-xl transition-shadow"
+            size="default"
+          >
+            <a
+              href="https://forms.office.com/Pages/ResponsePage.aspx?id=2zWeD09UYE-9zF6kFubccKWYVHshXnBMlwUt34IXB2ZUQko4SUdLUVVQSE5BRU1UOTQ1WFRLV0JXRiQlQCN0PWcu"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2"
+            >
+              <MessageCircle className="h-4 w-4" />
+              Give Feedback
+            </a>
+          </Button>
+          
           <Toaster />
         </FilterProvider>
       </body>

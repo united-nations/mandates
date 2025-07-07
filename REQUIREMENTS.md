@@ -25,21 +25,24 @@ Pages:
     - NO second sidebar here
 - Mandate detail page: popup that can be entered from the main/entity/organ page with details about a mandate document
 
-# Todos
 
-Scratchpad for AI. AI should change this at start and end of every activity: Keep a detailed list 
-of todos and sub-todos and their progress. Do not modify this paragraph but use the space below.
+# Refactor
 
-## Completed
-- ✅ Modified organ page to hide organs data card
-- ✅ Removed cross-citations sidebar from organ page (no second sidebar)
-- ✅ Kept entity list sidebar on organ page as required
-- ✅ Updated MandateExplorer component to conditionally hide organs data card when `isOrganPage` is true
-- ✅ Correctly configured organ page with entityListSidebar prop only (no crossCitationsSidebar)
-- ✅ Fixed sidebar visibility logic to show entity sidebar on organ pages (both desktop and mobile)
-- ✅ Fixed data card flickering/lag issue when switching between main/entity/organ pages by implementing proper state reset on page context changes and AbortController to prevent race conditions from multiple rapid API calls
-- ✅ Fixed cross-citations components to filter out null entities (frontend-only fix)
-- ✅ Removed redundant cross-citation-filter.tsx file (duplicate of consolidated-filter-sidebar.tsx)
-- ✅ Updated entity sidebar on organ pages to show counts specific to the current organ
-- ✅ Modified /api/mandates/meta endpoint to support organ parameter for organ-specific entity counts
+This is a major refactoring.
 
+The API and the filtering logic used to be very chaotic. I've removed most of it but there's still remnants that may be weird and inconsistent. Remove anything relating to filtering/API that is not clearly good. Also redefine types as suitable.
+
+What we want now:
+Load data, mostly from ppb2026_unique_mandates_with_metadata.json, complemented by @organs.json and @entity_details.csv  to augment short/long entity names etc.
+Provide a single API endpoint that accepts all filters including entity and organ and keyword search and all the other ones. Make sure this one is efficient.
+It should return a list of filtered mandates, paginated.
+It should also return counts for the datacards, and counts for the link/filter sidebars to be displayed. E.g. when one filter is applied then the counts within the filter sidebar should also already reflect the data as it has been filtered.
+It should also always return both long and short names of entity and organs so that no further api calls are required for that.
+
+The entity and organ pages should have a special but very simple logic: They always implicitly set the entity/organ of that page as a filter, but they do not show this very filter in the list of active filters.
+
+Feel free to destroy and recreate and fromscratch everything that does not conform to this relatively simple logic.
+
+When something is unclear, always ask!
+
+First, before implementing, make a plan, and create steps in @LOGS.md  

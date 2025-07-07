@@ -1,23 +1,19 @@
 "use client";
 
-import { TooltipProvider } from '@/components/ui/tooltip';
 import { explainerTexts } from '@/lib/explainer-texts';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, FileText, ArrowRight } from 'lucide-react';
+import { FileText, ArrowRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { PageLayout } from '@/components/ui/page-layout';
+import { BackButton } from '@/components/ui/back-button';
 
 export default function MethodologyPage() {
   const router = useRouter();
   return (
-    <TooltipProvider>
-      <div className="min-h-screen bg-background text-foreground">
-        <main className="w-full max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto py-10 px-8 sm:px-12 lg:px-16">
-          <div className="mb-2">
-            <Button variant="outline" size="sm" className="mb-4 shrink-0 inline-flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 py-1 sm:px-2.5 sm:py-1.5 h-auto !bg-trout !text-white hover:!bg-trout/90 transition-colors" onClick={() => router.push('/') }>
-              <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4" />
-              Back to Main View
-            </Button>
-          </div>
+    <PageLayout>
+      <div className="mb-2">
+        <BackButton />
+      </div>
           <div className="flex items-center gap-3 mb-6">
             <FileText className="h-8 w-8 text-un-blue" />
             <h1 className="text-2xl font-bold tracking-tight text-foreground">Methodology</h1>
@@ -40,8 +36,6 @@ export default function MethodologyPage() {
               <ArrowRight className="h-3 w-3 sm:h-4 sm:w-4" />
             </Button>
           </div>
-        </main>
-      </div>
-    </TooltipProvider>
+    </PageLayout>
   );
 } 

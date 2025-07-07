@@ -1,12 +1,10 @@
 'use client';
 
-import { Badge } from '@/components/ui/badge';
+import { FilterBadge } from '@/components/ui/filter-badge';
 import { Button } from '@/components/ui/button';
-import { Search, X, Filter } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import { EntityName } from './ui/entity-name';
 import { toTitleCase } from '@/lib/utils';
-
-import { explainerTexts } from '@/lib/explainer-texts';
 
 interface SearchResultsSummaryProps {
   totalResults: number;
@@ -80,131 +78,76 @@ export function SearchResultsSummary({
 
         <div className="flex flex-wrap gap-2">
           {hasSearch && (
-            <Badge variant="default" className="flex items-center gap-1">
-              Search: "{searchKeyword}"
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-4 w-4 p-0 hover:bg-transparent"
-                onClick={onClearSearch}
-              >
-                <X className="h-3 w-3" />
-              </Button>
-            </Badge>
+            <FilterBadge
+              icon={Search}
+              label={`Search: "${searchKeyword}"`}
+              onClear={onClearSearch}
+              variant="default"
+            />
           )}
 
           {appliedFilters.entity && appliedFilters.entity !== 'all' && (
-            <Badge variant="secondary" className="flex items-center gap-1">
-              Entity:&nbsp;
-              <EntityName entityName={appliedFilters.entity} />
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-4 w-4 p-0 hover:bg-transparent"
-                onClick={() => onClearFilter('entity')}
-              >
-                <X className="h-3 w-3" />
-              </Button>
-            </Badge>
+            <FilterBadge
+              label={<>Entity:&nbsp;<EntityName entityName={appliedFilters.entity} /></>}
+              onClear={() => onClearFilter('entity')}
+              variant="secondary"
+            />
           )}
 
           {appliedFilters.organ && appliedFilters.organ !== 'all' && (
-            <Badge variant="secondary" className="flex items-center gap-1">
-              Organ: {appliedFilters.organ}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-4 w-4 p-0 hover:bg-transparent"
-                onClick={() => onClearFilter('organ')}
-              >
-                <X className="h-3 w-3" />
-              </Button>
-            </Badge>
+            <FilterBadge
+              label={`Organ: ${appliedFilters.organ}`}
+              onClear={() => onClearFilter('organ')}
+              variant="secondary"
+            />
           )}
 
           {appliedFilters.programme && (
-            <Badge variant="secondary" className="flex items-center gap-1">
-              Programme: {appliedFilters.programme}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-4 w-4 p-0 hover:bg-transparent"
-                onClick={() => onClearFilter('programme')}
-              >
-                <X className="h-3 w-3" />
-              </Button>
-            </Badge>
+            <FilterBadge
+              label={`Programme: ${appliedFilters.programme}`}
+              onClear={() => onClearFilter('programme')}
+              variant="secondary"
+            />
           )}
 
           {appliedFilters.subject && (
-            <Badge variant="secondary" className="flex items-center gap-1">
-              Subject: {toTitleCase(appliedFilters.subject)}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-4 w-4 p-0 hover:bg-transparent"
-                onClick={() => onClearFilter('subject')}
-              >
-                <X className="h-3 w-3" />
-              </Button>
-            </Badge>
+            <FilterBadge
+              label={`Subject: ${toTitleCase(appliedFilters.subject)}`}
+              onClear={() => onClearFilter('subject')}
+              variant="secondary"
+            />
           )}
 
           {appliedFilters.pillar && appliedFilters.pillar !== 'all' && (
-            <Badge variant="secondary" className="flex items-center gap-1">
-              Pillar: {appliedFilters.pillar}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-4 w-4 p-0 hover:bg-transparent"
-                onClick={() => onClearFilter('pillar')}
-              >
-                <X className="h-3 w-3" />
-              </Button>
-            </Badge>
+            <FilterBadge
+              label={`Pillar: ${appliedFilters.pillar}`}
+              onClear={() => onClearFilter('pillar')}
+              variant="secondary"
+            />
           )}
 
           {appliedFilters.year && (
-            <Badge variant="secondary" className="flex items-center gap-1">
-              Year: {appliedFilters.year}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-4 w-4 p-0 hover:bg-transparent"
-                onClick={() => onClearFilter('year')}
-              >
-                <X className="h-3 w-3" />
-              </Button>
-            </Badge>
+            <FilterBadge
+              label={`Year: ${appliedFilters.year}`}
+              onClear={() => onClearFilter('year')}
+              variant="secondary"
+            />
           )}
 
           {appliedFilters.budget_document && appliedFilters.budget_document !== 'all' && (
-            <Badge variant="secondary" className="flex items-center gap-1">
-              Budget Doc: {appliedFilters.budget_document}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-4 w-4 p-0 hover:bg-transparent"
-                onClick={() => onClearFilter('budget_document')}
-              >
-                <X className="h-3 w-3" />
-              </Button>
-            </Badge>
+            <FilterBadge
+              label={`Budget Doc: ${appliedFilters.budget_document}`}
+              onClear={() => onClearFilter('budget_document')}
+              variant="secondary"
+            />
           )}
 
           {appliedFilters.cross_entity && (
-            <Badge variant="secondary" className="flex items-center gap-1">
-              Shared with:&nbsp;
-              <EntityName entityName={appliedFilters.cross_entity} />
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-4 w-4 p-0 hover:bg-transparent"
-                onClick={() => onClearFilter('cross_entity')}
-              >
-                <X className="h-3 w-3" />
-              </Button>
-            </Badge>
+            <FilterBadge
+              label={<>Shared with:&nbsp;<EntityName entityName={appliedFilters.cross_entity} /></>}
+              onClear={() => onClearFilter('cross_entity')}
+              variant="secondary"
+            />
           )}
         </div>
       </div>

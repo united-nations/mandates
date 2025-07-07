@@ -141,7 +141,7 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [], 
   }
   
   const hasSubjects = mandate.subject_headings && mandate.subject_headings.length > 0;
-  const displaySymbol = mandate.full_document_symbol || mandate.symbol;
+  const displaySymbol = mandate.full_document_symbol;
   const pdfUrl = mandate.link;
 
   return (

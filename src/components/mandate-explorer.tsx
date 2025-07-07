@@ -1,15 +1,14 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react'
-import type { Mandate } from '@/types'
+import { useState, useEffect, useCallback } from 'react'
+import type { Mandate, ApiResponse } from '@/types'
 import { MandateList } from '@/components/mandate-list'
 import { FilterControls } from '@/components/filter-controls'
 import { PaginationControls } from '@/components/pagination-controls'
-import { Skeleton } from '@/components/ui/skeleton'
+import { LoadingSkeleton } from '@/components/ui/loading-skeleton'
 import { FileText, Landmark, Building, Quote, ChevronUp, ChevronDown } from 'lucide-react'
 import { MandateDetails } from '@/components/mandate-details'
 import { DataCard } from '@/components/data-card'
-import { CrossCitations } from '@/components/cross-citations'
 import {
   Select,
   SelectContent,
@@ -20,319 +19,129 @@ import {
 import { SearchableDropdownOption } from '@/components/ui/searchable-dropdown'
 import { explainerTexts } from '@/lib/explainer-texts'
 import { CollapsibleSidebars } from '@/components/collapsible-sidebars'
+import { EntityListSidebar } from '@/components/entity-list-sidebar'
+import { OrganListSidebar } from '@/components/organ-list-sidebar'
+import { CrossCitationsSidebar } from '@/components/cross-citations-sidebar'
 import { useFilters } from '@/contexts/FilterContext'
 import { Button } from '@/components/ui/button'
-
-interface Entity {
-  entity: string
-  entity_long: string
-}
-
-interface EntityWithCount {
-  name: string
-  count: number
-}
-
-interface BodyWithCount {
-  name: string
-  count: number
-}
-
-interface Organ {
-  short: string
-  long: string
-}
 
 interface MandateExplorerProps {
   // Additional CSS classes
   className?: string
-  // Optional sidebar components for entities and organs
-  entityListSidebar?: React.ReactNode
-  organListSidebar?: React.ReactNode
-  // Whether to show the cross-citations section (false for entity detail pages)
-  showCrossCitations?: boolean
-  // Custom cross-citations sidebar for overlays
-  crossCitationsSidebar?: React.ReactNode
+  // Explicit filters for entity/organ pages
+  entityFilter?: string
+  organFilter?: string
+  // Page type for conditional rendering
+  pageType: 'main' | 'entity' | 'organ'
 }
 
 export function MandateExplorer ({
   className = '',
-  entityListSidebar,
-  organListSidebar,
-  showCrossCitations = true,
-  crossCitationsSidebar
+  entityFilter,
+  organFilter,
+  pageType
 }: MandateExplorerProps) {
-  const {
-    filters,
-    setFilter,
-    isEntityPage,
-    isOrganPage,
-    isMainPage,
-    currentEntityName,
-    currentOrganName
-  } = useFilters()
+  const { filters, setFilter } = useFilters()
 
-  const [mandates, setMandates] = useState<Mandate[]>([])
+  // Simplified state management - only what's needed for UI
+  const [apiData, setApiData] = useState<ApiResponse | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [totalPages, setTotalPages] = useState(0)
-  const [totalItems, setTotalItems] = useState(0)
-  const [uniqueOrgans, setUniqueOrgans] = useState(0)
-  const [uniqueEntities, setUniqueEntities] = useState(0)
-  const [totalCitations, setTotalCitations] = useState(0)
-
-  const [allEntities, setAllEntities] = useState<Entity[]>([])
-  const [allOrgans, setAllOrgans] = useState<Organ[]>([])
-  const [entityOptions, setEntityOptions] = useState<EntityWithCount[]>([])
-  const [organOptions, setOrganOptions] = useState<BodyWithCount[]>([])
-  const [programmeOptions, setProgrammeOptions] = useState<string[]>([])
-  const [subjectOptions, setSubjectOptions] = useState<string[]>([])
-
-  const [yearDistribution, setYearDistribution] = useState<{
-    [year: string]: number
-  }>({})
-  const [yearRange, setYearRange] = useState<{
-    min: number
-    max: number
-  } | null>(null)
-
   const [selectedMandate, setSelectedMandate] = useState<Mandate | null>(null)
-
+  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false)
+  
+  // Data card popover states (preserved for exact same behavior)
   const [sourceDocumentsPopover, setSourceDocumentsPopover] = useState(false)
   const [unOrgansPopover, setUnOrgansPopover] = useState(false)
   const [unEntitiesPopover, setUnEntitiesPopover] = useState(false)
   const [citationsPopover, setCitationsPopover] = useState(false)
 
-  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false)
-
-  // Get current page and page size from filters
+  // Get current page and page size from filters (preserved logic)
   const currentPage = Number(filters.page || '1')
   const pageSize = Number(filters.limit || '10')
-  const sortBy =
-    filters.sort_by || (filters.keyword ? 'default' : 'citing_entities_desc')
-
-  // Ref to track current abort controller
-  const abortControllerRef = useRef<AbortController | null>(null)
-
-  // Reset data when page context changes to prevent stale data
-  const prevPageContext = useRef({
-    isEntityPage: false,
-    isOrganPage: false,
-    isMainPage: true,
-    currentEntityName: '',
-    currentOrganName: ''
-  })
-
+  const sortBy = filters.sort_by || (filters.keyword ? 'default' : 'citing_entities_desc')
+  
+  // Fetch data when filters change - use direct dependency tracking with explicit values
   useEffect(() => {
-    const prev = prevPageContext.current
-    const hasPageTypeChanged =
-      prev.isEntityPage !== isEntityPage ||
-      prev.isOrganPage !== isOrganPage ||
-      prev.isMainPage !== isMainPage
-    const hasEntityChanged = prev.currentEntityName !== currentEntityName
-    const hasOrganChanged = prev.currentOrganName !== currentOrganName
-
-    if (hasPageTypeChanged || hasEntityChanged || hasOrganChanged) {
-      setTotalItems(0)
-      setUniqueOrgans(0)
-      setUniqueEntities(0)
-      setTotalCitations(0)
-      setTotalPages(0)
-      setMandates([])
+    const fetchData = async () => {
       setIsLoading(true)
+      try {
+        const params = new URLSearchParams()
 
-      // Update ref
-      prevPageContext.current = {
-        isEntityPage,
-        isOrganPage,
-        isMainPage,
-        currentEntityName: currentEntityName || '',
-        currentOrganName: currentOrganName || ''
-      }
-    }
-  }, [
-    isEntityPage,
-    isOrganPage,
-    isMainPage,
-    currentEntityName,
-    currentOrganName
-  ])
+        // Start with URL-based filters
+        Object.entries(filters).forEach(([key, value]) => {
+          if (value && value !== 'all') {
+            params.set(key, value)
+          }
+        })
 
-  // Fetch mandates whenever filters change
-  const fetchMandates = useCallback(async () => {
-    // Cancel previous request if it exists
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort()
-    }
-
-    // Create new abort controller for this request
-    const abortController = new AbortController()
-    abortControllerRef.current = abortController
-
-    setIsLoading(true)
-    try {
-      const params = new URLSearchParams()
-
-      // Add all filters to params
-      Object.entries(filters).forEach(([key, value]) => {
-        if (value && value !== 'all') {
-          params.set(key, value)
+        // Add explicit page filters (these override URL params)
+        if (entityFilter) {
+          params.set('entity', entityFilter)
         }
-      })
+        if (organFilter) {
+          params.set('organ', organFilter)
+        }
 
-      // Set defaults
-      params.set('page', currentPage.toString())
-      params.set('limit', pageSize.toString())
-      params.set('sort_by', sortBy)
+        // Set defaults using current values
+        params.set('page', currentPage.toString())
+        params.set('limit', pageSize.toString())
+        params.set('sort_by', sortBy)
 
-      const apiUrl = `/api/mandates?${params.toString()}`;
+        const response = await fetch(`/api/mandates?${params.toString()}`)
+        if (!response.ok) {
+          throw new Error(`API Error: ${response.status}`)
+        }
 
-      const response = await fetch(apiUrl, {
-        signal: abortController.signal
-      })
-
-      // If request was aborted, don't process the response
-      if (abortController.signal.aborted) {
-        return
-      }
-
-      const data = await response.json()
-
-      setMandates(data.items || [])
-      setTotalPages(data.totalPages || 0)
-      setTotalItems(data.totalItems || 0)
-      setUniqueOrgans(data.metadata?.uniqueOrgans || 0)
-      setUniqueEntities(data.metadata?.uniqueEntities || 0)
-      setTotalCitations(data.metadata?.totalCitations || 0)
-
-      if (data.metadata?.yearDistribution) {
-        setYearDistribution(data.metadata.yearDistribution)
-      }
-    } catch (error) {
-      // Ignore abort errors
-      if (error instanceof Error && error.name === 'AbortError') {
-        return
-      }
-      console.error('Failed to fetch mandates:', error)
-    } finally {
-      // Only set loading to false if this request wasn't aborted
-      if (!abortController.signal.aborted) {
+        const data: ApiResponse = await response.json()
+        setApiData(data)
+      } catch (error) {
+        console.error('Failed to fetch data:', error)
+      } finally {
         setIsLoading(false)
       }
     }
-  }, [filters, currentPage, pageSize, sortBy])
 
-  useEffect(() => {
-    fetchMandates()
-  }, [fetchMandates])
+    fetchData()
+  }, [filters, currentPage, pageSize, sortBy, entityFilter, organFilter])
 
-  // Cleanup: abort any pending requests when component unmounts
-  useEffect(() => {
-    return () => {
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort()
-      }
-    }
-  }, [])
-
-  useEffect(() => {
-    async function fetchAllEntities () {
-      try {
-        const res = await fetch('/api/entities')
-        if (res.ok) {
-          const data = await res.json()
-          setAllEntities(data)
-        }
-      } catch (error) {
-        console.error('Failed to fetch all entities:', error)
-      }
-    }
-    fetchAllEntities()
-  }, [])
-
-  useEffect(() => {
-    async function fetchAllOrgans () {
-      try {
-        const res = await fetch('/api/organs')
-        if (res.ok) {
-          const data = await res.json()
-          setAllOrgans(data)
-        }
-      } catch (error) {
-        console.error('Failed to fetch organs data:', error)
-      }
-    }
-    fetchAllOrgans()
-  }, [])
-
-  useEffect(() => {
-    async function fetchMetadata () {
-      try {
-        const response = await fetch('/api/mandates/meta')
-        const data = await response.json()
-        setEntityOptions(data.uniqueEntities || [])
-        setOrganOptions(data.uniqueBodiesWithCount || [])
-        setSubjectOptions(data.uniqueSubjects || [])
-        setProgrammeOptions(data.uniqueProgrammes || [])
-
-        if (data.yearRange) {
-          setYearRange(data.yearRange)
-        }
-        if (data.yearDistribution) {
-          setYearDistribution(data.yearDistribution)
-        }
-      } catch (error) {
-        console.error('Failed to fetch metadata:', error)
-      }
-    }
-    fetchMetadata()
-  }, [])
-
+  // Handle sort change (preserved exact function)
   const handleSortChange = useCallback((value: string) => {
     setFilter('sort_by', value)
   }, [setFilter])
 
-  const LoadingSkeleton = () => (
-    <div className='space-y-4'>
-      <Skeleton className='h-8 w-3/4' />
-      <Skeleton className='h-24 w-full' />
-      <Skeleton className='h-24 w-full' />
-      <Skeleton className='h-24 w-full' />
-    </div>
+  // Loading skeleton (now using reusable component)
+  const LoadingSkeletonComponent = () => (
+    <LoadingSkeleton variant="list" count={4} />
   )
 
-  const findOrganData = (organName: string): Organ | undefined => {
-    return allOrgans.find(
-      organ => organ.short === organName || organ.long === organName
-    )
-  }
+  // Prepare dropdown options (preserved exact format)
+  const entityDropdownOptions: SearchableDropdownOption[] = 
+    apiData?.filterOptions.entities.map(entity => ({
+      value: entity.entity,
+      label: `${entity.entity_long || entity.entity} (${entity.count})`
+    })) || []
 
-  const getEntityLongName = (entityShortName: string) => {
-    return allEntities.find((e: any) => e['Entity'] === entityShortName)?.[
-      'entity_long'
-    ] as string | undefined
-  }
+  const organDropdownOptions: SearchableDropdownOption[] = 
+    apiData?.filterOptions.organs.map(organ => ({
+      value: organ.short,
+      label: `${organ.long || organ.short} (${organ.count})`
+    })) || []
 
-  const entityDropdownOptions: SearchableDropdownOption[] = entityOptions.map(
-    entity => ({
-      value: entity.name,
-      label: `${getEntityLongName(entity.name) || entity.name} (${
-        entity.count
-      })`
-    })
-  )
+  // Extract data for components (with same fallbacks as before)
+  const mandates = apiData?.mandates || []
+  const pagination = apiData?.pagination || { page: 1, limit: 10, totalPages: 0, totalItems: 0 }
+  const counts = apiData?.counts || { totalDocuments: 0, totalEntities: 0, totalOrgans: 0, totalCitations: 0 }
+  const filterOptions = apiData?.filterOptions || { programmes: [], subjects: [], yearRange: { min: 2000, max: 2024 }, yearDistribution: {} }
+  const allOrgans = apiData?.reference.organs || []
+  const allEntities = apiData?.reference.entities || []
+  const crossCitations = apiData?.sidebar.crossCitations || []
 
-  const organDropdownOptions: SearchableDropdownOption[] = organOptions.map(
-    organ => ({
-      value: organ.name,
-      label: `${findOrganData(organ.name)?.long || organ.name} (${organ.count})`
-    })
-  )
-
+  // Data cards section (preserved exact JSX structure and logic)
   const dataCardsSection = (
     <>
       <DataCard
         title={explainerTexts.dataCards.sourceDocuments.title}
-        value={totalItems}
+        value={counts.totalDocuments}
         icon={FileText}
         description={explainerTexts.dataCards.sourceDocuments.description}
         isOpen={sourceDocumentsPopover}
@@ -342,39 +151,39 @@ export function MandateExplorer ({
       {/* Always show organs card; on organ page show short name, else show count */}
       <DataCard
         title={
-          isOrganPage
+          pageType === 'organ'
             ? 'UN Organ / Body'
             : explainerTexts.dataCards.unOrgans.title
         }
-        value={isOrganPage ? currentOrganName || '' : uniqueOrgans}
+        value={pageType === 'organ' ? organFilter || '' : counts.totalOrgans}
         icon={Landmark}
         description={explainerTexts.dataCards.unOrgans.description}
         isOpen={unOrgansPopover}
         onOpenChange={setUnOrgansPopover}
-        isLoading={isLoading && !isOrganPage}
+        isLoading={isLoading && pageType !== 'organ'}
       />
       {/* Always show entity card; on entity page show short name, else show count */}
       <DataCard
         title={
-          isEntityPage ? 'Entity' : explainerTexts.dataCards.unEntities.title
+          pageType === 'entity' ? 'Entity' : explainerTexts.dataCards.unEntities.title
         }
-        value={isEntityPage ? currentEntityName || '' : uniqueEntities}
+        value={pageType === 'entity' ? entityFilter || '' : counts.totalEntities}
         icon={Building}
         description={explainerTexts.dataCards.unEntities.description}
         isOpen={unEntitiesPopover}
         onOpenChange={setUnEntitiesPopover}
-        isLoading={isLoading && !isEntityPage}
+        isLoading={isLoading && pageType !== 'entity'}
       />
       <DataCard
         title={
-          isEntityPage
+          pageType === 'entity'
             ? explainerTexts.dataCards.citationsByEntity.title
             : explainerTexts.dataCards.citations.title
         }
-        value={totalCitations}
+        value={counts.totalCitations}
         icon={Quote}
         description={
-          isEntityPage
+          pageType === 'entity'
             ? explainerTexts.dataCards.citationsByEntity.description
             : explainerTexts.dataCards.citations.description
         }
@@ -387,7 +196,7 @@ export function MandateExplorer ({
 
   return (
     <div className={className}>
-      {/* Summary Cards */}
+      {/* Summary Cards (preserved exact structure) */}
       <section
         aria-labelledby='summary-heading'
         className={`grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4`}
@@ -396,31 +205,46 @@ export function MandateExplorer ({
       </section>
 
       <div>
-        <div className='mt-6 pt-4'>
-          {/* Collapsible sidebars for smaller screens - show on main page and entity sidebar on organ page */}
-          {isMainPage && <CollapsibleSidebars />}
+                  <div className='mt-6 pt-4'>
+            {/* Collapsible sidebars for smaller screens (preserved exact logic) */}
+            {pageType === 'main' && (
+              <CollapsibleSidebars 
+                entities={apiData?.sidebar?.entities || []}
+                allEntities={apiData?.reference?.entities || []}
+                organs={apiData?.sidebar?.organs || []}
+                allOrgans={apiData?.reference?.organs || []}
+                isLoading={isLoading}
+              />
+            )}
 
-          {/* Collapsible sidebars for entity/organ pages - show above main content */}
-          {(isEntityPage || isOrganPage) && (
+          {/* Collapsible sidebars for entity/organ pages */}
+          {(pageType === 'entity' || pageType === 'organ') && (
             <div className='lg:hidden mb-6 max-w-md'>
-              {crossCitationsSidebar}
+                              <CrossCitationsSidebar 
+                  crossCitations={crossCitations}
+                  allEntities={allEntities}
+                  isLoading={isLoading}
+                  pageType={pageType}
+                  entityFilter={entityFilter}
+                  organFilter={organFilter} 
+                />
             </div>
           )}
 
-          {/* Main content with mandates list, cross-citations, and sidebars */}
+          {/* Main content with mandates list and sidebars */}
           <div className='flex flex-col lg:flex-row gap-6'>
             {/* Main mandates content */}
             <div className='flex-1 min-w-0'>
-              {/* Section Title with Icon and Sort Controls + FilterControls */}
+              {/* Section Title with Icon and Sort Controls + FilterControls (preserved exact JSX) */}
               <div className='mb-4'>
                 <div className='flex items-center gap-3 justify-between flex-wrap mb-2'>
                   <div className='flex items-center gap-2'>
                     <FileText className='h-6 w-6 text-un-blue' />
                     <h2 className='text-2xl font-bold tracking-tight'>
                       {explainerTexts.dataCards.sectionTitle}
-                      {/* Detail page title: cited by/issued by */}
-                      {isEntityPage && <> cited by {currentEntityName}</>}
-                      {isOrganPage && <> issued by {currentOrganName}</>}
+                      {/* Detail page title: cited by/issued by (preserved exact logic) */}
+                      {pageType === 'entity' && <> cited by {entityFilter}</>}
+                      {pageType === 'organ' && <> issued by {organFilter}</>}
                     </h2>
                   </div>
                   <div className='flex items-center gap-2 ml-auto'>
@@ -465,33 +289,38 @@ export function MandateExplorer ({
                 <FilterControls
                   entityOptions={entityDropdownOptions}
                   organOptions={organDropdownOptions}
-                  programmeOptions={programmeOptions}
-                  subjectOptions={subjectOptions}
-                  yearRange={yearRange}
-                  yearDistribution={yearDistribution}
+                  programmeOptions={filterOptions.programmes}
+                  subjectOptions={filterOptions.subjects}
+                  yearRange={filterOptions.yearRange}
+                  yearDistribution={filterOptions.yearDistribution}
                   showAdvancedSearch={showAdvancedSearch}
                   setShowAdvancedSearch={setShowAdvancedSearch}
+                  entitiesData={allEntities}
+                  entityFilter={entityFilter}
+                  organFilter={organFilter}
+                  pageType={pageType}
                 />
               </div>
               <div className='flex flex-col lg:flex-row gap-6'>
-                {/* Mandates List */}
+                {/* Mandates List (preserved exact structure) */}
                 <div className='flex-1'>
                   <div className='mb-6'>
                     {isLoading ? (
-                      <LoadingSkeleton />
+                      <LoadingSkeletonComponent />
                     ) : (
                       <>
                         <MandateList
                           mandates={mandates}
                           onMandateClick={setSelectedMandate}
                           organsData={allOrgans}
+                          entitiesData={allEntities}
                         />
                         <div className='mt-4'>
                           <PaginationControls
-                            currentPage={currentPage}
-                            totalPages={totalPages}
-                            pageSize={pageSize}
-                            totalItems={totalItems}
+                            currentPage={pagination.page}
+                            totalPages={pagination.totalPages}
+                            pageSize={pagination.limit}
+                            totalItems={pagination.totalItems}
                           />
                         </div>
                       </>
@@ -501,15 +330,63 @@ export function MandateExplorer ({
               </div>
             </div>
 
+            {/* Right sidebar - render internally based on page type */}
             <div className='hidden lg:block lg:w-80 flex-shrink-0 space-y-6'>
-              {(isEntityPage || isOrganPage) && crossCitationsSidebar}
-              {isMainPage && entityListSidebar}
-              {isMainPage && organListSidebar}
+              {/* Entity pages show cross-citations and organs */}
+              {pageType === 'entity' && (
+                <>
+                  <CrossCitationsSidebar 
+                    crossCitations={crossCitations}
+                    allEntities={allEntities}
+                    isLoading={isLoading}
+                    pageType={pageType}
+                    entityFilter={entityFilter}
+                    organFilter={organFilter}
+                  />
+                  <OrganListSidebar 
+                    organs={apiData?.filterOptions.organs || []}
+                    allOrgans={allOrgans}
+                    isLoading={isLoading}
+                    pageType={pageType}
+                    entityFilter={entityFilter}
+                  />
+                </>
+              )}
+              
+              {/* Organ pages show entities only */}
+              {pageType === 'organ' && (
+                <EntityListSidebar 
+                  entities={apiData?.filterOptions.entities || []}
+                  allEntities={allEntities}
+                  isLoading={isLoading}
+                  pageType={pageType}
+                  organFilter={organFilter}
+                />
+              )}
+              
+              {/* Main page shows entities and organs */}
+              {pageType === 'main' && (
+                <>
+                  <EntityListSidebar 
+                    entities={apiData?.filterOptions.entities || []}
+                    allEntities={allEntities}
+                    isLoading={isLoading}
+                    pageType={pageType}
+                  />
+                  <OrganListSidebar 
+                    organs={apiData?.filterOptions.organs || []}
+                    allOrgans={allOrgans}
+                    isLoading={isLoading}
+                    pageType={pageType}
+                  />
+                </>
+              )}
             </div>
           </div>
         </div>
       </div>
 
+      {/* Mandate Details Modal (preserved exact structure) */}
       <MandateDetails
         mandate={selectedMandate}
         open={!!selectedMandate}

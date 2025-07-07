@@ -2,16 +2,12 @@
 
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
 import Clarity from '@microsoft/clarity'
 
 import { MandateExplorer } from '@/components/mandate-explorer'
-import { TooltipProvider } from '@/components/ui/tooltip'
+import { PageLayout } from '@/components/ui/page-layout'
 import { explainerTexts } from '@/lib/explainer-texts'
-import { MessageCircle } from 'lucide-react'
 import Link from 'next/link'
-import { EntityListSidebar } from '@/components/entity-list-sidebar'
-import { OrganListSidebar } from '@/components/organ-list-sidebar'
 
 interface ParentContext {
   scrollY: number
@@ -131,48 +127,26 @@ function MandateNavigator () {
   }, [router])
 
   return (
-    <TooltipProvider>
-      <div className='min-h-screen bg-background text-foreground'>
-        <main className='w-full max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto space-y-6 px-8 sm:px-12 lg:px-16 pb-48'>
-          {/* Header with context info */}
-          <div className='text-muted-foreground mt-2 sm:text-justify max-w-[792px] text-left'>
-            <p className='leading-tight mb-0'>
-              {explainerTexts.mainHeader.shortDescription}{' '}<br />
-              <Link
-                href='/methodology'
-                className='font-bold text-un-blue hover:text-shuttle-gray text-sm inline transition-colors'
-                style={{ textDecoration: 'none' }}
-              >
-                Read More
-              </Link>
-            </p>
-          </div>
+    <PageLayout>
+      <div className='space-y-6 pb-48'>
+        {/* Header with context info */}
+        <div className='text-muted-foreground mt-2 sm:text-justify max-w-[792px] text-left'>
+          <p className='leading-tight mb-0'>
+            {explainerTexts.mainHeader.shortDescription}{' '}<br />
+            <Link
+              href='/methodology'
+              className='font-bold text-un-blue hover:text-shuttle-gray text-sm inline transition-colors'
+              style={{ textDecoration: 'none' }}
+            >
+              Read More
+            </Link>
+          </p>
+        </div>
 
-          {/* Mandate Explorer */}
-          <MandateExplorer
-            entityListSidebar={<EntityListSidebar />}
-            organListSidebar={<OrganListSidebar />}
-          />
-        </main>
-
-        {/* Fixed Feedback Button */}
-        <Button
-          asChild
-          className="fixed bottom-6 right-6 z-50 shadow-lg hover:shadow-xl transition-shadow"
-          size="default"
-        >
-          <a
-            href="https://forms.office.com/Pages/ResponsePage.aspx?id=2zWeD09UYE-9zF6kFubccKWYVHshXnBMlwUt34IXB2ZUQko4SUdLUVVQSE5BRU1UOTQ1WFRLV0JXRiQlQCN0PWcu"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2"
-          >
-            <MessageCircle className="h-4 w-4" />
-            Give Feedback
-          </a>
-        </Button>
+        {/* Mandate Explorer - now renders sidebars internally */}
+        <MandateExplorer pageType="main" />
       </div>
-    </TooltipProvider>
+    </PageLayout>
   )
 }
 

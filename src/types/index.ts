@@ -1,3 +1,4 @@
+// Core data types based on the JSON structure
 export interface CitationInfo {
   origin_document: string;
   budget_part: string;
@@ -7,29 +8,28 @@ export interface CitationInfo {
   entity: string;
   programme: number | null;
   programme_title: string;
-  'sub-programme': string;
+  'sub-programme': string | null;
   component: any | null;
   description: string;
   part_in_document: string;
 }
 
 export interface Mandate {
-  symbol: string;
+  full_document_symbol: string;
   num_citations: number;
   num_entities: number;
   entities: string[];
   link: string | null;
-  full_document_symbol: string | null;
   priority_area: string;
   year: string;
   body: string;
   pillar: string;
   entity_long: string;
-  citation_info: CitationInfo[];
-  origin_document: string;
-  part_in_document: string;
+  description: string | null;
   type: string;
-  entity: string;
+  citation_info: CitationInfo[];
+  // Enriched fields (added by API)
+  body_long?: string;
   document_symbol: string | null;
   classification_code: string[] | null;
   classification: string[] | null;
@@ -39,7 +39,6 @@ export interface Mandate {
   uniform_title: string[] | null;
   title: string | null;
   subtitle: string | null;
-  description: string | null;
   statement_of_responsibility: string[] | null;
   translated_title: string[] | null;
   publish_place: string[] | null;
@@ -73,17 +72,110 @@ export interface Mandate {
   programme?: string;
   text?: string;
   ai_summary?: string;
-
+  
   // Search-related fields
   searchScore?: number;
   highlightedTitle?: string;
   highlightedFields?: { [key: string]: string };
 }
 
-export type Entity = {
-  'Entity': string;
-  'Entity-Long': string;
-  'Entity URL'?: string;
-  'UN Principal Organ'?: string;
-  [key: string]: any;
-};
+// Entity types
+export interface Entity {
+  entity: string;
+  entity_long: string;
+  url?: string;
+  principal_organ?: string;
+  description?: string;
+  annual_report_link?: string;
+  transparency_portal_link?: string;
+}
+
+export interface EntityWithCount {
+  entity: string;
+  entity_long: string;
+  count: number;
+}
+
+// Organ types
+export interface Organ {
+  short: string;
+  long: string;
+  website?: string;
+}
+
+export interface OrganWithCount {
+  short: string;
+  long: string;
+  count: number;
+}
+
+// Filter types
+export interface FilterOptions {
+  entity?: string;
+  organ?: string;
+  keyword?: string;
+  programme?: string;
+  subject?: string;
+  start_year?: string;
+  end_year?: string;
+  budget_document?: string;
+  sort_by?: string;
+  page?: string;
+  limit?: string;
+}
+
+// Cross-citation types
+export interface CrossCitation {
+  entity: string;
+  entity_long: string;
+  count: number;
+}
+
+// API Response types
+export interface ApiResponse {
+  // Paginated mandate results
+  mandates: Mandate[];
+  pagination: {
+    page: number;
+    limit: number;
+    totalPages: number;
+    totalItems: number;
+  };
+  
+  // Data for cards
+  counts: {
+    totalDocuments: number;
+    totalEntities: number;
+    totalOrgans: number;
+    totalCitations: number;
+  };
+  
+  // Sidebar data (already filtered)
+  sidebar: {
+    entities: EntityWithCount[];
+    organs: OrganWithCount[];
+    crossCitations: CrossCitation[];
+  };
+  
+  // Filter options for dropdowns
+  filterOptions: {
+    entities: EntityWithCount[];
+    organs: OrganWithCount[];
+    programmes: string[];
+    subjects: string[];
+    yearRange: {
+      min: number;
+      max: number;
+    };
+    yearDistribution: Record<string, number>;
+  };
+  
+  // Reference data for display
+  reference: {
+    entities: Entity[];
+    organs: Organ[];
+  };
+}
+
+// Legacy types for backward compatibility during transition
+export type { Entity as LegacyEntity };

@@ -21,14 +21,19 @@ interface Organ {
   long: string;
 }
 
+interface Entity {
+  entity: string;
+  entity_long: string;
+}
 
 interface MandateListProps {
   mandates: Mandate[];
   onMandateClick: (mandate: Mandate) => void;
   organsData: Organ[];
+  entitiesData: Entity[];
 }
 
-const EntityBadges = ({ entities }: { entities: string[] }) => {
+const EntityBadges = ({ entities, entitiesData }: { entities: string[]; entitiesData: Entity[] }) => {
   const validEntities = entities.filter(entity => entity !== null).sort();
 
   if (validEntities.length === 0) {
@@ -40,7 +45,11 @@ const EntityBadges = ({ entities }: { entities: string[] }) => {
       {validEntities.map(entity => (
         <Link key={entity} href={`/entity/${encodeURIComponent(entity)}`}>
           <Badge variant="secondary" className="font-bold text-xs !bg-un-blue/75 !text-white hover:!bg-un-blue/60 cursor-pointer transition-colors">
-            <EntityName entityName={entity} showUnderline={false} />
+            <EntityName 
+              entityName={entity} 
+              entityLong={entitiesData.find(e => e.entity === entity)?.entity_long}
+              showUnderline={false} 
+            />
           </Badge>
         </Link>
       ))}
@@ -58,7 +67,7 @@ const HighlightedContent = ({ content, fallback }: { content?: string; fallback:
   return <span>{fallback}</span>;
 };
 
-export function MandateList({ mandates, onMandateClick, organsData }: MandateListProps) {
+export function MandateList({ mandates, onMandateClick, organsData, entitiesData }: MandateListProps) {
   // Helper function to find organ data by matching both short and long names
   const findOrganData = (organName: string): Organ | undefined => {
     return organsData.find(organ => 
@@ -104,14 +113,12 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
         {mandates.map((mandate, index) => {
           const hasSearchMatches = (mandate as any).match_details && (mandate as any).match_details.length > 0;
           const searchScore = (mandate as any).searchScore || 0;
-          const displaySymbol = mandate.full_document_symbol || mandate.symbol;
+          const displaySymbol = mandate.full_document_symbol;
           
           return (
             <motion.div
               key={mandate.full_document_symbol || mandate.document_symbol}
-              className={`relative p-3 sm:p-4 rounded-lg bg-[#F6F7F8] hover:bg-un-blue/10 transition-all cursor-pointer ${
-                hasSearchMatches ? 'ring-2 ring-primary/20 bg-accent/5' : ''
-              }`}
+              className="relative p-3 sm:p-4 rounded-lg bg-[#F6F7F8] hover:bg-un-blue/10 transition-all cursor-pointer"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: index * 0.05 }}
@@ -260,7 +267,7 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
                         <p>{explainerTexts.mandateList.citationCount}</p>
                       </TooltipContent>
                     </Tooltip>
-                    <EntityBadges entities={mandate.entities || []} />
+                    <EntityBadges entities={mandate.entities || []} entitiesData={entitiesData} />
                   </div>
                 )}
               </div>

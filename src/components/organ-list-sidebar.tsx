@@ -2,128 +2,47 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Input } from '@/components/ui/input'
-import { Landmark, Search } from 'lucide-react'
-import { Skeleton } from '@/components/ui/skeleton'
+import { Landmark } from 'lucide-react'
+import { LoadingSkeleton } from '@/components/ui/loading-skeleton'
+import { SearchInput } from '@/components/ui/search-input'
+import { SidebarListItem } from '@/components/ui/sidebar-list-item'
 import { useFilters } from '@/contexts/FilterContext'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-
-interface BodyWithCount {
-  name: string
-  count: number
-}
-
-interface Organ {
-  short: string
-  long: string
-}
+import type { OrganWithCount, Organ } from '@/types'
 
 interface OrganListSidebarProps {
+  organs: OrganWithCount[]
+  allOrgans: Organ[]
+  isLoading?: boolean
   hideHeader?: boolean
   borderless?: boolean
+  pageType: 'main' | 'entity' | 'organ'
+  entityFilter?: string
 }
 
-export function OrganListSidebar({ hideHeader = false, borderless = false }: OrganListSidebarProps) {
+export function OrganListSidebar({ 
+  organs, 
+  allOrgans, 
+  isLoading = false, 
+  hideHeader = false, 
+  borderless = false,
+  pageType,
+  entityFilter
+}: OrganListSidebarProps) {
   const router = useRouter();
-  const { filters, setFilter, isEntityPage, isMainPage, currentEntityName } = useFilters();
+  const { filters, setFilter } = useFilters();
   
-  const [organs, setOrgans] = useState<BodyWithCount[]>([])
-  const [allOrgans, setAllOrgans] = useState<Organ[]>([])
-  const [filteredOrgans, setFilteredOrgans] = useState<BodyWithCount[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [filteredOrgans, setFilteredOrgans] = useState<OrganWithCount[]>(organs)
   const [searchTerm, setSearchTerm] = useState('')
-  const [maxCount, setMaxCount] = useState(1)
-
-  useEffect(() => {
-    async function fetchData() {
-      setIsLoading(true)
-      try {
-        let organsData: BodyWithCount[] = []
-        
-        // Build parameters with all current filters (excluding organ filter to get counts for all organs)
-        const params = new URLSearchParams()
-        
-        // Add all filters except organ (since we want counts for all organs)
-        Object.entries(filters).forEach(([key, value]) => {
-          if (key !== 'organ' && key !== 'page' && key !== 'limit' && key !== 'sort_by' && value && value !== 'all') {
-            params.set(key, value)
-          }
-        })
-        
-        // Always set a high limit to get accurate counts
-        params.set('limit', '1000')
-        
-        // Fetch mandates with current filters to calculate organ counts
-        const res = await fetch(`/api/mandates?${params.toString()}`)
-        if (res.ok) {
-          const data = await res.json()
-          const organCounts: { [key: string]: number } = {}
-          
-          // Count mandates by organ - the API returns items, not mandates
-          const mandates = data.items || data.mandates || []
-          mandates.forEach((mandate: any) => {
-            if (mandate.body) {
-              organCounts[mandate.body] = (organCounts[mandate.body] || 0) + 1
-            }
-          })
-          
-          organsData = Object.entries(organCounts)
-            .map(([name, count]) => ({ name, count }))
-            .sort((a: BodyWithCount, b: BodyWithCount) => b.count - a.count)
-        }
-        
-        // Always fetch organ details for name mapping
-        const organsResponse = await fetch('/api/organs')
-        if (organsResponse.ok) {
-          const organsList = await organsResponse.json()
-          setAllOrgans(organsList)
-        }
-        
-        // If no organs found with current filters, fallback to meta endpoint with same filters
-        if (organsData.length === 0) {
-          const metaParams = new URLSearchParams(params)
-          metaParams.delete('limit') // Meta endpoint doesn't need limit
-          
-          let metaUrl = '/api/mandates/meta'
-          if (metaParams.toString()) {
-            metaUrl += `?${metaParams.toString()}`
-          }
-          
-          const metaResponse = await fetch(metaUrl)
-          if (metaResponse.ok) {
-            const metaData = await metaResponse.json()
-            organsData = (metaData.uniqueBodiesWithCount || []).sort((a: BodyWithCount, b: BodyWithCount) => b.count - a.count)
-          }
-        }
-        
-        // Deduplicate by name (case-insensitive)
-        const seen = new Set<string>()
-        organsData = organsData.filter((organ: BodyWithCount) => {
-          const key = organ.name.trim().toLowerCase()
-          if (seen.has(key)) return false
-          seen.add(key)
-          return true
-        })
-        
-        setOrgans(organsData)
-        setFilteredOrgans(organsData)
-        setMaxCount(Math.max(...organsData.map((organ: BodyWithCount) => organ.count), 1))
-      } catch (error) {
-        console.error('Failed to fetch organs:', error)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-    fetchData()
-  }, [filters, isEntityPage, currentEntityName])
+  const maxCount = Math.max(...organs.map(organ => organ.count), 1)
 
   useEffect(() => {
     if (!searchTerm.trim()) {
       setFilteredOrgans(organs)
     } else {
       const filtered = organs.filter(organ => {
-        const organData = findOrganData(organ.name)
-        return organ.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        const organData = findOrganData(organ.short)
+        return organ.short.toLowerCase().includes(searchTerm.toLowerCase()) ||
                (organData && organData.long.toLowerCase().includes(searchTerm.toLowerCase()))
       })
       setFilteredOrgans(filtered)
@@ -137,47 +56,17 @@ export function OrganListSidebar({ hideHeader = false, borderless = false }: Org
   }
 
   const handleOrganClick = (organName: string) => {
-    if (isMainPage) {
-      // Navigate to organ page using the organ name (which should now be short names)
-      router.push(`/organ/${encodeURIComponent(organName)}`);
-      // Jump to top after navigation
-      setTimeout(() => {
-        window.scrollTo(0, 0);
-      }, 100);
-    } else if (isEntityPage) {
-      // Set organ filter on entity page
-      setFilter('organ', organName);
-    }
+    // Always navigate to organ page - this is the simple approach
+    router.push(`/organ/${encodeURIComponent(organName)}`);
+    // Jump to top after navigation
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 100);
   };
 
-  const LoadingSkeleton = () => (
-    <div className="space-y-2">
-      {[...Array(8)].map((_, i) => (
-        <div key={i} className="flex items-center justify-between p-2">
-          <Skeleton className="h-4 w-24" />
-          <Skeleton className="h-4 w-8" />
-        </div>
-      ))}
-    </div>
+  const LoadingSkeletonComponent = () => (
+    <LoadingSkeleton variant="sidebar" count={8} />
   )
-
-  // Add OrganName component
-  function OrganName({ organName, allOrgans, showUnderline = true }: { organName: string, allOrgans: Organ[], showUnderline?: boolean }) {
-    // Since data now uses short names, organName should be the short name
-    const found = allOrgans.find((o) => o.short === organName);
-    const longName = found ? found.long : null;
-    
-    return (
-      <Tooltip>
-        <TooltipTrigger className={showUnderline ? 'underline decoration-dotted cursor-help' : 'cursor-help'}>
-          {organName}
-        </TooltipTrigger>
-        <TooltipContent>
-          <p>{longName || organName}</p>
-        </TooltipContent>
-      </Tooltip>
-    );
-  }
 
   return (
     <div className={borderless ? '' : 'border-l-2 border-gray-200 pl-4'}>
@@ -188,53 +77,36 @@ export function OrganListSidebar({ hideHeader = false, borderless = false }: Org
             <h3 className="text-lg font-semibold">UN Organs</h3>
           </div>
           <p className="text-sm text-muted-foreground">
-            {isEntityPage 
-              ? `Bodies and number of issued source documents for ${currentEntityName}`
-              : 'Bodies and number of issued source documents'
+            {pageType === 'entity' 
+              ? `Organs and number of cited source documents for ${entityFilter}`
+              : 'Organs and number of cited source documents'
             }
           </p>
         </div>
       )}
       
       <div className="space-y-3">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search organs..."
-            value={searchTerm}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
-            className="pl-10 h-9 text-sm border-0 border-b border-muted bg-transparent focus-visible:ring-0 focus-visible:border-un-blue rounded-none"
-          />
-        </div>
+        <SearchInput
+          placeholder="Search organs..."
+          value={searchTerm}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
+          variant="border-bottom"
+        />
         
         <div className="max-h-96 overflow-y-auto">
           {isLoading ? (
-            <LoadingSkeleton />
+            <LoadingSkeletonComponent />
           ) : (
             <div className="space-y-1">
               {filteredOrgans.map((organ) => (
-                <div
-                  key={organ.name}
-                  className={`flex items-center justify-between p-2 rounded-sm hover:bg-muted/30 cursor-pointer group border-b border-muted/30 last:border-b-0 ${
-                    filters.organ === organ.name ? 'bg-un-blue/10 border-un-blue/30' : ''
-                  }`}
-                  onClick={() => handleOrganClick(organ.name)}
-                >
-                  <div className="min-w-0 flex-1">
-                    <div className="text-sm font-medium truncate">
-                      {/* organ.name is already the short name from the data */}
-                      <OrganName organName={organ.name} allOrgans={allOrgans} showUnderline={true} />
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 flex-shrink-0 w-32">
-                    <span className="flex items-center w-full">
-                      <span className="text-xs font-mono text-un-blue text-right pr-2 min-w-[28px] max-w-[32px] flex-shrink-0 justify-end flex">{organ.count.toLocaleString()}</span>
-                      <span className="relative flex-1 h-2 bg-un-blue/10 rounded">
-                        <span className="absolute left-0 top-0 h-2 rounded bg-un-blue/60" style={{ width: `${(organ.count / maxCount) * 100}%`, minWidth: 2 }} />
-                      </span>
-                    </span>
-                  </div>
-                </div>
+                <SidebarListItem
+                  key={organ.short}
+                  label={<OrganName organName={organ.short} allOrgans={allOrgans} showUnderline={true} />}
+                  count={organ.count}
+                  maxCount={maxCount}
+                  isActive={filters.organ === organ.short}
+                  onClick={() => handleOrganClick(organ.short)}
+                />
               ))}
               {filteredOrgans.length === 0 && !isLoading && (
                 <div className="text-center py-6 text-sm text-muted-foreground">
@@ -246,5 +118,27 @@ export function OrganListSidebar({ hideHeader = false, borderless = false }: Org
         </div>
       </div>
     </div>
+  )
+}
+
+// Helper component for organ name display
+function OrganName({ organName, allOrgans, showUnderline = true }: { organName: string, allOrgans: Organ[], showUnderline?: boolean }) {
+  const organData = allOrgans.find(organ => organ.short === organName || organ.long === organName)
+  const displayName = organData?.short || organName
+  const longName = organData?.long || organName
+
+  if (displayName === longName) {
+    return <>{displayName}</>
+  }
+
+  return (
+    <Tooltip>
+      <TooltipTrigger className={showUnderline ? "underline decoration-dotted cursor-help" : "cursor-help"}>
+        {displayName}
+      </TooltipTrigger>
+      <TooltipContent>
+        <p>{longName}</p>
+      </TooltipContent>
+    </Tooltip>
   )
 } 

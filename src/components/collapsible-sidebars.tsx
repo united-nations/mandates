@@ -4,8 +4,37 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { EntityListSidebar } from '@/components/entity-list-sidebar'
 import { OrganListSidebar } from '@/components/organ-list-sidebar'
 import { Building, Landmark } from 'lucide-react'
+import type { EntityWithCount, OrganWithCount, Entity, Organ } from '@/types'
 
-export function CollapsibleSidebars() {
+interface CollapsibleSidebarsProps {
+  entities: EntityWithCount[]
+  allEntities: Entity[]
+  organs: OrganWithCount[]
+  allOrgans: Organ[]
+  isLoading: boolean
+}
+
+export function CollapsibleSidebars({ 
+  entities, 
+  allEntities, 
+  organs, 
+  allOrgans, 
+  isLoading 
+}: CollapsibleSidebarsProps) {
+  // Convert Entity[] to EntityWithCount[] for consistency
+  const allEntitiesWithCount: EntityWithCount[] = allEntities.map(entity => ({
+    entity: entity.entity,
+    entity_long: entity.entity_long,
+    count: 0 // Default count for reference data
+  }))
+
+  // Convert Organ[] to OrganWithCount[] for consistency
+  const allOrgansWithCount: OrganWithCount[] = allOrgans.map(organ => ({
+    short: organ.short,
+    long: organ.long,
+    count: 0 // Default count for reference data
+  }))
+
   return (
     <div className="lg:hidden mb-6 border rounded-lg">
       <Accordion type="multiple" className="w-full">
@@ -17,7 +46,14 @@ export function CollapsibleSidebars() {
             </div>
           </AccordionTrigger>
           <AccordionContent className="px-4 pb-4">
-            <EntityListSidebar hideHeader={true} borderless={true} />
+            <EntityListSidebar 
+              entities={entities}
+              allEntities={allEntitiesWithCount}
+              isLoading={isLoading}
+              hideHeader={true} 
+              borderless={true}
+              pageType="main"
+            />
           </AccordionContent>
         </AccordionItem>
         
@@ -29,7 +65,14 @@ export function CollapsibleSidebars() {
             </div>
           </AccordionTrigger>
           <AccordionContent className="px-4 pb-4">
-            <OrganListSidebar hideHeader={true} borderless={true} />
+            <OrganListSidebar 
+              organs={organs}
+              allOrgans={allOrgansWithCount}
+              isLoading={isLoading}
+              hideHeader={true} 
+              borderless={true}
+              pageType="main"
+            />
           </AccordionContent>
         </AccordionItem>
       </Accordion>
