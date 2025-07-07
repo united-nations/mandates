@@ -78,8 +78,8 @@ function EntitiesListContent() {
               <div className="flex-1">
                 <div className="mb-2">
                   <Link href="/">
-                    <Button variant="outline" size="sm" className="mb-4">
-                      <ArrowLeft className="h-4 w-4 mr-2" />
+                    <Button variant="outline" size="sm" className="mb-4 shrink-0 inline-flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 py-1 sm:px-2.5 sm:py-1.5 h-auto !bg-trout !text-white hover:!bg-trout/90 transition-colors">
+                      <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4" />
                       Back to Main View
                     </Button>
                   </Link>

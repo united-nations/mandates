@@ -43,8 +43,13 @@ export default function RootLayout({
             <div className="pt-2">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" aria-label="Open navigation menu">
-                    <Menu className="h-6 w-6" />
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    aria-label="Open navigation menu"
+                    className="shrink-0 inline-flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 py-1 sm:px-2.5 sm:py-1.5 h-auto !bg-trout !text-white hover:!bg-trout/90"
+                  >
+                    <Menu className="h-3 w-3 sm:h-4 sm:w-4" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
