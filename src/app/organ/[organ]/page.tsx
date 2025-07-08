@@ -9,6 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { PageLayout } from '@/components/ui/page-layout';
 import { BackButton } from '@/components/ui/back-button';
 import { MetadataItem } from '@/components/ui/metadata-item';
+import { formatUrlForDisplay } from '@/lib/utils';
 
 function OrganPageContent() {
   const params = useParams();
@@ -83,18 +84,7 @@ function OrganPageContent() {
                     {organDetails.website && (
                       <MetadataItem label="Website" icon={LinkIcon}>
                         <a href={organDetails.website} target="_blank" rel="noopener noreferrer" className="text-un-blue underline hover:text-un-blue/80 transition-colors">
-                          {(() => {
-                            const cleanUrl = organDetails.website.replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/$/, '');
-                            const domain = cleanUrl.split('/')[0];
-                            
-                            // If URL is short enough, show it all
-                            if (cleanUrl.length <= 35) {
-                              return cleanUrl;
-                            }
-                            
-                            // Otherwise show domain + ...
-                            return `${domain}/...`;
-                          })()}
+                          {formatUrlForDisplay(organDetails.website, 35)}
                         </a>
                       </MetadataItem>
                     )}

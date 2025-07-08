@@ -56,3 +56,29 @@ export function toTitleCase(str: string): string {
     }
   );
 }
+
+/**
+ * Format a URL for display by removing protocol, www prefix, and trailing slash
+ * Optionally truncates long URLs to show domain + "..." for better readability
+ * @param url - The URL to format
+ * @param maxLength - Optional max length before truncating (default: no truncation)
+ * @returns Formatted URL string
+ */
+export function formatUrlForDisplay(url: string, maxLength?: number): string {
+  if (!url) return "";
+  
+  // Clean the URL by removing protocol, www prefix, and trailing slash
+  const cleanUrl = url
+    .replace(/^https?:\/\//, '')
+    .replace(/^www\./, '')
+    .replace(/\/$/, '');
+  
+  // If no max length specified or URL is short enough, return as is
+  if (!maxLength || cleanUrl.length <= maxLength) {
+    return cleanUrl;
+  }
+  
+  // Otherwise show domain + ...
+  const domain = cleanUrl.split('/')[0];
+  return `${domain}/...`;
+}

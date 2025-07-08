@@ -876,3 +876,29 @@ The **FilterContext is URL-based** and persists across all pages. When someone n
 **The filter persistence issue is now COMPLETELY and SIMPLY resolved!** 🎉
 
 ---
+
+## URL Formatting Refactoring
+
+### Problem Analysis:
+- URL formatting logic was duplicated across multiple components
+- Organ page had complex inline logic with truncation (show "domain/..." for URLs > 35 chars)
+- Entity page had simpler URL cleaning logic (remove protocol, www, trailing slash)
+- Code duplication made maintenance difficult
+
+### Solution:
+- [✅] Created `formatUrlForDisplay()` utility function in `src/lib/utils.ts`
+- [✅] Function handles URL cleaning (removes protocol, www prefix, trailing slash)
+- [✅] Optional truncation parameter for better readability on long URLs
+- [✅] Updated organ page to use `formatUrlForDisplay(url, 35)` for truncation
+- [✅] Updated entity page to use `formatUrlForDisplay(url)` for both website and transparency portal links
+
+### Files Modified:
+- `src/lib/utils.ts` - Added formatUrlForDisplay utility function
+- `src/app/organ/[organ]/page.tsx` - Replaced complex inline logic with utility call
+- `src/app/entity/[entity]/page.tsx` - Replaced duplicated URL cleaning with utility calls
+
+### Benefits:
+- Single source of truth for URL formatting
+- Consistent URL display across all pages
+- Easier maintenance and future modifications
+- Cleaner component code without inline formatting logic
