@@ -6,7 +6,14 @@ import { MandateList } from '@/components/mandate-list'
 import { FilterControls } from '@/components/filter-controls'
 import { PaginationControls } from '@/components/pagination-controls'
 import { LoadingSkeleton } from '@/components/ui/loading-skeleton'
-import { FileText, Landmark, Building, Quote, ChevronUp, ChevronDown } from 'lucide-react'
+import {
+  FileText,
+  Landmark,
+  Building,
+  Quote,
+  ChevronUp,
+  ChevronDown
+} from 'lucide-react'
 import { MandateDetails } from '@/components/mandate-details'
 import { DataCard } from '@/components/data-card'
 import {
@@ -26,8 +33,6 @@ import { useFilters } from '@/contexts/FilterContext'
 import { Button } from '@/components/ui/button'
 
 interface MandateExplorerProps {
-  // Additional CSS classes
-  className?: string
   // Explicit filters for entity/organ pages
   entityFilter?: string
   organFilter?: string
@@ -36,7 +41,6 @@ interface MandateExplorerProps {
 }
 
 export function MandateExplorer ({
-  className = '',
   entityFilter,
   organFilter,
   pageType
@@ -48,7 +52,7 @@ export function MandateExplorer ({
   const [isLoading, setIsLoading] = useState(true)
   const [selectedMandate, setSelectedMandate] = useState<Mandate | null>(null)
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false)
-  
+
   // Data card popover states (preserved for exact same behavior)
   const [sourceDocumentsPopover, setSourceDocumentsPopover] = useState(false)
   const [unOrgansPopover, setUnOrgansPopover] = useState(false)
@@ -58,8 +62,9 @@ export function MandateExplorer ({
   // Get current page and page size from filters (preserved logic)
   const currentPage = Number(filters.page || '1')
   const pageSize = Number(filters.limit || '10')
-  const sortBy = filters.sort_by || (filters.keyword ? 'default' : 'citing_entities_desc')
-  
+  const sortBy =
+    filters.sort_by || (filters.keyword ? 'default' : 'citing_entities_desc')
+
   // Fetch data when filters change - simplified logic
   useEffect(() => {
     const fetchData = async () => {
@@ -73,14 +78,16 @@ export function MandateExplorer ({
         } else if (pageType === 'organ' && organFilter) {
           params.set('organ', organFilter)
         }
-        
+
         // Add URL-based filters (for main page or additional filters on entity/organ pages)
         Object.entries(filters).forEach(([key, value]) => {
           if (value && value !== 'all') {
             // Skip entity/organ filters if we already set them implicitly above
-            if ((pageType === 'entity' && key === 'entity') || 
-                (pageType === 'organ' && key === 'organ')) {
-              return;
+            if (
+              (pageType === 'entity' && key === 'entity') ||
+              (pageType === 'organ' && key === 'organ')
+            ) {
+              return
             }
             params.set(key, value)
           }
@@ -106,26 +113,37 @@ export function MandateExplorer ({
     }
 
     fetchData()
-  }, [filters, currentPage, pageSize, sortBy, entityFilter, organFilter, pageType])
+  }, [
+    filters,
+    currentPage,
+    pageSize,
+    sortBy,
+    entityFilter,
+    organFilter,
+    pageType
+  ])
 
   // Handle sort change (preserved exact function)
-  const handleSortChange = useCallback((value: string) => {
-    setFilter('sort_by', value)
-  }, [setFilter])
+  const handleSortChange = useCallback(
+    (value: string) => {
+      setFilter('sort_by', value)
+    },
+    [setFilter]
+  )
 
   // Loading skeleton (now using reusable component)
   const LoadingSkeletonComponent = () => (
-    <LoadingSkeleton variant="list" count={4} />
+    <LoadingSkeleton variant='list' count={4} />
   )
 
   // Prepare dropdown options (preserved exact format)
-  const entityDropdownOptions: SearchableDropdownOption[] = 
+  const entityDropdownOptions: SearchableDropdownOption[] =
     apiData?.filterOptions.entities.map(entity => ({
       value: entity.entity,
       label: `${entity.entity_long || entity.entity} (${entity.count})`
     })) || []
 
-  const organDropdownOptions: SearchableDropdownOption[] = 
+  const organDropdownOptions: SearchableDropdownOption[] =
     apiData?.filterOptions.organs.map(organ => ({
       value: organ.short,
       label: `${organ.long || organ.short} (${organ.count})`
@@ -133,9 +151,24 @@ export function MandateExplorer ({
 
   // Extract data for components (with same fallbacks as before)
   const mandates = apiData?.mandates || []
-  const pagination = apiData?.pagination || { page: 1, limit: 10, totalPages: 0, totalItems: 0 }
-  const counts = apiData?.counts || { totalDocuments: 0, totalEntities: 0, totalOrgans: 0, totalCitations: 0 }
-  const filterOptions = apiData?.filterOptions || { programmes: [], subjects: [], yearRange: { min: 2000, max: 2024 }, yearDistribution: {} }
+  const pagination = apiData?.pagination || {
+    page: 1,
+    limit: 10,
+    totalPages: 0,
+    totalItems: 0
+  }
+  const counts = apiData?.counts || {
+    totalDocuments: 0,
+    totalEntities: 0,
+    totalOrgans: 0,
+    totalCitations: 0
+  }
+  const filterOptions = apiData?.filterOptions || {
+    programmes: [],
+    subjects: [],
+    yearRange: { min: 2000, max: 2024 },
+    yearDistribution: {}
+  }
   const allOrgans = apiData?.reference.organs || []
   const allEntities = apiData?.reference.entities || []
   const crossCitations = apiData?.sidebar.crossCitations || []
@@ -169,9 +202,13 @@ export function MandateExplorer ({
       {/* Always show entity card; on entity page show short name, else show count */}
       <DataCard
         title={
-          pageType === 'entity' ? 'Entity' : explainerTexts.dataCards.unEntities.title
+          pageType === 'entity'
+            ? 'Entity'
+            : explainerTexts.dataCards.unEntities.title
         }
-        value={pageType === 'entity' ? entityFilter || '' : counts.totalEntities}
+        value={
+          pageType === 'entity' ? entityFilter || '' : counts.totalEntities
+        }
         icon={Building}
         description={explainerTexts.dataCards.unEntities.description}
         isOpen={unEntitiesPopover}
@@ -199,7 +236,7 @@ export function MandateExplorer ({
   )
 
   return (
-    <div className={className}>
+    <div>
       {/* Summary Cards (preserved exact structure) */}
       <section
         aria-labelledby='summary-heading'
@@ -209,29 +246,29 @@ export function MandateExplorer ({
       </section>
 
       <div>
-                  <div className='mt-6 pt-4'>
-            {/* Collapsible sidebars for smaller screens (preserved exact logic) */}
-            {pageType === 'main' && (
-              <CollapsibleSidebars 
-                entities={apiData?.sidebar?.entities || []}
-                allEntities={apiData?.reference?.entities || []}
-                organs={apiData?.sidebar?.organs || []}
-                allOrgans={apiData?.reference?.organs || []}
-                isLoading={isLoading}
-              />
-            )}
+        <div className='mt-6 pt-4'>
+          {/* Collapsible sidebars for smaller screens (preserved exact logic) */}
+          {pageType === 'main' && (
+            <CollapsibleSidebars
+              entities={apiData?.sidebar?.entities || []}
+              allEntities={apiData?.reference?.entities || []}
+              organs={apiData?.sidebar?.organs || []}
+              allOrgans={apiData?.reference?.organs || []}
+              isLoading={isLoading}
+            />
+          )}
 
-          {/* Collapsible sidebars for entity/organ pages */}
-          {(pageType === 'entity' || pageType === 'organ') && (
+          {/* Collapsible sidebars for entity pages */}
+          {pageType === 'entity' && (
             <div className='lg:hidden mb-6 max-w-md'>
-                              <CrossCitationsSidebar 
-                  crossCitations={crossCitations}
-                  allEntities={allEntities}
-                  isLoading={isLoading}
-                  pageType={pageType}
-                  entityFilter={entityFilter}
-                  organFilter={organFilter} 
-                />
+              <CrossCitationsSidebar
+                crossCitations={crossCitations}
+                allEntities={allEntities}
+                isLoading={isLoading}
+                pageType={pageType}
+                entityFilter={entityFilter}
+                organFilter={organFilter}
+              />
             </div>
           )}
 
@@ -253,14 +290,20 @@ export function MandateExplorer ({
                   </div>
                   <div className='flex items-center gap-2 ml-auto'>
                     <Button
-                      variant="ghost"
+                      variant='ghost'
                       onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}
-                      className="flex-shrink-0 flex items-center gap-2 px-2 text-left text-slate-600 hover:text-slate-900 hover:bg-transparent whitespace-nowrap"
+                      className='flex-shrink-0 flex items-center gap-2 px-2 text-left text-slate-600 hover:text-slate-900 hover:bg-transparent whitespace-nowrap'
                     >
-                      <span className="text-sm font-medium">
-                        {showAdvancedSearch ? 'Hide Advanced Filters' : 'Show Advanced Filters'}
+                      <span className='text-sm font-medium'>
+                        {showAdvancedSearch
+                          ? 'Hide Advanced Filters'
+                          : 'Show Advanced Filters'}
                       </span>
-                      {showAdvancedSearch ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                      {showAdvancedSearch ? (
+                        <ChevronUp className='h-4 w-4' />
+                      ) : (
+                        <ChevronDown className='h-4 w-4' />
+                      )}
                     </Button>
                     <Select value={sortBy} onValueChange={handleSortChange}>
                       <SelectTrigger className='w-[80px]' id='sort-by'>
@@ -339,7 +382,7 @@ export function MandateExplorer ({
               {/* Entity pages show cross-citations and organs */}
               {pageType === 'entity' && (
                 <>
-                  <CrossCitationsSidebar 
+                  <CrossCitationsSidebar
                     crossCitations={crossCitations}
                     allEntities={allEntities}
                     isLoading={isLoading}
@@ -347,7 +390,7 @@ export function MandateExplorer ({
                     entityFilter={entityFilter}
                     organFilter={organFilter}
                   />
-                  <OrganListSidebar 
+                  <OrganListSidebar
                     organs={apiData?.filterOptions.organs || []}
                     allOrgans={allOrgans}
                     isLoading={isLoading}
@@ -356,10 +399,10 @@ export function MandateExplorer ({
                   />
                 </>
               )}
-              
+
               {/* Organ pages show entities only */}
               {pageType === 'organ' && (
-                <EntityListSidebar 
+                <EntityListSidebar
                   entities={apiData?.filterOptions.entities || []}
                   allEntities={allEntities}
                   isLoading={isLoading}
@@ -367,17 +410,17 @@ export function MandateExplorer ({
                   organFilter={organFilter}
                 />
               )}
-              
+
               {/* Main page shows entities and organs */}
               {pageType === 'main' && (
                 <>
-                  <EntityListSidebar 
+                  <EntityListSidebar
                     entities={apiData?.filterOptions.entities || []}
                     allEntities={allEntities}
                     isLoading={isLoading}
                     pageType={pageType}
                   />
-                  <OrganListSidebar 
+                  <OrganListSidebar
                     organs={apiData?.filterOptions.organs || []}
                     allOrgans={allOrgans}
                     isLoading={isLoading}

@@ -1,4 +1,5 @@
-import type { Metadata } from 'next'
+'use client'
+
 import './globals.css'
 import { Toaster } from '@/components/ui/toaster'
 import { explainerTexts } from '@/lib/explainer-texts'
@@ -15,11 +16,6 @@ import {
 } from '@/components/ui/dropdown-menu'
 import Clarity from '@microsoft/clarity'
 import { useEffect } from 'react'
-
-export const metadata: Metadata = {
-  title: explainerTexts.pageMetadata.title,
-  description: explainerTexts.pageMetadata.description
-}
 
 export default function RootLayout ({
   children
