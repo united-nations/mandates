@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { Building } from 'lucide-react'
 import { LoadingSkeleton } from '@/components/ui/loading-skeleton'
 import { SearchInput } from '@/components/ui/search-input'
@@ -29,7 +29,6 @@ export function EntityListSidebar({
   pageType,
   organFilter
 }: EntityListSidebarProps) {
-  const router = useRouter();
   const { filters, setFilter } = useFilters();
   
   const [filteredEntities, setFilteredEntities] = useState<EntityWithCount[]>(entities)
@@ -51,12 +50,13 @@ export function EntityListSidebar({
   }, [searchTerm, entities, allEntities])
 
   const handleEntityClick = (entityName: string) => {
-    // Always navigate to entity page - this is the simple approach
-    router.push(`/entity/${encodeURIComponent(entityName)}`);
-    // Jump to top after navigation
-    setTimeout(() => {
-      window.scrollTo(0, 0);
-    }, 100);
+    if (pageType === 'main') {
+      // On main page: Navigate to entity page (simple link - will be handled by Link component)
+      return;
+    } else {
+      // On entity/organ pages: Set as filter
+      setFilter('entity', entityName);
+    }
   };
 
   const LoadingSkeletonComponent = () => (
@@ -74,6 +74,8 @@ export function EntityListSidebar({
           <p className="text-sm text-muted-foreground">
             {pageType === 'organ' 
               ? `Entities and number of cited source documents for ${organFilter}`
+              : pageType === 'entity'
+              ? 'Click to add entity filter'
               : 'Entities and number of cited source documents'
             }
           </p>
@@ -94,20 +96,42 @@ export function EntityListSidebar({
           ) : (
             <div className="space-y-1">
               {filteredEntities.map((entity) => (
-                <SidebarListItem
-                  key={entity.entity}
-                  label={
-                    <EntityName 
-                      entityName={entity.entity} 
-                      entityLong={allEntities.find(e => e.entity === entity.entity)?.entity_long}
-                      asChild={true} 
+                pageType === 'main' ? (
+                  <Link 
+                    key={entity.entity} 
+                    href={`/entity/${encodeURIComponent(entity.entity)}`}
+                    className="block"
+                  >
+                    <SidebarListItem
+                      label={
+                        <EntityName 
+                          entityName={entity.entity} 
+                          entityLong={allEntities.find(e => e.entity === entity.entity)?.entity_long}
+                          asChild={true} 
+                        />
+                      }
+                      count={entity.count}
+                      maxCount={maxCount}
+                      isActive={filters.entity === entity.entity}
+                      onClick={() => {}} // Empty onClick for Link wrapper
                     />
-                  }
-                  count={entity.count}
-                  maxCount={maxCount}
-                  isActive={filters.entity === entity.entity}
-                  onClick={() => handleEntityClick(entity.entity)}
-                />
+                  </Link>
+                ) : (
+                  <SidebarListItem
+                    key={entity.entity}
+                    label={
+                      <EntityName 
+                        entityName={entity.entity} 
+                        entityLong={allEntities.find(e => e.entity === entity.entity)?.entity_long}
+                        asChild={true} 
+                      />
+                    }
+                    count={entity.count}
+                    maxCount={maxCount}
+                    isActive={filters.entity === entity.entity}
+                    onClick={() => handleEntityClick(entity.entity)}
+                  />
+                )
               ))}
               {filteredEntities.length === 0 && !isLoading && (
                 <div className="text-center py-6 text-sm text-muted-foreground">

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { Link as LinkIcon } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { EntityName } from '@/components/ui/entity-name'
@@ -31,26 +31,19 @@ export function CrossCitationsSidebar({
   entityFilter,
   organFilter
 }: CrossCitationsSidebarProps) {
-  const router = useRouter();
-  const { filters } = useFilters();
+  const { filters, setFilter } = useFilters();
 
   const [showAll, setShowAll] = useState(false)
   const DISPLAY_LIMIT = 30
 
   const handleEntityClick = (entityName: string) => {
-    // Always navigate to entity page - simple approach
-    router.push(`/entity/${encodeURIComponent(entityName)}`);
-    setTimeout(() => {
-      window.scrollTo(0, 0);
-    }, 100);
+    // On entity/organ pages: Set as filter (cross-citations sidebar only appears on these pages)
+    setFilter('entity', entityName);
   };
 
   const handleOrganClick = (organName: string) => {
-    // Always navigate to organ page - simple approach
-    router.push(`/organ/${encodeURIComponent(organName)}`);
-    setTimeout(() => {
-      window.scrollTo(0, 0);
-    }, 100);
+    // On entity/organ pages: Set as filter (cross-citations sidebar only appears on these pages)
+    setFilter('organ', organName);
   };
 
   // Filter and truncate logic
@@ -85,7 +78,7 @@ export function CrossCitationsSidebar({
             <h3 className="text-lg font-semibold">Cross-Citations</h3>
           </div>
           <p className="text-sm text-muted-foreground mb-3">
-            Other entities and the number of source documents they cite that {entityFilter} also cites
+            Click to add entity filter - Other entities and the number of source documents they cite that {entityFilter} also cites
           </p>
           
           <div className="space-y-1">
@@ -136,7 +129,7 @@ export function CrossCitationsSidebar({
             <h3 className="text-lg font-semibold">Related Organs</h3>
           </div>
           <p className="text-sm text-muted-foreground mb-3">
-            Other organs citing the same entities as {organFilter}
+            Click to add organ filter - Other organs citing the same entities as {organFilter}
           </p>
           
           <div className="space-y-1">

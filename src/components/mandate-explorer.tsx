@@ -60,27 +60,31 @@ export function MandateExplorer ({
   const pageSize = Number(filters.limit || '10')
   const sortBy = filters.sort_by || (filters.keyword ? 'default' : 'citing_entities_desc')
   
-  // Fetch data when filters change - use direct dependency tracking with explicit values
+  // Fetch data when filters change - simplified logic
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
       try {
         const params = new URLSearchParams()
 
-        // Start with URL-based filters
+        // For entity/organ pages: only use implicit filter + any additional URL filters from within-page filtering
+        if (pageType === 'entity' && entityFilter) {
+          params.set('entity', entityFilter)
+        } else if (pageType === 'organ' && organFilter) {
+          params.set('organ', organFilter)
+        }
+        
+        // Add URL-based filters (for main page or additional filters on entity/organ pages)
         Object.entries(filters).forEach(([key, value]) => {
           if (value && value !== 'all') {
+            // Skip entity/organ filters if we already set them implicitly above
+            if ((pageType === 'entity' && key === 'entity') || 
+                (pageType === 'organ' && key === 'organ')) {
+              return;
+            }
             params.set(key, value)
           }
         })
-
-        // Add explicit page filters (these override URL params)
-        if (entityFilter) {
-          params.set('entity', entityFilter)
-        }
-        if (organFilter) {
-          params.set('organ', organFilter)
-        }
 
         // Set defaults using current values
         params.set('page', currentPage.toString())
@@ -102,7 +106,7 @@ export function MandateExplorer ({
     }
 
     fetchData()
-  }, [filters, currentPage, pageSize, sortBy, entityFilter, organFilter])
+  }, [filters, currentPage, pageSize, sortBy, entityFilter, organFilter, pageType])
 
   // Handle sort change (preserved exact function)
   const handleSortChange = useCallback((value: string) => {

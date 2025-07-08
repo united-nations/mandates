@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { Landmark } from 'lucide-react'
 import { LoadingSkeleton } from '@/components/ui/loading-skeleton'
 import { SearchInput } from '@/components/ui/search-input'
@@ -29,7 +29,6 @@ export function OrganListSidebar({
   pageType,
   entityFilter
 }: OrganListSidebarProps) {
-  const router = useRouter();
   const { filters, setFilter } = useFilters();
   
   const [filteredOrgans, setFilteredOrgans] = useState<OrganWithCount[]>(organs)
@@ -56,12 +55,13 @@ export function OrganListSidebar({
   }
 
   const handleOrganClick = (organName: string) => {
-    // Always navigate to organ page - this is the simple approach
-    router.push(`/organ/${encodeURIComponent(organName)}`);
-    // Jump to top after navigation
-    setTimeout(() => {
-      window.scrollTo(0, 0);
-    }, 100);
+    if (pageType === 'main') {
+      // On main page: Navigate to organ page (simple link - will be handled by Link component)
+      return;
+    } else {
+      // On entity/organ pages: Set as filter
+      setFilter('organ', organName);
+    }
   };
 
   const LoadingSkeletonComponent = () => (
@@ -79,6 +79,8 @@ export function OrganListSidebar({
           <p className="text-sm text-muted-foreground">
             {pageType === 'entity' 
               ? `Organs and number of cited source documents for ${entityFilter}`
+              : pageType === 'organ'
+              ? 'Click to add organ filter'
               : 'Organs and number of cited source documents'
             }
           </p>
@@ -99,14 +101,30 @@ export function OrganListSidebar({
           ) : (
             <div className="space-y-1">
               {filteredOrgans.map((organ) => (
-                <SidebarListItem
-                  key={organ.short}
-                  label={<OrganName organName={organ.short} allOrgans={allOrgans} showUnderline={true} />}
-                  count={organ.count}
-                  maxCount={maxCount}
-                  isActive={filters.organ === organ.short}
-                  onClick={() => handleOrganClick(organ.short)}
-                />
+                pageType === 'main' ? (
+                  <Link 
+                    key={organ.short} 
+                    href={`/organ/${encodeURIComponent(organ.short)}`}
+                    className="block"
+                  >
+                    <SidebarListItem
+                      label={<OrganName organName={organ.short} allOrgans={allOrgans} showUnderline={true} />}
+                      count={organ.count}
+                      maxCount={maxCount}
+                      isActive={filters.organ === organ.short}
+                      onClick={() => {}} // Empty onClick for Link wrapper
+                    />
+                  </Link>
+                ) : (
+                  <SidebarListItem
+                    key={organ.short}
+                    label={<OrganName organName={organ.short} allOrgans={allOrgans} showUnderline={true} />}
+                    count={organ.count}
+                    maxCount={maxCount}
+                    isActive={filters.organ === organ.short}
+                    onClick={() => handleOrganClick(organ.short)}
+                  />
+                )
               ))}
               {filteredOrgans.length === 0 && !isLoading && (
                 <div className="text-center py-6 text-sm text-muted-foreground">

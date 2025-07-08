@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useUrlFilters } from '@/hooks/use-url-filters';
+import { useFilters } from '@/contexts/FilterContext';
 
 interface PaginationControlsProps {
   currentPage: number;
@@ -20,44 +20,39 @@ export function PaginationControls({
   pageSize,
   className = '',
 }: PaginationControlsProps) {
-  const { setFilter } = useUrlFilters();
-  
-  // Don't render if there's nothing to paginate
-  if (totalPages <= 1 && totalItems <= pageSize) return null;
-
-  const pageSizeOptions = [10, 20, 30, 50, 100, 1000];
+  const { setFilter } = useFilters();
 
   const handlePageChange = (page: number) => {
     setFilter('page', page.toString());
   };
 
-  const handlePageSizeChange = (size: number) => {
-    setFilter('limit', size.toString());
-    // Page will be reset to 1 automatically by setFilter
+  const handlePageSizeChange = (size: string) => {
+    setFilter('limit', size);
+    setFilter('page', '1'); // Reset to first page when changing page size
   };
 
+  if (totalPages <= 1) {
+    return null;
+  }
+
   return (
-    <div className={`flex flex-col space-y-3 p-2 pt-1 md:flex-row md:items-center md:justify-between md:space-y-0 ${className}`}>
-      {/* Page size selector */}
-      <div className="flex items-center justify-center space-x-2 md:justify-start">
-        <div className="text-sm text-muted-foreground">Rows per page</div>
-        <Select
-          value={String(pageSize)}
-          onValueChange={(value) => handlePageSizeChange(Number(value))}
-        >
-          <SelectTrigger className="w-[70px]">
+    <div className={`flex flex-col items-center space-y-4 md:flex-row md:justify-between md:space-y-0 ${className}`}>
+      <div className="flex items-center space-x-2">
+        <span className="text-sm text-muted-foreground">Show</span>
+        <Select value={pageSize.toString()} onValueChange={handlePageSizeChange}>
+          <SelectTrigger className="w-16">
             <SelectValue />
           </SelectTrigger>
-          <SelectContent className="max-h-[200px] overflow-y-auto">
-            {pageSizeOptions.map(size => (
-              <SelectItem key={size} value={String(size)}>{size}</SelectItem>
-            ))}
-            <SelectItem value={String(totalItems)}>All</SelectItem>
+          <SelectContent>
+            <SelectItem value="10">10</SelectItem>
+            <SelectItem value="25">25</SelectItem>
+            <SelectItem value="50">50</SelectItem>
+            <SelectItem value="100">100</SelectItem>
           </SelectContent>
         </Select>
+        <span className="text-sm text-muted-foreground">per page</span>
       </div>
 
-      {/* Page navigation */}
       <div className="flex flex-col items-center space-y-2 md:flex-row md:space-y-0 md:space-x-4">
         <div className="text-sm text-muted-foreground text-center">
           Page {currentPage} of {totalPages} ({totalItems.toLocaleString()} items)

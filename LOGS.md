@@ -726,3 +726,153 @@ All high-priority reusable components have been:
 **The foundation for consistent, maintainable UI components is now established!** 🎉
 
 ---
+
+# 🔄 NAVIGATION & SIDEBAR SIMPLIFICATION REFACTORING
+
+## Problem Analysis
+
+### Current Complex Navigation System:
+1. **Filter State Preservation**: Navigation attempts to preserve filter state across page transitions
+2. **Complex Router Logic**: All sidebar clicks use `router.push()` with scroll-to-top setTimeout logic
+3. **Mixed Navigation/Filter Behavior**: Sidebars act as navigation links everywhere, but REQUIREMENTS.md says they should be filters on entity/organ pages
+
+### User Request:
+- **Reset all filters on navigation**: Entity/organ page or main page navigation should clear all filters
+- **Simple links**: No filter state transfer, just simple navigation
+- **Sidebar behavior change**: On entity/organ pages, sidebars should act as filters (not navigation)
+
+## Implementation Plan
+
+### [x] Phase 1: Convert Navigation to Simple Links
+- [x] Replace `router.push()` with simple `<Link>` components in all sidebars
+- [x] Remove scroll-to-top logic (let browser handle it naturally)
+- [x] Remove any filter state preservation logic
+
+### [x] Phase 2: Change Sidebar Behavior Based on Page Type
+- [x] **Main page**: Sidebars remain navigation links (current behavior)
+- [x] **Entity/Organ pages**: Sidebars become filter controls
+  - [x] Entity page cross-citations: Set entity filter
+  - [x] Entity page organs: Set organ filter  
+  - [x] Organ page entities: Set entity filter
+
+### [x] Phase 3: Simplify Filter Management
+- [x] Remove complex URL state management that tries to preserve filters
+- [x] Keep FilterContext simple - just for current page filtering
+- [x] Remove implicit filter merging logic in MandateExplorer
+
+### [x] Phase 4: Cleanup
+- [x] Remove unused router imports from sidebar components
+- [x] Simplify MandateExplorer filter API logic
+- [x] Test that navigation works as expected
+
+## ✅ REFACTORING COMPLETE
+
+### What Was Accomplished:
+
+1. **🔗 Simple Navigation Links**:
+   - **Main page sidebars**: Now use `<Link href="/entity/name">` and `<Link href="/organ/name">` for simple navigation
+   - **No filter preservation**: Navigation completely resets all filters
+   - **No complex router logic**: Removed `router.push()` and scroll-to-top setTimeout patterns
+
+2. **🎯 Conditional Sidebar Behavior**:
+   - **Main page**: Sidebars navigate to entity/organ pages (Link components)
+   - **Entity pages**: 
+     - Cross-citations sidebar sets entity filters
+     - Organs sidebar sets organ filters
+   - **Organ pages**: Entity sidebar sets entity filters
+   - **Updated descriptions**: Clear UI text explains filter vs navigation behavior
+
+3. **⚡ Simplified Filter Management**:
+   - **FilterContext**: Remains clean, only manages URL state for current page
+   - **MandateExplorer**: Simplified API parameter building logic
+   - **Implicit filters**: Entity/organ pages set their filter first, then add any additional filters
+   - **No double-filtering**: Skip setting implicit filters from URL params
+
+4. **🧹 Code Cleanup**:
+   - **Removed unused imports**: `useRouter` from all sidebar components
+   - **Cleaner API logic**: More readable parameter building in MandateExplorer
+   - **Consistent behavior**: All components follow same pattern
+
+### User Experience Impact:
+- **Clear expectations**: Navigation always resets, filters work within pages
+- **Simplified mental model**: No hidden filter state preservation
+- **Better performance**: No complex state synchronization across navigation
+- **Intuitive behavior**: Sidebars clearly indicate whether they navigate or filter
+
+---
+
+# 🔧 URL PARAMETER PERSISTENCE ISSUE
+
+## Problem Analysis
+
+### User Issue:
+> "sometimes when i go to an entity page and set some filters and go back to main then theres still filters set"
+
+### Root Cause:
+The **FilterContext is URL-based** and persists across all pages. When someone navigates from entity pages back to main, URL parameters can persist in the browser's URL bar, causing the FilterContext to read and apply them on the main page.
+
+### Navigation Flow Issue:
+1. User is on main page: `/`
+2. User navigates to entity page: `/entity/UNEP` 
+3. User sets filters on entity page: `/entity/UNEP?keyword=test&programme=something`
+4. User clicks back button or navigates to main: `/?keyword=test&programme=something`
+5. FilterContext reads URL params and applies filters on main page ❌
+
+### The Problem:
+- **FilterContext reads URL params**: It syncs `searchParams` to `filters` state on ALL pages
+- **Navigation doesn't clear URL params**: Back button and some navigation preserves URL state
+- **Same FilterContext everywhere**: Main, entity, and organ pages all use same context
+
+## Implementation Plan
+
+### [x] Phase 1: Fix BackButton Navigation
+- [x] Make BackButton navigate to clean URLs without query parameters
+- [x] Updated `src/components/ui/back-button.tsx` to strip URL params
+
+### [x] Phase 2: Make FilterContext Page-Aware
+- [x] **Root cause identified**: FilterContext was reading URL params on ALL pages
+- [x] **Solution implemented**: Made FilterContext page-aware
+  - **Main page**: Reads all URL params and applies as filters
+  - **Entity/organ pages**: Only reads additional filters set on that page, ignores inherited filters
+  - **Navigation isolation**: Filters no longer persist across page navigation
+
+### [x] Phase 3: SIMPLIFIED - Complete Page Isolation  
+- [x] **Issue discovered**: Even page-aware FilterContext still had complexity with URL parameter inheritance
+- [x] **SIMPLER SOLUTION**: Complete page isolation
+  - **🔄 Filter reset on navigation**: `useEffect(() => setFilters({}), [pathname])` - filters reset completely when pathname changes
+  - **📄 Page-specific filtering**: Each page only reads its own URL parameters, zero inheritance
+  - **🔗 Clean navigation**: All navigation links verified to go to clean URLs (`/entity/name`, `/organ/name`, `/`)
+
+### [x] Phase 4: Code Cleanup
+- [x] Removed unused `useUrlFilters` hook
+- [x] Updated `PaginationControls` to use unified `FilterContext`
+- [x] Simplified filter management across all pages
+- [x] Removed complex initialization and state tracking logic
+
+## ✅ FINAL SOLUTION COMPLETE
+
+### What Was Fixed:
+1. **🔄 Complete Page Isolation**: 
+   - Filters reset completely when navigating between pages (`useEffect(() => setFilters({}), [pathname])`)
+   - Each page starts with a clean slate, no inherited parameters
+   - Simple and predictable behavior
+
+2. **🔗 Clean Navigation**: 
+   - All navigation links go to clean URLs: `/`, `/entity/name`, `/organ/name`
+   - BackButton strips URL parameters  
+   - No filter state preservation across navigation
+
+3. **📄 Page-Specific Behavior**: 
+   - Main page: Reads URL parameters set on main page only
+   - Entity/organ pages: Reads additional filters set on that specific page only
+   - No cross-page filter inheritance
+
+### User Experience Result:
+- **✅ TRUE isolation**: Navigating between pages completely resets all filters
+- **✅ Clean data**: Data card counts always reflect clean state after navigation
+- **✅ Simple mental model**: Each page is independent, navigation = complete reset
+- **✅ Predictable behavior**: No mysterious filter persistence
+
+**The filter persistence issue is now COMPLETELY and SIMPLY resolved!** 🎉
+
+---

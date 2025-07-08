@@ -31,28 +31,62 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   
-  // Initialize filters from URL params only - no implicit logic
+  // Determine page type
+  const isMainPage = pathname === '/'
+  const isEntityPage = pathname.startsWith('/entity/')
+  const isOrganPage = pathname.startsWith('/organ/')
+  
+  // Each page starts completely fresh
   const [filters, setFilters] = useState<FilterType>({})
   
-  // Sync URL params to state whenever they change
+  // Reset filters when page type changes (complete isolation)
+  useEffect(() => {
+    setFilters({})
+  }, [pathname])
+  
+  // Read URL params only for current page, ignore everything on navigation
   useEffect(() => {
     const newFilters: FilterType = {}
     
-    // Read all possible filter params from URL
-    const filterKeys: (keyof FilterType)[] = [
-      'entity', 'organ', 'keyword', 'programme', 'subject', 
-      'start_year', 'end_year', 'budget_document', 'sort_by', 'page', 'limit'
-    ]
-    
-    filterKeys.forEach(key => {
-      const value = searchParams.get(key)
-      if (value) {
-        newFilters[key] = value
+    if (isMainPage) {
+      // Main page: Only read URL params (for filters set on this page)
+      const filterKeys: (keyof FilterType)[] = [
+        'entity', 'organ', 'keyword', 'programme', 'subject', 
+        'start_year', 'end_year', 'budget_document', 'sort_by', 'page', 'limit'
+      ]
+      
+      filterKeys.forEach(key => {
+        const value = searchParams.get(key)
+        if (value) {
+          newFilters[key] = value
+        }
+      })
+    } else if (isEntityPage || isOrganPage) {
+      // Entity/organ pages: Only read additional filters (not implicit ones)
+      const additionalFilterKeys: (keyof FilterType)[] = [
+        'keyword', 'programme', 'subject', 'start_year', 'end_year', 
+        'budget_document', 'sort_by', 'page', 'limit'
+      ]
+      
+      additionalFilterKeys.forEach(key => {
+        const value = searchParams.get(key)
+        if (value) {
+          newFilters[key] = value
+        }
+      })
+      
+      // Only include cross-filters (entity on organ page, organ on entity page)
+      if (isEntityPage) {
+        const organValue = searchParams.get('organ')
+        if (organValue) newFilters.organ = organValue
+      } else if (isOrganPage) {
+        const entityValue = searchParams.get('entity')
+        if (entityValue) newFilters.entity = entityValue
       }
-    })
+    }
     
     setFilters(newFilters)
-  }, [searchParams])
+  }, [searchParams, isMainPage, isEntityPage, isOrganPage])
   
   // Update a single filter and sync to URL
   const setFilter = (key: keyof FilterType, value: string | undefined) => {
