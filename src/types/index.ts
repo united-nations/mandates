@@ -113,6 +113,7 @@ export interface OrganWithCount {
 export interface FilterOptions {
   entity?: string;
   organ?: string;
+  crossCitingEntity?: string;
   keyword?: string;
   programme?: string;
   subject?: string;

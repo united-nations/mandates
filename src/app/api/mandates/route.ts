@@ -1,27 +1,28 @@
-import { NextResponse } from 'next/server';
-import DataService from '@/lib/data-service';
-import type { 
-  Mandate, 
-  Entity, 
-  Organ, 
-  FilterOptions, 
+import { NextResponse } from 'next/server'
+import DataService from '@/lib/data-service'
+import type {
+  Mandate,
+  Entity,
+  Organ,
+  FilterOptions,
   ApiResponse,
   EntityWithCount,
   OrganWithCount,
-  CrossCitation 
-} from '@/types';
+  CrossCitation
+} from '@/types'
 
 /**
  * Unified API endpoint that handles all filtering and returns comprehensive data
  */
-export async function GET(request: Request) {
+export async function GET (request: Request) {
   try {
-    const { searchParams } = new URL(request.url);
-    
+    const { searchParams } = new URL(request.url)
+
     // Parse filter parameters
     const filters: FilterOptions = {
       entity: searchParams.get('entity') || undefined,
       organ: searchParams.get('organ') || undefined,
+      crossCitingEntity: searchParams.get('crossCitingEntity') || undefined,
       keyword: searchParams.get('keyword') || undefined,
       programme: searchParams.get('programme') || undefined,
       subject: searchParams.get('subject') || undefined,
@@ -30,35 +31,52 @@ export async function GET(request: Request) {
       budget_document: searchParams.get('budget_document') || undefined,
       sort_by: searchParams.get('sort_by') || 'citing_entities_desc',
       page: searchParams.get('page') || '1',
-      limit: searchParams.get('limit') || '10',
-    };
+      limit: searchParams.get('limit') || '10'
+    }
 
     // Parse pagination
-    const page = Math.max(1, parseInt(filters.page || '1'));
-    const limit = Math.max(1, Math.min(100, parseInt(filters.limit || '10')));
+    const page = Math.max(1, parseInt(filters.page || '1'))
+    const limit = Math.max(1, Math.min(100, parseInt(filters.limit || '10')))
 
     // Load all data
-    const { mandates, entities, organs, entityMap, organMap } = await DataService.getAllData();
+    const { mandates, entities, organs, entityMap, organMap } =
+      await DataService.getAllData()
 
     // Apply filters
-    const filteredMandates = filterMandates(mandates, filters);
-    
+    const filteredMandates = filterMandates(mandates, filters)
+
     // Sort mandates
-    const sortedMandates = sortMandates(filteredMandates, filters.sort_by || 'citing_entities_desc');
-    
+    const sortedMandates = sortMandates(
+      filteredMandates,
+      filters.sort_by || 'citing_entities_desc'
+    )
+
     // Paginate
-    const totalItems = sortedMandates.length;
-    const totalPages = Math.ceil(totalItems / limit);
-    const startIndex = (page - 1) * limit;
-    const paginatedMandates = sortedMandates.slice(startIndex, startIndex + limit);
+    const totalItems = sortedMandates.length
+    const totalPages = Math.ceil(totalItems / limit)
+    const startIndex = (page - 1) * limit
+    const paginatedMandates = sortedMandates.slice(
+      startIndex,
+      startIndex + limit
+    )
 
     // Enrich mandates with entity/organ details
-    const enrichedMandates = enrichMandates(paginatedMandates, entityMap, organMap);
+    const enrichedMandates = enrichMandates(
+      paginatedMandates,
+      entityMap,
+      organMap
+    )
 
     // Calculate aggregations
-    const counts = calculateCounts(filteredMandates);
-    const sidebarData = calculateSidebarData(filteredMandates, entityMap, organMap, filters, mandates);
-    const filterOptions = calculateFilterOptions(mandates, entityMap, organMap);
+    const counts = calculateCounts(filteredMandates)
+    const sidebarData = calculateSidebarData(
+      filteredMandates,
+      entityMap,
+      organMap,
+      filters,
+      mandates
+    )
+    const filterOptions = calculateFilterOptions(mandates, entityMap, organMap)
 
     // Build response
     const response: ApiResponse = {
@@ -67,69 +85,63 @@ export async function GET(request: Request) {
         page,
         limit,
         totalPages,
-        totalItems,
+        totalItems
       },
       counts,
       sidebar: sidebarData,
       filterOptions,
       reference: {
         entities: Array.from(entityMap.values()),
-        organs: Array.from(organMap.values()),
-      },
-    };
+        organs: Array.from(organMap.values())
+      }
+    }
 
-    return NextResponse.json(response);
+    return NextResponse.json(response)
   } catch (error) {
-    console.error('API Error:', error);
+    console.error('API Error:', error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
-    );
+    )
   }
 }
 
 /**
  * Filter mandates based on provided filters
  */
-function filterMandates(mandates: Mandate[], filters: FilterOptions): Mandate[] {
-  let filtered = mandates;
+function filterMandates (
+  mandates: Mandate[],
+  filters: FilterOptions
+): Mandate[] {
+  let filtered = mandates
 
   // Entity filter
   if (filters.entity) {
-    filtered = filtered.filter(mandate => 
-      mandate.entities.filter(e => e != null && e !== '').includes(filters.entity!)
-    );
+    filtered = filtered.filter(mandate =>
+      mandate.entities.includes(filters.entity!)
+    )
+  }
+
+  if (filters.crossCitingEntity) {
+    filtered = filtered.filter(mandate =>
+      mandate.entities.includes(filters.crossCitingEntity!)
+    )
   }
 
   // Organ filter
   if (filters.organ) {
-    filtered = filtered.filter(mandate => 
-      mandate.body === filters.organ
-    );
-  }
-
-  // Keyword search (search in title, description, and subject headings)
-  if (filters.keyword) {
-    const keyword = filters.keyword.toLowerCase();
-    filtered = filtered.filter(mandate => {
-      const searchableText = [
-        mandate.title || '',
-        mandate.description || '',
-        mandate.full_document_symbol || '',
-        ...(mandate.subject_headings || [])
-      ].join(' ').toLowerCase();
-      
-      return searchableText.includes(keyword);
-    });
+    filtered = filtered.filter(mandate => mandate.body === filters.organ)
   }
 
   // Programme filter
   if (filters.programme) {
     filtered = filtered.filter(mandate =>
-      mandate.citation_info.some(info => 
-        info.programme_title?.toLowerCase().includes(filters.programme!.toLowerCase())
+      mandate.citation_info.some(info =>
+        info.programme_title
+          ?.toLowerCase()
+          .includes(filters.programme!.toLowerCase())
       )
-    );
+    )
   }
 
   // Subject filter
@@ -138,168 +150,178 @@ function filterMandates(mandates: Mandate[], filters: FilterOptions): Mandate[] 
       mandate.subject_headings.some(subject =>
         subject.toLowerCase().includes(filters.subject!.toLowerCase())
       )
-    );
+    )
   }
 
   // Year range filter
   if (filters.start_year || filters.end_year) {
     filtered = filtered.filter(mandate => {
-      const year = parseInt(mandate.year);
-      const startYear = filters.start_year ? parseInt(filters.start_year) : 0;
-      const endYear = filters.end_year ? parseInt(filters.end_year) : 9999;
-      return year >= startYear && year <= endYear;
-    });
+      const year = parseInt(mandate.year)
+      const startYear = filters.start_year ? parseInt(filters.start_year) : 0
+      const endYear = filters.end_year ? parseInt(filters.end_year) : 9999
+      return year >= startYear && year <= endYear
+    })
   }
 
   // Budget document filter
   if (filters.budget_document) {
     filtered = filtered.filter(mandate =>
-      mandate.citation_info.some(info =>
-        info.origin_document === filters.budget_document
+      mandate.citation_info.some(
+        info => info.origin_document === filters.budget_document
       )
-    );
+    )
   }
 
-  return filtered;
+  // Keyword search (search in title, description, and subject headings)
+  if (filters.keyword) {
+    const keyword = filters.keyword.toLowerCase()
+    filtered = filtered.filter(mandate => {
+      const searchableText = [
+        mandate.title || '',
+        mandate.description || '',
+        mandate.full_document_symbol || '',
+        ...(mandate.subject_headings || [])
+      ]
+        .join(' ')
+        .toLowerCase()
+
+      return searchableText.includes(keyword)
+    })
+  }
+
+  return filtered
 }
 
 /**
  * Sort mandates based on sort option
  */
-function sortMandates(mandates: Mandate[], sortBy: string): Mandate[] {
-  const sorted = [...mandates];
-  
+function sortMandates (mandates: Mandate[], sortBy: string): Mandate[] {
+  const sorted = [...mandates]
+
   switch (sortBy) {
     case 'citing_entities_desc':
-      return sorted.sort((a, b) => b.num_entities - a.num_entities);
+      return sorted.sort((a, b) => b.num_entities - a.num_entities)
     case 'citing_entities_asc':
-      return sorted.sort((a, b) => a.num_entities - b.num_entities);
+      return sorted.sort((a, b) => a.num_entities - b.num_entities)
     case 'citations_desc':
-      return sorted.sort((a, b) => b.num_citations - a.num_citations);
+      return sorted.sort((a, b) => b.num_citations - a.num_citations)
     case 'citations_asc':
-      return sorted.sort((a, b) => a.num_citations - b.num_citations);
+      return sorted.sort((a, b) => a.num_citations - b.num_citations)
     case 'year_desc':
-      return sorted.sort((a, b) => parseInt(b.year) - parseInt(a.year));
+      return sorted.sort((a, b) => parseInt(b.year) - parseInt(a.year))
     case 'year_asc':
-      return sorted.sort((a, b) => parseInt(a.year) - parseInt(b.year));
+      return sorted.sort((a, b) => parseInt(a.year) - parseInt(b.year))
     default:
-      return sorted;
+      return sorted
   }
 }
 
 /**
  * Enrich mandates with entity and organ details
  */
-function enrichMandates(
-  mandates: Mandate[], 
-  entityMap: Map<string, Entity>, 
+function enrichMandates (
+  mandates: Mandate[],
+  entityMap: Map<string, Entity>,
   organMap: Map<string, Organ>
 ): Mandate[] {
   return mandates.map(mandate => ({
     ...mandate,
-    // Add enriched entity information - filter out null/undefined/empty entities
     entity_long: mandate.entities
-      .filter(entity => entity != null && entity !== '')
       .map(entity => entityMap.get(entity)?.entity_long || entity)
       .join(', '),
-    // Add enriched organ information
-    body_long: organMap.get(mandate.body)?.long || mandate.body,
-  }));
+    body_long: organMap.get(mandate.body)?.long || mandate.body
+  }))
 }
 
 /**
  * Calculate counts for data cards
  */
-function calculateCounts(mandates: Mandate[]) {
-  const uniqueEntities = new Set<string>();
-  const uniqueOrgans = new Set<string>();
-  let totalCitations = 0;
+function calculateCounts (mandates: Mandate[]) {
+  const uniqueEntities = new Set<string>()
+  const uniqueOrgans = new Set<string>()
+  let totalCitations = 0
 
   mandates.forEach(mandate => {
-    // Filter out null/undefined/empty entities
-    mandate.entities
-      .filter(entity => entity != null && entity !== '')
-      .forEach(entity => uniqueEntities.add(entity));
-    
+    mandate.entities.forEach(entity => uniqueEntities.add(entity))
     if (mandate.body && mandate.body !== '') {
-      uniqueOrgans.add(mandate.body);
+      uniqueOrgans.add(mandate.body)
     }
-    totalCitations += mandate.num_citations;
-  });
+    totalCitations += mandate.num_citations
+  })
 
   return {
     totalDocuments: mandates.length,
     totalEntities: uniqueEntities.size,
     totalOrgans: uniqueOrgans.size,
-    totalCitations,
-  };
+    totalCitations
+  }
 }
 
 /**
  * Calculate sidebar data with counts
  */
-function calculateSidebarData(
-  mandates: Mandate[],
+function calculateSidebarData (
+  filteredMandates: Mandate[],
   entityMap: Map<string, Entity>,
   organMap: Map<string, Organ>,
   filters: FilterOptions,
   allMandates: Mandate[]
 ) {
   // Count entities
-  const entityCounts = new Map<string, number>();
-  const organCounts = new Map<string, number>();
+  const entityCounts = new Map<string, number>()
+  const organCounts = new Map<string, number>()
 
-  mandates.forEach(mandate => {
+  filteredMandates.forEach(mandate => {
     // Entity counts - filter out null/undefined/empty entities
     mandate.entities
       .filter(entity => entity != null && entity !== '')
       .forEach(entity => {
-        entityCounts.set(entity, (entityCounts.get(entity) || 0) + 1);
-      });
+        entityCounts.set(entity, (entityCounts.get(entity) || 0) + 1)
+      })
 
     // Organ counts
     if (mandate.body && mandate.body !== '') {
-      organCounts.set(mandate.body, (organCounts.get(mandate.body) || 0) + 1);
+      organCounts.set(mandate.body, (organCounts.get(mandate.body) || 0) + 1)
     }
-  });
+  })
 
   // Build sidebar data
   const entities: EntityWithCount[] = Array.from(entityCounts.entries())
     .map(([entity, count]) => ({
       entity,
       entity_long: entityMap.get(entity)?.entity_long || entity,
-      count,
+      count
     }))
-    .sort((a, b) => b.count - a.count);
+    .sort((a, b) => b.count - a.count)
 
   const organs: OrganWithCount[] = Array.from(organCounts.entries())
     .map(([organ, count]) => ({
       short: organ,
       long: organMap.get(organ)?.long || organ,
-      count,
+      count
     }))
-    .sort((a, b) => b.count - a.count);
+    .sort((a, b) => b.count - a.count)
 
   // Calculate cross-citations based on page type
   const crossCitations: CrossCitation[] = calculateCrossCitations(
-    mandates,
+    filteredMandates,
     allMandates,
     entityMap,
     organMap,
     filters
-  );
+  )
 
   return {
     entities,
     organs,
-    crossCitations,
-  };
+    crossCitations
+  }
 }
 
 /**
  * Calculate cross-citations for entity or organ pages
  */
-function calculateCrossCitations(
+function calculateCrossCitations (
   filteredMandates: Mandate[],
   allMandates: Mandate[],
   entityMap: Map<string, Entity>,
@@ -308,131 +330,104 @@ function calculateCrossCitations(
 ): CrossCitation[] {
   if (filters.entity) {
     // Entity page - find entities that cite the same documents
-    const entityCrossCitations = new Map<string, number>();
-    
+    const entityCrossCitations = new Map<string, number>()
+
     filteredMandates.forEach(mandate => {
       mandate.entities
-        .filter(entity => entity != null && entity !== '') // Filter out null/undefined/empty entities
         .forEach(entity => {
-          if (entity !== filters.entity && entity.trim() !== '') {
-            entityCrossCitations.set(entity, (entityCrossCitations.get(entity) || 0) + 1);
+          if (entity && entity !== filters.entity && entity.trim() !== '') {
+            entityCrossCitations.set(
+              entity,
+              (entityCrossCitations.get(entity) || 0) + 1
+            )
           }
-        });
-    });
+        })
+    })
 
     return Array.from(entityCrossCitations.entries())
       .map(([entity, sharedMandatesCount]) => ({
         entity,
         entity_long: entityMap.get(entity)?.entity_long || entity,
-        count: sharedMandatesCount,
+        count: sharedMandatesCount
       }))
-      .sort((a, b) => b.count - a.count);
+      .sort((a, b) => b.count - a.count)
   }
 
-  if (filters.organ) {
-    // Organ page - find organs connected through shared entities
-    const organCrossCitations = new Map<string, number>();
-    
-    filteredMandates.forEach(mandate => {
-      // Get all entities mentioned in this mandate
-      mandate.entities
-        .filter(entity => entity != null && entity !== '') // Filter out null/undefined/empty entities
-        .forEach(entity => {
-          // Find all other mandates that mention this entity
-          const relatedMandates = allMandates.filter(m => 
-            m.entities.filter(e => e != null && e !== '').includes(entity) && m.body !== filters.organ
-          );
-          
-          relatedMandates.forEach(relatedMandate => {
-            if (relatedMandate.body && relatedMandate.body.trim() !== '') {
-              organCrossCitations.set(relatedMandate.body, (organCrossCitations.get(relatedMandate.body) || 0) + 1);
-            }
-          });
-        });
-    });
-
-    return Array.from(organCrossCitations.entries())
-      .map(([organ, sharedMandatesCount]) => ({
-        entity: organ, // Using entity field for consistency, but it's actually an organ
-        entity_long: organMap.get(organ)?.long || organ,
-        count: sharedMandatesCount,
-      }))
-      .sort((a, b) => b.count - a.count);
-  }
-
-  return [];
+  return []
 }
 
 /**
  * Calculate filter options for dropdowns
  */
-function calculateFilterOptions(
+function calculateFilterOptions (
   mandates: Mandate[],
   entityMap: Map<string, Entity>,
   organMap: Map<string, Organ>
 ) {
-  const entityCounts = new Map<string, number>();
-  const organCounts = new Map<string, number>();
-  const programmes = new Set<string>();
-  const subjects = new Set<string>();
-  const years = new Set<number>();
+  const entityCounts = new Map<string, number>()
+  const organCounts = new Map<string, number>()
+  const programmes = new Set<string>()
+  const subjects = new Set<string>()
+  const years = new Set<number>()
 
   mandates.forEach(mandate => {
     // Entity counts - filter out null/undefined/empty entities
     mandate.entities
       .filter(entity => entity != null && entity !== '')
       .forEach(entity => {
-        entityCounts.set(entity, (entityCounts.get(entity) || 0) + 1);
-      });
+        entityCounts.set(entity, (entityCounts.get(entity) || 0) + 1)
+      })
 
     // Organ counts
     if (mandate.body && mandate.body !== '') {
-      organCounts.set(mandate.body, (organCounts.get(mandate.body) || 0) + 1);
+      organCounts.set(mandate.body, (organCounts.get(mandate.body) || 0) + 1)
     }
 
     // Programmes
     mandate.citation_info.forEach(info => {
       if (info.programme_title) {
-        programmes.add(info.programme_title);
+        programmes.add(info.programme_title)
       }
-    });
+    })
 
     // Subjects
     mandate.subject_headings.forEach(subject => {
-      subjects.add(subject);
-    });
+      subjects.add(subject)
+    })
 
     // Years
-    years.add(parseInt(mandate.year));
-  });
+    years.add(parseInt(mandate.year))
+  })
 
   // Build filter options
   const entities: EntityWithCount[] = Array.from(entityCounts.entries())
     .map(([entity, count]) => ({
       entity,
       entity_long: entityMap.get(entity)?.entity_long || entity,
-      count,
+      count
     }))
-    .sort((a, b) => b.count - a.count);
+    .sort((a, b) => b.count - a.count)
 
   const organs: OrganWithCount[] = Array.from(organCounts.entries())
     .map(([organ, count]) => ({
       short: organ,
       long: organMap.get(organ)?.long || organ,
-      count,
+      count
     }))
-    .sort((a, b) => b.count - a.count);
+    .sort((a, b) => b.count - a.count)
 
-  const sortedYears = Array.from(years).sort((a, b) => a - b);
+  const sortedYears = Array.from(years).sort((a, b) => a - b)
   const yearRange = {
     min: sortedYears[0] || 2000,
-    max: sortedYears[sortedYears.length - 1] || 2024,
-  };
+    max: sortedYears[sortedYears.length - 1] || 2024
+  }
 
   const yearDistribution = sortedYears.reduce((acc, year) => {
-    acc[year.toString()] = mandates.filter(m => parseInt(m.year) === year).length;
-    return acc;
-  }, {} as Record<string, number>);
+    acc[year.toString()] = mandates.filter(
+      m => parseInt(m.year) === year
+    ).length
+    return acc
+  }, {} as Record<string, number>)
 
   return {
     entities,
@@ -440,6 +435,6 @@ function calculateFilterOptions(
     programmes: Array.from(programmes).sort(),
     subjects: Array.from(subjects).sort(),
     yearRange,
-    yearDistribution,
-  };
+    yearDistribution
+  }
 }

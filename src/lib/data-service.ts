@@ -3,7 +3,7 @@ import path from 'path';
 import { parse } from 'csv-parse/sync';
 import type { Mandate, Entity, Organ } from '@/types';
 
-interface RawEntityData {
+interface EntityDetails {
   'Entity-Long': string;
   'Entity': string;
   'Combined': string;
@@ -77,9 +77,9 @@ class DataService {
       const rawData = parse(fileContent, {
         columns: true,
         skip_empty_lines: true,
-      }) as RawEntityData[];
+      }) as EntityDetails[];
 
-      this.entitiesCache = rawData.map((item: RawEntityData) => ({
+      this.entitiesCache = rawData.map((item: EntityDetails) => ({
         entity: item['Entity'] || '',
         entity_long: item['Entity-Long'] || '',
         url: item['Entity URL'] || undefined,
