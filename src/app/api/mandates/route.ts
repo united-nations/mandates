@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import DataService from '@/lib/data-service'
-import { safeHighlightSearchTerms, toTitleCase } from '@/lib/utils'
+import { safeHighlightSearchTerms } from '@/lib/utils'
+import { titleCase } from 'title-case'
 import type {
   Mandate,
   Entity,
@@ -229,7 +230,7 @@ function addHighlighting(mandates: Mandate[], keyword?: string): Mandate[] {
     // Create highlighted fields object
     const highlightedFields: { [key: string]: string } = {};
     
-    // Highlight the displayTitle (already normalized in enrichMandates)
+    // Highlight the displayTitle (already normalized and title-cased in enrichMandates)
     if (mandate.displayTitle) {
       const highlightedTitle = safeHighlightSearchTerms(mandate.displayTitle, keyword);
       if (highlightedTitle && highlightedTitle !== mandate.displayTitle) {
@@ -251,7 +252,7 @@ function addHighlighting(mandates: Mandate[], keyword?: string): Mandate[] {
     if (mandate.subject_headings && mandate.subject_headings.length > 0) {
       const matchedSubjects = mandate.subject_headings
         .map(subject => {
-          const titleCasedSubject = toTitleCase(subject);
+          const titleCasedSubject = titleCase(subject.toLowerCase());
           const highlighted = safeHighlightSearchTerms(titleCasedSubject, keyword);
           return highlighted !== titleCasedSubject ? highlighted : null;
         })
@@ -283,13 +284,13 @@ function enrichMandates (
       .map(entity => entityMap.get(entity)?.entity_long || entity)
       .join(', '),
     body_long: organMap.get(mandate.body)?.long || mandate.body,
-    displayTitle: (mandate.uniform_title && mandate.uniform_title.length > 0 && mandate.uniform_title[0].trim()) 
+    displayTitle: titleCase(((mandate.uniform_title && mandate.uniform_title.length > 0 && mandate.uniform_title[0].trim()) 
       ? mandate.uniform_title[0].trim()
       : (mandate.title && mandate.title.trim()) 
         ? mandate.title.trim()
         : (mandate.description && mandate.description.trim()) 
           ? mandate.description.trim()
-          : 'Untitled'
+          : 'Untitled').toLowerCase())
   }))
 }
 

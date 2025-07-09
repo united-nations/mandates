@@ -15,7 +15,7 @@ import { Button } from './ui/button';
 import { FileText, Building, Calendar, Link, Users, FileCheck, Target, Columns, Sparkles, X } from 'lucide-react';
 import { EntityName } from './ui/entity-name';
 import { TooltipProvider } from './ui/tooltip';
-import { toTitleCase } from '@/lib/utils';
+import { titleCase } from 'title-case';
 import NextLink from 'next/link';
 
 interface MandateDetailsProps {
@@ -259,7 +259,7 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [], 
                             window.open(url.toString(), '_blank');
                           }}
                         >
-                          {toTitleCase(heading)}
+                          {titleCase(heading.toLowerCase())}
                         </Badge>
                       ))}
                     </div>
@@ -327,7 +327,7 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [], 
                               window.open(url.toString(), '_blank');
                             }}
                           >
-                            {toTitleCase(programmeTitle)}
+                            {titleCase(programmeTitle)}
                           </Badge>
                         </div>
                       </div>

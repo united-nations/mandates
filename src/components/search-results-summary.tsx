@@ -4,7 +4,7 @@ import { FilterBadge } from '@/components/ui/filter-badge';
 import { Button } from '@/components/ui/button';
 import { Search, X } from 'lucide-react';
 import { EntityName } from './ui/entity-name';
-import { toTitleCase } from '@/lib/utils';
+import { titleCase } from 'title-case';
 
 interface SearchResultsSummaryProps {
   totalResults: number;
@@ -112,7 +112,7 @@ export function SearchResultsSummary({
 
           {appliedFilters.subject && (
             <FilterBadge
-              label={`Subject: ${toTitleCase(appliedFilters.subject)}`}
+                              label={`Subject: ${titleCase(appliedFilters.subject)}`}
               onClear={() => onClearFilter('subject')}
               variant="secondary"
             />

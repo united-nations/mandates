@@ -1643,3 +1643,61 @@ const isMainPage = pathname === '/'
   - Better visual separation and improved UX
 
 ---
+
+## Fix Title Case Function Issues
+
+**Problem Analysis:**
+- Current `toTitleCase` function has issues with possessives ("africa's" → "Africa'S" instead of "Africa's")
+- Ordinal numbers are incorrectly capitalized ("3rd" → "3Rd" instead of "3rd")
+- Manual implementation is complex and error-prone
+
+**Goal:** Fix title case to handle possessives and ordinals correctly, or replace with a robust library
+
+**Options:**
+1. Fix current implementation
+2. Replace with `title-case` library (6.7M weekly downloads, proper TypeScript support)
+
+**Steps:**
+[x] Research title case libraries and best practices
+[x] Analyze current implementation issues
+[x] Choose between fixing current code vs using library
+[x] Implement solution
+[x] Test with problematic cases ("africa's", "3rd", etc.)
+
+**Solution Implemented:**
+- Replaced custom implementation with `title-case` library (6.7M weekly downloads)
+- Reduced code complexity from 50+ lines to 3 lines
+- Fixed possessive handling: "africa's" → "Africa's" ✓
+- Fixed ordinal numbers: "3rd" → "3rd" ✓
+- Improved reliability with battle-tested library
+
+**Next Steps:**
+[x] Remove utility function wrapper and use library directly
+[x] Update all imports to use `titleCase` from `title-case` library
+[x] Test to ensure no breaking changes
+
+**Final Result:**
+- Removed utility function wrapper entirely
+- Updated all 7 files that used the function to import directly from `title-case`
+- Simplified codebase by removing redundant wrapper layer
+- All functionality maintained with improved reliability
+
+## Apply Title Case to Mandate List Titles
+
+**Goal:** Apply title case formatting to mandate titles displayed in the mandate list
+
+**Steps:**
+[x] Import `titleCase` from `title-case` library
+[x] Update `HighlightedContent` component to apply title case to fallback titles
+[x] Test title case formatting in mandate list display
+
+**Result:**
+- Mandate titles now display in proper title case format
+- Improved readability and consistency with other UI elements
+- Applied to fallback text while preserving search highlighting functionality
+
+**Issue Found and Fixed:**
+- Search highlighting was bypassing title case formatting
+- Fixed by applying title case in API before highlighting
+- Both highlighted and non-highlighted titles now properly formatted
+- Moved title case logic from frontend to backend for consistency

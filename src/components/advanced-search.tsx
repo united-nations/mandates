@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectSe
 import { HelpCircle, Calendar, Target, Receipt, BookOpen } from 'lucide-react';
 import { YearSlider } from './year-slider';
 import { explainerTexts } from '@/lib/explainer-texts';
-import { toTitleCase } from '@/lib/utils';
+import { titleCase } from 'title-case';
 import { useState, useEffect } from 'react';
 
 interface AdvancedSearchProps {
@@ -57,13 +57,13 @@ export function AdvancedSearch({
 
   const programmeDropdownOptions = programmeOptions.map(p => ({ 
     value: p.value, 
-    label: `${toTitleCase(p.value)} (${p.count})`,
+              label: `${titleCase(p.value)} (${p.count})`,
     disabled: p.count === 0
   }));
 
   const subjectDropdownOptions = subjectOptions.map(s => ({ 
     value: s.value, 
-    label: `${toTitleCase(s.value)} (${s.count})`,
+              label: `${titleCase(s.value)} (${s.count})`,
     disabled: s.count === 0
   }));
 

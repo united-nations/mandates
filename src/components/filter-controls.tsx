@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label';
 import { FilterBadge } from '@/components/ui/filter-badge';
 import { EntityName } from './ui/entity-name';
 import { OrganName } from './ui/organ-name';
-import { toTitleCase } from '@/lib/utils';
+import { titleCase } from 'title-case';
 import { explainerTexts } from '@/lib/explainer-texts';
 import { useFilters } from '@/contexts/FilterContext';
 
@@ -297,7 +297,7 @@ export function FilterControls({
                 {displayFilters.subject && (
                   <FilterBadge
                     icon={BookOpen}
-                    label={`Subject: ${toTitleCase(displayFilters.subject)}`}
+                    label={`Subject: ${titleCase(displayFilters.subject)}`}
                     onClear={() => clearFilter('subject')}
                     variant="secondary"
                   />
