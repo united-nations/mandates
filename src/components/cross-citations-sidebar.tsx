@@ -97,7 +97,7 @@ export function CrossCitationsSidebar({
         <GenericSidebar
           icon={LinkIcon}
           title="Cross-Citations"
-          description={`Other entities and the number of source documents they cite that ${entityFilter} also cites`}
+          description={`Other entities and the number of source documents cited by both ${entityFilter} and the other entities`}
           items={crossCitations}
           isLoading={isLoading}
           searchPlaceholder="Search entities..."
