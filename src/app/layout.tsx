@@ -16,12 +16,17 @@ import {
 } from '@/components/ui/dropdown-menu'
 import Clarity from '@microsoft/clarity'
 import { useEffect } from 'react'
+import { usePathname } from 'next/navigation'
+import { BackButton } from '@/components/ui/back-button'
 
 export default function RootLayout ({
   children
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const pathname = usePathname()
+  const isMainPage = pathname === '/'
+
   // Initialize Microsoft Clarity
   useEffect(() => {
     Clarity.init('s4kksugeb9')
@@ -83,6 +88,14 @@ export default function RootLayout ({
               </DropdownMenu>
             </div>
           </header>
+
+          {/* Back Button - shown on all pages except main page */}
+          {!isMainPage && (
+            <div className='w-full max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-8 sm:px-12 lg:px-16 mb-2'>
+              <BackButton />
+            </div>
+          )}
+
           {children}
 
           {/* Fixed Feedback Button */}

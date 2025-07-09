@@ -5,15 +5,12 @@ import { Button } from '@/components/ui/button';
 import { FileText, ArrowRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { PageLayout } from '@/components/ui/page-layout';
-import { BackButton } from '@/components/ui/back-button';
+
 
 export default function MethodologyPage() {
   const router = useRouter();
   return (
     <PageLayout>
-      <div className="mb-2">
-        <BackButton />
-      </div>
           <div className="flex items-center gap-3 mb-6">
             <FileText className="h-8 w-8 text-un-blue" />
             <h1 className="text-2xl font-bold tracking-tight text-foreground">Methodology</h1>

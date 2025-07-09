@@ -2,14 +2,11 @@
 
 import { Link as LinkIcon } from 'lucide-react';
 import { PageLayout } from '@/components/ui/page-layout';
-import { BackButton } from '@/components/ui/back-button';
+
 
 export default function ResourcesPage() {
   return (
     <PageLayout>
-      <div className="mb-2">
-        <BackButton />
-      </div>
           <div className="flex items-center gap-3 mb-6">
             <LinkIcon className="h-8 w-8 text-un-blue" />
             <h1 className="text-2xl font-bold tracking-tight text-foreground">More Transparency Resources</h1>

@@ -8,7 +8,7 @@ import { MandateExplorer } from '@/components/mandate-explorer'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { PageLayout } from '@/components/ui/page-layout'
-import { BackButton } from '@/components/ui/back-button'
+
 import { MetadataItem } from '@/components/ui/metadata-item'
 import { formatUrlForDisplay } from '@/lib/utils'
 
@@ -36,9 +36,6 @@ function EntityPageContent () {
 
   return (
     <PageLayout>
-      <div className='mb-2'>
-        <BackButton />
-      </div>
 
       <div className='flex items-start gap-4 mb-6'>
         <div className='rounded-lg bg-un-blue/10 p-2'>
@@ -47,21 +44,17 @@ function EntityPageContent () {
         <div className='flex-1 min-w-0'>
           <div className='mb-2'>
             <h1 className='text-2xl font-bold tracking-tight mb-1'>
-              <EntityName
-                entityName={entityName}
-                entityLong={entityDetails?.entity_long}
-                showUnderline={false}
-              />
+              {entityDetails?.entity_long} ({entityName})
             </h1>
 
-            {entityDetails?.principal_organ && (
+            {/* {entityDetails?.principal_organ && (
               <div className='flex items-center gap-2 mb-2'>
                 <Badge variant='secondary' className='text-xs'>
                   <Landmark className='h-3 w-3 mr-1' />
                   {entityDetails.principal_organ}
                 </Badge>
               </div>
-            )}
+            )} */}
           </div>
 
           {!entityDetails ? (

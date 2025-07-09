@@ -7,7 +7,7 @@ import { MandateExplorer } from '@/components/mandate-explorer';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { PageLayout } from '@/components/ui/page-layout';
-import { BackButton } from '@/components/ui/back-button';
+
 import { MetadataItem } from '@/components/ui/metadata-item';
 import { formatUrlForDisplay } from '@/lib/utils';
 
@@ -31,9 +31,6 @@ function OrganPageContent() {
 
   return (
     <PageLayout>
-      <div className="mb-2">
-        <BackButton />
-      </div>
           
           <div className="flex items-start gap-4 mb-6">
             <div className="rounded-lg bg-un-blue/10 p-2">
@@ -42,16 +39,8 @@ function OrganPageContent() {
             <div className="flex-1 min-w-0">
               <div className="mb-2">
                 <h1 className="text-2xl font-bold tracking-tight mb-1">
-                  {organDetails?.long || organName}
+                  {organDetails?.long} ({organName})
                 </h1>
-                
-                {organDetails?.short && organDetails.short !== organDetails.long && (
-                  <div className="flex items-center gap-2 mb-2">
-                    <Badge variant="secondary" className="text-xs">
-                      {organDetails.short}
-                    </Badge>
-                  </div>
-                )}
               </div>
 
               {!organDetails ? (

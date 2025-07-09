@@ -1507,3 +1507,85 @@ displayTitle: (mandate.uniform_title && mandate.uniform_title.length > 0 && mand
 
 ## Status: ✅ COMPLETED
 Code duplication eliminated! Title logic now exists only in the API enrichment step.
+
+---
+
+# 🔙 BACK BUTTON CENTRALIZATION 
+
+## Problem Analysis
+
+### User Request:
+> "wheres the back to main view button currently? i think it should be in layout.tsx, and should be disabled for the main page only"
+
+### Current State:
+- **BackButton component** exists at `src/components/ui/back-button.tsx`
+- **Individual implementations** on each page:
+  - Entity pages: `/entity/[entity]` 
+  - Organ pages: `/organ/[organ]`
+  - Methodology page: `/methodology`
+  - Resources page: `/resources`
+- **Missing from main page**: `/` (correctly, but inconsistently managed)
+- **Duplicated code**: Each page imports and renders `<BackButton />` individually
+
+### Problems with Current Approach:
+1. **Code duplication**: Same `<BackButton />` repeated on 4+ pages
+2. **Inconsistent management**: Easy to forget to add to new pages
+3. **No centralized control**: Can't globally modify back button behavior
+4. **Manual maintenance**: Each page needs individual update for back button changes
+
+## Implementation Plan
+
+### [x] Phase 1: Move BackButton to Layout
+- [x] Add `usePathname` hook to detect current page in `layout.tsx`
+- [x] Add conditional rendering logic: show on all pages except main page (`/`)
+- [x] Place BackButton after header, before children content
+- [x] Use same styling and container classes for consistency
+
+### [x] Phase 2: Remove Individual BackButtons  
+- [x] Remove `BackButton` import from all individual pages
+- [x] Remove `<BackButton />` element and container div from all pages
+- [x] Clean up resulting layout by removing empty divs
+
+## ✅ REFACTORING COMPLETE
+
+### What Was Accomplished:
+
+1. **🏗️ Centralized Back Button Management**:
+   - **layout.tsx**: Now contains the BackButton with conditional rendering
+   - **Pathname detection**: Uses `usePathname()` to detect main page (`/`)
+   - **Conditional display**: `{!isMainPage && <BackButton />}` shows on all pages except main
+   - **Consistent styling**: Same container classes and layout as before
+
+2. **🧹 Code Cleanup**:
+   - **Removed from 4 pages**: Entity, organ, methodology, and resources pages
+   - **Eliminated duplication**: Single BackButton instance instead of 4 copies
+   - **Cleaner page components**: Pages now focus on their content, not navigation
+
+3. **✨ Benefits**:
+   - **Single source of truth**: All back button logic in one place
+   - **Easier maintenance**: Future changes only need to be made in layout.tsx
+   - **Consistent behavior**: Guaranteed to appear on all non-main pages
+   - **Better UX**: No risk of forgetting to add back button to new pages
+
+### Technical Implementation:
+```tsx
+// In layout.tsx
+const pathname = usePathname()
+const isMainPage = pathname === '/'
+
+{/* Back Button - shown on all pages except main page */}
+{!isMainPage && (
+  <div className='w-full max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-8 sm:px-12 lg:px-16 mb-2'>
+    <BackButton />
+  </div>
+)}
+```
+
+### Pages Updated:
+- ✅ `src/app/entity/[entity]/page.tsx` - removed BackButton
+- ✅ `src/app/organ/[organ]/page.tsx` - removed BackButton  
+- ✅ `src/app/methodology/page.tsx` - removed BackButton
+- ✅ `src/app/resources/page.tsx` - removed BackButton
+- ✅ `src/app/layout.tsx` - added centralized BackButton logic
+
+---
