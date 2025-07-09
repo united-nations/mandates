@@ -6,7 +6,6 @@ import { X, ChevronDown, ChevronUp, HelpCircle, Search, Building, Landmark, Targ
 import { SearchInput } from '@/components/ui/search-input';
 import { AdvancedSearch } from '@/components/advanced-search';
 import { YearSlider } from './year-slider';
-import { SearchableDropdown, SearchableDropdownOption } from '@/components/ui/searchable-dropdown';
 import { Label } from '@/components/ui/label';
 import { FilterBadge } from '@/components/ui/filter-badge';
 import { EntityName } from './ui/entity-name';
@@ -20,8 +19,6 @@ interface Entity {
 }
 
 interface FilterControlsProps {
-  entityOptions: SearchableDropdownOption[];
-  organOptions: SearchableDropdownOption[];
   programmeOptions: string[];
   subjectOptions: string[];
   yearRange: { min: number; max: number } | null;
@@ -36,8 +33,6 @@ interface FilterControlsProps {
 }
 
 export function FilterControls({
-  entityOptions,
-  organOptions,
   programmeOptions,
   subjectOptions,
   yearRange,

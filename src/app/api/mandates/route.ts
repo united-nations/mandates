@@ -364,25 +364,11 @@ function calculateFilterOptions (
   entityMap: Map<string, Entity>,
   organMap: Map<string, Organ>
 ) {
-  const entityCounts = new Map<string, number>()
-  const organCounts = new Map<string, number>()
   const programmes = new Set<string>()
   const subjects = new Set<string>()
   const years = new Set<number>()
 
   mandates.forEach(mandate => {
-    // Entity counts - filter out null/undefined/empty entities
-    mandate.entities
-      .filter(entity => entity != null && entity !== '')
-      .forEach(entity => {
-        entityCounts.set(entity, (entityCounts.get(entity) || 0) + 1)
-      })
-
-    // Organ counts
-    if (mandate.body && mandate.body !== '') {
-      organCounts.set(mandate.body, (organCounts.get(mandate.body) || 0) + 1)
-    }
-
     // Programmes
     mandate.citation_info.forEach(info => {
       if (info.programme_title) {
@@ -399,23 +385,6 @@ function calculateFilterOptions (
     years.add(parseInt(mandate.year))
   })
 
-  // Build filter options
-  const entities: EntityWithCount[] = Array.from(entityCounts.entries())
-    .map(([entity, count]) => ({
-      entity,
-      entity_long: entityMap.get(entity)?.entity_long || entity,
-      count
-    }))
-    .sort((a, b) => b.count - a.count)
-
-  const organs: OrganWithCount[] = Array.from(organCounts.entries())
-    .map(([organ, count]) => ({
-      short: organ,
-      long: organMap.get(organ)?.long || organ,
-      count
-    }))
-    .sort((a, b) => b.count - a.count)
-
   const sortedYears = Array.from(years).sort((a, b) => a - b)
   const yearRange = {
     min: sortedYears[0] || 2000,
@@ -430,8 +399,6 @@ function calculateFilterOptions (
   }, {} as Record<string, number>)
 
   return {
-    entities,
-    organs,
     programmes: Array.from(programmes).sort(),
     subjects: Array.from(subjects).sort(),
     yearRange,

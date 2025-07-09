@@ -970,3 +970,97 @@ Entity/organ pages were making **3 API calls** instead of 1:
 
 ## Status: ✅ COMPLETED
 All duplicate API call issues have been resolved. Entity and organ pages now efficiently load all data with a single API request.
+
+---
+
+# 🔧 SIDEBAR FILTERING ISSUE FIX
+
+## Problem Identified:
+On organ pages (like HRC), the data cards showed correct filtered counts, but the entity list sidebar showed overall counts instead of filtered counts.
+
+## Root Cause:
+The issue was in the `MandateExplorer` component data source selection:
+
+### API Data Structure:
+- **`apiData.sidebar.entities`**: Entity counts calculated from **filtered mandates** (correct for sidebars)
+- **`apiData.filterOptions.entities`**: Entity counts calculated from **all mandates** (correct for dropdowns)
+
+### Wrong Data Usage:
+- **Main page**: ✅ Used `apiData?.sidebar?.entities` (correct)
+- **Entity page**: ❌ Used `apiData?.filterOptions.entities` (wrong - unfiltered counts)
+- **Organ page**: ❌ Used `apiData?.filterOptions.entities` (wrong - unfiltered counts)
+
+## Solution Applied:
+Updated `src/components/mandate-explorer.tsx` to use the correct data source:
+
+```typescript
+// Before (WRONG):
+entities={apiData?.filterOptions.entities || []}
+
+// After (CORRECT):
+entities={apiData?.sidebar?.entities || []}
+```
+
+## Files Modified:
+- `src/components/mandate-explorer.tsx` - Updated all sidebar components to use `sidebar` data instead of `filterOptions`
+
+## Result:
+- **✅ Entity pages**: Entity sidebars now show filtered counts
+- **✅ Organ pages**: Entity sidebars now show filtered counts  
+- **✅ Main page**: No change (was already correct)
+- **✅ Consistent behavior**: All sidebars now reflect the current filter state
+
+## Status: ✅ COMPLETED
+The sidebar filtering issue has been resolved. All sidebar counts now correctly reflect the filtered data state.
+
+---
+
+# 🧹 FILTER OPTIONS CLEANUP
+
+## Problem Identified:
+The API was still calculating and returning entity/organ dropdown options in `filterOptions`, but these were no longer used since there are no dropdown menus for entities/organs anymore.
+
+## Analysis:
+- **Entity/organ filtering** is now handled through sidebar interactions and direct navigation
+- **SearchableDropdown** is only used for programmes and subjects in AdvancedSearch
+- **Unused code** was creating unnecessary data and API payload bloat
+
+## Changes Made:
+
+### 1. Removed from MandateExplorer:
+- `entityDropdownOptions` creation
+- `organDropdownOptions` creation  
+- `entityOptions` prop passed to FilterControls
+- `organOptions` prop passed to FilterControls
+- `SearchableDropdownOption` import
+
+### 2. Removed from FilterControls:
+- `entityOptions` prop from interface
+- `organOptions` prop from interface
+- `SearchableDropdown` and `SearchableDropdownOption` imports
+
+### 3. Removed from API route:
+- Entity count calculation in `calculateFilterOptions`
+- Organ count calculation in `calculateFilterOptions`
+- Entity/organ arrays in filterOptions response
+
+### 4. Updated types:
+- Removed `entities` and `organs` from `filterOptions` interface
+- Kept only `programmes`, `subjects`, `yearRange`, `yearDistribution`
+
+## Benefits:
+- **Smaller API payload**: No unnecessary entity/organ counts in filterOptions
+- **Cleaner code**: Removed unused dropdown option creation
+- **Better performance**: Less data processing and transfer
+- **Clearer architecture**: filterOptions now only contains data for actual dropdowns
+
+## Current filterOptions usage:
+- ✅ **Programmes**: Used in AdvancedSearch SearchableDropdown
+- ✅ **Subjects**: Used in AdvancedSearch SearchableDropdown  
+- ✅ **Year Range**: Used in AdvancedSearch YearSlider
+- ✅ **Year Distribution**: Used in AdvancedSearch YearSlider
+
+## Status: ✅ COMPLETED
+The filterOptions cleanup has been completed. Only necessary data for actual dropdown menus is now calculated and returned.
+
+---

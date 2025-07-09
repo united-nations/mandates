@@ -23,7 +23,6 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
-import { SearchableDropdownOption } from '@/components/ui/searchable-dropdown'
 import { explainerTexts } from '@/lib/explainer-texts'
 import { CollapsibleSidebars } from '@/components/collapsible-sidebars'
 import { EntityListSidebar } from '@/components/entity-list-sidebar'
@@ -151,19 +150,6 @@ export function MandateExplorer ({
   const LoadingSkeletonComponent = () => (
     <LoadingSkeleton variant='list' count={4} />
   )
-
-  // Prepare dropdown options (preserved exact format)
-  const entityDropdownOptions: SearchableDropdownOption[] =
-    apiData?.filterOptions.entities.map(entity => ({
-      value: entity.entity,
-      label: `${entity.entity_long || entity.entity} (${entity.count})`
-    })) || []
-
-  const organDropdownOptions: SearchableDropdownOption[] =
-    apiData?.filterOptions.organs.map(organ => ({
-      value: organ.short,
-      label: `${organ.long || organ.short} (${organ.count})`
-    })) || []
 
   // Extract data for components (with same fallbacks as before)
   const mandates = apiData?.mandates || []
@@ -350,8 +336,6 @@ export function MandateExplorer ({
                   </div>
                 </div>
                 <FilterControls
-                  entityOptions={entityDropdownOptions}
-                  organOptions={organDropdownOptions}
                   programmeOptions={filterOptions.programmes}
                   subjectOptions={filterOptions.subjects}
                   yearRange={filterOptions.yearRange}
@@ -407,7 +391,7 @@ export function MandateExplorer ({
                     organFilter={organFilter}
                   />
                   <OrganListSidebar
-                    organs={apiData?.filterOptions.organs || []}
+                    organs={apiData?.sidebar?.organs || []}
                     allOrgans={allOrgans}
                     isLoading={isLoading}
                     pageType={pageType}
@@ -419,7 +403,7 @@ export function MandateExplorer ({
               {/* Organ pages show entities only */}
               {pageType === 'organ' && (
                 <EntityListSidebar
-                  entities={apiData?.filterOptions.entities || []}
+                  entities={apiData?.sidebar?.entities || []}
                   allEntities={allEntities}
                   isLoading={isLoading}
                   pageType={pageType}
@@ -431,13 +415,13 @@ export function MandateExplorer ({
               {pageType === 'main' && (
                 <>
                   <EntityListSidebar
-                    entities={apiData?.filterOptions.entities || []}
+                    entities={apiData?.sidebar?.entities || []}
                     allEntities={allEntities}
                     isLoading={isLoading}
                     pageType={pageType}
                   />
                   <OrganListSidebar
-                    organs={apiData?.filterOptions.organs || []}
+                    organs={apiData?.sidebar?.organs || []}
                     allOrgans={allOrgans}
                     isLoading={isLoading}
                     pageType={pageType}

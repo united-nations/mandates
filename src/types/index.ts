@@ -160,16 +160,11 @@ export interface ApiResponse {
   
   // Filter options for dropdowns
   filterOptions: {
-    entities: EntityWithCount[];
-    organs: OrganWithCount[];
-    programmes: string[];
-    subjects: string[];
-    yearRange: {
-      min: number;
-      max: number;
-    };
-    yearDistribution: Record<string, number>;
-  };
+    programmes: string[]
+    subjects: string[]
+    yearRange: { min: number; max: number }
+    yearDistribution: Record<string, number>
+  }
   
   // Reference data for display
   reference: {
