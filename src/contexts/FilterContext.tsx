@@ -39,12 +39,7 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
   // Each page starts completely fresh
   const [filters, setFilters] = useState<FilterType>({})
   
-  // Reset filters when page type changes (complete isolation)
-  useEffect(() => {
-    setFilters({})
-  }, [pathname])
-  
-  // Read URL params only for current page, ignore everything on navigation
+  // Single useEffect to handle both pathname changes and URL params reading
   useEffect(() => {
     const newFilters: FilterType = {}
     
@@ -86,7 +81,7 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
     }
     
     setFilters(newFilters)
-  }, [searchParams, isMainPage, isEntityPage, isOrganPage])
+  }, [searchParams, pathname, isMainPage, isEntityPage, isOrganPage])
   
   // Update a single filter and sync to URL
   const setFilter = (key: keyof FilterType, value: string | undefined) => {

@@ -38,12 +38,18 @@ interface MandateExplorerProps {
   organFilter?: string
   // Page type for conditional rendering
   pageType: 'main' | 'entity' | 'organ'
+  // Callback to pass entity details to parent component
+  onEntityDetailsLoaded?: (entities: any[]) => void
+  // Callback to pass organ details to parent component
+  onOrganDetailsLoaded?: (organs: any[]) => void
 }
 
 export function MandateExplorer ({
   entityFilter,
   organFilter,
-  pageType
+  pageType,
+  onEntityDetailsLoaded,
+  onOrganDetailsLoaded
 }: MandateExplorerProps) {
   const { filters, setFilter } = useFilters()
 
@@ -105,6 +111,16 @@ export function MandateExplorer ({
 
         const data: ApiResponse = await response.json()
         setApiData(data)
+        
+        // Call callback to pass entity details to parent component
+        if (onEntityDetailsLoaded && data.reference?.entities) {
+          onEntityDetailsLoaded(data.reference.entities)
+        }
+        
+        // Call callback to pass organ details to parent component
+        if (onOrganDetailsLoaded && data.reference?.organs) {
+          onOrganDetailsLoaded(data.reference.organs)
+        }
       } catch (error) {
         console.error('Failed to fetch data:', error)
       } finally {

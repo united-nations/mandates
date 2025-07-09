@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useState, useEffect } from 'react';
+import { Suspense, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { Landmark, Link as LinkIcon } from 'lucide-react';
 import { MandateExplorer } from '@/components/mandate-explorer';
@@ -20,34 +20,14 @@ function OrganPageContent() {
     long: string;
     website?: string;
   } | null>(null);
-  const [isLoadingOrganDetails, setIsLoadingOrganDetails] = useState(false);
 
-  useEffect(() => {
-    async function fetchOrganDetails() {
-      setIsLoadingOrganDetails(true);
-      try {
-        // Use the unified API to get organ data
-        const response = await fetch('/api/mandates?limit=1');
-        if (response.ok) {
-          const data = await response.json();
-          const organs = data.reference?.organs || [];
-          const foundOrgan = organs.find((o: any) => o.short === organName);
-          
-          if (foundOrgan) {
-            setOrganDetails(foundOrgan);
-          }
-        }
-      } catch (error) {
-        console.error('Failed to fetch organ details:', error);
-      } finally {
-        setIsLoadingOrganDetails(false);
-      }
+  // Callback to receive organ details from MandateExplorer
+  const handleOrganDetailsLoaded = (organs: any[]) => {
+    const foundOrgan = organs.find((o: any) => o.short === organName);
+    if (foundOrgan) {
+      setOrganDetails(foundOrgan);
     }
-
-    if (organName) {
-      fetchOrganDetails();
-    }
-  }, [organName]);
+  };
 
   return (
     <PageLayout>
@@ -74,28 +54,30 @@ function OrganPageContent() {
                 )}
               </div>
 
-              {isLoadingOrganDetails ? (
+              {!organDetails ? (
                 <div className="space-y-2 mt-4">
                   <Skeleton className="h-6 w-48" />
                 </div>
               ) : (
-                organDetails && (
-                  <div className="space-y-0">
-                    {organDetails.website && (
-                      <MetadataItem label="Website" icon={LinkIcon}>
-                        <a href={organDetails.website} target="_blank" rel="noopener noreferrer" className="text-un-blue underline hover:text-un-blue/80 transition-colors">
-                          {formatUrlForDisplay(organDetails.website, 35)}
-                        </a>
-                      </MetadataItem>
-                    )}
-                  </div>
-                )
+                <div className="space-y-0">
+                  {organDetails.website && (
+                    <MetadataItem label="Website" icon={LinkIcon}>
+                      <a href={organDetails.website} target="_blank" rel="noopener noreferrer" className="text-un-blue underline hover:text-un-blue/80 transition-colors">
+                        {formatUrlForDisplay(organDetails.website, 35)}
+                      </a>
+                    </MetadataItem>
+                  )}
+                </div>
               )}
             </div>
           </div>
 
-      {/* Mandate Explorer - now renders sidebars internally */}
-      <MandateExplorer pageType="organ" organFilter={organName} />
+      {/* Mandate Explorer - now passes callback to receive organ details */}
+      <MandateExplorer 
+        pageType="organ" 
+        organFilter={organName}
+        onOrganDetailsLoaded={handleOrganDetailsLoaded}
+      />
     </PageLayout>
   );
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import { Suspense, useState, useEffect } from 'react'
+import { Suspense, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { Building, Link as LinkIcon, Landmark } from 'lucide-react'
 import { EntityName } from '@/components/ui/entity-name'
@@ -25,36 +25,14 @@ function EntityPageContent () {
   const entityName = decodeURIComponent(params.entity as string)
 
   const [entityDetails, setEntityDetails] = useState<Entity | null>(null)
-  const [isLoadingEntityDetails, setIsLoadingEntityDetails] = useState(false)
 
-  useEffect(() => {
-    async function fetchEntityDetails () {
-      setIsLoadingEntityDetails(true)
-      try {
-        // Use the unified API to get entity data
-        const response = await fetch('/api/mandates?limit=1')
-        if (response.ok) {
-          const data = await response.json()
-          const entities = data.reference?.entities || []
-          const foundEntity = entities.find(
-            (e: Entity) => e.entity === entityName
-          )
-
-          if (foundEntity) {
-            setEntityDetails(foundEntity)
-          }
-        }
-      } catch (error) {
-        console.error('Failed to fetch entity details:', error)
-      } finally {
-        setIsLoadingEntityDetails(false)
-      }
+  // Callback to receive entity details from MandateExplorer
+  const handleEntityDetailsLoaded = (entities: Entity[]) => {
+    const foundEntity = entities.find(e => e.entity === entityName)
+    if (foundEntity) {
+      setEntityDetails(foundEntity)
     }
-
-    if (entityName) {
-      fetchEntityDetails()
-    }
-  }, [entityName])
+  }
 
   return (
     <PageLayout>
@@ -86,45 +64,47 @@ function EntityPageContent () {
             )}
           </div>
 
-          {isLoadingEntityDetails ? (
+          {!entityDetails ? (
             <div className='space-y-2 mt-4'>
               <Skeleton className='h-6 w-48' />
             </div>
           ) : (
-            entityDetails && (
-              <div className='space-y-0'>
-                {entityDetails.url && (
-                  <MetadataItem label='Website' icon={LinkIcon}>
-                    <a
-                      href={entityDetails.url}
-                      target='_blank'
-                      rel='noopener noreferrer'
-                      className='text-un-blue underline break-all hover:text-un-blue/80 transition-colors'
-                    >
-                      {formatUrlForDisplay(entityDetails.url)}
-                    </a>
-                  </MetadataItem>
-                )}
-                {entityDetails.transparency_portal_link && (
-                  <MetadataItem label='Transparency Portal' icon={LinkIcon}>
-                    <a
-                      href={entityDetails.transparency_portal_link}
-                      target='_blank'
-                      rel='noopener noreferrer'
-                      className='text-un-blue underline break-all hover:text-un-blue/80 transition-colors'
-                    >
-                      {formatUrlForDisplay(entityDetails.transparency_portal_link)}
-                    </a>
-                  </MetadataItem>
-                )}
-              </div>
-            )
+            <div className='space-y-0'>
+              {entityDetails.url && (
+                <MetadataItem label='Website' icon={LinkIcon}>
+                  <a
+                    href={entityDetails.url}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    className='text-un-blue underline break-all hover:text-un-blue/80 transition-colors'
+                  >
+                    {formatUrlForDisplay(entityDetails.url)}
+                  </a>
+                </MetadataItem>
+              )}
+              {entityDetails.transparency_portal_link && (
+                <MetadataItem label='Transparency Portal' icon={LinkIcon}>
+                  <a
+                    href={entityDetails.transparency_portal_link}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    className='text-un-blue underline break-all hover:text-un-blue/80 transition-colors'
+                  >
+                    {formatUrlForDisplay(entityDetails.transparency_portal_link)}
+                  </a>
+                </MetadataItem>
+              )}
+            </div>
           )}
         </div>
       </div>
 
-      {/* Mandate Explorer - now renders sidebars internally */}
-      <MandateExplorer pageType='entity' entityFilter={entityName} />
+      {/* Mandate Explorer - now passes callback to receive entity details */}
+      <MandateExplorer 
+        pageType='entity' 
+        entityFilter={entityName}
+        onEntityDetailsLoaded={handleEntityDetailsLoaded}
+      />
     </PageLayout>
   )
 }

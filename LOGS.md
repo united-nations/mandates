@@ -930,10 +930,43 @@ Add `prefetch={false}` to Link components in sidebars to prevent automatic prefe
 ## Next Steps:
 - [x] Implement prefetch={false} on sidebar Link components
 - [x] Apply prefetch={false} to mandate list entity badges to prevent mass prefetching
-- [ ] Test performance impact and user experience
+- [x] Test performance impact and user experience
 
 ## Implementation Completed:
 - Added `prefetch={false}` to EntityListSidebar Link components
 - Added `prefetch={false}` to OrganListSidebar Link components  
 - Added `prefetch={false}` to MandateList entity badge Link components
 - Main navigation links (layout.tsx) kept with prefetching enabled for better UX
+
+## Duplicate API Calls Issue Fixed:
+
+### Problem Identified:
+Entity/organ pages were making **3 API calls** instead of 1:
+1. `mandates?entity=DPPA&page=1&limit=10&sort_by=citing_entities_desc` ✅ (correct)
+2. `mandates?limit=1` ❌ (separate call for entity/organ details)
+3. `mandates?entity=DPPA&page=1&limit=10&sort_by=citing_entities_desc` ✅ (duplicate from FilterContext)
+
+### Root Causes:
+1. **Separate API call for details**: Entity/organ pages made additional `/api/mandates?limit=1` call for details
+2. **FilterContext double state updates**: Two separate useEffect hooks caused duplicate MandateExplorer calls
+3. **Inefficient data flow**: Two components making separate API calls for related data
+
+### Fixes Applied:
+1. **Eliminated separate details call**: Entity/organ pages now get details from MandateExplorer API response via callback
+2. **Consolidated FilterContext useEffect**: Combined two useEffect hooks into one to prevent double state updates
+3. **Optimized data flow**: Single API call provides all data needed for both components
+
+### Implementation Changes:
+- Modified `src/app/entity/[entity]/page.tsx` to use callback pattern instead of separate API call
+- Modified `src/app/organ/[organ]/page.tsx` to use callback pattern instead of separate API call
+- Updated `src/components/mandate-explorer.tsx` to accept and call detail loading callbacks
+- Fixed `src/contexts/FilterContext.tsx` to use single useEffect for pathname and searchParams
+
+### Expected Result:
+- **Entity/organ pages now make only 1 API call** instead of 3
+- **Faster page loads** due to reduced network requests
+- **Same user experience** with optimized data flow
+- **Better performance** from consolidated state management
+
+## Status: ✅ COMPLETED
+All duplicate API call issues have been resolved. Entity and organ pages now efficiently load all data with a single API request.
