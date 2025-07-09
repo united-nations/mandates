@@ -15,6 +15,8 @@ interface CrossCitationsSidebarProps {
   pageType: 'main' | 'entity' | 'organ'
   entityFilter?: string
   organFilter?: string
+  hideHeader?: boolean
+  borderless?: boolean
 }
 
 export function CrossCitationsSidebar({ 
@@ -23,7 +25,9 @@ export function CrossCitationsSidebar({
   isLoading = false,
   pageType,
   entityFilter,
-  organFilter
+  organFilter,
+  hideHeader = false,
+  borderless = false
 }: CrossCitationsSidebarProps) {
   const { filters, setFilter } = useFilters();
 
@@ -107,6 +111,8 @@ export function CrossCitationsSidebar({
           maxItemsBeforeExpand={30}
           variant="filter"
           emptyMessage="No cross-citations found"
+          hideHeader={hideHeader}
+          borderless={borderless}
         />
       )}
       
@@ -124,6 +130,8 @@ export function CrossCitationsSidebar({
           maxItemsBeforeExpand={30}
           variant="filter"
           emptyMessage="No related organs found"
+          hideHeader={hideHeader}
+          borderless={borderless}
         />
       )}
     </>

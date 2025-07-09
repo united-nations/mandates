@@ -199,6 +199,52 @@ of todos and sub-todos and their progress. Do not modify this paragraph but use 
    - The problem is that `EntityName` component makes individual API calls for each entity
    - Since there are many entities displayed, this creates dozens of API calls
 
+## Latest Changes - Mobile Sidebar Enhancement (December 2024)
+
+### Problem Analysis:
+- User requested that mobile view show all applicable sidebars for each page type, not just cross-citations
+- Currently entity pages only showed cross-citations sidebar on mobile
+- Organ pages showed no sidebars at all on mobile
+- Main page already had collapsible sidebars working correctly
+
+### Solution Implemented:
+- [x] **Updated mobile view structure** - Now shows all applicable sidebars for each page type
+- [x] **Added collapsible accordion pattern** - Used same UI pattern as main page
+- [x] **Entity pages mobile view** - Now shows both Cross-Citations sidebar AND UN Organs sidebar
+- [x] **Organ pages mobile view** - Now shows UN Entities sidebar (was missing before)
+- [x] **Enhanced CrossCitationsSidebar component** - Added hideHeader and borderless props support
+- [x] **Consistent accordion UI** - All mobile sidebars now use same collapsible pattern with icons
+
+### Technical Details:
+- Added Accordion component imports to mandate-explorer.tsx
+- Updated CrossCitationsSidebar interface to accept hideHeader and borderless props
+- Modified CrossCitationsSidebar to pass these props to GenericSidebar components
+- OrganListSidebar and EntityListSidebar already supported these props
+- Used same accordion structure as CollapsibleSidebars component for consistency
+
+### Result:
+- Mobile users now have access to same sidebar functionality as desktop users
+- All page types show appropriate sidebars in collapsed/expandable format
+- Consistent UI pattern across all mobile sidebar implementations
+
+### DRY Refactoring (December 2024):
+- [x] **Created reusable SidebarAccordion component** - Extracted repetitive accordion structure
+- [x] **Refactored mandate-explorer.tsx** - Entity and organ page mobile sidebars
+- [x] **Refactored collapsible-sidebars.tsx** - Main page mobile sidebars
+- [x] **Eliminated code duplication** - Removed ~90 lines of repetitive accordion JSX
+- [x] **Improved maintainability** - Single component to maintain accordion behavior
+- [x] **Type-safe implementation** - Proper TypeScript interfaces for accordion items
+- [x] **Consistent styling** - All accordion items use same styling and behavior
+
+**Technical improvements:**
+- Created `src/components/ui/sidebar-accordion.tsx` as reusable component
+- Accepts array of items with id, title, icon, and content
+- Handles all accordion styling and structure internally
+- Reduced mandate-explorer.tsx complexity by ~50 lines
+- **Eliminated collapsible-sidebars.tsx entirely** - Replaced with direct SidebarAccordion usage
+- **All accordion usage now centralized** - Only remains in the reusable component
+- **Further consolidation** - Moved data transformation logic inline, removing intermediate wrapper
+
 ## Bug Fix: Double-Counting Active Filters
 
 ### Problem:

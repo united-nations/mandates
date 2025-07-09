@@ -12,7 +12,8 @@ import {
   Building,
   Quote,
   ChevronUp,
-  ChevronDown
+  ChevronDown,
+  Link as LinkIcon
 } from 'lucide-react'
 import { MandateDetails } from '@/components/mandate-details'
 import { DataCard } from '@/components/data-card'
@@ -23,8 +24,9 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
+import { SidebarAccordion } from '@/components/ui/sidebar-accordion'
 import { explainerTexts } from '@/lib/explainer-texts'
-import { CollapsibleSidebars } from '@/components/collapsible-sidebars'
+
 import { EntityListSidebar } from '@/components/entity-list-sidebar'
 import { OrganListSidebar } from '@/components/organ-list-sidebar'
 import { CrossCitationsSidebar } from '@/components/cross-citations-sidebar'
@@ -251,27 +253,113 @@ export function MandateExplorer ({
         <div className='mt-6 pt-4'>
           {/* Collapsible sidebars for smaller screens (preserved exact logic) */}
           {pageType === 'main' && (
-            <CollapsibleSidebars
-              entities={apiData?.sidebar?.entities || []}
-              allEntities={apiData?.reference?.entities || []}
-              organs={apiData?.sidebar?.organs || []}
-              allOrgans={apiData?.reference?.organs || []}
-              isLoading={isLoading}
+            <SidebarAccordion
+              items={[
+                {
+                  id: 'entities',
+                  title: 'UN Entities',
+                  icon: Building,
+                  content: (
+                    <EntityListSidebar 
+                      entities={apiData?.sidebar?.entities || []}
+                      allEntities={allEntities.map(entity => ({
+                        entity: entity.entity,
+                        entity_long: entity.entity_long,
+                        count: 0
+                      }))}
+                      isLoading={isLoading}
+                      hideHeader={true} 
+                      borderless={true}
+                      pageType="main"
+                    />
+                  )
+                },
+                {
+                  id: 'organs',
+                  title: 'UN Organs',
+                  icon: Landmark,
+                  content: (
+                    <OrganListSidebar 
+                      organs={apiData?.sidebar?.organs || []}
+                      allOrgans={allOrgans.map(organ => ({
+                        short: organ.short,
+                        long: organ.long,
+                        count: 0
+                      }))}
+                      isLoading={isLoading}
+                      hideHeader={true} 
+                      borderless={true}
+                      pageType="main"
+                    />
+                  )
+                }
+              ]}
             />
           )}
 
           {/* Collapsible sidebars for entity pages */}
           {pageType === 'entity' && (
-            <div className='lg:hidden mb-6 max-w-md'>
-              <CrossCitationsSidebar
-                crossCitations={crossCitations}
-                allEntities={allEntities}
-                isLoading={isLoading}
-                pageType={pageType}
-                entityFilter={entityFilter}
-                organFilter={organFilter}
-              />
-            </div>
+            <SidebarAccordion
+              items={[
+                {
+                  id: 'cross-citations',
+                  title: 'Cross-Citations',
+                  icon: LinkIcon,
+                  content: (
+                    <CrossCitationsSidebar
+                      crossCitations={crossCitations}
+                      allEntities={allEntities}
+                      isLoading={isLoading}
+                      pageType={pageType}
+                      entityFilter={entityFilter}
+                      organFilter={organFilter}
+                      hideHeader={true}
+                      borderless={true}
+                    />
+                  )
+                },
+                {
+                  id: 'organs',
+                  title: 'UN Organs',
+                  icon: Landmark,
+                  content: (
+                    <OrganListSidebar
+                      organs={apiData?.sidebar?.organs || []}
+                      allOrgans={allOrgans}
+                      isLoading={isLoading}
+                      pageType={pageType}
+                      entityFilter={entityFilter}
+                      hideHeader={true}
+                      borderless={true}
+                    />
+                  )
+                }
+              ]}
+            />
+          )}
+
+          {/* Collapsible sidebars for organ pages */}
+          {pageType === 'organ' && (
+            <SidebarAccordion
+              items={[
+                {
+                  id: 'entities',
+                  title: 'UN Entities',
+                  icon: Building,
+                  content: (
+                    <EntityListSidebar
+                      entities={apiData?.sidebar?.entities || []}
+                      allEntities={allEntities}
+                      isLoading={isLoading}
+                      pageType={pageType}
+                      organFilter={organFilter}
+                      hideHeader={true}
+                      borderless={true}
+                    />
+                  )
+                }
+              ]}
+            />
           )}
 
           {/* Main content with mandates list and sidebars */}
