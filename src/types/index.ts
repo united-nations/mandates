@@ -160,8 +160,8 @@ export interface ApiResponse {
   
   // Filter options for dropdowns
   filterOptions: {
-    programmes: string[]
-    subjects: string[]
+    programmes: { value: string; count: number }[]
+    subjects: { value: string; count: number }[]
     yearRange: { min: number; max: number }
     yearDistribution: Record<string, number>
   }

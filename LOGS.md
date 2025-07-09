@@ -1064,3 +1064,118 @@ The API was still calculating and returning entity/organ dropdown options in `fi
 The filterOptions cleanup has been completed. Only necessary data for actual dropdown menus is now calculated and returned.
 
 ---
+
+# 🎯 CONTEXT-AWARE FILTER OPTIONS
+
+## Problem Identified:
+Filter options (programmes, subjects, year distribution) were calculated from ALL mandates, which meant they didn't reflect the current filter context.
+
+## Example Issues:
+- On HRC organ page → year distribution showed ALL years, not just HRC years
+- With keyword search → programme options showed counts for all data, not search results
+- Users couldn't see what was actually available within their current filter state
+
+## Solution Applied:
+Changed `calculateFilterOptions` to use `filteredMandates` instead of all `mandates`:
+
+```typescript
+// Before (WRONG):
+const filterOptions = calculateFilterOptions(mandates, entityMap, organMap)
+
+// After (CORRECT):
+const filterOptions = calculateFilterOptions(filteredMandates, entityMap, organMap)
+```
+
+## Benefits:
+- **📊 Context-aware counts**: Filter options now show counts based on current filters
+- **🔍 Better user experience**: Users see what's actually available in their current context
+- **📈 More informative**: Year distribution, programme options reflect filtered state
+- **⚡ Intuitive behavior**: Options update dynamically as filters change
+
+## Examples:
+- **HRC organ page**: Year distribution shows only years with HRC mandates
+- **Keyword search**: Programme options show counts matching the search term
+- **Subject filter**: Year distribution shows years for that subject only
+- **Multiple filters**: All options reflect the intersection of active filters
+
+## Status: ✅ COMPLETED
+Filter options are now context-aware and reflect the current filter state.
+
+---
+
+# 🎨 ENHANCED CONTEXT-AWARE FILTER OPTIONS WITH COUNTS
+
+## Problem Identified:
+While year filtering was context-aware, programme and subject filters needed a more sophisticated approach:
+- Show ALL available options (not just relevant ones)
+- Display count information for each option
+- Grey out options with 0 count in current context
+- Maintain good UX by showing what's available vs. unavailable
+
+## Solution Implemented:
+
+### 1. **Hybrid Approach**:
+- **Year filter**: Context-aware (only show years with data in current filter)
+- **Programme/Subject filters**: Show all options with counts, grey out count=0
+
+### 2. **API Changes**:
+```typescript
+// New calculateFilterOptions signature
+function calculateFilterOptions(
+  allMandates: Mandate[],     // For getting all available options
+  filteredMandates: Mandate[], // For calculating counts in current context
+  entityMap: Map<string, Entity>,
+  organMap: Map<string, Organ>
+)
+
+// New return format with counts
+{
+  programmes: { value: string; count: number }[],
+  subjects: { value: string; count: number }[],
+  yearRange: { min: number; max: number },
+  yearDistribution: Record<string, number>
+}
+```
+
+### 3. **Frontend Updates**:
+- **SearchableDropdownOption**: Added `disabled?: boolean` property
+- **AdvancedSearch**: Updated to handle new option format with counts
+- **SearchableDropdown**: Added styling for disabled options (opacity-50, cursor-not-allowed)
+- **Option labels**: Show counts like "Climate Change (5)" or "Peacekeeping (0)"
+
+### 4. **User Experience**:
+- **Clear context**: Users see exactly how many results each option will yield
+- **Available vs unavailable**: Greyed out options show count=0 but remain visible
+- **Informed decisions**: Users can see the impact of their filter choices
+- **No surprises**: No options disappear, just become unavailable
+
+## Examples:
+
+### On HRC organ page:
+- **Programme**: "Peace and Security (12)" ✅, "Climate Change (0)" ❌ (greyed)
+- **Subject**: "Human Rights (8)" ✅, "Economic Development (0)" ❌ (greyed)
+- **Year**: Only shows 2018-2024 (years with HRC mandates)
+
+### With keyword search "climate":
+- **Programme**: "Environment (15)" ✅, "Peacekeeping (0)" ❌ (greyed)
+- **Subject**: "Climate Change (20)" ✅, "Human Rights (0)" ❌ (greyed)
+- **Year**: Shows years with climate-related mandates
+
+## Technical Implementation:
+
+### Data Flow:
+1. **API**: Calculate all options from `allMandates`
+2. **API**: Calculate counts from `filteredMandates` 
+3. **Frontend**: Add count to labels and disable count=0 options
+4. **UI**: Style disabled options with reduced opacity
+
+### Benefits:
+- **📊 Rich context**: Users see exact counts for each option
+- **🎯 Better UX**: No disappearing options, just unavailable ones
+- **⚡ Informed filtering**: Users understand the impact of their choices
+- **🔍 Discoverable**: All options remain visible for exploration
+
+## Status: ✅ COMPLETED
+Enhanced context-aware filter options with counts and greyed-out unavailable options implemented successfully.
+
+---

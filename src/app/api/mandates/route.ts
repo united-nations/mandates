@@ -76,7 +76,7 @@ export async function GET (request: Request) {
       filters,
       mandates
     )
-    const filterOptions = calculateFilterOptions(mandates, entityMap, organMap)
+    const filterOptions = calculateFilterOptions(mandates, filteredMandates, entityMap, organMap)
 
     // Build response
     const response: ApiResponse = {
@@ -360,31 +360,67 @@ function calculateCrossCitations (
  * Calculate filter options for dropdowns
  */
 function calculateFilterOptions (
-  mandates: Mandate[],
+  allMandates: Mandate[],
+  filteredMandates: Mandate[],
   entityMap: Map<string, Entity>,
   organMap: Map<string, Organ>
 ) {
-  const programmes = new Set<string>()
-  const subjects = new Set<string>()
-  const years = new Set<number>()
-
-  mandates.forEach(mandate => {
+  // Get all possible programmes and subjects from all mandates
+  const allProgrammes = new Set<string>()
+  const allSubjects = new Set<string>()
+  
+  allMandates.forEach(mandate => {
     // Programmes
     mandate.citation_info.forEach(info => {
       if (info.programme_title) {
-        programmes.add(info.programme_title)
+        allProgrammes.add(info.programme_title)
       }
     })
 
     // Subjects
     mandate.subject_headings.forEach(subject => {
-      subjects.add(subject)
+      allSubjects.add(subject)
+    })
+  })
+
+  // Calculate counts for programmes and subjects from filtered mandates
+  const programmeCounts = new Map<string, number>()
+  const subjectCounts = new Map<string, number>()
+  const years = new Set<number>()
+
+  filteredMandates.forEach(mandate => {
+    // Programme counts
+    mandate.citation_info.forEach(info => {
+      if (info.programme_title) {
+        programmeCounts.set(
+          info.programme_title,
+          (programmeCounts.get(info.programme_title) || 0) + 1
+        )
+      }
     })
 
-    // Years
+    // Subject counts
+    mandate.subject_headings.forEach(subject => {
+      subjectCounts.set(subject, (subjectCounts.get(subject) || 0) + 1)
+    })
+
+    // Years (context-aware)
     years.add(parseInt(mandate.year))
   })
 
+  // Build programme options with counts (including 0 counts)
+  const programmeOptions = Array.from(allProgrammes).map(programme => ({
+    value: programme,
+    count: programmeCounts.get(programme) || 0
+  })).sort((a, b) => a.value.localeCompare(b.value))
+
+  // Build subject options with counts (including 0 counts)
+  const subjectOptions = Array.from(allSubjects).map(subject => ({
+    value: subject,
+    count: subjectCounts.get(subject) || 0
+  })).sort((a, b) => a.value.localeCompare(b.value))
+
+  // Year range and distribution (context-aware)
   const sortedYears = Array.from(years).sort((a, b) => a - b)
   const yearRange = {
     min: sortedYears[0] || 2000,
@@ -392,15 +428,15 @@ function calculateFilterOptions (
   }
 
   const yearDistribution = sortedYears.reduce((acc, year) => {
-    acc[year.toString()] = mandates.filter(
+    acc[year.toString()] = filteredMandates.filter(
       m => parseInt(m.year) === year
     ).length
     return acc
   }, {} as Record<string, number>)
 
   return {
-    programmes: Array.from(programmes).sort(),
-    subjects: Array.from(subjects).sort(),
+    programmes: programmeOptions,
+    subjects: subjectOptions,
     yearRange,
     yearDistribution
   }

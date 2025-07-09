@@ -14,6 +14,7 @@ export interface SearchableDropdownOption {
   value: string;
   label: string;
   description?: string;
+  disabled?: boolean;
 }
 
 interface SearchableDropdownProps {
@@ -72,7 +73,11 @@ export function SearchableDropdown({
     }
   }, [highlightedIndex]);
 
-  const handleSelect = (selectedValue: string) => {
+  const handleSelect = (selectedValue: string, option?: SearchableDropdownOption) => {
+    // Prevent selecting disabled options
+    if (option && option.disabled) {
+      return;
+    }
     onChange(selectedValue);
     setOpen(false);
   };
@@ -89,8 +94,8 @@ export function SearchableDropdown({
         e.preventDefault();
         setHighlightedIndex((prev) => {
           let next = prev < filteredOptions.length - 1 ? prev + 1 : 0;
-          // Skip dividers
-          while (next < filteredOptions.length && filteredOptions[next]?.value === "---divider---") {
+          // Skip dividers and disabled options
+          while (next < filteredOptions.length && (filteredOptions[next]?.value === "---divider---" || filteredOptions[next]?.disabled)) {
             next = next < filteredOptions.length - 1 ? next + 1 : 0;
             if (next === prev) break; // Prevent infinite loop
           }
@@ -101,8 +106,8 @@ export function SearchableDropdown({
         e.preventDefault();
         setHighlightedIndex((prev) => {
           let next = prev > 0 ? prev - 1 : filteredOptions.length - 1;
-          // Skip dividers
-          while (next >= 0 && filteredOptions[next]?.value === "---divider---") {
+          // Skip dividers and disabled options
+          while (next >= 0 && (filteredOptions[next]?.value === "---divider---" || filteredOptions[next]?.disabled)) {
             next = next > 0 ? next - 1 : filteredOptions.length - 1;
             if (next === prev) break; // Prevent infinite loop
           }
@@ -111,8 +116,8 @@ export function SearchableDropdown({
         break;
       case 'Enter':
         e.preventDefault();
-        if (highlightedIndex >= 0 && filteredOptions[highlightedIndex]) {
-          handleSelect(filteredOptions[highlightedIndex].value);
+        if (highlightedIndex >= 0 && filteredOptions[highlightedIndex] && !filteredOptions[highlightedIndex].disabled) {
+          handleSelect(filteredOptions[highlightedIndex].value, filteredOptions[highlightedIndex]);
         }
         break;
       case 'Escape':
@@ -208,10 +213,12 @@ export function SearchableDropdown({
                       size="sm"
                       className={cn(
                         "w-full justify-between font-normal h-auto py-2",
-                        highlightedIndex === index && "!bg-un-blue/10 !text-un-blue"
+                        highlightedIndex === index && "!bg-un-blue/10 !text-un-blue",
+                        option.disabled && "opacity-50 cursor-not-allowed"
                       )}
-                      onClick={() => handleSelect(option.value)}
+                      onClick={() => handleSelect(option.value, option)}
                       onMouseEnter={() => setHighlightedIndex(index)}
+                      disabled={option.disabled}
                     >
                       <div className="flex flex-col items-start text-left flex-1 min-w-0">
                         <span className="font-medium whitespace-normal text-left">{option.label}</span>

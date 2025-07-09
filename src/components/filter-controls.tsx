@@ -19,8 +19,8 @@ interface Entity {
 }
 
 interface FilterControlsProps {
-  programmeOptions: string[];
-  subjectOptions: string[];
+  programmeOptions: { value: string; count: number }[];
+  subjectOptions: { value: string; count: number }[];
   yearRange: { min: number; max: number } | null;
   yearDistribution: { [year: string]: number };
   showAdvancedSearch: boolean;

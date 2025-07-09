@@ -13,8 +13,8 @@ interface AdvancedSearchProps {
   programme: string;
   subject: string;
   budgetDocument: string;
-  programmeOptions: string[];
-  subjectOptions: string[];
+  programmeOptions: { value: string; count: number }[];
+  subjectOptions: { value: string; count: number }[];
   yearRange: { min: number; max: number } | null;
   yearDistribution: { [year: string]: number };
   selectedYearRange: [number, number] | null;
@@ -56,13 +56,15 @@ export function AdvancedSearch({
   }, [openTooltip]);
 
   const programmeDropdownOptions = programmeOptions.map(p => ({ 
-    value: p, 
-    label: toTitleCase(p) 
+    value: p.value, 
+    label: `${toTitleCase(p.value)} (${p.count})`,
+    disabled: p.count === 0
   }));
 
   const subjectDropdownOptions = subjectOptions.map(s => ({ 
-    value: s, 
-    label: toTitleCase(s) 
+    value: s.value, 
+    label: `${toTitleCase(s.value)} (${s.count})`,
+    disabled: s.count === 0
   }));
 
   const toggleTooltip = (tooltipId: string) => {
