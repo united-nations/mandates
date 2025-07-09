@@ -902,3 +902,38 @@ The **FilterContext is URL-based** and persists across all pages. When someone n
 - Consistent URL display across all pages
 - Easier maintenance and future modifications
 - Cleaner component code without inline formatting logic
+
+## Analysis: Next.js Link Prefetching Issue
+
+### Problem Identified:
+Network requests like `UNHCR?_rsc=1ld0r`, `DESA?_rsc=1ld0r`, etc. are **Next.js automatically prefetching entity pages**.
+
+### Root Cause:
+1. **EntityListSidebar** renders `Link` components for each entity when `pageType === 'main'`
+2. **MandateList** renders entity badges as `Link` components
+3. **Next.js automatically prefetches all visible links** by default
+4. This causes ~30-40 prefetch requests for entity pages on main page load
+
+### Code Locations:
+- `src/components/entity-list-sidebar.tsx` lines 97-108
+- `src/components/mandate-list.tsx` lines 41-48
+- `src/components/organ-list-sidebar.tsx` (similar pattern)
+
+### Solutions Available:
+1. **Disable prefetching on sidebar links** (recommended)
+2. **Disable prefetching globally** in next.config.ts
+3. **Use conditional prefetching** based on user interaction
+
+### Recommended Fix:
+Add `prefetch={false}` to Link components in sidebars to prevent automatic prefetching while preserving it for main content links.
+
+## Next Steps:
+- [x] Implement prefetch={false} on sidebar Link components
+- [x] Apply prefetch={false} to mandate list entity badges to prevent mass prefetching
+- [ ] Test performance impact and user experience
+
+## Implementation Completed:
+- Added `prefetch={false}` to EntityListSidebar Link components
+- Added `prefetch={false}` to OrganListSidebar Link components  
+- Added `prefetch={false}` to MandateList entity badge Link components
+- Main navigation links (layout.tsx) kept with prefetching enabled for better UX

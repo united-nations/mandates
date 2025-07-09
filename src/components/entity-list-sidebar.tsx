@@ -101,6 +101,7 @@ export function EntityListSidebar({
                     key={entity.entity} 
                     href={`/entity/${encodeURIComponent(entity.entity)}`}
                     className="block"
+                    prefetch={false}
                   >
                     <SidebarListItem
                       label={

@@ -43,7 +43,7 @@ const EntityBadges = ({ entities, entitiesData }: { entities: string[]; entities
   return (
     <div className="flex flex-wrap gap-1 items-center">
       {validEntities.map(entity => (
-        <Link key={entity} href={`/entity/${encodeURIComponent(entity)}`}>
+        <Link key={entity} href={`/entity/${encodeURIComponent(entity)}`} prefetch={false}>
           <Badge variant="secondary" className="font-bold text-xs !bg-un-blue/75 !text-white hover:!bg-un-blue/60 cursor-pointer transition-colors">
             <EntityName 
               entityName={entity} 

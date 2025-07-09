@@ -106,6 +106,7 @@ export function OrganListSidebar({
                     key={organ.short} 
                     href={`/organ/${encodeURIComponent(organ.short)}`}
                     className="block"
+                    prefetch={false}
                   >
                     <SidebarListItem
                       label={<OrganName organName={organ.short} allOrgans={allOrgans} showUnderline={true} />}
