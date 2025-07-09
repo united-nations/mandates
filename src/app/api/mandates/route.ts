@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import DataService from '@/lib/data-service'
+import { safeHighlightSearchTerms, toTitleCase } from '@/lib/utils'
 import type {
   Mandate,
   Entity,
@@ -42,12 +43,22 @@ export async function GET (request: Request) {
     const { mandates, entities, organs, entityMap, organMap } =
       await DataService.getAllData()
 
+    // Enrich mandates with entity/organ details (includes displayTitle)
+    const enrichedMandates = enrichMandates(
+      mandates,
+      entityMap,
+      organMap
+    )
+
     // Apply filters
-    const filteredMandates = filterMandates(mandates, filters)
+    const filteredMandates = filterMandates(enrichedMandates, filters)
+
+    // Add highlighting when keyword search is active
+    const highlightedMandates = addHighlighting(filteredMandates, filters.keyword)
 
     // Sort mandates
     const sortedMandates = sortMandates(
-      filteredMandates,
+      highlightedMandates,
       filters.sort_by || 'citing_entities_desc'
     )
 
@@ -58,13 +69,6 @@ export async function GET (request: Request) {
     const paginatedMandates = sortedMandates.slice(
       startIndex,
       startIndex + limit
-    )
-
-    // Enrich mandates with entity/organ details
-    const enrichedMandates = enrichMandates(
-      paginatedMandates,
-      entityMap,
-      organMap
     )
 
     // Calculate aggregations
@@ -80,7 +84,7 @@ export async function GET (request: Request) {
 
     // Build response
     const response: ApiResponse = {
-      mandates: enrichedMandates,
+      mandates: paginatedMandates,
       pagination: {
         page,
         limit,
@@ -172,13 +176,12 @@ function filterMandates (
     )
   }
 
-  // Keyword search (search in title, description, and subject headings)
+  // Keyword search (search in displayTitle, document symbol, and subject headings)
   if (filters.keyword) {
     const keyword = filters.keyword.toLowerCase()
     filtered = filtered.filter(mandate => {
       const searchableText = [
-        mandate.title || '',
-        mandate.description || '',
+        mandate.displayTitle || '',
         mandate.full_document_symbol || '',
         ...(mandate.subject_headings || [])
       ]
@@ -217,6 +220,56 @@ function sortMandates (mandates: Mandate[], sortBy: string): Mandate[] {
 }
 
 /**
+ * Add highlighting to mandates when keyword search is active
+ */
+function addHighlighting(mandates: Mandate[], keyword?: string): Mandate[] {
+  if (!keyword) return mandates;
+  
+  return mandates.map(mandate => {
+    // Create highlighted fields object
+    const highlightedFields: { [key: string]: string } = {};
+    
+    // Highlight the displayTitle (already normalized in enrichMandates)
+    if (mandate.displayTitle) {
+      const highlightedTitle = safeHighlightSearchTerms(mandate.displayTitle, keyword);
+      if (highlightedTitle && highlightedTitle !== mandate.displayTitle) {
+        highlightedFields.title = highlightedTitle;
+      }
+    }
+    
+    // Note: Description highlighting removed as it's already used as title fallback and would be duplicated
+    
+    // Highlight full document symbol
+    if (mandate.full_document_symbol) {
+      const highlightedSymbol = safeHighlightSearchTerms(mandate.full_document_symbol, keyword);
+      if (highlightedSymbol && highlightedSymbol !== mandate.full_document_symbol) {
+        highlightedFields.full_document_symbol = highlightedSymbol;
+      }
+    }
+    
+    // Highlight subject headings - only include those that actually have matches
+    if (mandate.subject_headings && mandate.subject_headings.length > 0) {
+      const matchedSubjects = mandate.subject_headings
+        .map(subject => {
+          const titleCasedSubject = toTitleCase(subject);
+          const highlighted = safeHighlightSearchTerms(titleCasedSubject, keyword);
+          return highlighted !== titleCasedSubject ? highlighted : null;
+        })
+        .filter(highlighted => highlighted !== null) as string[];
+      
+      if (matchedSubjects.length > 0) {
+        highlightedFields.subject_headings = matchedSubjects.join(', ');
+      }
+    }
+    
+    return {
+      ...mandate,
+      highlightedFields: Object.keys(highlightedFields).length > 0 ? highlightedFields : undefined
+    };
+  });
+}
+
+/**
  * Enrich mandates with entity and organ details
  */
 function enrichMandates (
@@ -229,7 +282,14 @@ function enrichMandates (
     entity_long: mandate.entities
       .map(entity => entityMap.get(entity)?.entity_long || entity)
       .join(', '),
-    body_long: organMap.get(mandate.body)?.long || mandate.body
+    body_long: organMap.get(mandate.body)?.long || mandate.body,
+    displayTitle: (mandate.uniform_title && mandate.uniform_title.length > 0 && mandate.uniform_title[0].trim()) 
+      ? mandate.uniform_title[0].trim()
+      : (mandate.title && mandate.title.trim()) 
+        ? mandate.title.trim()
+        : (mandate.description && mandate.description.trim()) 
+          ? mandate.description.trim()
+          : 'Untitled'
   }))
 }
 

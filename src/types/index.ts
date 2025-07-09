@@ -30,6 +30,7 @@ export interface Mandate {
   citation_info: CitationInfo[];
   // Enriched fields (added by API)
   body_long?: string;
+  displayTitle?: string;
   document_symbol: string | null;
   classification_code: string[] | null;
   classification: string[] | null;

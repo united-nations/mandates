@@ -198,6 +198,61 @@ of todos and sub-todos and their progress. Do not modify this paragraph but use 
    - The main sidebar components are actually fine - they receive data as props
    - The problem is that `EntityName` component makes individual API calls for each entity
    - Since there are many entities displayed, this creates dozens of API calls
+
+## Search Result Highlighting Implementation
+
+### Problem Analysis:
+- Keyword search was working but results weren't visually highlighted
+- Infrastructure was already in place (`HighlightedContent` component, `highlightedFields` on Mandate type)
+- API wasn't providing highlighted content when keyword search was active
+
+### Solution Implemented:
+1. **[x] Added highlighting utility functions** in `src/lib/utils.ts`:
+   - `highlightSearchTerms()` - highlights search terms with HTML mark tags
+   - `safeHighlightSearchTerms()` - safely handles null/undefined values
+   - Uses proper regex escaping for special characters
+
+2. **[x] Modified API to add highlighting** in `src/app/api/mandates/route.ts`:
+   - Added `addHighlighting()` function that processes mandates when keyword is present
+   - Highlights in title, full_document_symbol, and subject_headings (description removed to avoid duplication)
+   - Only shows subject headings that actually have matches (not all subject headings)
+   - Applies title case formatting to subject headings using `toTitleCase()` utility
+   - Only applies highlighting when there's an active keyword search
+   - Integrated into main API flow after filtering but before sorting
+
+3. **[x] Enhanced MandateList component** in `src/components/mandate-list.tsx`:
+   - Added highlighting support for document symbol display
+   - ~~Added search icon visual cue when highlighting is active~~ (removed per user request)
+   - Added display of matches in subject headings (fields not normally shown)
+   - Removed description highlighting to avoid duplication with title fallback
+   - Maintained modular filter approach
+
+4. **[x] CSS styles already in place** in `src/app/globals.css`:
+   - UN Blue themed highlighting with proper contrast
+   - Dark mode support
+   - Responsive design considerations
+
+### Key Features:
+- **Modular filtering**: Search highlighting works alongside other filters
+- **Field-specific highlighting**: Highlights in title, document symbol, and subject headings (description removed to avoid duplication)
+- **Hidden field visibility**: Shows only matched subject headings (not all subject headings)
+- **Title case formatting**: Subject headings are displayed in proper title case format
+- **Smart truncation**: Limits displayed match snippets to 200 characters with ellipsis
+- **Performance**: Only processes highlighting when keyword search is active
+
+### Latest Changes (Title Display Cleanup):
+- **[x] Unified highlighting properties**: Removed redundant `highlightedTitle`, now only uses `highlightedFields.title`
+- **[x] Removed SC special treatment**: No more hardcoded Security Council logic
+- **[x] Removed fallback field**: Simplified HighlightedContent component usage
+- **[x] Finalized title display order**: Now uses `uniform_title || title || description` fallback order
+
+### Testing:
+- [ ] Test highlighting with simple keywords
+- [ ] Test highlighting with special characters
+- [ ] Test highlighting combined with other filters
+- [ ] Test highlighting on entity/organ pages
+- [ ] Test highlighting in dark mode
+- [ ] Test new concatenated title display format
    - Plus some filter list components may be making their own calls
 
 3. **Data Already Available But Not Used**:
@@ -1395,3 +1450,67 @@ Create two distinct visual styles:
 
 ## Status: ✅ COMPLETED
 Sidebar visual differentiation is now complete with pronounced differences between navigation and filter functions!
+
+---
+
+# 🧹 CODE QUALITY FIX: ELIMINATE TITLE LOGIC DUPLICATION
+
+## Problem Analysis
+The same title fallback logic existed in **both** backend and frontend:
+- **Backend API**: For determining what text to highlight in search results
+- **Frontend UI**: For determining what title to display
+
+This created a DRY violation where:
+- Changes needed to be made in two places
+- Logic could get out of sync
+- Business logic was scattered across layers
+
+## Goal
+Create single source of truth for title display logic
+
+## Solution Plan
+- [x] Add `displayTitle` field to Mandate type
+- [x] Move title fallback logic to API's `enrichMandates()` function
+- [x] Update highlighting logic to use normalized `displayTitle`
+- [x] Simplify frontend to use `displayTitle` field
+- [x] Update search filtering to use `displayTitle`
+- [x] Move enrichment step before filtering
+
+## ✅ Implementation Details
+
+### 1. **Type Definition Update**
+- Added `displayTitle?: string` to Mandate interface in `src/types/index.ts`
+
+### 2. **API Normalization** 
+- Updated `enrichMandates()` function to include title normalization:
+```typescript
+displayTitle: (mandate.uniform_title && mandate.uniform_title.length > 0 && mandate.uniform_title[0].trim()) 
+  ? mandate.uniform_title[0].trim()
+  : (mandate.title && mandate.title.trim()) 
+    ? mandate.title.trim()
+    : (mandate.description && mandate.description.trim()) 
+      ? mandate.description.trim()
+      : 'Untitled'
+```
+
+### 3. **Highlighting Simplification**
+- **Before**: Complex fallback logic duplicated in highlighting function
+- **After**: Simply highlights `mandate.displayTitle` (already normalized)
+
+### 4. **Frontend Simplification**
+- **Before**: Complex nested ternary for title fallback in MandateList component
+- **After**: Simple `mandate.displayTitle || 'Untitled'`
+
+### 5. **Search Logic Update**
+- Updated keyword search to use `displayTitle` instead of raw `title` field
+- Moved enrichment step before filtering to ensure `displayTitle` is available
+
+## ✅ Benefits Achieved
+- **DRY Principle**: Single source of truth for title logic
+- **Consistency**: Backend and frontend always use same title
+- **Maintainability**: Changes only need to be made in one place
+- **Performance**: No duplicate computation of title logic
+- **Type Safety**: TypeScript ensures displayTitle is properly handled
+
+## Status: ✅ COMPLETED
+Code duplication eliminated! Title logic now exists only in the API enrichment step.

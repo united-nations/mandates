@@ -114,6 +114,7 @@ export function MandateList({ mandates, onMandateClick, organsData, entitiesData
           const hasSearchMatches = (mandate as any).match_details && (mandate as any).match_details.length > 0;
           const searchScore = (mandate as any).searchScore || 0;
           const displaySymbol = mandate.full_document_symbol;
+          const hasHighlighting = (mandate as any).highlightedFields && Object.keys((mandate as any).highlightedFields).length > 0;
           
           return (
             <motion.div
@@ -137,12 +138,8 @@ export function MandateList({ mandates, onMandateClick, organsData, entitiesData
                 <div className="pr-20 sm:pr-32">
                   <h3 className="text-sm sm:text-base font-semibold leading-tight break-words hyphens-auto">
                     <HighlightedContent 
-                      content={(mandate as any).highlightedTitle || (mandate as any).highlightedFields?.title} 
-                      fallback={
-                        mandate.body === "SC" && mandate.uniform_title && mandate.uniform_title.length > 0
-                          ? mandate.uniform_title[0]
-                          : mandate.title || mandate.description || 'Untitled'
-                      } 
+                      content={(mandate as any).highlightedFields?.title} 
+                      fallback={mandate.displayTitle || 'Untitled'} 
                     />
                   </h3>
                 </div>
@@ -152,7 +149,12 @@ export function MandateList({ mandates, onMandateClick, organsData, entitiesData
                     <TooltipTrigger asChild>
                       <div className="flex items-center gap-1.5">
                         <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
-                        <span className="font-medium">{getTruncatedSymbol(displaySymbol)}</span>
+                        <span className="font-medium">
+                          <HighlightedContent 
+                            content={(mandate as any).highlightedFields?.full_document_symbol} 
+                            fallback={getTruncatedSymbol(displaySymbol)}
+                          />
+                        </span>
                       </div>
                     </TooltipTrigger>
                     <TooltipContent>
@@ -198,61 +200,20 @@ export function MandateList({ mandates, onMandateClick, organsData, entitiesData
 
                 </div>
                 
-                {/* Match details and highlighted content */}
-                {/* {hasSearchMatches && (
-                  <div className="text-sm space-y-2">
-                    <div className="flex flex-wrap gap-1 items-center">
-                      <span className="font-medium text-muted-foreground">Matches found in:</span>
-                      {mandate.match_details!.map((detail, idx) => (
-                        <Badge key={idx} variant="outline">
-                          {detail}
-                        </Badge>
-                      ))}
-                    </div>
-                    
-                    {mandate.highlightedFields && Object.entries(mandate.highlightedFields).map(([field, content]) => {
-                      if (field === 'title') return null; // Already shown in title
-                      if (field === 'ai_summary') return null; // Skip AI summary field
-                      
-                      // Ensure content is a string
-                      const contentStr = typeof content === 'string' ? content : '';
-                      
-                      // Truncate if too long
-                      const shouldTruncate = contentStr.length > 200;
-                      const displayContent = shouldTruncate 
-                        ? contentStr.substring(0, 200) + '...' 
-                        : contentStr;
-                      
-                      // Create better field names for display
-                      const getFieldDisplayName = (fieldName: string) => {
-                        const displayNames: { [key: string]: string } = {
-                          'subject_headings': 'Subject Headings',
-                          'abstract': 'Abstract',
-                          'issuing_body': 'Issuing Body',
-                          'entities': 'Entities',
-                          'priority_area': 'Priority Area',
-                          'pillar': 'Pillar',
-                          'programme_titles': 'Programme Titles',
-                          'section_titles': 'Section Titles',
-                          'descriptions': 'Descriptions',
-                          'operative_paragraphs': 'Operative Paragraphs',
-                          'note': 'Notes',
-                          'subtitle': 'Subtitle',
-                          'uniform_title': 'Uniform Title',
-                          'translated_title': 'Translated Title'
-                        };
-                        return displayNames[fieldName] || fieldName.replace('_', ' ');
-                      };
-                      
-                      return (
-                        <div key={field} className="text-sm">
-                          <span className="font-medium text-muted-foreground">{getFieldDisplayName(field)}:</span>{' '}
-                          <span dangerouslySetInnerHTML={{ __html: displayContent }} />
-                        </div>
-                      );
-                    })}
+                {/* Search matches in fields not normally displayed */}
+                {hasHighlighting && (mandate as any).highlightedFields?.subject_headings && (
+                  <div className="text-sm">
+                    <span className="font-medium text-muted-foreground">Subject headings:</span>{' '}
+                    <span 
+                      className="text-slate-700"
+                      dangerouslySetInnerHTML={{ 
+                        __html: (mandate as any).highlightedFields.subject_headings.length > 200 
+                          ? (mandate as any).highlightedFields.subject_headings.substring(0, 200) + '...' 
+                          : (mandate as any).highlightedFields.subject_headings
+                      }} 
+                    />
                   </div>
-                )} */}
+                )}
 
                 {/* Citations and Entities */}
                 {(mandate.num_citations > 0 || (mandate.entities && mandate.entities.length > 0)) && (
