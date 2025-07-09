@@ -281,6 +281,7 @@ function enrichMandates (
   return mandates.map(mandate => ({
     ...mandate,
     entity_long: mandate.entities
+      .filter(entity => entity != null && entity !== '')
       .map(entity => entityMap.get(entity)?.entity_long || entity)
       .join(', '),
     body_long: organMap.get(mandate.body)?.long || mandate.body,
@@ -303,7 +304,9 @@ function calculateCounts (mandates: Mandate[]) {
   let totalCitations = 0
 
   mandates.forEach(mandate => {
-    mandate.entities.forEach(entity => uniqueEntities.add(entity))
+    mandate.entities
+      .filter(entity => entity != null && entity !== '')
+      .forEach(entity => uniqueEntities.add(entity))
     if (mandate.body && mandate.body !== '') {
       uniqueOrgans.add(mandate.body)
     }
