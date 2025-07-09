@@ -199,6 +199,30 @@ of todos and sub-todos and their progress. Do not modify this paragraph but use 
    - The problem is that `EntityName` component makes individual API calls for each entity
    - Since there are many entities displayed, this creates dozens of API calls
 
+## Bug Fix: Double-Counting Active Filters
+
+### Problem:
+- When performing a keyword search (and no other filters) on the main page, the active filters count showed "2" instead of "1"
+- This was happening because the keyword was being counted twice in the filter count calculation
+
+### Analysis:
+- In `FilterControls` component, the count was calculated as:
+  ```typescript
+  {(hasSearch ? 1 : 0) + Object.values(displayFilters).filter(v => v && v !== 'all').length}
+  ```
+- `hasSearch ? 1 : 0` added 1 for the keyword search
+- `Object.values(displayFilters).filter(v => v && v !== 'all').length` also counted the keyword because it was still present in `displayFilters`
+- The `getDisplayFilters()` function removed some filters (entity/organ on specific pages, pagination, sorting) but not the keyword
+
+### Solution:
+- [✅] Modified `getDisplayFilters()` function to also remove the `keyword` from `displayFilters`
+- [✅] Added `delete displayFilters.keyword;` to prevent double-counting
+- [✅] Updated comment to clarify that keyword is counted separately
+
+### Result:
+- Keyword search now correctly shows "Active Filters: 1" instead of "2"
+- Count calculation logic is now consistent and clear
+
 ## Search Result Highlighting Implementation
 
 ### Problem Analysis:

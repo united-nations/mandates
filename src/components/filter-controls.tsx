@@ -127,10 +127,11 @@ export function FilterControls({
       delete displayFilters.organ;
     }
     
-    // Remove pagination and sorting from display
+    // Remove pagination, sorting, and keyword from display (keyword is counted separately)
     delete displayFilters.page;
     delete displayFilters.limit;
     delete displayFilters.sort_by;
+    delete displayFilters.keyword;
     
     return displayFilters;
   };
