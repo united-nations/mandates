@@ -77,7 +77,7 @@ export function GenericSidebar<T>({
   )
 
   return (
-    <div className={borderless ? '' : 'border-l-2 border-gray-200 pl-4'}>
+    <div className={borderless ? '' : 'border-l border-gray-200 pl-4'}>
       {!hideHeader && (
         <div className="mb-4">
           <div className="flex items-center gap-2 mb-2">
