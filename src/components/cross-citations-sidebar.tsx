@@ -42,8 +42,8 @@ export function CrossCitationsSidebar({
   };
 
   // Filter logic
-  const showEntitySection = pageType === 'entity' && entityFilter && crossCitations.length > 0
-  const showOrganSection = pageType === 'organ' && organFilter && crossCitations.length > 0
+  const showEntitySection = pageType === 'entity' && entityFilter
+  const showOrganSection = pageType === 'organ' && organFilter
 
   // Find max for bar scaling
   const maxEntityCount = crossCitations.length > 0 ? Math.max(...crossCitations.map(c => c.count)) : 1;
