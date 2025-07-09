@@ -199,6 +199,52 @@ of todos and sub-todos and their progress. Do not modify this paragraph but use 
    - The problem is that `EntityName` component makes individual API calls for each entity
    - Since there are many entities displayed, this creates dozens of API calls
 
+---
+
+## Sidebar Text Updates for Active Filters
+
+### Problem Analysis:
+- Sidebar descriptions were static and didn't indicate when filters were active
+- Users couldn't tell when results were being filtered by additional criteria
+- Need to show "(with X filters)" or "(with keyword filter)" etc. in descriptions
+
+### Goal:
+Update sidebar descriptions to show active filters, excluding:
+- Implicit filters (entity on entity page, organ on organ page)
+- Pagination filters (page, limit)
+- Sort filters (sort_by)
+
+### Implementation Steps:
+
+- [✅] **Create helper function**: Added `getActiveFiltersText()` in `src/lib/utils.ts`
+  - Takes filters, page type, and implicit filter values
+  - Returns formatted text like "(with keyword filter)" or "(with 3 active filters)"
+  - Handles singular/plural forms correctly
+
+- [✅] **Update CrossCitationsSidebar**: Modified descriptions to include active filters
+  - Entity section: "Other entities and the number of source documents (with X filters) cited by both ENTITY and the other entities"
+  - Organ section: "Click to add organ filter - Other organs (with X filters) citing the same entities as ORGAN"
+
+- [✅] **Update EntityListSidebar**: Modified getDescription() function
+  - Main page: "Entities and number of cited source documents (with X filters)"
+  - Organ page: "Entities and number of cited source documents (with X filters) for ORGAN"
+
+- [✅] **Update OrganListSidebar**: Modified getDescription() function
+  - Main page: "Organs and bodies issuing and number of cited source documents (with X filters)"
+  - Entity page: "Organs and bodies issuing and number of cited source documents (with X filters) for ENTITY"
+
+### Results:
+- Users can now see when filters are active in sidebar descriptions
+- Text is clear and informative about filtering state
+- Consistent formatting across all sidebar components
+- No changes to component behavior, only descriptive text
+
+### Files Modified:
+- `src/lib/utils.ts` - Added helper function
+- `src/components/cross-citations-sidebar.tsx` - Updated descriptions
+- `src/components/entity-list-sidebar.tsx` - Updated descriptions  
+- `src/components/organ-list-sidebar.tsx` - Updated descriptions
+
 ## Latest Changes - Mobile Sidebar Enhancement (December 2024)
 
 ### Problem Analysis:

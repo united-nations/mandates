@@ -7,6 +7,7 @@ import { EntityName } from '@/components/ui/entity-name'
 import { useFilters } from '@/contexts/FilterContext'
 import { GenericSidebar } from '@/components/ui/generic-sidebar'
 import { SidebarListItem } from '@/components/ui/sidebar-list-item'
+import { getActiveFiltersText } from '@/lib/utils'
 import type { EntityWithCount, Entity } from '@/types'
 
 interface EntityListSidebarProps {
@@ -44,10 +45,12 @@ export function EntityListSidebar({
 
   // Get description based on page type
   const getDescription = () => {
+    const activeFiltersText = getActiveFiltersText(filters, pageType, undefined, organFilter);
+    
     if (pageType === 'organ') {
-      return `Entities and number of cited source documents for ${organFilter}`
+      return `Entities and number of cited source documents ${activeFiltersText}for ${organFilter}`
     } else {
-      return 'Entities and number of cited source documents'
+      return `Entities and number of cited source documents${activeFiltersText ? ' ' + activeFiltersText.trim() : ''}`
     }
   }
 

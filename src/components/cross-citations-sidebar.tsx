@@ -6,6 +6,7 @@ import { EntityName } from '@/components/ui/entity-name'
 import { useFilters } from '@/contexts/FilterContext'
 import { GenericSidebar } from '@/components/ui/generic-sidebar'
 import { SidebarListItem } from '@/components/ui/sidebar-list-item'
+import { getActiveFiltersText } from '@/lib/utils'
 import type { CrossCitation, Entity } from '@/types'
 
 interface CrossCitationsSidebarProps {
@@ -35,15 +36,6 @@ export function CrossCitationsSidebar({
     // On entity/organ pages: Set as crossCitingEntity filter to show intersection
     setFilter('crossCitingEntity', entityName);
   };
-
-  const handleOrganClick = (organName: string) => {
-    // On entity/organ pages: Set as filter (cross-citations sidebar only appears on these pages)
-    setFilter('organ', organName);
-  };
-
-  // Filter logic
-  const showEntitySection = pageType === 'entity' && entityFilter
-  const showOrganSection = pageType === 'organ' && organFilter
 
   // Find max for bar scaling
   const maxEntityCount = crossCitations.length > 0 ? Math.max(...crossCitations.map(c => c.count)) : 1;
@@ -78,30 +70,14 @@ export function CrossCitationsSidebar({
     />
   )
 
-  // Render item function for organs
-  const renderOrganItem = (citation: CrossCitation, index: number, variant: 'navigation' | 'filter') => (
-    <SidebarListItem
-      key={citation.entity}
-      label={citation.entity_long || citation.entity}
-      count={citation.count}
-      maxCount={maxEntityCount}
-      isActive={filters.organ === citation.entity}
-      onClick={() => handleOrganClick(citation.entity)}
-      variant={variant}
-    />
-  )
-
-  if (!showEntitySection && !showOrganSection) {
-    return null;
-  }
+  // Get active filters text
+  const activeFiltersText = getActiveFiltersText(filters, pageType, entityFilter, organFilter);
 
   return (
-    <>
-      {showEntitySection && (
         <GenericSidebar
           icon={LinkIcon}
           title="Cross-Citations"
-          description={`Other entities and the number of source documents cited by both ${entityFilter} and the other entities`}
+          description={`Other entities and the number of source documents ${activeFiltersText}cited by both ${entityFilter} and the other entities`}
           items={crossCitations}
           isLoading={isLoading}
           searchPlaceholder="Search entities..."
@@ -114,26 +90,5 @@ export function CrossCitationsSidebar({
           hideHeader={hideHeader}
           borderless={borderless}
         />
-      )}
-      
-      {showOrganSection && (
-        <GenericSidebar
-          icon={LinkIcon}
-          title="Related Organs"
-          description={`Click to add organ filter - Other organs citing the same entities as ${organFilter}`}
-          items={crossCitations}
-          isLoading={isLoading}
-          searchPlaceholder="Search organs..."
-          searchFilter={searchFilter}
-          renderItem={renderOrganItem}
-          showExpandCollapse={true}
-          maxItemsBeforeExpand={30}
-          variant="filter"
-          emptyMessage="No related organs found"
-          hideHeader={hideHeader}
-          borderless={borderless}
-        />
-      )}
-    </>
   )
 } 
