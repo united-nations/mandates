@@ -1420,21 +1420,14 @@ Create two distinct visual styles:
 ### 2. **SidebarListItem Component Updates**
 - Added `variant?: 'navigation' | 'filter'` prop
 - **Navigation Style** (main page):
-  - Light blue hover background (`hover:bg-blue-50`)
-  - Blue border on hover (`hover:border-blue-200`)
-  - Shadow on hover (`hover:shadow-sm`)
-  - Blue underline on hover (`group-hover:underline decoration-blue-400`)
-  - Blue text color on hover (`group-hover:text-blue-600`)
-  - External link icon that appears on hover
-  - Blue progress bar (`bg-blue-500/60`)
-  - Count text changes to blue on hover
+  - Slightly lighter hover background (`hover:bg-muted/20`)
+  - Underline on hover (`group-hover:underline`)
+  - Text turns blue on hover (`group-hover:text-un-blue`)
+  - No active state (since you navigate away)
 - **Filter Style** (entity/organ pages):
-  - Gray hover background (`hover:bg-slate-100`)
-  - Gray border on hover (`hover:border-slate-200`)
-  - Strong active state with blue background and ring (`bg-un-blue/15 border-un-blue/40 shadow-sm ring-1 ring-un-blue/20`)
-  - Filter icon that appears on hover
-  - UN blue progress bar (`bg-un-blue/60`)
-  - Count text stays gray
+  - Slightly darker hover background (`hover:bg-muted/30`)
+  - Active state with blue background (`bg-un-blue/10 border-un-blue/30`)
+  - No underline behavior
 
 ### 3. **All Sidebar Components Updated**
 - **Cross-citations sidebar**: Always uses `variant="filter"` (only appears on entity/organ pages)

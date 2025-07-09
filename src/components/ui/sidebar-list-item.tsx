@@ -1,5 +1,4 @@
 import { cn } from '@/lib/utils'
-import { ExternalLink, Filter } from 'lucide-react'
 
 interface SidebarListItemProps {
   /**
@@ -65,22 +64,18 @@ export function SidebarListItem({
   const progressPercentage = maxCount > 0 ? (count / maxCount) * 100 : 0
   
   // Different styles based on variant
-  const baseStyles = "flex items-center justify-between p-3 rounded-lg cursor-pointer group transition-all duration-200"
+  const baseStyles = "flex items-center justify-between p-2 rounded-sm cursor-pointer group border-b border-muted/30 last:border-b-0"
   
   const variantStyles = {
     navigation: {
-      container: "hover:bg-blue-50 hover:border-blue-200 border border-transparent hover:shadow-sm",
-      label: "group-hover:text-blue-600 group-hover:underline decoration-blue-400 underline-offset-2 transition-all duration-200",
-      active: "", // Navigation items don't have active state since they navigate away
-      icon: <ExternalLink className="h-3 w-3 text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />,
-      progressBar: "bg-blue-500/60"
+      container: "hover:bg-muted/20 transition-colors",
+      label: "group-hover:underline group-hover:text-un-blue transition-colors",
+      active: "" // Navigation items don't have active state since they navigate away
     },
     filter: {
-      container: "hover:bg-slate-100 border border-transparent hover:border-slate-200",
-      label: "transition-colors duration-200",
-      active: "bg-un-blue/15 border-un-blue/40 shadow-sm ring-1 ring-un-blue/20",
-      icon: <Filter className="h-3 w-3 text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />,
-      progressBar: "bg-un-blue/60"
+      container: "hover:bg-muted/30 transition-colors",
+      label: "transition-colors",
+      active: "bg-un-blue/10 border-un-blue/30"
     }
   }
   
@@ -96,31 +91,26 @@ export function SidebarListItem({
       )}
       onClick={onClick}
     >
-      <div className="min-w-0 flex-1 flex items-center gap-2">
+      <div className="min-w-0 flex-1">
         <div className={cn(
           "text-sm font-medium truncate",
           currentVariant.label
         )}>
           {label}
         </div>
-        {currentVariant.icon}
       </div>
       <div className="flex items-center gap-2 flex-shrink-0 w-32">
         <span className="flex items-center w-full">
           <span className={cn(
-            'text-xs font-mono text-slate-600 text-right pr-2 min-w-[28px] max-w-[32px] flex-shrink-0 justify-end flex',
-            variant === 'navigation' && 'group-hover:text-blue-600',
+            'text-xs font-mono text-un-blue text-right pr-2 min-w-[28px] max-w-[32px] flex-shrink-0 justify-end flex',
             countClassName
           )}>
             {count.toLocaleString()}
           </span>
           {showProgressBar && (
-            <span className="relative flex-1 h-2 bg-slate-200 rounded-full overflow-hidden">
+            <span className="relative flex-1 h-2 bg-un-blue/10 rounded">
               <span 
-                className={cn(
-                  "absolute left-0 top-0 h-2 rounded-full transition-all duration-300",
-                  currentVariant.progressBar
-                )} 
+                className="absolute left-0 top-0 h-2 rounded bg-un-blue/60" 
                 style={{ 
                   width: `${progressPercentage}%`, 
                   minWidth: count > 0 ? 2 : 0 
