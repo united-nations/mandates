@@ -13,102 +13,88 @@ import type {
   CrossCitation
 } from '@/types'
 
+// Simple in-memory cache
+const responseCache = new Map<string, { data: ApiResponse; timestamp: number }>()
+const CACHE_TTL = 5 * 60 * 1000 // 5 minutes
+
+// Precomputed data for default views
+let precomputedData: {
+  defaultCounts: any
+  defaultSidebar: any
+  defaultFilterOptions: any
+  allEntities: Entity[]
+  allOrgans: Organ[]
+} | null = null
+
 /**
- * Unified API endpoint that handles all filtering and returns comprehensive data
+ * Generate cache key from filters
  */
-export async function GET (request: Request) {
-  try {
-    const { searchParams } = new URL(request.url)
+function generateCacheKey(filters: FilterOptions): string {
+  return JSON.stringify(filters)
+}
 
-    // Parse filter parameters
-    const filters: FilterOptions = {
-      entity: searchParams.get('entity') || undefined,
-      organ: searchParams.get('organ') || undefined,
-      crossCitingEntity: searchParams.get('crossCitingEntity') || undefined,
-      keyword: searchParams.get('keyword') || undefined,
-      programme: searchParams.get('programme') || undefined,
-      subject: searchParams.get('subject') || undefined,
-      start_year: searchParams.get('start_year') || undefined,
-      end_year: searchParams.get('end_year') || undefined,
-      budget_document: searchParams.get('budget_document') || undefined,
-      sort_by: searchParams.get('sort_by') || 'citing_entities_desc',
-      page: searchParams.get('page') || '1',
-      limit: searchParams.get('limit') || '10'
-    }
-
-    // Parse pagination
-    const page = Math.max(1, parseInt(filters.page || '1'))
-    const limit = Math.max(1, Math.min(100, parseInt(filters.limit || '10')))
-
-    // Load all data
-    const { mandates, entities, organs, entityMap, organMap } =
-      await DataService.getAllData()
-
-    // Enrich mandates with entity/organ details (includes displayTitle)
-    const enrichedMandates = enrichMandates(
-      mandates,
-      entityMap,
-      organMap
-    )
-
-    // Apply filters
-    const filteredMandates = filterMandates(enrichedMandates, filters)
-
-    // Add highlighting when keyword search is active
-    const highlightedMandates = addHighlighting(filteredMandates, filters.keyword)
-
-    // Sort mandates
-    const sortedMandates = sortMandates(
-      highlightedMandates,
-      filters.sort_by || 'citing_entities_desc'
-    )
-
-    // Paginate
-    const totalItems = sortedMandates.length
-    const totalPages = Math.ceil(totalItems / limit)
-    const startIndex = (page - 1) * limit
-    const paginatedMandates = sortedMandates.slice(
-      startIndex,
-      startIndex + limit
-    )
-
-    // Calculate aggregations
-    const counts = calculateCounts(filteredMandates)
-    const sidebarData = calculateSidebarData(
-      filteredMandates,
-      entityMap,
-      organMap,
-      filters,
-      mandates
-    )
-    const filterOptions = calculateFilterOptions(mandates, filteredMandates, entityMap, organMap)
-
-    // Build response
-    const response: ApiResponse = {
-      mandates: paginatedMandates,
-      pagination: {
-        page,
-        limit,
-        totalPages,
-        totalItems
-      },
-      counts,
-      sidebar: sidebarData,
-      filterOptions,
-      reference: {
-        entities: Array.from(entityMap.values()),
-        organs: Array.from(organMap.values())
-      }
-    }
-
-    return NextResponse.json(response)
-  } catch (error) {
-    console.error('API Error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+/**
+ * Check if cached response is valid
+ */
+function getCachedResponse(key: string): ApiResponse | null {
+  const cached = responseCache.get(key)
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+    return cached.data
   }
+  if (cached) {
+    responseCache.delete(key) // Remove expired cache
+  }
+  return null
+}
+
+/**
+ * Cache response
+ */
+function cacheResponse(key: string, data: ApiResponse): void {
+  responseCache.set(key, { data, timestamp: Date.now() })
+}
+
+/**
+ * Initialize precomputed data for default views
+ */
+async function initializePrecomputedData() {
+  if (precomputedData) return precomputedData
+
+  const { mandates, entities, organs, entityMap, organMap } = await DataService.getAllData()
+  
+  // Precompute default counts (no filters)
+  const defaultCounts = calculateCounts(mandates)
+  
+  // Precompute default sidebar data
+  const defaultSidebar = calculateSidebarData(mandates, entityMap, organMap, {}, mandates)
+  
+  // Precompute default filter options
+  const defaultFilterOptions = calculateFilterOptions(mandates, mandates, entityMap, organMap)
+  
+  precomputedData = {
+    defaultCounts,
+    defaultSidebar,
+    defaultFilterOptions,
+    allEntities: Array.from(entityMap.values()),
+    allOrgans: Array.from(organMap.values())
+  }
+  
+  return precomputedData
+}
+
+/**
+ * Check if filters represent a default view (no active filters)
+ */
+function isDefaultView(filters: FilterOptions): boolean {
+  return !filters.entity && 
+         !filters.organ && 
+         !filters.crossCitingEntity && 
+         !filters.keyword && 
+         !filters.programme && 
+         !filters.subject && 
+         !filters.start_year && 
+         !filters.end_year && 
+         !filters.budget_document
 }
 
 /**
@@ -177,12 +163,21 @@ function filterMandates (
     )
   }
 
-  // Keyword search (search in displayTitle, document symbol, and subject headings)
+  // Keyword search (search in title, description, document symbol, and subject headings)
   if (filters.keyword) {
     const keyword = filters.keyword.toLowerCase()
     filtered = filtered.filter(mandate => {
+      // Create displayTitle on-the-fly for search (same logic as enrichMandates)
+      const displayTitle = titleCase(((mandate.uniform_title && mandate.uniform_title.length > 0 && mandate.uniform_title[0].trim()) 
+        ? mandate.uniform_title[0].trim()
+        : (mandate.title && mandate.title.trim()) 
+          ? mandate.title.trim()
+          : (mandate.description && mandate.description.trim()) 
+            ? mandate.description.trim()
+            : 'Untitled').toLowerCase())
+      
       const searchableText = [
-        mandate.displayTitle || '',
+        displayTitle,
         mandate.full_document_symbol || '',
         ...(mandate.subject_headings || [])
       ]
@@ -503,5 +498,114 @@ function calculateFilterOptions (
     subjects: subjectOptions,
     yearRange,
     yearDistribution
+  }
+}
+
+/**
+ * Unified API endpoint that handles all filtering and returns comprehensive data
+ */
+export async function GET (request: Request) {
+  try {
+    const { searchParams } = new URL(request.url)
+
+    // Parse filter parameters
+    const filters: FilterOptions = {
+      entity: searchParams.get('entity') || undefined,
+      organ: searchParams.get('organ') || undefined,
+      crossCitingEntity: searchParams.get('crossCitingEntity') || undefined,
+      keyword: searchParams.get('keyword') || undefined,
+      programme: searchParams.get('programme') || undefined,
+      subject: searchParams.get('subject') || undefined,
+      start_year: searchParams.get('start_year') || undefined,
+      end_year: searchParams.get('end_year') || undefined,
+      budget_document: searchParams.get('budget_document') || undefined,
+      sort_by: searchParams.get('sort_by') || 'citing_entities_desc',
+      page: searchParams.get('page') || '1',
+      limit: searchParams.get('limit') || '10'
+    }
+
+    // Check cache first
+    const cacheKey = generateCacheKey(filters)
+    const cachedResponse = getCachedResponse(cacheKey)
+    if (cachedResponse) {
+      return NextResponse.json(cachedResponse)
+    }
+
+    // Initialize precomputed data
+    await initializePrecomputedData()
+
+    // Parse pagination
+    const page = Math.max(1, parseInt(filters.page || '1'))
+    const limit = Math.max(1, Math.min(100, parseInt(filters.limit || '10')))
+
+    // Load all data
+    const { mandates, entities, organs, entityMap, organMap } = await DataService.getAllData()
+
+    // Apply filters first (before expensive operations)
+    const filteredMandates = filterMandates(mandates, filters)
+
+    // Sort mandates
+    const sortedMandates = sortMandates(filteredMandates, filters.sort_by || 'citing_entities_desc')
+
+    // Paginate
+    const totalItems = sortedMandates.length
+    const totalPages = Math.ceil(totalItems / limit)
+    const startIndex = (page - 1) * limit
+    const paginatedMandates = sortedMandates.slice(startIndex, startIndex + limit)
+
+    // LAZY ENRICHMENT: Only enrich mandates that will be returned
+    const enrichedPaginatedMandates = enrichMandates(paginatedMandates, entityMap, organMap)
+
+    // Add highlighting when keyword search is active
+    const highlightedMandates = addHighlighting(enrichedPaginatedMandates, filters.keyword)
+
+    // Use precomputed data for default views, calculate for filtered views
+    let counts, sidebarData, filterOptions, reference
+    
+    if (isDefaultView(filters) && precomputedData) {
+      // Use precomputed data for default views
+      counts = precomputedData.defaultCounts
+      sidebarData = precomputedData.defaultSidebar
+      filterOptions = precomputedData.defaultFilterOptions
+      reference = {
+        entities: precomputedData.allEntities,
+        organs: precomputedData.allOrgans
+      }
+    } else {
+      // Calculate for filtered views
+      counts = calculateCounts(filteredMandates)
+      sidebarData = calculateSidebarData(filteredMandates, entityMap, organMap, filters, mandates)
+      filterOptions = calculateFilterOptions(mandates, filteredMandates, entityMap, organMap)
+      reference = {
+        entities: Array.from(entityMap.values()),
+        organs: Array.from(organMap.values())
+      }
+    }
+
+    // Build response
+    const response: ApiResponse = {
+      mandates: highlightedMandates,
+      pagination: {
+        page,
+        limit,
+        totalPages,
+        totalItems
+      },
+      counts,
+      sidebar: sidebarData,
+      filterOptions,
+      reference
+    }
+
+    // Cache response
+    cacheResponse(cacheKey, response)
+
+    return NextResponse.json(response)
+  } catch (error) {
+    console.error('API Error:', error)
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
   }
 }

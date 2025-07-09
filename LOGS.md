@@ -1818,3 +1818,75 @@ const isMainPage = pathname === '/'
 - ✅ Empty space issue resolved
 - ✅ Fixed feedback button still properly accessible
 - ✅ Better visual balance on main page
+
+# Performance Optimization - Phase 1 (Basic)
+
+## Problem Analysis
+Current API performance bottlenecks:
+1. **Full data loading every request**: `DataService.getAllData()` loads all mandates, entities, and organs on every API call
+2. **Complete enrichment**: All mandates get enriched with entity/organ details, even for paginated results
+3. **Expensive calculations**: Counts, sidebar data, and filter options are recalculated on every request
+4. **No caching**: Everything is computed fresh each time
+
+## Phase 1 Optimizations (Basic Implementation)
+
+### [x] 1. Simple In-Memory Response Caching
+- Cache complete API responses for common requests (default views, popular filters)
+- Use Map-based caching with TTL (time-to-live)
+- Cache keys based on filter parameters
+- Especially effective for default main/entity/organ views
+
+### [x] 2. Precomputed Aggregations at Startup
+- Calculate counts, sidebar data, and filter options once at startup
+- Store precomputed results for default views (no filters)
+- Only recalculate when underlying data changes
+
+### [x] 3. Lazy Enrichment
+- Only enrich mandates that will be returned in current page
+- Move enrichment after filtering and pagination
+- Calculate sidebar data only for filtered results
+
+## Implementation Strategy
+- Keep it simple and pragmatic
+- Use basic Map-based caching (no external dependencies)
+- Focus on default views first (main page, entity pages, organ pages)
+- Minimal code changes to existing API structure
+
+## Success Metrics
+- Default page loads: ~100ms → ~10ms
+- Cached responses: ~500ms → ~5ms
+- Memory usage: Reasonable (under 100MB for cache)
+
+## Implementation Summary
+
+### ✅ Completed Optimizations:
+
+1. **Simple In-Memory Response Caching**:
+   - Added Map-based response cache with 5-minute TTL
+   - Cache keys generated from filter parameters
+   - Cached responses returned immediately for repeated requests
+   - Automatic cache expiration and cleanup
+
+2. **Precomputed Aggregations at Startup**:
+   - Initialize precomputed data on first API call
+   - Cache default counts, sidebar data, and filter options
+   - Use precomputed data for default views (no filters applied)
+   - Only recalculate aggregations when filters are active
+
+3. **Lazy Enrichment**:
+   - Moved enrichment after filtering and pagination
+   - Only enrich mandates that will be returned in current page
+   - Reduced processing from all ~3000 mandates to just 10-50 per request
+   - Updated keyword search to work with un-enriched mandates
+
+### Performance Impact:
+- **Default views**: Skip expensive calculations entirely using precomputed data
+- **Filtered views**: Process only paginated results instead of all mandates
+- **Repeated requests**: Served from cache in milliseconds
+- **Memory efficient**: Cache only stores final API responses, not intermediate data
+
+### Next Steps for Further Optimization:
+- Monitor cache hit rates and adjust TTL if needed
+- Consider implementing cache warming for common entity/organ pages
+- Add cache invalidation mechanism for data updates
+- Consider moving to Redis for distributed caching in production
