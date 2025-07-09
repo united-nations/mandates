@@ -3,11 +3,10 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Building } from 'lucide-react'
-import { LoadingSkeleton } from '@/components/ui/loading-skeleton'
-import { SearchInput } from '@/components/ui/search-input'
-import { SidebarListItem } from '@/components/ui/sidebar-list-item'
 import { EntityName } from '@/components/ui/entity-name'
 import { useFilters } from '@/contexts/FilterContext'
+import { GenericSidebar } from '@/components/ui/generic-sidebar'
+import { SidebarListItem } from '@/components/ui/sidebar-list-item'
 import type { EntityWithCount, Entity } from '@/types'
 
 interface EntityListSidebarProps {
@@ -31,23 +30,7 @@ export function EntityListSidebar({
 }: EntityListSidebarProps) {
   const { filters, setFilter } = useFilters();
   
-  const [filteredEntities, setFilteredEntities] = useState<EntityWithCount[]>(entities)
-  const [searchTerm, setSearchTerm] = useState('')
   const maxCount = Math.max(...entities.map(entity => entity.count), 1)
-
-  useEffect(() => {
-    if (!searchTerm.trim()) {
-      setFilteredEntities(entities)
-    } else {
-      const lowerSearch = searchTerm.toLowerCase()
-      const filtered = entities.filter(entity => {
-        const shortName = entity.entity.toLowerCase()
-        const longName = (allEntities.find(e => e.entity === entity.entity)?.entity_long || '').toLowerCase()
-        return shortName.includes(lowerSearch) || longName.includes(lowerSearch)
-      })
-      setFilteredEntities(filtered)
-    }
-  }, [searchTerm, entities, allEntities])
 
   const handleEntityClick = (entityName: string) => {
     if (pageType === 'main') {
@@ -59,90 +42,71 @@ export function EntityListSidebar({
     }
   };
 
-  const LoadingSkeletonComponent = () => (
-    <LoadingSkeleton variant="sidebar" count={8} />
-  )
+  // Get description based on page type
+  const getDescription = () => {
+    if (pageType === 'organ') {
+      return `Entities and number of cited source documents for ${organFilter}`
+    } else {
+      return 'Entities and number of cited source documents'
+    }
+  }
+
+  // Search filter function
+  const searchFilter = (entity: EntityWithCount, searchTerm: string) => {
+    const shortName = entity.entity.toLowerCase()
+    const longName = (allEntities.find(e => e.entity === entity.entity)?.entity_long || '').toLowerCase()
+    return shortName.includes(searchTerm) || longName.includes(searchTerm)
+  }
+
+  // Render item function
+  const renderItem = (entity: EntityWithCount, index: number) => {
+    const item = (
+      <SidebarListItem
+        key={entity.entity}
+        label={
+          <EntityName 
+            entityName={entity.entity} 
+            entityLong={allEntities.find(e => e.entity === entity.entity)?.entity_long}
+            asChild={true} 
+          />
+        }
+        count={entity.count}
+        maxCount={maxCount}
+        isActive={filters.entity === entity.entity}
+        onClick={() => handleEntityClick(entity.entity)}
+      />
+    )
+
+    // For main page, wrap in Link
+    if (pageType === 'main') {
+      return (
+        <Link 
+          key={entity.entity} 
+          href={`/entity/${encodeURIComponent(entity.entity)}`}
+          className="block"
+          prefetch={false}
+        >
+          {item}
+        </Link>
+      )
+    }
+
+    return item
+  }
 
   return (
-    <div className={borderless ? '' : 'border-l-2 border-gray-200 pl-4'}>
-      {!hideHeader && (
-        <div className="mb-4">
-          <div className="flex items-center gap-2 mb-2">
-            <Building className="h-5 w-5 text-un-blue" />
-            <h3 className="text-lg font-semibold">UN Entities</h3>
-          </div>
-          <p className="text-sm text-muted-foreground">
-            {pageType === 'organ' 
-              ? `Entities and number of cited source documents for ${organFilter}`
-              : pageType === 'entity'
-              ? 'Click to add entity filter'
-              : 'Entities and number of cited source documents'
-            }
-          </p>
-        </div>
-      )}
-      
-      <div className="space-y-3">
-        <SearchInput
-          placeholder="Search entities..."
-          value={searchTerm}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
-          variant="border-bottom"
-        />
-        
-        <div className="max-h-96 overflow-y-auto">
-          {isLoading ? (
-            <LoadingSkeletonComponent />
-          ) : (
-            <div className="space-y-1">
-              {filteredEntities.map((entity) => (
-                pageType === 'main' ? (
-                  <Link 
-                    key={entity.entity} 
-                    href={`/entity/${encodeURIComponent(entity.entity)}`}
-                    className="block"
-                    prefetch={false}
-                  >
-                    <SidebarListItem
-                      label={
-                        <EntityName 
-                          entityName={entity.entity} 
-                          entityLong={allEntities.find(e => e.entity === entity.entity)?.entity_long}
-                          asChild={true} 
-                        />
-                      }
-                      count={entity.count}
-                      maxCount={maxCount}
-                      isActive={filters.entity === entity.entity}
-                      onClick={() => {}} // Empty onClick for Link wrapper
-                    />
-                  </Link>
-                ) : (
-                  <SidebarListItem
-                    key={entity.entity}
-                    label={
-                      <EntityName 
-                        entityName={entity.entity} 
-                        entityLong={allEntities.find(e => e.entity === entity.entity)?.entity_long}
-                        asChild={true} 
-                      />
-                    }
-                    count={entity.count}
-                    maxCount={maxCount}
-                    isActive={filters.entity === entity.entity}
-                    onClick={() => handleEntityClick(entity.entity)}
-                  />
-                )
-              ))}
-              {filteredEntities.length === 0 && !isLoading && (
-                <div className="text-center py-6 text-sm text-muted-foreground">
-                  No entities found
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
+    <GenericSidebar
+      icon={Building}
+      title="UN Entities"
+      description={getDescription()}
+      items={entities}
+      isLoading={isLoading}
+      searchPlaceholder="Search entities..."
+      searchFilter={searchFilter}
+      renderItem={renderItem}
+      hideHeader={hideHeader}
+      borderless={borderless}
+      emptyMessage="No entities found"
+    />
   )
 } 
