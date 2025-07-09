@@ -1701,3 +1701,28 @@ const isMainPage = pathname === '/'
 - Fixed by applying title case in API before highlighting
 - Both highlighted and non-highlighted titles now properly formatted
 - Moved title case logic from frontend to backend for consistency
+
+---
+
+## Fix Empty Space at Bottom of Main Page
+
+**Problem Analysis:**
+- User reported excessive empty space at the bottom of the main page
+- Root cause: `pb-48` class (192px bottom padding) on main page container
+- Purpose: Provide clearance for fixed feedback button positioned at `bottom-6` (24px)
+- Issue: 192px padding is excessive for a 24px positioned button
+
+**Solution:**
+- [x] Changed bottom padding from `pb-48` (192px) to `pb-16` (64px)
+- [x] Maintains adequate clearance for fixed feedback button
+- [x] Eliminates excessive empty space while preserving functionality
+
+**Technical Details:**
+- Fixed feedback button in layout.tsx: `className='fixed bottom-6 right-6'`
+- Changed main page container: `className='space-y-6 pb-16'`
+- Provides 64px clearance (more than enough for 24px positioned button)
+
+**Result:**
+- ✅ Empty space issue resolved
+- ✅ Fixed feedback button still properly accessible
+- ✅ Better visual balance on main page

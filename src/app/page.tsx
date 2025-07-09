@@ -10,7 +10,7 @@ import Link from 'next/link'
 export default function Page () {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <div className='space-y-6 pb-48'>
+      <div className='space-y-6 pb-16'>
         {/* Header with context info */}
         <div className='text-muted-foreground mt-2 sm:text-justify max-w-[792px] text-left'>
           <p className='leading-tight mb-0'>
