@@ -1575,7 +1575,7 @@ const isMainPage = pathname === '/'
 
 {/* Back Button - shown on all pages except main page */}
 {!isMainPage && (
-  <div className='w-full max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-8 sm:px-12 lg:px-16 mb-2'>
+  <div className='w-full max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-8 sm:px-12 lg:px-16 mb-6'>
     <BackButton />
   </div>
 )}
@@ -1587,5 +1587,35 @@ const isMainPage = pathname === '/'
 - ✅ `src/app/methodology/page.tsx` - removed BackButton
 - ✅ `src/app/resources/page.tsx` - removed BackButton
 - ✅ `src/app/layout.tsx` - added centralized BackButton logic
+
+---
+
+## Task: Refactor PageLayout Component into Root Layout
+
+### Analysis
+- PageLayout component is now minimal (just TooltipProvider + responsive container + background)
+- Root layout already has similar responsive container structure
+- PageLayout is used in 5 pages but provides minimal value
+- Can be consolidated into root layout for cleaner architecture
+
+### Steps
+- [x] Move TooltipProvider to root layout
+- [x] Move main container structure to wrap children in root layout  
+- [x] Apply background styling to body
+- [x] Update all 5 pages to remove PageLayout wrapper
+- [x] Delete PageLayout component file
+- [x] Test all pages still work correctly
+
+### Results
+- ✅ **PageLayout component successfully refactored into root layout**
+- ✅ **All 5 pages updated to remove PageLayout wrapper**
+- ✅ **Cleaner architecture with centralized layout logic**
+- ✅ **Maintained same visual appearance and functionality**
+- ✅ **Better performance with one less component in render tree**
+
+### Additional Improvements
+- ✅ **Increased spacing between back button and page content** (`mb-2` → `mb-6`)
+  - Applied centrally in root layout for all non-main pages
+  - Better visual separation and improved UX
 
 ---

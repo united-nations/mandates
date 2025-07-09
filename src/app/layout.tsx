@@ -2,6 +2,7 @@
 
 import './globals.css'
 import { Toaster } from '@/components/ui/toaster'
+import { TooltipProvider } from '@/components/ui/tooltip'
 import { explainerTexts } from '@/lib/explainer-texts'
 import { GoogleAnalytics } from '@next/third-parties/google'
 import { FilterProvider } from '@/contexts/FilterContext'
@@ -46,57 +47,60 @@ export default function RootLayout ({
         />
       </head>
       {/* Updated body to use font-sans from Tailwind config (which is now Roboto) */}
-      <body className='font-sans antialiased'>
-        <FilterProvider>
-          <header className='w-full max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-8 sm:px-12 lg:px-16 pt-6 pb-2 flex items-start justify-between'>
-            <div className='flex-1'>
-              <div className='flex items-center gap-x-2 mb-2'>
-                <Link
-                  href='/'
-                  className='text-4xl font-bold tracking-tight text-foreground hover:text-un-blue transition-colors'
-                >
-                  {explainerTexts.mainHeader.title}
-                </Link>
-                <span className='inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200'>
-                  {explainerTexts.mainHeader.versionTag}
-                </span>
-              </div>
-            </div>
-            <div className='pt-2'>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant='ghost'
-                    size='icon'
-                    aria-label='Open navigation menu'
-                    className='shrink-0 inline-flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 py-1 sm:px-2.5 sm:py-1.5 h-auto !bg-trout !text-white hover:!bg-trout/90'
+      <body className='font-sans antialiased min-h-screen bg-background text-foreground'>
+        <TooltipProvider>
+          <FilterProvider>
+            <header className='w-full max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-8 sm:px-12 lg:px-16 pt-6 pb-2 flex items-start justify-between'>
+              <div className='flex-1'>
+                <div className='flex items-center gap-x-2 mb-2'>
+                  <Link
+                    href='/'
+                    className='text-4xl font-bold tracking-tight text-foreground hover:text-un-blue transition-colors'
                   >
-                    <Menu className='h-3 w-3 sm:h-4 sm:w-4' />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align='end'>
-                  <DropdownMenuItem asChild>
-                    <Link href='/'>Mandate Source Registry</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href='/methodology'>Methodology</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href='/resources'>More Resources</Link>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </header>
+                    {explainerTexts.mainHeader.title}
+                  </Link>
+                  <span className='inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200'>
+                    {explainerTexts.mainHeader.versionTag}
+                  </span>
+                </div>
+              </div>
+              <div className='pt-2'>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant='ghost'
+                      size='icon'
+                      aria-label='Open navigation menu'
+                      className='shrink-0 inline-flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 py-1 sm:px-2.5 sm:py-1.5 h-auto !bg-trout !text-white hover:!bg-trout/90'
+                    >
+                      <Menu className='h-3 w-3 sm:h-4 sm:w-4' />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align='end'>
+                    <DropdownMenuItem asChild>
+                      <Link href='/'>Mandate Source Registry</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href='/methodology'>Methodology</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href='/resources'>More Resources</Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            </header>
 
-          {/* Back Button - shown on all pages except main page */}
-          {!isMainPage && (
-            <div className='w-full max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-8 sm:px-12 lg:px-16 mb-2'>
-              <BackButton />
-            </div>
-          )}
+            {/* Back Button - shown on all pages except main page */}
+            {!isMainPage && (
+              <div className='w-full max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-8 sm:px-12 lg:px-16 mb-8'>
+                <BackButton />
+              </div>
+            )}
 
-          {children}
+            <main className="w-full max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto py-0 px-8 sm:px-12 lg:px-16">
+              {children}
+            </main>
 
           {/* Fixed Feedback Button */}
           <Button
@@ -117,6 +121,7 @@ export default function RootLayout ({
 
           <Toaster />
         </FilterProvider>
+        </TooltipProvider>
       </body>
       <GoogleAnalytics gaId='G-HYTYJM0JGC' />
     </html>

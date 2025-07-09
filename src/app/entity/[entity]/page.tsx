@@ -7,8 +7,6 @@ import { EntityName } from '@/components/ui/entity-name'
 import { MandateExplorer } from '@/components/mandate-explorer'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
-import { PageLayout } from '@/components/ui/page-layout'
-
 import { MetadataItem } from '@/components/ui/metadata-item'
 import { formatUrlForDisplay } from '@/lib/utils'
 
@@ -35,8 +33,7 @@ function EntityPageContent () {
   }
 
   return (
-    <PageLayout>
-
+    <div>
       <div className='flex items-start gap-4 mb-6'>
         <div className='rounded-lg bg-un-blue/10 p-2'>
           <Building className='h-6 w-6 text-un-blue' />
@@ -98,7 +95,7 @@ function EntityPageContent () {
         entityFilter={entityName}
         onEntityDetailsLoaded={handleEntityDetailsLoaded}
       />
-    </PageLayout>
+    </div>
   )
 }
 
