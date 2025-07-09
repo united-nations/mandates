@@ -12,7 +12,7 @@ export default function Page () {
     <Suspense fallback={<div>Loading...</div>}>
       <div className='space-y-6 pb-16'>
         {/* Header with context info */}
-        <div className='text-muted-foreground mt-2 sm:text-justify max-w-[792px] text-left'>
+        <div className='text-muted-foreground mt-4 sm:text-justify max-w-[792px] text-left'>
           <p className='leading-tight mb-0'>
             {explainerTexts.mainHeader.shortDescription} <br />
             <Link

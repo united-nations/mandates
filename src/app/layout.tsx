@@ -50,7 +50,7 @@ export default function RootLayout ({
       <body className='font-sans antialiased min-h-screen bg-background text-foreground'>
         <TooltipProvider>
           <FilterProvider>
-            <header className='w-full max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-8 sm:px-12 lg:px-16 pt-6 pb-2 flex items-start justify-between'>
+            <header className='w-full max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-8 sm:px-12 lg:px-16 pt-8 pb-2 flex items-start justify-between'>
               <div className='flex-1'>
                 <div className='flex items-center gap-x-2 mb-2'>
                   <Link
