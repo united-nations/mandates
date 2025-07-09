@@ -256,15 +256,15 @@ export function MandateExplorer ({
             <SidebarAccordion
               items={[
                 {
-                  id: 'entities',
-                  title: 'UN Entities',
-                  icon: Building,
+                  id: 'organs',
+                  title: 'UN Organs',
+                  icon: Landmark,
                   content: (
-                    <EntityListSidebar 
-                      entities={apiData?.sidebar?.entities || []}
-                      allEntities={allEntities.map(entity => ({
-                        entity: entity.entity,
-                        entity_long: entity.entity_long,
+                    <OrganListSidebar 
+                      organs={apiData?.sidebar?.organs || []}
+                      allOrgans={allOrgans.map(organ => ({
+                        short: organ.short,
+                        long: organ.long,
                         count: 0
                       }))}
                       isLoading={isLoading}
@@ -275,15 +275,15 @@ export function MandateExplorer ({
                   )
                 },
                 {
-                  id: 'organs',
-                  title: 'UN Organs',
-                  icon: Landmark,
+                  id: 'entities',
+                  title: 'UN Entities',
+                  icon: Building,
                   content: (
-                    <OrganListSidebar 
-                      organs={apiData?.sidebar?.organs || []}
-                      allOrgans={allOrgans.map(organ => ({
-                        short: organ.short,
-                        long: organ.long,
+                    <EntityListSidebar 
+                      entities={apiData?.sidebar?.entities || []}
+                      allEntities={allEntities.map(entity => ({
+                        entity: entity.entity,
+                        entity_long: entity.entity_long,
                         count: 0
                       }))}
                       isLoading={isLoading}
@@ -302,6 +302,22 @@ export function MandateExplorer ({
             <SidebarAccordion
               items={[
                 {
+                  id: 'organs',
+                  title: 'UN Organs',
+                  icon: Landmark,
+                  content: (
+                    <OrganListSidebar
+                      organs={apiData?.sidebar?.organs || []}
+                      allOrgans={allOrgans}
+                      isLoading={isLoading}
+                      pageType={pageType}
+                      entityFilter={entityFilter}
+                      hideHeader={true}
+                      borderless={true}
+                    />
+                  )
+                },
+                {
                   id: 'cross-citations',
                   title: 'Cross-Citations',
                   icon: LinkIcon,
@@ -313,22 +329,6 @@ export function MandateExplorer ({
                       pageType={pageType}
                       entityFilter={entityFilter}
                       organFilter={organFilter}
-                      hideHeader={true}
-                      borderless={true}
-                    />
-                  )
-                },
-                {
-                  id: 'organs',
-                  title: 'UN Organs',
-                  icon: Landmark,
-                  content: (
-                    <OrganListSidebar
-                      organs={apiData?.sidebar?.organs || []}
-                      allOrgans={allOrgans}
-                      isLoading={isLoading}
-                      pageType={pageType}
-                      entityFilter={entityFilter}
                       hideHeader={true}
                       borderless={true}
                     />
@@ -471,6 +471,13 @@ export function MandateExplorer ({
               {/* Entity pages show cross-citations and organs */}
               {pageType === 'entity' && (
                 <>
+                  <OrganListSidebar
+                    organs={apiData?.sidebar?.organs || []}
+                    allOrgans={allOrgans}
+                    isLoading={isLoading}
+                    pageType={pageType}
+                    entityFilter={entityFilter}
+                  />
                   <CrossCitationsSidebar
                     crossCitations={crossCitations}
                     allEntities={allEntities}
@@ -478,13 +485,6 @@ export function MandateExplorer ({
                     pageType={pageType}
                     entityFilter={entityFilter}
                     organFilter={organFilter}
-                  />
-                  <OrganListSidebar
-                    organs={apiData?.sidebar?.organs || []}
-                    allOrgans={allOrgans}
-                    isLoading={isLoading}
-                    pageType={pageType}
-                    entityFilter={entityFilter}
                   />
                 </>
               )}
@@ -503,15 +503,15 @@ export function MandateExplorer ({
               {/* Main page shows entities and organs */}
               {pageType === 'main' && (
                 <>
-                  <EntityListSidebar
-                    entities={apiData?.sidebar?.entities || []}
-                    allEntities={allEntities}
-                    isLoading={isLoading}
-                    pageType={pageType}
-                  />
                   <OrganListSidebar
                     organs={apiData?.sidebar?.organs || []}
                     allOrgans={allOrgans}
+                    isLoading={isLoading}
+                    pageType={pageType}
+                  />
+                  <EntityListSidebar
+                    entities={apiData?.sidebar?.entities || []}
+                    allEntities={allEntities}
                     isLoading={isLoading}
                     pageType={pageType}
                   />
