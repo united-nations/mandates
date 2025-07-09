@@ -51,11 +51,9 @@ export function OrganListSidebar({
   // Get description based on page type
   const getDescription = () => {
     if (pageType === 'entity') {
-      return `Organs and number of cited source documents for ${entityFilter}`
-    } else if (pageType === 'organ') {
-      return 'Click to add organ filter'
+      return `Organs and bodies issuing and number of cited source documents for ${entityFilter}`
     } else {
-      return 'Organs and number of cited source documents'
+      return 'Organs and bodies issuing and number of cited source documents'
     }
   }
 
@@ -103,11 +101,11 @@ export function OrganListSidebar({
   return (
     <GenericSidebar
       icon={Landmark}
-      title="UN Organs"
+      title="UN Organs & Bodies"
       description={getDescription()}
       items={organs}
       isLoading={isLoading}
-      searchPlaceholder="Search organs..."
+      searchPlaceholder="Search organs and bodies..."
       searchFilter={searchFilter}
       renderItem={renderItem}
       hideHeader={hideHeader}
