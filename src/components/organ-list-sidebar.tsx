@@ -8,6 +8,7 @@ import { SearchInput } from '@/components/ui/search-input'
 import { SidebarListItem } from '@/components/ui/sidebar-list-item'
 import { useFilters } from '@/contexts/FilterContext'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { OrganName } from '@/components/ui/organ-name'
 import type { OrganWithCount, Organ } from '@/types'
 
 interface OrganListSidebarProps {
@@ -137,27 +138,5 @@ export function OrganListSidebar({
         </div>
       </div>
     </div>
-  )
-}
-
-// Helper component for organ name display
-function OrganName({ organName, allOrgans, showUnderline = true }: { organName: string, allOrgans: Organ[], showUnderline?: boolean }) {
-  const organData = allOrgans.find(organ => organ.short === organName || organ.long === organName)
-  const displayName = organData?.short || organName
-  const longName = organData?.long || organName
-
-  if (displayName === longName) {
-    return <>{displayName}</>
-  }
-
-  return (
-    <Tooltip>
-      <TooltipTrigger className={showUnderline ? "underline decoration-dotted cursor-help" : "cursor-help"}>
-        {displayName}
-      </TooltipTrigger>
-      <TooltipContent>
-        <p>{longName}</p>
-      </TooltipContent>
-    </Tooltip>
   )
 } 

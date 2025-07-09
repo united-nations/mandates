@@ -1179,3 +1179,46 @@ function calculateFilterOptions(
 Enhanced context-aware filter options with counts and greyed-out unavailable options implemented successfully.
 
 ---
+
+## Cross-Citations Filter Issue Analysis
+
+### Problem
+The cross-citations filter is not correctly applied. When users click on a cross-citation entity in the sidebar, it replaces the original entity filter instead of adding a cross-citing entity filter.
+
+### Root Cause
+1. The FilterContext doesn't support `crossCitingEntity` filter type, even though the API supports it
+2. The cross-citations sidebar sets `entity` filter instead of `crossCitingEntity`
+3. This causes the original entity context to be lost when filtering by cross-citations
+
+### Expected Behavior
+- User is on entity page `/entity/UNDP` (entity filter = UNDP)
+- User clicks on cross-citation entity "UNICEF"
+- Should show mandates cited by BOTH UNDP AND UNICEF (intersection)
+- Should preserve UNDP as the main entity and add UNICEF as crossCitingEntity
+
+### Solution Plan
+- [x] Add `crossCitingEntity` to FilterContext's FilterType interface
+- [x] Update cross-citations sidebar to use `crossCitingEntity` filter instead of `entity`
+- [x] Add crossCitingEntity filter chip to FilterControls component
+- [x] Test the filtering behavior works correctly
+- [x] Ensure URL parameters are properly handled for crossCitingEntity
+
+### Implementation Details
+1. **FilterContext Update**: Added `crossCitingEntity` to FilterType interface and included it in filter handling logic for both main and entity/organ pages.
+
+2. **Cross-Citations Sidebar**: Updated `handleEntityClick` to set `crossCitingEntity` filter instead of `entity`, preserving the original entity context on entity pages.
+
+3. **Filter Chips**: Added a dedicated filter chip for `crossCitingEntity` in FilterControls component with proper entity name display and clear functionality.
+
+4. **API Integration**: The existing API route already supports `crossCitingEntity` parameter, so no backend changes were needed.
+
+5. **Organ Name Tooltips**: Added long name tooltips for organ filter chips similar to entity chips:
+   - Created reusable `OrganName` component in `src/components/ui/organ-name.tsx`
+   - Updated `FilterControls` to accept `allOrgans` prop and use `OrganName` component
+   - Updated `MandateExplorer` to pass `allOrgans` data to `FilterControls`
+
+### Testing Results
+- Cross-citations filter is now correctly applied as intersection (entity AND crossCitingEntity)
+- Filter chips display properly showing "Cross-citing Entity: [name]"
+- Original entity context is preserved on entity pages
+- URL parameters are properly handled for crossCitingEntity

@@ -37,8 +37,8 @@ export function CrossCitationsSidebar({
   const DISPLAY_LIMIT = 30
 
   const handleEntityClick = (entityName: string) => {
-    // On entity/organ pages: Set as filter (cross-citations sidebar only appears on these pages)
-    setFilter('entity', entityName);
+    // On entity/organ pages: Set as crossCitingEntity filter to show intersection
+    setFilter('crossCitingEntity', entityName);
   };
 
   const handleOrganClick = (organName: string) => {
@@ -85,9 +85,9 @@ export function CrossCitationsSidebar({
             {filteredCitations.slice(0, showAll ? filteredCitations.length : DISPLAY_LIMIT).map((citation) => (
               <div
                 key={citation.entity}
-                                 className={`flex items-center justify-between p-2 rounded-sm hover:bg-muted/30 cursor-pointer group border-b border-muted/30 last:border-b-0 ${
-                   filters.entity === citation.entity ? 'bg-un-blue/10 border-un-blue/30' : ''
-                 }`}
+                                                 className={`flex items-center justify-between p-2 rounded-sm hover:bg-muted/30 cursor-pointer group border-b border-muted/30 last:border-b-0 ${
+                  filters.crossCitingEntity === citation.entity ? 'bg-un-blue/10 border-un-blue/30' : ''
+                }`}
                 onClick={() => handleEntityClick(citation.entity)}
               >
                 <div className="min-w-0 flex-1">

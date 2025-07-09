@@ -6,6 +6,7 @@ import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 export interface FilterType {
   entity?: string
   organ?: string
+  crossCitingEntity?: string
   keyword?: string
   programme?: string
   subject?: string
@@ -46,7 +47,7 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
     if (isMainPage) {
       // Main page: Only read URL params (for filters set on this page)
       const filterKeys: (keyof FilterType)[] = [
-        'entity', 'organ', 'keyword', 'programme', 'subject', 
+        'entity', 'organ', 'crossCitingEntity', 'keyword', 'programme', 'subject', 
         'start_year', 'end_year', 'budget_document', 'sort_by', 'page', 'limit'
       ]
       
@@ -59,7 +60,7 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
     } else if (isEntityPage || isOrganPage) {
       // Entity/organ pages: Only read additional filters (not implicit ones)
       const additionalFilterKeys: (keyof FilterType)[] = [
-        'keyword', 'programme', 'subject', 'start_year', 'end_year', 
+        'crossCitingEntity', 'keyword', 'programme', 'subject', 'start_year', 'end_year', 
         'budget_document', 'sort_by', 'page', 'limit'
       ]
       

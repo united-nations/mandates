@@ -9,6 +9,7 @@ import { YearSlider } from './year-slider';
 import { Label } from '@/components/ui/label';
 import { FilterBadge } from '@/components/ui/filter-badge';
 import { EntityName } from './ui/entity-name';
+import { OrganName } from './ui/organ-name';
 import { toTitleCase } from '@/lib/utils';
 import { explainerTexts } from '@/lib/explainer-texts';
 import { useFilters } from '@/contexts/FilterContext';
@@ -16,6 +17,11 @@ import { useFilters } from '@/contexts/FilterContext';
 interface Entity {
   entity: string;
   entity_long: string;
+}
+
+interface Organ {
+  short: string;
+  long: string;
 }
 
 interface FilterControlsProps {
@@ -26,6 +32,7 @@ interface FilterControlsProps {
   showAdvancedSearch: boolean;
   setShowAdvancedSearch: (show: boolean) => void;
   entitiesData: Entity[];
+  allOrgans: Organ[];
   // New props for implicit filter logic
   entityFilter?: string;
   organFilter?: string;
@@ -40,6 +47,7 @@ export function FilterControls({
   showAdvancedSearch,
   setShowAdvancedSearch,
   entitiesData,
+  allOrgans,
   entityFilter,
   organFilter,
   pageType,
@@ -244,11 +252,33 @@ export function FilterControls({
                   />
                 )}
 
+                {/* Cross-citing Entity chip */}
+                {displayFilters.crossCitingEntity && displayFilters.crossCitingEntity !== 'all' && (
+                  <FilterBadge
+                    icon={Building}
+                    label={<>
+                      Cross-citing Entity:&nbsp;
+                      <EntityName 
+                        entityName={displayFilters.crossCitingEntity} 
+                        entityLong={entitiesData.find(e => e.entity === displayFilters.crossCitingEntity)?.entity_long}
+                      />
+                    </>}
+                    onClear={() => clearFilter('crossCitingEntity')}
+                    variant="secondary"
+                  />
+                )}
+
                 {/* Organ chip - only show if not on organ page or if it's an additional filter */}
                 {displayFilters.organ && displayFilters.organ !== 'all' && (
                   <FilterBadge
                     icon={Landmark}
-                    label={`Organ: ${displayFilters.organ}`}
+                    label={<>
+                      Organ:&nbsp;
+                      <OrganName 
+                        organName={displayFilters.organ} 
+                        allOrgans={allOrgans}
+                      />
+                    </>}
                     onClear={() => clearFilter('organ')}
                     variant="secondary"
                   />

@@ -343,6 +343,7 @@ export function MandateExplorer ({
                   showAdvancedSearch={showAdvancedSearch}
                   setShowAdvancedSearch={setShowAdvancedSearch}
                   entitiesData={allEntities}
+                  allOrgans={allOrgans}
                   entityFilter={entityFilter}
                   organFilter={organFilter}
                   pageType={pageType}
