@@ -77,14 +77,35 @@ export default function RootLayout ({
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align='end'>
-                    <DropdownMenuItem asChild>
-                      <Link href='/'>Mandate Source Registry</Link>
+                    <DropdownMenuItem 
+                      asChild={pathname !== '/'}
+                      className={pathname === '/' ? 'text-muted-foreground cursor-default opacity-60' : ''}
+                    >
+                      {pathname === '/' ? (
+                        <span>Mandate Source Registry</span>
+                      ) : (
+                        <Link href='/'>Mandate Source Registry</Link>
+                      )}
                     </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link href='/methodology'>Methodology</Link>
+                    <DropdownMenuItem 
+                      asChild={pathname !== '/methodology'}
+                      className={pathname === '/methodology' ? 'text-muted-foreground cursor-default opacity-60' : ''}
+                    >
+                      {pathname === '/methodology' ? (
+                        <span>Methodology</span>
+                      ) : (
+                        <Link href='/methodology'>Methodology</Link>
+                      )}
                     </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link href='/resources'>More Resources</Link>
+                    <DropdownMenuItem 
+                      asChild={pathname !== '/resources'}
+                      className={pathname === '/resources' ? 'text-muted-foreground cursor-default opacity-60' : ''}
+                    >
+                      {pathname === '/resources' ? (
+                        <span>More Resources</span>
+                      ) : (
+                        <Link href='/resources'>More Resources</Link>
+                      )}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
