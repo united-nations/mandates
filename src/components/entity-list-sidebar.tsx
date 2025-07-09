@@ -51,6 +51,9 @@ export function EntityListSidebar({
     }
   }
 
+  // Get variant based on page type
+  const variant = pageType === 'main' ? 'navigation' : 'filter'
+
   // Search filter function
   const searchFilter = (entity: EntityWithCount, searchTerm: string) => {
     const shortName = entity.entity.toLowerCase()
@@ -59,7 +62,7 @@ export function EntityListSidebar({
   }
 
   // Render item function
-  const renderItem = (entity: EntityWithCount, index: number) => {
+  const renderItem = (entity: EntityWithCount, index: number, variant: 'navigation' | 'filter') => {
     const item = (
       <SidebarListItem
         key={entity.entity}
@@ -74,6 +77,7 @@ export function EntityListSidebar({
         maxCount={maxCount}
         isActive={filters.entity === entity.entity}
         onClick={() => handleEntityClick(entity.entity)}
+        variant={variant}
       />
     )
 
@@ -106,6 +110,7 @@ export function EntityListSidebar({
       renderItem={renderItem}
       hideHeader={hideHeader}
       borderless={borderless}
+      variant={variant}
       emptyMessage="No entities found"
     />
   )

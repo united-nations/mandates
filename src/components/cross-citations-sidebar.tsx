@@ -56,7 +56,7 @@ export function CrossCitationsSidebar({
   }
 
   // Render item function for entities
-  const renderEntityItem = (citation: CrossCitation, index: number) => (
+  const renderEntityItem = (citation: CrossCitation, index: number, variant: 'navigation' | 'filter') => (
     <SidebarListItem
       key={citation.entity}
       label={
@@ -70,11 +70,12 @@ export function CrossCitationsSidebar({
       maxCount={maxEntityCount}
       isActive={filters.crossCitingEntity === citation.entity}
       onClick={() => handleEntityClick(citation.entity)}
+      variant={variant}
     />
   )
 
   // Render item function for organs
-  const renderOrganItem = (citation: CrossCitation, index: number) => (
+  const renderOrganItem = (citation: CrossCitation, index: number, variant: 'navigation' | 'filter') => (
     <SidebarListItem
       key={citation.entity}
       label={citation.entity_long || citation.entity}
@@ -82,6 +83,7 @@ export function CrossCitationsSidebar({
       maxCount={maxEntityCount}
       isActive={filters.organ === citation.entity}
       onClick={() => handleOrganClick(citation.entity)}
+      variant={variant}
     />
   )
 
@@ -103,6 +105,7 @@ export function CrossCitationsSidebar({
           renderItem={renderEntityItem}
           showExpandCollapse={true}
           maxItemsBeforeExpand={30}
+          variant="filter"
           emptyMessage="No cross-citations found"
         />
       )}
@@ -119,6 +122,7 @@ export function CrossCitationsSidebar({
           renderItem={renderOrganItem}
           showExpandCollapse={true}
           maxItemsBeforeExpand={30}
+          variant="filter"
           emptyMessage="No related organs found"
         />
       )}

@@ -1317,3 +1317,81 @@ The three sidebar components have significant code duplication:
 
 ## Status: ✅ COMPLETED
 The sidebar component refactoring is now complete and successful! All three sidebars now follow DRY principles while maintaining exact same functionality and appearance.
+
+---
+
+# 🎨 SIDEBAR VISUAL DIFFERENTIATION
+
+## Problem Analysis
+The sidebars have different behaviors on different pages:
+- **Main page**: Navigation links to entity/organ pages
+- **Entity/organ pages**: Filter toggles for current page
+
+Users need visual cues to understand the different functions.
+
+## Design Concept
+Create two distinct visual styles:
+
+### 1. **Navigation Style** (Main Page)
+- **Purpose**: Indicates items will navigate to new pages
+- **Visual cues**: 
+  - Hover underline (link-like behavior)
+  - Slight opacity change on hover
+  - External link visual treatment
+  - More prominent hover states
+
+### 2. **Filter Style** (Entity/Organ Pages)  
+- **Purpose**: Indicates items will filter current page
+- **Visual cues**:
+  - Active/inactive toggle states
+  - Background color changes when active
+  - More prominent selection states
+  - Filter-like visual treatment
+
+## Implementation Plan
+- [x] Add `variant` prop to GenericSidebar component
+- [x] Add `variant` prop to SidebarListItem component  
+- [x] Update all three sidebar components to pass correct variant
+- [x] Implement different styling in SidebarListItem component
+- [x] Test visual differentiation across all pages
+
+## ✅ What Was Implemented:
+
+### 1. **GenericSidebar Component Updates**
+- Added `variant?: 'navigation' | 'filter'` prop
+- Pass variant to renderItem function: `renderItem(item, index, variant)`
+- Default variant is 'filter'
+
+### 2. **SidebarListItem Component Updates**
+- Added `variant?: 'navigation' | 'filter'` prop
+- **Navigation Style** (main page):
+  - Light blue hover background (`hover:bg-blue-50`)
+  - Blue border on hover (`hover:border-blue-200`)
+  - Shadow on hover (`hover:shadow-sm`)
+  - Blue underline on hover (`group-hover:underline decoration-blue-400`)
+  - Blue text color on hover (`group-hover:text-blue-600`)
+  - External link icon that appears on hover
+  - Blue progress bar (`bg-blue-500/60`)
+  - Count text changes to blue on hover
+- **Filter Style** (entity/organ pages):
+  - Gray hover background (`hover:bg-slate-100`)
+  - Gray border on hover (`hover:border-slate-200`)
+  - Strong active state with blue background and ring (`bg-un-blue/15 border-un-blue/40 shadow-sm ring-1 ring-un-blue/20`)
+  - Filter icon that appears on hover
+  - UN blue progress bar (`bg-un-blue/60`)
+  - Count text stays gray
+
+### 3. **All Sidebar Components Updated**
+- **Cross-citations sidebar**: Always uses `variant="filter"` (only appears on entity/organ pages)
+- **Entity-list sidebar**: Uses `variant="navigation"` on main page, `variant="filter"` on entity/organ pages
+- **Organ-list sidebar**: Uses `variant="navigation"` on main page, `variant="filter"` on entity/organ pages
+
+### 4. **Visual Differentiation Achieved**
+- **Navigation items** clearly indicate they will navigate to new pages
+- **Filter items** clearly indicate they will filter current page content
+- **Icons** provide immediate visual context (ExternalLink vs Filter)
+- **Color schemes** reinforce the different purposes
+- **Hover states** are distinct and purposeful
+
+## Status: ✅ COMPLETED
+Sidebar visual differentiation is now complete with pronounced differences between navigation and filter functions!

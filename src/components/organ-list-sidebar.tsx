@@ -59,6 +59,9 @@ export function OrganListSidebar({
     }
   }
 
+  // Get variant based on page type
+  const variant = pageType === 'main' ? 'navigation' : 'filter'
+
   // Search filter function
   const searchFilter = (organ: OrganWithCount, searchTerm: string) => {
     const organData = findOrganData(organ.short)
@@ -67,7 +70,7 @@ export function OrganListSidebar({
   }
 
   // Render item function
-  const renderItem = (organ: OrganWithCount, index: number) => {
+  const renderItem = (organ: OrganWithCount, index: number, variant: 'navigation' | 'filter') => {
     const item = (
       <SidebarListItem
         key={organ.short}
@@ -76,6 +79,7 @@ export function OrganListSidebar({
         maxCount={maxCount}
         isActive={filters.organ === organ.short}
         onClick={() => handleOrganClick(organ.short)}
+        variant={variant}
       />
     )
 
@@ -108,6 +112,7 @@ export function OrganListSidebar({
       renderItem={renderItem}
       hideHeader={hideHeader}
       borderless={borderless}
+      variant={variant}
       emptyMessage="No organs found"
     />
   )

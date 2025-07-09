@@ -20,13 +20,16 @@ interface GenericSidebarProps<T> {
   searchFilter: (item: T, searchTerm: string) => boolean
   
   // Rendering props
-  renderItem: (item: T, index: number) => ReactNode
+  renderItem: (item: T, index: number, variant: 'navigation' | 'filter') => ReactNode
   
   // Display props
   hideHeader?: boolean
   borderless?: boolean
   showExpandCollapse?: boolean
   maxItemsBeforeExpand?: number
+  
+  // Visual variant
+  variant?: 'navigation' | 'filter'
   
   // Empty state
   emptyMessage?: string
@@ -45,6 +48,7 @@ export function GenericSidebar<T>({
   borderless = false,
   showExpandCollapse = false,
   maxItemsBeforeExpand = 30,
+  variant = 'filter',
   emptyMessage = "No items found"
 }: GenericSidebarProps<T>) {
   const [filteredItems, setFilteredItems] = useState<T[]>(items)
@@ -99,7 +103,7 @@ export function GenericSidebar<T>({
             <LoadingSkeletonComponent />
           ) : (
             <div className="space-y-1">
-              {itemsToDisplay.map((item, index) => renderItem(item, index))}
+              {itemsToDisplay.map((item, index) => renderItem(item, index, variant))}
               
               {hasMoreItems && (
                 <button
