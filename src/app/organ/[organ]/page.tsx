@@ -31,20 +31,20 @@ function OrganPageContent() {
     <div>
       <div className="mb-6">
         <div className="flex items-center gap-4 mb-2">
-          <div className="rounded-lg bg-un-blue/10 p-2 w-12 flex items-center justify-center">
+          {/* <div className="rounded-lg bg-un-blue/10 p-2 w-12 flex items-center justify-center">
             <Landmark className="h-6 w-6 text-un-blue" />
-          </div>
+          </div> */}
           <h1 className="text-2xl font-bold tracking-tight">
             {organDetails?.long} ({organName})
           </h1>
         </div>
 
         {!organDetails ? (
-          <div className="space-y-2 mt-4 ml-16">
+          <div className="space-y-2 mt-4 ml-0">
             <Skeleton className="h-6 w-48" />
           </div>
         ) : (
-          <div className="space-y-0 ml-16">
+          <div className="space-y-0 ml-0">
             {organDetails.website && (
               <MetadataItem label="Website" icon={LinkIcon}>
                 <a href={organDetails.website} target="_blank" rel="noopener noreferrer" className="text-un-blue underline hover:text-un-blue/80 transition-colors">

@@ -36,20 +36,20 @@ function EntityPageContent () {
     <div>
       <div className='mb-6'>
         <div className='flex items-center gap-4 mb-2'>
-          <div className='rounded-lg bg-un-blue/10 p-2 w-12 flex items-center justify-center'>
+          {/* <div className='rounded-lg bg-un-blue/10 p-2 w-12 flex items-center justify-center'>
             <Building className='h-6 w-6 text-un-blue' />
-          </div>
+          </div> */}
           <h1 className='text-2xl font-bold tracking-tight'>
             {entityDetails?.entity_long} ({entityName})
           </h1>
         </div>
 
         {!entityDetails ? (
-          <div className='space-y-2 mt-4 ml-16'>
+          <div className='space-y-2 mt-4 ml-0'>
             <Skeleton className='h-6 w-48' />
           </div>
         ) : (
-          <div className='space-y-0 ml-16'>
+          <div className='space-y-0 ml-0'>
             {entityDetails.url && (
               <MetadataItem label='Website' icon={LinkIcon}>
                 <a
