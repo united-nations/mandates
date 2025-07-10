@@ -21,6 +21,7 @@ export interface FilterType {
 interface FilterContextType {
   filters: FilterType
   setFilter: (key: keyof FilterType, value: string | undefined) => void
+  setMultipleFilters: (updates: Partial<FilterType>) => void
   clearFilter: (key: keyof FilterType) => void
   clearAllFilters: () => void
 }
@@ -104,6 +105,23 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
     router.push(newUrl, { scroll: false })
   }
   
+  // Update multiple filters atomically
+  const setMultipleFilters = (updates: Partial<FilterType>) => {
+    const newParams = new URLSearchParams(searchParams.toString())
+    
+    Object.entries(updates).forEach(([key, value]) => {
+      if (value === undefined || value === '' || value === 'all') {
+        newParams.delete(key)
+      } else {
+        newParams.set(key, value)
+      }
+    })
+    
+    // Navigate with new params
+    const newUrl = `${pathname}?${newParams.toString()}`;
+    router.push(newUrl, { scroll: false })
+  }
+
   // Clear a single filter
   const clearFilter = (key: keyof FilterType) => {
     setFilter(key, undefined)
@@ -125,6 +143,7 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
   const contextValue: FilterContextType = {
     filters,
     setFilter,
+    setMultipleFilters,
     clearFilter,
     clearAllFilters
   }

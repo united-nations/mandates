@@ -482,7 +482,7 @@ export function MandateExplorer ({
                           <PaginationControls
                             currentPage={pagination.page}
                             totalPages={pagination.totalPages}
-                            pageSize={pagination.limit}
+                            pageSize={pageSize}
                             totalItems={pagination.totalItems}
                           />
                         </div>

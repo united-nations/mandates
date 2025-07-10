@@ -20,15 +20,17 @@ export function PaginationControls({
   pageSize,
   className = '',
 }: PaginationControlsProps) {
-  const { setFilter } = useFilters();
+  const { setFilter, setMultipleFilters } = useFilters();
 
   const handlePageChange = (page: number) => {
     setFilter('page', page.toString());
   };
 
   const handlePageSizeChange = (size: string) => {
-    setFilter('limit', size);
-    setFilter('page', '1'); // Reset to first page when changing page size
+    setMultipleFilters({
+      limit: size,
+      page: '1'
+    });
   };
 
   if (totalPages <= 1) {
