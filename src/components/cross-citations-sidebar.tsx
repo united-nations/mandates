@@ -84,7 +84,7 @@ export function CrossCitationsSidebar({
           searchFilter={searchFilter}
           renderItem={renderEntityItem}
           showExpandCollapse={true}
-          maxItemsBeforeExpand={30}
+          maxItemsBeforeExpand={10}
           variant="filter"
           emptyMessage="No cross-citations found"
           hideHeader={hideHeader}
