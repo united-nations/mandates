@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { useSearchParams } from 'next/navigation'
 import type { Mandate, ApiResponse } from '@/types'
 import { MandateList } from '@/components/mandate-list'
 import { FilterControls } from '@/components/filter-controls'
@@ -53,6 +54,22 @@ export function MandateExplorer ({
   onOrganDetailsLoaded
 }: MandateExplorerProps) {
   const { filters, setFilter } = useFilters()
+  const searchParams = useSearchParams()
+
+  // Get current URL parameters directly (this is always up-to-date)
+  const currentUrlParams = {
+    page: searchParams.get('page') || '1',
+    limit: searchParams.get('limit') || '10',
+    entity: searchParams.get('entity') || '',
+    organ: searchParams.get('organ') || '',
+    keyword: searchParams.get('keyword') || '',
+    programme: searchParams.get('programme') || '',
+    subject: searchParams.get('subject') || '',
+    start_year: searchParams.get('start_year') || '',
+    end_year: searchParams.get('end_year') || '',
+    budget_document: searchParams.get('budget_document') || '',
+    sort_by: searchParams.get('sort_by') || (searchParams.get('keyword') ? 'default' : 'citing_entities_desc')
+  }
 
   // Simplified state management - only what's needed for UI
   const [apiData, setApiData] = useState<ApiResponse | null>(null)
@@ -66,13 +83,12 @@ export function MandateExplorer ({
   const [unEntitiesPopover, setUnEntitiesPopover] = useState(false)
   const [citationsPopover, setCitationsPopover] = useState(false)
 
-  // Get current page and page size from filters (preserved logic)
-  const currentPage = Number(filters.page || '1')
-  const pageSize = Number(filters.limit || '10')
-  const sortBy =
-    filters.sort_by || (filters.keyword ? 'default' : 'citing_entities_desc')
+  // Get current page and page size from URL params directly (always up-to-date)
+  const currentPage = Number(currentUrlParams.page)
+  const pageSize = Number(currentUrlParams.limit)
+  const sortBy = currentUrlParams.sort_by
 
-  // Fetch data when filters change - simplified logic
+  // Fetch data when URL parameters change - use URL params directly
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
@@ -86,8 +102,19 @@ export function MandateExplorer ({
           params.set('organ', organFilter)
         }
 
-        // Add URL-based filters (for main page or additional filters on entity/organ pages)
-        Object.entries(filters).forEach(([key, value]) => {
+        // Add URL-based filters directly from searchParams (not from context)
+        const urlFilters = {
+          entity: currentUrlParams.entity,
+          organ: currentUrlParams.organ,
+          keyword: currentUrlParams.keyword,
+          programme: currentUrlParams.programme,
+          subject: currentUrlParams.subject,
+          start_year: currentUrlParams.start_year,
+          end_year: currentUrlParams.end_year,
+          budget_document: currentUrlParams.budget_document
+        }
+
+        Object.entries(urlFilters).forEach(([key, value]) => {
           if (value && value !== 'all') {
             // Skip entity/organ filters if we already set them implicitly above
             if (
@@ -131,7 +158,7 @@ export function MandateExplorer ({
 
     fetchData()
   }, [
-    filters,
+    searchParams,
     currentPage,
     pageSize,
     sortBy,
