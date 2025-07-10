@@ -115,6 +115,8 @@ export function OrganListSidebar({
       borderless={borderless}
       variant={variant}
       emptyMessage="No organs found"
+      showExpandCollapse={true}
+      maxItemsBeforeExpand={4}
     />
   )
 } 

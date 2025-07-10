@@ -98,7 +98,22 @@ export function GenericSidebar<T>({
           variant="border-bottom"
         />
         
-        <div className="max-h-96 overflow-y-auto">
+        <div 
+          className="max-h-[28rem] overflow-y-auto"
+          onWheel={(e) => {
+            const target = e.currentTarget;
+            const { scrollTop, scrollHeight, clientHeight } = target;
+            
+            // Check if scrolling up at the top
+            if (e.deltaY < 0 && scrollTop === 0) {
+              e.preventDefault();
+            }
+            // Check if scrolling down at the bottom
+            else if (e.deltaY > 0 && scrollTop + clientHeight >= scrollHeight) {
+              e.preventDefault();
+            }
+          }}
+        >
           {isLoading ? (
             <LoadingSkeletonComponent />
           ) : (

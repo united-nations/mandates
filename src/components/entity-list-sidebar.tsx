@@ -115,6 +115,8 @@ export function EntityListSidebar({
       borderless={borderless}
       variant={variant}
       emptyMessage="No entities found"
+      showExpandCollapse={true}
+      maxItemsBeforeExpand={10}
     />
   )
 } 
