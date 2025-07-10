@@ -8,6 +8,7 @@ import { YearSlider } from './year-slider';
 import { explainerTexts } from '@/lib/explainer-texts';
 import { titleCase } from 'title-case';
 import { useState, useEffect } from 'react';
+import { getBudgetDocumentOptions } from '@/lib/budget-documents';
 
 interface AdvancedSearchProps {
   programme: string;
@@ -163,9 +164,11 @@ export function AdvancedSearch({
               <SelectContent>
                 <SelectItem value="all">All Budget Documents</SelectItem>
                 <SelectSeparator />
-                <SelectItem value="ppb2026">Proposed Programme Budget for 2026</SelectItem>
-                <SelectItem value="pko">Budget of Peacekeeping Operations 2025/26</SelectItem>
-                <SelectItem value="PPB 2026/Plan Outline">Plan Outline</SelectItem>
+                {getBudgetDocumentOptions().map(option => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>

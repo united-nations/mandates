@@ -13,6 +13,7 @@ import { OrganName } from './ui/organ-name';
 import { titleCase } from 'title-case';
 import { explainerTexts } from '@/lib/explainer-texts';
 import { useFilters } from '@/contexts/FilterContext';
+import { getBudgetDocumentDisplayName } from '@/lib/budget-documents';
 
 interface Entity {
   entity: string;
@@ -319,7 +320,7 @@ export function FilterControls({
                 {displayFilters.budget_document && displayFilters.budget_document !== 'all' && (
                   <FilterBadge
                     icon={Receipt}
-                    label={`Budget: ${displayFilters.budget_document}`}
+                    label={`Budget: ${getBudgetDocumentDisplayName(displayFilters.budget_document)}`}
                     onClear={() => clearFilter('budget_document')}
                     variant="secondary"
                   />

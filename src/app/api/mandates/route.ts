@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import DataService from '@/lib/data-service'
 import { safeHighlightSearchTerms } from '@/lib/utils'
 import { titleCase } from 'title-case'
+import { matchesBudgetDocument, getBudgetDocumentFilterValues } from '@/lib/budget-documents'
 import type {
   Mandate,
   Entity,
@@ -157,9 +158,12 @@ function filterMandates (
   // Budget document filter
   if (filters.budget_document) {
     filtered = filtered.filter(mandate =>
-      mandate.citation_info.some(
-        info => info.origin_document === filters.budget_document
-      )
+      mandate.citation_info.some(info => {
+        if (!info.origin_document) return false;
+        
+        // Use the centralized budget document matching logic
+        return matchesBudgetDocument(info.origin_document, filters.budget_document!);
+      })
     )
   }
 

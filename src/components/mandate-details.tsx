@@ -17,6 +17,7 @@ import { EntityName } from './ui/entity-name';
 import { TooltipProvider } from './ui/tooltip';
 import { titleCase } from 'title-case';
 import NextLink from 'next/link';
+import { getOriginDocumentDisplayName, getBudgetDocumentSlug } from '@/lib/budget-documents';
 
 interface MandateDetailsProps {
   mandate: Mandate | null;
@@ -60,13 +61,6 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [], 
     if (isRightSwipe) {
       onOpenChange(false);
     }
-  };
-
-  const budgetDocumentDisplayNames: { [key: string]: string } = {
-    'ppb2026': 'Proposed Programme Budget for 2026',
-    'PPB 2026': 'Proposed Programme Budget for 2026',
-    'pko': 'Budget of Peacekeeping Operations 2025/26',
-    'PPB 2026/Plan Outline': 'Plan Outline',
   };
 
   // Create entity lookup function
@@ -218,12 +212,21 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [], 
                   {budgetDocuments.length > 0 ? (
                     <div className="flex flex-wrap gap-1">
                       {budgetDocuments.map((doc, index) => {
-                        const displayName = budgetDocumentDisplayNames[doc] || doc;
+                        const displayName = getOriginDocumentDisplayName(doc);
+                        const slug = getBudgetDocumentSlug(displayName);
+                        
                         return (
                           <Badge 
                             key={index} 
                             variant="stronger" 
-                            className="text-xs"
+                            className="text-xs cursor-pointer hover:bg-primary/80 transition-colors"
+                            onClick={() => {
+                              // Navigate to filtered results using the budget document slug
+                              const url = new URL(window.location.origin + '/');
+                              url.searchParams.set('page', '1');
+                              url.searchParams.set('budget_document', slug);
+                              window.open(url.toString(), '_blank');
+                            }}
                           >
                             {displayName}
                           </Badge>
