@@ -216,14 +216,15 @@ export function FilterControls({
                       {(hasSearch ? 1 : 0) + Object.values(displayFilters).filter(v => v && v !== 'all').length}
                     </span>
                   </div>
-                  <button
-                    type="button"
-                    className="shrink-0 inline-flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-slate-600 hover:text-slate-800 cursor-pointer transition-colors"
+                  <Button
+                    variant="clear"
+                    size="sm"
                     onClick={clearAllFilters}
+                    className="shrink-0 -mr-3"
                   >
                     <X className="h-3 w-3 sm:h-4 sm:w-4" />
                     <span className="text-xs sm:text-sm">Clear All</span>
-                  </button>
+                  </Button>
                 </div>
               )}
               
