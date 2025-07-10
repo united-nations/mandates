@@ -159,7 +159,7 @@ export function AdvancedSearch({
               onValueChange={onBudgetDocumentChange}
             >
               <SelectTrigger id="budget-document" className="text-sm h-11 border-slate-300 focus:border-blue-500 focus:ring-blue-500 bg-white">
-                <SelectValue placeholder={explainerTexts.advancedFilters.budgetDocument.placeholder} />
+                <SelectValue placeholder={explainerTexts.advancedFilters.budgetDocument.placeholder} className="text-left" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Budget Documents</SelectItem>
