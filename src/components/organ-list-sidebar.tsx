@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { Landmark } from 'lucide-react'
 import { useFilters } from '@/contexts/FilterContext'
 import { GenericSidebar } from '@/components/ui/generic-sidebar'
@@ -30,6 +31,7 @@ export function OrganListSidebar({
   entityFilter
 }: OrganListSidebarProps) {
   const { filters, setFilter } = useFilters();
+  const router = useRouter();
   
   const maxCount = Math.max(...organs.map(organ => organ.count), 1)
 
@@ -39,10 +41,28 @@ export function OrganListSidebar({
     )
   }
 
+  // Build URL with current filters for navigation to organ page
+  const buildOrganPageUrl = (organName: string): string => {
+    const params = new URLSearchParams();
+    
+    // Add all current filters except 'organ' (since we're navigating to an organ page)
+    // and exclude pagination (start fresh on new page)
+    Object.entries(filters).forEach(([key, value]) => {
+      if (key !== 'organ' && key !== 'page' && value && value !== 'all') {
+        params.set(key, value);
+      }
+    });
+    
+    const queryString = params.toString();
+    const baseUrl = `/organ/${encodeURIComponent(organName)}`;
+    return queryString ? `${baseUrl}?${queryString}` : baseUrl;
+  };
+
   const handleOrganClick = (organName: string) => {
     if (pageType === 'main') {
-      // On main page: Navigate to organ page (simple link - will be handled by Link component)
-      return;
+      // On main page: Navigate to organ page with current filters preserved
+      const url = buildOrganPageUrl(organName);
+      router.push(url);
     } else {
       // On entity/organ pages: Set as filter
       setFilter('organ', organName);
@@ -84,20 +104,8 @@ export function OrganListSidebar({
       />
     )
 
-    // For main page, wrap in Link
-    if (pageType === 'main') {
-      return (
-        <Link 
-          key={organ.short} 
-          href={`/organ/${encodeURIComponent(organ.short)}`}
-          className="block"
-          prefetch={false}
-        >
-          {item}
-        </Link>
-      )
-    }
-
+    // For main page, we handle navigation via onClick in handleOrganClick
+    // No need to wrap in Link anymore since we're using router.push with filters
     return item
   }
 

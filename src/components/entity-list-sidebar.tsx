@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { Building } from 'lucide-react'
 import { EntityName } from '@/components/ui/entity-name'
 import { useFilters } from '@/contexts/FilterContext'
@@ -30,13 +31,32 @@ export function EntityListSidebar({
   organFilter
 }: EntityListSidebarProps) {
   const { filters, setFilter } = useFilters();
+  const router = useRouter();
   
   const maxCount = Math.max(...entities.map(entity => entity.count), 1)
 
+  // Build URL with current filters for navigation to entity page
+  const buildEntityPageUrl = (entityName: string): string => {
+    const params = new URLSearchParams();
+    
+    // Add all current filters except 'entity' (since we're navigating to an entity page)
+    // and exclude pagination (start fresh on new page)
+    Object.entries(filters).forEach(([key, value]) => {
+      if (key !== 'entity' && key !== 'page' && value && value !== 'all') {
+        params.set(key, value);
+      }
+    });
+    
+    const queryString = params.toString();
+    const baseUrl = `/entity/${encodeURIComponent(entityName)}`;
+    return queryString ? `${baseUrl}?${queryString}` : baseUrl;
+  };
+
   const handleEntityClick = (entityName: string) => {
     if (pageType === 'main') {
-      // On main page: Navigate to entity page (simple link - will be handled by Link component)
-      return;
+      // On main page: Navigate to entity page with current filters preserved
+      const url = buildEntityPageUrl(entityName);
+      router.push(url);
     } else {
       // On entity/organ pages: Set as filter
       setFilter('entity', entityName);
@@ -84,20 +104,8 @@ export function EntityListSidebar({
       />
     )
 
-    // For main page, wrap in Link
-    if (pageType === 'main') {
-      return (
-        <Link 
-          key={entity.entity} 
-          href={`/entity/${encodeURIComponent(entity.entity)}`}
-          className="block"
-          prefetch={false}
-        >
-          {item}
-        </Link>
-      )
-    }
-
+    // For main page, we handle navigation via onClick in handleEntityClick
+    // No need to wrap in Link anymore since we're using router.push with filters
     return item
   }
 
