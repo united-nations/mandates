@@ -172,12 +172,13 @@ function filterMandates (
     const keyword = filters.keyword.toLowerCase()
     filtered = filtered.filter(mandate => {
       // Create displayTitle on-the-fly for search (same logic as enrichMandates)
+      const citationDescription = mandate.citation_info?.find(info => info.description?.trim())?.description?.trim()
       const displayTitle = titleCase(((mandate.uniform_title && mandate.uniform_title.length > 0 && mandate.uniform_title[0].trim()) 
         ? mandate.uniform_title[0].trim()
         : (mandate.title && mandate.title.trim()) 
           ? mandate.title.trim()
-          : (mandate.description && mandate.description.trim()) 
-            ? mandate.description.trim()
+          : citationDescription
+            ? citationDescription
             : 'Untitled').toLowerCase())
       
       const searchableText = [
@@ -284,13 +285,23 @@ function enrichMandates (
       .map(entity => entityMap.get(entity)?.entity_long || entity)
       .join(', '),
     body_long: organMap.get(mandate.body)?.long || mandate.body,
-    displayTitle: titleCase(((mandate.uniform_title && mandate.uniform_title.length > 0 && mandate.uniform_title[0].trim()) 
-      ? mandate.uniform_title[0].trim()
-      : (mandate.title && mandate.title.trim()) 
-        ? mandate.title.trim()
-        : (mandate.description && mandate.description.trim()) 
-          ? mandate.description.trim()
-          : 'Untitled').toLowerCase())
+    displayTitle: titleCase((() => {
+      // Check uniform_title first
+      if (mandate.uniform_title && mandate.uniform_title.length > 0 && mandate.uniform_title[0].trim()) {
+        return mandate.uniform_title[0].trim()
+      }
+      // Check title
+      if (mandate.title && mandate.title.trim()) {
+        return mandate.title.trim()
+      }
+      // Check citation_info descriptions
+      const citationDescription = mandate.citation_info?.find(info => info.description?.trim())?.description?.trim()
+      if (citationDescription) {
+        return citationDescription
+      }
+      // Final fallback
+      return 'Untitled'
+    })().toLowerCase())
   }))
 }
 
