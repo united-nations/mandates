@@ -56,6 +56,7 @@ export function FilterControls({
   const { 
     filters, 
     setFilter, 
+    setMultipleFilters,
     clearFilter, 
     clearAllFilters
   } = useFilters();
@@ -147,8 +148,10 @@ export function FilterControls({
     : null;
 
   const handleYearRangeChange = (range: [number, number]) => {
-    setFilter('start_year', range[0].toString());
-    setFilter('end_year', range[1].toString());
+    setMultipleFilters({
+      start_year: range[0].toString(),
+      end_year: range[1].toString()
+    });
   };
 
   const selectedYearRange: [number, number] | null = 
