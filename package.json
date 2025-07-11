@@ -36,6 +36,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
+    "csv-parse": "^5.6.0",
     "date-fns": "^3.6.0",
     "dotenv": "^16.5.0",
     "firebase": "^11.9.1",
@@ -50,6 +51,7 @@
     "react-hook-form": "^7.54.2",
     "recharts": "^2.15.1",
     "tailwind-merge": "^3.0.1",
+    "title-case": "^4.3.2",
     "zod": "^3.24.2"
   },
   "devDependencies": {

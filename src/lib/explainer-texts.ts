@@ -7,7 +7,7 @@ export const explainerTexts = {
   // Main page and overview
   mainHeader: {
     title: 'UN Mandate Source Registry',
-    versionTag: "(beta version)",
+    versionTag: "beta version",
     shortDescription: 'Developed as part of the UN80 Initiative, this registry serves as a transparency tool for understanding UN mandates and programmes. It compiles the source documents that UN entities cite when explaining why their programmes exist and why they require resources, enabling better dialogue on mandate implementation.',
     fullDescription: [
       "This beta version of the registry provides access to mandate source documents cited by UN Entities in support of resource requirements in the UN's Proposed Programme Budget for 2026 and the Peacekeeping Budget for 2025/2026. The Registry will be iteratively expanded in the coming weeks to integrate mandates related to other UN System Entities and to include the operative paragraphs from relevant documents. The Registry serves as a technical reference to assist Member States in assessing current mandate implementation arrangements across the UN System."
@@ -56,10 +56,11 @@ export const explainerTexts = {
   // Filter Controls
   filters: {
     keywordSearch: {
-      label: 'Keyword Search (beta)',
+      label: 'Keyword Search',
+      betaTag: 'beta',
       placeholder: 'Search for document titles...',
       tooltip:
-        'Search for specific terms to find mandate source documents. Press Enter or click the search button to search.'
+        'Search for specific terms to find mandate source documents. Press Enter to search.'
     },
     unOrgan: {
       label: 'UN Organ & Body',
@@ -84,20 +85,20 @@ export const explainerTexts = {
       label: 'Programme',
       placeholder: 'Filter by Programme...',
       searchPlaceholder: 'Search Programmes...',
-      emptyPlaceholder: 'No Programmes found.',
-      tooltip: 'Filter by specific Programmes in the budget structure of UN Entities.'
+      emptyPlaceholder: 'No programmes found.',
+      tooltip: 'Filter by programmes in the proposed programme budget.'
     },
     subjects: {
       label: 'UN Library Subjects',
       placeholder: 'Filter by Subject...',
-      searchPlaceholder: 'Search Subjects...',
-      emptyPlaceholder: 'No Subjects found.',
+      searchPlaceholder: 'Search subjects...',
+      emptyPlaceholder: 'No subjects found.',
       tooltip: 'Filter by subject headings from the UN Bibliographic Information System. These describe the main topics and themes of each document.'
     },
     budgetDocument: {
       label: 'Budget Document',
-      placeholder: 'Select budget document type...',
-      tooltip: 'Filter by the specific budget document type.'
+      placeholder: 'Select Budget Document Type...',
+      tooltip: 'Filter by the budget document where the entity cites the mandate.'
     },
     yearRange: {
       label: 'Year Range',

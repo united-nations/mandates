@@ -14,20 +14,26 @@ import {
 import { EntityName } from './ui/entity-name';
 import { FileText, Calendar, Landmark, Target, Info, Search } from 'lucide-react';
 import { explainerTexts } from '@/lib/explainer-texts';
+import Link from 'next/link';
 
 interface Organ {
   short: string;
   long: string;
 }
 
+interface Entity {
+  entity: string;
+  entity_long: string;
+}
 
 interface MandateListProps {
   mandates: Mandate[];
   onMandateClick: (mandate: Mandate) => void;
   organsData: Organ[];
+  entitiesData: Entity[];
 }
 
-const EntityBadges = ({ entities }: { entities: string[] }) => {
+const EntityBadges = ({ entities, entitiesData }: { entities: string[]; entitiesData: Entity[] }) => {
   const validEntities = entities.filter(entity => entity !== null).sort();
 
   if (validEntities.length === 0) {
@@ -37,9 +43,15 @@ const EntityBadges = ({ entities }: { entities: string[] }) => {
   return (
     <div className="flex flex-wrap gap-1 items-center">
       {validEntities.map(entity => (
-          <Badge key={entity} variant="secondary" className="font-bold text-xs !bg-un-blue/75 !text-white hover:!bg-un-blue/60">
-            <EntityName entityName={entity} showUnderline={false} />
+        <Link key={entity} href={`/entity/${encodeURIComponent(entity)}`} prefetch={false}>
+          <Badge variant="secondary" className="font-bold text-xs !bg-un-blue/75 !text-white hover:!bg-un-blue/60 cursor-pointer transition-colors">
+            <EntityName 
+              entityName={entity} 
+              entityLong={entitiesData.find(e => e.entity === entity)?.entity_long}
+              showUnderline={false} 
+            />
           </Badge>
+        </Link>
       ))}
     </div>
   );
@@ -55,7 +67,7 @@ const HighlightedContent = ({ content, fallback }: { content?: string; fallback:
   return <span>{fallback}</span>;
 };
 
-export function MandateList({ mandates, onMandateClick, organsData }: MandateListProps) {
+export function MandateList({ mandates, onMandateClick, organsData, entitiesData }: MandateListProps) {
   // Helper function to find organ data by matching both short and long names
   const findOrganData = (organName: string): Organ | undefined => {
     return organsData.find(organ => 
@@ -101,14 +113,13 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
         {mandates.map((mandate, index) => {
           const hasSearchMatches = (mandate as any).match_details && (mandate as any).match_details.length > 0;
           const searchScore = (mandate as any).searchScore || 0;
-          const displaySymbol = mandate.full_document_symbol || mandate.symbol;
+          const displaySymbol = mandate.full_document_symbol;
+          const hasHighlighting = (mandate as any).highlightedFields && Object.keys((mandate as any).highlightedFields).length > 0;
           
           return (
             <motion.div
               key={mandate.full_document_symbol || mandate.document_symbol}
-              className={`relative p-3 sm:p-4 rounded-lg bg-[#F6F7F8] hover:bg-un-blue/10 transition-all cursor-pointer ${
-                hasSearchMatches ? 'ring-2 ring-primary/20 bg-accent/5' : ''
-              }`}
+              className="relative p-3 sm:p-4 rounded-lg bg-[#F6F7F8] hover:bg-un-blue/10 transition-all cursor-pointer"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: index * 0.05 }}
@@ -118,7 +129,7 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
                 {/* Details button - positioned absolute, smaller on mobile */}
                 <Button 
                   variant="details"
-                  className="absolute top-2 sm:top-3 right-2 sm:right-3 shrink-0 inline-flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 py-1 sm:px-3 sm:py-2 h-auto !bg-trout !text-white hover:!bg-trout/90"
+                  className="absolute top-2 sm:top-3 right-2 sm:right-3 shrink-0 inline-flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 py-1 sm:px-2.5 sm:py-1.5 h-auto !bg-trout !text-white hover:!bg-trout/90"
                 >
                   <Info className="h-3 w-3 sm:h-4 sm:w-4" />
                   <span className="text-xs sm:text-sm">Details</span>
@@ -127,12 +138,8 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
                 <div className="pr-20 sm:pr-32">
                   <h3 className="text-sm sm:text-base font-semibold leading-tight break-words hyphens-auto">
                     <HighlightedContent 
-                      content={(mandate as any).highlightedTitle || (mandate as any).highlightedFields?.title} 
-                      fallback={
-                        mandate.body === "Security Council" && mandate.uniform_title && mandate.uniform_title.length > 0
-                          ? mandate.uniform_title[0]
-                          : mandate.title || mandate.description || 'Untitled'
-                      } 
+                      content={(mandate as any).highlightedFields?.title} 
+                      fallback={mandate.displayTitle || 'Untitled'} 
                     />
                   </h3>
                 </div>
@@ -142,7 +149,12 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
                     <TooltipTrigger asChild>
                       <div className="flex items-center gap-1.5">
                         <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
-                        <span className="font-medium">{getTruncatedSymbol(displaySymbol)}</span>
+                        <span className="font-medium">
+                          <HighlightedContent 
+                            content={(mandate as any).highlightedFields?.full_document_symbol} 
+                            fallback={getTruncatedSymbol(displaySymbol)}
+                          />
+                        </span>
                       </div>
                     </TooltipTrigger>
                     <TooltipContent>
@@ -188,61 +200,20 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
 
                 </div>
                 
-                {/* Match details and highlighted content */}
-                {/* {hasSearchMatches && (
-                  <div className="text-sm space-y-2">
-                    <div className="flex flex-wrap gap-1 items-center">
-                      <span className="font-medium text-muted-foreground">Matches found in:</span>
-                      {mandate.match_details!.map((detail, idx) => (
-                        <Badge key={idx} variant="outline">
-                          {detail}
-                        </Badge>
-                      ))}
-                    </div>
-                    
-                    {mandate.highlightedFields && Object.entries(mandate.highlightedFields).map(([field, content]) => {
-                      if (field === 'title') return null; // Already shown in title
-                      if (field === 'ai_summary') return null; // Skip AI summary field
-                      
-                      // Ensure content is a string
-                      const contentStr = typeof content === 'string' ? content : '';
-                      
-                      // Truncate if too long
-                      const shouldTruncate = contentStr.length > 200;
-                      const displayContent = shouldTruncate 
-                        ? contentStr.substring(0, 200) + '...' 
-                        : contentStr;
-                      
-                      // Create better field names for display
-                      const getFieldDisplayName = (fieldName: string) => {
-                        const displayNames: { [key: string]: string } = {
-                          'subject_headings': 'Subject Headings',
-                          'abstract': 'Abstract',
-                          'issuing_body': 'Issuing Body',
-                          'entities': 'Entities',
-                          'priority_area': 'Priority Area',
-                          'pillar': 'Pillar',
-                          'programme_titles': 'Programme Titles',
-                          'section_titles': 'Section Titles',
-                          'descriptions': 'Descriptions',
-                          'operative_paragraphs': 'Operative Paragraphs',
-                          'note': 'Notes',
-                          'subtitle': 'Subtitle',
-                          'uniform_title': 'Uniform Title',
-                          'translated_title': 'Translated Title'
-                        };
-                        return displayNames[fieldName] || fieldName.replace('_', ' ');
-                      };
-                      
-                      return (
-                        <div key={field} className="text-sm">
-                          <span className="font-medium text-muted-foreground">{getFieldDisplayName(field)}:</span>{' '}
-                          <span dangerouslySetInnerHTML={{ __html: displayContent }} />
-                        </div>
-                      );
-                    })}
+                {/* Search matches in fields not normally displayed */}
+                {hasHighlighting && (mandate as any).highlightedFields?.subject_headings && (
+                  <div className="text-sm">
+                    <span className="font-medium text-muted-foreground">Subject headings:</span>{' '}
+                    <span 
+                      className="text-slate-700"
+                      dangerouslySetInnerHTML={{ 
+                        __html: (mandate as any).highlightedFields.subject_headings.length > 200 
+                          ? (mandate as any).highlightedFields.subject_headings.substring(0, 200) + '...' 
+                          : (mandate as any).highlightedFields.subject_headings
+                      }} 
+                    />
                   </div>
-                )} */}
+                )}
 
                 {/* Citations and Entities */}
                 {(mandate.num_citations > 0 || (mandate.entities && mandate.entities.length > 0)) && (
@@ -257,7 +228,7 @@ export function MandateList({ mandates, onMandateClick, organsData }: MandateLis
                         <p>{explainerTexts.mandateList.citationCount}</p>
                       </TooltipContent>
                     </Tooltip>
-                    <EntityBadges entities={mandate.entities || []} />
+                    <EntityBadges entities={mandate.entities || []} entitiesData={entitiesData} />
                   </div>
                 )}
               </div>

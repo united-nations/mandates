@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import type { Mandate, CitationInfo } from '@/types';
+import { getMandateDisplayTitle } from '@/lib/utils';
 import {
   Dialog,
   DialogContent,
@@ -15,7 +16,9 @@ import { Button } from './ui/button';
 import { FileText, Building, Calendar, Link, Users, FileCheck, Target, Columns, Sparkles, X } from 'lucide-react';
 import { EntityName } from './ui/entity-name';
 import { TooltipProvider } from './ui/tooltip';
-import { toTitleCase } from '@/lib/utils';
+import { titleCase } from 'title-case';
+import NextLink from 'next/link';
+import { getOriginDocumentDisplayName, getBudgetDocumentSlug } from '@/lib/budget-documents';
 
 interface MandateDetailsProps {
   mandate: Mandate | null;
@@ -59,13 +62,6 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [], 
     if (isRightSwipe) {
       onOpenChange(false);
     }
-  };
-
-  const budgetDocumentDisplayNames: { [key: string]: string } = {
-    'ppb2026': 'Proposed Programme Budget for 2026',
-    'PPB 2026': 'Proposed Programme Budget for 2026',
-    'pko': 'Budget of Peacekeeping Operations 2025/26',
-    'PPB 2026/Plan Outline': 'Plan Outline',
   };
 
   // Create entity lookup function
@@ -140,7 +136,7 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [], 
   }
   
   const hasSubjects = mandate.subject_headings && mandate.subject_headings.length > 0;
-  const displaySymbol = mandate.full_document_symbol || mandate.symbol;
+  const displaySymbol = mandate.full_document_symbol;
   const pdfUrl = mandate.link;
 
   return (
@@ -155,22 +151,20 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [], 
         <div className="border-b pr-12 pb-2 md:pb-4">
             <p className="text-xs md:text-sm font-medium text-muted-foreground">Mandate Document</p>
             <DialogTitle className="text-lg md:text-2xl font-bold mt-1 leading-tight">
-              {mandate.body === "Security Council" && mandate.uniform_title && mandate.uniform_title.length > 0
-                ? mandate.uniform_title[0]
-                : mandate.title || mandate.description}
+              {getMandateDisplayTitle(mandate)}
             </DialogTitle>
             <DialogDescription className="mt-0.5 md:mt-1 text-xs md:text-sm">
                 {displaySymbol}
             </DialogDescription>
             {pdfUrl ? (
-                <Button asChild className="mt-1.5 md:mt-4 h-7 md:h-10 text-xs md:text-sm bg-un-blue text-white hover:bg-un-blue/90 transition-colors">
+                <Button asChild className="mt-1.5 md:mt-4 h-7 md:h-10 text-xs md:text-sm !bg-trout !text-white hover:!bg-trout/90 transition-colors">
                     <a href={pdfUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 md:gap-2">
                         <FileText className="h-3 w-3 md:h-4 md:w-4" />
                         View PDF
                     </a>
                 </Button>
             ) : (
-                <Button disabled variant="primary" className="mt-1.5 md:mt-4 h-7 md:h-10 text-xs md:text-sm inline-flex items-center gap-1.5 md:gap-2">
+                <Button disabled variant="primary" className="mt-1.5 md:mt-4 h-7 md:h-10 text-xs md:text-sm !bg-trout/50 !text-white/70 inline-flex items-center gap-1.5 md:gap-2">
                     <FileText className="h-3 w-3 md:h-4 md:w-4" />
                     View PDF
                 </Button>
@@ -197,11 +191,8 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [], 
                       variant="stronger" 
                       className="text-xs cursor-pointer hover:bg-primary/80 transition-colors"
                       onClick={() => {
-                        // Open filtered results in a new window with only the organ filter
-                        const url = new URL(window.location.origin + window.location.pathname);
-                        url.searchParams.set('page', '1');
-                        url.searchParams.set('organ', mandate.body);
-                        window.open(url.toString(), '_blank');
+                        // Navigate to organ detail page
+                        window.location.href = `/organ/${encodeURIComponent(mandate.body)}`;
                       }}
                     >
                       {mandate.body}
@@ -220,12 +211,21 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [], 
                   {budgetDocuments.length > 0 ? (
                     <div className="flex flex-wrap gap-1">
                       {budgetDocuments.map((doc, index) => {
-                        const displayName = budgetDocumentDisplayNames[doc] || doc;
+                        const displayName = getOriginDocumentDisplayName(doc);
+                        const slug = getBudgetDocumentSlug(displayName);
+                        
                         return (
                           <Badge 
                             key={index} 
                             variant="stronger" 
-                            className="text-xs"
+                            className="text-xs cursor-pointer hover:bg-primary/80 transition-colors"
+                            onClick={() => {
+                              // Navigate to filtered results using the budget document slug
+                              const url = new URL(window.location.origin + '/');
+                              url.searchParams.set('page', '1');
+                              url.searchParams.set('budget_document', slug);
+                              window.open(url.toString(), '_blank');
+                            }}
                           >
                             {displayName}
                           </Badge>
@@ -261,7 +261,7 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [], 
                             window.open(url.toString(), '_blank');
                           }}
                         >
-                          {toTitleCase(heading)}
+                          {titleCase(heading.toLowerCase())}
                         </Badge>
                       ))}
                     </div>
@@ -292,11 +292,8 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [], 
                             variant="secondary" 
                             className="text-xs w-fit px-2 py-1 !bg-un-blue !text-white hover:!bg-un-blue/90 cursor-pointer transition-colors"
                             onClick={() => {
-                              // Open filtered results in a new window with only the entity filter
-                              const url = new URL(window.location.origin + window.location.pathname);
-                              url.searchParams.set('page', '1');
-                              url.searchParams.set('entity', shortName);
-                              window.open(url.toString(), '_blank');
+                              // Navigate to entity detail page
+                              window.location.href = `/entity/${encodeURIComponent(shortName)}`;
                             }}
                           >
                             {shortName}
@@ -332,7 +329,7 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [], 
                               window.open(url.toString(), '_blank');
                             }}
                           >
-                            {toTitleCase(programmeTitle)}
+                            {titleCase(programmeTitle)}
                           </Badge>
                         </div>
                       </div>

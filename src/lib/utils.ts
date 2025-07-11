@@ -1,58 +1,149 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { titleCase } from 'title-case';
+import type { FilterType } from '@/contexts/FilterContext';
+import type { Mandate } from '@/types';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function toTitleCase(str: string): string {
-  if (!str) return "";
-  const smallWords = new Set([
-    "a",
-    "an",
-    "and",
-    "as",
-    "at",
-    "but",
-    "by",
-    "for",
-    "in",
-    "of",
-    "on",
-    "or",
-    "the",
-    "to",
-    "vs",
-  ]);
+/**
+ * Format a URL for display by removing protocol, www prefix, and trailing slash
+ * Optionally truncates long URLs to show domain + "..." for better readability
+ * @param url - The URL to format
+ * @param maxLength - Optional max length before truncating (default: no truncation)
+ * @returns Formatted URL string
+ */
+export function formatUrlForDisplay(url: string, maxLength?: number): string {
+  if (!url) return "";
+  
+  // Clean the URL by removing protocol, www prefix, and trailing slash
+  const cleanUrl = url
+    .replace(/^https?:\/\//, '')
+    .replace(/^www\./, '')
+    .replace(/\/$/, '');
+  
+  // If no max length specified or URL is short enough, return as is
+  if (!maxLength || cleanUrl.length <= maxLength) {
+    return cleanUrl;
+  }
+  
+  // Otherwise show domain + ...
+  const domain = cleanUrl.split('/')[0];
+  return `${domain}/...`;
+}
 
-  // Updated regex to handle both straight (') and smart/curly (\u2019) apostrophes
-  return str.replace(
-    /\b\w+(?:[''\u2019][a-z]*)*\b/g,
-    (word, index) => {
-      // Handle possessives and contractions properly (both straight and curly apostrophes)
-      if (word.includes("'") || word.includes("'") || word.includes("\u2019")) {
-        // Split on any type of apostrophe
-        const parts = word.split(/[''\u2019]/);
-        const firstPart = parts[0].toLowerCase();
-        const restPart = parts.slice(1).join("'").toLowerCase(); // Use straight apostrophe in output
+/**
+ * Highlights search terms in text with HTML mark tags
+ * @param text The text to highlight
+ * @param searchTerm The search term to highlight
+ * @returns Text with highlighted search terms
+ */
+export function highlightSearchTerms(text: string, searchTerm: string): string {
+  if (!text || !searchTerm) return text;
+  
+  // Escape special regex characters in search term
+  const escapedTerm = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  
+  // Create regex for case-insensitive search
+  const regex = new RegExp(`(${escapedTerm})`, 'gi');
+  
+  // Replace matches with highlighted version
+  return text.replace(regex, '<mark class="bg-yellow-200 text-yellow-900 px-0.5 rounded">$1</mark>');
+}
 
-        // Check if the first part (before apostrophe) is a small word
-        if (index > 0 && smallWords.has(firstPart)) {
-          return firstPart + "'" + restPart;
-        }
-        return (
-          firstPart.charAt(0).toUpperCase() +
-          firstPart.slice(1) +
-          "'" +
-          restPart
-        );
-      }
+/**
+ * Safely highlights search terms in text, handling null/undefined values
+ * @param text The text to highlight (can be null/undefined)
+ * @param searchTerm The search term to highlight
+ * @returns Highlighted text or original text if no highlighting possible
+ */
+export function safeHighlightSearchTerms(text: string | null | undefined, searchTerm: string): string | undefined {
+  if (!text || !searchTerm) return text || undefined;
+  return highlightSearchTerms(text, searchTerm);
+}
 
-      const lowerWord = word.toLowerCase();
-      if (index > 0 && smallWords.has(lowerWord)) {
-        return lowerWord;
-      }
-      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-    }
-  );
+/**
+ * Get active filters text for sidebar descriptions
+ * @param filters - Current filters
+ * @param pageType - Type of page ('main' | 'entity' | 'organ')
+ * @param entityFilter - Current entity filter (for entity pages)
+ * @param organFilter - Current organ filter (for organ pages)
+ * @returns Formatted text describing active filters, or empty string if none
+ */
+export function getActiveFiltersText(
+  filters: FilterType,
+  pageType: 'main' | 'entity' | 'organ',
+  entityFilter?: string,
+  organFilter?: string
+): string {
+  const activeFilters: string[] = [];
+  
+  // Define which filters to check based on page type
+  const filtersToCheck = { ...filters };
+  
+  // Exclude implicit filters and pagination
+  delete filtersToCheck.page;
+  delete filtersToCheck.limit;
+  delete filtersToCheck.sort_by;
+  
+  // Exclude implicit filters based on page type
+  if (pageType === 'entity' && entityFilter) {
+    // On entity page, exclude the entity filter itself
+    delete filtersToCheck.entity;
+  } else if (pageType === 'organ' && organFilter) {
+    // On organ page, exclude the organ filter itself
+    delete filtersToCheck.organ;
+  }
+  
+  // Check each remaining filter
+  if (filtersToCheck.entity) activeFilters.push('entity');
+  if (filtersToCheck.organ) activeFilters.push('organ');
+  if (filtersToCheck.crossCitingEntity) activeFilters.push('cross-citing entity');
+  if (filtersToCheck.keyword) activeFilters.push('keyword');
+  if (filtersToCheck.programme) activeFilters.push('programme');
+  if (filtersToCheck.subject) activeFilters.push('subject');
+  if (filtersToCheck.start_year || filtersToCheck.end_year) activeFilters.push('year range');
+  if (filtersToCheck.budget_document) activeFilters.push('budget document');
+  
+  if (activeFilters.length === 0) {
+    return '';
+  }
+  
+  if (activeFilters.length === 1) {
+    return `(with ${activeFilters[0]} filter) `;
+  }
+  
+  if (activeFilters.length === 2) {
+    return `(with ${activeFilters[0]} and ${activeFilters[1]} filters) `;
+  }
+  
+  return `(with ${activeFilters.length} active filters) `;
+}
+
+/**
+ * Get the display title for a mandate using the same logic as the API
+ * This ensures consistency across all components
+ */
+export function getMandateDisplayTitle(mandate: Mandate): string {
+  // Check uniform_title first
+  if (mandate.uniform_title && mandate.uniform_title.length > 0 && mandate.uniform_title[0].trim()) {
+    return titleCase(mandate.uniform_title[0].trim().toLowerCase())
+  }
+  // Check title
+  if (mandate.title && mandate.title.trim()) {
+    return titleCase(mandate.title.trim().toLowerCase())
+  }
+  // Check top-level description
+  if (mandate.description && mandate.description.trim()) {
+    return titleCase(mandate.description.trim().toLowerCase())
+  }
+  // Check citation_info descriptions
+  const citationDescription = mandate.citation_info?.find(info => info.description?.trim())?.description?.trim()
+  if (citationDescription) {
+    return titleCase(citationDescription.toLowerCase())
+  }
+  // Final fallback
+  return 'Untitled'
 }

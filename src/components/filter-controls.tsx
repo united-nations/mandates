@@ -1,64 +1,73 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { X, ChevronDown, ChevronUp, HelpCircle, Search, Landmark, Building } from 'lucide-react';
+import { X, ChevronDown, ChevronUp, HelpCircle, Search, Building, Landmark, Target, BookOpen, Calendar, Receipt, FileText } from 'lucide-react';
+import { SearchInput } from '@/components/ui/search-input';
 import { AdvancedSearch } from '@/components/advanced-search';
 import { YearSlider } from './year-slider';
-import { SearchableDropdown, SearchableDropdownOption } from '@/components/ui/searchable-dropdown';
 import { Label } from '@/components/ui/label';
+import { FilterBadge } from '@/components/ui/filter-badge';
+import { EntityName } from './ui/entity-name';
+import { OrganName } from './ui/organ-name';
+import { titleCase } from 'title-case';
 import { explainerTexts } from '@/lib/explainer-texts';
+import { useFilters } from '@/contexts/FilterContext';
+import { getBudgetDocumentDisplayName } from '@/lib/budget-documents';
+
+interface Entity {
+  entity: string;
+  entity_long: string;
+}
+
+interface Organ {
+  short: string;
+  long: string;
+}
 
 interface FilterControlsProps {
-  entityOptions: SearchableDropdownOption[];
-  organOptions: SearchableDropdownOption[];
-  programmeOptions: string[];
-  subjectOptions: string[];
-  selectedEntity: string;
-  selectedOrgan: string;
-  keyword: string;
-  onEntityChange: (value: string) => void;
-  onOrganChange: (value: string) => void;
-  onKeywordChange: (value: string) => void;
-  onKeywordSearch?: (value?: string) => void; // New prop for Enter-based search
-  programme: string;
-  subject: string;
+  programmeOptions: { value: string; count: number }[];
+  subjectOptions: { value: string; count: number }[];
   yearRange: { min: number; max: number } | null;
   yearDistribution: { [year: string]: number };
-  selectedYearRange: [number, number] | null;
-  budgetDocument: string;
-  onProgrammeChange: (value: string) => void;
-  onSubjectChange: (value: string) => void;
-  onYearRangeChange: (value: [number, number]) => void;
-  onBudgetDocumentChange: (value: string) => void;
+  showAdvancedSearch: boolean;
+  setShowAdvancedSearch: (show: boolean) => void;
+  entitiesData: Entity[];
+  allOrgans: Organ[];
+  // New props for implicit filter logic
+  entityFilter?: string;
+  organFilter?: string;
+  pageType: 'main' | 'entity' | 'organ';
 }
 
 export function FilterControls({
-  entityOptions,
-  organOptions,
   programmeOptions,
   subjectOptions,
-  selectedEntity,
-  selectedOrgan,
-  keyword,
-  onEntityChange,
-  onOrganChange,
-  onKeywordChange,
-  onKeywordSearch,
-  programme,
-  subject,
   yearRange,
   yearDistribution,
-  selectedYearRange,
-  budgetDocument,
-  onProgrammeChange,
-  onSubjectChange,
-  onYearRangeChange,
-  onBudgetDocumentChange,
+  showAdvancedSearch,
+  setShowAdvancedSearch,
+  entitiesData,
+  allOrgans,
+  entityFilter,
+  organFilter,
+  pageType,
 }: FilterControlsProps) {
-  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
+  const { 
+    filters, 
+    setFilter, 
+    setMultipleFilters,
+    clearFilter, 
+    clearAllFilters
+  } = useFilters();
+  
   const [openTooltip, setOpenTooltip] = useState<string | null>(null);
+  const [searchInput, setSearchInput] = useState(filters.keyword || '');
+
+  // Sync search input with filters when filters change externally (e.g., clear all)
+  useEffect(() => {
+    setSearchInput(filters.keyword || '');
+  }, [filters.keyword]);
 
   // Close tooltip when clicking outside
   useEffect(() => {
@@ -79,6 +88,13 @@ export function FilterControls({
     setOpenTooltip(openTooltip === tooltipId ? null : tooltipId);
   };
 
+  const handleSearch = () => {
+    const trimmedValue = searchInput.trim();
+    if (trimmedValue !== (filters.keyword || '').trim()) {
+      setFilter('keyword', trimmedValue || undefined);
+    }
+  };
+
   const TooltipButton = ({ tooltipId, ariaLabel, tooltipText }: { 
     tooltipId: string; 
     ariaLabel: string; 
@@ -94,136 +110,230 @@ export function FilterControls({
         <HelpCircle className="h-4 w-4 text-muted-foreground" />
       </button>
       {openTooltip === tooltipId && (
-        <div className="absolute right-0 top-6 z-50 w-64 p-3 bg-popover border rounded-md shadow-md text-sm text-popover-foreground">
+        <div className="absolute right-0 top-6 z-50 w-64 p-3 bg-popover border rounded-md text-sm text-popover-foreground">
           <p>{tooltipText}</p>
         </div>
       )}
     </div>
   );
 
+  // Get filters that should be displayed as chips (context-aware)
+  const getDisplayFilters = () => {
+    const displayFilters = { ...filters };
+    
+    // Remove implicit filters based on page type and explicit filters
+    if (pageType === 'entity' && entityFilter && displayFilters.entity === entityFilter) {
+      delete displayFilters.entity;
+    }
+    if (pageType === 'organ' && organFilter && displayFilters.organ === organFilter) {
+      delete displayFilters.organ;
+    }
+    
+    // Remove pagination, sorting, and keyword from display (keyword is counted separately)
+    delete displayFilters.page;
+    delete displayFilters.limit;
+    delete displayFilters.sort_by;
+    delete displayFilters.keyword;
+    
+    return displayFilters;
+  };
+  
+  const displayFilters = getDisplayFilters();
+  const hasFilters = Object.values(displayFilters).some(value => value && value !== 'all');
+  const hasSearch = filters.keyword && filters.keyword.trim().length > 0;
+
+  // Convert year range to display format
+  const yearRangeDisplay = filters.start_year && filters.end_year 
+    ? `${filters.start_year}-${filters.end_year}`
+    : null;
+
+  const handleYearRangeChange = (range: [number, number]) => {
+    setMultipleFilters({
+      start_year: range[0].toString(),
+      end_year: range[1].toString()
+    });
+  };
+
+  const selectedYearRange: [number, number] | null = 
+    filters.start_year && filters.end_year 
+      ? [parseInt(filters.start_year), parseInt(filters.end_year)]
+      : null;
+
   return (
-    <div className="p-6 rounded-lg shadow-sm space-y-4" style={{ backgroundColor: '#F6F7F8' }}>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Label htmlFor="keyword-search" className="text-base font-medium">{explainerTexts.filters.keywordSearch.label}</Label>
-              <Search className="h-4 w-4 text-muted-foreground" />
-            </div>
-            <TooltipButton 
-              tooltipId="keywordSearch"
-              ariaLabel="More information about keyword search"
-              tooltipText={explainerTexts.filters.keywordSearch.tooltip}
-            />
-          </div>
-          <div className="relative flex">
-            <Input
-              id="keyword-search"
-              placeholder={explainerTexts.filters.keywordSearch.placeholder}
-              value={keyword}
-              onChange={(e) => onKeywordChange(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault();
-                  onKeywordSearch?.(keyword);
-                }
-              }}
-              className="pr-20 text-sm h-11"
-            />
-            <div className="absolute right-0 top-0 h-full flex">
-              {keyword && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-full px-2"
-                  onClick={() => onKeywordChange('')}
-                  title="Clear search"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              )}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-full px-3 text-muted-foreground hover:text-foreground"
-                onClick={() => onKeywordSearch?.(keyword)}
-                title="Search (or press Enter)"
-              >
-                <Search className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Label className="text-base font-medium">{explainerTexts.filters.unOrgan.label}</Label>
-              <Landmark className="h-4 w-4 text-muted-foreground" />
-            </div>
-            <TooltipButton 
-              tooltipId="unOrgan"
-              ariaLabel="More information about UN organ filter"
-              tooltipText={explainerTexts.filters.unOrgan.tooltip}
-            />
-          </div>
-          <SearchableDropdown
-            options={organOptions}
-            value={selectedOrgan}
-            onChange={onOrganChange}
-            placeholder={explainerTexts.filters.unOrgan.placeholder}
-            searchPlaceholder={explainerTexts.filters.unOrgan.searchPlaceholder}
-            emptyPlaceholder={explainerTexts.filters.unOrgan.emptyPlaceholder}
-            className="text-sm h-11"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Label className="text-base font-medium">{explainerTexts.filters.unEntity.label}</Label>
-              <Building className="h-4 w-4 text-muted-foreground" />
-            </div>
-            <TooltipButton 
-              tooltipId="unEntity"
-              ariaLabel="More information about UN entity filter"
-              tooltipText={explainerTexts.filters.unEntity.tooltip}
-            />
-          </div>
-          <SearchableDropdown
-            options={entityOptions}
-            value={selectedEntity}
-            onChange={onEntityChange}
-            placeholder={explainerTexts.filters.unEntity.placeholder}
-            searchPlaceholder={explainerTexts.filters.unEntity.searchPlaceholder}
-            emptyPlaceholder={explainerTexts.filters.unEntity.emptyPlaceholder}
-            className="text-sm h-11"
-          />
-        </div>
-      </div>
-
-      <div className="flex">
-        <Button variant="link" onClick={() => setShowAdvancedSearch(!showAdvancedSearch)} className="flex items-center gap-2 px-0 text-left">
-          {showAdvancedSearch ? 'Hide Advanced Filters' : 'Show Advanced Filters'}
-          {showAdvancedSearch ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-        </Button>
-      </div>
-
+    <div className="">
+      {/* Advanced Filters - Enhanced container (now above search bar) */}
       {showAdvancedSearch && (
-        <AdvancedSearch
-          programme={programme}
-          subject={subject}
-          budgetDocument={budgetDocument}
-          onProgrammeChange={onProgrammeChange}
-          onSubjectChange={onSubjectChange}
-          onBudgetDocumentChange={onBudgetDocumentChange}
-          programmeOptions={programmeOptions}
-          subjectOptions={subjectOptions}
-          yearRange={yearRange}
-          yearDistribution={yearDistribution}
-          selectedYearRange={selectedYearRange}
-          onYearRangeChange={onYearRangeChange}
-        />
+        <div className="bg-white/50">
+          <div className="p-6 pt-4">
+            <AdvancedSearch
+              programme={filters.programme || ''}
+              subject={filters.subject || ''}
+              budgetDocument={filters.budget_document || ''}
+              onProgrammeChange={(value) => setFilter('programme', value)}
+              onSubjectChange={(value) => setFilter('subject', value)}
+              onBudgetDocumentChange={(value) => setFilter('budget_document', value)}
+              programmeOptions={programmeOptions}
+              subjectOptions={subjectOptions}
+              yearRange={yearRange}
+              yearDistribution={yearDistribution}
+              selectedYearRange={selectedYearRange}
+              onYearRangeChange={handleYearRangeChange}
+            />
+          </div>
+        </div>
+      )}
+      {/* Search bar only in a row */}
+      <div className="flex items-center gap-2 mb-4">
+        <div className="relative grow">
+          <SearchInput
+            id="keyword-search"
+            placeholder={explainerTexts.filters.keywordSearch.placeholder}
+            value={searchInput}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchInput(e.target.value)}
+            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                handleSearch();
+              }
+            }}
+            variant="border-bottom"
+            showClearButton={true}
+            onClear={() => {
+              setSearchInput('');
+              clearFilter('keyword');
+            }}
+          />
+        </div>
+      </div>
+
+      {/* Filter Chips - Enhanced styling */}
+      {(hasSearch || hasFilters) && (
+        <div className="border border-slate-200 rounded-md">
+          <div className="p-6 pt-4">
+            <div className="space-y-4">
+              {/* Only show Active Filters label, count, and Clear All if there are visible chips or search */}
+              {(hasSearch || Object.values(displayFilters).filter(v => v && v !== 'all').length > 0) && (
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-semibold text-slate-700">Active Filters</span>
+                    <span className="text-xs text-slate-500 bg-slate-100 px-2 py-1 rounded-full">
+                      {(hasSearch ? 1 : 0) + Object.values(displayFilters).filter(v => v && v !== 'all').length}
+                    </span>
+                  </div>
+                  <Button
+                    variant="clear"
+                    size="sm"
+                    onClick={clearAllFilters}
+                    className="shrink-0 -mr-3"
+                  >
+                    <X className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="text-xs sm:text-sm">Clear All</span>
+                  </Button>
+                </div>
+              )}
+              
+              <div className="flex flex-wrap gap-2">
+                {hasSearch && (
+                  <FilterBadge
+                    icon={Search}
+                    label={`"${filters.keyword}"`}
+                    onClear={() => clearFilter('keyword')}
+                    variant="secondary"
+                  />
+                )}
+
+                {/* Entity chip - only show if not on entity page or if it's an additional filter */}
+                {displayFilters.entity && displayFilters.entity !== 'all' && (
+                  <FilterBadge
+                    icon={Building}
+                    label={<>
+                      Entity:&nbsp;
+                      <EntityName 
+                        entityName={displayFilters.entity} 
+                        entityLong={entitiesData.find(e => e.entity === displayFilters.entity)?.entity_long}
+                      />
+                    </>}
+                    onClear={() => clearFilter('entity')}
+                    variant="secondary"
+                  />
+                )}
+
+                {/* Cross-citing Entity chip */}
+                {displayFilters.crossCitingEntity && displayFilters.crossCitingEntity !== 'all' && (
+                  <FilterBadge
+                    icon={Building}
+                    label={<>
+                      Cross-citing Entity:&nbsp;
+                      <EntityName 
+                        entityName={displayFilters.crossCitingEntity} 
+                        entityLong={entitiesData.find(e => e.entity === displayFilters.crossCitingEntity)?.entity_long}
+                      />
+                    </>}
+                    onClear={() => clearFilter('crossCitingEntity')}
+                    variant="secondary"
+                  />
+                )}
+
+                {/* Organ chip - only show if not on organ page or if it's an additional filter */}
+                {displayFilters.organ && displayFilters.organ !== 'all' && (
+                  <FilterBadge
+                    icon={Landmark}
+                    label={<>
+                      Organ:&nbsp;
+                      <OrganName 
+                        organName={displayFilters.organ} 
+                        allOrgans={allOrgans}
+                      />
+                    </>}
+                    onClear={() => clearFilter('organ')}
+                    variant="secondary"
+                  />
+                )}
+
+                {displayFilters.programme && (
+                  <FilterBadge
+                    icon={Target}
+                    label={`Programme: ${displayFilters.programme}`}
+                    onClear={() => clearFilter('programme')}
+                    variant="secondary"
+                  />
+                )}
+
+                {displayFilters.subject && (
+                  <FilterBadge
+                    icon={BookOpen}
+                    label={`Subject: ${titleCase(displayFilters.subject)}`}
+                    onClear={() => clearFilter('subject')}
+                    variant="secondary"
+                  />
+                )}
+
+                {yearRangeDisplay && (
+                  <FilterBadge
+                    icon={Calendar}
+                    label={`Year: ${yearRangeDisplay}`}
+                    onClear={() => {
+                      clearFilter('start_year');
+                      clearFilter('end_year');
+                    }}
+                    variant="secondary"
+                  />
+                )}
+
+                {displayFilters.budget_document && displayFilters.budget_document !== 'all' && (
+                  <FilterBadge
+                    icon={Receipt}
+                    label={`Budget: ${getBudgetDocumentDisplayName(displayFilters.budget_document)}`}
+                    onClear={() => clearFilter('budget_document')}
+                    variant="secondary"
+                  />
+                )}
+
+
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
