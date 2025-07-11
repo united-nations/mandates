@@ -177,9 +177,11 @@ function filterMandates (
         ? mandate.uniform_title[0].trim()
         : (mandate.title && mandate.title.trim()) 
           ? mandate.title.trim()
-          : citationDescription
-            ? citationDescription
-            : 'Untitled').toLowerCase())
+          : (mandate.description && mandate.description.trim()) 
+            ? mandate.description.trim()
+            : citationDescription
+              ? citationDescription
+              : 'Untitled').toLowerCase())
       
       const searchableText = [
         displayTitle,
@@ -293,6 +295,10 @@ function enrichMandates (
       // Check title
       if (mandate.title && mandate.title.trim()) {
         return mandate.title.trim()
+      }
+      // Check top-level description
+      if (mandate.description && mandate.description.trim()) {
+        return mandate.description.trim()
       }
       // Check citation_info descriptions
       const citationDescription = mandate.citation_info?.find(info => info.description?.trim())?.description?.trim()
