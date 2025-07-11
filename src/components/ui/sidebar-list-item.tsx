@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
 interface SidebarListItemProps {
   /**
@@ -48,6 +49,11 @@ interface SidebarListItemProps {
    * Additional CSS classes for the count display
    */
   countClassName?: string
+  
+  /**
+   * Tooltip content to show on hover
+   */
+  tooltipContent?: string
 }
 
 export function SidebarListItem({
@@ -59,7 +65,8 @@ export function SidebarListItem({
   showProgressBar = true,
   variant = 'filter',
   className,
-  countClassName
+  countClassName,
+  tooltipContent
 }: SidebarListItemProps) {
   const progressPercentage = maxCount > 0 ? (count / maxCount) * 100 : 0
   
@@ -81,7 +88,7 @@ export function SidebarListItem({
   
   const currentVariant = variantStyles[variant]
   
-  return (
+  const itemContent = (
     <div
       className={cn(
         baseStyles,
@@ -122,4 +129,20 @@ export function SidebarListItem({
       </div>
     </div>
   )
+
+  // If tooltip content is provided, wrap with tooltip
+  if (tooltipContent) {
+    return (
+      <Tooltip delayDuration={500}>
+        <TooltipTrigger asChild>
+          {itemContent}
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{tooltipContent}</p>
+        </TooltipContent>
+      </Tooltip>
+    )
+  }
+
+  return itemContent
 } 

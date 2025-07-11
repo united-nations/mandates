@@ -25,7 +25,7 @@ export function EntityName({
   // If used inside interactive elements, don't render tooltip trigger
   if (asChild) {
     return (
-      <span className={showUnderline ? "underline decoration-dotted" : ""} title={longName}>
+      <span title={longName}>
         {displayName}
       </span>
     )
@@ -33,7 +33,7 @@ export function EntityName({
 
   return (
     <Tooltip>
-      <TooltipTrigger className={showUnderline ? "underline decoration-dotted cursor-help" : "cursor-help"}>
+      <TooltipTrigger className="cursor-help">
         {displayName}
       </TooltipTrigger>
       <TooltipContent>

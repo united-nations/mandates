@@ -86,13 +86,16 @@ export function EntityListSidebar({
 
   // Render item function
   const renderItem = (entity: EntityWithCount, index: number, variant: 'navigation' | 'filter') => {
+    const entityData = allEntities.find(e => e.entity === entity.entity)
+    const tooltipContent = entityData?.entity_long && entityData.entity !== entityData.entity_long ? entityData.entity_long : undefined
+    
     const item = (
       <SidebarListItem
         key={entity.entity}
         label={
           <EntityName 
             entityName={entity.entity} 
-            entityLong={allEntities.find(e => e.entity === entity.entity)?.entity_long}
+            entityLong={entityData?.entity_long}
             asChild={true} 
           />
         }
@@ -101,6 +104,7 @@ export function EntityListSidebar({
         isActive={filters.entity === entity.entity}
         onClick={() => handleEntityClick(entity.entity)}
         variant={variant}
+        tooltipContent={tooltipContent}
       />
     )
 

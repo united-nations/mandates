@@ -92,15 +92,19 @@ export function OrganListSidebar({
 
   // Render item function
   const renderItem = (organ: OrganWithCount, index: number, variant: 'navigation' | 'filter') => {
+    const organData = findOrganData(organ.short)
+    const tooltipContent = organData && organData.short !== organData.long ? organData.long : undefined
+    
     const item = (
       <SidebarListItem
         key={organ.short}
-        label={<OrganName organName={organ.short} allOrgans={allOrgans} showUnderline={true} />}
+        label={<OrganName organName={organ.short} allOrgans={allOrgans} asChild={true} />}
         count={organ.count}
         maxCount={maxCount}
         isActive={filters.organ === organ.short}
         onClick={() => handleOrganClick(organ.short)}
         variant={variant}
+        tooltipContent={tooltipContent}
       />
     )
 
