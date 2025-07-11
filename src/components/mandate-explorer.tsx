@@ -62,6 +62,7 @@ export function MandateExplorer ({
     limit: searchParams.get('limit') || '10',
     entity: searchParams.get('entity') || '',
     organ: searchParams.get('organ') || '',
+    crossCitingEntity: searchParams.get('crossCitingEntity') || '',
     keyword: searchParams.get('keyword') || '',
     programme: searchParams.get('programme') || '',
     subject: searchParams.get('subject') || '',
@@ -106,6 +107,7 @@ export function MandateExplorer ({
         const urlFilters = {
           entity: currentUrlParams.entity,
           organ: currentUrlParams.organ,
+          crossCitingEntity: currentUrlParams.crossCitingEntity,
           keyword: currentUrlParams.keyword,
           programme: currentUrlParams.programme,
           subject: currentUrlParams.subject,
