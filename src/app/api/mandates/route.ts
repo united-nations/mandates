@@ -296,7 +296,7 @@ function enrichMandates (
 /**
  * Calculate counts for data cards
  */
-function calculateCounts (mandates: Mandate[]) {
+function calculateCounts (mandates: Mandate[], filters?: FilterOptions) {
   const uniqueEntities = new Set<string>()
   const uniqueOrgans = new Set<string>()
   let totalCitations = 0
@@ -308,7 +308,18 @@ function calculateCounts (mandates: Mandate[]) {
     if (mandate.body && mandate.body !== '') {
       uniqueOrgans.add(mandate.body)
     }
-    totalCitations += mandate.num_citations
+    
+    // Calculate citations based on context
+    if (filters?.entity) {
+      // Entity page (with or without cross-citation): count only citations by this entity
+      const entityCitations = mandate.citation_info.filter(
+        citation => citation.entity === filters.entity
+      ).length
+      totalCitations += entityCitations
+    } else {
+      // Main page: count all citations
+      totalCitations += mandate.num_citations
+    }
   })
 
   return {
@@ -591,7 +602,7 @@ export async function GET (request: Request) {
       }
     } else {
       // Calculate for filtered views
-      counts = calculateCounts(filteredMandates)
+      counts = calculateCounts(filteredMandates, filters)
       sidebarData = calculateSidebarData(filteredMandates, entityMap, organMap, filters, mandates)
       filterOptions = calculateFilterOptions(mandates, filteredMandates, entityMap, organMap)
       reference = {
