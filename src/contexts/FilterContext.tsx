@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode, Suspense } from 'react'
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
+import { FILTER_PARAMS, ADDITIONAL_FILTER_PARAMS, type FilterParamKey } from '@/lib/filter-constants'
 
 export interface FilterType {
   entity?: string
@@ -20,9 +21,9 @@ export interface FilterType {
 
 interface FilterContextType {
   filters: FilterType
-  setFilter: (key: keyof FilterType, value: string | undefined) => void
+  setFilter: (key: FilterParamKey, value: string | undefined) => void
   setMultipleFilters: (updates: Partial<FilterType>) => void
-  clearFilter: (key: keyof FilterType) => void
+  clearFilter: (key: FilterParamKey) => void
   clearAllFilters: () => void
 }
 
@@ -47,12 +48,7 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
     
     if (isMainPage) {
       // Main page: Only read URL params (for filters set on this page)
-      const filterKeys: (keyof FilterType)[] = [
-        'entity', 'organ', 'crossCitingEntity', 'keyword', 'programme', 'subject', 
-        'start_year', 'end_year', 'budget_document', 'sort_by', 'page', 'limit'
-      ]
-      
-      filterKeys.forEach(key => {
+      FILTER_PARAMS.forEach(key => {
         const value = searchParams.get(key)
         if (value) {
           newFilters[key] = value
@@ -60,12 +56,7 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
       })
     } else if (isEntityPage || isOrganPage) {
       // Entity/organ pages: Only read additional filters (not implicit ones)
-      const additionalFilterKeys: (keyof FilterType)[] = [
-        'crossCitingEntity', 'keyword', 'programme', 'subject', 'start_year', 'end_year', 
-        'budget_document', 'sort_by', 'page', 'limit'
-      ]
-      
-      additionalFilterKeys.forEach(key => {
+      ADDITIONAL_FILTER_PARAMS.forEach(key => {
         const value = searchParams.get(key)
         if (value) {
           newFilters[key] = value
@@ -86,7 +77,7 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
   }, [searchParams, pathname, isMainPage, isEntityPage, isOrganPage])
   
   // Update a single filter and sync to URL
-  const setFilter = (key: keyof FilterType, value: string | undefined) => {
+  const setFilter = (key: FilterParamKey, value: string | undefined) => {
     const newParams = new URLSearchParams(searchParams.toString())
     
     if (value === undefined || value === '' || value === 'all') {
@@ -123,7 +114,7 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
   }
 
   // Clear a single filter
-  const clearFilter = (key: keyof FilterType) => {
+  const clearFilter = (key: FilterParamKey) => {
     setFilter(key, undefined)
   }
   

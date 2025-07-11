@@ -28,10 +28,14 @@ let precomputedData: {
 } | null = null
 
 /**
- * Generate cache key from filters
+ * Generate cache key from filters with stable ordering
  */
 function generateCacheKey(filters: FilterOptions): string {
-  return JSON.stringify(filters)
+  // Sort keys for consistent cache keys regardless of object key order
+  const sortedEntries = Object.entries(filters)
+    .filter(([_, value]) => value !== undefined && value !== null)
+    .sort(([a], [b]) => a.localeCompare(b))
+  return JSON.stringify(sortedEntries)
 }
 
 /**
@@ -507,7 +511,7 @@ export async function GET (request: Request) {
   try {
     const { searchParams } = new URL(request.url)
 
-    // Parse filter parameters
+    // Parse filter parameters with basic validation
     const filters: FilterOptions = {
       entity: searchParams.get('entity') || undefined,
       organ: searchParams.get('organ') || undefined,
@@ -523,6 +527,22 @@ export async function GET (request: Request) {
       limit: searchParams.get('limit') || '10'
     }
 
+    // Basic validation
+    const page = Math.max(1, parseInt(filters.page || '1'))
+    const limit = Math.max(1, Math.min(100, parseInt(filters.limit || '10')))
+    
+    // Validate year range if provided
+    if (filters.start_year && (isNaN(parseInt(filters.start_year)) || parseInt(filters.start_year) < 1900)) {
+      return NextResponse.json({ error: 'Invalid start_year parameter' }, { status: 400 })
+    }
+    if (filters.end_year && (isNaN(parseInt(filters.end_year)) || parseInt(filters.end_year) > 2030)) {
+      return NextResponse.json({ error: 'Invalid end_year parameter' }, { status: 400 })
+    }
+
+    // Update filters with validated values
+    filters.page = page.toString()
+    filters.limit = limit.toString()
+
     // Check cache first
     const cacheKey = generateCacheKey(filters)
     const cachedResponse = getCachedResponse(cacheKey)
@@ -533,9 +553,8 @@ export async function GET (request: Request) {
     // Initialize precomputed data
     await initializePrecomputedData()
 
-    // Parse pagination
-    const page = Math.max(1, parseInt(filters.page || '1'))
-    const limit = Math.max(1, Math.min(100, parseInt(filters.limit || '10')))
+    // Use validated pagination values from above
+    // (page and limit variables are already declared and validated)
 
     // Load all data
     const { mandates, entities, organs, entityMap, organMap } = await DataService.getAllData()

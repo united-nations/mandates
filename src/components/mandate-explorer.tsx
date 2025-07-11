@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useSearchParams } from 'next/navigation'
-import type { Mandate, ApiResponse } from '@/types'
+import type { Mandate, ApiResponse, Entity, Organ } from '@/types'
 import { MandateList } from '@/components/mandate-list'
 import { FilterControls } from '@/components/filter-controls'
 import { PaginationControls } from '@/components/pagination-controls'
@@ -33,6 +33,7 @@ import { OrganListSidebar } from '@/components/organ-list-sidebar'
 import { CrossCitationsSidebar } from '@/components/cross-citations-sidebar'
 import { useFilters } from '@/contexts/FilterContext'
 import { Button } from '@/components/ui/button'
+import { FILTER_PARAMS, FILTER_ONLY_PARAMS } from '@/lib/filter-constants'
 
 interface MandateExplorerProps {
   // Explicit filters for entity/organ pages
@@ -41,9 +42,9 @@ interface MandateExplorerProps {
   // Page type for conditional rendering
   pageType: 'main' | 'entity' | 'organ'
   // Callback to pass entity details to parent component
-  onEntityDetailsLoaded?: (entities: any[]) => void
+  onEntityDetailsLoaded?: (entities: Entity[]) => void
   // Callback to pass organ details to parent component
-  onOrganDetailsLoaded?: (organs: any[]) => void
+  onOrganDetailsLoaded?: (organs: Organ[]) => void
 }
 
 export function MandateExplorer ({
@@ -56,21 +57,22 @@ export function MandateExplorer ({
   const { filters, setFilter } = useFilters()
   const searchParams = useSearchParams()
 
-  // Get current URL parameters directly (this is always up-to-date)
-  const currentUrlParams = {
-    page: searchParams.get('page') || '1',
-    limit: searchParams.get('limit') || '10',
-    entity: searchParams.get('entity') || '',
-    organ: searchParams.get('organ') || '',
-    crossCitingEntity: searchParams.get('crossCitingEntity') || '',
-    keyword: searchParams.get('keyword') || '',
-    programme: searchParams.get('programme') || '',
-    subject: searchParams.get('subject') || '',
-    start_year: searchParams.get('start_year') || '',
-    end_year: searchParams.get('end_year') || '',
-    budget_document: searchParams.get('budget_document') || '',
-    sort_by: searchParams.get('sort_by') || (searchParams.get('keyword') ? 'default' : 'citing_entities_desc')
+  // Helper function to extract URL parameters using constants
+  const getUrlParam = (key: string, defaultValue: string = '') => {
+    const value = searchParams.get(key)
+    if (key === 'sort_by' && !value) {
+      return searchParams.get('keyword') ? 'default' : 'citing_entities_desc'
+    }
+    return value || defaultValue
   }
+
+  // Get current URL parameters directly (this is always up-to-date)
+  const currentUrlParams = Object.fromEntries(
+    FILTER_PARAMS.map(param => [
+      param, 
+      getUrlParam(param, param === 'page' ? '1' : param === 'limit' ? '10' : '')
+    ])
+  ) as Record<typeof FILTER_PARAMS[number], string>
 
   // Simplified state management - only what's needed for UI
   const [apiData, setApiData] = useState<ApiResponse | null>(null)
@@ -104,17 +106,9 @@ export function MandateExplorer ({
         }
 
         // Add URL-based filters directly from searchParams (not from context)
-        const urlFilters = {
-          entity: currentUrlParams.entity,
-          organ: currentUrlParams.organ,
-          crossCitingEntity: currentUrlParams.crossCitingEntity,
-          keyword: currentUrlParams.keyword,
-          programme: currentUrlParams.programme,
-          subject: currentUrlParams.subject,
-          start_year: currentUrlParams.start_year,
-          end_year: currentUrlParams.end_year,
-          budget_document: currentUrlParams.budget_document
-        }
+        const urlFilters = Object.fromEntries(
+          FILTER_ONLY_PARAMS.map(param => [param, currentUrlParams[param]])
+        ) as Record<typeof FILTER_ONLY_PARAMS[number], string>
 
         Object.entries(urlFilters).forEach(([key, value]) => {
           if (value && value !== 'all') {
