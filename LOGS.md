@@ -1890,3 +1890,29 @@ Current API performance bottlenecks:
 - Consider implementing cache warming for common entity/organ pages
 - Add cache invalidation mechanism for data updates
 - Consider moving to Redis for distributed caching in production
+
+## New Task: Make Version Tag Chip Clickable (December 2024)
+
+### Problem Analysis:
+- Version tag chip in header is currently just a static span element
+- User wants it to be clickable and link to the methodology page
+- Need to convert span to Link component while preserving styling
+
+### Goal:
+Make the version tag chip clickable and link to `/methodology` page
+
+### Implementation Steps:
+
+- [x] **Wrap version tag in Link component**: Convert the span to a Link that points to `/methodology`
+- [x] **Preserve styling**: Ensure the chip appearance remains unchanged
+- [x] **Add hover effects**: Consider adding appropriate hover state for better UX
+
+### Files to Modify:
+- `src/app/layout.tsx` - Update the version tag chip
+
+### ✅ Task Completed:
+- Successfully converted static span to Link component
+- Preserved all original styling (chip appearance unchanged)
+- Added hover effects: `hover:bg-slate-200 hover:text-slate-700`
+- Added smooth transition with `transition-colors`
+- Version tag chip now clickable and links to `/methodology` page

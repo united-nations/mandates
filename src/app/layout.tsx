@@ -59,9 +59,12 @@ export default function RootLayout ({
                   >
                     {explainerTexts.mainHeader.title}
                   </Link>
-                  <span className='inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200'>
+                  <Link 
+                    href='/methodology'
+                    className='inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200 hover:bg-slate-200 hover:text-slate-700 transition-colors cursor-pointer'
+                  >
                     {explainerTexts.mainHeader.versionTag}
-                  </span>
+                  </Link>
                 </div>
               </div>
               <div className='pt-2'>
