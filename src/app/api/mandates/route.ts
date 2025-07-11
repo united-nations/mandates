@@ -203,7 +203,14 @@ function sortMandates (mandates: Mandate[], sortBy: string): Mandate[] {
     case 'citations_desc':
       return sorted.sort((a, b) => b.num_citations - a.num_citations)
     case 'citations_asc':
-      return sorted.sort((a, b) => a.num_citations - b.num_citations)
+      return sorted.sort((a, b) => {
+        // PROBLEM: Some mandates have num_entities=0 but num_citations>0 (exist in budget docs but not cited by entities)
+        // SOLUTION: For citation sorting, treat mandates with 0 entities as having 0 effective citations
+        // This ensures "Referenced but not cited" mandates appear first in ascending order
+        const aEffectiveCitations = a.num_entities === 0 ? 0 : a.num_citations;
+        const bEffectiveCitations = b.num_entities === 0 ? 0 : b.num_citations;
+        return aEffectiveCitations - bEffectiveCitations;
+      })
     case 'year_desc':
       return sorted.sort((a, b) => parseInt(b.year) - parseInt(a.year))
     case 'year_asc':
