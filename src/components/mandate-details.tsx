@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import type { Mandate, CitationInfo } from '@/types';
+import { getMandateDisplayTitle } from '@/lib/utils';
 import {
   Dialog,
   DialogContent,
@@ -150,9 +151,7 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [], 
         <div className="border-b pr-12 pb-2 md:pb-4">
             <p className="text-xs md:text-sm font-medium text-muted-foreground">Mandate Document</p>
             <DialogTitle className="text-lg md:text-2xl font-bold mt-1 leading-tight">
-              {mandate.body === "SC" && mandate.uniform_title && mandate.uniform_title.length > 0
-                ? mandate.uniform_title[0]
-                : mandate.title || mandate.description}
+              {getMandateDisplayTitle(mandate)}
             </DialogTitle>
             <DialogDescription className="mt-0.5 md:mt-1 text-xs md:text-sm">
                 {displaySymbol}

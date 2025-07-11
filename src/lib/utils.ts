@@ -1,6 +1,8 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { titleCase } from 'title-case';
 import type { FilterType } from '@/contexts/FilterContext';
+import type { Mandate } from '@/types';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -118,4 +120,30 @@ export function getActiveFiltersText(
   }
   
   return `(with ${activeFilters.length} active filters) `;
+}
+
+/**
+ * Get the display title for a mandate using the same logic as the API
+ * This ensures consistency across all components
+ */
+export function getMandateDisplayTitle(mandate: Mandate): string {
+  // Check uniform_title first
+  if (mandate.uniform_title && mandate.uniform_title.length > 0 && mandate.uniform_title[0].trim()) {
+    return titleCase(mandate.uniform_title[0].trim().toLowerCase())
+  }
+  // Check title
+  if (mandate.title && mandate.title.trim()) {
+    return titleCase(mandate.title.trim().toLowerCase())
+  }
+  // Check top-level description
+  if (mandate.description && mandate.description.trim()) {
+    return titleCase(mandate.description.trim().toLowerCase())
+  }
+  // Check citation_info descriptions
+  const citationDescription = mandate.citation_info?.find(info => info.description?.trim())?.description?.trim()
+  if (citationDescription) {
+    return titleCase(citationDescription.toLowerCase())
+  }
+  // Final fallback
+  return 'Untitled'
 }
