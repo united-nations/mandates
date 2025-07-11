@@ -126,7 +126,7 @@ export function EntityListSidebar({
       hideHeader={hideHeader}
       borderless={borderless}
       variant={variant}
-      emptyMessage="No entities found"
+      emptyMessage="No entities found. Note that the beta version only includes entities that are part of the UN Secretariat. This will be expanded in the coming weeks."
       showExpandCollapse={true}
       maxItemsBeforeExpand={10}
     />
