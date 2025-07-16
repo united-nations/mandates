@@ -13,6 +13,15 @@ RUN npm ci
 FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+# Verify LFS files are actual content, not pointers
+RUN ls -la data/ && \
+    echo "Checking if JSON file is LFS pointer or actual content:" && \
+    head -n 1 data/ppb2026_unique_mandates_with_metadata.json && \
+    if head -n 1 data/ppb2026_unique_mandates_with_metadata.json | grep -q "version https://git-lfs.github.com"; then \
+      echo "ERROR: LFS file not resolved - contains pointer instead of actual data" && exit 1; \
+    else \
+      echo "SUCCESS: LFS file resolved - contains actual JSON data"; \
+    fi
 # Create a public directory if it doesn't exist
 RUN mkdir -p public
 RUN npm run build
