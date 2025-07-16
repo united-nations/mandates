@@ -269,12 +269,40 @@ export function MandateDetails({ mandate, open, onOpenChange, allEntities = [], 
                 )}
               </div>
 
-              {/* AI Summary Content */}
-              <div className="bg-muted/30 rounded-lg p-3">
-                <p className="text-sm leading-relaxed text-muted-foreground italic">
-                  Document summaries and operative paragraphs are coming soon.
-                </p>
-              </div>
+              {/* Operative Paragraphs Content */}
+              {mandate.paragraphs && mandate.paragraphs.length > 0 ? (
+                <div className="space-y-3">
+                  <h3 className="text-base font-semibold flex items-center gap-2">
+                    <FileCheck className="h-4 w-4" />
+                    Paragraphs ({mandate.paragraphs.length})
+                  </h3>
+                  <div className="space-y-2 max-h-96 overflow-y-auto">
+                    {mandate.paragraphs.map((paragraph, index) => (
+                      <div key={`${paragraph.paragraph_idx}-${paragraph.subparagraph_idx}-${index}`} className="bg-muted/30 rounded-lg p-3">
+                        <div className="flex items-start gap-2">
+                          <Badge variant="outline" className="text-xs mt-0.5 flex-shrink-0">
+                            {paragraph.paragraph_idx}.{paragraph.subparagraph_idx}
+                          </Badge>
+                          <div className="flex-1">
+                            <p className="text-sm leading-relaxed">{paragraph.paragraph_text}</p>
+                            {paragraph.is_operative && (
+                              <Badge variant="secondary" className="text-xs mt-2">
+                                Operative
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="bg-muted/30 rounded-lg p-3">
+                  <p className="text-sm leading-relaxed text-muted-foreground italic">
+                    No paragraphs available for this document.
+                  </p>
+                </div>
+              )}
 
               {/* Entities Mentioned */}
               {entityCounts.length > 0 && (
