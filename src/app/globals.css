@@ -2,14 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: var(--font-sans), sans-serif; /* Updated to use --font-sans */
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-sans), sans-serif; /* Updated to use --font-sans */
-}
-
 @layer base {
   :root {
     --un-blue: #009edb; /* Official UN Blue color */

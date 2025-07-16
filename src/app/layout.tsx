@@ -19,6 +19,17 @@ import Clarity from '@microsoft/clarity'
 import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { BackButton } from '@/components/ui/back-button'
+import { Roboto } from 'next/font/google'
+
+const roboto = Roboto({
+  weight: ['300', '400', '500', '700'],
+  subsets: ['latin'],
+  display: 'swap',
+  fallback: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+  variable: '--font-roboto',
+  preload: true,
+  adjustFontFallback: false,
+})
 
 export default function RootLayout ({
   children
@@ -28,23 +39,23 @@ export default function RootLayout ({
   const pathname = usePathname()
   const isMainPage = pathname === '/'
 
-  // Initialize Microsoft Clarity
+  // Initialize Microsoft Clarity with a delay to not block initial render
   useEffect(() => {
-    Clarity.init('s4kksugeb9')
+    const timer = setTimeout(() => {
+      Clarity.init('s4kksugeb9')
+    }, 1000) // Delay Clarity initialization by 1 second
+    
+    return () => clearTimeout(timer)
   }, [])
   return (
-    <html lang='en'>
+    <html lang='en' className={roboto.variable}>
       <head>
-        <link rel='preconnect' href='https://fonts.googleapis.com' />
-        <link
-          rel='preconnect'
-          href='https://fonts.gstatic.com'
-          crossOrigin='anonymous'
-        />
-        <link
-          href='https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap'
-          rel='stylesheet'
-        />
+        {/* DNS prefetch for external resources */}
+        <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+        <link rel="dns-prefetch" href="//www.googletagmanager.com" />
+        <link rel="dns-prefetch" href="//www.google-analytics.com" />
+        <link rel="dns-prefetch" href="//forms.office.com" />
       </head>
       {/* Updated body to use font-sans from Tailwind config (which is now Roboto) */}
       <body className='font-sans antialiased min-h-screen bg-background text-foreground'>

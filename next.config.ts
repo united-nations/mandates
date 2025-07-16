@@ -19,6 +19,14 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Optimize CSS loading - disabled due to build issues
+  // experimental: {
+  //   optimizeCss: true,
+  // },
+  // Enable static optimization
+  trailingSlash: false,
+  // Compress responses
+  compress: true,
 };
 
 export default nextConfig;

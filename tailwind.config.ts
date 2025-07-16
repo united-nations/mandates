@@ -11,10 +11,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Roboto', ...defaultTheme.fontFamily.sans],
-        body: ['Roboto', ...defaultTheme.fontFamily.sans], // Use Roboto for body
-        headline: ['Roboto', ...defaultTheme.fontFamily.sans], // Use Roboto for headline
-        code: ['monospace'],
+        sans: ['var(--font-roboto)', ...defaultTheme.fontFamily.sans],
       },
       colors: {
         'card-gray': "F6F7F8",
