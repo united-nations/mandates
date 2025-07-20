@@ -29,6 +29,10 @@ function MandatePageContent() {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
     const [allEntities, setAllEntities] = useState<{ entity: string; entity_long: string }[]>([])
+    
+    // State for expandable sections
+    const [showAllEntities, setShowAllEntities] = useState(false)
+    const [showAllProgrammes, setShowAllProgrammes] = useState(false)
 
     useEffect(() => {
         const fetchMandate = async () => {
@@ -314,7 +318,7 @@ function MandatePageContent() {
                                         Entities Citing this Document ({entityCounts.length} total)
                                     </h3>
                                     <div className="space-y-1.5 text-xs">
-                                        {entityCounts.map(([shortName, data]) => (
+                                        {(showAllEntities ? entityCounts : entityCounts.slice(0, 5)).map(([shortName, data]) => (
                                             <div key={shortName} className="flex gap-2">
                                                 <span className="text-muted-foreground font-mono flex-shrink-0 leading-[1.5] py-1">{data.count}x</span>
                                                 <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 min-w-0 flex-1">
@@ -332,6 +336,17 @@ function MandatePageContent() {
                                                 </div>
                                             </div>
                                         ))}
+                                        {entityCounts.length > 5 && (
+                                            <button
+                                                onClick={() => setShowAllEntities(!showAllEntities)}
+                                                className="text-sm text-un-blue hover:text-un-blue/80 mt-2 w-full text-left"
+                                            >
+                                                {showAllEntities 
+                                                    ? 'Show less' 
+                                                    : `Show ${entityCounts.length - 5} more`
+                                                }
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
                             )}
@@ -344,7 +359,7 @@ function MandatePageContent() {
                                         Programmes Citing this Document ({programmeCounts.length} total)
                                     </h3>
                                     <div className="space-y-1.5 text-xs">
-                                        {programmeCounts.map(([programmeTitle, count]) => (
+                                        {(showAllProgrammes ? programmeCounts : programmeCounts.slice(0, 5)).map(([programmeTitle, count]) => (
                                             <div key={programmeTitle} className="flex items-center gap-2">
                                                 <span className="text-muted-foreground font-mono flex-shrink-0">{count}x</span>
                                                 <div className="min-w-0 flex-1">
@@ -364,6 +379,17 @@ function MandatePageContent() {
                                                 </div>
                                             </div>
                                         ))}
+                                        {programmeCounts.length > 5 && (
+                                            <button
+                                                onClick={() => setShowAllProgrammes(!showAllProgrammes)}
+                                                className="text-sm text-un-blue hover:text-un-blue/80 mt-2 w-full text-left"
+                                            >
+                                                {showAllProgrammes 
+                                                    ? 'Show less' 
+                                                    : `Show ${programmeCounts.length - 5} more`
+                                                }
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
                             )}
