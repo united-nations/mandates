@@ -12,7 +12,7 @@ import { getOriginDocumentDisplayName, getBudgetDocumentSlug } from '@/lib/budge
 import { Skeleton } from '@/components/ui/skeleton'
 
 const MetadataItem = ({ label, children }: { label: React.ReactNode, children: React.ReactNode }) => (
-    <div className="flex items-baseline text-xs py-1">
+    <div className="flex items-baseline text-sm py-1">
         <div className="w-28 font-medium text-muted-foreground flex-shrink-0 pr-3">{label}</div>
         <div className="flex-grow">{children}</div>
     </div>
@@ -187,11 +187,11 @@ function MandatePageContent() {
         <div className="pb-20">
             {/* Header */}
             <div className="border-b pr-12 pb-2 md:pb-4 mb-8">
-                <p className="text-sm md:text-sm font-medium text-muted-foreground">Mandate Document</p>
+                <p className="text-base md:text-lg font-medium text-muted-foreground">Mandate Document</p>
                 <h1 className="text-lg md:text-2xl font-bold mt-1 leading-tight">
                     {getMandateDisplayTitle(mandate)}
                 </h1>
-                <p className="mt-0.5 md:mt-1 text-xs md:text-sm text-muted-foreground">
+                <p className="mt-0.5 md:mt-1 text-sm md:text-base text-muted-foreground">
                     {displaySymbol}
                 </p>
                 {pdfUrl ? (
