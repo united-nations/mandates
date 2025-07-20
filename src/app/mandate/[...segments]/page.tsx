@@ -96,9 +96,9 @@ function MandatePageContent() {
             if (shortName) {
                 if (!counts[shortName]) {
                     // Use lookup function instead of citation data
-                    counts[shortName] = { 
-                      longName: getEntityLongName(shortName), 
-                      count: 0 
+                    counts[shortName] = {
+                        longName: getEntityLongName(shortName),
+                        count: 0
                     }
                 }
                 counts[shortName].count++
@@ -106,10 +106,10 @@ function MandatePageContent() {
         })
 
         return Object.entries(counts).sort(([shortNameA, dataA], [shortNameB, dataB]) => {
-          if (dataB.count !== dataA.count) {
-            return dataB.count - dataA.count
-          }
-          return shortNameA.localeCompare(shortNameB)
+            if (dataB.count !== dataA.count) {
+                return dataB.count - dataA.count
+            }
+            return shortNameA.localeCompare(shortNameB)
         })
     }, [mandate, getEntityLongName])
 
@@ -119,20 +119,20 @@ function MandatePageContent() {
         const counts: { [key: string]: number } = {}
 
         mandate.citation_info.forEach(citation => {
-          const programmeTitle = citation.programme_title
-          if (programmeTitle) {
-            if (!counts[programmeTitle]) {
-              counts[programmeTitle] = 0
+            const programmeTitle = citation.programme_title
+            if (programmeTitle) {
+                if (!counts[programmeTitle]) {
+                    counts[programmeTitle] = 0
+                }
+                counts[programmeTitle]++
             }
-            counts[programmeTitle]++
-          }
         })
 
         return Object.entries(counts).sort(([titleA, countA], [titleB, countB]) => {
-          if (countB !== countA) {
-            return countB - countA
-          }
-          return titleA.localeCompare(titleB)
+            if (countB !== countA) {
+                return countB - countA
+            }
+            return titleA.localeCompare(titleB)
         })
     }, [mandate])
 
@@ -140,9 +140,9 @@ function MandatePageContent() {
         if (!mandate || !mandate.citation_info) return []
         const uniqueDocs = new Set<string>()
         mandate.citation_info.forEach(citation => {
-          if (citation.origin_document) {
-            uniqueDocs.add(citation.origin_document)
-          }
+            if (citation.origin_document) {
+                uniqueDocs.add(citation.origin_document)
+            }
         })
         return Array.from(uniqueDocs)
     }, [mandate])
@@ -174,7 +174,7 @@ function MandatePageContent() {
             </div>
         )
     }
-    
+
     const hasSubjects = mandate.subject_headings && mandate.subject_headings.length > 0
     const displaySymbol = mandate.full_document_symbol
     const pdfUrl = mandate.link
@@ -185,7 +185,7 @@ function MandatePageContent() {
             <div className="border-b pr-12 pb-2 md:pb-4 mb-8">
                 <p className="text-xs md:text-sm font-medium text-muted-foreground">Mandate Document</p>
                 <h1 className="text-lg md:text-2xl font-bold mt-1 leading-tight">
-                  {getMandateDisplayTitle(mandate)}
+                    {getMandateDisplayTitle(mandate)}
                 </h1>
                 <p className="mt-0.5 md:mt-1 text-xs md:text-sm text-muted-foreground">
                     {displaySymbol}
@@ -209,196 +209,196 @@ function MandatePageContent() {
             <div className="flex-grow overflow-y-auto overflow-x-hidden">
                 <div className="space-y-4 pr-2">
 
-                  {/* AI Summary */}
-                  <div className="space-y-1">
-                    <h3 className="text-base font-semibold flex items-center gap-2">
-                      <FileText className="h-4 w-4" />
-                      <span>Document Summary</span>
-                    </h3>
-                  </div>
+                    {/* AI Summary */}
+                    <div className="space-y-1">
+                        <h3 className="text-base font-semibold flex items-center gap-2">
+                            <FileText className="h-4 w-4" />
+                            <span>Document Summary</span>
+                        </h3>
+                    </div>
 
-                  {/* Compact Metadata List */}
-                  <div className="space-y-1 rounded-lg">
-                    <MetadataItem label="Organ">
-                      {mandate.body ? (
-                        <Badge 
-                          variant="stronger" 
-                          className="text-xs cursor-pointer hover:bg-primary/80 transition-colors"
-                          onClick={() => {
-                            // Navigate to organ detail page
-                            window.location.href = `/organ/${encodeURIComponent(mandate.body)}`;
-                          }}
-                        >
-                          {mandate.body}
-                        </Badge>
-                      ) : (
-                        <span className="text-muted-foreground">—</span>
-                      )}
-                    </MetadataItem>
-                    <MetadataItem label="Document Type">
-                      {mandate.type ? <Badge variant="stronger" className="text-xs">{mandate.type}</Badge> : <span className="text-muted-foreground">—</span>}
-                    </MetadataItem>
-                    <MetadataItem label="Year">
-                      {mandate.year ? <Badge variant="stronger" className="text-xs">{mandate.year}</Badge> : <span className="text-muted-foreground">—</span>}
-                    </MetadataItem>
-                    <MetadataItem label="Budget Document">
-                      {budgetDocuments.length > 0 ? (
-                        <div className="flex flex-wrap gap-1">
-                          {budgetDocuments.map((doc, index) => {
-                            const displayName = getOriginDocumentDisplayName(doc);
-                            const slug = getBudgetDocumentSlug(displayName);
-                            
-                            return (
-                              <Badge 
-                                key={index} 
-                                variant="stronger" 
-                                className="text-xs cursor-pointer hover:bg-primary/80 transition-colors"
-                                onClick={() => {
-                                  // Navigate to filtered results using the budget document slug
-                                  const url = new URL(window.location.origin + '/');
-                                  url.searchParams.set('page', '1');
-                                  url.searchParams.set('budget_document', slug);
-                                  window.open(url.toString(), '_blank');
-                                }}
-                              >
-                                {displayName}
-                              </Badge>
-                            );
-                          })}
-                        </div>
-                      ) : (
-                        <span className="text-muted-foreground">—</span>
-                      )}
-                    </MetadataItem>
-                    {mandate.subject_headings && mandate.subject_headings.length > 0 && (
-                      <MetadataItem 
-                        label={
-                          <a href="https://metadata.un.org/thesaurus/" target="_blank" rel="noopener noreferrer" className="hover:underline">
-                            UN Library Subjects
-                          </a>
-                        }
-                      >
-                        <div className="flex flex-wrap gap-1 pt-2">
-                          {mandate.subject_headings
-                            .slice()
-                            .sort((a, b) => a.localeCompare(b))
-                            .map((heading, index) => (
-                            <Badge 
-                              key={index} 
-                              variant="outline" 
-                              className="text-xs font-normal !border-un-blue cursor-pointer hover:bg-un-blue/10 transition-colors"
-                              onClick={() => {
-                                // Open filtered results in a new window with only the subject filter
-                                const url = new URL(window.location.origin + window.location.pathname);
-                                url.searchParams.set('page', '1');
-                                url.searchParams.set('subject', heading.trim());
-                                window.open(url.toString(), '_blank');
-                              }}
+                    {/* Compact Metadata List */}
+                    <div className="space-y-1 rounded-lg">
+                        <MetadataItem label="Organ">
+                            {mandate.body ? (
+                                <Badge
+                                    variant="stronger"
+                                    className="text-xs cursor-pointer hover:bg-primary/80 transition-colors"
+                                    onClick={() => {
+                                        // Navigate to organ detail page
+                                        window.location.href = `/organ/${encodeURIComponent(mandate.body)}`;
+                                    }}
+                                >
+                                    {mandate.body}
+                                </Badge>
+                            ) : (
+                                <span className="text-muted-foreground">—</span>
+                            )}
+                        </MetadataItem>
+                        <MetadataItem label="Document Type">
+                            {mandate.type ? <Badge variant="stronger" className="text-xs">{mandate.type}</Badge> : <span className="text-muted-foreground">—</span>}
+                        </MetadataItem>
+                        <MetadataItem label="Year">
+                            {mandate.year ? <Badge variant="stronger" className="text-xs">{mandate.year}</Badge> : <span className="text-muted-foreground">—</span>}
+                        </MetadataItem>
+                        <MetadataItem label="Budget Document">
+                            {budgetDocuments.length > 0 ? (
+                                <div className="flex flex-wrap gap-1">
+                                    {budgetDocuments.map((doc, index) => {
+                                        const displayName = getOriginDocumentDisplayName(doc);
+                                        const slug = getBudgetDocumentSlug(displayName);
+
+                                        return (
+                                            <Badge
+                                                key={index}
+                                                variant="stronger"
+                                                className="text-xs cursor-pointer hover:bg-primary/80 transition-colors"
+                                                onClick={() => {
+                                                    // Navigate to filtered results using the budget document slug
+                                                    const url = new URL(window.location.origin + '/');
+                                                    url.searchParams.set('page', '1');
+                                                    url.searchParams.set('budget_document', slug);
+                                                    window.open(url.toString(), '_blank');
+                                                }}
+                                            >
+                                                {displayName}
+                                            </Badge>
+                                        );
+                                    })}
+                                </div>
+                            ) : (
+                                <span className="text-muted-foreground">—</span>
+                            )}
+                        </MetadataItem>
+                        {mandate.subject_headings && mandate.subject_headings.length > 0 && (
+                            <MetadataItem
+                                label={
+                                    <a href="https://metadata.un.org/thesaurus/" target="_blank" rel="noopener noreferrer" className="hover:underline">
+                                        UN Library Subjects
+                                    </a>
+                                }
                             >
-                              {titleCase(heading.toLowerCase())}
-                            </Badge>
-                          ))}
+                                <div className="flex flex-wrap gap-1 pt-2">
+                                    {mandate.subject_headings
+                                        .slice()
+                                        .sort((a, b) => a.localeCompare(b))
+                                        .map((heading, index) => (
+                                            <Badge
+                                                key={index}
+                                                variant="outline"
+                                                className="text-xs font-normal !border-un-blue cursor-pointer hover:bg-un-blue/10 transition-colors"
+                                                onClick={() => {
+                                                    // Open filtered results in a new window with only the subject filter
+                                                    const url = new URL(window.location.origin + window.location.pathname);
+                                                    url.searchParams.set('page', '1');
+                                                    url.searchParams.set('subject', heading.trim());
+                                                    window.open(url.toString(), '_blank');
+                                                }}
+                                            >
+                                                {titleCase(heading.toLowerCase())}
+                                            </Badge>
+                                        ))}
+                                </div>
+                            </MetadataItem>
+                        )}
+                    </div>
+
+                    {/* Operative Paragraphs Content */}
+                    {mandate.paragraphs && mandate.paragraphs.length > 0 ? (
+                        <div className="space-y-3">
+                            <h3 className="text-base font-semibold flex items-center gap-2">
+                                <FileCheck className="h-4 w-4" />
+                                Paragraphs ({mandate.paragraphs.length})
+                            </h3>
+                            <div className="space-y-2 max-h-96 overflow-y-auto">
+                                {mandate.paragraphs.map((paragraph, index) => (
+                                    <div key={`${paragraph.paragraph_idx}-${paragraph.subparagraph_idx}-${index}`} className="bg-muted/30 rounded-lg p-3">
+                                        <div className="flex items-start gap-2">
+                                            <Badge variant="outline" className="text-xs mt-0.5 flex-shrink-0">
+                                                {paragraph.paragraph_idx}.{paragraph.subparagraph_idx}
+                                            </Badge>
+                                            <div className="flex-1">
+                                                <p className="text-sm leading-relaxed">{paragraph.paragraph_text}</p>
+                                                {paragraph.is_operative && (
+                                                    <Badge variant="secondary" className="text-xs mt-2">
+                                                        Operative
+                                                    </Badge>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
-                      </MetadataItem>
+                    ) : (
+                        <div className="bg-muted/30 rounded-lg p-3">
+                            <p className="text-sm leading-relaxed text-muted-foreground italic">
+                                No paragraphs available for this document.
+                            </p>
+                        </div>
                     )}
-                  </div>
 
-                  {/* Operative Paragraphs Content */}
-                  {mandate.paragraphs && mandate.paragraphs.length > 0 ? (
-                    <div className="space-y-3">
-                      <h3 className="text-base font-semibold flex items-center gap-2">
-                        <FileCheck className="h-4 w-4" />
-                        Paragraphs ({mandate.paragraphs.length})
-                      </h3>
-                      <div className="space-y-2 max-h-96 overflow-y-auto">
-                        {mandate.paragraphs.map((paragraph, index) => (
-                          <div key={`${paragraph.paragraph_idx}-${paragraph.subparagraph_idx}-${index}`} className="bg-muted/30 rounded-lg p-3">
-                            <div className="flex items-start gap-2">
-                              <Badge variant="outline" className="text-xs mt-0.5 flex-shrink-0">
-                                {paragraph.paragraph_idx}.{paragraph.subparagraph_idx}
-                              </Badge>
-                              <div className="flex-1">
-                                <p className="text-sm leading-relaxed">{paragraph.paragraph_text}</p>
-                                {paragraph.is_operative && (
-                                  <Badge variant="secondary" className="text-xs mt-2">
-                                    Operative
-                                  </Badge>
-                                )}
-                              </div>
+                    {/* Entities Mentioned */}
+                    {entityCounts.length > 0 && (
+                        <div className="space-y-2">
+                            <h3 className="text-base font-semibold flex items-center gap-2">
+                                <Building className="h-4 w-4" />
+                                Entities Citing this Document ({entityCounts.length} total)
+                            </h3>
+                            <div className="space-y-1.5 text-xs">
+                                {entityCounts.map(([shortName, data]) => (
+                                    <div key={shortName} className="flex gap-2">
+                                        <span className="text-muted-foreground font-mono flex-shrink-0 leading-[1.5] py-1">{data.count}x</span>
+                                        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 min-w-0 flex-1">
+                                            <Badge
+                                                variant="secondary"
+                                                className="text-xs w-fit px-2 py-1 !bg-un-blue !text-white hover:!bg-un-blue/90 cursor-pointer transition-colors"
+                                                onClick={() => {
+                                                    // Navigate to entity detail page
+                                                    window.location.href = `/entity/${encodeURIComponent(shortName)}`;
+                                                }}
+                                            >
+                                                {shortName}
+                                            </Badge>
+                                            <span className="text-muted-foreground break-words">{data.longName}</span>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="bg-muted/30 rounded-lg p-3">
-                      <p className="text-sm leading-relaxed text-muted-foreground italic">
-                        No paragraphs available for this document.
-                      </p>
-                    </div>
-                  )}
+                        </div>
+                    )}
 
-                  {/* Entities Mentioned */}
-                  {entityCounts.length > 0 && (
-                    <div className="space-y-2">
-                      <h3 className="text-base font-semibold flex items-center gap-2">
-                        <Building className="h-4 w-4" />
-                        Entities Citing this Document ({entityCounts.length} total)
-                      </h3>
-                      <div className="space-y-1.5 text-xs">
-                        {entityCounts.map(([shortName, data]) => (
-                          <div key={shortName} className="flex gap-2">
-                            <span className="text-muted-foreground font-mono flex-shrink-0 leading-[1.5] py-1">{data.count}x</span>
-                            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 min-w-0 flex-1">
-                              <Badge 
-                                variant="secondary" 
-                                className="text-xs w-fit px-2 py-1 !bg-un-blue !text-white hover:!bg-un-blue/90 cursor-pointer transition-colors"
-                                onClick={() => {
-                                  // Navigate to entity detail page
-                                  window.location.href = `/entity/${encodeURIComponent(shortName)}`;
-                                }}
-                              >
-                                {shortName}
-                              </Badge>
-                              <span className="text-muted-foreground break-words">{data.longName}</span>
+                    {/* Programme Counts */}
+                    {programmeCounts.length > 0 && (
+                        <div className="space-y-2">
+                            <h3 className="text-base font-semibold flex items-center gap-2">
+                                <Target className="h-4 w-4" />
+                                Programmes Citing this Document ({programmeCounts.length} total)
+                            </h3>
+                            <div className="space-y-1.5 text-xs">
+                                {programmeCounts.map(([programmeTitle, count]) => (
+                                    <div key={programmeTitle} className="flex items-center gap-2">
+                                        <span className="text-muted-foreground font-mono flex-shrink-0">{count}x</span>
+                                        <div className="min-w-0 flex-1">
+                                            <Badge
+                                                variant="secondary"
+                                                className="text-xs px-2 py-1 whitespace-normal leading-relaxed inline-block max-w-full cursor-pointer hover:bg-secondary/80 transition-colors"
+                                                onClick={() => {
+                                                    // Open filtered results in a new window with only the programme filter
+                                                    const url = new URL(window.location.origin + '/');
+                                                    url.searchParams.set('page', '1');
+                                                    url.searchParams.set('programme', programmeTitle);
+                                                    window.open(url.toString(), '_blank');
+                                                }}
+                                            >
+                                                {titleCase(programmeTitle)}
+                                            </Badge>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Programme Counts */}
-                  {programmeCounts.length > 0 && (
-                    <div className="space-y-2">
-                      <h3 className="text-base font-semibold flex items-center gap-2">
-                        <Target className="h-4 w-4" />
-                        Programmes Citing this Document ({programmeCounts.length} total)
-                      </h3>
-                      <div className="space-y-1.5 text-xs">
-                        {programmeCounts.map(([programmeTitle, count]) => (
-                          <div key={programmeTitle} className="flex items-center gap-2">
-                            <span className="text-muted-foreground font-mono flex-shrink-0">{count}x</span>
-                            <div className="min-w-0 flex-1">
-                              <Badge 
-                                variant="secondary" 
-                                className="text-xs px-2 py-1 whitespace-normal leading-relaxed inline-block max-w-full cursor-pointer hover:bg-secondary/80 transition-colors"
-                                onClick={() => {
-                                  // Open filtered results in a new window with only the programme filter
-                                  const url = new URL(window.location.origin + window.location.pathname);
-                                  url.searchParams.set('page', '1');
-                                  url.searchParams.set('programme', programmeTitle);
-                                  window.open(url.toString(), '_blank');
-                                }}
-                              >
-                                {titleCase(programmeTitle)}
-                              </Badge>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
