@@ -28,7 +28,7 @@ function MandatePageContent() {
     const [mandate, setMandate] = useState<Mandate | null>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
-    const [allEntities, setAllEntities] = useState<{ entity: string; entity_long: string }[]>([])
+    const [entityMap, setEntityMap] = useState<Map<string, { entity: string; entity_long: string }>>(new Map())
 
     // State for expandable sections
     const [showAllEntities, setShowAllEntities] = useState(false)
@@ -52,6 +52,15 @@ function MandatePageContent() {
                 // Since we're using exact match filter, we should get exactly one result or none
                 if (data.mandates && data.mandates.length > 0) {
                     setMandate(data.mandates[0])
+                    
+                    // Build entity map from the reference data that's already provided by the API
+                    if (data.reference?.entities) {
+                        const map = new Map()
+                        data.reference.entities.forEach((entity: any) => {
+                            map.set(entity.entity, entity)
+                        })
+                        setEntityMap(map)
+                    }
                 } else {
                     throw new Error('Mandate not found')
                 }
@@ -62,33 +71,16 @@ function MandatePageContent() {
             }
         }
 
-        const fetchEntities = async () => {
-            try {
-                // Fetch entities for entity lookup
-                const response = await fetch('/api/mandates?limit=1')
-                if (response.ok) {
-                    const data = await response.json()
-                    if (data.entities) {
-                        setAllEntities(data.entities)
-                    }
-                }
-            } catch (err) {
-                // Silently fail for entities fetch - not critical
-                console.warn('Failed to fetch entities:', err)
-            }
-        }
-
         if (documentSymbol) {
             fetchMandate()
-            fetchEntities()
         }
     }, [documentSymbol])
 
-    // Create entity lookup function
+    // Create entity lookup function using the API-provided entity map
     const getEntityLongName = useCallback((shortName: string): string => {
-        const entity = allEntities.find(e => e.entity === shortName)
+        const entity = entityMap.get(shortName)
         return entity?.entity_long || shortName
-    }, [allEntities])
+    }, [entityMap])
 
     const entityCounts = useMemo(() => {
         if (!mandate || !mandate.citation_info) return []
@@ -319,12 +311,12 @@ function MandatePageContent() {
                                     </h3>
                                     <div className="space-y-1.5 text-xs">
                                         {(showAllEntities ? entityCounts : entityCounts.slice(0, 5)).map(([shortName, data]) => (
-                                            <div key={shortName} className="flex gap-2">
-                                                <span className="text-muted-foreground font-mono flex-shrink-0 leading-[1.5] py-1">{data.count}x</span>
-                                                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 min-w-0 flex-1">
+                                            <div key={shortName} className="flex items-center gap-2">
+                                                <span className="text-muted-foreground font-mono flex-shrink-0 min-w-[2rem]">{data.count}x</span>
+                                                <div className="flex items-center gap-2 min-w-0 flex-1">
                                                     <Badge
                                                         variant="secondary"
-                                                        className="text-xs w-fit px-2 py-1 !bg-un-blue !text-white hover:!bg-un-blue/90 cursor-pointer transition-colors"
+                                                        className="text-xs px-2 py-1 !bg-un-blue !text-white hover:!bg-un-blue/90 cursor-pointer transition-colors flex-shrink-0"
                                                         onClick={() => {
                                                             // Navigate to entity detail page
                                                             window.location.href = `/entity/${encodeURIComponent(shortName)}`;
@@ -332,7 +324,9 @@ function MandatePageContent() {
                                                     >
                                                         {shortName}
                                                     </Badge>
-                                                    <span className="text-muted-foreground break-words">{data.longName}</span>
+                                                    <span className="text-muted-foreground text-xs truncate" title={data.longName}>
+                                                        {data.longName}
+                                                    </span>
                                                 </div>
                                             </div>
                                         ))}
@@ -426,7 +420,7 @@ function MandatePageContent() {
                     ) : (
                         <div className="bg-muted/30 rounded-lg p-3">
                             <p className="text-sm leading-relaxed text-muted-foreground italic">
-                                No paragraphs available for this document.
+                                No paragraphs currently available for this document.
                             </p>
                         </div>
                     )}
