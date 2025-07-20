@@ -303,6 +303,73 @@ function MandatePageContent() {
                         )}
                     </div>
 
+                    {/* Citations Layout - Side by side on larger screens, stacked on smaller */}
+                    {(entityCounts.length > 0 || programmeCounts.length > 0) && (
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+                            {/* Entities Mentioned */}
+                            {entityCounts.length > 0 && (
+                                <div className="space-y-2">
+                                    <h3 className="text-base font-semibold flex items-center gap-2">
+                                        <Building className="h-4 w-4" />
+                                        Entities Citing this Document ({entityCounts.length} total)
+                                    </h3>
+                                    <div className="space-y-1.5 text-xs">
+                                        {entityCounts.map(([shortName, data]) => (
+                                            <div key={shortName} className="flex gap-2">
+                                                <span className="text-muted-foreground font-mono flex-shrink-0 leading-[1.5] py-1">{data.count}x</span>
+                                                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 min-w-0 flex-1">
+                                                    <Badge
+                                                        variant="secondary"
+                                                        className="text-xs w-fit px-2 py-1 !bg-un-blue !text-white hover:!bg-un-blue/90 cursor-pointer transition-colors"
+                                                        onClick={() => {
+                                                            // Navigate to entity detail page
+                                                            window.location.href = `/entity/${encodeURIComponent(shortName)}`;
+                                                        }}
+                                                    >
+                                                        {shortName}
+                                                    </Badge>
+                                                    <span className="text-muted-foreground break-words">{data.longName}</span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Programme Counts */}
+                            {programmeCounts.length > 0 && (
+                                <div className="space-y-2">
+                                    <h3 className="text-base font-semibold flex items-center gap-2">
+                                        <Target className="h-4 w-4" />
+                                        Programmes Citing this Document ({programmeCounts.length} total)
+                                    </h3>
+                                    <div className="space-y-1.5 text-xs">
+                                        {programmeCounts.map(([programmeTitle, count]) => (
+                                            <div key={programmeTitle} className="flex items-center gap-2">
+                                                <span className="text-muted-foreground font-mono flex-shrink-0">{count}x</span>
+                                                <div className="min-w-0 flex-1">
+                                                    <Badge
+                                                        variant="secondary"
+                                                        className="text-xs px-2 py-1 whitespace-normal leading-relaxed inline-block max-w-full cursor-pointer hover:bg-secondary/80 transition-colors"
+                                                        onClick={() => {
+                                                            // Open filtered results in a new window with only the programme filter
+                                                            const url = new URL(window.location.origin + '/');
+                                                            url.searchParams.set('page', '1');
+                                                            url.searchParams.set('programme', programmeTitle);
+                                                            window.open(url.toString(), '_blank');
+                                                        }}
+                                                    >
+                                                        {titleCase(programmeTitle)}
+                                                    </Badge>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
                     {/* Operative Paragraphs Content */}
                     {mandate.paragraphs && mandate.paragraphs.length > 0 ? (
                         <div className="space-y-3">
@@ -335,68 +402,6 @@ function MandatePageContent() {
                             <p className="text-sm leading-relaxed text-muted-foreground italic">
                                 No paragraphs available for this document.
                             </p>
-                        </div>
-                    )}
-
-                    {/* Entities Mentioned */}
-                    {entityCounts.length > 0 && (
-                        <div className="space-y-2">
-                            <h3 className="text-base font-semibold flex items-center gap-2">
-                                <Building className="h-4 w-4" />
-                                Entities Citing this Document ({entityCounts.length} total)
-                            </h3>
-                            <div className="space-y-1.5 text-xs">
-                                {entityCounts.map(([shortName, data]) => (
-                                    <div key={shortName} className="flex gap-2">
-                                        <span className="text-muted-foreground font-mono flex-shrink-0 leading-[1.5] py-1">{data.count}x</span>
-                                        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 min-w-0 flex-1">
-                                            <Badge
-                                                variant="secondary"
-                                                className="text-xs w-fit px-2 py-1 !bg-un-blue !text-white hover:!bg-un-blue/90 cursor-pointer transition-colors"
-                                                onClick={() => {
-                                                    // Navigate to entity detail page
-                                                    window.location.href = `/entity/${encodeURIComponent(shortName)}`;
-                                                }}
-                                            >
-                                                {shortName}
-                                            </Badge>
-                                            <span className="text-muted-foreground break-words">{data.longName}</span>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Programme Counts */}
-                    {programmeCounts.length > 0 && (
-                        <div className="space-y-2">
-                            <h3 className="text-base font-semibold flex items-center gap-2">
-                                <Target className="h-4 w-4" />
-                                Programmes Citing this Document ({programmeCounts.length} total)
-                            </h3>
-                            <div className="space-y-1.5 text-xs">
-                                {programmeCounts.map(([programmeTitle, count]) => (
-                                    <div key={programmeTitle} className="flex items-center gap-2">
-                                        <span className="text-muted-foreground font-mono flex-shrink-0">{count}x</span>
-                                        <div className="min-w-0 flex-1">
-                                            <Badge
-                                                variant="secondary"
-                                                className="text-xs px-2 py-1 whitespace-normal leading-relaxed inline-block max-w-full cursor-pointer hover:bg-secondary/80 transition-colors"
-                                                onClick={() => {
-                                                    // Open filtered results in a new window with only the programme filter
-                                                    const url = new URL(window.location.origin + '/');
-                                                    url.searchParams.set('page', '1');
-                                                    url.searchParams.set('programme', programmeTitle);
-                                                    window.open(url.toString(), '_blank');
-                                                }}
-                                            >
-                                                {titleCase(programmeTitle)}
-                                            </Badge>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
                         </div>
                     )}
                 </div>
