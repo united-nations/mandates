@@ -117,6 +117,19 @@ export function MandateList({ mandates, organsData, entitiesData }: MandateListP
     return `/mandate/${segments.join('/')}`;
   };
 
+  // Helper function to handle mandate click
+  const handleMandateClick = (mandate: Mandate, event: React.MouseEvent) => {
+    event.preventDefault();
+    const url = getMandateUrl(mandate);
+    const currentUrl = window.location.href;
+    
+    // Store the current URL for return navigation
+    sessionStorage.setItem('mandateReturnUrl', currentUrl);
+    
+    // Open the window with clean URL
+    window.open(url, '_blank');
+  };
+
   return (
     <TooltipProvider>
       <div className="space-y-4">
@@ -127,12 +140,10 @@ export function MandateList({ mandates, organsData, entitiesData }: MandateListP
           const hasHighlighting = (mandate as any).highlightedFields && Object.keys((mandate as any).highlightedFields).length > 0;
           
           return (
-            <Link 
+            <div
               key={mandate.full_document_symbol || mandate.document_symbol} 
-              href={getMandateUrl(mandate)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block"
+              onClick={(e) => handleMandateClick(mandate, e)}
+              className="block cursor-pointer"
             >
               <motion.div
                 className="relative p-3 sm:p-4 rounded-lg bg-[#F6F7F8] hover:bg-un-blue/10 transition-all cursor-pointer"
@@ -245,7 +256,7 @@ export function MandateList({ mandates, organsData, entitiesData }: MandateListP
                 )}
               </div>
             </motion.div>
-            </Link>
+            </div>
           );
         })}
       </div>
