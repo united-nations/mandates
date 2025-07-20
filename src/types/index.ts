@@ -137,6 +137,7 @@ export interface FilterOptions {
   start_year?: string;
   end_year?: string;
   budget_document?: string;
+  full_document_symbol?: string;
   sort_by?: string;
   page?: string;
   limit?: string;
