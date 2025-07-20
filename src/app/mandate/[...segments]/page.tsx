@@ -29,7 +29,7 @@ function MandatePageContent() {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
     const [allEntities, setAllEntities] = useState<{ entity: string; entity_long: string }[]>([])
-    
+
     // State for expandable sections
     const [showAllEntities, setShowAllEntities] = useState(false)
     const [showAllProgrammes, setShowAllProgrammes] = useState(false)
@@ -187,7 +187,7 @@ function MandatePageContent() {
         <div className="pb-20">
             {/* Header */}
             <div className="border-b pr-12 pb-2 md:pb-4 mb-8">
-                <p className="text-xs md:text-sm font-medium text-muted-foreground">Mandate Document</p>
+                <p className="text-sm md:text-sm font-medium text-muted-foreground">Mandate Document</p>
                 <h1 className="text-lg md:text-2xl font-bold mt-1 leading-tight">
                     {getMandateDisplayTitle(mandate)}
                 </h1>
@@ -315,7 +315,7 @@ function MandatePageContent() {
                                 <div className="space-y-2">
                                     <h3 className="text-base font-semibold flex items-center gap-2">
                                         <Building className="h-4 w-4" />
-                                        Entities Citing this Document ({entityCounts.length} total)
+                                        {entityCounts.length} {entityCounts.length === 1 ? 'Entity' : 'Entities'} Citing this Document
                                     </h3>
                                     <div className="space-y-1.5 text-xs">
                                         {(showAllEntities ? entityCounts : entityCounts.slice(0, 5)).map(([shortName, data]) => (
@@ -341,8 +341,8 @@ function MandatePageContent() {
                                                 onClick={() => setShowAllEntities(!showAllEntities)}
                                                 className="text-sm text-un-blue hover:text-un-blue/80 mt-2 w-full text-left"
                                             >
-                                                {showAllEntities 
-                                                    ? 'Show less' 
+                                                {showAllEntities
+                                                    ? 'Show less'
                                                     : `Show ${entityCounts.length - 5} more`
                                                 }
                                             </button>
@@ -356,7 +356,7 @@ function MandatePageContent() {
                                 <div className="space-y-2">
                                     <h3 className="text-base font-semibold flex items-center gap-2">
                                         <Target className="h-4 w-4" />
-                                        Programmes Citing this Document ({programmeCounts.length} total)
+                                        {programmeCounts.length} {programmeCounts.length === 1 ? 'Programme' : 'Programmes'} Citing this Document
                                     </h3>
                                     <div className="space-y-1.5 text-xs">
                                         {(showAllProgrammes ? programmeCounts : programmeCounts.slice(0, 5)).map(([programmeTitle, count]) => (
@@ -384,8 +384,8 @@ function MandatePageContent() {
                                                 onClick={() => setShowAllProgrammes(!showAllProgrammes)}
                                                 className="text-sm text-un-blue hover:text-un-blue/80 mt-2 w-full text-left"
                                             >
-                                                {showAllProgrammes 
-                                                    ? 'Show less' 
+                                                {showAllProgrammes
+                                                    ? 'Show less'
                                                     : `Show ${programmeCounts.length - 5} more`
                                                 }
                                             </button>
