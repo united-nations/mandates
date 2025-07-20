@@ -52,7 +52,7 @@ function MandatePageContent() {
                 // Since we're using exact match filter, we should get exactly one result or none
                 if (data.mandates && data.mandates.length > 0) {
                     setMandate(data.mandates[0])
-                    
+
                     // Build entity map from the reference data that's already provided by the API
                     if (data.reference?.entities) {
                         const map = new Map()
@@ -183,7 +183,7 @@ function MandatePageContent() {
                 <h1 className="text-lg md:text-2xl font-bold mt-1 leading-tight">
                     {getMandateDisplayTitle(mandate)}
                 </h1>
-                <p className="mt-0.5 md:mt-1 text-sm md:text-base text-muted-foreground">
+                <p className="mt-0.5 md:mt-1 text-sm md:text-base text-muted-foreground font-mono">
                     {displaySymbol}
                 </p>
                 {pdfUrl ? (
@@ -312,21 +312,23 @@ function MandatePageContent() {
                                     <div className="space-y-1.5 text-xs">
                                         {(showAllEntities ? entityCounts : entityCounts.slice(0, 5)).map(([shortName, data]) => (
                                             <div key={shortName} className="flex items-center gap-2">
-                                                <span className="text-muted-foreground font-mono flex-shrink-0 min-w-[2rem]">{data.count}x</span>
-                                                <div className="flex items-center gap-2 min-w-0 flex-1">
-                                                    <Badge
-                                                        variant="secondary"
-                                                        className="text-xs px-2 py-1 !bg-un-blue !text-white hover:!bg-un-blue/90 cursor-pointer transition-colors flex-shrink-0"
-                                                        onClick={() => {
-                                                            // Navigate to entity detail page
-                                                            window.location.href = `/entity/${encodeURIComponent(shortName)}`;
-                                                        }}
-                                                    >
-                                                        {shortName}
-                                                    </Badge>
-                                                    <span className="text-muted-foreground text-xs truncate" title={data.longName}>
-                                                        {data.longName}
-                                                    </span>
+                                                <span className="text-muted-foreground font-mono flex-shrink-0">{data.count}x</span>
+                                                <div className="min-w-0 flex-1">
+                                                    <div className="flex items-center gap-2">
+                                                        <Badge
+                                                            variant="secondary"
+                                                            className="text-xs px-2 py-1 !bg-un-blue !text-white hover:!bg-un-blue/90 cursor-pointer transition-colors flex-shrink-0"
+                                                            onClick={() => {
+                                                                // Navigate to entity detail page
+                                                                window.location.href = `/entity/${encodeURIComponent(shortName)}`;
+                                                            }}
+                                                        >
+                                                            {shortName}
+                                                        </Badge>
+                                                        <span className="text-muted-foreground text-xs truncate" title={data.longName}>
+                                                            {data.longName}
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         ))}
