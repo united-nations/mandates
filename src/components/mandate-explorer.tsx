@@ -470,7 +470,6 @@ export function MandateExplorer ({
                       <>
                         <MandateList
                           mandates={mandates}
-                          onMandateClick={setSelectedMandate}
                           organsData={allOrgans}
                           entitiesData={allEntities}
                         />

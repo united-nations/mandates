@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import type { Mandate } from '@/types';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import {
   Tooltip,
@@ -28,7 +27,6 @@ interface Entity {
 
 interface MandateListProps {
   mandates: Mandate[];
-  onMandateClick: (mandate: Mandate) => void;
   organsData: Organ[];
   entitiesData: Entity[];
 }
@@ -67,7 +65,7 @@ const HighlightedContent = ({ content, fallback }: { content?: string; fallback:
   return <span>{fallback}</span>;
 };
 
-export function MandateList({ mandates, onMandateClick, organsData, entitiesData }: MandateListProps) {
+export function MandateList({ mandates, organsData, entitiesData }: MandateListProps) {
   // Helper function to find organ data by matching both short and long names
   const findOrganData = (organName: string): Organ | undefined => {
     return organsData.find(organ => 
@@ -107,6 +105,18 @@ export function MandateList({ mandates, onMandateClick, organsData, entitiesData
     }
     return symbol;
   };
+
+  // Helper function to generate mandate page URL
+  const getMandateUrl = (mandate: Mandate): string => {
+    const documentSymbol = mandate.full_document_symbol || mandate.document_symbol;
+    if (!documentSymbol) {
+      return '/mandate/unknown';
+    }
+    // Split by forward slash and encode each segment individually
+    const segments = documentSymbol.split('/').map(segment => encodeURIComponent(segment));
+    return `/mandate/${segments.join('/')}`;
+  };
+
   return (
     <TooltipProvider>
       <div className="space-y-4">
@@ -117,23 +127,25 @@ export function MandateList({ mandates, onMandateClick, organsData, entitiesData
           const hasHighlighting = (mandate as any).highlightedFields && Object.keys((mandate as any).highlightedFields).length > 0;
           
           return (
-            <motion.div
-              key={mandate.full_document_symbol || mandate.document_symbol}
-              className="relative p-3 sm:p-4 rounded-lg bg-[#F6F7F8] hover:bg-un-blue/10 transition-all cursor-pointer"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: index * 0.05 }}
-              onClick={() => onMandateClick(mandate)}
+            <Link 
+              key={mandate.full_document_symbol || mandate.document_symbol} 
+              href={getMandateUrl(mandate)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block"
             >
-              <div className="flex flex-col gap-3">
-                {/* Details button - positioned absolute, smaller on mobile */}
-                <Button 
-                  variant="details"
-                  className="absolute top-2 sm:top-3 right-2 sm:right-3 shrink-0 inline-flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 py-1 sm:px-2.5 sm:py-1.5 h-auto !bg-trout !text-white hover:!bg-trout/90"
-                >
-                  <Info className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="text-xs sm:text-sm">Details</span>
-                </Button>
+              <motion.div
+                className="relative p-3 sm:p-4 rounded-lg bg-[#F6F7F8] hover:bg-un-blue/10 transition-all cursor-pointer"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.05 }}
+              >
+                <div className="flex flex-col gap-3">
+                  {/* Details button - positioned absolute, smaller on mobile */}
+                  <div className="absolute top-2 sm:top-3 right-2 sm:right-3 shrink-0 inline-flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 py-1 sm:px-2.5 sm:py-1.5 h-auto bg-trout text-white rounded">
+                    <Info className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="text-xs sm:text-sm">Details</span>
+                  </div>
 
                 <div className="pr-20 sm:pr-32">
                   <h3 className="text-sm sm:text-base font-semibold leading-tight break-words hyphens-auto">
@@ -233,6 +245,7 @@ export function MandateList({ mandates, onMandateClick, organsData, entitiesData
                 )}
               </div>
             </motion.div>
+            </Link>
           );
         })}
       </div>

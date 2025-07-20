@@ -82,12 +82,6 @@ function MandatePageContent() {
         return (
             <div className="pb-8">
                 <div className="mb-6">
-                    <NextLink href="/">
-                        <Button variant="ghost" size="sm" className="mb-4">
-                            <ArrowLeft className="h-4 w-4 mr-2" />
-                            Back to Explorer
-                        </Button>
-                    </NextLink>
                     <h1 className="text-3xl font-bold text-red-600">Mandate Not Found</h1>
                     <p className="text-muted-foreground mt-2">
                         Could not find mandate with document symbol: <code className="bg-muted px-2 py-1 rounded">{documentSymbol}</code>
