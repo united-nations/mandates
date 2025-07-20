@@ -94,6 +94,11 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
     // Navigate with new params
     const newUrl = `${pathname}?${newParams.toString()}`;
     router.push(newUrl, { scroll: false })
+    
+    // Scroll to top on entity/organ pages when filters change (but not pagination)
+    if ((isEntityPage || isOrganPage) && key !== 'page' && key !== 'limit') {
+      window.scrollTo({ top: 0, behavior: 'instant' })
+    }
   }
   
   // Update multiple filters atomically
@@ -111,6 +116,11 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
     // Navigate with new params
     const newUrl = `${pathname}?${newParams.toString()}`;
     router.push(newUrl, { scroll: false })
+    
+    // Scroll to top on entity/organ pages when filters change
+    if (isEntityPage || isOrganPage) {
+      window.scrollTo({ top: 0, behavior: 'instant' })
+    }
   }
 
   // Clear a single filter
@@ -129,6 +139,11 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
     if (limit) newParams.set('limit', limit)
     
     router.push(`${pathname}?${newParams.toString()}`, { scroll: false })
+    
+    // Scroll to top on entity/organ pages when filters are cleared
+    if (isEntityPage || isOrganPage) {
+      window.scrollTo({ top: 0, behavior: 'instant' })
+    }
   }
   
   const contextValue: FilterContextType = {
