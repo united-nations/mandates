@@ -16,7 +16,6 @@ import {
   ChevronDown,
   Link as LinkIcon
 } from 'lucide-react'
-import { MandateDetails } from '@/components/mandate-details'
 import { DataCard } from '@/components/data-card'
 import {
   Select,
@@ -77,7 +76,6 @@ export function MandateExplorer ({
   // Simplified state management - only what's needed for UI
   const [apiData, setApiData] = useState<ApiResponse | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [selectedMandate, setSelectedMandate] = useState<Mandate | null>(null)
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false)
 
   // Data card popover states (preserved for exact same behavior)
@@ -470,7 +468,6 @@ export function MandateExplorer ({
                       <>
                         <MandateList
                           mandates={mandates}
-                          onMandateClick={setSelectedMandate}
                           organsData={allOrgans}
                           entitiesData={allEntities}
                         />
@@ -544,18 +541,6 @@ export function MandateExplorer ({
           </div>
         </div>
       </div>
-
-      {/* Mandate Details Modal (preserved exact structure) */}
-      <MandateDetails
-        mandate={selectedMandate}
-        open={!!selectedMandate}
-        onOpenChange={isOpen => {
-          if (!isOpen) {
-            setSelectedMandate(null)
-          }
-        }}
-        allEntities={allEntities}
-      />
     </div>
   )
 }

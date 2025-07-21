@@ -4,4 +4,6 @@
 - We use shadcn (https://ui.shadcn.com)
 - Make sure you understand the full current API infrastructure before changing or adding things
 - Make sure you stick with the infrastructure and extend it instead of building completely separate structures
+- Check utils for existing functions.
+- You can find lists of params in src/lib/filter-constants.ts
 - Make sure to make consistent design choices. We prefer things to be left-aligned, consistent, clear hierarchies, no drop shadows, consistent colors, well-aligned, no unecessary boxes around things.

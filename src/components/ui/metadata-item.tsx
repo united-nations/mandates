@@ -8,10 +8,10 @@ interface MetadataItemProps {
 
 export function MetadataItem({ label, children, icon: Icon }: MetadataItemProps) {
   return (
-    <div className="flex items-center gap-2 text-sm py-1">
-      {Icon && <Icon className="h-4 w-4 text-muted-foreground flex-shrink-0" />}
-      <div className="font-medium text-muted-foreground">{label}:</div>
-      <div className="text-foreground">{children}</div>
+    <div className="flex gap-3 text-sm py-1.5">
+      {Icon && <Icon className="h-4 w-4 text-muted-foreground flex-shrink-0 mt-0.5" />}
+      <div className="font-medium text-muted-foreground flex-shrink-0 min-w-[120px] leading-relaxed">{label}:</div>
+      <div className="text-foreground flex-1">{children}</div>
     </div>
   );
 } 

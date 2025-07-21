@@ -171,6 +171,13 @@ function filterMandates (
     )
   }
 
+  // Document symbol filter (exact match)
+  if (filters.full_document_symbol) {
+    filtered = filtered.filter(mandate => 
+      mandate.full_document_symbol === filters.full_document_symbol
+    )
+  }
+
   // Keyword search (search in title, description, document symbol, and subject headings)
   if (filters.keyword) {
     const keyword = filters.keyword.toLowerCase()
@@ -533,6 +540,7 @@ export async function GET (request: Request) {
       start_year: searchParams.get('start_year') || undefined,
       end_year: searchParams.get('end_year') || undefined,
       budget_document: searchParams.get('budget_document') || undefined,
+      full_document_symbol: searchParams.get('full_document_symbol') || undefined,
       sort_by: searchParams.get('sort_by') || 'citing_entities_desc',
       page: searchParams.get('page') || '1',
       limit: searchParams.get('limit') || '10'
