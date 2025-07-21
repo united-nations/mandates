@@ -355,7 +355,7 @@ function MandatePageContent() {
                                                     const url = new URL(window.location.origin + '/');
                                                     url.searchParams.set('page', '1');
                                                     url.searchParams.set('budget_document', slug);
-                                                    window.open(url.toString(), '_blank');
+                                                    window.location.href = url.toString();
                                                 }}
                                             >
                                                 {displayName}
@@ -385,11 +385,11 @@ function MandatePageContent() {
                                                 variant="outline"
                                                 className="text-xs font-normal !border-un-blue cursor-pointer hover:bg-un-blue/10 transition-colors"
                                                 onClick={() => {
-                                                    // Open filtered results in a new window with only the subject filter
-                                                    const url = new URL(window.location.origin + window.location.pathname);
+                                                    // Navigate to filtered results with only the subject filter
+                                                    const url = new URL(window.location.origin + '/');
                                                     url.searchParams.set('page', '1');
                                                     url.searchParams.set('subject', heading.trim());
-                                                    window.open(url.toString(), '_blank');
+                                                    window.location.href = url.toString();
                                                 }}
                                             >
                                                 {titleCase(heading.toLowerCase())}
@@ -466,11 +466,11 @@ function MandatePageContent() {
                                                         variant="secondary"
                                                         className="text-xs px-2 py-1 whitespace-normal leading-relaxed inline-block max-w-full cursor-pointer hover:bg-secondary/80 transition-colors"
                                                         onClick={() => {
-                                                            // Open filtered results in a new window with only the programme filter
+                                                            // Navigate to filtered results with only the programme filter
                                                             const url = new URL(window.location.origin + '/');
                                                             url.searchParams.set('page', '1');
                                                             url.searchParams.set('programme', programmeTitle);
-                                                            window.open(url.toString(), '_blank');
+                                                            window.location.href = url.toString();
                                                         }}
                                                     >
                                                         {titleCase(programmeTitle)}

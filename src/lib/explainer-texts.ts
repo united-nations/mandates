@@ -142,7 +142,7 @@ export const explainerTexts = {
     // Mandate Detail Page
     mandateDetail: {
         paragraphs: {
-            title: 'Paragraphs (Beta)',
+            title: 'Paragraphs (Experimental)',
             betaDisclaimer: 'Paragraph content is machine-extracted from UN documents. For authoritative content, please refer to the official UN document.'
         }
     }
