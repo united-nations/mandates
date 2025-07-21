@@ -2,8 +2,8 @@
 
 import { useState, useMemo, useEffect, useCallback, Suspense } from 'react'
 import { useParams } from 'next/navigation'
-import type { Mandate, CitationInfo, OperativeParagraph } from '@/types'
-import { getMandateDisplayTitle } from '@/lib/utils'
+import type { Mandate, CitationInfo, OperativeParagraph, DeliverableType } from '@/types'
+import { getMandateDisplayTitle, getDeliverableTypeLabel } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { FileText, Building, FileCheck, Target, HelpCircle } from 'lucide-react'
@@ -35,6 +35,7 @@ function MandatePageContent() {
     const [showAllEntities, setShowAllEntities] = useState(false)
     const [showAllProgrammes, setShowAllProgrammes] = useState(false)
     const [openTooltip, setOpenTooltip] = useState<string | null>(null)
+    const [paragraphFilter, setParagraphFilter] = useState<'all' | 'operative' | 'non-operative'>('operative')
 
     useEffect(() => {
         const fetchMandate = async () => {
@@ -175,6 +176,16 @@ function MandatePageContent() {
             }))
     }, [mandate])
 
+    // Filter paragraphs based on the selected filter
+    const filteredParagraphs = useMemo(() => {
+        if (paragraphFilter === 'all') return groupedParagraphs
+        
+        return groupedParagraphs.filter(group => {
+            const isOperative = group.subparagraphs.some(sub => sub.is_op_para)
+            return paragraphFilter === 'operative' ? isOperative : !isOperative
+        })
+    }, [groupedParagraphs, paragraphFilter])
+
     const budgetDocuments = useMemo(() => {
         if (!mandate || !mandate.citation_info) return []
         const uniqueDocs = new Set<string>()
@@ -247,14 +258,6 @@ function MandatePageContent() {
             {/* Content */}
             <div className="flex-grow overflow-y-auto overflow-x-hidden">
                 <div className="space-y-4 pr-2">
-
-                    {/* AI Summary */}
-                    <div className="space-y-1">
-                        <h3 className="text-base font-semibold flex items-center gap-2">
-                            <FileText className="h-4 w-4" />
-                            <span>Document Summary</span>
-                        </h3>
-                    </div>
 
                     {/* Compact Metadata List */}
                     <div className="space-y-1 rounded-lg">
@@ -438,41 +441,71 @@ function MandatePageContent() {
                     {/* Operative Paragraphs */}
                     {mandate.paragraphs && mandate.paragraphs.length > 0 ? (
                         <div className="space-y-3">
-                            <h3 className="text-base font-semibold flex items-center gap-2">
-                                <FileCheck className="h-4 w-4" />
-                                <span>{explainerTexts.mandateDetail.paragraphs.title}</span>
-                                <div className="relative tooltip-container">
-                                    <button
-                                        type="button"
-                                        className="p-0 border-0 bg-transparent cursor-help focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 rounded-sm flex items-center"
-                                        aria-label="Information about paragraph extraction"
-                                        onClick={() => toggleTooltip('paragraphs-beta')}
+                            <div className="flex items-center justify-between pr-4">
+                                <h3 className="text-base font-semibold flex items-center gap-2">
+                                    <FileCheck className="h-4 w-4" />
+                                    <span>{explainerTexts.mandateDetail.paragraphs.title}</span>
+                                    <div className="relative tooltip-container">
+                                        <button
+                                            type="button"
+                                            className="p-0 border-0 bg-transparent cursor-help focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 rounded-sm flex items-center"
+                                            aria-label="Information about paragraph extraction"
+                                            onClick={() => toggleTooltip('paragraphs-beta')}
+                                        >
+                                            <HelpCircle className="h-4 w-4 text-muted-foreground" />
+                                        </button>
+                                        {openTooltip === 'paragraphs-beta' && (
+                                            <div className="absolute left-0 top-6 z-50 w-80 p-3 bg-white border rounded-md shadow-lg text-sm font-normal">
+                                                <p>{explainerTexts.mandateDetail.paragraphs.betaDisclaimer}</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </h3>
+                                
+                                {/* Filter buttons */}
+                                <div className="flex gap-1">
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className={`text-xs h-7 border ${paragraphFilter === 'operative' ? '!border-un-blue !text-un-blue bg-un-blue/10 hover:!text-un-blue hover:bg-un-blue/20' : 'border-gray-200 hover:border-gray-300'}`}
+                                        onClick={() => setParagraphFilter('operative')}
                                     >
-                                        <HelpCircle className="h-4 w-4 text-muted-foreground" />
-                                    </button>
-                                    {openTooltip === 'paragraphs-beta' && (
-                                        <div className="absolute left-0 top-6 z-50 w-80 p-3 bg-white border rounded-md shadow-lg text-sm font-normal">
-                                            <p>{explainerTexts.mandateDetail.paragraphs.betaDisclaimer}</p>
-                                        </div>
-                                    )}
+                                        Operative
+                                    </Button>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className={`text-xs h-7 border ${paragraphFilter === 'non-operative' ? '!border-un-blue !text-un-blue bg-un-blue/10 hover:!text-un-blue hover:bg-un-blue/20' : 'border-gray-200 hover:border-gray-300'}`}
+                                        onClick={() => setParagraphFilter('non-operative')}
+                                    >
+                                        Non-operative
+                                    </Button>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className={`text-xs h-7 border ${paragraphFilter === 'all' ? '!border-un-blue !text-un-blue bg-un-blue/10 hover:!text-un-blue hover:bg-un-blue/20' : 'border-gray-200 hover:border-gray-300'}`}
+                                        onClick={() => setParagraphFilter('all')}
+                                    >
+                                        All
+                                    </Button>
                                 </div>
-                            </h3>
+                            </div>
                             <div className="space-y-3 max-h-[800px] overflow-y-auto pr-4">
-                                {groupedParagraphs.map((group) => (
+                                {filteredParagraphs.map((group) => (
                                     <div key={group.paragraph_idx} className="space-y-2">
                                         {/* Paragraph Header with paragraph_text */}
                                         <div className="bg-muted/30 rounded-lg p-3">
                                             <div className="flex items-start gap-4">
-                                                <div className="flex-1 max-w-[88%]">
+                                                <div className="flex-1 max-w-[75%]">
                                                     {group.subparagraphs[0]?.paragraph_text && (
                                                         <p className="text-sm leading-relaxed">
                                                             {group.subparagraphs[0].paragraph_text}
                                                         </p>
                                                     )}
                                                 </div>
-                                                <div className="flex-shrink-0 w-[12%] flex justify-end">
-                                                    {group.subparagraphs.some(sub => sub.is_operative) && (
-                                                        <Badge variant="secondary" className="text-xs">
+                                                <div className="flex-shrink-0 w-[25%] flex justify-end">
+                                                    {group.subparagraphs.some(sub => sub.is_op_para) && (
+                                                        <Badge variant="outline" className="text-xs !border-un-blue !text-un-blue bg-un-blue/10">
                                                             Operative
                                                         </Badge>
                                                     )}
@@ -486,13 +519,26 @@ function MandatePageContent() {
                                                 subparagraph.subparagraph_text && (
                                                     <div key={`${group.paragraph_idx}-${subparagraph.subparagraph_idx}`} className="bg-muted/20 rounded-lg p-3">
                                                         <div className="flex items-start gap-4">
-                                                            <div className="flex-1 max-w-[88%]">
+                                                            <div className="flex-1 max-w-[75%]">
                                                                 <p className="text-sm leading-relaxed">
                                                                     {subparagraph.subparagraph_text}
                                                                 </p>
                                                             </div>
-                                                            <div className="flex-shrink-0 w-[12%]">
-                                                                {/* Reserved space for future content */}
+                                                            <div className="flex-shrink-0 w-[25%] flex flex-col gap-1.5 items-end">
+                                                                {/* Deliverable type badges - stacked vertically */}
+                                                                {subparagraph.deliverable_type && subparagraph.deliverable_type.length > 0 && (
+                                                                    <div className="flex flex-col gap-1 items-end">
+                                                                        {subparagraph.deliverable_type.map((type, typeIndex) => (
+                                                                            <Badge 
+                                                                                key={typeIndex} 
+                                                                                variant="outline" 
+                                                                                className="text-xs !border-emerald-400 !text-emerald-700 bg-emerald-50 text-right"
+                                                                            >
+                                                                                {getDeliverableTypeLabel(type)}
+                                                                            </Badge>
+                                                                        ))}
+                                                                    </div>
+                                                                )}
                                                             </div>
                                                         </div>
                                                     </div>
