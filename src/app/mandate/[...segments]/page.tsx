@@ -2,8 +2,8 @@
 
 import { useState, useMemo, useEffect, useCallback, Suspense } from 'react'
 import { useParams } from 'next/navigation'
-import type { Mandate, CitationInfo, OperativeParagraph, DeliverableType } from '@/types'
-import { getMandateDisplayTitle, getDeliverableTypeLabel } from '@/lib/utils'
+import type { Mandate, CitationInfo, OperativeParagraph } from '@/types'
+import { getMandateDisplayTitle, getDeliverableTypeLabel, DELIVERABLE_TYPE_LABELS } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { FileText, Building, FileCheck, Target, HelpCircle } from 'lucide-react'
@@ -36,6 +36,8 @@ function MandatePageContent() {
     const [showAllProgrammes, setShowAllProgrammes] = useState(false)
     const [openTooltip, setOpenTooltip] = useState<string | null>(null)
     const [paragraphFilter, setParagraphFilter] = useState<'all' | 'operative' | 'non-operative'>('operative')
+    const [deliverableTypeFilter, setDeliverableTypeFilter] = useState<string | null>(null)
+    const [deliverableDropdownPosition, setDeliverableDropdownPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 })
 
     useEffect(() => {
         const fetchMandate = async () => {
@@ -88,14 +90,45 @@ function MandatePageContent() {
             }
         };
 
+        const handleScroll = () => {
+            if (openTooltip === 'deliverable-types') {
+                setOpenTooltip(null);
+            }
+        };
+
+        const handleResize = () => {
+            if (openTooltip === 'deliverable-types') {
+                setOpenTooltip(null);
+            }
+        };
+
         if (openTooltip) {
             document.addEventListener('mousedown', handleClickOutside);
-            return () => document.removeEventListener('mousedown', handleClickOutside);
+            window.addEventListener('scroll', handleScroll, true);
+            window.addEventListener('resize', handleResize);
+            return () => {
+                document.removeEventListener('mousedown', handleClickOutside);
+                window.removeEventListener('scroll', handleScroll, true);
+                window.removeEventListener('resize', handleResize);
+            };
         }
     }, [openTooltip]);
 
     const toggleTooltip = (tooltipId: string) => {
         setOpenTooltip(openTooltip === tooltipId ? null : tooltipId);
+    };
+
+    const handleDeliverableTypeToggle = (event: React.MouseEvent<HTMLButtonElement>) => {
+        const button = event.currentTarget;
+        const rect = button.getBoundingClientRect();
+        
+        // Position the dropdown below the button
+        setDeliverableDropdownPosition({
+            x: rect.left,
+            y: rect.bottom + 8
+        });
+        
+        toggleTooltip('deliverable-types');
     };
 
     // Create entity lookup function using the API-provided entity map
@@ -178,13 +211,35 @@ function MandatePageContent() {
 
     // Filter paragraphs based on the selected filter
     const filteredParagraphs = useMemo(() => {
-        if (paragraphFilter === 'all') return groupedParagraphs
+        let filtered = groupedParagraphs;
         
-        return groupedParagraphs.filter(group => {
-            const isOperative = group.subparagraphs.some(sub => sub.is_op_para)
-            return paragraphFilter === 'operative' ? isOperative : !isOperative
-        })
-    }, [groupedParagraphs, paragraphFilter])
+        // Filter by operative/non-operative
+        if (paragraphFilter !== 'all') {
+            filtered = filtered.filter(group => {
+                const isOperative = group.subparagraphs.some(sub => sub.is_op_para)
+                return paragraphFilter === 'operative' ? isOperative : !isOperative
+            })
+        }
+        
+        // Filter by deliverable type
+        if (deliverableTypeFilter) {
+            filtered = filtered.map(group => {
+                // Filter subparagraphs that match the deliverable type
+                const matchingSubparagraphs = group.subparagraphs.filter(sub => 
+                    sub.deliverable_type && sub.deliverable_type.includes(deliverableTypeFilter)
+                );
+                
+                // If any subparagraphs match, return the group with all its subparagraphs
+                // (but we'll only show the matching ones in the UI if needed)
+                if (matchingSubparagraphs.length > 0) {
+                    return group;
+                }
+                return null;
+            }).filter(Boolean) as typeof groupedParagraphs;
+        }
+        
+        return filtered;
+    }, [groupedParagraphs, paragraphFilter, deliverableTypeFilter])
 
     const budgetDocuments = useMemo(() => {
         if (!mandate || !mandate.citation_info) return []
@@ -379,15 +434,17 @@ function MandatePageContent() {
                                             </div>
                                         ))}
                                         {entityCounts.length > 5 && (
-                                            <button
-                                                onClick={() => setShowAllEntities(!showAllEntities)}
-                                                className="text-sm text-un-blue hover:text-un-blue/80 mt-2 w-full text-left"
-                                            >
-                                                {showAllEntities
-                                                    ? 'Show less'
-                                                    : `Show ${entityCounts.length - 5} more`
-                                                }
-                                            </button>
+                                            <div className="mt-2 w-full">
+                                                <button
+                                                    onClick={() => setShowAllEntities(!showAllEntities)}
+                                                    className="text-sm text-un-blue hover:text-un-blue/80 text-left inline-block"
+                                                >
+                                                    {showAllEntities
+                                                        ? 'Show less'
+                                                        : `Show ${entityCounts.length - 5} more`
+                                                    }
+                                                </button>
+                                            </div>
                                         )}
                                     </div>
                                 </div>
@@ -422,15 +479,17 @@ function MandatePageContent() {
                                             </div>
                                         ))}
                                         {programmeCounts.length > 5 && (
-                                            <button
-                                                onClick={() => setShowAllProgrammes(!showAllProgrammes)}
-                                                className="text-sm text-un-blue hover:text-un-blue/80 mt-2 w-full text-left"
-                                            >
-                                                {showAllProgrammes
-                                                    ? 'Show less'
-                                                    : `Show ${programmeCounts.length - 5} more`
-                                                }
-                                            </button>
+                                            <div className="mt-2 w-full">
+                                                <button
+                                                    onClick={() => setShowAllProgrammes(!showAllProgrammes)}
+                                                    className="text-sm text-un-blue hover:text-un-blue/80 text-left inline-block"
+                                                >
+                                                    {showAllProgrammes
+                                                        ? 'Show less'
+                                                        : `Show ${programmeCounts.length - 5} more`
+                                                    }
+                                                </button>
+                                            </div>
                                         )}
                                     </div>
                                 </div>
@@ -463,7 +522,58 @@ function MandatePageContent() {
                                 </h3>
                                 
                                 {/* Filter buttons */}
-                                <div className="flex gap-1">
+                                <div className="flex gap-1 items-center">
+                                    {/* Deliverable type filter */}
+                                    <div className="relative tooltip-container">
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="text-xs h-7 border !border-emerald-400 !text-emerald-700 bg-emerald-50 hover:!text-emerald-700 hover:bg-emerald-100"
+                                            onClick={handleDeliverableTypeToggle}
+                                        >
+                                            {deliverableTypeFilter ? getDeliverableTypeLabel(deliverableTypeFilter) : 'Deliverable Types'}
+                                        </Button>
+                                        {openTooltip === 'deliverable-types' && (
+                                            <div className="fixed z-[9999] w-60 p-3 bg-white border rounded-md shadow-lg text-sm font-normal" 
+                                                 style={{
+                                                     left: `${deliverableDropdownPosition.x}px`,
+                                                     top: `${deliverableDropdownPosition.y}px`
+                                                 }}>
+                                                <p className="font-medium mb-2">Filter by Deliverable Type</p>
+                                                <div className="space-y-1">
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        className="w-full justify-start text-xs h-6 border border-gray-200 hover:!border-emerald-400 hover:!text-emerald-700 hover:bg-emerald-50"
+                                                        onClick={() => {
+                                                            setDeliverableTypeFilter(null);
+                                                            setOpenTooltip(null);
+                                                        }}
+                                                    >
+                                                        All Types
+                                                    </Button>
+                                                    {Object.entries(DELIVERABLE_TYPE_LABELS).map(([key, label]) => (
+                                                        <Button
+                                                            key={key}
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            className={`w-full justify-start text-xs h-6 border ${deliverableTypeFilter === key ? '!border-emerald-400 !text-emerald-700 bg-emerald-50 hover:!border-emerald-400 hover:!text-emerald-700 hover:bg-emerald-100' : 'border-gray-200 hover:!border-emerald-400 hover:!text-emerald-700 hover:bg-emerald-50'}`}
+                                                            onClick={() => {
+                                                                setDeliverableTypeFilter(key);
+                                                                setOpenTooltip(null);
+                                                            }}
+                                                        >
+                                                            {label}
+                                                        </Button>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                    
+                                    {/* Separator */}
+                                    <div className="h-5 w-px bg-gray-300 mx-1"></div>
+                                    
                                     <Button
                                         variant="ghost"
                                         size="sm"
@@ -490,7 +600,7 @@ function MandatePageContent() {
                                     </Button>
                                 </div>
                             </div>
-                            <div className="space-y-3 max-h-[800px] overflow-y-auto pr-4">
+                            <div className="space-y-3 max-h-[800px] overflow-y-auto overflow-x-visible pr-4">
                                 {filteredParagraphs.map((group) => (
                                     <div key={group.paragraph_idx} className="space-y-2">
                                         {/* Paragraph Header with paragraph_text */}
@@ -515,7 +625,15 @@ function MandatePageContent() {
 
                                         {/* Subparagraphs - indented with their own boxes showing subparagraph_text */}
                                         <div className="ml-6 space-y-2">
-                                            {group.subparagraphs.map((subparagraph, subIndex) => (
+                                            {group.subparagraphs
+                                                .filter(subparagraph => {
+                                                    // If no deliverable type filter, show all subparagraphs
+                                                    if (!deliverableTypeFilter) return true;
+                                                    // If deliverable type filter is active, only show matching subparagraphs
+                                                    return subparagraph.deliverable_type && 
+                                                           subparagraph.deliverable_type.includes(deliverableTypeFilter);
+                                                })
+                                                .map((subparagraph, subIndex) => (
                                                 subparagraph.subparagraph_text && (
                                                     <div key={`${group.paragraph_idx}-${subparagraph.subparagraph_idx}`} className="bg-muted/20 rounded-lg p-3">
                                                         <div className="flex items-start gap-4">
