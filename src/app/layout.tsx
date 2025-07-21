@@ -22,13 +22,13 @@ import { BackButton } from '@/components/ui/back-button'
 import { Roboto } from 'next/font/google'
 
 const roboto = Roboto({
-  weight: ['300', '400', '500', '700'],
-  subsets: ['latin'],
-  display: 'swap',
-  fallback: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
-  variable: '--font-roboto',
-  preload: true,
-  adjustFontFallback: false,
+    weight: ['300', '400', '500', '700'],
+    subsets: ['latin'],
+    display: 'swap',
+    fallback: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+    variable: '--font-roboto',
+    preload: true,
+    adjustFontFallback: false,
 })
 
 export default function RootLayout({
@@ -39,109 +39,23 @@ export default function RootLayout({
     const pathname = usePathname()
     const isMainPage = pathname === '/'
 
-  // Initialize Microsoft Clarity with a delay to not block initial render
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      Clarity.init('s4kksugeb9')
-    }, 1000) // Delay Clarity initialization by 1 second
-    
-    return () => clearTimeout(timer)
-  }, [])
-  return (
-    <html lang='en' className={roboto.variable}>
-      <head>
-        {/* DNS prefetch for external resources */}
-        <link rel="dns-prefetch" href="//fonts.googleapis.com" />
-        <link rel="dns-prefetch" href="//fonts.gstatic.com" />
-        <link rel="dns-prefetch" href="//www.googletagmanager.com" />
-        <link rel="dns-prefetch" href="//www.google-analytics.com" />
-        <link rel="dns-prefetch" href="//forms.office.com" />
-      </head>
-      {/* Updated body to use font-sans from Tailwind config (which is now Roboto) */}
-      <body className='font-sans antialiased min-h-screen bg-background text-foreground'>
-        <TooltipProvider>
-          <FilterProvider>
-            <header className='w-full max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-8 sm:px-12 lg:px-16 pt-8 pb-2 flex items-start justify-between'>
-              <div className='flex-1'>
-                <div className='flex items-center gap-x-2 mb-2'>
-                  <Link
-                    href='/'
-                    className='text-4xl font-bold tracking-tight text-foreground hover:text-un-blue transition-colors'
-                  >
-                    {explainerTexts.mainHeader.title}
-                  </Link>
-                  <Link 
-                    href='/methodology'
-                    className='inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200 hover:bg-slate-200 hover:text-slate-700 transition-colors cursor-pointer'
-                  >
-                    {explainerTexts.mainHeader.versionTag}
-                  </Link>
-                </div>
-              </div>
-              <div className='pt-2'>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant='ghost'
-                      size='icon'
-                      aria-label='Open navigation menu'
-                      className='shrink-0 inline-flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 py-1 sm:px-2.5 sm:py-1.5 h-auto !bg-trout !text-white hover:!bg-trout/90'
-                    >
-                      <Menu className='h-3 w-3 sm:h-4 sm:w-4' />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align='end'>
-                    <DropdownMenuItem 
-                      asChild={pathname !== '/'}
-                      className={pathname === '/' ? 'text-muted-foreground cursor-default opacity-60' : ''}
-                    >
-                      {pathname === '/' ? (
-                        <span>Mandate Source Registry</span>
-                      ) : (
-                        <Link href='/'>Mandate Source Registry</Link>
-                      )}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem 
-                      asChild={pathname !== '/methodology'}
-                      className={pathname === '/methodology' ? 'text-muted-foreground cursor-default opacity-60' : ''}
-                    >
-                      {pathname === '/methodology' ? (
-                        <span>Methodology</span>
-                      ) : (
-                        <Link href='/methodology'>Methodology</Link>
-                      )}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem 
-                      asChild={pathname !== '/resources'}
-                      className={pathname === '/resources' ? 'text-muted-foreground cursor-default opacity-60' : ''}
-                    >
-                      {pathname === '/resources' ? (
-                        <span>More Resources</span>
-                      ) : (
-                        <Link href='/resources'>More Resources</Link>
-                      )}
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            </header>
-    // Initialize Microsoft Clarity
+    // Initialize Microsoft Clarity with a delay to not block initial render
     useEffect(() => {
-        Clarity.init('s4kksugeb9')
-    }, []);
+        const timer = setTimeout(() => {
+            Clarity.init('s4kksugeb9')
+        }, 1000) // Delay Clarity initialization by 1 second
+
+        return () => clearTimeout(timer)
+    }, [])
     return (
-        <html lang='en'>
+        <html lang='en' className={roboto.variable}>
             <head>
-                <link rel='preconnect' href='https://fonts.googleapis.com' />
-                <link
-                    rel='preconnect'
-                    href='https://fonts.gstatic.com'
-                    crossOrigin='anonymous'
-                />
-                <link
-                    href='https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap'
-                    rel='stylesheet'
-                />
+                {/* DNS prefetch for external resources */}
+                <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+                <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+                <link rel="dns-prefetch" href="//www.googletagmanager.com" />
+                <link rel="dns-prefetch" href="//www.google-analytics.com" />
+                <link rel="dns-prefetch" href="//forms.office.com" />
             </head>
             {/* Updated body to use font-sans from Tailwind config (which is now Roboto) */}
             <body className='font-sans antialiased min-h-screen bg-background text-foreground'>
@@ -149,21 +63,19 @@ export default function RootLayout({
                     <FilterProvider>
                         <header className='w-full max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-8 sm:px-12 lg:px-16 pt-8 pb-2 flex items-start justify-between'>
                             <div className='flex-1'>
-                                <div className='mb-2'>
-                                    <div className='flex flex-col sm:flex-row sm:items-center sm:gap-x-2 gap-y-2'>
-                                        <Link
-                                            href='/'
-                                            className='text-3xl sm:text-4xl font-bold tracking-tight text-foreground hover:text-un-blue transition-colors'
-                                        >
-                                            {explainerTexts.mainHeader.title}
-                                        </Link>
-                                        <Link
-                                            href='/methodology'
-                                            className='inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200 hover:bg-slate-200 hover:text-slate-700 transition-colors cursor-pointer w-fit'
-                                        >
-                                            {explainerTexts.mainHeader.versionTag}
-                                        </Link>
-                                    </div>
+                                <div className='flex items-center gap-x-2 mb-2'>
+                                    <Link
+                                        href='/'
+                                        className='text-4xl font-bold tracking-tight text-foreground hover:text-un-blue transition-colors'
+                                    >
+                                        {explainerTexts.mainHeader.title}
+                                    </Link>
+                                    <Link
+                                        href='/methodology'
+                                        className='inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200 hover:bg-slate-200 hover:text-slate-700 transition-colors cursor-pointer'
+                                    >
+                                        {explainerTexts.mainHeader.versionTag}
+                                    </Link>
                                 </div>
                             </div>
                             <div className='pt-2'>
