@@ -13,9 +13,9 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { explainerTexts } from '@/lib/explainer-texts'
 
 const MetadataItem = ({ label, children }: { label: React.ReactNode, children: React.ReactNode }) => (
-    <div className="flex items-baseline text-sm py-1">
-        <div className="w-28 font-medium text-muted-foreground flex-shrink-0 pr-3">{label}</div>
-        <div className="flex-grow">{children}</div>
+    <div className="flex items-center gap-3 text-sm py-1.5">
+        <div className="font-medium text-muted-foreground flex-shrink-0 w-[120px]">{label}</div>
+        <div className="text-foreground flex-1">{children}</div>
     </div>
 )
 
@@ -315,7 +315,7 @@ function MandatePageContent() {
                 <div className="space-y-4 pr-2">
 
                     {/* Compact Metadata List */}
-                    <div className="space-y-1 rounded-lg">
+                    <div className="space-y-0 rounded-lg">
                         <MetadataItem label="Organ">
                             {mandate.body ? (
                                 <Badge
@@ -340,7 +340,7 @@ function MandatePageContent() {
                         </MetadataItem>
                         <MetadataItem label="Budget Document">
                             {budgetDocuments.length > 0 ? (
-                                <div className="flex flex-wrap gap-1">
+                                <div className="flex flex-wrap gap-1.5">
                                     {budgetDocuments.map((doc, index) => {
                                         const displayName = getOriginDocumentDisplayName(doc);
                                         const slug = getBudgetDocumentSlug(displayName);
@@ -375,7 +375,7 @@ function MandatePageContent() {
                                     </a>
                                 }
                             >
-                                <div className="flex flex-wrap gap-1 pt-2">
+                                <div className="flex flex-wrap gap-1.5">
                                     {mandate.subject_headings
                                         .slice()
                                         .sort((a, b) => a.localeCompare(b))
