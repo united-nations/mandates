@@ -525,7 +525,7 @@ function MandatePageContent() {
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"
-                                                    className="w-full justify-start text-xs h-6 border border-gray-200 hover:!border-emerald-400 hover:!text-emerald-700 hover:bg-emerald-50"
+                                                    className={`w-full justify-start text-xs h-6 border ${deliverableTypeFilter === null ? '!border-emerald-400 !text-emerald-700 bg-emerald-50 hover:!border-emerald-400 hover:!text-emerald-700 hover:bg-emerald-100' : 'border-gray-200 hover:!border-emerald-400 hover:!text-emerald-700 hover:bg-emerald-50'}`}
                                                     onClick={() => {
                                                         setDeliverableTypeFilter(null);
                                                         setOpenTooltip(null);
