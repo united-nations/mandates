@@ -121,13 +121,13 @@ function MandatePageContent() {
     const handleDeliverableTypeToggle = (event: React.MouseEvent<HTMLButtonElement>) => {
         const button = event.currentTarget;
         const rect = button.getBoundingClientRect();
-        
+
         // Position the dropdown below the button
         setDeliverableDropdownPosition({
             x: rect.left,
             y: rect.bottom + 8
         });
-        
+
         toggleTooltip('deliverable-types');
     };
 
@@ -212,7 +212,7 @@ function MandatePageContent() {
     // Filter paragraphs based on the selected filter
     const filteredParagraphs = useMemo(() => {
         let filtered = groupedParagraphs;
-        
+
         // Filter by operative/non-operative
         if (paragraphFilter !== 'all') {
             filtered = filtered.filter(group => {
@@ -220,15 +220,15 @@ function MandatePageContent() {
                 return paragraphFilter === 'operative' ? isOperative : !isOperative
             })
         }
-        
+
         // Filter by deliverable type
         if (deliverableTypeFilter) {
             filtered = filtered.map(group => {
                 // Filter subparagraphs that match the deliverable type
-                const matchingSubparagraphs = group.subparagraphs.filter(sub => 
+                const matchingSubparagraphs = group.subparagraphs.filter(sub =>
                     sub.deliverable_type && sub.deliverable_type.includes(deliverableTypeFilter)
                 );
-                
+
                 // If any subparagraphs match, return the group with all its subparagraphs
                 // (but we'll only show the matching ones in the UI if needed)
                 if (matchingSubparagraphs.length > 0) {
@@ -237,7 +237,7 @@ function MandatePageContent() {
                 return null;
             }).filter(Boolean) as typeof groupedParagraphs;
         }
-        
+
         return filtered;
     }, [groupedParagraphs, paragraphFilter, deliverableTypeFilter])
 
@@ -312,7 +312,7 @@ function MandatePageContent() {
 
             {/* Content */}
             <div className="flex-grow overflow-y-auto overflow-x-hidden">
-                <div className="space-y-4 pr-2">
+                <div className="space-y-10 pr-2">
 
                     {/* Compact Metadata List */}
                     <div className="space-y-0 rounded-lg">
@@ -402,10 +402,10 @@ function MandatePageContent() {
 
                     {/* Citations Layout - Side by side on larger screens, stacked on smaller */}
                     {(entityCounts.length > 0 || programmeCounts.length > 0) && (
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
                             {/* Entities Mentioned */}
                             {entityCounts.length > 0 && (
-                                <div className="space-y-2">
+                                <div className="space-y-3">
                                     <h3 className="text-base font-semibold flex items-center gap-2">
                                         <Building className="h-4 w-4" />
                                         {entityCounts.length} {entityCounts.length === 1 ? 'Entity' : 'Entities'} Citing this Document
@@ -452,7 +452,7 @@ function MandatePageContent() {
 
                             {/* Programme Counts */}
                             {programmeCounts.length > 0 && (
-                                <div className="space-y-2">
+                                <div className="space-y-3">
                                     <h3 className="text-base font-semibold flex items-center gap-2">
                                         <Target className="h-4 w-4" />
                                         {programmeCounts.length} {programmeCounts.length === 1 ? 'Programme' : 'Programmes'} Citing this Document
@@ -499,7 +499,7 @@ function MandatePageContent() {
 
                     {/* Operative Paragraphs */}
                     {mandate.paragraphs && mandate.paragraphs.length > 0 ? (
-                        <div className="space-y-3">
+                        <div className="space-y-4">
                             <div className="flex items-center justify-between pr-4">
                                 <h3 className="text-base font-semibold flex items-center gap-2">
                                     <FileCheck className="h-4 w-4" />
@@ -520,7 +520,7 @@ function MandatePageContent() {
                                         )}
                                     </div>
                                 </h3>
-                                
+
                                 {/* Filter buttons */}
                                 <div className="flex gap-1 items-center">
                                     {/* Deliverable type filter */}
@@ -534,11 +534,11 @@ function MandatePageContent() {
                                             {deliverableTypeFilter ? getDeliverableTypeLabel(deliverableTypeFilter) : 'Deliverable Types'}
                                         </Button>
                                         {openTooltip === 'deliverable-types' && (
-                                            <div className="fixed z-[9999] w-60 p-3 bg-white border rounded-md shadow-lg text-sm font-normal" 
-                                                 style={{
-                                                     left: `${deliverableDropdownPosition.x}px`,
-                                                     top: `${deliverableDropdownPosition.y}px`
-                                                 }}>
+                                            <div className="fixed z-[9999] w-60 p-3 bg-white border rounded-md shadow-lg text-sm font-normal"
+                                                style={{
+                                                    left: `${deliverableDropdownPosition.x}px`,
+                                                    top: `${deliverableDropdownPosition.y}px`
+                                                }}>
                                                 <p className="font-medium mb-2">Filter by Deliverable Type</p>
                                                 <div className="space-y-1">
                                                     <Button
@@ -570,10 +570,10 @@ function MandatePageContent() {
                                             </div>
                                         )}
                                     </div>
-                                    
+
                                     {/* Separator */}
                                     <div className="h-5 w-px bg-gray-300 mx-1"></div>
-                                    
+
                                     <Button
                                         variant="ghost"
                                         size="sm"
@@ -630,38 +630,38 @@ function MandatePageContent() {
                                                     // If no deliverable type filter, show all subparagraphs
                                                     if (!deliverableTypeFilter) return true;
                                                     // If deliverable type filter is active, only show matching subparagraphs
-                                                    return subparagraph.deliverable_type && 
-                                                           subparagraph.deliverable_type.includes(deliverableTypeFilter);
+                                                    return subparagraph.deliverable_type &&
+                                                        subparagraph.deliverable_type.includes(deliverableTypeFilter);
                                                 })
                                                 .map((subparagraph, subIndex) => (
-                                                subparagraph.subparagraph_text && (
-                                                    <div key={`${group.paragraph_idx}-${subparagraph.subparagraph_idx}`} className="bg-muted/20 rounded-lg p-3">
-                                                        <div className="flex items-start gap-4">
-                                                            <div className="flex-1 max-w-[75%]">
-                                                                <p className="text-sm leading-relaxed">
-                                                                    {subparagraph.subparagraph_text}
-                                                                </p>
-                                                            </div>
-                                                            <div className="flex-shrink-0 w-[25%] flex flex-col gap-1.5 items-end">
-                                                                {/* Deliverable type badges - stacked vertically */}
-                                                                {subparagraph.deliverable_type && subparagraph.deliverable_type.length > 0 && (
-                                                                    <div className="flex flex-col gap-1 items-end">
-                                                                        {subparagraph.deliverable_type.map((type, typeIndex) => (
-                                                                            <Badge 
-                                                                                key={typeIndex} 
-                                                                                variant="outline" 
-                                                                                className="text-xs !border-emerald-400 !text-emerald-700 bg-emerald-50 text-right"
-                                                                            >
-                                                                                {getDeliverableTypeLabel(type)}
-                                                                            </Badge>
-                                                                        ))}
-                                                                    </div>
-                                                                )}
+                                                    subparagraph.subparagraph_text && (
+                                                        <div key={`${group.paragraph_idx}-${subparagraph.subparagraph_idx}`} className="bg-muted/20 rounded-lg p-3">
+                                                            <div className="flex items-start gap-4">
+                                                                <div className="flex-1 max-w-[75%]">
+                                                                    <p className="text-sm leading-relaxed">
+                                                                        {subparagraph.subparagraph_text}
+                                                                    </p>
+                                                                </div>
+                                                                <div className="flex-shrink-0 w-[25%] flex flex-col gap-1.5 items-end">
+                                                                    {/* Deliverable type badges - stacked vertically */}
+                                                                    {subparagraph.deliverable_type && subparagraph.deliverable_type.length > 0 && (
+                                                                        <div className="flex flex-col gap-1 items-end">
+                                                                            {subparagraph.deliverable_type.map((type, typeIndex) => (
+                                                                                <Badge
+                                                                                    key={typeIndex}
+                                                                                    variant="outline"
+                                                                                    className="text-xs !border-emerald-400 !text-emerald-700 bg-emerald-50 text-right"
+                                                                                >
+                                                                                    {getDeliverableTypeLabel(type)}
+                                                                                </Badge>
+                                                                            ))}
+                                                                        </div>
+                                                                    )}
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                )
-                                            ))}
+                                                    )
+                                                ))}
                                         </div>
                                     </div>
                                 ))}
