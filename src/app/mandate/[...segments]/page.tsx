@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect, useCallback, Suspense } from 'react'
 import { useParams } from 'next/navigation'
 import type { Mandate, CitationInfo } from '@/types'
-import { getMandateDisplayTitle, getDeliverableTypeLabel, DELIVERABLE_TYPE_LABELS } from '@/lib/utils'
+import { getMandateDisplayTitle } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { FileText, Building, FileCheck, Target, HelpCircle } from 'lucide-react'
@@ -38,8 +38,6 @@ function MandatePageContent() {
     const [showAllProgrammes, setShowAllProgrammes] = useState(false)
     const [openTooltip, setOpenTooltip] = useState<string | null>(null)
     const [paragraphFilter, setParagraphFilter] = useState<'all' | 'operative' | 'non-operative'>('operative')
-    const [deliverableTypeFilter, setDeliverableTypeFilter] = useState<string | null>(null)
-    const [deliverableDropdownPosition, setDeliverableDropdownPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 })
 
     // Use the new paragraphs API
     const {
@@ -48,8 +46,7 @@ function MandatePageContent() {
         error: paragraphsError
     } = useParagraphs({
         full_document_symbol: documentSymbol,
-        is_op_para: paragraphFilter === 'all' ? undefined : (paragraphFilter === 'operative' ? 'true' : 'false'),
-        deliverable_type: deliverableTypeFilter || undefined
+        is_op_para: paragraphFilter === 'all' ? undefined : (paragraphFilter === 'operative' ? 'true' : 'false')
     });
 
     useEffect(() => {
@@ -104,13 +101,13 @@ function MandatePageContent() {
         };
 
         const handleScroll = () => {
-            if (openTooltip === 'deliverable-types') {
+            if (openTooltip === 'paragraphs-beta') {
                 setOpenTooltip(null);
             }
         };
 
         const handleResize = () => {
-            if (openTooltip === 'deliverable-types') {
+            if (openTooltip === 'paragraphs-beta') {
                 setOpenTooltip(null);
             }
         };
@@ -129,19 +126,6 @@ function MandatePageContent() {
 
     const toggleTooltip = (tooltipId: string) => {
         setOpenTooltip(openTooltip === tooltipId ? null : tooltipId);
-    };
-
-    const handleDeliverableTypeToggle = (event: React.MouseEvent<HTMLButtonElement>) => {
-        const button = event.currentTarget;
-        const rect = button.getBoundingClientRect();
-
-        // Position the dropdown below the button
-        setDeliverableDropdownPosition({
-            x: rect.left,
-            y: rect.bottom + 8
-        });
-
-        toggleTooltip('deliverable-types');
     };
 
     // Create entity lookup function using the API-provided entity map
@@ -505,57 +489,6 @@ function MandatePageContent() {
 
                             {/* Filter buttons */}
                             <div className="flex gap-1 items-center">
-                                {/* Deliverable type filter */}
-                                <div className="relative tooltip-container">
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="text-xs h-7 border !border-emerald-400 !text-emerald-700 bg-emerald-50 hover:!text-emerald-700 hover:bg-emerald-100"
-                                        onClick={handleDeliverableTypeToggle}
-                                    >
-                                        {deliverableTypeFilter ? getDeliverableTypeLabel(deliverableTypeFilter) : 'Deliverable Types'}
-                                    </Button>
-                                    {openTooltip === 'deliverable-types' && (
-                                        <div className="fixed z-[9999] w-60 p-3 bg-white border rounded-md shadow-lg text-sm font-normal"
-                                            style={{
-                                                left: `${deliverableDropdownPosition.x}px`,
-                                                top: `${deliverableDropdownPosition.y}px`
-                                            }}>
-                                            <p className="font-medium mb-2">Filter by Deliverable Type</p>
-                                            <div className="space-y-1">
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    className={`w-full justify-start text-xs h-6 border ${deliverableTypeFilter === null ? '!border-emerald-400 !text-emerald-700 bg-emerald-50 hover:!border-emerald-400 hover:!text-emerald-700 hover:bg-emerald-100' : 'border-gray-200 hover:!border-emerald-400 hover:!text-emerald-700 hover:bg-emerald-50'}`}
-                                                    onClick={() => {
-                                                        setDeliverableTypeFilter(null);
-                                                        setOpenTooltip(null);
-                                                    }}
-                                                >
-                                                    All Types
-                                                </Button>
-                                                {Object.entries(DELIVERABLE_TYPE_LABELS).map(([key, label]) => (
-                                                    <Button
-                                                        key={key}
-                                                        variant="ghost"
-                                                        size="sm"
-                                                        className={`w-full justify-start text-xs h-6 border ${deliverableTypeFilter === key ? '!border-emerald-400 !text-emerald-700 bg-emerald-50 hover:!border-emerald-400 hover:!text-emerald-700 hover:bg-emerald-100' : 'border-gray-200 hover:!border-emerald-400 hover:!text-emerald-700 hover:bg-emerald-50'}`}
-                                                        onClick={() => {
-                                                            setDeliverableTypeFilter(key);
-                                                            setOpenTooltip(null);
-                                                        }}
-                                                    >
-                                                        {label}
-                                                    </Button>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-
-                                {/* Separator */}
-                                <div className="h-5 w-px bg-gray-300 mx-1"></div>
-
                                 <Button
                                     variant="ghost"
                                     size="sm"
@@ -650,24 +583,6 @@ function MandatePageContent() {
                                                                 Operative
                                                             </Badge>
                                                         )}
-
-                                                        {/* Paragraph-level deliverable type badges (when subparagraph_text is null) */}
-                                                        {group.subparagraphs
-                                                            .filter(sub => !sub.subparagraph_text && sub.deliverable_type && sub.deliverable_type.length > 0)
-                                                            .map((sub, index) => (
-                                                                <div key={`paragraph-deliverables-${index}`} className="flex flex-col gap-1 items-end">
-                                                                    {sub.deliverable_type.map((type: string, typeIndex: number) => (
-                                                                        <Badge
-                                                                            key={typeIndex}
-                                                                            variant="outline"
-                                                                            className="text-xs !border-emerald-400 !text-emerald-700 bg-emerald-50 text-right"
-                                                                        >
-                                                                            {getDeliverableTypeLabel(type)}
-                                                                        </Badge>
-                                                                    ))}
-                                                                </div>
-                                                            ))
-                                                        }
                                                     </div>
                                                 </div>
                                             </div>
@@ -685,20 +600,7 @@ function MandatePageContent() {
                                                                     </p>
                                                                 </div>
                                                                 <div className="flex-shrink-0 w-[25%] flex flex-col gap-1.5 items-end">
-                                                                    {/* Subparagraph-level deliverable type badges (only when subparagraph_text exists) */}
-                                                                    {subparagraph.deliverable_type && subparagraph.deliverable_type.length > 0 && (
-                                                                        <div className="flex flex-col gap-1 items-end">
-                                                                            {subparagraph.deliverable_type.map((type: string, typeIndex: number) => (
-                                                                                <Badge
-                                                                                    key={typeIndex}
-                                                                                    variant="outline"
-                                                                                    className="text-xs !border-emerald-400 !text-emerald-700 bg-emerald-50 text-right"
-                                                                                >
-                                                                                    {getDeliverableTypeLabel(type)}
-                                                                                </Badge>
-                                                                            ))}
-                                                                        </div>
-                                                                    )}
+                                                                    {/* Space for future badges if needed */}
                                                                 </div>
                                                             </div>
                                                         </div>
