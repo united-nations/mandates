@@ -457,27 +457,24 @@ function MandatePageContent() {
                                     )}
                                 </div>
                             </h3>
-                            <div className="space-y-3 max-h-[800px] overflow-y-auto">
+                            <div className="space-y-3 max-h-[800px] overflow-y-auto pr-4">
                                 {groupedParagraphs.map((group) => (
                                     <div key={group.paragraph_idx} className="space-y-2">
                                         {/* Paragraph Header with paragraph_text */}
                                         <div className="bg-muted/30 rounded-lg p-3">
-                                            <div className="flex items-start justify-between gap-2">
-                                                <div className="flex-1">
-                                                    <div className="flex items-center gap-2 mb-2">
-                                                        <span className="text-sm font-bold text-muted-foreground">
-                                                            {group.paragraph_idx}
-                                                        </span>
-                                                        {group.subparagraphs.some(sub => sub.is_operative) && (
-                                                            <Badge variant="secondary" className="text-xs flex-shrink-0">
-                                                                Operative
-                                                            </Badge>
-                                                        )}
-                                                    </div>
+                                            <div className="flex items-start gap-4">
+                                                <div className="flex-1 max-w-[88%]">
                                                     {group.subparagraphs[0]?.paragraph_text && (
                                                         <p className="text-sm leading-relaxed">
                                                             {group.subparagraphs[0].paragraph_text}
                                                         </p>
+                                                    )}
+                                                </div>
+                                                <div className="flex-shrink-0 w-[12%] flex justify-end">
+                                                    {group.subparagraphs.some(sub => sub.is_operative) && (
+                                                        <Badge variant="secondary" className="text-xs">
+                                                            Operative
+                                                        </Badge>
                                                     )}
                                                 </div>
                                             </div>
@@ -488,9 +485,16 @@ function MandatePageContent() {
                                             {group.subparagraphs.map((subparagraph, subIndex) => (
                                                 subparagraph.subparagraph_text && (
                                                     <div key={`${group.paragraph_idx}-${subparagraph.subparagraph_idx}`} className="bg-muted/20 rounded-lg p-3">
-                                                        <p className="text-sm leading-relaxed">
-                                                            {subparagraph.subparagraph_text}
-                                                        </p>
+                                                        <div className="flex items-start gap-4">
+                                                            <div className="flex-1 max-w-[88%]">
+                                                                <p className="text-sm leading-relaxed">
+                                                                    {subparagraph.subparagraph_text}
+                                                                </p>
+                                                            </div>
+                                                            <div className="flex-shrink-0 w-[12%]">
+                                                                {/* Reserved space for future content */}
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 )
                                             ))}
