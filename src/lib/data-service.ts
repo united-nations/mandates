@@ -54,6 +54,7 @@ class DataService {
         citation_info: item.citation_info || [],
         subject_headings: item.subject_headings || [],
         entities: item.entities || [],
+        paragraphs: item.paragraphs || [],
       }));
       
       return this.mandatesCache!;

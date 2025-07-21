@@ -1,4 +1,21 @@
 // Core data types based on the JSON structure
+export interface OperativeParagraph {
+  paragraph_idx: number;
+  subparagraph_idx: number;
+  paragraph_text: string;
+  subparagraph_text: string;
+//   is_operative: boolean;
+  is_op_para: boolean;
+  normalized_keywords: string;
+  is_definite_keyword: boolean;
+  is_definite: boolean;
+  has_deliverable: boolean;
+  deliverable_type: string[];
+  has_assignee: boolean;
+  assignee: string;
+  contains_within_existing_resources: boolean;
+}
+
 export interface CitationInfo {
   origin_document: string;
   budget_part: string;
@@ -69,7 +86,7 @@ export interface Mandate {
   action_note_date: string[] | null;
   related_documents: string[] | null;
   vote_summary: string[] | null;
-  operative_paragraphs?: string[] | null;
+  paragraphs?: OperativeParagraph[] | null;
   programme?: string;
   text?: string;
   ai_summary?: string;
@@ -121,6 +138,7 @@ export interface FilterOptions {
   start_year?: string;
   end_year?: string;
   budget_document?: string;
+  full_document_symbol?: string;
   sort_by?: string;
   page?: string;
   limit?: string;
