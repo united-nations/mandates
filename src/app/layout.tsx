@@ -52,19 +52,21 @@ export default function RootLayout({
                     <FilterProvider>
                         <header className='w-full max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-8 sm:px-12 lg:px-16 pt-8 pb-2 flex items-start justify-between'>
                             <div className='flex-1'>
-                                <div className='flex items-center gap-x-2 mb-2'>
-                                    <Link
-                                        href='/'
-                                        className='text-4xl font-bold tracking-tight text-foreground hover:text-un-blue transition-colors'
-                                    >
-                                        {explainerTexts.mainHeader.title}
-                                    </Link>
-                                    <Link
-                                        href='/methodology'
-                                        className='inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200 hover:bg-slate-200 hover:text-slate-700 transition-colors cursor-pointer'
-                                    >
-                                        {explainerTexts.mainHeader.versionTag}
-                                    </Link>
+                                <div className='mb-2'>
+                                    <div className='flex flex-col sm:flex-row sm:items-center sm:gap-x-2 gap-y-2'>
+                                        <Link
+                                            href='/'
+                                            className='text-3xl sm:text-4xl font-bold tracking-tight text-foreground hover:text-un-blue transition-colors'
+                                        >
+                                            {explainerTexts.mainHeader.title}
+                                        </Link>
+                                        <Link
+                                            href='/methodology'
+                                            className='inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200 hover:bg-slate-200 hover:text-slate-700 transition-colors cursor-pointer w-fit'
+                                        >
+                                            {explainerTexts.mainHeader.versionTag}
+                                        </Link>
+                                    </div>
                                 </div>
                             </div>
                             <div className='pt-2'>
