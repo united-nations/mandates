@@ -25,7 +25,8 @@ function MandatePageContent() {
     const segments = params.segments as string[]
 
     // Reconstruct the full document symbol from segments
-    const documentSymbol = segments.join('/')
+    // URL decode each segment first, then join
+    const documentSymbol = segments.map(segment => decodeURIComponent(segment)).join('/')
 
     const [mandate, setMandate] = useState<Mandate | null>(null)
     const [loading, setLoading] = useState(true)

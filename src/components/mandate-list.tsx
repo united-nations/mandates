@@ -108,8 +108,10 @@ export function MandateList({ mandates, organsData, entitiesData }: MandateListP
 
   // Helper function to generate mandate page URL
   const getMandateUrl = (mandate: Mandate): string => {
-    const documentSymbol = mandate.full_document_symbol || mandate.document_symbol;
+    // Always use full_document_symbol as the primary source of truth
+    const documentSymbol = mandate.full_document_symbol;
     if (!documentSymbol) {
+      console.warn('Mandate missing full_document_symbol:', mandate);
       return '/mandate/unknown';
     }
     // Split by forward slash and encode each segment individually
@@ -141,7 +143,7 @@ export function MandateList({ mandates, organsData, entitiesData }: MandateListP
           
           return (
             <div
-              key={mandate.full_document_symbol || mandate.document_symbol} 
+              key={mandate.full_document_symbol} 
               onClick={(e) => handleMandateClick(mandate, e)}
               className="block cursor-pointer"
             >
