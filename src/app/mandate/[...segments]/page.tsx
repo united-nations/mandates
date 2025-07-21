@@ -2,14 +2,15 @@
 
 import { useState, useMemo, useEffect, useCallback, Suspense } from 'react'
 import { useParams } from 'next/navigation'
-import type { Mandate, CitationInfo } from '@/types'
+import type { Mandate, CitationInfo, OperativeParagraph } from '@/types'
 import { getMandateDisplayTitle } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { FileText, Building, FileCheck, Target } from 'lucide-react'
+import { FileText, Building, FileCheck, Target, HelpCircle } from 'lucide-react'
 import { titleCase } from 'title-case'
 import { getOriginDocumentDisplayName, getBudgetDocumentSlug } from '@/lib/budget-documents'
 import { Skeleton } from '@/components/ui/skeleton'
+import { explainerTexts } from '@/lib/explainer-texts'
 
 const MetadataItem = ({ label, children }: { label: React.ReactNode, children: React.ReactNode }) => (
     <div className="flex items-baseline text-sm py-1">
@@ -33,6 +34,7 @@ function MandatePageContent() {
     // State for expandable sections
     const [showAllEntities, setShowAllEntities] = useState(false)
     const [showAllProgrammes, setShowAllProgrammes] = useState(false)
+    const [openTooltip, setOpenTooltip] = useState<string | null>(null)
 
     useEffect(() => {
         const fetchMandate = async () => {
@@ -75,6 +77,25 @@ function MandatePageContent() {
             fetchMandate()
         }
     }, [documentSymbol])
+
+    // Close tooltip when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            const target = event.target as Element;
+            if (!target.closest('.tooltip-container')) {
+                setOpenTooltip(null);
+            }
+        };
+
+        if (openTooltip) {
+            document.addEventListener('mousedown', handleClickOutside);
+            return () => document.removeEventListener('mousedown', handleClickOutside);
+        }
+    }, [openTooltip]);
+
+    const toggleTooltip = (tooltipId: string) => {
+        setOpenTooltip(openTooltip === tooltipId ? null : tooltipId);
+    };
 
     // Create entity lookup function using the API-provided entity map
     const getEntityLongName = useCallback((shortName: string): string => {
@@ -130,6 +151,28 @@ function MandatePageContent() {
             }
             return titleA.localeCompare(titleB)
         })
+    }, [mandate])
+
+    const groupedParagraphs = useMemo(() => {
+        if (!mandate || !mandate.paragraphs) return []
+
+        const groups: { [key: number]: OperativeParagraph[] } = {}
+
+        mandate.paragraphs.forEach(paragraph => {
+            if (!groups[paragraph.paragraph_idx]) {
+                groups[paragraph.paragraph_idx] = []
+            }
+            groups[paragraph.paragraph_idx].push(paragraph)
+        })
+
+        // Sort groups by paragraph_idx and subparagraphs by subparagraph_idx
+        return Object.keys(groups)
+            .map(Number)
+            .sort((a, b) => a - b)
+            .map(paragraphIdx => ({
+                paragraph_idx: paragraphIdx,
+                subparagraphs: groups[paragraphIdx].sort((a, b) => a.subparagraph_idx - b.subparagraph_idx)
+            }))
     }, [mandate])
 
     const budgetDocuments = useMemo(() => {
@@ -392,28 +435,65 @@ function MandatePageContent() {
                         </div>
                     )}
 
-                    {/* Operative Paragraphs Content */}
+                    {/* Operative Paragraphs */}
                     {mandate.paragraphs && mandate.paragraphs.length > 0 ? (
                         <div className="space-y-3">
                             <h3 className="text-base font-semibold flex items-center gap-2">
                                 <FileCheck className="h-4 w-4" />
-                                Paragraphs ({mandate.paragraphs.length})
+                                <span>{explainerTexts.mandateDetail.paragraphs.title}</span>
+                                <div className="relative tooltip-container">
+                                    <button
+                                        type="button"
+                                        className="p-0 border-0 bg-transparent cursor-help focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 rounded-sm flex items-center"
+                                        aria-label="Information about paragraph extraction"
+                                        onClick={() => toggleTooltip('paragraphs-beta')}
+                                    >
+                                        <HelpCircle className="h-4 w-4 text-muted-foreground" />
+                                    </button>
+                                    {openTooltip === 'paragraphs-beta' && (
+                                        <div className="absolute left-0 top-6 z-50 w-80 p-3 bg-white border rounded-md shadow-lg text-sm font-normal">
+                                            <p>{explainerTexts.mandateDetail.paragraphs.betaDisclaimer}</p>
+                                        </div>
+                                    )}
+                                </div>
                             </h3>
-                            <div className="space-y-2 max-h-96 overflow-y-auto">
-                                {mandate.paragraphs.map((paragraph, index) => (
-                                    <div key={`${paragraph.paragraph_idx}-${paragraph.subparagraph_idx}-${index}`} className="bg-muted/30 rounded-lg p-3">
-                                        <div className="flex items-start gap-2">
-                                            <Badge variant="outline" className="text-xs mt-0.5 flex-shrink-0">
-                                                {paragraph.paragraph_idx}.{paragraph.subparagraph_idx}
-                                            </Badge>
-                                            <div className="flex-1">
-                                                <p className="text-sm leading-relaxed">{paragraph.paragraph_text}</p>
-                                                {paragraph.is_operative && (
-                                                    <Badge variant="secondary" className="text-xs mt-2">
-                                                        Operative
-                                                    </Badge>
-                                                )}
+                            <div className="space-y-3 max-h-[800px] overflow-y-auto">
+                                {groupedParagraphs.map((group) => (
+                                    <div key={group.paragraph_idx} className="space-y-2">
+                                        {/* Paragraph Header with paragraph_text */}
+                                        <div className="bg-muted/30 rounded-lg p-3">
+                                            <div className="flex items-start justify-between gap-2">
+                                                <div className="flex-1">
+                                                    <div className="flex items-center gap-2 mb-2">
+                                                        <span className="text-sm font-bold text-muted-foreground">
+                                                            {group.paragraph_idx}
+                                                        </span>
+                                                        {group.subparagraphs.some(sub => sub.is_operative) && (
+                                                            <Badge variant="secondary" className="text-xs flex-shrink-0">
+                                                                Operative
+                                                            </Badge>
+                                                        )}
+                                                    </div>
+                                                    {group.subparagraphs[0]?.paragraph_text && (
+                                                        <p className="text-sm leading-relaxed">
+                                                            {group.subparagraphs[0].paragraph_text}
+                                                        </p>
+                                                    )}
+                                                </div>
                                             </div>
+                                        </div>
+
+                                        {/* Subparagraphs - indented with their own boxes showing subparagraph_text */}
+                                        <div className="ml-6 space-y-2">
+                                            {group.subparagraphs.map((subparagraph, subIndex) => (
+                                                subparagraph.subparagraph_text && (
+                                                    <div key={`${group.paragraph_idx}-${subparagraph.subparagraph_idx}`} className="bg-muted/20 rounded-lg p-3">
+                                                        <p className="text-sm leading-relaxed">
+                                                            {subparagraph.subparagraph_text}
+                                                        </p>
+                                                    </div>
+                                                )
+                                            ))}
                                         </div>
                                     </div>
                                 ))}
