@@ -41,9 +41,9 @@ function MandatePageContent() {
     const [deliverableDropdownPosition, setDeliverableDropdownPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 })
 
     // Use the new paragraphs API
-    const { 
-        paragraphs, 
-        isLoading: paragraphsLoading, 
+    const {
+        paragraphs,
+        isLoading: paragraphsLoading,
         error: paragraphsError
     } = useParagraphs({
         full_document_symbol: documentSymbol,
@@ -480,145 +480,182 @@ function MandatePageContent() {
                     )}
 
                     {/* Operative Paragraphs */}
-                    {paragraphsLoading ? (
-                        <div className="space-y-4">
-                            <Skeleton className="h-8 w-64" />
-                            <Skeleton className="h-32 w-full" />
-                            <Skeleton className="h-32 w-full" />
-                        </div>
-                    ) : paragraphsError ? (
-                        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                            <p className="text-red-700">Error loading paragraphs: {paragraphsError}</p>
-                        </div>
-                    ) : paragraphs && paragraphs.length > 0 ? (
-                        <div className="space-y-4">
-                            <div className="flex items-center justify-between pr-4">
-                                <h3 className="text-base font-semibold flex items-center gap-2">
-                                    <FileCheck className="h-4 w-4" />
-                                    <span>{explainerTexts.mandateDetail.paragraphs.title}</span>
-                                    <div className="relative tooltip-container">
-                                        <button
-                                            type="button"
-                                            className="p-0 border-0 bg-transparent cursor-help focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 rounded-sm flex items-center"
-                                            aria-label="Information about paragraph extraction"
-                                            onClick={() => toggleTooltip('paragraphs-beta')}
-                                        >
-                                            <HelpCircle className="h-4 w-4 text-muted-foreground" />
-                                        </button>
-                                        {openTooltip === 'paragraphs-beta' && (
-                                            <div className="absolute left-0 top-6 z-50 w-80 p-3 bg-white border rounded-md shadow-lg text-sm font-normal">
-                                                <p>{explainerTexts.mandateDetail.paragraphs.betaDisclaimer}</p>
-                                            </div>
-                                        )}
-                                    </div>
-                                </h3>
+                    <div className="space-y-4">
+                        <div className="flex items-center justify-between pr-4">
+                            <h3 className="text-base font-semibold flex items-center gap-2">
+                                <FileCheck className="h-4 w-4" />
+                                <span>{explainerTexts.mandateDetail.paragraphs.title}</span>
+                                <div className="relative tooltip-container">
+                                    <button
+                                        type="button"
+                                        className="p-0 border-0 bg-transparent cursor-help focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 rounded-sm flex items-center"
+                                        aria-label="Information about paragraph extraction"
+                                        onClick={() => toggleTooltip('paragraphs-beta')}
+                                    >
+                                        <HelpCircle className="h-4 w-4 text-muted-foreground" />
+                                    </button>
+                                    {openTooltip === 'paragraphs-beta' && (
+                                        <div className="absolute left-0 top-6 z-50 w-80 p-3 bg-white border rounded-md shadow-lg text-sm font-normal">
+                                            <p>{explainerTexts.mandateDetail.paragraphs.betaDisclaimer}</p>
+                                        </div>
+                                    )}
+                                </div>
+                            </h3>
 
-                                {/* Filter buttons */}
-                                <div className="flex gap-1 items-center">
-                                    {/* Deliverable type filter */}
-                                    <div className="relative tooltip-container">
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            className="text-xs h-7 border !border-emerald-400 !text-emerald-700 bg-emerald-50 hover:!text-emerald-700 hover:bg-emerald-100"
-                                            onClick={handleDeliverableTypeToggle}
-                                        >
-                                            {deliverableTypeFilter ? getDeliverableTypeLabel(deliverableTypeFilter) : 'Deliverable Types'}
-                                        </Button>
-                                        {openTooltip === 'deliverable-types' && (
-                                            <div className="fixed z-[9999] w-60 p-3 bg-white border rounded-md shadow-lg text-sm font-normal"
-                                                style={{
-                                                    left: `${deliverableDropdownPosition.x}px`,
-                                                    top: `${deliverableDropdownPosition.y}px`
-                                                }}>
-                                                <p className="font-medium mb-2">Filter by Deliverable Type</p>
-                                                <div className="space-y-1">
+                            {/* Filter buttons */}
+                            <div className="flex gap-1 items-center">
+                                {/* Deliverable type filter */}
+                                <div className="relative tooltip-container">
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="text-xs h-7 border !border-emerald-400 !text-emerald-700 bg-emerald-50 hover:!text-emerald-700 hover:bg-emerald-100"
+                                        onClick={handleDeliverableTypeToggle}
+                                    >
+                                        {deliverableTypeFilter ? getDeliverableTypeLabel(deliverableTypeFilter) : 'Deliverable Types'}
+                                    </Button>
+                                    {openTooltip === 'deliverable-types' && (
+                                        <div className="fixed z-[9999] w-60 p-3 bg-white border rounded-md shadow-lg text-sm font-normal"
+                                            style={{
+                                                left: `${deliverableDropdownPosition.x}px`,
+                                                top: `${deliverableDropdownPosition.y}px`
+                                            }}>
+                                            <p className="font-medium mb-2">Filter by Deliverable Type</p>
+                                            <div className="space-y-1">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="w-full justify-start text-xs h-6 border border-gray-200 hover:!border-emerald-400 hover:!text-emerald-700 hover:bg-emerald-50"
+                                                    onClick={() => {
+                                                        setDeliverableTypeFilter(null);
+                                                        setOpenTooltip(null);
+                                                    }}
+                                                >
+                                                    All Types
+                                                </Button>
+                                                {Object.entries(DELIVERABLE_TYPE_LABELS).map(([key, label]) => (
                                                     <Button
+                                                        key={key}
                                                         variant="ghost"
                                                         size="sm"
-                                                        className="w-full justify-start text-xs h-6 border border-gray-200 hover:!border-emerald-400 hover:!text-emerald-700 hover:bg-emerald-50"
+                                                        className={`w-full justify-start text-xs h-6 border ${deliverableTypeFilter === key ? '!border-emerald-400 !text-emerald-700 bg-emerald-50 hover:!border-emerald-400 hover:!text-emerald-700 hover:bg-emerald-100' : 'border-gray-200 hover:!border-emerald-400 hover:!text-emerald-700 hover:bg-emerald-50'}`}
                                                         onClick={() => {
-                                                            setDeliverableTypeFilter(null);
+                                                            setDeliverableTypeFilter(key);
                                                             setOpenTooltip(null);
                                                         }}
                                                     >
-                                                        All Types
+                                                        {label}
                                                     </Button>
-                                                    {Object.entries(DELIVERABLE_TYPE_LABELS).map(([key, label]) => (
-                                                        <Button
-                                                            key={key}
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            className={`w-full justify-start text-xs h-6 border ${deliverableTypeFilter === key ? '!border-emerald-400 !text-emerald-700 bg-emerald-50 hover:!border-emerald-400 hover:!text-emerald-700 hover:bg-emerald-100' : 'border-gray-200 hover:!border-emerald-400 hover:!text-emerald-700 hover:bg-emerald-50'}`}
-                                                            onClick={() => {
-                                                                setDeliverableTypeFilter(key);
-                                                                setOpenTooltip(null);
-                                                            }}
-                                                        >
-                                                            {label}
-                                                        </Button>
-                                                    ))}
-                                                </div>
+                                                ))}
                                             </div>
-                                        )}
-                                    </div>
-
-                                    {/* Separator */}
-                                    <div className="h-5 w-px bg-gray-300 mx-1"></div>
-
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className={`text-xs h-7 border ${paragraphFilter === 'operative' ? '!border-un-blue !text-un-blue bg-un-blue/10 hover:!text-un-blue hover:bg-un-blue/20' : 'border-gray-200 hover:border-gray-300'}`}
-                                        onClick={() => setParagraphFilter('operative')}
-                                    >
-                                        Operative
-                                    </Button>
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className={`text-xs h-7 border ${paragraphFilter === 'non-operative' ? '!border-un-blue !text-un-blue bg-un-blue/10 hover:!text-un-blue hover:bg-un-blue/20' : 'border-gray-200 hover:border-gray-300'}`}
-                                        onClick={() => setParagraphFilter('non-operative')}
-                                    >
-                                        Non-operative
-                                    </Button>
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className={`text-xs h-7 border ${paragraphFilter === 'all' ? '!border-un-blue !text-un-blue bg-un-blue/10 hover:!text-un-blue hover:bg-un-blue/20' : 'border-gray-200 hover:border-gray-300'}`}
-                                        onClick={() => setParagraphFilter('all')}
-                                    >
-                                        All
-                                    </Button>
+                                        </div>
+                                    )}
                                 </div>
+
+                                {/* Separator */}
+                                <div className="h-5 w-px bg-gray-300 mx-1"></div>
+
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className={`text-xs h-7 border ${paragraphFilter === 'operative' ? '!border-un-blue !text-un-blue bg-un-blue/10 hover:!text-un-blue hover:bg-un-blue/20' : 'border-gray-200 hover:border-gray-300'}`}
+                                    onClick={() => setParagraphFilter('operative')}
+                                >
+                                    Operative
+                                </Button>
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className={`text-xs h-7 border ${paragraphFilter === 'non-operative' ? '!border-un-blue !text-un-blue bg-un-blue/10 hover:!text-un-blue hover:bg-un-blue/20' : 'border-gray-200 hover:border-gray-300'}`}
+                                    onClick={() => setParagraphFilter('non-operative')}
+                                >
+                                    Non-operative
+                                </Button>
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className={`text-xs h-7 border ${paragraphFilter === 'all' ? '!border-un-blue !text-un-blue bg-un-blue/10 hover:!text-un-blue hover:bg-un-blue/20' : 'border-gray-200 hover:border-gray-300'}`}
+                                    onClick={() => setParagraphFilter('all')}
+                                >
+                                    All
+                                </Button>
                             </div>
-                            <div className="space-y-3 max-h-[800px] overflow-y-auto overflow-x-visible pr-4">
-                                {groupedParagraphs.map((group) => (
-                                    <div key={group.paragraph_idx} className="space-y-2">
-                                        {/* Paragraph Header with paragraph_text */}
+                        </div>
+
+                        {/* Paragraphs Content Area - Fixed container to prevent layout shift */}
+                        <div className="min-h-[400px] h-[800px] max-h-[800px] overflow-y-auto overflow-x-visible pr-4 border border-transparent">
+                            {paragraphsLoading ? (
+                                <div className="space-y-3">
+                                    <div className="space-y-2">
                                         <div className="bg-muted/30 rounded-lg p-3">
-                                            <div className="flex items-start gap-4">
-                                                <div className="flex-1 max-w-[75%]">
-                                                    {group.subparagraphs[0]?.paragraph_text && (
-                                                        <p className="text-sm leading-relaxed">
-                                                            {group.subparagraphs[0].paragraph_text}
-                                                        </p>
-                                                    )}
-                                                </div>
-                                                <div className="flex-shrink-0 w-[25%] flex flex-col gap-1.5 items-end">
-                                                    {/* Operative badge */}
-                                                    {group.subparagraphs.some(sub => sub.is_op_para) && (
-                                                        <Badge variant="outline" className="text-xs !border-un-blue !text-un-blue bg-un-blue/10">
-                                                            Operative
-                                                        </Badge>
-                                                    )}
-                                                    
-                                                    {/* Paragraph-level deliverable type badges (when subparagraph_text is null) */}
-                                                    {group.subparagraphs
-                                                        .filter(sub => !sub.subparagraph_text && sub.deliverable_type && sub.deliverable_type.length > 0)
-                                                        .map((sub, index) => (
-                                                            <div key={`paragraph-deliverables-${index}`} className="flex flex-col gap-1 items-end">
-                                                                {sub.deliverable_type.map((type: string, typeIndex: number) => (
+                                            <Skeleton className="h-4 w-3/4 mb-2" />
+                                            <Skeleton className="h-4 w-full mb-1" />
+                                            <Skeleton className="h-4 w-5/6" />
+                                        </div>
+                                        <div className="ml-6 space-y-2">
+                                            <div className="bg-muted/20 rounded-lg p-3">
+                                                <Skeleton className="h-4 w-4/5 mb-1" />
+                                                <Skeleton className="h-4 w-full" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <div className="bg-muted/30 rounded-lg p-3">
+                                            <Skeleton className="h-4 w-2/3 mb-2" />
+                                            <Skeleton className="h-4 w-full mb-1" />
+                                            <Skeleton className="h-4 w-4/5" />
+                                        </div>
+                                        <div className="ml-6 space-y-2">
+                                            <div className="bg-muted/20 rounded-lg p-3">
+                                                <Skeleton className="h-4 w-3/4 mb-1" />
+                                                <Skeleton className="h-4 w-full" />
+                                            </div>
+                                            <div className="bg-muted/20 rounded-lg p-3">
+                                                <Skeleton className="h-4 w-5/6 mb-1" />
+                                                <Skeleton className="h-4 w-full" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <div className="bg-muted/30 rounded-lg p-3">
+                                            <Skeleton className="h-4 w-3/5 mb-2" />
+                                            <Skeleton className="h-4 w-full mb-1" />
+                                            <Skeleton className="h-4 w-3/4" />
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : paragraphsError ? (
+                                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                                    <p className="text-red-700">Error loading paragraphs: {paragraphsError}</p>
+                                </div>
+                            ) : paragraphs && paragraphs.length > 0 ? (
+                                <div className="space-y-3">
+                                    {groupedParagraphs.map((group) => (
+                                        <div key={group.paragraph_idx} className="space-y-2">
+                                            {/* Paragraph Header with paragraph_text */}
+                                            <div className="bg-muted/30 rounded-lg p-3">
+                                                <div className="flex items-start gap-4">
+                                                    <div className="flex-1 max-w-[75%]">
+                                                        {group.subparagraphs[0]?.paragraph_text && (
+                                                            <p className="text-sm leading-relaxed">
+                                                                {group.subparagraphs[0].paragraph_text}
+                                                            </p>
+                                                        )}
+                                                    </div>
+                                                    <div className="flex-shrink-0 w-[25%] flex flex-col gap-1.5 items-end">
+                                                        {/* Operative badge */}
+                                                        {group.subparagraphs.some(sub => sub.is_op_para) && (
+                                                            <Badge variant="outline" className="text-xs !border-un-blue !text-un-blue bg-un-blue/10">
+                                                                Operative
+                                                            </Badge>
+                                                        )}
+
+                                                        {/* Paragraph-level deliverable type badges (when subparagraph_text is null) */}
+                                                        {group.subparagraphs
+                                                            .filter(sub => !sub.subparagraph_text && sub.deliverable_type && sub.deliverable_type.length > 0)
+                                                            .map((sub, index) => (
+                                                                <div key={`paragraph-deliverables-${index}`} className="flex flex-col gap-1 items-end">
+                                                                    {sub.deliverable_type.map((type: string, typeIndex: number) => (
                                                                         <Badge
                                                                             key={typeIndex}
                                                                             variant="outline"
@@ -627,56 +664,57 @@ function MandatePageContent() {
                                                                             {getDeliverableTypeLabel(type)}
                                                                         </Badge>
                                                                     ))}
-                                                            </div>
-                                                        ))
-                                                    }
+                                                                </div>
+                                                            ))
+                                                        }
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        {/* Subparagraphs - indented with their own boxes showing subparagraph_text */}
-                                        <div className="ml-6 space-y-2">
-                                            {group.subparagraphs
-                                                .filter(subparagraph => subparagraph.subparagraph_text) // Only show subparagraphs with actual text
-                                                .map((subparagraph, subIndex) => (
-                                                    <div key={`${group.paragraph_idx}-${subparagraph.subparagraph_idx}`} className="bg-muted/20 rounded-lg p-3">
-                                                        <div className="flex items-start gap-4">
-                                                            <div className="flex-1 max-w-[75%]">
-                                                                <p className="text-sm leading-relaxed">
-                                                                    {subparagraph.subparagraph_text}
-                                                                </p>
-                                                            </div>
-                                                            <div className="flex-shrink-0 w-[25%] flex flex-col gap-1.5 items-end">
-                                                                {/* Subparagraph-level deliverable type badges (only when subparagraph_text exists) */}
-                                                                {subparagraph.deliverable_type && subparagraph.deliverable_type.length > 0 && (
-                                                                    <div className="flex flex-col gap-1 items-end">
-                                                                        {subparagraph.deliverable_type.map((type: string, typeIndex: number) => (
-                                                                            <Badge
-                                                                                key={typeIndex}
-                                                                                variant="outline"
-                                                                                className="text-xs !border-emerald-400 !text-emerald-700 bg-emerald-50 text-right"
-                                                                            >
-                                                                                {getDeliverableTypeLabel(type)}
-                                                                            </Badge>
-                                                                        ))}
-                                                                    </div>
-                                                                )}
+                                            {/* Subparagraphs - indented with their own boxes showing subparagraph_text */}
+                                            <div className="ml-6 space-y-2">
+                                                {group.subparagraphs
+                                                    .filter(subparagraph => subparagraph.subparagraph_text) // Only show subparagraphs with actual text
+                                                    .map((subparagraph, subIndex) => (
+                                                        <div key={`${group.paragraph_idx}-${subparagraph.subparagraph_idx}`} className="bg-muted/20 rounded-lg p-3">
+                                                            <div className="flex items-start gap-4">
+                                                                <div className="flex-1 max-w-[75%]">
+                                                                    <p className="text-sm leading-relaxed">
+                                                                        {subparagraph.subparagraph_text}
+                                                                    </p>
+                                                                </div>
+                                                                <div className="flex-shrink-0 w-[25%] flex flex-col gap-1.5 items-end">
+                                                                    {/* Subparagraph-level deliverable type badges (only when subparagraph_text exists) */}
+                                                                    {subparagraph.deliverable_type && subparagraph.deliverable_type.length > 0 && (
+                                                                        <div className="flex flex-col gap-1 items-end">
+                                                                            {subparagraph.deliverable_type.map((type: string, typeIndex: number) => (
+                                                                                <Badge
+                                                                                    key={typeIndex}
+                                                                                    variant="outline"
+                                                                                    className="text-xs !border-emerald-400 !text-emerald-700 bg-emerald-50 text-right"
+                                                                                >
+                                                                                    {getDeliverableTypeLabel(type)}
+                                                                                </Badge>
+                                                                            ))}
+                                                                        </div>
+                                                                    )}
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                ))}
+                                                    ))}
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
-                            </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="bg-muted/30 rounded-lg p-3">
+                                    <p className="text-sm leading-relaxed text-muted-foreground italic">
+                                        No paragraphs currently available for this document.
+                                    </p>
+                                </div>
+                            )}
                         </div>
-                    ) : (
-                        <div className="bg-muted/30 rounded-lg p-3">
-                            <p className="text-sm leading-relaxed text-muted-foreground italic">
-                                No paragraphs currently available for this document.
-                            </p>
-                        </div>
-                    )}
+                    </div>
                 </div>
             </div>
         </div>
