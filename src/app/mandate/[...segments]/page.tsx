@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect, useCallback, Suspense } from 'react'
 import { useParams } from 'next/navigation'
-import type { Mandate, CitationInfo, OperativeParagraph } from '@/types'
+import type { Mandate, CitationInfo } from '@/types'
 import { getMandateDisplayTitle, getDeliverableTypeLabel, DELIVERABLE_TYPE_LABELS } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -11,6 +11,7 @@ import { titleCase } from 'title-case'
 import { getOriginDocumentDisplayName, getBudgetDocumentSlug } from '@/lib/budget-documents'
 import { Skeleton } from '@/components/ui/skeleton'
 import { explainerTexts } from '@/lib/explainer-texts'
+import { useParagraphs } from '@/hooks/use-paragraphs'
 
 const MetadataItem = ({ label, children }: { label: React.ReactNode, children: React.ReactNode }) => (
     <div className="flex items-center gap-3 text-sm py-1.5">
@@ -38,6 +39,17 @@ function MandatePageContent() {
     const [paragraphFilter, setParagraphFilter] = useState<'all' | 'operative' | 'non-operative'>('operative')
     const [deliverableTypeFilter, setDeliverableTypeFilter] = useState<string | null>(null)
     const [deliverableDropdownPosition, setDeliverableDropdownPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 })
+
+    // Use the new paragraphs API
+    const { 
+        paragraphs, 
+        isLoading: paragraphsLoading, 
+        error: paragraphsError
+    } = useParagraphs({
+        full_document_symbol: documentSymbol,
+        is_op_para: paragraphFilter === 'all' ? undefined : (paragraphFilter === 'operative' ? 'true' : 'false'),
+        deliverable_type: deliverableTypeFilter || undefined
+    });
 
     useEffect(() => {
         const fetchMandate = async () => {
@@ -187,12 +199,14 @@ function MandatePageContent() {
         })
     }, [mandate])
 
+    // Group paragraphs by paragraph_idx for display
+    // This handles the nested structure properly
     const groupedParagraphs = useMemo(() => {
-        if (!mandate || !mandate.paragraphs) return []
+        if (!paragraphs || paragraphs.length === 0) return []
 
-        const groups: { [key: number]: OperativeParagraph[] } = {}
+        const groups: { [key: number]: typeof paragraphs } = {}
 
-        mandate.paragraphs.forEach(paragraph => {
+        paragraphs.forEach(paragraph => {
             if (!groups[paragraph.paragraph_idx]) {
                 groups[paragraph.paragraph_idx] = []
             }
@@ -207,39 +221,7 @@ function MandatePageContent() {
                 paragraph_idx: paragraphIdx,
                 subparagraphs: groups[paragraphIdx].sort((a, b) => a.subparagraph_idx - b.subparagraph_idx)
             }))
-    }, [mandate])
-
-    // Filter paragraphs based on the selected filter
-    const filteredParagraphs = useMemo(() => {
-        let filtered = groupedParagraphs;
-
-        // Filter by operative/non-operative
-        if (paragraphFilter !== 'all') {
-            filtered = filtered.filter(group => {
-                const isOperative = group.subparagraphs.some(sub => sub.is_op_para)
-                return paragraphFilter === 'operative' ? isOperative : !isOperative
-            })
-        }
-
-        // Filter by deliverable type
-        if (deliverableTypeFilter) {
-            filtered = filtered.map(group => {
-                // Filter subparagraphs that match the deliverable type
-                const matchingSubparagraphs = group.subparagraphs.filter(sub =>
-                    sub.deliverable_type && sub.deliverable_type.includes(deliverableTypeFilter)
-                );
-
-                // If any subparagraphs match, return the group with all its subparagraphs
-                // (but we'll only show the matching ones in the UI if needed)
-                if (matchingSubparagraphs.length > 0) {
-                    return group;
-                }
-                return null;
-            }).filter(Boolean) as typeof groupedParagraphs;
-        }
-
-        return filtered;
-    }, [groupedParagraphs, paragraphFilter, deliverableTypeFilter])
+    }, [paragraphs])
 
     const budgetDocuments = useMemo(() => {
         if (!mandate || !mandate.citation_info) return []
@@ -498,7 +480,17 @@ function MandatePageContent() {
                     )}
 
                     {/* Operative Paragraphs */}
-                    {mandate.paragraphs && mandate.paragraphs.length > 0 ? (
+                    {paragraphsLoading ? (
+                        <div className="space-y-4">
+                            <Skeleton className="h-8 w-64" />
+                            <Skeleton className="h-32 w-full" />
+                            <Skeleton className="h-32 w-full" />
+                        </div>
+                    ) : paragraphsError ? (
+                        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                            <p className="text-red-700">Error loading paragraphs: {paragraphsError}</p>
+                        </div>
+                    ) : paragraphs && paragraphs.length > 0 ? (
                         <div className="space-y-4">
                             <div className="flex items-center justify-between pr-4">
                                 <h3 className="text-base font-semibold flex items-center gap-2">
@@ -601,7 +593,7 @@ function MandatePageContent() {
                                 </div>
                             </div>
                             <div className="space-y-3 max-h-[800px] overflow-y-auto overflow-x-visible pr-4">
-                                {filteredParagraphs.map((group) => (
+                                {groupedParagraphs.map((group) => (
                                     <div key={group.paragraph_idx} className="space-y-2">
                                         {/* Paragraph Header with paragraph_text */}
                                         <div className="bg-muted/30 rounded-lg p-3">
@@ -613,12 +605,31 @@ function MandatePageContent() {
                                                         </p>
                                                     )}
                                                 </div>
-                                                <div className="flex-shrink-0 w-[25%] flex justify-end">
+                                                <div className="flex-shrink-0 w-[25%] flex flex-col gap-1.5 items-end">
+                                                    {/* Operative badge */}
                                                     {group.subparagraphs.some(sub => sub.is_op_para) && (
                                                         <Badge variant="outline" className="text-xs !border-un-blue !text-un-blue bg-un-blue/10">
                                                             Operative
                                                         </Badge>
                                                     )}
+                                                    
+                                                    {/* Paragraph-level deliverable type badges (when subparagraph_text is null) */}
+                                                    {group.subparagraphs
+                                                        .filter(sub => !sub.subparagraph_text && sub.deliverable_type && sub.deliverable_type.length > 0)
+                                                        .map((sub, index) => (
+                                                            <div key={`paragraph-deliverables-${index}`} className="flex flex-col gap-1 items-end">
+                                                                {sub.deliverable_type.map((type: string, typeIndex: number) => (
+                                                                        <Badge
+                                                                            key={typeIndex}
+                                                                            variant="outline"
+                                                                            className="text-xs !border-emerald-400 !text-emerald-700 bg-emerald-50 text-right"
+                                                                        >
+                                                                            {getDeliverableTypeLabel(type)}
+                                                                        </Badge>
+                                                                    ))}
+                                                            </div>
+                                                        ))
+                                                    }
                                                 </div>
                                             </div>
                                         </div>
@@ -626,41 +637,33 @@ function MandatePageContent() {
                                         {/* Subparagraphs - indented with their own boxes showing subparagraph_text */}
                                         <div className="ml-6 space-y-2">
                                             {group.subparagraphs
-                                                .filter(subparagraph => {
-                                                    // If no deliverable type filter, show all subparagraphs
-                                                    if (!deliverableTypeFilter) return true;
-                                                    // If deliverable type filter is active, only show matching subparagraphs
-                                                    return subparagraph.deliverable_type &&
-                                                        subparagraph.deliverable_type.includes(deliverableTypeFilter);
-                                                })
+                                                .filter(subparagraph => subparagraph.subparagraph_text) // Only show subparagraphs with actual text
                                                 .map((subparagraph, subIndex) => (
-                                                    subparagraph.subparagraph_text && (
-                                                        <div key={`${group.paragraph_idx}-${subparagraph.subparagraph_idx}`} className="bg-muted/20 rounded-lg p-3">
-                                                            <div className="flex items-start gap-4">
-                                                                <div className="flex-1 max-w-[75%]">
-                                                                    <p className="text-sm leading-relaxed">
-                                                                        {subparagraph.subparagraph_text}
-                                                                    </p>
-                                                                </div>
-                                                                <div className="flex-shrink-0 w-[25%] flex flex-col gap-1.5 items-end">
-                                                                    {/* Deliverable type badges - stacked vertically */}
-                                                                    {subparagraph.deliverable_type && subparagraph.deliverable_type.length > 0 && (
-                                                                        <div className="flex flex-col gap-1 items-end">
-                                                                            {subparagraph.deliverable_type.map((type, typeIndex) => (
-                                                                                <Badge
-                                                                                    key={typeIndex}
-                                                                                    variant="outline"
-                                                                                    className="text-xs !border-emerald-400 !text-emerald-700 bg-emerald-50 text-right"
-                                                                                >
-                                                                                    {getDeliverableTypeLabel(type)}
-                                                                                </Badge>
-                                                                            ))}
-                                                                        </div>
-                                                                    )}
-                                                                </div>
+                                                    <div key={`${group.paragraph_idx}-${subparagraph.subparagraph_idx}`} className="bg-muted/20 rounded-lg p-3">
+                                                        <div className="flex items-start gap-4">
+                                                            <div className="flex-1 max-w-[75%]">
+                                                                <p className="text-sm leading-relaxed">
+                                                                    {subparagraph.subparagraph_text}
+                                                                </p>
+                                                            </div>
+                                                            <div className="flex-shrink-0 w-[25%] flex flex-col gap-1.5 items-end">
+                                                                {/* Subparagraph-level deliverable type badges (only when subparagraph_text exists) */}
+                                                                {subparagraph.deliverable_type && subparagraph.deliverable_type.length > 0 && (
+                                                                    <div className="flex flex-col gap-1 items-end">
+                                                                        {subparagraph.deliverable_type.map((type: string, typeIndex: number) => (
+                                                                            <Badge
+                                                                                key={typeIndex}
+                                                                                variant="outline"
+                                                                                className="text-xs !border-emerald-400 !text-emerald-700 bg-emerald-50 text-right"
+                                                                            >
+                                                                                {getDeliverableTypeLabel(type)}
+                                                                            </Badge>
+                                                                        ))}
+                                                                    </div>
+                                                                )}
                                                             </div>
                                                         </div>
-                                                    )
+                                                    </div>
                                                 ))}
                                         </div>
                                     </div>

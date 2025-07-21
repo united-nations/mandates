@@ -4,7 +4,7 @@ export interface OperativeParagraph {
   subparagraph_idx: number;
   paragraph_text: string;
   subparagraph_text: string;
-  is_operative: boolean;
+//   is_operative: boolean;
   is_op_para: boolean;
   normalized_keywords: string;
   is_definite_keyword: boolean;
