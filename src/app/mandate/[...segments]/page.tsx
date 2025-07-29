@@ -184,29 +184,6 @@ function MandatePageContent() {
         })
     }, [mandate])
 
-    // Group paragraphs by paragraph_idx for display
-    // This handles the nested structure properly
-    const groupedParagraphs = useMemo(() => {
-        if (!paragraphs || paragraphs.length === 0) return []
-
-        const groups: { [key: number]: typeof paragraphs } = {}
-
-        paragraphs.forEach(paragraph => {
-            if (!groups[paragraph.paragraph_idx]) {
-                groups[paragraph.paragraph_idx] = []
-            }
-            groups[paragraph.paragraph_idx].push(paragraph)
-        })
-
-        // Sort groups by paragraph_idx and subparagraphs by subparagraph_idx
-        return Object.keys(groups)
-            .map(Number)
-            .sort((a, b) => a - b)
-            .map(paragraphIdx => ({
-                paragraph_idx: paragraphIdx,
-                subparagraphs: groups[paragraphIdx].sort((a, b) => a.subparagraph_idx - b.subparagraph_idx)
-            }))
-    }, [paragraphs])
 
     const budgetDocuments = useMemo(() => {
         if (!mandate || !mandate.citation_info) return []
@@ -563,51 +540,98 @@ function MandatePageContent() {
                                     <p className="text-red-700">Error loading paragraphs: {paragraphsError}</p>
                                 </div>
                             ) : paragraphs && paragraphs.length > 0 ? (
-                                <div className="space-y-3">
-                                    {groupedParagraphs.map((group) => (
-                                        <div key={group.paragraph_idx} className="space-y-2">
-                                            {/* Paragraph Header with paragraph_text */}
-                                            <div className="bg-muted/30 rounded-lg p-3">
-                                                <div className="flex items-start gap-4">
-                                                    <div className="flex-1 max-w-[75%]">
-                                                        {group.subparagraphs[0]?.paragraph_text && (
+                                <div className="space-y-4">
+                                    {paragraphs.map((paragraph, index) => {
+                                        // Helper function to process text with links and action verbs
+                                        const processText = (text: string, actionVerb: string | null, links: [string, string][]) => {
+                                            let processedText = text;
+                                            
+                                            // Replace links with clickable elements
+                                            if (links && links.length > 0) {
+                                                links.forEach(([linkText, url]) => {
+                                                    const linkRegex = new RegExp(linkText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+                                                    processedText = processedText.replace(linkRegex, `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-un-blue hover:underline font-medium">${linkText}</a>`);
+                                                });
+                                            }
+                                            
+                                            // Highlight action verb if present (can appear anywhere in the text)
+                                            if (actionVerb && actionVerb.trim()) {
+                                                const verbRegex = new RegExp(`\\b(${actionVerb.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})\\b`, 'i');
+                                                processedText = processedText.replace(verbRegex, `<span class="font-semibold text-un-blue">$1</span>`);
+                                            }
+                                            
+                                            return processedText;
+                                        };
+
+                                        // Calculate indentation based on paragraph_level
+                                        const indentLevel = paragraph.paragraph_level || 0;
+                                        const indentClass = indentLevel > 1 ? `ml-${Math.min((indentLevel - 1) * 6, 24)}` : '';
+
+                                        // Handle different content types
+                                        if (paragraph.type === 'heading') {
+                                            const HeadingTag = `h${Math.min(paragraph.heading_level || 3, 6)}` as keyof JSX.IntrinsicElements;
+                                            const headingClasses = {
+                                                1: 'text-lg font-bold',
+                                                2: 'text-base font-bold',
+                                                3: 'text-base font-semibold',
+                                                4: 'text-sm font-semibold',
+                                                5: 'text-sm font-medium',
+                                                6: 'text-sm font-medium'
+                                            };
+                                            const headingClass = headingClasses[paragraph.heading_level as keyof typeof headingClasses] || headingClasses[3];
+
+                                            return (
+                                                <div key={`${documentSymbol}-${index}`} className={`${indentClass}`}>
+                                                    <HeadingTag className={`${headingClass} text-foreground mb-3 leading-tight`}>
+                                                        {paragraph.prefix && (
+                                                            <span className="font-medium text-un-blue mr-2">
+                                                                {paragraph.prefix}
+                                                            </span>
+                                                        )}
+                                                        <span dangerouslySetInnerHTML={{ 
+                                                            __html: processText(paragraph.text, paragraph.action_verb, paragraph.links) 
+                                                        }} />
+                                                    </HeadingTag>
+                                                </div>
+                                            );
+                                        }
+
+                                        // Regular paragraphs
+                                        return (
+                                            <div key={`${documentSymbol}-${index}`} className={`${indentClass}`}>
+                                                <div className="bg-muted/30 rounded-lg p-3">
+                                                    <div className="flex items-start gap-4">
+                                                        <div className="flex-1 max-w-[75%]">
                                                             <p className="text-sm leading-relaxed">
-                                                                {group.subparagraphs[0].paragraph_text}
+                                                                {paragraph.prefix && (
+                                                                    <span className="font-medium text-un-blue mr-2">
+                                                                        {paragraph.prefix}
+                                                                    </span>
+                                                                )}
+                                                                <span dangerouslySetInnerHTML={{ 
+                                                                    __html: processText(paragraph.text, paragraph.action_verb, paragraph.links) 
+                                                                }} />
                                                             </p>
-                                                        )}
-                                                    </div>
-                                                    <div className="flex-shrink-0 w-[25%] flex flex-col gap-1.5 items-end">
-                                                        {/* Operative badge */}
-                                                        {group.subparagraphs.some(sub => sub.is_op_para) && (
-                                                            <Badge variant="outline" className="text-xs !border-un-blue !text-un-blue bg-un-blue/10">
-                                                                Operative
-                                                            </Badge>
-                                                        )}
+                                                        </div>
+                                                        <div className="flex-shrink-0 w-[25%] flex flex-col gap-1.5 items-end">
+                                                            {/* Operative badge */}
+                                                            {paragraph.paragraph_type === 'operative' && (
+                                                                <Badge variant="outline" className="text-xs !border-un-blue !text-un-blue bg-un-blue/10">
+                                                                    Operative
+                                                                </Badge>
+                                                            )}
+                                                            {/* Paragraph type badge for non-operative types */}
+                                                            {paragraph.paragraph_type && paragraph.paragraph_type !== 'operative' && (
+                                                                <Badge variant="outline" className="text-xs border-gray-300 text-gray-600 bg-gray-50">
+                                                                    {titleCase(paragraph.paragraph_type)}
+                                                                </Badge>
+                                                            )}
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            {/* Subparagraphs - indented with their own boxes showing subparagraph_text */}
-                                            <div className="ml-6 space-y-2">
-                                                {group.subparagraphs
-                                                    .filter(subparagraph => subparagraph.subparagraph_text) // Only show subparagraphs with actual text
-                                                    .map((subparagraph, subIndex) => (
-                                                        <div key={`${group.paragraph_idx}-${subparagraph.subparagraph_idx}`} className="bg-muted/20 rounded-lg p-3">
-                                                            <div className="flex items-start gap-4">
-                                                                <div className="flex-1 max-w-[75%]">
-                                                                    <p className="text-sm leading-relaxed">
-                                                                        {subparagraph.subparagraph_text}
-                                                                    </p>
-                                                                </div>
-                                                                <div className="flex-shrink-0 w-[25%] flex flex-col gap-1.5 items-end">
-                                                                    {/* Space for future badges if needed */}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    ))}
-                                            </div>
-                                        </div>
-                                    ))}
+                                        );
+                                    })}
                                 </div>
                             ) : (
                                 <div className="bg-muted/30 rounded-lg p-3">

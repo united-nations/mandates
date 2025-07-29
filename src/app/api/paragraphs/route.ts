@@ -23,19 +23,31 @@ export async function GET(request: NextRequest) {
 
     let filteredParagraphs = mandate.paragraphs;
 
-    // Filter by operative/non-operative
-    if (isOperative === 'true') {
-      filteredParagraphs = filteredParagraphs.filter(p => p.is_op_para);
-    } else if (isOperative === 'false') {
-      filteredParagraphs = filteredParagraphs.filter(p => !p.is_op_para);
-    }
+    // Filter out frontmatter, backmatter, and titles - only show meaningful content
+    filteredParagraphs = filteredParagraphs.filter(p => 
+      !p.is_frontmatter && 
+      p.type !== 'backmatter' &&
+      p.type !== 'frontmatter' &&
+      p.type !== 'title'
+    );
 
-    // Filter by deliverable type
-    if (deliverableType) {
-      filteredParagraphs = filteredParagraphs.filter(p =>
-        p.deliverable_type && p.deliverable_type.includes(deliverableType)
+    // Filter by operative/non-operative based on paragraph_type
+    // BUT always include headers regardless of filter
+    if (isOperative === 'true') {
+      // Show operative paragraphs + all headers
+      filteredParagraphs = filteredParagraphs.filter(p => 
+        p.type === 'heading' || p.paragraph_type === 'operative'
+      );
+    } else if (isOperative === 'false') {
+      // Show non-operative paragraphs + all headers
+      filteredParagraphs = filteredParagraphs.filter(p => 
+        p.type === 'heading' || (p.paragraph_type && p.paragraph_type !== 'operative')
       );
     }
+    // If isOperative is null/undefined, show all meaningful content (already filtered above)
+
+    // Note: deliverable_type filtering is removed as it's not available in the new structure
+    // If needed in the future, it could be implemented based on action_verb or other fields
 
     return Response.json({ paragraphs: filteredParagraphs });
   } catch (error) {
