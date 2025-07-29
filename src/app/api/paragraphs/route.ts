@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
       );
     } else if (isOperative === 'false') {
       // Show non-operative paragraphs + all headers
-      filteredParagraphs = filteredParagraphs.filter(p => 
+      filteredParagraphs = filteredParagraphs.filter(p =>
         p.type === 'heading' || (p.paragraph_type && p.paragraph_type !== 'operative')
       );
     }

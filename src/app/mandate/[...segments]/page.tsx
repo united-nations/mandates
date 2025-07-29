@@ -39,15 +39,8 @@ function MandatePageContent() {
     const [openTooltip, setOpenTooltip] = useState<string | null>(null)
     const [paragraphFilter, setParagraphFilter] = useState<'all' | 'operative' | 'non-operative'>('operative')
 
-    // Use the new paragraphs API
-    const {
-        paragraphs,
-        isLoading: paragraphsLoading,
-        error: paragraphsError
-    } = useParagraphs({
-        full_document_symbol: documentSymbol,
-        is_op_para: paragraphFilter === 'all' ? undefined : (paragraphFilter === 'operative' ? 'true' : 'false')
-    });
+    // TOC state management - only track active heading, expansion is automatic
+    const [activeHeadingId, setActiveHeadingId] = useState<string | null>(null)
 
     useEffect(() => {
         const fetchMandate = async () => {
@@ -184,7 +177,6 @@ function MandatePageContent() {
         })
     }, [mandate])
 
-
     const budgetDocuments = useMemo(() => {
         if (!mandate || !mandate.citation_info) return []
         const uniqueDocs = new Set<string>()
@@ -195,6 +187,170 @@ function MandatePageContent() {
         })
         return Array.from(uniqueDocs)
     }, [mandate])
+
+    // Use the new paragraphs API
+    const {
+        paragraphs,
+        isLoading: paragraphsLoading,
+        error: paragraphsError
+    } = useParagraphs({
+        full_document_symbol: documentSymbol,
+        is_op_para: paragraphFilter === 'all' ? undefined : (paragraphFilter === 'operative' ? 'true' : 'false')
+    });
+
+    // TOC data structure
+    interface TOCItem {
+        id: string;
+        text: string;
+        level: number;
+        children: TOCItem[];
+        index: number;
+    }
+
+    // Build TOC from paragraphs
+    const tocItems = useMemo((): TOCItem[] => {
+        if (!paragraphs || paragraphs.length === 0) return [];
+
+        const items: TOCItem[] = [];
+        const stack: TOCItem[] = [];
+
+        paragraphs.forEach((paragraph, index) => {
+            if (paragraph.type === 'heading') {
+                const level = paragraph.heading_level || 3;
+                // Include prefix in TOC text if it exists
+                const displayText = paragraph.prefix 
+                    ? `${paragraph.prefix} ${paragraph.text}`
+                    : paragraph.text;
+                const item: TOCItem = {
+                    id: `heading-${index}`,
+                    text: displayText,
+                    level,
+                    children: [],
+                    index
+                };
+
+                // Remove items from stack that are at same or deeper level
+                while (stack.length > 0 && stack[stack.length - 1].level >= level) {
+                    stack.pop();
+                }
+
+                if (stack.length === 0) {
+                    // Top-level item
+                    items.push(item);
+                } else {
+                    // Child item
+                    stack[stack.length - 1].children.push(item);
+                }
+
+                stack.push(item);
+            }
+        });
+
+        return items;
+    }, [paragraphs]);
+
+    // Helper function to check if a section should be expanded based on active heading
+    const isInActivePath = useCallback((item: TOCItem): boolean => {
+        if (!activeHeadingId) return false;
+        
+        // Check if this item or any of its descendants is active
+        const checkDescendants = (currentItem: TOCItem): boolean => {
+            if (currentItem.id === activeHeadingId) return true;
+            return currentItem.children.some(child => checkDescendants(child));
+        };
+        
+        return checkDescendants(item);
+    }, [activeHeadingId]);
+
+    // Intersection Observer for scroll detection
+    useEffect(() => {
+        if (!paragraphs || paragraphs.length === 0 || tocItems.length === 0) return;
+
+        const headingElements = paragraphs
+            .map((paragraph, index) => {
+                if (paragraph.type === 'heading') {
+                    return document.getElementById(`heading-${index}`);
+                }
+                return null;
+            })
+            .filter(Boolean) as HTMLElement[];
+
+        if (headingElements.length === 0) return;
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                // Find the heading that's most visible
+                let mostVisible = entries[0];
+                entries.forEach(entry => {
+                    if (entry.intersectionRatio > mostVisible.intersectionRatio) {
+                        mostVisible = entry;
+                    }
+                });
+
+                if (mostVisible.isIntersecting) {
+                    setActiveHeadingId(mostVisible.target.id);
+                }
+            },
+            {
+                rootMargin: '-20% 0px -60% 0px', // Trigger when heading is in upper portion of viewport
+                threshold: [0, 0.25, 0.5, 0.75, 1]
+            }
+        );
+
+        headingElements.forEach(el => observer.observe(el));
+
+        return () => observer.disconnect();
+    }, [paragraphs, tocItems]);
+
+    // TOC navigation handler
+    const handleTOCClick = (headingId: string) => {
+        const element = document.getElementById(headingId);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    };
+
+    // Render TOC items recursively
+    const renderTOCItem = (item: TOCItem, isTopLevel: boolean = false): React.ReactNode => {
+        const isActive = activeHeadingId === item.id;
+        const hasChildren = item.children.length > 0;
+        const shouldExpand = isInActivePath(item);
+        
+        return (
+            <div key={item.id} className="space-y-1">
+                <div className="flex items-center gap-1">
+                    {hasChildren && (
+                        <button
+                            onClick={() => handleTOCClick(item.id)}
+                            className="p-0.5 hover:bg-gray-100 rounded text-gray-400 hover:text-gray-600"
+                            title={`Go to ${item.text}`}
+                        >
+                            <svg className={`h-3 w-3 transition-transform ${shouldExpand ? 'rotate-90' : ''}`} fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                            </svg>
+                        </button>
+                    )}
+                    <button
+                        onClick={() => handleTOCClick(item.id)}
+                        className={`text-left flex-1 py-1 px-2 rounded text-xs hover:bg-gray-100 transition-colors ${
+                            isActive ? 'bg-un-blue/10 text-un-blue font-medium' : 'text-gray-700 hover:text-gray-900'
+                        } ${isTopLevel ? 'font-medium' : ''}`}
+                        style={{ marginLeft: `${(item.level - 1) * 12}px` }}
+                    >
+                        <span className="line-clamp-2 leading-tight">
+                            {item.text.length > 35 ? `${item.text.substring(0, 35)}...` : item.text}
+                        </span>
+                    </button>
+                </div>
+                
+                {hasChildren && shouldExpand && (
+                    <div className="space-y-1">
+                        {item.children.map(child => renderTOCItem(child, false))}
+                    </div>
+                )}
+            </div>
+        );
+    };
 
     if (loading) {
         return (
@@ -229,7 +385,7 @@ function MandatePageContent() {
     const pdfUrl = mandate.link
 
     return (
-        <div className="pb-20">
+        <div>
             {/* Header */}
             <div className="border-b pr-12 pb-2 md:pb-4 mb-8">
                 <p className="text-base md:text-lg font-medium text-muted-foreground">Mandate Document</p>
@@ -255,7 +411,7 @@ function MandatePageContent() {
             </div>
 
             {/* Content */}
-            <div className="flex-grow overflow-y-auto overflow-x-hidden">
+            <div>
                 <div className="space-y-10 pr-2">
 
                     {/* Compact Metadata List */}
@@ -441,7 +597,7 @@ function MandatePageContent() {
                         </div>
                     )}
 
-                    {/* Operative Paragraphs */}
+                    {/* Paragraphs Section with TOC */}
                     <div className="space-y-4">
                         <div className="flex items-center justify-between pr-4">
                             <h3 className="text-base font-semibold flex items-center gap-2">
@@ -493,116 +649,102 @@ function MandatePageContent() {
                             </div>
                         </div>
 
-                        {/* Paragraphs Content Area - Fixed container to prevent layout shift */}
-                        <div className="min-h-[400px] h-[800px] max-h-[800px] overflow-y-auto overflow-x-visible pr-4 border border-transparent">
-                            {paragraphsLoading ? (
-                                <div className="space-y-3">
-                                    <div className="space-y-2">
-                                        <div className="bg-muted/30 rounded-lg p-3">
-                                            <Skeleton className="h-4 w-3/4 mb-2" />
-                                            <Skeleton className="h-4 w-full mb-1" />
-                                            <Skeleton className="h-4 w-5/6" />
-                                        </div>
-                                        <div className="ml-6 space-y-2">
-                                            <div className="bg-muted/20 rounded-lg p-3">
-                                                <Skeleton className="h-4 w-4/5 mb-1" />
-                                                <Skeleton className="h-4 w-full" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <div className="bg-muted/30 rounded-lg p-3">
-                                            <Skeleton className="h-4 w-2/3 mb-2" />
-                                            <Skeleton className="h-4 w-full mb-1" />
-                                            <Skeleton className="h-4 w-4/5" />
-                                        </div>
-                                        <div className="ml-6 space-y-2">
-                                            <div className="bg-muted/20 rounded-lg p-3">
-                                                <Skeleton className="h-4 w-3/4 mb-1" />
-                                                <Skeleton className="h-4 w-full" />
-                                            </div>
-                                            <div className="bg-muted/20 rounded-lg p-3">
-                                                <Skeleton className="h-4 w-5/6 mb-1" />
-                                                <Skeleton className="h-4 w-full" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <div className="bg-muted/30 rounded-lg p-3">
-                                            <Skeleton className="h-4 w-3/5 mb-2" />
-                                            <Skeleton className="h-4 w-full mb-1" />
-                                            <Skeleton className="h-4 w-3/4" />
-                                        </div>
-                                    </div>
-                                </div>
-                            ) : paragraphsError ? (
-                                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                                    <p className="text-red-700">Error loading paragraphs: {paragraphsError}</p>
-                                </div>
-                            ) : paragraphs && paragraphs.length > 0 ? (
-                                <div className="space-y-4">
-                                    {paragraphs.map((paragraph, index) => {
-                                        // Helper function to process text with links and action verbs
-                                        const processText = (text: string, actionVerb: string | null, links: [string, string][]) => {
-                                            let processedText = text;
-                                            
-                                            // Replace links with clickable elements
-                                            if (links && links.length > 0) {
-                                                links.forEach(([linkText, url]) => {
-                                                    const linkRegex = new RegExp(linkText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
-                                                    processedText = processedText.replace(linkRegex, `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-un-blue hover:underline font-medium">${linkText}</a>`);
-                                                });
-                                            }
-                                            
-                                            // Highlight action verb if present (can appear anywhere in the text)
-                                            if (actionVerb && actionVerb.trim()) {
-                                                const verbRegex = new RegExp(`\\b(${actionVerb.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})\\b`, 'i');
-                                                processedText = processedText.replace(verbRegex, `<span class="font-semibold text-un-blue">$1</span>`);
-                                            }
-                                            
-                                            return processedText;
-                                        };
-
-                                        // Calculate indentation based on paragraph_level
-                                        const indentLevel = paragraph.paragraph_level || 0;
-                                        const indentClass = indentLevel > 1 ? `ml-${Math.min((indentLevel - 1) * 6, 24)}` : '';
-
-                                        // Handle different content types
-                                        if (paragraph.type === 'heading') {
-                                            const HeadingTag = `h${Math.min(paragraph.heading_level || 3, 6)}` as keyof JSX.IntrinsicElements;
-                                            const headingClasses = {
-                                                1: 'text-lg font-bold',
-                                                2: 'text-base font-bold',
-                                                3: 'text-base font-semibold',
-                                                4: 'text-sm font-semibold',
-                                                5: 'text-sm font-medium',
-                                                6: 'text-sm font-medium'
-                                            };
-                                            const headingClass = headingClasses[paragraph.heading_level as keyof typeof headingClasses] || headingClasses[3];
-
-                                            return (
-                                                <div key={`${documentSymbol}-${index}`} className={`${indentClass}`}>
-                                                    <HeadingTag className={`${headingClass} text-foreground mb-3 leading-tight`}>
-                                                        {paragraph.prefix && (
-                                                            <span className="font-medium text-un-blue mr-2">
-                                                                {paragraph.prefix}
-                                                            </span>
-                                                        )}
-                                                        <span dangerouslySetInnerHTML={{ 
-                                                            __html: processText(paragraph.text, paragraph.action_verb, paragraph.links) 
-                                                        }} />
-                                                    </HeadingTag>
-                                                </div>
-                                            );
-                                        }
-
-                                        // Regular paragraphs
-                                        return (
-                                            <div key={`${documentSymbol}-${index}`} className={`${indentClass}`}>
+                        {/* Paragraphs Content with TOC Layout */}
+                        <div className="flex gap-8">
+                            {/* Main paragraph content - narrower to make room for TOC */}
+                            <div className="flex-1 max-w-[65%]">
+                                <div className="pr-4">
+                                    {paragraphsLoading ? (
+                                        <div className="space-y-3">
+                                            <div className="space-y-2">
                                                 <div className="bg-muted/30 rounded-lg p-3">
-                                                    <div className="flex items-start gap-4">
-                                                        <div className="flex-1 max-w-[75%]">
-                                                            <p className="text-sm leading-relaxed">
+                                                    <Skeleton className="h-4 w-3/4 mb-2" />
+                                                    <Skeleton className="h-4 w-full mb-1" />
+                                                    <Skeleton className="h-4 w-5/6" />
+                                                </div>
+                                                <div className="ml-6 space-y-2">
+                                                    <div className="bg-muted/20 rounded-lg p-3">
+                                                        <Skeleton className="h-4 w-4/5 mb-1" />
+                                                        <Skeleton className="h-4 w-full" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="space-y-2">
+                                                <div className="bg-muted/30 rounded-lg p-3">
+                                                    <Skeleton className="h-4 w-2/3 mb-2" />
+                                                    <Skeleton className="h-4 w-full mb-1" />
+                                                    <Skeleton className="h-4 w-4/5" />
+                                                </div>
+                                                <div className="ml-6 space-y-2">
+                                                    <div className="bg-muted/20 rounded-lg p-3">
+                                                        <Skeleton className="h-4 w-3/4 mb-1" />
+                                                        <Skeleton className="h-4 w-full" />
+                                                    </div>
+                                                    <div className="bg-muted/20 rounded-lg p-3">
+                                                        <Skeleton className="h-4 w-5/6 mb-1" />
+                                                        <Skeleton className="h-4 w-full" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="space-y-2">
+                                                <div className="bg-muted/30 rounded-lg p-3">
+                                                    <Skeleton className="h-4 w-3/5 mb-2" />
+                                                    <Skeleton className="h-4 w-full mb-1" />
+                                                    <Skeleton className="h-4 w-3/4" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ) : paragraphsError ? (
+                                        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                                            <p className="text-red-700">Error loading paragraphs: {paragraphsError}</p>
+                                        </div>
+                                    ) : paragraphs && paragraphs.length > 0 ? (
+                                        <div className="space-y-4">
+                                            {paragraphs.map((paragraph, index) => {
+                                                // Helper function to process text with links and action verbs
+                                                const processText = (text: string, actionVerb: string | null, links: [string, string][]) => {
+                                                    let processedText = text;
+                                                    
+                                                    // Replace links with clickable elements
+                                                    if (links && links.length > 0) {
+                                                        links.forEach(([linkText, url]) => {
+                                                            const linkRegex = new RegExp(linkText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+                                                            processedText = processedText.replace(linkRegex, `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-un-blue hover:underline font-medium">${linkText}</a>`);
+                                                        });
+                                                    }
+                                                    
+                                                    // Highlight action verb if present (can appear anywhere in the text)
+                                                    if (actionVerb && actionVerb.trim()) {
+                                                        const verbRegex = new RegExp(`\\b(${actionVerb.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})\\b`, 'i');
+                                                        processedText = processedText.replace(verbRegex, `<span class="font-semibold text-un-blue">$1</span>`);
+                                                    }
+                                                    
+                                                    return processedText;
+                                                };
+
+                                                // Calculate indentation based on paragraph_level
+                                                const indentLevel = paragraph.paragraph_level || 0;
+                                                const indentClass = indentLevel > 1 ? `ml-${Math.min((indentLevel - 1) * 6, 24)}` : '';
+
+                                                // Generate unique ID for headings (for TOC navigation)
+                                                const headingId = paragraph.type === 'heading' ? `heading-${index}` : undefined;
+
+                                                // Handle different content types
+                                                if (paragraph.type === 'heading') {
+                                                    const HeadingTag = `h${Math.min(paragraph.heading_level || 3, 6)}` as keyof JSX.IntrinsicElements;
+                                                    const headingClasses = {
+                                                        1: 'text-lg font-bold',
+                                                        2: 'text-base font-bold',
+                                                        3: 'text-base font-semibold',
+                                                        4: 'text-sm font-semibold',
+                                                        5: 'text-sm font-medium',
+                                                        6: 'text-sm font-medium'
+                                                    };
+                                                    const headingClass = headingClasses[paragraph.heading_level as keyof typeof headingClasses] || headingClasses[3];
+
+                                                    return (
+                                                        <div key={`${documentSymbol}-${index}`} className={`${indentClass}`}>
+                                                            <HeadingTag id={headingId} className={`${headingClass} text-foreground mb-3 leading-tight scroll-mt-4`}>
                                                                 {paragraph.prefix && (
                                                                     <span className="font-medium text-un-blue mr-2">
                                                                         {paragraph.prefix}
@@ -611,35 +753,76 @@ function MandatePageContent() {
                                                                 <span dangerouslySetInnerHTML={{ 
                                                                     __html: processText(paragraph.text, paragraph.action_verb, paragraph.links) 
                                                                 }} />
-                                                            </p>
+                                                            </HeadingTag>
                                                         </div>
-                                                        <div className="flex-shrink-0 w-[25%] flex flex-col gap-1.5 items-end">
-                                                            {/* Operative badge */}
-                                                            {paragraph.paragraph_type === 'operative' && (
-                                                                <Badge variant="outline" className="text-xs !border-un-blue !text-un-blue bg-un-blue/10">
-                                                                    Operative
-                                                                </Badge>
-                                                            )}
-                                                            {/* Paragraph type badge for non-operative types */}
-                                                            {paragraph.paragraph_type && paragraph.paragraph_type !== 'operative' && (
-                                                                <Badge variant="outline" className="text-xs border-gray-300 text-gray-600 bg-gray-50">
-                                                                    {titleCase(paragraph.paragraph_type)}
-                                                                </Badge>
-                                                            )}
+                                                    );
+                                                }
+
+                                                // Regular paragraphs
+                                                return (
+                                                    <div key={`${documentSymbol}-${index}`} className={`${indentClass}`}>
+                                                    <div className="bg-muted/30 rounded-lg p-3">
+                                                        <div className="flex items-start gap-4">
+                                                            <div className="flex-1 max-w-[90%]">
+                                                                    <p className="text-sm leading-relaxed">
+                                                                        {paragraph.prefix && (
+                                                                            <span className="font-medium text-un-blue mr-2">
+                                                                                {paragraph.prefix}
+                                                                            </span>
+                                                                        )}
+                                                                        <span dangerouslySetInnerHTML={{ 
+                                                                            __html: processText(paragraph.text, paragraph.action_verb, paragraph.links) 
+                                                                        }} />
+                                                                    </p>
+                                                            </div>
+                                                            <div className="flex-shrink-0 w-[10%] flex flex-col gap-1.5 items-end">
+                                                                {/* Operative badge */}
+                                                                    {paragraph.paragraph_type === 'operative' && (
+                                                                    <Badge variant="outline" className="text-xs !border-un-blue !text-un-blue bg-un-blue/10">
+                                                                        Operative
+                                                                    </Badge>
+                                                                )}
+                                                                    {/* Paragraph type badge for non-operative types */}
+                                                                    {paragraph.paragraph_type && paragraph.paragraph_type !== 'operative' && (
+                                                                        <Badge variant="outline" className="text-xs border-gray-300 text-gray-600 bg-gray-50">
+                                                                            {titleCase(paragraph.paragraph_type)}
+                                                                        </Badge>
+                                                                    )}
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                );
+                                            })}
+                                        </div>
+                                    ) : (
+                                        <div className="bg-muted/30 rounded-lg p-3">
+                                            <p className="text-sm leading-relaxed text-muted-foreground italic">
+                                                No paragraphs currently available for this document.
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Floating TOC - Right side, only for paragraphs section */}
+                            <div className="w-[30%] flex-shrink-0">
+                                <div className="sticky top-4 bg-white rounded-lg p-4 mb-8">
+                                    <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                                        <FileText className="h-4 w-4" />
+                                        Table of Contents
+                                    </h4>
+                                    <div className="space-y-1">
+                                        {tocItems.length > 0 ? (
+                                            tocItems.map(item => renderTOCItem(item, true))
+                                        ) : (
+                                            <div className="text-xs text-gray-500 italic">
+                                                No headings found in this document.
                                             </div>
-                                        );
-                                    })}
+                                        )}
+                                    </div>
                                 </div>
-                            ) : (
-                                <div className="bg-muted/30 rounded-lg p-3">
-                                    <p className="text-sm leading-relaxed text-muted-foreground italic">
-                                        No paragraphs currently available for this document.
-                                    </p>
-                                </div>
-                            )}
+                            </div>
                         </div>
                     </div>
                 </div>
