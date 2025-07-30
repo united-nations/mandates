@@ -724,7 +724,20 @@ function MandatePageContent() {
 
                                                 // Calculate indentation based on paragraph_level
                                                 const indentLevel = paragraph.paragraph_level || 0;
-                                                const indentClass = indentLevel > 1 ? `ml-${Math.min((indentLevel - 1) * 6, 24)}` : '';
+                                                const getIndentClass = (level: number): string => {
+                                                    if (level <= 1) return '';
+                                                    switch (level) {
+                                                        case 2: return 'ml-6';
+                                                        case 3: return 'ml-12';
+                                                        case 4: return 'ml-18';
+                                                        case 5: return 'ml-24';
+                                                        case 6: return 'ml-30';
+                                                        case 7: return 'ml-36';
+                                                        case 8: return 'ml-42';
+                                                        default: return 'ml-48'; // For very deep nesting
+                                                    }
+                                                };
+                                                const indentClass = getIndentClass(indentLevel);
 
                                                 // Generate unique ID for headings (for TOC navigation)
                                                 const headingId = paragraph.type === 'heading' ? `heading-${index}` : undefined;
