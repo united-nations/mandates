@@ -188,15 +188,41 @@ function MandatePageContent() {
         return Array.from(uniqueDocs)
     }, [mandate])
 
-    // Use the new paragraphs API
+    // Use the new paragraphs API - always fetch all paragraphs
     const {
-        paragraphs,
+        paragraphs: allParagraphs,
         isLoading: paragraphsLoading,
         error: paragraphsError
     } = useParagraphs({
         full_document_symbol: documentSymbol,
-        is_op_para: paragraphFilter === 'all' ? undefined : (paragraphFilter === 'operative' ? 'true' : 'false')
+        // Always fetch all paragraphs, filtering will be done in frontend
+        is_op_para: undefined
     });
+
+    // Frontend filtering of paragraphs
+    const paragraphs = useMemo(() => {
+        if (!allParagraphs) return allParagraphs;
+        
+        if (paragraphFilter === 'all') {
+            return allParagraphs;
+        }
+        
+        return allParagraphs.filter(paragraph => {
+            // Always show headings
+            if (paragraph.type === 'heading') {
+                return true;
+            }
+            
+            // Filter based on paragraph type
+            if (paragraphFilter === 'operative') {
+                return paragraph.paragraph_type === 'operative';
+            } else if (paragraphFilter === 'non-operative') {
+                return paragraph.paragraph_type !== 'operative';
+            }
+            
+            return true;
+        });
+    }, [allParagraphs, paragraphFilter]);
 
     // TOC data structure
     interface TOCItem {
@@ -319,17 +345,20 @@ function MandatePageContent() {
         return (
             <div key={item.id} className="space-y-1">
                 <div className="flex items-center gap-1">
-                    {hasChildren && (
-                        <button
-                            onClick={() => handleTOCClick(item.id)}
-                            className="p-0.5 hover:bg-gray-100 rounded text-gray-400 hover:text-gray-600"
-                            title={`Go to ${item.text}`}
-                        >
-                            <svg className={`h-3 w-3 transition-transform ${shouldExpand ? 'rotate-90' : ''}`} fill="currentColor" viewBox="0 0 20 20">
-                                <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                            </svg>
-                        </button>
-                    )}
+                    {/* Always reserve space for expand button to maintain alignment */}
+                    <div className="w-4 h-4 flex items-center justify-center flex-shrink-0">
+                        {hasChildren && (
+                            <button
+                                onClick={() => handleTOCClick(item.id)}
+                                className="p-0.5 hover:bg-gray-100 rounded text-gray-400 hover:text-gray-600"
+                                title={`Go to ${item.text}`}
+                            >
+                                <svg className={`h-3 w-3 transition-transform ${shouldExpand ? 'rotate-90' : ''}`} fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                                </svg>
+                            </button>
+                        )}
+                    </div>
                     <button
                         onClick={() => handleTOCClick(item.id)}
                         className={`text-left flex-1 py-1 px-2 rounded text-xs hover:bg-gray-100 transition-colors ${
@@ -742,6 +771,72 @@ function MandatePageContent() {
                                                 // Generate unique ID for headings (for TOC navigation)
                                                 const headingId = paragraph.type === 'heading' ? `heading-${index}` : undefined;
 
+                                                // Check if this is a heading and if it has any visible paragraphs following it
+                                                const isHeading = paragraph.type === 'heading';
+                                                let hasVisibleParagraphsAfter = false;
+                                                let hasHiddenParagraphsAfter = false;
+                                                let nextHeadingIndex = -1;
+                                                
+                                                if (isHeading) {
+                                                    // Find the next heading at the same or higher level in filtered paragraphs
+                                                    const currentLevel = paragraph.heading_level || 3;
+                                                    for (let i = index + 1; i < paragraphs.length; i++) {
+                                                        const nextParagraph = paragraphs[i];
+                                                        if (nextParagraph.type === 'heading' && (nextParagraph.heading_level || 3) <= currentLevel) {
+                                                            nextHeadingIndex = i;
+                                                            break;
+                                                        }
+                                                    }
+                                                    
+                                                    // Check if there are any non-heading paragraphs between this heading and the next in filtered results
+                                                    const endIndex = nextHeadingIndex === -1 ? paragraphs.length : nextHeadingIndex;
+                                                    for (let i = index + 1; i < endIndex; i++) {
+                                                        if (paragraphs[i].type !== 'heading') {
+                                                            hasVisibleParagraphsAfter = true;
+                                                            break;
+                                                        }
+                                                    }
+                                                    
+                                                    // Check if there are hidden paragraphs in this section (only if filtering and no visible paragraphs)
+                                                    if (!hasVisibleParagraphsAfter && paragraphFilter !== 'all' && allParagraphs) {
+                                                        // Find the corresponding heading in allParagraphs
+                                                        const allHeadingIndex = allParagraphs.findIndex(p => 
+                                                            p.type === 'heading' && 
+                                                            p.text === paragraph.text && 
+                                                            p.prefix === paragraph.prefix
+                                                        );
+                                                        
+                                                        if (allHeadingIndex !== -1) {
+                                                            // Find the next heading at the same or higher level in all paragraphs
+                                                            let allNextHeadingIndex = -1;
+                                                            for (let i = allHeadingIndex + 1; i < allParagraphs.length; i++) {
+                                                                const nextParagraph = allParagraphs[i];
+                                                                if (nextParagraph.type === 'heading' && (nextParagraph.heading_level || 3) <= currentLevel) {
+                                                                    allNextHeadingIndex = i;
+                                                                    break;
+                                                                }
+                                                            }
+                                                            
+                                                            // Check if there are any non-heading paragraphs that would match the filter
+                                                            const allEndIndex = allNextHeadingIndex === -1 ? allParagraphs.length : allNextHeadingIndex;
+                                                            for (let i = allHeadingIndex + 1; i < allEndIndex; i++) {
+                                                                const p = allParagraphs[i];
+                                                                if (p.type !== 'heading') {
+                                                                    // Check if this paragraph would be hidden by current filter
+                                                                    const wouldBeVisible = paragraphFilter === 'operative' 
+                                                                        ? p.paragraph_type === 'operative'
+                                                                        : p.paragraph_type !== 'operative';
+                                                                    
+                                                                    if (!wouldBeVisible) {
+                                                                        hasHiddenParagraphsAfter = true;
+                                                                        break;
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
                                                 // Handle different content types
                                                 if (paragraph.type === 'heading') {
                                                     const HeadingTag = `h${Math.min(paragraph.heading_level || 3, 6)}` as keyof JSX.IntrinsicElements;
@@ -756,17 +851,25 @@ function MandatePageContent() {
                                                     const headingClass = headingClasses[paragraph.heading_level as keyof typeof headingClasses] || headingClasses[3];
 
                                                     return (
-                                                        <div key={`${documentSymbol}-${index}`} className={`${indentClass}`}>
-                                                            <HeadingTag id={headingId} className={`${headingClass} text-foreground mb-3 leading-tight scroll-mt-4`}>
-                                                                {paragraph.prefix && (
-                                                                    <span className="font-medium text-un-blue mr-2">
-                                                                        {paragraph.prefix}
-                                                                    </span>
-                                                                )}
-                                                                <span dangerouslySetInnerHTML={{ 
-                                                                    __html: processText(paragraph.text, paragraph.action_verb, paragraph.links) 
-                                                                }} />
-                                                            </HeadingTag>
+                                                        <div key={`${documentSymbol}-${index}`}>
+                                                            <div className={`${indentClass}`}>
+                                                                <HeadingTag id={headingId} className={`${headingClass} text-foreground mb-3 leading-tight scroll-mt-4`}>
+                                                                    {paragraph.prefix && (
+                                                                        <span className="font-medium text-un-blue mr-2">
+                                                                            {paragraph.prefix}
+                                                                        </span>
+                                                                    )}
+                                                                    <span dangerouslySetInnerHTML={{ 
+                                                                        __html: processText(paragraph.text, paragraph.action_verb, paragraph.links) 
+                                                                    }} />
+                                                                </HeadingTag>
+                                                            </div>
+                                                            {/* Show disclaimer only if heading has hidden paragraphs due to filtering */}
+                                                            {!hasVisibleParagraphsAfter && hasHiddenParagraphsAfter && (
+                                                                <p className="text-xs text-muted-foreground italic mb-3">
+                                                                    No {paragraphFilter === 'operative' ? 'operative' : 'non-operative'} paragraphs in this section.
+                                                                </p>
+                                                            )}
                                                         </div>
                                                     );
                                                 }
