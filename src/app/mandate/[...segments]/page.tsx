@@ -385,7 +385,7 @@ function MandatePageContent() {
     const pdfUrl = mandate.link
 
     return (
-        <div>
+        <div className="pb-12">
             {/* Header */}
             <div className="border-b pr-12 pb-2 md:pb-4 mb-8">
                 <p className="text-base md:text-lg font-medium text-muted-foreground">Mandate Document</p>
@@ -763,7 +763,7 @@ function MandatePageContent() {
                                                     <div key={`${documentSymbol}-${index}`} className={`${indentClass}`}>
                                                     <div className="bg-muted/30 rounded-lg p-3">
                                                         <div className="flex items-start gap-4">
-                                                            <div className="flex-1 max-w-[90%]">
+                                                            <div className="flex-1 max-w-[85%]">
                                                                     <p className="text-sm leading-relaxed">
                                                                         {paragraph.prefix && (
                                                                             <span className="font-medium text-un-blue mr-2">
@@ -775,7 +775,7 @@ function MandatePageContent() {
                                                                         }} />
                                                                     </p>
                                                             </div>
-                                                            <div className="flex-shrink-0 w-[10%] flex flex-col gap-1.5 items-end">
+                                                            <div className="flex-shrink-0 w-[15%] flex flex-col gap-1.5 items-end">
                                                                 {/* Operative badge */}
                                                                     {paragraph.paragraph_type === 'operative' && (
                                                                     <Badge variant="outline" className="text-xs !border-un-blue !text-un-blue bg-un-blue/10">

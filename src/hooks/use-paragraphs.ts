@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import type { OperativeParagraph } from '@/types';
+import type { Paragraph } from '@/types';
 
 interface UseParagraphsParams {
   full_document_symbol: string;
@@ -10,7 +10,7 @@ interface UseParagraphsParams {
 }
 
 export function useParagraphs(params: UseParagraphsParams) {
-  const [paragraphs, setParagraphs] = useState<OperativeParagraph[]>([]);
+  const [paragraphs, setParagraphs] = useState<Paragraph[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

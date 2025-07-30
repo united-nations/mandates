@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import DataService from '@/lib/data-service'
-import type { OperativeParagraph } from '@/types'
+import type { Paragraph } from '@/types'
 
 export async function GET(request: NextRequest) {
   try {
@@ -23,12 +23,14 @@ export async function GET(request: NextRequest) {
 
     let filteredParagraphs = mandate.paragraphs;
 
-    // Filter out frontmatter, backmatter, and titles - only show meaningful content
+    // Filter out frontmatter, backmatter, footers, titles, and non-English content - only show meaningful content
     filteredParagraphs = filteredParagraphs.filter(p => 
       !p.is_frontmatter && 
       p.type !== 'backmatter' &&
       p.type !== 'frontmatter' &&
-      p.type !== 'title'
+      p.type !== 'footer' &&
+      p.type !== 'title' &&
+      (!p.language || p.language.toLowerCase() === 'english')
     );
 
     // Filter by operative/non-operative based on paragraph_type

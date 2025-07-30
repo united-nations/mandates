@@ -1,5 +1,5 @@
 // Core data types based on the JSON structure
-export interface OperativeParagraph {
+export interface Paragraph {
   text: string;
   is_frontmatter: boolean;
   type: string; // "title", "paragraph", "heading", etc.
@@ -11,6 +11,7 @@ export interface OperativeParagraph {
   action_verb_type: string | null; // "preambular", "operative"
   action_verb_normalized: string | null;
   links: [string, string][] | []; // Array of [text, url] tuples
+  language: string | null; // Language of the text block
 }
 
 export interface CitationInfo {
@@ -83,7 +84,7 @@ export interface Mandate {
   action_note_date: string[] | null;
   related_documents: string[] | null;
   vote_summary: string[] | null;
-  paragraphs?: OperativeParagraph[] | null;
+  paragraphs?: Paragraph[] | null;
   programme?: string;
   text?: string;
   ai_summary?: string;
