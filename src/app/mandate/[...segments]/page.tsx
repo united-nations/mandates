@@ -292,41 +292,143 @@ function MandatePageContent() {
     useEffect(() => {
         if (!paragraphs || paragraphs.length === 0 || tocItems.length === 0) return;
 
-        const headingElements = paragraphs
-            .map((paragraph, index) => {
-                if (paragraph.type === 'heading') {
-                    return document.getElementById(`heading-${index}`);
-                }
-                return null;
-            })
-            .filter(Boolean) as HTMLElement[];
-
-        if (headingElements.length === 0) return;
-
-        const observer = new IntersectionObserver(
-            (entries) => {
-                // Find the heading that's most visible
-                let mostVisible = entries[0];
-                entries.forEach(entry => {
-                    if (entry.intersectionRatio > mostVisible.intersectionRatio) {
-                        mostVisible = entry;
+        // Add a small delay to ensure DOM elements are rendered
+        const timeoutId = setTimeout(() => {
+            const headingElements = paragraphs
+                .map((paragraph, index) => {
+                    if (paragraph.type === 'heading') {
+                        return document.getElementById(`heading-${index}`);
                     }
-                });
+                    return null;
+                })
+                .filter(Boolean) as HTMLElement[];
 
-                if (mostVisible.isIntersecting) {
-                    setActiveHeadingId(mostVisible.target.id);
-                }
-            },
-            {
-                rootMargin: '-20% 0px -60% 0px', // Trigger when heading is in upper portion of viewport
-                threshold: [0, 0.25, 0.5, 0.75, 1]
+            if (headingElements.length === 0) {
+                // Try again after a longer delay if no elements found
+                const retryTimeoutId = setTimeout(() => {
+                    const retryElements = paragraphs
+                        .map((paragraph, index) => {
+                            if (paragraph.type === 'heading') {
+                                return document.getElementById(`heading-${index}`);
+                            }
+                            return null;
+                        })
+                        .filter(Boolean) as HTMLElement[];
+
+                    if (retryElements.length === 0) return;
+
+                    const observer = new IntersectionObserver(
+                        (entries) => {
+                            if (entries.length === 0) return;
+
+                            // Sort entries by their position in the document
+                            const sortedEntries = entries.sort((a, b) => {
+                                const aRect = a.boundingClientRect;
+                                const bRect = b.boundingClientRect;
+                                return aRect.top - bRect.top;
+                            });
+
+                            // Find the best heading to highlight
+                            let activeEntry = null;
+
+                            // First, try to find an intersecting heading
+                            const intersectingEntries = sortedEntries.filter(entry => entry.isIntersecting);
+                            if (intersectingEntries.length > 0) {
+                                // Use the first intersecting heading (topmost)
+                                activeEntry = intersectingEntries[0];
+                            } else {
+                                // No headings are intersecting, find the last heading above the viewport
+                                const aboveViewport = sortedEntries.filter(entry => 
+                                    entry.boundingClientRect.bottom < 0
+                                );
+                                if (aboveViewport.length > 0) {
+                                    activeEntry = aboveViewport[aboveViewport.length - 1]; // Last one above viewport
+                                } else {
+                                    // All headings are below viewport, use the first one
+                                    activeEntry = sortedEntries[0];
+                                }
+                            }
+
+                            if (activeEntry) {
+                                setActiveHeadingId(activeEntry.target.id);
+                            }
+                        },
+                        {
+                            rootMargin: '-20% 0px -60% 0px', // Trigger when heading is in upper portion of viewport
+                            threshold: [0, 0.25, 0.5, 0.75, 1]
+                        }
+                    );
+
+                    retryElements.forEach(el => observer.observe(el));
+
+                    // Return cleanup function for retry observer
+                    return () => observer.disconnect();
+                }, 100);
+
+                return () => clearTimeout(retryTimeoutId);
             }
-        );
 
-        headingElements.forEach(el => observer.observe(el));
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    if (entries.length === 0) return;
 
-        return () => observer.disconnect();
-    }, [paragraphs, tocItems]);
+                    // Sort entries by their position in the document
+                    const sortedEntries = entries.sort((a, b) => {
+                        const aRect = a.boundingClientRect;
+                        const bRect = b.boundingClientRect;
+                        return aRect.top - bRect.top;
+                    });
+
+                    // Find the best heading to highlight
+                    let activeEntry = null;
+
+                    // First, try to find an intersecting heading
+                    const intersectingEntries = sortedEntries.filter(entry => entry.isIntersecting);
+                    if (intersectingEntries.length > 0) {
+                        // Use the first intersecting heading (topmost)
+                        activeEntry = intersectingEntries[0];
+                    } else {
+                        // No headings are intersecting, find the last heading above the viewport
+                        const aboveViewport = sortedEntries.filter(entry => 
+                            entry.boundingClientRect.bottom < 0
+                        );
+                        if (aboveViewport.length > 0) {
+                            activeEntry = aboveViewport[aboveViewport.length - 1]; // Last one above viewport
+                        } else {
+                            // All headings are below viewport, use the first one
+                            activeEntry = sortedEntries[0];
+                        }
+                    }
+
+                    if (activeEntry) {
+                        setActiveHeadingId(activeEntry.target.id);
+                    }
+                },
+                {
+                    rootMargin: '-20% 0px -60% 0px', // Trigger when heading is in upper portion of viewport
+                    threshold: [0, 0.25, 0.5, 0.75, 1]
+                }
+            );
+
+            headingElements.forEach(el => observer.observe(el));
+
+            return () => observer.disconnect();
+        }, 50); // Small delay to ensure DOM is ready
+
+        return () => clearTimeout(timeoutId);
+    }, [paragraphs]); // Remove tocItems from dependencies as it's derived from paragraphs
+
+    // Set initial active heading when paragraphs first load
+    useEffect(() => {
+        if (!paragraphs || paragraphs.length === 0 || activeHeadingId !== null) return;
+
+        // Find the first heading and set it as active
+        const firstHeading = paragraphs.find(p => p.type === 'heading');
+        if (firstHeading) {
+            const firstHeadingIndex = paragraphs.indexOf(firstHeading);
+            setActiveHeadingId(`heading-${firstHeadingIndex}`);
+        }
+    }, [paragraphs, activeHeadingId]);
 
     // TOC navigation handler
     const handleTOCClick = (headingId: string) => {
