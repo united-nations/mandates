@@ -15,6 +15,8 @@ import {
     DropdownMenuContent,
     DropdownMenuItem
 } from '@/components/ui/dropdown-menu'
+import Clarity from '@microsoft/clarity'
+import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { BackButton } from '@/components/ui/back-button'
 import { Roboto } from 'next/font/google'
@@ -36,6 +38,15 @@ export default function RootLayout({
 }>) {
     const pathname = usePathname()
     const isMainPage = pathname === '/'
+
+    // Initialize Microsoft Clarity with a delay to not block initial render
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            Clarity.init('s4kksugeb9')
+        }, 1000) // Delay Clarity initialization by 1 second
+
+        return () => clearTimeout(timer)
+    }, [])
     return (
         <html lang='en' className={roboto.variable}>
             <head>
