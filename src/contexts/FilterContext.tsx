@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode, Suspense } from 'react'
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 import { FILTER_PARAMS, ADDITIONAL_FILTER_PARAMS, type FilterParamKey } from '@/lib/filter-constants'
+import { LoadingFallback } from '@/components/ui/loading-fallback'
 
 export interface FilterType {
   entity?: string
@@ -163,7 +164,7 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
 
 export function FilterProvider({ children }: { children: ReactNode }) {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<LoadingFallback />}>
       <FilterProviderInner>{children}</FilterProviderInner>
     </Suspense>
   )
