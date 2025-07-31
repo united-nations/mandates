@@ -31,7 +31,7 @@ export function MandateMetadata({ mandate }: MandateMetadataProps) {
         {mandate.body ? (
           <Badge
             variant="stronger"
-            className="text-xs cursor-pointer hover:bg-primary/80 transition-colors"
+            className="text-xs cursor-pointer hover:bg-secondary/80 transition-colors"
             onClick={() => {
               // Navigate to organ detail page
               window.location.href = `/organ/${encodeURIComponent(mandate.body)}`
@@ -75,7 +75,7 @@ export function MandateMetadata({ mandate }: MandateMetadataProps) {
                 <Badge
                   key={index}
                   variant="stronger"
-                  className="text-xs cursor-pointer hover:bg-primary/80 transition-colors"
+                  className="text-xs cursor-pointer hover:bg-secondary/80 transition-colors"
                   onClick={() => {
                     // Navigate to filtered results using the budget document slug
                     const url = new URL(window.location.origin + '/')
