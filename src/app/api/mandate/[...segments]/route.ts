@@ -4,11 +4,14 @@ import type { Mandate, Paragraph } from '@/types'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { segments: string[] } }
+  { params }: { params: Promise<{ segments: string[] }> }
 ) {
   try {
+    // Await params before using its properties
+    const { segments } = await params
+    
     // Reconstruct the full document symbol from segments (same as mandate page)
-    const documentSymbol = params.segments.map(segment => decodeURIComponent(segment)).join('/')
+    const documentSymbol = segments.map(segment => decodeURIComponent(segment)).join('/')
     
     // Get all mandates and find the one we need
     const mandates = await DataService.getMandates()
