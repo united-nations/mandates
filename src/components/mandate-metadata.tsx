@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { titleCase } from 'title-case'
 import { getOriginDocumentDisplayName, getBudgetDocumentSlug } from '@/lib/budget-documents'
@@ -12,6 +12,8 @@ interface MandateMetadataProps {
 }
 
 export function MandateMetadata({ mandate }: MandateMetadataProps) {
+  const [showAllSubjects, setShowAllSubjects] = useState(false)
+  const SUBJECTS_DEFAULT_SHOWN = 20
   const budgetDocuments = useMemo(() => {
     if (!mandate || !mandate.citation_info) return []
     const uniqueDocs = new Set<string>()
@@ -106,25 +108,36 @@ export function MandateMetadata({ mandate }: MandateMetadataProps) {
           }
         >
           <div className="flex flex-wrap gap-1.5">
-            {mandate.subject_headings
-              .slice()
-              .sort((a, b) => a.localeCompare(b))
-              .map((heading, index) => (
-                <Badge
-                  key={index}
-                  variant="outline"
-                  className="text-xs font-normal !border-un-blue cursor-pointer hover:bg-un-blue/10 transition-colors"
-                  onClick={() => {
-                    // Navigate to filtered results with only the subject filter
-                    const url = new URL(window.location.origin + '/')
-                    url.searchParams.set('page', '1')
-                    url.searchParams.set('subject', heading.trim())
-                    window.location.href = url.toString()
-                  }}
-                >
-                  {titleCase(heading.toLowerCase())}
-                </Badge>
-              ))}
+            {(showAllSubjects || mandate.subject_headings.length <= SUBJECTS_DEFAULT_SHOWN
+              ? mandate.subject_headings.slice().sort((a, b) => a.localeCompare(b))
+              : mandate.subject_headings.slice().sort((a, b) => a.localeCompare(b)).slice(0, SUBJECTS_DEFAULT_SHOWN)
+            ).map((heading, index) => (
+              <Badge
+                key={index}
+                variant="outline"
+                className="text-xs font-normal !border-un-blue cursor-pointer hover:bg-un-blue/10 transition-colors"
+                onClick={() => {
+                  // Navigate to filtered results with only the subject filter
+                  const url = new URL(window.location.origin + '/')
+                  url.searchParams.set('page', '1')
+                  url.searchParams.set('subject', heading.trim())
+                  window.location.href = url.toString()
+                }}
+              >
+                {titleCase(heading.toLowerCase())}
+              </Badge>
+            ))}
+            {mandate.subject_headings.length > SUBJECTS_DEFAULT_SHOWN && (
+              <button
+                type="button"
+                className="text-sm text-un-blue hover:text-un-blue/80 ml-1"
+                onClick={() => setShowAllSubjects(!showAllSubjects)}
+              >
+                {showAllSubjects
+                  ? 'Show less'
+                  : `Show ${mandate.subject_headings.length - SUBJECTS_DEFAULT_SHOWN} more`}
+              </button>
+            )}
           </div>
         </MetadataItem>
       )}
