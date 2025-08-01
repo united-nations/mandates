@@ -1,12 +1,13 @@
 'use client'
 
 import { useState, useMemo, useEffect, useCallback } from 'react'
-import { FileCheck, FileText, HelpCircle } from 'lucide-react'
+import { FileCheck, FileText, HelpCircle, Menu } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { titleCase } from 'title-case'
 import { explainerTexts } from '@/lib/explainer-texts'
+import { useIsMobile } from '@/hooks/use-mobile'
 import type { Paragraph } from '@/types'
 
 interface ParagraphsSectionProps {
@@ -29,6 +30,9 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
   const [paragraphFilter, setParagraphFilter] = useState<'all' | 'operative' | 'non-operative'>('operative')
   const [activeHeadingId, setActiveHeadingId] = useState<string | null>(null)
   const [openTooltip, setOpenTooltip] = useState<string | null>(null)
+  const [isMobileTOCOpen, setIsMobileTOCOpen] = useState(false)
+  
+  const isMobile = useIsMobile()
 
   // Frontend filtering of paragraphs
   const paragraphs = useMemo(() => {
@@ -260,12 +264,15 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
     }
   }
 
-  // Close tooltip when clicking outside
+  // Close tooltip and mobile TOC when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element
       if (!target.closest('.tooltip-container')) {
         setOpenTooltip(null)
+      }
+      if (!target.closest('.mobile-toc-container')) {
+        setIsMobileTOCOpen(false)
       }
     }
 
@@ -281,7 +288,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
       }
     }
 
-    if (openTooltip) {
+    if (openTooltip || isMobileTOCOpen) {
       document.addEventListener('mousedown', handleClickOutside)
       window.addEventListener('scroll', handleScroll, true)
       window.addEventListener('resize', handleResize)
@@ -291,7 +298,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
         window.removeEventListener('resize', handleResize)
       }
     }
-  }, [openTooltip])
+  }, [openTooltip, isMobileTOCOpen])
 
   const toggleTooltip = (tooltipId: string) => {
     setOpenTooltip(openTooltip === tooltipId ? null : tooltipId)
@@ -415,11 +422,46 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
         </div>
       </div>
 
+      {/* Mobile TOC - Floating button and expandable panel */}
+      {isMobile && (
+        <div className="mobile-toc-container">
+          {/* Floating TOC Button */}
+          <button
+            onClick={() => setIsMobileTOCOpen(!isMobileTOCOpen)}
+            className="fixed top-4 left-4 z-50 bg-white border border-gray-200 rounded-lg p-2 shadow-lg hover:bg-gray-50 transition-colors"
+            aria-label="Toggle table of contents"
+          >
+            <Menu className="h-4 w-4 text-gray-700" />
+          </button>
+          
+          {/* Expandable TOC Panel */}
+          {isMobileTOCOpen && (
+            <div className="fixed top-14 left-4 z-40 bg-white border border-gray-200 rounded-lg shadow-lg max-w-xs w-80 max-h-96 overflow-y-auto">
+              <div className="p-4">
+                <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <FileText className="h-4 w-4" />
+                  Table of Contents
+                </h4>
+                <div className="space-y-1">
+                  {tocItems.length > 0 ? (
+                    tocItems.map(item => renderTOCItem(item, true))
+                  ) : (
+                    <div className="text-xs text-gray-500 italic">
+                      No headings found in this document.
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Paragraphs Content with TOC Layout */}
-      <div className="flex gap-8">
-        {/* Main paragraph content - narrower to make room for TOC */}
-        <div className="flex-1 max-w-[65%]">
-          <div className="pr-4">
+      <div className={isMobile ? "w-full" : "flex gap-8"}>
+        {/* Main paragraph content */}
+        <div className={isMobile ? "w-full" : "flex-1 max-w-[65%]"}>
+          <div className={isMobile ? "" : "pr-4"}>
             {isLoading ? (
               <div className="space-y-3">
                 <div className="space-y-2">
@@ -637,24 +679,26 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
           </div>
         </div>
 
-        {/* Floating TOC - Right side, only for paragraphs section */}
-        <div className="w-[30%] flex-shrink-0">
-          <div className="sticky top-4 bg-white rounded-lg p-4 mb-8">
-            <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-              <FileText className="h-4 w-4" />
-              Table of Contents
-            </h4>
-            <div className="space-y-1">
-              {tocItems.length > 0 ? (
-                tocItems.map(item => renderTOCItem(item, true))
-              ) : (
-                <div className="text-xs text-gray-500 italic">
-                  No headings found in this document.
-                </div>
-              )}
+        {/* Desktop TOC Sidebar - Right side, only for paragraphs section */}
+        {!isMobile && (
+          <div className="w-[30%] flex-shrink-0">
+            <div className="sticky top-4 bg-white rounded-lg p-4 mb-8">
+              <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                <FileText className="h-4 w-4" />
+                Table of Contents
+              </h4>
+              <div className="space-y-1">
+                {tocItems.length > 0 ? (
+                  tocItems.map(item => renderTOCItem(item, true))
+                ) : (
+                  <div className="text-xs text-gray-500 italic">
+                    No headings found in this document.
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   )
