@@ -27,7 +27,7 @@ interface TOCItem {
 }
 
 export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, isLoading, error }: ParagraphsSectionProps) {
-  const [paragraphFilter, setParagraphFilter] = useState<'all' | 'operative' | 'non-operative'>('operative')
+  const [paragraphFilter, setParagraphFilter] = useState<'all' | 'operative'>('operative')
   const [activeHeadingId, setActiveHeadingId] = useState<string | null>(null)
   const [openTooltip, setOpenTooltip] = useState<string | null>(null)
   const [isMobileTOCOpen, setIsMobileTOCOpen] = useState(false)
@@ -53,8 +53,6 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
       // Filter based on paragraph type
       if (paragraphFilter === 'operative') {
         return paragraph.paragraph_type === 'operative'
-      } else if (paragraphFilter === 'non-operative') {
-        return paragraph.paragraph_type !== 'operative'
       }
       
       return true
@@ -401,53 +399,47 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
 
   return (
     <div className="space-y-4">
-      <div ref={paragraphsTitleRef} className="flex items-center justify-between pr-4">
-        <h3 className="text-base font-semibold flex items-center gap-2">
-          <FileCheck className="h-4 w-4" />
-          <span>{explainerTexts.mandateDetail.paragraphs.title}</span>
-          <div className="relative tooltip-container">
-            <button
-              type="button"
-              className="p-0 border-0 bg-transparent cursor-help focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 rounded-sm flex items-center"
-              aria-label="Information about paragraph extraction"
-              onClick={() => toggleTooltip('paragraphs-beta')}
-            >
-              <HelpCircle className="h-4 w-4 text-muted-foreground" />
-            </button>
-            {openTooltip === 'paragraphs-beta' && (
-              <div className="absolute left-0 top-6 z-50 w-80 p-3 bg-white border rounded-md shadow-lg text-sm font-normal">
-                <p>{explainerTexts.mandateDetail.paragraphs.betaDisclaimer}</p>
-              </div>
-            )}
-          </div>
-        </h3>
+      <div ref={paragraphsTitleRef} className="pr-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0">
+          <h3 className="text-base font-semibold flex items-center gap-2">
+            <FileCheck className="h-4 w-4" />
+            <span>{explainerTexts.mandateDetail.paragraphs.title}</span>
+            <div className="relative tooltip-container">
+              <button
+                type="button"
+                className="p-0 border-0 bg-transparent cursor-help focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 rounded-sm flex items-center"
+                aria-label="Information about paragraph extraction"
+                onClick={() => toggleTooltip('paragraphs-beta')}
+              >
+                <HelpCircle className="h-4 w-4 text-muted-foreground" />
+              </button>
+              {openTooltip === 'paragraphs-beta' && (
+                <div className="absolute left-0 top-6 z-50 w-80 p-3 bg-white border rounded-md shadow-lg text-sm font-normal">
+                  <p>{explainerTexts.mandateDetail.paragraphs.betaDisclaimer}</p>
+                </div>
+              )}
+            </div>
+          </h3>
 
-        {/* Filter buttons */}
-        <div className="flex gap-1 items-center">
-          <Button
-            variant="ghost"
-            size="sm"
-            className={`text-xs h-7 border ${paragraphFilter === 'operative' ? '!border-un-blue !text-un-blue bg-un-blue/10 hover:!text-un-blue hover:bg-un-blue/20' : 'border-gray-200 hover:border-gray-300'}`}
-            onClick={() => setParagraphFilter('operative')}
-          >
-            Operative
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className={`text-xs h-7 border ${paragraphFilter === 'non-operative' ? '!border-un-blue !text-un-blue bg-un-blue/10 hover:!text-un-blue hover:bg-un-blue/20' : 'border-gray-200 hover:border-gray-300'}`}
-            onClick={() => setParagraphFilter('non-operative')}
-          >
-            Non-operative
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className={`text-xs h-7 border ${paragraphFilter === 'all' ? '!border-un-blue !text-un-blue bg-un-blue/10 hover:!text-un-blue hover:bg-un-blue/20' : 'border-gray-200 hover:border-gray-300'}`}
-            onClick={() => setParagraphFilter('all')}
-          >
-            All
-          </Button>
+          {/* Filter buttons */}
+          <div className="flex gap-1 items-center">
+            <Button
+              variant="ghost"
+              size="sm"
+              className={`text-xs h-7 border ${paragraphFilter === 'operative' ? '!border-un-blue !text-un-blue bg-un-blue/10 hover:!text-un-blue hover:bg-un-blue/20' : 'border-gray-200 hover:border-gray-300'}`}
+              onClick={() => setParagraphFilter('operative')}
+            >
+              Operative
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className={`text-xs h-7 border ${paragraphFilter === 'all' ? '!border-un-blue !text-un-blue bg-un-blue/10 hover:!text-un-blue hover:bg-un-blue/20' : 'border-gray-200 hover:border-gray-300'}`}
+              onClick={() => setParagraphFilter('all')}
+            >
+              All
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -612,7 +604,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
                             // Check if this paragraph would be hidden by current filter
                             const wouldBeVisible = paragraphFilter === 'operative' 
                               ? p.paragraph_type === 'operative'
-                              : p.paragraph_type !== 'operative'
+                              : true // 'all' filter shows everything
                             
                             if (!wouldBeVisible) {
                               hasHiddenParagraphsAfter = true
@@ -654,7 +646,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
                         {/* Show disclaimer only if heading has hidden paragraphs due to filtering */}
                         {!hasVisibleParagraphsAfter && hasHiddenParagraphsAfter && (
                           <p className="text-xs text-muted-foreground italic mb-3">
-                            No {paragraphFilter === 'operative' ? 'operative' : 'non-operative'} paragraphs in this section.
+                            No operative paragraphs in this section.
                           </p>
                         )}
                       </div>
