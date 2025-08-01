@@ -7,7 +7,6 @@ export const explainerTexts = {
     // Main page and overview
     mainHeader: {
         title: 'UN Mandate Source Registry',
-        versionTag: "beta version: secretariat data only",
         shortDescription: 'Developed as part of the UN80 Initiative, this registry serves as a transparency tool for understanding UN mandates and programmes. It compiles the source documents that UN entities cite when explaining why their programmes exist and why they require resources, enabling better dialogue on mandate implementation.',
         fullDescription: [
             "This beta version of the registry provides access to mandate source documents cited by UN Entities in support of resource requirements in the UN's Proposed Programme Budget for 2026 and the Peacekeeping Budget for 2025/2026. The Registry will be iteratively expanded in the coming weeks to integrate mandates related to other UN System Entities and to include the operative paragraphs from relevant documents. The Registry serves as a technical reference to assist Member States in assessing current mandate implementation arrangements across the UN System."
