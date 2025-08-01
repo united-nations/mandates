@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useEffect, useCallback } from 'react'
+import { useState, useMemo, useEffect, useCallback, useRef } from 'react'
 import { FileCheck, FileText, HelpCircle, Menu } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -31,8 +31,10 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
   const [activeHeadingId, setActiveHeadingId] = useState<string | null>(null)
   const [openTooltip, setOpenTooltip] = useState<string | null>(null)
   const [isMobileTOCOpen, setIsMobileTOCOpen] = useState(false)
+  const [showFloatingTOC, setShowFloatingTOC] = useState(false)
   
   const isMobile = useIsMobile()
+  const paragraphsTitleRef = useRef<HTMLDivElement>(null)
 
   // Frontend filtering of paragraphs
   const paragraphs = useMemo(() => {
@@ -256,6 +258,33 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
     }
   }, [paragraphs, activeHeadingId])
 
+  // Intersection Observer for paragraphs title visibility
+  useEffect(() => {
+    if (!isMobile || !paragraphsTitleRef.current) return
+
+    const titleElement = paragraphsTitleRef.current
+
+    const checkScrollPosition = () => {
+      const rect = titleElement.getBoundingClientRect()
+      // Show floating TOC when the title has completely scrolled above the viewport
+      setShowFloatingTOC(rect.bottom < 0)
+    }
+
+    // Check initial position
+    checkScrollPosition()
+
+    // Use scroll event listener for more reliable position tracking
+    const handleScroll = () => {
+      checkScrollPosition()
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [isMobile])
+
   // TOC navigation handler
   const handleTOCClick = (headingId: string) => {
     const element = document.getElementById(headingId)
@@ -372,7 +401,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between pr-4">
+      <div ref={paragraphsTitleRef} className="flex items-center justify-between pr-4">
         <h3 className="text-base font-semibold flex items-center gap-2">
           <FileCheck className="h-4 w-4" />
           <span>{explainerTexts.mandateDetail.paragraphs.title}</span>
@@ -423,7 +452,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
       </div>
 
       {/* Mobile TOC - Floating button and expandable panel */}
-      {isMobile && (
+      {isMobile && showFloatingTOC && (
         <div className="mobile-toc-container">
           {/* Floating TOC Button */}
           <button
