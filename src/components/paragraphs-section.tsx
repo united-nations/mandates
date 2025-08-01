@@ -32,6 +32,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
   const [openTooltip, setOpenTooltip] = useState<string | null>(null)
   const [isMobileTOCOpen, setIsMobileTOCOpen] = useState(false)
   const [showFloatingTOC, setShowFloatingTOC] = useState(false)
+  const [expandedBadge, setExpandedBadge] = useState<string | null>(null)
   
   const isMobile = useIsMobile()
   const paragraphsTitleRef = useRef<HTMLDivElement>(null)
@@ -291,7 +292,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
     }
   }
 
-  // Close tooltip and mobile TOC when clicking outside
+  // Close tooltip, mobile TOC, and expanded badges when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element
@@ -301,11 +302,17 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
       if (!target.closest('.mobile-toc-container')) {
         setIsMobileTOCOpen(false)
       }
+      if (!target.closest('.badge-container')) {
+        setExpandedBadge(null)
+      }
     }
 
     const handleScroll = () => {
       if (openTooltip === 'paragraphs-beta') {
         setOpenTooltip(null)
+      }
+      if (expandedBadge) {
+        setExpandedBadge(null)
       }
     }
 
@@ -313,9 +320,12 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
       if (openTooltip === 'paragraphs-beta') {
         setOpenTooltip(null)
       }
+      if (expandedBadge) {
+        setExpandedBadge(null)
+      }
     }
 
-    if (openTooltip || isMobileTOCOpen) {
+    if (openTooltip || isMobileTOCOpen || expandedBadge) {
       document.addEventListener('mousedown', handleClickOutside)
       window.addEventListener('scroll', handleScroll, true)
       window.addEventListener('resize', handleResize)
@@ -325,10 +335,22 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
         window.removeEventListener('resize', handleResize)
       }
     }
-  }, [openTooltip, isMobileTOCOpen])
+  }, [openTooltip, isMobileTOCOpen, expandedBadge])
 
   const toggleTooltip = (tooltipId: string) => {
     setOpenTooltip(openTooltip === tooltipId ? null : tooltipId)
+  }
+
+  const toggleBadge = (badgeId: string) => {
+    if (expandedBadge === badgeId) {
+      setExpandedBadge(null)
+    } else {
+      setExpandedBadge(badgeId)
+      // Auto-collapse after 3 seconds
+      setTimeout(() => {
+        setExpandedBadge(current => current === badgeId ? null : current)
+      }, 3000)
+    }
   }
 
   // Render TOC items recursively
@@ -399,7 +421,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
 
   return (
     <div className="space-y-4">
-      <div ref={paragraphsTitleRef} className="pr-4">
+      <div ref={paragraphsTitleRef} className="sm:pr-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0">
           <h3 className="text-base font-semibold flex items-center gap-2">
             <FileCheck className="h-4 w-4" />
@@ -655,10 +677,10 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
 
                   // Regular paragraphs
                   return (
-                    <div key={`${documentSymbol}-${index}`} className={`${indentClass}`}>
+                    <div key={`${documentSymbol}-${index}`} className={`${indentClass} relative`}>
                       <div className="bg-muted/30 rounded-lg p-3">
-                        <div className="flex items-start gap-4">
-                          <div className="flex-1 max-w-[85%]">
+                        <div className={isMobile ? "w-full" : "flex items-start gap-4"}>
+                          <div className={isMobile ? "w-full" : "flex-1 max-w-[85%]"}>
                             <p className="text-sm leading-relaxed">
                               {paragraph.prefix && (
                                 <span className="font-medium text-un-blue mr-2">
@@ -670,22 +692,61 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
                               }} />
                             </p>
                           </div>
-                          <div className="flex-shrink-0 w-[15%] flex flex-col gap-1.5 items-end">
-                            {/* Operative badge */}
-                            {paragraph.paragraph_type === 'operative' && (
-                              <Badge variant="outline" className="text-xs !border-un-blue !text-un-blue bg-un-blue/10">
-                                Operative
-                              </Badge>
-                            )}
-                            {/* Paragraph type badge for non-operative types */}
-                            {paragraph.paragraph_type && paragraph.paragraph_type !== 'operative' && (
-                              <Badge variant="outline" className="text-xs border-gray-300 text-gray-600 bg-gray-50">
-                                {titleCase(paragraph.paragraph_type)}
-                              </Badge>
-                            )}
-                          </div>
+                          {!isMobile && (
+                            <div className="flex-shrink-0 w-[15%] flex flex-col gap-1.5 items-end">
+                              {/* Desktop badges */}
+                              {paragraph.paragraph_type && (
+                                <Badge 
+                                  variant="outline" 
+                                  className={`text-xs ${
+                                    paragraph.paragraph_type === 'operative'
+                                      ? '!border-un-blue !text-un-blue bg-un-blue/10'
+                                      : 'border-gray-300 text-gray-600 bg-gray-50'
+                                  }`}
+                                >
+                                  {paragraph.paragraph_type === 'operative' ? 'Operative' : titleCase(paragraph.paragraph_type)}
+                                </Badge>
+                              )}
+                            </div>
+                          )}
                         </div>
                       </div>
+                      
+                      {/* Mobile badge - floating at top-right corner */}
+                      {isMobile && paragraph.paragraph_type && (
+                        <div className="badge-container absolute -top-1 -right-1 z-10">
+                          {/* Circle button - hidden when expanded */}
+                          {expandedBadge !== `${documentSymbol}-${index}` && (
+                            <button
+                              onClick={() => toggleBadge(`${documentSymbol}-${index}`)}
+                              className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-medium transition-all duration-200 ${
+                                paragraph.paragraph_type === 'operative'
+                                  ? 'bg-un-blue text-white hover:bg-blue-700'
+                                  : 'bg-gray-600 text-white hover:bg-gray-700'
+                              }`}
+                              aria-label={`${titleCase(paragraph.paragraph_type)} paragraph`}
+                            >
+                              {paragraph.paragraph_type === 'operative' ? 'O' : paragraph.paragraph_type.charAt(0).toUpperCase()}
+                            </button>
+                          )}
+                          
+                          {/* Expanded badge tooltip */}
+                          {expandedBadge === `${documentSymbol}-${index}` && (
+                            <div className="absolute top-0 right-0 z-20 transform translate-x-1">
+                              <Badge 
+                                variant="outline" 
+                                className={`text-xs whitespace-nowrap ${
+                                  paragraph.paragraph_type === 'operative'
+                                    ? '!border-un-blue !text-un-blue bg-blue-50'
+                                    : 'border-gray-300 text-gray-600 bg-gray-50'
+                                }`}
+                              >
+                                {paragraph.paragraph_type === 'operative' ? 'Operative' : titleCase(paragraph.paragraph_type)}
+                              </Badge>
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   )
                 })}

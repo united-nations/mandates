@@ -88,7 +88,7 @@ function MandatePageContent() {
 
             {/* Content */}
             <div>
-                <div className="space-y-10 pr-2">
+                <div className="space-y-10 sm:pr-2">
                     {/* Metadata Section */}
                     <MandateMetadata mandate={mandate} />
 
