@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useMemo, useEffect, useCallback, useRef } from 'react'
-import { FileCheck, FileText, HelpCircle, Menu, Package } from 'lucide-react'
+import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react'
+import { FileCheck, FileText, HelpCircle, Menu, Package, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -26,10 +26,207 @@ interface TOCItem {
   index: number
 }
 
+// Reusable filter dropdown component
+interface FilterDropdownProps {
+  label: string
+  icon: React.ReactNode
+  currentFilter: string
+  isOpen: boolean
+  onToggle: () => void
+  onFilterChange: (filter: string) => void
+  typeCounts: Record<string, number>
+  withItemsCount: number
+  withItemsLabel: string
+  totalCount: number
+  className?: string
+}
+
+function FilterDropdown({ 
+  label, 
+  icon, 
+  currentFilter, 
+  isOpen, 
+  onToggle, 
+  onFilterChange, 
+  typeCounts, 
+  withItemsCount, 
+  withItemsLabel,
+  totalCount,
+  className = ''
+}: FilterDropdownProps) {
+  const withItemsKey = `with-${label.toLowerCase()}`
+  
+  return (
+    <div className={`relative ${className}`}>
+      <button
+        onClick={onToggle}
+        className={`text-xs h-7 px-3 border rounded-md bg-white hover:bg-gray-50 transition-colors flex items-center gap-1.5 ${
+          currentFilter !== 'all' ? '!border-un-blue !text-un-blue bg-un-blue/10' : 'border-gray-200 text-gray-700'
+        }`}
+      >
+        {icon}
+        <span>
+          {currentFilter === 'all' 
+            ? label
+            : currentFilter === withItemsKey
+            ? `${withItemsLabel} (${withItemsCount})`
+            : `${currentFilter} (${typeCounts[currentFilter] || 0})`
+          }
+        </span>
+        <svg className={`h-3 w-3 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="currentColor" viewBox="0 0 20 20">
+          <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+        </svg>
+      </button>
+      
+      {isOpen && (
+        <div className="absolute top-8 left-0 z-50 bg-white border border-gray-200 rounded-md shadow-lg min-w-48 py-1">
+          {/* All paragraphs option */}
+          <button
+            onClick={() => onFilterChange('all')}
+            className={`w-full text-left py-1.5 text-xs hover:bg-gray-50 flex items-center justify-between ${
+              currentFilter === 'all' ? 'bg-un-blue/10 text-un-blue' : 'text-gray-700'
+            }`}
+          >
+            <span className="pl-3">All paragraphs</span>
+            <span className="text-gray-500 pr-3">{totalCount}</span>
+          </button>
+          
+          {/* With items option */}
+          {withItemsCount > 0 && (
+            <button
+              onClick={() => onFilterChange(withItemsKey)}
+              className={`w-full text-left py-1.5 text-xs hover:bg-gray-50 flex items-center justify-between ${
+                currentFilter === withItemsKey ? 'bg-un-blue/10 text-un-blue' : 'text-gray-700'
+              }`}
+            >
+              <span className="pl-3">{withItemsLabel}</span>
+              <span className="text-gray-500 pr-3">{withItemsCount}</span>
+            </button>
+          )}
+          
+          {/* Type subcategories */}
+          {Object.keys(typeCounts).length > 0 && (
+            Object.entries(typeCounts)
+              .sort(([, a], [, b]) => b - a)
+              .map(([type, count]) => (
+                <button
+                  key={type}
+                  onClick={() => onFilterChange(type)}
+                  className={`w-full text-left py-1.5 text-xs hover:bg-gray-50 flex items-center justify-between ${
+                    currentFilter === type ? 'bg-un-blue/10 text-un-blue' : 'text-gray-700'
+                  }`}
+                >
+                  <span className="pl-6">{type}</span>
+                  <span className="text-gray-500 pr-3">{count}</span>
+                </button>
+              ))
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// Helper function to render badges for a paragraph
+function renderBadges(paragraph: Paragraph, keyPrefix: string = '') {
+  const badges: React.ReactNode[] = []
+  
+  // Paragraph type badge
+  if (paragraph.paragraph_type) {
+    badges.push(
+      <Badge 
+        key={`${keyPrefix}paragraph-type`}
+        variant="outline" 
+        className={`text-xs ${
+          paragraph.paragraph_type === 'operative'
+            ? '!border-un-blue !text-un-blue bg-un-blue/10'
+            : 'border-gray-300 text-gray-600 bg-gray-50'
+        }`}
+      >
+        {paragraph.paragraph_type === 'operative' ? 'Operative' : titleCase(paragraph.paragraph_type)}
+      </Badge>
+    )
+  }
+  
+  // Deliverable badges
+  if (paragraph.mandates) {
+    paragraph.mandates.forEach((mandate, mandateIdx) => {
+      mandate.deliverables.forEach((deliverable, deliverableIdx) => {
+        badges.push(
+          <Badge 
+            key={`${keyPrefix}deliverable-${mandateIdx}-${deliverableIdx}`}
+            variant="outline" 
+            className="text-xs !border-green-500 !text-green-700 bg-green-50"
+          >
+            {deliverable.deliverable_type}
+          </Badge>
+        )
+      })
+    })
+  }
+  
+  // Assignee badges
+  if (paragraph.mandates) {
+    paragraph.mandates.forEach((mandate, mandateIdx) => {
+      mandate.assignees.forEach((assignee, assigneeIdx) => {
+        badges.push(
+          <Badge 
+            key={`${keyPrefix}assignee-${mandateIdx}-${assigneeIdx}`}
+            variant="outline" 
+            className="text-xs !border-purple-500 !text-purple-700 bg-purple-50"
+          >
+            {assignee.assignee_type}
+          </Badge>
+        )
+      })
+    })
+  }
+  
+  return badges
+}
+
+// Helper function to get mobile badge info
+function getMobileBadgeInfo(paragraph: Paragraph) {
+  const hasOperative = paragraph.paragraph_type === 'operative'
+  const hasDeliverables = paragraph.mandates?.some(mandate => mandate.deliverables.length > 0) || false
+  const hasAssignees = paragraph.mandates?.some(mandate => mandate.assignees.length > 0) || false
+  
+  let color = 'bg-gray-600 text-white hover:bg-gray-700'
+  let letter = '?'
+  
+  if (hasOperative) {
+    color = 'bg-un-blue text-white hover:bg-blue-700'
+    letter = 'O'
+  } else if (hasDeliverables) {
+    color = 'bg-green-600 text-white hover:bg-green-700'
+    letter = 'D'
+  } else if (hasAssignees) {
+    color = 'bg-purple-600 text-white hover:bg-purple-700'
+    letter = 'A'
+  } else if (paragraph.paragraph_type) {
+    letter = paragraph.paragraph_type.charAt(0).toUpperCase()
+  }
+  
+  const labels = [
+    paragraph.paragraph_type ? titleCase(paragraph.paragraph_type) : '',
+    hasDeliverables ? 'deliverable' : '',
+    hasAssignees ? 'assignee' : ''
+  ].filter(Boolean).join(' ')
+  
+  return {
+    color,
+    letter,
+    ariaLabel: `${labels} paragraph`,
+    shouldShow: paragraph.paragraph_type || hasDeliverables || hasAssignees
+  }
+}
+
 export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, isLoading, error }: ParagraphsSectionProps) {
   const [paragraphFilter, setParagraphFilter] = useState<'all' | 'operative'>('operative')
   const [deliverableFilter, setDeliverableFilter] = useState<string>('all')
   const [isDeliverableDropdownOpen, setIsDeliverableDropdownOpen] = useState(false)
+  const [assigneeFilter, setAssigneeFilter] = useState<string>('all')
+  const [isAssigneeDropdownOpen, setIsAssigneeDropdownOpen] = useState(false)
   const [activeHeadingId, setActiveHeadingId] = useState<string | null>(null)
   const [openTooltip, setOpenTooltip] = useState<string | null>(null)
   const [isMobileTOCOpen, setIsMobileTOCOpen] = useState(false)
@@ -46,12 +243,12 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
     const counts: Record<string, number> = {}
     
     allParagraphs.forEach((paragraph: Paragraph) => {
-      if (paragraph.deliverables) {
-        paragraph.deliverables.forEach(deliverable => {
-          if (deliverable.deliverable_is_specific) {
+      if (paragraph.mandates) {
+        paragraph.mandates.forEach(mandate => {
+          mandate.deliverables.forEach(deliverable => {
             const type = deliverable.deliverable_type
             counts[type] = (counts[type] || 0) + 1
-          }
+          })
         })
       }
     })
@@ -59,12 +256,41 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
     return counts
   }, [allParagraphs])
 
-  // Calculate count of paragraphs with any specific deliverables
+  // Calculate assignee type counts from all paragraphs
+  const assigneeTypeCounts = useMemo(() => {
+    if (!allParagraphs) return {}
+    
+    const counts: Record<string, number> = {}
+    
+    allParagraphs.forEach((paragraph: Paragraph) => {
+      if (paragraph.mandates) {
+        paragraph.mandates.forEach(mandate => {
+          mandate.assignees.forEach(assignee => {
+            const type = assignee.assignee_type
+            counts[type] = (counts[type] || 0) + 1
+          })
+        })
+      }
+    })
+    
+    return counts
+  }, [allParagraphs])
+
+  // Calculate count of paragraphs with any assignees
+  const paragraphsWithAssigneesCount = useMemo(() => {
+    if (!allParagraphs) return 0
+    
+    return allParagraphs.filter((paragraph: Paragraph) => 
+      paragraph.mandates?.some(mandate => mandate.assignees.length > 0)
+    ).length
+  }, [allParagraphs])
+
+  // Calculate count of paragraphs with any deliverables
   const paragraphsWithDeliverablesCount = useMemo(() => {
     if (!allParagraphs) return 0
     
     return allParagraphs.filter((paragraph: Paragraph) => 
-      paragraph.deliverables?.some(deliverable => deliverable.deliverable_is_specific)
+      paragraph.mandates?.some(mandate => mandate.deliverables.length > 0)
     ).length
   }, [allParagraphs])
 
@@ -93,8 +319,8 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
           return true
         }
         
-        // Check if paragraph has any specific deliverables
-        return paragraph.deliverables?.some(deliverable => deliverable.deliverable_is_specific)
+        // Check if paragraph has any deliverables
+        return paragraph.mandates?.some(mandate => mandate.deliverables.length > 0)
       })
     } else if (deliverableFilter !== 'all') {
       filtered = filtered.filter((paragraph: Paragraph) => {
@@ -104,15 +330,43 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
         }
         
         // Check if paragraph has the specific deliverable type
-        return paragraph.deliverables?.some(deliverable => 
-          deliverable.deliverable_is_specific && 
-          deliverable.deliverable_type === deliverableFilter
+        return paragraph.mandates?.some(mandate => 
+          mandate.deliverables.some(deliverable => 
+            deliverable.deliverable_type === deliverableFilter
+          )
+        )
+      })
+    }
+    
+    // Filter by assignee type
+    if (assigneeFilter === 'with-assignees') {
+      filtered = filtered.filter((paragraph: Paragraph) => {
+        // Always show headings
+        if (paragraph.type === 'heading') {
+          return true
+        }
+        
+        // Check if paragraph has any assignees
+        return paragraph.mandates?.some(mandate => mandate.assignees.length > 0)
+      })
+    } else if (assigneeFilter !== 'all') {
+      filtered = filtered.filter((paragraph: Paragraph) => {
+        // Always show headings
+        if (paragraph.type === 'heading') {
+          return true
+        }
+        
+        // Check if paragraph has the specific assignee type
+        return paragraph.mandates?.some(mandate => 
+          mandate.assignees.some(assignee => 
+            assignee.assignee_type === assigneeFilter
+          )
         )
       })
     }
     
     return filtered
-  }, [allParagraphs, paragraphFilter, deliverableFilter])
+  }, [allParagraphs, paragraphFilter, deliverableFilter, assigneeFilter])
 
   // Build TOC from paragraphs
   const tocItems = useMemo((): TOCItem[] => {
@@ -362,6 +616,9 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
       if (!target.closest('.deliverable-dropdown')) {
         setIsDeliverableDropdownOpen(false)
       }
+      if (!target.closest('.assignee-dropdown')) {
+        setIsAssigneeDropdownOpen(false)
+      }
     }
 
     const handleScroll = () => {
@@ -373,6 +630,9 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
       }
       if (isDeliverableDropdownOpen) {
         setIsDeliverableDropdownOpen(false)
+      }
+      if (isAssigneeDropdownOpen) {
+        setIsAssigneeDropdownOpen(false)
       }
     }
 
@@ -386,9 +646,12 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
       if (isDeliverableDropdownOpen) {
         setIsDeliverableDropdownOpen(false)
       }
+      if (isAssigneeDropdownOpen) {
+        setIsAssigneeDropdownOpen(false)
+      }
     }
 
-    if (openTooltip || isMobileTOCOpen || expandedBadge || isDeliverableDropdownOpen) {
+    if (openTooltip || isMobileTOCOpen || expandedBadge || isDeliverableDropdownOpen || isAssigneeDropdownOpen) {
       document.addEventListener('mousedown', handleClickOutside)
       window.addEventListener('scroll', handleScroll, true)
       window.addEventListener('resize', handleResize)
@@ -398,7 +661,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
         window.removeEventListener('resize', handleResize)
       }
     }
-  }, [openTooltip, isMobileTOCOpen, expandedBadge, isDeliverableDropdownOpen])
+  }, [openTooltip, isMobileTOCOpen, expandedBadge, isDeliverableDropdownOpen, isAssigneeDropdownOpen])
 
   const toggleTooltip = (tooltipId: string) => {
     setOpenTooltip(openTooltip === tooltipId ? null : tooltipId)
@@ -461,9 +724,22 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
     )
   }
 
-  // Helper function to process text with links and action verbs
-  const processText = (text: string, actionVerb: string | null, links: [string, string][]) => {
-    let processedText = text
+  // Helper function to process text with highlights, links and action verbs
+  const processText = (text: string, actionVerb: string | null, links: [string, string][], textWithHighlights?: string) => {
+    let processedText = textWithHighlights || text
+    
+    // Process textWithHighlights if available
+    if (textWithHighlights) {
+      // Replace **action verbs** with blue styling
+      processedText = processedText.replace(/\*(.*?)\*/g, '<span class="font-semibold text-un-blue">$1</span>')
+      
+      // Replace <<assignees>> with rounded gray background
+      processedText = processedText.replace(/<<(.*?)>>/g, '<span class="bg-gray-200 px-2 py-0.5 rounded-full text-sm font-medium">$1</span>')
+
+      // Replace <<deliverables>> with rounded orange background
+      processedText = processedText.replace(/\[\[(.*?)\]\]/g, '<span class="bg-orange-200 px-2 py-0.5 rounded-full text-sm font-medium">$1</span>')
+    } else {
+    }
     
     // Replace links with clickable elements
     if (links && links.length > 0) {
@@ -472,13 +748,6 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
         processedText = processedText.replace(linkRegex, `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-un-blue hover:underline font-medium">${linkText}</a>`)
       })
     }
-    
-    // Highlight action verb if present (can appear anywhere in the text)
-    if (actionVerb && actionVerb.trim()) {
-      const verbRegex = new RegExp(`\\b(${actionVerb.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})\\b`, 'i')
-      processedText = processedText.replace(verbRegex, `<span class="font-semibold text-un-blue">$1</span>`)
-    }
-    
     return processedText
   }
 
@@ -508,88 +777,44 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
 
           {/* Filter buttons */}
           <div className="flex gap-2 items-center">
-            {/* Deliverable type dropdown - moved to left */}
+            {/* Assignee type dropdown */}
+            {Object.keys(assigneeTypeCounts).length > 0 && (
+              <FilterDropdown
+                label="Assignees"
+                icon={<Users className="h-3 w-3" />}
+                currentFilter={assigneeFilter}
+                isOpen={isAssigneeDropdownOpen}
+                onToggle={() => setIsAssigneeDropdownOpen(!isAssigneeDropdownOpen)}
+                onFilterChange={(filter) => {
+                  setAssigneeFilter(filter)
+                  setIsAssigneeDropdownOpen(false)
+                }}
+                typeCounts={assigneeTypeCounts}
+                withItemsCount={paragraphsWithAssigneesCount}
+                withItemsLabel="With assignees"
+                totalCount={allParagraphs?.length || 0}
+                className="assignee-dropdown"
+              />
+            )}
+            
+            {/* Deliverable type dropdown */}
             {Object.keys(deliverableTypeCounts).length > 0 && (
-              <div className="relative deliverable-dropdown">
-                <button
-                  onClick={() => setIsDeliverableDropdownOpen(!isDeliverableDropdownOpen)}
-                  className={`text-xs h-7 px-3 border rounded-md bg-white hover:bg-gray-50 transition-colors flex items-center gap-1.5 ${
-                    deliverableFilter !== 'all' ? '!border-un-blue !text-un-blue bg-un-blue/10' : 'border-gray-200 text-gray-700'
-                  }`}
-                >
-                  <Package className="h-3 w-3" />
-                  <span>
-                    {deliverableFilter === 'all' 
-                      ? 'Deliverables'
-                      : deliverableFilter === 'with-deliverables'
-                      ? `With deliverables (${paragraphsWithDeliverablesCount})`
-                      : `${deliverableFilter} (${deliverableTypeCounts[deliverableFilter] || 0})`
-                    }
-                  </span>
-                  <svg className={`h-3 w-3 transition-transform ${isDeliverableDropdownOpen ? 'rotate-180' : ''}`} fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                </button>
-                
-                {isDeliverableDropdownOpen && (
-                  <div className="absolute top-8 left-0 z-50 bg-white border border-gray-200 rounded-md shadow-lg min-w-48 py-1">
-                    {/* All paragraphs option */}
-                    <button
-                      onClick={() => {
-                        setDeliverableFilter('all')
-                        setIsDeliverableDropdownOpen(false)
-                      }}
-                      className={`w-full text-left py-1.5 text-xs hover:bg-gray-50 flex items-center justify-between ${
-                        deliverableFilter === 'all' ? 'bg-un-blue/10 text-un-blue' : 'text-gray-700'
-                      }`}
-                    >
-                      <span className="pl-3">All paragraphs</span>
-                      <span className="text-gray-500 pr-3">
-                        {allParagraphs?.length || 0}
-                      </span>
-                    </button>
-                    
-                    {/* With deliverables option */}
-                    {paragraphsWithDeliverablesCount > 0 && (
-                      <button
-                        onClick={() => {
-                          setDeliverableFilter('with-deliverables')
-                          setIsDeliverableDropdownOpen(false)
-                        }}
-                        className={`w-full text-left py-1.5 text-xs hover:bg-gray-50 flex items-center justify-between ${
-                          deliverableFilter === 'with-deliverables' ? 'bg-un-blue/10 text-un-blue' : 'text-gray-700'
-                        }`}
-                      >
-                        <span className="pl-3">With deliverables</span>
-                        <span className="text-gray-500 pr-3">
-                          {paragraphsWithDeliverablesCount}
-                        </span>
-                      </button>
-                    )}
-                    
-                    {/* Deliverable type subcategories */}
-                    {Object.keys(deliverableTypeCounts).length > 0 && (
-                      Object.entries(deliverableTypeCounts)
-                        .sort(([, a], [, b]) => b - a)
-                        .map(([type, count]) => (
-                          <button
-                            key={type}
-                            onClick={() => {
-                              setDeliverableFilter(type)
-                              setIsDeliverableDropdownOpen(false)
-                            }}
-                            className={`w-full text-left py-1.5 text-xs hover:bg-gray-50 flex items-center justify-between ${
-                              deliverableFilter === type ? 'bg-un-blue/10 text-un-blue' : 'text-gray-700'
-                            }`}
-                          >
-                            <span className="pl-6">{type}</span>
-                            <span className="text-gray-500 pr-3">{count}</span>
-                          </button>
-                        ))
-                    )}
-                  </div>
-                )}
-              </div>
+              <FilterDropdown
+                label="Deliverables"
+                icon={<Package className="h-3 w-3" />}
+                currentFilter={deliverableFilter}
+                isOpen={isDeliverableDropdownOpen}
+                onToggle={() => setIsDeliverableDropdownOpen(!isDeliverableDropdownOpen)}
+                onFilterChange={(filter) => {
+                  setDeliverableFilter(filter)
+                  setIsDeliverableDropdownOpen(false)
+                }}
+                typeCounts={deliverableTypeCounts}
+                withItemsCount={paragraphsWithDeliverablesCount}
+                withItemsLabel="With deliverables"
+                totalCount={allParagraphs?.length || 0}
+                className="deliverable-dropdown"
+              />
             )}
             
             <div className="flex gap-1 items-center">
@@ -810,7 +1035,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
                               </span>
                             )}
                             <span dangerouslySetInnerHTML={{ 
-                              __html: processText(paragraph.text, paragraph.action_verb, paragraph.links) 
+                              __html: processText(paragraph.text, paragraph.mandates?.[0]?.action_verb || null, paragraph.links, paragraph.textWithHighlights) 
                             }} />
                           </HeadingTag>
                         </div>
@@ -837,89 +1062,48 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
                                 </span>
                               )}
                               <span dangerouslySetInnerHTML={{ 
-                                __html: processText(paragraph.text, paragraph.action_verb, paragraph.links) 
+                                __html: processText(paragraph.text, paragraph.mandates?.[0]?.action_verb || null, paragraph.links, paragraph.textWithHighlights) 
                               }} />
                             </p>
                           </div>
                           {!isMobile && (
                             <div className="flex-shrink-0 w-[15%] flex flex-col gap-1.5 items-end">
                               {/* Desktop badges */}
-                              {paragraph.paragraph_type && (
-                                <Badge 
-                                  variant="outline" 
-                                  className={`text-xs ${
-                                    paragraph.paragraph_type === 'operative'
-                                      ? '!border-un-blue !text-un-blue bg-un-blue/10'
-                                      : 'border-gray-300 text-gray-600 bg-gray-50'
-                                  }`}
-                                >
-                                  {paragraph.paragraph_type === 'operative' ? 'Operative' : titleCase(paragraph.paragraph_type)}
-                                </Badge>
-                              )}
-                              {paragraph.deliverables && paragraph.deliverables.filter(d => d.deliverable_is_specific).map((deliverable, idx) => (
-                                <Badge 
-                                  key={idx}
-                                  variant="outline" 
-                                  className="text-xs !border-green-500 !text-green-700 bg-green-50"
-                                >
-                                  {deliverable.deliverable_type}
-                                </Badge>
-                              ))}
+                              {renderBadges(paragraph, 'desktop-')}
                             </div>
                           )}
                         </div>
                       </div>
                       
                       {/* Mobile badges - floating at top-right corner */}
-                      {isMobile && (paragraph.paragraph_type || (paragraph.deliverables && paragraph.deliverables.some(d => d.deliverable_is_specific))) && (
-                        <div className="badge-container absolute -top-1 -right-1 z-10">
-                          {/* Circle button - hidden when expanded */}
-                          {expandedBadge !== `${documentSymbol}-${index}` && (
-                            <button
-                              onClick={() => toggleBadge(`${documentSymbol}-${index}`)}
-                              className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-medium transition-all duration-200 ${
-                                paragraph.paragraph_type === 'operative'
-                                  ? 'bg-un-blue text-white hover:bg-blue-700'
-                                  : paragraph.deliverables && paragraph.deliverables.some(d => d.deliverable_is_specific)
-                                  ? 'bg-green-600 text-white hover:bg-green-700'
-                                  : 'bg-gray-600 text-white hover:bg-gray-700'
-                              }`}
-                              aria-label={`${paragraph.paragraph_type ? titleCase(paragraph.paragraph_type) : ''} ${paragraph.deliverables && paragraph.deliverables.some(d => d.deliverable_is_specific) ? 'deliverable' : ''} paragraph`}
-                            >
-                              {paragraph.paragraph_type === 'operative' ? 'O' : 
-                               paragraph.deliverables && paragraph.deliverables.some(d => d.deliverable_is_specific) ? 'D' :
-                               paragraph.paragraph_type ? paragraph.paragraph_type.charAt(0).toUpperCase() : '?'}
-                            </button>
-                          )}
-                          
-                          {/* Expanded badge tooltip */}
-                          {expandedBadge === `${documentSymbol}-${index}` && (
-                            <div className="absolute top-0 right-0 z-20 transform translate-x-1 flex flex-col gap-1">
-                              {paragraph.paragraph_type && (
-                                <Badge 
-                                  variant="outline" 
-                                  className={`text-xs whitespace-nowrap ${
-                                    paragraph.paragraph_type === 'operative'
-                                      ? '!border-un-blue !text-un-blue bg-blue-50'
-                                      : 'border-gray-300 text-gray-600 bg-gray-50'
-                                  }`}
-                                >
-                                  {paragraph.paragraph_type === 'operative' ? 'Operative' : titleCase(paragraph.paragraph_type)}
-                                </Badge>
-                              )}
-                              {paragraph.deliverables && paragraph.deliverables.filter(d => d.deliverable_is_specific).map((deliverable, idx) => (
-                                <Badge 
-                                  key={idx}
-                                  variant="outline" 
-                                  className="text-xs whitespace-nowrap !border-green-500 !text-green-700 bg-green-50"
-                                >
-                                  {deliverable.deliverable_type}
-                                </Badge>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      )}
+                      {(() => {
+                        const badgeInfo = getMobileBadgeInfo(paragraph)
+                        return isMobile && badgeInfo.shouldShow && (
+                          <div className="badge-container absolute -top-1 -right-1 z-10">
+                            {/* Circle button - hidden when expanded */}
+                            {expandedBadge !== `${documentSymbol}-${index}` && (
+                              <button
+                                onClick={() => toggleBadge(`${documentSymbol}-${index}`)}
+                                className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-medium transition-all duration-200 ${badgeInfo.color}`}
+                                aria-label={badgeInfo.ariaLabel}
+                              >
+                                {badgeInfo.letter}
+                              </button>
+                            )}
+                            
+                            {/* Expanded badge tooltip */}
+                            {expandedBadge === `${documentSymbol}-${index}` && (
+                              <div className="absolute top-0 right-0 z-20 transform translate-x-1 flex flex-col gap-1">
+                                {renderBadges(paragraph, 'mobile-').map(badge => 
+                                  React.cloneElement(badge as React.ReactElement, {
+                                    className: `${(badge as React.ReactElement).props.className} whitespace-nowrap`
+                                  })
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        )
+                      })()}
                     </div>
                   )
                 })}

@@ -7,30 +7,24 @@ export interface Paragraph {
   paragraph_type: string | null; // "preambular", "operative", etc.
   paragraph_level: number | null;
   prefix: string | null; // "1.", "2.", etc. - renamed from paragraph_prefix, can also apply to headers
-  action_verb: string | null;
-  action_verb_type: string | null; // "preambular", "operative"
-  action_verb_normalized: string | null;
   links: [string, string][] | []; // Array of [text, url] tuples
   language: string | null; // Language of the text block
   symbol?: string;
   index?: number;
-  action_verbs?: {
+  mandates?: {
     action_verb: string;
-    action_verb_type: string;
-    action_verb_normalized: string;
-  }[];
-  deliverables?: {
-    deliverable_citation: string;
-    deliverable_type: string;
-    deliverable_is_specific: boolean;
-    deliverable_description: string;
     assignees: {
-      assignee_citation: string;
+      assignee: string;
+      assignee_normalized: string;
       assignee_type: string;
-      assignee_name: string;
+    }[];
+    deliverables: {
+      deliverable: string;
+      deliverable_normalized: string;
+      deliverable_type: string;
     }[];
   }[];
-  paragraphWithHighlights?: string;
+  textWithHighlights?: string;
 }
 
 export interface CitationInfo {
