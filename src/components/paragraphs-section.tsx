@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react'
-import { FileCheck, FileText, HelpCircle, Menu, Package, Users } from 'lucide-react'
+import { FileCheck, FileText, HelpCircle, Menu, Package, Users, MessageCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -92,7 +92,7 @@ function FilterDropdown({
           </button>
           
           {/* With items option */}
-          {withItemsCount > 0 && (
+          {withItemsCount > 0 && withItemsLabel && (
             <button
               onClick={() => onFilterChange(withItemsKey)}
               className={`w-full text-left py-1.5 text-xs hover:bg-gray-50 flex items-center justify-between ${
@@ -148,10 +148,32 @@ function renderBadges(paragraph: Paragraph, keyPrefix: string = '') {
     )
   }
   
+  // Action verb type badges
+  if (paragraph.mandates) {
+    const uniqueActionVerbTypes = new Set<string>()
+    paragraph.mandates.forEach((mandate) => {
+      if (mandate.action_verb_type) {
+        uniqueActionVerbTypes.add(mandate.action_verb_type)
+      }
+    })
+    
+    Array.from(uniqueActionVerbTypes).forEach((actionVerbType, idx) => {
+      badges.push(
+        <Badge 
+          key={`${keyPrefix}action-verb-${idx}`}
+          variant="outline" 
+          className="text-xs !border-orange-500 !text-orange-700 bg-orange-50"
+        >
+          {titleCase(actionVerbType)}
+        </Badge>
+      )
+    })
+  }
+  
   // Deliverable badges
   if (paragraph.mandates) {
     paragraph.mandates.forEach((mandate, mandateIdx) => {
-      mandate.deliverables.forEach((deliverable, deliverableIdx) => {
+      mandate.deliverables?.forEach((deliverable, deliverableIdx) => {
         badges.push(
           <Badge 
             key={`${keyPrefix}deliverable-${mandateIdx}-${deliverableIdx}`}
@@ -168,7 +190,7 @@ function renderBadges(paragraph: Paragraph, keyPrefix: string = '') {
   // Assignee badges
   if (paragraph.mandates) {
     paragraph.mandates.forEach((mandate, mandateIdx) => {
-      mandate.assignees.forEach((assignee, assigneeIdx) => {
+      mandate.assignees?.forEach((assignee, assigneeIdx) => {
         badges.push(
           <Badge 
             key={`${keyPrefix}assignee-${mandateIdx}-${assigneeIdx}`}
@@ -188,8 +210,9 @@ function renderBadges(paragraph: Paragraph, keyPrefix: string = '') {
 // Helper function to get mobile badge info
 function getMobileBadgeInfo(paragraph: Paragraph) {
   const hasOperative = paragraph.paragraph_type === 'operative'
-  const hasDeliverables = paragraph.mandates?.some(mandate => mandate.deliverables.length > 0) || false
-  const hasAssignees = paragraph.mandates?.some(mandate => mandate.assignees.length > 0) || false
+  const hasActionVerbs = paragraph.mandates?.some(mandate => mandate.action_verb_type) || false
+  const hasDeliverables = paragraph.mandates?.some(mandate => mandate.deliverables?.length > 0) || false
+  const hasAssignees = paragraph.mandates?.some(mandate => mandate.assignees?.length > 0) || false
   
   let color = 'bg-gray-600 text-white hover:bg-gray-700'
   let letter = '?'
@@ -197,6 +220,9 @@ function getMobileBadgeInfo(paragraph: Paragraph) {
   if (hasOperative) {
     color = 'bg-un-blue text-white hover:bg-blue-700'
     letter = 'O'
+  } else if (hasActionVerbs) {
+    color = 'bg-orange-600 text-white hover:bg-orange-700'
+    letter = 'V'
   } else if (hasDeliverables) {
     color = 'bg-green-600 text-white hover:bg-green-700'
     letter = 'D'
@@ -209,6 +235,7 @@ function getMobileBadgeInfo(paragraph: Paragraph) {
   
   const labels = [
     paragraph.paragraph_type ? titleCase(paragraph.paragraph_type) : '',
+    hasActionVerbs ? 'action verb' : '',
     hasDeliverables ? 'deliverable' : '',
     hasAssignees ? 'assignee' : ''
   ].filter(Boolean).join(' ')
@@ -217,7 +244,7 @@ function getMobileBadgeInfo(paragraph: Paragraph) {
     color,
     letter,
     ariaLabel: `${labels} paragraph`,
-    shouldShow: paragraph.paragraph_type || hasDeliverables || hasAssignees
+    shouldShow: paragraph.paragraph_type || hasActionVerbs || hasDeliverables || hasAssignees
   }
 }
 
@@ -227,6 +254,8 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
   const [isDeliverableDropdownOpen, setIsDeliverableDropdownOpen] = useState(false)
   const [assigneeFilter, setAssigneeFilter] = useState<string>('all')
   const [isAssigneeDropdownOpen, setIsAssigneeDropdownOpen] = useState(false)
+  const [actionVerbFilter, setActionVerbFilter] = useState<string>('all')
+  const [isActionVerbDropdownOpen, setIsActionVerbDropdownOpen] = useState(false)
   const [activeHeadingId, setActiveHeadingId] = useState<string | null>(null)
   const [openTooltip, setOpenTooltip] = useState<string | null>(null)
   const [isMobileTOCOpen, setIsMobileTOCOpen] = useState(false)
@@ -245,7 +274,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
     allParagraphs.forEach((paragraph: Paragraph) => {
       if (paragraph.mandates) {
         paragraph.mandates.forEach(mandate => {
-          mandate.deliverables.forEach(deliverable => {
+          mandate.deliverables?.forEach(deliverable => {
             const type = deliverable.deliverable_type
             counts[type] = (counts[type] || 0) + 1
           })
@@ -265,7 +294,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
     allParagraphs.forEach((paragraph: Paragraph) => {
       if (paragraph.mandates) {
         paragraph.mandates.forEach(mandate => {
-          mandate.assignees.forEach(assignee => {
+          mandate.assignees?.forEach(assignee => {
             const type = assignee.assignee_type
             counts[type] = (counts[type] || 0) + 1
           })
@@ -281,8 +310,28 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
     if (!allParagraphs) return 0
     
     return allParagraphs.filter((paragraph: Paragraph) => 
-      paragraph.mandates?.some(mandate => mandate.assignees.length > 0)
+      paragraph.mandates?.some(mandate => mandate.assignees?.length > 0)
     ).length
+  }, [allParagraphs])
+
+  // Calculate action verb type counts from all paragraphs
+  const actionVerbTypeCounts = useMemo(() => {
+    if (!allParagraphs) return {}
+    
+    const counts: Record<string, number> = {}
+    
+    allParagraphs.forEach((paragraph: Paragraph) => {
+      if (paragraph.mandates) {
+        paragraph.mandates.forEach(mandate => {
+          if (mandate.action_verb_type) {
+            const type = mandate.action_verb_type
+            counts[type] = (counts[type] || 0) + 1
+          }
+        })
+      }
+    })
+    
+    return counts
   }, [allParagraphs])
 
   // Calculate count of paragraphs with any deliverables
@@ -290,7 +339,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
     if (!allParagraphs) return 0
     
     return allParagraphs.filter((paragraph: Paragraph) => 
-      paragraph.mandates?.some(mandate => mandate.deliverables.length > 0)
+      paragraph.mandates?.some(mandate => mandate.deliverables?.length > 0)
     ).length
   }, [allParagraphs])
 
@@ -320,7 +369,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
         }
         
         // Check if paragraph has any deliverables
-        return paragraph.mandates?.some(mandate => mandate.deliverables.length > 0)
+        return paragraph.mandates?.some(mandate => mandate.deliverables?.length > 0)
       })
     } else if (deliverableFilter !== 'all') {
       filtered = filtered.filter((paragraph: Paragraph) => {
@@ -347,7 +396,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
         }
         
         // Check if paragraph has any assignees
-        return paragraph.mandates?.some(mandate => mandate.assignees.length > 0)
+        return paragraph.mandates?.some(mandate => mandate.assignees?.length > 0)
       })
     } else if (assigneeFilter !== 'all') {
       filtered = filtered.filter((paragraph: Paragraph) => {
@@ -365,8 +414,23 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
       })
     }
     
+    // Filter by action verb type
+    if (actionVerbFilter !== 'all') {
+      filtered = filtered.filter((paragraph: Paragraph) => {
+        // Always show headings
+        if (paragraph.type === 'heading') {
+          return true
+        }
+        
+        // Check if paragraph has the specific action verb type
+        return paragraph.mandates?.some(mandate => 
+          mandate.action_verb_type === actionVerbFilter
+        )
+      })
+    }
+    
     return filtered
-  }, [allParagraphs, paragraphFilter, deliverableFilter, assigneeFilter])
+  }, [allParagraphs, paragraphFilter, deliverableFilter, assigneeFilter, actionVerbFilter])
 
   // Build TOC from paragraphs
   const tocItems = useMemo((): TOCItem[] => {
@@ -619,6 +683,9 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
       if (!target.closest('.assignee-dropdown')) {
         setIsAssigneeDropdownOpen(false)
       }
+      if (!target.closest('.action-verb-dropdown')) {
+        setIsActionVerbDropdownOpen(false)
+      }
     }
 
     const handleScroll = () => {
@@ -633,6 +700,9 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
       }
       if (isAssigneeDropdownOpen) {
         setIsAssigneeDropdownOpen(false)
+      }
+      if (isActionVerbDropdownOpen) {
+        setIsActionVerbDropdownOpen(false)
       }
     }
 
@@ -649,9 +719,12 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
       if (isAssigneeDropdownOpen) {
         setIsAssigneeDropdownOpen(false)
       }
+      if (isActionVerbDropdownOpen) {
+        setIsActionVerbDropdownOpen(false)
+      }
     }
 
-    if (openTooltip || isMobileTOCOpen || expandedBadge || isDeliverableDropdownOpen || isAssigneeDropdownOpen) {
+    if (openTooltip || isMobileTOCOpen || expandedBadge || isDeliverableDropdownOpen || isAssigneeDropdownOpen || isActionVerbDropdownOpen) {
       document.addEventListener('mousedown', handleClickOutside)
       window.addEventListener('scroll', handleScroll, true)
       window.addEventListener('resize', handleResize)
@@ -661,7 +734,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
         window.removeEventListener('resize', handleResize)
       }
     }
-  }, [openTooltip, isMobileTOCOpen, expandedBadge, isDeliverableDropdownOpen, isAssigneeDropdownOpen])
+  }, [openTooltip, isMobileTOCOpen, expandedBadge, isDeliverableDropdownOpen, isAssigneeDropdownOpen, isActionVerbDropdownOpen])
 
   const toggleTooltip = (tooltipId: string) => {
     setOpenTooltip(openTooltip === tooltipId ? null : tooltipId)
@@ -814,6 +887,26 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
                 withItemsLabel="With deliverables"
                 totalCount={allParagraphs?.length || 0}
                 className="deliverable-dropdown"
+              />
+            )}
+            
+            {/* Action verb type dropdown */}
+            {Object.keys(actionVerbTypeCounts).length > 0 && (
+              <FilterDropdown
+                label="Actions"
+                icon={<MessageCircle className="h-3 w-3" />}
+                currentFilter={actionVerbFilter}
+                isOpen={isActionVerbDropdownOpen}
+                onToggle={() => setIsActionVerbDropdownOpen(!isActionVerbDropdownOpen)}
+                onFilterChange={(filter) => {
+                  setActionVerbFilter(filter)
+                  setIsActionVerbDropdownOpen(false)
+                }}
+                typeCounts={actionVerbTypeCounts}
+                withItemsCount={0}
+                withItemsLabel=""
+                totalCount={allParagraphs?.length || 0}
+                className="action-verb-dropdown"
               />
             )}
             

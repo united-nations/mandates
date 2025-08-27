@@ -13,6 +13,7 @@ export interface Paragraph {
   index?: number;
   mandates?: {
     action_verb: string;
+    action_verb_type: string;
     assignees: {
       assignee: string;
       assignee_normalized: string;
