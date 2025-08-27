@@ -3,12 +3,14 @@
 import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react'
 import { FileCheck, FileText, HelpCircle, Menu, Package, Users, MessageCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
+
 import { Skeleton } from '@/components/ui/skeleton'
-import { titleCase } from 'title-case'
+
 import { explainerTexts } from '@/lib/explainer-texts'
 import { useIsMobile } from '@/hooks/use-mobile'
 import type { Paragraph } from '@/types'
+import { titleCase } from 'title-case'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
 interface ParagraphsSectionProps {
   paragraphs: Paragraph[]
@@ -70,7 +72,7 @@ function FilterDropdown({
             ? label
             : currentFilter === withItemsKey
             ? `${withItemsLabel} (${withItemsCount})`
-            : `${currentFilter} (${typeCounts[currentFilter] || 0})`
+            : `${titleCase(currentFilter)} (${typeCounts[currentFilter] || 0})`
           }
         </span>
         <svg className={`h-3 w-3 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="currentColor" viewBox="0 0 20 20">
@@ -116,7 +118,7 @@ function FilterDropdown({
                     currentFilter === type ? 'bg-un-blue/10 text-un-blue' : 'text-gray-700'
                   }`}
                 >
-                  <span className="pl-6">{type}</span>
+                  <span className="pl-6">{titleCase(type)}</span>
                   <span className="text-gray-500 pr-3">{count}</span>
                 </button>
               ))
@@ -127,124 +129,20 @@ function FilterDropdown({
   )
 }
 
-// Helper function to render badges for a paragraph
-function renderBadges(paragraph: Paragraph, keyPrefix: string = '') {
-  const badges: React.ReactNode[] = []
-  
-  // Paragraph type badge
-  if (paragraph.paragraph_type) {
-    badges.push(
-      <Badge 
-        key={`${keyPrefix}paragraph-type`}
-        variant="outline" 
-        className={`text-xs ${
-          paragraph.paragraph_type === 'operative'
-            ? '!border-un-blue !text-un-blue bg-un-blue/10'
-            : 'border-gray-300 text-gray-600 bg-gray-50'
-        }`}
-      >
-        {paragraph.paragraph_type === 'operative' ? 'Operative' : titleCase(paragraph.paragraph_type)}
-      </Badge>
-    )
-  }
-  
-  // Action verb type badges
-  if (paragraph.mandates) {
-    const uniqueActionVerbTypes = new Set<string>()
-    paragraph.mandates.forEach((mandate) => {
-      if (mandate.action_verb_type) {
-        uniqueActionVerbTypes.add(mandate.action_verb_type)
-      }
-    })
-    
-    Array.from(uniqueActionVerbTypes).forEach((actionVerbType, idx) => {
-      badges.push(
-        <Badge 
-          key={`${keyPrefix}action-verb-${idx}`}
-          variant="outline" 
-          className="text-xs !border-orange-500 !text-orange-700 bg-orange-50"
-        >
-          {titleCase(actionVerbType)}
-        </Badge>
-      )
-    })
-  }
-  
-  // Deliverable badges
-  if (paragraph.mandates) {
-    paragraph.mandates.forEach((mandate, mandateIdx) => {
-      mandate.deliverables?.forEach((deliverable, deliverableIdx) => {
-        badges.push(
-          <Badge 
-            key={`${keyPrefix}deliverable-${mandateIdx}-${deliverableIdx}`}
-            variant="outline" 
-            className="text-xs !border-green-500 !text-green-700 bg-green-50"
-          >
-            {deliverable.deliverable_type}
-          </Badge>
-        )
-      })
-    })
-  }
-  
-  // Assignee badges
-  if (paragraph.mandates) {
-    paragraph.mandates.forEach((mandate, mandateIdx) => {
-      mandate.assignees?.forEach((assignee, assigneeIdx) => {
-        badges.push(
-          <Badge 
-            key={`${keyPrefix}assignee-${mandateIdx}-${assigneeIdx}`}
-            variant="outline" 
-            className="text-xs !border-purple-500 !text-purple-700 bg-purple-50"
-          >
-            {assignee.assignee_type}
-          </Badge>
-        )
-      })
-    })
-  }
-  
-  return badges
+// Helper function to check if paragraph is operative
+function isOperativeParagraph(paragraph: Paragraph): boolean {
+  return paragraph.paragraph_type === 'operative'
 }
 
-// Helper function to get mobile badge info
-function getMobileBadgeInfo(paragraph: Paragraph) {
-  const hasOperative = paragraph.paragraph_type === 'operative'
-  const hasActionVerbs = paragraph.mandates?.some(mandate => mandate.action_verb_type) || false
-  const hasDeliverables = paragraph.mandates?.some(mandate => mandate.deliverables?.length > 0) || false
-  const hasAssignees = paragraph.mandates?.some(mandate => mandate.assignees?.length > 0) || false
-  
-  let color = 'bg-gray-600 text-white hover:bg-gray-700'
-  let letter = '?'
-  
-  if (hasOperative) {
-    color = 'bg-un-blue text-white hover:bg-blue-700'
-    letter = 'O'
-  } else if (hasActionVerbs) {
-    color = 'bg-orange-600 text-white hover:bg-orange-700'
-    letter = 'V'
-  } else if (hasDeliverables) {
-    color = 'bg-green-600 text-white hover:bg-green-700'
-    letter = 'D'
-  } else if (hasAssignees) {
-    color = 'bg-purple-600 text-white hover:bg-purple-700'
-    letter = 'A'
-  } else if (paragraph.paragraph_type) {
-    letter = paragraph.paragraph_type.charAt(0).toUpperCase()
-  }
-  
-  const labels = [
-    paragraph.paragraph_type ? titleCase(paragraph.paragraph_type) : '',
-    hasActionVerbs ? 'action verb' : '',
-    hasDeliverables ? 'deliverable' : '',
-    hasAssignees ? 'assignee' : ''
-  ].filter(Boolean).join(' ')
+// Helper function to get operative badge info (for corner display)
+function getOperativeBadgeInfo(paragraph: Paragraph) {
+  const isOperative = paragraph.paragraph_type === 'operative'
   
   return {
-    color,
-    letter,
-    ariaLabel: `${labels} paragraph`,
-    shouldShow: paragraph.paragraph_type || hasActionVerbs || hasDeliverables || hasAssignees
+    color: 'bg-un-blue text-white hover:bg-blue-700',
+    letter: 'O',
+    ariaLabel: 'Operative paragraph',
+    shouldShow: isOperative
   }
 }
 
@@ -260,7 +158,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
   const [openTooltip, setOpenTooltip] = useState<string | null>(null)
   const [isMobileTOCOpen, setIsMobileTOCOpen] = useState(false)
   const [showFloatingTOC, setShowFloatingTOC] = useState(false)
-  const [expandedBadge, setExpandedBadge] = useState<string | null>(null)
+
   
   const isMobile = useIsMobile()
   const paragraphsTitleRef = useRef<HTMLDivElement>(null)
@@ -664,7 +562,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
     }
   }
 
-  // Close tooltip, mobile TOC, expanded badges, and dropdown when clicking outside
+  // Close tooltip, mobile TOC, and dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element
@@ -673,9 +571,6 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
       }
       if (!target.closest('.mobile-toc-container')) {
         setIsMobileTOCOpen(false)
-      }
-      if (!target.closest('.badge-container')) {
-        setExpandedBadge(null)
       }
       if (!target.closest('.deliverable-dropdown')) {
         setIsDeliverableDropdownOpen(false)
@@ -692,9 +587,6 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
       if (openTooltip === 'paragraphs-beta') {
         setOpenTooltip(null)
       }
-      if (expandedBadge) {
-        setExpandedBadge(null)
-      }
       if (isDeliverableDropdownOpen) {
         setIsDeliverableDropdownOpen(false)
       }
@@ -710,9 +602,6 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
       if (openTooltip === 'paragraphs-beta') {
         setOpenTooltip(null)
       }
-      if (expandedBadge) {
-        setExpandedBadge(null)
-      }
       if (isDeliverableDropdownOpen) {
         setIsDeliverableDropdownOpen(false)
       }
@@ -724,7 +613,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
       }
     }
 
-    if (openTooltip || isMobileTOCOpen || expandedBadge || isDeliverableDropdownOpen || isAssigneeDropdownOpen || isActionVerbDropdownOpen) {
+    if (openTooltip || isMobileTOCOpen || isDeliverableDropdownOpen || isAssigneeDropdownOpen || isActionVerbDropdownOpen) {
       document.addEventListener('mousedown', handleClickOutside)
       window.addEventListener('scroll', handleScroll, true)
       window.addEventListener('resize', handleResize)
@@ -734,22 +623,10 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
         window.removeEventListener('resize', handleResize)
       }
     }
-  }, [openTooltip, isMobileTOCOpen, expandedBadge, isDeliverableDropdownOpen, isAssigneeDropdownOpen, isActionVerbDropdownOpen])
+  }, [openTooltip, isMobileTOCOpen, isDeliverableDropdownOpen, isAssigneeDropdownOpen, isActionVerbDropdownOpen])
 
   const toggleTooltip = (tooltipId: string) => {
     setOpenTooltip(openTooltip === tooltipId ? null : tooltipId)
-  }
-
-  const toggleBadge = (badgeId: string) => {
-    if (expandedBadge === badgeId) {
-      setExpandedBadge(null)
-    } else {
-      setExpandedBadge(badgeId)
-      // Auto-collapse after 3 seconds
-      setTimeout(() => {
-        setExpandedBadge(current => current === badgeId ? null : current)
-      }, 3000)
-    }
   }
 
   // Render TOC items recursively
@@ -797,31 +674,168 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
     )
   }
 
-  // Helper function to process text with highlights, links and action verbs
-  const processText = (text: string, actionVerb: string | null, links: [string, string][], textWithHighlights?: string) => {
-    let processedText = textWithHighlights || text
+  // Helper function to parse and render text with proper React tooltip components
+  const renderProcessedText = (text: string, actionVerb: string | null, links: [string, string][], textWithHighlights?: string, mandates?: any[]) => {
+    const sourceText = textWithHighlights || text
     
-    // Process textWithHighlights if available
-    if (textWithHighlights) {
-      // Replace **action verbs** with blue styling
-      processedText = processedText.replace(/\*(.*?)\*/g, '<span class="font-semibold text-un-blue">$1</span>')
-      
-      // Replace <<assignees>> with rounded gray background
-      processedText = processedText.replace(/<<(.*?)>>/g, '<span class="bg-gray-200 px-2 py-0.5 rounded-full text-sm font-medium">$1</span>')
+    if (!textWithHighlights) {
+      // Handle links only for non-highlighted text
+      let processedText = sourceText
+      if (links && links.length > 0) {
+        links.forEach(([linkText, url]) => {
+          const linkRegex = new RegExp(linkText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')
+          processedText = processedText.replace(linkRegex, `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-un-blue hover:underline font-medium">${linkText}</a>`)
+        })
+      }
+      return <span dangerouslySetInnerHTML={{ __html: processedText }} />
+    }
 
-      // Replace <<deliverables>> with rounded orange background
-      processedText = processedText.replace(/\[\[(.*?)\]\]/g, '<span class="bg-orange-200 px-2 py-0.5 rounded-full text-sm font-medium">$1</span>')
-    } else {
-    }
+    // Parse text and create segments with proper React components
+    const segments: React.ReactNode[] = []
+    let segmentKey = 0
     
-    // Replace links with clickable elements
-    if (links && links.length > 0) {
-      links.forEach(([linkText, url]) => {
-        const linkRegex = new RegExp(linkText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')
-        processedText = processedText.replace(linkRegex, `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-un-blue hover:underline font-medium">${linkText}</a>`)
-      })
+    // Split text by all special patterns to process sequentially
+    const allPatterns = [
+      { pattern: /\*(.*?)\*/g, type: 'verb' },
+      { pattern: /<<(.*?)>>/g, type: 'assignee' },
+      { pattern: /\[\[(.*?)\]\]/g, type: 'deliverable' }
+    ]
+    
+    let currentText = sourceText
+    const replacements: { start: number; end: number; component: React.ReactNode; text: string }[] = []
+    
+    // Find all matches across all patterns
+    allPatterns.forEach(({ pattern, type }) => {
+      let match
+      while ((match = pattern.exec(sourceText)) !== null) {
+        const matchText = match[1]
+        let component: React.ReactNode
+        
+        if (type === 'verb') {
+          const correspondingMandate = mandates?.find(mandate => 
+            mandate.action_verb && mandate.action_verb.toLowerCase() === matchText.toLowerCase()
+          )
+          const shouldBeBold = correspondingMandate?.action_verb_type === 'decision' || 
+                              correspondingMandate?.action_verb_type === 'directive'
+          
+          component = (
+            <Tooltip key={`verb-${segmentKey++}`}>
+              <TooltipTrigger asChild>
+                <span className={`${shouldBeBold ? 'font-semibold' : ''} text-un-blue cursor-help`}>
+                  {matchText}
+                </span>
+              </TooltipTrigger>
+              <TooltipContent className="max-w-xs">
+                <div className="space-y-1">
+                  <div className="font-medium">Action Verb</div>
+                  <div className="text-sm">
+                    {titleCase(correspondingMandate?.action_verb_type || 'Unknown')}
+                  </div>
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          )
+        } else if (type === 'assignee') {
+          let assigneeData: any = null
+          mandates?.forEach(mandate => {
+            mandate.assignees?.forEach((assignee: any) => {
+              if (assignee.assignee.toLowerCase() === matchText.toLowerCase()) {
+                assigneeData = assignee
+              }
+            })
+          })
+          
+          component = (
+            <Tooltip key={`assignee-${segmentKey++}`}>
+              <TooltipTrigger asChild>
+                <span className="bg-gray-200 px-2 py-0.5 rounded-full text-sm font-medium cursor-help">
+                  <Users className="w-3 h-3 inline mr-1 align-middle" />
+                  {matchText}
+                </span>
+              </TooltipTrigger>
+              <TooltipContent className="max-w-xs">
+                <div className="space-y-1">
+                  <div className="font-medium">Assignee</div>
+                  <div className="text-sm">
+                    <div>{titleCase(assigneeData?.assignee_type || 'Unknown')}</div>
+                    {assigneeData?.assignee_normalized && (
+                      <div className="text-gray-500">{assigneeData.assignee_normalized}</div>
+                    )}
+                  </div>
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          )
+        } else if (type === 'deliverable') {
+          let deliverableData: any = null
+          mandates?.forEach(mandate => {
+            mandate.deliverables?.forEach((deliverable: any) => {
+              if (deliverable.deliverable.toLowerCase() === matchText.toLowerCase()) {
+                deliverableData = deliverable
+              }
+            })
+          })
+          
+          component = (
+            <Tooltip key={`deliverable-${segmentKey++}`}>
+              <TooltipTrigger asChild>
+                <span className="bg-gray-200 px-2 py-0.5 rounded-full text-sm font-medium cursor-help">
+                  <Package className="w-3 h-3 inline mr-1 align-middle" />
+                  {matchText}
+                </span>
+              </TooltipTrigger>
+              <TooltipContent className="max-w-xs">
+                <div className="space-y-1">
+                  <div className="font-medium">Deliverable</div>
+                  <div className="text-sm">
+                    <div>{titleCase(deliverableData?.deliverable_type || 'Unknown')}</div>
+                    {deliverableData?.deliverable_normalized && (
+                      <div className="text-gray-500">{deliverableData.deliverable_normalized}</div>
+                    )}
+                  </div>
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          )
+        }
+        
+        replacements.push({
+          start: match.index,
+          end: match.index + match[0].length,
+          component: component!,
+          text: match[0]
+        })
+      }
+      pattern.lastIndex = 0 // Reset regex
+    })
+    
+    // Sort replacements by position and build segments
+    replacements.sort((a, b) => a.start - b.start)
+    
+    let lastIndex = 0
+    replacements.forEach((replacement, index) => {
+      // Add text before this replacement
+      if (replacement.start > lastIndex) {
+        const textBefore = sourceText.slice(lastIndex, replacement.start)
+        if (textBefore) {
+          segments.push(<span key={`text-${segmentKey++}`}>{textBefore}</span>)
+        }
+      }
+      
+      // Add the replacement component
+      segments.push(replacement.component)
+      lastIndex = replacement.end
+    })
+    
+    // Add remaining text
+    if (lastIndex < sourceText.length) {
+      const remainingText = sourceText.slice(lastIndex)
+      if (remainingText) {
+        segments.push(<span key={`text-${segmentKey++}`}>{remainingText}</span>)
+      }
     }
-    return processedText
+
+    return <>{segments}</>
   }
 
   return (
@@ -910,23 +924,20 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
               />
             )}
             
-            <div className="flex gap-1 items-center">
-              <Button
-                variant="ghost"
-                size="sm"
-                className={`text-xs h-7 border ${paragraphFilter === 'operative' ? '!border-un-blue !text-un-blue bg-un-blue/10 hover:!text-un-blue hover:bg-un-blue/20' : 'border-gray-200 hover:border-gray-300'}`}
+            <div className="flex items-center border border-gray-200 rounded-md overflow-hidden">
+              <button
+                className={`text-xs h-7 px-3 transition-colors ${paragraphFilter === 'operative' ? 'bg-un-blue text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
                 onClick={() => setParagraphFilter('operative')}
               >
                 Operative
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                className={`text-xs h-7 border ${paragraphFilter === 'all' ? '!border-un-blue !text-un-blue bg-un-blue/10 hover:!text-un-blue hover:bg-un-blue/20' : 'border-gray-200 hover:border-gray-300'}`}
+              </button>
+              <div className="w-px h-4 bg-gray-200"></div>
+              <button
+                className={`text-xs h-7 px-3 transition-colors ${paragraphFilter === 'all' ? 'bg-un-blue text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
                 onClick={() => setParagraphFilter('all')}
               >
                 All
-              </Button>
+              </button>
             </div>
           </div>
         </div>
@@ -1127,9 +1138,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
                                 {paragraph.prefix}
                               </span>
                             )}
-                            <span dangerouslySetInnerHTML={{ 
-                              __html: processText(paragraph.text, paragraph.mandates?.[0]?.action_verb || null, paragraph.links, paragraph.textWithHighlights) 
-                            }} />
+                            {renderProcessedText(paragraph.text, paragraph.mandates?.[0]?.action_verb || null, paragraph.links, paragraph.textWithHighlights, paragraph.mandates)}
                           </HeadingTag>
                         </div>
                         {/* Show disclaimer only if heading has hidden paragraphs due to filtering */}
@@ -1146,54 +1155,29 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
                   return (
                     <div key={`${documentSymbol}-${index}`} className={`${indentClass} relative`}>
                       <div className="bg-muted/30 rounded-lg p-3">
-                        <div className={isMobile ? "w-full" : "flex items-start gap-4"}>
-                          <div className={isMobile ? "w-full" : "flex-1 max-w-[85%]"}>
-                            <p className="text-sm leading-relaxed">
-                              {paragraph.prefix && (
-                                <span className="font-medium text-un-blue mr-2">
-                                  {paragraph.prefix}
-                                </span>
-                              )}
-                              <span dangerouslySetInnerHTML={{ 
-                                __html: processText(paragraph.text, paragraph.mandates?.[0]?.action_verb || null, paragraph.links, paragraph.textWithHighlights) 
-                              }} />
-                            </p>
+                        <div className="max-w-4xl">
+                          <div className="text-sm leading-relaxed">
+                            {paragraph.prefix && (
+                              <span className="font-medium text-un-blue mr-2">
+                                {paragraph.prefix}
+                              </span>
+                            )}
+                            {renderProcessedText(paragraph.text, paragraph.mandates?.[0]?.action_verb || null, paragraph.links, paragraph.textWithHighlights, paragraph.mandates)}
                           </div>
-                          {!isMobile && (
-                            <div className="flex-shrink-0 w-[15%] flex flex-col gap-1.5 items-end">
-                              {/* Desktop badges */}
-                              {renderBadges(paragraph, 'desktop-')}
-                            </div>
-                          )}
                         </div>
                       </div>
                       
-                      {/* Mobile badges - floating at top-right corner */}
+                      {/* Operative badge - floating at top-right corner for all devices */}
                       {(() => {
-                        const badgeInfo = getMobileBadgeInfo(paragraph)
-                        return isMobile && badgeInfo.shouldShow && (
-                          <div className="badge-container absolute -top-1 -right-1 z-10">
-                            {/* Circle button - hidden when expanded */}
-                            {expandedBadge !== `${documentSymbol}-${index}` && (
-                              <button
-                                onClick={() => toggleBadge(`${documentSymbol}-${index}`)}
-                                className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-medium transition-all duration-200 ${badgeInfo.color}`}
-                                aria-label={badgeInfo.ariaLabel}
-                              >
-                                {badgeInfo.letter}
-                              </button>
-                            )}
-                            
-                            {/* Expanded badge tooltip */}
-                            {expandedBadge === `${documentSymbol}-${index}` && (
-                              <div className="absolute top-0 right-0 z-20 transform translate-x-1 flex flex-col gap-1">
-                                {renderBadges(paragraph, 'mobile-').map(badge => 
-                                  React.cloneElement(badge as React.ReactElement, {
-                                    className: `${(badge as React.ReactElement).props.className} whitespace-nowrap`
-                                  })
-                                )}
-                              </div>
-                            )}
+                        const badgeInfo = getOperativeBadgeInfo(paragraph)
+                        return badgeInfo.shouldShow && (
+                          <div className="absolute -top-1 -right-1 z-10">
+                            <div
+                              className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-medium ${badgeInfo.color}`}
+                              aria-label={badgeInfo.ariaLabel}
+                            >
+                              {badgeInfo.letter}
+                            </div>
                           </div>
                         )
                       })()}
