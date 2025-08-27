@@ -1,14 +1,16 @@
 'use client'
 
-import { useState, useMemo, useEffect, useCallback, useRef } from 'react'
-import { FileCheck, FileText, HelpCircle, Menu } from 'lucide-react'
+import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react'
+import { FileCheck, FileText, HelpCircle, Menu, Package, Users, MessageCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
+
 import { Skeleton } from '@/components/ui/skeleton'
-import { titleCase } from 'title-case'
+
 import { explainerTexts } from '@/lib/explainer-texts'
 import { useIsMobile } from '@/hooks/use-mobile'
 import type { Paragraph } from '@/types'
+import { titleCase } from 'title-case'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
 interface ParagraphsSectionProps {
   paragraphs: Paragraph[]
@@ -26,39 +28,307 @@ interface TOCItem {
   index: number
 }
 
+// Reusable filter dropdown component
+interface FilterDropdownProps {
+  label: string
+  icon: React.ReactNode
+  currentFilter: string
+  isOpen: boolean
+  onToggle: () => void
+  onFilterChange: (filter: string) => void
+  typeCounts: Record<string, number>
+  withItemsCount: number
+  withItemsLabel: string
+  totalCount: number
+  className?: string
+}
+
+function FilterDropdown({ 
+  label, 
+  icon, 
+  currentFilter, 
+  isOpen, 
+  onToggle, 
+  onFilterChange, 
+  typeCounts, 
+  withItemsCount, 
+  withItemsLabel,
+  totalCount,
+  className = ''
+}: FilterDropdownProps) {
+  const withItemsKey = `with-${label.toLowerCase()}`
+  
+  return (
+    <div className={`relative ${className}`}>
+      <button
+        onClick={onToggle}
+        className={`text-xs h-7 px-3 border rounded-md bg-white hover:bg-gray-50 transition-colors flex items-center gap-1.5 ${
+          currentFilter !== 'all' ? '!border-un-blue !text-un-blue bg-un-blue/10' : 'border-gray-200 text-gray-700'
+        }`}
+      >
+        {icon}
+        <span>
+          {currentFilter === 'all' 
+            ? label
+            : currentFilter === withItemsKey
+            ? `${withItemsLabel} (${withItemsCount})`
+            : `${titleCase(currentFilter)} (${typeCounts[currentFilter] || 0})`
+          }
+        </span>
+        <svg className={`h-3 w-3 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="currentColor" viewBox="0 0 20 20">
+          <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+        </svg>
+      </button>
+      
+      {isOpen && (
+        <div className="absolute top-8 left-0 z-50 bg-white border border-gray-200 rounded-md shadow-lg min-w-48 py-1">
+          {/* All paragraphs option */}
+          <button
+            onClick={() => onFilterChange('all')}
+            className={`w-full text-left py-1.5 text-xs hover:bg-gray-50 flex items-center justify-between ${
+              currentFilter === 'all' ? 'bg-un-blue/10 text-un-blue' : 'text-gray-700'
+            }`}
+          >
+            <span className="pl-3">All paragraphs</span>
+            <span className="text-gray-500 pr-3">{totalCount}</span>
+          </button>
+          
+          {/* With items option */}
+          {withItemsCount > 0 && withItemsLabel && (
+            <button
+              onClick={() => onFilterChange(withItemsKey)}
+              className={`w-full text-left py-1.5 text-xs hover:bg-gray-50 flex items-center justify-between ${
+                currentFilter === withItemsKey ? 'bg-un-blue/10 text-un-blue' : 'text-gray-700'
+              }`}
+            >
+              <span className="pl-3">{withItemsLabel}</span>
+              <span className="text-gray-500 pr-3">{withItemsCount}</span>
+            </button>
+          )}
+          
+          {/* Type subcategories */}
+          {Object.keys(typeCounts).length > 0 && (
+            Object.entries(typeCounts)
+              .sort(([, a], [, b]) => b - a)
+              .map(([type, count]) => (
+                <button
+                  key={type}
+                  onClick={() => onFilterChange(type)}
+                  className={`w-full text-left py-1.5 text-xs hover:bg-gray-50 flex items-center justify-between ${
+                    currentFilter === type ? 'bg-un-blue/10 text-un-blue' : 'text-gray-700'
+                  }`}
+                >
+                  <span className="pl-6">{titleCase(type)}</span>
+                  <span className="text-gray-500 pr-3">{count}</span>
+                </button>
+              ))
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// Helper function to check if paragraph is operative
+function isOperativeParagraph(paragraph: Paragraph): boolean {
+  return paragraph.paragraph_type === 'operative'
+}
+
+// Helper function to get operative badge info (for corner display)
+function getOperativeBadgeInfo(paragraph: Paragraph) {
+  const isOperative = paragraph.paragraph_type === 'operative'
+  
+  return {
+    color: 'bg-un-blue text-white hover:bg-blue-700',
+    letter: 'O',
+    ariaLabel: 'Operative paragraph',
+    shouldShow: isOperative
+  }
+}
+
 export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, isLoading, error }: ParagraphsSectionProps) {
   const [paragraphFilter, setParagraphFilter] = useState<'all' | 'operative'>('operative')
+  const [deliverableFilter, setDeliverableFilter] = useState<string>('all')
+  const [isDeliverableDropdownOpen, setIsDeliverableDropdownOpen] = useState(false)
+  const [assigneeFilter, setAssigneeFilter] = useState<string>('all')
+  const [isAssigneeDropdownOpen, setIsAssigneeDropdownOpen] = useState(false)
+  const [actionVerbFilter, setActionVerbFilter] = useState<string>('all')
+  const [isActionVerbDropdownOpen, setIsActionVerbDropdownOpen] = useState(false)
   const [activeHeadingId, setActiveHeadingId] = useState<string | null>(null)
   const [openTooltip, setOpenTooltip] = useState<string | null>(null)
   const [isMobileTOCOpen, setIsMobileTOCOpen] = useState(false)
   const [showFloatingTOC, setShowFloatingTOC] = useState(false)
-  const [expandedBadge, setExpandedBadge] = useState<string | null>(null)
+
   
   const isMobile = useIsMobile()
   const paragraphsTitleRef = useRef<HTMLDivElement>(null)
+
+  // Calculate deliverable type counts from all paragraphs
+  const deliverableTypeCounts = useMemo(() => {
+    if (!allParagraphs) return {}
+    
+    const counts: Record<string, number> = {}
+    
+    allParagraphs.forEach((paragraph: Paragraph) => {
+      if (paragraph.mandates) {
+        paragraph.mandates.forEach(mandate => {
+          mandate.deliverables?.forEach(deliverable => {
+            const type = deliverable.deliverable_type
+            counts[type] = (counts[type] || 0) + 1
+          })
+        })
+      }
+    })
+    
+    return counts
+  }, [allParagraphs])
+
+  // Calculate assignee type counts from all paragraphs
+  const assigneeTypeCounts = useMemo(() => {
+    if (!allParagraphs) return {}
+    
+    const counts: Record<string, number> = {}
+    
+    allParagraphs.forEach((paragraph: Paragraph) => {
+      if (paragraph.mandates) {
+        paragraph.mandates.forEach(mandate => {
+          mandate.assignees?.forEach(assignee => {
+            const type = assignee.assignee_type
+            counts[type] = (counts[type] || 0) + 1
+          })
+        })
+      }
+    })
+    
+    return counts
+  }, [allParagraphs])
+
+  // Calculate count of paragraphs with any assignees
+  const paragraphsWithAssigneesCount = useMemo(() => {
+    if (!allParagraphs) return 0
+    
+    return allParagraphs.filter((paragraph: Paragraph) => 
+      paragraph.mandates?.some(mandate => mandate.assignees?.length > 0)
+    ).length
+  }, [allParagraphs])
+
+  // Calculate action verb type counts from all paragraphs
+  const actionVerbTypeCounts = useMemo(() => {
+    if (!allParagraphs) return {}
+    
+    const counts: Record<string, number> = {}
+    
+    allParagraphs.forEach((paragraph: Paragraph) => {
+      if (paragraph.mandates) {
+        paragraph.mandates.forEach(mandate => {
+          if (mandate.action_verb_type) {
+            const type = mandate.action_verb_type
+            counts[type] = (counts[type] || 0) + 1
+          }
+        })
+      }
+    })
+    
+    return counts
+  }, [allParagraphs])
+
+  // Calculate count of paragraphs with any deliverables
+  const paragraphsWithDeliverablesCount = useMemo(() => {
+    if (!allParagraphs) return 0
+    
+    return allParagraphs.filter((paragraph: Paragraph) => 
+      paragraph.mandates?.some(mandate => mandate.deliverables?.length > 0)
+    ).length
+  }, [allParagraphs])
 
   // Frontend filtering of paragraphs
   const paragraphs = useMemo(() => {
     if (!allParagraphs) return allParagraphs
     
-    if (paragraphFilter === 'all') {
-      return allParagraphs
+    let filtered = allParagraphs
+    
+    // Filter by paragraph type
+    if (paragraphFilter === 'operative') {
+      filtered = filtered.filter((paragraph: Paragraph) => {
+        // Always show headings
+        if (paragraph.type === 'heading') {
+          return true
+        }
+        return paragraph.paragraph_type === 'operative'
+      })
     }
     
-    return allParagraphs.filter((paragraph: Paragraph) => {
-      // Always show headings
-      if (paragraph.type === 'heading') {
-        return true
-      }
-      
-      // Filter based on paragraph type
-      if (paragraphFilter === 'operative') {
-        return paragraph.paragraph_type === 'operative'
-      }
-      
-      return true
-    })
-  }, [allParagraphs, paragraphFilter])
+    // Filter by deliverable type
+    if (deliverableFilter === 'with-deliverables') {
+      filtered = filtered.filter((paragraph: Paragraph) => {
+        // Always show headings
+        if (paragraph.type === 'heading') {
+          return true
+        }
+        
+        // Check if paragraph has any deliverables
+        return paragraph.mandates?.some(mandate => mandate.deliverables?.length > 0)
+      })
+    } else if (deliverableFilter !== 'all') {
+      filtered = filtered.filter((paragraph: Paragraph) => {
+        // Always show headings
+        if (paragraph.type === 'heading') {
+          return true
+        }
+        
+        // Check if paragraph has the specific deliverable type
+        return paragraph.mandates?.some(mandate => 
+          mandate.deliverables?.some(deliverable => 
+            deliverable.deliverable_type === deliverableFilter
+          )
+        )
+      })
+    }
+    
+    // Filter by assignee type
+    if (assigneeFilter === 'with-assignees') {
+      filtered = filtered.filter((paragraph: Paragraph) => {
+        // Always show headings
+        if (paragraph.type === 'heading') {
+          return true
+        }
+        
+        // Check if paragraph has any assignees
+        return paragraph.mandates?.some(mandate => mandate.assignees?.length > 0)
+      })
+    } else if (assigneeFilter !== 'all') {
+      filtered = filtered.filter((paragraph: Paragraph) => {
+        // Always show headings
+        if (paragraph.type === 'heading') {
+          return true
+        }
+        
+        // Check if paragraph has the specific assignee type
+        return paragraph.mandates?.some(mandate => 
+          mandate.assignees.some(assignee => 
+            assignee.assignee_type === assigneeFilter
+          )
+        )
+      })
+    }
+    
+    // Filter by action verb type
+    if (actionVerbFilter !== 'all') {
+      filtered = filtered.filter((paragraph: Paragraph) => {
+        // Always show headings
+        if (paragraph.type === 'heading') {
+          return true
+        }
+        
+        // Check if paragraph has the specific action verb type
+        return paragraph.mandates?.some(mandate => 
+          mandate.action_verb_type === actionVerbFilter
+        )
+      })
+    }
+    
+    return filtered
+  }, [allParagraphs, paragraphFilter, deliverableFilter, assigneeFilter, actionVerbFilter])
 
   // Build TOC from paragraphs
   const tocItems = useMemo((): TOCItem[] => {
@@ -292,7 +562,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
     }
   }
 
-  // Close tooltip, mobile TOC, and expanded badges when clicking outside
+  // Close tooltip, mobile TOC, and dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element
@@ -302,8 +572,14 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
       if (!target.closest('.mobile-toc-container')) {
         setIsMobileTOCOpen(false)
       }
-      if (!target.closest('.badge-container')) {
-        setExpandedBadge(null)
+      if (!target.closest('.deliverable-dropdown')) {
+        setIsDeliverableDropdownOpen(false)
+      }
+      if (!target.closest('.assignee-dropdown')) {
+        setIsAssigneeDropdownOpen(false)
+      }
+      if (!target.closest('.action-verb-dropdown')) {
+        setIsActionVerbDropdownOpen(false)
       }
     }
 
@@ -311,8 +587,14 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
       if (openTooltip === 'paragraphs-beta') {
         setOpenTooltip(null)
       }
-      if (expandedBadge) {
-        setExpandedBadge(null)
+      if (isDeliverableDropdownOpen) {
+        setIsDeliverableDropdownOpen(false)
+      }
+      if (isAssigneeDropdownOpen) {
+        setIsAssigneeDropdownOpen(false)
+      }
+      if (isActionVerbDropdownOpen) {
+        setIsActionVerbDropdownOpen(false)
       }
     }
 
@@ -320,12 +602,18 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
       if (openTooltip === 'paragraphs-beta') {
         setOpenTooltip(null)
       }
-      if (expandedBadge) {
-        setExpandedBadge(null)
+      if (isDeliverableDropdownOpen) {
+        setIsDeliverableDropdownOpen(false)
+      }
+      if (isAssigneeDropdownOpen) {
+        setIsAssigneeDropdownOpen(false)
+      }
+      if (isActionVerbDropdownOpen) {
+        setIsActionVerbDropdownOpen(false)
       }
     }
 
-    if (openTooltip || isMobileTOCOpen || expandedBadge) {
+    if (openTooltip || isMobileTOCOpen || isDeliverableDropdownOpen || isAssigneeDropdownOpen || isActionVerbDropdownOpen) {
       document.addEventListener('mousedown', handleClickOutside)
       window.addEventListener('scroll', handleScroll, true)
       window.addEventListener('resize', handleResize)
@@ -335,22 +623,10 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
         window.removeEventListener('resize', handleResize)
       }
     }
-  }, [openTooltip, isMobileTOCOpen, expandedBadge])
+  }, [openTooltip, isMobileTOCOpen, isDeliverableDropdownOpen, isAssigneeDropdownOpen, isActionVerbDropdownOpen])
 
   const toggleTooltip = (tooltipId: string) => {
     setOpenTooltip(openTooltip === tooltipId ? null : tooltipId)
-  }
-
-  const toggleBadge = (badgeId: string) => {
-    if (expandedBadge === badgeId) {
-      setExpandedBadge(null)
-    } else {
-      setExpandedBadge(badgeId)
-      // Auto-collapse after 3 seconds
-      setTimeout(() => {
-        setExpandedBadge(current => current === badgeId ? null : current)
-      }, 3000)
-    }
   }
 
   // Render TOC items recursively
@@ -398,25 +674,168 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
     )
   }
 
-  // Helper function to process text with links and action verbs
-  const processText = (text: string, actionVerb: string | null, links: [string, string][]) => {
-    let processedText = text
+  // Helper function to parse and render text with proper React tooltip components
+  const renderProcessedText = (text: string, actionVerb: string | null, links: [string, string][], textWithHighlights?: string, mandates?: any[]) => {
+    const sourceText = textWithHighlights || text
     
-    // Replace links with clickable elements
-    if (links && links.length > 0) {
-      links.forEach(([linkText, url]) => {
-        const linkRegex = new RegExp(linkText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')
-        processedText = processedText.replace(linkRegex, `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-un-blue hover:underline font-medium">${linkText}</a>`)
-      })
+    if (!textWithHighlights) {
+      // Handle links only for non-highlighted text
+      let processedText = sourceText
+      if (links && links.length > 0) {
+        links.forEach(([linkText, url]) => {
+          const linkRegex = new RegExp(linkText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')
+          processedText = processedText.replace(linkRegex, `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-un-blue hover:underline font-medium">${linkText}</a>`)
+        })
+      }
+      return <span dangerouslySetInnerHTML={{ __html: processedText }} />
     }
+
+    // Parse text and create segments with proper React components
+    const segments: React.ReactNode[] = []
+    let segmentKey = 0
     
-    // Highlight action verb if present (can appear anywhere in the text)
-    if (actionVerb && actionVerb.trim()) {
-      const verbRegex = new RegExp(`\\b(${actionVerb.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})\\b`, 'i')
-      processedText = processedText.replace(verbRegex, `<span class="font-semibold text-un-blue">$1</span>`)
+    // Split text by all special patterns to process sequentially
+    const allPatterns = [
+      { pattern: /\*(.*?)\*/g, type: 'verb' },
+      { pattern: /<<(.*?)>>/g, type: 'assignee' },
+      { pattern: /\[\[(.*?)\]\]/g, type: 'deliverable' }
+    ]
+    
+    let currentText = sourceText
+    const replacements: { start: number; end: number; component: React.ReactNode; text: string }[] = []
+    
+    // Find all matches across all patterns
+    allPatterns.forEach(({ pattern, type }) => {
+      let match
+      while ((match = pattern.exec(sourceText)) !== null) {
+        const matchText = match[1]
+        let component: React.ReactNode
+        
+        if (type === 'verb') {
+          const correspondingMandate = mandates?.find(mandate => 
+            mandate.action_verb && mandate.action_verb.toLowerCase() === matchText.toLowerCase()
+          )
+          const shouldBeBold = correspondingMandate?.action_verb_type === 'decision' || 
+                              correspondingMandate?.action_verb_type === 'directive'
+          
+          component = (
+            <Tooltip key={`verb-${segmentKey++}`}>
+              <TooltipTrigger asChild>
+                <span className={`${shouldBeBold ? 'font-semibold' : ''} text-un-blue cursor-help`}>
+                  {matchText}
+                </span>
+              </TooltipTrigger>
+              <TooltipContent className="max-w-xs">
+                <div className="space-y-1">
+                  <div className="font-medium">Action Verb</div>
+                  <div className="text-sm">
+                    {titleCase(correspondingMandate?.action_verb_type || 'Unknown')}
+                  </div>
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          )
+        } else if (type === 'assignee') {
+          let assigneeData: any = null
+          mandates?.forEach(mandate => {
+            mandate.assignees?.forEach((assignee: any) => {
+              if (assignee.assignee.toLowerCase() === matchText.toLowerCase()) {
+                assigneeData = assignee
+              }
+            })
+          })
+          
+          component = (
+            <Tooltip key={`assignee-${segmentKey++}`}>
+              <TooltipTrigger asChild>
+                <span className="bg-gray-200 border border-un-blue px-2 py-0.5 rounded-full text-sm font-medium cursor-help">
+                  <Users className="w-3 h-3 inline mr-1 align-middle" />
+                  {matchText}
+                </span>
+              </TooltipTrigger>
+              <TooltipContent className="max-w-xs">
+                <div className="space-y-1">
+                  <div className="font-medium">Assignee</div>
+                  <div className="text-sm">
+                    <div>{titleCase(assigneeData?.assignee_type || 'Unknown')}</div>
+                    {assigneeData?.assignee_normalized && (
+                      <div className="text-gray-500">{assigneeData.assignee_normalized}</div>
+                    )}
+                  </div>
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          )
+        } else if (type === 'deliverable') {
+          let deliverableData: any = null
+          mandates?.forEach(mandate => {
+            mandate.deliverables?.forEach((deliverable: any) => {
+              if (deliverable.deliverable.toLowerCase() === matchText.toLowerCase()) {
+                deliverableData = deliverable
+              }
+            })
+          })
+          
+          component = (
+            <Tooltip key={`deliverable-${segmentKey++}`}>
+              <TooltipTrigger asChild>
+                <span className="bg-gray-200 border border-gray-350 px-2 py-0.5 rounded-full text-sm font-medium cursor-help">
+                  <Package className="w-3 h-3 inline mr-1 align-middle" />
+                  {matchText}
+                </span>
+              </TooltipTrigger>
+              <TooltipContent className="max-w-xs">
+                <div className="space-y-1">
+                  <div className="font-medium">Deliverable</div>
+                  <div className="text-sm">
+                    <div>{titleCase(deliverableData?.deliverable_type || 'Unknown')}</div>
+                    {deliverableData?.deliverable_normalized && (
+                      <div className="text-gray-500">{deliverableData.deliverable_normalized}</div>
+                    )}
+                  </div>
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          )
+        }
+        
+        replacements.push({
+          start: match.index,
+          end: match.index + match[0].length,
+          component: component!,
+          text: match[0]
+        })
+      }
+      pattern.lastIndex = 0 // Reset regex
+    })
+    
+    // Sort replacements by position and build segments
+    replacements.sort((a, b) => a.start - b.start)
+    
+    let lastIndex = 0
+    replacements.forEach((replacement, index) => {
+      // Add text before this replacement
+      if (replacement.start > lastIndex) {
+        const textBefore = sourceText.slice(lastIndex, replacement.start)
+        if (textBefore) {
+          segments.push(<span key={`text-${segmentKey++}`}>{textBefore}</span>)
+        }
+      }
+      
+      // Add the replacement component
+      segments.push(replacement.component)
+      lastIndex = replacement.end
+    })
+    
+    // Add remaining text
+    if (lastIndex < sourceText.length) {
+      const remainingText = sourceText.slice(lastIndex)
+      if (remainingText) {
+        segments.push(<span key={`text-${segmentKey++}`}>{remainingText}</span>)
+      }
     }
-    
-    return processedText
+
+    return <>{segments}</>
   }
 
   return (
@@ -444,23 +863,82 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
           </h3>
 
           {/* Filter buttons */}
-          <div className="flex gap-1 items-center">
-            <Button
-              variant="ghost"
-              size="sm"
-              className={`text-xs h-7 border ${paragraphFilter === 'operative' ? '!border-un-blue !text-un-blue bg-un-blue/10 hover:!text-un-blue hover:bg-un-blue/20' : 'border-gray-200 hover:border-gray-300'}`}
-              onClick={() => setParagraphFilter('operative')}
-            >
-              Operative
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className={`text-xs h-7 border ${paragraphFilter === 'all' ? '!border-un-blue !text-un-blue bg-un-blue/10 hover:!text-un-blue hover:bg-un-blue/20' : 'border-gray-200 hover:border-gray-300'}`}
-              onClick={() => setParagraphFilter('all')}
-            >
-              All
-            </Button>
+          <div className="flex gap-2 items-center">
+            {/* Assignee type dropdown */}
+            {Object.keys(assigneeTypeCounts).length > 0 && (
+              <FilterDropdown
+                label="Assignees"
+                icon={<Users className="h-3 w-3" />}
+                currentFilter={assigneeFilter}
+                isOpen={isAssigneeDropdownOpen}
+                onToggle={() => setIsAssigneeDropdownOpen(!isAssigneeDropdownOpen)}
+                onFilterChange={(filter) => {
+                  setAssigneeFilter(filter)
+                  setIsAssigneeDropdownOpen(false)
+                }}
+                typeCounts={assigneeTypeCounts}
+                withItemsCount={paragraphsWithAssigneesCount}
+                withItemsLabel="With assignees"
+                totalCount={allParagraphs?.length || 0}
+                className="assignee-dropdown"
+              />
+            )}
+            
+            {/* Deliverable type dropdown */}
+            {Object.keys(deliverableTypeCounts).length > 0 && (
+              <FilterDropdown
+                label="Deliverables"
+                icon={<Package className="h-3 w-3" />}
+                currentFilter={deliverableFilter}
+                isOpen={isDeliverableDropdownOpen}
+                onToggle={() => setIsDeliverableDropdownOpen(!isDeliverableDropdownOpen)}
+                onFilterChange={(filter) => {
+                  setDeliverableFilter(filter)
+                  setIsDeliverableDropdownOpen(false)
+                }}
+                typeCounts={deliverableTypeCounts}
+                withItemsCount={paragraphsWithDeliverablesCount}
+                withItemsLabel="With deliverables"
+                totalCount={allParagraphs?.length || 0}
+                className="deliverable-dropdown"
+              />
+            )}
+            
+            {/* Action verb type dropdown */}
+            {Object.keys(actionVerbTypeCounts).length > 0 && (
+              <FilterDropdown
+                label="Actions"
+                icon={<MessageCircle className="h-3 w-3" />}
+                currentFilter={actionVerbFilter}
+                isOpen={isActionVerbDropdownOpen}
+                onToggle={() => setIsActionVerbDropdownOpen(!isActionVerbDropdownOpen)}
+                onFilterChange={(filter) => {
+                  setActionVerbFilter(filter)
+                  setIsActionVerbDropdownOpen(false)
+                }}
+                typeCounts={actionVerbTypeCounts}
+                withItemsCount={0}
+                withItemsLabel=""
+                totalCount={allParagraphs?.length || 0}
+                className="action-verb-dropdown"
+              />
+            )}
+            
+            <div className="flex items-center border border-gray-200 rounded-md overflow-hidden">
+              <button
+                className={`text-xs h-7 px-3 transition-colors ${paragraphFilter === 'operative' ? 'bg-un-blue text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+                onClick={() => setParagraphFilter('operative')}
+              >
+                Operative
+              </button>
+              <div className="w-px h-4 bg-gray-200"></div>
+              <button
+                className={`text-xs h-7 px-3 transition-colors ${paragraphFilter === 'all' ? 'bg-un-blue text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+                onClick={() => setParagraphFilter('all')}
+              >
+                All
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -660,9 +1138,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
                                 {paragraph.prefix}
                               </span>
                             )}
-                            <span dangerouslySetInnerHTML={{ 
-                              __html: processText(paragraph.text, paragraph.action_verb, paragraph.links) 
-                            }} />
+                            {renderProcessedText(paragraph.text, paragraph.mandates?.[0]?.action_verb || null, paragraph.links, paragraph.textWithHighlights, paragraph.mandates)}
                           </HeadingTag>
                         </div>
                         {/* Show disclaimer only if heading has hidden paragraphs due to filtering */}
@@ -679,74 +1155,32 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
                   return (
                     <div key={`${documentSymbol}-${index}`} className={`${indentClass} relative`}>
                       <div className="bg-muted/30 rounded-lg p-3">
-                        <div className={isMobile ? "w-full" : "flex items-start gap-4"}>
-                          <div className={isMobile ? "w-full" : "flex-1 max-w-[85%]"}>
-                            <p className="text-sm leading-relaxed">
-                              {paragraph.prefix && (
-                                <span className="font-medium text-un-blue mr-2">
-                                  {paragraph.prefix}
-                                </span>
-                              )}
-                              <span dangerouslySetInnerHTML={{ 
-                                __html: processText(paragraph.text, paragraph.action_verb, paragraph.links) 
-                              }} />
-                            </p>
+                        <div className="max-w-4xl">
+                          <div className="text-sm leading-relaxed">
+                            {paragraph.prefix && (
+                              <span className="font-medium text-un-blue mr-2">
+                                {paragraph.prefix}
+                              </span>
+                            )}
+                            {renderProcessedText(paragraph.text, paragraph.mandates?.[0]?.action_verb || null, paragraph.links, paragraph.textWithHighlights, paragraph.mandates)}
                           </div>
-                          {!isMobile && (
-                            <div className="flex-shrink-0 w-[15%] flex flex-col gap-1.5 items-end">
-                              {/* Desktop badges */}
-                              {paragraph.paragraph_type && (
-                                <Badge 
-                                  variant="outline" 
-                                  className={`text-xs ${
-                                    paragraph.paragraph_type === 'operative'
-                                      ? '!border-un-blue !text-un-blue bg-un-blue/10'
-                                      : 'border-gray-300 text-gray-600 bg-gray-50'
-                                  }`}
-                                >
-                                  {paragraph.paragraph_type === 'operative' ? 'Operative' : titleCase(paragraph.paragraph_type)}
-                                </Badge>
-                              )}
-                            </div>
-                          )}
                         </div>
                       </div>
                       
-                      {/* Mobile badge - floating at top-right corner */}
-                      {isMobile && paragraph.paragraph_type && (
-                        <div className="badge-container absolute -top-1 -right-1 z-10">
-                          {/* Circle button - hidden when expanded */}
-                          {expandedBadge !== `${documentSymbol}-${index}` && (
-                            <button
-                              onClick={() => toggleBadge(`${documentSymbol}-${index}`)}
-                              className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-medium transition-all duration-200 ${
-                                paragraph.paragraph_type === 'operative'
-                                  ? 'bg-un-blue text-white hover:bg-blue-700'
-                                  : 'bg-gray-600 text-white hover:bg-gray-700'
-                              }`}
-                              aria-label={`${titleCase(paragraph.paragraph_type)} paragraph`}
+                      {/* Operative badge - floating at top-right corner for all devices */}
+                      {(() => {
+                        const badgeInfo = getOperativeBadgeInfo(paragraph)
+                        return badgeInfo.shouldShow && (
+                          <div className="absolute -top-1 -right-1 z-10">
+                            <div
+                              className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-medium ${badgeInfo.color}`}
+                              aria-label={badgeInfo.ariaLabel}
                             >
-                              {paragraph.paragraph_type === 'operative' ? 'O' : paragraph.paragraph_type.charAt(0).toUpperCase()}
-                            </button>
-                          )}
-                          
-                          {/* Expanded badge tooltip */}
-                          {expandedBadge === `${documentSymbol}-${index}` && (
-                            <div className="absolute top-0 right-0 z-20 transform translate-x-1">
-                              <Badge 
-                                variant="outline" 
-                                className={`text-xs whitespace-nowrap ${
-                                  paragraph.paragraph_type === 'operative'
-                                    ? '!border-un-blue !text-un-blue bg-blue-50'
-                                    : 'border-gray-300 text-gray-600 bg-gray-50'
-                                }`}
-                              >
-                                {paragraph.paragraph_type === 'operative' ? 'Operative' : titleCase(paragraph.paragraph_type)}
-                              </Badge>
+                              {badgeInfo.letter}
                             </div>
-                          )}
-                        </div>
-                      )}
+                          </div>
+                        )
+                      })()}
                     </div>
                   )
                 })}
