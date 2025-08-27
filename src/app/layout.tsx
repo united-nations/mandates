@@ -39,15 +39,6 @@ export default function RootLayout({
 }>) {
     const pathname = usePathname()
     const isMainPage = pathname === '/'
-
-    // Initialize Microsoft Clarity with a delay to not block initial render
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            Clarity.init('s4kksugeb9')
-        }, 1000) // Delay Clarity initialization by 1 second
-
-        return () => clearTimeout(timer)
-    }, [])
     return (
         <html lang='en' className={roboto.variable}>
             <head>
