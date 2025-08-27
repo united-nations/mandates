@@ -278,7 +278,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
         
         // Check if paragraph has the specific deliverable type
         return paragraph.mandates?.some(mandate => 
-          mandate.deliverables.some(deliverable => 
+          mandate.deliverables?.some(deliverable => 
             deliverable.deliverable_type === deliverableFilter
           )
         )
@@ -748,7 +748,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
           component = (
             <Tooltip key={`assignee-${segmentKey++}`}>
               <TooltipTrigger asChild>
-                <span className="bg-gray-200 px-2 py-0.5 rounded-full text-sm font-medium cursor-help">
+                <span className="bg-gray-200 border border-un-blue px-2 py-0.5 rounded-full text-sm font-medium cursor-help">
                   <Users className="w-3 h-3 inline mr-1 align-middle" />
                   {matchText}
                 </span>
@@ -779,7 +779,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
           component = (
             <Tooltip key={`deliverable-${segmentKey++}`}>
               <TooltipTrigger asChild>
-                <span className="bg-gray-200 px-2 py-0.5 rounded-full text-sm font-medium cursor-help">
+                <span className="bg-gray-200 border border-gray-350 px-2 py-0.5 rounded-full text-sm font-medium cursor-help">
                   <Package className="w-3 h-3 inline mr-1 align-middle" />
                   {matchText}
                 </span>
