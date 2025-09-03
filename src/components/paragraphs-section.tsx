@@ -305,7 +305,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
         
         // Check if paragraph has the specific assignee type
         return paragraph.mandates?.some(mandate => 
-          mandate.assignees.some(assignee => 
+          mandate.assignees?.some(assignee => 
             assignee.assignee_type === assigneeFilter
           )
         )
