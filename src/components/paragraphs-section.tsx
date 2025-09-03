@@ -140,7 +140,7 @@ function getOperativeBadgeInfo(paragraph: Paragraph) {
   
   return {
     color: 'bg-un-blue text-white hover:bg-blue-700',
-    letter: 'O',
+    letter: 'OP',
     ariaLabel: 'Operative paragraph',
     shouldShow: isOperative
   }
@@ -1232,7 +1232,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
                             <Tooltip>
                               <TooltipTrigger asChild>
                                 <div
-                                  className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-medium cursor-help ${badgeInfo.color}`}
+                                  className={`w-7 h-5 rounded-full flex items-center justify-center text-xs font-medium cursor-help ${badgeInfo.color}`}
                                   aria-label={badgeInfo.ariaLabel}
                                 >
                                   {badgeInfo.letter}
