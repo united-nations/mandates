@@ -866,79 +866,135 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
           <div className="flex gap-2 items-center">
             {/* Assignee type dropdown */}
             {Object.keys(assigneeTypeCounts).length > 0 && (
-              <FilterDropdown
-                label="Assignees"
-                icon={<Users className="h-3 w-3" />}
-                currentFilter={assigneeFilter}
-                isOpen={isAssigneeDropdownOpen}
-                onToggle={() => setIsAssigneeDropdownOpen(!isAssigneeDropdownOpen)}
-                onFilterChange={(filter) => {
-                  setAssigneeFilter(filter)
-                  setIsAssigneeDropdownOpen(false)
-                }}
-                typeCounts={assigneeTypeCounts}
-                withItemsCount={paragraphsWithAssigneesCount}
-                withItemsLabel="With assignees"
-                totalCount={allParagraphs?.length || 0}
-                className="assignee-dropdown"
-              />
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <FilterDropdown
+                      label="Assignees"
+                      icon={<Users className="h-3 w-3" />}
+                      currentFilter={assigneeFilter}
+                      isOpen={isAssigneeDropdownOpen}
+                      onToggle={() => setIsAssigneeDropdownOpen(!isAssigneeDropdownOpen)}
+                      onFilterChange={(filter) => {
+                        setAssigneeFilter(filter)
+                        setIsAssigneeDropdownOpen(false)
+                      }}
+                      typeCounts={assigneeTypeCounts}
+                      withItemsCount={paragraphsWithAssigneesCount}
+                      withItemsLabel="With assignees"
+                      totalCount={allParagraphs?.length || 0}
+                      className="assignee-dropdown"
+                    />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-sm">
+                  <div className="space-y-2">
+                    <div className="font-medium">Filter by Assignee</div>
+                    <div className="text-sm">
+                      Assignees are the entities or organizations assigned to carry out a mandate.
+                    </div>
+                  </div>
+                </TooltipContent>
+              </Tooltip>
             )}
             
             {/* Deliverable type dropdown */}
             {Object.keys(deliverableTypeCounts).length > 0 && (
-              <FilterDropdown
-                label="Deliverables"
-                icon={<Package className="h-3 w-3" />}
-                currentFilter={deliverableFilter}
-                isOpen={isDeliverableDropdownOpen}
-                onToggle={() => setIsDeliverableDropdownOpen(!isDeliverableDropdownOpen)}
-                onFilterChange={(filter) => {
-                  setDeliverableFilter(filter)
-                  setIsDeliverableDropdownOpen(false)
-                }}
-                typeCounts={deliverableTypeCounts}
-                withItemsCount={paragraphsWithDeliverablesCount}
-                withItemsLabel="With deliverables"
-                totalCount={allParagraphs?.length || 0}
-                className="deliverable-dropdown"
-              />
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <FilterDropdown
+                      label="Deliverables"
+                      icon={<Package className="h-3 w-3" />}
+                      currentFilter={deliverableFilter}
+                      isOpen={isDeliverableDropdownOpen}
+                      onToggle={() => setIsDeliverableDropdownOpen(!isDeliverableDropdownOpen)}
+                      onFilterChange={(filter) => {
+                        setDeliverableFilter(filter)
+                        setIsDeliverableDropdownOpen(false)
+                      }}
+                      typeCounts={deliverableTypeCounts}
+                      withItemsCount={paragraphsWithDeliverablesCount}
+                      withItemsLabel="With deliverables"
+                      totalCount={allParagraphs?.length || 0}
+                      className="deliverable-dropdown"
+                    />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-sm">
+                  <div className="space-y-2">
+                    <div className="font-medium">Filter by Deliverable Type</div>
+                    <div className="text-sm">
+                      Deliverables are specific outputs or tasks that are mandated in a paragraph.
+                    </div>
+                  </div>
+                </TooltipContent>
+              </Tooltip>
             )}
             
             {/* Action verb type dropdown */}
             {Object.keys(actionVerbTypeCounts).length > 0 && (
-              <FilterDropdown
-                label="Actions"
-                icon={<MessageCircle className="h-3 w-3" />}
-                currentFilter={actionVerbFilter}
-                isOpen={isActionVerbDropdownOpen}
-                onToggle={() => setIsActionVerbDropdownOpen(!isActionVerbDropdownOpen)}
-                onFilterChange={(filter) => {
-                  setActionVerbFilter(filter)
-                  setIsActionVerbDropdownOpen(false)
-                }}
-                typeCounts={actionVerbTypeCounts}
-                withItemsCount={0}
-                withItemsLabel=""
-                totalCount={allParagraphs?.length || 0}
-                className="action-verb-dropdown"
-              />
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <FilterDropdown
+                      label="Actions"
+                      icon={<MessageCircle className="h-3 w-3" />}
+                      currentFilter={actionVerbFilter}
+                      isOpen={isActionVerbDropdownOpen}
+                      onToggle={() => setIsActionVerbDropdownOpen(!isActionVerbDropdownOpen)}
+                      onFilterChange={(filter) => {
+                        setActionVerbFilter(filter)
+                        setIsActionVerbDropdownOpen(false)
+                      }}
+                      typeCounts={actionVerbTypeCounts}
+                      withItemsCount={0}
+                      withItemsLabel=""
+                      totalCount={allParagraphs?.length || 0}
+                      className="action-verb-dropdown"
+                    />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-sm">
+                  <div className="space-y-2">
+                    <div className="font-medium">Filter by Action Type</div>
+                    <div className="text-sm">
+                      The main action verbs of preambular and operative paragraphs are categorized into different Action Types.
+                    </div>
+                  </div>
+                </TooltipContent>
+              </Tooltip>
             )}
             
-            <div className="flex items-center border border-gray-200 rounded-md overflow-hidden">
-              <button
-                className={`text-xs h-7 px-3 transition-colors ${paragraphFilter === 'operative' ? 'bg-un-blue text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
-                onClick={() => setParagraphFilter('operative')}
-              >
-                Operative
-              </button>
-              <div className="w-px h-4 bg-gray-200"></div>
-              <button
-                className={`text-xs h-7 px-3 transition-colors ${paragraphFilter === 'all' ? 'bg-un-blue text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
-                onClick={() => setParagraphFilter('all')}
-              >
-                All
-              </button>
-            </div>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex items-center border border-gray-200 rounded-md overflow-hidden">
+                  <button
+                    className={`text-xs h-7 px-3 transition-colors ${paragraphFilter === 'operative' ? 'bg-un-blue text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+                    onClick={() => setParagraphFilter('operative')}
+                  >
+                    Operative
+                  </button>
+                  <div className="w-px h-4 bg-gray-200"></div>
+                  <button
+                    className={`text-xs h-7 px-3 transition-colors ${paragraphFilter === 'all' ? 'bg-un-blue text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+                    onClick={() => setParagraphFilter('all')}
+                  >
+                    All
+                  </button>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent className="max-w-sm">
+                <div className="space-y-2">
+                  <div className="font-medium">Filter by Paragraph Type</div>
+                  <div className="text-sm">
+                    <div><strong>Operative:</strong> Main paragraphs that express the opinions of Member States and contain the action that they are agreeing to take.</div>
+                    <div className="mt-1"><strong>Preambular:</strong> Introductory paragraphs that present the background to the action part of the resolution.</div>
+                    {/* https://www.un.org/en/ga/second/72/editingguidelines.pdf */}
+                  </div>
+                </div>
+              </TooltipContent>
+            </Tooltip>
           </div>
         </div>
       </div>
@@ -1172,12 +1228,19 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
                         const badgeInfo = getOperativeBadgeInfo(paragraph)
                         return badgeInfo.shouldShow && (
                           <div className="absolute -top-1 -right-1 z-10">
-                            <div
-                              className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-medium ${badgeInfo.color}`}
-                              aria-label={badgeInfo.ariaLabel}
-                            >
-                              {badgeInfo.letter}
-                            </div>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div
+                                  className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-medium cursor-help ${badgeInfo.color}`}
+                                  aria-label={badgeInfo.ariaLabel}
+                                >
+                                  {badgeInfo.letter}
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Operative paragraph</p>
+                              </TooltipContent>
+                            </Tooltip>
                           </div>
                         )
                       })()}
