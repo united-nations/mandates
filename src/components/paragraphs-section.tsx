@@ -863,7 +863,8 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
           </h3>
 
           {/* Filter buttons */}
-          <div className="flex gap-2 items-center">
+          <div className="flex gap-3 items-center">
+            <span className="text-sm font-medium text-gray-600">Filter:</span>
             {/* Assignee type dropdown */}
             {Object.keys(assigneeTypeCounts).length > 0 && (
               <Tooltip>
