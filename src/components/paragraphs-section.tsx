@@ -62,8 +62,8 @@ function FilterDropdown({
     <div className={`relative ${className}`}>
       <button
         onClick={onToggle}
-        className={`text-xs h-7 px-3 border rounded-md bg-white hover:bg-gray-50 transition-colors flex items-center gap-1.5 ${
-          currentFilter !== 'all' ? '!border-un-blue !text-un-blue bg-un-blue/10' : 'border-gray-200 text-gray-700'
+        className={`text-xs h-7 px-3 border rounded-md bg-gray-100 hover:bg-gray-200 border-gray-300 hover:border-gray-400 transition-all duration-200 flex items-center gap-1.5 cursor-pointer ${
+          currentFilter !== 'all' ? '!border-un-blue !text-un-blue !bg-un-blue/15 hover:!bg-un-blue/25' : 'text-gray-700'
         }`}
       >
         {icon}
@@ -975,20 +975,20 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
               {/* Paragraph type toggle - always visible */}
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <div className="flex items-center border border-gray-200 rounded-md overflow-hidden">
-                    <button
-                      className={`text-xs h-7 px-3 transition-colors ${paragraphFilter === 'operative' ? 'bg-un-blue text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
-                      onClick={() => setParagraphFilter('operative')}
-                    >
-                      Operative
-                    </button>
-                    <div className="w-px h-4 bg-gray-200"></div>
-                    <button
-                      className={`text-xs h-7 px-3 transition-colors ${paragraphFilter === 'all' ? 'bg-un-blue text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
-                      onClick={() => setParagraphFilter('all')}
-                    >
-                      All
-                    </button>
+                                     <div className="flex items-center border border-gray-300 rounded-md overflow-hidden hover:border-gray-400 transition-all duration-200 bg-gray-100">
+                                       <button
+                     className={`text-xs h-7 px-3 transition-all duration-200 cursor-pointer ${paragraphFilter === 'operative' ? 'bg-un-blue text-white' : 'bg-transparent text-gray-700 hover:bg-gray-200 hover:text-gray-900'}`}
+                     onClick={() => setParagraphFilter('operative')}
+                   >
+                     Operative
+                   </button>
+                   <div className="w-px h-4 bg-gray-300"></div>
+                   <button
+                     className={`text-xs h-7 px-3 transition-all duration-200 cursor-pointer ${paragraphFilter === 'all' ? 'bg-un-blue text-white' : 'bg-transparent text-gray-700 hover:bg-gray-200 hover:text-gray-900'}`}
+                     onClick={() => setParagraphFilter('all')}
+                   >
+                     All
+                   </button>
                   </div>
                 </TooltipTrigger>
                 <TooltipContent className="max-w-sm">
