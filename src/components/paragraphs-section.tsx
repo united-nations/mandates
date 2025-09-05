@@ -276,7 +276,6 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
   const [openTooltip, setOpenTooltip] = useState<string | null>(null)
   const [isMobileTOCOpen, setIsMobileTOCOpen] = useState(false)
   const [showFloatingTOC, setShowFloatingTOC] = useState(false)
-  const actionVerbDropdownRef = useRef<HTMLDivElement>(null)
 
   
   const isMobile = useIsMobile()
@@ -1090,7 +1089,6 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
                         typeCounts={actionVerbCounts}
                         totalCount={allParagraphs?.length || 0}
                         className="action-verb-dropdown"
-                        ref={actionVerbDropdownRef}
                       />
                     </div>
                   </TooltipTrigger>
