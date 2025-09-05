@@ -129,6 +129,124 @@ function FilterDropdown({
   )
 }
 
+// Searchable filter dropdown component for action verbs
+interface SearchableFilterDropdownProps {
+  label: string
+  icon: React.ReactNode
+  currentFilter: string
+  isOpen: boolean
+  onToggle: () => void
+  onFilterChange: (filter: string) => void
+  typeCounts: Record<string, number>
+  totalCount: number
+  className?: string
+}
+
+function SearchableFilterDropdown({ 
+  label, 
+  icon, 
+  currentFilter, 
+  isOpen, 
+  onToggle, 
+  onFilterChange, 
+  typeCounts, 
+  totalCount,
+  className = ''
+}: SearchableFilterDropdownProps) {
+  const [searchTerm, setSearchTerm] = useState('')
+  
+  // Filter options based on search term
+  const filteredOptions = useMemo(() => {
+    const entries = Object.entries(typeCounts)
+    if (!searchTerm) return entries
+    
+    return entries.filter(([verb]) => 
+      verb.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  }, [typeCounts, searchTerm])
+  
+  // Reset search when dropdown closes
+  useEffect(() => {
+    if (!isOpen) {
+      setSearchTerm('')
+    }
+  }, [isOpen])
+  
+  return (
+    <div className={`relative ${className}`}>
+      <button
+        onClick={onToggle}
+        className={`text-xs h-7 px-3 border rounded-md bg-gray-100 hover:bg-gray-200 border-gray-300 hover:border-gray-400 transition-all duration-200 flex items-center gap-1.5 cursor-pointer ${
+          currentFilter !== 'all' ? '!border-un-blue !text-un-blue !bg-un-blue/15 hover:!bg-un-blue/25' : 'text-gray-700'
+        }`}
+      >
+        {icon}
+        <span>
+          {currentFilter === 'all' 
+            ? label
+            : `${titleCase(currentFilter)} (${typeCounts[currentFilter] || 0})`
+          }
+        </span>
+        <svg className={`h-3 w-3 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="currentColor" viewBox="0 0 20 20">
+          <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+        </svg>
+      </button>
+      
+      {isOpen && (
+        <div className="absolute top-8 left-0 z-50 bg-white border border-gray-200 rounded-md shadow-lg min-w-48 py-1">
+          {/* Search input */}
+          <div className="px-3 py-2 border-b border-gray-100">
+            <input
+              type="text"
+              placeholder="Search action verbs..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full text-xs px-2 py-1 border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-un-blue focus:border-un-blue"
+              autoFocus
+            />
+          </div>
+          
+          {/* Scrollable options container */}
+          <div className="max-h-48 overflow-y-auto dropdown-scroll-container">
+            {/* All paragraphs option */}
+            <button
+              onClick={() => onFilterChange('all')}
+              className={`w-full text-left py-1.5 text-xs hover:bg-gray-50 flex items-center justify-between ${
+                currentFilter === 'all' ? 'bg-un-blue/10 text-un-blue' : 'text-gray-700'
+              }`}
+            >
+              <span className="pl-3">All paragraphs</span>
+              <span className="text-gray-500 pr-3">{totalCount}</span>
+            </button>
+            
+            {/* Filtered action verbs */}
+            {filteredOptions.length > 0 ? (
+              filteredOptions
+                .sort(([, a], [, b]) => b - a)
+                .map(([verb, count]) => (
+                  <button
+                    key={verb}
+                    onClick={() => onFilterChange(verb)}
+                    className={`w-full text-left py-1.5 text-xs hover:bg-gray-50 flex items-center justify-between ${
+                      currentFilter === verb ? 'bg-un-blue/10 text-un-blue' : 'text-gray-700'
+                    }`}
+                  >
+                    <span className="pl-6">{titleCase(verb)}</span>
+                    <span className="text-gray-500 pr-3">{count}</span>
+                  </button>
+                ))
+            ) : searchTerm ? (
+              <div className="px-3 py-2 text-xs text-gray-500 italic">
+                No action verbs found matching "{searchTerm}"
+              </div>
+            ) : null}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 // Helper function to check if paragraph is operative
 function isOperativeParagraph(paragraph: Paragraph): boolean {
   return paragraph.paragraph_type === 'operative'
@@ -158,6 +276,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
   const [openTooltip, setOpenTooltip] = useState<string | null>(null)
   const [isMobileTOCOpen, setIsMobileTOCOpen] = useState(false)
   const [showFloatingTOC, setShowFloatingTOC] = useState(false)
+  const actionVerbDropdownRef = useRef<HTMLDivElement>(null)
 
   
   const isMobile = useIsMobile()
@@ -212,8 +331,8 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
     ).length
   }, [allParagraphs])
 
-  // Calculate action verb type counts from all paragraphs
-  const actionVerbTypeCounts = useMemo(() => {
+  // Calculate action verb counts from all paragraphs
+  const actionVerbCounts = useMemo(() => {
     if (!allParagraphs) return {}
     
     const counts: Record<string, number> = {}
@@ -221,9 +340,9 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
     allParagraphs.forEach((paragraph: Paragraph) => {
       if (paragraph.mandates) {
         paragraph.mandates.forEach(mandate => {
-          if (mandate.action_verb_type) {
-            const type = mandate.action_verb_type
-            counts[type] = (counts[type] || 0) + 1
+          if (mandate.action_verb) {
+            const verb = mandate.action_verb.toLowerCase()
+            counts[verb] = (counts[verb] || 0) + 1
           }
         })
       }
@@ -312,7 +431,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
       })
     }
     
-    // Filter by action verb type
+    // Filter by action verb
     if (actionVerbFilter !== 'all') {
       filtered = filtered.filter((paragraph: Paragraph) => {
         // Always show headings
@@ -320,9 +439,9 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
           return true
         }
         
-        // Check if paragraph has the specific action verb type
+        // Check if paragraph has the specific action verb
         return paragraph.mandates?.some(mandate => 
-          mandate.action_verb_type === actionVerbFilter
+          mandate.action_verb && mandate.action_verb.toLowerCase() === actionVerbFilter
         )
       })
     }
@@ -584,6 +703,14 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
     }
 
     const handleScroll = () => {
+      // Only close tooltip on scroll, not dropdowns
+      if (openTooltip === 'paragraphs-beta') {
+        setOpenTooltip(null)
+      }
+    }
+
+    const handleResize = () => {
+      // Close everything on resize as layout changes
       if (openTooltip === 'paragraphs-beta') {
         setOpenTooltip(null)
       }
@@ -598,29 +725,36 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
       }
     }
 
-    const handleResize = () => {
-      if (openTooltip === 'paragraphs-beta') {
-        setOpenTooltip(null)
-      }
-      if (isDeliverableDropdownOpen) {
-        setIsDeliverableDropdownOpen(false)
-      }
-      if (isAssigneeDropdownOpen) {
-        setIsAssigneeDropdownOpen(false)
-      }
-      if (isActionVerbDropdownOpen) {
-        setIsActionVerbDropdownOpen(false)
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        if (openTooltip === 'paragraphs-beta') {
+          setOpenTooltip(null)
+        }
+        if (isDeliverableDropdownOpen) {
+          setIsDeliverableDropdownOpen(false)
+        }
+        if (isAssigneeDropdownOpen) {
+          setIsAssigneeDropdownOpen(false)
+        }
+        if (isActionVerbDropdownOpen) {
+          setIsActionVerbDropdownOpen(false)
+        }
+        if (isMobileTOCOpen) {
+          setIsMobileTOCOpen(false)
+        }
       }
     }
 
     if (openTooltip || isMobileTOCOpen || isDeliverableDropdownOpen || isAssigneeDropdownOpen || isActionVerbDropdownOpen) {
       document.addEventListener('mousedown', handleClickOutside)
-      window.addEventListener('scroll', handleScroll, true)
+      window.addEventListener('scroll', handleScroll, false)
       window.addEventListener('resize', handleResize)
+      document.addEventListener('keydown', handleKeyDown)
       return () => {
         document.removeEventListener('mousedown', handleClickOutside)
-        window.removeEventListener('scroll', handleScroll, true)
+        window.removeEventListener('scroll', handleScroll, false)
         window.removeEventListener('resize', handleResize)
+        document.removeEventListener('keydown', handleKeyDown)
       }
     }
   }, [openTooltip, isMobileTOCOpen, isDeliverableDropdownOpen, isAssigneeDropdownOpen, isActionVerbDropdownOpen])
@@ -938,12 +1072,12 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
                 </Tooltip>
               )}
               
-              {/* Action verb type dropdown */}
-              {Object.keys(actionVerbTypeCounts).length > 0 && (
+              {/* Action verb searchable dropdown */}
+              {Object.keys(actionVerbCounts).length > 0 && (
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div>
-                      <FilterDropdown
+                      <SearchableFilterDropdown
                         label="Actions"
                         icon={<MessageCircle className="h-3 w-3" />}
                         currentFilter={actionVerbFilter}
@@ -953,19 +1087,18 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
                           setActionVerbFilter(filter)
                           setIsActionVerbDropdownOpen(false)
                         }}
-                        typeCounts={actionVerbTypeCounts}
-                        withItemsCount={0}
-                        withItemsLabel=""
+                        typeCounts={actionVerbCounts}
                         totalCount={allParagraphs?.length || 0}
                         className="action-verb-dropdown"
+                        ref={actionVerbDropdownRef}
                       />
                     </div>
                   </TooltipTrigger>
                   <TooltipContent className="max-w-sm">
                     <div className="space-y-2">
-                      <div className="font-medium">Filter by Action Type</div>
+                      <div className="font-medium">Filter by Action Verb</div>
                       <div className="text-sm">
-                        The main action verbs of preambular and operative paragraphs are categorized into different Action Types.
+                        Filter paragraphs by the specific action verbs they contain (e.g., "requests", "decides", "invites").
                       </div>
                     </div>
                   </TooltipContent>
