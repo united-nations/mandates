@@ -829,8 +829,14 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
     const sourceText = textWithHighlights || text
     
     if (!textWithHighlights) {
-      // Handle links only for non-highlighted text
+      // Handle links and special phrase highlighting for non-highlighted text
       let processedText = sourceText
+      
+      // First, highlight "within existing resources" in bold red
+      const withinExistingResourcesRegex = /within existing resources/gi
+      processedText = processedText.replace(withinExistingResourcesRegex, '<span class="font-bold text-red-600">within existing resources</span>')
+      
+      // Then handle links
       if (links && links.length > 0) {
         links.forEach(([linkText, url]) => {
           const linkRegex = new RegExp(linkText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')
@@ -848,7 +854,8 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
     const allPatterns = [
       { pattern: /\*(.*?)\*/g, type: 'verb' },
       { pattern: /<<(.*?)>>/g, type: 'assignee' },
-      { pattern: /\[\[(.*?)\]\]/g, type: 'deliverable' }
+      { pattern: /\[\[(.*?)\]\]/g, type: 'deliverable' },
+      { pattern: /within existing resources/gi, type: 'highlight' }
     ]
     
     let currentText = sourceText
@@ -858,10 +865,16 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
     allPatterns.forEach(({ pattern, type }) => {
       let match
       while ((match = pattern.exec(sourceText)) !== null) {
-        const matchText = match[1]
+        const matchText = type === 'highlight' ? match[0] : match[1]
         let component: React.ReactNode
         
-        if (type === 'verb') {
+        if (type === 'highlight') {
+          component = (
+            <span key={`highlight-${segmentKey++}`} className="font-bold text-red-600">
+              {matchText}
+            </span>
+          )
+        } else if (type === 'verb') {
           const correspondingMandate = mandates?.find(mandate => 
             mandate.action_verb && mandate.action_verb.toLowerCase() === matchText.toLowerCase()
           )
