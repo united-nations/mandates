@@ -363,87 +363,104 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
   const paragraphs = useMemo(() => {
     if (!allParagraphs) return allParagraphs
     
-    let filtered = allParagraphs
-    
-    // Filter by paragraph type
-    if (paragraphFilter === 'operative') {
-      filtered = filtered.filter((paragraph: Paragraph) => {
-        // Always show headings
-        if (paragraph.type === 'heading') {
-          return true
+    // Helper function to check if a paragraph matches the current filters
+    const paragraphMatchesFilters = (paragraph: Paragraph): boolean => {
+      // Filter by paragraph type
+      if (paragraphFilter === 'operative' && paragraph.paragraph_type !== 'operative') {
+        return false
+      }
+      
+      // Filter by deliverable type
+      if (deliverableFilter === 'with-deliverables') {
+        if (!paragraph.mandates?.some(mandate => mandate.deliverables?.length > 0)) {
+          return false
         }
-        return paragraph.paragraph_type === 'operative'
-      })
-    }
-    
-    // Filter by deliverable type
-    if (deliverableFilter === 'with-deliverables') {
-      filtered = filtered.filter((paragraph: Paragraph) => {
-        // Always show headings
-        if (paragraph.type === 'heading') {
-          return true
-        }
-        
-        // Check if paragraph has any deliverables
-        return paragraph.mandates?.some(mandate => mandate.deliverables?.length > 0)
-      })
-    } else if (deliverableFilter !== 'all') {
-      filtered = filtered.filter((paragraph: Paragraph) => {
-        // Always show headings
-        if (paragraph.type === 'heading') {
-          return true
-        }
-        
-        // Check if paragraph has the specific deliverable type
-        return paragraph.mandates?.some(mandate => 
+      } else if (deliverableFilter !== 'all') {
+        if (!paragraph.mandates?.some(mandate => 
           mandate.deliverables?.some(deliverable => 
             deliverable.deliverable_type === deliverableFilter
           )
-        )
-      })
-    }
-    
-    // Filter by assignee type
-    if (assigneeFilter === 'with-assignees') {
-      filtered = filtered.filter((paragraph: Paragraph) => {
-        // Always show headings
-        if (paragraph.type === 'heading') {
-          return true
+        )) {
+          return false
         }
-        
-        // Check if paragraph has any assignees
-        return paragraph.mandates?.some(mandate => mandate.assignees?.length > 0)
-      })
-    } else if (assigneeFilter !== 'all') {
-      filtered = filtered.filter((paragraph: Paragraph) => {
-        // Always show headings
-        if (paragraph.type === 'heading') {
-          return true
+      }
+      
+      // Filter by assignee type
+      if (assigneeFilter === 'with-assignees') {
+        if (!paragraph.mandates?.some(mandate => mandate.assignees?.length > 0)) {
+          return false
         }
-        
-        // Check if paragraph has the specific assignee type
-        return paragraph.mandates?.some(mandate => 
+      } else if (assigneeFilter !== 'all') {
+        if (!paragraph.mandates?.some(mandate => 
           mandate.assignees?.some(assignee => 
             assignee.assignee_type === assigneeFilter
           )
-        )
-      })
+        )) {
+          return false
+        }
+      }
+      
+      // Filter by action verb
+      if (actionVerbFilter !== 'all') {
+        if (!paragraph.mandates?.some(mandate => 
+          mandate.action_verb && mandate.action_verb.toLowerCase() === actionVerbFilter
+        )) {
+          return false
+        }
+      }
+      
+      return true
     }
-    
-    // Filter by action verb
-    if (actionVerbFilter !== 'all') {
-      filtered = filtered.filter((paragraph: Paragraph) => {
-        // Always show headings
-        if (paragraph.type === 'heading') {
+
+    // Helper function to check if a heading has any visible content beneath it
+    const headingHasVisibleContent = (headingIndex: number): boolean => {
+      const heading = allParagraphs[headingIndex]
+      if (heading.type !== 'heading') return false
+      
+      const currentLevel = heading.heading_level || 3
+      
+      // Find the next heading at the same or higher level
+      let nextHeadingIndex = -1
+      for (let i = headingIndex + 1; i < allParagraphs.length; i++) {
+        const nextParagraph = allParagraphs[i]
+        if (nextParagraph.type === 'heading' && (nextParagraph.heading_level || 3) <= currentLevel) {
+          nextHeadingIndex = i
+          break
+        }
+      }
+      
+      // Check if there are any matching paragraphs between this heading and the next
+      const endIndex = nextHeadingIndex === -1 ? allParagraphs.length : nextHeadingIndex
+      for (let i = headingIndex + 1; i < endIndex; i++) {
+        const paragraph = allParagraphs[i]
+        if (paragraph.type !== 'heading' && paragraphMatchesFilters(paragraph)) {
           return true
         }
-        
-        // Check if paragraph has the specific action verb
-        return paragraph.mandates?.some(mandate => 
-          mandate.action_verb && mandate.action_verb.toLowerCase() === actionVerbFilter
-        )
-      })
+      }
+      
+      return false
     }
+
+    // Check if any filters are active
+    const hasActiveFilters = paragraphFilter !== 'all' || 
+                            deliverableFilter !== 'all' || 
+                            assigneeFilter !== 'all' || 
+                            actionVerbFilter !== 'all'
+
+    // Filter paragraphs
+    const filtered = allParagraphs.filter((paragraph: Paragraph, index: number) => {
+      if (paragraph.type === 'heading') {
+        // If no filters are active, always show headings
+        if (!hasActiveFilters) {
+          return true
+        }
+        // If filters are active, only show headings that have visible content beneath them
+        return headingHasVisibleContent(index)
+      }
+      
+      // For non-heading paragraphs, apply the filters
+      return paragraphMatchesFilters(paragraph)
+    })
     
     return filtered
   }, [allParagraphs, paragraphFilter, deliverableFilter, assigneeFilter, actionVerbFilter])
@@ -1245,71 +1262,6 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
                   // Generate unique ID for headings (for TOC navigation)
                   const headingId = paragraph.type === 'heading' ? `heading-${index}` : undefined
 
-                  // Check if this is a heading and if it has any visible paragraphs following it
-                  const isHeading = paragraph.type === 'heading'
-                  let hasVisibleParagraphsAfter = false
-                  let hasHiddenParagraphsAfter = false
-                  let nextHeadingIndex = -1
-                  
-                  if (isHeading) {
-                    // Find the next heading at the same or higher level in filtered paragraphs
-                    const currentLevel = paragraph.heading_level || 3
-                    for (let i = index + 1; i < paragraphs.length; i++) {
-                      const nextParagraph = paragraphs[i]
-                      if (nextParagraph.type === 'heading' && (nextParagraph.heading_level || 3) <= currentLevel) {
-                        nextHeadingIndex = i
-                        break
-                      }
-                    }
-                    
-                    // Check if there are any non-heading paragraphs between this heading and the next in filtered results
-                    const endIndex = nextHeadingIndex === -1 ? paragraphs.length : nextHeadingIndex
-                    for (let i = index + 1; i < endIndex; i++) {
-                      if (paragraphs[i].type !== 'heading') {
-                        hasVisibleParagraphsAfter = true
-                        break
-                      }
-                    }
-                    
-                    // Check if there are hidden paragraphs in this section (only if filtering and no visible paragraphs)
-                    if (!hasVisibleParagraphsAfter && paragraphFilter !== 'all' && allParagraphs) {
-                      // Find the corresponding heading in allParagraphs
-                      const allHeadingIndex = allParagraphs.findIndex((p: Paragraph) => 
-                        p.type === 'heading' && 
-                        p.text === paragraph.text && 
-                        p.prefix === paragraph.prefix
-                      )
-                      
-                      if (allHeadingIndex !== -1) {
-                        // Find the next heading at the same or higher level in all paragraphs
-                        let allNextHeadingIndex = -1
-                        for (let i = allHeadingIndex + 1; i < allParagraphs.length; i++) {
-                          const nextParagraph = allParagraphs[i]
-                          if (nextParagraph.type === 'heading' && (nextParagraph.heading_level || 3) <= currentLevel) {
-                            allNextHeadingIndex = i
-                            break
-                          }
-                        }
-                        
-                        // Check if there are any non-heading paragraphs that would match the filter
-                        const allEndIndex = allNextHeadingIndex === -1 ? allParagraphs.length : allNextHeadingIndex
-                        for (let i = allHeadingIndex + 1; i < allEndIndex; i++) {
-                          const p = allParagraphs[i]
-                          if (p.type !== 'heading') {
-                            // Check if this paragraph would be hidden by current filter
-                            const wouldBeVisible = paragraphFilter === 'operative' 
-                              ? p.paragraph_type === 'operative'
-                              : true // 'all' filter shows everything
-                            
-                            if (!wouldBeVisible) {
-                              hasHiddenParagraphsAfter = true
-                              break
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
 
                   // Handle different content types
                   if (paragraph.type === 'heading') {
@@ -1336,12 +1288,6 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
                             {renderProcessedText(paragraph.text, paragraph.mandates?.[0]?.action_verb || null, paragraph.links, paragraph.textWithHighlights, paragraph.mandates)}
                           </HeadingTag>
                         </div>
-                        {/* Show disclaimer only if heading has hidden paragraphs due to filtering */}
-                        {!hasVisibleParagraphsAfter && hasHiddenParagraphsAfter && (
-                          <p className="text-xs text-muted-foreground italic mb-3">
-                            No operative paragraphs in this section.
-                          </p>
-                        )}
                       </div>
                     )
                   }
