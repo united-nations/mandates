@@ -41,6 +41,7 @@ interface FilterDropdownProps {
   withItemsLabel: string
   totalCount: number
   className?: string
+  hierarchicalData?: Record<string, Record<string, number>>
 }
 
 function FilterDropdown({ 
@@ -54,7 +55,8 @@ function FilterDropdown({
   withItemsCount, 
   withItemsLabel,
   totalCount,
-  className = ''
+  className = '',
+  hierarchicalData
 }: FilterDropdownProps) {
   const withItemsKey = `with-${label.toLowerCase()}`
   
@@ -72,7 +74,13 @@ function FilterDropdown({
             ? label
             : currentFilter === withItemsKey
             ? `${withItemsLabel} (${withItemsCount})`
-            : `${titleCase(currentFilter)} (${typeCounts[currentFilter] || 0})`
+            : currentFilter.includes(':')
+            ? (() => {
+                const [type, item] = currentFilter.split(':')
+                const itemCount = hierarchicalData?.[type]?.[item] || 0
+                return `${titleCase(item)} (${itemCount})`
+              })()
+            : `${titleCase(currentFilter.replace(/_/g, ' '))} (${typeCounts[currentFilter] || 0})`
           }
         </span>
         <svg className={`h-3 w-3 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="currentColor" viewBox="0 0 20 20">
@@ -111,16 +119,36 @@ function FilterDropdown({
             Object.entries(typeCounts)
               .sort(([, a], [, b]) => b - a)
               .map(([type, count]) => (
-                <button
-                  key={type}
-                  onClick={() => onFilterChange(type)}
-                  className={`w-full text-left py-1.5 text-xs hover:bg-gray-50 flex items-center justify-between ${
-                    currentFilter === type ? 'bg-un-blue/10 text-un-blue' : 'text-gray-700'
-                  }`}
-                >
-                  <span className="pl-6">{titleCase(type)}</span>
-                  <span className="text-gray-500 pr-3">{count}</span>
-                </button>
+                <div key={type}>
+                  {/* Type header */}
+                  <button
+                    onClick={() => onFilterChange(type)}
+                    className={`w-full text-left py-1.5 text-xs hover:bg-gray-50 flex items-center justify-between ${
+                      currentFilter === type ? 'bg-un-blue/10 text-un-blue' : 'text-gray-700'
+                    }`}
+                  >
+                    <span className="pl-6">{titleCase(type.replace(/_/g, ' '))}</span>
+                    <span className="text-gray-500 pr-3">{count}</span>
+                  </button>
+                  
+                  {/* Individual items under this type */}
+                  {hierarchicalData && hierarchicalData[type] && (
+                    Object.entries(hierarchicalData[type])
+                      .sort(([, a], [, b]) => b - a)
+                      .map(([itemName, itemCount]) => (
+                        <button
+                          key={`${type}-${itemName}`}
+                          onClick={() => onFilterChange(`${type}:${itemName}`)}
+                          className={`w-full text-left py-1.5 text-xs hover:bg-gray-50 flex items-center justify-between ${
+                            currentFilter === `${type}:${itemName}` ? 'bg-un-blue/10 text-un-blue' : 'text-gray-600'
+                          }`}
+                        >
+                          <span className="pl-10 text-xs">{titleCase(itemName)}</span>
+                          <span className="text-gray-400 pr-3 text-xs">{itemCount}</span>
+                        </button>
+                      ))
+                  )}
+                </div>
               ))
           )}
         </div>
@@ -184,7 +212,7 @@ function SearchableFilterDropdown({
         <span>
           {currentFilter === 'all' 
             ? label
-            : `${titleCase(currentFilter)} (${typeCounts[currentFilter] || 0})`
+            : `${titleCase(currentFilter.replace(/_/g, ' '))} (${typeCounts[currentFilter] || 0})`
           }
         </span>
         <svg className={`h-3 w-3 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="currentColor" viewBox="0 0 20 20">
@@ -231,7 +259,7 @@ function SearchableFilterDropdown({
                       currentFilter === verb ? 'bg-un-blue/10 text-un-blue' : 'text-gray-700'
                     }`}
                   >
-                    <span className="pl-6">{titleCase(verb)}</span>
+                    <span className="pl-6">{titleCase(verb.replace(/_/g, ' '))}</span>
                     <span className="text-gray-500 pr-3">{count}</span>
                   </button>
                 ))
@@ -321,6 +349,32 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
     return counts
   }, [allParagraphs])
 
+  // Calculate individual assignee counts grouped by type
+  const assigneesByType = useMemo(() => {
+    if (!allParagraphs) return {}
+    
+    const groupedAssignees: Record<string, Record<string, number>> = {}
+    
+    allParagraphs.forEach((paragraph: Paragraph) => {
+      if (paragraph.mandates) {
+        paragraph.mandates.forEach(mandate => {
+          mandate.assignees?.forEach(assignee => {
+            const type = assignee.assignee_type
+            const assigneeName = assignee.assignee_normalized || assignee.assignee
+            
+            if (!groupedAssignees[type]) {
+              groupedAssignees[type] = {}
+            }
+            
+            groupedAssignees[type][assigneeName] = (groupedAssignees[type][assigneeName] || 0) + 1
+          })
+        })
+      }
+    })
+    
+    return groupedAssignees
+  }, [allParagraphs])
+
   // Calculate count of paragraphs with any assignees
   const paragraphsWithAssigneesCount = useMemo(() => {
     if (!allParagraphs) return 0
@@ -385,18 +439,32 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
         }
       }
       
-      // Filter by assignee type
+      // Filter by assignee type or individual assignee
       if (assigneeFilter === 'with-assignees') {
         if (!paragraph.mandates?.some(mandate => mandate.assignees?.length > 0)) {
           return false
         }
       } else if (assigneeFilter !== 'all') {
-        if (!paragraph.mandates?.some(mandate => 
-          mandate.assignees?.some(assignee => 
-            assignee.assignee_type === assigneeFilter
-          )
-        )) {
-          return false
+        if (assigneeFilter.includes(':')) {
+          // Individual assignee filter (format: "type:assigneeName")
+          const [filterType, filterAssignee] = assigneeFilter.split(':')
+          if (!paragraph.mandates?.some(mandate => 
+            mandate.assignees?.some(assignee => 
+              assignee.assignee_type === filterType && 
+              (assignee.assignee_normalized || assignee.assignee) === filterAssignee
+            )
+          )) {
+            return false
+          }
+        } else {
+          // Assignee type filter
+          if (!paragraph.mandates?.some(mandate => 
+            mandate.assignees?.some(assignee => 
+              assignee.assignee_type === assigneeFilter
+            )
+          )) {
+            return false
+          }
         }
       }
       
@@ -878,7 +946,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
           const correspondingMandate = mandates?.find(mandate => 
             mandate.action_verb && mandate.action_verb.toLowerCase() === matchText.toLowerCase()
           )
-          const shouldBeBold = correspondingMandate?.action_verb_type === 'decision' || 
+          const shouldBeBold = correspondingMandate?.action_verb_type === 'deciding' || 
                               correspondingMandate?.action_verb_type === 'directive'
           
           component = (
@@ -892,7 +960,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
                 <div className="space-y-1">
                   <div className="font-medium">Action Verb</div>
                   <div className="text-sm">
-                    {titleCase(correspondingMandate?.action_verb_type || 'Unknown')}
+                    {titleCase((correspondingMandate?.action_verb_type || 'Unknown').replace(/_/g, ' '))}
                   </div>
                 </div>
               </TooltipContent>
@@ -920,7 +988,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
                 <div className="space-y-1">
                   <div className="font-medium">Assignee</div>
                   <div className="text-sm">
-                    <div>{titleCase(assigneeData?.assignee_type || 'Unknown')}</div>
+                    <div>{titleCase((assigneeData?.assignee_type || 'Unknown').replace(/_/g, ' '))}</div>
                     {assigneeData?.assignee_normalized && (
                       <div className="text-gray-500">{assigneeData.assignee_normalized}</div>
                     )}
@@ -951,7 +1019,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
                 <div className="space-y-1">
                   <div className="font-medium">Deliverable</div>
                   <div className="text-sm">
-                    <div>{titleCase(deliverableData?.deliverable_type || 'Unknown')}</div>
+                    <div>{titleCase((deliverableData?.deliverable_type || 'Unknown').replace(/_/g, ' '))}</div>
                     {deliverableData?.deliverable_normalized && (
                       <div className="text-gray-500">{deliverableData.deliverable_normalized}</div>
                     )}
@@ -1053,6 +1121,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
                         withItemsLabel="With assignees"
                         totalCount={allParagraphs?.length || 0}
                         className="assignee-dropdown"
+                        hierarchicalData={assigneesByType}
                       />
                     </div>
                   </TooltipTrigger>
