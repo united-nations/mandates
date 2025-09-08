@@ -1195,7 +1195,8 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
                     <div className="space-y-2">
                       <div className="font-medium">Filter by Action Verb</div>
                       <div className="text-sm">
-                        Action verbs determine the type and strength of operative paragraphs. They may present and acknowledge information, reinforce prior statements, express a positive or negative stance, constitute an action of the assembly itself, or direct assignees to carry out deliverables.
+                        Action verbs determine the type and strength of operative paragraphs. 
+                        {/* They may present and acknowledge information, reinforce prior statements, express a positive or negative stance, constitute an action of the assembly itself, or direct assignees to carry out deliverables. */}
                       </div>
                     </div>
                   </TooltipContent>
