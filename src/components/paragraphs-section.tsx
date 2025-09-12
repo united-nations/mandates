@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react'
-import { FileCheck, FileText, HelpCircle, Menu, Package, Users, MessageCircle } from 'lucide-react'
+import { FileCheck, FileText, HelpCircle, Menu, Package, Users, MessageCircle, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 import { Skeleton } from '@/components/ui/skeleton'
@@ -42,6 +42,7 @@ interface FilterDropdownProps {
   totalCount: number
   className?: string
   hierarchicalData?: Record<string, Record<string, number>>
+  filteredTotalCount: number // Count of all paragraphs matching other filters
 }
 
 function FilterDropdown({ 
@@ -56,7 +57,8 @@ function FilterDropdown({
   withItemsLabel,
   totalCount,
   className = '',
-  hierarchicalData
+  hierarchicalData,
+  filteredTotalCount
 }: FilterDropdownProps) {
   const withItemsKey = `with-${label.toLowerCase()}`
   
@@ -98,7 +100,7 @@ function FilterDropdown({
             }`}
           >
             <span className="pl-3">All paragraphs</span>
-            <span className="text-gray-500 pr-3">{totalCount}</span>
+            <span className="text-gray-500 pr-3">{filteredTotalCount}</span>
           </button>
           
           {/* With items option */}
@@ -117,34 +119,56 @@ function FilterDropdown({
           {/* Type subcategories */}
           {Object.keys(typeCounts).length > 0 && (
             Object.entries(typeCounts)
-              .sort(([, a], [, b]) => b - a)
+              .sort(([, a], [, b]) => {
+                // Sort by count descending, but keep non-zero counts first
+                if (a === 0 && b === 0) return 0
+                if (a === 0) return 1
+                if (b === 0) return -1
+                return b - a
+              })
               .map(([type, count]) => (
                 <div key={type}>
                   {/* Type header */}
                   <button
-                    onClick={() => onFilterChange(type)}
-                    className={`w-full text-left py-1.5 text-xs hover:bg-gray-50 flex items-center justify-between ${
-                      currentFilter === type ? 'bg-un-blue/10 text-un-blue' : 'text-gray-700'
+                    onClick={() => count > 0 ? onFilterChange(type) : undefined}
+                    disabled={count === 0}
+                    className={`w-full text-left py-1.5 text-xs flex items-center justify-between ${
+                      count === 0 
+                        ? 'text-gray-400 cursor-not-allowed' 
+                        : currentFilter === type 
+                        ? 'bg-un-blue/10 text-un-blue hover:bg-gray-50' 
+                        : 'text-gray-700 hover:bg-gray-50'
                     }`}
                   >
                     <span className="pl-6">{titleCase(type.replace(/_/g, ' '))}</span>
-                    <span className="text-gray-500 pr-3">{count}</span>
+                    <span className={`pr-3 ${count === 0 ? 'text-gray-400' : 'text-gray-500'}`}>{count}</span>
                   </button>
                   
                   {/* Individual items under this type */}
                   {hierarchicalData && hierarchicalData[type] && (
                     Object.entries(hierarchicalData[type])
-                      .sort(([, a], [, b]) => b - a)
+                      .sort(([, a], [, b]) => {
+                        // Sort by count descending, but keep non-zero counts first
+                        if (a === 0 && b === 0) return 0
+                        if (a === 0) return 1
+                        if (b === 0) return -1
+                        return b - a
+                      })
                       .map(([itemName, itemCount]) => (
                         <button
                           key={`${type}-${itemName}`}
-                          onClick={() => onFilterChange(`${type}:${itemName}`)}
-                          className={`w-full text-left py-1.5 text-xs hover:bg-gray-50 flex items-center justify-between ${
-                            currentFilter === `${type}:${itemName}` ? 'bg-un-blue/10 text-un-blue' : 'text-gray-600'
+                          onClick={() => itemCount > 0 ? onFilterChange(`${type}:${itemName}`) : undefined}
+                          disabled={itemCount === 0}
+                          className={`w-full text-left py-1.5 text-xs flex items-center justify-between ${
+                            itemCount === 0
+                              ? 'text-gray-400 cursor-not-allowed'
+                              : currentFilter === `${type}:${itemName}` 
+                              ? 'bg-un-blue/10 text-un-blue hover:bg-gray-50' 
+                              : 'text-gray-600 hover:bg-gray-50'
                           }`}
                         >
                           <span className="pl-10 text-xs">{titleCase(itemName)}</span>
-                          <span className="text-gray-400 pr-3 text-xs">{itemCount}</span>
+                          <span className={`pr-3 text-xs ${itemCount === 0 ? 'text-gray-400' : 'text-gray-400'}`}>{itemCount}</span>
                         </button>
                       ))
                   )}
@@ -168,6 +192,7 @@ interface SearchableFilterDropdownProps {
   typeCounts: Record<string, number>
   totalCount: number
   className?: string
+  filteredTotalCount: number // Count of all paragraphs matching other filters
 }
 
 function SearchableFilterDropdown({ 
@@ -179,7 +204,8 @@ function SearchableFilterDropdown({
   onFilterChange, 
   typeCounts, 
   totalCount,
-  className = ''
+  className = '',
+  filteredTotalCount
 }: SearchableFilterDropdownProps) {
   const [searchTerm, setSearchTerm] = useState('')
   
@@ -244,23 +270,34 @@ function SearchableFilterDropdown({
               }`}
             >
               <span className="pl-3">All paragraphs</span>
-              <span className="text-gray-500 pr-3">{totalCount}</span>
+              <span className="text-gray-500 pr-3">{filteredTotalCount}</span>
             </button>
             
             {/* Filtered action verbs */}
             {filteredOptions.length > 0 ? (
               filteredOptions
-                .sort(([, a], [, b]) => b - a)
+                .sort(([, a], [, b]) => {
+                  // Sort by count descending, but keep non-zero counts first
+                  if (a === 0 && b === 0) return 0
+                  if (a === 0) return 1
+                  if (b === 0) return -1
+                  return b - a
+                })
                 .map(([verb, count]) => (
                   <button
                     key={verb}
-                    onClick={() => onFilterChange(verb)}
-                    className={`w-full text-left py-1.5 text-xs hover:bg-gray-50 flex items-center justify-between ${
-                      currentFilter === verb ? 'bg-un-blue/10 text-un-blue' : 'text-gray-700'
+                    onClick={() => count > 0 ? onFilterChange(verb) : undefined}
+                    disabled={count === 0}
+                    className={`w-full text-left py-1.5 text-xs flex items-center justify-between ${
+                      count === 0
+                        ? 'text-gray-400 cursor-not-allowed'
+                        : currentFilter === verb 
+                        ? 'bg-un-blue/10 text-un-blue hover:bg-gray-50' 
+                        : 'text-gray-700 hover:bg-gray-50'
                     }`}
                   >
                     <span className="pl-6">{titleCase(verb.replace(/_/g, ' '))}</span>
-                    <span className="text-gray-500 pr-3">{count}</span>
+                    <span className={`pr-3 ${count === 0 ? 'text-gray-400' : 'text-gray-500'}`}>{count}</span>
                   </button>
                 ))
             ) : searchTerm ? (
@@ -309,48 +346,192 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
   const isMobile = useIsMobile()
   const paragraphsTitleRef = useRef<HTMLDivElement>(null)
 
-  // Calculate deliverable type counts from all paragraphs
-  const deliverableTypeCounts = useMemo(() => {
-    if (!allParagraphs) return {}
+  // Check if any filters are active (excluding paragraph type which defaults to 'operative')
+  const hasActiveFilters = useMemo(() => {
+    return deliverableFilter !== 'all' || 
+           assigneeFilter !== 'all' || 
+           actionVerbFilter !== 'all'
+  }, [deliverableFilter, assigneeFilter, actionVerbFilter])
+
+  // Reset all filters to default
+  const resetFilters = useCallback(() => {
+    setDeliverableFilter('all')
+    setAssigneeFilter('all')
+    setActionVerbFilter('all')
+    // Keep paragraph filter as 'operative' since that's the default
+  }, [])
+
+  // Helper function to check if a paragraph matches filters (excluding the filter being calculated)
+  const paragraphMatchesOtherFilters = useCallback((paragraph: Paragraph, excludeFilter: 'deliverable' | 'assignee' | 'actionVerb'): boolean => {
+    // Filter by paragraph type (always applied)
+    if (paragraphFilter === 'operative' && paragraph.paragraph_type !== 'operative') {
+      return false
+    }
     
-    const counts: Record<string, number> = {}
+    // Filter by assignee type or individual assignee (if not excluded)
+    if (excludeFilter !== 'assignee') {
+      if (assigneeFilter === 'with-assignees') {
+        if (!paragraph.mandates?.some(mandate => mandate.assignees?.length > 0)) {
+          return false
+        }
+      } else if (assigneeFilter !== 'all') {
+        if (assigneeFilter.includes(':')) {
+          const [filterType, filterAssignee] = assigneeFilter.split(':')
+          if (!paragraph.mandates?.some(mandate => 
+            mandate.assignees?.some(assignee => 
+              assignee.assignee_type === filterType && 
+              (assignee.assignee_normalized || assignee.assignee) === filterAssignee
+            )
+          )) {
+            return false
+          }
+        } else {
+          if (!paragraph.mandates?.some(mandate => 
+            mandate.assignees?.some(assignee => 
+              assignee.assignee_type === assigneeFilter
+            )
+          )) {
+            return false
+          }
+        }
+      }
+    }
     
+    // Filter by deliverable type (if not excluded)
+    if (excludeFilter !== 'deliverable') {
+      if (deliverableFilter === 'with-deliverables') {
+        if (!paragraph.mandates?.some(mandate => mandate.deliverables?.length > 0)) {
+          return false
+        }
+      } else if (deliverableFilter !== 'all') {
+        if (!paragraph.mandates?.some(mandate => 
+          mandate.deliverables?.some(deliverable => 
+            deliverable.deliverable_type === deliverableFilter
+          )
+        )) {
+          return false
+        }
+      }
+    }
+    
+    // Filter by action verb (if not excluded)
+    if (excludeFilter !== 'actionVerb') {
+      if (actionVerbFilter !== 'all') {
+        if (!paragraph.mandates?.some(mandate => 
+          mandate.action_verb && mandate.action_verb.toLowerCase() === actionVerbFilter
+        )) {
+          return false
+        }
+      }
+    }
+    
+    return true
+  }, [paragraphFilter, assigneeFilter, deliverableFilter, actionVerbFilter])
+
+  // Get all possible deliverable types from unfiltered data
+  const allDeliverableTypes = useMemo(() => {
+    if (!allParagraphs) return new Set<string>()
+    
+    const types = new Set<string>()
     allParagraphs.forEach((paragraph: Paragraph) => {
       if (paragraph.mandates) {
         paragraph.mandates.forEach(mandate => {
           mandate.deliverables?.forEach(deliverable => {
-            const type = deliverable.deliverable_type
-            counts[type] = (counts[type] || 0) + 1
+            types.add(deliverable.deliverable_type)
           })
         })
       }
     })
     
-    return counts
+    return types
   }, [allParagraphs])
 
-  // Calculate assignee type counts from all paragraphs
-  const assigneeTypeCounts = useMemo(() => {
+  // Calculate deliverable type counts based on current filters (paragraph-level counting)
+  const deliverableTypeCounts = useMemo(() => {
     if (!allParagraphs) return {}
     
+    // Initialize all possible types with 0 count
     const counts: Record<string, number> = {}
+    allDeliverableTypes.forEach(type => {
+      counts[type] = 0
+    })
     
+    allParagraphs.forEach((paragraph: Paragraph) => {
+      if (paragraphMatchesOtherFilters(paragraph, 'deliverable')) {
+      if (paragraph.mandates) {
+          // Track which deliverable types this paragraph has (to avoid double-counting)
+          const deliverableTypesInParagraph = new Set<string>()
+          
+        paragraph.mandates.forEach(mandate => {
+          mandate.deliverables?.forEach(deliverable => {
+              deliverableTypesInParagraph.add(deliverable.deliverable_type)
+            })
+          })
+          
+          // Count this paragraph once for each unique deliverable type it contains
+          deliverableTypesInParagraph.forEach(type => {
+            counts[type] = (counts[type] || 0) + 1
+          })
+        }
+      }
+    })
+    
+    return counts
+  }, [allParagraphs, paragraphMatchesOtherFilters, allDeliverableTypes])
+
+  // Get all possible assignee types from unfiltered data
+  const allAssigneeTypes = useMemo(() => {
+    if (!allParagraphs) return new Set<string>()
+    
+    const types = new Set<string>()
     allParagraphs.forEach((paragraph: Paragraph) => {
       if (paragraph.mandates) {
         paragraph.mandates.forEach(mandate => {
           mandate.assignees?.forEach(assignee => {
-            const type = assignee.assignee_type
-            counts[type] = (counts[type] || 0) + 1
+            types.add(assignee.assignee_type)
           })
         })
       }
     })
     
-    return counts
+    return types
   }, [allParagraphs])
 
-  // Calculate individual assignee counts grouped by type
-  const assigneesByType = useMemo(() => {
+  // Calculate assignee type counts based on current filters (paragraph-level counting)
+  const assigneeTypeCounts = useMemo(() => {
+    if (!allParagraphs) return {}
+    
+    // Initialize all possible types with 0 count
+    const counts: Record<string, number> = {}
+    allAssigneeTypes.forEach(type => {
+      counts[type] = 0
+    })
+    
+    allParagraphs.forEach((paragraph: Paragraph) => {
+      if (paragraphMatchesOtherFilters(paragraph, 'assignee')) {
+      if (paragraph.mandates) {
+          // Track which assignee types this paragraph has (to avoid double-counting)
+          const assigneeTypesInParagraph = new Set<string>()
+          
+        paragraph.mandates.forEach(mandate => {
+          mandate.assignees?.forEach(assignee => {
+              assigneeTypesInParagraph.add(assignee.assignee_type)
+            })
+          })
+          
+          // Count this paragraph once for each unique assignee type it contains
+          assigneeTypesInParagraph.forEach(type => {
+            counts[type] = (counts[type] || 0) + 1
+          })
+        }
+      }
+    })
+    
+    return counts
+  }, [allParagraphs, paragraphMatchesOtherFilters, allAssigneeTypes])
+
+  // Get all possible individual assignees grouped by type from unfiltered data
+  const allAssigneesByType = useMemo(() => {
     if (!allParagraphs) return {}
     
     const groupedAssignees: Record<string, Record<string, number>> = {}
@@ -366,7 +547,9 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
               groupedAssignees[type] = {}
             }
             
-            groupedAssignees[type][assigneeName] = (groupedAssignees[type][assigneeName] || 0) + 1
+            if (!groupedAssignees[type][assigneeName]) {
+              groupedAssignees[type][assigneeName] = 0
+            }
           })
         })
       }
@@ -375,43 +558,140 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
     return groupedAssignees
   }, [allParagraphs])
 
-  // Calculate count of paragraphs with any assignees
+  // Calculate individual assignee counts grouped by type based on current filters (paragraph-level counting)
+  const assigneesByType = useMemo(() => {
+    if (!allParagraphs) return {}
+    
+    // Initialize with all possible assignees with 0 count
+    const groupedAssignees: Record<string, Record<string, number>> = {}
+    Object.entries(allAssigneesByType).forEach(([type, assignees]) => {
+      groupedAssignees[type] = {}
+      Object.keys(assignees).forEach(assigneeName => {
+        groupedAssignees[type][assigneeName] = 0
+      })
+    })
+    
+    allParagraphs.forEach((paragraph: Paragraph) => {
+      if (paragraphMatchesOtherFilters(paragraph, 'assignee')) {
+        if (paragraph.mandates) {
+          // Track which assignees this paragraph has (to avoid double-counting)
+          const assigneesInParagraph = new Set<string>()
+          
+          paragraph.mandates.forEach(mandate => {
+            mandate.assignees?.forEach(assignee => {
+              const type = assignee.assignee_type
+              const assigneeName = assignee.assignee_normalized || assignee.assignee
+              assigneesInParagraph.add(`${type}:${assigneeName}`)
+            })
+          })
+          
+          // Count this paragraph once for each unique assignee it contains
+          assigneesInParagraph.forEach(assigneeKey => {
+            const [type, assigneeName] = assigneeKey.split(':')
+            
+            if (groupedAssignees[type] && groupedAssignees[type][assigneeName] !== undefined) {
+              groupedAssignees[type][assigneeName] = (groupedAssignees[type][assigneeName] || 0) + 1
+            }
+          })
+        }
+      }
+    })
+    
+    return groupedAssignees
+  }, [allParagraphs, paragraphMatchesOtherFilters, allAssigneesByType])
+
+  // Calculate count of paragraphs with any assignees based on current filters
   const paragraphsWithAssigneesCount = useMemo(() => {
     if (!allParagraphs) return 0
     
     return allParagraphs.filter((paragraph: Paragraph) => 
+      paragraphMatchesOtherFilters(paragraph, 'assignee') &&
       paragraph.mandates?.some(mandate => mandate.assignees?.length > 0)
     ).length
-  }, [allParagraphs])
+  }, [allParagraphs, paragraphMatchesOtherFilters])
 
-  // Calculate action verb counts from all paragraphs
-  const actionVerbCounts = useMemo(() => {
-    if (!allParagraphs) return {}
+  // Get all possible action verbs from unfiltered data
+  const allActionVerbs = useMemo(() => {
+    if (!allParagraphs) return new Set<string>()
     
-    const counts: Record<string, number> = {}
-    
+    const verbs = new Set<string>()
     allParagraphs.forEach((paragraph: Paragraph) => {
       if (paragraph.mandates) {
         paragraph.mandates.forEach(mandate => {
           if (mandate.action_verb) {
-            const verb = mandate.action_verb.toLowerCase()
-            counts[verb] = (counts[verb] || 0) + 1
+            verbs.add(mandate.action_verb.toLowerCase())
           }
         })
       }
     })
     
-    return counts
+    return verbs
   }, [allParagraphs])
 
-  // Calculate count of paragraphs with any deliverables
+  // Calculate action verb counts based on current filters (paragraph-level counting)
+  const actionVerbCounts = useMemo(() => {
+    if (!allParagraphs) return {}
+    
+    // Initialize all possible verbs with 0 count
+    const counts: Record<string, number> = {}
+    allActionVerbs.forEach(verb => {
+      counts[verb] = 0
+    })
+    
+    allParagraphs.forEach((paragraph: Paragraph) => {
+      if (paragraphMatchesOtherFilters(paragraph, 'actionVerb')) {
+      if (paragraph.mandates) {
+          // Track which action verbs this paragraph has (to avoid double-counting)
+          const actionVerbsInParagraph = new Set<string>()
+          
+        paragraph.mandates.forEach(mandate => {
+          if (mandate.action_verb) {
+              actionVerbsInParagraph.add(mandate.action_verb.toLowerCase())
+            }
+          })
+          
+          // Count this paragraph once for each unique action verb it contains
+          actionVerbsInParagraph.forEach(verb => {
+            counts[verb] = (counts[verb] || 0) + 1
+          })
+        }
+      }
+    })
+    
+    return counts
+  }, [allParagraphs, paragraphMatchesOtherFilters, allActionVerbs])
+
+  // Calculate count of paragraphs with any deliverables based on current filters
   const paragraphsWithDeliverablesCount = useMemo(() => {
     if (!allParagraphs) return 0
     
     return allParagraphs.filter((paragraph: Paragraph) => 
+      paragraphMatchesOtherFilters(paragraph, 'deliverable') &&
       paragraph.mandates?.some(mandate => mandate.deliverables?.length > 0)
     ).length
-  }, [allParagraphs])
+  }, [allParagraphs, paragraphMatchesOtherFilters])
+
+  // Calculate filtered total counts for "All paragraphs" option in each dropdown
+  const deliverableFilteredTotalCount = useMemo(() => {
+    if (!allParagraphs) return 0
+    return allParagraphs.filter((paragraph: Paragraph) => 
+      paragraphMatchesOtherFilters(paragraph, 'deliverable')
+    ).length
+  }, [allParagraphs, paragraphMatchesOtherFilters])
+
+  const assigneeFilteredTotalCount = useMemo(() => {
+    if (!allParagraphs) return 0
+    return allParagraphs.filter((paragraph: Paragraph) => 
+      paragraphMatchesOtherFilters(paragraph, 'assignee')
+    ).length
+  }, [allParagraphs, paragraphMatchesOtherFilters])
+
+  const actionVerbFilteredTotalCount = useMemo(() => {
+    if (!allParagraphs) return 0
+    return allParagraphs.filter((paragraph: Paragraph) => 
+      paragraphMatchesOtherFilters(paragraph, 'actionVerb')
+    ).length
+  }, [allParagraphs, paragraphMatchesOtherFilters])
 
   // Frontend filtering of paragraphs
   const paragraphs = useMemo(() => {
@@ -1100,7 +1380,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
             <span className="text-sm font-medium text-gray-600 hidden sm:block">Filter:</span>
             
             {/* Filter buttons - responsive flex */}
-            <div className="flex flex-wrap gap-2 sm:gap-3">
+            <div className="flex flex-wrap gap-2 sm:gap-3 items-center">
               {/* Assignee type dropdown */}
               {Object.keys(assigneeTypeCounts).length > 0 && (
                 <Tooltip>
@@ -1122,6 +1402,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
                         totalCount={allParagraphs?.length || 0}
                         className="assignee-dropdown"
                         hierarchicalData={assigneesByType}
+                        filteredTotalCount={assigneeFilteredTotalCount}
                       />
                     </div>
                   </TooltipTrigger>
@@ -1156,6 +1437,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
                         withItemsLabel="With deliverables"
                         totalCount={allParagraphs?.length || 0}
                         className="deliverable-dropdown"
+                        filteredTotalCount={deliverableFilteredTotalCount}
                       />
                     </div>
                   </TooltipTrigger>
@@ -1188,6 +1470,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
                         typeCounts={actionVerbCounts}
                         totalCount={allParagraphs?.length || 0}
                         className="action-verb-dropdown"
+                        filteredTotalCount={actionVerbFilteredTotalCount}
                       />
                     </div>
                   </TooltipTrigger>
@@ -1233,6 +1516,25 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
                   </div>
                 </TooltipContent>
               </Tooltip>
+              
+              {/* Reset button - only visible when filters are active */}
+              {hasActiveFilters && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={resetFilters}
+                      className="text-xs h-7 px-2 rounded-md bg-au-chico text-white hover:bg-shuttle-gray transition-colors flex items-center gap-1 cursor-pointer"
+                      aria-label="Reset all filters"
+                    >
+                      <X className="h-3 w-3" />
+                      <span>Reset</span>
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Reset all filters to default</p>
+                  </TooltipContent>
+                </Tooltip>
+              )}
             </div>
           </div>
         </div>
