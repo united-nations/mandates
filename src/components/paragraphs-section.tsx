@@ -760,6 +760,42 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
       return true
     }
 
+    // Helper function to find parent paragraph index
+    const findParentIndex = (currentIndex: number): number | null => {
+      const currentParagraph = allParagraphs[currentIndex]
+      const currentLevel = currentParagraph.paragraph_level || 0
+      
+      // Look backwards for a paragraph with a lower level (parent)
+      for (let i = currentIndex - 1; i >= 0; i--) {
+        const paragraph = allParagraphs[i]
+        if (paragraph.type !== 'heading' && (paragraph.paragraph_level || 0) < currentLevel) {
+          return i
+        }
+      }
+      return null
+    }
+
+    // Helper function to find all children of a paragraph
+    const findChildrenIndices = (parentIndex: number): number[] => {
+      const parentParagraph = allParagraphs[parentIndex]
+      const parentLevel = parentParagraph.paragraph_level || 0
+      const childIndices: number[] = []
+      
+      // Look forward for paragraphs with higher levels (children)
+      for (let i = parentIndex + 1; i < allParagraphs.length; i++) {
+        const paragraph = allParagraphs[i]
+        if (paragraph.type === 'heading') continue
+        
+        const currentLevel = paragraph.paragraph_level || 0
+        if (currentLevel <= parentLevel) {
+          // Found a sibling or parent, stop looking
+          break
+        }
+        childIndices.push(i)
+      }
+      return childIndices
+    }
+
     // Helper function to check if a heading has any visible content beneath it
     const headingHasVisibleContent = (headingIndex: number): boolean => {
       const heading = allParagraphs[headingIndex]
@@ -781,7 +817,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
       const endIndex = nextHeadingIndex === -1 ? allParagraphs.length : nextHeadingIndex
       for (let i = headingIndex + 1; i < endIndex; i++) {
         const paragraph = allParagraphs[i]
-        if (paragraph.type !== 'heading' && paragraphMatchesFilters(paragraph)) {
+        if (paragraph.type !== 'heading' && shouldIncludeParagraph(i)) {
           return true
         }
       }
@@ -789,11 +825,62 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
       return false
     }
 
+    // Check if any assignee/deliverable/action filters are active (these trigger parent-child logic)
+    const hasEnhancedFilters = deliverableFilter !== 'all' || 
+                              assigneeFilter !== 'all' || 
+                              actionVerbFilter !== 'all'
+
     // Check if any filters are active
-    const hasActiveFilters = paragraphFilter !== 'all' || 
-                            deliverableFilter !== 'all' || 
-                            assigneeFilter !== 'all' || 
-                            actionVerbFilter !== 'all'
+    const hasActiveFilters = paragraphFilter !== 'all' || hasEnhancedFilters
+
+    // Helper function to determine if a paragraph should be included (with parent-child logic)
+    const shouldIncludeParagraph = (index: number): boolean => {
+      const paragraph = allParagraphs[index]
+      
+      // Always apply basic paragraph type filter
+      if (paragraphFilter === 'operative' && paragraph.paragraph_type !== 'operative') {
+        return false
+      }
+
+      // If no enhanced filters are active, use simple matching
+      if (!hasEnhancedFilters) {
+        return true // Only paragraph type filter is active, which we already checked
+      }
+
+      // Check if this paragraph directly matches the enhanced filters
+      const directMatch = paragraphMatchesFilters(paragraph)
+      
+      if (directMatch) {
+        return true
+      }
+
+      // If paragraph doesn't directly match, check parent-child relationships
+      
+      // Check if this paragraph is a child of a matching parent
+      const parentIndex = findParentIndex(index)
+      if (parentIndex !== null) {
+        const parentParagraph = allParagraphs[parentIndex]
+        if (paragraphFilter === 'operative' && parentParagraph.paragraph_type !== 'operative') {
+          // Parent doesn't match paragraph type filter, skip
+        } else if (paragraphMatchesFilters(parentParagraph)) {
+          return true // Include child because parent matches
+        }
+      }
+
+      // Check if this paragraph is a parent of any matching children
+      const childIndices = findChildrenIndices(index)
+      for (const childIndex of childIndices) {
+        const childParagraph = allParagraphs[childIndex]
+        if (paragraphFilter === 'operative' && childParagraph.paragraph_type !== 'operative') {
+          continue // Child doesn't match paragraph type filter
+        }
+        if (paragraphMatchesFilters(childParagraph)) {
+          return true // Include parent because child matches
+        }
+      }
+
+      return false
+    }
 
     // Filter paragraphs
     const filtered = allParagraphs.filter((paragraph: Paragraph, index: number) => {
@@ -806,8 +893,8 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
         return headingHasVisibleContent(index)
       }
       
-      // For non-heading paragraphs, apply the filters
-      return paragraphMatchesFilters(paragraph)
+      // For non-heading paragraphs, apply the enhanced filtering logic
+      return shouldIncludeParagraph(index)
     })
     
     return filtered
