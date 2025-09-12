@@ -300,7 +300,7 @@ function SearchableFilterDropdown({
           </div>
           
           {/* Scrollable options container */}
-          <div className="max-h-48 overflow-y-auto dropdown-scroll-container">
+          <div className="max-h-72 overflow-y-auto dropdown-scroll-container">
             {/* All paragraphs option */}
             <button
               onClick={() => onFilterChange('all')}
@@ -1707,7 +1707,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
                       />
                     </div>
                   </TooltipTrigger>
-                  <TooltipContent className="max-w-sm">
+                  <TooltipContent className="max-w-sm" side="top">
                     <div className="space-y-2">
                       <div className="font-medium">Filter by Entity</div>
                       <div className="text-sm">
@@ -1742,7 +1742,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
                       />
                     </div>
                   </TooltipTrigger>
-                  <TooltipContent className="max-w-sm">
+                  <TooltipContent className="max-w-sm" side="top">
                     <div className="space-y-2">
                       <div className="font-medium">Filter by Deliverable Type</div>
                       <div className="text-sm">
@@ -1775,7 +1775,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
                       />
                     </div>
                   </TooltipTrigger>
-                  <TooltipContent className="max-w-sm">
+                  <TooltipContent className="max-w-sm" side="top">
                     <div className="space-y-2">
                       <div className="font-medium">Filter by Action Verb</div>
                       <div className="text-sm">
@@ -1806,7 +1806,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
                    </button>
                   </div>
                 </TooltipTrigger>
-                <TooltipContent className="max-w-sm">
+                <TooltipContent className="max-w-sm" side="top">
                   <div className="space-y-2">
                     <div className="font-medium">Filter by Paragraph Type</div>
                     <div className="text-sm">
@@ -1831,7 +1831,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
                       <span>Reset</span>
                     </button>
                   </TooltipTrigger>
-                  <TooltipContent>
+                  <TooltipContent side="top">
                     <p>Reset all filters to default</p>
                   </TooltipContent>
                 </Tooltip>
