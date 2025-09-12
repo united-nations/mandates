@@ -19,6 +19,11 @@ export interface Paragraph {
       assignee_normalized: string;
       assignee_type: string;
     }[];
+    mentioned_entities: {
+      mentioned_entity: string;
+      mentioned_entity_normalized: string;
+      mentioned_entity_type: string;
+    }[];
     deliverables: {
       deliverable: string;
       deliverable_normalized: string;

@@ -368,34 +368,43 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
       return false
     }
     
-    // Filter by assignee type or individual assignee (if not excluded)
-    if (excludeFilter !== 'assignee') {
-      if (assigneeFilter === 'with-assignees') {
-        if (!paragraph.mandates?.some(mandate => mandate.assignees?.length > 0)) {
-          return false
-        }
-      } else if (assigneeFilter !== 'all') {
-        if (assigneeFilter.includes(':')) {
-          const [filterType, filterAssignee] = assigneeFilter.split(':')
+      // Filter by entity type or individual entity (if not excluded) - includes both assignees and mentioned_entities
+      if (excludeFilter !== 'assignee') {
+        if (assigneeFilter === 'with-assignees') {
           if (!paragraph.mandates?.some(mandate => 
-            mandate.assignees?.some(assignee => 
-              assignee.assignee_type === filterType && 
-              (assignee.assignee_normalized || assignee.assignee) === filterAssignee
-            )
+            (mandate.assignees?.length > 0) || (mandate.mentioned_entities?.length > 0)
           )) {
             return false
           }
-        } else {
-          if (!paragraph.mandates?.some(mandate => 
-            mandate.assignees?.some(assignee => 
-              assignee.assignee_type === assigneeFilter
-            )
-          )) {
-            return false
+        } else if (assigneeFilter !== 'all') {
+          if (assigneeFilter.includes(':')) {
+            const [filterType, filterEntity] = assigneeFilter.split(':')
+            if (!paragraph.mandates?.some(mandate => 
+              mandate.assignees?.some(assignee => 
+                assignee.assignee_type === filterType && 
+                (assignee.assignee_normalized || assignee.assignee) === filterEntity
+              ) ||
+              mandate.mentioned_entities?.some(entity => 
+                entity.mentioned_entity_type === filterType && 
+                (entity.mentioned_entity_normalized || entity.mentioned_entity) === filterEntity
+              )
+            )) {
+              return false
+            }
+          } else {
+            if (!paragraph.mandates?.some(mandate => 
+              mandate.assignees?.some(assignee => 
+                assignee.assignee_type === assigneeFilter
+              ) ||
+              mandate.mentioned_entities?.some(entity => 
+                entity.mentioned_entity_type === assigneeFilter
+              )
+            )) {
+              return false
+            }
           }
         }
       }
-    }
     
     // Filter by deliverable type (if not excluded)
     if (excludeFilter !== 'deliverable') {
@@ -479,7 +488,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
     return counts
   }, [allParagraphs, paragraphMatchesOtherFilters, allDeliverableTypes])
 
-  // Get all possible assignee types from unfiltered data
+  // Get all possible entity types from unfiltered data (both assignees and mentioned_entities)
   const allAssigneeTypes = useMemo(() => {
     if (!allParagraphs) return new Set<string>()
     
@@ -487,8 +496,13 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
     allParagraphs.forEach((paragraph: Paragraph) => {
       if (paragraph.mandates) {
         paragraph.mandates.forEach(mandate => {
+          // Include assignee types
           mandate.assignees?.forEach(assignee => {
             types.add(assignee.assignee_type)
+          })
+          // Include mentioned entity types
+          mandate.mentioned_entities?.forEach(entity => {
+            types.add(entity.mentioned_entity_type)
           })
         })
       }
@@ -497,7 +511,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
     return types
   }, [allParagraphs])
 
-  // Calculate assignee type counts based on current filters (paragraph-level counting)
+  // Calculate entity type counts based on current filters (paragraph-level counting)
   const assigneeTypeCounts = useMemo(() => {
     if (!allParagraphs) return {}
     
@@ -510,17 +524,22 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
     allParagraphs.forEach((paragraph: Paragraph) => {
       if (paragraphMatchesOtherFilters(paragraph, 'assignee')) {
       if (paragraph.mandates) {
-          // Track which assignee types this paragraph has (to avoid double-counting)
-          const assigneeTypesInParagraph = new Set<string>()
+          // Track which entity types this paragraph has (to avoid double-counting)
+          const entityTypesInParagraph = new Set<string>()
           
         paragraph.mandates.forEach(mandate => {
+          // Include assignee types
           mandate.assignees?.forEach(assignee => {
-              assigneeTypesInParagraph.add(assignee.assignee_type)
+              entityTypesInParagraph.add(assignee.assignee_type)
+            })
+          // Include mentioned entity types
+          mandate.mentioned_entities?.forEach(entity => {
+              entityTypesInParagraph.add(entity.mentioned_entity_type)
             })
           })
           
-          // Count this paragraph once for each unique assignee type it contains
-          assigneeTypesInParagraph.forEach(type => {
+          // Count this paragraph once for each unique entity type it contains
+          entityTypesInParagraph.forEach(type => {
             counts[type] = (counts[type] || 0) + 1
           })
         }
@@ -530,83 +549,106 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
     return counts
   }, [allParagraphs, paragraphMatchesOtherFilters, allAssigneeTypes])
 
-  // Get all possible individual assignees grouped by type from unfiltered data
+  // Get all possible individual entities grouped by type from unfiltered data
   const allAssigneesByType = useMemo(() => {
     if (!allParagraphs) return {}
     
-    const groupedAssignees: Record<string, Record<string, number>> = {}
+    const groupedEntities: Record<string, Record<string, number>> = {}
     
     allParagraphs.forEach((paragraph: Paragraph) => {
       if (paragraph.mandates) {
         paragraph.mandates.forEach(mandate => {
+          // Include assignees
           mandate.assignees?.forEach(assignee => {
             const type = assignee.assignee_type
-            const assigneeName = assignee.assignee_normalized || assignee.assignee
+            const entityName = assignee.assignee_normalized || assignee.assignee
             
-            if (!groupedAssignees[type]) {
-              groupedAssignees[type] = {}
+            if (!groupedEntities[type]) {
+              groupedEntities[type] = {}
             }
             
-            if (!groupedAssignees[type][assigneeName]) {
-              groupedAssignees[type][assigneeName] = 0
+            if (!groupedEntities[type][entityName]) {
+              groupedEntities[type][entityName] = 0
+            }
+          })
+          // Include mentioned entities
+          mandate.mentioned_entities?.forEach(entity => {
+            const type = entity.mentioned_entity_type
+            const entityName = entity.mentioned_entity_normalized || entity.mentioned_entity
+            
+            if (!groupedEntities[type]) {
+              groupedEntities[type] = {}
+            }
+            
+            if (!groupedEntities[type][entityName]) {
+              groupedEntities[type][entityName] = 0
             }
           })
         })
       }
     })
     
-    return groupedAssignees
+    return groupedEntities
   }, [allParagraphs])
 
-  // Calculate individual assignee counts grouped by type based on current filters (paragraph-level counting)
+  // Calculate individual entity counts grouped by type based on current filters (paragraph-level counting)
   const assigneesByType = useMemo(() => {
     if (!allParagraphs) return {}
     
-    // Initialize with all possible assignees with 0 count
-    const groupedAssignees: Record<string, Record<string, number>> = {}
-    Object.entries(allAssigneesByType).forEach(([type, assignees]) => {
-      groupedAssignees[type] = {}
-      Object.keys(assignees).forEach(assigneeName => {
-        groupedAssignees[type][assigneeName] = 0
+    // Initialize with all possible entities with 0 count
+    const groupedEntities: Record<string, Record<string, number>> = {}
+    Object.entries(allAssigneesByType).forEach(([type, entities]) => {
+      groupedEntities[type] = {}
+      Object.keys(entities).forEach(entityName => {
+        groupedEntities[type][entityName] = 0
       })
     })
     
     allParagraphs.forEach((paragraph: Paragraph) => {
       if (paragraphMatchesOtherFilters(paragraph, 'assignee')) {
         if (paragraph.mandates) {
-          // Track which assignees this paragraph has (to avoid double-counting)
-          const assigneesInParagraph = new Set<string>()
+          // Track which entities this paragraph has (to avoid double-counting)
+          const entitiesInParagraph = new Set<string>()
           
           paragraph.mandates.forEach(mandate => {
+            // Include assignees
             mandate.assignees?.forEach(assignee => {
               const type = assignee.assignee_type
-              const assigneeName = assignee.assignee_normalized || assignee.assignee
-              assigneesInParagraph.add(`${type}:${assigneeName}`)
+              const entityName = assignee.assignee_normalized || assignee.assignee
+              entitiesInParagraph.add(`${type}:${entityName}`)
+            })
+            // Include mentioned entities
+            mandate.mentioned_entities?.forEach(entity => {
+              const type = entity.mentioned_entity_type
+              const entityName = entity.mentioned_entity_normalized || entity.mentioned_entity
+              entitiesInParagraph.add(`${type}:${entityName}`)
             })
           })
           
-          // Count this paragraph once for each unique assignee it contains
-          assigneesInParagraph.forEach(assigneeKey => {
-            const [type, assigneeName] = assigneeKey.split(':')
+          // Count this paragraph once for each unique entity it contains
+          entitiesInParagraph.forEach(entityKey => {
+            const [type, entityName] = entityKey.split(':')
             
-            if (groupedAssignees[type] && groupedAssignees[type][assigneeName] !== undefined) {
-              groupedAssignees[type][assigneeName] = (groupedAssignees[type][assigneeName] || 0) + 1
+            if (groupedEntities[type] && groupedEntities[type][entityName] !== undefined) {
+              groupedEntities[type][entityName] = (groupedEntities[type][entityName] || 0) + 1
             }
           })
         }
       }
     })
     
-    return groupedAssignees
+    return groupedEntities
   }, [allParagraphs, paragraphMatchesOtherFilters, allAssigneesByType])
 
-  // Calculate count of paragraphs with any assignees based on current filters
+  // Calculate count of paragraphs with any entities based on current filters
   const paragraphsWithAssigneesCount = useMemo(() => {
     if (!allParagraphs) return 0
     
     return allParagraphs.filter((paragraph: Paragraph) => 
       paragraphMatchesOtherFilters(paragraph, 'assignee') &&
-      paragraph.mandates?.some(mandate => mandate.assignees?.length > 0)
+      paragraph.mandates?.some(mandate => 
+        (mandate.assignees?.length > 0) || (mandate.mentioned_entities?.length > 0)
+      )
     ).length
   }, [allParagraphs, paragraphMatchesOtherFilters])
 
@@ -719,28 +761,37 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
         }
       }
       
-      // Filter by assignee type or individual assignee
+      // Filter by entity type or individual entity - includes both assignees and mentioned_entities
       if (assigneeFilter === 'with-assignees') {
-        if (!paragraph.mandates?.some(mandate => mandate.assignees?.length > 0)) {
+        if (!paragraph.mandates?.some(mandate => 
+          (mandate.assignees?.length > 0) || (mandate.mentioned_entities?.length > 0)
+        )) {
           return false
         }
       } else if (assigneeFilter !== 'all') {
         if (assigneeFilter.includes(':')) {
-          // Individual assignee filter (format: "type:assigneeName")
-          const [filterType, filterAssignee] = assigneeFilter.split(':')
+          // Individual entity filter (format: "type:entityName")
+          const [filterType, filterEntity] = assigneeFilter.split(':')
           if (!paragraph.mandates?.some(mandate => 
             mandate.assignees?.some(assignee => 
               assignee.assignee_type === filterType && 
-              (assignee.assignee_normalized || assignee.assignee) === filterAssignee
+              (assignee.assignee_normalized || assignee.assignee) === filterEntity
+            ) ||
+            mandate.mentioned_entities?.some(entity => 
+              entity.mentioned_entity_type === filterType && 
+              (entity.mentioned_entity_normalized || entity.mentioned_entity) === filterEntity
             )
           )) {
             return false
           }
         } else {
-          // Assignee type filter
+          // Entity type filter
           if (!paragraph.mandates?.some(mandate => 
             mandate.assignees?.some(assignee => 
               assignee.assignee_type === assigneeFilter
+            ) ||
+            mandate.mentioned_entities?.some(entity => 
+              entity.mentioned_entity_type === assigneeFilter
             )
           )) {
             return false
@@ -1292,6 +1343,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
     const allPatterns = [
       { pattern: /\*(.*?)\*/g, type: 'verb' },
       { pattern: /<<(.*?)>>/g, type: 'assignee' },
+      { pattern: /\{\{(.*?)\}\}/g, type: 'mentioned_entity' },
       { pattern: /\[\[(.*?)\]\]/g, type: 'deliverable' },
       { pattern: /within existing resources/gi, type: 'highlight' }
     ]
@@ -1341,41 +1393,55 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
               </TooltipContent>
             </Tooltip>
           )
-        } else if (type === 'assignee') {
-          let assigneeData: any = null
+        } else if (type === 'assignee' || type === 'mentioned_entity') {
+          let entityData: any = null
+          
+          // Search in both assignees and mentioned_entities
           mandates?.forEach(mandate => {
+            // Check assignees
             mandate.assignees?.forEach((assignee: any) => {
               if (assignee.assignee.toLowerCase() === matchText.toLowerCase()) {
-                assigneeData = assignee
+                entityData = { ...assignee, entityType: 'assignee' }
+              }
+            })
+            // Check mentioned_entities
+            mandate.mentioned_entities?.forEach((entity: any) => {
+              if (entity.mentioned_entity.toLowerCase() === matchText.toLowerCase()) {
+                entityData = { 
+                  assignee: entity.mentioned_entity,
+                  assignee_normalized: entity.mentioned_entity_normalized,
+                  assignee_type: entity.mentioned_entity_type,
+                  entityType: 'mentioned_entity'
+                }
               }
             })
           })
           
-          // Enhanced highlighting for assignee when filter is active
-          const isFilteredAssignee = assigneeFilter !== 'all' && (
+          // Enhanced highlighting for entity when filter is active
+          const isFilteredEntity = assigneeFilter !== 'all' && (
             (assigneeFilter.includes(':') && 
-             assigneeFilter === `${assigneeData?.assignee_type}:${assigneeData?.assignee_normalized || assigneeData?.assignee}`) ||
-            (!assigneeFilter.includes(':') && assigneeData?.assignee_type === assigneeFilter)
+             assigneeFilter === `${entityData?.assignee_type}:${entityData?.assignee_normalized || entityData?.assignee}`) ||
+            (!assigneeFilter.includes(':') && entityData?.assignee_type === assigneeFilter)
           )
-          const assigneeClasses = hasEnhancedFilters && isFilteredAssignee
+          const entityClasses = hasEnhancedFilters && isFilteredEntity
             ? "bg-yellow-200 border border-un-blue px-2 py-0.5 rounded-full text-sm font-semibold cursor-help shadow-sm"
             : "bg-gray-200 border border-un-blue px-2 py-0.5 rounded-full text-sm font-medium cursor-help"
           
           component = (
-            <Tooltip key={`assignee-${segmentKey++}`}>
+            <Tooltip key={`entity-${segmentKey++}`}>
               <TooltipTrigger asChild>
-                <span className={assigneeClasses}>
+                <span className={entityClasses}>
                   <Users className="w-3 h-3 inline mr-1 align-middle" />
                   {matchText}
                 </span>
               </TooltipTrigger>
               <TooltipContent className="max-w-xs">
                 <div className="space-y-1">
-                  <div className="font-medium">Assignee</div>
+                  <div className="font-medium">Entity</div>
                   <div className="text-sm">
-                    <div>{titleCase((assigneeData?.assignee_type || 'Unknown').replace(/_/g, ' '))}</div>
-                    {assigneeData?.assignee_normalized && (
-                      <div className="text-gray-500">{assigneeData.assignee_normalized}</div>
+                    <div>{titleCase((entityData?.assignee_type || 'Unknown').replace(/_/g, ' '))}</div>
+                    {entityData?.assignee_normalized && (
+                      <div className="text-gray-500">{entityData.assignee_normalized}</div>
                     )}
                   </div>
                 </div>
@@ -1499,7 +1565,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
                   <TooltipTrigger asChild>
                     <div>
                       <FilterDropdown
-                        label="Assignees"
+                        label="Entities"
                         icon={<Users className="h-3 w-3" />}
                         currentFilter={assigneeFilter}
                         isOpen={isAssigneeDropdownOpen}
@@ -1510,7 +1576,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
                         }}
                         typeCounts={assigneeTypeCounts}
                         withItemsCount={paragraphsWithAssigneesCount}
-                        withItemsLabel="With assignees"
+                        withItemsLabel="With entities"
                         totalCount={allParagraphs?.length || 0}
                         className="assignee-dropdown"
                         hierarchicalData={assigneesByType}
@@ -1520,9 +1586,9 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
                   </TooltipTrigger>
                   <TooltipContent className="max-w-sm">
                     <div className="space-y-2">
-                      <div className="font-medium">Filter by Assignee</div>
+                      <div className="font-medium">Filter by Entity</div>
                       <div className="text-sm">
-                        Assignees are the entities or organizations assigned to carry out a mandate.
+                        Entities include both assignees (organizations assigned to carry out mandates) and mentioned entities (organizations referenced in the text).
                       </div>
                     </div>
                   </TooltipContent>
