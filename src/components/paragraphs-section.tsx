@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react'
 import { FileCheck, FileText, HelpCircle, Menu, Package, Users, MessageCircle, X } from 'lucide-react'
+import { ScrollToTop } from '@/components/ui/scroll-to-top'
 import { Button } from '@/components/ui/button'
 
 import { Skeleton } from '@/components/ui/skeleton'
@@ -1745,6 +1746,11 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
                   </div>
                 )}
               </div>
+            </div>
+            
+            {/* Scroll to Top Button - positioned at bottom of TOC area */}
+            <div className="sticky bottom-4 flex justify-center">
+              <ScrollToTop />
             </div>
           </div>
         )}
