@@ -1176,6 +1176,9 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
   const renderProcessedText = (text: string, actionVerb: string | null, links: [string, string][], textWithHighlights?: string, mandates?: any[]) => {
     const sourceText = textWithHighlights || text
     
+    // Check if any assignee/deliverable/action verb filters are active for enhanced highlighting
+    const hasEnhancedFilters = assigneeFilter !== 'all' || deliverableFilter !== 'all' || actionVerbFilter !== 'all'
+    
     if (!textWithHighlights) {
       // Handle links and special phrase highlighting for non-highlighted text
       let processedText = sourceText
@@ -1226,11 +1229,18 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
           const correspondingMandate = mandates?.find(mandate => 
             mandate.action_verb && mandate.action_verb.toLowerCase() === matchText.toLowerCase()
           )
+          
+          // Enhanced highlighting for action verb when filter is active
+          const isFilteredVerb = actionVerbFilter !== 'all' && 
+            correspondingMandate?.action_verb?.toLowerCase() === actionVerbFilter
+          const verbClasses = hasEnhancedFilters && isFilteredVerb 
+            ? "text-un-blue cursor-help bg-yellow-200 px-1 py-0.5 rounded font-semibold shadow-sm"
+            : "text-un-blue cursor-help"
                     
           component = (
             <Tooltip key={`verb-${segmentKey++}`}>
               <TooltipTrigger asChild>
-                <span className="text-un-blue cursor-help">
+                <span className={verbClasses}>
                   {matchText}
                 </span>
               </TooltipTrigger>
@@ -1254,10 +1264,20 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
             })
           })
           
+          // Enhanced highlighting for assignee when filter is active
+          const isFilteredAssignee = assigneeFilter !== 'all' && (
+            (assigneeFilter.includes(':') && 
+             assigneeFilter === `${assigneeData?.assignee_type}:${assigneeData?.assignee_normalized || assigneeData?.assignee}`) ||
+            (!assigneeFilter.includes(':') && assigneeData?.assignee_type === assigneeFilter)
+          )
+          const assigneeClasses = hasEnhancedFilters && isFilteredAssignee
+            ? "bg-yellow-200 border border-un-blue px-2 py-0.5 rounded-full text-sm font-semibold cursor-help shadow-sm"
+            : "bg-gray-200 border border-un-blue px-2 py-0.5 rounded-full text-sm font-medium cursor-help"
+          
           component = (
             <Tooltip key={`assignee-${segmentKey++}`}>
               <TooltipTrigger asChild>
-                <span className="bg-gray-200 border border-un-blue px-2 py-0.5 rounded-full text-sm font-medium cursor-help">
+                <span className={assigneeClasses}>
                   <Users className="w-3 h-3 inline mr-1 align-middle" />
                   {matchText}
                 </span>
@@ -1285,10 +1305,17 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
             })
           })
           
+          // Enhanced highlighting for deliverable when filter is active
+          const isFilteredDeliverable = deliverableFilter !== 'all' && 
+            deliverableData?.deliverable_type === deliverableFilter
+          const deliverableClasses = hasEnhancedFilters && isFilteredDeliverable
+            ? "bg-yellow-200 border border-gray-350 px-2 py-0.5 rounded-full text-sm font-semibold cursor-help shadow-sm"
+            : "bg-gray-200 border border-gray-350 px-2 py-0.5 rounded-full text-sm font-medium cursor-help"
+          
           component = (
             <Tooltip key={`deliverable-${segmentKey++}`}>
               <TooltipTrigger asChild>
-                <span className="bg-gray-200 border border-gray-350 px-2 py-0.5 rounded-full text-sm font-medium cursor-help">
+                <span className={deliverableClasses}>
                   <Package className="w-3 h-3 inline mr-1 align-middle" />
                   {matchText}
                 </span>
