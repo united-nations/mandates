@@ -1227,13 +1227,11 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
           const correspondingMandate = mandates?.find(mandate => 
             mandate.action_verb && mandate.action_verb.toLowerCase() === matchText.toLowerCase()
           )
-          const shouldBeBold = correspondingMandate?.action_verb_type === 'deciding' || 
-                              correspondingMandate?.action_verb_type === 'directive'
           
           component = (
             <Tooltip key={`verb-${segmentKey++}`}>
               <TooltipTrigger asChild>
-                <span className={`${shouldBeBold ? 'font-semibold' : ''} text-un-blue cursor-help`}>
+                <span className="text-un-blue cursor-help">
                   {matchText}
                 </span>
               </TooltipTrigger>
