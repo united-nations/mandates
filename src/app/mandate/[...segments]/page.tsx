@@ -13,6 +13,7 @@ import { useMandateData } from '@/hooks/use-mandate-data'
 import { ParagraphsSection } from '@/components/paragraphs-section'
 import { CitationCounts } from '@/components/citation-counts'
 import { MandateMetadata } from '@/components/mandate-metadata'
+import { ScrollToTop } from '@/components/ui/scroll-to-top'
 
 function MandatePageContent() {
     const params = useParams()
@@ -104,6 +105,9 @@ function MandatePageContent() {
                     />
                 </div>
             </div>
+            
+            {/* Scroll to Top Button */}
+            <ScrollToTop />
         </div>
     )
 }

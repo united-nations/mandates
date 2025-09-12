@@ -4,11 +4,7 @@ import { useState, useEffect } from 'react'
 import { ChevronUp } from 'lucide-react'
 import { Button } from './button'
 
-interface ScrollToTopProps {
-  className?: string
-}
-
-export function ScrollToTop({ className }: ScrollToTopProps) {
+export function ScrollToTop() {
   const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
@@ -36,7 +32,7 @@ export function ScrollToTop({ className }: ScrollToTopProps) {
   return (
     <Button
       onClick={scrollToTop}
-      className={`h-12 w-12 rounded-full bg-white border border-gray-200 shadow-lg hover:bg-gray-50 transition-all duration-200 hover:shadow-xl ${className || ''}`}
+      className="fixed bottom-5 right-[180px] z-50 h-12 w-12 rounded-full bg-white border border-gray-200 shadow-lg hover:bg-gray-50 transition-all duration-200 hover:shadow-xl"
       variant="ghost"
       size="icon"
       aria-label="Scroll to top"
