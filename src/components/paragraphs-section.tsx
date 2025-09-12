@@ -181,7 +181,7 @@ function FilterDropdown({
   )
 }
 
-// Searchable filter dropdown component for action verbs
+// Searchable filter dropdown component
 interface SearchableFilterDropdownProps {
   label: string
   icon: React.ReactNode
@@ -193,6 +193,9 @@ interface SearchableFilterDropdownProps {
   totalCount: number
   className?: string
   filteredTotalCount: number // Count of all paragraphs matching other filters
+  hierarchicalData?: Record<string, Record<string, number>>
+  withItemsCount?: number
+  withItemsLabel?: string
 }
 
 function SearchableFilterDropdown({ 
@@ -205,7 +208,10 @@ function SearchableFilterDropdown({
   typeCounts, 
   totalCount,
   className = '',
-  filteredTotalCount
+  filteredTotalCount,
+  hierarchicalData,
+  withItemsCount,
+  withItemsLabel
 }: SearchableFilterDropdownProps) {
   const [searchTerm, setSearchTerm] = useState('')
   
@@ -214,10 +220,35 @@ function SearchableFilterDropdown({
     const entries = Object.entries(typeCounts)
     if (!searchTerm) return entries
     
-    return entries.filter(([verb]) => 
-      verb.toLowerCase().includes(searchTerm.toLowerCase())
+    return entries.filter(([option]) => 
+      option.toLowerCase().includes(searchTerm.toLowerCase())
     )
   }, [typeCounts, searchTerm])
+
+  // Filter hierarchical data based on search term
+  const filteredHierarchicalData = useMemo(() => {
+    if (!hierarchicalData || !searchTerm) return hierarchicalData
+    
+    const filtered: Record<string, Record<string, number>> = {}
+    
+    Object.entries(hierarchicalData).forEach(([type, entities]) => {
+      const filteredEntities: Record<string, number> = {}
+      
+      // Include entities that match the search term
+      Object.entries(entities).forEach(([entityName, count]) => {
+        if (entityName.toLowerCase().includes(searchTerm.toLowerCase())) {
+          filteredEntities[entityName] = count
+        }
+      })
+      
+      // Include the type if it matches the search term or has matching entities
+      if (type.toLowerCase().includes(searchTerm.toLowerCase()) || Object.keys(filteredEntities).length > 0) {
+        filtered[type] = filteredEntities
+      }
+    })
+    
+    return filtered
+  }, [hierarchicalData, searchTerm])
   
   // Reset search when dropdown closes
   useEffect(() => {
@@ -238,6 +269,14 @@ function SearchableFilterDropdown({
         <span>
           {currentFilter === 'all' 
             ? label
+            : currentFilter === `with-${label.toLowerCase()}`
+            ? `${withItemsLabel} (${withItemsCount})`
+            : currentFilter.includes(':')
+            ? (() => {
+                const [type, item] = currentFilter.split(':')
+                const itemCount = hierarchicalData?.[type]?.[item] || 0
+                return `${titleCase(item)} (${itemCount})`
+              })()
             : `${titleCase(currentFilter.replace(/_/g, ' '))} (${typeCounts[currentFilter] || 0})`
           }
         </span>
@@ -252,7 +291,7 @@ function SearchableFilterDropdown({
           <div className="px-3 py-2 border-b border-gray-100">
             <input
               type="text"
-              placeholder="Search action verbs..."
+              placeholder={`Search ${label.toLowerCase()}...`}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full text-xs px-2 py-1 border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-un-blue focus:border-un-blue"
@@ -273,38 +312,122 @@ function SearchableFilterDropdown({
               <span className="text-gray-500 pr-3">{filteredTotalCount}</span>
             </button>
             
-            {/* Filtered action verbs */}
-            {filteredOptions.length > 0 ? (
-              filteredOptions
-                .sort(([, a], [, b]) => {
-                  // Sort by count descending, but keep non-zero counts first
-                  if (a === 0 && b === 0) return 0
-                  if (a === 0) return 1
-                  if (b === 0) return -1
-                  return b - a
-                })
-                .map(([verb, count]) => (
-                  <button
-                    key={verb}
-                    onClick={() => count > 0 ? onFilterChange(verb) : undefined}
-                    disabled={count === 0}
-                    className={`w-full text-left py-1.5 text-xs flex items-center justify-between ${
-                      count === 0
-                        ? 'text-gray-400 cursor-not-allowed'
-                        : currentFilter === verb 
-                        ? 'bg-un-blue/10 text-un-blue hover:bg-gray-50' 
-                        : 'text-gray-700 hover:bg-gray-50'
-                    }`}
-                  >
-                    <span className="pl-6">{titleCase(verb.replace(/_/g, ' '))}</span>
-                    <span className={`pr-3 ${count === 0 ? 'text-gray-400' : 'text-gray-500'}`}>{count}</span>
-                  </button>
-                ))
-            ) : searchTerm ? (
-              <div className="px-3 py-2 text-xs text-gray-500 italic">
-                No action verbs found matching "{searchTerm}"
-              </div>
-            ) : null}
+            {/* With items option */}
+            {withItemsCount && withItemsCount > 0 && withItemsLabel && (
+              <button
+                onClick={() => onFilterChange(`with-${label.toLowerCase()}`)}
+                className={`w-full text-left py-1.5 text-xs hover:bg-gray-50 flex items-center justify-between ${
+                  currentFilter === `with-${label.toLowerCase()}` ? 'bg-un-blue/10 text-un-blue' : 'text-gray-700'
+                }`}
+              >
+                <span className="pl-3">{withItemsLabel}</span>
+                <span className="text-gray-500 pr-3">{withItemsCount}</span>
+              </button>
+            )}
+            
+            {/* Hierarchical options or simple filtered options */}
+            {hierarchicalData ? (
+              // Hierarchical structure
+              Object.keys(filteredHierarchicalData || {}).length > 0 ? (
+                Object.entries(filteredHierarchicalData || {})
+                  .sort(([, a], [, b]) => {
+                    // Sort by total count in each type
+                    const aTotal = Object.values(a).reduce((sum, count) => sum + count, 0)
+                    const bTotal = Object.values(b).reduce((sum, count) => sum + count, 0)
+                    if (aTotal === 0 && bTotal === 0) return 0
+                    if (aTotal === 0) return 1
+                    if (bTotal === 0) return -1
+                    return bTotal - aTotal
+                  })
+                  .map(([type, entities]) => {
+                    const typeCount = typeCounts[type] || 0
+                    return (
+                      <div key={type}>
+                        {/* Type header */}
+                        <button
+                          onClick={() => typeCount > 0 ? onFilterChange(type) : undefined}
+                          disabled={typeCount === 0}
+                          className={`w-full text-left py-1.5 text-xs flex items-center justify-between ${
+                            typeCount === 0 
+                              ? 'text-gray-400 cursor-not-allowed' 
+                              : currentFilter === type 
+                              ? 'bg-un-blue/10 text-un-blue hover:bg-gray-50' 
+                              : 'text-gray-700 hover:bg-gray-50'
+                          }`}
+                        >
+                          <span className="pl-6">{titleCase(type.replace(/_/g, ' '))}</span>
+                          <span className={`pr-3 ${typeCount === 0 ? 'text-gray-400' : 'text-gray-500'}`}>{typeCount}</span>
+                        </button>
+                        
+                        {/* Individual entities under this type */}
+                        {Object.entries(entities)
+                          .sort(([, a], [, b]) => {
+                            // Sort by count descending, but keep non-zero counts first
+                            if (a === 0 && b === 0) return 0
+                            if (a === 0) return 1
+                            if (b === 0) return -1
+                            return b - a
+                          })
+                          .map(([entityName, entityCount]) => (
+                            <button
+                              key={`${type}-${entityName}`}
+                              onClick={() => entityCount > 0 ? onFilterChange(`${type}:${entityName}`) : undefined}
+                              disabled={entityCount === 0}
+                              className={`w-full text-left py-1.5 text-xs flex items-center justify-between ${
+                                entityCount === 0
+                                  ? 'text-gray-400 cursor-not-allowed'
+                                  : currentFilter === `${type}:${entityName}` 
+                                  ? 'bg-un-blue/10 text-un-blue hover:bg-gray-50' 
+                                  : 'text-gray-600 hover:bg-gray-50'
+                              }`}
+                            >
+                              <span className="pl-10 text-xs">{titleCase(entityName)}</span>
+                              <span className={`pr-3 text-xs ${entityCount === 0 ? 'text-gray-400' : 'text-gray-400'}`}>{entityCount}</span>
+                            </button>
+                          ))
+                        }
+                      </div>
+                    )
+                  })
+              ) : searchTerm ? (
+                <div className="px-3 py-2 text-xs text-gray-500 italic">
+                  No {label.toLowerCase()} found matching "{searchTerm}"
+                </div>
+              ) : null
+            ) : (
+              // Simple filtered options (for non-hierarchical data like action verbs)
+              filteredOptions.length > 0 ? (
+                filteredOptions
+                  .sort(([, a], [, b]) => {
+                    // Sort by count descending, but keep non-zero counts first
+                    if (a === 0 && b === 0) return 0
+                    if (a === 0) return 1
+                    if (b === 0) return -1
+                    return b - a
+                  })
+                  .map(([option, count]) => (
+                    <button
+                      key={option}
+                      onClick={() => count > 0 ? onFilterChange(option) : undefined}
+                      disabled={count === 0}
+                      className={`w-full text-left py-1.5 text-xs flex items-center justify-between ${
+                        count === 0
+                          ? 'text-gray-400 cursor-not-allowed'
+                          : currentFilter === option 
+                          ? 'bg-un-blue/10 text-un-blue hover:bg-gray-50' 
+                          : 'text-gray-700 hover:bg-gray-50'
+                      }`}
+                    >
+                      <span className="pl-6">{titleCase(option.replace(/_/g, ' '))}</span>
+                      <span className={`pr-3 ${count === 0 ? 'text-gray-400' : 'text-gray-500'}`}>{count}</span>
+                    </button>
+                  ))
+              ) : searchTerm ? (
+                <div className="px-3 py-2 text-xs text-gray-500 italic">
+                  No {label.toLowerCase()} found matching "{searchTerm}"
+                </div>
+              ) : null
+            )}
           </div>
         </div>
       )}
@@ -1564,7 +1687,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div>
-                      <FilterDropdown
+                      <SearchableFilterDropdown
                         label="Entities"
                         icon={<Users className="h-3 w-3" />}
                         currentFilter={assigneeFilter}
@@ -1575,12 +1698,12 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
                           setIsAssigneeDropdownOpen(false)
                         }}
                         typeCounts={assigneeTypeCounts}
-                        withItemsCount={paragraphsWithAssigneesCount}
-                        withItemsLabel="With entities"
                         totalCount={allParagraphs?.length || 0}
                         className="assignee-dropdown"
-                        hierarchicalData={assigneesByType}
                         filteredTotalCount={assigneeFilteredTotalCount}
+                        hierarchicalData={assigneesByType}
+                        withItemsCount={paragraphsWithAssigneesCount}
+                        withItemsLabel="With entities"
                       />
                     </div>
                   </TooltipTrigger>
