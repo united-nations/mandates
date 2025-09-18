@@ -95,7 +95,7 @@ export default function ResolutionsPage() {
     };
 
     const titleTemplate = (row: Resolution) => (
-        <div className="truncate max-w-[32rem]">
+        <div className="truncate max-w-[20rem] sm:max-w-[24rem] md:max-w-[28rem] lg:max-w-[32rem] xl:max-w-[40rem]" title={row.title || row.combined_title}>
             <span className="font-medium">{row.title || row.combined_title}</span>
         </div>
     );
@@ -169,18 +169,24 @@ export default function ResolutionsPage() {
         );
     };
 
-    const withinResourcesTemplate = (row: Resolution) => (
-        <div className="flex items-center gap-2">
-            {row.has_within_existing_resources ? (
-                <Check className="h-4 w-4" />
-            ) : (
-                <X className="h-4 w-4" />
-            )}
-            <span className="text-sm text-muted-foreground">
-                ({row.count_within_existing_resources || 0})
-            </span>
-        </div>
-    );
+    const withinResourcesTemplate = (row: Resolution) => {
+        if (row.has_within_existing_resources === null || row.has_within_existing_resources === undefined) {
+            return <div className="text-gray-400">N/A</div>;
+        }
+        
+        return (
+            <div className="flex items-center gap-2">
+                {row.has_within_existing_resources ? (
+                    <Check className="h-4 w-4 text-faded-jade" />
+                ) : (
+                    <X className="h-4 w-4 text-au-chico" />
+                )}
+                <span className="text-sm text-muted-foreground">
+                    ({row.count_within_existing_resources || 0})
+                </span>
+            </div>
+        );
+    };
 
     const customPaginatorTemplate = {
         layout: 'FirstPageLink PrevPageLink NextPageLink LastPageLink RowsPerPageDropdown CurrentPageReport',
