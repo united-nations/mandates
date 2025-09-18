@@ -4,7 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import type { Resolution } from "@/types";
-import { Check, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, FileText, X, RotateCcw } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, FileText, RotateCcw, X } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { useEffect, useState } from "react";
@@ -20,6 +21,10 @@ interface ApiResponse {
 }
 
 export default function ResolutionsPage() {
+    const searchParams = useSearchParams()
+    const router = useRouter()
+    const pathname = usePathname()
+
     const [resolutions, setResolutions] = useState<Resolution[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -30,11 +35,22 @@ export default function ResolutionsPage() {
         totalPages: 0,
     });
 
-    const [sortField, setSortField] = useState<keyof Resolution>('year');
-    const [sortOrder, setSortOrder] = useState<1 | -1>(-1);
-    const [selectedOrgan, setSelectedOrgan] = useState<string>('General Assembly');
-    const [selectedRecurringSeries, setSelectedRecurringSeries] = useState<string>('all');
-    const [isShowingFilteredSubset, setIsShowingFilteredSubset] = useState(false);
+    // Initialize state from URL parameters
+    const [sortField, setSortField] = useState<keyof Resolution>(
+        (searchParams.get('sortField') as keyof Resolution) || 'year'
+    );
+    const [sortOrder, setSortOrder] = useState<1 | -1>(
+        searchParams.get('sortOrder') === 'asc' ? 1 : -1
+    );
+    const [selectedOrgan, setSelectedOrgan] = useState<string>(
+        searchParams.get('organ') || 'General Assembly'
+    );
+    const [selectedRecurringSeries, setSelectedRecurringSeries] = useState<string>(
+        searchParams.get('recurringSeries') || 'all'
+    );
+    const [isShowingFilteredSubset, setIsShowingFilteredSubset] = useState(
+        searchParams.get('view') === 'series' || searchParams.get('view') === 'single'
+    );
 
     const organOptions = [
         { value: 'all', label: 'All Organs' },
@@ -50,7 +66,28 @@ export default function ResolutionsPage() {
         { value: 'false', label: 'One-time Resolutions' },
     ];
 
-    const fetchResolutions = async (page: number = 1, limit: number = 20, sortField: string = 'year', sortOrder: string = 'desc', organ: string = 'General Assembly', recurringSeries: string = 'all') => {
+    // Function to update URL parameters
+    const updateURL = (updates: Record<string, string | null>) => {
+        const params = new URLSearchParams(searchParams.toString())
+
+        Object.entries(updates).forEach(([key, value]) => {
+            if (value === null || value === '' ||
+                (key === 'organ' && value === 'General Assembly') ||
+                (key === 'recurringSeries' && value === 'all') ||
+                (key === 'sortField' && value === 'year') ||
+                (key === 'sortOrder' && value === 'desc') ||
+                (key === 'page' && value === '1')) {
+                params.delete(key)
+            } else {
+                params.set(key, value)
+            }
+        })
+
+        const newURL = params.toString() ? `${pathname}?${params.toString()}` : pathname
+        router.replace(newURL, { scroll: false })
+    }
+
+    const fetchResolutions = async (page: number = 1, limit: number = 20, sortField: string = 'year', sortOrder: string = 'desc', organ: string = 'General Assembly', recurringSeries: string = 'all', updateUrl: boolean = true) => {
         try {
             setLoading(true);
             const params = new URLSearchParams({
@@ -77,6 +114,18 @@ export default function ResolutionsPage() {
             setPagination(data.pagination);
             setError(null);
             setIsShowingFilteredSubset(false);
+
+            // Update URL parameters
+            if (updateUrl) {
+                updateURL({
+                    page: page > 1 ? page.toString() : null,
+                    sortField: sortField !== 'year' ? sortField : null,
+                    sortOrder: sortOrder !== 'desc' ? sortOrder : null,
+                    organ: organ !== 'General Assembly' ? organ : null,
+                    recurringSeries: recurringSeries !== 'all' ? recurringSeries : null,
+                    view: null // Clear any series/single view
+                });
+            }
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to load data');
         } finally {
@@ -85,8 +134,67 @@ export default function ResolutionsPage() {
     };
 
     useEffect(() => {
-        fetchResolutions(1, 20, 'year', 'desc', selectedOrgan, selectedRecurringSeries);
-    }, [selectedOrgan, selectedRecurringSeries]);
+        const currentPage = parseInt(searchParams.get('page') || '1', 10);
+
+        // Update pagination state from URL
+        setPagination(prev => ({ ...prev, page: currentPage }));
+
+        // Check if we need to load a specific series or single resolution
+        const view = searchParams.get('view');
+        const seriesTitle = searchParams.get('seriesTitle');
+        const seriesOrgan = searchParams.get('seriesOrgan');
+        const singleSymbol = searchParams.get('symbol');
+
+        if (view === 'series' && seriesTitle && seriesOrgan) {
+            // Load specific series
+            handleSeriesClick(seriesTitle, seriesOrgan, false); // false = don't update URL
+        } else if (view === 'single' && singleSymbol) {
+            // Load specific resolution
+            handlePreviousSymbolClick(singleSymbol, false); // false = don't update URL
+        } else {
+            // Normal page load - only fetch if this is the initial load or if URL params actually changed
+            fetchResolutions(currentPage, 20, sortField, sortOrder === 1 ? 'asc' : 'desc', selectedOrgan, selectedRecurringSeries, false);
+        }
+    }, []); // Remove dependencies to avoid infinite loops
+
+    // Separate effect for handling direct URL changes (like back/forward navigation)
+    useEffect(() => {
+        const handlePopState = () => {
+            // Force re-read URL parameters when user navigates back/forward
+            const newOrgan = searchParams.get('organ') || 'General Assembly';
+            const newRecurringSeries = searchParams.get('recurringSeries') || 'all';
+            const newSortField = (searchParams.get('sortField') as keyof Resolution) || 'year';
+            const newSortOrder = searchParams.get('sortOrder') === 'asc' ? 1 : -1;
+            const newPage = parseInt(searchParams.get('page') || '1', 10);
+
+            // Update state to match URL
+            setSelectedOrgan(newOrgan);
+            setSelectedRecurringSeries(newRecurringSeries);
+            setSortField(newSortField);
+            setSortOrder(newSortOrder);
+
+            // Check for special views
+            const view = searchParams.get('view');
+            if (view === 'series') {
+                const seriesTitle = searchParams.get('seriesTitle');
+                const seriesOrgan = searchParams.get('seriesOrgan');
+                if (seriesTitle && seriesOrgan) {
+                    handleSeriesClick(seriesTitle, seriesOrgan, false);
+                }
+            } else if (view === 'single') {
+                const symbol = searchParams.get('symbol');
+                if (symbol) {
+                    handlePreviousSymbolClick(symbol, false);
+                }
+            } else {
+                // Normal fetch with URL parameters
+                fetchResolutions(newPage, 20, newSortField, newSortOrder === 1 ? 'asc' : 'desc', newOrgan, newRecurringSeries, false);
+            }
+        };
+
+        window.addEventListener('popstate', handlePopState);
+        return () => window.removeEventListener('popstate', handlePopState);
+    }, [searchParams]);
 
     const handleSort = (e: any) => {
         const newSortField = e.sortField as keyof Resolution;
@@ -129,33 +237,93 @@ export default function ResolutionsPage() {
             });
 
             setResolutions(sortedResolutions);
+
+            // Update URL for client-side sorting too
+            updateURL({
+                sortField: newSortField !== 'year' ? newSortField : null,
+                sortOrder: newSortOrder !== -1 ? (newSortOrder === 1 ? 'asc' : 'desc') : null,
+            });
         } else {
             // Normal server-side sorting for full dataset
-            fetchResolutions(pagination.page, pagination.limit, newSortField, newSortOrder === 1 ? 'asc' : 'desc', selectedOrgan, selectedRecurringSeries);
+            updateURL({
+                sortField: newSortField !== 'year' ? newSortField : null,
+                sortOrder: newSortOrder !== -1 ? (newSortOrder === 1 ? 'asc' : 'desc') : null,
+            });
+
+            fetchResolutions(pagination.page, pagination.limit, newSortField, newSortOrder === 1 ? 'asc' : 'desc', selectedOrgan, selectedRecurringSeries, false);
         }
     };
 
     const handlePageChange = (e: any) => {
         const newPage = e.page + 1; // PrimeReact uses 0-based indexing
-        fetchResolutions(newPage, e.rows, sortField, sortOrder === 1 ? 'asc' : 'desc', selectedOrgan, selectedRecurringSeries);
+
+        // Update URL immediately
+        updateURL({
+            page: newPage > 1 ? newPage.toString() : null
+        });
+
+        // Fetch new data
+        fetchResolutions(newPage, e.rows, sortField, sortOrder === 1 ? 'asc' : 'desc', selectedOrgan, selectedRecurringSeries, false);
     };
 
     const handleOrganChange = (value: string) => {
         setSelectedOrgan(value);
         setIsShowingFilteredSubset(false);
-        // fetchResolutions will be called by useEffect when selectedOrgan changes
+
+        // Update URL immediately
+        updateURL({
+            organ: value !== 'General Assembly' ? value : null,
+            page: null, // Reset to page 1
+            view: null, // Clear any series/single view
+            seriesTitle: null,
+            seriesOrgan: null,
+            symbol: null
+        });
+
+        // Fetch new data
+        fetchResolutions(1, 20, sortField, sortOrder === 1 ? 'asc' : 'desc', value, selectedRecurringSeries, false);
     };
 
     const handleRecurringSeriesChange = (value: string) => {
         setSelectedRecurringSeries(value);
         setIsShowingFilteredSubset(false);
-        // fetchResolutions will be called by useEffect when selectedRecurringSeries changes
+
+        // Update URL immediately
+        updateURL({
+            recurringSeries: value !== 'all' ? value : null,
+            page: null, // Reset to page 1
+            view: null, // Clear any series/single view
+            seriesTitle: null,
+            seriesOrgan: null,
+            symbol: null
+        });
+
+        // Fetch new data
+        fetchResolutions(1, 20, sortField, sortOrder === 1 ? 'asc' : 'desc', selectedOrgan, value, false);
     };
 
     const handleResetFilters = () => {
         setSelectedOrgan('General Assembly');
         setSelectedRecurringSeries('all');
         setIsShowingFilteredSubset(false);
+        setSortField('year');
+        setSortOrder(-1);
+
+        // Reset URL to default state
+        updateURL({
+            organ: null,
+            recurringSeries: null,
+            page: null,
+            sortField: null,
+            sortOrder: null,
+            view: null,
+            seriesTitle: null,
+            seriesOrgan: null,
+            symbol: null
+        });
+
+        // Fetch fresh data with default parameters
+        fetchResolutions(1, 20, 'year', 'desc', 'General Assembly', 'all', false);
     };
 
     const titleTemplate = (row: Resolution) => (
@@ -200,7 +368,7 @@ export default function ResolutionsPage() {
         );
     };
 
-    const handleSeriesClick = async (normalizedTitle: string, organ: string) => {
+    const handleSeriesClick = async (normalizedTitle: string, organ: string, updateUrl: boolean = true) => {
         try {
             setLoading(true);
 
@@ -233,6 +401,19 @@ export default function ResolutionsPage() {
                 // Set sort state to reflect the current sorting
                 setSortField('year');
                 setSortOrder(-1); // -1 for descending
+
+                // Update URL with series view parameters
+                if (updateUrl) {
+                    updateURL({
+                        view: 'series',
+                        seriesTitle: normalizedTitle,
+                        seriesOrgan: organ,
+                        symbol: null, // Clear any single symbol
+                        page: null,
+                        sortField: null, // Use default year sorting
+                        sortOrder: null // Use default desc sorting
+                    });
+                }
 
                 // Brief highlight after loading
                 setTimeout(() => {
@@ -309,7 +490,7 @@ export default function ResolutionsPage() {
         );
     };
 
-    const handlePreviousSymbolClick = async (previousSymbol: string) => {
+    const handlePreviousSymbolClick = async (previousSymbol: string, updateUrl: boolean = true) => {
         // Find the resolution with the matching symbol in current data
         const targetResolution = resolutions.find(res => res.symbol === previousSymbol);
 
@@ -361,6 +542,19 @@ export default function ResolutionsPage() {
                         totalPages: 1
                     });
                     setIsShowingFilteredSubset(true);
+
+                    // Update URL with single resolution view
+                    if (updateUrl) {
+                        updateURL({
+                            view: 'single',
+                            symbol: previousSymbol,
+                            seriesTitle: null, // Clear any series params
+                            seriesOrgan: null,
+                            page: null,
+                            sortField: null,
+                            sortOrder: null
+                        });
+                    }
 
                     // Highlight it after a brief delay
                     setTimeout(() => {
