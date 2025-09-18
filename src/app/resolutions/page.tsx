@@ -31,19 +31,19 @@ export default function ResolutionsPage() {
 
     const [sortField, setSortField] = useState<keyof Resolution>('year');
     const [sortOrder, setSortOrder] = useState<1 | -1>(-1);
-    const [selectedOrgan, setSelectedOrgan] = useState<string>('A/');
+    const [selectedOrgan, setSelectedOrgan] = useState<string>('General Assembly');
 
     const organOptions = [
         { value: 'all', label: 'All Organs' },
-        { value: 'A/', label: 'General Assembly' },
-        { value: 'E/', label: 'Economic and Social Council' },
-        { value: 'S/', label: 'Security Council' },
-        { value: 'A/HRC/', label: 'Human Rights Council' },
-        // { value: 'ST/', label: 'Secretariat' },
-        // { value: 'T/', label: 'Trusteeship Council' },
+        { value: 'General Assembly', label: 'General Assembly' },
+        { value: 'Economic and Social Council', label: 'Economic and Social Council' },
+        { value: 'Security Council', label: 'Security Council' },
+        { value: 'Human Rights Council', label: 'Human Rights Council' },
+        { value: 'Secretariat', label: 'Secretariat' },
+        { value: 'Trusteeship Council', label: 'Trusteeship Council' },
     ];
 
-    const fetchResolutions = async (page: number = 1, limit: number = 20, sortField: string = 'year', sortOrder: string = 'desc', organ: string = 'A/') => {
+    const fetchResolutions = async (page: number = 1, limit: number = 20, sortField: string = 'year', sortOrder: string = 'desc', organ: string = 'General Assembly') => {
         try {
             setLoading(true);
             const params = new URLSearchParams({
@@ -108,7 +108,7 @@ export default function ResolutionsPage() {
 
     const lengthTemplate = (row: Resolution) => (
         <div>
-            {row.word_count ? `~${row.word_count.toLocaleString()}` : 'N/A'}
+            {row.word_count ? `~${row.word_count.toLocaleString()}` : <span className="text-gray-400">N/A</span>}
         </div>
     );
 
@@ -133,7 +133,7 @@ export default function ResolutionsPage() {
         // Use similarity_to_previous if available
         const similarity = row.similarity_to_previous || 0;
         if (similarity === null || similarity === 0) {
-            return <div className="text-muted-foreground">N/A</div>;
+            return <div className="text-gray-400">N/A</div>;
         }
 
         // Create gradient from green (low) to red (high)

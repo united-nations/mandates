@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
     let filteredResolutions = allResolutions;
     if (organ) {
       filteredResolutions = allResolutions.filter(resolution => 
-        resolution.symbol.startsWith(organ)
+        resolution.organ === organ
       );
     }
 
