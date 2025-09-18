@@ -189,3 +189,74 @@ mark {
 .search-input:focus {
   box-shadow: 0 0 0 2px hsl(var(--ring));
 }
+
+/* PrimeReact DataTable custom styling with UN Blue */
+.custom-table .p-datatable-thead > tr > th {
+  background-color: rgba(0, 158, 219, 0.1);
+  border-color: hsl(var(--border));
+  color: hsl(var(--foreground));
+  font-weight: 600;
+}
+
+.custom-table .p-datatable-tbody > tr.p-row-odd {
+  background-color: #F6F7F8;
+}
+
+.custom-table .p-datatable-thead > tr > th:hover {
+  background-color: rgba(0, 158, 219, 0.08);
+}
+
+.custom-table .p-datatable-tbody > tr:hover {
+  background-color: rgba(0, 158, 219, 0.05);
+}
+
+.custom-table .p-datatable-tbody > tr.p-highlight {
+  background-color: rgba(0, 158, 219, 0.1);
+  color: hsl(var(--foreground));
+}
+
+.custom-table .p-datatable-tbody > tr.p-highlight:hover {
+  background-color: rgba(0, 158, 219, 0.15);
+}
+
+/* Sortable column headers */
+.custom-table .p-sortable-column:hover {
+  background-color: rgba(0, 158, 219, 0.08);
+}
+
+.custom-table .p-sortable-column.p-highlight {
+  background-color: rgba(0, 158, 219, 0.1);
+  color: #009edb;
+}
+
+.custom-table .p-sortable-column .p-sortable-column-icon {
+  color: #009edb;
+}
+
+
+
+/* Dark mode variants */
+.dark .custom-table .p-datatable-thead > tr > th:hover {
+  background-color: rgba(0, 158, 219, 0.15);
+}
+
+.dark .custom-table .p-datatable-tbody > tr:hover {
+  background-color: rgba(0, 158, 219, 0.1);
+}
+
+.dark .custom-table .p-datatable-tbody > tr.p-highlight {
+  background-color: rgba(0, 158, 219, 0.2);
+}
+
+.dark .custom-table .p-datatable-tbody > tr.p-highlight:hover {
+  background-color: rgba(0, 158, 219, 0.25);
+}
+
+.dark .custom-table .p-sortable-column:hover {
+  background-color: rgba(0, 158, 219, 0.15);
+}
+
+.dark .custom-table .p-sortable-column.p-highlight {
+  background-color: rgba(0, 158, 219, 0.2);
+  color: #87ceeb;
+}

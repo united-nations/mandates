@@ -1,5 +1,9 @@
 'use client'
 
+import "primereact/resources/themes/lara-light-blue/theme.css";
+import "primereact/resources/primereact.min.css";
+import "primeicons/primeicons.css";
+
 import './globals.css'
 import { Toaster } from '@/components/ui/toaster'
 import { TooltipProvider } from '@/components/ui/tooltip'
@@ -131,6 +135,16 @@ export default function RootLayout({
                                                 <span>Methodology</span>
                                             ) : (
                                                 <Link href='/methodology'>Methodology</Link>
+                                            )}
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem
+                                            asChild={pathname !== '/resolutions'}
+                                            className={pathname === '/resolutions' ? 'text-muted-foreground cursor-default opacity-60' : ''}
+                                        >
+                                            {pathname === '/resolutions' ? (
+                                                <span>All Resolutions</span>
+                                            ) : (
+                                                <Link href='/resolutions'>All Resolutions</Link>
                                             )}
                                         </DropdownMenuItem>
                                         <DropdownMenuItem
