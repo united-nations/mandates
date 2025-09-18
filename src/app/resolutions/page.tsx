@@ -1,123 +1,73 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FileText, Check, X } from "lucide-react";
-import { DataTable, DataTableSortOrderType } from "primereact/datatable";
+import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
+import type { Resolution } from "@/types";
 
-interface Resolution {
-  id: number;
-  symbol: string;
-  year: number;
-  title: string;
-  length: number;
-  recurrence: {
+interface ApiResponse {
+  data: Resolution[];
+  pagination: {
+    page: number;
+    limit: number;
     total: number;
-    yearRange: string;
-    avgFrequency: string;
-  };
-  levenshteinSimilarity: number;
-  withinExistingResources: {
-    isWithin: boolean;
-    occurrences: number;
+    totalPages: number;
   };
 }
 
 export default function ResolutionsPage() {
-  const [resolutions] = useState<Resolution[]>([
-    { 
-      id: 1, 
-      symbol: "A/RES/79/1",
-      title: "Pact for the Future", 
-      year: 2024,
-      length: 3420,
-      recurrence: {
-        total: 15,
-        yearRange: "2009-2024",
-        avgFrequency: "Annual"
-      },
-      levenshteinSimilarity: 0.8,
-      withinExistingResources: {
-        isWithin: true,
-        occurrences: 12
-      }
-    },
-    { 
-      id: 2, 
-      symbol: "A/RES/78/245",
-      title: "Resolution on Peacekeeping Operations", 
-      year: 2023,
-      length: 2850,
-      recurrence: {
-        total: 8,
-        yearRange: "2015-2023",
-        avgFrequency: "Biannual"
-      },
-      levenshteinSimilarity: 0.65,
-      withinExistingResources: {
-        isWithin: false,
-        occurrences: 3
-      }
-    },
-    { 
-      id: 3, 
-      symbol: "A/RES/77/154",
-      title: "Digital Rights and Governance", 
-      year: 2022,
-      length: 1950,
-      recurrence: {
-        total: 5,
-        yearRange: "2018-2022",
-        avgFrequency: "Triannual"
-      },
-      levenshteinSimilarity: 0.72,
-      withinExistingResources: {
-        isWithin: true,
-        occurrences: 8
-      }
-    },
-    { 
-      id: 4, 
-      symbol: "A/RES/79/89",
-      title: "Humanitarian Aid Coordination", 
-      year: 2024,
-      length: 4100,
-      recurrence: {
-        total: 22,
-        yearRange: "2002-2024",
-        avgFrequency: "Annual"
-      },
-      levenshteinSimilarity: 0.91,
-      withinExistingResources: {
-        isWithin: true,
-        occurrences: 18
-      }
-    },
-    { 
-      id: 5, 
-      symbol: "A/RES/76/307",
-      title: "Global Health Security Framework", 
-      year: 2021,
-      length: 2750,
-      recurrence: {
-        total: 12,
-        yearRange: "2009-2021",
-        avgFrequency: "Biannual"
-      },
-      levenshteinSimilarity: 0.58,
-      withinExistingResources: {
-        isWithin: false,
-        occurrences: 5
-      }
-    },
-  ]);
+  const [resolutions, setResolutions] = useState<Resolution[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [pagination, setPagination] = useState({
+    page: 1,
+    limit: 10,
+    total: 0,
+    totalPages: 0,
+  });
 
-  const [sortField, setSortField] = useState<keyof Resolution | undefined>();
-  const [sortOrder, setSortOrder] = useState<DataTableSortOrderType>(1);
+  const [sortField, setSortField] = useState<keyof Resolution>('year');
+  const [sortOrder, setSortOrder] = useState<1 | -1>(-1);
+
+  const fetchResolutions = async (page: number = 1, limit: number = 10, sortField: string = 'year', sortOrder: string = 'desc') => {
+    try {
+      setLoading(true);
+      const response = await fetch(`/api/resolutions?page=${page}&limit=${limit}&sortField=${sortField}&sortOrder=${sortOrder}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch resolutions');
+      }
+      const data: ApiResponse = await response.json();
+      setResolutions(data.data);
+      setPagination(data.pagination);
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load data');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchResolutions();
+  }, []);
+
+  const handleSort = (e: any) => {
+    const newSortField = e.sortField as keyof Resolution;
+    const newSortOrder = e.sortOrder as 1 | -1;
+    setSortField(newSortField);
+    setSortOrder(newSortOrder);
+    fetchResolutions(pagination.page, pagination.limit, newSortField, newSortOrder === 1 ? 'asc' : 'desc');
+  };
+
+  const handlePageChange = (e: any) => {
+    const newPage = e.page + 1; // PrimeReact uses 0-based indexing
+    fetchResolutions(newPage, e.rows, sortField, sortOrder === 1 ? 'asc' : 'desc');
+  };
 
   const titleTemplate = (row: Resolution) => (
-    <div className="truncate max-w-[28rem]">
-      <span className="font-medium">{row.title}</span>
+    <div className="truncate max-w-[32rem]">
+      <span className="font-medium">{row.title || row.combined_title}</span>
     </div>
   );
 
@@ -129,26 +79,35 @@ export default function ResolutionsPage() {
 
   const lengthTemplate = (row: Resolution) => (
     <div>
-      ~{row.length.toLocaleString()}
+      {row.word_count ? `~${row.word_count.toLocaleString()}` : 'N/A'}
     </div>
   );
 
   const recurrenceTemplate = (row: Resolution) => (
     <div className="text-sm">
-      <div className="font-medium">{row.recurrence.total} total</div>
-      <div className="text-muted-foreground">{row.recurrence.yearRange}</div>
+      <div className="font-medium">{row.series_symbol_count} total</div>
+      <div className="text-muted-foreground">
+        {row.series_first_year === row.series_last_year 
+          ? `${row.series_first_year}` 
+          : `${row.series_first_year}-${row.series_last_year}`}
+      </div>
     </div>
   );
 
   const frequencyTemplate = (row: Resolution) => (
     <div className="text-sm">
-      {row.recurrence.avgFrequency}
+      {row.is_recurring_series ? 'Recurring' : 'One-time'}
     </div>
   );
 
   const similarityTemplate = (row: Resolution) => {
+    // Use similarity_to_previous if available
+    const similarity = row.similarity_to_previous || 0;
+    if (similarity === null || similarity === 0) {
+      return <div className="text-muted-foreground">N/A</div>;
+    }
+    
     // Create gradient from green (low) to red (high)
-    const similarity = row.levenshteinSimilarity;
     const red = Math.round(similarity * 255);
     const green = Math.round((1 - similarity) * 255);
     const color = `rgb(${red}, ${green}, 0)`;
@@ -162,43 +121,63 @@ export default function ResolutionsPage() {
 
   const withinResourcesTemplate = (row: Resolution) => (
     <div className="flex items-center gap-2">
-      {row.withinExistingResources.isWithin ? (
+      {row.has_within_existing_resources ? (
         <Check className="h-4 w-4" />
       ) : (
         <X className="h-4 w-4" />
       )}
       <span className="text-sm text-muted-foreground">
-        ({row.withinExistingResources.occurrences})
+        ({row.count_within_existing_resources || 0})
       </span>
     </div>
   );
 
+  if (error) {
+    return (
+      <div className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]">
+        <div className="max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-8 sm:px-12 lg:px-16">
+          <div className="flex items-center gap-3 mb-6">
+            <FileText className="h-8 w-8 text-un-blue" />
+            <h1 className="text-2xl font-bold tracking-tight text-foreground">
+              All Resolutions
+            </h1>
+          </div>
+          <div className="text-red-500">Error: {error}</div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full">
-      <div className="flex items-center gap-3 mb-6">
-        <FileText className="h-8 w-8 text-un-blue" />
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">
-          All Resolutions
-        </h1>
+    <div className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]">
+      <div className="max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-8 sm:px-12 lg:px-16 mb-6">
+        <div className="flex items-center gap-3">
+          <FileText className="h-8 w-8 text-un-blue" />
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">
+            All Resolutions
+          </h1>
+        </div>
       </div>
 
-      <DataTable
-        value={resolutions}
-        stripedRows
-        showGridlines
-        size="small"
-        tableStyle={{ width: "100%" }}
-        paginator
-        rows={5}
-        sortField={sortField}
-        sortOrder={sortOrder}
-        onSort={(e) => {
-          setSortField(e.sortField as keyof Resolution);
-          setSortOrder(e.sortOrder as DataTableSortOrderType);
-        }}
-        removableSort
-        className="custom-table"
-      >
+      <div className="max-w-[95vw] mx-auto px-4 overflow-x-auto">
+        <DataTable
+          value={resolutions}
+          loading={loading}
+          stripedRows
+          showGridlines
+          size="small"
+          tableStyle={{ width: "100%", minWidth: "1400px" }}
+          paginator
+          rows={pagination.limit}
+          totalRecords={pagination.total}
+          lazy
+          onPage={handlePageChange}
+          sortField={sortField}
+          sortOrder={sortOrder}
+          onSort={handleSort}
+          removableSort
+          className="custom-table"
+        >
         <Column
           field="symbol"
           header="Symbol"
@@ -220,12 +199,12 @@ export default function ResolutionsPage() {
           sortable
         />
         <Column
-          field="length"
+          field="word_count"
           header="Length [words]"
           body={lengthTemplate}
           sortable
           headerClassName="whitespace-nowrap"
-          style={{ width: "8rem" }}
+          style={{ width: "9rem" }}
         />
         <Column
           header="Recurrence"
@@ -237,10 +216,10 @@ export default function ResolutionsPage() {
           header="Avg. Frequency"
           body={frequencyTemplate}
           headerClassName="whitespace-nowrap"
-          style={{ width: "8rem" }}
+          style={{ width: "9rem" }}
         />
         <Column
-          field="levenshteinSimilarity"
+          field="similarity_to_previous"
           header="Similarity"
           body={similarityTemplate}
           sortable
@@ -251,9 +230,10 @@ export default function ResolutionsPage() {
           header="Within Resources"
           body={withinResourcesTemplate}
           headerClassName="whitespace-nowrap"
-          style={{ width: "10rem" }}
+          style={{ width: "11rem" }}
         />
-      </DataTable>
+        </DataTable>
+      </div>
     </div>
   );
 }

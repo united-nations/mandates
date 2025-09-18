@@ -192,5 +192,41 @@ export interface ApiResponse {
   };
 }
 
+// Resolution types for the resolutions dashboard
+export interface Resolution {
+  symbol: string;
+  original_symbol: string;
+  organ: string;
+  document_type: string;
+  issuing_body: string;
+  year: number;
+  title: string;
+  uniform_title: string | null;
+  combined_title: string;
+  normalized_title: string;
+  group_title: string;
+  is_potential_duplicate: boolean;
+  is_addendum: boolean;
+  is_revision: boolean;
+  is_corrigendum: boolean;
+  agenda_doc_symbol: string[];
+  agenda_item_title: string[];
+  agenda_subject_heading: string[];
+  related_documents: string[];
+  is_recurring_series: boolean;
+  series_symbol_count: number;
+  series_first_year: number;
+  series_last_year: number;
+  series_year_range: number;
+  distance_to_previous: number | null;
+  previous_symbol: string | null;
+  similarity_to_previous: number | null;
+  word_count: number | null;
+  has_within_existing_resources: boolean | null;
+  count_within_existing_resources: number | null;
+  pdf_status: string;
+  url: string;
+}
+
 // Legacy types for backward compatibility during transition
 export type { Entity as LegacyEntity };
