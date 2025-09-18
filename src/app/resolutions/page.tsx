@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { FileText, Check, X } from "lucide-react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import type { Resolution } from "@/types";
 
 interface ApiResponse {
@@ -22,18 +23,40 @@ export default function ResolutionsPage() {
   const [error, setError] = useState<string | null>(null);
   const [pagination, setPagination] = useState({
     page: 1,
-    limit: 10,
+    limit: 20,
     total: 0,
     totalPages: 0,
   });
 
   const [sortField, setSortField] = useState<keyof Resolution>('year');
   const [sortOrder, setSortOrder] = useState<1 | -1>(-1);
+  const [selectedOrgan, setSelectedOrgan] = useState<string>('A/');
 
-  const fetchResolutions = async (page: number = 1, limit: number = 10, sortField: string = 'year', sortOrder: string = 'desc') => {
+  const organOptions = [
+    { value: 'all', label: 'All Organs' },
+    { value: 'A/', label: 'General Assembly' },
+    { value: 'E/', label: 'Economic and Social Council' },
+    { value: 'S/', label: 'Security Council' },
+    { value: 'A/HRC/', label: 'Human Rights Council' },
+    { value: 'ST/', label: 'Secretariat' },
+    { value: 'T/', label: 'Trusteeship Council' },
+  ];
+
+  const fetchResolutions = async (page: number = 1, limit: number = 20, sortField: string = 'year', sortOrder: string = 'desc', organ: string = 'A/') => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/resolutions?page=${page}&limit=${limit}&sortField=${sortField}&sortOrder=${sortOrder}`);
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: limit.toString(),
+        sortField,
+        sortOrder,
+      });
+      
+      if (organ !== 'all') {
+        params.append('organ', organ);
+      }
+      
+      const response = await fetch(`/api/resolutions?${params}`);
       if (!response.ok) {
         throw new Error('Failed to fetch resolutions');
       }
@@ -49,20 +72,25 @@ export default function ResolutionsPage() {
   };
 
   useEffect(() => {
-    fetchResolutions();
-  }, []);
+    fetchResolutions(1, 20, 'year', 'desc', selectedOrgan);
+  }, [selectedOrgan]);
 
   const handleSort = (e: any) => {
     const newSortField = e.sortField as keyof Resolution;
     const newSortOrder = e.sortOrder as 1 | -1;
     setSortField(newSortField);
     setSortOrder(newSortOrder);
-    fetchResolutions(pagination.page, pagination.limit, newSortField, newSortOrder === 1 ? 'asc' : 'desc');
+    fetchResolutions(pagination.page, pagination.limit, newSortField, newSortOrder === 1 ? 'asc' : 'desc', selectedOrgan);
   };
 
   const handlePageChange = (e: any) => {
     const newPage = e.page + 1; // PrimeReact uses 0-based indexing
-    fetchResolutions(newPage, e.rows, sortField, sortOrder === 1 ? 'asc' : 'desc');
+    fetchResolutions(newPage, e.rows, sortField, sortOrder === 1 ? 'asc' : 'desc', selectedOrgan);
+  };
+
+  const handleOrganChange = (value: string) => {
+    setSelectedOrgan(value);
+    // fetchResolutions will be called by useEffect when selectedOrgan changes
   };
 
   const titleTemplate = (row: Resolution) => (
@@ -151,11 +179,27 @@ export default function ResolutionsPage() {
   return (
     <div className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]">
       <div className="max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-8 sm:px-12 lg:px-16 mb-6">
-        <div className="flex items-center gap-3">
-          <FileText className="h-8 w-8 text-un-blue" />
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">
-            All Resolutions
-          </h1>
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-3">
+            <FileText className="h-8 w-8 text-un-blue" />
+            <h1 className="text-2xl font-bold tracking-tight text-foreground">
+              All Resolutions
+            </h1>
+          </div>
+          <div className="flex items-center gap-2">
+            <Select value={selectedOrgan} onValueChange={handleOrganChange}>
+              <SelectTrigger id="organ-filter" className="w-48 text-sm h-9 border-slate-300 focus:border-blue-500 focus:ring-blue-500 bg-white">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {organOptions.map(option => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </div>
 

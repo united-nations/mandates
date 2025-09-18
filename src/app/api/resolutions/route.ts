@@ -16,9 +16,18 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '10');
     const sortField = searchParams.get('sortField') || 'year';
     const sortOrder = searchParams.get('sortOrder') || 'desc';
+    const organ = searchParams.get('organ');
+
+    // Filter by organ if specified
+    let filteredResolutions = allResolutions;
+    if (organ) {
+      filteredResolutions = allResolutions.filter(resolution => 
+        resolution.symbol.startsWith(organ)
+      );
+    }
 
     // Sort the data
-    const sortedResolutions = [...allResolutions].sort((a, b) => {
+    const sortedResolutions = [...filteredResolutions].sort((a, b) => {
       const aValue = a[sortField as keyof Resolution];
       const bValue = b[sortField as keyof Resolution];
       
@@ -48,8 +57,8 @@ export async function GET(request: NextRequest) {
       pagination: {
         page,
         limit,
-        total: allResolutions.length,
-        totalPages: Math.ceil(allResolutions.length / limit),
+        total: filteredResolutions.length,
+        totalPages: Math.ceil(filteredResolutions.length / limit),
       },
     });
   } catch (error) {
