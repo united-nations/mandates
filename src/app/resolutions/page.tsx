@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import type { Resolution } from "@/types";
 import { Check, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, FileText, X } from "lucide-react";
 import { Column } from "primereact/column";
@@ -32,6 +33,7 @@ export default function ResolutionsPage() {
     const [sortField, setSortField] = useState<keyof Resolution>('year');
     const [sortOrder, setSortOrder] = useState<1 | -1>(-1);
     const [selectedOrgan, setSelectedOrgan] = useState<string>('General Assembly');
+    const [isShowingFilteredSubset, setIsShowingFilteredSubset] = useState(false);
 
     const organOptions = [
         { value: 'all', label: 'All Organs' },
@@ -65,6 +67,7 @@ export default function ResolutionsPage() {
             setResolutions(data.data);
             setPagination(data.pagination);
             setError(null);
+            setIsShowingFilteredSubset(false);
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to load data');
         } finally {
@@ -78,10 +81,49 @@ export default function ResolutionsPage() {
 
     const handleSort = (e: any) => {
         const newSortField = e.sortField as keyof Resolution;
-        const newSortOrder = e.sortOrder as 1 | -1;
+        let newSortOrder: 1 | -1;
+
+        // Custom sort behavior: 
+        // - If clicking a new column, start with descending (-1)
+        // - If clicking the same column, toggle the order
+        if (newSortField !== sortField) {
+            // New column - start with descending (high to low)
+            newSortOrder = -1;
+        } else {
+            // Same column - toggle the current order
+            newSortOrder = sortOrder === 1 ? -1 : 1;
+        }
+
         setSortField(newSortField);
         setSortOrder(newSortOrder);
-        fetchResolutions(pagination.page, pagination.limit, newSortField, newSortOrder === 1 ? 'asc' : 'desc', selectedOrgan);
+
+        if (isShowingFilteredSubset) {
+            // Sort the current filtered subset client-side
+            const sortedResolutions = [...resolutions].sort((a, b) => {
+                const aValue = a[newSortField];
+                const bValue = b[newSortField];
+
+                if (aValue === null || aValue === undefined) return 1;
+                if (bValue === null || bValue === undefined) return -1;
+
+                if (typeof aValue === 'string' && typeof bValue === 'string') {
+                    const comparison = aValue.localeCompare(bValue);
+                    return newSortOrder === 1 ? comparison : -comparison;
+                }
+
+                if (typeof aValue === 'number' && typeof bValue === 'number') {
+                    const comparison = aValue - bValue;
+                    return newSortOrder === 1 ? comparison : -comparison;
+                }
+
+                return 0;
+            });
+
+            setResolutions(sortedResolutions);
+        } else {
+            // Normal server-side sorting for full dataset
+            fetchResolutions(pagination.page, pagination.limit, newSortField, newSortOrder === 1 ? 'asc' : 'desc', selectedOrgan);
+        }
     };
 
     const handlePageChange = (e: any) => {
@@ -91,6 +133,7 @@ export default function ResolutionsPage() {
 
     const handleOrganChange = (value: string) => {
         setSelectedOrgan(value);
+        setIsShowingFilteredSubset(false);
         // fetchResolutions will be called by useEffect when selectedOrgan changes
     };
 
@@ -103,9 +146,9 @@ export default function ResolutionsPage() {
     const symbolTemplate = (row: Resolution) => (
         <div className="font-mono text-sm">
             {row.url ? (
-                <a 
-                    href={row.url} 
-                    target="_blank" 
+                <a
+                    href={row.url}
+                    target="_blank"
                     rel="noopener noreferrer"
                     className="text-un-blue hover:text-un-blue/80 hover:underline"
                 >
@@ -123,31 +166,237 @@ export default function ResolutionsPage() {
         </div>
     );
 
-    const recurrenceTemplate = (row: Resolution) => (
-        <div className="text-sm">
-            <div className="font-medium">{row.series_symbol_count} total</div>
-            <div className="text-muted-foreground">
-                {row.series_first_year === row.series_last_year
-                    ? `${row.series_first_year}`
-                    : `${row.series_first_year}-${row.series_last_year}`}
-            </div>
-        </div>
-    );
+    const handleSeriesClick = async (normalizedTitle: string, organ: string) => {
+        try {
+            setLoading(true);
+
+            // Fetch all resolutions to find the series
+            const response = await fetch('/api/resolutions?limit=10000'); // Get all to search
+            if (!response.ok) {
+                throw new Error('Failed to fetch resolutions');
+            }
+            const data: ApiResponse = await response.json();
+
+            // Find all resolutions in the same series (same normalized_title and organ)
+            const seriesResolutions = data.data.filter(res =>
+                res.normalized_title === normalizedTitle && res.organ === organ
+            );
+
+            if (seriesResolutions.length > 0) {
+                // Sort by year to show chronological order (highest year on top)
+                const sortedSeries = seriesResolutions.sort((a, b) => b.year - a.year);
+
+                // Show the entire series
+                setResolutions(sortedSeries);
+                setPagination({
+                    page: 1,
+                    limit: sortedSeries.length,
+                    total: sortedSeries.length,
+                    totalPages: 1
+                });
+                setIsShowingFilteredSubset(true);
+
+                // Set sort state to reflect the current sorting
+                setSortField('year');
+                setSortOrder(-1); // -1 for descending
+
+                // Brief highlight after loading
+                setTimeout(() => {
+                    const tableElement = document.querySelector('.p-datatable-tbody');
+                    if (tableElement) {
+                        const rows = tableElement.querySelectorAll('tr');
+                        rows.forEach((row, index) => {
+                            setTimeout(() => {
+                                const originalBackground = (row as HTMLElement).style.backgroundColor;
+                                (row as HTMLElement).style.backgroundColor = '#009edb20';
+                                (row as HTMLElement).style.borderLeft = '4px solid #009edb';
+                                setTimeout(() => {
+                                    (row as HTMLElement).style.backgroundColor = originalBackground;
+                                    (row as HTMLElement).style.borderLeft = '';
+                                }, 800);
+                            }, index * 100); // Stagger the highlighting
+                        });
+                    }
+                }, 100);
+            } else {
+                setError(`No series found for "${normalizedTitle}" in ${organ}.`);
+            }
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Failed to load series');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const recurrenceTemplate = (row: Resolution) => {
+        // Only show tooltip for recurring series (more than 1 resolution)
+        if (row.series_symbol_count === 1) {
+            return (
+                <div className="text-sm">
+                    <div className="font-medium">1 total</div>
+                    <div className="text-muted-foreground">{row.year}</div>
+                </div>
+            );
+        }
+
+        return (
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <div className="text-sm cursor-help">
+                        <div className="font-medium">{row.series_symbol_count} total</div>
+                        <div className="text-muted-foreground">
+                            {row.series_first_year === row.series_last_year
+                                ? `${row.series_first_year}`
+                                : `${row.series_first_year}-${row.series_last_year}`}
+                        </div>
+                    </div>
+                </TooltipTrigger>
+                <TooltipContent className="p-0">
+                    <button
+                        onClick={() => handleSeriesClick(row.normalized_title, row.organ)}
+                        className="px-3 py-2 text-sm hover:bg-gray-100 transition-colors rounded"
+                    >
+                        View entire series ({row.series_symbol_count} resolutions)
+                        <div className="text-xs text-gray-500 mt-1">Click to show all in series</div>
+                    </button>
+                </TooltipContent>
+            </Tooltip>
+        );
+    };
+
+    const handlePreviousSymbolClick = async (previousSymbol: string) => {
+        // Find the resolution with the matching symbol in current data
+        const targetResolution = resolutions.find(res => res.symbol === previousSymbol);
+
+        if (targetResolution) {
+            // Found in current view - scroll to it and highlight
+            const tableElement = document.querySelector('.p-datatable-tbody');
+            if (tableElement) {
+                const rows = tableElement.querySelectorAll('tr');
+                const targetIndex = resolutions.findIndex(res => res.symbol === previousSymbol);
+
+                if (targetIndex !== -1 && rows[targetIndex]) {
+                    rows[targetIndex].scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+
+                    // Briefly highlight the row with UN blue - less aggressive
+                    const originalBackground = rows[targetIndex].style.backgroundColor;
+                    rows[targetIndex].style.backgroundColor = '#009edb20'; // UN blue with transparency
+                    rows[targetIndex].style.borderLeft = '4px solid #009edb'; // UN blue border
+                    setTimeout(() => {
+                        rows[targetIndex].style.backgroundColor = originalBackground;
+                        rows[targetIndex].style.borderLeft = '';
+                    }, 800);
+                }
+            }
+        } else {
+            // Not found in current view - fetch and show just this resolution
+            try {
+                setLoading(true);
+
+                // Fetch all resolutions to find the target
+                const response = await fetch('/api/resolutions?limit=10000'); // Get all to search
+                if (!response.ok) {
+                    throw new Error('Failed to fetch resolutions');
+                }
+                const data: ApiResponse = await response.json();
+
+                // Find the target resolution
+                const targetResolution = data.data.find(res => res.symbol === previousSymbol);
+
+                if (targetResolution) {
+                    // Show just this resolution
+                    setResolutions([targetResolution]);
+                    setPagination({
+                        page: 1,
+                        limit: 1,
+                        total: 1,
+                        totalPages: 1
+                    });
+                    setIsShowingFilteredSubset(true);
+
+                    // Highlight it after a brief delay
+                    setTimeout(() => {
+                        const tableElement = document.querySelector('.p-datatable-tbody');
+                        if (tableElement) {
+                            const firstRow = tableElement.querySelector('tr');
+                            if (firstRow) {
+                                const originalBackground = firstRow.style.backgroundColor;
+                                firstRow.style.backgroundColor = '#009edb20'; // UN blue with transparency
+                                firstRow.style.borderLeft = '4px solid #009edb'; // UN blue border
+                                setTimeout(() => {
+                                    firstRow.style.backgroundColor = originalBackground;
+                                    firstRow.style.borderLeft = '';
+                                }, 800);
+                            }
+                        }
+                    }, 100);
+                } else {
+                    setError(`Resolution ${previousSymbol} not found in the database.`);
+                }
+            } catch (err) {
+                setError(err instanceof Error ? err.message : 'Failed to load resolution');
+            } finally {
+                setLoading(false);
+            }
+        }
+    };
 
     const frequencyTemplate = (row: Resolution) => {
         // If series_symbol_count is 1, it's a one-time resolution
         if (row.series_symbol_count === 1) {
-            return <div className="text-sm">One-time</div>;
+            return (
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <div className="text-sm cursor-help">One-time</div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p>No previous resolution</p>
+                    </TooltipContent>
+                </Tooltip>
+            );
         }
-        
+
         // For recurring series, show distance to previous
         if (row.distance_to_previous !== null && row.distance_to_previous !== undefined) {
             const yearText = row.distance_to_previous === 1 ? 'year' : 'years';
-            return <div className="text-sm">{row.distance_to_previous} {yearText} ago</div>;
+            const hasPreviousSymbol = row.previous_symbol;
+
+            return (
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <div className="text-sm cursor-help">{row.distance_to_previous} {yearText} ago</div>
+                    </TooltipTrigger>
+                    <TooltipContent className="p-0">
+                        {hasPreviousSymbol ? (
+                            <button
+                                onClick={() => handlePreviousSymbolClick(row.previous_symbol!)}
+                                className="px-3 py-2 text-sm hover:bg-gray-100 transition-colors rounded"
+                            >
+                                {row.previous_symbol}
+                                <div className="text-xs text-gray-500 mt-1">Click to find in table</div>
+                            </button>
+                        ) : (
+                            <p className="px-3 py-2">No previous resolution</p>
+                        )}
+                    </TooltipContent>
+                </Tooltip>
+            );
         }
-        
+
         // Fallback for cases where distance_to_previous is not available
-        return <div className="text-sm text-gray-400">N/A</div>;
+        return (
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <div className="text-sm text-gray-400 cursor-help">N/A</div>
+                </TooltipTrigger>
+                <TooltipContent>
+                    <p>No previous resolution</p>
+                </TooltipContent>
+            </Tooltip>
+        );
     };
 
     const similarityTemplate = (row: Resolution) => {
@@ -173,7 +422,7 @@ export default function ResolutionsPage() {
         if (row.has_within_existing_resources === null || row.has_within_existing_resources === undefined) {
             return <div className="text-gray-400">N/A</div>;
         }
-        
+
         return (
             <div className="flex items-center gap-2">
                 {row.has_within_existing_resources ? (
