@@ -1,19 +1,36 @@
 // Core data types based on the JSON structure
-export interface OperativeParagraph {
-  paragraph_idx: number;
-  subparagraph_idx: number;
-  paragraph_text: string;
-  subparagraph_text: string;
-//   is_operative: boolean;
-  is_op_para: boolean;
-  normalized_keywords: string;
-  is_definite_keyword: boolean;
-  is_definite: boolean;
-  has_deliverable: boolean;
-  deliverable_type: string[];
-  has_assignee: boolean;
-  assignee: string;
-  contains_within_existing_resources: boolean;
+export interface Paragraph {
+  text: string;
+  is_frontmatter: boolean;
+  type: string; // "title", "paragraph", "heading", etc.
+  heading_level: number | null;
+  paragraph_type: string | null; // "preambular", "operative", etc.
+  paragraph_level: number | null;
+  prefix: string | null; // "1.", "2.", etc. - renamed from paragraph_prefix, can also apply to headers
+  links: [string, string][] | []; // Array of [text, url] tuples
+  language: string | null; // Language of the text block
+  symbol?: string;
+  index?: number;
+  mandates?: {
+    action_verb: string;
+    action_verb_type: string;
+    assignees: {
+      assignee: string;
+      assignee_normalized: string;
+      assignee_type: string;
+    }[];
+    mentioned_entities: {
+      mentioned_entity: string;
+      mentioned_entity_normalized: string;
+      mentioned_entity_type: string;
+    }[];
+    deliverables: {
+      deliverable: string;
+      deliverable_normalized: string;
+      deliverable_type: string;
+    }[];
+  }[];
+  textWithHighlights?: string;
 }
 
 export interface CitationInfo {
@@ -86,7 +103,7 @@ export interface Mandate {
   action_note_date: string[] | null;
   related_documents: string[] | null;
   vote_summary: string[] | null;
-  paragraphs?: OperativeParagraph[] | null;
+  paragraphs?: Paragraph[] | null;
   programme?: string;
   text?: string;
   ai_summary?: string;

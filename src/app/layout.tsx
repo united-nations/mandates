@@ -10,7 +10,7 @@ import { TooltipProvider } from '@/components/ui/tooltip'
 import { explainerTexts } from '@/lib/explainer-texts'
 import { GoogleAnalytics } from '@next/third-parties/google'
 import { FilterProvider } from '@/contexts/FilterContext'
-import { Menu, MessageCircle } from 'lucide-react'
+import { Menu, MessageCircle, Info } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import {
@@ -19,6 +19,7 @@ import {
     DropdownMenuContent,
     DropdownMenuItem
 } from '@/components/ui/dropdown-menu'
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 import Clarity from '@microsoft/clarity'
 import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
@@ -67,19 +68,40 @@ export default function RootLayout({
                     <FilterProvider>
                         <header className='w-full max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-8 sm:px-12 lg:px-16 pt-8 pb-2 flex items-start justify-between'>
                             <div className='flex-1'>
-                                <div className='flex items-center gap-x-2 mb-2'>
+                                <div className='flex flex-col lg:flex-row lg:items-center lg:gap-x-2 mb-2'>
                                     <Link
                                         href='/'
                                         className='text-4xl font-bold tracking-tight text-foreground hover:text-un-blue transition-colors'
                                     >
                                         {explainerTexts.mainHeader.title}
                                     </Link>
-                                    <Link
-                                        href='/methodology'
-                                        className='inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200 hover:bg-slate-200 hover:text-slate-700 transition-colors cursor-pointer'
-                                    >
-                                        {explainerTexts.mainHeader.versionTag}
-                                    </Link>
+                                    <div className='mt-1 lg:mt-0'>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <Button
+                                                    variant="ghost"
+                                                    className='inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200 hover:bg-slate-200 hover:text-slate-700 transition-colors cursor-pointer h-auto'
+                                                >
+                                                    beta version
+                                                    <Info className='h-3 w-3' />
+                                                </Button>
+                                            </TooltipTrigger>
+                                            <TooltipContent side="bottom" className="max-w-56">
+                                                <p className="text-sm">
+                                                    This beta version focuses on data about the UN secretariat.
+                                                    <br />
+                                                    Go to the{' '}
+                                                    <Link 
+                                                        href="/methodology" 
+                                                        className="text-un-blue hover:text-shuttle-gray underline font-medium"
+                                                    >
+                                                        Methodology
+                                                    </Link>
+                                                    {' '}page for more details.
+                                                </p>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    </div>
                                 </div>
                             </div>
                             <div className='pt-2'>

@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { MetadataItem } from '@/components/ui/metadata-item'
 import { formatUrlForDisplay } from '@/lib/utils'
+import { LoadingFallback } from '@/components/ui/loading-fallback'
 
 interface Entity {
     entity: string
@@ -89,7 +90,7 @@ function EntityPageContent() {
 
 export default function EntityPage() {
     return (
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<LoadingFallback />}>
             <EntityPageContent />
         </Suspense>
     )
