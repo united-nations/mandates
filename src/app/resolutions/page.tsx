@@ -102,7 +102,18 @@ export default function ResolutionsPage() {
 
     const symbolTemplate = (row: Resolution) => (
         <div className="font-mono text-sm">
-            {row.symbol}
+            {row.url ? (
+                <a 
+                    href={row.url} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-un-blue hover:text-un-blue/80 hover:underline"
+                >
+                    {row.symbol}
+                </a>
+            ) : (
+                <span>{row.symbol}</span>
+            )}
         </div>
     );
 
