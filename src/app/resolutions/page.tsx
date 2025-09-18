@@ -160,11 +160,20 @@ export default function ResolutionsPage() {
         </div>
     );
 
-    const lengthTemplate = (row: Resolution) => (
-        <div>
-            {row.word_count ? `~${row.word_count.toLocaleString()}` : <span className="text-gray-400">N/A</span>}
-        </div>
-    );
+    const lengthTemplate = (row: Resolution) => {
+        if (!row.word_count) {
+            return <div><span className="text-gray-400">N/A</span></div>;
+        }
+        
+        // Round to nearest 50
+        const roundedCount = Math.round(row.word_count / 50) * 50;
+        
+        return (
+            <div>
+                ~{roundedCount.toLocaleString()}
+            </div>
+        );
+    };
 
     const handleSeriesClick = async (normalizedTitle: string, organ: string) => {
         try {
@@ -375,7 +384,7 @@ export default function ResolutionsPage() {
                                 onClick={() => handlePreviousSymbolClick(row.previous_symbol!)}
                                 className="px-3 py-2 text-sm hover:bg-gray-100 transition-colors rounded"
                             >
-                                {row.previous_symbol}
+                                <span className="font-mono">{row.previous_symbol}</span>
                                 <div className="text-xs text-gray-500 mt-1">Click to find in table</div>
                             </button>
                         ) : (
@@ -413,7 +422,7 @@ export default function ResolutionsPage() {
 
         return (
             <div style={{ color }}>
-                {similarity.toFixed(2)}
+                ~{similarity.toFixed(2)}
             </div>
         );
     };
@@ -436,6 +445,32 @@ export default function ResolutionsPage() {
             </div>
         );
     };
+
+    const similarityHeaderTemplate = () => (
+        <Tooltip>
+            <TooltipTrigger asChild>
+                <span className="cursor-help">Similarity</span>
+            </TooltipTrigger>
+            <TooltipContent>
+                <p>Levenshtein ratio on character level<br />of the document fulltexts</p>
+            </TooltipContent>
+        </Tooltip>
+    );
+
+    const withinResourcesHeaderTemplate = () => (
+        <Tooltip>
+            <TooltipTrigger asChild>
+                <span className="cursor-help">Within Resources</span>
+            </TooltipTrigger>
+            <TooltipContent>
+                <p>Shows if a resolution includes<br />"within existing resources" and how often</p>
+            </TooltipContent>
+        </Tooltip>
+    );
+
+    const lengthHeaderTemplate = () => (
+        <span>Length <span className="font-normal text-muted-foreground">[words]</span></span>
+    );
 
     const customPaginatorTemplate = {
         layout: 'FirstPageLink PrevPageLink NextPageLink LastPageLink RowsPerPageDropdown CurrentPageReport',
@@ -575,7 +610,7 @@ export default function ResolutionsPage() {
                     />
                     <Column
                         field="word_count"
-                        header="Length [words]"
+                        header={lengthHeaderTemplate}
                         body={lengthTemplate}
                         sortable
                         headerClassName="whitespace-nowrap"
@@ -597,14 +632,14 @@ export default function ResolutionsPage() {
                     />
                     <Column
                         field="similarity_to_previous"
-                        header="Similarity"
+                        header={similarityHeaderTemplate}
                         body={similarityTemplate}
                         sortable
                         headerClassName="whitespace-nowrap"
                         style={{ width: "8rem" }}
                     />
                     <Column
-                        header="Within Resources"
+                        header={withinResourcesHeaderTemplate}
                         body={withinResourcesTemplate}
                         headerClassName="whitespace-nowrap"
                         style={{ width: "11rem" }}
