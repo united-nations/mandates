@@ -17,12 +17,21 @@ export async function GET(request: NextRequest) {
     const sortField = searchParams.get('sortField') || 'year';
     const sortOrder = searchParams.get('sortOrder') || 'desc';
     const organ = searchParams.get('organ');
+    const isRecurringSeries = searchParams.get('is_recurring_series');
 
     // Filter by organ if specified
     let filteredResolutions = allResolutions;
     if (organ) {
-      filteredResolutions = allResolutions.filter(resolution => 
+      filteredResolutions = filteredResolutions.filter(resolution => 
         resolution.organ === organ
+      );
+    }
+
+    // Filter by recurring series if specified
+    if (isRecurringSeries) {
+      const isRecurring = isRecurringSeries === 'true';
+      filteredResolutions = filteredResolutions.filter(resolution => 
+        resolution.is_recurring_series === isRecurring
       );
     }
 

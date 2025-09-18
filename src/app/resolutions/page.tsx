@@ -33,6 +33,7 @@ export default function ResolutionsPage() {
     const [sortField, setSortField] = useState<keyof Resolution>('year');
     const [sortOrder, setSortOrder] = useState<1 | -1>(-1);
     const [selectedOrgan, setSelectedOrgan] = useState<string>('General Assembly');
+    const [selectedRecurringSeries, setSelectedRecurringSeries] = useState<string>('all');
     const [isShowingFilteredSubset, setIsShowingFilteredSubset] = useState(false);
 
     const organOptions = [
@@ -41,11 +42,15 @@ export default function ResolutionsPage() {
         { value: 'Economic and Social Council', label: 'Economic and Social Council' },
         { value: 'Security Council', label: 'Security Council' },
         { value: 'Human Rights Council', label: 'Human Rights Council' },
-        { value: 'Secretariat', label: 'Secretariat' },
-        { value: 'Trusteeship Council', label: 'Trusteeship Council' },
     ];
 
-    const fetchResolutions = async (page: number = 1, limit: number = 20, sortField: string = 'year', sortOrder: string = 'desc', organ: string = 'General Assembly') => {
+    const recurringSeriesOptions = [
+        { value: 'all', label: 'All Documents' },
+        { value: 'true', label: 'Recurring Resolutions' },
+        { value: 'false', label: 'One-time Resolutions' },
+    ];
+
+    const fetchResolutions = async (page: number = 1, limit: number = 20, sortField: string = 'year', sortOrder: string = 'desc', organ: string = 'General Assembly', recurringSeries: string = 'all') => {
         try {
             setLoading(true);
             const params = new URLSearchParams({
@@ -57,6 +62,10 @@ export default function ResolutionsPage() {
 
             if (organ !== 'all') {
                 params.append('organ', organ);
+            }
+
+            if (recurringSeries !== 'all') {
+                params.append('is_recurring_series', recurringSeries);
             }
 
             const response = await fetch(`/api/resolutions?${params}`);
@@ -76,8 +85,8 @@ export default function ResolutionsPage() {
     };
 
     useEffect(() => {
-        fetchResolutions(1, 20, 'year', 'desc', selectedOrgan);
-    }, [selectedOrgan]);
+        fetchResolutions(1, 20, 'year', 'desc', selectedOrgan, selectedRecurringSeries);
+    }, [selectedOrgan, selectedRecurringSeries]);
 
     const handleSort = (e: any) => {
         const newSortField = e.sortField as keyof Resolution;
@@ -122,19 +131,25 @@ export default function ResolutionsPage() {
             setResolutions(sortedResolutions);
         } else {
             // Normal server-side sorting for full dataset
-            fetchResolutions(pagination.page, pagination.limit, newSortField, newSortOrder === 1 ? 'asc' : 'desc', selectedOrgan);
+            fetchResolutions(pagination.page, pagination.limit, newSortField, newSortOrder === 1 ? 'asc' : 'desc', selectedOrgan, selectedRecurringSeries);
         }
     };
 
     const handlePageChange = (e: any) => {
         const newPage = e.page + 1; // PrimeReact uses 0-based indexing
-        fetchResolutions(newPage, e.rows, sortField, sortOrder === 1 ? 'asc' : 'desc', selectedOrgan);
+        fetchResolutions(newPage, e.rows, sortField, sortOrder === 1 ? 'asc' : 'desc', selectedOrgan, selectedRecurringSeries);
     };
 
     const handleOrganChange = (value: string) => {
         setSelectedOrgan(value);
         setIsShowingFilteredSubset(false);
         // fetchResolutions will be called by useEffect when selectedOrgan changes
+    };
+
+    const handleRecurringSeriesChange = (value: string) => {
+        setSelectedRecurringSeries(value);
+        setIsShowingFilteredSubset(false);
+        // fetchResolutions will be called by useEffect when selectedRecurringSeries changes
     };
 
     const titleTemplate = (row: Resolution) => (
@@ -160,14 +175,18 @@ export default function ResolutionsPage() {
         </div>
     );
 
+    const yearTemplate = (row: Resolution) => (
+        <div>{row.year === 0 ? 'N/A' : row.year}</div>
+    );
+
     const lengthTemplate = (row: Resolution) => {
         if (!row.word_count) {
             return <div><span className="text-gray-400">N/A</span></div>;
         }
-        
+
         // Round to nearest 50
         const roundedCount = Math.round(row.word_count / 50) * 50;
-        
+
         return (
             <div>
                 ~{roundedCount.toLocaleString()}
@@ -241,10 +260,20 @@ export default function ResolutionsPage() {
         // Only show tooltip for recurring series (more than 1 resolution)
         if (row.series_symbol_count === 1) {
             return (
-                <div className="text-sm">
-                    <div className="font-medium">1 total</div>
-                    <div className="text-muted-foreground">{row.year}</div>
-                </div>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <div className="text-sm cursor-help">
+                            <div className="font-medium">1 total</div>
+                            <div className="text-muted-foreground">{row.year === 0 ? 'N/A' : row.year}</div>
+                        </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p>Standalone resolution</p>
+                        <p className="text-xs text-gray-500 mt-1">
+                            Not part of a recurring series
+                        </p>
+                    </TooltipContent>
+                </Tooltip>
             );
         }
 
@@ -254,9 +283,10 @@ export default function ResolutionsPage() {
                     <div className="text-sm cursor-help">
                         <div className="font-medium">{row.series_symbol_count} total</div>
                         <div className="text-muted-foreground">
-                            {row.series_first_year === row.series_last_year
-                                ? `${row.series_first_year}`
-                                : `${row.series_first_year}-${row.series_last_year}`}
+                            {row.series_first_year === 0 || row.series_last_year === 0 ? 'N/A' :
+                                row.series_first_year === row.series_last_year
+                                    ? `${row.series_first_year}`
+                                    : `${row.series_first_year}-${row.series_last_year}`}
                         </div>
                     </div>
                 </TooltipTrigger>
@@ -370,13 +400,21 @@ export default function ResolutionsPage() {
 
         // For recurring series, show distance to previous
         if (row.distance_to_previous !== null && row.distance_to_previous !== undefined) {
-            const yearText = row.distance_to_previous === 1 ? 'year' : 'years';
             const hasPreviousSymbol = row.previous_symbol;
+
+            // Handle special case for same year (distance = 0)
+            let displayText;
+            if (row.distance_to_previous === 0) {
+                displayText = '<1 year ago';
+            } else {
+                const yearText = row.distance_to_previous === 1 ? 'year' : 'years';
+                displayText = `${row.distance_to_previous} ${yearText} ago`;
+            }
 
             return (
                 <Tooltip>
                     <TooltipTrigger asChild>
-                        <div className="text-sm cursor-help">{row.distance_to_previous} {yearText} ago</div>
+                        <div className="text-sm cursor-help">{displayText}</div>
                     </TooltipTrigger>
                     <TooltipContent className="p-0">
                         {hasPreviousSymbol ? (
@@ -420,10 +458,35 @@ export default function ResolutionsPage() {
         const green = Math.round((1 - similarity) * 255);
         const color = `rgb(${red}, ${green}, 0)`;
 
+        // Interpretation text based on similarity value
+        let interpretation = '';
+        if (similarity < 0.2) {
+            interpretation = 'Very different';
+        } else if (similarity < 0.4) {
+            interpretation = 'Somewhat different';
+        } else if (similarity < 0.6) {
+            interpretation = 'Moderately similar';
+        } else if (similarity < 0.8) {
+            interpretation = 'Very similar';
+        } else {
+            interpretation = 'Nearly identical';
+        }
+
         return (
-            <div style={{ color }}>
-                ~{similarity.toFixed(2)}
-            </div>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <div style={{ color }} className="cursor-help">
+                        ~{similarity.toFixed(2)}
+                    </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                    <p className="font-medium">{interpretation}</p>
+                    <p className="text-xs text-gray-500 mt-1 font-mono">
+                        1.00 – identical text<br />
+                        0.00 – completely different
+                    </p>
+                </TooltipContent>
+            </Tooltip>
         );
     };
 
@@ -564,6 +627,18 @@ export default function ResolutionsPage() {
                                 ))}
                             </SelectContent>
                         </Select>
+                        <Select value={selectedRecurringSeries} onValueChange={handleRecurringSeriesChange}>
+                            <SelectTrigger id="recurring-filter" className="w-52 text-sm h-9 border-slate-300 focus:border-blue-500 focus:ring-blue-500 bg-white">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {recurringSeriesOptions.map(option => (
+                                    <SelectItem key={option.value} value={option.value}>
+                                        {option.label}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
                     </div>
                 </div>
             </div>
@@ -599,6 +674,7 @@ export default function ResolutionsPage() {
                     <Column
                         field="year"
                         header="Year"
+                        body={yearTemplate}
                         sortable
                         style={{ width: "6rem" }}
                     />
