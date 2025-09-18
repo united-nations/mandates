@@ -123,11 +123,21 @@ export default function ResolutionsPage() {
         </div>
     );
 
-    const frequencyTemplate = (row: Resolution) => (
-        <div className="text-sm">
-            {row.is_recurring_series ? 'Recurring' : 'One-time'}
-        </div>
-    );
+    const frequencyTemplate = (row: Resolution) => {
+        // If series_symbol_count is 1, it's a one-time resolution
+        if (row.series_symbol_count === 1) {
+            return <div className="text-sm">One-time</div>;
+        }
+        
+        // For recurring series, show distance to previous
+        if (row.distance_to_previous !== null && row.distance_to_previous !== undefined) {
+            const yearText = row.distance_to_previous === 1 ? 'year' : 'years';
+            return <div className="text-sm">{row.distance_to_previous} {yearText} ago</div>;
+        }
+        
+        // Fallback for cases where distance_to_previous is not available
+        return <div className="text-sm text-gray-400">N/A</div>;
+    };
 
     const similarityTemplate = (row: Resolution) => {
         // Use similarity_to_previous if available
@@ -306,13 +316,15 @@ export default function ResolutionsPage() {
                         style={{ width: "9rem" }}
                     />
                     <Column
+                        field="series_symbol_count"
                         header="Recurrence"
                         body={recurrenceTemplate}
+                        sortable
                         headerClassName="whitespace-nowrap"
                         style={{ width: "10rem" }}
                     />
                     <Column
-                        header="Avg. Frequency"
+                        header="Previous"
                         body={frequencyTemplate}
                         headerClassName="whitespace-nowrap"
                         style={{ width: "9rem" }}
