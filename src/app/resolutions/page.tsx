@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import type { Resolution } from "@/types";
-import { Check, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, FileText, X } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, FileText, X, RotateCcw } from "lucide-react";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { useEffect, useState } from "react";
@@ -150,6 +150,12 @@ export default function ResolutionsPage() {
         setSelectedRecurringSeries(value);
         setIsShowingFilteredSubset(false);
         // fetchResolutions will be called by useEffect when selectedRecurringSeries changes
+    };
+
+    const handleResetFilters = () => {
+        setSelectedOrgan('General Assembly');
+        setSelectedRecurringSeries('all');
+        setIsShowingFilteredSubset(false);
     };
 
     const titleTemplate = (row: Resolution) => (
@@ -606,7 +612,7 @@ export default function ResolutionsPage() {
 
     return (
         <div className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]">
-            <div className="max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-8 sm:px-12 lg:px-16 mb-6">
+            <div className="max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-8 sm:px-12 lg:px-16 mb-6 pt-8">
                 <div className="flex items-center gap-6">
                     <div className="flex items-center gap-3">
                         <FileText className="h-8 w-8 text-un-blue" />
@@ -639,18 +645,28 @@ export default function ResolutionsPage() {
                                 ))}
                             </SelectContent>
                         </Select>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={handleResetFilters}
+                            className="h-9 px-3 text-sm border-slate-300"
+                            title="Reset filters to default"
+                        >
+                            <RotateCcw className="h-4 w-4 mr-1" />
+                            Reset
+                        </Button>
                     </div>
                 </div>
             </div>
 
-            <div className="max-w-[95vw] mx-auto px-4 overflow-x-auto">
+            <div className="max-w-[95vw] mx-auto px-4 overflow-x-auto mt-8">
                 <DataTable
                     value={resolutions}
                     loading={loading}
                     stripedRows
                     showGridlines
                     size="small"
-                    tableStyle={{ width: "100%", minWidth: "1400px" }}
+                    tableStyle={{ width: "100%", minWidth: "1200px" }}
                     paginator
                     rows={pagination.limit}
                     totalRecords={pagination.total}
@@ -669,20 +685,21 @@ export default function ResolutionsPage() {
                         body={symbolTemplate}
                         sortable
                         headerClassName="whitespace-nowrap"
-                        style={{ width: "10rem" }}
+                        style={{ width: "8rem" }}
                     />
                     <Column
                         field="year"
                         header="Year"
                         body={yearTemplate}
                         sortable
-                        style={{ width: "6rem" }}
+                        style={{ width: "5rem" }}
                     />
                     <Column
                         field="title"
                         header="Title"
                         body={titleTemplate}
                         sortable
+                        style={{ width: "20rem", maxWidth: "20rem" }}
                     />
                     <Column
                         field="word_count"
@@ -690,7 +707,7 @@ export default function ResolutionsPage() {
                         body={lengthTemplate}
                         sortable
                         headerClassName="whitespace-nowrap"
-                        style={{ width: "9rem" }}
+                        style={{ width: "7rem" }}
                     />
                     <Column
                         field="series_symbol_count"
@@ -698,13 +715,13 @@ export default function ResolutionsPage() {
                         body={recurrenceTemplate}
                         sortable
                         headerClassName="whitespace-nowrap"
-                        style={{ width: "10rem" }}
+                        style={{ width: "8rem" }}
                     />
                     <Column
                         header="Previous"
                         body={frequencyTemplate}
                         headerClassName="whitespace-nowrap"
-                        style={{ width: "9rem" }}
+                        style={{ width: "7rem" }}
                     />
                     <Column
                         field="similarity_to_previous"
@@ -712,13 +729,13 @@ export default function ResolutionsPage() {
                         body={similarityTemplate}
                         sortable
                         headerClassName="whitespace-nowrap"
-                        style={{ width: "8rem" }}
+                        style={{ width: "7rem" }}
                     />
                     <Column
                         header={withinResourcesHeaderTemplate}
                         body={withinResourcesTemplate}
                         headerClassName="whitespace-nowrap"
-                        style={{ width: "11rem" }}
+                        style={{ width: "9rem" }}
                     />
                 </DataTable>
             </div>

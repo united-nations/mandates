@@ -43,6 +43,7 @@ export default function RootLayout({
 }>) {
     const pathname = usePathname()
     const isMainPage = pathname === '/'
+    const isResolutionsPage = pathname === '/resolutions'
 
     // Initialize Microsoft Clarity with a delay to not block initial render
     useEffect(() => {
@@ -162,8 +163,8 @@ export default function RootLayout({
                             </div>
                         </header>
 
-                        {/* Back Button - shown on all pages except main page */}
-                        {!isMainPage && (
+                        {/* Back Button - shown on all pages except main page and resolutions page */}
+                        {!isMainPage && !isResolutionsPage && (
                             <div className='w-full max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-8 sm:px-12 lg:px-16 mb-8'>
                                 <BackButton />
                             </div>
