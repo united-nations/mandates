@@ -671,6 +671,9 @@ export default function DocumentTable<T extends BaseDocument>({
             interpretation = 'Nearly identical';
         }
 
+        // Check if we have a previous symbol to compare with
+        const hasPreviousSymbol = row.previous_symbol;
+
         return (
             <Tooltip>
                 <TooltipTrigger asChild>
@@ -678,12 +681,29 @@ export default function DocumentTable<T extends BaseDocument>({
                         ~{similarity.toFixed(2)}
                     </div>
                 </TooltipTrigger>
-                <TooltipContent>
-                    <p className="font-medium">{interpretation}</p>
-                    <p className="text-xs text-gray-500 mt-1 font-mono">
-                        1.00 – identical text<br />
-                        0.00 – completely different
-                    </p>
+                <TooltipContent className="p-0">
+                    <div className="p-3">
+                        <p className="font-medium">{interpretation}</p>
+                        <p className="text-xs text-gray-500 mt-1 font-mono">
+                            1.00 – identical text<br />
+                            0.00 – completely different
+                        </p>
+                        {hasPreviousSymbol && (
+                            <div className="mt-2 pt-2 border-t">
+                                <a
+                                    href={`/diff?symbol1=${encodeURIComponent(row.previous_symbol!)}&symbol2=${encodeURIComponent(row.symbol)}`}
+                                    className="text-un-blue hover:text-un-blue/80 hover:underline text-sm font-medium"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    Compare documents →
+                                </a>
+                                <div className="text-xs text-gray-500 mt-1">
+                                    View side-by-side diff
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </TooltipContent>
             </Tooltip>
         );
