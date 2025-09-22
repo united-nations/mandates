@@ -149,7 +149,7 @@ export default function RootLayout({
                                                 <Link href='/resolutions'>All Resolutions</Link>
                                             )}
                                         </DropdownMenuItem>
-                                        <DropdownMenuItem
+                                        {/* <DropdownMenuItem
                                             asChild={pathname !== '/reports'}
                                             className={pathname === '/reports' ? 'text-muted-foreground cursor-default opacity-60' : ''}
                                         >
@@ -158,7 +158,7 @@ export default function RootLayout({
                                             ) : (
                                                 <Link href='/reports'>Reports</Link>
                                             )}
-                                        </DropdownMenuItem>
+                                        </DropdownMenuItem> */}
                                         <DropdownMenuItem
                                             asChild={pathname !== '/resources'}
                                             className={pathname === '/resources' ? 'text-muted-foreground cursor-default opacity-60' : ''}
