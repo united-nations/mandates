@@ -37,7 +37,6 @@ export const reportsConfig: DocumentConfig<Report> = {
     { value: 'Economic and Social Council', label: 'Economic and Social Council' },
     { value: 'Security Council', label: 'Security Council' },
     { value: 'Human Rights Council', label: 'Human Rights Council' },
-    { value: 'Trusteeship Council', label: 'Trusteeship Council' },
     { value: 'Secretariat', label: 'Secretariat' },
   ],
   columns: {
