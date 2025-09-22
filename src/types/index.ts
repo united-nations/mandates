@@ -209,8 +209,8 @@ export interface ApiResponse {
   };
 }
 
-// Resolution types for the resolutions dashboard
-export interface Resolution {
+// Base document interface for both resolutions and reports
+export interface BaseDocument {
   symbol: string;
   original_symbol: string;
   organ: string;
@@ -239,10 +239,42 @@ export interface Resolution {
   previous_symbol: string | null;
   similarity_to_previous: number | null;
   word_count: number | null;
-  has_within_existing_resources: boolean | null;
-  count_within_existing_resources: number | null;
   pdf_status: string;
   url: string;
+}
+
+// Resolution-specific interface
+export interface Resolution extends BaseDocument {
+  has_within_existing_resources: boolean | null;
+  count_within_existing_resources: number | null;
+}
+
+// Report interface (same as BaseDocument for now, but extensible)
+export interface Report extends BaseDocument {
+  // Future report-specific fields can be added here
+}
+
+// Generic document type for components
+export type Document = Resolution | Report;
+
+// Document configuration for different document types
+export interface DocumentConfig<T extends BaseDocument> {
+  type: 'resolutions' | 'reports';
+  title: string;
+  apiEndpoint: string;
+  dataFile: string;
+  defaultOrgan: string;
+  organOptions: Array<{ value: string; label: string }>;
+  columns: {
+    symbol: boolean;
+    year: boolean;
+    title: boolean;
+    length: boolean;
+    recurrence: boolean;
+    previous: boolean;
+    similarity: boolean;
+    withinResources: boolean;
+  };
 }
 
 // Legacy types for backward compatibility during transition

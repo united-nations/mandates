@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import path from 'path';
 import { promises as fs } from 'fs';
-import type { Resolution } from '@/types';
+import type { Report } from '@/types';
 
 export async function GET(request: NextRequest) {
   try {
     // Read the JSON file
-    const filePath = path.join(process.cwd(), 'data', 'all_resolutions_dashboard.json');
+    const filePath = path.join(process.cwd(), 'data', 'all_reports_dashboard.json');
     const fileContents = await fs.readFile(filePath, 'utf8');
-    const allDocuments: Resolution[] = JSON.parse(fileContents);
+    const allDocuments: Report[] = JSON.parse(fileContents);
 
     // Get query parameters for pagination and filtering
     const searchParams = request.nextUrl.searchParams;
@@ -37,8 +37,8 @@ export async function GET(request: NextRequest) {
 
     // Sort the data
     const sortedDocuments = [...filteredDocuments].sort((a, b) => {
-      const aValue = a[sortField as keyof Resolution];
-      const bValue = b[sortField as keyof Resolution];
+      const aValue = a[sortField as keyof Report];
+      const bValue = b[sortField as keyof Report];
       
       if (aValue === null || aValue === undefined) return 1;
       if (bValue === null || bValue === undefined) return -1;
@@ -71,9 +71,9 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Error reading resolutions data:', error);
+    console.error('Error reading reports data:', error);
     return NextResponse.json(
-      { error: 'Failed to load resolutions data' },
+      { error: 'Failed to load reports data' },
       { status: 500 }
     );
   }
