@@ -44,6 +44,7 @@ export default function RootLayout({
     const pathname = usePathname()
     const isMainPage = pathname === '/'
     const isResolutionsPage = pathname === '/resolutions'
+    const isReportsPage = pathname === '/reports'
 
     // Initialize Microsoft Clarity with a delay to not block initial render
     useEffect(() => {
@@ -148,6 +149,16 @@ export default function RootLayout({
                                                 <Link href='/resolutions'>All Resolutions</Link>
                                             )}
                                         </DropdownMenuItem>
+                                        {/* <DropdownMenuItem
+                                            asChild={pathname !== '/reports'}
+                                            className={pathname === '/reports' ? 'text-muted-foreground cursor-default opacity-60' : ''}
+                                        >
+                                            {pathname === '/reports' ? (
+                                                <span>Reports</span>
+                                            ) : (
+                                                <Link href='/reports'>Reports</Link>
+                                            )}
+                                        </DropdownMenuItem> */}
                                         <DropdownMenuItem
                                             asChild={pathname !== '/resources'}
                                             className={pathname === '/resources' ? 'text-muted-foreground cursor-default opacity-60' : ''}
@@ -163,8 +174,8 @@ export default function RootLayout({
                             </div>
                         </header>
 
-                        {/* Back Button - shown on all pages except main page and resolutions page */}
-                        {!isMainPage && !isResolutionsPage && (
+                        {/* Back Button - shown on all pages except main page, resolutions page, and reports page */}
+                        {!isMainPage && !isResolutionsPage && !isReportsPage && (
                             <div className='w-full max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-8 sm:px-12 lg:px-16 mb-8'>
                                 <BackButton />
                             </div>
