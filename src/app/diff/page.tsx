@@ -180,17 +180,19 @@ export default function DiffPage() {
                   </div>
                 ) : (
                   <div className="flex items-center justify-center">
-                    <button
-                      onClick={() => startEditing('symbol1')}
-                      className="text-base font-semibold text-gray-900 hover:text-un-blue transition-colors cursor-pointer flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100"
-                      title="Click to edit"
-                    >
-                      {symbol1} ({extractYear(symbol1)})
+                    <div className="text-base font-semibold text-gray-900 hover:text-un-blue transition-colors cursor-pointer flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100">
+                      <span
+                        onClick={() => startEditing('symbol1')}
+                        className="cursor-pointer"
+                        title="Click to edit"
+                      >
+                        {symbol1} ({extractYear(symbol1)})
+                      </span>
                       <div className="flex items-center gap-1 ml-1">
                         <Edit3 className="h-3 w-3 opacity-50" />
                         <FocusToggle position="left" focus={focus} setFocus={setFocus} />
                       </div>
-                    </button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -224,17 +226,19 @@ export default function DiffPage() {
                   </div>
                 ) : (
                   <div className="flex items-center justify-center">
-                    <button
-                      onClick={() => startEditing('symbol2')}
-                      className="text-base font-semibold text-gray-900 hover:text-un-blue transition-colors cursor-pointer flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100"
-                      title="Click to edit"
-                    >
-                      {symbol2} ({extractYear(symbol2)})
+                    <div className="text-base font-semibold text-gray-900 hover:text-un-blue transition-colors cursor-pointer flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100">
+                      <span
+                        onClick={() => startEditing('symbol2')}
+                        className="cursor-pointer"
+                        title="Click to edit"
+                      >
+                        {symbol2} ({extractYear(symbol2)})
+                      </span>
                       <div className="flex items-center gap-1 ml-1">
                         <Edit3 className="h-3 w-3 opacity-50" />
                         <FocusToggle position="right" focus={focus} setFocus={setFocus} />
                       </div>
-                    </button>
+                    </div>
                   </div>
                 )}
               </div>
