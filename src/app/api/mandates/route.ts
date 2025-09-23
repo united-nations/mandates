@@ -596,6 +596,32 @@ export async function GET (request: Request) {
     // Add highlighting when keyword search is active
     const highlightedMandates = addHighlighting(enrichedPaginatedMandates, filters.keyword)
 
+    // FIELD OPTIMIZATION: Only send fields needed for list view
+    const optimizedMandates = highlightedMandates.map(mandate => ({
+      // Core fields for display
+      full_document_symbol: mandate.full_document_symbol,
+      displayTitle: mandate.displayTitle,
+      body: mandate.body,
+      year: mandate.year,
+      num_citations: mandate.num_citations,
+      num_entities: mandate.num_entities,
+      entities: mandate.entities,
+      
+      // Fields needed for filtering (already computed, but needed for client-side operations)
+      citation_info: mandate.citation_info,
+      subject_headings: mandate.subject_headings,
+      
+      // Fields needed for title generation (in case client needs to regenerate)
+      uniform_title: mandate.uniform_title,
+      title: mandate.title,
+      description: mandate.description,
+      
+      // Search highlighting
+      highlightedFields: mandate.highlightedFields,
+      
+      // Remove all other metadata fields that aren't used in list view
+    })) as Mandate[] // Type assertion since we're intentionally reducing fields
+
     // Use precomputed data for default views, calculate for filtered views
     let counts, sidebarData, filterOptions, reference
     
@@ -621,7 +647,7 @@ export async function GET (request: Request) {
 
     // Build response
     const response: ApiResponse = {
-      mandates: highlightedMandates,
+      mandates: optimizedMandates,
       pagination: {
         page,
         limit,
