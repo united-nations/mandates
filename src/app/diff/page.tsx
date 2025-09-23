@@ -222,9 +222,10 @@ export default function DiffPage() {
           <div className="space-y-4">
             <div className="flex flex-col items-center gap-4 mb-6">
               <DiffButton focus={focus} setFocus={setFocus} />
-              <div className="text-sm text-muted-foreground">
+              {/* <div className="text-sm text-muted-foreground">
                 <span className="font-medium text-un-blue">{(diffData.score * 100).toFixed(1)}%</span> similarity
-              </div>
+              </div> */}
+              {/* hide because it's currently not consistent with the similarity scores in the overview */}
             </div>
             
             <div className="grid grid-cols-2 gap-4 mb-6">
