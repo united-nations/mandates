@@ -64,45 +64,38 @@ function parseText(text: string) {
   return parts
 }
 
-function ButtonPart ({ text, position, focus, setFocus }: {
-  text: string
-  position: string | null
-  focus: string | null
-  setFocus: (position: string | null) => void
-}) {
-  const getRoundedClasses = () => {
-    if (position === 'left') return 'rounded-l-lg'
-    if (position === 'right') return 'rounded-r-lg'
-    return ''
-  }
-  
-  return (
-    <button
-      className={`px-4 py-2 text-button transition-colors ${getRoundedClasses()} ${
-        position === 'left' ? 'border-r border-border' : ''
-      } ${
-        position === 'right' ? 'border-l border-border' : ''
-      } ${
-        focus === position 
-          ? 'bg-primary text-primary-foreground' 
-          : 'hover:bg-muted text-primary'
-      }`}
-      onClick={() => setFocus(position)}
-    >
-      {text}
-    </button>
-  )
-}
-
 function Button ({ focus, setFocus }: {
   focus: string | null
   setFocus: (position: string | null) => void
 }) {
   return (
-    <div className="inline-flex rounded-lg border border-border bg-card">
-      <ButtonPart position='left' text='Focus Left' {...{ focus, setFocus }} />
-      <ButtonPart position={null} text='Compare Both' {...{ focus, setFocus }} />
-      <ButtonPart position='right' text='Focus Right' {...{ focus, setFocus }} />
+    <div className="flex items-center border border-gray-300 rounded-md overflow-hidden hover:border-gray-400 transition-all duration-200 bg-gray-100">
+      <button
+        className={`text-xs h-7 px-3 transition-all duration-200 cursor-pointer ${
+          focus === 'left' ? 'bg-un-blue text-white' : 'bg-transparent text-gray-700 hover:bg-gray-200 hover:text-gray-900'
+        }`}
+        onClick={() => setFocus('left')}
+      >
+        Focus Left
+      </button>
+      <div className="w-px h-7 bg-gray-300"></div>
+      <button
+        className={`text-xs h-7 px-3 transition-all duration-200 cursor-pointer ${
+          focus === null ? 'bg-un-blue text-white' : 'bg-transparent text-gray-700 hover:bg-gray-200 hover:text-gray-900'
+        }`}
+        onClick={() => setFocus(null)}
+      >
+        Compare Both
+      </button>
+      <div className="w-px h-7 bg-gray-300"></div>
+      <button
+        className={`text-xs h-7 px-3 transition-all duration-200 cursor-pointer ${
+          focus === 'right' ? 'bg-un-blue text-white' : 'bg-transparent text-gray-700 hover:bg-gray-200 hover:text-gray-900'
+        }`}
+        onClick={() => setFocus('right')}
+      >
+        Focus Right
+      </button>
     </div>
   )
 }
