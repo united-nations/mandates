@@ -3,16 +3,25 @@ import path from 'path';
 import { promises as fs } from 'fs';
 import type { BaseDocument } from '@/types';
 
+// Simple permanent in-memory cache
+const documentCache = new Map<string, any[]>();
+
 export function createDocumentHandler<T extends BaseDocument>(
   dataFileName: string,
   documentType: string
 ) {
   return async function GET(request: NextRequest) {
     try {
-      // Read the JSON file
-      const filePath = path.join(process.cwd(), 'data', dataFileName);
-      const fileContents = await fs.readFile(filePath, 'utf8');
-      const allDocuments: T[] = JSON.parse(fileContents);
+      // Check cache first
+      let allDocuments: T[] = documentCache.get(dataFileName) as T[];
+      
+      if (!allDocuments) {
+        // Read and permanently cache the JSON file
+        const filePath = path.join(process.cwd(), 'data', dataFileName);
+        const fileContents = await fs.readFile(filePath, 'utf8');
+        allDocuments = JSON.parse(fileContents);
+        documentCache.set(dataFileName, allDocuments);
+      }
 
       // Get query parameters for pagination and filtering
       const searchParams = request.nextUrl.searchParams;
