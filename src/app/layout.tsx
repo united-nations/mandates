@@ -20,7 +20,6 @@ import {
     DropdownMenuItem
 } from '@/components/ui/dropdown-menu'
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
-import Clarity from '@microsoft/clarity'
 import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { BackButton } from '@/components/ui/back-button'
@@ -47,14 +46,6 @@ export default function RootLayout({
     const isReportsPage = pathname === '/reports'
     const isDiffPage = pathname === '/diff'
 
-    // Initialize Microsoft Clarity with a delay to not block initial render
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            Clarity.init('s4kksugeb9')
-        }, 1000) // Delay Clarity initialization by 1 second
-
-        return () => clearTimeout(timer)
-    }, [])
     return (
         <html lang='en' className={roboto.variable}>
             <head>
