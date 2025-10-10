@@ -11,6 +11,8 @@ import {
 } from '@/lib/treemap-config';
 import { squarify, TreemapItem, TreemapRect, formatNumber, formatPercentage, formatApproximate } from '@/lib/treemap-utils';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
 
 interface BucketWithData extends BucketDefinition {
   bucketData: BucketData;
@@ -33,6 +35,7 @@ export default function ResolutionsTreemapView({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [hoveredBucket, setHoveredBucket] = useState<string | null>(null);
+  const [hideMissing, setHideMissing] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -103,19 +106,55 @@ export default function ResolutionsTreemapView({
         bucketData: bucketsData[bucket.id] || { count: 0, percentage: 0 },
       },
     }))
-    .filter(item => item.value > 0);
+    .filter(item => item.value > 0)
+    .filter(item => !hideMissing || item.data.id !== 'unknown'); // Filter out 'unknown' if hideMissing is true
 
   // Calculate layout (100x100 coordinate system)
   const rects: TreemapRect<BucketWithData>[] = squarify(items, 0, 0, 100, 100);
 
   return (
-    <div className="w-full h-[calc(100vh-280px)] min-h-[700px]">
-      <div className="relative w-full h-full bg-muted">
-        {rects.map((rect, index) => {
-          const bucket = rect.data;
+    <div className="w-full mb-8">
+      <div className="w-full h-[calc(100vh-320px)] min-h-[500px] mb-4">
+        <div className="relative w-full h-full bg-muted">
+          {rects.map((rect, index) => {
+            const bucket = rect.data;
           const bucketData = bucket.bucketData;
           const isHovered = hoveredBucket === bucket.id;
-          const showLabel = rect.width > 3 && rect.height > 2;
+          
+          // Always show labels if box has any reasonable size
+          const showLabel = rect.width > 1.5 && rect.height > 1;
+          
+          // Normal font sizes
+          const normalTitleSize = 14;
+          const normalDetailSize = 12;
+          const normalPadding = 8;
+          
+          // Estimate space needed for normal text
+          // Rough estimate: 1% width = ~10px, 1% height = ~7-8px
+          const estimatedTextWidth = rect.width * 10; // px
+          const estimatedTextHeight = rect.height * 7; // px
+          
+          // Only scale down if box is too small for normal text
+          // Check if we have space for at least 6-7 characters at normal size (~80px) and 2 lines (~30px)
+          const needsScaling = estimatedTextWidth < 80 || estimatedTextHeight < 30;
+          
+          let titleFontSize = normalTitleSize;
+          let detailFontSize = normalDetailSize;
+          let padding = normalPadding;
+          
+          if (needsScaling) {
+            // Scale down proportionally when needed
+            const widthScale = estimatedTextWidth / 80;
+            const heightScale = estimatedTextHeight / 30;
+            const scale = Math.min(widthScale, heightScale);
+            
+            titleFontSize = Math.max(9, normalTitleSize * scale);
+            detailFontSize = Math.max(8, normalDetailSize * scale);
+            padding = Math.max(4, normalPadding * scale);
+          }
+          
+          // Only show details if there's enough space
+          const showDetails = detailFontSize >= 9 && estimatedTextHeight >= 20;
 
           // Determine text color based on background lightness
           const bgColor = colors[bucket.id] || '#E5E7EB';
@@ -143,17 +182,33 @@ export default function ResolutionsTreemapView({
                   onMouseLeave={() => setHoveredBucket(null)}
                 >
                   {showLabel && (
-                    <div className="p-2 h-full flex flex-col justify-start items-start overflow-hidden">
-                      <div className="text-base font-bold leading-tight text-left mb-1">
+                    <div 
+                      className="h-full flex flex-col justify-start items-start overflow-hidden"
+                      style={{ padding: `${padding}px` }}
+                    >
+                      <div 
+                        className="font-bold leading-tight text-left"
+                        style={{ 
+                          fontSize: `${titleFontSize}px`,
+                          marginBottom: showDetails ? `${padding / 2}px` : 0
+                        }}
+                      >
                         {bucket.id === 'unknown'
                           ? 'Word count not available'
                           : bucket.id === 'new'
                           ? bucket.label
                           : `${bucket.label} ${dimension === 'length' ? 'words' : 'similar'}`}
                       </div>
-                      <div className="text-sm leading-tight text-left opacity-90">
-                        {formatNumber(bucketData.count)} ({formatPercentage(bucketData.percentage)})
-                      </div>
+                      {showDetails && (
+                        <div 
+                          className="leading-tight text-left opacity-90"
+                          style={{ 
+                            fontSize: `${detailFontSize}px`
+                          }}
+                        >
+                          {formatNumber(bucketData.count)} ({formatPercentage(bucketData.percentage)})
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -185,6 +240,22 @@ export default function ResolutionsTreemapView({
             </Tooltip>
           );
         })}
+        </div>
+      </div>
+      
+      {/* Hide missing toggle */}
+      <div className="flex items-center gap-2 pt-2">
+        <Checkbox 
+          id="hide-missing" 
+          checked={hideMissing}
+          onCheckedChange={(checked) => setHideMissing(checked === true)}
+        />
+        <Label 
+          htmlFor="hide-missing" 
+          className="text-sm text-muted-foreground cursor-pointer"
+        >
+          Hide documents with missing word count
+        </Label>
       </div>
     </div>
   );
