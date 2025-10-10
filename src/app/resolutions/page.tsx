@@ -184,7 +184,7 @@ function ResolutionsPageContent() {
         <div className="flex items-center gap-3 mb-4">
           <FileText className="h-8 w-8 text-un-blue" />
           <h1 className="text-2xl font-bold tracking-tight text-foreground">
-            <span className="text-un-blue">{organText}</span> Resolutions by{' '}
+            <span className={filters.organ ? "text-un-blue" : ""}>{organText}</span> Resolutions by{' '}
             <DropdownMenu>
               <DropdownMenuTrigger className="text-un-blue hover:text-un-blue/80 focus:outline-none inline-flex items-center gap-0.5 transition-colors">
                 <span ref={dimensionTextRef} className="border-b-2 border-un-blue/20 hover:border-un-blue/40 transition-colors">
