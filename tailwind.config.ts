@@ -1,112 +1,118 @@
-import type {Config} from 'tailwindcss';
+import type { Config } from 'tailwindcss';
 import defaultTheme from 'tailwindcss/defaultTheme';
 
 export default {
-  darkMode: ['class'],
-  content: [
-    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
-  ],
-  theme: {
-    extend: {
-      fontFamily: {
-        sans: ['var(--font-roboto)', ...defaultTheme.fontFamily.sans],
-      },
-      colors: {
-        'card-gray': "F6F7F8",
-        'un-blue': '#009edb', // Official UN Blue color
-        // Custom color palette
-        'trout': '#495057',
-        'shuttle-gray': '#596B7D',
-        'camouflage-green': '#7D8471',
-        'pale-oyster': '#9B8B7A',
-        'smoky': '#6C5B7B',
-        'au-chico': '#A0665C',
-        'faded-jade': '#4A7C7E',
-        background: 'hsl(var(--background))',
-        foreground: 'hsl(var(--foreground))',
-        card: {
-          DEFAULT: 'hsl(var(--card))',
-          foreground: 'hsl(var(--card-foreground))',
+    darkMode: ['class'],
+    content: [
+        './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
+        './src/components/**/*.{js,ts,jsx,tsx,mdx}',
+        './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    ],
+    theme: {
+        extend: {
+            fontFamily: {
+                sans: ['var(--font-roboto)', ...defaultTheme.fontFamily.sans],
+            },
+            colors: {
+                'card-gray': "#F6F7F8",
+                'un-blue': '#009EDB', // Official UN Blue color
+                // Custom color palette
+                'trout': '#495057',
+                'shuttle-gray': '#5A6C7D',
+                'camouflage-green': '#7D8471',
+                'pale-oyster': '#9BBB7A',
+                'smoky': '#6C5B7B',
+                'au-chico': '#A0665C',
+                'faded-jade': '#4A7C7E',
+                'white': '#FFFFFF',
+                'black': '#000000',
+                'geyser': '#DDE2E6', // Gray Plot Fill
+                'iron': '#D9DCDF', // Table Fill
+
+                // shad/cn ??
+                background: 'hsl(var(--background))',
+                foreground: 'hsl(var(--foreground))',
+                card: {
+                    DEFAULT: 'hsl(var(--card))',
+                    foreground: 'hsl(var(--card-foreground))',
+                },
+                'dashboard-card': {
+                    DEFAULT: 'hsl(var(--dashboard-card))',
+                    foreground: 'hsl(var(--dashboard-card-foreground))',
+                },
+                popover: {
+                    DEFAULT: 'hsl(var(--popover))',
+                    foreground: 'hsl(var(--popover-foreground))',
+                },
+                primary: {
+                    DEFAULT: 'hsl(var(--primary))',
+                    foreground: 'hsl(var(--primary-foreground))',
+                },
+                secondary: {
+                    DEFAULT: 'hsl(var(--secondary))',
+                    foreground: 'hsl(var(--secondary-foreground))',
+                },
+                muted: {
+                    DEFAULT: 'hsl(var(--muted))',
+                    foreground: 'hsl(var(--muted-foreground))',
+                },
+                accent: {
+                    DEFAULT: 'hsl(var(--accent))',
+                    foreground: 'hsl(var(--accent-foreground))',
+                },
+                destructive: {
+                    DEFAULT: 'hsl(var(--destructive))',
+                    foreground: 'hsl(var(--destructive-foreground))',
+                },
+                border: 'hsl(var(--border))',
+                input: 'hsl(var(--input))',
+                ring: 'hsl(var(--ring))',
+                chart: {
+                    '1': 'hsl(var(--chart-1))',
+                    '2': 'hsl(var(--chart-2))',
+                    '3': 'hsl(var(--chart-3))',
+                    '4': 'hsl(var(--chart-4))',
+                    '5': 'hsl(var(--chart-5))',
+                },
+                sidebar: {
+                    DEFAULT: 'hsl(var(--sidebar-background))',
+                    foreground: 'hsl(var(--sidebar-foreground))',
+                    primary: 'hsl(var(--sidebar-primary))',
+                    'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
+                    accent: 'hsl(var(--sidebar-accent))',
+                    'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
+                    border: 'hsl(var(--sidebar-border))',
+                    ring: 'hsl(var(--sidebar-ring))',
+                },
+            },
+            borderRadius: {
+                lg: 'var(--radius)',
+                md: 'calc(var(--radius) - 2px)',
+                sm: 'calc(var(--radius) - 4px)',
+            },
+            keyframes: {
+                'accordion-down': {
+                    from: {
+                        height: '0',
+                    },
+                    to: {
+                        height: 'var(--radix-accordion-content-height)',
+                    },
+                },
+                'accordion-up': {
+                    from: {
+                        height: 'var(--radix-accordion-content-height)',
+                    },
+                    to: {
+                        height: '0',
+                    },
+                },
+            },
+            animation: {
+                'accordion-down': 'accordion-down 0.2s ease-out',
+                'accordion-up': 'accordion-up 0.2s ease-out',
+            },
         },
-        'dashboard-card': {
-          DEFAULT: 'hsl(var(--dashboard-card))',
-          foreground: 'hsl(var(--dashboard-card-foreground))',
-        },
-        popover: {
-          DEFAULT: 'hsl(var(--popover))',
-          foreground: 'hsl(var(--popover-foreground))',
-        },
-        primary: {
-          DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))',
-        },
-        secondary: {
-          DEFAULT: 'hsl(var(--secondary))',
-          foreground: 'hsl(var(--secondary-foreground))',
-        },
-        muted: {
-          DEFAULT: 'hsl(var(--muted))',
-          foreground: 'hsl(var(--muted-foreground))',
-        },
-        accent: {
-          DEFAULT: 'hsl(var(--accent))',
-          foreground: 'hsl(var(--accent-foreground))',
-        },
-        destructive: {
-          DEFAULT: 'hsl(var(--destructive))',
-          foreground: 'hsl(var(--destructive-foreground))',
-        },
-        border: 'hsl(var(--border))',
-        input: 'hsl(var(--input))',
-        ring: 'hsl(var(--ring))',
-        chart: {
-          '1': 'hsl(var(--chart-1))',
-          '2': 'hsl(var(--chart-2))',
-          '3': 'hsl(var(--chart-3))',
-          '4': 'hsl(var(--chart-4))',
-          '5': 'hsl(var(--chart-5))',
-        },
-        sidebar: {
-          DEFAULT: 'hsl(var(--sidebar-background))',
-          foreground: 'hsl(var(--sidebar-foreground))',
-          primary: 'hsl(var(--sidebar-primary))',
-          'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-          accent: 'hsl(var(--sidebar-accent))',
-          'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-          border: 'hsl(var(--sidebar-border))',
-          ring: 'hsl(var(--sidebar-ring))',
-        },
-      },
-      borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
-      },
-      keyframes: {
-        'accordion-down': {
-          from: {
-            height: '0',
-          },
-          to: {
-            height: 'var(--radix-accordion-content-height)',
-          },
-        },
-        'accordion-up': {
-          from: {
-            height: 'var(--radix-accordion-content-height)',
-          },
-          to: {
-            height: '0',
-          },
-        },
-      },
-      animation: {
-        'accordion-down': 'accordion-down 0.2s ease-out',
-        'accordion-up': 'accordion-up 0.2s ease-out',
-      },
     },
-  },
-  plugins: [require('tailwindcss-animate')],
+    plugins: [require('tailwindcss-animate')],
 } satisfies Config;
