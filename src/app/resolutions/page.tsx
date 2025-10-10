@@ -1,7 +1,13 @@
-import DocumentTable from '@/components/document-table';
-import { resolutionsConfig } from '@/lib/document-configs';
-import type { Resolution } from '@/types';
+'use client';
+
+import { Suspense } from 'react';
+import ResolutionsPageWrapper from '@/components/resolutions-page-wrapper';
+import { LoadingFallback } from '@/components/ui/loading-fallback';
 
 export default function ResolutionsPage() {
-    return <DocumentTable<Resolution> config={resolutionsConfig} />;
+    return (
+        <Suspense fallback={<LoadingFallback />}>
+            <ResolutionsPageWrapper />
+        </Suspense>
+    );
 }

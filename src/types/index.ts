@@ -277,5 +277,24 @@ export interface DocumentConfig<T extends BaseDocument> {
   };
 }
 
+// Treemap aggregate types
+export interface BucketData {
+  count: number;
+  percentage: number;
+  avg_value?: number; // avg word count or avg similarity
+}
+
+export interface AggregateResponse {
+  totals: {
+    count: number;
+    resolutions_with_word_count: number;
+    resolutions_with_similarity: number;
+  };
+  buckets: {
+    length: Record<string, BucketData>;
+    similarity: Record<string, BucketData>;
+  };
+}
+
 // Legacy types for backward compatibility during transition
 export type { Entity as LegacyEntity };
