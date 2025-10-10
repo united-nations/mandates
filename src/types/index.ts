@@ -277,6 +277,14 @@ export interface DocumentConfig<T extends BaseDocument> {
   };
 }
 
+// Document filter types (for resolutions and reports pages)
+export interface DocumentFilters {
+  organ?: string;
+  is_recurring_series?: string;
+  length_bucket?: string;
+  similarity_bucket?: string;
+}
+
 // Treemap aggregate types
 export interface BucketData {
   count: number;

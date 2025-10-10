@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { AggregateResponse, BucketData } from '@/types';
+import { AggregateResponse, BucketData, DocumentFilters } from '@/types';
 import {
   lengthBuckets,
   similarityBuckets,
@@ -19,15 +19,13 @@ interface BucketWithData extends BucketDefinition {
 }
 
 interface ResolutionsTreemapViewProps {
-  organ?: string;
-  isRecurringSeries?: string;
+  filters: DocumentFilters;
   dimension: 'length' | 'similarity';
   onCellClick: (dimension: 'length' | 'similarity', bucketId: string) => void;
 }
 
 export default function ResolutionsTreemapView({
-  organ,
-  isRecurringSeries,
+  filters,
   dimension,
   onCellClick,
 }: ResolutionsTreemapViewProps) {
@@ -44,11 +42,19 @@ export default function ResolutionsTreemapView({
 
       try {
         const params = new URLSearchParams({ mode: 'aggregate' });
-        if (organ) {
-          params.set('organ', organ);
+        
+        // Apply all filters
+        if (filters.organ) {
+          params.set('organ', filters.organ);
         }
-        if (isRecurringSeries) {
-          params.set('is_recurring_series', isRecurringSeries);
+        if (filters.is_recurring_series) {
+          params.set('is_recurring_series', filters.is_recurring_series);
+        }
+        if (filters.length_bucket) {
+          params.set('length_bucket', filters.length_bucket);
+        }
+        if (filters.similarity_bucket) {
+          params.set('similarity_bucket', filters.similarity_bucket);
         }
 
         const response = await fetch(`/api/resolutions?${params}`);
@@ -66,7 +72,7 @@ export default function ResolutionsTreemapView({
     };
 
     fetchData();
-  }, [organ, isRecurringSeries]);
+  }, [filters]);
 
   if (loading) {
     return (

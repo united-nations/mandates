@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import type { BaseDocument, DocumentConfig } from "@/types";
+import type { BaseDocument, DocumentConfig, DocumentFilters } from "@/types";
 import { Check, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, FileText, RotateCcw, X } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Column } from "primereact/column";
@@ -22,11 +22,13 @@ interface ApiResponse<T> {
 
 interface DocumentTableProps<T extends BaseDocument> {
     config: DocumentConfig<T>;
+    filters?: DocumentFilters;
     hideHeader?: boolean;
 }
 
 export default function DocumentTable<T extends BaseDocument>({
     config,
+    filters: propFilters,
     hideHeader = false
 }: DocumentTableProps<T>) {
     const searchParams = useSearchParams()
@@ -43,19 +45,19 @@ export default function DocumentTable<T extends BaseDocument>({
         totalPages: 0,
     });
 
-    // Initialize state from URL parameters
+    // Initialize state from URL parameters (fallback) or props
     const [sortField, setSortField] = useState<string>(
         searchParams.get('sortField') || 'year'
     );
     const [sortOrder, setSortOrder] = useState<1 | -1>(
         searchParams.get('sortOrder') === 'asc' ? 1 : -1
     );
-    const [selectedOrgan, setSelectedOrgan] = useState<string>(
-        searchParams.get('organ') || config.defaultOrgan
-    );
-    const [selectedRecurringSeries, setSelectedRecurringSeries] = useState<string>(
-        searchParams.get('recurringSeries') || 'all'
-    );
+    
+    // Use prop filters if provided, otherwise read from URL (for backwards compatibility)
+    const selectedOrgan = propFilters?.organ || searchParams.get('organ') || config.defaultOrgan;
+    const selectedRecurringSeries = propFilters?.is_recurring_series || searchParams.get('is_recurring_series') || 'all';
+    const selectedLengthBucket = propFilters?.length_bucket || searchParams.get('length_bucket') || 'all';
+    
     const [isShowingFilteredSubset, setIsShowingFilteredSubset] = useState(
         searchParams.get('view') === 'series' || searchParams.get('view') === 'single'
     );
@@ -87,7 +89,7 @@ export default function DocumentTable<T extends BaseDocument>({
         router.replace(newURL, { scroll: false })
     }
 
-    const fetchDocuments = async (page: number = 1, limit: number = 20, sortField: string = 'year', sortOrder: string = 'desc', organ: string = config.defaultOrgan, recurringSeries: string = 'all', updateUrl: boolean = true) => {
+    const fetchDocuments = async (page: number = 1, limit: number = 20, sortField: string = 'year', sortOrder: string = 'desc', organ: string = config.defaultOrgan, recurringSeries: string = 'all', lengthBucket: string = 'all', updateUrl: boolean = true) => {
         try {
             setLoading(true);
             const params = new URLSearchParams({
@@ -103,6 +105,10 @@ export default function DocumentTable<T extends BaseDocument>({
 
             if (recurringSeries !== 'all') {
                 params.append('is_recurring_series', recurringSeries);
+            }
+
+            if (lengthBucket !== 'all') {
+                params.append('length_bucket', lengthBucket);
             }
 
             const response = await fetch(`${config.apiEndpoint}?${params}`);
@@ -123,6 +129,7 @@ export default function DocumentTable<T extends BaseDocument>({
                     sortOrder: sortOrder !== 'desc' ? sortOrder : null,
                     organ: organ !== config.defaultOrgan ? organ : null,
                     recurringSeries: recurringSeries !== 'all' ? recurringSeries : null,
+                    length_bucket: lengthBucket !== 'all' ? lengthBucket : null,
                     view: null // Clear any series/single view
                 });
             }
@@ -153,23 +160,36 @@ export default function DocumentTable<T extends BaseDocument>({
             handlePreviousSymbolClick(singleSymbol, false); // false = don't update URL
         } else {
             // Normal page load - only fetch if this is the initial load or if URL params actually changed
-            fetchDocuments(currentPage, 20, sortField, sortOrder === 1 ? 'asc' : 'desc', selectedOrgan, selectedRecurringSeries, false);
+            fetchDocuments(currentPage, 20, sortField, sortOrder === 1 ? 'asc' : 'desc', selectedOrgan, selectedRecurringSeries, selectedLengthBucket, false);
         }
     }, []); // Remove dependencies to avoid infinite loops
 
-    // Separate effect for handling direct URL changes (like back/forward navigation)
+    // Watch for prop filters changes and re-fetch (for resolutions page)
     useEffect(() => {
+        if (propFilters) {
+            const currentPage = parseInt(searchParams.get('page') || '1', 10);
+            const organ = propFilters.organ || 'all';
+            const recurringSeries = propFilters.is_recurring_series || 'all';
+            const lengthBucket = propFilters.length_bucket || 'all';
+            
+            fetchDocuments(currentPage, 20, sortField, sortOrder === 1 ? 'asc' : 'desc', organ, recurringSeries, lengthBucket, false);
+        }
+    }, [propFilters?.organ, propFilters?.is_recurring_series, propFilters?.length_bucket, propFilters?.similarity_bucket]);
+
+    // Separate effect for handling direct URL changes (like back/forward navigation)
+    // Only active when filters are not passed as props
+    useEffect(() => {
+        if (propFilters) return; // Skip if using prop filters
+
         const handlePopState = () => {
             // Force re-read URL parameters when user navigates back/forward
             const newOrgan = searchParams.get('organ') || config.defaultOrgan;
-            const newRecurringSeries = searchParams.get('recurringSeries') || 'all';
+            const newRecurringSeries = searchParams.get('is_recurring_series') || 'all';
             const newSortField = searchParams.get('sortField') || 'year';
             const newSortOrder = searchParams.get('sortOrder') === 'asc' ? 1 : -1;
             const newPage = parseInt(searchParams.get('page') || '1', 10);
+            const newLengthBucket = searchParams.get('length_bucket') || 'all';
 
-            // Update state to match URL
-            setSelectedOrgan(newOrgan);
-            setSelectedRecurringSeries(newRecurringSeries);
             setSortField(newSortField);
             setSortOrder(newSortOrder);
 
@@ -188,13 +208,25 @@ export default function DocumentTable<T extends BaseDocument>({
                 }
             } else {
                 // Normal fetch with URL parameters
-                fetchDocuments(newPage, 20, newSortField, newSortOrder === 1 ? 'asc' : 'desc', newOrgan, newRecurringSeries, false);
+                fetchDocuments(newPage, 20, newSortField, newSortOrder === 1 ? 'asc' : 'desc', newOrgan, newRecurringSeries, newLengthBucket, false);
             }
         };
 
         window.addEventListener('popstate', handlePopState);
         return () => window.removeEventListener('popstate', handlePopState);
-    }, [searchParams]);
+    }, [searchParams, propFilters]);
+
+    // Watch for length_bucket changes from URL and re-fetch
+    // Only active when filters are not passed as props
+    useEffect(() => {
+        if (propFilters) return; // Skip if using prop filters
+        
+        const urlLengthBucket = searchParams.get('length_bucket') || 'all';
+        if (urlLengthBucket !== selectedLengthBucket) {
+            const currentPage = parseInt(searchParams.get('page') || '1', 10);
+            fetchDocuments(currentPage, 20, sortField, sortOrder === 1 ? 'asc' : 'desc', selectedOrgan, selectedRecurringSeries, urlLengthBucket, false);
+        }
+    }, [searchParams.get('length_bucket'), propFilters]);
 
     const handleSort = (e: any) => {
         const newSortField = e.sortField as string;
@@ -250,7 +282,7 @@ export default function DocumentTable<T extends BaseDocument>({
                 sortOrder: newSortOrder !== -1 ? (newSortOrder === 1 ? 'asc' : 'desc') : null,
             });
 
-            fetchDocuments(pagination.page, pagination.limit, newSortField, newSortOrder === 1 ? 'asc' : 'desc', selectedOrgan, selectedRecurringSeries, false);
+            fetchDocuments(pagination.page, pagination.limit, newSortField, newSortOrder === 1 ? 'asc' : 'desc', selectedOrgan, selectedRecurringSeries, selectedLengthBucket, false);
         }
     };
 
@@ -263,11 +295,13 @@ export default function DocumentTable<T extends BaseDocument>({
         });
 
         // Fetch new data
-        fetchDocuments(newPage, e.rows, sortField, sortOrder === 1 ? 'asc' : 'desc', selectedOrgan, selectedRecurringSeries, false);
+        fetchDocuments(newPage, e.rows, sortField, sortOrder === 1 ? 'asc' : 'desc', selectedOrgan, selectedRecurringSeries, selectedLengthBucket, false);
     };
 
     const handleOrganChange = (value: string) => {
-        setSelectedOrgan(value);
+        // When filters are passed as props, filter changes are handled by parent
+        if (propFilters) return;
+        
         setIsShowingFilteredSubset(false);
 
         // Update URL immediately
@@ -281,16 +315,18 @@ export default function DocumentTable<T extends BaseDocument>({
         });
 
         // Fetch new data
-        fetchDocuments(1, 20, sortField, sortOrder === 1 ? 'asc' : 'desc', value, selectedRecurringSeries, false);
+        fetchDocuments(1, 20, sortField, sortOrder === 1 ? 'asc' : 'desc', value, selectedRecurringSeries, selectedLengthBucket, false);
     };
 
     const handleRecurringSeriesChange = (value: string) => {
-        setSelectedRecurringSeries(value);
+        // When filters are passed as props, filter changes are handled by parent
+        if (propFilters) return;
+        
         setIsShowingFilteredSubset(false);
 
         // Update URL immediately
         updateURL({
-            recurringSeries: value !== 'all' ? value : null,
+            is_recurring_series: value !== 'all' ? value : null,
             page: null, // Reset to page 1
             view: null, // Clear any series/single view
             seriesTitle: null,
@@ -299,12 +335,13 @@ export default function DocumentTable<T extends BaseDocument>({
         });
 
         // Fetch new data
-        fetchDocuments(1, 20, sortField, sortOrder === 1 ? 'asc' : 'desc', selectedOrgan, value, false);
+        fetchDocuments(1, 20, sortField, sortOrder === 1 ? 'asc' : 'desc', selectedOrgan, value, selectedLengthBucket, false);
     };
 
     const handleResetFilters = () => {
-        setSelectedOrgan(config.defaultOrgan);
-        setSelectedRecurringSeries('all');
+        // When filters are passed as props, filter changes are handled by parent
+        if (propFilters) return;
+        
         setIsShowingFilteredSubset(false);
         setSortField('year');
         setSortOrder(-1);
@@ -312,7 +349,7 @@ export default function DocumentTable<T extends BaseDocument>({
         // Reset URL to default state
         updateURL({
             organ: null,
-            recurringSeries: null,
+            is_recurring_series: null,
             page: null,
             sortField: null,
             sortOrder: null,
@@ -323,7 +360,7 @@ export default function DocumentTable<T extends BaseDocument>({
         });
 
         // Fetch fresh data with default parameters
-        fetchDocuments(1, 20, 'year', 'desc', config.defaultOrgan, 'all', false);
+        fetchDocuments(1, 20, 'year', 'desc', config.defaultOrgan, 'all', 'all', false);
     };
 
     const handleSeriesClick = async (normalizedTitle: string, organ: string, updateUrl: boolean = true) => {

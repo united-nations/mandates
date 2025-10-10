@@ -5,11 +5,11 @@ import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import DocumentTable from '@/components/document-table';
 import ResolutionsTreemapView from '@/components/resolutions-treemap-view';
 import { resolutionsConfig } from '@/lib/document-configs';
-import { Resolution } from '@/types';
+import { Resolution, DocumentFilters } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft, FileText, RotateCcw } from 'lucide-react';
-import { lengthBuckets, similarityBuckets } from '@/lib/treemap-config';
+import { FileText, RotateCcw } from 'lucide-react';
+import { lengthBuckets } from '@/lib/treemap-config';
 import { LoadingFallback } from '@/components/ui/loading-fallback';
 
 function ResolutionsPageContent() {
@@ -17,23 +17,24 @@ function ResolutionsPageContent() {
   const router = useRouter();
   const pathname = usePathname();
 
-  // Get current state from URL
+  // Read all state from URL (single source of truth)
   const view = searchParams.get('view') || 'treemap';
   const dimension = (searchParams.get('dimension') as 'length' | 'similarity') || 'length';
-  const lengthBucket = searchParams.get('length_bucket');
-  const similarityBucket = searchParams.get('similarity_bucket');
-  const selectedOrgan = searchParams.get('organ') || 'all';
-  const selectedRecurringSeries = searchParams.get('is_recurring_series') || 'all';
+  
+  // Centralized filters object
+  const filters: DocumentFilters = {
+    organ: searchParams.get('organ') || undefined,
+    is_recurring_series: searchParams.get('is_recurring_series') || undefined,
+    length_bucket: searchParams.get('length_bucket') || undefined,
+    similarity_bucket: searchParams.get('similarity_bucket') || undefined,
+  };
 
-  // Track if we're in a filtered table view (from clicking a bucket)
-  const isFilteredView = lengthBucket || similarityBucket;
-
-  // Helper to update URL
+  // Helper to update URL with any parameter changes
   const updateURL = (updates: Record<string, string | null>) => {
     const params = new URLSearchParams(searchParams.toString());
 
     Object.entries(updates).forEach(([key, value]) => {
-      if (value === null || value === '') {
+      if (value === null || value === '' || value === 'all') {
         params.delete(key);
       } else {
         params.set(key, value);
@@ -43,48 +44,26 @@ function ResolutionsPageContent() {
     router.replace(`${pathname}?${params}`, { scroll: false });
   };
 
-  // Switch to treemap view
+  // View switching
   const switchToTreemap = () => {
-    updateURL({
-      view: null,
-      length_bucket: null,
-      similarity_bucket: null,
-      page: null,
-    });
+    updateURL({ view: null }); // treemap is default
   };
 
-  // Handle cell click - switch to table with bucket filter
-  const handleCellClick = (clickedDimension: 'length' | 'similarity', bucketId: string) => {
-    const startTime = performance.now();
+  const switchToTable = () => {
+    updateURL({ view: 'table' });
+  };
 
+  // Handle treemap cell click - set the appropriate bucket filter and switch to table
+  const handleCellClick = (clickedDimension: 'length' | 'similarity', bucketId: string) => {
     updateURL({
       view: 'table',
       length_bucket: clickedDimension === 'length' ? bucketId : null,
       similarity_bucket: clickedDimension === 'similarity' ? bucketId : null,
-      page: null,
-    });
-
-    // Log transition time
-    requestAnimationFrame(() => {
-      const endTime = performance.now();
-      console.log(`Treemap → Table transition: ${(endTime - startTime).toFixed(2)}ms`);
+      page: null, // Reset pagination
     });
   };
 
-  // Get bucket label for display
-  const getActiveBucketLabel = () => {
-    if (lengthBucket) {
-      const bucket = lengthBuckets.find(b => b.id === lengthBucket);
-      return bucket ? `Length: ${bucket.label}` : lengthBucket;
-    }
-    if (similarityBucket) {
-      const bucket = similarityBuckets.find(b => b.id === similarityBucket);
-      return bucket ? `Similarity: ${bucket.label}` : similarityBucket;
-    }
-    return null;
-  };
-
-  // Handle filter changes
+  // Filter handlers
   const handleOrganChange = (value: string) => {
     updateURL({
       organ: value === 'all' ? null : value,
@@ -99,16 +78,34 @@ function ResolutionsPageContent() {
     });
   };
 
+  const handleLengthBucketChange = (value: string) => {
+    updateURL({
+      length_bucket: value === 'all' ? null : value,
+      page: null,
+    });
+  };
+
   const handleResetFilters = () => {
     updateURL({
       organ: null,
       is_recurring_series: null,
+      length_bucket: null,
+      similarity_bucket: null,
       page: null,
     });
   };
 
   // Check if there are any active filters
-  const hasActiveFilters = selectedOrgan !== 'all' || selectedRecurringSeries !== 'all';
+  const hasActiveFilters = 
+    filters.organ || 
+    filters.is_recurring_series || 
+    filters.length_bucket || 
+    filters.similarity_bucket;
+
+  // Display values for selects
+  const selectedOrgan = filters.organ || 'all';
+  const selectedRecurringSeries = filters.is_recurring_series || 'all';
+  const selectedLengthBucket = filters.length_bucket || 'all';
 
   const recurringSeriesOptions = [
     { value: 'all', label: 'All Documents' },
@@ -116,21 +113,19 @@ function ResolutionsPageContent() {
     { value: 'false', label: 'One-time Documents' },
   ];
 
-  // Handle view switch
-  const switchToTable = () => {
-    updateURL({
-      view: 'table',
-      length_bucket: null,
-      similarity_bucket: null,
-      page: null,
-    });
-  };
+  const lengthBucketOptions = [
+    { value: 'all', label: 'All Lengths' },
+    ...lengthBuckets.filter(b => b.id !== 'unknown').map(b => ({
+      value: b.id,
+      label: b.label + ' words'
+    }))
+  ];
 
   return (
     <div className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]">
       {/* Header with filters - always visible */}
       <div className="max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-8 sm:px-12 lg:px-16 mb-6 pt-8">
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-6 mb-4">
           <div className="flex items-center gap-3">
             <FileText className="h-8 w-8 text-un-blue" />
             <h1 className="text-2xl font-bold tracking-tight text-foreground">
@@ -138,35 +133,33 @@ function ResolutionsPageContent() {
             </h1>
           </div>
 
-          {/* View toggle buttons */}
-          {!isFilteredView && (
-            <div className="inline-flex h-9 items-center justify-center gap-0.5 rounded-md border border-med-gray bg-muted p-0.5 text-muted-foreground">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={switchToTreemap}
-                className={`h-full px-3 text-sm font-medium transition-colors rounded-sm ${
-                  view === 'treemap'
-                    ? 'bg-background text-un-blue shadow-sm pointer-events-none'
-                    : 'hover:bg-background/60 hover:text-foreground'
-                }`}
-              >
-                Treemap
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={switchToTable}
-                className={`h-full px-3 text-sm font-medium transition-colors rounded-sm ${
-                  view === 'table'
-                    ? 'bg-background text-un-blue shadow-sm pointer-events-none'
-                    : 'hover:bg-background/60 hover:text-foreground'
-                }`}
-              >
-                Table
-              </Button>
-            </div>
-          )}
+          {/* View toggle buttons - always visible */}
+          <div className="inline-flex h-9 items-center justify-center gap-0.5 rounded-md border border-med-gray bg-muted p-0.5 text-muted-foreground">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={switchToTreemap}
+              className={`h-full px-3 text-sm font-medium transition-colors rounded-sm ${
+                view === 'treemap'
+                  ? 'bg-background text-un-blue shadow-sm pointer-events-none'
+                  : 'hover:bg-background/60 hover:text-foreground'
+              }`}
+            >
+              Treemap
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={switchToTable}
+              className={`h-full px-3 text-sm font-medium transition-colors rounded-sm ${
+                view === 'table'
+                  ? 'bg-background text-un-blue shadow-sm pointer-events-none'
+                  : 'hover:bg-background/60 hover:text-foreground'
+              }`}
+            >
+              Table
+            </Button>
+          </div>
 
           <div className="flex items-center gap-2">
             <Select value={selectedOrgan} onValueChange={handleOrganChange}>
@@ -207,23 +200,22 @@ function ResolutionsPageContent() {
           </div>
         </div>
 
-        {/* Back to overview button for filtered table view */}
-        {isFilteredView && view === 'table' && (
-          <div className="flex items-center gap-4 mt-6">
-            <Button
-              onClick={switchToTreemap}
-              variant="outline"
-              size="sm"
-              className="flex items-center gap-2"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back to overview
-            </Button>
-
-            {/* Show active bucket filter badge */}
-            <div className="flex items-center gap-2 px-3 py-1 bg-blue-50 border border-blue-200 rounded-sm text-sm text-blue-700">
-              <span className="font-medium">{getActiveBucketLabel()}</span>
-            </div>
+        {/* Advanced filters - only show in table view */}
+        {view === 'table' && (
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground font-medium">Advanced:</span>
+            <Select value={selectedLengthBucket} onValueChange={handleLengthBucketChange}>
+              <SelectTrigger id="length-filter" className="w-40 h-9 px-3 text-sm border-med-gray focus:border-blue-500 focus:ring-blue-500 bg-white">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {lengthBucketOptions.map(option => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         )}
       </div>
@@ -232,14 +224,17 @@ function ResolutionsPageContent() {
       {view === 'treemap' ? (
         <div className="max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-8 sm:px-12 lg:px-16">
           <ResolutionsTreemapView
-            organ={searchParams.get('organ') || undefined}
-            isRecurringSeries={searchParams.get('is_recurring_series') || undefined}
+            filters={filters}
             dimension={dimension}
             onCellClick={handleCellClick}
           />
         </div>
       ) : (
-        <DocumentTable<Resolution> config={resolutionsConfig} hideHeader={true} />
+        <DocumentTable<Resolution> 
+          config={resolutionsConfig} 
+          filters={filters}
+          hideHeader={true} 
+        />
       )}
     </div>
   );
