@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense } from 'react';
+import { Suspense, useRef, useState, useEffect } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import DocumentTable from '@/components/document-table';
 import ResolutionsTreemapView from '@/components/resolutions-treemap-view';
@@ -8,7 +8,8 @@ import { resolutionsConfig } from '@/lib/document-configs';
 import { Resolution, DocumentFilters } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { FileText, RotateCcw } from 'lucide-react';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { FileText, RotateCcw, ChevronDown } from 'lucide-react';
 import { lengthBuckets } from '@/lib/treemap-config';
 import { LoadingFallback } from '@/components/ui/loading-fallback';
 
@@ -16,6 +17,8 @@ function ResolutionsPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
+  const dimensionTextRef = useRef<HTMLSpanElement>(null);
+  const [dropdownMinWidth, setDropdownMinWidth] = useState<number>(0);
 
   // Read all state from URL (single source of truth)
   const view = searchParams.get('view') || 'treemap';
@@ -95,6 +98,27 @@ function ResolutionsPageContent() {
     });
   };
 
+  const handleDimensionChange = (newDimension: 'length' | 'similarity') => {
+    updateURL({
+      dimension: newDimension,
+      // Reset bucket filters when changing dimension
+      length_bucket: null,
+      similarity_bucket: null,
+      page: null,
+    });
+  };
+
+  // Get dimension display text
+  const dimensionText = dimension === 'length' ? 'Word Length' : 'Similarity to Previous';
+
+  // Measure the current dimension text width
+  useEffect(() => {
+    if (dimensionTextRef.current) {
+      const width = dimensionTextRef.current.offsetWidth;
+      setDropdownMinWidth(width);
+    }
+  }, [dimensionText]);
+
   // Check if there are any active filters
   const hasActiveFilters = 
     filters.organ || 
@@ -125,15 +149,47 @@ function ResolutionsPageContent() {
     <div className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]">
       {/* Header with filters - always visible */}
       <div className="max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-8 sm:px-12 lg:px-16 mb-6 pt-8">
-        <div className="flex items-center gap-6 mb-4">
-          <div className="flex items-center gap-3">
-            <FileText className="h-8 w-8 text-un-blue" />
-            <h1 className="text-2xl font-bold tracking-tight text-foreground">
-              All Resolutions
-            </h1>
-          </div>
+        {/* Title row */}
+        <div className="flex items-center gap-3 mb-4">
+          <FileText className="h-8 w-8 text-un-blue" />
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">
+            All Resolutions by{' '}
+            <DropdownMenu>
+              <DropdownMenuTrigger className="text-un-blue hover:text-un-blue/80 focus:outline-none inline-flex items-center gap-0.5 transition-colors">
+                <span ref={dimensionTextRef} className="border-b-2 border-un-blue/20 hover:border-un-blue/40 transition-colors">
+                  {dimensionText}
+                </span>
+                <ChevronDown className="h-5 w-5" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent 
+                align="start" 
+                className="w-auto p-0.5 border-un-blue/20 shadow-sm"
+                style={{ minWidth: dropdownMinWidth }}
+              >
+                {dimension !== 'length' && (
+                  <DropdownMenuItem 
+                    onClick={() => handleDimensionChange('length')}
+                    className="cursor-pointer text-sm font-semibold text-un-blue hover:text-un-blue hover:bg-un-blue/10 py-2 px-3 rounded-sm focus:text-un-blue focus:bg-un-blue/10 whitespace-nowrap"
+                  >
+                    Word Length
+                  </DropdownMenuItem>
+                )}
+                {dimension !== 'similarity' && (
+                  <DropdownMenuItem 
+                    onClick={() => handleDimensionChange('similarity')}
+                    className="cursor-pointer text-sm font-semibold text-un-blue hover:text-un-blue hover:bg-un-blue/10 py-2 px-3 rounded-sm focus:text-un-blue focus:bg-un-blue/10 whitespace-nowrap"
+                  >
+                    Similarity to Previous
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </h1>
+        </div>
 
-          {/* View toggle buttons - always visible */}
+        {/* View toggle and filters row */}
+        <div className="flex items-center justify-between gap-4 mb-4">
+          {/* View toggle buttons */}
           <div className="inline-flex h-9 items-center justify-center gap-0.5 rounded-md border border-med-gray bg-muted p-0.5 text-muted-foreground">
             <Button
               variant="ghost"
@@ -191,11 +247,10 @@ function ResolutionsPageContent() {
               size="sm"
               onClick={handleResetFilters}
               disabled={!hasActiveFilters}
-              className="h-9 px-3 text-sm border-med-gray bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="h-9 w-9 p-0 border-med-gray bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
               title="Reset filters to default"
             >
-              <RotateCcw className="h-4 w-4 mr-1" />
-              Reset
+              <RotateCcw className="h-4 w-4" />
             </Button>
           </div>
         </div>
