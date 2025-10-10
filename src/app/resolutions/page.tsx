@@ -107,6 +107,9 @@ function ResolutionsPageContent() {
     });
   };
 
+  // Check if there are any active filters
+  const hasActiveFilters = selectedOrgan !== 'all' || selectedRecurringSeries !== 'all';
+
   const recurringSeriesOptions = [
     { value: 'all', label: 'All Documents' },
     { value: 'true', label: 'Recurring Documents' },
@@ -137,15 +140,15 @@ function ResolutionsPageContent() {
 
           {/* View toggle buttons */}
           {!isFilteredView && (
-            <div className="inline-flex items-center border border-med-gray rounded-md overflow-hidden bg-white h-9">
+            <div className="inline-flex h-9 items-center justify-center gap-0.5 rounded-md border border-med-gray bg-muted p-0.5 text-muted-foreground">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={switchToTreemap}
-                className={`h-full px-3 text-sm transition-colors rounded-none border-r border-med-gray/50 ${
+                className={`h-full px-3 text-sm font-medium transition-colors rounded-sm ${
                   view === 'treemap'
-                    ? 'bg-un-blue text-white hover:bg-un-blue/90'
-                    : 'text-muted-foreground hover:bg-muted'
+                    ? 'bg-background text-un-blue shadow-sm pointer-events-none'
+                    : 'hover:bg-background/60 hover:text-foreground'
                 }`}
               >
                 Treemap
@@ -154,10 +157,10 @@ function ResolutionsPageContent() {
                 variant="ghost"
                 size="sm"
                 onClick={switchToTable}
-                className={`h-full px-3 text-sm transition-colors rounded-none ${
+                className={`h-full px-3 text-sm font-medium transition-colors rounded-sm ${
                   view === 'table'
-                    ? 'bg-un-blue text-white hover:bg-un-blue/90'
-                    : 'text-muted-foreground hover:bg-muted'
+                    ? 'bg-background text-un-blue shadow-sm pointer-events-none'
+                    : 'hover:bg-background/60 hover:text-foreground'
                 }`}
               >
                 Table
@@ -194,7 +197,8 @@ function ResolutionsPageContent() {
               variant="outline"
               size="sm"
               onClick={handleResetFilters}
-              className="h-9 px-3 text-sm border-med-gray"
+              disabled={!hasActiveFilters}
+              className="h-9 px-3 text-sm border-med-gray bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
               title="Reset filters to default"
             >
               <RotateCcw className="h-4 w-4 mr-1" />
