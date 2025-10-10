@@ -11,8 +11,6 @@ import {
 } from '@/lib/treemap-config';
 import { squarify, TreemapItem, TreemapRect, formatNumber, formatPercentage, formatApproximate } from '@/lib/treemap-utils';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Label } from '@/components/ui/label';
 
 interface BucketWithData extends BucketDefinition {
   bucketData: BucketData;
@@ -33,7 +31,6 @@ export default function ResolutionsTreemapView({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [hoveredBucket, setHoveredBucket] = useState<string | null>(null);
-  const [hideMissing, setHideMissing] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -55,6 +52,9 @@ export default function ResolutionsTreemapView({
         }
         if (filters.similarity_bucket) {
           params.set('similarity_bucket', filters.similarity_bucket);
+        }
+        if (filters.include_missing_fulltexts) {
+          params.set('include_missing_fulltexts', filters.include_missing_fulltexts);
         }
 
         const response = await fetch(`/api/resolutions?${params}`);
@@ -112,8 +112,7 @@ export default function ResolutionsTreemapView({
         bucketData: bucketsData[bucket.id] || { count: 0, percentage: 0 },
       },
     }))
-    .filter(item => item.value > 0)
-    .filter(item => !hideMissing || item.data.id !== 'unknown'); // Filter out 'unknown' if hideMissing is true
+    .filter(item => item.value > 0);
 
   // Calculate layout (100x100 coordinate system)
   const rects: TreemapRect<BucketWithData>[] = squarify(items, 0, 0, 100, 100);
@@ -247,21 +246,6 @@ export default function ResolutionsTreemapView({
           );
         })}
         </div>
-      </div>
-      
-      {/* Hide missing toggle */}
-      <div className="flex items-center gap-2 pt-2">
-        <Checkbox 
-          id="hide-missing" 
-          checked={hideMissing}
-          onCheckedChange={(checked) => setHideMissing(checked === true)}
-        />
-        <Label 
-          htmlFor="hide-missing" 
-          className="text-sm text-muted-foreground cursor-pointer"
-        >
-          Hide documents with missing word count
-        </Label>
       </div>
     </div>
   );

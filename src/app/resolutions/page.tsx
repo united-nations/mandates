@@ -9,6 +9,7 @@ import { Resolution, DocumentFilters } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Checkbox } from '@/components/ui/checkbox';
 import { FileText, RotateCcw, ChevronDown } from 'lucide-react';
 import { lengthBuckets } from '@/lib/treemap-config';
 import { LoadingFallback } from '@/components/ui/loading-fallback';
@@ -30,6 +31,7 @@ function ResolutionsPageContent() {
     is_recurring_series: searchParams.get('is_recurring_series') || undefined,
     length_bucket: searchParams.get('length_bucket') || undefined,
     similarity_bucket: searchParams.get('similarity_bucket') || undefined,
+    include_missing_fulltexts: searchParams.get('include_missing_fulltexts') || undefined,
   };
 
   // Helper to update URL with any parameter changes
@@ -95,12 +97,20 @@ function ResolutionsPageContent() {
     });
   };
 
+  const handleIncludeMissingFulltextsChange = (checked: boolean) => {
+    updateURL({
+      include_missing_fulltexts: checked ? null : 'false',
+      page: null,
+    });
+  };
+
   const handleResetFilters = () => {
     updateURL({
       organ: null,
       is_recurring_series: null,
       length_bucket: null,
       similarity_bucket: null,
+      include_missing_fulltexts: null,
       page: null,
     });
   };
@@ -144,7 +154,8 @@ function ResolutionsPageContent() {
     filters.organ || 
     filters.is_recurring_series || 
     filters.length_bucket || 
-    filters.similarity_bucket;
+    filters.similarity_bucket ||
+    filters.include_missing_fulltexts;
 
   // Display values for selects
   const selectedOrgan = filters.organ || 'all';
@@ -302,6 +313,22 @@ function ResolutionsPageContent() {
             dimension={dimension}
             onCellClick={handleCellClick}
           />
+          
+          {/* Include missing fulltexts checkbox - below treemap */}
+          <div className="flex items-center justify-start gap-2 mt-4">
+            <Checkbox
+              id="include-missing-fulltexts"
+              checked={filters.include_missing_fulltexts !== 'false'}
+              onCheckedChange={handleIncludeMissingFulltextsChange}
+              className="border-med-gray data-[state=checked]:bg-un-blue data-[state=checked]:border-un-blue"
+            />
+            <label
+              htmlFor="include-missing-fulltexts"
+              className="text-sm text-muted-foreground cursor-pointer select-none"
+            >
+              Include resolutions with missing fulltexts
+            </label>
+          </div>
         </div>
       ) : (
         <DocumentTable<Resolution> 

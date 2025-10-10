@@ -35,6 +35,7 @@ export function createDocumentHandler<T extends BaseDocument>(
       const isRecurringSeries = searchParams.get('is_recurring_series');
       const lengthBucketParam = searchParams.get('length_bucket');
       const similarityBucketParam = searchParams.get('similarity_bucket');
+      const includeMissingFulltexts = searchParams.get('include_missing_fulltexts');
 
       // Filter by organ if specified
       let filteredDocuments = allDocuments;
@@ -49,6 +50,14 @@ export function createDocumentHandler<T extends BaseDocument>(
         const isRecurring = isRecurringSeries === 'true';
         filteredDocuments = filteredDocuments.filter(document =>
           document.is_recurring_series === isRecurring
+        );
+      }
+
+      // By default, include documents with missing fulltext (null word_count)
+      // Only exclude them if explicitly set to false
+      if (includeMissingFulltexts === 'false') {
+        filteredDocuments = filteredDocuments.filter(document =>
+          document.word_count !== null
         );
       }
 

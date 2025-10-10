@@ -283,6 +283,7 @@ export interface DocumentFilters {
   is_recurring_series?: string;
   length_bucket?: string;
   similarity_bucket?: string;
+  include_missing_fulltexts?: string;
 }
 
 // Treemap aggregate types
