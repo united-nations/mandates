@@ -22,10 +22,12 @@ interface ApiResponse<T> {
 
 interface DocumentTableProps<T extends BaseDocument> {
     config: DocumentConfig<T>;
+    hideHeader?: boolean;
 }
 
-export default function DocumentTable<T extends BaseDocument>({ 
-    config
+export default function DocumentTable<T extends BaseDocument>({
+    config,
+    hideHeader = false
 }: DocumentTableProps<T>) {
     const searchParams = useSearchParams()
     const router = useRouter()
@@ -831,52 +833,54 @@ export default function DocumentTable<T extends BaseDocument>({
 
     return (
         <div className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]">
-            <div className="max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-8 sm:px-12 lg:px-16 mb-6 pt-8">
-                <div className="flex items-center gap-6">
-                    <div className="flex items-center gap-3">
-                        <FileText className="h-8 w-8 text-un-blue" />
-                        <h1 className="text-2xl font-bold tracking-tight text-foreground">
-                            {config.title}
-                        </h1>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <Select value={selectedOrgan} onValueChange={handleOrganChange}>
-                            <SelectTrigger id="organ-filter" className="w-48 text-sm h-9 border-slate-300 focus:border-blue-500 focus:ring-blue-500 bg-white">
-                                <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {config.organOptions.map(option => (
-                                    <SelectItem key={option.value} value={option.value}>
-                                        {option.label}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                        <Select value={selectedRecurringSeries} onValueChange={handleRecurringSeriesChange}>
-                            <SelectTrigger id="recurring-filter" className="w-52 text-sm h-9 border-slate-300 focus:border-blue-500 focus:ring-blue-500 bg-white">
-                                <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {recurringSeriesOptions.map(option => (
-                                    <SelectItem key={option.value} value={option.value}>
-                                        {option.label}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={handleResetFilters}
-                            className="h-9 px-3 text-sm border-slate-300"
-                            title="Reset filters to default"
-                        >
-                            <RotateCcw className="h-4 w-4 mr-1" />
-                            Reset
-                        </Button>
+            {!hideHeader && (
+                <div className="max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-8 sm:px-12 lg:px-16 mb-6 pt-8">
+                    <div className="flex items-center gap-6">
+                        <div className="flex items-center gap-3">
+                            <FileText className="h-8 w-8 text-un-blue" />
+                            <h1 className="text-2xl font-bold tracking-tight text-foreground">
+                                {config.title}
+                            </h1>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <Select value={selectedOrgan} onValueChange={handleOrganChange}>
+                                <SelectTrigger id="organ-filter" className="w-48 text-sm h-9 border-slate-300 focus:border-blue-500 focus:ring-blue-500 bg-white">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {config.organOptions.map(option => (
+                                        <SelectItem key={option.value} value={option.value}>
+                                            {option.label}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <Select value={selectedRecurringSeries} onValueChange={handleRecurringSeriesChange}>
+                                <SelectTrigger id="recurring-filter" className="w-52 text-sm h-9 border-slate-300 focus:border-blue-500 focus:ring-blue-500 bg-white">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {recurringSeriesOptions.map(option => (
+                                        <SelectItem key={option.value} value={option.value}>
+                                            {option.label}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={handleResetFilters}
+                                className="h-9 px-3 text-sm border-slate-300"
+                                title="Reset filters to default"
+                            >
+                                <RotateCcw className="h-4 w-4 mr-1" />
+                                Reset
+                            </Button>
+                        </div>
                     </div>
                 </div>
-            </div>
+            )}
 
             <div className="max-w-[95vw] mx-auto px-4 overflow-x-auto mt-8">
                 <DataTable

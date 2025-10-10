@@ -28,6 +28,7 @@ export default {
                 'black': '#000000',
                 'geyser': '#DDE2E6', // Gray Plot Fill
                 'iron': '#D9DCDF', // Table Fill
+                'med-gray': '#D9DCDF', // Axis color, think-cell
 
                 // shad/cn ??
                 background: 'hsl(var(--background))',

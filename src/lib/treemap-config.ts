@@ -12,33 +12,36 @@ export interface BucketDefinition {
 }
 
 // Length buckets (word_count dimension)
+// Semantic ordering: long → short (reversed), with Unknown last on right
 export const lengthBuckets: BucketDefinition[] = [
-  { id: 'unknown', label: 'Unknown', min: null, max: null, description: 'No word count data' },
-  { id: '<0.5k', label: '<0.5K', min: 0, max: 500, description: 'Under 500 words' },
-  { id: '0.5k-1k', label: '0.5K⎼1K', min: 501, max: 1000, description: '500 to 1,000 words' },
-  { id: '1k-2k', label: '1K⎼2K', min: 1001, max: 2000, description: '1,000 to 2,000 words' },
-  { id: '2k-5k', label: '2K⎼5K', min: 2001, max: 5000, description: '2,000 to 5,000 words' },
   { id: '>5k', label: '>5K', min: 5001, max: null, description: 'Over 5,000 words' },
+  { id: '2k-5k', label: '2K⎼5K', min: 2001, max: 5000, description: '2,000 to 5,000 words' },
+  { id: '1k-2k', label: '1K⎼2K', min: 1001, max: 2000, description: '1,000 to 2,000 words' },
+  { id: '0.5k-1k', label: '0.5K⎼1K', min: 501, max: 1000, description: '500 to 1,000 words' },
+  { id: '<0.5k', label: '<0.5K', min: 0, max: 500, description: 'Under 500 words' },
+  { id: 'unknown', label: 'Unknown', min: null, max: null, description: 'No word count data' },
 ];
 
 // Similarity buckets (similarity_to_previous dimension)
+// Semantic ordering: different → identical, with New/First last
 export const similarityBuckets: BucketDefinition[] = [
-  { id: 'new', label: 'New/First', min: null, max: null, description: 'No previous version' },
   { id: '<30', label: '<30%', min: 0, max: 0.30, description: 'Very different' },
   { id: '30-70', label: '30%⎼70%', min: 0.30, max: 0.70, description: 'Moderately similar' },
   { id: '70-90', label: '70%⎼90%', min: 0.70, max: 0.90, description: 'Very similar' },
   { id: '>90', label: '>90%', min: 0.90, max: 1.00, description: 'Nearly identical' },
+  { id: 'new', label: 'New/First', min: null, max: null, description: 'No previous version' },
 ];
 
 // Color mappings for length dimension (inline styles)
-// Uses colors from globals.css, spectrum from faded-jade to pale-oyster
+// Uses custom palette from tailwind.config.ts
+// Warm to cool gradient: highest counts (warm/red) → lowest counts (cool)
 export const lengthColors: Record<string, string> = {
   'unknown': '#E5E7EB',  // gray-200 (neutral for unknown)
-  '<0.5k': '#4A7C7E',    // faded-jade
-  '0.5k-1k': '#009edb',  // un-blue
-  '1k-2k': '#7D8471',    // camouflage-green
-  '2k-5k': '#9B8B7A',    // pale-oyster
-  '>5k': '#596B7D',      // shuttle-gray
+  '<0.5k': '#4A7C7E',    // faded-jade (coolest - lowest counts)
+  '0.5k-1k': '#7D8471',  // camouflage-green
+  '1k-2k': '#9B8B7A',    // pale-oyster
+  '2k-5k': '#6C5B7B',    // smoky (transitional purple)
+  '>5k': '#A0665C',      // au-chico (warmest/reddish - highest counts)
 };
 
 // Color mappings for similarity dimension (inline styles)
@@ -57,8 +60,9 @@ export function getBucketForValue(
   buckets: BucketDefinition[]
 ): string {
   if (value === null) {
-    // First bucket is always the "unknown" or "new" bucket
-    return buckets[0].id;
+    // Find the "unknown" or "new" bucket (the one with min and max both null)
+    const unknownBucket = buckets.find(b => b.min === null && b.max === null);
+    return unknownBucket?.id || buckets[0].id;
   }
 
   for (const bucket of buckets) {
@@ -80,5 +84,6 @@ export function getBucketForValue(
   }
 
   // Fallback to unknown bucket if no match found
-  return buckets[0].id;
+  const unknownBucket = buckets.find(b => b.min === null && b.max === null);
+  return unknownBucket?.id || buckets[0].id;
 }

@@ -68,7 +68,7 @@ export default function ResolutionsTreemapView({
   if (loading) {
     return (
       <div className="w-full h-[calc(100vh-280px)] min-h-[700px] flex items-center justify-center">
-        <div className="text-gray-500 text-lg">Loading treemap...</div>
+        <div className="text-muted-foreground text-lg">Loading treemap...</div>
       </div>
     );
   }
@@ -76,7 +76,7 @@ export default function ResolutionsTreemapView({
   if (error) {
     return (
       <div className="w-full h-[calc(100vh-280px)] min-h-[700px] flex items-center justify-center">
-        <div className="text-red-600">Error: {error}</div>
+        <div className="text-destructive">Error: {error}</div>
       </div>
     );
   }
@@ -84,7 +84,7 @@ export default function ResolutionsTreemapView({
   if (!data) {
     return (
       <div className="w-full h-[calc(100vh-280px)] min-h-[700px] flex items-center justify-center">
-        <div className="text-gray-500 text-lg">No data available</div>
+        <div className="text-muted-foreground text-lg">No data available</div>
       </div>
     );
   }
@@ -110,7 +110,7 @@ export default function ResolutionsTreemapView({
 
   return (
     <div className="w-full h-[calc(100vh-280px)] min-h-[700px]">
-      <div className="relative w-full h-full bg-gray-100">
+      <div className="relative w-full h-full bg-muted">
         {rects.map((rect, index) => {
           const bucket = rect.data;
           const bucketData = bucket.bucketData;
@@ -143,12 +143,16 @@ export default function ResolutionsTreemapView({
                   onMouseLeave={() => setHoveredBucket(null)}
                 >
                   {showLabel && (
-                    <div className="p-1 h-full overflow-hidden">
-                      <div className="text-xs font-medium leading-tight truncate">
-                        {bucket.label}
+                    <div className="p-2 h-full flex flex-col justify-start items-start overflow-hidden">
+                      <div className="text-base font-bold leading-tight text-left mb-1">
+                        {bucket.id === 'unknown'
+                          ? 'Word count not available'
+                          : bucket.id === 'new'
+                          ? bucket.label
+                          : `${bucket.label} ${dimension === 'length' ? 'words' : 'similar'}`}
                       </div>
-                      <div className="text-xs opacity-70 leading-tight truncate transition-opacity duration-300">
-                        {formatPercentage(bucketData.percentage)}
+                      <div className="text-sm leading-tight text-left opacity-90">
+                        {formatNumber(bucketData.count)} ({formatPercentage(bucketData.percentage)})
                       </div>
                     </div>
                   )}
@@ -157,25 +161,25 @@ export default function ResolutionsTreemapView({
               <TooltipContent
                 side="top"
                 sideOffset={8}
-                className="bg-white text-slate-800 border border-slate-200 shadow-lg max-w-xs sm:max-w-sm"
+                className="bg-popover text-popover-foreground border border-border shadow-lg max-w-xs sm:max-w-sm"
                 hideWhenDetached
                 avoidCollisions={true}
                 collisionPadding={12}
               >
                 <div className="text-center max-w-xs sm:max-w-sm p-1">
                   <p className="font-medium text-xs sm:text-sm leading-tight">{bucket.description}</p>
-                  <p className="text-xs text-slate-600 mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     {formatNumber(bucketData.count)} resolutions ({formatPercentage(bucketData.percentage)})
                   </p>
                   {bucketData.avg_value !== undefined && bucketData.avg_value > 0 && (
-                    <p className="text-xs text-slate-500 mt-1">
+                    <p className="text-xs text-muted-foreground mt-1">
                       {dimension === 'length'
                         ? `${formatApproximate(bucketData.avg_value)} words avg`
                         : `${formatApproximate(bucketData.avg_value * 100)}% avg similarity`}
                     </p>
                   )}
-                  <p className="text-xs text-slate-500 mt-1 hidden sm:block">Click to explore</p>
-                  <p className="text-xs text-slate-500 mt-1 sm:hidden">Tap to explore</p>
+                  <p className="text-xs text-muted-foreground mt-1 hidden sm:block">Click to explore</p>
+                  <p className="text-xs text-muted-foreground mt-1 sm:hidden">Tap to explore</p>
                 </div>
               </TooltipContent>
             </Tooltip>
