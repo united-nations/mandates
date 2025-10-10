@@ -952,7 +952,7 @@ export default function DocumentTable<T extends BaseDocument>({
                     {config.columns.year && (
                         <Column
                             field="year"
-                            header="Year"
+                            header="Session Year"
                             body={yearTemplate}
                             sortable
                             style={{ width: "5rem" }}

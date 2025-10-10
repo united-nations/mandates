@@ -49,7 +49,14 @@ function ResolutionsPageContent() {
 
   // View switching
   const switchToTreemap = () => {
-    updateURL({ view: null }); // treemap is default
+    // Reset the bucket filter for the current dimension when switching to treemap
+    const updates: Record<string, string | null> = { view: null };
+    if (dimension === 'length') {
+      updates.length_bucket = null;
+    } else if (dimension === 'similarity') {
+      updates.similarity_bucket = null;
+    }
+    updateURL(updates);
   };
 
   const switchToTable = () => {
@@ -109,7 +116,20 @@ function ResolutionsPageContent() {
   };
 
   // Get dimension display text
-  const dimensionText = dimension === 'length' ? 'Word Length' : 'Similarity to Previous';
+  const dimensionText = dimension === 'length' ? 'Length' : 'Similarity to Previous';
+
+  // Organ acronyms mapping
+  const organAcronyms: Record<string, string> = {
+    'General Assembly': 'GA',
+    'Economic and Social Council': 'ECOSOC',
+    'Security Council': 'SC',
+    'Human Rights Council': 'HRC',
+  };
+
+  // Get organ display text for header (using acronyms)
+  const organText = filters.organ 
+    ? organAcronyms[filters.organ] || 'All'
+    : 'All';
 
   // Measure the current dimension text width
   useEffect(() => {
@@ -139,9 +159,9 @@ function ResolutionsPageContent() {
 
   const lengthBucketOptions = [
     { value: 'all', label: 'All Lengths' },
-    ...lengthBuckets.filter(b => b.id !== 'unknown').map(b => ({
+    ...lengthBuckets.map(b => ({
       value: b.id,
-      label: b.label + ' words'
+      label: b.id === 'unknown' ? b.label : b.label + ' words'
     }))
   ];
 
@@ -153,7 +173,7 @@ function ResolutionsPageContent() {
         <div className="flex items-center gap-3 mb-4">
           <FileText className="h-8 w-8 text-un-blue" />
           <h1 className="text-2xl font-bold tracking-tight text-foreground">
-            All Resolutions by{' '}
+            <span className="text-un-blue">{organText}</span> Resolutions by{' '}
             <DropdownMenu>
               <DropdownMenuTrigger className="text-un-blue hover:text-un-blue/80 focus:outline-none inline-flex items-center gap-0.5 transition-colors">
                 <span ref={dimensionTextRef} className="border-b-2 border-un-blue/20 hover:border-un-blue/40 transition-colors">
@@ -257,8 +277,7 @@ function ResolutionsPageContent() {
 
         {/* Advanced filters - only show in table view */}
         {view === 'table' && (
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground font-medium">Advanced:</span>
+          <div className="flex items-center justify-end gap-2 mb-4">
             <Select value={selectedLengthBucket} onValueChange={handleLengthBucketChange}>
               <SelectTrigger id="length-filter" className="w-40 h-9 px-3 text-sm border-med-gray focus:border-blue-500 focus:ring-blue-500 bg-white">
                 <SelectValue />
