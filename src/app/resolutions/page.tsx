@@ -11,7 +11,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Checkbox } from '@/components/ui/checkbox';
 import { FileText, RotateCcw, ChevronDown } from 'lucide-react';
-import { lengthBuckets } from '@/lib/treemap-config';
 import { LoadingFallback } from '@/components/ui/loading-fallback';
 
 function ResolutionsPageContent() {
@@ -90,13 +89,6 @@ function ResolutionsPageContent() {
     });
   };
 
-  const handleLengthBucketChange = (value: string) => {
-    updateURL({
-      length_bucket: value === 'all' ? null : value,
-      page: null,
-    });
-  };
-
   const handleIncludeMissingFulltextsChange = (checked: boolean) => {
     updateURL({
       include_missing_fulltexts: checked ? null : 'false',
@@ -160,7 +152,6 @@ function ResolutionsPageContent() {
   // Display values for selects
   const selectedOrgan = filters.organ || 'all';
   const selectedRecurringSeries = filters.is_recurring_series || 'all';
-  const selectedLengthBucket = filters.length_bucket || 'all';
 
   const recurringSeriesOptions = [
     { value: 'all', label: 'All Documents' },
@@ -168,20 +159,12 @@ function ResolutionsPageContent() {
     { value: 'false', label: 'One-time Documents' },
   ];
 
-  const lengthBucketOptions = [
-    { value: 'all', label: 'All Lengths' },
-    ...lengthBuckets.map(b => ({
-      value: b.id,
-      label: b.id === 'unknown' ? b.label : b.label + ' words'
-    }))
-  ];
-
   return (
     <div className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]">
       {/* Header with filters - always visible */}
-      <div className="max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-8 sm:px-12 lg:px-16 mb-6 pt-8">
+      <div className="max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-8 sm:px-12 lg:px-16 mb-4 pt-6">
         {/* Title row */}
-        <div className="flex items-center gap-3 mb-4">
+        <div className="flex items-center gap-3 mb-3">
           <FileText className="h-8 w-8 text-un-blue" />
           <h1 className="text-2xl font-bold tracking-tight text-foreground">
             <span className={filters.organ ? "text-un-blue" : ""}>{organText}</span> Resolutions by{' '}
@@ -219,7 +202,7 @@ function ResolutionsPageContent() {
         </div>
 
         {/* View toggle and filters row */}
-        <div className="flex items-center justify-between gap-4 mb-4">
+        <div className="flex items-center justify-between gap-4 mb-3">
           {/* View toggle buttons */}
           <div className="inline-flex h-9 items-center justify-center gap-0.5 rounded-md border border-med-gray bg-muted p-0.5 text-muted-foreground">
             <Button
@@ -286,23 +269,6 @@ function ResolutionsPageContent() {
           </div>
         </div>
 
-        {/* Advanced filters - only show in table view */}
-        {view === 'table' && (
-          <div className="flex items-center justify-end gap-2 mb-4">
-            <Select value={selectedLengthBucket} onValueChange={handleLengthBucketChange}>
-              <SelectTrigger id="length-filter" className="w-40 h-9 px-3 text-sm border-med-gray focus:border-blue-500 focus:ring-blue-500 bg-white">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {lengthBucketOptions.map(option => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        )}
       </div>
 
       {/* Content */}
@@ -315,7 +281,7 @@ function ResolutionsPageContent() {
           />
           
           {/* Include missing fulltexts checkbox - below treemap */}
-          <div className="flex items-center justify-start gap-2 mt-4">
+          <div className="flex items-center justify-start gap-2 mt-3 pb-6">
             <Checkbox
               id="include-missing-fulltexts"
               checked={filters.include_missing_fulltexts !== 'false'}

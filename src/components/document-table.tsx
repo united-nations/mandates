@@ -7,8 +7,11 @@ import type { BaseDocument, DocumentConfig, DocumentFilters } from "@/types";
 import { Check, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, FileText, RotateCcw, X } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Column } from "primereact/column";
-import { DataTable } from "primereact/datatable";
+import { DataTable, DataTableFilterMeta } from "primereact/datatable";
+import { FilterMatchMode } from "primereact/api";
+import { Dropdown } from "primereact/dropdown";
 import { useEffect, useState } from "react";
+import { lengthBuckets, getBucketForValue } from "@/lib/treemap-config";
 
 interface ApiResponse<T> {
     data: T[];
@@ -52,6 +55,11 @@ export default function DocumentTable<T extends BaseDocument>({
     const [sortOrder, setSortOrder] = useState<1 | -1>(
         searchParams.get('sortOrder') === 'asc' ? 1 : -1
     );
+
+    // Initialize DataTable filters state
+    const [filters, setFilters] = useState<DataTableFilterMeta>({
+        length_bucket: { value: null, matchMode: 'custom' as any },
+    });
     
     // Use prop filters if provided, otherwise read from URL (for backwards compatibility)
     const selectedOrgan = propFilters?.organ || searchParams.get('organ') || config.defaultOrgan;
@@ -164,6 +172,16 @@ export default function DocumentTable<T extends BaseDocument>({
         }
     }, []); // Remove dependencies to avoid infinite loops
 
+    // Sync URL params to DataTable filters (Treemap → Table)
+    useEffect(() => {
+        const lengthBucket = propFilters?.length_bucket || searchParams.get('length_bucket');
+
+        setFilters(prev => ({
+            ...prev,
+            length_bucket: { value: lengthBucket || null, matchMode: 'custom' as any }
+        }));
+    }, [propFilters?.length_bucket, searchParams]);
+
     // Watch for prop filters changes and re-fetch (for resolutions page)
     useEffect(() => {
         if (propFilters) {
@@ -171,7 +189,7 @@ export default function DocumentTable<T extends BaseDocument>({
             const organ = propFilters.organ || 'all';
             const recurringSeries = propFilters.is_recurring_series || 'all';
             const lengthBucket = propFilters.length_bucket || 'all';
-            
+
             fetchDocuments(currentPage, 20, sortField, sortOrder === 1 ? 'asc' : 'desc', organ, recurringSeries, lengthBucket, false);
         }
     }, [propFilters?.organ, propFilters?.is_recurring_series, propFilters?.length_bucket, propFilters?.similarity_bucket]);
@@ -529,6 +547,52 @@ export default function DocumentTable<T extends BaseDocument>({
                 setLoading(false);
             }
         }
+    };
+
+    // Custom filter function for length bucket
+    const lengthBucketFilter = (value: number | null, filterValue: string | null): boolean => {
+        if (!filterValue) return true; // No filter applied
+
+        const bucket = lengthBuckets.find(b => b.id === filterValue);
+        if (!bucket) return true;
+
+        // Handle "unknown" bucket (null values)
+        if (bucket.min === null && bucket.max === null) {
+            return value === null;
+        }
+
+        // Handle null value when filter is not "unknown"
+        if (value === null) return false;
+
+        // Handle open-ended range (e.g., ">5k")
+        if (bucket.max === null) {
+            return value >= bucket.min!;
+        }
+
+        // Handle closed range
+        return value >= bucket.min! && value <= bucket.max;
+    };
+
+    // Length bucket filter dropdown template
+    const lengthBucketFilterTemplate = (options: any) => {
+        return (
+            <Dropdown
+                value={options.value}
+                options={[
+                    { label: 'All', value: null },
+                    ...lengthBuckets.map(b => ({
+                        label: b.label,
+                        value: b.id
+                    }))
+                ]}
+                onChange={(e) => options.filterCallback(e.value)}
+                placeholder="All"
+                className="p-column-filter text-xs"
+                panelClassName="text-xs"
+                scrollHeight="200px"
+                style={{ minWidth: '6.5rem', fontSize: '0.75rem', height: '1.75rem', padding: '0.25rem 0.5rem' }}
+            />
+        );
     };
 
     // Template functions
@@ -936,6 +1000,25 @@ export default function DocumentTable<T extends BaseDocument>({
                     sortOrder={sortOrder}
                     onSort={handleSort}
                     removableSort
+                    filters={filters}
+                    onFilter={(e) => {
+                        setFilters(e.filters);
+
+                        // Sync filters to URL and trigger refetch
+                        const lengthBucketFilter = e.filters.length_bucket as any;
+                        const lengthBucketValue = lengthBucketFilter?.value;
+                        console.log('[DocumentTable] onFilter called:', { lengthBucketValue, propFilters: !!propFilters });
+                        updateURL({
+                            length_bucket: lengthBucketValue || null,
+                            page: null, // Reset to page 1 when filter changes
+                        });
+
+                        // Only refetch if not using prop filters (parent will handle refetch via useEffect)
+                        if (!propFilters) {
+                            fetchDocuments(1, 20, sortField, sortOrder === 1 ? 'asc' : 'desc', selectedOrgan, selectedRecurringSeries, lengthBucketValue || 'all', false);
+                        }
+                    }}
+                    filterDisplay="row"
                     className="custom-table"
                     paginatorTemplate={customPaginatorTemplate}
                 >
@@ -973,8 +1056,13 @@ export default function DocumentTable<T extends BaseDocument>({
                             header={lengthHeaderTemplate}
                             body={lengthTemplate}
                             sortable
+                            filter
+                            filterElement={lengthBucketFilterTemplate}
+                            filterFunction={lengthBucketFilter}
+                            filterField="length_bucket"
+                            showFilterMenu={false}
                             headerClassName="whitespace-nowrap"
-                            style={{ width: "7rem" }}
+                            style={{ width: "10rem" }}
                         />
                     )}
                     {config.columns.recurrence && (

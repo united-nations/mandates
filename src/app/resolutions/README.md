@@ -53,6 +53,7 @@ export const GET = createDocumentHandler<Resolution>(
 - Generic component used by both resolutions and reports pages
 - Fetches paginated data from `/api/resolutions`
 - Sortable columns, pagination controls
+- **Column filters**: In-header filters (Excel-like) that sync with URL
 - Configured via `resolutionsConfig` (see configs below)
 
 ---
@@ -122,6 +123,10 @@ User on table view or clicks "Show Table"
       → API handler filters → sorts → paginates
         → Returns { data: [...], total, page, totalPages }
     → Component renders rows with pagination
+    → User clicks column filter dropdown (e.g., Length)
+      → Updates DataTable filter state
+      → Syncs to URL: ?length_bucket=1k-2k
+      → API refetches with new filter
 ```
 
 ---
@@ -149,12 +154,24 @@ All state lives in URL search params (single source of truth):
 
 ## Filter Logic
 
-Filters are applied **server-side** in the API handler:
+Filters are applied **server-side** in the API handler. There are two types of filters:
 
+### External Filters (Outside Table)
+- **Organ**: Dropdown in page header
+- **Recurring Series**: Dropdown in page header
+- Applied to both treemap and table views
+
+### Column Filters (Inside Table)
+- **Length Bucket**: Dropdown in table column header
+- Uses PrimeReact DataTable filter system
+- Syncs bidirectionally with URL params
+- Can be triggered by Treemap click or manually selected
+
+### Filter Application Flow:
 1. Start with all documents from cached JSON
 2. Apply `organ` filter → match `document.organ === organ`
 3. Apply `is_recurring_series` filter → match boolean
-4. Apply `length_bucket` filter → check if `word_count` falls in bucket range
+4. Apply `length_bucket` filter → check if `word_count` falls in bucket range (custom filter function)
 5. Apply `similarity_bucket` filter → check if `similarity_to_previous` falls in bucket range
 6. Return filtered set (paginated or aggregated)
 

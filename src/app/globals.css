@@ -200,6 +200,59 @@ mark {
   font-weight: 600;
 }
 
+/* Custom styling for column filter dropdowns */
+.p-column-filter.p-dropdown {
+  font-size: 0.75rem;
+  min-height: 1.75rem;
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.375rem;
+  background-color: white;
+}
+
+.p-column-filter .p-dropdown-trigger {
+  width: 1.5rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.p-column-filter .p-dropdown-label {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  color: hsl(var(--foreground));
+  font-weight: 400;
+}
+
+.p-column-filter + .p-dropdown-panel .p-dropdown-items .p-dropdown-item {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.75rem;
+}
+
+.p-dropdown-panel.text-xs {
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.375rem;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.p-dropdown-panel.text-xs .p-dropdown-items {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.p-dropdown-panel.text-xs .p-dropdown-item {
+  font-size: 0.75rem;
+  padding: 0.35rem 0.75rem;
+  color: hsl(var(--foreground));
+}
+
+.p-dropdown-panel.text-xs .p-dropdown-item:hover {
+  background-color: rgba(0, 158, 219, 0.1);
+  color: #009edb;
+}
+
+.p-dropdown-panel.text-xs .p-dropdown-item.p-highlight {
+  background-color: rgba(0, 158, 219, 0.15);
+  color: #009edb;
+}
+
 .custom-table .p-datatable-tbody > tr.p-row-odd {
   background-color: #F6F7F8;
 }

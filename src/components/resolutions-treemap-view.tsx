@@ -130,8 +130,8 @@ export default function ResolutionsTreemapView({
           const showLabel = rect.width > 1.5 && rect.height > 1;
           
           // Normal font sizes
-          const normalTitleSize = 14;
-          const normalDetailSize = 12;
+          const normalTitleSize = 16;
+          const normalDetailSize = 13;
           const normalPadding = 8;
           
           // Estimate space needed for normal text
@@ -195,7 +195,7 @@ export default function ResolutionsTreemapView({
                         className="font-bold leading-tight text-left"
                         style={{ 
                           fontSize: `${titleFontSize}px`,
-                          marginBottom: showDetails ? `${padding / 2}px` : 0
+                          marginBottom: showDetails ? `${padding / 5}px` : 0
                         }}
                       >
                         {bucket.id === 'unknown'
