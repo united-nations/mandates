@@ -163,12 +163,12 @@ function ResolutionsPageContent() {
       {/* Header with filters - always visible */}
       <div className="max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-8 sm:px-12 lg:px-16 mb-4 pt-6">
         {/* Title row */}
-        <div className="flex items-center gap-3 mb-3">
+        <div className="flex items-center gap-3 mb-1">
           <FileText className="h-8 w-8 text-un-blue" />
           <h1 className="text-2xl font-bold tracking-tight text-foreground">
             <span className={searchParams.get('organ') ? "text-un-blue" : ""}>{organText}</span> Resolutions by{' '}
             <DropdownMenu>
-              <DropdownMenuTrigger className="text-un-blue hover:text-un-blue/80 focus:outline-none inline-flex items-center gap-0.5 transition-colors">
+              <DropdownMenuTrigger className="text-un-blue hover:text-un-blue/80 focus:outline-none inline-flex items-center gap-0 transition-colors">
                 <span ref={dimensionTextRef} className="border-b-2 border-un-blue/20 hover:border-un-blue/40 transition-colors">
                   {dimensionText}
                 </span>
@@ -176,7 +176,7 @@ function ResolutionsPageContent() {
               </DropdownMenuTrigger>
               <DropdownMenuContent 
                 align="start" 
-                className="w-auto p-0.5 border-un-blue/20 shadow-sm"
+                className="w-auto p-0.5 border-un-blue/20 shadow-sm mt-1"
                 style={{ minWidth: dropdownMinWidth }}
               >
                 {dimension !== 'length' && (

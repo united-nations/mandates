@@ -300,27 +300,58 @@ export default function DocumentTable<T extends BaseDocument>({
     };
 
     // Length bucket filter dropdown template
-    const lengthBucketFilterTemplate = (options: any) => (
-        <Dropdown
-            value={options.value}
-            options={[
-                { label: 'All', value: null },
-                ...lengthBuckets.map(b => ({ label: b.label, value: b.id }))
-            ]}
-            onChange={(e) => {
-                // Directly update URL instead of using filterCallback
-                updateURL({
-                    length_bucket: e.value || null,
-                    page: null,
-                });
-            }}
-            placeholder="All"
-            className="p-column-filter text-xs"
-            panelClassName="text-xs"
-            scrollHeight="200px"
-            style={{ minWidth: '6.5rem', fontSize: '0.75rem', height: '1.75rem', padding: '0.25rem 0.5rem' }}
-        />
-    );
+    const lengthBucketFilterTemplate = (options: any) => {
+        const isFiltered = options.value !== null && options.value !== undefined;
+
+        return (
+            <div className="flex items-center gap-1 w-full">
+                <Dropdown
+                    value={options.value}
+                    options={[
+                        { label: 'All', value: null },
+                        ...lengthBuckets.map(b => ({ label: b.label, value: b.id }))
+                    ]}
+                    onChange={(e) => {
+                        // Directly update URL instead of using filterCallback
+                        updateURL({
+                            length_bucket: e.value || null,
+                            page: null,
+                        });
+                    }}
+                    placeholder="All"
+                    className={`p-column-filter text-xs ${isFiltered ? 'border-un-blue border-2' : ''}`}
+                    panelClassName="text-xs"
+                    scrollHeight="200px"
+                    showClear={false}
+                    style={{
+                        width: '100%',
+                        flex: 1,
+                        fontSize: '0.75rem',
+                        height: '1.5rem',
+                        padding: '0.1rem 0.5rem',
+                        display: 'flex',
+                        alignItems: 'center'
+                    }}
+                />
+                {isFiltered && (
+                    <button
+                        onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            updateURL({
+                                length_bucket: null,
+                                page: null,
+                            });
+                        }}
+                        className="h-[1.75rem] w-[1.75rem] flex items-center justify-center hover:bg-gray-200 rounded transition-colors flex-shrink-0"
+                        title="Clear filter"
+                    >
+                        <X className="h-3.5 w-3.5 text-gray-600" />
+                    </button>
+                )}
+            </div>
+        );
+    };
 
     // Cell templates
     const titleTemplate = (row: T) => (
