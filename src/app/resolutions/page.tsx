@@ -214,7 +214,7 @@ function ResolutionsPageContent() {
         </div>
 
         {/* View toggle and filters row */}
-        <div className="flex items-center justify-between gap-4 mb-3">
+        <div className="flex items-center justify-between gap-4 mb-3 mt-4">
           {/* View toggle buttons */}
           <div className="inline-flex h-9 items-center justify-center gap-0.5 rounded-md border border-med-gray bg-muted p-0.5 text-muted-foreground">
             <Button
@@ -285,7 +285,7 @@ function ResolutionsPageContent() {
 
       {/* Content */}
       {view === 'treemap' ? (
-        <div className="max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-8 sm:px-12 lg:px-16">
+        <div className="max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-8 sm:px-12 lg:px-16 mt-4">
           <ResolutionsTreemapView
             filters={treemapFilters}
             dimension={dimension}
