@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import path from 'path';
 import { promises as fs } from 'fs';
 import type { BaseDocument, BucketData, AggregateResponse } from '@/types';
-import { lengthBuckets, similarityBuckets, getBucketForValue } from './treemap-config';
+import { lengthBuckets, similarityBuckets, frequencyBuckets, getBucketForValue } from './treemap-config';
 
 // Simple permanent in-memory cache
 const documentCache = new Map<string, any[]>();
@@ -35,6 +35,7 @@ export function createDocumentHandler<T extends BaseDocument>(
       const isRecurringSeries = searchParams.get('is_recurring_series');
       const lengthBucketParam = searchParams.get('length_bucket');
       const similarityBucketParam = searchParams.get('similarity_bucket');
+      const frequencyBucketParam = searchParams.get('frequency_bucket');
       const includeMissingFulltexts = searchParams.get('include_missing_fulltexts');
 
       // Filter by organ if specified
@@ -78,7 +79,9 @@ export function createDocumentHandler<T extends BaseDocument>(
             filteredDocuments = filteredDocuments.filter(
               doc =>
                 doc.word_count !== null &&
-                doc.word_count >= bucket.min! &&
+                bucket.min !== null &&
+                bucket.max !== null &&
+                doc.word_count >= bucket.min &&
                 doc.word_count <= bucket.max
             );
           }
@@ -103,8 +106,40 @@ export function createDocumentHandler<T extends BaseDocument>(
             filteredDocuments = filteredDocuments.filter(
               doc =>
                 doc.similarity_to_previous !== null &&
-                doc.similarity_to_previous >= bucket.min! &&
+                bucket.min !== null &&
+                bucket.max !== null &&
+                doc.similarity_to_previous >= bucket.min &&
                 doc.similarity_to_previous <= bucket.max
+            );
+          }
+        }
+      }
+
+      // Filter by frequency bucket if specified (distance_to_previous)
+      if (frequencyBucketParam) {
+        const bucket = frequencyBuckets.find(b => b.id === frequencyBucketParam);
+        if (bucket) {
+          if (bucket.min === null && bucket.max === null) {
+            // One-time bucket - series_symbol_count === 1
+            filteredDocuments = filteredDocuments.filter(doc => doc.series_symbol_count === 1);
+          } else if (bucket.max === null) {
+            // Open-ended range (e.g., ">5")
+            filteredDocuments = filteredDocuments.filter(
+              doc =>
+                doc.distance_to_previous !== null &&
+                doc.distance_to_previous !== undefined &&
+                doc.distance_to_previous >= bucket.min!
+            );
+          } else {
+            // Closed range
+            filteredDocuments = filteredDocuments.filter(
+              doc =>
+                doc.distance_to_previous !== null &&
+                doc.distance_to_previous !== undefined &&
+                bucket.min !== null &&
+                bucket.max !== null &&
+                doc.distance_to_previous >= bucket.min &&
+                doc.distance_to_previous <= bucket.max
             );
           }
         }
@@ -126,9 +161,16 @@ export function createDocumentHandler<T extends BaseDocument>(
           similarityBucketCounts[bucket.id] = { count: 0, sum: 0 };
         });
 
+        // Initialize buckets for frequency
+        const frequencyBucketCounts: Record<string, { count: number; sum: number }> = {};
+        frequencyBuckets.forEach(bucket => {
+          frequencyBucketCounts[bucket.id] = { count: 0, sum: 0 };
+        });
+
         // Count documents with non-null values
         let docsWithWordCount = 0;
         let docsWithSimilarity = 0;
+        let docsWithFrequency = 0;
 
         // Bucket all documents
         filteredDocuments.forEach(doc => {
@@ -146,6 +188,21 @@ export function createDocumentHandler<T extends BaseDocument>(
           if (doc.similarity_to_previous !== null) {
             similarityBucketCounts[similarityBucketId].sum += doc.similarity_to_previous;
             docsWithSimilarity++;
+          }
+
+          // Frequency bucketing (distance_to_previous for recurring, one-time for series_symbol_count === 1)
+          let frequencyBucketId: string;
+          if (doc.series_symbol_count === 1) {
+            // One-time documents
+            frequencyBucketId = 'one-time';
+          } else {
+            // Recurring documents - use distance_to_previous
+            frequencyBucketId = getBucketForValue(doc.distance_to_previous, frequencyBuckets);
+          }
+          frequencyBucketCounts[frequencyBucketId].count++;
+          if (doc.distance_to_previous !== null && doc.distance_to_previous !== undefined && doc.series_symbol_count > 1) {
+            frequencyBucketCounts[frequencyBucketId].sum += doc.distance_to_previous;
+            docsWithFrequency++;
           }
         });
 
@@ -170,6 +227,15 @@ export function createDocumentHandler<T extends BaseDocument>(
           };
         });
 
+        const frequencyBucketsData: Record<string, BucketData> = {};
+        Object.entries(frequencyBucketCounts).forEach(([id, data]) => {
+          frequencyBucketsData[id] = {
+            count: data.count,
+            percentage: totalCount > 0 ? (data.count / totalCount) * 100 : 0,
+            avg_value: data.count > 0 ? data.sum / data.count : undefined,
+          };
+        });
+
         const endTime = performance.now();
         const duration = endTime - startTime;
 
@@ -178,10 +244,12 @@ export function createDocumentHandler<T extends BaseDocument>(
             count: totalCount,
             resolutions_with_word_count: docsWithWordCount,
             resolutions_with_similarity: docsWithSimilarity,
+            resolutions_with_frequency: docsWithFrequency,
           },
           buckets: {
             length: lengthBucketsData,
             similarity: similarityBucketsData,
+            frequency: frequencyBucketsData,
           },
         };
 

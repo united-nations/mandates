@@ -5,8 +5,10 @@ import { AggregateResponse, BucketData, DocumentFilters } from '@/types';
 import {
   lengthBuckets,
   similarityBuckets,
+  frequencyBuckets,
   lengthColors,
   similarityColors,
+  frequencyColors,
   BucketDefinition,
 } from '@/lib/treemap-config';
 import { squarify, TreemapItem, TreemapRect, formatNumber, formatPercentage, formatApproximate } from '@/lib/treemap-utils';
@@ -18,8 +20,8 @@ interface BucketWithData extends BucketDefinition {
 
 interface ResolutionsTreemapViewProps {
   filters: DocumentFilters;
-  dimension: 'length' | 'similarity';
-  onCellClick: (dimension: 'length' | 'similarity', bucketId: string) => void;
+  dimension: 'length' | 'similarity' | 'frequency';
+  onCellClick: (dimension: 'length' | 'similarity' | 'frequency', bucketId: string) => void;
 }
 
 export default function ResolutionsTreemapView({
@@ -99,9 +101,9 @@ export default function ResolutionsTreemapView({
   }
 
   // Select buckets and data based on dimension
-  const buckets = dimension === 'length' ? lengthBuckets : similarityBuckets;
-  const bucketsData = dimension === 'length' ? data.buckets.length : data.buckets.similarity;
-  const colors = dimension === 'length' ? lengthColors : similarityColors;
+  const buckets = dimension === 'length' ? lengthBuckets : dimension === 'similarity' ? similarityBuckets : frequencyBuckets;
+  const bucketsData = dimension === 'length' ? data.buckets.length : dimension === 'similarity' ? data.buckets.similarity : data.buckets.frequency;
+  const colors = dimension === 'length' ? lengthColors : dimension === 'similarity' ? similarityColors : frequencyColors;
 
   // Prepare treemap items
   const items: TreemapItem<BucketWithData>[] = buckets
@@ -202,7 +204,9 @@ export default function ResolutionsTreemapView({
                           ? 'Word count not available'
                           : bucket.id === 'new'
                           ? bucket.label
-                          : `${bucket.label} ${dimension === 'length' ? 'words' : 'similar'}`}
+                          : bucket.id === 'one-time'
+                          ? bucket.label
+                          : `${bucket.label} ${dimension === 'length' ? 'words' : dimension === 'similarity' ? 'similar' : 'ago'}`}
                       </div>
                       {showDetails && (
                         <div 
@@ -235,7 +239,9 @@ export default function ResolutionsTreemapView({
                     <p className="text-xs text-muted-foreground mt-1">
                       {dimension === 'length'
                         ? `${formatApproximate(bucketData.avg_value)} words avg`
-                        : `${formatApproximate(bucketData.avg_value * 100)}% avg similarity`}
+                        : dimension === 'similarity'
+                        ? `${formatApproximate(bucketData.avg_value * 100)}% avg similarity`
+                        : `${formatApproximate(bucketData.avg_value)} years avg`}
                     </p>
                   )}
                   <p className="text-xs text-muted-foreground mt-1 hidden sm:block">Click to explore</p>

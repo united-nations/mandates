@@ -32,26 +32,48 @@ export const similarityBuckets: BucketDefinition[] = [
   { id: 'new', label: 'New/First', min: null, max: null, description: 'No previous version' },
 ];
 
+// Frequency buckets (distance_to_previous dimension)
+// Semantic ordering: most frequent → least frequent, with One-time last
+export const frequencyBuckets: BucketDefinition[] = [
+  { id: '<1', label: '<1 year', min: 0, max: 0, description: 'Less than 1 year ago' },
+  { id: '1', label: '1 year', min: 1, max: 1, description: '1 year ago' },
+  { id: '2', label: '2 years', min: 2, max: 2, description: '2 years ago' },
+  { id: '3-5', label: '3⎼5 years', min: 3, max: 5, description: '3 to 5 years ago' },
+  { id: '>5', label: '>5 years', min: 6, max: null, description: 'More than 5 years ago' },
+  { id: 'one-time', label: 'One-time', min: null, max: null, description: 'One-time document' },
+];
+
 // Color mappings for length dimension (inline styles)
 // Uses custom palette from tailwind.config.ts
-// Warm to cool gradient: highest counts (warm/red) → lowest counts (cool)
+// Red to green gradient: longest documents (red) → shortest documents (green)
 export const lengthColors: Record<string, string> = {
   'unknown': '#E5E7EB',  // gray-200 (neutral for unknown)
-  '<0.5k': '#4A7C7E',    // faded-jade (coolest - lowest counts)
-  '0.5k-1k': '#7D8471',  // camouflage-green
-  '1k-2k': '#9B8B7A',    // pale-oyster
-  '2k-5k': '#6C5B7B',    // smoky (transitional purple)
-  '>5k': '#A0665C',      // au-chico (warmest/reddish - highest counts)
+  '>5k': '#A0665C',      // au-chico (reddish - longest)
+  '2k-5k': '#6C5B7B',    // smoky (purple)
+  '1k-2k': '#7D8471',    // camouflage-green
+  '0.5k-1k': '#9BBB7A',  // pale-oyster (yellow-green)
+  '<0.5k': '#4A7C7E',    // faded-jade (greenish - shortest)
 };
 
 // Color mappings for similarity dimension (inline styles)
-// Blue gradient from light to dark
+// Red to green gradient: most similar (red/au-chico) → least similar (green/faded-jade)
 export const similarityColors: Record<string, string> = {
   'new': '#E5E7EB',      // gray-200 (neutral for new/first)
-  '<30': '#BFDBFE',      // light blue
-  '30-70': '#60A5FA',    // medium blue
-  '70-90': '#2563EB',    // dark blue
-  '>90': '#1E40AF',      // darkest blue
+  '>90': '#A0665C',      // au-chico (reddish - nearly identical, highest similarity)
+  '70-90': '#6C5B7B',    // smoky (purple - very similar)
+  '30-70': '#7D8471',    // camouflage-green (moderate similarity)
+  '<30': '#4A7C7E',      // faded-jade (greenish - very different, low similarity)
+};
+
+// Color mappings for frequency dimension (inline styles)
+// Red to green gradient: less frequent/longer gaps (red) → more frequent/shorter gaps (green)
+export const frequencyColors: Record<string, string> = {
+  'one-time': '#E5E7EB', // gray-200 (neutral for one-time)
+  '>5': '#A0665C',       // au-chico (reddish - least frequent, longest gap)
+  '3-5': '#6C5B7B',      // smoky (purple)
+  '2': '#7D8471',        // camouflage-green
+  '1': '#9BBB7A',        // pale-oyster (yellow-green)
+  '<1': '#4A7C7E',       // faded-jade (greenish - most frequent, shortest gap)
 };
 
 // Helper function to determine which bucket a value falls into

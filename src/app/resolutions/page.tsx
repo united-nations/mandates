@@ -22,7 +22,7 @@ function ResolutionsPageContent() {
 
   // Read all state from URL (single source of truth)
   const view = searchParams.get('view') || 'treemap';
-  const dimension = (searchParams.get('dimension') as 'length' | 'similarity') || 'length';
+  const dimension = (searchParams.get('dimension') as 'length' | 'similarity' | 'frequency') || 'length';
   
   // Filters for treemap (read from URL)
   const treemapFilters: DocumentFilters = {
@@ -55,6 +55,8 @@ function ResolutionsPageContent() {
       updates.length_bucket = null;
     } else if (dimension === 'similarity') {
       updates.similarity_bucket = null;
+    } else if (dimension === 'frequency') {
+      updates.frequency_bucket = null;
     }
     updateURL(updates);
   };
@@ -64,11 +66,12 @@ function ResolutionsPageContent() {
   };
 
   // Handle treemap cell click - set the appropriate bucket filter and switch to table
-  const handleCellClick = (clickedDimension: 'length' | 'similarity', bucketId: string) => {
+  const handleCellClick = (clickedDimension: 'length' | 'similarity' | 'frequency', bucketId: string) => {
     updateURL({
       view: 'table',
       length_bucket: clickedDimension === 'length' ? bucketId : null,
       similarity_bucket: clickedDimension === 'similarity' ? bucketId : null,
+      frequency_bucket: clickedDimension === 'frequency' ? bucketId : null,
       page: null, // Reset pagination
     });
   };
@@ -101,23 +104,24 @@ function ResolutionsPageContent() {
       is_recurring_series: null,
       length_bucket: null,
       similarity_bucket: null,
-      include_missing_fulltexts: null,
+      frequency_bucket: null,
       page: null,
     });
   };
 
-  const handleDimensionChange = (newDimension: 'length' | 'similarity') => {
+  const handleDimensionChange = (newDimension: 'length' | 'similarity' | 'frequency') => {
     updateURL({
       dimension: newDimension,
       // Reset bucket filters when changing dimension
       length_bucket: null,
       similarity_bucket: null,
+      frequency_bucket: null,
       page: null,
     });
   };
 
   // Get dimension display text
-  const dimensionText = dimension === 'length' ? 'Length' : 'Similarity to Previous';
+  const dimensionText = dimension === 'length' ? 'Length' : dimension === 'similarity' ? 'Similarity to Previous' : 'Frequency';
 
   // Organ acronyms mapping
   const organAcronyms: Record<string, string> = {
@@ -146,6 +150,7 @@ function ResolutionsPageContent() {
     searchParams.get('is_recurring_series') ||
     searchParams.get('length_bucket') ||
     searchParams.get('similarity_bucket') ||
+    searchParams.get('frequency_bucket') ||
     searchParams.get('include_missing_fulltexts') === 'false';
 
   // Display values for selects
@@ -193,6 +198,14 @@ function ResolutionsPageContent() {
                     className="cursor-pointer text-sm font-semibold text-un-blue hover:text-un-blue hover:bg-un-blue/10 py-2 px-3 rounded-sm focus:text-un-blue focus:bg-un-blue/10 whitespace-nowrap"
                   >
                     Similarity to Previous
+                  </DropdownMenuItem>
+                )}
+                {dimension !== 'frequency' && (
+                  <DropdownMenuItem 
+                    onClick={() => handleDimensionChange('frequency')}
+                    className="cursor-pointer text-sm font-semibold text-un-blue hover:text-un-blue hover:bg-un-blue/10 py-2 px-3 rounded-sm focus:text-un-blue focus:bg-un-blue/10 whitespace-nowrap"
+                  >
+                    Frequency
                   </DropdownMenuItem>
                 )}
               </DropdownMenuContent>

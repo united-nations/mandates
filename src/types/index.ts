@@ -298,10 +298,12 @@ export interface AggregateResponse {
     count: number;
     resolutions_with_word_count: number;
     resolutions_with_similarity: number;
+    resolutions_with_frequency: number;
   };
   buckets: {
     length: Record<string, BucketData>;
     similarity: Record<string, BucketData>;
+    frequency: Record<string, BucketData>;
   };
 }
 
