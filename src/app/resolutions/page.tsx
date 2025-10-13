@@ -24,13 +24,12 @@ function ResolutionsPageContent() {
   const view = searchParams.get('view') || 'treemap';
   const dimension = (searchParams.get('dimension') as 'length' | 'similarity') || 'length';
   
-  // Centralized filters object
-  const filters: DocumentFilters = {
+  // Filters for treemap (read from URL)
+  const treemapFilters: DocumentFilters = {
     organ: searchParams.get('organ') || undefined,
     is_recurring_series: searchParams.get('is_recurring_series') || undefined,
-    length_bucket: searchParams.get('length_bucket') || undefined,
-    similarity_bucket: searchParams.get('similarity_bucket') || undefined,
     include_missing_fulltexts: searchParams.get('include_missing_fulltexts') || undefined,
+    // Note: length_bucket and similarity_bucket are managed by table/treemap components
   };
 
   // Helper to update URL with any parameter changes
@@ -129,8 +128,8 @@ function ResolutionsPageContent() {
   };
 
   // Get organ display text for header (using acronyms)
-  const organText = filters.organ 
-    ? organAcronyms[filters.organ] || 'All'
+  const organText = searchParams.get('organ')
+    ? organAcronyms[searchParams.get('organ')!] || 'All'
     : 'All';
 
   // Measure the current dimension text width
@@ -142,16 +141,16 @@ function ResolutionsPageContent() {
   }, [dimensionText]);
 
   // Check if there are any active filters
-  const hasActiveFilters = 
-    filters.organ || 
-    filters.is_recurring_series || 
-    filters.length_bucket || 
-    filters.similarity_bucket ||
-    filters.include_missing_fulltexts;
+  const hasActiveFilters =
+    searchParams.get('organ') ||
+    searchParams.get('is_recurring_series') ||
+    searchParams.get('length_bucket') ||
+    searchParams.get('similarity_bucket') ||
+    searchParams.get('include_missing_fulltexts') === 'false';
 
   // Display values for selects
-  const selectedOrgan = filters.organ || 'all';
-  const selectedRecurringSeries = filters.is_recurring_series || 'all';
+  const selectedOrgan = searchParams.get('organ') || 'all';
+  const selectedRecurringSeries = searchParams.get('is_recurring_series') || 'all';
 
   const recurringSeriesOptions = [
     { value: 'all', label: 'All Documents' },
@@ -167,7 +166,7 @@ function ResolutionsPageContent() {
         <div className="flex items-center gap-3 mb-3">
           <FileText className="h-8 w-8 text-un-blue" />
           <h1 className="text-2xl font-bold tracking-tight text-foreground">
-            <span className={filters.organ ? "text-un-blue" : ""}>{organText}</span> Resolutions by{' '}
+            <span className={searchParams.get('organ') ? "text-un-blue" : ""}>{organText}</span> Resolutions by{' '}
             <DropdownMenu>
               <DropdownMenuTrigger className="text-un-blue hover:text-un-blue/80 focus:outline-none inline-flex items-center gap-0.5 transition-colors">
                 <span ref={dimensionTextRef} className="border-b-2 border-un-blue/20 hover:border-un-blue/40 transition-colors">
@@ -275,16 +274,16 @@ function ResolutionsPageContent() {
       {view === 'treemap' ? (
         <div className="max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-8 sm:px-12 lg:px-16">
           <ResolutionsTreemapView
-            filters={filters}
+            filters={treemapFilters}
             dimension={dimension}
             onCellClick={handleCellClick}
           />
-          
+
           {/* Include missing fulltexts checkbox - below treemap */}
           <div className="flex items-center justify-start gap-2 mt-3 pb-6">
             <Checkbox
               id="include-missing-fulltexts"
-              checked={filters.include_missing_fulltexts !== 'false'}
+              checked={searchParams.get('include_missing_fulltexts') !== 'false'}
               onCheckedChange={handleIncludeMissingFulltextsChange}
               className="border-med-gray data-[state=checked]:bg-un-blue data-[state=checked]:border-un-blue"
             />
@@ -297,10 +296,9 @@ function ResolutionsPageContent() {
           </div>
         </div>
       ) : (
-        <DocumentTable<Resolution> 
-          config={resolutionsConfig} 
-          filters={filters}
-          hideHeader={true} 
+        <DocumentTable<Resolution>
+          config={resolutionsConfig}
+          hideHeader={true}
         />
       )}
     </div>

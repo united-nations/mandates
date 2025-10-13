@@ -51,9 +51,11 @@ export const GET = createDocumentHandler<Resolution>(
 ### Table View
 **`src/components/document-table.tsx`**
 - Generic component used by both resolutions and reports pages
-- Fetches paginated data from `/api/resolutions`
+- **URL-based state**: All filters read from and synced to URL search params (single source of truth)
+- Fetches paginated data from `/api/resolutions` when URL changes
+- Single `useEffect` watches `searchParams` and automatically refetches
 - Sortable columns, pagination controls
-- **Column filters**: In-header filters (Excel-like) that sync with URL
+- **Column filters**: In-header PrimeReact Dropdown that directly updates URL (no intermediate state)
 - Configured via `resolutionsConfig` (see configs below)
 
 ---
@@ -119,14 +121,14 @@ User visits /resolutions
 ```
 User on table view or clicks "Show Table"
   → page.tsx renders DocumentTable
-    → Fetches /api/resolutions?page=1&limit=10&organ=...&length_bucket=...
+    → Fetches /api/resolutions?page=1&limit=20&organ=...&length_bucket=...
       → API handler filters → sorts → paginates
         → Returns { data: [...], total, page, totalPages }
     → Component renders rows with pagination
     → User clicks column filter dropdown (e.g., Length)
-      → Updates DataTable filter state
-      → Syncs to URL: ?length_bucket=1k-2k
-      → API refetches with new filter
+      → Dropdown onChange directly updates URL: ?length_bucket=1k-2k
+      → useEffect in DocumentTable watches searchParams
+      → Automatically refetches API with new filter
 ```
 
 ---
@@ -162,28 +164,45 @@ Filters are applied **server-side** in the API handler. There are two types of f
 - Applied to both treemap and table views
 
 ### Column Filters (Inside Table)
-- **Length Bucket**: Dropdown in table column header
-- Uses PrimeReact DataTable filter system
-- Syncs bidirectionally with URL params
-- Can be triggered by Treemap click or manually selected
+- **Length Bucket**: PrimeReact Dropdown in table column header
+- **Direct URL update**: Dropdown `onChange` calls `updateURL()` (bypasses PrimeReact's filterCallback)
+- **Reactive refetch**: URL change triggers `useEffect` in DocumentTable → automatic API refetch
+- Can be triggered by Treemap click or manually selected in dropdown
+- Filter state synced from URL back to PrimeReact for UI display
 
 ### Filter Application Flow:
 1. Start with all documents from cached JSON
 2. Apply `organ` filter → match `document.organ === organ`
 3. Apply `is_recurring_series` filter → match boolean
-4. Apply `length_bucket` filter → check if `word_count` falls in bucket range (custom filter function)
+4. Apply `length_bucket` filter → check if `word_count` falls in bucket range (min/max logic)
 5. Apply `similarity_bucket` filter → check if `similarity_to_previous` falls in bucket range
 6. Return filtered set (paginated or aggregated)
+
+**Key Implementation Detail:**
+- Column filter dropdown uses custom `onChange` handler that updates URL directly
+- This ensures filter changes work both from treemap clicks AND dropdown selection
+- The `useEffect` pattern creates a unidirectional data flow: URL → API → Data
 
 ---
 
 ## Adding New Features
 
-### Add a new filter:
+### Add a new column filter (in table header):
+1. Add bucket definitions in `treemap-config.ts` (if applicable)
+2. Add filter logic in `document-api-handler.ts` (GET handler)
+3. Update `DocumentFilters` type in `src/types/index.ts`
+4. In `document-table.tsx`:
+   - Add filter template function (similar to `lengthBucketFilterTemplate`)
+   - Ensure `onChange` calls `updateURL()` directly (don't use `filterCallback`)
+   - Add to Column definition with `filter={true}` and `filterElement={yourTemplate}`
+5. Sync filter state from URL in `useEffect` (read from `searchParams`)
+
+### Add a new external filter (page-level):
 1. Update URL params in `page.tsx` (read + update handlers)
 2. Add filter logic in `document-api-handler.ts` (GET handler)
 3. Update `DocumentFilters` type in `src/types/index.ts`
 4. Add UI control in `page.tsx` (dropdown, checkbox, etc.)
+5. Connect control to `updateURL()` helper
 
 ### Add a new dimension:
 1. Define buckets in `treemap-config.ts`
