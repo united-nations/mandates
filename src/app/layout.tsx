@@ -184,7 +184,7 @@ export default function RootLayout({
                             size='default'
                         >
                             <a
-                                href='https://forms.office.com/Pages/ResponsePage.aspx?id=2zWeD09UYE-9zF6kFubccKWYVHshXnBMlwUt34IXB2ZUQko4SUdLUVVQSE5BRU1UOTQ1WFRLV0JXRiQlQCN0PWcu'
+                                href='https://airtable.com/appId4rDWaFTpzNWz/pagpU0nMIhQMQPICL/form'
                                 target='_blank'
                                 rel='noopener noreferrer'
                                 className='inline-flex items-center gap-2'
