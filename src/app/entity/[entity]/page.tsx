@@ -2,7 +2,7 @@
 
 import { Suspense, useState } from 'react'
 import { useParams } from 'next/navigation'
-import { Building, Link as LinkIcon, Landmark } from 'lucide-react'
+import { Building, Link as LinkIcon, Landmark, ExternalLink } from 'lucide-react'
 import { EntityName } from '@/components/ui/entity-name'
 import { MandateExplorer } from '@/components/mandate-explorer'
 import { Badge } from '@/components/ui/badge'
@@ -10,13 +10,14 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { MetadataItem } from '@/components/ui/metadata-item'
 import { formatUrlForDisplay } from '@/lib/utils'
 import { LoadingFallback } from '@/components/ui/loading-fallback'
+import { Button } from '@/components/ui/button'
 
 interface Entity {
     entity: string
     entity_long: string
-    url?: string
-    principal_organ?: string
+    entity_link?: string
     transparency_portal_link?: string
+    entity_description?: string
 }
 
 function EntityPageContent() {
@@ -35,8 +36,8 @@ function EntityPageContent() {
 
     return (
         <div>
-            <div className='mb-6'>
-                <div className='flex items-center gap-4 mb-2'>
+            <div className='mb-8'>
+                <div className='flex items-center gap-4 mb-4'>
                     {entityDetails ? (
                         <h1 className='text-2xl font-bold tracking-tight'>
                             {entityDetails.entity_long} ({entityName})
@@ -48,34 +49,23 @@ function EntityPageContent() {
                     )}
                 </div>
 
-                {entityDetails ? (
-                    <div className='space-y-0 ml-0'>
-                        {entityDetails.url && (
-                            <MetadataItem label='Website' icon={LinkIcon}>
-                                <a
-                                    href={entityDetails.url}
-                                    target='_blank'
-                                    rel='noopener noreferrer'
-                                    className='text-un-blue underline break-all hover:text-un-blue/80 transition-colors'
-                                >
-                                    {formatUrlForDisplay(entityDetails.url)}
-                                </a>
-                            </MetadataItem>
-                        )}
-                        {entityDetails.transparency_portal_link && (
-                            <MetadataItem label='Transparency Portal' icon={LinkIcon}>
-                                <a
-                                    href={entityDetails.transparency_portal_link}
-                                    target='_blank'
-                                    rel='noopener noreferrer'
-                                    className='text-un-blue underline break-all hover:text-un-blue/80 transition-colors'
-                                >
-                                    {formatUrlForDisplay(entityDetails.transparency_portal_link)}
-                                </a>
-                            </MetadataItem>
-                        )}
-                    </div>
-                ) : null}
+                {entityDetails && (
+                    <Button
+                        size='sm'
+                        asChild
+                        className='bg-un-blue text-white hover:bg-un-blue/90 transition-colors'
+                    >
+                        <a
+                            href={`https://systemchart.un.org/?entity=${entityName.toLowerCase()}`}
+                            target='_blank'
+                            rel='noopener noreferrer'
+                            className='flex items-center gap-2'
+                        >
+                            <ExternalLink className='h-4 w-4' />
+                            View in UN System Chart
+                        </a>
+                    </Button>
+                )}
             </div>
 
             {/* Mandate Explorer */}

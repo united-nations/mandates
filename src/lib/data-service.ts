@@ -4,24 +4,8 @@ import { parse } from 'csv-parse/sync';
 import type { Mandate, Entity, Organ } from '@/types';
 
 interface EntityDetails {
-  'Entity-Long': string;
-  'Entity': string;
-  'Combined': string;
-  'Show': string;
-  'Group': string;
-  'Sub-Group': string;
-  'UN Principal Organ': string;
-  'Category': string;
-  'CEB Member?': string;
-  'Head of Entity-Level': string;
-  'Head of Entity-Title': string;
-  'Head of Entity-Name': string;
-  'Entity URL': string;
-  'Comment': string;
-  'description': string;
-  'annual_report_link': string;
-  'transparency_portal_link': string;
-  'Organizational Chart': string;
+  'entity': string;
+  'entity_long': string;
 }
 
 class DataService {
@@ -73,7 +57,7 @@ class DataService {
     }
 
     try {
-      const filePath = path.join(process.cwd(), 'data', 'entity_details.csv');
+      const filePath = path.join(process.cwd(), 'data', 'mandate_entities.csv');
       const fileContent = await readFile(filePath, 'utf-8');
       const rawData = parse(fileContent, {
         columns: true,
@@ -81,13 +65,11 @@ class DataService {
       }) as EntityDetails[];
 
       this.entitiesCache = rawData.map((item: EntityDetails) => ({
-        entity: item['Entity'] || '',
-        entity_long: item['Entity-Long'] || '',
-        url: item['Entity URL'] || undefined,
-        principal_organ: item['UN Principal Organ'] || undefined,
-        description: item['description'] || undefined,
-        annual_report_link: item['annual_report_link'] || undefined,
+        entity: item['entity'] || '',
+        entity_long: item['entity_long'] || '',
+        entity_link: item['entity_link'] || undefined,
         transparency_portal_link: item['transparency_portal_link'] || undefined,
+        entity_description: item['entity_description'] || undefined,
       }));
 
       return this.entitiesCache;
