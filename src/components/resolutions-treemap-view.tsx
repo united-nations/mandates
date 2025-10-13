@@ -49,6 +49,9 @@ export default function ResolutionsTreemapView({
         if (filters.is_recurring_series) {
           params.set('is_recurring_series', filters.is_recurring_series);
         }
+        if (filters.year_range) {
+          params.set('year_range', filters.year_range);
+        }
         if (filters.length_bucket) {
           params.set('length_bucket', filters.length_bucket);
         }

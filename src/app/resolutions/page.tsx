@@ -114,6 +114,7 @@ function ResolutionsPageContent() {
       length_bucket: null,
       similarity_bucket: null,
       frequency_bucket: null,
+      include_missing_fulltexts: null,
       page: null,
     });
   };
@@ -176,7 +177,7 @@ function ResolutionsPageContent() {
 
   const yearRangeOptions = [
     { value: 'all', label: 'All Years' },
-    { value: '1990-2025', label: '1990–2025' },
+    { value: '1990-2025', label: '1990-2025' },
   ];
 
   return (

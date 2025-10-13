@@ -33,6 +33,7 @@ export function createDocumentHandler<T extends BaseDocument>(
       const sortOrder = searchParams.get('sortOrder') || 'desc';
       const organ = searchParams.get('organ');
       const isRecurringSeries = searchParams.get('is_recurring_series');
+      const yearRange = searchParams.get('year_range');
       const lengthBucketParam = searchParams.get('length_bucket');
       const similarityBucketParam = searchParams.get('similarity_bucket');
       const frequencyBucketParam = searchParams.get('frequency_bucket');
@@ -52,6 +53,18 @@ export function createDocumentHandler<T extends BaseDocument>(
         filteredDocuments = filteredDocuments.filter(document =>
           document.is_recurring_series === isRecurring
         );
+      }
+
+      // Filter by year range if specified
+      if (yearRange && yearRange !== 'all') {
+        const [startYear, endYear] = yearRange.split('-').map(Number);
+        console.log('Year range filter:', { yearRange, startYear, endYear, beforeCount: filteredDocuments.length });
+        if (startYear && endYear) {
+          filteredDocuments = filteredDocuments.filter(document =>
+            document.year >= startYear && document.year <= endYear
+          );
+          console.log('After year filter:', filteredDocuments.length);
+        }
       }
 
       // By default, include documents with missing fulltext (null word_count)

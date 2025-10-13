@@ -88,6 +88,7 @@ export default function DocumentTable<T extends BaseDocument>({
             const sortOrderParam = searchParams.get('sortOrder') || 'desc';
             const organ = searchParams.get('organ');
             const isRecurringSeries = searchParams.get('is_recurring_series');
+            const yearRange = searchParams.get('year_range');
             const lengthBucket = searchParams.get('length_bucket');
             const similarityBucket = searchParams.get('similarity_bucket');
             const frequencyBucket = searchParams.get('frequency_bucket');
@@ -102,6 +103,7 @@ export default function DocumentTable<T extends BaseDocument>({
 
             if (organ && organ !== 'all') params.append('organ', organ);
             if (isRecurringSeries && isRecurringSeries !== 'all') params.append('is_recurring_series', isRecurringSeries);
+            if (yearRange && yearRange !== 'all') params.append('year_range', yearRange);
             if (lengthBucket && lengthBucket !== 'all') params.append('length_bucket', lengthBucket);
             if (similarityBucket && similarityBucket !== 'all') params.append('similarity_bucket', similarityBucket);
             if (frequencyBucket && frequencyBucket !== 'all') params.append('frequency_bucket', frequencyBucket);
