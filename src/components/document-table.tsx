@@ -10,7 +10,7 @@ import { Column } from "primereact/column";
 import { DataTable, DataTableFilterMeta } from "primereact/datatable";
 import { Dropdown } from "primereact/dropdown";
 import { useEffect, useState } from "react";
-import { lengthBuckets } from "@/lib/treemap-config";
+import { lengthBuckets, similarityBuckets } from "@/lib/treemap-config";
 
 interface ApiResponse<T> {
     data: T[];
@@ -48,6 +48,7 @@ export default function DocumentTable<T extends BaseDocument>({
     // DataTable filters state (for UI only - synced with URL)
     const [filters, setFilters] = useState<DataTableFilterMeta>({
         length_bucket: { value: null, matchMode: 'custom' as any },
+        similarity_bucket: { value: null, matchMode: 'custom' as any },
     });
 
     const [sortField, setSortField] = useState<string>('year');
@@ -139,18 +140,22 @@ export default function DocumentTable<T extends BaseDocument>({
 
         // Sync UI filter state with URL
         const lengthBucket = searchParams.get('length_bucket');
+        const similarityBucket = searchParams.get('similarity_bucket');
         setFilters({
-            length_bucket: { value: lengthBucket || null, matchMode: 'custom' as any }
+            length_bucket: { value: lengthBucket || null, matchMode: 'custom' as any },
+            similarity_bucket: { value: similarityBucket || null, matchMode: 'custom' as any }
         });
     }, [searchParams]);
 
     // PrimeReact filter change handler
     const handleFilterChange = (e: any) => {
         const lengthBucketValue = e.filters.length_bucket?.value;
+        const similarityBucketValue = e.filters.similarity_bucket?.value;
 
         // Simply update URL - the useEffect above will handle the refetch
         updateURL({
             length_bucket: lengthBucketValue || null,
+            similarity_bucket: similarityBucketValue || null,
             page: null, // Reset to page 1
         });
     };
@@ -340,6 +345,74 @@ export default function DocumentTable<T extends BaseDocument>({
                             e.stopPropagation();
                             updateURL({
                                 length_bucket: null,
+                                page: null,
+                            });
+                        }}
+                        className="h-[1.75rem] w-[1.75rem] flex items-center justify-center hover:bg-gray-200 rounded transition-colors flex-shrink-0"
+                        title="Clear filter"
+                    >
+                        <X className="h-3.5 w-3.5 text-gray-600" />
+                    </button>
+                )}
+            </div>
+        );
+    };
+
+    // Similarity bucket filter function (for PrimeReact)
+    const similarityBucketFilter = (value: number | null, filterValue: string | null): boolean => {
+        if (!filterValue) return true;
+
+        const bucket = similarityBuckets.find(b => b.id === filterValue);
+        if (!bucket) return true;
+
+        if (bucket.min === null && bucket.max === null) return value === null;
+        if (value === null) return false;
+        if (bucket.max === null) return value >= bucket.min!;
+
+        return value >= bucket.min! && value <= bucket.max;
+    };
+
+    // Similarity bucket filter dropdown template
+    const similarityBucketFilterTemplate = (options: any) => {
+        const isFiltered = options.value !== null && options.value !== undefined;
+
+        return (
+            <div className="flex items-center gap-1 w-full">
+                <Dropdown
+                    value={options.value}
+                    options={[
+                        { label: 'All', value: null },
+                        ...similarityBuckets.map(b => ({ label: b.label, value: b.id }))
+                    ]}
+                    onChange={(e) => {
+                        // Directly update URL instead of using filterCallback
+                        updateURL({
+                            similarity_bucket: e.value || null,
+                            page: null,
+                        });
+                    }}
+                    placeholder="All"
+                    className={`p-column-filter text-xs ${isFiltered ? 'border-un-blue border-2' : ''}`}
+                    panelClassName="text-xs"
+                    scrollHeight="200px"
+                    showClear={false}
+                    style={{
+                        width: '100%',
+                        flex: 1,
+                        fontSize: '0.75rem',
+                        height: '1.5rem',
+                        padding: '0.1rem 0.5rem',
+                        display: 'flex',
+                        alignItems: 'center'
+                    }}
+                />
+                {isFiltered && (
+                    <button
+                        onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            updateURL({
+                                similarity_bucket: null,
                                 page: null,
                             });
                         }}
@@ -739,8 +812,13 @@ export default function DocumentTable<T extends BaseDocument>({
                             header={similarityHeaderTemplate}
                             body={similarityTemplate}
                             sortable
+                            filter
+                            filterElement={similarityBucketFilterTemplate}
+                            filterFunction={similarityBucketFilter}
+                            filterField="similarity_bucket"
+                            showFilterMenu={false}
                             headerClassName="whitespace-nowrap"
-                            style={{ width: "7rem" }}
+                            style={{ width: "10rem" }}
                         />
                     )}
                     {config.columns.withinResources && (

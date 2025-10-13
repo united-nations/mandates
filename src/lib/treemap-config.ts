@@ -23,12 +23,12 @@ export const lengthBuckets: BucketDefinition[] = [
 ];
 
 // Similarity buckets (similarity_to_previous dimension)
-// Semantic ordering: different → identical, with New/First last
+// Semantic ordering: most similar → different, with New/First last
 export const similarityBuckets: BucketDefinition[] = [
-  { id: '<30', label: '<30%', min: 0, max: 0.30, description: 'Very different' },
-  { id: '30-70', label: '30%⎼70%', min: 0.30, max: 0.70, description: 'Moderately similar' },
-  { id: '70-90', label: '70%⎼90%', min: 0.70, max: 0.90, description: 'Very similar' },
   { id: '>90', label: '>90%', min: 0.90, max: 1.00, description: 'Nearly identical' },
+  { id: '70-90', label: '70%⎼90%', min: 0.70, max: 0.90, description: 'Very similar' },
+  { id: '30-70', label: '30%⎼70%', min: 0.30, max: 0.70, description: 'Moderately similar' },
+  { id: '<30', label: '<30%', min: 0, max: 0.30, description: 'Very different' },
   { id: 'new', label: 'New/First', min: null, max: null, description: 'No previous version' },
 ];
 
