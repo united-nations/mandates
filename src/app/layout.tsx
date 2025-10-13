@@ -20,7 +20,6 @@ import {
     DropdownMenuItem
 } from '@/components/ui/dropdown-menu'
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
-import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { BackButton } from '@/components/ui/back-button'
 import { Roboto } from 'next/font/google'
@@ -85,8 +84,8 @@ export default function RootLayout({
                                                     This beta version focuses on data about the UN secretariat.
                                                     <br />
                                                     Go to the{' '}
-                                                    <Link 
-                                                        href="/methodology" 
+                                                    <Link
+                                                        href="/methodology"
                                                         className="text-un-blue hover:text-shuttle-gray underline font-medium"
                                                     >
                                                         Methodology
@@ -197,8 +196,8 @@ export default function RootLayout({
                         <Toaster />
                     </FilterProvider>
                 </TooltipProvider>
+                <GoogleAnalytics gaId='G-HYTYJM0JGC' />
             </body>
-            <GoogleAnalytics gaId='G-HYTYJM0JGC' />
         </html>
     )
 }
