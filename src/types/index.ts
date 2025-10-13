@@ -281,6 +281,7 @@ export interface DocumentConfig<T extends BaseDocument> {
 export interface DocumentFilters {
   organ?: string;
   is_recurring_series?: string;
+  year_range?: string;
   length_bucket?: string;
   similarity_bucket?: string;
   include_missing_fulltexts?: string;

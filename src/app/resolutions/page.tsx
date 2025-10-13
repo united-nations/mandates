@@ -28,6 +28,7 @@ function ResolutionsPageContent() {
   const treemapFilters: DocumentFilters = {
     organ: searchParams.get('organ') || undefined,
     is_recurring_series: searchParams.get('is_recurring_series') || undefined,
+    year_range: searchParams.get('year_range') || undefined,
     include_missing_fulltexts: searchParams.get('include_missing_fulltexts') || undefined,
     // Note: length_bucket and similarity_bucket are managed by table/treemap components
   };
@@ -91,6 +92,13 @@ function ResolutionsPageContent() {
     });
   };
 
+  const handleYearRangeChange = (value: string) => {
+    updateURL({
+      year_range: value === 'all' ? null : value,
+      page: null,
+    });
+  };
+
   const handleIncludeMissingFulltextsChange = (checked: boolean) => {
     updateURL({
       include_missing_fulltexts: checked ? null : 'false',
@@ -102,6 +110,7 @@ function ResolutionsPageContent() {
     updateURL({
       organ: null,
       is_recurring_series: null,
+      year_range: null,
       length_bucket: null,
       similarity_bucket: null,
       frequency_bucket: null,
@@ -148,6 +157,7 @@ function ResolutionsPageContent() {
   const hasActiveFilters =
     searchParams.get('organ') ||
     searchParams.get('is_recurring_series') ||
+    searchParams.get('year_range') ||
     searchParams.get('length_bucket') ||
     searchParams.get('similarity_bucket') ||
     searchParams.get('frequency_bucket') ||
@@ -156,11 +166,17 @@ function ResolutionsPageContent() {
   // Display values for selects
   const selectedOrgan = searchParams.get('organ') || 'all';
   const selectedRecurringSeries = searchParams.get('is_recurring_series') || 'all';
+  const selectedYearRange = searchParams.get('year_range') || 'all';
 
   const recurringSeriesOptions = [
     { value: 'all', label: 'All Documents' },
     { value: 'true', label: 'Recurring Documents' },
     { value: 'false', label: 'One-time Documents' },
+  ];
+
+  const yearRangeOptions = [
+    { value: 'all', label: 'All Years' },
+    { value: '1990-2025', label: '1990–2025' },
   ];
 
   return (
@@ -245,7 +261,7 @@ function ResolutionsPageContent() {
 
           <div className="flex items-center gap-2">
             <Select value={selectedOrgan} onValueChange={handleOrganChange}>
-              <SelectTrigger id="organ-filter" className={`w-48 h-9 px-3 text-sm bg-white data-[state=open]:border-un-blue ${selectedOrgan !== 'all' ? 'border-un-blue' : 'border-med-gray'}`}>
+              <SelectTrigger id="organ-filter" className={`w-[240px] h-9 px-3 text-sm bg-white data-[state=open]:border-un-blue ${selectedOrgan !== 'all' ? 'border-un-blue' : 'border-med-gray'}`}>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -256,8 +272,20 @@ function ResolutionsPageContent() {
                 ))}
               </SelectContent>
             </Select>
+            <Select value={selectedYearRange} onValueChange={handleYearRangeChange}>
+              <SelectTrigger id="year-range-filter" className={`w-[120px] h-9 px-3 text-sm bg-white data-[state=open]:border-un-blue ${selectedYearRange !== 'all' ? 'border-un-blue' : 'border-med-gray'}`}>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {yearRangeOptions.map(option => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <Select value={selectedRecurringSeries} onValueChange={handleRecurringSeriesChange}>
-              <SelectTrigger id="recurring-filter" className={`w-52 h-9 px-3 text-sm bg-white data-[state=open]:border-un-blue ${selectedRecurringSeries !== 'all' ? 'border-un-blue' : 'border-med-gray'}`}>
+              <SelectTrigger id="recurring-filter" className={`w-[200px] h-9 px-3 text-sm bg-white data-[state=open]:border-un-blue ${selectedRecurringSeries !== 'all' ? 'border-un-blue' : 'border-med-gray'}`}>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
