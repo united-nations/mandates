@@ -115,6 +115,7 @@ function ResolutionsPageContent() {
       similarity_bucket: null,
       frequency_bucket: null,
       include_missing_fulltexts: null,
+      title_search: null,
       page: null,
     });
   };
@@ -162,6 +163,7 @@ function ResolutionsPageContent() {
     searchParams.get('length_bucket') ||
     searchParams.get('similarity_bucket') ||
     searchParams.get('frequency_bucket') ||
+    searchParams.get('title_search') ||
     searchParams.get('include_missing_fulltexts') === 'false';
 
   // Display values for selects

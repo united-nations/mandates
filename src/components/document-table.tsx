@@ -3,13 +3,14 @@
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Input } from '@/components/ui/input';
 import type { BaseDocument, DocumentConfig } from "@/types";
 import { Check, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, FileText, RotateCcw, X } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Column } from "primereact/column";
 import { DataTable, DataTableFilterMeta } from "primereact/datatable";
 import { Dropdown } from "primereact/dropdown";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { lengthBuckets, similarityBuckets, frequencyBuckets } from "@/lib/treemap-config";
 
 interface ApiResponse<T> {
@@ -50,11 +51,15 @@ export default function DocumentTable<T extends BaseDocument>({
         length_bucket: { value: null, matchMode: 'custom' as any },
         similarity_bucket: { value: null, matchMode: 'custom' as any },
         frequency_bucket: { value: null, matchMode: 'custom' as any },
+        title: { value: null, matchMode: 'custom' as any },
     });
 
     const [sortField, setSortField] = useState<string>('year');
     const [sortOrder, setSortOrder] = useState<1 | -1>(-1);
     const [isShowingFilteredSubset, setIsShowingFilteredSubset] = useState(false);
+
+    // Local state for title search input (before submission)
+    const [titleSearchInput, setTitleSearchInput] = useState<string>('');
 
     const recurringSeriesOptions = [
         { value: 'all', label: 'All Documents' },
@@ -108,6 +113,9 @@ export default function DocumentTable<T extends BaseDocument>({
             if (similarityBucket && similarityBucket !== 'all') params.append('similarity_bucket', similarityBucket);
             if (frequencyBucket && frequencyBucket !== 'all') params.append('frequency_bucket', frequencyBucket);
 
+            const titleSearch = searchParams.get('title_search');
+            if (titleSearch) params.append('title_search', titleSearch);
+
             const response = await fetch(`${config.apiEndpoint}?${params}`);
             if (!response.ok) throw new Error(`Failed to fetch ${config.type}`);
 
@@ -147,11 +155,16 @@ export default function DocumentTable<T extends BaseDocument>({
         const lengthBucket = searchParams.get('length_bucket');
         const similarityBucket = searchParams.get('similarity_bucket');
         const frequencyBucket = searchParams.get('frequency_bucket');
+        const titleSearch = searchParams.get('title_search');
         setFilters({
             length_bucket: { value: lengthBucket || null, matchMode: 'custom' as any },
             similarity_bucket: { value: similarityBucket || null, matchMode: 'custom' as any },
-            frequency_bucket: { value: frequencyBucket || null, matchMode: 'custom' as any }
+            frequency_bucket: { value: frequencyBucket || null, matchMode: 'custom' as any },
+            title: { value: titleSearch || null, matchMode: 'custom' as any }
         });
+        
+        // Sync local title search input with URL
+        setTitleSearchInput(titleSearch || '');
     }, [searchParams]);
 
     // PrimeReact filter change handler
@@ -159,12 +172,14 @@ export default function DocumentTable<T extends BaseDocument>({
         const lengthBucketValue = e.filters.length_bucket?.value;
         const similarityBucketValue = e.filters.similarity_bucket?.value;
         const frequencyBucketValue = e.filters.frequency_bucket?.value;
+        const titleValue = e.filters.title?.value;
 
         // Simply update URL - the useEffect above will handle the refetch
         updateURL({
             length_bucket: lengthBucketValue || null,
             similarity_bucket: similarityBucketValue || null,
             frequency_bucket: frequencyBucketValue || null,
+            title_search: titleValue || null,
             page: null, // Reset to page 1
         });
     };
@@ -504,6 +519,59 @@ export default function DocumentTable<T extends BaseDocument>({
                 )}
             </div>
         );
+    };
+
+    // Title filter template
+    const titleFilterTemplate = (options: any) => {
+        const isFiltered = options.value !== null && options.value !== undefined && options.value !== '';
+
+        const handleTitleSearch = () => {
+            updateURL({
+                title_search: titleSearchInput || null,
+                page: null,
+            });
+        };
+
+        const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+            if (e.key === 'Enter') {
+                handleTitleSearch();
+            }
+        };
+
+        return (
+            <div className="flex items-center gap-1 w-full">
+                <Input
+                    type="text"
+                    value={titleSearchInput}
+                    onChange={(e) => setTitleSearchInput(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    placeholder="Press Enter to search..."
+                    className={`text-xs h-[1.5rem] px-2 ${isFiltered ? 'border-un-blue border-2' : ''}`}
+                />
+                {isFiltered && (
+                    <button
+                        onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setTitleSearchInput('');
+                            updateURL({
+                                title_search: null,
+                                page: null,
+                            });
+                        }}
+                        className="h-[1.75rem] w-[1.75rem] flex items-center justify-center hover:bg-gray-200 rounded transition-colors flex-shrink-0"
+                        title="Clear filter"
+                    >
+                        <X className="h-3.5 w-3.5 text-gray-600" />
+                    </button>
+                )}
+            </div>
+        );
+    };
+
+    // Title filter function (always return true since filtering is server-side)
+    const titleFilter = (): boolean => {
+        return true;
     };
 
     // Cell templates
@@ -850,6 +918,11 @@ export default function DocumentTable<T extends BaseDocument>({
                             header="Title"
                             body={titleTemplate}
                             sortable
+                            filter
+                            filterElement={titleFilterTemplate}
+                            filterFunction={titleFilter}
+                            filterField="title"
+                            showFilterMenu={false}
                             style={{ width: "20rem", maxWidth: "20rem" }}
                         />
                     )}

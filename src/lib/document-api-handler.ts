@@ -38,6 +38,7 @@ export function createDocumentHandler<T extends BaseDocument>(
       const similarityBucketParam = searchParams.get('similarity_bucket');
       const frequencyBucketParam = searchParams.get('frequency_bucket');
       const includeMissingFulltexts = searchParams.get('include_missing_fulltexts');
+      const titleSearch = searchParams.get('title_search');
 
       // Filter by organ if specified
       let filteredDocuments = allDocuments;
@@ -73,6 +74,15 @@ export function createDocumentHandler<T extends BaseDocument>(
         filteredDocuments = filteredDocuments.filter(document =>
           document.word_count !== null
         );
+      }
+
+      // Filter by title search if specified
+      if (titleSearch) {
+        const searchLower = titleSearch.toLowerCase();
+        filteredDocuments = filteredDocuments.filter(document => {
+          const title = document.title || document.combined_title || '';
+          return title.toLowerCase().includes(searchLower);
+        });
       }
 
       // Filter by length bucket if specified
