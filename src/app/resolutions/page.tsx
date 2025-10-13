@@ -245,7 +245,7 @@ function ResolutionsPageContent() {
 
           <div className="flex items-center gap-2">
             <Select value={selectedOrgan} onValueChange={handleOrganChange}>
-              <SelectTrigger id="organ-filter" className="w-48 h-9 px-3 text-sm border-med-gray focus:border-blue-500 focus:ring-blue-500 bg-white">
+              <SelectTrigger id="organ-filter" className={`w-48 h-9 px-3 text-sm bg-white data-[state=open]:border-un-blue ${selectedOrgan !== 'all' ? 'border-un-blue' : 'border-med-gray'}`}>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -257,7 +257,7 @@ function ResolutionsPageContent() {
               </SelectContent>
             </Select>
             <Select value={selectedRecurringSeries} onValueChange={handleRecurringSeriesChange}>
-              <SelectTrigger id="recurring-filter" className="w-52 h-9 px-3 text-sm border-med-gray focus:border-blue-500 focus:ring-blue-500 bg-white">
+              <SelectTrigger id="recurring-filter" className={`w-52 h-9 px-3 text-sm bg-white data-[state=open]:border-un-blue ${selectedRecurringSeries !== 'all' ? 'border-un-blue' : 'border-med-gray'}`}>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -273,7 +273,7 @@ function ResolutionsPageContent() {
               size="sm"
               onClick={handleResetFilters}
               disabled={!hasActiveFilters}
-              className="h-9 w-9 p-0 border-med-gray bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="h-9 w-9 p-0 border-med-gray bg-trout hover:bg-trout/80 text-white disabled:bg-gray-100 disabled:text-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
               title="Reset filters to default"
             >
               <RotateCcw className="h-4 w-4" />
