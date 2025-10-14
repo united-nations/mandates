@@ -2,7 +2,7 @@
 
 import { Suspense, useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
-import { Building, Link as LinkIcon, Landmark, ExternalLink, AlertCircle } from 'lucide-react'
+import { Building, Link as LinkIcon, Landmark, ExternalLink, AlertCircle, Info } from 'lucide-react'
 import { EntityName } from '@/components/ui/entity-name'
 import { MandateExplorer } from '@/components/mandate-explorer'
 import { Badge } from '@/components/ui/badge'
@@ -12,6 +12,7 @@ import { formatUrlForDisplay } from '@/lib/utils'
 import { LoadingFallback } from '@/components/ui/loading-fallback'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import type { ApiResponse } from '@/types'
 
 interface Entity {
     entity: string
@@ -28,6 +29,7 @@ function EntityPageContent() {
     const [entityDetails, setEntityDetails] = useState<Entity | null>(null)
     const [isLoading, setIsLoading] = useState(true)
     const [entityNotFound, setEntityNotFound] = useState(false)
+    const [mandateCount, setMandateCount] = useState<number | null>(null)
 
     // Callback to receive entity details from MandateExplorer (more efficient)
     const handleEntityDetailsLoaded = (entities: Entity[]) => {
@@ -39,6 +41,11 @@ function EntityPageContent() {
             setEntityNotFound(true)
         }
         setIsLoading(false)
+    }
+
+    // Callback to receive API data including mandate count
+    const handleDataLoaded = (data: ApiResponse) => {
+        setMandateCount(data.pagination.totalItems)
     }
 
     // Set a timeout to show error if no data is loaded within reasonable time
@@ -61,6 +68,33 @@ function EntityPageContent() {
                     <AlertTitle>Entity Not Found</AlertTitle>
                     <AlertDescription>
                         The entity "{entityName}" does not exist or has not yet been added to the UN Mandate Source Registry.
+                    </AlertDescription>
+                </Alert>
+            )}
+
+            {/* Show info message if entity exists but has no mandates */}
+            {!isLoading && entityDetails && mandateCount === 0 && (
+                <Alert className="mb-6 max-w-2xl border-un-blue/30 bg-un-blue/5 text-un-blue">
+                    <Info className="h-4 w-4" />
+                    <AlertTitle>Source Documents Not Yet Available</AlertTitle>
+                    <AlertDescription>
+                        <div className="space-y-2">
+                            <p>
+                                No source documents have been found for {entityDetails.entity_long} ({entityName}) in the current version of the registry. Documents for this entity are being processed and will be added soon.
+                            </p>
+                            <p className="font-medium">
+                                Are you an entity focal point?{' '}
+                                <a
+                                    href="https://airtable.com/appId4rDWaFTpzNWz/pagpU0nMIhQMQPICL/form"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="underline hover:no-underline"
+                                >
+                                    Please get in touch
+                                </a>{' '}
+                                to expedite this process.
+                            </p>
+                        </div>
                     </AlertDescription>
                 </Alert>
             )}
@@ -103,6 +137,7 @@ function EntityPageContent() {
                     pageType='entity'
                     entityFilter={entityName}
                     onEntityDetailsLoaded={handleEntityDetailsLoaded}
+                    onDataLoaded={handleDataLoaded}
                 />
             )}
         </div>
