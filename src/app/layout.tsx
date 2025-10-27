@@ -82,7 +82,7 @@ export default function RootLayout({
                                                 </div>
                                             </Link>
                                             {/*  beta badge that repositions */}
-                                            <div className='hidden lg:block mt-1 lg:mt-0 self-start lg:self-auto'>
+                                            <div className='hidden lg:block mt-1 self-start lg:self-auto'>
                                                     <Tooltip>
                                                     <TooltipTrigger asChild>
                                                         <Button
