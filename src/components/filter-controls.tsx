@@ -30,6 +30,7 @@ interface FilterControlsProps {
   subjectOptions: { value: string; count: number }[];
   yearRange: { min: number; max: number } | null;
   yearDistribution: { [year: string]: number };
+  originalYearDistribution?: { [year: string]: number };
   showAdvancedSearch: boolean;
   setShowAdvancedSearch: (show: boolean) => void;
   entitiesData: Entity[];
@@ -45,6 +46,7 @@ export function FilterControls({
   subjectOptions,
   yearRange,
   yearDistribution,
+  originalYearDistribution,
   showAdvancedSearch,
   setShowAdvancedSearch,
   entitiesData,
@@ -176,6 +178,7 @@ export function FilterControls({
               subjectOptions={subjectOptions}
               yearRange={yearRange}
               yearDistribution={yearDistribution}
+              originalYearDistribution={originalYearDistribution}
               selectedYearRange={selectedYearRange}
               onYearRangeChange={handleYearRangeChange}
             />
