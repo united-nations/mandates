@@ -25,11 +25,15 @@ export function ShareButton() {
                     variant="ghost"
                     size="icon"
                     onClick={handleShare}
-                    className="h-9 w-9 text-muted-foreground hover:text-un-blue transition-colors"
+                    className={`h-9 w-9 transition-colors ${
+                        copied 
+                            ? 'bg-un-blue text-white hover:bg-un-blue' 
+                            : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+                    }`}
                     aria-label="Share current page"
                 >
                     {copied ? (
-                        <Check className="h-4 w-4 text-green-600" />
+                        <Check className="h-4 w-4" />
                     ) : (
                         <Share className="h-4 w-4" />
                     )}
