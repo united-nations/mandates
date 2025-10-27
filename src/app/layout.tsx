@@ -15,7 +15,7 @@ import { Button } from '@/components/ui/button'
 import { ShareButton } from '@/components/ui/share-button'
 import Link from 'next/link'
 import Image from 'next/image'
-import { AnimatedLogo } from '@/components/ui/animated-logo'
+import dynamic from 'next/dynamic'
 import {
     DropdownMenu,
     DropdownMenuTrigger,
@@ -26,6 +26,11 @@ import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip
 import { usePathname } from 'next/navigation'
 import { BackButton } from '@/components/ui/back-button'
 import { Roboto } from 'next/font/google'
+
+// Dynamic import to prevent SSR and eliminate hydration errors
+const AnimatedLogo = dynamic(() => import('@/components/ui/animated-logo').then(mod => mod.AnimatedLogo), {
+    ssr: false
+})
 
 const roboto = Roboto({
     weight: ['300', '400', '500', '700'],
