@@ -36,7 +36,7 @@ export const similarityBuckets: BucketDefinition[] = [
 // Semantic ordering: most frequent → least frequent, with One-time last
 export const frequencyBuckets: BucketDefinition[] = [
   { id: '<1', label: '<1 year', min: 0, max: 0, description: 'Less than 1 year ago' },
-  { id: '1', label: '1 year', min: 1, max: 1, description: '1 year ago' },
+  { id: '1', label: '1 year', min: 1, max: 1, description: 'Annual' },
   { id: '2', label: '2 years', min: 2, max: 2, description: '2 years ago' },
   { id: '3-5', label: '3⎼5 years', min: 3, max: 5, description: '3 to 5 years ago' },
   { id: '>5', label: '>5 years', min: 6, max: null, description: 'More than 5 years ago' },
