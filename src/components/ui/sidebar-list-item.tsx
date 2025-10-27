@@ -133,7 +133,7 @@ export function SidebarListItem({
   // If tooltip content is provided, wrap with tooltip
   if (tooltipContent) {
     return (
-      <Tooltip delayDuration={500}>
+      <Tooltip delayDuration={300} disableHoverableContent={true}>
         <TooltipTrigger asChild>
           {itemContent}
         </TooltipTrigger>
