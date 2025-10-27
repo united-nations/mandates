@@ -10,7 +10,7 @@ import { TooltipProvider } from '@/components/ui/tooltip'
 import { explainerTexts } from '@/lib/explainer-texts'
 import { GoogleAnalytics } from '@next/third-parties/google'
 import { FilterProvider } from '@/contexts/FilterContext'
-import { Menu, MessageCircle, Info } from 'lucide-react'
+import { Menu, MessageCircle, Info, Home, BookOpen, ExternalLink } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ShareButton } from '@/components/ui/share-button'
 import Link from 'next/link'
@@ -131,9 +131,15 @@ export default function RootLayout({
                                                 className={pathname === '/' ? 'text-muted-foreground cursor-default opacity-60' : ''}
                                             >
                                                 {pathname === '/' ? (
-                                                    <span>Mandate Source Registry</span>
+                                                    <span className='flex items-center gap-2'>
+                                                        <Home className='h-4 w-4' />
+                                                        Mandate Source Registry
+                                                    </span>
                                                 ) : (
-                                                    <Link href='/'>Mandate Source Registry</Link>
+                                                    <Link href='/' className='flex items-center gap-2'>
+                                                        <Home className='h-4 w-4' />
+                                                        Mandate Source Registry
+                                                    </Link>
                                                 )}
                                             </DropdownMenuItem>
                                             <DropdownMenuItem
@@ -141,9 +147,15 @@ export default function RootLayout({
                                                 className={pathname === '/methodology' ? 'text-muted-foreground cursor-default opacity-60' : ''}
                                             >
                                                 {pathname === '/methodology' ? (
-                                                    <span>Methodology</span>
+                                                    <span className='flex items-center gap-2'>
+                                                        <BookOpen className='h-4 w-4' />
+                                                        Methodology
+                                                    </span>
                                                 ) : (
-                                                    <Link href='/methodology'>Methodology</Link>
+                                                    <Link href='/methodology' className='flex items-center gap-2'>
+                                                        <BookOpen className='h-4 w-4' />
+                                                        Methodology
+                                                    </Link>
                                                 )}
                                             </DropdownMenuItem>
                                             {/* <DropdownMenuItem
@@ -171,9 +183,15 @@ export default function RootLayout({
                                                 className={pathname === '/resources' ? 'text-muted-foreground cursor-default opacity-60' : ''}
                                             >
                                                 {pathname === '/resources' ? (
-                                                    <span>More Resources</span>
+                                                    <span className='flex items-center gap-2'>
+                                                        <ExternalLink className='h-4 w-4' />
+                                                        More Resources
+                                                    </span>
                                                 ) : (
-                                                    <Link href='/resources'>More Resources</Link>
+                                                    <Link href='/resources' className='flex items-center gap-2'>
+                                                        <ExternalLink className='h-4 w-4' />
+                                                        More Resources
+                                                    </Link>
                                                 )}
                                             </DropdownMenuItem>
                                         </DropdownMenuContent>
