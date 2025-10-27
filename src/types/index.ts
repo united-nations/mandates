@@ -118,11 +118,6 @@ export interface Mandate {
 export interface Entity {
   entity: string;
   entity_long: string;
-  url?: string;
-  principal_organ?: string;
-  description?: string;
-  annual_report_link?: string;
-  transparency_portal_link?: string;
 }
 
 export interface EntityWithCount {

@@ -44,6 +44,8 @@ interface MandateExplorerProps {
   onEntityDetailsLoaded?: (entities: Entity[]) => void
   // Callback to pass organ details to parent component
   onOrganDetailsLoaded?: (organs: Organ[]) => void
+  // Callback to pass API data to parent component
+  onDataLoaded?: (data: ApiResponse) => void
 }
 
 export function MandateExplorer ({
@@ -51,7 +53,8 @@ export function MandateExplorer ({
   organFilter,
   pageType,
   onEntityDetailsLoaded,
-  onOrganDetailsLoaded
+  onOrganDetailsLoaded,
+  onDataLoaded
 }: MandateExplorerProps) {
   const { filters, setFilter } = useFilters()
   const searchParams = useSearchParams()

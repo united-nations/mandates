@@ -61,7 +61,7 @@ The application uses a **unified API architecture** centered around `/api/mandat
 `src/lib/data-service.ts` is the **singleton data loader**:
 
 - Loads mandate data from `data/ppb2026_unique_mandates_with_metadata.json`
-- Loads entity metadata from `data/entity_details.csv`
+- Loads entity metadata from `data/mandate_entities.csv`
 - Loads organ data from `data/organs.json`
 - Provides in-memory caches with lookup maps
 
