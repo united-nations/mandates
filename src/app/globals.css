@@ -33,6 +33,8 @@
     --destructive-foreground: 0 0% 100%;
 
     --border: 220 15% 85%; /* Softer gray border */
+    /* --border: 210, 9%, 86%; Med gray custom */
+
     --input: 0 0% 100%; /* White input backgrounds */
     --ring: 196 100% 43%; /* UN Blue for focus rings */
 
@@ -196,6 +198,88 @@ mark {
   border-color: hsl(var(--border));
   color: hsl(var(--foreground));
   font-weight: 600;
+  padding-top: 0.5rem;
+  padding-bottom: 0rem;
+}
+
+/* Reduce spacing in filter row - minimal space above, slight space below */
+.custom-table .p-datatable-thead > tr:has(.p-column-filter) > th {
+  padding-top: 0rem !important;
+  padding-bottom: 0.65rem !important;
+  margin-top: -0.15rem !important;
+  vertical-align: top !important;
+}
+
+/* Custom styling for column filter dropdowns */
+.p-column-filter.p-dropdown {
+  font-size: 0.75rem;
+  min-height: 1.75rem;
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.375rem;
+  background-color: white;
+  display: flex;
+  align-items: center;
+}
+
+.p-column-filter .p-dropdown-trigger {
+  width: 1.5rem;
+  color: hsl(var(--muted-foreground));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.p-column-filter .p-dropdown-label {
+  padding: 0rem 0.5rem;
+  font-size: 0.75rem;
+  color: hsl(var(--foreground));
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  text-align: left;
+  line-height: 1.75rem;
+}
+
+/* Filtered column styling - UN blue border */
+.p-column-filter.border-un-blue {
+  border-color: #009edb !important;
+}
+
+/* Hide PrimeReact's default filter clear button - we have our own */
+.p-column-filter-clear-button {
+  display: none !important;
+}
+
+.p-column-filter + .p-dropdown-panel .p-dropdown-items .p-dropdown-item {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.75rem;
+}
+
+.p-dropdown-panel.text-xs {
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.375rem;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.p-dropdown-panel.text-xs .p-dropdown-items {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.p-dropdown-panel.text-xs .p-dropdown-item {
+  font-size: 0.75rem;
+  padding: 0.35rem 0.75rem;
+  color: hsl(var(--foreground));
+}
+
+.p-dropdown-panel.text-xs .p-dropdown-item:hover {
+  background-color: rgba(0, 158, 219, 0.1);
+  color: #009edb;
+}
+
+.p-dropdown-panel.text-xs .p-dropdown-item.p-highlight {
+  background-color: rgba(0, 158, 219, 0.15);
+  color: #009edb;
 }
 
 .custom-table .p-datatable-tbody > tr.p-row-odd {

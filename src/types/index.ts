@@ -272,5 +272,36 @@ export interface DocumentConfig<T extends BaseDocument> {
   };
 }
 
+// Document filter types (for resolutions and reports pages)
+export interface DocumentFilters {
+  organ?: string;
+  is_recurring_series?: string;
+  year_range?: string;
+  length_bucket?: string;
+  similarity_bucket?: string;
+  include_missing_fulltexts?: string;
+}
+
+// Treemap aggregate types
+export interface BucketData {
+  count: number;
+  percentage: number;
+  avg_value?: number; // avg word count or avg similarity
+}
+
+export interface AggregateResponse {
+  totals: {
+    count: number;
+    resolutions_with_word_count: number;
+    resolutions_with_similarity: number;
+    resolutions_with_frequency: number;
+  };
+  buckets: {
+    length: Record<string, BucketData>;
+    similarity: Record<string, BucketData>;
+    frequency: Record<string, BucketData>;
+  };
+}
+
 // Legacy types for backward compatibility during transition
 export type { Entity as LegacyEntity };

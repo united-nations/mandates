@@ -46,3 +46,4 @@ This will start the application on `http://localhost:9002`.
 - `npm run typecheck`: Runs the TypeScript compiler to check for type errors.
 - `npm run genkit:dev`: Starts the Genkit development server.
 - `npm run genkit:watch`: Starts the Genkit development server in watch mode.
+- `npm list tailwindcss`

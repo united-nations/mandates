@@ -9,24 +9,30 @@ UN80 Dashboard is a Next.js 15 application for exploring and filtering United Na
 ## Development Commands
 
 **Development server:**
+
 ```bash
 npm run dev
 ```
+
 Runs on `http://localhost:9001` (note: custom port 9001, not default 3000)
 
 **Type checking:**
+
 ```bash
 npm run typecheck
 ```
+
 Run before commits to catch TypeScript errors.
 
 **Build and production:**
+
 ```bash
 npm run build
 npm run start
 ```
 
 **Linting:**
+
 ```bash
 npm run lint
 ```
@@ -53,6 +59,7 @@ The application uses a **unified API architecture** centered around `/api/mandat
 ### Core Data Service
 
 `src/lib/data-service.ts` is the **singleton data loader**:
+
 - Loads mandate data from `data/ppb2026_unique_mandates_with_metadata.json`
 - Loads entity metadata from `data/mandate_entities.csv`
 - Loads organ data from `data/organs.json`
@@ -71,6 +78,7 @@ The filter system uses URL-based state management:
 ### Component Structure
 
 **Pages:**
+
 - `src/app/page.tsx` - Main dashboard (all mandates)
 - `src/app/entity/[entity]/page.tsx` - Entity-specific view
 - `src/app/organ/[organ]/page.tsx` - Organ-specific view
@@ -79,6 +87,7 @@ The filter system uses URL-based state management:
 - `src/app/reports/page.tsx` - Reports document table
 
 **Core Components:**
+
 - `mandate-explorer.tsx` - Main data explorer (used by all list pages)
 - `mandate-list.tsx` - Displays paginated mandate cards
 - `filter-controls.tsx` - Search, programme, subject, year filters
@@ -90,6 +99,7 @@ All in `src/components/ui/` - mostly shadcn/ui components with customizations
 ### Types
 
 All TypeScript types are defined in `src/types/index.ts`:
+
 - `Mandate` - Core mandate data structure with enriched fields
 - `Entity` - Entity metadata with URLs and descriptions
 - `Organ` - UN organ information
@@ -99,6 +109,7 @@ All TypeScript types are defined in `src/types/index.ts`:
 ## Key Conventions
 
 ### Design Principles
+
 - **Left-aligned** layouts
 - **Consistent spacing** and hierarchies
 - **No drop shadows** on components
@@ -106,19 +117,25 @@ All TypeScript types are defined in `src/types/index.ts`:
 - **Consistent UN colors** from Tailwind palette in `src/app/globals.css`, prefer UN Blue `--un-blue`
 
 ### Code Style
+
 - Always check `src/lib/utils.ts` and `src/lib/shared-utils.ts` for existing utility functions
 - Filter parameter lists are in `src/lib/filter-constants.ts` - use these constants
 - Extend existing infrastructure rather than building parallel structures
 - Use shadcn/ui components for UI elements
+- make sure to use custum Tailwind colors @tailwind.config.ts and @src/app/globals.css 
 
 ### API Pattern
+
 When adding new features that need data:
+
 1. Check if `/api/mandates` already provides it
 2. If not, extend the unified API rather than creating new endpoints
 3. Update `ApiResponse` type in `src/types/index.ts`
 
 ### Filtering Pattern
+
 When adding new filters:
+
 1. Add parameter to `FILTER_PARAMS` in `src/lib/filter-constants.ts`
 2. Update `FilterOptions` type in `src/types/index.ts`
 3. Implement filtering logic in `/api/mandates/route.ts` `filterMandates()` function
@@ -127,6 +144,11 @@ When adding new filters:
 ## Data Files Location
 
 All data files are in the `data/` directory:
+
 - `ppb2026_unique_mandates_with_metadata.json` - Main mandate data
 - `entity_details.csv` - Entity metadata
 - `organs.json` - UN organ information
+
+## Notes
+
+- feature implementation notes are stored in `notes/` and give valuable insights into feature requests and implementation plans

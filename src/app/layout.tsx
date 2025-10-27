@@ -20,7 +20,6 @@ import {
     DropdownMenuItem
 } from '@/components/ui/dropdown-menu'
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
-import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { BackButton } from '@/components/ui/back-button'
 import { Roboto } from 'next/font/google'
@@ -85,8 +84,8 @@ export default function RootLayout({
                                                     This beta version focuses on data about the UN secretariat.
                                                     <br />
                                                     Go to the{' '}
-                                                    <Link 
-                                                        href="/methodology" 
+                                                    <Link
+                                                        href="/methodology"
                                                         className="text-un-blue hover:text-shuttle-gray underline font-medium"
                                                     >
                                                         Methodology
@@ -184,7 +183,7 @@ export default function RootLayout({
                             size='default'
                         >
                             <a
-                                href='https://forms.office.com/Pages/ResponsePage.aspx?id=2zWeD09UYE-9zF6kFubccKWYVHshXnBMlwUt34IXB2ZUQko4SUdLUVVQSE5BRU1UOTQ1WFRLV0JXRiQlQCN0PWcu'
+                                href='https://airtable.com/appId4rDWaFTpzNWz/pagpU0nMIhQMQPICL/form'
                                 target='_blank'
                                 rel='noopener noreferrer'
                                 className='inline-flex items-center gap-2'
@@ -197,8 +196,8 @@ export default function RootLayout({
                         <Toaster />
                     </FilterProvider>
                 </TooltipProvider>
+                <GoogleAnalytics gaId='G-HYTYJM0JGC' />
             </body>
-            <GoogleAnalytics gaId='G-HYTYJM0JGC' />
         </html>
     )
 }
