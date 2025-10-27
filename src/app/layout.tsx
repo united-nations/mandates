@@ -12,6 +12,7 @@ import { GoogleAnalytics } from '@next/third-parties/google'
 import { FilterProvider } from '@/contexts/FilterContext'
 import { Menu, MessageCircle, Info } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { ShareButton } from '@/components/ui/share-button'
 import Link from 'next/link'
 import Image from 'next/image'
 import { AnimatedLogo } from '@/components/ui/animated-logo'
@@ -106,7 +107,8 @@ export default function RootLayout({
                                         </div>
                                     </div>
                                 </div>
-                                <div className='pt-2'>
+                                <div className='pt-2 flex items-center gap-2'>
+                                    <ShareButton />
                                     <DropdownMenu>
                                         <DropdownMenuTrigger asChild>
                                             <Button
