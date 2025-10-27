@@ -345,19 +345,30 @@ mark {
   color: #87ceeb;
 }
 
-/* UN20 Animation Sprite Keyframes */
-@keyframes un20-entrance {
+/* UN80 Corner Logo and UN20 Animation Sprite Keyframes */
+@keyframes corner-slide-in {
   0% {
     opacity: 0;
-    transform: rotate(-180deg) scale(0.5);
-  }
-  70% {
-    opacity: 0.8;
-    transform: rotate(0deg) scale(1.1);
+    transform: translateX(-120px);
   }
   100% {
     opacity: 1;
-    transform: rotate(0deg) scale(1);
+    transform: translateX(0);
+  }
+}
+
+@keyframes un20-roll-in {
+  0% {
+    opacity: 0;
+    transform: translateX(-60px) rotate(-360deg) scale(0.3);
+  }
+  70% {
+    opacity: 0.8;
+    transform: translateX(0) rotate(0deg) scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) rotate(0deg) scale(1);
   }
 }
 
@@ -370,14 +381,27 @@ mark {
   }
 }
 
-/* UN20 Animation Classes */
-.un20-animation-entrance {
-  animation: un20-entrance 1.5s ease-out forwards;
-  animation-delay: 0.5s;
+/* Animation Classes */
+.corner-slide-entrance {
+  animation: corner-slide-in 0.8s ease-out forwards;
+  animation-delay: 3s;
   opacity: 0;
+  transform: translateX(-120px);
 }
 
-.un20-animation-loaded {
-  animation: un20-fade-in 0.5s ease-in forwards;
+.corner-slide-loaded {
   opacity: 1;
+  transform: translateX(0);
+}
+
+.un20-roll-entrance {
+  animation: un20-roll-in 1s ease-out forwards;
+  animation-delay: 4s; /* 3s corner delay + 1s additional */
+  opacity: 0;
+  transform: translateX(-60px) rotate(-360deg) scale(0.3);
+}
+
+.un20-roll-loaded {
+  opacity: 1;
+  transform: translateX(0) rotate(0deg) scale(1);
 }
