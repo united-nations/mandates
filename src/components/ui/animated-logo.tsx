@@ -7,47 +7,35 @@ import Image from 'next/image'
 export function AnimatedLogo() {
     const pathname = usePathname()
     
-    // Always start with loaded state to ensure server/client match
-    const [cornerAnimated, setCornerAnimated] = useState(true)
-    const [spriteAnimated, setSpriteAnimated] = useState(true)
-    const [isMounted, setIsMounted] = useState(false)
+    // Always start with loaded state to match server rendering
+    const [cornerClass, setCornerClass] = useState('corner-slide-loaded')
+    const [spriteClass, setSpriteClass] = useState('un20-roll-loaded')
+    const [isClient, setIsClient] = useState(false)
 
     useEffect(() => {
-        setIsMounted(true)
-    }, [])
-
-    useEffect(() => {
-        // Only run animation after component is mounted and on main page
-        if (isMounted && pathname === '/') {
-            // Reset states to trigger animation
-            setCornerAnimated(false)
-            setSpriteAnimated(false)
+        // Mark as client-side and handle logic there
+        setIsClient(true)
+        
+        if (pathname === '/') {
+            // On home page, start hidden then animate
+            setCornerClass('corner-slide-hidden')
+            setSpriteClass('un20-roll-hidden')
             
-            // Corner slides in after 3 seconds
             const cornerTimer = setTimeout(() => {
-                setCornerAnimated(true)
-            }, 3800) // 3s delay + 0.8s animation
+                setCornerClass('corner-slide-entrance')
+            }, 3000)
             
-            // Sprite rolls in 1 second after corner starts (4 seconds total)
             const spriteTimer = setTimeout(() => {
-                setSpriteAnimated(true)
-            }, 5000) // 4s delay + 1s animation
+                setSpriteClass('un20-roll-entrance')
+            }, 4000)
 
             return () => {
                 clearTimeout(cornerTimer)
                 clearTimeout(spriteTimer)
             }
         }
-    }, [isMounted, pathname])
-
-    // Always use loaded classes until after mount + animation state changes
-    const cornerClass = (isMounted && pathname === '/' && !cornerAnimated) 
-        ? 'corner-slide-entrance' 
-        : 'corner-slide-loaded'
-    
-    const spriteClass = (isMounted && pathname === '/' && !spriteAnimated) 
-        ? 'un20-roll-entrance' 
-        : 'un20-roll-loaded'
+        // On other pages, keep loaded state (no change needed)
+    }, [pathname])
 
     return (
         <div suppressHydrationWarning>

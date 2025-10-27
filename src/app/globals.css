@@ -394,6 +394,11 @@ mark {
   transform: translateX(0);
 }
 
+.corner-slide-hidden {
+  opacity: 0;
+  transform: translateX(-120px);
+}
+
 .un20-roll-entrance {
   animation: un20-roll-in 1s ease-out forwards;
   animation-delay: 4s; /* 3s corner delay + 1s additional */
@@ -404,4 +409,9 @@ mark {
 .un20-roll-loaded {
   opacity: 1;
   transform: translateX(0) rotate(0deg) scale(1);
+}
+
+.un20-roll-hidden {
+  opacity: 0;
+  transform: translateX(-60px) rotate(-360deg) scale(0.3);
 }
