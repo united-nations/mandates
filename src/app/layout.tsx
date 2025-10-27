@@ -13,6 +13,8 @@ import { FilterProvider } from '@/contexts/FilterContext'
 import { Menu, MessageCircle, Info } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import Image from 'next/image'
+import { AnimatedLogo } from '@/components/ui/animated-logo'
 import {
     DropdownMenu,
     DropdownMenuTrigger,
@@ -75,7 +77,7 @@ export default function RootLayout({
                                             </Link>
                                             {/*  beta badge that repositions */}
                                             <div className='hidden lg:block mt-1 lg:mt-0 self-start lg:self-auto'>
-                                                <Tooltip>
+                                                    <Tooltip>
                                                     <TooltipTrigger asChild>
                                                         <Button
                                                             variant="ghost"
@@ -200,6 +202,9 @@ export default function RootLayout({
                                 Give Feedback
                             </a>
                         </Button>
+
+                        {/* UN80 Logo with UN20 Animation - fixed at bottom */}
+                        <AnimatedLogo />
 
                         <Toaster />
                     </FilterProvider>

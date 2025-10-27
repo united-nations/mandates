@@ -344,3 +344,40 @@ mark {
   background-color: rgba(0, 158, 219, 0.2);
   color: #87ceeb;
 }
+
+/* UN20 Animation Sprite Keyframes */
+@keyframes un20-entrance {
+  0% {
+    opacity: 0;
+    transform: rotate(-180deg) scale(0.5);
+  }
+  70% {
+    opacity: 0.8;
+    transform: rotate(0deg) scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+}
+
+@keyframes un20-fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* UN20 Animation Classes */
+.un20-animation-entrance {
+  animation: un20-entrance 1.5s ease-out forwards;
+  animation-delay: 0.5s;
+  opacity: 0;
+}
+
+.un20-animation-loaded {
+  animation: un20-fade-in 0.5s ease-in forwards;
+  opacity: 1;
+}
