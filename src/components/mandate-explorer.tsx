@@ -77,6 +77,7 @@ export function MandateExplorer ({
   const [apiData, setApiData] = useState<ApiResponse | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false)
+  const [originalYearDistribution, setOriginalYearDistribution] = useState<{ [year: string]: number } | null>(null)
 
   // Data card popover states (preserved for exact same behavior)
   const [sourceDocumentsPopover, setSourceDocumentsPopover] = useState(false)
@@ -133,6 +134,12 @@ export function MandateExplorer ({
 
         const data: ApiResponse = await response.json()
         setApiData(data)
+        
+        // Store original year distribution if no year filters are currently applied
+        const hasYearFilters = currentUrlParams.start_year || currentUrlParams.end_year
+        if (!hasYearFilters && data.filterOptions?.yearDistribution && !originalYearDistribution) {
+          setOriginalYearDistribution(data.filterOptions.yearDistribution)
+        }
         
         // Call callback to pass entity details to parent component
         if (onEntityDetailsLoaded && data.reference?.entities) {
@@ -455,6 +462,7 @@ export function MandateExplorer ({
                   subjectOptions={filterOptions.subjects}
                   yearRange={filterOptions.yearRange}
                   yearDistribution={filterOptions.yearDistribution}
+                  originalYearDistribution={originalYearDistribution || undefined}
                   showAdvancedSearch={showAdvancedSearch}
                   setShowAdvancedSearch={setShowAdvancedSearch}
                   entitiesData={allEntities}

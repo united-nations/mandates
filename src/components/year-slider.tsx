@@ -9,6 +9,7 @@ interface YearSliderProps {
   yearRange: { min: number; max: number };
   value: [number, number];
   onChange: (value: [number, number]) => void;
+  originalYearDistribution?: { [year: string]: number }; // Unfiltered distribution for full spectrum
 }
 
 const CustomizedBar = (props: any) => {
@@ -23,7 +24,7 @@ const CustomizedBar = (props: any) => {
     return <rect x={x} y={y} width={width} height={height} fill={barFill} />;
 };
 
-export function YearSlider({ yearDistribution, yearRange, value, onChange }: YearSliderProps) {
+export function YearSlider({ yearDistribution, yearRange, value, onChange, originalYearDistribution }: YearSliderProps) {
   const [localValue, setLocalValue] = useState(value);
 
   useEffect(() => {
@@ -31,11 +32,20 @@ export function YearSlider({ yearDistribution, yearRange, value, onChange }: Yea
   }, [value]);
 
   const data = useMemo(() => {
-    if (!yearDistribution || !yearRange) return [];
+    if (!yearRange) return [];
+    
+    // Always use the full spectrum from 1946 to 2025, regardless of current filters
+    const FULL_YEAR_RANGE = { min: 1946, max: 2025 };
+    
+    // Use original distribution if available, otherwise fall back to current distribution
+    const distributionToUse = originalYearDistribution || yearDistribution;
+    
     const chartData = [];
-    const maxCount = Math.max(...Object.values(yearDistribution));
-    for (let year = yearRange.min; year <= yearRange.max; year++) {
-      const count = yearDistribution[year] || 0;
+    const maxCount = Math.max(...Object.values(distributionToUse));
+    
+    // Always show the full spectrum
+    for (let year = FULL_YEAR_RANGE.min; year <= FULL_YEAR_RANGE.max; year++) {
+      const count = distributionToUse[year] || 0;
       chartData.push({
         year: String(year),
         count: count,
@@ -44,7 +54,7 @@ export function YearSlider({ yearDistribution, yearRange, value, onChange }: Yea
       });
     }
     return chartData;
-  }, [yearDistribution, yearRange]);
+  }, [yearDistribution, originalYearDistribution, yearRange]);
 
   const handleCommit = (committedValue: [number, number]) => {
     onChange(committedValue);
@@ -65,8 +75,8 @@ export function YearSlider({ yearDistribution, yearRange, value, onChange }: Yea
         </ResponsiveContainer>
         <div className="absolute bottom-0 left-0 right-0">
           <Slider
-            min={yearRange.min}
-            max={yearRange.max}
+            min={1946}
+            max={2025}
             step={1}
             value={localValue}
             onValueChange={(val: number[]) => setLocalValue(val as [number, number])}
