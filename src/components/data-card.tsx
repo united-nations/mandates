@@ -51,7 +51,7 @@ export function DataCard({
               <Icon className="h-5 w-5 text-un-blue flex-shrink-0" />
             </CardHeader>
             <CardContent className="flex-grow flex items-center justify-start pt-2">
-              <div className="text-4xl font-bold text-foreground">
+              <div className="text-4xl font-bold text-foreground tabular-nums">
                 {isLoading ? (
                   <Skeleton className="h-8 w-16" />
                 ) : (
