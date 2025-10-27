@@ -18,6 +18,7 @@ interface AdvancedSearchProps {
   subjectOptions: { value: string; count: number }[];
   yearRange: { min: number; max: number } | null;
   yearDistribution: { [year: string]: number };
+  originalYearDistribution?: { [year: string]: number };
   selectedYearRange: [number, number] | null;
   onProgrammeChange: (value: string) => void;
   onSubjectChange: (value: string) => void;
@@ -33,6 +34,7 @@ export function AdvancedSearch({
   subjectOptions,
   yearRange,
   yearDistribution,
+  originalYearDistribution,
   selectedYearRange,
   onProgrammeChange,
   onSubjectChange,
@@ -193,6 +195,7 @@ export function AdvancedSearch({
                 yearRange={yearRange}
                 value={selectedYearRange || [yearRange.min, yearRange.max]}
                 onChange={onYearRangeChange}
+                originalYearDistribution={originalYearDistribution}
               />
             </div>
           </div>

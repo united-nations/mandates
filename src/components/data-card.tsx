@@ -38,7 +38,10 @@ export function DataCard({
         <div 
           onMouseEnter={() => onOpenChange?.(true)} 
           onMouseLeave={() => onOpenChange?.(false)} 
-          className="h-full"
+          className="h-full w-full min-w-[250px] sm:min-w-0"
+          style={{
+            scrollSnapAlign: 'center'
+          }}
         >
           <Card className="flex flex-col h-full cursor-help border-0 shadow-none bg-un-blue/10">
             <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 min-h-16">
