@@ -74,7 +74,7 @@ export default function RootLayout({
                                         <div className='flex flex-col lg:flex-row lg:items-center lg:gap-x-2'>
                                             <Link
                                                 href='/'
-                                                className='text-4xl tracking-tight text-foreground hover:text-un-blue transition-colors leading-tight'
+                                                className='text-4xl tracking-tight text-foreground hover:text-un-blue transition-colors leading-tight mt-1'
                                             >
                                                 <div className='leading-none'>
                                                     <span className='font-bold'>UN Mandate</span>
