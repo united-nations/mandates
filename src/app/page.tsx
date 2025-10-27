@@ -10,7 +10,7 @@ import { LoadingFallback } from '@/components/ui/loading-fallback'
 
 export default function Page () {
   return (
-    <Suspense fallback={<LoadingFallback />}>
+    <Suspense fallback={<LoadingFallback variant="page" />}>
       <div className='space-y-6 pb-16'>
         {/* Header with context info */}
         <div className='text-muted-foreground mt-4 sm:text-justify max-w-[792px] text-left'>
