@@ -70,7 +70,7 @@ export default function RootLayout({
                                             >
                                                 <div className='leading-none'>
                                                     <span className='font-bold'>UN Mandate</span>
-                                                    <span className='text-3xl font-normal block lg:inline lg:ml-1 lg:pl-2 lg:text-4xl'>Source Registry</span>
+                                                    <span className='text-3xl font-normal block lg:inline lg:ml-1 lg:pl-1 lg:text-4xl'>Source Registry</span>
                                                 </div>
                                             </Link>
                                             {/*  beta badge that repositions */}
