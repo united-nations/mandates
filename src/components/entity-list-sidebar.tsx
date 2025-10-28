@@ -68,9 +68,33 @@ export function EntityListSidebar({
     const activeFiltersText = getActiveFiltersText(filters, pageType, undefined, organFilter);
     
     if (pageType === 'organ') {
-      return `Entities and number of cited source documents ${activeFiltersText}for ${organFilter}`
+      return (
+        <>
+          <a 
+            href="https://systemchart.un.org/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-un-blue hover:text-shuttle-gray transition-colors no-underline"
+          >
+            Entities
+          </a>
+          {` and number of cited source documents ${activeFiltersText}for ${organFilter}`}
+        </>
+      )
     } else {
-      return `Entities and number of cited source documents${activeFiltersText ? ' ' + activeFiltersText.trim() : ''}`
+      return (
+        <>
+          <a 
+            href="https://systemchart.un.org/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-un-blue hover:text-shuttle-gray transition-colors no-underline"
+          >
+            Entities
+          </a>
+          {` and number of cited source documents${activeFiltersText ? ' ' + activeFiltersText.trim() : ''}`}
+        </>
+      )
     }
   }
 
