@@ -1,0 +1,2598 @@
+{
+  "cluster_titles": {
+    "-1004": "UPR Summary Reports (Stakeholder Information)",
+    "-1002": "UPR Working Group Reports",
+    "-1001": "UPR National Reports",
+    "-1000": "UPR Compilation Reports (UN Information)",
+    "0": "UN Human Rights Treaty Submissions",
+    "1": "State Party Reports to UN Committees",
+    "2": "Country Periodic Reports to UN Committees",
+    "3": "Periodic Reports on Core Human Rights Treaties",
+    "4": "Periodic Reports on Covenant Implementation",
+    "5": "Periodic Reports on Human Rights Covenants",
+    "6": "Periodic Reports on Treaty Implementation",
+    "7": "Canadian Compliance with UN Human Rights Conventions",
+    "8": "Country Reports on Covenant Compliance",
+    "9": "Periodical State Reports to UN Treaties",
+    "10": "State Party Reports under UN Human Rights Bodies",
+    "11": "Reports on Indigenous Rights and Participation",
+    "12": "Periodic Reports on Covenant and Convention Compliance",
+    "13": "Periodical Reports by Indonesia to UN",
+    "14": "Reports on Covenant Compliance and Slavery",
+    "15": "Member States' Periodic Compliance Reports",
+    "16": "Periodic UN Human Rights Reports",
+    "17": "Periodic Reports Submitted by State Parties",
+    "18": "Periodic Reports to UN Treaty Bodies",
+    "19": "Periodic State Compliance Reports by Nations",
+    "20": "Periodic Reports Submitted by Pakistan",
+    "21": "State Party Periodic Reports Submission",
+    "22": "Reports Submitted by States Parties",
+    "23": "Periodic Reports Submitted by the Netherlands",
+    "24": "State Periodic Reports to UN Committees",
+    "25": "United Kingdom Periodic Reports",
+    "26": "State Party Periodic Reports to UN Bodies",
+    "27": "Follow-up Reports on Individual Communications",
+    "28": "Quadrennial Reports by NGOs to ECOSOC",
+    "29": "UN Reports on Ethics and Oversight",
+    "30": "Corrigenda of UN Organizational Reports",
+    "31": "UN Reports on Health and Development",
+    "32": "Reports on United Nations Evaluation Functions",
+    "33": "Annual and Strategic UN Development Reports",
+    "34": "UN Administrative and Financial Program Reports",
+    "35": "United Nations System Accountability Reports",
+    "36": "UN Reports on Humanitarian Assistance",
+    "37": "United Nations Financial and Programmatic Reports",
+    "38": "Reports on UNCDF Achievements and Activities",
+    "39": "Environmental and Sustainable Development Reports",
+    "40": "UN Reports on Fundraising and Volunteering",
+    "41": "Reports on Governance and Oversight",
+    "42": "UN Operational and Development Reports",
+    "43": "United Nations Financial and Administrative Reports",
+    "44": "Country Reports on Regional Development",
+    "45": "Regional Member State Reports Summary",
+    "46": "Geographical Names Standardization Reports",
+    "47": "United Nations Geographical Names Reports",
+    "48": "Reports on Geographical Naming Conventions",
+    "49": "Reports on Geographical Names Standardization",
+    "50": "UN Documents on Geographical Names Reports",
+    "51": "Reports on UN Group of Experts Activities",
+    "52": "Scandinavian Countries' National Reports",
+    "53": "Reports Related to Finland's Geographical Names",
+    "54": "Geographical Name Standardization Reports",
+    "55": "Reports on Geographical Names Discussions",
+    "56": "Reports on Geographical Naming Initiatives",
+    "57": "Geographical Names and Africa-focused Coordination",
+    "58": "Geospatial Information Management Reports",
+    "59": "Global Geospatial and Geographical Names Reports",
+    "60": "Collaborative Reports on Geographic Research",
+    "61": "Reports on ICANN Activities and Summary",
+    "62": "Reports on Geographical Naming Standards",
+    "63": "Reports on Collaboration with ICOS",
+    "64": "Romanization Systems for Geographical Names",
+    "65": "Reports by UNGEGN Working Groups",
+    "66": "Reports on the Rights of Older Persons",
+    "67": "Secretary-General Reports: Corrigenda Updates",
+    "68": "Reports on Global Statistical Systems",
+    "69": "Advancing Gender Equality and Women's Rights",
+    "70": "Global Population and Sustainable Development",
+    "71": "Reports on Statistical Development Initiatives",
+    "72": "Advancing Sustainable Development and Social Protection",
+    "73": "Statistical Coordination and Best Practices Reports",
+    "74": "Rights of Persons with Disabilities",
+    "75": "Financial Resources for Population Programme",
+    "76": "Human Rights and Emerging Digital Technologies",
+    "77": "Sustainable Development and Biodiversity Reports",
+    "78": "Youth and Peacebuilding Initiatives",
+    "79": "Food Security and Sustainable Development",
+    "80": "Human Rights in Conflict Zones",
+    "81": "Coordination of UN Development Initiatives",
+    "82": "Statelessness and Displacement in Population Studies",
+    "83": "Statistics for Sustainable Development Reporting",
+    "84": "Reports on International Statistical Programs",
+    "85": "Crime Prevention and Criminal Justice Reports",
+    "86": "UN Reports with Corrigendum Information",
+    "87": "Literacy and Education for Development",
+    "88": "Strategies for Poverty Eradication and Development",
+    "89": "Reports on Africa's Development and Challenges",
+    "90": "Sustainable Development and Technological Progress",
+    "91": "Sustainable Marine Development and Management",
+    "92": "Reports of ECOSOC Functions and Commissions",
+    "93": "UN Economic and Social Development Reports",
+    "94": "Crime Prevention and Criminal Justice Reports",
+    "95": "Reports on UN Legal and Trade Commissions",
+    "96": "Reports on International Drug Policy Strategies",
+    "97": "CEDAW Reports and Meeting Summaries",
+    "98": "Global Development Policy and Cooperation",
+    "99": "Development Policy and Transition Support",
+    "100": "Reports on Tax Cooperation Sessions",
+    "101": "Advancing Human Rights and Development",
+    "102": "United Nations Human Rights Committees Reports",
+    "103": "Reports on UN Organizational Committees",
+    "104": "Reports on Regions and Humanitarian Issues",
+    "105": "UN System Engagement in Sustainable Development",
+    "106": "Narcotics Control and Regulation Reports",
+    "107": "Climate Change and Human Rights Reports",
+    "108": "Digital Innovations for Socioeconomic Development",
+    "109": "UN Reports on Situation in Haiti",
+    "110": "Reports of the Committee on NGOs",
+    "111": "Committee Reports on Organizational Meetings",
+    "112": "Environmental and Development UN Initiatives",
+    "113": "Reports on UN Communication Activities",
+    "114": "Reports on Cluster Munitions Agreements and Actions",
+    "115": "United Nations Environmental Policy Reports",
+    "116": "United Nations Fund and Assistance Reports",
+    "117": "Private Sector Role in Arab SDG Goals",
+    "118": "Reports on Enforced Disappearances",
+    "119": "Human Rights and Business Interactions",
+    "120": "Human Rights of Persons with Albinism",
+    "121": "Unilateral Coercive Measures and Human Rights",
+    "122": "Gender-based Violence and Legal Frameworks",
+    "123": "Reports on Child Exploitation and Rights",
+    "124": "Achieving Sustainable Goals Through Sport",
+    "125": "Youth and Rights in Global Perspectives",
+    "126": "Human Rights in Law Enforcement Contexts",
+    "127": "Mercenary Impacts on Human Rights",
+    "128": "Human Rights in Afghanistan Reports",
+    "129": "Justice Systems and Human Rights Reports",
+    "130": "Freedom of Assembly and Association Reports",
+    "131": "Education and Human Rights Initiatives Analysis",
+    "132": "Transitional Justice and Human Rights Reports",
+    "133": "Racial Equality and Minority Rights",
+    "134": "National Human Rights Institutions Activities",
+    "135": "Human Rights Enhancement and Coordination",
+    "136": "Human Rights in the Marshall Islands",
+    "137": "Human Rights and Migration Dynamics",
+    "138": "Addressing Gender-Based Violence and Inequality",
+    "139": "Human Rights to Water and Sanitation",
+    "140": "Access to Health and COVID-19 Responses",
+    "141": "Climate Change and Human Rights Impacts",
+    "142": "Human Rights in Occupied Palestinian Territories",
+    "143": "Reports on Trafficking and Related Human Rights",
+    "144": "Working Group Specialized Session Reports",
+    "145": "Reports on Human Rights Defenders",
+    "146": "Adequate Housing and Homelessness Reports",
+    "147": "Corrigendums for Special Rapporteur Reports",
+    "148": "United Nations Governance and Protection Reports",
+    "149": "Reports on Racial Equity Initiatives",
+    "150": "Casualty Recording and Civilian Impact",
+    "151": "Reports on the Right to Development",
+    "152": "Efforts to Combat Glorification of Nazism",
+    "153": "Reports on United Nations Commemorations",
+    "154": "Human Rights Communications Reports",
+    "155": "Reports with Corrections from UN Working Groups",
+    "156": "Human Rights of Minority Groups",
+    "157": "Conscientious Objection Rights Analysis",
+    "158": "Advancement of Human Rights Reporting",
+    "159": "UN Reports on Georgia's Humanitarian and Governance Issues",
+    "160": "Human Rights Situation and Investigations Reports",
+    "161": "Religious Discrimination and Minority Rights",
+    "162": "Reports on Cultural Rights and Issues",
+    "163": "Global Social Challenges During COVID-19",
+    "164": "Human Rights in Detention Contexts",
+    "165": "Gender and Diversity in Human Rights",
+    "166": "Advancing LGBTIQ Rights and Health",
+    "167": "Human Rights and Digital Challenges",
+    "168": "Reports on Leprosy and Human Rights",
+    "169": "Anti-Corruption and Illicit Financial Flows",
+    "170": "Media Freedom and Journalist Safety",
+    "171": "Human Rights and Financial Justice Reports",
+    "172": "Environmental impacts on human rights",
+    "173": "Human Rights in Sri Lanka",
+    "174": "State Party Reports on Human Rights Compliance",
+    "175": "Human Rights and Emerging Technologies",
+    "176": "Freedom of Expression and Media Rights",
+    "177": "Reports on Torture and Human Rights",
+    "178": "Human Rights and Toxic Substances",
+    "179": "Human Rights and Anti-Discrimination Efforts",
+    "180": "Human Rights and Penal Issues Reports",
+    "181": "Human Rights in Counter-Terrorism Context",
+    "182": "Reports on Middle East and Occupied Territories",
+    "183": "Human Rights in Latin American Countries",
+    "184": "Human Rights and Migration Analysis",
+    "185": "Human Rights and Armed Conflicts",
+    "186": "Human Rights and Civilian Safety",
+    "187": "Effects of Coercive Measures on Human Rights",
+    "188": "Human Rights Reporting in Southeast Asia",
+    "189": "Investigations of Conflict-Related Violations",
+    "190": "Human Rights and Environmental Justice",
+    "191": "UN Human Rights Mechanisms Reports",
+    "192": "State Reporting under Human Rights Covenants",
+    "193": "UN Session and Council Activity Reports",
+    "194": "Israeli Settlements in Occupied Territories",
+    "195": "Privacy and Data Protection Measures",
+    "196": "Global Economic Structural Analysis",
+    "197": "Reports on Special Rapporteur Mandates",
+    "198": "Human Rights and Protection against Violence",
+    "199": "Reports by UN Special Rapporteurs",
+    "200": "Violence Against Women and Girls Frameworks",
+    "201": "Durban Declaration Implementation and Human Rights",
+    "202": "Human Rights in International Contexts",
+    "203": "Protection and Accountability in International Law",
+    "204": "Human Rights in Korea",
+    "205": "Reports on Cyprus Peace and Human Rights",
+    "206": "UN Periodic and Special Procedure Reports",
+    "207": "Advisory Committee Session Reports",
+    "208": "Human Rights Issues in African Nations",
+    "209": "Human Rights Council Special Session Reports",
+    "210": "Reports on Human Rights and State Obligations",
+    "211": "Human Rights of Older Persons in Finland",
+    "212": "State Responses to Expert Reports on Aging",
+    "213": "State Comments on Human Rights Reports",
+    "214": "Human Rights Investigation in Conflict Zones",
+    "215": "Human Rights in Conflict Zones",
+    "216": "Human Rights in Ukraine and Crimea",
+    "217": "Human Rights in the Islamic Republic of Iran",
+    "218": "Reports on Judicial Mechanism and Oversight",
+    "219": "Country Visits on Human Rights Issues",
+    "220": "Special Rapporteur Visit Reports",
+    "221": "Human Rights in the European Union",
+    "222": "Special Rapporteur Visits to Hungary",
+    "223": "State Comments on Rapporteurs' Brazil Visits",
+    "224": "Human Rights in Denmark and Greenland",
+    "225": "Special Rapporteur Visit to Japan",
+    "226": "Special Rapporteur Visits to Poland",
+    "227": "Human Rights Assessments in Italy",
+    "228": "Special Rapporteur Visits and Assessments",
+    "229": "Human Rights and Hazardous Substances",
+    "230": "Human Rights and Environmental Management Reports",
+    "231": "Human Rights Reports on Chile and Costa Rica",
+    "232": "Special Rapporteurs' Reports on Fiji",
+    "233": "State Comments on Special Rapporteur Visits",
+    "234": "Reports on State Human Rights Obligations",
+    "235": "Regional Human Rights and Transitional Justice",
+    "236": "UN Reports Regarding Viet Nam's Developments",
+    "237": "Reports on UNESCO's Role in Education",
+    "238": "Special Rapporteur Visit to South Korea",
+    "239": "Special Rapporteur Privacy Country Visits Reports",
+    "240": "Reports on the Convention on Disabilities",
+    "241": "Human Rights Reports on Cambodia",
+    "242": "Human Rights in Myanmar Reports",
+    "243": "Reports on Human Rights in T\u00fcrkiye",
+    "244": "Reports on Eliminating Violence Against Women",
+    "245": "State Party Reports on UN Treaties",
+    "246": "Nuclear Disarmament and Non-Proliferation Reports",
+    "247": "Children's Rights and Humanitarian Issues",
+    "248": "Human Rights Analysis and Challenges Reports",
+    "249": "Situation and Human Rights in Somalia",
+    "250": "Human Rights in DPRK Reports",
+    "251": "Capacity-Building for Local Government Initiatives",
+    "252": "Human Rights Council Sessions Overview",
+    "253": "Human Rights and Environmental Protection Reports",
+    "254": "State Reports on Human Rights Conventions",
+    "255": "Special Procedures Country Visit Reports",
+    "256": "Reports under UN Human Rights Conventions",
+    "257": "Human Rights Investigations and Follow-ups",
+    "258": "Reports on Human Rights Observations",
+    "259": "State Compliance with Human Rights Conventions",
+    "260": "State Reporting on Human Rights Treaties",
+    "261": "Gender Equality Reports from Mauritania",
+    "262": "Special Rapporteur Visits on Environmental Rights",
+    "263": "Human Rights Reports from Sweden",
+    "264": "State Reports to UN Human Rights Committees",
+    "265": "Gender Equality and Human Rights Reviews",
+    "266": "Special Rapporteur Visits to the USA",
+    "267": "Reports on UN Treaty Body Submissions",
+    "268": "UN Facilities and Infrastructure Reports",
+    "269": "Reports on Administrative and Budgetary Matters",
+    "270": "Decolonization and the Western Sahara Situation",
+    "271": "Decolonization Efforts and Non-Self-Governing Territories",
+    "272": "Credentials Committee Reports on UN Sessions",
+    "273": "Reports on International Law Methods",
+    "274": "UN Reports on International Law Topics",
+    "275": "Special Rapporteur Report Corrections",
+    "276": "Reports on International Law and State Relations",
+    "277": "Prevention of Piracy and Armed Robbery",
+    "278": "Environmental Protection During Armed Conflicts",
+    "279": "Secondment of Military and Police Personnel",
+    "280": "Advisory Committee Budget-Related Reports 2021-2025",
+    "281": "UN Programme Budget Implications Reports",
+    "282": "Corrections to Secretary-General Sustainable Reports",
+    "283": "Sustainable Fisheries Governance and Regulations",
+    "284": "Secretary-General Reports with Corrections",
+    "285": "UN Organizational Efficiency and Justice Reports",
+    "286": "Reports on Security and Counter-Terrorism Efforts",
+    "287": "Budget and Administrative Corrections Reports",
+    "288": "Nuclear Disarmament and Legacy Remediation",
+    "289": "Reports from United Nations General Assembly",
+    "290": "Administration and Jurisdiction in UN Systems",
+    "291": "UN Administrative and Budgetary Reviews",
+    "292": "Administrative and Budgetary Oversight Reports",
+    "293": "Official Reports of GA Committees",
+    "294": "International Security and Emerging Technologies",
+    "295": "Colonial Legacy and Self-Determination Issues",
+    "296": "Amendments to UN Staff Regulations",
+    "297": "General Assembly Appointment Reports",
+    "298": "United Nations Air Travel Policies",
+    "299": "UN Peacekeeping Operations Financial and Budgetary Reports",
+    "300": "Reports on UN Staff Conduct Policies",
+    "301": "UN Peacekeeping Budget Reports 2023-2026",
+    "302": "Financial and Administrative Report Corrections",
+    "303": "UN Peacekeeping Reports in Africa",
+    "304": "Funding Updates and Adjustments Reports",
+    "305": "UN Mission Performance and Asset Reports",
+    "306": "Children and Armed Conflict Reports",
+    "307": "Secretariat Composition and Personnel Management",
+    "308": "Human Resources and Recruitment Strategies",
+    "309": "Human Resources Management in the UN",
+    "310": "Special Political and Decolonization Committee Reports",
+    "311": "Nuclear Weapons and Non-Proliferation",
+    "312": "Service Conditions for Judicial Officials",
+    "313": "Disarmament and Regional Security Measures",
+    "314": "Responsibility and Harm in International Law",
+    "315": "Accountability of UN Officials and Staff",
+    "316": "Committee on Peaceful Uses of Outer Space",
+    "317": "UN Reports on Middle Eastern Peace Efforts",
+    "318": "Reports of the Sixth Committee",
+    "319": "UN Reports on Disarmament Efforts",
+    "320": "Reports of the 4th Committee",
+    "321": "Support for Landlocked Developing Countries",
+    "322": "Initiatives Supporting Development in Least Developed Countries",
+    "323": "OIOS Evaluations on Political Mission Operations",
+    "324": "UN Treaties and Justice Assistance Reports",
+    "325": "Support for Extraordinary Chambers in Cambodia",
+    "326": "UN Financial and Budgetary Reports",
+    "327": "Reports on UN Financing and Administration",
+    "328": "Implementation of Sustainable Development Actions",
+    "329": "Food Security in Least Developed Nations",
+    "330": "Second Committee Reports on Key Areas",
+    "331": "Environmental Sustainability and Resource Management",
+    "332": "Secretary-General Reports on Development",
+    "333": "Funding and Development Innovations",
+    "334": "United Nations Financial Contributions Analyses",
+    "335": "Analysis of UN Legal Framework Reports",
+    "336": "Reports on UN Decolonization Efforts",
+    "337": "Security Council Reports and Correspondence",
+    "338": "Peacekeeping Operations: Policy and Strategic Reports",
+    "339": "Health and Nutrition Progress Reporting",
+    "340": "Efforts Addressing Nuclear Impact and Cooperation",
+    "341": "UN Reports on Peace and Finance",
+    "342": "International Tax Cooperation Developments",
+    "343": "International Terrorism Elimination Measures",
+    "344": "Environmental and Security Concerns in Development",
+    "345": "Observer Status for International Organizations",
+    "346": "Environmental and Maritime Issues",
+    "347": "Study Offers for Non-Self-Governing Territories",
+    "348": "Strategic Coordination and Future Planning Reports",
+    "349": "Palestine Refugees and Property Concerns",
+    "350": "Peacebuilding Reports with Corrections Updates",
+    "351": "UN Administration and Well-being Initiatives",
+    "352": "General Assembly Committee Reports",
+    "353": "UN Budgetary and Planning Amendments",
+    "354": "Counteracting ICT-Enabled Criminal Activity",
+    "355": "Financial and Service Contributions Analysis",
+    "356": "Reports by Committee on Contributions",
+    "357": "Reports on Racial Discrimination Committee Sessions",
+    "358": "Reports on Racial Discrimination Compliance",
+    "359": "Reports of UN Human Rights Committees",
+    "360": "United Nations Disarmament and Development Reports",
+    "361": "Nuclear Disarmament Treaty Reports",
+    "362": "UNHCR Executive and Standing Committees Reports",
+    "363": "Human Rights Council Proceedings",
+    "364": "UN Administrative and Operational Governance",
+    "365": "Judicial Activities Reports 2023-2024",
+    "366": "Corrigenda of UN Committee Reports",
+    "367": "Reimbursement Rates and Standards Reviews",
+    "368": "Technology Bank Activities for LDCs",
+    "369": "Treaty Practices and Regulations Analysis",
+    "370": "UN Organizational and Administrative Reports",
+    "371": "Revitalization of General Assembly Work",
+    "372": "Reports on International Humanitarian Law",
+    "373": "Special Committee Decisions on Puerto Rico",
+    "374": "Reports on Migrant Workers' Rights",
+    "375": "State Reports on Human Rights Compliance",
+    "376": "High-level UN Meetings Reports Analysis",
+    "377": "Financial Reports on Nuclear Treaty Meetings",
+    "378": "Future of Global Environment Outlook",
+    "379": "Meetings on Continental Shelf Commission Elections",
+    "380": "Convention on Biological Diversity Meetings",
+    "381": "Reports on the Treaty on Nuclear Prohibition",
+    "382": "Technology Bank Council Session Reports",
+    "383": "Management and Administration Review Reports",
+    "384": "World Investment Reports Overview",
+    "385": "World Investment Report 2023",
+    "386": "Assessment of Specific Security Benchmarks",
+    "387": "Credentials for UN Security Council Delegates",
+    "388": "Implementation of Resolution 1956 (2010)",
+    "389": "Reports by the Secretary-General on Mandate Implementation",
+    "390": "Security Council Resolution Implementation Reports",
+    "391": "Security Council Committee Reports",
+    "392": "Panel of Experts Final Reports",
+    "393": "Subcommittee on Prevention of Torture Reports",
+    "394": "State Periodic Reports on UN Conventions",
+    "395": "Periodic Reports by States Parties",
+    "396": "State Submissions Under the CAT Convention",
+    "397": "Periodic Reports Submitted by Brazil",
+    "398": "Periodic State Reports on Human Rights",
+    "399": "Periodic Reports on Convention Against Torture",
+    "400": "Periodic Reports to Convention Against Torture",
+    "401": "Israel's State Party Reports on Conventions",
+    "402": "Periodic Reports under UN Human Rights Treaties",
+    "403": "Periodic Reports by the Russian Federation",
+    "404": "USA's Human Rights Treaty Reports",
+    "405": "State Party Initial and Periodic Reports",
+    "406": "India's Compliance with Human Rights Treaties",
+    "407": "Periodic State Compliance Reports under ICCPR and ICERD",
+    "408": "State Reports on International Human Rights",
+    "409": "Follow-Up to Human Rights Committee Observations",
+    "410": "States' Reports on Enforced Disappearances",
+    "411": "Periodic Reports on Human Rights Conventions",
+    "412": "Periodic Reports on Anti-Discrimination Conventions",
+    "413": "CEDAW Periodic Reports Submission",
+    "414": "Periodic Reports on Racial Discrimination",
+    "415": "Reports for ICERD under Article 9",
+    "416": "New Zealand's 2021 Convention Reports",
+    "417": "State Party Reports on UN Conventions",
+    "418": "State Reports Submission Status Overview",
+    "419": "Reports on Child Involvement in Armed Conflict",
+    "420": "CRPD Periodic Reports by Member States",
+    "421": "Reports on Convention on Disabilities",
+    "422": "Reports on Human Rights Instruments",
+    "423": "States Parties Human Rights Core Documents",
+    "424": "State Reports on Human Rights Instruments",
+    "425": "Common Core Documents of State Parties",
+    "426": "Subcommittee's Preventive Visits Reports",
+    "427": "Subcommittee Visit Reports: Switzerland 2019"
+  },
+  "cluster_details": {
+    "-1004": {
+      "title": "UPR Summary Reports (Stakeholder Information)",
+      "description": "Summary of stakeholders' information prepared by OHCHR for the Universal Periodic Review.",
+      "theme": "Universal Periodic Review"
+    },
+    "-1002": {
+      "title": "UPR Working Group Reports",
+      "description": "Reports of the Working Group on the Universal Periodic Review containing recommendations.",
+      "theme": "Universal Periodic Review"
+    },
+    "-1001": {
+      "title": "UPR National Reports",
+      "description": "National reports submitted by States under review as part of the Universal Periodic Review process.",
+      "theme": "Universal Periodic Review"
+    },
+    "-1000": {
+      "title": "UPR Compilation Reports (UN Information)",
+      "description": "Compilation of UN information prepared by OHCHR for the Universal Periodic Review.",
+      "theme": "Universal Periodic Review"
+    },
+    "0": {
+      "title": "UN Human Rights Treaty Submissions",
+      "description": "This cluster comprises reports submitted by states under various UN human rights treaties, detailing their adherence and implementation of the conventions through periodic reviews conducted by treaty bodies.",
+      "theme": "Human Rights"
+    },
+    "1": {
+      "title": "State Party Reports to UN Committees",
+      "description": "These reports represent official submissions by state parties to various UN human rights bodies, including periodic and common core documents, detailing compliance with international human rights instruments.",
+      "theme": "Human Rights"
+    },
+    "2": {
+      "title": "Country Periodic Reports to UN Committees",
+      "description": "This cluster contains periodic reports submitted by Australia and Ireland to various UN treaty bodies, fulfilling their obligations under international human rights conventions.",
+      "theme": "Human Rights"
+    },
+    "3": {
+      "title": "Periodic Reports on Core Human Rights Treaties",
+      "description": "This cluster includes periodic reports submitted by various nations to United Nations treaty bodies, detailing compliance and implementation of obligations under international human rights conventions, including CEDAW and ICCPR.",
+      "theme": "Human Rights"
+    },
+    "4": {
+      "title": "Periodic Reports on Covenant Implementation",
+      "description": "The reports in this cluster are periodic submissions to the Committee on Economic, Social and Cultural Rights by state parties, detailing their adherence to and implementation of obligations under articles 16 and 17 of the International Covenant on Economic, Social and Cultural Rights.",
+      "theme": "Human Rights"
+    },
+    "5": {
+      "title": "Periodic Reports on Human Rights Covenants",
+      "description": "These reports represent submissions by various nations under the International Covenant on Economic, Social and Cultural Rights (ICESCR), and the International Covenant on Civil and Political Rights (ICCPR), providing updates on their adherence to and implementation of the respective treaty obligations.",
+      "theme": "Human Rights"
+    },
+    "6": {
+      "title": "Periodic Reports on Treaty Implementation",
+      "description": "This cluster contains periodic reports submitted by member states regarding their implementation and compliance with international treaties, analyzed by corresponding UN treaty bodies.",
+      "theme": "Human Rights"
+    },
+    "7": {
+      "title": "Canadian Compliance with UN Human Rights Conventions",
+      "description": "This cluster encompasses reports detailing Canada's obligations, evaluations, and feedback regarding its adherence to various United Nations human rights treaties and agreements. They include both periodic submissions by Canada and assessments by UN special rapporteurs and working groups.",
+      "theme": "Human Rights"
+    },
+    "8": {
+      "title": "Country Reports on Covenant Compliance",
+      "description": "These reports detail compliance by Chile and Peru with the International Covenant on Economic, Social and Cultural Rights, as reviewed by the Committee on Economic, Social and Cultural Rights.",
+      "theme": "Human Rights"
+    },
+    "9": {
+      "title": "Periodical State Reports to UN Treaties",
+      "description": "This cluster comprises periodic reports submitted by states to various UN treaty bodies, detailing compliance with international human rights obligations as prescribed by specific conventions.",
+      "theme": "Human Rights"
+    },
+    "10": {
+      "title": "State Party Reports under UN Human Rights Bodies",
+      "description": "This cluster consists of periodic and initial reports submitted by State Parties under various United Nations human rights treaties. These documents provide updates on the implementation and compliance with the respective conventions and covenants.",
+      "theme": "Human Rights"
+    },
+    "11": {
+      "title": "Reports on Indigenous Rights and Participation",
+      "description": "This cluster comprises United Nations reports addressing the rights, status, and participation of Indigenous Peoples globally. Topics include efforts to implement declarations, expert mechanism findings, specific country reports, and participation in UN processes.",
+      "theme": "Human Rights"
+    },
+    "12": {
+      "title": "Periodic Reports on Covenant and Convention Compliance",
+      "description": "This cluster includes reports submitted by member states, specifically Hong Kong, China, and Singapore, outlining their compliance efforts and progress related to international human rights covenants and conventions, as required periodically by the respective UN committees.",
+      "theme": "Human Rights"
+    },
+    "13": {
+      "title": "Periodical Reports by Indonesia to UN",
+      "description": "These reports represent periodic submissions by Indonesia to various United Nations committees and treaty bodies, detailing the nation's commitments under several international conventions and covenants.",
+      "theme": "Human Rights"
+    },
+    "14": {
+      "title": "Reports on Covenant Compliance and Slavery",
+      "description": "This cluster includes reports addressing compliance with the Covenant on Economic, Social and Cultural Rights and investigations into contemporary forms of slavery, focusing on incarcerated individuals.",
+      "theme": "Human Rights"
+    },
+    "15": {
+      "title": "Member States' Periodic Compliance Reports",
+      "description": "This cluster consists of periodic reports submitted by member states under various UN conventions and covenants, focusing on the implementation and compliance with their obligations related to human rights and anti-discrimination measures.",
+      "theme": "Human Rights"
+    },
+    "16": {
+      "title": "Periodic UN Human Rights Reports",
+      "description": "This cluster comprises periodic reports submitted by Central Asian and Eastern European nations to various UN human rights bodies under treaty obligations, detailing progress and compliance with conventions like ICERD, CRC, and others.",
+      "theme": "Human Rights"
+    },
+    "17": {
+      "title": "Periodic Reports Submitted by State Parties",
+      "description": "This cluster comprises periodic reports submitted by various state parties to respective UN human rights treaties, outlining their compliance and implementation of the provisions outlined in the treaties.",
+      "theme": "Human Rights"
+    },
+    "18": {
+      "title": "Periodic Reports to UN Treaty Bodies",
+      "description": "This cluster contains periodic reports submitted by nations to various UN treaty bodies in compliance with the corresponding human rights conventions and protocols. They address country-specific implementations and measures aligning with international human rights obligations.",
+      "theme": "Human Rights"
+    },
+    "19": {
+      "title": "Periodic State Compliance Reports by Nations",
+      "description": "This cluster encompasses periodic state reports submitted to various UN treaty bodies, detailing the implementation and compliance with international conventions and covenants, such as the Convention on the Elimination of All Forms of Discrimination against Women and the International Covenant on Civil and Political Rights.",
+      "theme": "International Conventions and Compliance"
+    },
+    "20": {
+      "title": "Periodic Reports Submitted by Pakistan",
+      "description": "This cluster comprises various periodic reports submitted by Pakistan to United Nations committees and treaty bodies, as required under specific international human rights treaties and protocols.",
+      "theme": "Human Rights"
+    },
+    "21": {
+      "title": "State Party Periodic Reports Submission",
+      "description": "This cluster comprises periodic state party reports submitted to various UN treaty bodies in compliance with international conventions, detailing the implementation of respective treaty obligations over specified reporting periods.",
+      "theme": "Human Rights"
+    },
+    "22": {
+      "title": "Reports Submitted by States Parties",
+      "description": "This cluster includes reports submitted by States parties in accordance with international obligations under human rights treaties, focusing on economic, social, and cultural rights as well as core documents providing fundamental contextual information on implementation of these treaties.",
+      "theme": "Human Rights"
+    },
+    "23": {
+      "title": "Periodic Reports Submitted by the Netherlands",
+      "description": "This cluster contains periodic state reports submitted by the Netherlands to various international human rights treaty bodies. These reports outline the country's compliance with its obligations under specific human rights treaties.",
+      "theme": "Human Rights"
+    },
+    "24": {
+      "title": "State Periodic Reports to UN Committees",
+      "description": "This cluster consists of periodic reports submitted by member states under the obligations of various United Nations human rights treaties, covering compliance and implementation of treaty provisions.",
+      "theme": "Human Rights"
+    },
+    "25": {
+      "title": "United Kingdom Periodic Reports",
+      "description": "This cluster comprises periodic reports submitted by the United Kingdom of Great Britain and Northern Ireland to various UN committees as part of its obligations under human rights treaties.",
+      "theme": "Human Rights"
+    },
+    "26": {
+      "title": "State Party Periodic Reports to UN Bodies",
+      "description": "This cluster consists of periodic and initial reports submitted by States Parties under various UN human rights treaties. These reports detail the progress, measures taken, and compliance with treaty obligations, facilitating treaty bodies' assessments through periodic reviews.",
+      "theme": "Human Rights"
+    },
+    "27": {
+      "title": "Follow-up Reports on Individual Communications",
+      "description": "This cluster contains follow-up progress reports prepared by various UN committees under the human rights treaty system, focusing on the examination and resolution of individual communications submitted to these committees.",
+      "theme": "Human Rights"
+    },
+    "28": {
+      "title": "Quadrennial Reports by NGOs to ECOSOC",
+      "description": "The cluster consists of quadrennial reports submitted by non-governmental organizations maintaining consultative status with the UN Economic and Social Council, detailing their activities and compliance during specified four-year periods, as required by Council resolution 1996/31.",
+      "theme": "Non-Governmental Organizations"
+    },
+    "29": {
+      "title": "UN Reports on Ethics and Oversight",
+      "description": "This cluster gathers United Nations official documents focusing on ethics, audit, investigation activities, and internal oversight across various UN agencies. It includes annual reports, office activities, committee reviews, and compliance updates.",
+      "theme": "Governance and Oversight"
+    },
+    "30": {
+      "title": "Corrigenda of UN Organizational Reports",
+      "description": "This cluster contains corrigenda of various United Nations reports submitted by organizational bodies such as UNDP, UNOPS, and UNFPA, addressing corrections, updates, or clarifications to previously distributed documents.",
+      "theme": "Governance"
+    },
+    "31": {
+      "title": "UN Reports on Health and Development",
+      "description": "This cluster comprises United Nations reports focusing on health initiatives, gender equality, economic progress, Sustainable Development Goals (SDGs), and strategies to combat diseases and global challenges, reflecting efforts in implementing strategic plans and addressing inequalities.",
+      "theme": "Development"
+    },
+    "32": {
+      "title": "Reports on United Nations Evaluation Functions",
+      "description": "This cluster encompasses reports detailing evaluations and reviews of various United Nations entities' functions, initiatives, and performance, submitted for organizational accountability and improvement.",
+      "theme": "Evaluation and Oversight"
+    },
+    "33": {
+      "title": "Annual and Strategic UN Development Reports",
+      "description": "This cluster compiles reports from various UN entities detailing their annual achievements, strategic plan implementations, and reviews of global programs, focusing on development, gender equality, disaster management, and sustainable governance.",
+      "theme": "Development"
+    },
+    "34": {
+      "title": "UN Administrative and Financial Program Reports",
+      "description": "This cluster collects reports and documents related to administrative, financial management, audit, and budgeting processes across various United Nations entities for multiple years.",
+      "theme": "Administration & Finance"
+    },
+    "35": {
+      "title": "United Nations System Accountability Reports",
+      "description": "This cluster encompasses reports focused on accountability, assessment, and management practices within the United Nations System, including evaluations of organizational frameworks, program implementation, and risk management.",
+      "theme": "Accountability and Oversight"
+    },
+    "36": {
+      "title": "UN Reports on Humanitarian Assistance",
+      "description": "Reports encompassing UN efforts in providing humanitarian assistance, coordination, and resolution implementations in response to global crises and conflicts.",
+      "theme": "Humanitarian Affairs"
+    },
+    "37": {
+      "title": "United Nations Financial and Programmatic Reports",
+      "description": "The reports in this cluster analyze and document the financial performance, auditing, and progress evaluation of initiatives and funds managed by various United Nations entities, based on the latest fiscal year or strategic frameworks.",
+      "theme": "Budget & Finance"
+    },
+    "38": {
+      "title": "Reports on UNCDF Achievements and Activities",
+      "description": "This cluster comprises reports documenting the results and reviews of the United Nations Capital Development Fund (UNCDF), including an outline of achieved goals and strategic reviews, spanning various years.",
+      "theme": "Development"
+    },
+    "39": {
+      "title": "Environmental and Sustainable Development Reports",
+      "description": "This cluster contains reports addressing global issues related to environmental sustainability, human security, water resources, and international cooperation frameworks, emphasizing actions and plans for sustainable development.",
+      "theme": "Sustainable Development"
+    },
+    "40": {
+      "title": "UN Reports on Fundraising and Volunteering",
+      "description": "This cluster includes UN reports detailing activities and financial statuses of private fundraising, partnerships, and volunteering initiatives, highlighting their collective efforts towards UN goals.",
+      "theme": "Development"
+    },
+    "41": {
+      "title": "Reports on Governance and Oversight",
+      "description": "This cluster comprises reports addressing issues of program oversight, internal auditing, implementation of recommendations, and financial reviews across various United Nations entities and programs.",
+      "theme": "Governance"
+    },
+    "42": {
+      "title": "UN Operational and Development Reports",
+      "description": "This cluster contains reports and documents generated by various UN entities, including operational reviews, session summaries, and thematic analyses, focused on organizational, developmental, and administrative activities.",
+      "theme": "United Nations Operations"
+    },
+    "43": {
+      "title": "United Nations Financial and Administrative Reports",
+      "description": "This cluster of reports focuses on financial and administrative topics including budgetary questions, health insurance management, peacebuilding investments, and the financial situation of the UN, reflecting a detailed analysis of resource management.",
+      "theme": "Budget & Finance"
+    },
+    "44": {
+      "title": "Country Reports on Regional Development",
+      "description": "This cluster includes country reports provided by Mozambique and Cape Verde, describing national contexts and developments regarding administrative and regional specifics.",
+      "theme": "Development"
+    },
+    "45": {
+      "title": "Regional Member State Reports Summary",
+      "description": "This cluster contains reports submitted by member states and regional groups providing summaries of national initiatives, policies, and activities across various sectors.",
+      "theme": "Development"
+    },
+    "46": {
+      "title": "Geographical Names Standardization Reports",
+      "description": "This cluster comprises reports submitted by various countries and regional bodies to present their activities and developments related to the standardization of geographical names, following protocols recognized by United Nations expert groups.",
+      "theme": "Geography"
+    },
+    "47": {
+      "title": "United Nations Geographical Names Reports",
+      "description": "This cluster includes reports related to the United Nations Group of Experts on Geographical Names (UNGEGN) detailing activities, achievements, and analysis from various working divisions, member states, and sessions focusing on toponymy and geographical naming standards.",
+      "theme": "Geographical Names Management"
+    },
+    "48": {
+      "title": "Reports on Geographical Naming Conventions",
+      "description": "These reports focus on the discussions and documentation presented during sessions of the United Nations Group of Experts on Geographical Names, detailing contributions from specific countries and regional divisions regarding geographical nomenclature.",
+      "theme": "Geospatial Information"
+    },
+    "49": {
+      "title": "Reports on Geographical Names Standardization",
+      "description": "This cluster encompasses official reports submitted by various nations and divisions to the United Nations Group of Experts on Geographical Names. These documents detail activities, updates, and progress made in geographic name standardization conducted during specific periods.",
+      "theme": "Geographical Names and Cartography"
+    },
+    "50": {
+      "title": "UN Documents on Geographical Names Reports",
+      "description": "This cluster consists of country and division reports submitted to the United Nations Group of Experts on Geographical Names (UNGEGN), summarizing contributions and activities from various sessions held between 2021 and 2025.",
+      "theme": "Geographical Classification"
+    },
+    "51": {
+      "title": "Reports on UN Group of Experts Activities",
+      "description": "These reports document contributions to and summaries from the 2023 session of the United Nations Group of Experts on Geographical Names, with a specific focus on Canadian and USA-Canada Division participation.",
+      "theme": "Geographical Names and Standards"
+    },
+    "52": {
+      "title": "Scandinavian Countries' National Reports",
+      "description": "A collection of reports submitted by Scandinavian nations outlining their national perspectives or activities within the framework of United Nations platforms.",
+      "theme": "National Reporting"
+    },
+    "53": {
+      "title": "Reports Related to Finland's Geographical Names",
+      "description": "This cluster includes reports presented by Finland concerning geographical naming standards, toponymic guidelines, and summaries provided to the United Nations Group of Experts on Geographical Names.",
+      "theme": "Geographical Names and Toponymy"
+    },
+    "54": {
+      "title": "Geographical Name Standardization Reports",
+      "description": "These reports document the activities, summaries, and contributions of Italy and the Romano-Hellenic Division in the context of sessions held by the United Nations Group of Experts on Geographical Names, focusing on geographical name standardization.",
+      "theme": "Geography"
+    },
+    "55": {
+      "title": "Reports on Geographical Names Discussions",
+      "description": "This cluster contains summaries and submissions of reports discussed during the United Nations Group of Experts on Geographical Names sessions from member states and divisions, covering topics and updates on geographical name standardization.",
+      "theme": "Geography and Mapping"
+    },
+    "56": {
+      "title": "Reports on Geographical Naming Initiatives",
+      "description": "This cluster comprises reports submitted by New Zealand, focusing on activities related to geographical naming, including alignment with UN strategic plans and the promotion of traditional M\u0101ori names.",
+      "theme": "Development"
+    },
+    "57": {
+      "title": "Geographical Names and Africa-focused Coordination",
+      "description": "This cluster of reports centers around UN initiatives and discussions regarding standardization, management, and advisory activities pertaining to geographical names, including a specific focus on the cooperation efforts of the Task Team for Africa.",
+      "theme": "Geography and Administration"
+    },
+    "58": {
+      "title": "Geospatial Information Management Reports",
+      "description": "These reports collectively focus on topics related to global geospatial information management, including toponymic guidelines and collaborative efforts in cartography and geographical naming conventions.",
+      "theme": "Development"
+    },
+    "59": {
+      "title": "Global Geospatial and Geographical Names Reports",
+      "description": "These reports relate to the activities, sessions, and outcomes of the United Nations Committee of Experts on Global Geospatial Information Management and the United Nations Group of Experts on Geographical Names, focusing on the management, standardization, and evaluation of geospatial and geographical names information globally.",
+      "theme": "Geospatial Information Management"
+    },
+    "60": {
+      "title": "Collaborative Reports on Geographic Research",
+      "description": "These reports document findings and collaborative efforts within global geographic and hydrographic research, including Antarctic exploration and systematic methodologies.",
+      "theme": "Science & Environment"
+    },
+    "61": {
+      "title": "Reports on ICANN Activities and Summary",
+      "description": "These reports provide summaries of activities, developments, and information related to the Internet Corporation for Assigned Names and Numbers (ICANN), presented or submitted in alignment with United Nations engagements.",
+      "theme": "Information and Communication Technologies"
+    },
+    "62": {
+      "title": "Reports on Geographical Naming Standards",
+      "description": "These reports cover activities and outcomes related to international geographical naming practices, addressing toponymy and exonyms.",
+      "theme": "Geospatial Information"
+    },
+    "63": {
+      "title": "Reports on Collaboration with ICOS",
+      "description": "These reports provide summaries of activities and interactions by the Liaison Officer with the International Council of Onomastic Sciences (ICOS), highlighting joint initiatives and findings.",
+      "theme": "Collaboration and Partnerships"
+    },
+    "64": {
+      "title": "Romanization Systems for Geographical Names",
+      "description": "This cluster contains reports by the Working Group on Romanization Systems, providing summaries on the current status of United Nations romanization systems for geographical names, which concern the transcription of non-Latin scripts into Roman letters.",
+      "theme": "Standardization and Nomenclature"
+    },
+    "65": {
+      "title": "Reports by UNGEGN Working Groups",
+      "description": "This cluster includes reports provided by Working Groups under the United Nations Group of Experts on Geographical Names (UNGEGN), focusing on their activities, initiatives, and contributions to toponymy education, publicity, and funding.",
+      "theme": "Development"
+    },
+    "66": {
+      "title": "Reports on the Rights of Older Persons",
+      "description": "This cluster of reports focuses on the rights, welfare, and protection of older persons, including in diverse global contexts and under the Madrid International Plan of Action on Ageing, 2002.",
+      "theme": "Human Rights"
+    },
+    "67": {
+      "title": "Secretary-General Reports: Corrigenda Updates",
+      "description": "This cluster consists of corrigenda to various reports by the UN Secretary-General, addressing amendments and updates to prior submissions on topics such as aging, population, financial resources, social development, and open data.",
+      "theme": "Administrative and Budgetary Matters"
+    },
+    "68": {
+      "title": "Reports on Global Statistical Systems",
+      "description": "This cluster encompasses various reports related to statistics and data management, including expert group findings, census implementations, demographic surveys, and statistical commission activities, outlining methodologies, implementations, and progress.",
+      "theme": "Statistics and Data Management"
+    },
+    "69": {
+      "title": "Advancing Gender Equality and Women's Rights",
+      "description": "These reports focus on global efforts to achieve gender equality and empower women and girls, covering topics such as policy frameworks, human rights, violence prevention, and sustainable development.",
+      "theme": "Gender Equality and Women's Empowerment"
+    },
+    "70": {
+      "title": "Global Population and Sustainable Development",
+      "description": "Reports addressing population trends, actions, and their ties to sustainable development goals within global development frameworks.",
+      "theme": "Development"
+    },
+    "71": {
+      "title": "Reports on Statistical Development Initiatives",
+      "description": "This cluster encompasses reports concerning the development, implementation, and coordination of statistical methodologies, infrastructures, and thematic analyses to support global and regional progress assessment, including the Sustainable Development Goals.",
+      "theme": "Statistics and Data Analysis"
+    },
+    "72": {
+      "title": "Advancing Sustainable Development and Social Protection",
+      "description": "The reports in this cluster collectively address key aspects of achieving sustainable development goals, focusing particularly on social protection, health, and measures to reduce inequalities globally.",
+      "theme": "Sustainable Development"
+    },
+    "73": {
+      "title": "Statistical Coordination and Best Practices Reports",
+      "description": "These reports pertain to UN efforts in coordinating and enhancing statistical methodologies and frameworks across various committees and expert groups to ensure consistency, quality, and dissemination of official statistics.",
+      "theme": "Statistics and Data Management"
+    },
+    "74": {
+      "title": "Rights of Persons with Disabilities",
+      "description": "This cluster comprises reports focusing on the rights, inclusion, and well-being of persons with disabilities, adhering to the frameworks of the Convention on the Rights of Persons with Disabilities and other relevant mechanisms promoting equality and human rights.",
+      "theme": "Human Rights"
+    },
+    "75": {
+      "title": "Financial Resources for Population Programme",
+      "description": "These reports focus on the allocation and flow of financial resources aimed at facilitating the progress of the Programme of Action established during the International Conference on Population and Development.",
+      "theme": "Development"
+    },
+    "76": {
+      "title": "Human Rights and Emerging Digital Technologies",
+      "description": "This cluster addresses the impact and implications of digital and emerging technologies on various aspects of human rights, focusing on themes such as privacy, gender equality, countering discrimination, and the use of these technologies in governance and social justice initiatives.",
+      "theme": "Human Rights"
+    },
+    "77": {
+      "title": "Sustainable Development and Biodiversity Reports",
+      "description": "This cluster encompasses reports focusing on international frameworks and agreements aimed at advancing the implementation, monitoring, and support of sustainable development goals and biodiversity conservation efforts.",
+      "theme": "Sustainable Development"
+    },
+    "78": {
+      "title": "Youth and Peacebuilding Initiatives",
+      "description": "This cluster encompasses reports from the United Nations focused on global efforts to engage youth, foster peace, and promote interreligious and intercultural dialogue for sustainable development and conflict resolution.",
+      "theme": "Development"
+    },
+    "79": {
+      "title": "Food Security and Sustainable Development",
+      "description": "This cluster comprises UN reports addressing food security, nutrition, agricultural development, and their intersections with sustainable development goals, climate action, and human rights. These documents provide frameworks and analysis for achieving equitable and stable food systems.",
+      "theme": "Development"
+    },
+    "80": {
+      "title": "Human Rights in Conflict Zones",
+      "description": "This cluster focuses on reports addressing human rights concerns and capacity-building efforts in areas affected by conflict or post-conflict scenarios, emphasizing protection for vulnerable groups, including women, children, and civilians, as well as targeted technical assistance.",
+      "theme": "Human Rights"
+    },
+    "81": {
+      "title": "Coordination of UN Development Initiatives",
+      "description": "This cluster encompasses reports addressing the United Nations' efforts and programs aimed at sustainable development through partnerships, innovation, and interagency cooperation. They provide insights and progress analyses of policies aligning with global development goals.",
+      "theme": "Development"
+    },
+    "82": {
+      "title": "Statelessness and Displacement in Population Studies",
+      "description": "These reports address challenges and rights concerning stateless individuals and internally displaced persons, focusing on statistical measures and electoral participation.",
+      "theme": "Human Rights"
+    },
+    "83": {
+      "title": "Statistics for Sustainable Development Reporting",
+      "description": "This cluster focuses on reports addressing the coordination and capacity-building efforts in statistical practices and methodologies, highlighting the importance of data in achieving the 2030 Agenda for Sustainable Development.",
+      "theme": "Statistics and Data Analysis"
+    },
+    "84": {
+      "title": "Reports on International Statistical Programs",
+      "description": "These reports provide insights into and updates about major international statistical initiatives coordinated by global organizations under the facilitation of the UN Secretary-General. They highlight data compendiums and analytical frameworks established for global and comparative benchmarking.",
+      "theme": "Statistics and Data Analysis"
+    },
+    "85": {
+      "title": "Crime Prevention and Criminal Justice Reports",
+      "description": "This cluster includes documents addressing the United Nations' efforts and evaluations related to crime prevention, justice system improvements, and the alignment of these initiatives with global frameworks such as the Sustainable Development Goals.",
+      "theme": "Crime Prevention and Criminal Justice"
+    },
+    "86": {
+      "title": "UN Reports with Corrigendum Information",
+      "description": "These reports are corrigenda for previous UN documents, addressing corrections or updates to their content.",
+      "theme": "Document Revision"
+    },
+    "87": {
+      "title": "Literacy and Education for Development",
+      "description": "This cluster comprises reports focusing on literacy and education as pivotal components for sustainable development, societal empowerment, and the integration of democratic principles.",
+      "theme": "Education and Development"
+    },
+    "88": {
+      "title": "Strategies for Poverty Eradication and Development",
+      "description": "A cluster of reports examining international strategies and actions for poverty eradication, addressing global inequalities, and promoting sustainable development in alignment with UN mandates.",
+      "theme": "Development"
+    },
+    "89": {
+      "title": "Reports on Africa's Development and Challenges",
+      "description": "These reports focus on the progress and challenges of the New Partnership for Africa's Development and related socio-economic matters in African nations, providing insights into implementation and human rights impacts.",
+      "theme": "Development"
+    },
+    "90": {
+      "title": "Sustainable Development and Technological Progress",
+      "description": "This cluster encompasses reports focusing on sustainable development goals and their interrelation with technological innovation, economic recovery, and socio-environmental considerations.",
+      "theme": "Development"
+    },
+    "91": {
+      "title": "Sustainable Marine Development and Management",
+      "description": "These reports focus on sustainable development, international cooperation, and governance mechanisms regarding oceans, seas, and coastal zones, highlighting their importance for environmental protection, inclusive development, and socioeconomic aspects adhering to the 2030 Agenda.",
+      "theme": "Sustainable Development"
+    },
+    "92": {
+      "title": "Reports of ECOSOC Functions and Commissions",
+      "description": "These reports pertain to the activities, sessions, and outcomes of the Economic and Social Council (ECOSOC), its forums, and related functional commissions.",
+      "theme": "Economic and Social Development"
+    },
+    "93": {
+      "title": "UN Economic and Social Development Reports",
+      "description": "This cluster includes reports that focus on various aspects of global economic growth, social progress, and sustainable development efforts, as presented and reviewed in sessions of UN bodies, particularly the General Assembly and Economic and Social Council.",
+      "theme": "Development"
+    },
+    "94": {
+      "title": "Crime Prevention and Criminal Justice Reports",
+      "description": "This cluster includes reports focusing on sessions, congresses, and follow-up actions related to United Nations initiatives on crime prevention and criminal justice, covering activities of relevant committees and the Economic and Social Council.",
+      "theme": "Crime Prevention and Justice"
+    },
+    "95": {
+      "title": "Reports on UN Legal and Trade Commissions",
+      "description": "This cluster encompasses reports on the proceedings, outcomes, and related activities of United Nations commissions focusing on international law, trade, and crime prevention. Additionally, it includes discussions from the General Assembly's Sixth Committee.",
+      "theme": "International Law and Cooperation"
+    },
+    "96": {
+      "title": "Reports on International Drug Policy Strategies",
+      "description": "These reports address the global strategy and policy frameworks concerning the challenges associated with international drug control, reflecting on sessions, discussions, and evaluations from multiple committees and UN entities.",
+      "theme": "Narcotics and Drug Control"
+    },
+    "97": {
+      "title": "CEDAW Reports and Meeting Summaries",
+      "description": "This cluster comprises reports related to the Convention on the Elimination of All Forms of Discrimination against Women, including sessional summaries, committee considerations, and pre-sessional working group reports spanning from 2019 through 2025.",
+      "theme": "Gender Equality"
+    },
+    "98": {
+      "title": "Global Development Policy and Cooperation",
+      "description": "This cluster encompasses reports focusing on international efforts to promote and enhance sustainable development, economic growth, and socio-economic cooperation, addressing challenges such as debt sustainability, trade, policy frameworks, and rights-based approaches.",
+      "theme": "Development"
+    },
+    "99": {
+      "title": "Development Policy and Transition Support",
+      "description": "These reports address the evaluations and outcomes of the Committee for Development Policy sessions and the measures for supporting nations during development transitions.",
+      "theme": "Development"
+    },
+    "100": {
+      "title": "Reports on Tax Cooperation Sessions",
+      "description": "These reports document the outcomes and discussions of the sessions held by the Committee of Experts on International Cooperation in Tax Matters, focusing on global tax policy cooperation.",
+      "theme": "International Taxation"
+    },
+    "101": {
+      "title": "Advancing Human Rights and Development",
+      "description": "This cluster of UN reports discusses initiatives, dialogues, and policy developments to promote human rights and sustainable development, emphasizing themes like the right to development, participation in public affairs, and the intersection with poverty eradication, gender equity, and social integration.",
+      "theme": "Human Rights"
+    },
+    "102": {
+      "title": "United Nations Human Rights Committees Reports",
+      "description": "This cluster comprises official reports from various UN human rights committees, documenting the proceedings, conclusions, and recommendations of their sessions held across multiple years.",
+      "theme": "Human Rights"
+    },
+    "103": {
+      "title": "Reports on UN Organizational Committees",
+      "description": "This cluster includes reports from various UN committees related to organizational and administrative functions, including sessions, program coordination, information dissemination, conference patterns, and agenda management within the UN system.",
+      "theme": "UN Governance and Administration"
+    },
+    "104": {
+      "title": "Reports on Regions and Humanitarian Issues",
+      "description": "This cluster consists of reports generated by various entities within the United Nations system, addressing regional situations, humanitarian efforts, and human rights conditions across different areas including South Sudan, Somalia, Afghanistan, the Sahel region, and Central Africa.",
+      "theme": "International Affairs and Humanitarian Assistance"
+    },
+    "105": {
+      "title": "UN System Engagement in Sustainable Development",
+      "description": "These reports focus on the activities of United Nations specialized agencies and other international institutions concerning the implementation of the Declaration on Granting Independence and promoting sustainable and resilient tourism in specific regions.",
+      "theme": "Development"
+    },
+    "106": {
+      "title": "Narcotics Control and Regulation Reports",
+      "description": "This cluster encompasses reports focusing on the control measures, implementation efforts, and policy recommendations pertaining to narcotic drugs and psychotropic substances, highlighting adherence to international agreements.",
+      "theme": "Drug Control"
+    },
+    "107": {
+      "title": "Climate Change and Human Rights Reports",
+      "description": "This cluster comprises United Nations reports focusing on the interrelation between climate change, its impacts, and human rights, providing analyses and recommendations for advancing sustainable development and environmental justice.",
+      "theme": "Climate Change and Environmental Protection"
+    },
+    "108": {
+      "title": "Digital Innovations for Socioeconomic Development",
+      "description": "This cluster of reports explores the role and influence of digital technologies and innovations in achieving sustainable socioeconomic development goals and upholding fundamental human rights, including education, health, and social equality.",
+      "theme": "Development"
+    },
+    "109": {
+      "title": "UN Reports on Situation in Haiti",
+      "description": "This cluster encompasses reports and communications addressing the human rights, political, and operational circumstances in Haiti, highlighting international efforts and recommendations by the United Nations.",
+      "theme": "Human Rights"
+    },
+    "110": {
+      "title": "Reports of the Committee on NGOs",
+      "description": "Reports documenting the sessions of the Committee on Non-Governmental Organizations, detailing matters discussed and recommendations made during their regular and resumed sessions.",
+      "theme": "United Nations Bodies and Commissions"
+    },
+    "111": {
+      "title": "Committee Reports on Organizational Meetings",
+      "description": "This cluster includes reports from UN committees on their respective sessions where key organizational matters and operational topics were addressed.",
+      "theme": "Governance"
+    },
+    "112": {
+      "title": "Environmental and Development UN Initiatives",
+      "description": "This cluster encompasses reports detailing discussions, progress, and outcomes from UN forums and bodies addressing sustainable development, biodiversity, and forestry, pivotal for global cooperation and environmental stewardship.",
+      "theme": "Sustainable Development"
+    },
+    "113": {
+      "title": "Reports on UN Communication Activities",
+      "description": "This cluster contains reports addressing the activities, evaluations, and objectives of the United Nations Department of Global Communications, including areas like multilingualism, conference patterns, outreach, strategic communications, and news services.",
+      "theme": "Communication and Outreach"
+    },
+    "114": {
+      "title": "Reports on Cluster Munitions Agreements and Actions",
+      "description": "This cluster contains reports related to disarmament affairs, focusing particularly on the Convention on Cluster Munitions and its associated annual and progress reports that track implementation of international treaties and action plans.",
+      "theme": "Disarmament"
+    },
+    "115": {
+      "title": "United Nations Environmental Policy Reports",
+      "description": "These documents are United Nations reports focusing on environmental conservation, sustainable development initiatives, and actions mandated by specific resolutions, highlighting global efforts towards environmental governance.",
+      "theme": "Environment and Sustainability"
+    },
+    "116": {
+      "title": "United Nations Fund and Assistance Reports",
+      "description": "This cluster of UN reports details the operations, status, and activities of various voluntary funds and assistance programs coordinated by UN bodies, demonstrating the organization's efforts in addressing global needs under specific focused areas.",
+      "theme": "Development"
+    },
+    "117": {
+      "title": "Private Sector Role in Arab SDG Goals",
+      "description": "This cluster includes reports focusing on the involvement of the private sector in achieving Sustainable Development Goals (SDGs) within the Arab region, highlighting areas such as innovation, skills development, and regional impacts.",
+      "theme": "Sustainable Development"
+    },
+    "118": {
+      "title": "Reports on Enforced Disappearances",
+      "description": "This cluster comprises official United Nations reports addressing the issue of enforced or involuntary disappearances, including frameworks, state compliance, and specific case investigations.",
+      "theme": "Human Rights"
+    },
+    "119": {
+      "title": "Human Rights and Business Interactions",
+      "description": "The reports in this cluster address the intersection of human rights and business operations, focusing on the implementation and practical application of the Guiding Principles on Business and Human Rights, corporate responsibility, and the role of businesses in respecting and facilitating human rights globally.",
+      "theme": "Human Rights"
+    },
+    "120": {
+      "title": "Human Rights of Persons with Albinism",
+      "description": "Reports addressing the challenges, protection, and rights of individuals with albinism, featuring mandate achievements, thematic issues, and country-specific analyses.",
+      "theme": "Human Rights"
+    },
+    "121": {
+      "title": "Unilateral Coercive Measures and Human Rights",
+      "description": "Reports addressing the impacts, deliberations, and legal perspectives related to unilateral coercive measures on global human rights, including assessments from special rapporteurs and panel discussions.",
+      "theme": "Human Rights"
+    },
+    "122": {
+      "title": "Gender-based Violence and Legal Frameworks",
+      "description": "These reports examine issues of gender-based violence, particularly rape as a human rights violation and crime, and discuss appropriate legislative and digital measures for prevention and accountability.",
+      "theme": "Human Rights"
+    },
+    "123": {
+      "title": "Reports on Child Exploitation and Rights",
+      "description": "This cluster groups reports focusing on combating the sale, exploitation, and abuse of children, and includes observations, state responses, and compliance reports related to international conventions on child protection.",
+      "theme": "Human Rights"
+    },
+    "124": {
+      "title": "Achieving Sustainable Goals Through Sport",
+      "description": "This cluster of reports explores the integral role of sports in advancing peace, sustainable development, and social inclusion as recognized by United Nations initiatives.",
+      "theme": "Development"
+    },
+    "125": {
+      "title": "Youth and Rights in Global Perspectives",
+      "description": "These reports focus on the rights, challenges, and roles of youth and civil society in human rights and governance globally. They address issues like youth engagement, participation, and responses to crises such as COVID-19.",
+      "theme": "Human Rights"
+    },
+    "126": {
+      "title": "Human Rights in Law Enforcement Contexts",
+      "description": "These reports explore the promotion and protection of human rights concerning police practices, focusing on addressing violations such as excessive use of force, ensuring accountability, and safeguarding fundamental freedoms in detention and assembly contexts.",
+      "theme": "Human Rights"
+    },
+    "127": {
+      "title": "Mercenary Impacts on Human Rights",
+      "description": "These reports by the Working Group on the Use of Mercenaries investigate the consequences of mercenary activities and associated entities on human rights and self-determination, focusing on justice, accountability, and recruitment practices.",
+      "theme": "Human Rights"
+    },
+    "128": {
+      "title": "Human Rights in Afghanistan Reports",
+      "description": "This cluster encompasses reports analyzing the human rights situation in Afghanistan, emphasizing women's rights, discrimination issues, and legal frameworks, as presented by the UN entities, including the OHCHR and Special Rapporteur.",
+      "theme": "Human Rights"
+    },
+    "129": {
+      "title": "Justice Systems and Human Rights Reports",
+      "description": "This cluster encompasses reports focusing on the administration of justice, the independence and protection of judicial authorities, access to justice, and related human rights considerations, emphasizing the role of legal frameworks and challenges in various countries.",
+      "theme": "Human Rights"
+    },
+    "130": {
+      "title": "Freedom of Assembly and Association Reports",
+      "description": "This cluster comprises reports by the Special Rapporteur on the Rights to Freedom of Peaceful Assembly and of Association, addressing themes such as access to resources, the impact of political cycles, strategies to protect civic space, and country-specific assessments.",
+      "theme": "Human Rights"
+    },
+    "131": {
+      "title": "Education and Human Rights Initiatives Analysis",
+      "description": "This cluster contains reports and evaluations associated with global and national efforts initiated and supported by the United Nations to improve and assess the state of education considered a fundamental human right for all individuals, emphasizing inclusivity, equity, and accessibility.",
+      "theme": "Human Rights"
+    },
+    "132": {
+      "title": "Transitional Justice and Human Rights Reports",
+      "description": "This cluster encompasses reports addressing issues of transitional justice, human rights violations, and restorative mechanisms to ensure truth, justice, reparation, and non-recurrence. It also includes assessments related to enforced disappearances, impacts on specific communities, and international legal principles.",
+      "theme": "Human Rights"
+    },
+    "133": {
+      "title": "Racial Equality and Minority Rights",
+      "description": "This cluster of reports collectively addresses racism, racial discrimination, xenophobia, and the rights and empowerment of national, ethnic, religious, and linguistic minorities, as well as efforts towards the implementation of related UN declarations and programs, particularly focusing on the Durban Declaration and Programme of Action.",
+      "theme": "Human Rights"
+    },
+    "134": {
+      "title": "National Human Rights Institutions Activities",
+      "description": "Reports focusing on the roles, accreditation processes, and contributions of national institutions, including the Global Alliance of National Human Rights Institutions and Ombudsman offices, in promoting and protecting human rights globally.",
+      "theme": "Human Rights"
+    },
+    "135": {
+      "title": "Human Rights Enhancement and Coordination",
+      "description": "This cluster covers reports focusing on the coordination, promotion, and enhancement of human rights protection, capacity building, and response to global challenges, in line with international agreements and the United Nations' objectives.",
+      "theme": "Human Rights"
+    },
+    "136": {
+      "title": "Human Rights in the Marshall Islands",
+      "description": "This cluster examines the human rights concerns within the Marshall Islands, particularly focusing on impacts from historical nuclear activities and issues affecting internally displaced persons.",
+      "theme": "Human Rights"
+    },
+    "137": {
+      "title": "Human Rights and Migration Dynamics",
+      "description": "This cluster consists of reports focusing on the interrelation between human rights, migration, and issues such as labor, trafficking, and the socio-political factors affecting migrants' communities at a global level.",
+      "theme": "Human Rights"
+    },
+    "138": {
+      "title": "Addressing Gender-Based Violence and Inequality",
+      "description": "This cluster includes reports focusing on the adverse impacts of child, early, and forced marriage and related gender-based violence, emphasizing the protection, promotion, and realization of women's and girls' human rights worldwide.",
+      "theme": "Human Rights"
+    },
+    "139": {
+      "title": "Human Rights to Water and Sanitation",
+      "description": "This cluster encompasses reports primarily authored by Special Rapporteurs, focusing on the realization and challenges associated with safe drinking water and sanitation as fundamental human rights. The documents explore specific regional case studies, thematic analyses, and progress evaluations over defined periods.",
+      "theme": "Human Rights"
+    },
+    "140": {
+      "title": "Access to Health and COVID-19 Responses",
+      "description": "Reports in this cluster collectively focus on global strategies, challenges, and practices related to ensuring equitable access to healthcare, medicines, and vaccines, and include assessments of the human rights implications of the COVID-19 pandemic.",
+      "theme": "Health and Human Rights"
+    },
+    "141": {
+      "title": "Climate Change and Human Rights Impacts",
+      "description": "This cluster focuses on the intersection of climate change effects, human rights impacts, and strategies for addressing challenges faced by vulnerable groups, emphasizing housing, displacement, and equity.",
+      "theme": "Human Rights"
+    },
+    "142": {
+      "title": "Human Rights in Occupied Palestinian Territories",
+      "description": "This cluster comprises reports addressing human rights issues in the Occupied Palestinian Territory, including East Jerusalem. Topics include accountability for violations of international law, the humanitarian impact of settlements, and findings from relevant UN bodies.",
+      "theme": "Human Rights"
+    },
+    "143": {
+      "title": "Reports on Trafficking and Related Human Rights",
+      "description": "This cluster comprises reports addressing trafficking in persons, particularly women and children, alongside associated human rights dimensions such as internal displacement, migrant protection, and exploitation prevention.",
+      "theme": "Human Rights"
+    },
+    "144": {
+      "title": "Working Group Specialized Session Reports",
+      "description": "This cluster includes reports from UN Working Groups addressing findings, cases, and thematic frameworks, primarily focusing on Arbitrary Detention and Enforced or Involuntary Disappearances from their defined sessions.",
+      "theme": "Human Rights"
+    },
+    "145": {
+      "title": "Reports on Human Rights Defenders",
+      "description": "This cluster consists of reports presented by the UN Special Rapporteur on the situation of Human Rights Defenders, emphasizing their roles, challenges faced, and continuing contributions to global human rights efforts, including field visits and thematic analyses.",
+      "theme": "Human Rights"
+    },
+    "146": {
+      "title": "Adequate Housing and Homelessness Reports",
+      "description": "This cluster encompasses United Nations reports focusing on issues of homelessness, housing rights, and the living conditions framework, including studies conducted by Special Rapporteurs and the Secretary-General.",
+      "theme": "Human Rights"
+    },
+    "147": {
+      "title": "Corrigendums for Special Rapporteur Reports",
+      "description": "A collection of corrigendums for reports issued by various UN Special Rapporteurs and Experts addressing human rights and social issues.",
+      "theme": "Human Rights"
+    },
+    "148": {
+      "title": "United Nations Governance and Protection Reports",
+      "description": "This cluster comprises reports focused on United Nations practices and initiatives related to governance, prevention of atrocities, human rights protection, peacekeeping, and addressing sexual exploitation and abuse, reflecting a system-wide commitment to global development and security.",
+      "theme": "United Nations Governance"
+    },
+    "149": {
+      "title": "Reports on Racial Equity Initiatives",
+      "description": "These reports discuss various efforts, investigations, and recommendations concerning racial equity, justice, and the protection of human rights, particularly focusing on issues affecting individuals of African descent and addressing systemic discrimination and racism in different national contexts.",
+      "theme": "Human Rights"
+    },
+    "150": {
+      "title": "Casualty Recording and Civilian Impact",
+      "description": "This cluster focuses on reports by the UN High Commissioner for Human Rights addressing the recording of civilian casualties and its role in promoting and protecting human rights globally.",
+      "theme": "Human Rights"
+    },
+    "151": {
+      "title": "Reports on the Right to Development",
+      "description": "This cluster includes reports by the Special Rapporteur on the Right to Development, focusing on national-level action on climate change, pandemic responses, and overarching principles of development rights.",
+      "theme": "Human Rights"
+    },
+    "152": {
+      "title": "Efforts to Combat Glorification of Nazism",
+      "description": "These reports discuss the efforts and strategies required to counteract the glorification of Nazism, neo-Nazism, and other practices contributing to contemporary racism, xenophobia, and discrimination, presented by the Special Rapporteur on Contemporary Forms of Racism.",
+      "theme": "Human Rights"
+    },
+    "153": {
+      "title": "Reports on United Nations Commemorations",
+      "description": "These reports detail United Nations initiatives to commemorate significant events, promote international awareness, and provide support for affected communities.",
+      "theme": "Commemorations & Solidarity"
+    },
+    "154": {
+      "title": "Human Rights Communications Reports",
+      "description": "This cluster contains periodic reports published by the UN Special Procedures Mechanisms detailing communications sent to state and non-state actors regarding alleged human rights violations, along with responses received from these entities over defined timeframes.",
+      "theme": "Human Rights"
+    },
+    "155": {
+      "title": "Reports with Corrections from UN Working Groups",
+      "description": "These reports are corrigenda issued by various United Nations working groups to address errors or omissions in their previously released documents, emphasizing transparency and accuracy.",
+      "theme": "United Nations Documentation"
+    },
+    "156": {
+      "title": "Human Rights of Minority Groups",
+      "description": "These reports, authored by the Special Rapporteur on Minority Issues, address various aspects of protecting and promoting the rights of minorities, including conflict prevention, representation, education, and social inclusion.",
+      "theme": "Human Rights"
+    },
+    "157": {
+      "title": "Conscientious Objection Rights Analysis",
+      "description": "These reports analyze the theme of conscientious objection to military service, documenting international human rights perspectives and legal frameworks as assessed by the OHCHR.",
+      "theme": "Human Rights"
+    },
+    "158": {
+      "title": "Advancement of Human Rights Reporting",
+      "description": "This cluster includes reports from UN Special Rapporteurs addressing modern human rights issues, encompassing themes such as racism, xenophobia, slavery, and the conditions of minority groups, with on-site investigations in select nations.",
+      "theme": "Human Rights"
+    },
+    "159": {
+      "title": "UN Reports on Georgia's Humanitarian and Governance Issues",
+      "description": "These reports collectively examine the humanitarian conditions, internally displaced persons, and international cooperation efforts related to Georgia, including visits from independent experts and analyses by the United Nations.",
+      "theme": "International Relations and Human Rights"
+    },
+    "160": {
+      "title": "Human Rights Situation and Investigations Reports",
+      "description": "This cluster comprises reports presented by the United Nations entities, including the Secretary-General, High Commissioners, Special Rapporteurs, and Independent Experts, documenting inquiries, analyses, and findings on human rights situations in various regions. These reports aim to address violations, implement resolutions, and guide the promotion and protection of human rights.",
+      "theme": "Human Rights"
+    },
+    "161": {
+      "title": "Religious Discrimination and Minority Rights",
+      "description": "This cluster encompasses reports addressing issues related to discrimination based on religion or belief, the rights of religious and belief minorities, and measures promoting tolerance and inclusivity, examined across various regions including country-specific case studies.",
+      "theme": "Human Rights"
+    },
+    "162": {
+      "title": "Reports on Cultural Rights and Issues",
+      "description": "This cluster of reports explores various aspects of cultural rights, including their interaction with societal challenges such as migration, digitalization, and cultural diversity, as well as country-specific analyses and visits by the Special Rapporteur.",
+      "theme": "Human Rights"
+    },
+    "163": {
+      "title": "Global Social Challenges During COVID-19",
+      "description": "This cluster of reports addresses significant social and systemic issues, including impacts of the COVID-19 pandemic, systemic racism, and poverty eradication efforts, examined through the lens of human rights.",
+      "theme": "Human Rights"
+    },
+    "164": {
+      "title": "Human Rights in Detention Contexts",
+      "description": "This cluster of UN reports addresses human rights issues related to detention practices, prison management, and the prevention of torture. It includes periodic reviews, country visits, and thematic analyses designed to ensure compliance with international standards such as the United Nations Standard Minimum Rules for the Treatment of Prisoners.",
+      "theme": "Human Rights"
+    },
+    "165": {
+      "title": "Gender and Diversity in Human Rights",
+      "description": "This cluster comprises reports addressing the necessity for gender balance and equitable geographical representation within human rights mechanisms and treaty bodies.",
+      "theme": "Human Rights"
+    },
+    "166": {
+      "title": "Advancing LGBTIQ Rights and Health",
+      "description": "This cluster consists of reports that analyze issues concerning violence, discrimination, and access to rights faced by LGBTIQ individuals, emphasizing legal frameworks, health, and inclusion aligned with UN initiatives.",
+      "theme": "Human Rights"
+    },
+    "167": {
+      "title": "Human Rights and Digital Challenges",
+      "description": "Reports addressing human rights issues and protections related to freedom of expression, digital technology, and access to information.",
+      "theme": "Human Rights"
+    },
+    "168": {
+      "title": "Reports on Leprosy and Human Rights",
+      "description": "This cluster contains reports primarily addressing the rights, living conditions, and health standards of persons affected by leprosy and their family members, complemented by country-specific assessments and additional themes of poverty and disabilities.",
+      "theme": "Human Rights"
+    },
+    "169": {
+      "title": "Anti-Corruption and Illicit Financial Flows",
+      "description": "This cluster of reports addresses issues related to combating corruption, recovering illicit financial assets, and ensuring related human rights, emphasizing coordination, legal integrity, and transparent international financial practices.",
+      "theme": "Anti-Corruption"
+    },
+    "170": {
+      "title": "Media Freedom and Journalist Safety",
+      "description": "This cluster contains reports addressing issues related to safeguarding media freedom, protecting journalists, and promoting the right to freedom of opinion and expression as assessed by UN bodies and experts.",
+      "theme": "Human Rights"
+    },
+    "171": {
+      "title": "Human Rights and Financial Justice Reports",
+      "description": "This cluster consists of reports that address the interplay between financial mechanisms, such as foreign debt and taxation, and their impact on human rights, contributed by the Independent Expert Attiya Waris and the Secretary-General.",
+      "theme": "Human Rights"
+    },
+    "172": {
+      "title": "Environmental impacts on human rights",
+      "description": "This cluster of reports examines the intersections of environmental factors, including climate change, marine resource utilization, and hazardous substance management, with the promotion and protection of human rights.",
+      "theme": "Human Rights"
+    },
+    "173": {
+      "title": "Human Rights in Sri Lanka",
+      "description": "This cluster examines human rights issues in Sri Lanka, documenting efforts toward reconciliation, accountability, and institutional guarantees for preventing recurrence of past injustices. It includes reports from the UN High Commissioner for Human Rights and the Special Rapporteur on the Promotion of Truth, Justice, Reparation, and Guarantees of Non-Recurrence.",
+      "theme": "Human Rights"
+    },
+    "174": {
+      "title": "State Party Reports on Human Rights Compliance",
+      "description": "This cluster of reports consists of submissions from various States parties to United Nations human rights instruments, detailing their compliance and implementation of obligations under respective treaties.",
+      "theme": "Human Rights"
+    },
+    "175": {
+      "title": "Human Rights and Emerging Technologies",
+      "description": "This cluster addresses the interface between human rights principles and the advancements in technology, focusing on neurotechnology and related areas, highlighting the right to privacy and rights of disabled individuals.",
+      "theme": "Human Rights"
+    },
+    "176": {
+      "title": "Freedom of Expression and Media Rights",
+      "description": "This cluster comprises reports focused on the promotion and protection of the right to freedom of opinion and expression, addressing challenges such as disinformation, journalist safety, and digital divides as they relate to human rights and governance.",
+      "theme": "Human Rights"
+    },
+    "177": {
+      "title": "Reports on Torture and Human Rights",
+      "description": "This cluster contains reports addressing the issues and prevention of torture, cruel, inhuman, or degrading treatment, and their intersection with human rights principles, featuring contributions from Special Rapporteurs.",
+      "theme": "Human Rights"
+    },
+    "178": {
+      "title": "Human Rights and Toxic Substances",
+      "description": "This cluster includes reports by the Special Rapporteur Marcos Orellana discussing the human rights implications arising from toxic substances, focusing on access to justice, effective remedies, and the right to science.",
+      "theme": "Human Rights"
+    },
+    "179": {
+      "title": "Human Rights and Anti-Discrimination Efforts",
+      "description": "These reports collectively address themes of human rights principles including freedom of religion and belief, prevention of genocide, and combating discrimination and hatred, demonstrating the UN's commitment to fostering inclusive principles.",
+      "theme": "Human Rights"
+    },
+    "180": {
+      "title": "Human Rights and Penal Issues Reports",
+      "description": "This cluster of reports addresses themes relating to human rights, focusing on the death penalty, drug policy, and national adherence to international human rights covenants.",
+      "theme": "Human Rights"
+    },
+    "181": {
+      "title": "Human Rights in Counter-Terrorism Context",
+      "description": "This cluster contains reports addressing the interface of counter-terrorism and human rights, focusing on the impacts, practices, and thematic activities of relevant international entities.",
+      "theme": "Human Rights"
+    },
+    "182": {
+      "title": "Reports on Middle East and Occupied Territories",
+      "description": "This cluster of reports addresses developments related to the human rights, governance, and natural resource issues in the Middle East, with specific focus on the Palestinian territories and the occupied Syrian Golan.",
+      "theme": "Human Rights"
+    },
+    "183": {
+      "title": "Human Rights in Latin American Countries",
+      "description": "This cluster includes reports focused on the analysis, assistance, and monitoring of human rights issues, technical cooperation, and related activities in various Latin American countries as conducted by the United Nations and its bodies.",
+      "theme": "Human Rights"
+    },
+    "184": {
+      "title": "Human Rights and Migration Analysis",
+      "description": "Reports focusing on examining migration-related human rights issues, exploring violations, prevention, accountability, and field visits to assess conditions for migrants in various countries.",
+      "theme": "Human Rights"
+    },
+    "185": {
+      "title": "Human Rights and Armed Conflicts",
+      "description": "This cluster of reports addresses the impact of arms transfers, mercenary activities, and private military engagements on human rights, as well as the implications on natural resource exploitation, arms trafficking, and regional assessments.",
+      "theme": "Human Rights"
+    },
+    "186": {
+      "title": "Human Rights and Civilian Safety",
+      "description": "These reports examine the intersection of human rights issues with civilian safety, addressing topics such as firearm possession and its impact, as well as the protection of rights during peaceful protests.",
+      "theme": "Human Rights"
+    },
+    "187": {
+      "title": "Effects of Coercive Measures on Human Rights",
+      "description": "This cluster of reports primarily analyzes the implications of unilateral coercive measures on various human rights, with a focus on socio-economic and health-related impacts and specific regional assessments.",
+      "theme": "Human Rights"
+    },
+    "188": {
+      "title": "Human Rights Reporting in Southeast Asia",
+      "description": "This cluster contains reports addressing human rights matters within Southeast Asia, focusing on specific nations such as the Philippines and Thailand. The documents include assessments, recommendations, and progress updates from United Nations bodies and associated representatives.",
+      "theme": "Human Rights"
+    },
+    "189": {
+      "title": "Investigations of Conflict-Related Violations",
+      "description": "This cluster of reports examines the implementation of UN resolutions and initiatives related to investigating human rights violations and the issue of missing persons in conflict-affected regions, focusing on Yemen and the Syrian Arab Republic.",
+      "theme": "Human Rights"
+    },
+    "190": {
+      "title": "Human Rights and Environmental Justice",
+      "description": "These reports focus on human rights in relation to environmental challenges and systemic justice, highlighting issues such as hazardous materials, mining, judicial independence, and racial discrimination.",
+      "theme": "Human Rights"
+    },
+    "191": {
+      "title": "UN Human Rights Mechanisms Reports",
+      "description": "This cluster comprises reports authored by UN-appointed experts and rapporteurs that focus on various aspects and issues related to human rights and their protection on international, national, and community levels.",
+      "theme": "Human Rights"
+    },
+    "192": {
+      "title": "State Reporting under Human Rights Covenants",
+      "description": "These reports pertain to state submissions under Article 40 of the International Covenant on Civil and Political Rights, outlining compliance and measures adopted to uphold human rights obligations as per UN standards.",
+      "theme": "Human Rights"
+    },
+    "193": {
+      "title": "UN Session and Council Activity Reports",
+      "description": "This cluster comprises reports discussing the activities, proceedings, and outcomes of various United Nations councils, committees, and working groups across different sessions, emphasizing governance, human rights, trade, and development.",
+      "theme": "Governance & Institutional Affairs"
+    },
+    "194": {
+      "title": "Israeli Settlements in Occupied Territories",
+      "description": "This cluster encompasses reports addressing the issue of Israeli settlements in the Occupied Palestinian Territory and the occupied Syrian Golan, focusing on their implications and related concerns.",
+      "theme": "Human Rights"
+    },
+    "195": {
+      "title": "Privacy and Data Protection Measures",
+      "description": "Both reports discuss the protection of individual privacy and personal data in modern society, exploring legal frameworks and international implications.",
+      "theme": "Human Rights"
+    },
+    "196": {
+      "title": "Global Economic Structural Analysis",
+      "description": "These reports examine international systemic structures and trends impacting economic development and equity, addressing global inequalities and sustainable growth.",
+      "theme": "Development"
+    },
+    "197": {
+      "title": "Reports on Special Rapporteur Mandates",
+      "description": "Both reports are authored by Special Rapporteurs and focus on investigations and comments related to human rights and judicial processes, providing insights into systemic issues and state responses.",
+      "theme": "Human Rights"
+    },
+    "198": {
+      "title": "Human Rights and Protection against Violence",
+      "description": "This cluster consists of reports that examine the impacts of violations and abuses on human rights across various vulnerable groups affected by violence, exploitation, and stigmatization, emphasizing the need for protection and justice.",
+      "theme": "Human Rights"
+    },
+    "199": {
+      "title": "Reports by UN Special Rapporteurs",
+      "description": "These reports are authored by UN-appointed Special Rapporteurs and focus on observations regarding human rights issues. Both discuss responses and commentary related to specific rights monitorings.",
+      "theme": "Human Rights"
+    },
+    "200": {
+      "title": "Violence Against Women and Girls Frameworks",
+      "description": "These reports by the Special Rapporteur on Violence against Women and Girls explore the frameworks and social constructs related to the causative factors and prevention of gender-based violence.",
+      "theme": "Human Rights"
+    },
+    "201": {
+      "title": "Durban Declaration Implementation and Human Rights",
+      "description": "These reports pertain to the Durban Declaration and Programme of Action, addressing efforts, progress, and resolutions related to combating racial discrimination and supporting human rights globally.",
+      "theme": "Human Rights"
+    },
+    "202": {
+      "title": "Human Rights in International Contexts",
+      "description": "This cluster comprises reports specifically addressing human rights concerns and recommendations, involving the circumstances in Myanmar and the interaction of corporate entities with human rights obligations in Japan.",
+      "theme": "Human Rights"
+    },
+    "203": {
+      "title": "Protection and Accountability in International Law",
+      "description": "This cluster includes reports addressing international legal frameworks and mechanisms for protecting individuals and ensuring accountability under international law, focusing on areas such as private military activities, crimes against humanity, diplomatic protection, and disaster response.",
+      "theme": "International Law"
+    },
+    "204": {
+      "title": "Human Rights in Korea",
+      "description": "These reports examine various aspects of human rights and accountability in the Democratic People's Republic of Korea and the Republic of Korea, including analysis by UN Special Rapporteurs and the High Commissioner for Human Rights.",
+      "theme": "Human Rights"
+    },
+    "205": {
+      "title": "Reports on Cyprus Peace and Human Rights",
+      "description": "This cluster comprises reports from the United Nations focusing on the political situation, mission initiatives, peacebuilding efforts, and human rights conditions in Cyprus.",
+      "theme": "Peacekeeping"
+    },
+    "206": {
+      "title": "UN Periodic and Special Procedure Reports",
+      "description": "This cluster contains periodic submissions and special reports delivered by UN entities or state parties under human rights agreements and conventions, emphasizing the promotion of truth, justice, and human rights analysis.",
+      "theme": "Human Rights"
+    },
+    "207": {
+      "title": "Advisory Committee Session Reports",
+      "description": "This cluster contains reports detailing the proceedings and outcomes of the 30th and 33rd sessions of the Advisory Committee of the Human Rights Council, addressing various human rights matters discussed during these sessions.",
+      "theme": "Human Rights"
+    },
+    "208": {
+      "title": "Human Rights Issues in African Nations",
+      "description": "Reports addressing human rights challenges and specific cases of concern, focusing on notable regions within Africa, such as South Sudan and Nigeria.",
+      "theme": "Human Rights"
+    },
+    "209": {
+      "title": "Human Rights Council Special Session Reports",
+      "description": "This cluster includes reports from the Human Rights Council documenting deliberations and resolutions during its 33rd and 37th special sessions.",
+      "theme": "Human Rights"
+    },
+    "210": {
+      "title": "Reports on Human Rights and State Obligations",
+      "description": "This cluster includes reports by Independent Experts focusing on the impacts of state financial obligations and international solidarity on the realization of human rights, particularly economic, social, and cultural rights, through case studies and state-specific visits.",
+      "theme": "Human Rights"
+    },
+    "211": {
+      "title": "Human Rights of Older Persons in Finland",
+      "description": "This cluster includes reports centered on the comments provided by the Finnish State concerning the visit and analysis conducted by the Independent Expert on the enjoyment of all human rights by older persons in Finland, including subsequent corrections.",
+      "theme": "Human Rights"
+    },
+    "212": {
+      "title": "State Responses to Expert Reports on Aging",
+      "description": "This cluster includes reports featuring comments by the states of Nigeria and Moldova in response to visits and observations by the Independent Expert on the enjoyment of all human rights by older persons, focusing on the condition of elderly rights within these countries.",
+      "theme": "Human Rights"
+    },
+    "213": {
+      "title": "State Comments on Human Rights Reports",
+      "description": "This cluster contains reports that compile comments by States in response to reports by UN human rights experts, focusing on specific human rights issues or country visits.",
+      "theme": "Human Rights"
+    },
+    "214": {
+      "title": "Human Rights Investigation in Conflict Zones",
+      "description": "This cluster encompasses reports detailing investigations and findings by independent UN experts and missions on the human rights situations and violations in various regions affected by conflict or political instability, such as Libya, Sudan, Ethiopia, Eritrea, and Yemen.",
+      "theme": "Human Rights"
+    },
+    "215": {
+      "title": "Human Rights in Conflict Zones",
+      "description": "This cluster focuses on reports examining human rights conditions and violations in regions experiencing conflict, with specific case studies on Syria and Myanmar.",
+      "theme": "Human Rights"
+    },
+    "216": {
+      "title": "Human Rights in Ukraine and Crimea",
+      "description": "This cluster of reports focuses on the examination and documentation of human rights conditions within the territories of Ukraine, including the Autonomous Republic of Crimea and the city of Sevastopol, highlighting situations of occupation and key findings from visits by UN Special Rapporteurs and other bodies.",
+      "theme": "Human Rights"
+    },
+    "217": {
+      "title": "Human Rights in the Islamic Republic of Iran",
+      "description": "This cluster comprises reports addressing the situation of human rights in the Islamic Republic of Iran, providing analyses, findings, and recommendations by UN bodies and experts to address observed shortcomings and promote human rights standards.",
+      "theme": "Human Rights"
+    },
+    "218": {
+      "title": "Reports on Judicial Mechanism and Oversight",
+      "description": "This cluster encompasses reports addressing the operations, financing, and evaluation of international judicial mechanisms, focusing on accountability and procedural review.",
+      "theme": "Justice and Accountability"
+    },
+    "219": {
+      "title": "Country Visits on Human Rights Issues",
+      "description": "This cluster focuses on United Nations reports documenting investigations during country visits by experts to assess specific human rights concerns, offering evaluated insights and recommendations to address findings.",
+      "theme": "Human Rights"
+    },
+    "220": {
+      "title": "Special Rapporteur Visit Reports",
+      "description": "These reports detail observations and comments regarding visits conducted by Special Rapporteurs to specific nations, focusing on extreme poverty, human rights, and climate change impacts.",
+      "theme": "Human Rights"
+    },
+    "221": {
+      "title": "Human Rights in the European Union",
+      "description": "This cluster contains reports focusing on human rights issues within the European Union, with an emphasis on topics such as extreme poverty, rights of persons with disabilities, and treaty obligations. They include assessments, country visits, feedback, and periodic submissions.",
+      "theme": "Human Rights"
+    },
+    "222": {
+      "title": "Special Rapporteur Visits to Hungary",
+      "description": "This cluster contains reports concerning the visits of Special Rapporteurs to Hungary, including their analyses and the Hungarian State's comments. Each report focuses on the thematic areas of freedom of religion, belief, and opinion.",
+      "theme": "Human Rights"
+    },
+    "223": {
+      "title": "State Comments on Rapporteurs' Brazil Visits",
+      "description": "This cluster contains reports that present the comments provided by the State of Brazil following the visits of UN Special Rapporteurs. These documents address specific rights and societal issues discussed during the missions, reflecting the State's perspectives and responses.",
+      "theme": "Human Rights"
+    },
+    "224": {
+      "title": "Human Rights in Denmark and Greenland",
+      "description": "This cluster includes reports examining human rights issues in Denmark and Greenland, with a focus on Indigenous Peoples and international solidarity, authored by UN-appointed experts during their official visits.",
+      "theme": "Human Rights"
+    },
+    "225": {
+      "title": "Special Rapporteur Visit to Japan",
+      "description": "This cluster includes reports that document the visit of the Special Rapporteur on the Human Rights of Internally Displaced Persons, Cecilia Jimenez-Damary, to Japan and encompass her observations and recommendations alongside comments by the State.",
+      "theme": "Human Rights"
+    },
+    "226": {
+      "title": "Special Rapporteur Visits to Poland",
+      "description": "This cluster contains reports documenting visits by Special Rapporteurs to Poland, focusing on human rights issues including migrants and violence against women and girls.",
+      "theme": "Human Rights"
+    },
+    "227": {
+      "title": "Human Rights Assessments in Italy",
+      "description": "This cluster of reports investigates the human rights implications of hazardous substances management, corporate responsibility, and associated issues in Italy, highlighting recommendations and findings.",
+      "theme": "Human Rights"
+    },
+    "228": {
+      "title": "Special Rapporteur Visits and Assessments",
+      "description": "This cluster comprises reports documenting the visits of UN Special Rapporteurs to assess human rights issues, such as environmental management and access to water and sanitation, in various countries.",
+      "theme": "Human Rights"
+    },
+    "229": {
+      "title": "Human Rights and Hazardous Substances",
+      "description": "Reports addressing the human rights implications of managing and disposing hazardous substances, featuring country-specific evaluations and observations.",
+      "theme": "Human Rights"
+    },
+    "230": {
+      "title": "Human Rights and Environmental Management Reports",
+      "description": "This cluster consists of reports by the Special Rapporteurs detailing the implications of environmentally sound management and disposal of hazardous substances and wastes and related initiatives supporting the human right to a clean, healthy, and sustainable environment, based on visits to specific nations.",
+      "theme": "Human Rights"
+    },
+    "231": {
+      "title": "Human Rights Reports on Chile and Costa Rica",
+      "description": "This cluster includes reports addressing various human rights topics, including judiciary independence, health rights, and compliance with international covenants, specifically focusing on the situation in Chile and Costa Rica.",
+      "theme": "Human Rights"
+    },
+    "232": {
+      "title": "Special Rapporteurs' Reports on Fiji",
+      "description": "This cluster contains reports by UN Special Rapporteurs providing findings and recommendations following their official visits to Fiji, accompanied by comments from the State related to these reports.",
+      "theme": "Human Rights"
+    },
+    "233": {
+      "title": "State Comments on Special Rapporteur Visits",
+      "description": "This cluster includes reports presenting the comments made by states regarding the observations and recommendations provided during visits by UN Special Rapporteurs addressing various human rights issues in specific countries.",
+      "theme": "Human Rights"
+    },
+    "234": {
+      "title": "Reports on State Human Rights Obligations",
+      "description": "This cluster consists of UN reports concerning state compliance with international human rights treaties and duties, including specific periodic submissions and rapporteur assessments.",
+      "theme": "Human Rights"
+    },
+    "235": {
+      "title": "Regional Human Rights and Transitional Justice",
+      "description": "Reports addressing human rights, justice processes, and UN missions concerning transparency and reconciliation measures in Southeast Europe.",
+      "theme": "Human Rights"
+    },
+    "236": {
+      "title": "UN Reports Regarding Viet Nam's Developments",
+      "description": "This cluster includes reports addressing Viet Nam's compliance with international human rights treaties and development efforts, featuring observations, state comments, and updates from periodic submissions.",
+      "theme": "Human Rights"
+    },
+    "237": {
+      "title": "Reports on UNESCO's Role in Education",
+      "description": "These reports focus on the discussions and findings of the Special Rapporteur on the Right to Education during the visit to the United Nations Educational, Scientific and Cultural Organization (UNESCO), highlighting the organization's contributions to promoting educational rights.",
+      "theme": "Education"
+    },
+    "238": {
+      "title": "Special Rapporteur Visit to South Korea",
+      "description": "This cluster includes reports by the Special Rapporteur regarding the right to privacy, focusing on their visit to the Republic of Korea and encompassing insights, evaluations, and comments from the respective state.",
+      "theme": "Human Rights"
+    },
+    "239": {
+      "title": "Special Rapporteur Privacy Country Visits Reports",
+      "description": "This cluster contains reports by Special Rapporteur on the right to privacy, documenting findings and assessments related to privacy concerns and legislative frameworks during official country visits.",
+      "theme": "Human Rights"
+    },
+    "240": {
+      "title": "Reports on the Convention on Disabilities",
+      "description": "This cluster comprises reports submitted by various countries under Article 35 of the Convention on the Rights of Persons with Disabilities. These documents detail governmental measures and progress concerning the implementation of the Convention's provisions.",
+      "theme": "Human Rights"
+    },
+    "241": {
+      "title": "Human Rights Reports on Cambodia",
+      "description": "This cluster contains reports by the Special Rapporteur on the Situation of Human Rights in Cambodia, including reflections provided by the State and analyses by specific rapporteurs.",
+      "theme": "Human Rights"
+    },
+    "242": {
+      "title": "Human Rights in Myanmar Reports",
+      "description": "This cluster of reports addresses the state of human rights in Myanmar, focusing on the situation of various groups including Rohingya Muslims and other minorities, as well as the implications of the events since February 2021. These are authored by UN entities and discuss implementations of international recommendations.",
+      "theme": "Human Rights"
+    },
+    "243": {
+      "title": "Reports on Human Rights in T\u00fcrkiye",
+      "description": "This cluster comprises reports submitted to or created by UN bodies focusing on human rights-related issues in T\u00fcrkiye, including responses to inquiries on violence against women, discrimination, and adherence to international human rights conventions.",
+      "theme": "Human Rights"
+    },
+    "244": {
+      "title": "Reports on Eliminating Violence Against Women",
+      "description": "The reports in this cluster collectively address the measures taken, activities conducted, and goals pursued under United Nations initiatives aimed at the elimination of violence against women, including updates on relevant trust funds and efforts for intensification.",
+      "theme": "Human Rights"
+    },
+    "245": {
+      "title": "State Party Reports on UN Treaties",
+      "description": "This cluster consists of periodic or initial reports and related commentary submitted by Member States under various United Nations human rights treaties, aiming to ensure compliance and monitor the implementation of international agreements.",
+      "theme": "Human Rights"
+    },
+    "246": {
+      "title": "Nuclear Disarmament and Non-Proliferation Reports",
+      "description": "This cluster encompasses reports focusing on worldwide nuclear disarmament efforts, the review conferences of the Treaty on the Non-Proliferation of Nuclear Weapons (NPT), and implementation of respective action plans by participating member states.",
+      "theme": "Disarmament"
+    },
+    "247": {
+      "title": "Children's Rights and Humanitarian Issues",
+      "description": "This cluster includes reports discussing children's rights including family reunification, promotion, and humanitarian considerations relating to displaced individuals, reflecting UN's commitment to child welfare.",
+      "theme": "Human Rights"
+    },
+    "248": {
+      "title": "Human Rights Analysis and Challenges Reports",
+      "description": "This cluster comprises reports addressing various challenges and analyses related to human rights, focusing on specific situations, impacts, and legal frameworks influencing human rights and freedoms.",
+      "theme": "Human Rights"
+    },
+    "249": {
+      "title": "Situation and Human Rights in Somalia",
+      "description": "Both reports focus on the current conditions in Somalia, addressing human rights issues and broader situational updates from authoritative perspectives.",
+      "theme": "Human Rights"
+    },
+    "250": {
+      "title": "Human Rights in DPRK Reports",
+      "description": "This cluster contains reports by the Special Rapporteur addressing the human rights situation in the Democratic People's Republic of Korea (DPRK). These reports focus on assessing and presenting findings regarding human rights practices and recommending measures for improvement.",
+      "theme": "Human Rights"
+    },
+    "251": {
+      "title": "Capacity-Building for Local Government Initiatives",
+      "description": "This cluster examines efforts to enhance local government capacities and engagement in aligning with international human rights and sustainable development goals.",
+      "theme": "Development"
+    },
+    "252": {
+      "title": "Human Rights Council Sessions Overview",
+      "description": "This cluster comprises reports detailing discussions, decisions, and findings from various sessions and special meetings of the United Nations Human Rights Council, as well as analyses of human rights situations, particularly focusing on the Rohingya crisis and other critical global human rights issues.",
+      "theme": "Human Rights"
+    },
+    "253": {
+      "title": "Human Rights and Environmental Protection Reports",
+      "description": "This cluster consists of reports addressing the interconnection between human rights and environmental protection, focusing on obligations to ensure a safe and sustainable environment as a fundamental human right.",
+      "theme": "Human Rights"
+    },
+    "254": {
+      "title": "State Reports on Human Rights Conventions",
+      "description": "These UN reports comprise periodic submissions by Member States addressing obligations under specific human rights treaties, including conventions on racial discrimination, gender equality, and rights of assembly and association.",
+      "theme": "Human Rights"
+    },
+    "255": {
+      "title": "Special Procedures Country Visit Reports",
+      "description": "This cluster contains reports prepared by United Nations Special Rapporteurs and Independent Experts documenting their findings and recommendations following official country visits to assess specific human rights situations.",
+      "theme": "Human Rights"
+    },
+    "256": {
+      "title": "Reports under UN Human Rights Conventions",
+      "description": "This cluster comprises reports submitted by various countries under UN Human Rights Conventions, detailing efforts and measures taken to comply with international human rights standards, focusing on children\u2019s and persons with disabilities\u2019 rights.",
+      "theme": "Human Rights"
+    },
+    "257": {
+      "title": "Human Rights Investigations and Follow-ups",
+      "description": "This cluster includes reports addressing human rights violations, justice mechanisms, and international obligations involving specific countries or individuals.",
+      "theme": "Human Rights"
+    },
+    "258": {
+      "title": "Reports on Human Rights Observations",
+      "description": "These reports detail assessments and observations related to human rights practices and compliance with international standards in specific locales.",
+      "theme": "Human Rights"
+    },
+    "259": {
+      "title": "State Compliance with Human Rights Conventions",
+      "description": "These reports detail state-submitted evaluations and actions under various international human rights treaties, highlighting compliance and implementation concerning human rights obligations.",
+      "theme": "Human Rights"
+    },
+    "260": {
+      "title": "State Reporting on Human Rights Treaties",
+      "description": "This cluster includes reports submitted by UN member states, Austria and Luxembourg, to various UN human rights bodies, detailing compliance with and implementation of treaty obligations under specific international human rights instruments.",
+      "theme": "Human Rights"
+    },
+    "261": {
+      "title": "Gender Equality Reports from Mauritania",
+      "description": "These reports focus on initiatives, evaluations, and measures undertaken by Mauritania in promoting gender equality and addressing issues related to discrimination against women and girls, guided by international frameworks.",
+      "theme": "Human Rights"
+    },
+    "262": {
+      "title": "Special Rapporteur Visits on Environmental Rights",
+      "description": "Reports by the Special Rapporteur on Human Rights and Environment detailing country visits to assess obligations relating to safe, clean, healthy, and sustainable environments.",
+      "theme": "Human Rights"
+    },
+    "263": {
+      "title": "Human Rights Reports from Sweden",
+      "description": "This cluster includes reports addressing Sweden's commitments and status under international human rights treaties and frameworks, documenting its efforts and engagements with UN mechanisms.",
+      "theme": "Human Rights"
+    },
+    "264": {
+      "title": "State Reports to UN Human Rights Committees",
+      "description": "This cluster comprises periodic and initial reports submitted by State Parties under international human rights conventions, detailing their compliance and actions relative to United Nations treaties.",
+      "theme": "Human Rights"
+    },
+    "265": {
+      "title": "Gender Equality and Human Rights Reviews",
+      "description": "These reports focus on examining the status of gender-related human rights obligations and practices, addressing issues related to violence, discrimination, and compliance with international conventions within the respective nations.",
+      "theme": "Human Rights"
+    },
+    "266": {
+      "title": "Special Rapporteur Visits to the USA",
+      "description": "These reports detail findings and recommendations from visits to the United States of America by UN Special Rapporteurs specializing in different human rights areas.",
+      "theme": "Human Rights"
+    },
+    "267": {
+      "title": "Reports on UN Treaty Body Submissions",
+      "description": "This cluster comprises reports submitted by States and Special Rapporteurs to UN bodies concerning compliance with and efforts to implement international human rights treaties and conventions.",
+      "theme": "Human Rights"
+    },
+    "268": {
+      "title": "UN Facilities and Infrastructure Reports",
+      "description": "Reports focus on administrative and budgetary issues complexing on United Nations facilities, including their planning, renovation, maintenance, and the enhancement of workplace conditions.",
+      "theme": "Administrative and Budgetary Management"
+    },
+    "269": {
+      "title": "Reports on Administrative and Budgetary Matters",
+      "description": "These reports address the administrative, budgetary, and operational aspects of UN operations, including infrastructure projects, personnel management, operational accessibility enhancements, and reform progress, as presented by relevant committees and offices.",
+      "theme": "Budget & Finance"
+    },
+    "270": {
+      "title": "Decolonization and the Western Sahara Situation",
+      "description": "This set of reports collectively addresses the ongoing efforts by the United Nations to facilitate decolonization processes globally, with a specific focus on the political and humanitarian aspects of the Western Sahara situation.",
+      "theme": "Decolonization"
+    },
+    "271": {
+      "title": "Decolonization Efforts and Non-Self-Governing Territories",
+      "description": "Reports analyzing developments and information regarding decolonization processes and the situation in Non-Self-Governing Territories as outlined by the UN Charter and related mandates.",
+      "theme": "Decolonization"
+    },
+    "272": {
+      "title": "Credentials Committee Reports on UN Sessions",
+      "description": "This cluster includes reports issued by the Credentials Committee for various United Nations conferences, sessions, and meetings, documenting the credentials of representatives participating in these gatherings.",
+      "theme": "UN Procedural Documentation"
+    },
+    "273": {
+      "title": "Reports on International Law Methods",
+      "description": "This cluster includes reports by UN Special Rapporteurs analyzing foundational aspects of international law creation and interpretation methods.",
+      "theme": "International Law"
+    },
+    "274": {
+      "title": "UN Reports on International Law Topics",
+      "description": "These reports cover a diverse range of international law issues addressed during the United Nations sessions, including principles of law, immunity, environmental protection, and sea-level rise.",
+      "theme": "International Law"
+    },
+    "275": {
+      "title": "Special Rapporteur Report Corrections",
+      "description": "These documents are corrected editions of reports submitted by UN Special Rapporteurs, addressing respective thematic areas such as general legal principles and environmental protection during armed conflicts.",
+      "theme": "UN Documentation"
+    },
+    "276": {
+      "title": "Reports on International Law and State Relations",
+      "description": "This cluster consists of documents created by UN bodies and Special Rapporteurs discussing aspects of international law, state sovereignty, and the mechanisms of treaties and dispute resolutions, emphasizing the legal framework within the international community.",
+      "theme": "International Law"
+    },
+    "277": {
+      "title": "Prevention of Piracy and Armed Robbery",
+      "description": "These reports address the prevention and suppression of maritime piracy and armed robbery at sea, highlighting the specific legal frameworks and situational analysis, including activities of the United Nations and other bodies.",
+      "theme": "Peacekeeping"
+    },
+    "278": {
+      "title": "Environmental Protection During Armed Conflicts",
+      "description": "This cluster comprises reports discussing the intersection of environmental protection and international law during armed conflicts, as presented by the International Law Commission and related entities.",
+      "theme": "International Law"
+    },
+    "279": {
+      "title": "Secondment of Military and Police Personnel",
+      "description": "The reports focus on the administration and budgetary considerations regarding the secondment of active-duty military and police personnel to UN operations.",
+      "theme": "Budget & Finance"
+    },
+    "280": {
+      "title": "Advisory Committee Budget-Related Reports 2021-2025",
+      "description": "This cluster consists of reports and assessments by the Advisory Committee on Administrative and Budgetary Questions (ACABQ), addressing financial implications for various UN programs and resolutions spanning from 2021 to 2025, including aspects of international cooperation, program budgeting, and administrative functions.",
+      "theme": "Budget & Finance"
+    },
+    "281": {
+      "title": "UN Programme Budget Implications Reports",
+      "description": "This cluster contains United Nations reports addressing financial implications of implementing various resolutions, draft resolutions, and decisions, as assessed by relevant committees such as the Fifth Committee and the Advisory Committee on Administrative and Budgetary Questions. These reports analyze projected resource requirements and budget planning for initiatives across diverse UN agenda topics.",
+      "theme": "Budget & Finance"
+    },
+    "282": {
+      "title": "Corrections to Secretary-General Sustainable Reports",
+      "description": "This cluster consists of corrigenda to reports of the Secretary-General addressing various aspects of sustainable practices, detailing revisions or clarifications to prior documentation for transparency and accuracy.",
+      "theme": "Sustainable Development"
+    },
+    "283": {
+      "title": "Sustainable Fisheries Governance and Regulations",
+      "description": "This cluster contains reports from the Secretary-General analyzing actions by member states and international bodies in addressing sustainable fishing practices, including the management of deep-sea fish stocks and the impact of bottom fishing on marine ecosystems, in adherence to relevant General Assembly resolutions.",
+      "theme": "Development"
+    },
+    "284": {
+      "title": "Secretary-General Reports with Corrections",
+      "description": "This cluster includes corrigenda to reports issued by the Secretary-General, which address updates or amendments to previous publications on administrative and ethical matters within the scope of the United Nations operations.",
+      "theme": "Administrative Matters"
+    },
+    "285": {
+      "title": "UN Organizational Efficiency and Justice Reports",
+      "description": "This cluster encompasses reports addressing United Nations internal management initiatives, including the promotion of organizational resilience, workplace flexibility, and mechanisms for conflict resolution and administration of justice.",
+      "theme": "Administrative Affairs"
+    },
+    "286": {
+      "title": "Reports on Security and Counter-Terrorism Efforts",
+      "description": "This cluster encompasses UN Secretary-General reports related to international security challenges, focusing on counter-terrorism, illicit arms management, organized crime mitigation, and addressing regional conflicts affecting peace and security.",
+      "theme": "Peace and Security"
+    },
+    "287": {
+      "title": "Budget and Administrative Corrections Reports",
+      "description": "This cluster comprises corrigenda to reports related to United Nations budgetary and administrative topics, addressing financial reviews, facility improvements, and organizational management plans.",
+      "theme": "Budget & Finance"
+    },
+    "288": {
+      "title": "Nuclear Disarmament and Legacy Remediation",
+      "description": "This cluster discusses efforts towards nuclear disarmament, addressing the legacy of nuclear weaponry by assisting affected populations and environments and verifying disarmament protocols.",
+      "theme": "Disarmament"
+    },
+    "289": {
+      "title": "Reports from United Nations General Assembly",
+      "description": "This cluster includes reports submitted to various committees of the United Nations General Assembly during its official sessions, addressing diverse topics such as international security, justice, disarmament, human rights, and global cooperation.",
+      "theme": "United Nations General Assembly Proceedings"
+    },
+    "290": {
+      "title": "Administration and Jurisdiction in UN Systems",
+      "description": "This cluster of reports explores the structure, processes, and reviews of justice administration and jurisdictional arrangements within the United Nations system, as prepared by various key organizational bodies.",
+      "theme": "Organizational Governance"
+    },
+    "291": {
+      "title": "UN Administrative and Budgetary Reviews",
+      "description": "These reports focus on administrative and financial matters related to UN operations, including peacekeeping funding, program budget proposals, and recommendations of special sessions of the General Assembly.",
+      "theme": "Budget & Finance"
+    },
+    "292": {
+      "title": "Administrative and Budgetary Oversight Reports",
+      "description": "This cluster comprises reports from the General Assembly's 5th Committee, focusing on administrative and financial oversight within the United Nations system, addressing topics such as budgetary coordination, financial situation, and efficiency assessments.",
+      "theme": "Budget & Finance"
+    },
+    "293": {
+      "title": "Official Reports of GA Committees",
+      "description": "This cluster comprises official reports presented during the 79th Session of the General Assembly by various committees, covering topics like women's advancement, disarmament, human rights, outer space security, and budget proposals.",
+      "theme": "General Assembly Documentation"
+    },
+    "294": {
+      "title": "International Security and Emerging Technologies",
+      "description": "Reports analyzing the implications of emerging technologies\u2014including cybersecurity, outer space, and autonomous systems\u2014on international security and peace.",
+      "theme": "International Security"
+    },
+    "295": {
+      "title": "Colonial Legacy and Self-Determination Issues",
+      "description": "Both reports address matters related to the governance, territorial disputes, and legal implications concerning regions with historic colonial contexts requiring international attention.",
+      "theme": "Decolonization"
+    },
+    "296": {
+      "title": "Amendments to UN Staff Regulations",
+      "description": "This cluster addresses proposed changes to the UN Staff Regulations and Rules, providing insights from both the Secretary-General and the Advisory Committee on Administrative and Budgetary Questions.",
+      "theme": "Human Resources"
+    },
+    "297": {
+      "title": "General Assembly Appointment Reports",
+      "description": "These reports focus on the appointment of members to subsidiary organs and committees of the United Nations, as considered by the 5th Committee during sessions of the General Assembly.",
+      "theme": "Governance and Organization"
+    },
+    "298": {
+      "title": "United Nations Air Travel Policies",
+      "description": "This cluster of reports focuses on policies, audits, and standards related to air travel and aviation services within the framework of United Nations operations, emphasizing accommodation standards and program budgets.",
+      "theme": "Administrative Oversight"
+    },
+    "299": {
+      "title": "UN Peacekeeping Operations Financial and Budgetary Reports",
+      "description": "This cluster comprises reports and documents regarding the financial aspects, budgeting, performance reviews, and fiscal oversight of United Nations peacekeeping operations and related activities for various missions and time frames.",
+      "theme": "Peacekeeping"
+    },
+    "300": {
+      "title": "Reports on UN Staff Conduct Policies",
+      "description": "This cluster contains reports that address United Nations Secretariat policies and audits related to staff conduct. Topics include post-employment restrictions and initiatives to combat racism and promote dignity within the organization's operations.",
+      "theme": "Administration"
+    },
+    "301": {
+      "title": "UN Peacekeeping Budget Reports 2023-2026",
+      "description": "This cluster contains reports related to budgetary performances, assessments, and proposals concerning United Nations peacekeeping missions and their operational support, focusing on financial allocations and results for the specified periods.",
+      "theme": "Budget & Finance"
+    },
+    "302": {
+      "title": "Financial and Administrative Report Corrections",
+      "description": "This cluster encompasses corrigenda to official financial and administrative reports issued by the United Nations, addressing revisions or clarifications to the presented information.",
+      "theme": "Budget & Finance"
+    },
+    "303": {
+      "title": "UN Peacekeeping Reports in Africa",
+      "description": "This cluster comprises reports focused on the United Nations' peacekeeping operations across various African regions, including mission budgets, evaluations, and situational analyses.",
+      "theme": "Peacekeeping"
+    },
+    "304": {
+      "title": "Funding Updates and Adjustments Reports",
+      "description": "This cluster comprises reports issued by the Secretary-General that provide updates and necessary corrections to financial documents pertaining to UN peacekeeping budgets and fiscal positions.",
+      "theme": "Budget & Finance"
+    },
+    "305": {
+      "title": "UN Mission Performance and Asset Reports",
+      "description": "This cluster consists of reports detailing the budgetary performance, operational results, and disposition of assets related to various United Nations peacekeeping and justice support missions worldwide. These documents include submissions by the Secretary-General and the Advisory Committee on Administrative and Budgetary Questions.",
+      "theme": "Peacekeeping"
+    },
+    "306": {
+      "title": "Children and Armed Conflict Reports",
+      "description": "This cluster includes reports and conclusions focused on the impact of armed conflicts on children in various geographical regions, compiled by the United Nations Secretary-General and the Working Group on Children and Armed Conflict to address and mitigate the challenges faced by affected children.",
+      "theme": "Human Rights"
+    },
+    "307": {
+      "title": "Secretariat Composition and Personnel Management",
+      "description": "These reports analyze the structure and use of gratis personnel, retired staff, consultants, and contractors within the UN Secretariat to provide insights and recommendations on human resource policies.",
+      "theme": "Administration and Human Resources"
+    },
+    "308": {
+      "title": "Human Resources and Recruitment Strategies",
+      "description": "These reports address aspects of personnel composition, management strategies, and recruitment practices within the United Nations system.",
+      "theme": "Administration"
+    },
+    "309": {
+      "title": "Human Resources Management in the UN",
+      "description": "This cluster comprises reports discussing strategies, reforms, and policies related to human resources management within the United Nations Secretariat, focusing on staff development, mobility, demographic composition, and the implementation of new frameworks to enhance organizational effectiveness.",
+      "theme": "Human Resources Management"
+    },
+    "310": {
+      "title": "Special Political and Decolonization Committee Reports",
+      "description": "This cluster involves reports prepared by the Special Political and Decolonization Committee (Fourth Committee) covering comprehensive reviews on topics, including special political missions and peacekeeping operations.",
+      "theme": "Peacekeeping"
+    },
+    "311": {
+      "title": "Nuclear Weapons and Non-Proliferation",
+      "description": "This cluster contains reports focused on the establishment of nuclear-weapon-free zones, implementation measures, and treaty compliance in regions such as the Middle East, submitted by states and the UN Secretary-General.",
+      "theme": "Disarmament"
+    },
+    "312": {
+      "title": "Service Conditions for Judicial Officials",
+      "description": "These reports collectively address the conditions of service, including compensation, for non-Secretariat officials such as judges of the International Court of Justice and the International Residual Mechanism for Criminal Tribunals.",
+      "theme": "Administrative and Budgetary"
+    },
+    "313": {
+      "title": "Disarmament and Regional Security Measures",
+      "description": "This cluster includes Secretary-General reports addressing various aspects of disarmament, arms control, and regional security measures, emphasizing initiatives to prevent proliferation, promote multilateral cooperation, and consider the relationship between disarmament and sustainable development.",
+      "theme": "Disarmament and Arms Control"
+    },
+    "314": {
+      "title": "Responsibility and Harm in International Law",
+      "description": "This cluster contains reports issued by the Secretary-General addressing international law principles regarding the prevention of transboundary harm, the allocation of loss, and the responsibilities of states and organizations for wrongful acts, including compilations of legal decisions and input from entities.",
+      "theme": "International Law"
+    },
+    "315": {
+      "title": "Accountability of UN Officials and Staff",
+      "description": "These reports analyze and report on practices, disciplinary measures, and potential criminal accountability related to United Nations officials and personnel during their missions.",
+      "theme": "Accountability"
+    },
+    "316": {
+      "title": "Committee on Peaceful Uses of Outer Space",
+      "description": "These reports document decisions, activities, and international cooperation facilitated by the Committee on the Peaceful Uses of Outer Space, including session summaries and legal procedures.",
+      "theme": "International Cooperation"
+    },
+    "317": {
+      "title": "UN Reports on Middle Eastern Peace Efforts",
+      "description": "This cluster comprises United Nations reports addressing issues related to peace efforts in the Middle East, with significant focus on the situation in Gaza and the rights of the Palestinian people.",
+      "theme": "Peacekeeping"
+    },
+    "318": {
+      "title": "Reports of the Sixth Committee",
+      "description": "This cluster comprises reports presented by the Sixth Committee during various sessions of the General Assembly, addressing topics related to international law and legal frameworks.",
+      "theme": "International Law"
+    },
+    "319": {
+      "title": "UN Reports on Disarmament Efforts",
+      "description": "This cluster comprises reports presented by the Secretary-General and relevant UN bodies, focusing on the initiatives, education, and regional efforts in disarmament and non-proliferation, including youth involvement and information dissemination.",
+      "theme": "Disarmament"
+    },
+    "320": {
+      "title": "Reports of the 4th Committee",
+      "description": "These documents comprise reports from the General Assembly Special Political and Decolonization Committee's 79th session, focusing on topics such as Non-Self-Governing Territories, the granting of independence to colonial countries, and related specialized programs and agencies.",
+      "theme": "Decolonization"
+    },
+    "321": {
+      "title": "Support for Landlocked Developing Countries",
+      "description": "These reports discuss international efforts and frameworks aimed at aiding landlocked developing countries in achieving sustainable development goals, particularly related to energy access and the Vienna Programme of Action implementation.",
+      "theme": "Development"
+    },
+    "322": {
+      "title": "Initiatives Supporting Development in Least Developed Countries",
+      "description": "These reports discuss various UN initiatives and mechanisms aimed at fostering sustainable development, entrepreneurship, and technology transfer in the Least Developed Countries.",
+      "theme": "Development"
+    },
+    "323": {
+      "title": "OIOS Evaluations on Political Mission Operations",
+      "description": "This cluster comprises reports by the Office of Internal Oversight Services that evaluate the operations and thematic areas of UN political and peacekeeping missions, focusing on their effectiveness in specific domains such as elections and political transitions.",
+      "theme": "Peacekeeping"
+    },
+    "324": {
+      "title": "UN Treaties and Justice Assistance Reports",
+      "description": "This cluster of reports pertains to United Nations' interactions and support mechanisms involving notable international judicial institutions, detailing activities and financial implications concerned with cooperation and assistance.",
+      "theme": "Justice and International Law"
+    },
+    "325": {
+      "title": "Support for Extraordinary Chambers in Cambodia",
+      "description": "These reports address financial support and residual functions related to the Extraordinary Chambers in the Courts of Cambodia, focusing on operational and subvention requests.",
+      "theme": "Judiciary"
+    },
+    "326": {
+      "title": "UN Financial and Budgetary Reports",
+      "description": "This cluster includes reports detailing financial and budgetary matters such as performance evaluations, proposed budgets, and special subventions for United Nations-affiliated tribunals, funds, and entities.",
+      "theme": "Budget & Finance"
+    },
+    "327": {
+      "title": "Reports on UN Financing and Administration",
+      "description": "This cluster comprises reports compiled by the 5th Committee of the UN General Assembly, focusing on financing, resources, program planning, and operational management associated with UN peacekeeping missions, international tribunals, and administrative mechanisms.",
+      "theme": "Budget & Finance"
+    },
+    "328": {
+      "title": "Implementation of Sustainable Development Actions",
+      "description": "This cluster contains reports focusing on the progress and implementation of initiatives aimed at fostering sustainable development goals, particularly in Small Island Developing States and through the Development Account.",
+      "theme": "Development"
+    },
+    "329": {
+      "title": "Food Security in Least Developed Nations",
+      "description": "These reports focus on addressing food insecurity in Least Developed Countries by exploring mechanisms like food stockholding systems and support structures to enhance food security and resilience.",
+      "theme": "Development"
+    },
+    "330": {
+      "title": "Second Committee Reports on Key Areas",
+      "description": "This cluster comprises reports by the 2nd Committee of the General Assembly's 79th session, addressing core topics including support for vulnerable states, macroeconomic policies, and development initiatives.",
+      "theme": "Development"
+    },
+    "331": {
+      "title": "Environmental Sustainability and Resource Management",
+      "description": "Reports within this cluster focus on global initiatives and assessments related to environmental sustainability, natural resource management, and the implementation progress of actionable international frameworks and objectives.",
+      "theme": "Environment"
+    },
+    "332": {
+      "title": "Secretary-General Reports on Development",
+      "description": "This cluster contains reports authored by the Secretary-General addressing topics related to development, including global human resource strategies and promoting sustainable development in Africa.",
+      "theme": "Development"
+    },
+    "333": {
+      "title": "Funding and Development Innovations",
+      "description": "The reports in this cluster focus on innovative approaches to financial strategies and capacity-building initiatives that support global development goals and priorities, including the Sustainable Development Goals and artificial intelligence.",
+      "theme": "Development"
+    },
+    "334": {
+      "title": "United Nations Financial Contributions Analyses",
+      "description": "Reports providing updates and analyses on the assessment scales and financial contribution obligations for Member States relating to UN operational expenses and peacekeeping missions.",
+      "theme": "Budget & Finance"
+    },
+    "335": {
+      "title": "Analysis of UN Legal Framework Reports",
+      "description": "These reports collectively address various aspects of the United Nations' legal and procedural frameworks, including the implementation of treaties, international law dissemination, and jurisdictional boundaries.",
+      "theme": "International Law"
+    },
+    "336": {
+      "title": "Reports on UN Decolonization Efforts",
+      "description": "These documents pertain to the United Nations' initiatives, committees, and actions surrounding the implementation of decolonization policies and the support for non-self-governing territories, as outlined in related General Assembly declarations.",
+      "theme": "Decolonization"
+    },
+    "337": {
+      "title": "Security Council Reports and Correspondence",
+      "description": "This cluster consists of reports and formal communications issued by various committees and working groups of the United Nations Security Council. These documents address a variety of topics, including sanctions regimes, conflict prevention, peacekeeping efforts, and thematic issues such as children and armed conflict.",
+      "theme": "Peacekeeping"
+    },
+    "338": {
+      "title": "Peacekeeping Operations: Policy and Strategic Reports",
+      "description": "This cluster encompasses reports and communications focusing on the policies, reviews, and strategic planning related to UN Peacekeeping Operations worldwide.",
+      "theme": "Peacekeeping"
+    },
+    "339": {
+      "title": "Health and Nutrition Progress Reporting",
+      "description": "This cluster contains reports by the Secretary-General addressing global efforts related to improving nutrition, mitigating non-communicable diseases, and promoting mental health and well-being as part of United Nations initiatives.",
+      "theme": "Health"
+    },
+    "340": {
+      "title": "Efforts Addressing Nuclear Impact and Cooperation",
+      "description": "This cluster comprises reports focusing on the consequences and rehabilitation efforts related to nuclear activity impacts, including the Semipalatinsk region and Chornobyl disaster recovery, as well as discussions on nuclear non-proliferation and international cooperation related to these issues.",
+      "theme": "Nuclear Disarmament"
+    },
+    "341": {
+      "title": "UN Reports on Peace and Finance",
+      "description": "This cluster encompasses reports discussing financial strategies and organizational efforts directly related to peacebuilding, support to displaced communities, and regional security operations.",
+      "theme": "Budget & Finance"
+    },
+    "342": {
+      "title": "International Tax Cooperation Developments",
+      "description": "This cluster encompasses reports concerning deliberations, organizational efforts, and proposals for establishing a United Nations Framework Convention on International Tax Cooperation to promote inclusive and effective international financial policies.",
+      "theme": "Development"
+    },
+    "343": {
+      "title": "International Terrorism Elimination Measures",
+      "description": "This cluster consists of reports from the Secretary-General addressing initiatives, methodologies, and actions directed towards combating international terrorism, structured to provide updates and supplementary information.",
+      "theme": "Counter-Terrorism"
+    },
+    "344": {
+      "title": "Environmental and Security Concerns in Development",
+      "description": "The reports in this cluster discuss themes related to addressing environmental sustainability and security measures within specific contexts and regions, aligned with UN initiatives for sustainable development and peace.",
+      "theme": "Sustainable Development"
+    },
+    "345": {
+      "title": "Observer Status for International Organizations",
+      "description": "This cluster contains reports from the UN General Assembly Sixth Committee on decisions regarding the granting of observer status to various international and regional organizations. These documents provide procedural and contextual information on the applications of entities seeking formal affiliation with the Assembly.",
+      "theme": "Governance and Cooperation"
+    },
+    "346": {
+      "title": "Environmental and Maritime Issues",
+      "description": "These reports address environmental challenges and maritime law, focusing on oceans' legal frameworks and ecological damage prevention.",
+      "theme": "Environment"
+    },
+    "347": {
+      "title": "Study Offers for Non-Self-Governing Territories",
+      "description": "These reports focus on proposals from Member States to provide education and training opportunities for residents of Non-Self-Governing Territories, as outlined by the Secretary-General.",
+      "theme": "Development"
+    },
+    "348": {
+      "title": "Strategic Coordination and Future Planning Reports",
+      "description": "These reports outline collaborative strategies and long-term planning efforts within the United Nations system, including deliberations of key executive bodies and comprehensive agendas for future action.",
+      "theme": "Governance"
+    },
+    "349": {
+      "title": "Palestine Refugees and Property Concerns",
+      "description": "These reports address matters related to Palestine refugees, focusing on their properties, revenues, and the activities of international bodies concerning these issues.",
+      "theme": "Peacekeeping and Political Solutions"
+    },
+    "350": {
+      "title": "Peacebuilding Reports with Corrections Updates",
+      "description": "These reports share a focus on peacebuilding activities, providing official findings and corrections related to reports from the Secretary-General and the Peacebuilding Commission.",
+      "theme": "Peace and Security"
+    },
+    "351": {
+      "title": "UN Administration and Well-being Initiatives",
+      "description": "These reports address aspects of the United Nations administrative frameworks, focusing on mental health protocols for uniformed personnel and financial updates concerning peacekeeping operations.",
+      "theme": "Administration and Budget"
+    },
+    "352": {
+      "title": "General Assembly Committee Reports",
+      "description": "This cluster encompasses reports from various committees of the General Assembly, focusing on programme planning and military budget reduction tasks during its 79th session.",
+      "theme": "Programme Planning"
+    },
+    "353": {
+      "title": "UN Budgetary and Planning Amendments",
+      "description": "Reports covering revisions, evaluations, and analyses related to United Nations budgetary procedures, programme planning, and management paradigms, as informed by recommendations and Secretariat reports.",
+      "theme": "Budget & Finance"
+    },
+    "354": {
+      "title": "Counteracting ICT-Enabled Criminal Activity",
+      "description": "This cluster of reports addresses the international governance efforts surrounding countering the misuse of Information and Communications Technologies (ICT) for criminal purposes, elaborating treaties and conventions for global cooperation and preventive measures against cybercrime and related challenges.",
+      "theme": "International Law"
+    },
+    "355": {
+      "title": "Financial and Service Contributions Analysis",
+      "description": "These reports investigate the responsibilities of member states in financial and service contributions to UN operations, reflecting periodic evaluations by relevant committees.",
+      "theme": "Budget & Finance"
+    },
+    "356": {
+      "title": "Reports by Committee on Contributions",
+      "description": "These reports, presented as addendums, summarize the activities and findings of the Committee on Contributions during its respective sessions.",
+      "theme": "Budget & Finance"
+    },
+    "357": {
+      "title": "Reports on Racial Discrimination Committee Sessions",
+      "description": "This cluster includes session reports from the Committee on the Elimination of Racial Discrimination, documenting discussions and observations pertinent to combating racial discrimination across multiple sessions.",
+      "theme": "Human Rights"
+    },
+    "358": {
+      "title": "Reports on Racial Discrimination Compliance",
+      "description": "This cluster encompasses reports and corrigenda related to the implementation, assessment, and compliance of member states concerning the International Convention on the Elimination of All Forms of Racial Discrimination, focusing on evaluations and state submissions.",
+      "theme": "Human Rights"
+    },
+    "359": {
+      "title": "Reports of UN Human Rights Committees",
+      "description": "This cluster compiles reports issued by various United Nations human rights treaty bodies, detailing session outcomes and reviews concerning the implementation and monitoring of international human rights treaties.",
+      "theme": "Human Rights"
+    },
+    "360": {
+      "title": "United Nations Disarmament and Development Reports",
+      "description": "This cluster comprises reports from various United Nations sessions and committees, focusing on disarmament, development financing, sustainable use of marine biodiversity, and review processes for international treaties.",
+      "theme": "International Cooperation and Peace"
+    },
+    "361": {
+      "title": "Nuclear Disarmament Treaty Reports",
+      "description": "This cluster contains reports related to the advocacy, implementation, and discussions concerning nuclear disarmament efforts under the frameworks of the Treaty on the Prohibition of Nuclear Weapons and the Treaty on the Non-Proliferation of Nuclear Weapons.",
+      "theme": "Disarmament"
+    },
+    "362": {
+      "title": "UNHCR Executive and Standing Committees Reports",
+      "description": "This cluster encompasses reports of sessions from the UNHCR Executive Committee and its Standing Committee, detailing their meetings, deliberations, and outcomes.",
+      "theme": "Refugees and Humanitarian Assistance"
+    },
+    "363": {
+      "title": "Human Rights Council Proceedings",
+      "description": "These reports detail the work, resolutions, and outputs of the Human Rights Council, focusing on contributions from committees and groups within the UN framework.",
+      "theme": "Human Rights"
+    },
+    "364": {
+      "title": "UN Administrative and Operational Governance",
+      "description": "This cluster encompasses reports focused on the administrative and operational frameworks of the United Nations, including human resources management, peacekeeping operations methodologies, and staff pension funds oversight.",
+      "theme": "Administration & Management"
+    },
+    "365": {
+      "title": "Judicial Activities Reports 2023-2024",
+      "description": "These reports summarize the activities and decisions of the International Court of Justice and the International Criminal Court during the specified period.",
+      "theme": "Justice & Legal Affairs"
+    },
+    "366": {
+      "title": "Corrigenda of UN Committee Reports",
+      "description": "This cluster includes documents categorizing as corrigenda related to official UN reports, specifically addressing corrections or updates provided to the International Criminal Court report and the General Assembly's 6th Committee activities.",
+      "theme": "United Nations Documentation"
+    },
+    "367": {
+      "title": "Reimbursement Rates and Standards Reviews",
+      "description": "This cluster of reports focuses on reviews and analyses of financial reimbursement rates and standards provided to United Nations troop- and police-contributing countries as well as Member States that contribute contingent-owned equipment. These reviews are conducted by the Advisory Committee on Administrative and Budgetary Questions and the Secretary-General.",
+      "theme": "Budget & Finance"
+    },
+    "368": {
+      "title": "Technology Bank Activities for LDCs",
+      "description": "Reports addressing the development and operational progress of the Technology Bank for Least Developed Countries.",
+      "theme": "Development"
+    },
+    "369": {
+      "title": "Treaty Practices and Regulations Analysis",
+      "description": "These reports examine aspects related to the UN Charter Article 102 and technological impacts on treaty-making practices, providing insights into regulatory frameworks and innovations.",
+      "theme": "Legal Frameworks"
+    },
+    "370": {
+      "title": "UN Organizational and Administrative Reports",
+      "description": "This cluster includes reports addressing organizational processes and administrative programs within the United Nations system, focusing on internships and budgeting operations.",
+      "theme": "Administration and Oversight"
+    },
+    "371": {
+      "title": "Revitalization of General Assembly Work",
+      "description": "This cluster includes reports focused on revitalizing the work of the UN General Assembly, as provided by various committees and departments to improve efficiency and effectiveness.",
+      "theme": "General Assembly"
+    },
+    "372": {
+      "title": "Reports on International Humanitarian Law",
+      "description": "This cluster contains reports by the Secretary-General addressing aspects of international legal frameworks, humanitarian principles, and rule of law mechanisms aimed at protecting victims of armed conflicts and promoting justice.",
+      "theme": "International Law"
+    },
+    "373": {
+      "title": "Special Committee Decisions on Puerto Rico",
+      "description": "This cluster comprises reports prepared by Rapporteurs of the Special Committee between 2020 and 2024, focusing on decisions and considerations regarding the territorial status and related matters concerning Puerto Rico.",
+      "theme": "Decolonization and Self-Determination"
+    },
+    "374": {
+      "title": "Reports on Migrant Workers' Rights",
+      "description": "These reports, submitted under Article 73 of the International Convention on the Protection of the Rights of All Migrant Workers and Members of Their Families, assess compliance and progress in safeguarding migrant workers' rights across various nations.",
+      "theme": "Human Rights"
+    },
+    "375": {
+      "title": "State Reports on Human Rights Compliance",
+      "description": "This cluster comprises periodic and core reports submitted to UN human rights treaty bodies by states regarding implementation of international treaties and declarations, in adherence to reporting obligations.",
+      "theme": "Human Rights"
+    },
+    "376": {
+      "title": "High-level UN Meetings Reports Analysis",
+      "description": "This cluster contains reports and summaries of sessions conducted by high-level UN committees and executive boards focused on management, programmes, and coordination, reflecting deliberations and outcomes across various thematic areas.",
+      "theme": "Governance and Coordination"
+    },
+    "377": {
+      "title": "Financial Reports on Nuclear Treaty Meetings",
+      "description": "This cluster contains financial reports associated with meetings and conferences related to the Treaty on the Prohibition of Nuclear Weapons and the Treaty on the Non-Proliferation of Nuclear Weapons, detailing their respective financial aspects.",
+      "theme": "Budget & Finance"
+    },
+    "378": {
+      "title": "Future of Global Environment Outlook",
+      "description": "These reports discuss the evaluation and strategic planning concerning the Global Environment Outlook's ongoing and future editions by the designated Steering Committee.",
+      "theme": "Environment & Sustainability"
+    },
+    "379": {
+      "title": "Meetings on Continental Shelf Commission Elections",
+      "description": "These reports document the proceedings of resumed meetings of State Parties under the United Nations Convention on the Law of the Sea for electing members to the Commission on the Limits of the Continental Shelf.",
+      "theme": "International Law"
+    },
+    "380": {
+      "title": "Convention on Biological Diversity Meetings",
+      "description": "These reports document proceedings and outcomes of various meetings conducted under the Convention on Biological Diversity and its protocols, focusing on biodiversity conservation, genetic resource usage, and sustainable development.",
+      "theme": "Environmental Sustainability"
+    },
+    "381": {
+      "title": "Reports on the Treaty on Nuclear Prohibition",
+      "description": "These documents analyze and discuss various aspects of the Treaty on the Prohibition of Nuclear Weapons, including state security concerns, scientific evaluations, and updates presented during meetings of States Parties.",
+      "theme": "Disarmament"
+    },
+    "382": {
+      "title": "Technology Bank Council Session Reports",
+      "description": "This cluster comprises reports detailing the proceedings and outcomes of multiple sessions of the Council of the Technology Bank for the Least Developed Countries, focusing on progress towards enhancing science, technology, and innovation in these nations.",
+      "theme": "Development"
+    },
+    "383": {
+      "title": "Management and Administration Review Reports",
+      "description": "This cluster consists of reports by the Joint Inspection Unit reviewing the management and administrative practices within specific United Nations organizations, aiming to enhance operational efficiency and effectiveness.",
+      "theme": "Governance"
+    },
+    "384": {
+      "title": "World Investment Reports Overview",
+      "description": "This cluster contains overviews of the annual 'World Investment Reports,' emphasizing global investment trends and their implications amid current economic challenges.",
+      "theme": "Development"
+    },
+    "385": {
+      "title": "World Investment Report 2023",
+      "description": "This cluster includes reports centered on the theme of investing in sustainable energy as explored in the 2023 edition of the UN's World Investment Report.",
+      "theme": "Development"
+    },
+    "386": {
+      "title": "Assessment of Specific Security Benchmarks",
+      "description": "These reports focus on evaluating progress toward established benchmarks related to UN Security Council resolutions concerning peace and security in specific regions or situations, with attention to compliance and impact.",
+      "theme": "Peace and Security"
+    },
+    "387": {
+      "title": "Credentials for UN Security Council Delegates",
+      "description": "These reports consist of submissions and assessments of credentials for various representatives, deputy representatives, and alternate representatives of member states serving in the capacity of United Nations Security Council delegates, outlining their official appointments in adherence to UN procedures.",
+      "theme": "Governance & Diplomacy"
+    },
+    "388": {
+      "title": "Implementation of Resolution 1956 (2010)",
+      "description": "These reports submitted by the Secretary-General detail the implementation progress related to paragraph 6 of resolution 1956 (2010), providing regular updates.",
+      "theme": "Peacekeeping"
+    },
+    "389": {
+      "title": "Reports by the Secretary-General on Mandate Implementation",
+      "description": "This cluster includes reports provided by the UN Secretary-General regarding the execution and progress of mandates established by Security Council resolutions, encompassing both specific clause implementations and peacekeeping operations.",
+      "theme": "Peacekeeping"
+    },
+    "390": {
+      "title": "Security Council Resolution Implementation Reports",
+      "description": "These reports provide updates and analysis on the implementation of Security Council resolutions 1559 (2004) and 1701 (2006), as prepared by the Secretary-General in adherence to stipulated reporting intervals.",
+      "theme": "Peacekeeping"
+    },
+    "391": {
+      "title": "Security Council Committee Reports",
+      "description": "This cluster contains official communications from the Chairs of various Security Council Committees to the President of the Security Council, providing updates on their respective mandates in addressing specific international situations.",
+      "theme": "Peace and Security"
+    },
+    "392": {
+      "title": "Panel of Experts Final Reports",
+      "description": "This cluster includes corrigenda of final reports from UN Panels of Experts established to monitor compliance with Security Council resolutions in relation to Libya and Yemen.",
+      "theme": "Peacekeeping"
+    },
+    "393": {
+      "title": "Subcommittee on Prevention of Torture Reports",
+      "description": "This cluster consists of reports by the Subcommittee on Prevention of Torture and Other Cruel, Inhuman or Degrading Treatment or Punishment, detailing its annual activities, visits to member states, and observations or recommendations to strengthen national mechanisms against torture.",
+      "theme": "Human Rights"
+    },
+    "394": {
+      "title": "State Periodic Reports on UN Conventions",
+      "description": "This cluster comprises periodic reports submitted by member states in compliance with their obligations under various United Nations conventions to detail steps taken to implement treaty provisions.",
+      "theme": "Reporting and Compliance"
+    },
+    "395": {
+      "title": "Periodic Reports by States Parties",
+      "description": "This cluster encompasses periodic reports submitted by member states to the UN treaty bodies as required under specific international conventions to report on measures adopted and progress made in implementing treaty provisions.",
+      "theme": "Human Rights"
+    },
+    "396": {
+      "title": "State Submissions Under the CAT Convention",
+      "description": "Reports submitted by member states under Article 19 of the Convention against Torture, detailing their adherence and implementation efforts.",
+      "theme": "Human Rights"
+    },
+    "397": {
+      "title": "Periodic Reports Submitted by Brazil",
+      "description": "These reports consist of Brazil's formal submissions to various United Nations conventions and protocols, detailing its implementation and compliance with international treaty obligations related to human rights.",
+      "theme": "Human Rights"
+    },
+    "398": {
+      "title": "Periodic State Reports on Human Rights",
+      "description": "These reports comprise state-submitted periodic updates under UN conventions, adhering to stipulated reporting procedures, demonstrating their compliance and implementation efforts concerning human rights obligations.",
+      "theme": "Human Rights"
+    },
+    "399": {
+      "title": "Periodic Reports on Convention Against Torture",
+      "description": "This cluster contains periodic reports submitted by Member States under Article 19 of the Convention Against Torture, including corrigenda, detailing compliance with the Convention's obligations.",
+      "theme": "Human Rights"
+    },
+    "400": {
+      "title": "Periodic Reports to Convention Against Torture",
+      "description": "This cluster contains periodic reports submitted by Germany and Liechtenstein under Article 19 of the Convention Against Torture, detailing measures taken to prevent torture and other cruel, inhuman, or degrading treatment.",
+      "theme": "Human Rights"
+    },
+    "401": {
+      "title": "Israel's State Party Reports on Conventions",
+      "description": "This cluster encompasses periodic and common core reports submitted by Israel concerning its obligations and implementation of international human rights conventions, as required by treaty bodies under the UN framework.",
+      "theme": "Human Rights"
+    },
+    "402": {
+      "title": "Periodic Reports under UN Human Rights Treaties",
+      "description": "The reports in this cluster are periodic submissions by state parties under the Convention against Torture and the International Covenant on Civil and Political Rights, focusing on compliance and implementation of treaty provisions.",
+      "theme": "Human Rights"
+    },
+    "403": {
+      "title": "Periodic Reports by the Russian Federation",
+      "description": "This cluster includes periodic state reports submitted by the Russian Federation to fulfill its obligations under international human rights conventions.",
+      "theme": "Human Rights"
+    },
+    "404": {
+      "title": "USA's Human Rights Treaty Reports",
+      "description": "This cluster comprises reports submitted by the United States of America to fulfill its obligations under various international human rights treaties, addressing adherence to specific protocols and conventions.",
+      "theme": "Human Rights"
+    },
+    "405": {
+      "title": "State Party Initial and Periodic Reports",
+      "description": "This cluster comprises reports submitted by State parties under various UN human rights conventions and covenants, detailing adherence and measures taken to comply with treaty obligations.",
+      "theme": "Human Rights"
+    },
+    "406": {
+      "title": "India's Compliance with Human Rights Treaties",
+      "description": "Reports submitted by India outlining the country's adherence to international human rights treaties, focusing on specific conventions and treaties to which it is a State Party.",
+      "theme": "Human Rights"
+    },
+    "407": {
+      "title": "Periodic State Compliance Reports under ICCPR and ICERD",
+      "description": "This cluster contains various periodic reports submitted by states under their commitments to the International Covenant on Civil and Political Rights (ICCPR) and the International Convention on the Elimination of All Forms of Racial Discrimination (ICERD), highlighting the reporting states' adherence to and implementation progress of these treaties.",
+      "theme": "Human Rights"
+    },
+    "408": {
+      "title": "State Reports on International Human Rights",
+      "description": "This cluster includes reports submitted by state parties, Zambia and Zimbabwe, under the frameworks of international human rights instruments and the associated covenants, reflecting their obligations and implementations within outlined reporting guidelines.",
+      "theme": "Human Rights"
+    },
+    "409": {
+      "title": "Follow-Up to Human Rights Committee Observations",
+      "description": "This cluster contains reports documenting the actions and updates regarding the follow-up to the Human Rights Committee's concluding observations and recommendations.",
+      "theme": "Human Rights"
+    },
+    "410": {
+      "title": "States' Reports on Enforced Disappearances",
+      "description": "This cluster comprises reports and corrigenda submitted by States parties under Article 29(1) of the International Convention for the Protection of All Persons from Enforced Disappearance. These documents relate to reports due in 2012 and 2013 from various countries regarding actions and compliance with the Convention.",
+      "theme": "Human Rights"
+    },
+    "411": {
+      "title": "Periodic Reports on Human Rights Conventions",
+      "description": "This cluster contains state parties' periodic reports submitted under respective articles of UN Human Rights Conventions, outlining measures implemented and progress made towards fulfilling their obligations.",
+      "theme": "Human Rights"
+    },
+    "412": {
+      "title": "Periodic Reports on Anti-Discrimination Conventions",
+      "description": "These reports represent periodic submissions by nations under UN anti-discrimination conventions, specifically addressing commitments to eliminate racial and gender discrimination as per international agreements.",
+      "theme": "Human Rights"
+    },
+    "413": {
+      "title": "CEDAW Periodic Reports Submission",
+      "description": "Reports submitted by nations to the UN under Article 18 of the Convention on the Elimination of All Forms of Discrimination Against Women (CEDAW), outlining their progress and compliance.",
+      "theme": "Human Rights"
+    },
+    "414": {
+      "title": "Periodic Reports on Racial Discrimination",
+      "description": "This cluster includes state reports submitted under Article 9 of the International Convention on the Elimination of All Forms of Racial Discrimination, detailing measures taken by member states to implement the Convention.",
+      "theme": "Human Rights"
+    },
+    "415": {
+      "title": "Reports for ICERD under Article 9",
+      "description": "This cluster consists of periodic and initial reports submitted by various UN member states under Article 9 of the International Convention on the Elimination of All Forms of Racial Discrimination (ICERD). These reports are prepared by signatory states to demonstrate compliance and progress in combatting racial discrimination.",
+      "theme": "Human Rights"
+    },
+    "416": {
+      "title": "New Zealand's 2021 Convention Reports",
+      "description": "This cluster contains periodic reports submitted by New Zealand to fulfill its obligations under international conventions addressing racial discrimination and children's rights, as stipulated for the reporting year 2021.",
+      "theme": "Human Rights"
+    },
+    "417": {
+      "title": "State Party Reports on UN Conventions",
+      "description": "This cluster includes State Party reports submitted under specific articles of UN conventions, detailing measures taken to comply with treaty obligations. These reports ensure accountability and transparency in human rights adherence.",
+      "theme": "Human Rights"
+    },
+    "418": {
+      "title": "State Reports Submission Status Overview",
+      "description": "These documents provide updates on the submission statuses of periodic reports by State parties per Article 9 (1) of the International Convention on the Elimination of All Forms of Racial Discrimination, as prepared by the Secretary-General.",
+      "theme": "Human Rights"
+    },
+    "419": {
+      "title": "Reports on Child Involvement in Armed Conflict",
+      "description": "These reports, submitted under Article 8 (1) of the Optional Protocol to the Convention on the Rights of the Child, address measures taken by member states to prevent and mitigate the involvement of children in armed conflict.",
+      "theme": "Human Rights"
+    },
+    "420": {
+      "title": "CRPD Periodic Reports by Member States",
+      "description": "This cluster contains combined periodic reports submitted by member states under Article 35 of the Convention on the Rights of Persons with Disabilities, detailing their compliance and progress in implementing the Convention's provisions.",
+      "theme": "Human Rights"
+    },
+    "421": {
+      "title": "Reports on Convention on Disabilities",
+      "description": "This cluster consists of reports and corrigenda produced under the Convention on the Rights of Persons with Disabilities, highlighting national and international assessments and inquiries.",
+      "theme": "Human Rights"
+    },
+    "422": {
+      "title": "Reports on Human Rights Instruments",
+      "description": "This cluster includes core documents from States parties, providing essential information on the implementation of international human rights treaties. The reports pertain to Australia and the United Kingdom of Great Britain and Northern Ireland.",
+      "theme": "Human Rights"
+    },
+    "423": {
+      "title": "States Parties Human Rights Core Documents",
+      "description": "This cluster includes common core documents submitted by various states under international human rights instruments as part of their treaty reporting obligations.",
+      "theme": "Human Rights"
+    },
+    "424": {
+      "title": "State Reports on Human Rights Instruments",
+      "description": "These reports are common core documents provided by States parties, detailing their compliance with international human rights treaties and frameworks.",
+      "theme": "Human Rights"
+    },
+    "425": {
+      "title": "Common Core Documents of State Parties",
+      "description": "These documents represent the common core reports submitted by Lithuania and Serbia as part of their obligations under the international human rights instruments, outlining national frameworks and measures taken to implement human rights.",
+      "theme": "Human Rights"
+    },
+    "426": {
+      "title": "Subcommittee's Preventive Visits Reports",
+      "description": "These documents detail the observations and recommendations by the Subcommittee on Prevention of Torture and Other Cruel, Inhuman or Degrading Treatment or Punishment following their visits to Hungary in March 2017 and Poland in July 2018, specifically addressing the National Preventive Mechanisms (NPM).",
+      "theme": "Human Rights"
+    },
+    "427": {
+      "title": "Subcommittee Visit Reports: Switzerland 2019",
+      "description": "This cluster comprises reports by the Subcommittee on Prevention of Torture detailing the findings and recommendations from its visit to Switzerland in early 2019, including assessments directed towards the national preventive mechanism and the State party.",
+      "theme": "Human Rights"
+    }
+  }
+}

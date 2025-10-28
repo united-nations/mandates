@@ -1,7 +1,15 @@
-import DocumentTable from '@/components/document-table';
-import { reportsConfig } from '@/lib/document-configs';
-import type { Report } from '@/types';
+'use client'
+
+import { Suspense } from 'react'
+import { ReportsExplorer } from '@/components/reports-explorer'
+import { LoadingFallback } from '@/components/ui/loading-fallback'
 
 export default function ReportsPage() {
-    return <DocumentTable<Report> config={reportsConfig} />;
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <div className="space-y-6 pb-16">
+        <ReportsExplorer />
+      </div>
+    </Suspense>
+  )
 }

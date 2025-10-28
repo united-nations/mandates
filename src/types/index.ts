@@ -209,6 +209,9 @@ export interface BaseDocument {
   symbol: string;
   original_symbol: string;
   organ: string;
+  organ_level1: string | null;
+  organ_level2: string | null;
+  organ_prefix: string | null;
   document_type: string;
   issuing_body: string;
   year: number;
@@ -230,6 +233,7 @@ export interface BaseDocument {
   series_first_year: number;
   series_last_year: number;
   series_year_range: number;
+  is_latest_version: boolean;
   distance_to_previous: number | null;
   previous_symbol: string | null;
   similarity_to_previous: number | null;
@@ -244,9 +248,18 @@ export interface Resolution extends BaseDocument {
   count_within_existing_resources: number | null;
 }
 
-// Report interface (same as BaseDocument for now, but extensible)
+// Report interface with classification and clustering fields
 export interface Report extends BaseDocument {
-  // Future report-specific fields can be added here
+  // document_type is inherited from BaseDocument
+  document_subtype: string | null;
+  author_level1: string | null;
+  author_level2: string | null;
+  classification_confidence: string | null;
+  cluster_id: number | null;
+  cluster_mean_similarity: number | null;
+  cluster_similarity_category: string | null;
+  top10_similar_symbols: string[] | null;
+  top10_similar_scores: number[] | null;
 }
 
 // Generic document type for components
