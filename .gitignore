@@ -2,6 +2,7 @@
 
 .playwright-mcp
 .claude
+.VSCodeCounter
 
 # dependencies
 /node_modules
