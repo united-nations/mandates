@@ -1,9 +1,9 @@
 {
   "cluster_titles": {
-    "-1004": "UPR Summary Reports (Stakeholder Information)",
-    "-1002": "UPR Working Group Reports",
-    "-1001": "UPR National Reports",
-    "-1000": "UPR Compilation Reports (UN Information)",
+    "-1004": "Universal Periodic Review \u2013 Summary Reports (Stakeholder Information)",
+    "-1002": "Universal Periodic Review \u2013 Working Group Reports",
+    "-1001": "Universal Periodic Review \u2013 National Reports",
+    "-1000": "Universal Periodic Review \u2013 Compilation Reports (UN Information)",
     "0": "UN Human Rights Treaty Submissions",
     "1": "State Party Reports to UN Committees",
     "2": "Country Periodic Reports to UN Committees",
@@ -435,22 +435,22 @@
   },
   "cluster_details": {
     "-1004": {
-      "title": "UPR Summary Reports (Stakeholder Information)",
+      "title": "Universal Periodic Review \u2013 Summary Reports (Stakeholder Information)",
       "description": "Summary of stakeholders' information prepared by OHCHR for the Universal Periodic Review.",
       "theme": "Universal Periodic Review"
     },
     "-1002": {
-      "title": "UPR Working Group Reports",
+      "title": "Universal Periodic Review \u2013 Working Group Reports",
       "description": "Reports of the Working Group on the Universal Periodic Review containing recommendations.",
       "theme": "Universal Periodic Review"
     },
     "-1001": {
-      "title": "UPR National Reports",
+      "title": "Universal Periodic Review \u2013 National Reports",
       "description": "National reports submitted by States under review as part of the Universal Periodic Review process.",
       "theme": "Universal Periodic Review"
     },
     "-1000": {
-      "title": "UPR Compilation Reports (UN Information)",
+      "title": "Universal Periodic Review \u2013 Compilation Reports (UN Information)",
       "description": "Compilation of UN information prepared by OHCHR for the Universal Periodic Review.",
       "theme": "Universal Periodic Review"
     },

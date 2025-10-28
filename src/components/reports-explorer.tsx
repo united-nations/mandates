@@ -784,8 +784,10 @@ export function ReportsExplorer() {
       <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 sm:p-6 rounded-lg border border-blue-200">
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">UN Reports Analysis</h1>
         <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
-          Analyzing UN reports from 2020-2025 to identify patterns, redundancies, and opportunities for consolidation. 
-          This tool uses machine learning clustering to group similar reports and suggests improvements to the reporting system.
+          Analysis of UN reports published by the UN Digital Library from 2020–2025.
+        </p>
+        <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
+          Clusters are based on semantic similarity, with automatically generated cluster titles.
         </p>
       </div>
 
@@ -848,7 +850,7 @@ export function ReportsExplorer() {
                 variant={viewMode === 'list' ? 'default' : 'ghost'}
                 size="sm"
                 onClick={() => setViewMode('list')}
-                className="rounded-none"
+                className="rounded-none h-full"
               >
                 <LayoutList className="mr-2 h-4 w-4" />
                 List
@@ -857,7 +859,7 @@ export function ReportsExplorer() {
                 variant={viewMode === 'cluster' ? 'default' : 'ghost'}
                 size="sm"
                 onClick={() => setViewMode('cluster')}
-                className="rounded-none"
+                className="rounded-none h-full"
               >
                 <LayoutGrid className="mr-2 h-4 w-4" />
                 Clusters
