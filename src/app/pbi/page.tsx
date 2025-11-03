@@ -23,25 +23,12 @@ interface PBIResolution {
   stages: PBIStage[]
   plenary_amount: number | null
   total_by_committee: { [key: string]: number }
+  year: number | null
 }
 
 function formatAmount(amount: number | null): string {
   if (amount === null || amount < 0) return 'N/A'
   return `$${amount.toLocaleString()}`
-}
-
-function extractYear(symbol: string): number {
-  // Extract year from symbols like A/C.1/78/L.52 -> 2023 (session 78 = 2023)
-  // or A/78/L.41 -> 2023
-  const match = symbol.match(/\/(\d{2,4})\//)
-  if (match) {
-    const num = parseInt(match[1])
-    if (num < 100) {
-      return 1945 + num // Session number to year
-    }
-    return num // Already a year
-  }
-  return 0
 }
 
 function extractResolutionTitle(pbiTitle: string): string {
@@ -77,28 +64,20 @@ export default function PBIPage() {
     fetch('/data/pbi_dashboard.json')
       .then(res => res.json())
       .then((rawData: PBIResolution[]) => {
-        // Add year and sort by year (latest first)
-        const dataWithYear = rawData.map(item => ({
-          ...item,
-          year: extractYear(item.referenced_resolution),
-          // Extract earliest date from stages for secondary sort
-          earliestDate: item.stages.reduce((earliest, stage) => {
-            const date = stage.publication_date
-            if (!date) return earliest
-            return !earliest || date < earliest ? date : earliest
-          }, null as string | null)
-        }))
-        
-        // Sort by year (desc), then by date (desc)
-        dataWithYear.sort((a, b) => {
-          if (b.year !== a.year) return b.year - a.year
-          if (a.earliestDate && b.earliestDate) {
-            return b.earliestDate.localeCompare(a.earliestDate)
-          }
-          return 0
+        // Sort by year (desc), then by plenary amount (desc)
+        const sortedData = [...rawData].sort((a, b) => {
+          // Year descending (nulls last)
+          const yearA = a.year || 0
+          const yearB = b.year || 0
+          if (yearB !== yearA) return yearB - yearA
+          
+          // Amount descending
+          const amountA = a.plenary_amount || 0
+          const amountB = b.plenary_amount || 0
+          return amountB - amountA
         })
         
-        setData(dataWithYear)
+        setData(sortedData)
         setLoading(false)
       })
       .catch(err => {
@@ -147,7 +126,7 @@ export default function PBIPage() {
             <span className="font-semibold">{data.length}</span> draft resolutions with budget implications
           </div>
           <div className="text-lg font-semibold text-un-blue mt-1">
-            Total Plenary Approved: {formatAmount(totalPlenaryAmount)}
+            Total GA Approved: {formatAmount(totalPlenaryAmount)}
           </div>
         </div>
       </div>
@@ -167,7 +146,7 @@ export default function PBIPage() {
                 Title
               </th>
               <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Plenary Amount
+                GA Approved
               </th>
             </tr>
           </thead>
@@ -185,35 +164,52 @@ export default function PBIPage() {
                 return dateA.localeCompare(dateB)
               })
 
-              const year = (item as any).year || extractYear(item.referenced_resolution)
               const resolutionTitle = extractResolutionTitle(item.title)
 
               return (
                 <>
                   <tr 
                     key={item.referenced_resolution}
-                    className="hover:bg-gray-50 cursor-pointer"
-                    onClick={() => toggleRow(item.referenced_resolution)}
+                    className="hover:bg-gray-50"
                   >
-                    <td className="px-4 py-3">
+                    <td 
+                      className="px-4 py-3 cursor-pointer"
+                      onClick={() => toggleRow(item.referenced_resolution)}
+                    >
                       {isExpanded ? (
                         <ChevronDown className="h-4 w-4 text-gray-400" />
                       ) : (
                         <ChevronRight className="h-4 w-4 text-gray-400" />
                       )}
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-600">
-                      {year || 'N/A'}
+                    <td 
+                      className="px-4 py-3 text-sm text-gray-600 cursor-pointer"
+                      onClick={() => toggleRow(item.referenced_resolution)}
+                    >
+                      {item.year || 'N/A'}
                     </td>
                     <td className="px-4 py-3">
-                      <span className="font-mono text-sm text-un-blue">
+                      <a
+                        href={`https://docs.un.org/en/${item.referenced_resolution}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-mono text-sm text-un-blue hover:underline flex items-center gap-1"
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         {item.referenced_resolution}
-                      </span>
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-700">
+                    <td 
+                      className="px-4 py-3 text-sm text-gray-700 cursor-pointer"
+                      onClick={() => toggleRow(item.referenced_resolution)}
+                    >
                       {resolutionTitle}
                     </td>
-                    <td className="px-4 py-3 text-right text-sm font-medium">
+                    <td 
+                      className="px-4 py-3 text-right text-sm font-medium cursor-pointer"
+                      onClick={() => toggleRow(item.referenced_resolution)}
+                    >
                       {formatAmount(item.plenary_amount)}
                     </td>
                   </tr>
