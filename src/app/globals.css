@@ -2,9 +2,6 @@
 @plugin 'tailwindcss-animate';
 
 @theme {
-  --font-sans: var(--font-roboto), ui-sans-serif, system-ui, sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-
   --color-card-gray: #f6f7f8;
   --color-un-blue: #009edb;
   --color-trout: #495057;
