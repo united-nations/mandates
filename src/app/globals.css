@@ -1,9 +1,11 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* https://tailwindcss.com/docs/colors#customizing-your-colors */
 @theme {
-  --color-card-gray: #f6f7f8;
   --color-un-blue: #009edb;
+
+  --color-card-gray: #f6f7f8;
   --color-trout: #495057;
   --color-shuttle-gray: #5a6c7d;
   --color-camouflage-green: #7d8471;
@@ -41,9 +43,8 @@
 }
 
 :root {
-  --un-blue: #009edb; /* Official UN Blue color */
-  --background: hsl(0 0% 100%);
-  --foreground: hsl(220 15% 25%);
+  --background: white;
+  --foreground: black;
 
   --card: hsl(220 20% 97%);
   --card-foreground: hsl(220 15% 25%);
@@ -54,7 +55,9 @@
   --popover: hsl(220 20% 97%); /* Very light cool gray, almost white */
   --popover-foreground: hsl(220 15% 25%);
 
-  --primary: hsl(220 30% 30%); /* Darker cool blue/gray for primary actions/text */
+  --primary: hsl(
+    220 30% 30%
+  ); /* Darker cool blue/gray for primary actions/text */
   --primary-foreground: hsl(0 0% 100%); /* White text on primary */
 
   --secondary: hsl(220 15% 90%); /* Lighter gray for secondary elements */
