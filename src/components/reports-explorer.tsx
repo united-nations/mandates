@@ -564,7 +564,7 @@ export function ReportsExplorer() {
               ) : (
                 <Button
                   key={pageNum}
-                  variant={currentPage === pageNum ? 'default' : 'outline'}
+                  variant={currentPage === pageNum ? 'default' : 'outline-solid'}
                   size="sm"
                   onClick={() => setCurrentPage(pageNum)}
                   className="w-9"
@@ -730,7 +730,7 @@ export function ReportsExplorer() {
                   )}
                 </div>
               </button>
-              <div className="flex items-center gap-2 flex-shrink-0 ml-4">
+              <div className="flex items-center gap-2 shrink-0 ml-4">
                 {metadata?.theme && (
                   <Badge className="bg-purple-100 text-purple-800 text-xs">
                     {metadata.theme}
@@ -781,7 +781,7 @@ export function ReportsExplorer() {
   return (
     <div className="space-y-6">
       {/* Header with intro text */}
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 sm:p-6 rounded-lg border border-blue-200">
+      <div className="bg-linear-to-r from-blue-50 to-indigo-50 p-4 sm:p-6 rounded-lg border border-blue-200">
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">UN Reports Analysis</h1>
         <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
           Analysis of UN reports published by the UN Digital Library from 2020–2025.
@@ -798,7 +798,7 @@ export function ReportsExplorer() {
             <p className="text-sm text-gray-600">Total Reports</p>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold text-[#009edb]">{stats.totalLatest}</p>
+            <p className="text-3xl font-bold text-un-blue">{stats.totalLatest}</p>
           </CardContent>
         </Card>
         <Card>
@@ -806,7 +806,7 @@ export function ReportsExplorer() {
             <p className="text-sm text-gray-600">Identified Clusters</p>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold text-[#009edb]">{stats.numClusters}</p>
+            <p className="text-3xl font-bold text-un-blue">{stats.numClusters}</p>
           </CardContent>
         </Card>
         <Card>
@@ -814,7 +814,7 @@ export function ReportsExplorer() {
             <p className="text-sm text-gray-600">Recurring Series</p>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold text-[#009edb]">{stats.totalSeries}</p>
+            <p className="text-3xl font-bold text-un-blue">{stats.totalSeries}</p>
           </CardContent>
         </Card>
         <Card>
@@ -822,7 +822,7 @@ export function ReportsExplorer() {
             <p className="text-sm text-gray-600">Avg Cluster Similarity</p>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold text-[#009edb]">
+            <p className="text-3xl font-bold text-un-blue">
               {(stats.avgSimilarity * 100).toFixed(0)}%
             </p>
           </CardContent>
@@ -1058,7 +1058,7 @@ export function ReportsExplorer() {
       </div>
 
       {/* UN Proposals for Reports and Meetings */}
-      <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg border-2 border-blue-200 p-6 mt-8">
+      <div className="bg-linear-to-br from-blue-50 to-purple-50 rounded-lg border-2 border-blue-200 p-6 mt-8">
         <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
           UN Proposals for Reports and Meetings
         </h2>

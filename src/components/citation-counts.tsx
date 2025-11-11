@@ -96,12 +96,12 @@ export function CitationCounts({ mandate, entities }: CitationCountsProps) {
           <div className="space-y-1.5 text-xs">
             {(showAllEntities ? entityCounts : entityCounts.slice(0, 5)).map(([shortName, data]) => (
               <div key={shortName} className="flex items-center gap-2">
-                <span className="text-muted-foreground font-mono flex-shrink-0">{data.count}x</span>
+                <span className="text-muted-foreground font-mono shrink-0">{data.count}x</span>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <Badge
                       variant="secondary"
-                      className="text-xs px-2.5 py-0.5 !bg-un-blue !text-white hover:!bg-un-blue/90 cursor-pointer transition-colors flex-shrink-0"
+                      className="text-xs px-2.5 py-0.5 bg-un-blue! text-white! hover:bg-un-blue/90! cursor-pointer transition-colors shrink-0"
                       onClick={() => {
                         // Navigate to entity detail page
                         window.location.href = `/entity/${encodeURIComponent(shortName)}`
@@ -143,7 +143,7 @@ export function CitationCounts({ mandate, entities }: CitationCountsProps) {
           <div className="space-y-1.5 text-xs">
             {(showAllProgrammes ? programmeCounts : programmeCounts.slice(0, 5)).map(([programmeTitle, count]) => (
               <div key={programmeTitle} className="flex items-center gap-2">
-                <span className="text-muted-foreground font-mono flex-shrink-0">{count}x</span>
+                <span className="text-muted-foreground font-mono shrink-0">{count}x</span>
                 <div className="min-w-0 flex-1">
                   <Badge
                     variant="secondary"

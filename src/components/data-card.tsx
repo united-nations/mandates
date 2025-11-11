@@ -48,9 +48,9 @@ export function DataCard({
               <CardTitle className="text-lg font-medium text-un-blue leading-tight">
                 {title}
               </CardTitle>
-              <Icon className="h-5 w-5 text-un-blue flex-shrink-0" />
+              <Icon className="h-5 w-5 text-un-blue shrink-0" />
             </CardHeader>
-            <CardContent className="flex-grow flex items-center justify-start pt-2">
+            <CardContent className="grow flex items-center justify-start pt-2">
               <div className="text-4xl font-bold text-foreground tabular-nums">
                 {isLoading ? (
                   <Skeleton className="h-8 w-16" />
@@ -79,7 +79,7 @@ export function DataCard({
                     
                     return (
                       <div key={index} className="flex items-center gap-2">
-                        <div className="w-16 text-xs text-trout font-medium text-right flex-shrink-0">
+                        <div className="w-16 text-xs text-trout font-medium text-right shrink-0">
                           {item.name}
                         </div>
                         <div className="flex-1 bg-gray-200 rounded-full h-3 relative">
@@ -88,7 +88,7 @@ export function DataCard({
                             style={{ width: `${Math.max(barWidth, 6)}%` }}
                           />
                         </div>
-                        <div className="w-8 text-xs text-muted-foreground text-right flex-shrink-0">
+                        <div className="w-8 text-xs text-muted-foreground text-right shrink-0">
                           {item.count}
                         </div>
                       </div>

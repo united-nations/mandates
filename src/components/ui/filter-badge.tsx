@@ -29,9 +29,9 @@ interface FilterBadgeProps {
    * The variant type determines the styling
    * - 'default': Default badge styling
    * - 'secondary': Secondary badge styling (used in FilterControls)
-   * - 'outline': Outline badge styling
+   * - 'outline-solid': Outline badge styling
    */
-  variant?: 'default' | 'secondary' | 'outline'
+  variant?: 'default' | 'secondary' | 'outline-solid'
   
   /**
    * Additional CSS classes

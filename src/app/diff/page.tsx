@@ -155,7 +155,7 @@ export default function DiffPage() {
                     value={symbol1}
                     onChange={(e) => setSymbol1(e.target.value)}
                     placeholder="e.g., A/RES/77/16"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-un-blue focus:ring-un-blue focus:ring-1 focus:outline-none"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-un-blue focus:ring-un-blue focus:ring-1 focus:outline-hidden"
                   />
                 </div>
                 <div>
@@ -165,7 +165,7 @@ export default function DiffPage() {
                     value={symbol2}
                     onChange={(e) => setSymbol2(e.target.value)}
                     placeholder="e.g., A/RES/79/326"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-un-blue focus:ring-un-blue focus:ring-1 focus:outline-none"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-un-blue focus:ring-un-blue focus:ring-1 focus:outline-hidden"
                   />
                 </div>
               </div>
@@ -203,7 +203,7 @@ export default function DiffPage() {
                           {example.symbol2} ({example.year2})
                         </span>
                       </div>
-                      <ArrowLeftRight className="h-4 w-4 text-gray-400 group-hover:text-un-blue flex-shrink-0" />
+                      <ArrowLeftRight className="h-4 w-4 text-gray-400 group-hover:text-un-blue shrink-0" />
                     </div>
                   </a>
                 ))}

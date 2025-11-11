@@ -192,7 +192,7 @@ function ResolutionsPageContent() {
           <h1 className="text-2xl font-bold tracking-tight text-foreground">
             <span className={searchParams.get('organ') ? "text-un-blue" : ""}>{organText}</span> Resolutions by{' '}
             <DropdownMenu>
-              <DropdownMenuTrigger className="text-un-blue hover:text-un-blue/80 focus:outline-none inline-flex items-center gap-0 transition-colors">
+              <DropdownMenuTrigger className="text-un-blue hover:text-un-blue/80 focus:outline-hidden inline-flex items-center gap-0 transition-colors">
                 <span ref={dimensionTextRef} className="border-b-2 border-un-blue/20 hover:border-un-blue/40 transition-colors">
                   {dimensionText}
                 </span>
@@ -200,7 +200,7 @@ function ResolutionsPageContent() {
               </DropdownMenuTrigger>
               <DropdownMenuContent 
                 align="start" 
-                className="w-auto p-0.5 border-un-blue/20 shadow-sm mt-1"
+                className="w-auto p-0.5 border-un-blue/20 shadow-xs mt-1"
                 style={{ minWidth: dropdownMinWidth }}
               >
                 {dimension !== 'length' && (
@@ -242,7 +242,7 @@ function ResolutionsPageContent() {
               onClick={switchToTreemap}
               className={`h-full px-3 text-sm font-medium transition-colors rounded-sm ${
                 view === 'treemap'
-                  ? 'bg-background text-un-blue shadow-sm pointer-events-none'
+                  ? 'bg-background text-un-blue shadow-xs pointer-events-none'
                   : 'hover:bg-background/60 hover:text-foreground'
               }`}
             >
@@ -254,7 +254,7 @@ function ResolutionsPageContent() {
               onClick={switchToTable}
               className={`h-full px-3 text-sm font-medium transition-colors rounded-sm ${
                 view === 'table'
-                  ? 'bg-background text-un-blue shadow-sm pointer-events-none'
+                  ? 'bg-background text-un-blue shadow-xs pointer-events-none'
                   : 'hover:bg-background/60 hover:text-foreground'
               }`}
             >

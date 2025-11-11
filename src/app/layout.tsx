@@ -67,7 +67,7 @@ export default function RootLayout({
             <body className='font-sans antialiased min-h-screen bg-background text-foreground'>
                 <TooltipProvider>
                     <FilterProvider>
-                        <header className='sticky top-0 z-40 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b'>
+                        <header className='sticky top-0 z-40 w-full bg-background/95 backdrop-blur-sm supports-backdrop-filter:bg-background/60 border-b'>
                             <div className='w-full max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-8 sm:px-12 lg:px-16 py-2 flex items-start justify-between'>
                                 <div className='flex-1'>
                                     <div className='flex flex-col lg:flex-row lg:items-center lg:gap-x-2 mb-0'>
@@ -120,7 +120,7 @@ export default function RootLayout({
                                                 variant='ghost'
                                                 size='icon'
                                                 aria-label='Open navigation menu'
-                                                className='shrink-0 inline-flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 py-1 sm:px-2.5 sm:py-1.5 h-auto !bg-trout !text-white hover:!bg-trout/90'
+                                                className='shrink-0 inline-flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 py-1 sm:px-2.5 sm:py-1.5 h-auto bg-trout! text-white! hover:bg-trout/90!'
                                             >
                                                 <Menu className='h-3 w-3 sm:h-4 sm:w-4' />
                                             </Button>

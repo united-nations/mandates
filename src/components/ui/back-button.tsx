@@ -73,7 +73,7 @@ export function BackButton({ label = 'Go Back', className = '' }: BackButtonProp
             variant="outline"
             size="sm"
             type="button"
-            className={`mb-4 shrink-0 inline-flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 py-1 sm:px-2.5 sm:py-1.5 h-auto !bg-trout !text-white hover:!bg-trout/90 transition-colors ${className}`}
+            className={`mb-4 shrink-0 inline-flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 py-1 sm:px-2.5 sm:py-1.5 h-auto bg-trout! text-white! hover:bg-trout/90! transition-colors ${className}`}
             onClick={handleClick}
         >
             <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4" />

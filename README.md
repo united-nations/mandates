@@ -47,3 +47,4 @@ This will start the application on `http://localhost:9002`.
 - `npm run genkit:dev`: Starts the Genkit development server.
 - `npm run genkit:watch`: Starts the Genkit development server in watch mode.
 - `npm list tailwindcss`
+- `npx tsc --noEmit`

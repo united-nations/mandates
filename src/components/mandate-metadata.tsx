@@ -115,7 +115,7 @@ export function MandateMetadata({ mandate }: MandateMetadataProps) {
               <Badge
                 key={index}
                 variant="outline"
-                className="text-xs font-normal !border-un-blue cursor-pointer hover:bg-un-blue/10 transition-colors"
+                className="text-xs font-normal border-un-blue! cursor-pointer hover:bg-un-blue/10 transition-colors"
                 onClick={() => {
                   // Navigate to filtered results with only the subject filter
                   const url = new URL(window.location.origin + '/')

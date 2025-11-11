@@ -159,10 +159,10 @@ export default function SDGExpensesTreemap({ onSDGClick }: SDGExpensesTreemapPro
               {isLargest ? (
                 <div className="h-full overflow-hidden relative">
                   <div className="absolute top-0 left-0 right-0 p-2 flex items-start gap-2 overflow-hidden z-20 pointer-events-none">
-                    <span className="inline-block text-2xl sm:text-3xl font-bold leading-none px-1 py-0.5 flex-shrink-0" style={{ backgroundColor: color }}>
+                    <span className="inline-block text-2xl sm:text-3xl font-bold leading-none px-1 py-0.5 shrink-0" style={{ backgroundColor: color }}>
                       {sdgNumber}
                     </span>
-                    <span className="inline-block text-xs sm:text-sm font-semibold leading-tight px-1 py-0.5 break-words" style={{ backgroundColor: color }}>
+                    <span className="inline-block text-xs sm:text-sm font-semibold leading-tight px-1 py-0.5 wrap-break-word" style={{ backgroundColor: color }}>
                       {shortTitle}
                     </span>
                   </div>
