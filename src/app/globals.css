@@ -463,3 +463,19 @@ mark {
   opacity: 0;
   transform: translateX(-60px) rotate(-360deg) scale(0.3);
 }
+
+
+/* Prevent layout shifts by always showing scrollbar */
+html {
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
+}
+
+body {
+  overflow-y: scroll;
+}
+
+/* Hide scrollbar for Webkit browsers (Chrome, Safari) */
+body::-webkit-scrollbar {
+  display: none;
+}
