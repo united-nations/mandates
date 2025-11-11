@@ -47,7 +47,7 @@ export function AnimatedLogo() {
             >
                 {/* Base corner logo */}
                 <Image
-                    src="/corner_un80.svg"
+                    src="/images/corner_un80.svg"
                     alt="UN80 Logo"
                     width={110}
                     height={110}
@@ -56,7 +56,7 @@ export function AnimatedLogo() {
                 {/* UN20 Animation Sprite on top */}
                 <div className='absolute inset-0 flex items-center justify-start pl-3 pt-2'>
                     <Image
-                        src="/un20animation.svg"
+                        src="/images/un20animation.svg"
                         alt="UN20 Animation"
                         width={30}
                         height={30}
