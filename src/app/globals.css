@@ -1,13 +1,9 @@
-@import 'tailwindcss';
-
+@import "tailwindcss";
 @plugin 'tailwindcss-animate';
 
-@custom-variant dark (&:is(.dark *));
-
 @theme {
-  --font-sans:
-    var(--font-roboto), ui-sans-serif, system-ui, sans-serif,
-    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-sans: var(--font-roboto), ui-sans-serif, system-ui, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 
   --color-card-gray: #f6f7f8;
   --color-un-blue: #009edb;
@@ -137,7 +133,7 @@
     --muted-foreground: 220 10% 50%;
 
     --accent: 196 100% 43%; /* UN Blue for hover/accent */
-    --accent-foreground: 0 0% 100%; 
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 100%;
@@ -156,7 +152,7 @@
     --chart-4: 180 35% 55%;
     --chart-5: 260 40% 60%;
 
-    --sidebar-background: 220 15% 92%; 
+    --sidebar-background: 220 15% 92%;
     --sidebar-foreground: 220 15% 25%;
     --sidebar-primary: 220 30% 30%;
     --sidebar-primary-foreground: 0 0% 100%;
@@ -164,53 +160,6 @@
     --sidebar-accent-foreground: 0 0% 100%;
     --sidebar-border: 220 15% 85%;
     --sidebar-ring: 220 30% 50%;
-  }
-
-  .dark {
-    --background: 220 15% 10%; /* Dark blue-gray */
-    --foreground: 220 10% 85%;
-
-    --card: 220 15% 15%;
-    --card-foreground: 220 10% 85%;
-
-    --dashboard-card: 220 10% 80%; /* set the color of filters and data cards */
-
-    --popover: 220 15% 15%;
-    --popover-foreground: 220 10% 85%;
-
-    --primary: 220 30% 60%; 
-    --primary-foreground: 220 10% 95%;
-
-    --secondary: 220 15% 25%; 
-    --secondary-foreground: 220 10% 80%;
-
-    --muted: 220 15% 20%;
-    --muted-foreground: 220 10% 60%;
-
-    --accent: 196 100% 43%; /* UN Blue for hover/accent */
-    --accent-foreground: 220 10% 95%;
-
-    --destructive: 0 60% 45%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 220 15% 30%;
-    --input: 220 15% 20%;
-    --ring: 196 100% 43%; /* UN Blue for focus rings */
-
-    --chart-1: 220 30% 60%;
-    --chart-2: 200 40% 60%;
-    --chart-3: 240 30% 70%;
-    --chart-4: 180 35% 65%;
-    --chart-5: 260 40% 70%;
-    
-    --sidebar-background: 220 15% 12%;
-    --sidebar-foreground: 220 10% 85%;
-    --sidebar-primary: 220 30% 60%;
-    --sidebar-primary-foreground: 220 10% 95%;
-    --sidebar-accent: 220 30% 50%;
-    --sidebar-accent-foreground: 220 10% 95%;
-    --sidebar-border: 220 15% 30%;
-    --sidebar-ring: 220 30% 60%;
   }
 }
 
@@ -220,7 +169,7 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1; 
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
 
@@ -237,14 +186,24 @@
 }
 
 .search-highlight-exact {
-  background-color: rgba(0, 158, 219, 0.25); /* Stronger UN Blue for exact matches */
+  background-color: rgba(
+    0,
+    158,
+    219,
+    0.25
+  ); /* Stronger UN Blue for exact matches */
   color: #009edb; /* UN Blue */
   border-color: rgba(0, 158, 219, 0.5);
   font-weight: 700;
 }
 
 .search-highlight-fuzzy {
-  background-color: rgba(0, 158, 219, 0.12); /* Lighter UN Blue for fuzzy matches */
+  background-color: rgba(
+    0,
+    158,
+    219,
+    0.12
+  ); /* Lighter UN Blue for fuzzy matches */
   color: #009edb; /* UN Blue */
   border-color: rgba(0, 158, 219, 0.25);
   font-weight: 600;
@@ -393,7 +352,7 @@ mark {
 }
 
 .custom-table .p-datatable-tbody > tr.p-row-odd {
-  background-color: #F6F7F8;
+  background-color: #f6f7f8;
 }
 
 .custom-table .p-datatable-thead > tr > th:hover {
@@ -426,8 +385,6 @@ mark {
 .custom-table .p-sortable-column .p-sortable-column-icon {
   color: #009edb;
 }
-
-
 
 /* Dark mode variants */
 .dark .custom-table .p-datatable-thead > tr > th:hover {
