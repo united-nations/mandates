@@ -18,6 +18,17 @@
   --color-iron: #d9dcdf;
   --color-card-gray: #f6f7f8;
   --color-med-gray: #d9dcdf;
+
+  /* Font weights for Roboto */
+  /* --font-weight-thin: 100;
+  --font-weight-extralight: 200;
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --font-weight-black: 900; */
 }
 
 /* Define shadcn semantic colors as CSS variables */
@@ -94,6 +105,17 @@
 
   --color-input: var(--input);
   --color-ring: var(--ring);
+
+  /* Expose font weights */
+  --font-weight-thin: 100;
+  --font-weight-extralight: 200;
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --font-weight-black: 900;
 }
 
 * {
@@ -112,6 +134,9 @@ body {
   background-color: var(--color-background);
   color: var(--color-foreground);
   font-feature-settings: "rlig" 1, "calt" 1;
+  /* Ensure font smoothing for better rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Custom --------------------------------------------------------------------------------- */

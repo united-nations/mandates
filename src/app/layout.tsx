@@ -13,6 +13,8 @@ import './globals.css';
 const roboto = Roboto({
     weight: ['100', '300', '400', '500', '700', '800', '900'],
     subsets: ["latin"],
+    display: 'swap',
+    variable: '--font-roboto',
 });
 
 export default function RootLayout({
