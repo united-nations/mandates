@@ -8,4 +8,7 @@
 - You can find lists of params in src/lib/filter-constants.ts
 - Make sure to make consistent design choices. We prefer things to be left-aligned, consistent, clear hierarchies, no drop shadows, consistent colors, well-aligned, no unecessary boxes around things.
 - no need to summarize your changes
-- never edit shadcn primitive components in `src/components/ui`, only in `src/components/`
+- Keep the original shadcn files in `components/ui/` and compose on top of them in `src/components/` rather than editing them directly.
+
+
+

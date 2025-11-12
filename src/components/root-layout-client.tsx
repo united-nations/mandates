@@ -8,8 +8,8 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { ShareButton } from '@/components/ui/share-button';
-import { Toaster } from '@/components/ui/toaster';
+import { ShareButton } from '@/components/share-button';
+import { Toaster } from '@/components/ui/sonner';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { FilterProvider } from '@/contexts/FilterContext';
 import { BookOpen, ExternalLink, Home, Info, Menu, MessageCircle } from 'lucide-react';
