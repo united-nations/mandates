@@ -26,7 +26,7 @@ export default function ResourcesPage() {
         <a href="https://results.un.org/" target="_blank" rel="noopener noreferrer" className="block rounded-lg border border-muted p-4 transition flex flex-col items-start text-left hover:border-un-blue">
           <img src="/screenshots/results.un.org.png" alt="results.un.org screenshot" className="rounded-md w-full h-32 object-cover mb-3" />
           <div className="font-medium text-un-blue text-base mb-1">Programme Budget Results</div>
-          <div className="text-muted-foreground text-sm">Results information for the proposed programme budget 2025.</div>
+          <div className="text-muted-foreground text-sm">Results information for the proposed programme budget 2026.</div>
         </a>
         {/* Card 4: systemchart.un.org */}
         <a href="https://systemchart.un.org/" target="_blank" rel="noopener noreferrer" className="block rounded-lg border border-muted p-4 transition flex flex-col items-start text-left hover:border-un-blue">
