@@ -101,7 +101,7 @@ export function CitationCounts({ mandate, entities }: CitationCountsProps) {
                   <div className="flex items-center gap-2">
                     <Badge
                       variant="secondary"
-                      className="text-xs px-2.5 py-0.5 bg-un-blue! text-white! hover:bg-un-blue/90! cursor-pointer transition-colors shrink-0"
+                      className="border-0 text-xs px-2.5 py-0.5 bg-un-blue! text-white! hover:bg-un-blue/90! cursor-pointer transition-colors shrink-0"
                       onClick={() => {
                         // Navigate to entity detail page
                         window.location.href = `/entity/${encodeURIComponent(shortName)}`
@@ -147,7 +147,7 @@ export function CitationCounts({ mandate, entities }: CitationCountsProps) {
                 <div className="min-w-0 flex-1">
                   <Badge
                     variant="secondary"
-                    className="text-xs px-2.5 py-0.5 cursor-pointer hover:bg-secondary/80 transition-colors"
+                    className="border-0 text-xs px-2.5 py-0.5 cursor-pointer hover:bg-secondary/80 transition-colors"
                     onClick={() => {
                       // Navigate to filtered results with only the programme filter
                       const url = new URL(window.location.origin + '/')

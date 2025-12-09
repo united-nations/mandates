@@ -76,7 +76,7 @@ export function SidebarListItem({
   const variantStyles = {
     navigation: {
       container: "hover:bg-muted/20 transition-colors",
-      label: "group-hover:underline group-hover:text-un-blue transition-colors",
+      label: "group-hover:text-un-blue transition-colors",
       active: "" // Navigation items don't have active state since they navigate away
     },
     filter: {

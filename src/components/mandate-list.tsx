@@ -42,7 +42,7 @@ const EntityBadges = ({ entities, entitiesData }: { entities: string[]; entities
     <div className="flex flex-wrap gap-1 items-center">
       {validEntities.map(entity => (
         <Link key={entity} href={`/entity/${encodeURIComponent(entity)}`} prefetch={false}>
-          <Badge variant="secondary" className="font-bold text-xs bg-un-blue/75! text-white! hover:bg-un-blue/60! cursor-pointer transition-colors">
+          <Badge variant="secondary" className="border-0 font-bold text-xs bg-un-blue/75! text-white! hover:bg-un-blue/60! cursor-pointer transition-colors">
             <EntityName 
               entityName={entity} 
               entityLong={entitiesData.find(e => e.entity === entity)?.entity_long}
