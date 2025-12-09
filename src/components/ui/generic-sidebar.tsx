@@ -9,7 +9,8 @@ interface GenericSidebarProps<T> {
   // Header props
   icon: LucideIcon
   title: string
-  description: string
+  titleLink?: string
+  description: string | ReactNode
   
   // Data props
   items: T[]
@@ -38,6 +39,7 @@ interface GenericSidebarProps<T> {
 export function GenericSidebar<T>({
   icon: Icon,
   title,
+  titleLink,
   description,
   items,
   isLoading = false,
@@ -82,7 +84,18 @@ export function GenericSidebar<T>({
         <div className="mb-4">
           <div className="flex items-center gap-2 mb-2">
             <Icon className="h-5 w-5 text-un-blue" />
-            <h3 className="text-lg font-semibold">{title}</h3>
+            {titleLink ? (
+              <a 
+                href={titleLink} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-lg font-semibold hover:text-un-blue hover:underline"
+              >
+                {title}
+              </a>
+            ) : (
+              <h3 className="text-lg font-semibold">{title}</h3>
+            )}
           </div>
           <p className="text-sm text-muted-foreground">
             {description}
