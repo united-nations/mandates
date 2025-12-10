@@ -1,0 +1,2 @@
+# Exclude shadcn/ui components from formatting
+src/components/ui/

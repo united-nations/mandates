@@ -679,9 +679,7 @@ export function ReportsExplorer() {
               ) : (
                 <Button
                   key={pageNum}
-                  variant={
-                    currentPage === pageNum ? "default" : "outline"
-                  }
+                  variant={currentPage === pageNum ? "default" : "outline"}
                   size="sm"
                   onClick={() => setCurrentPage(pageNum)}
                   className="w-9"
