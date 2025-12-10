@@ -246,23 +246,9 @@ export interface Resolution extends BaseDocument {
   count_within_existing_resources: number | null
 }
 
-// Report interface with classification and clustering fields
-export interface Report extends BaseDocument {
-  // document_type is inherited from BaseDocument
-  document_subtype: string | null
-  author_level1: string | null
-  author_level2: string | null
-  classification_confidence: string | null
-  cluster_id: number | null
-  cluster_mean_similarity: number | null
-  cluster_similarity_category: string | null
-  top10_similar_symbols: string[] | null
-  top10_similar_scores: number[] | null
-}
-
 // Document configuration for different document types
 export interface DocumentConfig<T extends BaseDocument> {
-  type: 'resolutions' | 'reports'
+  type: 'resolutions'
   title: string
   apiEndpoint: string
   dataFile: string
@@ -280,7 +266,7 @@ export interface DocumentConfig<T extends BaseDocument> {
   }
 }
 
-// Document filter types (for resolutions and reports pages)
+// Document filter types (for resolutions page)
 export interface DocumentFilters {
   organ?: string
   is_recurring_series?: string
