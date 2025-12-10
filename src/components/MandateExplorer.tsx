@@ -1,38 +1,37 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { useSearchParams } from "next/navigation";
-import type { Mandate, ApiResponse, Entity, Organ } from "@/types";
-import { MandateList } from "@/components/MandateList";
-import { FilterControls } from "@/components/FilterControls";
-import { PaginationControls } from "@/components/PaginationControls";
-import { LoadingSkeleton } from "@/components/LoadingSkeleton";
-import {
-  FileText,
-  Landmark,
-  Building,
-  Quote,
-  ChevronUp,
-  ChevronDown,
-  Link as LinkIcon,
-} from "lucide-react";
 import { DataCard } from "@/components/DataCard";
+import { FilterControls } from "@/components/FilterControls";
+import { LoadingSkeleton } from "@/components/LoadingSkeleton";
+import { MandateList } from "@/components/MandateList";
+import { PaginationControls } from "@/components/PaginationControls";
+import { SidebarAccordion } from "@/components/SidebarAccordion";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
 } from "@/components/ui/select";
-import { SidebarAccordion } from "@/components/SidebarAccordion";
 import { explainerTexts } from "@/lib/explainer-texts";
+import type { ApiResponse, Entity, Organ } from "@/types";
+import {
+  Building,
+  ChevronDown,
+  ChevronUp,
+  FileText,
+  Landmark,
+  Link as LinkIcon,
+  Quote,
+} from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 
-import { EntityListSidebar } from "@/components/SidebarEntityList";
 import { OrganListSidebar } from "@/components/Sidebar0rganList";
 import { CrossCitationsSidebar } from "@/components/SidebarCrossCitations";
-import { useFilters } from "@/contexts/FilterContext";
+import { EntityListSidebar } from "@/components/SidebarEntityList";
 import { Button } from "@/components/ui/button";
-import { FILTER_PARAMS, FILTER_ONLY_PARAMS } from "@/lib/filter-constants";
+import { useFilters } from "@/contexts/FilterContext";
+import { FILTER_ONLY_PARAMS, FILTER_PARAMS } from "@/lib/filter-constants";
 
 interface MandateExplorerProps {
   // Explicit filters for entity/organ pages

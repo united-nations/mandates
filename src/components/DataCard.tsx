@@ -1,11 +1,10 @@
-import { ReactNode } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Skeleton } from "@/components/ui/skeleton";
 import { LucideIcon } from "lucide-react";
 
 interface ChartDataItem {
@@ -47,17 +46,17 @@ export function DataCard({
             scrollSnapAlign: "center",
           }}
         >
-          <Card className="flex flex-col h-full cursor-help border-0 shadow-none bg-un-blue/10">
-            <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 min-h-16">
-              <CardTitle className="text-lg font-medium text-un-blue leading-tight">
+          <Card className="flex h-full cursor-help flex-col border-0 bg-un-blue/10 px-6 py-4 shadow-none transition-all hover:scale-[1.02]">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 p-0">
+              <CardTitle className="text-left text-lg font-normal leading-tight text-un-blue">
                 {title}
               </CardTitle>
-              <Icon className="h-5 w-5 text-un-blue shrink-0" />
+              <Icon className="h-5 w-5 shrink-0 text-un-blue" />
             </CardHeader>
-            <CardContent className="grow flex items-center justify-start pt-2">
-              <div className="text-4xl font-bold text-foreground tabular-nums">
+            <CardContent className="p-0">
+              <div className="text-left text-4xl font-bold leading-tight text-foreground tabular-nums">
                 {isLoading ? (
-                  <Skeleton className="h-8 w-16" />
+                  <Skeleton className="h-12 w-32" />
                 ) : typeof value === "number" && value > 0 ? (
                   value.toLocaleString()
                 ) : (
