@@ -6,9 +6,8 @@ const nextConfig: NextConfig = {
     typescript: {
         ignoreBuildErrors: true,
     },
-    eslint: {
-        ignoreDuringBuilds: true,
-    },
+    // Note: eslint config is no longer supported in next.config.ts in Next.js 16
+    // Configure ESLint directly in .eslintrc.json or eslint.config.js instead
     trailingSlash: false,
     // Compress responses
     compress: true,
