@@ -1,10 +1,8 @@
-"use client";
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
 } from "@/components/ui/popover";
 import { Skeleton } from "@/components/ui/skeleton";
 import { LucideIcon } from "lucide-react";
@@ -83,7 +81,7 @@ export function DataCard({
           onMouseLeave={() => onOpenChange?.(false)}
           className="h-full min-w-[250px] cursor-help snap-center border-0 bg-un-blue/10 px-6 py-4 shadow-none transition-all hover:scale-[1.02] sm:min-w-0"
         >
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 p-0">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 p-0 pb-2">
             <CardTitle className="text-left text-lg font-normal leading-tight text-un-blue">
               {title}
             </CardTitle>
