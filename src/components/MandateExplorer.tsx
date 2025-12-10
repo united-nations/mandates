@@ -218,6 +218,7 @@ export function MandateExplorer({
   const crossCitations = apiData?.sidebar.crossCitations || [];
 
   // Data cards section (preserved exact JSX structure and logic)
+  //   FIXME: simplify?
   const dataCardsSection = (
     <>
       <DataCard
