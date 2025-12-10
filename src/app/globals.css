@@ -133,7 +133,9 @@
 body {
   background-color: var(--color-background);
   color: var(--color-foreground);
-  font-feature-settings: "rlig" 1, "calt" 1;
+  font-feature-settings:
+    "rlig" 1,
+    "calt" 1;
   /* Ensure font smoothing for better rendering */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -221,7 +223,9 @@ mark {
 .search-result-enter-active {
   opacity: 1;
   transform: translateY(0);
-  transition: opacity 300ms, transform 300ms;
+  transition:
+    opacity 300ms,
+    transform 300ms;
 }
 
 /* Search input focus improvements */

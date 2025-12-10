@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect, useMemo } from 'react';
-import { Slider } from '@/components/ui/slider';
-import { Bar, BarChart, ResponsiveContainer, XAxis } from 'recharts';
+import React, { useState, useEffect, useMemo } from "react";
+import { Slider } from "@/components/ui/slider";
+import { Bar, BarChart, ResponsiveContainer, XAxis } from "recharts";
 
 interface YearSliderProps {
   yearDistribution: { [year: string]: number };
@@ -13,18 +13,34 @@ interface YearSliderProps {
 }
 
 const CustomizedBar = (props: any) => {
-    const { x, y, width, height, payload, fill, yearRange, selectedRange } = props;
-    // Determine if this bar is within the selected range
-    const yearNum = parseInt(payload.year, 10);
-    const isSelected = yearNum >= selectedRange[0] && yearNum <= selectedRange[1];
-    const barFill = isSelected ? '#009edb' : '#E2E4EA';
-    if (payload.count === 0) {
-        return <rect x={x + width / 4} y={y + height -1} width={width / 2} height={1} fill="hsl(var(--muted-foreground))" opacity={0.3} />;
-    }
-    return <rect x={x} y={y} width={width} height={height} fill={barFill} />;
+  const { x, y, width, height, payload, fill, yearRange, selectedRange } =
+    props;
+  // Determine if this bar is within the selected range
+  const yearNum = parseInt(payload.year, 10);
+  const isSelected = yearNum >= selectedRange[0] && yearNum <= selectedRange[1];
+  const barFill = isSelected ? "#009edb" : "#E2E4EA";
+  if (payload.count === 0) {
+    return (
+      <rect
+        x={x + width / 4}
+        y={y + height - 1}
+        width={width / 2}
+        height={1}
+        fill="hsl(var(--muted-foreground))"
+        opacity={0.3}
+      />
+    );
+  }
+  return <rect x={x} y={y} width={width} height={height} fill={barFill} />;
 };
 
-export function YearSlider({ yearDistribution, yearRange, value, onChange, originalYearDistribution }: YearSliderProps) {
+export function YearSlider({
+  yearDistribution,
+  yearRange,
+  value,
+  onChange,
+  originalYearDistribution,
+}: YearSliderProps) {
   const [localValue, setLocalValue] = useState(value);
 
   useEffect(() => {
@@ -33,16 +49,16 @@ export function YearSlider({ yearDistribution, yearRange, value, onChange, origi
 
   const data = useMemo(() => {
     if (!yearRange) return [];
-    
+
     // Always use the full spectrum from 1946 to 2025, regardless of current filters
     const FULL_YEAR_RANGE = { min: 1946, max: 2025 };
-    
+
     // Use original distribution if available, otherwise fall back to current distribution
     const distributionToUse = originalYearDistribution || yearDistribution;
-    
+
     const chartData = [];
     const maxCount = Math.max(...Object.values(distributionToUse));
-    
+
     // Always show the full spectrum
     for (let year = FULL_YEAR_RANGE.min; year <= FULL_YEAR_RANGE.max; year++) {
       const count = distributionToUse[year] || 0;
@@ -59,18 +75,36 @@ export function YearSlider({ yearDistribution, yearRange, value, onChange, origi
   const handleCommit = (committedValue: [number, number]) => {
     onChange(committedValue);
   };
-  
+
   if (!yearRange) return null;
 
   return (
     <div>
       <div className="relative h-16">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data} margin={{ top: 5, right: 0, left: 0, bottom: 0 }} barGap={2}>
-            <XAxis dataKey="year" axisLine={false} tickLine={false} tick={false} />
-            <Bar dataKey="displayHeight" fill="hsl(var(--primary))" shape={
-              (barProps: any) => <CustomizedBar {...barProps} yearRange={yearRange} selectedRange={localValue} />
-            } isAnimationActive={false} />
+          <BarChart
+            data={data}
+            margin={{ top: 5, right: 0, left: 0, bottom: 0 }}
+            barGap={2}
+          >
+            <XAxis
+              dataKey="year"
+              axisLine={false}
+              tickLine={false}
+              tick={false}
+            />
+            <Bar
+              dataKey="displayHeight"
+              fill="hsl(var(--primary))"
+              shape={(barProps: any) => (
+                <CustomizedBar
+                  {...barProps}
+                  yearRange={yearRange}
+                  selectedRange={localValue}
+                />
+              )}
+              isAnimationActive={false}
+            />
           </BarChart>
         </ResponsiveContainer>
         <div className="absolute bottom-0 left-0 right-0">
@@ -79,7 +113,9 @@ export function YearSlider({ yearDistribution, yearRange, value, onChange, origi
             max={2025}
             step={1}
             value={localValue}
-            onValueChange={(val: number[]) => setLocalValue(val as [number, number])}
+            onValueChange={(val: number[]) =>
+              setLocalValue(val as [number, number])
+            }
             onValueCommit={(val) => handleCommit(val as [number, number])}
             className="w-full [&_.bg-primary]:bg-un-blue! **:data-radix-slider-range:bg-un-blue! **:data-radix-slider-thumb:border-un-blue! [&_.border-primary]:border-un-blue!"
           />

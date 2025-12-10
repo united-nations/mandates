@@ -42,7 +42,7 @@ export interface CitationInfo {
   entity: string;
   programme: number | null;
   programme_title: string;
-  'sub-programme': string | null;
+  "sub-programme": string | null;
   component: any | null;
   description: string;
   part_in_document: string;
@@ -107,7 +107,7 @@ export interface Mandate {
   programme?: string;
   text?: string;
   ai_summary?: string;
-  
+
   // Search-related fields
   searchScore?: number;
   highlightedTitle?: string;
@@ -173,7 +173,7 @@ export interface ApiResponse {
     totalPages: number;
     totalItems: number;
   };
-  
+
   // Data for cards
   counts: {
     totalDocuments: number;
@@ -181,22 +181,22 @@ export interface ApiResponse {
     totalOrgans: number;
     totalCitations: number;
   };
-  
+
   // Sidebar data (already filtered)
   sidebar: {
     entities: EntityWithCount[];
     organs: OrganWithCount[];
     crossCitations: CrossCitation[];
   };
-  
+
   // Filter options for dropdowns
   filterOptions: {
-    programmes: { value: string; count: number }[]
-    subjects: { value: string; count: number }[]
-    yearRange: { min: number; max: number }
-    yearDistribution: Record<string, number>
-  }
-  
+    programmes: { value: string; count: number }[];
+    subjects: { value: string; count: number }[];
+    yearRange: { min: number; max: number };
+    yearDistribution: Record<string, number>;
+  };
+
   // Reference data for display
   reference: {
     entities: Entity[];
@@ -267,7 +267,7 @@ export type Document = Resolution | Report;
 
 // Document configuration for different document types
 export interface DocumentConfig<T extends BaseDocument> {
-  type: 'resolutions' | 'reports';
+  type: "resolutions" | "reports";
   title: string;
   apiEndpoint: string;
   dataFile: string;

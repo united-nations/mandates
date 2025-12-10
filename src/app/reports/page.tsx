@@ -1,8 +1,8 @@
-'use client'
+"use client";
 
-import { Suspense } from 'react'
-import { ReportsExplorer } from '@/components/reports-explorer'
-import { LoadingFallback } from '@/components/ui/loading-fallback'
+import { Suspense } from "react";
+import { ReportsExplorer } from "@/components/reports-explorer";
+import { LoadingFallback } from "@/components/ui/loading-fallback";
 
 export default function ReportsPage() {
   return (
@@ -11,5 +11,5 @@ export default function ReportsPage() {
         <ReportsExplorer />
       </div>
     </Suspense>
-  )
+  );
 }

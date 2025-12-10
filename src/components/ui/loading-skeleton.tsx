@@ -1,4 +1,4 @@
-import { Skeleton } from '@/components/ui/skeleton'
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface LoadingSkeletonProps {
   /**
@@ -8,47 +8,47 @@ interface LoadingSkeletonProps {
    * - 'card': Card-style skeleton items
    * - 'table': Table row skeleton items
    */
-  variant?: 'list' | 'sidebar' | 'card' | 'table'
-  
+  variant?: "list" | "sidebar" | "card" | "table";
+
   /**
    * Number of skeleton items to render
    * @default 4 for list, 8 for sidebar, 3 for card, 5 for table
    */
-  count?: number
-  
+  count?: number;
+
   /**
    * Whether to show icon placeholder for sidebar items
    * @default false
    */
-  showIcon?: boolean
-  
+  showIcon?: boolean;
+
   /**
    * Additional CSS classes
    */
-  className?: string
+  className?: string;
 }
 
 export function LoadingSkeleton({
-  variant = 'list',
+  variant = "list",
   count,
   showIcon = false,
-  className = ''
+  className = "",
 }: LoadingSkeletonProps) {
   // Set default count based on variant
   const defaultCount = {
     list: 4,
     sidebar: 8,
     card: 3,
-    table: 5
-  }[variant]
-  
-  const itemCount = count ?? defaultCount
-  
+    table: 5,
+  }[variant];
+
+  const itemCount = count ?? defaultCount;
+
   // Generate array for mapping
-  const items = Array.from({ length: itemCount }, (_, i) => i)
-  
+  const items = Array.from({ length: itemCount }, (_, i) => i);
+
   switch (variant) {
-    case 'list':
+    case "list":
       return (
         <div className={`space-y-4 ${className}`}>
           {items.map((i) => (
@@ -58,9 +58,9 @@ export function LoadingSkeleton({
             </div>
           ))}
         </div>
-      )
-    
-    case 'sidebar':
+      );
+
+    case "sidebar":
       return (
         <div className={`space-y-2 ${className}`}>
           {items.map((i) => (
@@ -71,9 +71,9 @@ export function LoadingSkeleton({
             </div>
           ))}
         </div>
-      )
-    
-    case 'card':
+      );
+
+    case "card":
       return (
         <div className={`space-y-4 ${className}`}>
           {items.map((i) => (
@@ -84,9 +84,9 @@ export function LoadingSkeleton({
             </div>
           ))}
         </div>
-      )
-    
-    case 'table':
+      );
+
+    case "table":
       return (
         <div className={`space-y-2 ${className}`}>
           {items.map((i) => (
@@ -98,9 +98,9 @@ export function LoadingSkeleton({
             </div>
           ))}
         </div>
-      )
-    
+      );
+
     default:
-      return null
+      return null;
   }
-} 
+}

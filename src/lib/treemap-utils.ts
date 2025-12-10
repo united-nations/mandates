@@ -31,12 +31,12 @@ export function squarify<T>(
   x: number,
   y: number,
   width: number,
-  height: number
+  height: number,
 ): TreemapRect<T>[] {
   const total = items.reduce((sum, item) => sum + item.value, 0);
   if (total === 0 || items.length === 0) return [];
 
-  const normalized = items.map(item => ({
+  const normalized = items.map((item) => ({
     ...item,
     normalizedValue: (item.value / total) * width * height,
   }));
@@ -53,7 +53,7 @@ function slice<T>(
   x: number,
   y: number,
   width: number,
-  height: number
+  height: number,
 ): TreemapRect<T>[] {
   if (items.length === 0) return [];
   if (items.length === 1) {
@@ -77,20 +77,35 @@ function slice<T>(
   const leftItems = items.slice(0, splitIndex);
   const rightItems = items.slice(splitIndex);
 
-  const leftSum = leftItems.reduce((sum, item) => sum + item.normalizedValue, 0);
+  const leftSum = leftItems.reduce(
+    (sum, item) => sum + item.normalizedValue,
+    0,
+  );
 
   // Split horizontally or vertically based on aspect ratio
   if (width >= height) {
     const leftWidth = width * (leftSum / total) - GAP / 2;
     return [
       ...slice(leftItems, x, y, leftWidth, height),
-      ...slice(rightItems, x + leftWidth + GAP, y, width - leftWidth - GAP, height),
+      ...slice(
+        rightItems,
+        x + leftWidth + GAP,
+        y,
+        width - leftWidth - GAP,
+        height,
+      ),
     ];
   } else {
     const leftHeight = height * (leftSum / total) - GAP / 2;
     return [
       ...slice(leftItems, x, y, width, leftHeight),
-      ...slice(rightItems, x, y + leftHeight + GAP, width, height - leftHeight - GAP),
+      ...slice(
+        rightItems,
+        x,
+        y + leftHeight + GAP,
+        width,
+        height - leftHeight - GAP,
+      ),
     ];
   }
 }
@@ -99,7 +114,7 @@ function slice<T>(
  * Format number with thousands separator
  */
 export function formatNumber(num: number): string {
-  return num.toLocaleString('en-US');
+  return num.toLocaleString("en-US");
 }
 
 /**

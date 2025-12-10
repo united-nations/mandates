@@ -1,9 +1,20 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useFilters } from '@/contexts/FilterContext';
+import { Button } from "@/components/ui/button";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+} from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useFilters } from "@/contexts/FilterContext";
 
 interface PaginationControlsProps {
   currentPage: number;
@@ -18,18 +29,18 @@ export function PaginationControls({
   totalPages,
   totalItems,
   pageSize,
-  className = '',
+  className = "",
 }: PaginationControlsProps) {
   const { setFilter, setMultipleFilters } = useFilters();
 
   const handlePageChange = (page: number) => {
-    setFilter('page', page.toString());
+    setFilter("page", page.toString());
   };
 
   const handlePageSizeChange = (size: string) => {
     setMultipleFilters({
       limit: size,
-      page: '1'
+      page: "1",
     });
   };
 
@@ -38,10 +49,15 @@ export function PaginationControls({
   }
 
   return (
-    <div className={`flex flex-col items-center space-y-4 md:flex-row md:justify-between md:space-y-0 ${className}`}>
+    <div
+      className={`flex flex-col items-center space-y-4 md:flex-row md:justify-between md:space-y-0 ${className}`}
+    >
       <div className="flex items-center space-x-2">
         <span className="text-sm text-muted-foreground">Show</span>
-        <Select value={pageSize.toString()} onValueChange={handlePageSizeChange}>
+        <Select
+          value={pageSize.toString()}
+          onValueChange={handlePageSizeChange}
+        >
           <SelectTrigger className="w-16">
             <SelectValue />
           </SelectTrigger>
@@ -57,7 +73,8 @@ export function PaginationControls({
 
       <div className="flex flex-col items-center space-y-2 md:flex-row md:space-y-0 md:space-x-4">
         <div className="text-sm text-muted-foreground text-center">
-          Page {currentPage} of {totalPages} ({totalItems.toLocaleString()} items)
+          Page {currentPage} of {totalPages} ({totalItems.toLocaleString()}{" "}
+          items)
         </div>
         <div className="flex items-center space-x-1">
           <Button

@@ -1,11 +1,11 @@
-import { readFile } from 'fs/promises';
-import path from 'path';
-import { parse } from 'csv-parse/sync';
-import type { Mandate, Entity, Organ } from '@/types';
+import { readFile } from "fs/promises";
+import path from "path";
+import { parse } from "csv-parse/sync";
+import type { Mandate, Entity, Organ } from "@/types";
 
 interface EntityDetails {
-  'entity': string;
-  'entity_long': string;
+  entity: string;
+  entity_long: string;
 }
 
 class DataService {
@@ -24,26 +24,30 @@ class DataService {
     }
 
     try {
-      const filePath = path.join(process.cwd(), 'data', 'ppb2026_unique_mandates_with_metadata.json');
-      const fileContent = await readFile(filePath, 'utf-8');
+      const filePath = path.join(
+        process.cwd(),
+        "data",
+        "ppb2026_unique_mandates_with_metadata.json",
+      );
+      const fileContent = await readFile(filePath, "utf-8");
       const rawData = JSON.parse(fileContent);
-      
+
       // Transform raw data to match our types
       this.mandatesCache = rawData.map((item: any) => ({
         ...item,
         // Ensure consistent field names
         full_document_symbol: item.full_document_symbol || item.symbol,
         description: item.description || null,
-        type: item.type || 'Unknown',
+        type: item.type || "Unknown",
         citation_info: item.citation_info || [],
         subject_headings: item.subject_headings || [],
         entities: item.entities || [],
         paragraphs: item.paragraphs || [],
       }));
-      
+
       return this.mandatesCache!;
     } catch (error) {
-      console.error('Error loading mandates data:', error);
+      console.error("Error loading mandates data:", error);
       return [];
     }
   }
@@ -57,24 +61,24 @@ class DataService {
     }
 
     try {
-      const filePath = path.join(process.cwd(), 'data', 'mandate_entities.csv');
-      const fileContent = await readFile(filePath, 'utf-8');
+      const filePath = path.join(process.cwd(), "data", "mandate_entities.csv");
+      const fileContent = await readFile(filePath, "utf-8");
       const rawData = parse(fileContent, {
         columns: true,
         skip_empty_lines: true,
       }) as EntityDetails[];
 
       this.entitiesCache = rawData.map((item: EntityDetails) => ({
-        entity: item['entity'] || '',
-        entity_long: item['entity_long'] || '',
-        entity_link: item['entity_link'] || undefined,
-        transparency_portal_link: item['transparency_portal_link'] || undefined,
-        entity_description: item['entity_description'] || undefined,
+        entity: item["entity"] || "",
+        entity_long: item["entity_long"] || "",
+        entity_link: item["entity_link"] || undefined,
+        transparency_portal_link: item["transparency_portal_link"] || undefined,
+        entity_description: item["entity_description"] || undefined,
       }));
 
       return this.entitiesCache;
     } catch (error) {
-      console.error('Error loading entities data:', error);
+      console.error("Error loading entities data:", error);
       return [];
     }
   }
@@ -88,19 +92,19 @@ class DataService {
     }
 
     try {
-      const filePath = path.join(process.cwd(), 'data', 'organs.json');
-      const fileContent = await readFile(filePath, 'utf-8');
+      const filePath = path.join(process.cwd(), "data", "organs.json");
+      const fileContent = await readFile(filePath, "utf-8");
       const rawData = JSON.parse(fileContent);
-      
+
       this.organsCache = rawData.map((item: any) => ({
-        short: item.short || '',
-        long: item.long || '',
+        short: item.short || "",
+        long: item.long || "",
         website: item.website || undefined,
       }));
 
       return this.organsCache!;
     } catch (error) {
-      console.error('Error loading organs data:', error);
+      console.error("Error loading organs data:", error);
       return [];
     }
   }
@@ -115,8 +119,8 @@ class DataService {
 
     const entities = await this.getEntities();
     this.entityDetailsMap = new Map();
-    
-    entities.forEach(entity => {
+
+    entities.forEach((entity) => {
       this.entityDetailsMap!.set(entity.entity, entity);
     });
 
@@ -133,8 +137,8 @@ class DataService {
 
     const organs = await this.getOrgans();
     this.organDetailsMap = new Map();
-    
-    organs.forEach(organ => {
+
+    organs.forEach((organ) => {
       this.organDetailsMap!.set(organ.short, organ);
     });
 
@@ -178,13 +182,15 @@ class DataService {
     entityMap: Map<string, Entity>;
     organMap: Map<string, Organ>;
   }> {
-    const [mandates, entities, organs, entityMap, organMap] = await Promise.all([
-      this.getMandates(),
-      this.getEntities(),
-      this.getOrgans(),
-      this.getEntityDetailsMap(),
-      this.getOrganDetailsMap(),
-    ]);
+    const [mandates, entities, organs, entityMap, organMap] = await Promise.all(
+      [
+        this.getMandates(),
+        this.getEntities(),
+        this.getOrgans(),
+        this.getEntityDetailsMap(),
+        this.getOrganDetailsMap(),
+      ],
+    );
 
     return {
       mandates,
@@ -196,4 +202,4 @@ class DataService {
   }
 }
 
-export default DataService; 
+export default DataService;

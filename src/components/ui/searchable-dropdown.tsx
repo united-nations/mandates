@@ -1,14 +1,18 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useRef } from 'react';
-import { Check, ChevronDown, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { cn } from '@/lib/utils';
+import { useState, useEffect, useRef } from "react";
+import { Check, ChevronDown, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/lib/utils";
 
-import { explainerTexts } from '@/lib/explainer-texts';
+import { explainerTexts } from "@/lib/explainer-texts";
 
 export interface SearchableDropdownOption {
   value: string;
@@ -37,7 +41,7 @@ export function SearchableDropdown({
   className,
 }: SearchableDropdownProps) {
   const [open, setOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const inputRef = useRef<HTMLInputElement>(null);
   const optionRefs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -45,8 +49,10 @@ export function SearchableDropdown({
   const filteredOptions = options.filter(
     (option) =>
       option.value === "---divider---" || // Always include dividers
-      (option.label && option.label.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (option.description && option.description.toLowerCase().includes(searchTerm.toLowerCase()))
+      (option.label &&
+        option.label.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (option.description &&
+        option.description.toLowerCase().includes(searchTerm.toLowerCase())),
   );
 
   useEffect(() => {
@@ -56,7 +62,7 @@ export function SearchableDropdown({
         inputRef.current.focus();
       }
     } else {
-        setSearchTerm('');
+      setSearchTerm("");
     }
   }, [open]);
 
@@ -67,13 +73,16 @@ export function SearchableDropdown({
   useEffect(() => {
     if (highlightedIndex >= 0 && optionRefs.current[highlightedIndex]) {
       optionRefs.current[highlightedIndex]?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
+        behavior: "smooth",
+        block: "nearest",
       });
     }
   }, [highlightedIndex]);
 
-  const handleSelect = (selectedValue: string, option?: SearchableDropdownOption) => {
+  const handleSelect = (
+    selectedValue: string,
+    option?: SearchableDropdownOption,
+  ) => {
     // Prevent selecting disabled options
     if (option && option.disabled) {
       return;
@@ -83,50 +92,65 @@ export function SearchableDropdown({
   };
 
   const handleClear = () => {
-    onChange('');
+    onChange("");
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (!open) return;
 
     switch (e.key) {
-      case 'ArrowDown':
+      case "ArrowDown":
         e.preventDefault();
         setHighlightedIndex((prev) => {
           let next = prev < filteredOptions.length - 1 ? prev + 1 : 0;
           // Skip dividers and disabled options
-          while (next < filteredOptions.length && (filteredOptions[next]?.value === "---divider---" || filteredOptions[next]?.disabled)) {
+          while (
+            next < filteredOptions.length &&
+            (filteredOptions[next]?.value === "---divider---" ||
+              filteredOptions[next]?.disabled)
+          ) {
             next = next < filteredOptions.length - 1 ? next + 1 : 0;
             if (next === prev) break; // Prevent infinite loop
           }
           return next;
         });
         break;
-      case 'ArrowUp':
+      case "ArrowUp":
         e.preventDefault();
         setHighlightedIndex((prev) => {
           let next = prev > 0 ? prev - 1 : filteredOptions.length - 1;
           // Skip dividers and disabled options
-          while (next >= 0 && (filteredOptions[next]?.value === "---divider---" || filteredOptions[next]?.disabled)) {
+          while (
+            next >= 0 &&
+            (filteredOptions[next]?.value === "---divider---" ||
+              filteredOptions[next]?.disabled)
+          ) {
             next = next > 0 ? next - 1 : filteredOptions.length - 1;
             if (next === prev) break; // Prevent infinite loop
           }
           return next;
         });
         break;
-      case 'Enter':
+      case "Enter":
         e.preventDefault();
-        if (highlightedIndex >= 0 && filteredOptions[highlightedIndex] && !filteredOptions[highlightedIndex].disabled) {
-          handleSelect(filteredOptions[highlightedIndex].value, filteredOptions[highlightedIndex]);
+        if (
+          highlightedIndex >= 0 &&
+          filteredOptions[highlightedIndex] &&
+          !filteredOptions[highlightedIndex].disabled
+        ) {
+          handleSelect(
+            filteredOptions[highlightedIndex].value,
+            filteredOptions[highlightedIndex],
+          );
         }
         break;
-      case 'Escape':
+      case "Escape":
         e.preventDefault();
         setOpen(false);
         break;
     }
   };
-  
+
   const selectedOption = options.find((option) => option.value === value);
   const displayValue = selectedOption ? selectedOption.label : placeholder;
 
@@ -137,11 +161,15 @@ export function SearchableDropdown({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={cn("w-full justify-between bg-white", !value && "text-muted-foreground", className)}
+          className={cn(
+            "w-full justify-between bg-white",
+            !value && "text-muted-foreground",
+            className,
+          )}
         >
           <span className="truncate">{displayValue}</span>
           <div className="flex items-center">
-             {value && (
+            {value && (
               <div
                 role="button"
                 tabIndex={0}
@@ -152,7 +180,7 @@ export function SearchableDropdown({
                   handleClear();
                 }}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
+                  if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
                     e.stopPropagation();
                     handleClear();
@@ -166,8 +194,8 @@ export function SearchableDropdown({
           </div>
         </Button>
       </PopoverTrigger>
-      <PopoverContent 
-        className="w-(--radix-popover-trigger-width) p-0 z-50 overflow-hidden rounded-md border bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2" 
+      <PopoverContent
+        className="w-(--radix-popover-trigger-width) p-0 z-50 overflow-hidden rounded-md border bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2"
         side="bottom"
         align="start"
         sideOffset={4}
@@ -202,7 +230,7 @@ export function SearchableDropdown({
                       />
                     );
                   }
-                  
+
                   return (
                     <Button
                       key={option.value}
@@ -213,15 +241,18 @@ export function SearchableDropdown({
                       size="sm"
                       className={cn(
                         "w-full justify-between font-normal h-auto py-2",
-                        highlightedIndex === index && "bg-un-blue/10! text-un-blue!",
-                        option.disabled && "opacity-50 cursor-not-allowed"
+                        highlightedIndex === index &&
+                          "bg-un-blue/10! text-un-blue!",
+                        option.disabled && "opacity-50 cursor-not-allowed",
                       )}
                       onClick={() => handleSelect(option.value, option)}
                       onMouseEnter={() => setHighlightedIndex(index)}
                       disabled={option.disabled}
                     >
                       <div className="flex flex-col items-start text-left flex-1 min-w-0">
-                        <span className="font-medium whitespace-normal text-left">{option.label}</span>
+                        <span className="font-medium whitespace-normal text-left">
+                          {option.label}
+                        </span>
                         {option.description && (
                           <span className="text-xs text-muted-foreground text-left whitespace-normal">
                             {option.description}

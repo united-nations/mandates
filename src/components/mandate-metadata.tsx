@@ -1,29 +1,32 @@
-'use client'
+"use client";
 
-import { useMemo, useState } from 'react'
-import { Badge } from '@/components/ui/badge'
-import { titleCase } from 'title-case'
-import { getOriginDocumentDisplayName, getBudgetDocumentSlug } from '@/lib/budget-documents'
-import { MetadataItem } from '@/components/ui/metadata-item'
-import type { Mandate } from '@/types'
+import { useMemo, useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { titleCase } from "title-case";
+import {
+  getOriginDocumentDisplayName,
+  getBudgetDocumentSlug,
+} from "@/lib/budget-documents";
+import { MetadataItem } from "@/components/ui/metadata-item";
+import type { Mandate } from "@/types";
 
 interface MandateMetadataProps {
-  mandate: Mandate
+  mandate: Mandate;
 }
 
 export function MandateMetadata({ mandate }: MandateMetadataProps) {
-  const [showAllSubjects, setShowAllSubjects] = useState(false)
-  const SUBJECTS_DEFAULT_SHOWN = 20
+  const [showAllSubjects, setShowAllSubjects] = useState(false);
+  const SUBJECTS_DEFAULT_SHOWN = 20;
   const budgetDocuments = useMemo(() => {
-    if (!mandate || !mandate.citation_info) return []
-    const uniqueDocs = new Set<string>()
-    mandate.citation_info.forEach(citation => {
+    if (!mandate || !mandate.citation_info) return [];
+    const uniqueDocs = new Set<string>();
+    mandate.citation_info.forEach((citation) => {
       if (citation.origin_document) {
-        uniqueDocs.add(citation.origin_document)
+        uniqueDocs.add(citation.origin_document);
       }
-    })
-    return Array.from(uniqueDocs)
-  }, [mandate])
+    });
+    return Array.from(uniqueDocs);
+  }, [mandate]);
 
   return (
     <div className="space-y-0 rounded-lg">
@@ -34,7 +37,7 @@ export function MandateMetadata({ mandate }: MandateMetadataProps) {
             className="text-xs cursor-pointer hover:bg-secondary/80 transition-colors"
             onClick={() => {
               // Navigate to organ detail page
-              window.location.href = `/organ/${encodeURIComponent(mandate.body)}`
+              window.location.href = `/organ/${encodeURIComponent(mandate.body)}`;
             }}
           >
             {mandate.body}
@@ -43,7 +46,7 @@ export function MandateMetadata({ mandate }: MandateMetadataProps) {
           <span className="text-muted-foreground">—</span>
         )}
       </MetadataItem>
-      
+
       <MetadataItem label="Document Type">
         {mandate.type ? (
           <Badge variant="stronger" className="text-xs">
@@ -53,7 +56,7 @@ export function MandateMetadata({ mandate }: MandateMetadataProps) {
           <span className="text-muted-foreground">—</span>
         )}
       </MetadataItem>
-      
+
       <MetadataItem label="Year">
         {mandate.year ? (
           <Badge variant="stronger" className="text-xs">
@@ -63,13 +66,13 @@ export function MandateMetadata({ mandate }: MandateMetadataProps) {
           <span className="text-muted-foreground">—</span>
         )}
       </MetadataItem>
-      
+
       <MetadataItem label="Budget Document">
         {budgetDocuments.length > 0 ? (
           <div className="flex flex-wrap gap-1.5">
             {budgetDocuments.map((doc, index) => {
-              const displayName = getOriginDocumentDisplayName(doc)
-              const slug = getBudgetDocumentSlug(displayName)
+              const displayName = getOriginDocumentDisplayName(doc);
+              const slug = getBudgetDocumentSlug(displayName);
 
               return (
                 <Badge
@@ -78,29 +81,29 @@ export function MandateMetadata({ mandate }: MandateMetadataProps) {
                   className="text-xs cursor-pointer hover:bg-secondary/80 transition-colors"
                   onClick={() => {
                     // Navigate to filtered results using the budget document slug
-                    const url = new URL(window.location.origin + '/')
-                    url.searchParams.set('page', '1')
-                    url.searchParams.set('budget_document', slug)
-                    window.location.href = url.toString()
+                    const url = new URL(window.location.origin + "/");
+                    url.searchParams.set("page", "1");
+                    url.searchParams.set("budget_document", slug);
+                    window.location.href = url.toString();
                   }}
                 >
                   {displayName}
                 </Badge>
-              )
+              );
             })}
           </div>
         ) : (
           <span className="text-muted-foreground">—</span>
         )}
       </MetadataItem>
-      
+
       {mandate.subject_headings && mandate.subject_headings.length > 0 && (
         <MetadataItem
           label={
-            <a 
-              href="https://metadata.un.org/thesaurus/" 
-              target="_blank" 
-              rel="noopener noreferrer" 
+            <a
+              href="https://metadata.un.org/thesaurus/"
+              target="_blank"
+              rel="noopener noreferrer"
               className="hover:underline"
             >
               UN Library Subjects
@@ -108,9 +111,15 @@ export function MandateMetadata({ mandate }: MandateMetadataProps) {
           }
         >
           <div className="flex flex-wrap gap-1.5">
-            {(showAllSubjects || mandate.subject_headings.length <= SUBJECTS_DEFAULT_SHOWN
-              ? mandate.subject_headings.slice().sort((a, b) => a.localeCompare(b))
-              : mandate.subject_headings.slice().sort((a, b) => a.localeCompare(b)).slice(0, SUBJECTS_DEFAULT_SHOWN)
+            {(showAllSubjects ||
+            mandate.subject_headings.length <= SUBJECTS_DEFAULT_SHOWN
+              ? mandate.subject_headings
+                  .slice()
+                  .sort((a, b) => a.localeCompare(b))
+              : mandate.subject_headings
+                  .slice()
+                  .sort((a, b) => a.localeCompare(b))
+                  .slice(0, SUBJECTS_DEFAULT_SHOWN)
             ).map((heading, index) => (
               <Badge
                 key={index}
@@ -118,10 +127,10 @@ export function MandateMetadata({ mandate }: MandateMetadataProps) {
                 className="text-xs font-normal border-un-blue! cursor-pointer hover:bg-un-blue/10 transition-colors"
                 onClick={() => {
                   // Navigate to filtered results with only the subject filter
-                  const url = new URL(window.location.origin + '/')
-                  url.searchParams.set('page', '1')
-                  url.searchParams.set('subject', heading.trim())
-                  window.location.href = url.toString()
+                  const url = new URL(window.location.origin + "/");
+                  url.searchParams.set("page", "1");
+                  url.searchParams.set("subject", heading.trim());
+                  window.location.href = url.toString();
                 }}
               >
                 {titleCase(heading.toLowerCase())}
@@ -134,7 +143,7 @@ export function MandateMetadata({ mandate }: MandateMetadataProps) {
                 onClick={() => setShowAllSubjects(!showAllSubjects)}
               >
                 {showAllSubjects
-                  ? 'Show less'
+                  ? "Show less"
                   : `Show ${mandate.subject_headings.length - SUBJECTS_DEFAULT_SHOWN} more`}
               </button>
             )}
@@ -142,5 +151,5 @@ export function MandateMetadata({ mandate }: MandateMetadataProps) {
         </MetadataItem>
       )}
     </div>
-  )
-} 
+  );
+}

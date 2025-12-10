@@ -1,19 +1,19 @@
-'use client';
+"use client";
 
-import { Suspense, useState } from 'react';
-import { useParams } from 'next/navigation';
-import { Landmark, Link as LinkIcon } from 'lucide-react';
-import { MandateExplorer } from '@/components/mandate-explorer';
-import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
-import { MetadataItem } from '@/components/ui/metadata-item';
-import { formatUrlForDisplay } from '@/lib/utils';
-import { LoadingFallback } from '@/components/ui/loading-fallback';
+import { Suspense, useState } from "react";
+import { useParams } from "next/navigation";
+import { Landmark, Link as LinkIcon } from "lucide-react";
+import { MandateExplorer } from "@/components/mandate-explorer";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+import { MetadataItem } from "@/components/ui/metadata-item";
+import { formatUrlForDisplay } from "@/lib/utils";
+import { LoadingFallback } from "@/components/ui/loading-fallback";
 
 function OrganPageContent() {
   const params = useParams();
   const organName = decodeURIComponent(params.organ as string);
-  
+
   const [organDetails, setOrganDetails] = useState<{
     short: string;
     long: string;
@@ -48,7 +48,12 @@ function OrganPageContent() {
           <div className="space-y-0 ml-0">
             {organDetails.website && (
               <MetadataItem label="Website" icon={LinkIcon}>
-                <a href={organDetails.website} target="_blank" rel="noopener noreferrer" className="text-un-blue underline hover:text-un-blue/80 transition-colors">
+                <a
+                  href={organDetails.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-un-blue underline hover:text-un-blue/80 transition-colors"
+                >
                   {formatUrlForDisplay(organDetails.website, 35)}
                 </a>
               </MetadataItem>
@@ -58,8 +63,8 @@ function OrganPageContent() {
       </div>
 
       {/* Mandate Explorer - now passes callback to receive organ details */}
-      <MandateExplorer 
-        pageType="organ" 
+      <MandateExplorer
+        pageType="organ"
         organFilter={organName}
         onOrganDetailsLoaded={handleOrganDetailsLoaded}
       />
@@ -73,4 +78,4 @@ export default function OrganPage() {
       <OrganPageContent />
     </Suspense>
   );
-} 
+}

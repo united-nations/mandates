@@ -1,17 +1,28 @@
-'use client';
+"use client";
 
-import { Suspense, useRef, useState, useEffect } from 'react';
-import { useSearchParams, useRouter, usePathname } from 'next/navigation';
-import DocumentTable from '@/components/document-table';
-import ResolutionsTreemapView from '@/components/resolutions-treemap-view';
-import { resolutionsConfig } from '@/lib/document-configs';
-import { Resolution, DocumentFilters } from '@/types';
-import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Checkbox } from '@/components/ui/checkbox';
-import { FileText, RotateCcw, ChevronDown } from 'lucide-react';
-import { LoadingFallback } from '@/components/ui/loading-fallback';
+import { Suspense, useRef, useState, useEffect } from "react";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import DocumentTable from "@/components/document-table";
+import ResolutionsTreemapView from "@/components/resolutions-treemap-view";
+import { resolutionsConfig } from "@/lib/document-configs";
+import { Resolution, DocumentFilters } from "@/types";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Checkbox } from "@/components/ui/checkbox";
+import { FileText, RotateCcw, ChevronDown } from "lucide-react";
+import { LoadingFallback } from "@/components/ui/loading-fallback";
 
 function ResolutionsPageContent() {
   const searchParams = useSearchParams();
@@ -21,15 +32,18 @@ function ResolutionsPageContent() {
   const [dropdownMinWidth, setDropdownMinWidth] = useState<number>(0);
 
   // Read all state from URL (single source of truth)
-  const view = searchParams.get('view') || 'treemap';
-  const dimension = (searchParams.get('dimension') as 'length' | 'similarity' | 'frequency') || 'length';
-  
+  const view = searchParams.get("view") || "treemap";
+  const dimension =
+    (searchParams.get("dimension") as "length" | "similarity" | "frequency") ||
+    "length";
+
   // Filters for treemap (read from URL)
   const treemapFilters: DocumentFilters = {
-    organ: searchParams.get('organ') || undefined,
-    is_recurring_series: searchParams.get('is_recurring_series') || undefined,
-    year_range: searchParams.get('year_range') || undefined,
-    include_missing_fulltexts: searchParams.get('include_missing_fulltexts') || undefined,
+    organ: searchParams.get("organ") || undefined,
+    is_recurring_series: searchParams.get("is_recurring_series") || undefined,
+    year_range: searchParams.get("year_range") || undefined,
+    include_missing_fulltexts:
+      searchParams.get("include_missing_fulltexts") || undefined,
     // Note: length_bucket and similarity_bucket are managed by table/treemap components
   };
 
@@ -38,7 +52,7 @@ function ResolutionsPageContent() {
     const params = new URLSearchParams(searchParams.toString());
 
     Object.entries(updates).forEach(([key, value]) => {
-      if (value === null || value === '' || value === 'all') {
+      if (value === null || value === "" || value === "all") {
         params.delete(key);
       } else {
         params.set(key, value);
@@ -52,27 +66,30 @@ function ResolutionsPageContent() {
   const switchToTreemap = () => {
     // Reset the bucket filter for the current dimension when switching to treemap
     const updates: Record<string, string | null> = { view: null };
-    if (dimension === 'length') {
+    if (dimension === "length") {
       updates.length_bucket = null;
-    } else if (dimension === 'similarity') {
+    } else if (dimension === "similarity") {
       updates.similarity_bucket = null;
-    } else if (dimension === 'frequency') {
+    } else if (dimension === "frequency") {
       updates.frequency_bucket = null;
     }
     updateURL(updates);
   };
 
   const switchToTable = () => {
-    updateURL({ view: 'table' });
+    updateURL({ view: "table" });
   };
 
   // Handle treemap cell click - set the appropriate bucket filter and switch to table
-  const handleCellClick = (clickedDimension: 'length' | 'similarity' | 'frequency', bucketId: string) => {
+  const handleCellClick = (
+    clickedDimension: "length" | "similarity" | "frequency",
+    bucketId: string,
+  ) => {
     updateURL({
-      view: 'table',
-      length_bucket: clickedDimension === 'length' ? bucketId : null,
-      similarity_bucket: clickedDimension === 'similarity' ? bucketId : null,
-      frequency_bucket: clickedDimension === 'frequency' ? bucketId : null,
+      view: "table",
+      length_bucket: clickedDimension === "length" ? bucketId : null,
+      similarity_bucket: clickedDimension === "similarity" ? bucketId : null,
+      frequency_bucket: clickedDimension === "frequency" ? bucketId : null,
       page: null, // Reset pagination
     });
   };
@@ -80,28 +97,28 @@ function ResolutionsPageContent() {
   // Filter handlers
   const handleOrganChange = (value: string) => {
     updateURL({
-      organ: value === 'all' ? null : value,
+      organ: value === "all" ? null : value,
       page: null,
     });
   };
 
   const handleRecurringSeriesChange = (value: string) => {
     updateURL({
-      is_recurring_series: value === 'all' ? null : value,
+      is_recurring_series: value === "all" ? null : value,
       page: null,
     });
   };
 
   const handleYearRangeChange = (value: string) => {
     updateURL({
-      year_range: value === 'all' ? null : value,
+      year_range: value === "all" ? null : value,
       page: null,
     });
   };
 
   const handleIncludeMissingFulltextsChange = (checked: boolean) => {
     updateURL({
-      include_missing_fulltexts: checked ? null : 'false',
+      include_missing_fulltexts: checked ? null : "false",
       page: null,
     });
   };
@@ -120,7 +137,9 @@ function ResolutionsPageContent() {
     });
   };
 
-  const handleDimensionChange = (newDimension: 'length' | 'similarity' | 'frequency') => {
+  const handleDimensionChange = (
+    newDimension: "length" | "similarity" | "frequency",
+  ) => {
     updateURL({
       dimension: newDimension,
       // Reset bucket filters when changing dimension
@@ -132,20 +151,25 @@ function ResolutionsPageContent() {
   };
 
   // Get dimension display text
-  const dimensionText = dimension === 'length' ? 'Length' : dimension === 'similarity' ? 'Similarity to Previous' : 'Frequency';
+  const dimensionText =
+    dimension === "length"
+      ? "Length"
+      : dimension === "similarity"
+        ? "Similarity to Previous"
+        : "Frequency";
 
   // Organ acronyms mapping
   const organAcronyms: Record<string, string> = {
-    'General Assembly': 'GA',
-    'Economic and Social Council': 'ECOSOC',
-    'Security Council': 'SC',
-    'Human Rights Council': 'HRC',
+    "General Assembly": "GA",
+    "Economic and Social Council": "ECOSOC",
+    "Security Council": "SC",
+    "Human Rights Council": "HRC",
   };
 
   // Get organ display text for header (using acronyms)
-  const organText = searchParams.get('organ')
-    ? organAcronyms[searchParams.get('organ')!] || 'All'
-    : 'All';
+  const organText = searchParams.get("organ")
+    ? organAcronyms[searchParams.get("organ")!] || "All"
+    : "All";
 
   // Measure the current dimension text width
   useEffect(() => {
@@ -157,29 +181,30 @@ function ResolutionsPageContent() {
 
   // Check if there are any active filters
   const hasActiveFilters =
-    searchParams.get('organ') ||
-    searchParams.get('is_recurring_series') ||
-    searchParams.get('year_range') ||
-    searchParams.get('length_bucket') ||
-    searchParams.get('similarity_bucket') ||
-    searchParams.get('frequency_bucket') ||
-    searchParams.get('title_search') ||
-    searchParams.get('include_missing_fulltexts') === 'false';
+    searchParams.get("organ") ||
+    searchParams.get("is_recurring_series") ||
+    searchParams.get("year_range") ||
+    searchParams.get("length_bucket") ||
+    searchParams.get("similarity_bucket") ||
+    searchParams.get("frequency_bucket") ||
+    searchParams.get("title_search") ||
+    searchParams.get("include_missing_fulltexts") === "false";
 
   // Display values for selects
-  const selectedOrgan = searchParams.get('organ') || 'all';
-  const selectedRecurringSeries = searchParams.get('is_recurring_series') || 'all';
-  const selectedYearRange = searchParams.get('year_range') || 'all';
+  const selectedOrgan = searchParams.get("organ") || "all";
+  const selectedRecurringSeries =
+    searchParams.get("is_recurring_series") || "all";
+  const selectedYearRange = searchParams.get("year_range") || "all";
 
   const recurringSeriesOptions = [
-    { value: 'all', label: 'All Documents' },
-    { value: 'true', label: 'Recurring Documents' },
-    { value: 'false', label: 'One-time Documents' },
+    { value: "all", label: "All Documents" },
+    { value: "true", label: "Recurring Documents" },
+    { value: "false", label: "One-time Documents" },
   ];
 
   const yearRangeOptions = [
-    { value: 'all', label: 'All Years' },
-    { value: '1990-2025', label: '1990-2025' },
+    { value: "all", label: "All Years" },
+    { value: "1990-2025", label: "1990-2025" },
   ];
 
   return (
@@ -190,38 +215,44 @@ function ResolutionsPageContent() {
         <div className="flex items-center gap-3 mb-1">
           <FileText className="h-8 w-8 text-un-blue" />
           <h1 className="text-2xl font-bold tracking-tight text-foreground">
-            <span className={searchParams.get('organ') ? "text-un-blue" : ""}>{organText}</span> Resolutions by{' '}
+            <span className={searchParams.get("organ") ? "text-un-blue" : ""}>
+              {organText}
+            </span>{" "}
+            Resolutions by{" "}
             <DropdownMenu>
               <DropdownMenuTrigger className="text-un-blue hover:text-un-blue/80 focus:outline-hidden inline-flex items-center gap-0 transition-colors">
-                <span ref={dimensionTextRef} className="border-b-2 border-un-blue/20 hover:border-un-blue/40 transition-colors">
+                <span
+                  ref={dimensionTextRef}
+                  className="border-b-2 border-un-blue/20 hover:border-un-blue/40 transition-colors"
+                >
                   {dimensionText}
                 </span>
                 <ChevronDown className="h-5 w-5" />
               </DropdownMenuTrigger>
-              <DropdownMenuContent 
-                align="start" 
+              <DropdownMenuContent
+                align="start"
                 className="w-auto p-0.5 border-un-blue/20 shadow-xs mt-1"
                 style={{ minWidth: dropdownMinWidth }}
               >
-                {dimension !== 'length' && (
-                  <DropdownMenuItem 
-                    onClick={() => handleDimensionChange('length')}
+                {dimension !== "length" && (
+                  <DropdownMenuItem
+                    onClick={() => handleDimensionChange("length")}
                     className="cursor-pointer text-sm font-semibold text-un-blue hover:text-un-blue hover:bg-un-blue/10 py-2 px-3 rounded-sm focus:text-un-blue focus:bg-un-blue/10 whitespace-nowrap"
                   >
                     Word Length
                   </DropdownMenuItem>
                 )}
-                {dimension !== 'similarity' && (
-                  <DropdownMenuItem 
-                    onClick={() => handleDimensionChange('similarity')}
+                {dimension !== "similarity" && (
+                  <DropdownMenuItem
+                    onClick={() => handleDimensionChange("similarity")}
                     className="cursor-pointer text-sm font-semibold text-un-blue hover:text-un-blue hover:bg-un-blue/10 py-2 px-3 rounded-sm focus:text-un-blue focus:bg-un-blue/10 whitespace-nowrap"
                   >
                     Similarity to Previous
                   </DropdownMenuItem>
                 )}
-                {dimension !== 'frequency' && (
-                  <DropdownMenuItem 
-                    onClick={() => handleDimensionChange('frequency')}
+                {dimension !== "frequency" && (
+                  <DropdownMenuItem
+                    onClick={() => handleDimensionChange("frequency")}
                     className="cursor-pointer text-sm font-semibold text-un-blue hover:text-un-blue hover:bg-un-blue/10 py-2 px-3 rounded-sm focus:text-un-blue focus:bg-un-blue/10 whitespace-nowrap"
                   >
                     Frequency
@@ -241,9 +272,9 @@ function ResolutionsPageContent() {
               size="sm"
               onClick={switchToTreemap}
               className={`h-full px-3 text-sm font-medium transition-colors rounded-sm ${
-                view === 'treemap'
-                  ? 'bg-background text-un-blue shadow-xs pointer-events-none'
-                  : 'hover:bg-background/60 hover:text-foreground'
+                view === "treemap"
+                  ? "bg-background text-un-blue shadow-xs pointer-events-none"
+                  : "hover:bg-background/60 hover:text-foreground"
               }`}
             >
               Treemap
@@ -253,9 +284,9 @@ function ResolutionsPageContent() {
               size="sm"
               onClick={switchToTable}
               className={`h-full px-3 text-sm font-medium transition-colors rounded-sm ${
-                view === 'table'
-                  ? 'bg-background text-un-blue shadow-xs pointer-events-none'
-                  : 'hover:bg-background/60 hover:text-foreground'
+                view === "table"
+                  ? "bg-background text-un-blue shadow-xs pointer-events-none"
+                  : "hover:bg-background/60 hover:text-foreground"
               }`}
             >
               Table
@@ -264,35 +295,50 @@ function ResolutionsPageContent() {
 
           <div className="flex items-center gap-2">
             <Select value={selectedOrgan} onValueChange={handleOrganChange}>
-              <SelectTrigger id="organ-filter" className={`w-[240px] h-9 px-3 text-sm bg-white data-[state=open]:border-un-blue ${selectedOrgan !== 'all' ? 'border-un-blue' : 'border-med-gray'}`}>
+              <SelectTrigger
+                id="organ-filter"
+                className={`w-[240px] h-9 px-3 text-sm bg-white data-[state=open]:border-un-blue ${selectedOrgan !== "all" ? "border-un-blue" : "border-med-gray"}`}
+              >
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {resolutionsConfig.organOptions.map(option => (
+                {resolutionsConfig.organOptions.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-            <Select value={selectedYearRange} onValueChange={handleYearRangeChange}>
-              <SelectTrigger id="year-range-filter" className={`w-[120px] h-9 px-3 text-sm bg-white data-[state=open]:border-un-blue ${selectedYearRange !== 'all' ? 'border-un-blue' : 'border-med-gray'}`}>
+            <Select
+              value={selectedYearRange}
+              onValueChange={handleYearRangeChange}
+            >
+              <SelectTrigger
+                id="year-range-filter"
+                className={`w-[120px] h-9 px-3 text-sm bg-white data-[state=open]:border-un-blue ${selectedYearRange !== "all" ? "border-un-blue" : "border-med-gray"}`}
+              >
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {yearRangeOptions.map(option => (
+                {yearRangeOptions.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-            <Select value={selectedRecurringSeries} onValueChange={handleRecurringSeriesChange}>
-              <SelectTrigger id="recurring-filter" className={`w-[200px] h-9 px-3 text-sm bg-white data-[state=open]:border-un-blue ${selectedRecurringSeries !== 'all' ? 'border-un-blue' : 'border-med-gray'}`}>
+            <Select
+              value={selectedRecurringSeries}
+              onValueChange={handleRecurringSeriesChange}
+            >
+              <SelectTrigger
+                id="recurring-filter"
+                className={`w-[200px] h-9 px-3 text-sm bg-white data-[state=open]:border-un-blue ${selectedRecurringSeries !== "all" ? "border-un-blue" : "border-med-gray"}`}
+              >
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {recurringSeriesOptions.map(option => (
+                {recurringSeriesOptions.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
@@ -311,11 +357,10 @@ function ResolutionsPageContent() {
             </Button>
           </div>
         </div>
-
       </div>
 
       {/* Content */}
-      {view === 'treemap' ? (
+      {view === "treemap" ? (
         <div className="max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-8 sm:px-12 lg:px-16 mt-4">
           <ResolutionsTreemapView
             filters={treemapFilters}
@@ -327,7 +372,9 @@ function ResolutionsPageContent() {
           <div className="flex items-center justify-start gap-2 mt-3 pb-6">
             <Checkbox
               id="include-missing-fulltexts"
-              checked={searchParams.get('include_missing_fulltexts') !== 'false'}
+              checked={
+                searchParams.get("include_missing_fulltexts") !== "false"
+              }
               onCheckedChange={handleIncludeMissingFulltextsChange}
               className="border-med-gray data-[state=checked]:bg-un-blue data-[state=checked]:border-un-blue"
             />
@@ -350,9 +397,9 @@ function ResolutionsPageContent() {
 }
 
 export default function ResolutionsPage() {
-    return (
-        <Suspense fallback={<LoadingFallback />}>
-            <ResolutionsPageContent />
-        </Suspense>
-    );
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <ResolutionsPageContent />
+    </Suspense>
+  );
 }

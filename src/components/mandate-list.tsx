@@ -1,19 +1,26 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import type { Mandate } from '@/types';
-import { Badge } from '@/components/ui/badge';
-import { motion } from 'framer-motion';
+import { useState } from "react";
+import type { Mandate } from "@/types";
+import { Badge } from "@/components/ui/badge";
+import { motion } from "framer-motion";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { EntityName } from './ui/entity-name';
-import { FileText, Calendar, Landmark, Target, Info, Search } from 'lucide-react';
-import { explainerTexts } from '@/lib/explainer-texts';
-import Link from 'next/link';
+import { EntityName } from "./ui/entity-name";
+import {
+  FileText,
+  Calendar,
+  Landmark,
+  Target,
+  Info,
+  Search,
+} from "lucide-react";
+import { explainerTexts } from "@/lib/explainer-texts";
+import Link from "next/link";
 
 interface Organ {
   short: string;
@@ -31,8 +38,14 @@ interface MandateListProps {
   entitiesData: Entity[];
 }
 
-const EntityBadges = ({ entities, entitiesData }: { entities: string[]; entitiesData: Entity[] }) => {
-  const validEntities = entities.filter(entity => entity !== null).sort();
+const EntityBadges = ({
+  entities,
+  entitiesData,
+}: {
+  entities: string[];
+  entitiesData: Entity[];
+}) => {
+  const validEntities = entities.filter((entity) => entity !== null).sort();
 
   if (validEntities.length === 0) {
     return null;
@@ -40,13 +53,22 @@ const EntityBadges = ({ entities, entitiesData }: { entities: string[]; entities
 
   return (
     <div className="flex flex-wrap gap-1 items-center">
-      {validEntities.map(entity => (
-        <Link key={entity} href={`/entity/${encodeURIComponent(entity)}`} prefetch={false}>
-          <Badge variant="secondary" className="border-0 font-bold text-xs bg-un-blue/75! text-white! hover:bg-un-blue/60! cursor-pointer transition-colors">
-            <EntityName 
-              entityName={entity} 
-              entityLong={entitiesData.find(e => e.entity === entity)?.entity_long}
-              showUnderline={false} 
+      {validEntities.map((entity) => (
+        <Link
+          key={entity}
+          href={`/entity/${encodeURIComponent(entity)}`}
+          prefetch={false}
+        >
+          <Badge
+            variant="secondary"
+            className="border-0 font-bold text-xs bg-un-blue/75! text-white! hover:bg-un-blue/60! cursor-pointer transition-colors"
+          >
+            <EntityName
+              entityName={entity}
+              entityLong={
+                entitiesData.find((e) => e.entity === entity)?.entity_long
+              }
+              showUnderline={false}
             />
           </Badge>
         </Link>
@@ -56,20 +78,28 @@ const EntityBadges = ({ entities, entitiesData }: { entities: string[]; entities
 };
 
 // Component to safely render HTML content with highlighting
-const HighlightedContent = ({ content, fallback }: { content?: string; fallback: string }) => {
+const HighlightedContent = ({
+  content,
+  fallback,
+}: {
+  content?: string;
+  fallback: string;
+}) => {
   if (content && content !== fallback) {
-    return (
-      <span dangerouslySetInnerHTML={{ __html: content }} />
-    );
+    return <span dangerouslySetInnerHTML={{ __html: content }} />;
   }
   return <span>{fallback}</span>;
 };
 
-export function MandateList({ mandates, organsData, entitiesData }: MandateListProps) {
+export function MandateList({
+  mandates,
+  organsData,
+  entitiesData,
+}: MandateListProps) {
   // Helper function to find organ data by matching both short and long names
   const findOrganData = (organName: string): Organ | undefined => {
-    return organsData.find(organ => 
-      organ.short === organName || organ.long === organName
+    return organsData.find(
+      (organ) => organ.short === organName || organ.long === organName,
     );
   };
 
@@ -81,27 +111,29 @@ export function MandateList({ mandates, organsData, entitiesData }: MandateListP
 
   // Helper function to check if mandate is referenced in Plan Outline
   const isReferencedInPlanOutline = (mandate: Mandate): boolean => {
-    return mandate.citation_info?.some(citation => 
-      citation.origin_document === 'PPB 2026/Plan Outline'
-    ) || false;
+    return (
+      mandate.citation_info?.some(
+        (citation) => citation.origin_document === "PPB 2026/Plan Outline",
+      ) || false
+    );
   };
 
   // Helper function to get citation display text
   const getCitationDisplayText = (mandate: Mandate): string => {
     const isPlanOutline = isReferencedInPlanOutline(mandate);
     const hasEntities = mandate.num_entities > 0;
-    
+
     if (isPlanOutline && !hasEntities) {
       return "Referenced in Plan Outline, but not cited by any entities";
     }
-    
-    return `Cited ${mandate.num_citations} time${mandate.num_citations !== 1 ? 's' : ''} by ${mandate.num_entities} entit${mandate.num_entities !== 1 ? 'ies' : 'y'}`;
+
+    return `Cited ${mandate.num_citations} time${mandate.num_citations !== 1 ? "s" : ""} by ${mandate.num_entities} entit${mandate.num_entities !== 1 ? "ies" : "y"}`;
   };
 
   // Helper function to truncate document symbol if too long
   const getTruncatedSymbol = (symbol: string): string => {
     if (symbol.length > 20) {
-      return symbol.substring(0, 20) + '...';
+      return symbol.substring(0, 20) + "...";
     }
     return symbol;
   };
@@ -111,12 +143,14 @@ export function MandateList({ mandates, organsData, entitiesData }: MandateListP
     // Always use full_document_symbol as the primary source of truth
     const documentSymbol = mandate.full_document_symbol;
     if (!documentSymbol) {
-      console.warn('Mandate missing full_document_symbol:', mandate);
-      return '/mandate/unknown';
+      console.warn("Mandate missing full_document_symbol:", mandate);
+      return "/mandate/unknown";
     }
     // Split by forward slash and encode each segment individually
-    const segments = documentSymbol.split('/').map(segment => encodeURIComponent(segment));
-    return `/mandate/${segments.join('/')}`;
+    const segments = documentSymbol
+      .split("/")
+      .map((segment) => encodeURIComponent(segment));
+    return `/mandate/${segments.join("/")}`;
   };
 
   // Helper function to handle mandate click
@@ -124,26 +158,30 @@ export function MandateList({ mandates, organsData, entitiesData }: MandateListP
     event.preventDefault();
     const url = getMandateUrl(mandate);
     const currentUrl = window.location.href;
-    
+
     // Store the current URL for return navigation
-    sessionStorage.setItem('mandateReturnUrl', currentUrl);
-    
+    sessionStorage.setItem("mandateReturnUrl", currentUrl);
+
     // Open the window with clean URL
-    window.open(url, '_blank');
+    window.open(url, "_blank");
   };
 
   return (
     <TooltipProvider>
       <div className="space-y-4">
         {mandates.map((mandate, index) => {
-          const hasSearchMatches = (mandate as any).match_details && (mandate as any).match_details.length > 0;
+          const hasSearchMatches =
+            (mandate as any).match_details &&
+            (mandate as any).match_details.length > 0;
           const searchScore = (mandate as any).searchScore || 0;
           const displaySymbol = mandate.full_document_symbol;
-          const hasHighlighting = (mandate as any).highlightedFields && Object.keys((mandate as any).highlightedFields).length > 0;
-          
+          const hasHighlighting =
+            (mandate as any).highlightedFields &&
+            Object.keys((mandate as any).highlightedFields).length > 0;
+
           return (
             <div
-              key={mandate.full_document_symbol} 
+              key={mandate.full_document_symbol}
               onClick={(e) => handleMandateClick(mandate, e)}
               className="block cursor-pointer"
             >
@@ -160,104 +198,129 @@ export function MandateList({ mandates, organsData, entitiesData }: MandateListP
                     <span className="text-xs sm:text-sm">Details</span>
                   </div>
 
-                <div className="pr-20 sm:pr-32">
-                  <h3 className="text-sm sm:text-base font-semibold leading-tight wrap-break-word hyphens-auto">
-                    <HighlightedContent 
-                      content={(mandate as any).highlightedFields?.title} 
-                      fallback={mandate.displayTitle || 'Untitled'} 
-                    />
-                  </h3>
-                </div>
+                  <div className="pr-20 sm:pr-32">
+                    <h3 className="text-sm sm:text-base font-semibold leading-tight wrap-break-word hyphens-auto">
+                      <HighlightedContent
+                        content={(mandate as any).highlightedFields?.title}
+                        fallback={mandate.displayTitle || "Untitled"}
+                      />
+                    </h3>
+                  </div>
 
-                <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-muted-foreground">
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="flex items-center gap-1.5">
-                        <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
-                        <span className="font-medium">
-                          <HighlightedContent 
-                            content={(mandate as any).highlightedFields?.full_document_symbol} 
-                            fallback={getTruncatedSymbol(displaySymbol)}
-                          />
-                        </span>
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <div className="space-y-1">
-                        <p className="font-medium">{displaySymbol}</p>
-                        <p className="text-xs text-muted-foreground">{explainerTexts.mandateList.documentSymbol}</p>
-                      </div>
-                    </TooltipContent>
-                  </Tooltip>
-                  
-                  {mandate.body && (
+                  <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-muted-foreground">
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <div className="flex items-center gap-1.5">
-                          <Landmark className="h-3 w-3 sm:h-4 sm:w-4" />
-                          <span className="font-medium">{mandate.body}</span>
+                          <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
+                          <span className="font-medium">
+                            <HighlightedContent
+                              content={
+                                (mandate as any).highlightedFields
+                                  ?.full_document_symbol
+                              }
+                              fallback={getTruncatedSymbol(displaySymbol)}
+                            />
+                          </span>
                         </div>
                       </TooltipTrigger>
                       <TooltipContent>
                         <div className="space-y-1">
-                          <p className="font-medium">{explainerTexts.mandateList.issuingOrgan.title}</p>
-                          <p>{getOrganLongName(mandate.body)}</p>
-                          <p className="text-xs text-muted-foreground">{explainerTexts.mandateList.issuingOrgan.description}</p>
+                          <p className="font-medium">{displaySymbol}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {explainerTexts.mandateList.documentSymbol}
+                          </p>
                         </div>
                       </TooltipContent>
                     </Tooltip>
-                  )}
-                   
-                  {mandate.year && mandate.year !== '-' && (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <div className="flex items-center gap-1.5">
-                          <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
-                          <span className="font-medium">{mandate.year}</span>
-                        </div>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>{explainerTexts.mandateList.year}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  )}
 
+                    {mandate.body && (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div className="flex items-center gap-1.5">
+                            <Landmark className="h-3 w-3 sm:h-4 sm:w-4" />
+                            <span className="font-medium">{mandate.body}</span>
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <div className="space-y-1">
+                            <p className="font-medium">
+                              {explainerTexts.mandateList.issuingOrgan.title}
+                            </p>
+                            <p>{getOrganLongName(mandate.body)}</p>
+                            <p className="text-xs text-muted-foreground">
+                              {
+                                explainerTexts.mandateList.issuingOrgan
+                                  .description
+                              }
+                            </p>
+                          </div>
+                        </TooltipContent>
+                      </Tooltip>
+                    )}
 
+                    {mandate.year && mandate.year !== "-" && (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div className="flex items-center gap-1.5">
+                            <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
+                            <span className="font-medium">{mandate.year}</span>
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>{explainerTexts.mandateList.year}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    )}
+                  </div>
+
+                  {/* Search matches in fields not normally displayed */}
+                  {hasHighlighting &&
+                    (mandate as any).highlightedFields?.subject_headings && (
+                      <div className="text-sm">
+                        <span className="font-medium text-muted-foreground">
+                          Subject headings:
+                        </span>{" "}
+                        <span
+                          className="text-slate-700"
+                          dangerouslySetInnerHTML={{
+                            __html:
+                              (mandate as any).highlightedFields
+                                .subject_headings.length > 200
+                                ? (
+                                    mandate as any
+                                  ).highlightedFields.subject_headings.substring(
+                                    0,
+                                    200,
+                                  ) + "..."
+                                : (mandate as any).highlightedFields
+                                    .subject_headings,
+                          }}
+                        />
+                      </div>
+                    )}
+
+                  {/* Citations and Entities */}
+                  {(mandate.num_citations > 0 ||
+                    (mandate.entities && mandate.entities.length > 0)) && (
+                    <div className="pt-2 border-t border-border/30">
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <p className="text-xs sm:text-sm font-medium mb-2 text-muted-foreground cursor-help">
+                            {getCitationDisplayText(mandate)}
+                          </p>
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-xs">
+                          <p>{explainerTexts.mandateList.citationCount}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                      <EntityBadges
+                        entities={mandate.entities || []}
+                        entitiesData={entitiesData}
+                      />
+                    </div>
+                  )}
                 </div>
-                
-                {/* Search matches in fields not normally displayed */}
-                {hasHighlighting && (mandate as any).highlightedFields?.subject_headings && (
-                  <div className="text-sm">
-                    <span className="font-medium text-muted-foreground">Subject headings:</span>{' '}
-                    <span 
-                      className="text-slate-700"
-                      dangerouslySetInnerHTML={{ 
-                        __html: (mandate as any).highlightedFields.subject_headings.length > 200 
-                          ? (mandate as any).highlightedFields.subject_headings.substring(0, 200) + '...' 
-                          : (mandate as any).highlightedFields.subject_headings
-                      }} 
-                    />
-                  </div>
-                )}
-
-                {/* Citations and Entities */}
-                {(mandate.num_citations > 0 || (mandate.entities && mandate.entities.length > 0)) && (
-                  <div className="pt-2 border-t border-border/30">
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <p className="text-xs sm:text-sm font-medium mb-2 text-muted-foreground cursor-help">
-                          {getCitationDisplayText(mandate)}
-                        </p>
-                      </TooltipTrigger>
-                      <TooltipContent className="max-w-xs">
-                        <p>{explainerTexts.mandateList.citationCount}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                    <EntityBadges entities={mandate.entities || []} entitiesData={entitiesData} />
-                  </div>
-                )}
-              </div>
-            </motion.div>
+              </motion.div>
             </div>
           );
         })}
