@@ -1,2 +1,40 @@
 # Exclude shadcn/ui components from formatting
 src/components/ui/
+
+# Dependencies
+node_modules
+
+# Next.js
+.next
+out
+build
+
+# Production
+dist
+
+# Misc
+.DS_Store
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local env files
+.env*.local
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Data files
+data/
+public/data/
+
+# Package lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
