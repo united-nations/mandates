@@ -106,7 +106,6 @@ export interface Mandate {
   paragraphs?: Paragraph[] | null
   programme?: string
   text?: string
-  ai_summary?: string
 
   // Search-related fields
   searchScore?: number
@@ -263,9 +262,6 @@ export interface Report extends BaseDocument {
   top10_similar_scores: number[] | null
 }
 
-// Generic document type for components
-export type Document = Resolution | Report
-
 // Document configuration for different document types
 export interface DocumentConfig<T extends BaseDocument> {
   type: 'resolutions' | 'reports'
@@ -316,6 +312,3 @@ export interface AggregateResponse {
     frequency: Record<string, BucketData>
   }
 }
-
-// Legacy types for backward compatibility during transition
-export type { Entity as LegacyEntity }
