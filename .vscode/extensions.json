@@ -6,6 +6,7 @@
         "github.vscode-pull-request-github",
         "mechatroner.rainbow-csv",
         "bradlc.vscode-tailwindcss",
-        "esbenp.prettier-vscode"
+        "esbenp.prettier-vscode",
+        "upstash.context7-mcp"
     ]
 }
