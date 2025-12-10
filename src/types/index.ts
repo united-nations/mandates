@@ -33,21 +33,6 @@ export interface Paragraph {
   textWithHighlights?: string
 }
 
-export interface CitationInfo {
-  origin_document: string
-  budget_part: string
-  section: string
-  section_title: string
-  entity_long: string
-  entity: string
-  programme: number | null
-  programme_title: string
-  'sub-programme': string | null
-  component: string | number | null
-  description: string
-  part_in_document: string
-}
-
 export interface Mandate {
   full_document_symbol: string
   num_citations: number
@@ -61,7 +46,20 @@ export interface Mandate {
   entity_long: string
   description: string | null
   type: string
-  citation_info: CitationInfo[]
+  citation_info: {
+    origin_document: string
+    budget_part: string
+    section: string
+    section_title: string
+    entity_long: string
+    entity: string
+    programme: number | null
+    programme_title: string
+    'sub-programme': string | null
+    component: string | number | null
+    description: string
+    part_in_document: string
+  }[]
   // Enriched fields (added by API)
   body_long?: string
   displayTitle?: string
