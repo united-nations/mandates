@@ -76,7 +76,7 @@ export function SidebarListItem({
   const variantStyles = {
     navigation: {
       container: "hover:bg-muted/20 transition-colors",
-      label: "group-hover:underline group-hover:text-un-blue transition-colors",
+      label: "group-hover:text-un-blue transition-colors",
       active: "" // Navigation items don't have active state since they navigate away
     },
     filter: {
@@ -106,10 +106,10 @@ export function SidebarListItem({
           {label}
         </div>
       </div>
-      <div className="flex items-center gap-2 flex-shrink-0 w-32">
+      <div className="flex items-center gap-2 shrink-0 w-32">
         <span className="flex items-center w-full">
           <span className={cn(
-            'text-xs font-mono text-un-blue text-right pr-2 min-w-[28px] max-w-[32px] flex-shrink-0 justify-end flex',
+            'text-xs font-mono text-un-blue text-right pr-2 min-w-[28px] max-w-[32px] shrink-0 justify-end flex',
             countClassName
           )}>
             {count.toLocaleString()}

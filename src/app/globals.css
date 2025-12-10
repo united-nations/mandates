@@ -1,123 +1,150 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@import "tw-animate-css";
 
-@layer base {
-  :root {
-    --un-blue: #009edb; /* Official UN Blue color */
-    --background: 0 0% 100%;
-    --foreground: 220 15% 25%;
+/* https://tailwindcss.com/docs/colors#customizing-your-colors */
+/* Define Tailwind brand colors */
+@theme {
+  --color-un-blue: #009edb;
 
-    --card: 220 20% 97%;
-    --card-foreground: 220 15% 25%;
+  --color-trout: #495057;
+  --color-shuttle-gray: #5a6c7d;
+  --color-camouflage-green: #7d8471;
+  --color-pale-oyster: #9bbb7a;
+  --color-smoky: #6c5b7b;
+  --color-au-chico: #a0665c;
+  --color-faded-jade: #4a7c7e;
 
-    --dashboard-card: 220 15% 92%;
-    --dashboard-card-foreground: 220 15% 25%;
+  --color-geyser: #dde2e6;
+  --color-iron: #d9dcdf;
+  --color-card-gray: #f6f7f8;
+  --color-med-gray: #d9dcdf;
 
-    --popover: 220 20% 97%; /* Very light cool gray, almost white */
-    --popover-foreground: 220 15% 25%;
-
-    --primary: 220 30% 30%; /* Darker cool blue/gray for primary actions/text */
-    --primary-foreground: 0 0% 100%; /* White text on primary */
-
-    --secondary: 220 15% 90%; /* Lighter gray for secondary elements */
-    --secondary-foreground: 220 15% 35%; /* Darker text on secondary */
-
-    --muted: 220 15% 88%;
-    --muted-foreground: 220 10% 50%;
-
-    --accent: 196 100% 43%; /* UN Blue for hover/accent */
-    --accent-foreground: 0 0% 100%; 
-
-    --destructive: 0 70% 50%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 220 15% 85%; /* Softer gray border */
-    /* --border: 210, 9%, 86%; Med gray custom */
-
-    --input: 0 0% 100%; /* White input backgrounds */
-    --ring: 196 100% 43%; /* UN Blue for focus rings */
-
-    --radius: 0.5rem;
-
-    --chart-1: 220 30% 50%;
-    --chart-2: 200 40% 50%;
-    --chart-3: 240 30% 60%;
-    --chart-4: 180 35% 55%;
-    --chart-5: 260 40% 60%;
-
-    --sidebar-background: 220 15% 92%; 
-    --sidebar-foreground: 220 15% 25%;
-    --sidebar-primary: 220 30% 30%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 30% 40%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 220 15% 85%;
-    --sidebar-ring: 220 30% 50%;
-  }
-
-  .dark {
-    --background: 220 15% 10%; /* Dark blue-gray */
-    --foreground: 220 10% 85%;
-
-    --card: 220 15% 15%;
-    --card-foreground: 220 10% 85%;
-
-    --dashboard-card: 220 10% 80%; /* set the color of filters and data cards */
-
-    --popover: 220 15% 15%;
-    --popover-foreground: 220 10% 85%;
-
-    --primary: 220 30% 60%; 
-    --primary-foreground: 220 10% 95%;
-
-    --secondary: 220 15% 25%; 
-    --secondary-foreground: 220 10% 80%;
-
-    --muted: 220 15% 20%;
-    --muted-foreground: 220 10% 60%;
-
-    --accent: 196 100% 43%; /* UN Blue for hover/accent */
-    --accent-foreground: 220 10% 95%;
-
-    --destructive: 0 60% 45%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 220 15% 30%;
-    --input: 220 15% 20%;
-    --ring: 196 100% 43%; /* UN Blue for focus rings */
-
-    --chart-1: 220 30% 60%;
-    --chart-2: 200 40% 60%;
-    --chart-3: 240 30% 70%;
-    --chart-4: 180 35% 65%;
-    --chart-5: 260 40% 70%;
-    
-    --sidebar-background: 220 15% 12%;
-    --sidebar-foreground: 220 10% 85%;
-    --sidebar-primary: 220 30% 60%;
-    --sidebar-primary-foreground: 220 10% 95%;
-    --sidebar-accent: 220 30% 50%;
-    --sidebar-accent-foreground: 220 10% 95%;
-    --sidebar-border: 220 15% 30%;
-    --sidebar-ring: 220 30% 60%;
-  }
+  /* Font weights for Roboto */
+  /* --font-weight-thin: 100;
+  --font-weight-extralight: 200;
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --font-weight-black: 900; */
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1; 
-  }
+/* Define shadcn semantic colors as CSS variables */
+/* use Tailwind colors with var()  */
+/* https://tailwindcss.com/docs/theme#referencing-other-variables */
+:root {
+  --background: white;
+  --foreground: black;
+
+  --card: hsl(220 20% 97%);
+  --card-foreground: hsl(220 15% 25%);
+
+  --dashboard-card: hsl(220 15% 92%);
+  --dashboard-card-foreground: hsl(220 15% 25%);
+
+  --popover: hsl(220 20% 97%); /* Very light cool gray, almost white */
+  --popover-foreground: hsl(220 15% 25%);
+
+  --primary: hsl(
+    220 30% 30%
+  ); /* Darker cool blue/gray for primary actions/text */
+  --primary-foreground: hsl(0 0% 100%); /* White text on primary */
+
+  --secondary: hsl(220 15% 90%); /* Lighter gray for secondary elements */
+  --secondary-foreground: hsl(220 15% 35%); /* Darker text on secondary */
+
+  --muted: hsl(220 15% 88%);
+  --muted-foreground: hsl(220 10% 50%);
+
+  --accent: var(--color-un-blue);
+  --accent-foreground: hsl(0 0% 100%);
+
+  --destructive: var(--color-au-chico);
+  --destructive-foreground: hsl(0 0% 100%);
+
+  --input: hsl(0 0% 100%); /* White input backgrounds */
+
+  /* card corner radius */
+  --radius: 0.5rem;
+
+  --radius-lg: 0.5rem;
+  --radius-md: calc(0.5rem - 2px);
+  --radius-sm: calc(0.5rem - 4px);
 }
+
+/* Expose shadcn variables to Tailwind utilities */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-dashboard-card: var(--dashboard-card);
+  --color-dashboard-card-foreground: var(--dashboard-card-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Expose font weights */
+  --font-weight-thin: 100;
+  --font-weight-extralight: 200;
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --font-weight-black: 900;
+}
+
+* {
+  border-color: var(--color-gray-200);
+}
+
+/* Remove focus rings globally */
+*:focus,
+*:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  --tw-ring-shadow: none !important;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-feature-settings: "rlig" 1, "calt" 1;
+  /* Ensure font smoothing for better rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom --------------------------------------------------------------------------------- */
 
 /* Enhanced search highlighting styles using UN Blue */
 .search-highlight {
   background-color: rgba(0, 158, 219, 0.15); /* UN Blue with transparency */
-  color: #009edb; /* UN Blue */
+  color: var(--color-un-blue); /* UN Blue */
   padding: 2px 4px;
   border-radius: 4px;
   font-weight: 600;
@@ -127,15 +154,25 @@
 }
 
 .search-highlight-exact {
-  background-color: rgba(0, 158, 219, 0.25); /* Stronger UN Blue for exact matches */
-  color: #009edb; /* UN Blue */
+  background-color: rgba(
+    0,
+    158,
+    219,
+    0.25
+  ); /* Stronger UN Blue for exact matches */
+  color: var(--color-un-blue); /* UN Blue */
   border-color: rgba(0, 158, 219, 0.5);
   font-weight: 700;
 }
 
 .search-highlight-fuzzy {
-  background-color: rgba(0, 158, 219, 0.12); /* Lighter UN Blue for fuzzy matches */
-  color: #009edb; /* UN Blue */
+  background-color: rgba(
+    0,
+    158,
+    219,
+    0.12
+  ); /* Lighter UN Blue for fuzzy matches */
+  color: var(--color-un-blue); /* UN Blue */
   border-color: rgba(0, 158, 219, 0.25);
   font-weight: 600;
 }
@@ -195,7 +232,7 @@ mark {
 /* PrimeReact DataTable custom styling with UN Blue */
 .custom-table .p-datatable-thead > tr > th {
   background-color: rgba(0, 158, 219, 0.1);
-  border-color: hsl(var(--border));
+  border-color: var(--color-gray-200);
   color: hsl(var(--foreground));
   font-weight: 600;
   padding-top: 0.5rem;
@@ -214,7 +251,7 @@ mark {
 .p-column-filter.p-dropdown {
   font-size: 0.75rem;
   min-height: 1.75rem;
-  border: 1px solid hsl(var(--border));
+  border: 1px solid var(--color-gray-200);
   border-radius: 0.375rem;
   background-color: white;
   display: flex;
@@ -242,7 +279,7 @@ mark {
 
 /* Filtered column styling - UN blue border */
 .p-column-filter.border-un-blue {
-  border-color: #009edb !important;
+  border-color: var(--color-un-blue) !important;
 }
 
 /* Hide PrimeReact's default filter clear button - we have our own */
@@ -256,7 +293,7 @@ mark {
 }
 
 .p-dropdown-panel.text-xs {
-  border: 1px solid hsl(var(--border));
+  border: 1px solid var(--color-gray-200);
   border-radius: 0.375rem;
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
 }
@@ -274,16 +311,16 @@ mark {
 
 .p-dropdown-panel.text-xs .p-dropdown-item:hover {
   background-color: rgba(0, 158, 219, 0.1);
-  color: #009edb;
+  color: var(--color-un-blue);
 }
 
 .p-dropdown-panel.text-xs .p-dropdown-item.p-highlight {
   background-color: rgba(0, 158, 219, 0.15);
-  color: #009edb;
+  color: var(--color-un-blue);
 }
 
 .custom-table .p-datatable-tbody > tr.p-row-odd {
-  background-color: #F6F7F8;
+  background-color: #f6f7f8;
 }
 
 .custom-table .p-datatable-thead > tr > th:hover {
@@ -310,14 +347,12 @@ mark {
 
 .custom-table .p-sortable-column.p-highlight {
   background-color: rgba(0, 158, 219, 0.1);
-  color: #009edb;
+  color: var(--color-un-blue);
 }
 
 .custom-table .p-sortable-column .p-sortable-column-icon {
-  color: #009edb;
+  color: var(--color-un-blue);
 }
-
-
 
 /* Dark mode variants */
 .dark .custom-table .p-datatable-thead > tr > th:hover {
@@ -414,4 +449,21 @@ mark {
 .un20-roll-hidden {
   opacity: 0;
   transform: translateX(-60px) rotate(-360deg) scale(0.3);
+}
+
+/* Remove scrollbar */
+
+/* Prevent layout shifts by always showing scrollbar */
+html {
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
+}
+
+body {
+  overflow-y: scroll;
+}
+
+/* Hide scrollbar for Webkit browsers (Chrome, Safari) */
+body::-webkit-scrollbar {
+  display: none;
 }

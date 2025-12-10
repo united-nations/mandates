@@ -67,7 +67,7 @@ function FilterDropdown({
       <button
         onClick={onToggle}
         className={`text-xs h-7 px-3 border rounded-md bg-gray-100 hover:bg-gray-200 border-gray-300 hover:border-gray-400 transition-all duration-200 flex items-center gap-1.5 cursor-pointer ${
-          currentFilter !== 'all' ? '!border-un-blue !text-un-blue !bg-un-blue/15 hover:!bg-un-blue/25' : 'text-gray-700'
+          currentFilter !== 'all' ? 'border-un-blue! text-un-blue! bg-un-blue/15! hover:bg-un-blue/25!' : 'text-gray-700'
         }`}
       >
         {icon}
@@ -262,7 +262,7 @@ function SearchableFilterDropdown({
       <button
         onClick={onToggle}
         className={`text-xs h-7 px-3 border rounded-md bg-gray-100 hover:bg-gray-200 border-gray-300 hover:border-gray-400 transition-all duration-200 flex items-center gap-1.5 cursor-pointer ${
-          currentFilter !== 'all' ? '!border-un-blue !text-un-blue !bg-un-blue/15 hover:!bg-un-blue/25' : 'text-gray-700'
+          currentFilter !== 'all' ? 'border-un-blue! text-un-blue! bg-un-blue/15! hover:bg-un-blue/25!' : 'text-gray-700'
         }`}
       >
         {icon}
@@ -294,7 +294,7 @@ function SearchableFilterDropdown({
               placeholder={`Search ${label.toLowerCase()}...`}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full text-xs px-2 py-1 border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-un-blue focus:border-un-blue"
+              className="w-full text-xs px-2 py-1 border border-gray-200 rounded focus:outline-hidden focus:ring-1 focus:ring-un-blue focus:border-un-blue"
               autoFocus
             />
           </div>
@@ -1398,7 +1398,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
       <div key={item.id} className="space-y-1">
         <div className="flex items-center gap-1">
           {/* Always reserve space for expand button to maintain alignment */}
-          <div className="w-4 h-4 flex items-center justify-center flex-shrink-0">
+          <div className="w-4 h-4 flex items-center justify-center shrink-0">
             {hasChildren && (
               <button
                 onClick={() => handleTOCClick(item.id)}
@@ -1496,7 +1496,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
           const isFilteredVerb = actionVerbFilter !== 'all' && 
             correspondingMandate?.action_verb?.toLowerCase() === actionVerbFilter
           const verbClasses = hasEnhancedFilters && isFilteredVerb 
-            ? "text-un-blue cursor-help bg-yellow-200 px-1 py-0.5 rounded font-semibold shadow-sm"
+            ? "text-un-blue cursor-help bg-yellow-200 px-1 py-0.5 rounded font-semibold shadow-xs"
             : "text-un-blue cursor-help"
                     
           component = (
@@ -1547,7 +1547,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
             (!assigneeFilter.includes(':') && entityData?.assignee_type === assigneeFilter)
           )
           const entityClasses = hasEnhancedFilters && isFilteredEntity
-            ? "bg-yellow-200 border border-un-blue px-2 py-0.5 rounded-full text-sm font-semibold cursor-help shadow-sm"
+            ? "bg-yellow-200 border border-un-blue px-2 py-0.5 rounded-full text-sm font-semibold cursor-help shadow-xs"
             : "bg-gray-200 border border-un-blue px-2 py-0.5 rounded-full text-sm font-medium cursor-help"
           
           component = (
@@ -1585,7 +1585,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
           const isFilteredDeliverable = deliverableFilter !== 'all' && 
             deliverableData?.deliverable_type === deliverableFilter
           const deliverableClasses = hasEnhancedFilters && isFilteredDeliverable
-            ? "bg-yellow-200 border border-gray-350 px-2 py-0.5 rounded-full text-sm font-semibold cursor-help shadow-sm"
+            ? "bg-yellow-200 border border-gray-350 px-2 py-0.5 rounded-full text-sm font-semibold cursor-help shadow-xs"
             : "bg-gray-200 border border-gray-350 px-2 py-0.5 rounded-full text-sm font-medium cursor-help"
           
           component = (
@@ -1662,7 +1662,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
             <div className="relative tooltip-container">
               <button
                 type="button"
-                className="p-0 border-0 bg-transparent cursor-help focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 rounded-sm flex items-center"
+                className="p-0 border-0 bg-transparent cursor-help focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 rounded-sm flex items-center"
                 aria-label="Information about paragraph extraction"
                 onClick={() => toggleTooltip('paragraphs-beta')}
               >
@@ -2031,7 +2031,7 @@ export function ParagraphsSection({ paragraphs: allParagraphs, documentSymbol, i
 
         {/* Desktop TOC Sidebar - Right side, only for paragraphs section */}
         {!isMobile && (
-          <div className="w-[30%] flex-shrink-0">
+          <div className="w-[30%] shrink-0">
             <div className="sticky top-4 bg-white rounded-lg p-4 mb-8">
               <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
                 <FileText className="h-4 w-4" />

@@ -419,7 +419,7 @@ export function MandateExplorer ({
                     <Button
                       variant='ghost'
                       onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}
-                      className='flex-shrink-0 flex items-center gap-2 px-2 text-left text-slate-600 hover:text-slate-900 hover:bg-transparent whitespace-nowrap'
+                      className='shrink-0 flex items-center gap-2 px-2 text-left text-slate-600 hover:text-slate-900 hover:bg-transparent whitespace-nowrap'
                     >
                       <span className='text-sm font-medium'>
                         {showAdvancedSearch
@@ -504,7 +504,7 @@ export function MandateExplorer ({
             </div>
 
             {/* Right sidebar - render internally based on page type */}
-            <div className='hidden lg:block lg:w-80 flex-shrink-0 space-y-6'>
+            <div className='hidden lg:block lg:w-80 shrink-0 space-y-6'>
               {/* Entity pages show cross-citations and organs */}
               {pageType === 'entity' && (
                 <>

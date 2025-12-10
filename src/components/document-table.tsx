@@ -372,7 +372,7 @@ export default function DocumentTable<T extends BaseDocument>({
                                 page: null,
                             });
                         }}
-                        className="h-[1.75rem] w-[1.75rem] flex items-center justify-center hover:bg-gray-200 rounded transition-colors flex-shrink-0"
+                        className="h-7 w-7 flex items-center justify-center hover:bg-gray-200 rounded transition-colors shrink-0"
                         title="Clear filter"
                     >
                         <X className="h-3.5 w-3.5 text-gray-600" />
@@ -440,7 +440,7 @@ export default function DocumentTable<T extends BaseDocument>({
                                 page: null,
                             });
                         }}
-                        className="h-[1.75rem] w-[1.75rem] flex items-center justify-center hover:bg-gray-200 rounded transition-colors flex-shrink-0"
+                        className="h-7 w-7 flex items-center justify-center hover:bg-gray-200 rounded transition-colors shrink-0"
                         title="Clear filter"
                     >
                         <X className="h-3.5 w-3.5 text-gray-600" />
@@ -511,7 +511,7 @@ export default function DocumentTable<T extends BaseDocument>({
                                 page: null,
                             });
                         }}
-                        className="h-[1.75rem] w-[1.75rem] flex items-center justify-center hover:bg-gray-200 rounded transition-colors flex-shrink-0"
+                        className="h-7 w-7 flex items-center justify-center hover:bg-gray-200 rounded transition-colors shrink-0"
                         title="Clear filter"
                     >
                         <X className="h-3.5 w-3.5 text-gray-600" />
@@ -546,7 +546,7 @@ export default function DocumentTable<T extends BaseDocument>({
                     onChange={(e) => setTitleSearchInput(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder="Press Enter to search..."
-                    className={`text-xs h-[1.5rem] px-2 ${isFiltered ? 'border-un-blue border-2' : ''}`}
+                    className={`text-xs h-6 px-2 ${isFiltered ? 'border-un-blue border-2' : ''}`}
                 />
                 {isFiltered && (
                     <button
@@ -559,7 +559,7 @@ export default function DocumentTable<T extends BaseDocument>({
                                 page: null,
                             });
                         }}
-                        className="h-[1.75rem] w-[1.75rem] flex items-center justify-center hover:bg-gray-200 rounded transition-colors flex-shrink-0"
+                        className="h-7 w-7 flex items-center justify-center hover:bg-gray-200 rounded transition-colors shrink-0"
                         title="Clear filter"
                     >
                         <X className="h-3.5 w-3.5 text-gray-600" />
@@ -576,7 +576,7 @@ export default function DocumentTable<T extends BaseDocument>({
 
     // Cell templates
     const titleTemplate = (row: T) => (
-        <div className="truncate max-w-[20rem] sm:max-w-[24rem] md:max-w-[28rem] lg:max-w-[32rem] xl:max-w-[40rem]" title={row.title || row.combined_title}>
+        <div className="truncate max-w-[20rem] sm:max-w-[24rem] md:max-w-md lg:max-w-lg xl:max-w-160" title={row.title || row.combined_title}>
             <span className="font-medium">{row.title || row.combined_title}</span>
         </div>
     );

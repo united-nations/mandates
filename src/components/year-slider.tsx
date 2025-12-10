@@ -81,7 +81,7 @@ export function YearSlider({ yearDistribution, yearRange, value, onChange, origi
             value={localValue}
             onValueChange={(val: number[]) => setLocalValue(val as [number, number])}
             onValueCommit={(val) => handleCommit(val as [number, number])}
-            className="w-full [&_.bg-primary]:!bg-un-blue [&_[data-radix-slider-range]]:!bg-un-blue [&_[data-radix-slider-thumb]]:!border-un-blue [&_.border-primary]:!border-un-blue"
+            className="w-full [&_.bg-primary]:bg-un-blue! **:data-radix-slider-range:bg-un-blue! **:data-radix-slider-thumb:border-un-blue! [&_.border-primary]:border-un-blue!"
           />
         </div>
       </div>

@@ -82,7 +82,7 @@ export function AdvancedSearch({
     <div className="relative tooltip-container">
       <button 
         type="button"
-        className="p-0 border-0 bg-transparent cursor-help focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 rounded-sm -ml-1 touch-manipulation"
+        className="p-0 border-0 bg-transparent cursor-help focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 rounded-sm -ml-1 touch-manipulation"
         aria-label={ariaLabel}
         onClick={() => toggleTooltip(tooltipId)}
       >

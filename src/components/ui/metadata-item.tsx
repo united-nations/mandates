@@ -12,8 +12,8 @@ export function MetadataItem({ label, children, icon: Icon }: MetadataItemProps)
       {/* Mobile: stacked layout, Desktop: side-by-side */}
       <div className="flex flex-col sm:flex-row sm:gap-3">
         {/* Icon and label container */}
-        <div className="flex gap-3 sm:flex-shrink-0 sm:min-w-[120px]">
-          {Icon && <Icon className="h-4 w-4 text-muted-foreground flex-shrink-0 mt-0.5" />}
+        <div className="flex gap-3 sm:shrink-0 sm:min-w-[120px]">
+          {Icon && <Icon className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />}
           <div className="font-medium text-muted-foreground leading-relaxed">{label}:</div>
         </div>
         

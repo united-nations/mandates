@@ -149,7 +149,7 @@ function Item ({ content, color, light }: {
       rounded-md p-3 text-left flex-1 text-body
       ${getColorClasses()}
       ${light ? 'opacity-30' : 'opacity-100'}
-      transition-opacity min-h-[2.5rem] flex items-start
+      transition-opacity min-h-10 flex items-start
     `}>
       <div className="w-full">
         {parseText(content || '')}

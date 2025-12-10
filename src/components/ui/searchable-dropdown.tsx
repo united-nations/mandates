@@ -167,7 +167,7 @@ export function SearchableDropdown({
         </Button>
       </PopoverTrigger>
       <PopoverContent 
-        className="w-[--radix-popover-trigger-width] p-0 z-50 overflow-hidden rounded-md border bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2" 
+        className="w-(--radix-popover-trigger-width) p-0 z-50 overflow-hidden rounded-md border bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2" 
         side="bottom"
         align="start"
         sideOffset={4}
@@ -213,7 +213,7 @@ export function SearchableDropdown({
                       size="sm"
                       className={cn(
                         "w-full justify-between font-normal h-auto py-2",
-                        highlightedIndex === index && "!bg-un-blue/10 !text-un-blue",
+                        highlightedIndex === index && "bg-un-blue/10! text-un-blue!",
                         option.disabled && "opacity-50 cursor-not-allowed"
                       )}
                       onClick={() => handleSelect(option.value, option)}

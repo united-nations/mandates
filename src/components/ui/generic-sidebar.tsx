@@ -112,7 +112,7 @@ export function GenericSidebar<T>({
         />
         
         <div 
-          className="max-h-[28rem] overflow-y-auto"
+          className="max-h-112 overflow-y-auto"
           onWheel={(e) => {
             const target = e.currentTarget;
             const { scrollTop, scrollHeight, clientHeight } = target;
