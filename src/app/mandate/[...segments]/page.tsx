@@ -91,7 +91,7 @@ function MandatePageContent() {
         ) : (
           <Button
             disabled
-            variant="primary"
+            variant="default"
             className="mt-1.5 md:mt-4 h-7 md:h-10 text-xs md:text-sm bg-trout/50! text-white/70! inline-flex items-center gap-1.5 md:gap-2"
           >
             <FileText className="h-3 w-3 md:h-4 md:w-4" />

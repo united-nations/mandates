@@ -61,7 +61,7 @@ export function SearchResultsSummary({
 
         {(hasSearch || hasFilters) && (
           <Button
-            variant="clear"
+            variant="default"
             className="shrink-0 inline-flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 py-1 sm:px-2.5 sm:py-1.5 h-auto bg-trout! text-white! hover:bg-trout/90!"
             onClick={() => {
               if (hasSearch) onClearSearch();

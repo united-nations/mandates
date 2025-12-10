@@ -264,10 +264,10 @@ export function FilterControls({
                     </span>
                   </div>
                   <Button
-                    variant="clear"
+                    variant="default"
                     size="sm"
                     onClick={clearAllFilters}
-                    className="shrink-0 -mr-3"
+                    className="shrink-0 -mr-3 bg-trout text-white hover:bg-trout/90"
                   >
                     <X className="h-3 w-3 sm:h-4 sm:w-4" />
                     <span className="text-xs sm:text-sm">Clear All</span>

@@ -2,8 +2,8 @@
 
 import { Share, Check } from "lucide-react";
 import { useState, useRef } from "react";
-import { Button } from "./button";
-import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
+import { Button } from "./ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 export function ShareButton() {
   const [showCopied, setShowCopied] = useState(false);
