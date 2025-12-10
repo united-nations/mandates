@@ -1,27 +1,27 @@
-"use client";
+'use client'
 
-import { FilterBadge } from "@/components/FilterBadge";
-import { Button } from "@/components/ui/button";
-import { Search, X } from "lucide-react";
-import { EntityName } from "./EntityName";
-import { titleCase } from "title-case";
+import { FilterBadge } from '@/components/FilterBadge'
+import { Button } from '@/components/ui/button'
+import { Search, X } from 'lucide-react'
+import { EntityName } from './EntityName'
+import { titleCase } from 'title-case'
 
 interface SearchResultsSummaryProps {
-  totalResults: number;
-  searchKeyword?: string;
+  totalResults: number
+  searchKeyword?: string
   appliedFilters: {
-    entity?: string;
-    organ?: string;
-    programme?: string;
-    subject?: string;
-    pillar?: string;
-    year?: string;
-    budget_document?: string;
-    cross_entity?: string;
-  };
-  onClearSearch: () => void;
-  onClearFilter: (filterKey: string) => void;
-  isLoading: boolean;
+    entity?: string
+    organ?: string
+    programme?: string
+    subject?: string
+    pillar?: string
+    year?: string
+    budget_document?: string
+    cross_entity?: string
+  }
+  onClearSearch: () => void
+  onClearFilter: (filterKey: string) => void
+  isLoading: boolean
 }
 
 export function SearchResultsSummary({
@@ -33,27 +33,27 @@ export function SearchResultsSummary({
   isLoading,
 }: SearchResultsSummaryProps) {
   const hasFilters = Object.values(appliedFilters).some(
-    (value) => value && value !== "all",
-  );
-  const hasSearch = searchKeyword && searchKeyword.trim().length > 0;
+    (value) => value && value !== 'all'
+  )
+  const hasSearch = searchKeyword && searchKeyword.trim().length > 0
 
-  if (!hasSearch && !hasFilters) return null;
+  if (!hasSearch && !hasFilters) return null
 
   return (
-    <div className="rounded-lg p-4 mb-6" style={{ backgroundColor: "#F6F7F8" }}>
-      <div className="flex items-center justify-between gap-4 mb-3">
+    <div className="mb-6 rounded-lg p-4" style={{ backgroundColor: '#F6F7F8' }}>
+      <div className="mb-3 flex items-center justify-between gap-4">
         <div className="flex items-center gap-2">
           <Search className="h-4 w-4 text-muted-foreground" />
           <span className="text-sm font-medium">
             {isLoading ? (
-              "Searching..."
+              'Searching...'
             ) : (
               <>
                 {totalResults.toLocaleString()} mandate source document
-                {totalResults !== 1 ? "s" : ""} found
-                {hasSearch && hasFilters && " with search and filters"}
-                {hasSearch && !hasFilters && " for your search"}
-                {!hasSearch && hasFilters && " with filters"}
+                {totalResults !== 1 ? 's' : ''} found
+                {hasSearch && hasFilters && ' with search and filters'}
+                {hasSearch && !hasFilters && ' for your search'}
+                {!hasSearch && hasFilters && ' with filters'}
               </>
             )}
           </span>
@@ -62,14 +62,14 @@ export function SearchResultsSummary({
         {(hasSearch || hasFilters) && (
           <Button
             variant="default"
-            className="shrink-0 inline-flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 py-1 sm:px-2.5 sm:py-1.5 h-auto bg-trout! text-white! hover:bg-trout/90!"
+            className="inline-flex h-auto shrink-0 items-center gap-1 bg-trout! px-2 py-1 text-xs text-white! hover:bg-trout/90! sm:gap-2 sm:px-2.5 sm:py-1.5 sm:text-sm"
             onClick={() => {
-              if (hasSearch) onClearSearch();
+              if (hasSearch) onClearSearch()
               Object.keys(appliedFilters).forEach((key) => {
                 if (appliedFilters[key as keyof typeof appliedFilters]) {
-                  onClearFilter(key);
+                  onClearFilter(key)
                 }
-              });
+              })
             }}
           >
             <X className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -88,7 +88,7 @@ export function SearchResultsSummary({
           />
         )}
 
-        {appliedFilters.entity && appliedFilters.entity !== "all" && (
+        {appliedFilters.entity && appliedFilters.entity !== 'all' && (
           <FilterBadge
             label={
               <>
@@ -96,15 +96,15 @@ export function SearchResultsSummary({
                 <EntityName entityName={appliedFilters.entity} />
               </>
             }
-            onClear={() => onClearFilter("entity")}
+            onClear={() => onClearFilter('entity')}
             variant="secondary"
           />
         )}
 
-        {appliedFilters.organ && appliedFilters.organ !== "all" && (
+        {appliedFilters.organ && appliedFilters.organ !== 'all' && (
           <FilterBadge
             label={`Organ: ${appliedFilters.organ}`}
-            onClear={() => onClearFilter("organ")}
+            onClear={() => onClearFilter('organ')}
             variant="secondary"
           />
         )}
@@ -112,7 +112,7 @@ export function SearchResultsSummary({
         {appliedFilters.programme && (
           <FilterBadge
             label={`Programme: ${appliedFilters.programme}`}
-            onClear={() => onClearFilter("programme")}
+            onClear={() => onClearFilter('programme')}
             variant="secondary"
           />
         )}
@@ -120,15 +120,15 @@ export function SearchResultsSummary({
         {appliedFilters.subject && (
           <FilterBadge
             label={`Subject: ${titleCase(appliedFilters.subject)}`}
-            onClear={() => onClearFilter("subject")}
+            onClear={() => onClearFilter('subject')}
             variant="secondary"
           />
         )}
 
-        {appliedFilters.pillar && appliedFilters.pillar !== "all" && (
+        {appliedFilters.pillar && appliedFilters.pillar !== 'all' && (
           <FilterBadge
             label={`Pillar: ${appliedFilters.pillar}`}
-            onClear={() => onClearFilter("pillar")}
+            onClear={() => onClearFilter('pillar')}
             variant="secondary"
           />
         )}
@@ -136,16 +136,16 @@ export function SearchResultsSummary({
         {appliedFilters.year && (
           <FilterBadge
             label={`Year: ${appliedFilters.year}`}
-            onClear={() => onClearFilter("year")}
+            onClear={() => onClearFilter('year')}
             variant="secondary"
           />
         )}
 
         {appliedFilters.budget_document &&
-          appliedFilters.budget_document !== "all" && (
+          appliedFilters.budget_document !== 'all' && (
             <FilterBadge
               label={`Budget Doc: ${appliedFilters.budget_document}`}
-              onClear={() => onClearFilter("budget_document")}
+              onClear={() => onClearFilter('budget_document')}
               variant="secondary"
             />
           )}
@@ -158,11 +158,11 @@ export function SearchResultsSummary({
                 <EntityName entityName={appliedFilters.cross_entity} />
               </>
             }
-            onClear={() => onClearFilter("cross_entity")}
+            onClear={() => onClearFilter('cross_entity')}
             variant="secondary"
           />
         )}
       </div>
     </div>
-  );
+  )
 }

@@ -1,7 +1,7 @@
-"use client";
+'use client'
 
-import { SearchableDropdown } from "./SearchableDropdown";
-import { Label } from "@/components/ui/label";
+import { SearchableDropdown } from './SearchableDropdown'
+import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
@@ -9,28 +9,28 @@ import {
   SelectTrigger,
   SelectValue,
   SelectSeparator,
-} from "@/components/ui/select";
-import { HelpCircle, Calendar, Target, Receipt, BookOpen } from "lucide-react";
-import { YearSlider } from "./YearSlider";
-import { explainerTexts } from "@/lib/explainer-texts";
-import { titleCase } from "title-case";
-import { useState, useEffect } from "react";
-import { getBudgetDocumentOptions } from "@/lib/budget-documents";
+} from '@/components/ui/select'
+import { HelpCircle, Calendar, Target, Receipt, BookOpen } from 'lucide-react'
+import { YearSlider } from './YearSlider'
+import { explainerTexts } from '@/lib/explainer-texts'
+import { titleCase } from 'title-case'
+import { useState, useEffect } from 'react'
+import { getBudgetDocumentOptions } from '@/lib/budget-documents'
 
 interface AdvancedSearchProps {
-  programme: string;
-  subject: string;
-  budgetDocument: string;
-  programmeOptions: { value: string; count: number }[];
-  subjectOptions: { value: string; count: number }[];
-  yearRange: { min: number; max: number } | null;
-  yearDistribution: { [year: string]: number };
-  originalYearDistribution?: { [year: string]: number };
-  selectedYearRange: [number, number] | null;
-  onProgrammeChange: (value: string) => void;
-  onSubjectChange: (value: string) => void;
-  onBudgetDocumentChange: (value: string) => void;
-  onYearRangeChange: (value: [number, number]) => void;
+  programme: string
+  subject: string
+  budgetDocument: string
+  programmeOptions: { value: string; count: number }[]
+  subjectOptions: { value: string; count: number }[]
+  yearRange: { min: number; max: number } | null
+  yearDistribution: { [year: string]: number }
+  originalYearDistribution?: { [year: string]: number }
+  selectedYearRange: [number, number] | null
+  onProgrammeChange: (value: string) => void
+  onSubjectChange: (value: string) => void
+  onBudgetDocumentChange: (value: string) => void
+  onYearRangeChange: (value: [number, number]) => void
 }
 
 export function AdvancedSearch({
@@ -48,70 +48,69 @@ export function AdvancedSearch({
   onBudgetDocumentChange,
   onYearRangeChange,
 }: AdvancedSearchProps) {
-  const [openTooltip, setOpenTooltip] = useState<string | null>(null);
+  const [openTooltip, setOpenTooltip] = useState<string | null>(null)
 
   // Close tooltip when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Element;
-      if (!target.closest(".tooltip-container")) {
-        setOpenTooltip(null);
+      const target = event.target as Element
+      if (!target.closest('.tooltip-container')) {
+        setOpenTooltip(null)
       }
-    };
+    }
 
     if (openTooltip) {
-      document.addEventListener("mousedown", handleClickOutside);
-      return () =>
-        document.removeEventListener("mousedown", handleClickOutside);
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => document.removeEventListener('mousedown', handleClickOutside)
     }
-  }, [openTooltip]);
+  }, [openTooltip])
 
   const programmeDropdownOptions = programmeOptions.map((p) => ({
     value: p.value,
     label: `${titleCase(p.value)} (${p.count})`,
     disabled: p.count === 0,
-  }));
+  }))
 
   const subjectDropdownOptions = subjectOptions.map((s) => ({
     value: s.value,
     label: `${titleCase(s.value)} (${s.count})`,
     disabled: s.count === 0,
-  }));
+  }))
 
   const toggleTooltip = (tooltipId: string) => {
-    setOpenTooltip(openTooltip === tooltipId ? null : tooltipId);
-  };
+    setOpenTooltip(openTooltip === tooltipId ? null : tooltipId)
+  }
 
   const TooltipButton = ({
     tooltipId,
     ariaLabel,
     tooltipText,
   }: {
-    tooltipId: string;
-    ariaLabel: string;
-    tooltipText: string;
+    tooltipId: string
+    ariaLabel: string
+    tooltipText: string
   }) => (
-    <div className="relative tooltip-container">
+    <div className="tooltip-container relative">
       <button
         type="button"
-        className="p-0 border-0 bg-transparent cursor-help focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 rounded-sm -ml-1 touch-manipulation"
+        className="-ml-1 cursor-help touch-manipulation rounded-sm border-0 bg-transparent p-0 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden"
         aria-label={ariaLabel}
         onClick={() => toggleTooltip(tooltipId)}
       >
         <HelpCircle className="h-4 w-4 text-muted-foreground" />
       </button>
       {openTooltip === tooltipId && (
-        <div className="absolute right-0 top-6 z-50 w-64 p-3 bg-popover border rounded-md shadow-md text-sm text-popover-foreground">
+        <div className="absolute top-6 right-0 z-50 w-64 rounded-md border bg-popover p-3 text-sm text-popover-foreground shadow-md">
           <p>{tooltipText}</p>
         </div>
       )}
     </div>
-  );
+  )
 
   return (
     <div className="space-y-6">
       {/* Row 1: UN Subjects, Programme, Budget Document */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -137,7 +136,7 @@ export function AdvancedSearch({
             emptyPlaceholder={
               explainerTexts.advancedFilters.subjects.emptyPlaceholder
             }
-            className="text-sm h-11 border-slate-300 focus:border-blue-500 focus:ring-blue-500 bg-white"
+            className="h-11 border-slate-300 bg-white text-sm focus:border-blue-500 focus:ring-blue-500"
           />
         </div>
         <div className="space-y-3">
@@ -165,7 +164,7 @@ export function AdvancedSearch({
             emptyPlaceholder={
               explainerTexts.advancedFilters.programme.emptyPlaceholder
             }
-            className="text-sm h-11 border-slate-300 focus:border-blue-500 focus:ring-blue-500 bg-white"
+            className="h-11 border-slate-300 bg-white text-sm focus:border-blue-500 focus:ring-blue-500"
           />
         </div>
         <div className="space-y-3">
@@ -190,7 +189,7 @@ export function AdvancedSearch({
           <Select value={budgetDocument} onValueChange={onBudgetDocumentChange}>
             <SelectTrigger
               id="budget-document"
-              className="text-sm h-11 border-slate-300 focus:border-blue-500 focus:ring-blue-500 bg-white"
+              className="h-11 border-slate-300 bg-white text-sm focus:border-blue-500 focus:ring-blue-500"
             >
               <SelectValue
                 placeholder={
@@ -239,5 +238,5 @@ export function AdvancedSearch({
         </div>
       )}
     </div>
-  );
+  )
 }

@@ -1,53 +1,53 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Search, X } from "lucide-react";
+import { useState } from 'react'
+import { useRouter, usePathname, useSearchParams } from 'next/navigation'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Search, X } from 'lucide-react'
 
 export function MandateSearchBox() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const [keyword, setKeyword] = useState(searchParams.get("keyword") || "");
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const [keyword, setKeyword] = useState(searchParams.get('keyword') || '')
 
   const handleSearch = (searchTerm: string = keyword) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("page", "1");
+    const params = new URLSearchParams(searchParams.toString())
+    params.set('page', '1')
     if (searchTerm.trim()) {
-      params.set("keyword", searchTerm.trim());
+      params.set('keyword', searchTerm.trim())
     } else {
-      params.delete("keyword");
+      params.delete('keyword')
       // When clearing search, if sort was relevance, reset to default (citing entities)
-      if (params.get("sort_by") === "default") {
-        params.set("sort_by", "citing_entities_desc");
+      if (params.get('sort_by') === 'default') {
+        params.set('sort_by', 'citing_entities_desc')
       }
     }
-    router.push(`${pathname}?${params.toString()}`, { scroll: false });
-  };
+    router.push(`${pathname}?${params.toString()}`, { scroll: false })
+  }
 
   const handleClear = () => {
-    setKeyword("");
-    handleSearch("");
-  };
+    setKeyword('')
+    handleSearch('')
+  }
 
   return (
     <div className="relative">
-      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+      <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
       <Input
         placeholder="Search mandate documents..."
         value={keyword}
         onChange={(e) => setKeyword(e.target.value)}
         onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            handleSearch(keyword);
+          if (e.key === 'Enter') {
+            e.preventDefault()
+            handleSearch(keyword)
           }
         }}
-        className="pl-10 pr-20 h-11"
+        className="h-11 pr-20 pl-10"
       />
-      <div className="absolute right-0 top-0 h-full flex">
+      <div className="absolute top-0 right-0 flex h-full">
         {keyword && (
           <Button
             variant="ghost"
@@ -70,5 +70,5 @@ export function MandateSearchBox() {
         </Button>
       </div>
     </div>
-  );
+  )
 }

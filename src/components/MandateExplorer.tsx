@@ -1,19 +1,19 @@
-"use client";
+'use client'
 
-import { DataCard } from "@/components/DataCard";
-import { FilterControls } from "@/components/FilterControls";
-import { LoadingSkeleton } from "@/components/LoadingSkeleton";
-import { MandateList } from "@/components/MandateList";
-import { PaginationControls } from "@/components/PaginationControls";
-import { SidebarAccordion } from "@/components/SidebarAccordion";
+import { DataCard } from '@/components/DataCard'
+import { FilterControls } from '@/components/FilterControls'
+import { LoadingSkeleton } from '@/components/LoadingSkeleton'
+import { MandateList } from '@/components/MandateList'
+import { PaginationControls } from '@/components/PaginationControls'
+import { SidebarAccordion } from '@/components/SidebarAccordion'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-} from "@/components/ui/select";
-import { explainerTexts } from "@/lib/explainer-texts";
-import type { ApiResponse, Entity, Organ } from "@/types";
+} from '@/components/ui/select'
+import { explainerTexts } from '@/lib/explainer-texts'
+import type { ApiResponse, Entity, Organ } from '@/types'
 import {
   Building,
   ChevronDown,
@@ -22,29 +22,29 @@ import {
   Landmark,
   Link as LinkIcon,
   Quote,
-} from "lucide-react";
-import { useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+} from 'lucide-react'
+import { useSearchParams } from 'next/navigation'
+import { useCallback, useEffect, useState } from 'react'
 
-import { OrganListSidebar } from "@/components/Sidebar0rganList";
-import { CrossCitationsSidebar } from "@/components/SidebarCrossCitations";
-import { EntityListSidebar } from "@/components/SidebarEntityList";
-import { Button } from "@/components/ui/button";
-import { useFilters } from "@/contexts/FilterContext";
-import { FILTER_ONLY_PARAMS, FILTER_PARAMS } from "@/lib/filter-constants";
+import { OrganListSidebar } from '@/components/Sidebar0rganList'
+import { CrossCitationsSidebar } from '@/components/SidebarCrossCitations'
+import { EntityListSidebar } from '@/components/SidebarEntityList'
+import { Button } from '@/components/ui/button'
+import { useFilters } from '@/contexts/FilterContext'
+import { FILTER_ONLY_PARAMS, FILTER_PARAMS } from '@/lib/filter-constants'
 
 interface MandateExplorerProps {
   // Explicit filters for entity/organ pages
-  entityFilter?: string;
-  organFilter?: string;
+  entityFilter?: string
+  organFilter?: string
   // Page type for conditional rendering
-  pageType: "main" | "entity" | "organ";
+  pageType: 'main' | 'entity' | 'organ'
   // Callback to pass entity details to parent component
-  onEntityDetailsLoaded?: (entities: Entity[]) => void;
+  onEntityDetailsLoaded?: (entities: Entity[]) => void
   // Callback to pass organ details to parent component
-  onOrganDetailsLoaded?: (organs: Organ[]) => void;
+  onOrganDetailsLoaded?: (organs: Organ[]) => void
   // Callback to pass API data to parent component
-  onDataLoaded?: (data: ApiResponse) => void;
+  onDataLoaded?: (data: ApiResponse) => void
 }
 
 export function MandateExplorer({
@@ -55,17 +55,17 @@ export function MandateExplorer({
   onOrganDetailsLoaded,
   onDataLoaded,
 }: MandateExplorerProps) {
-  const { filters, setFilter } = useFilters();
-  const searchParams = useSearchParams();
+  const { filters, setFilter } = useFilters()
+  const searchParams = useSearchParams()
 
   // Helper function to extract URL parameters using constants
-  const getUrlParam = (key: string, defaultValue: string = "") => {
-    const value = searchParams.get(key);
-    if (key === "sort_by" && !value) {
-      return searchParams.get("keyword") ? "default" : "citing_entities_desc";
+  const getUrlParam = (key: string, defaultValue: string = '') => {
+    const value = searchParams.get(key)
+    if (key === 'sort_by' && !value) {
+      return searchParams.get('keyword') ? 'default' : 'citing_entities_desc'
     }
-    return value || defaultValue;
-  };
+    return value || defaultValue
+  }
 
   // Get current URL parameters directly (this is always up-to-date)
   const currentUrlParams = Object.fromEntries(
@@ -73,103 +73,103 @@ export function MandateExplorer({
       param,
       getUrlParam(
         param,
-        param === "page" ? "1" : param === "limit" ? "10" : "",
+        param === 'page' ? '1' : param === 'limit' ? '10' : ''
       ),
-    ]),
-  ) as Record<(typeof FILTER_PARAMS)[number], string>;
+    ])
+  ) as Record<(typeof FILTER_PARAMS)[number], string>
 
   // Simplified state management - only what's needed for UI
-  const [apiData, setApiData] = useState<ApiResponse | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
+  const [apiData, setApiData] = useState<ApiResponse | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false)
   const [originalYearDistribution, setOriginalYearDistribution] = useState<{
-    [year: string]: number;
-  } | null>(null);
+    [year: string]: number
+  } | null>(null)
 
   // Data card popover states (preserved for exact same behavior)
-  const [sourceDocumentsPopover, setSourceDocumentsPopover] = useState(false);
-  const [unOrgansPopover, setUnOrgansPopover] = useState(false);
-  const [unEntitiesPopover, setUnEntitiesPopover] = useState(false);
-  const [citationsPopover, setCitationsPopover] = useState(false);
+  const [sourceDocumentsPopover, setSourceDocumentsPopover] = useState(false)
+  const [unOrgansPopover, setUnOrgansPopover] = useState(false)
+  const [unEntitiesPopover, setUnEntitiesPopover] = useState(false)
+  const [citationsPopover, setCitationsPopover] = useState(false)
 
   // Get current page and page size from URL params directly (always up-to-date)
-  const currentPage = Number(currentUrlParams.page);
-  const pageSize = Number(currentUrlParams.limit);
-  const sortBy = currentUrlParams.sort_by;
+  const currentPage = Number(currentUrlParams.page)
+  const pageSize = Number(currentUrlParams.limit)
+  const sortBy = currentUrlParams.sort_by
 
   // Fetch data when URL parameters change - use URL params directly
   useEffect(() => {
     const fetchData = async () => {
-      setIsLoading(true);
+      setIsLoading(true)
       try {
-        const params = new URLSearchParams();
+        const params = new URLSearchParams()
 
         // For entity/organ pages: only use implicit filter + any additional URL filters from within-page filtering
-        if (pageType === "entity" && entityFilter) {
-          params.set("entity", entityFilter);
-        } else if (pageType === "organ" && organFilter) {
-          params.set("organ", organFilter);
+        if (pageType === 'entity' && entityFilter) {
+          params.set('entity', entityFilter)
+        } else if (pageType === 'organ' && organFilter) {
+          params.set('organ', organFilter)
         }
 
         // Add URL-based filters directly from searchParams (not from context)
         const urlFilters = Object.fromEntries(
-          FILTER_ONLY_PARAMS.map((param) => [param, currentUrlParams[param]]),
-        ) as Record<(typeof FILTER_ONLY_PARAMS)[number], string>;
+          FILTER_ONLY_PARAMS.map((param) => [param, currentUrlParams[param]])
+        ) as Record<(typeof FILTER_ONLY_PARAMS)[number], string>
 
         Object.entries(urlFilters).forEach(([key, value]) => {
-          if (value && value !== "all") {
+          if (value && value !== 'all') {
             // Skip entity/organ filters if we already set them implicitly above
             if (
-              (pageType === "entity" && key === "entity") ||
-              (pageType === "organ" && key === "organ")
+              (pageType === 'entity' && key === 'entity') ||
+              (pageType === 'organ' && key === 'organ')
             ) {
-              return;
+              return
             }
-            params.set(key, value);
+            params.set(key, value)
           }
-        });
+        })
 
         // Set defaults using current values
-        params.set("page", currentPage.toString());
-        params.set("limit", pageSize.toString());
-        params.set("sort_by", sortBy);
+        params.set('page', currentPage.toString())
+        params.set('limit', pageSize.toString())
+        params.set('sort_by', sortBy)
 
-        const response = await fetch(`/api/mandates?${params.toString()}`);
+        const response = await fetch(`/api/mandates?${params.toString()}`)
         if (!response.ok) {
-          throw new Error(`API Error: ${response.status}`);
+          throw new Error(`API Error: ${response.status}`)
         }
 
-        const data: ApiResponse = await response.json();
-        setApiData(data);
+        const data: ApiResponse = await response.json()
+        setApiData(data)
 
         // Store original year distribution if no year filters are currently applied
         const hasYearFilters =
-          currentUrlParams.start_year || currentUrlParams.end_year;
+          currentUrlParams.start_year || currentUrlParams.end_year
         if (
           !hasYearFilters &&
           data.filterOptions?.yearDistribution &&
           !originalYearDistribution
         ) {
-          setOriginalYearDistribution(data.filterOptions.yearDistribution);
+          setOriginalYearDistribution(data.filterOptions.yearDistribution)
         }
 
         // Call callback to pass entity details to parent component
         if (onEntityDetailsLoaded && data.reference?.entities) {
-          onEntityDetailsLoaded(data.reference.entities);
+          onEntityDetailsLoaded(data.reference.entities)
         }
 
         // Call callback to pass organ details to parent component
         if (onOrganDetailsLoaded && data.reference?.organs) {
-          onOrganDetailsLoaded(data.reference.organs);
+          onOrganDetailsLoaded(data.reference.organs)
         }
       } catch (error) {
-        console.error("Failed to fetch data:", error);
+        console.error('Failed to fetch data:', error)
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
-    };
+    }
 
-    fetchData();
+    fetchData()
   }, [
     searchParams,
     currentPage,
@@ -178,44 +178,44 @@ export function MandateExplorer({
     entityFilter,
     organFilter,
     pageType,
-  ]);
+  ])
 
   // Handle sort change (preserved exact function)
   const handleSortChange = useCallback(
     (value: string) => {
-      setFilter("sort_by", value);
+      setFilter('sort_by', value)
     },
-    [setFilter],
-  );
+    [setFilter]
+  )
 
   // Loading skeleton (now using reusable component)
   const LoadingSkeletonComponent = () => (
     <LoadingSkeleton variant="list" count={4} />
-  );
+  )
 
   // Extract data for components (with same fallbacks as before)
-  const mandates = apiData?.mandates || [];
+  const mandates = apiData?.mandates || []
   const pagination = apiData?.pagination || {
     page: 1,
     limit: 10,
     totalPages: 0,
     totalItems: 0,
-  };
+  }
   const counts = apiData?.counts || {
     totalDocuments: 0,
     totalEntities: 0,
     totalOrgans: 0,
     totalCitations: 0,
-  };
+  }
   const filterOptions = apiData?.filterOptions || {
     programmes: [],
     subjects: [],
     yearRange: { min: 2000, max: 2024 },
     yearDistribution: {},
-  };
-  const allOrgans = apiData?.reference.organs || [];
-  const allEntities = apiData?.reference.entities || [];
-  const crossCitations = apiData?.sidebar.crossCitations || [];
+  }
+  const allOrgans = apiData?.reference.organs || []
+  const allEntities = apiData?.reference.entities || []
+  const crossCitations = apiData?.sidebar.crossCitations || []
 
   // Data cards section (preserved exact JSX structure and logic)
   //   FIXME: simplify?
@@ -233,43 +233,43 @@ export function MandateExplorer({
       {/* Always show organs card; on organ page show short name, else show count */}
       <DataCard
         title={
-          pageType === "organ"
-            ? "UN Organ / Body"
+          pageType === 'organ'
+            ? 'UN Organ / Body'
             : explainerTexts.dataCards.unOrgans.title
         }
-        value={pageType === "organ" ? organFilter || "" : counts.totalOrgans}
+        value={pageType === 'organ' ? organFilter || '' : counts.totalOrgans}
         icon={Landmark}
         description={explainerTexts.dataCards.unOrgans.description}
         isOpen={unOrgansPopover}
         onOpenChange={setUnOrgansPopover}
-        isLoading={isLoading && pageType !== "organ"}
+        isLoading={isLoading && pageType !== 'organ'}
       />
       {/* Always show entity card; on entity page show short name, else show count */}
       <DataCard
         title={
-          pageType === "entity"
-            ? "Entity"
+          pageType === 'entity'
+            ? 'Entity'
             : explainerTexts.dataCards.unEntities.title
         }
         value={
-          pageType === "entity" ? entityFilter || "" : counts.totalEntities
+          pageType === 'entity' ? entityFilter || '' : counts.totalEntities
         }
         icon={Building}
         description={explainerTexts.dataCards.unEntities.description}
         isOpen={unEntitiesPopover}
         onOpenChange={setUnEntitiesPopover}
-        isLoading={isLoading && pageType !== "entity"}
+        isLoading={isLoading && pageType !== 'entity'}
       />
       <DataCard
         title={
-          pageType === "entity"
+          pageType === 'entity'
             ? explainerTexts.dataCards.citationsByEntity.title
             : explainerTexts.dataCards.citations.title
         }
         value={counts.totalCitations}
         icon={Quote}
         description={
-          pageType === "entity"
+          pageType === 'entity'
             ? explainerTexts.dataCards.citationsByEntity.description
             : explainerTexts.dataCards.citations.description
         }
@@ -278,20 +278,20 @@ export function MandateExplorer({
         isLoading={isLoading}
       />
     </>
-  );
+  )
 
   return (
     <div>
       {/* Summary Cards - horizontal scroll on mobile, grid on larger screens */}
       <section
         aria-labelledby="summary-heading"
-        className="overflow-x-auto sm:overflow-x-visible scroll-smooth -mx-4 sm:mx-0"
+        className="-mx-4 overflow-x-auto scroll-smooth sm:mx-0 sm:overflow-x-visible"
         style={{
-          scrollSnapType: "x mandatory",
-          scrollPadding: "0 1rem",
+          scrollSnapType: 'x mandatory',
+          scrollPadding: '0 1rem',
         }}
       >
-        <div className="flex gap-4 sm:grid sm:grid-cols-2 lg:grid-cols-4 min-w-max sm:min-w-0 px-4 sm:px-0">
+        <div className="flex min-w-max gap-4 px-4 sm:grid sm:min-w-0 sm:grid-cols-2 sm:px-0 lg:grid-cols-4">
           {dataCardsSection}
         </div>
       </section>
@@ -299,12 +299,12 @@ export function MandateExplorer({
       <div>
         <div className="mt-6 pt-4">
           {/* Collapsible sidebars for smaller screens (preserved exact logic) */}
-          {pageType === "main" && (
+          {pageType === 'main' && (
             <SidebarAccordion
               items={[
                 {
-                  id: "organs",
-                  title: "UN Organs",
+                  id: 'organs',
+                  title: 'UN Organs',
                   icon: Landmark,
                   content: (
                     <OrganListSidebar
@@ -322,8 +322,8 @@ export function MandateExplorer({
                   ),
                 },
                 {
-                  id: "entities",
-                  title: "UN Entities",
+                  id: 'entities',
+                  title: 'UN Entities',
                   icon: Building,
                   content: (
                     <EntityListSidebar
@@ -345,12 +345,12 @@ export function MandateExplorer({
           )}
 
           {/* Collapsible sidebars for entity pages */}
-          {pageType === "entity" && (
+          {pageType === 'entity' && (
             <SidebarAccordion
               items={[
                 {
-                  id: "organs",
-                  title: "UN Organs",
+                  id: 'organs',
+                  title: 'UN Organs',
                   icon: Landmark,
                   content: (
                     <OrganListSidebar
@@ -365,8 +365,8 @@ export function MandateExplorer({
                   ),
                 },
                 {
-                  id: "cross-citations",
-                  title: "Cross-Citations",
+                  id: 'cross-citations',
+                  title: 'Cross-Citations',
                   icon: LinkIcon,
                   content: (
                     <CrossCitationsSidebar
@@ -386,12 +386,12 @@ export function MandateExplorer({
           )}
 
           {/* Collapsible sidebars for organ pages */}
-          {pageType === "organ" && (
+          {pageType === 'organ' && (
             <SidebarAccordion
               items={[
                 {
-                  id: "entities",
-                  title: "UN Entities",
+                  id: 'entities',
+                  title: 'UN Entities',
                   icon: Building,
                   content: (
                     <EntityListSidebar
@@ -410,31 +410,31 @@ export function MandateExplorer({
           )}
 
           {/* Main content with mandates list and sidebars */}
-          <div className="flex flex-col lg:flex-row gap-6">
+          <div className="flex flex-col gap-6 lg:flex-row">
             {/* Main mandates content */}
-            <div className="flex-1 min-w-0">
+            <div className="min-w-0 flex-1">
               {/* Section Title with Icon and Sort Controls + FilterControls (preserved exact JSX) */}
               <div className="mb-4">
-                <div className="flex items-center gap-3 justify-between flex-wrap mb-2">
+                <div className="mb-2 flex flex-wrap items-center justify-between gap-3">
                   <div className="flex items-center gap-2">
                     <FileText className="h-6 w-6 text-un-blue" />
                     <h2 className="text-2xl font-bold tracking-tight">
                       {explainerTexts.dataCards.sectionTitle}
                       {/* Detail page title: cited by/issued by (preserved exact logic) */}
-                      {pageType === "entity" && <> cited by {entityFilter}</>}
-                      {pageType === "organ" && <> issued by {organFilter}</>}
+                      {pageType === 'entity' && <> cited by {entityFilter}</>}
+                      {pageType === 'organ' && <> issued by {organFilter}</>}
                     </h2>
                   </div>
-                  <div className="flex items-center gap-2 ml-auto">
+                  <div className="ml-auto flex items-center gap-2">
                     <Button
                       variant="ghost"
                       onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}
-                      className="shrink-0 flex items-center gap-2 px-2 text-left text-slate-600 hover:text-slate-900 hover:bg-transparent whitespace-nowrap"
+                      className="flex shrink-0 items-center gap-2 px-2 text-left whitespace-nowrap text-slate-600 hover:bg-transparent hover:text-slate-900"
                     >
                       <span className="text-sm font-medium">
                         {showAdvancedSearch
-                          ? "Hide Advanced Filters"
-                          : "Show Advanced Filters"}
+                          ? 'Hide Advanced Filters'
+                          : 'Show Advanced Filters'}
                       </span>
                       {showAdvancedSearch ? (
                         <ChevronUp className="h-4 w-4" />
@@ -487,7 +487,7 @@ export function MandateExplorer({
                   pageType={pageType}
                 />
               </div>
-              <div className="flex flex-col lg:flex-row gap-6">
+              <div className="flex flex-col gap-6 lg:flex-row">
                 {/* Mandates List (preserved exact structure) */}
                 <div className="flex-1">
                   <div className="mb-6">
@@ -516,9 +516,9 @@ export function MandateExplorer({
             </div>
 
             {/* Right sidebar - render internally based on page type */}
-            <div className="hidden lg:block lg:w-80 shrink-0 space-y-6">
+            <div className="hidden shrink-0 space-y-6 lg:block lg:w-80">
               {/* Entity pages show cross-citations and organs */}
-              {pageType === "entity" && (
+              {pageType === 'entity' && (
                 <>
                   <OrganListSidebar
                     organs={apiData?.sidebar?.organs || []}
@@ -539,7 +539,7 @@ export function MandateExplorer({
               )}
 
               {/* Organ pages show entities only */}
-              {pageType === "organ" && (
+              {pageType === 'organ' && (
                 <EntityListSidebar
                   entities={apiData?.sidebar?.entities || []}
                   allEntities={allEntities}
@@ -550,7 +550,7 @@ export function MandateExplorer({
               )}
 
               {/* Main page shows entities and organs */}
-              {pageType === "main" && (
+              {pageType === 'main' && (
                 <>
                   <OrganListSidebar
                     organs={apiData?.sidebar?.organs || []}
@@ -571,5 +571,5 @@ export function MandateExplorer({
         </div>
       </div>
     </div>
-  );
+  )
 }

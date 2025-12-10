@@ -1,32 +1,32 @@
-"use client";
+'use client'
 
-import { useMemo, useState } from "react";
-import { Badge } from "@/components/ui/badge";
-import { titleCase } from "title-case";
+import { useMemo, useState } from 'react'
+import { Badge } from '@/components/ui/badge'
+import { titleCase } from 'title-case'
 import {
   getOriginDocumentDisplayName,
   getBudgetDocumentSlug,
-} from "@/lib/budget-documents";
-import { MetadataItem } from "@/components/MetadataItem";
-import type { Mandate } from "@/types";
+} from '@/lib/budget-documents'
+import { MetadataItem } from '@/components/MetadataItem'
+import type { Mandate } from '@/types'
 
 interface MandateMetadataProps {
-  mandate: Mandate;
+  mandate: Mandate
 }
 
 export function MandateMetadata({ mandate }: MandateMetadataProps) {
-  const [showAllSubjects, setShowAllSubjects] = useState(false);
-  const SUBJECTS_DEFAULT_SHOWN = 20;
+  const [showAllSubjects, setShowAllSubjects] = useState(false)
+  const SUBJECTS_DEFAULT_SHOWN = 20
   const budgetDocuments = useMemo(() => {
-    if (!mandate || !mandate.citation_info) return [];
-    const uniqueDocs = new Set<string>();
+    if (!mandate || !mandate.citation_info) return []
+    const uniqueDocs = new Set<string>()
     mandate.citation_info.forEach((citation) => {
       if (citation.origin_document) {
-        uniqueDocs.add(citation.origin_document);
+        uniqueDocs.add(citation.origin_document)
       }
-    });
-    return Array.from(uniqueDocs);
-  }, [mandate]);
+    })
+    return Array.from(uniqueDocs)
+  }, [mandate])
 
   return (
     <div className="space-y-0 rounded-lg">
@@ -34,10 +34,10 @@ export function MandateMetadata({ mandate }: MandateMetadataProps) {
         {mandate.body ? (
           <Badge
             variant="secondary"
-            className="text-xs cursor-pointer hover:bg-secondary/80 transition-colors"
+            className="cursor-pointer text-xs transition-colors hover:bg-secondary/80"
             onClick={() => {
               // Navigate to organ detail page
-              window.location.href = `/organ/${encodeURIComponent(mandate.body)}`;
+              window.location.href = `/organ/${encodeURIComponent(mandate.body)}`
             }}
           >
             {mandate.body}
@@ -71,25 +71,25 @@ export function MandateMetadata({ mandate }: MandateMetadataProps) {
         {budgetDocuments.length > 0 ? (
           <div className="flex flex-wrap gap-1.5">
             {budgetDocuments.map((doc, index) => {
-              const displayName = getOriginDocumentDisplayName(doc);
-              const slug = getBudgetDocumentSlug(displayName);
+              const displayName = getOriginDocumentDisplayName(doc)
+              const slug = getBudgetDocumentSlug(displayName)
 
               return (
                 <Badge
                   key={index}
                   variant="secondary"
-                  className="text-xs cursor-pointer hover:bg-secondary/80 transition-colors"
+                  className="cursor-pointer text-xs transition-colors hover:bg-secondary/80"
                   onClick={() => {
                     // Navigate to filtered results using the budget document slug
-                    const url = new URL(window.location.origin + "/");
-                    url.searchParams.set("page", "1");
-                    url.searchParams.set("budget_document", slug);
-                    window.location.href = url.toString();
+                    const url = new URL(window.location.origin + '/')
+                    url.searchParams.set('page', '1')
+                    url.searchParams.set('budget_document', slug)
+                    window.location.href = url.toString()
                   }}
                 >
                   {displayName}
                 </Badge>
-              );
+              )
             })}
           </div>
         ) : (
@@ -124,13 +124,13 @@ export function MandateMetadata({ mandate }: MandateMetadataProps) {
               <Badge
                 key={index}
                 variant="outline"
-                className="text-xs font-normal border-un-blue! cursor-pointer hover:bg-un-blue/10 transition-colors"
+                className="cursor-pointer border-un-blue! text-xs font-normal transition-colors hover:bg-un-blue/10"
                 onClick={() => {
                   // Navigate to filtered results with only the subject filter
-                  const url = new URL(window.location.origin + "/");
-                  url.searchParams.set("page", "1");
-                  url.searchParams.set("subject", heading.trim());
-                  window.location.href = url.toString();
+                  const url = new URL(window.location.origin + '/')
+                  url.searchParams.set('page', '1')
+                  url.searchParams.set('subject', heading.trim())
+                  window.location.href = url.toString()
                 }}
               >
                 {titleCase(heading.toLowerCase())}
@@ -139,11 +139,11 @@ export function MandateMetadata({ mandate }: MandateMetadataProps) {
             {mandate.subject_headings.length > SUBJECTS_DEFAULT_SHOWN && (
               <button
                 type="button"
-                className="text-sm text-un-blue hover:text-un-blue/80 ml-1"
+                className="ml-1 text-sm text-un-blue hover:text-un-blue/80"
                 onClick={() => setShowAllSubjects(!showAllSubjects)}
               >
                 {showAllSubjects
-                  ? "Show less"
+                  ? 'Show less'
                   : `Show ${mandate.subject_headings.length - SUBJECTS_DEFAULT_SHOWN} more`}
               </button>
             )}
@@ -151,5 +151,5 @@ export function MandateMetadata({ mandate }: MandateMetadataProps) {
         </MetadataItem>
       )}
     </div>
-  );
+  )
 }

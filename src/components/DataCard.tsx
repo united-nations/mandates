@@ -1,37 +1,37 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
-import { Skeleton } from "@/components/ui/skeleton";
-import { LucideIcon } from "lucide-react";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+import { Skeleton } from '@/components/ui/skeleton'
+import { LucideIcon } from 'lucide-react'
 
 interface ChartDataItem {
-  name: string;
-  count: number;
+  name: string
+  count: number
 }
 
 interface DataCardProps {
-  title: string;
-  value: string | number;
-  icon: LucideIcon;
-  description: string;
-  isLoading?: boolean;
-  isOpen?: boolean;
-  onOpenChange?: (open: boolean) => void;
-  chartData?: ChartDataItem[];
-  showChart?: boolean;
+  title: string
+  value: string | number
+  icon: LucideIcon
+  description: string
+  isLoading?: boolean
+  isOpen?: boolean
+  onOpenChange?: (open: boolean) => void
+  chartData?: ChartDataItem[]
+  showChart?: boolean
 }
 
 function ChartBar({
   item,
   maxCount,
 }: {
-  item: ChartDataItem;
-  maxCount: number;
+  item: ChartDataItem
+  maxCount: number
 }) {
-  const barWidth = (item.count / maxCount) * 100;
+  const barWidth = (item.count / maxCount) * 100
 
   return (
     <div className="flex items-center gap-2">
@@ -48,13 +48,13 @@ function ChartBar({
         {item.count}
       </div>
     </div>
-  );
+  )
 }
 
 function formatValue(value: string | number, isLoading: boolean) {
-  if (isLoading) return <Skeleton className="h-12 w-32" />;
-  if (typeof value === "number" && value > 0) return value.toLocaleString();
-  return value;
+  if (isLoading) return <Skeleton className="h-12 w-32" />
+  if (typeof value === 'number' && value > 0) return value.toLocaleString()
+  return value
 }
 
 export function DataCard({
@@ -70,8 +70,8 @@ export function DataCard({
 }: DataCardProps) {
   const sortedChartData = chartData
     ?.sort((a, b) => b.count - a.count)
-    .slice(0, 10);
-  const maxCount = chartData ? Math.max(...chartData.map((d) => d.count)) : 0;
+    .slice(0, 10)
+  const maxCount = chartData ? Math.max(...chartData.map((d) => d.count)) : 0
 
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
@@ -82,13 +82,13 @@ export function DataCard({
           className="h-full min-w-[250px] cursor-help snap-center border-0 bg-un-blue/10 px-6 py-4 shadow-none transition-all hover:scale-[1.02] sm:min-w-0"
         >
           <CardHeader className="flex flex-row items-center justify-between space-y-0 p-0 pb-2">
-            <CardTitle className="text-left text-lg font-normal leading-tight text-un-blue">
+            <CardTitle className="text-left text-lg leading-tight font-normal text-un-blue">
               {title}
             </CardTitle>
             <Icon className="size-5 shrink-0 text-un-blue" />
           </CardHeader>
           <CardContent className="p-0">
-            <div className="text-left text-4xl font-bold leading-tight tabular-nums text-foreground">
+            <div className="text-left text-4xl leading-tight font-bold text-foreground tabular-nums">
               {formatValue(value, isLoading)}
             </div>
           </CardContent>
@@ -113,5 +113,5 @@ export function DataCard({
         </div>
       </PopoverContent>
     </Popover>
-  );
+  )
 }

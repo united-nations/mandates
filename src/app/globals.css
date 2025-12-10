@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 /* https://tailwindcss.com/docs/colors#customizing-your-colors */
 /* Define Tailwind brand colors */
@@ -174,8 +174,8 @@ body {
   background-color: var(--color-background);
   color: var(--color-foreground);
   font-feature-settings:
-    "rlig" 1,
-    "calt" 1;
+    'rlig' 1,
+    'calt' 1;
   /* Ensure font smoothing for better rendering */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

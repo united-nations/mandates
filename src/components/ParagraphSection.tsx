@@ -1,6 +1,13 @@
-"use client";
+'use client'
 
-import React, { useState, useMemo, useEffect, useCallback, useRef, type JSX } from "react";
+import React, {
+  useState,
+  useMemo,
+  useEffect,
+  useCallback,
+  useRef,
+  type JSX,
+} from 'react'
 import {
   FileCheck,
   FileText,
@@ -10,52 +17,52 @@ import {
   Users,
   MessageCircle,
   X,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
+} from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from '@/components/ui/skeleton'
 
-import { explainerTexts } from "@/lib/explainer-texts";
-import { useIsMobile } from "@/hooks/use-mobile";
-import type { Paragraph } from "@/types";
-import { titleCase } from "title-case";
+import { explainerTexts } from '@/lib/explainer-texts'
+import { useIsMobile } from '@/hooks/use-mobile'
+import type { Paragraph } from '@/types'
+import { titleCase } from 'title-case'
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from '@/components/ui/tooltip'
 
 interface ParagraphsSectionProps {
-  paragraphs: Paragraph[];
-  documentSymbol: string;
-  isLoading: boolean;
-  error: string | null;
+  paragraphs: Paragraph[]
+  documentSymbol: string
+  isLoading: boolean
+  error: string | null
 }
 
 // TOC data structure
 interface TOCItem {
-  id: string;
-  text: string;
-  level: number;
-  children: TOCItem[];
-  index: number;
+  id: string
+  text: string
+  level: number
+  children: TOCItem[]
+  index: number
 }
 
 // Reusable filter dropdown component
 interface FilterDropdownProps {
-  label: string;
-  icon: React.ReactNode;
-  currentFilter: string;
-  isOpen: boolean;
-  onToggle: () => void;
-  onFilterChange: (filter: string) => void;
-  typeCounts: Record<string, number>;
-  withItemsCount: number;
-  withItemsLabel: string;
-  totalCount: number;
-  className?: string;
-  hierarchicalData?: Record<string, Record<string, number>>;
-  filteredTotalCount: number; // Count of all paragraphs matching other filters
+  label: string
+  icon: React.ReactNode
+  currentFilter: string
+  isOpen: boolean
+  onToggle: () => void
+  onFilterChange: (filter: string) => void
+  typeCounts: Record<string, number>
+  withItemsCount: number
+  withItemsLabel: string
+  totalCount: number
+  className?: string
+  hierarchicalData?: Record<string, Record<string, number>>
+  filteredTotalCount: number // Count of all paragraphs matching other filters
 }
 
 function FilterDropdown({
@@ -69,38 +76,38 @@ function FilterDropdown({
   withItemsCount,
   withItemsLabel,
   totalCount,
-  className = "",
+  className = '',
   hierarchicalData,
   filteredTotalCount,
 }: FilterDropdownProps) {
-  const withItemsKey = `with-${label.toLowerCase()}`;
+  const withItemsKey = `with-${label.toLowerCase()}`
 
   return (
     <div className={`relative ${className}`}>
       <button
         onClick={onToggle}
-        className={`text-xs h-7 px-3 border rounded-md bg-gray-100 hover:bg-gray-200 border-gray-300 hover:border-gray-400 transition-all duration-200 flex items-center gap-1.5 cursor-pointer ${
-          currentFilter !== "all"
-            ? "border-un-blue! text-un-blue! bg-un-blue/15! hover:bg-un-blue/25!"
-            : "text-gray-700"
+        className={`flex h-7 cursor-pointer items-center gap-1.5 rounded-md border border-gray-300 bg-gray-100 px-3 text-xs transition-all duration-200 hover:border-gray-400 hover:bg-gray-200 ${
+          currentFilter !== 'all'
+            ? 'border-un-blue! bg-un-blue/15! text-un-blue! hover:bg-un-blue/25!'
+            : 'text-gray-700'
         }`}
       >
         {icon}
         <span>
-          {currentFilter === "all"
+          {currentFilter === 'all'
             ? label
             : currentFilter === withItemsKey
               ? `${withItemsLabel} (${withItemsCount})`
-              : currentFilter.includes(":")
+              : currentFilter.includes(':')
                 ? (() => {
-                    const [type, item] = currentFilter.split(":");
-                    const itemCount = hierarchicalData?.[type]?.[item] || 0;
-                    return `${titleCase(item)} (${itemCount})`;
+                    const [type, item] = currentFilter.split(':')
+                    const itemCount = hierarchicalData?.[type]?.[item] || 0
+                    return `${titleCase(item)} (${itemCount})`
                   })()
-                : `${titleCase(currentFilter.replace(/_/g, " "))} (${typeCounts[currentFilter] || 0})`}
+                : `${titleCase(currentFilter.replace(/_/g, ' '))} (${typeCounts[currentFilter] || 0})`}
         </span>
         <svg
-          className={`h-3 w-3 transition-transform ${isOpen ? "rotate-180" : ""}`}
+          className={`h-3 w-3 transition-transform ${isOpen ? 'rotate-180' : ''}`}
           fill="currentColor"
           viewBox="0 0 20 20"
         >
@@ -112,32 +119,32 @@ function FilterDropdown({
         </svg>
       </button>
       {isOpen && (
-        <div className="absolute top-8 left-0 z-50 bg-white border border-gray-200 rounded-md shadow-lg min-w-48 py-1">
+        <div className="absolute top-8 left-0 z-50 min-w-48 rounded-md border border-gray-200 bg-white py-1 shadow-lg">
           {/* All paragraphs option */}
           <button
-            onClick={() => onFilterChange("all")}
-            className={`w-full text-left py-1.5 text-xs hover:bg-gray-50 flex items-center justify-between ${
-              currentFilter === "all"
-                ? "bg-un-blue/10 text-un-blue"
-                : "text-gray-700"
+            onClick={() => onFilterChange('all')}
+            className={`flex w-full items-center justify-between py-1.5 text-left text-xs hover:bg-gray-50 ${
+              currentFilter === 'all'
+                ? 'bg-un-blue/10 text-un-blue'
+                : 'text-gray-700'
             }`}
           >
             <span className="pl-3">All paragraphs</span>
-            <span className="text-gray-500 pr-3">{filteredTotalCount}</span>
+            <span className="pr-3 text-gray-500">{filteredTotalCount}</span>
           </button>
 
           {/* With items option */}
           {withItemsCount > 0 && withItemsLabel && (
             <button
               onClick={() => onFilterChange(withItemsKey)}
-              className={`w-full text-left py-1.5 text-xs hover:bg-gray-50 flex items-center justify-between ${
+              className={`flex w-full items-center justify-between py-1.5 text-left text-xs hover:bg-gray-50 ${
                 currentFilter === withItemsKey
-                  ? "bg-un-blue/10 text-un-blue"
-                  : "text-gray-700"
+                  ? 'bg-un-blue/10 text-un-blue'
+                  : 'text-gray-700'
               }`}
             >
               <span className="pl-3">{withItemsLabel}</span>
-              <span className="text-gray-500 pr-3">{withItemsCount}</span>
+              <span className="pr-3 text-gray-500">{withItemsCount}</span>
             </button>
           )}
 
@@ -146,10 +153,10 @@ function FilterDropdown({
             Object.entries(typeCounts)
               .sort(([, a], [, b]) => {
                 // Sort by count descending, but keep non-zero counts first
-                if (a === 0 && b === 0) return 0;
-                if (a === 0) return 1;
-                if (b === 0) return -1;
-                return b - a;
+                if (a === 0 && b === 0) return 0
+                if (a === 0) return 1
+                if (b === 0) return -1
+                return b - a
               })
               .map(([type, count]) => (
                 <div key={type}>
@@ -159,19 +166,19 @@ function FilterDropdown({
                       count > 0 ? onFilterChange(type) : undefined
                     }
                     disabled={count === 0}
-                    className={`w-full text-left py-1.5 text-xs flex items-center justify-between ${
+                    className={`flex w-full items-center justify-between py-1.5 text-left text-xs ${
                       count === 0
-                        ? "text-gray-400 cursor-not-allowed"
+                        ? 'cursor-not-allowed text-gray-400'
                         : currentFilter === type
-                          ? "bg-un-blue/10 text-un-blue hover:bg-gray-50"
-                          : "text-gray-700 hover:bg-gray-50"
+                          ? 'bg-un-blue/10 text-un-blue hover:bg-gray-50'
+                          : 'text-gray-700 hover:bg-gray-50'
                     }`}
                   >
                     <span className="pl-6">
-                      {titleCase(type.replace(/_/g, " "))}
+                      {titleCase(type.replace(/_/g, ' '))}
                     </span>
                     <span
-                      className={`pr-3 ${count === 0 ? "text-gray-400" : "text-gray-500"}`}
+                      className={`pr-3 ${count === 0 ? 'text-gray-400' : 'text-gray-500'}`}
                     >
                       {count}
                     </span>
@@ -183,10 +190,10 @@ function FilterDropdown({
                     Object.entries(hierarchicalData[type])
                       .sort(([, a], [, b]) => {
                         // Sort by count descending, but keep non-zero counts first
-                        if (a === 0 && b === 0) return 0;
-                        if (a === 0) return 1;
-                        if (b === 0) return -1;
-                        return b - a;
+                        if (a === 0 && b === 0) return 0
+                        if (a === 0) return 1
+                        if (b === 0) return -1
+                        return b - a
                       })
                       .map(([itemName, itemCount]) => (
                         <button
@@ -197,19 +204,19 @@ function FilterDropdown({
                               : undefined
                           }
                           disabled={itemCount === 0}
-                          className={`w-full text-left py-1.5 text-xs flex items-center justify-between ${
+                          className={`flex w-full items-center justify-between py-1.5 text-left text-xs ${
                             itemCount === 0
-                              ? "text-gray-400 cursor-not-allowed"
+                              ? 'cursor-not-allowed text-gray-400'
                               : currentFilter === `${type}:${itemName}`
-                                ? "bg-un-blue/10 text-un-blue hover:bg-gray-50"
-                                : "text-gray-600 hover:bg-gray-50"
+                                ? 'bg-un-blue/10 text-un-blue hover:bg-gray-50'
+                                : 'text-gray-600 hover:bg-gray-50'
                           }`}
                         >
                           <span className="pl-10 text-xs">
                             {titleCase(itemName)}
                           </span>
                           <span
-                            className={`pr-3 text-xs ${itemCount === 0 ? "text-gray-400" : "text-gray-400"}`}
+                            className={`pr-3 text-xs ${itemCount === 0 ? 'text-gray-400' : 'text-gray-400'}`}
                           >
                             {itemCount}
                           </span>
@@ -220,24 +227,24 @@ function FilterDropdown({
         </div>
       )}
     </div>
-  );
+  )
 }
 
 // Searchable filter dropdown component
 interface SearchableFilterDropdownProps {
-  label: string;
-  icon: React.ReactNode;
-  currentFilter: string;
-  isOpen: boolean;
-  onToggle: () => void;
-  onFilterChange: (filter: string) => void;
-  typeCounts: Record<string, number>;
-  totalCount: number;
-  className?: string;
-  filteredTotalCount: number; // Count of all paragraphs matching other filters
-  hierarchicalData?: Record<string, Record<string, number>>;
-  withItemsCount?: number;
-  withItemsLabel?: string;
+  label: string
+  icon: React.ReactNode
+  currentFilter: string
+  isOpen: boolean
+  onToggle: () => void
+  onFilterChange: (filter: string) => void
+  typeCounts: Record<string, number>
+  totalCount: number
+  className?: string
+  filteredTotalCount: number // Count of all paragraphs matching other filters
+  hierarchicalData?: Record<string, Record<string, number>>
+  withItemsCount?: number
+  withItemsLabel?: string
 }
 
 function SearchableFilterDropdown({
@@ -249,85 +256,85 @@ function SearchableFilterDropdown({
   onFilterChange,
   typeCounts,
   totalCount,
-  className = "",
+  className = '',
   filteredTotalCount,
   hierarchicalData,
   withItemsCount,
   withItemsLabel,
 }: SearchableFilterDropdownProps) {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('')
 
   // Filter options based on search term
   const filteredOptions = useMemo(() => {
-    const entries = Object.entries(typeCounts);
-    if (!searchTerm) return entries;
+    const entries = Object.entries(typeCounts)
+    if (!searchTerm) return entries
 
     return entries.filter(([option]) =>
-      option.toLowerCase().includes(searchTerm.toLowerCase()),
-    );
-  }, [typeCounts, searchTerm]);
+      option.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  }, [typeCounts, searchTerm])
 
   // Filter hierarchical data based on search term
   const filteredHierarchicalData = useMemo(() => {
-    if (!hierarchicalData || !searchTerm) return hierarchicalData;
+    if (!hierarchicalData || !searchTerm) return hierarchicalData
 
-    const filtered: Record<string, Record<string, number>> = {};
+    const filtered: Record<string, Record<string, number>> = {}
 
     Object.entries(hierarchicalData).forEach(([type, entities]) => {
-      const filteredEntities: Record<string, number> = {};
+      const filteredEntities: Record<string, number> = {}
 
       // Include entities that match the search term
       Object.entries(entities).forEach(([entityName, count]) => {
         if (entityName.toLowerCase().includes(searchTerm.toLowerCase())) {
-          filteredEntities[entityName] = count;
+          filteredEntities[entityName] = count
         }
-      });
+      })
 
       // Include the type if it matches the search term or has matching entities
       if (
         type.toLowerCase().includes(searchTerm.toLowerCase()) ||
         Object.keys(filteredEntities).length > 0
       ) {
-        filtered[type] = filteredEntities;
+        filtered[type] = filteredEntities
       }
-    });
+    })
 
-    return filtered;
-  }, [hierarchicalData, searchTerm]);
+    return filtered
+  }, [hierarchicalData, searchTerm])
 
   // Reset search when dropdown closes
   useEffect(() => {
     if (!isOpen) {
-      setSearchTerm("");
+      setSearchTerm('')
     }
-  }, [isOpen]);
+  }, [isOpen])
 
   return (
     <div className={`relative ${className}`}>
       <button
         onClick={onToggle}
-        className={`text-xs h-7 px-3 border rounded-md bg-gray-100 hover:bg-gray-200 border-gray-300 hover:border-gray-400 transition-all duration-200 flex items-center gap-1.5 cursor-pointer ${
-          currentFilter !== "all"
-            ? "border-un-blue! text-un-blue! bg-un-blue/15! hover:bg-un-blue/25!"
-            : "text-gray-700"
+        className={`flex h-7 cursor-pointer items-center gap-1.5 rounded-md border border-gray-300 bg-gray-100 px-3 text-xs transition-all duration-200 hover:border-gray-400 hover:bg-gray-200 ${
+          currentFilter !== 'all'
+            ? 'border-un-blue! bg-un-blue/15! text-un-blue! hover:bg-un-blue/25!'
+            : 'text-gray-700'
         }`}
       >
         {icon}
         <span>
-          {currentFilter === "all"
+          {currentFilter === 'all'
             ? label
             : currentFilter === `with-${label.toLowerCase()}`
               ? `${withItemsLabel} (${withItemsCount})`
-              : currentFilter.includes(":")
+              : currentFilter.includes(':')
                 ? (() => {
-                    const [type, item] = currentFilter.split(":");
-                    const itemCount = hierarchicalData?.[type]?.[item] || 0;
-                    return `${titleCase(item)} (${itemCount})`;
+                    const [type, item] = currentFilter.split(':')
+                    const itemCount = hierarchicalData?.[type]?.[item] || 0
+                    return `${titleCase(item)} (${itemCount})`
                   })()
-                : `${titleCase(currentFilter.replace(/_/g, " "))} (${typeCounts[currentFilter] || 0})`}
+                : `${titleCase(currentFilter.replace(/_/g, ' '))} (${typeCounts[currentFilter] || 0})`}
         </span>
         <svg
-          className={`h-3 w-3 transition-transform ${isOpen ? "rotate-180" : ""}`}
+          className={`h-3 w-3 transition-transform ${isOpen ? 'rotate-180' : ''}`}
           fill="currentColor"
           viewBox="0 0 20 20"
         >
@@ -339,147 +346,149 @@ function SearchableFilterDropdown({
         </svg>
       </button>
       {isOpen && (
-        <div className="absolute top-8 left-0 z-50 bg-white border border-gray-200 rounded-md shadow-lg min-w-48 py-1">
+        <div className="absolute top-8 left-0 z-50 min-w-48 rounded-md border border-gray-200 bg-white py-1 shadow-lg">
           {/* Search input */}
-          <div className="px-3 py-2 border-b border-gray-100">
+          <div className="border-b border-gray-100 px-3 py-2">
             <input
               type="text"
               placeholder={`Search ${label.toLowerCase()}...`}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full text-xs px-2 py-1 border border-gray-200 rounded focus:outline-hidden focus:ring-1 focus:ring-un-blue focus:border-un-blue"
+              className="w-full rounded border border-gray-200 px-2 py-1 text-xs focus:border-un-blue focus:ring-1 focus:ring-un-blue focus:outline-hidden"
               autoFocus
             />
           </div>
 
           {/* Scrollable options container */}
-          <div className="max-h-72 overflow-y-auto dropdown-scroll-container">
+          <div className="dropdown-scroll-container max-h-72 overflow-y-auto">
             {/* All paragraphs option */}
             <button
-              onClick={() => onFilterChange("all")}
-              className={`w-full text-left py-1.5 text-xs hover:bg-gray-50 flex items-center justify-between ${
-                currentFilter === "all"
-                  ? "bg-un-blue/10 text-un-blue"
-                  : "text-gray-700"
+              onClick={() => onFilterChange('all')}
+              className={`flex w-full items-center justify-between py-1.5 text-left text-xs hover:bg-gray-50 ${
+                currentFilter === 'all'
+                  ? 'bg-un-blue/10 text-un-blue'
+                  : 'text-gray-700'
               }`}
             >
               <span className="pl-3">All paragraphs</span>
-              <span className="text-gray-500 pr-3">{filteredTotalCount}</span>
+              <span className="pr-3 text-gray-500">{filteredTotalCount}</span>
             </button>
 
             {/* With items option */}
             {withItemsCount && withItemsCount > 0 && withItemsLabel && (
               <button
                 onClick={() => onFilterChange(`with-${label.toLowerCase()}`)}
-                className={`w-full text-left py-1.5 text-xs hover:bg-gray-50 flex items-center justify-between ${
+                className={`flex w-full items-center justify-between py-1.5 text-left text-xs hover:bg-gray-50 ${
                   currentFilter === `with-${label.toLowerCase()}`
-                    ? "bg-un-blue/10 text-un-blue"
-                    : "text-gray-700"
+                    ? 'bg-un-blue/10 text-un-blue'
+                    : 'text-gray-700'
                 }`}
               >
                 <span className="pl-3">{withItemsLabel}</span>
-                <span className="text-gray-500 pr-3">{withItemsCount}</span>
+                <span className="pr-3 text-gray-500">{withItemsCount}</span>
               </button>
             )}
 
             {/* Hierarchical options or simple filtered options */}
             {hierarchicalData ? (
               // Hierarchical structure
-              (Object.keys(filteredHierarchicalData || {}).length > 0 ? (Object.entries(filteredHierarchicalData || {})
-                .sort(([, a], [, b]) => {
-                  // Sort by total count in each type
-                  const aTotal = Object.values(a).reduce(
-                    (sum, count) => sum + count,
-                    0,
-                  );
-                  const bTotal = Object.values(b).reduce(
-                    (sum, count) => sum + count,
-                    0,
-                  );
-                  if (aTotal === 0 && bTotal === 0) return 0;
-                  if (aTotal === 0) return 1;
-                  if (bTotal === 0) return -1;
-                  return bTotal - aTotal;
-                })
-                .map(([type, entities]) => {
-                  const typeCount = typeCounts[type] || 0;
-                  return (
-                    <div key={type}>
-                      {/* Type header */}
-                      <button
-                        onClick={() =>
-                          typeCount > 0 ? onFilterChange(type) : undefined
-                        }
-                        disabled={typeCount === 0}
-                        className={`w-full text-left py-1.5 text-xs flex items-center justify-between ${
-                          typeCount === 0
-                            ? "text-gray-400 cursor-not-allowed"
-                            : currentFilter === type
-                              ? "bg-un-blue/10 text-un-blue hover:bg-gray-50"
-                              : "text-gray-700 hover:bg-gray-50"
-                        }`}
-                      >
-                        <span className="pl-6">
-                          {titleCase(type.replace(/_/g, " "))}
-                        </span>
-                        <span
-                          className={`pr-3 ${typeCount === 0 ? "text-gray-400" : "text-gray-500"}`}
+              Object.keys(filteredHierarchicalData || {}).length > 0 ? (
+                Object.entries(filteredHierarchicalData || {})
+                  .sort(([, a], [, b]) => {
+                    // Sort by total count in each type
+                    const aTotal = Object.values(a).reduce(
+                      (sum, count) => sum + count,
+                      0
+                    )
+                    const bTotal = Object.values(b).reduce(
+                      (sum, count) => sum + count,
+                      0
+                    )
+                    if (aTotal === 0 && bTotal === 0) return 0
+                    if (aTotal === 0) return 1
+                    if (bTotal === 0) return -1
+                    return bTotal - aTotal
+                  })
+                  .map(([type, entities]) => {
+                    const typeCount = typeCounts[type] || 0
+                    return (
+                      <div key={type}>
+                        {/* Type header */}
+                        <button
+                          onClick={() =>
+                            typeCount > 0 ? onFilterChange(type) : undefined
+                          }
+                          disabled={typeCount === 0}
+                          className={`flex w-full items-center justify-between py-1.5 text-left text-xs ${
+                            typeCount === 0
+                              ? 'cursor-not-allowed text-gray-400'
+                              : currentFilter === type
+                                ? 'bg-un-blue/10 text-un-blue hover:bg-gray-50'
+                                : 'text-gray-700 hover:bg-gray-50'
+                          }`}
                         >
-                          {typeCount}
-                        </span>
-                      </button>
-                      {/* Individual entities under this type */}
-                      {Object.entries(entities)
-                        .sort(([, a], [, b]) => {
-                          // Sort by count descending, but keep non-zero counts first
-                          if (a === 0 && b === 0) return 0;
-                          if (a === 0) return 1;
-                          if (b === 0) return -1;
-                          return b - a;
-                        })
-                        .map(([entityName, entityCount]) => (
-                          <button
-                            key={`${type}-${entityName}`}
-                            onClick={() =>
-                              entityCount > 0
-                                ? onFilterChange(`${type}:${entityName}`)
-                                : undefined
-                            }
-                            disabled={entityCount === 0}
-                            className={`w-full text-left py-1.5 text-xs flex items-center justify-between ${
-                              entityCount === 0
-                                ? "text-gray-400 cursor-not-allowed"
-                                : currentFilter === `${type}:${entityName}`
-                                  ? "bg-un-blue/10 text-un-blue hover:bg-gray-50"
-                                  : "text-gray-600 hover:bg-gray-50"
-                            }`}
+                          <span className="pl-6">
+                            {titleCase(type.replace(/_/g, ' '))}
+                          </span>
+                          <span
+                            className={`pr-3 ${typeCount === 0 ? 'text-gray-400' : 'text-gray-500'}`}
                           >
-                            <span className="pl-10 text-xs">
-                              {titleCase(entityName)}
-                            </span>
-                            <span
-                              className={`pr-3 text-xs ${entityCount === 0 ? "text-gray-400" : "text-gray-400"}`}
+                            {typeCount}
+                          </span>
+                        </button>
+                        {/* Individual entities under this type */}
+                        {Object.entries(entities)
+                          .sort(([, a], [, b]) => {
+                            // Sort by count descending, but keep non-zero counts first
+                            if (a === 0 && b === 0) return 0
+                            if (a === 0) return 1
+                            if (b === 0) return -1
+                            return b - a
+                          })
+                          .map(([entityName, entityCount]) => (
+                            <button
+                              key={`${type}-${entityName}`}
+                              onClick={() =>
+                                entityCount > 0
+                                  ? onFilterChange(`${type}:${entityName}`)
+                                  : undefined
+                              }
+                              disabled={entityCount === 0}
+                              className={`flex w-full items-center justify-between py-1.5 text-left text-xs ${
+                                entityCount === 0
+                                  ? 'cursor-not-allowed text-gray-400'
+                                  : currentFilter === `${type}:${entityName}`
+                                    ? 'bg-un-blue/10 text-un-blue hover:bg-gray-50'
+                                    : 'text-gray-600 hover:bg-gray-50'
+                              }`}
                             >
-                              {entityCount}
-                            </span>
-                          </button>
-                        ))}
-                    </div>
-                  );
-                })) : searchTerm ? (
+                              <span className="pl-10 text-xs">
+                                {titleCase(entityName)}
+                              </span>
+                              <span
+                                className={`pr-3 text-xs ${entityCount === 0 ? 'text-gray-400' : 'text-gray-400'}`}
+                              >
+                                {entityCount}
+                              </span>
+                            </button>
+                          ))}
+                      </div>
+                    )
+                  })
+              ) : searchTerm ? (
                 <div className="px-3 py-2 text-xs text-gray-500 italic">
                   No {label.toLowerCase()} found matching "{searchTerm}"
                 </div>
-              ) : null)
+              ) : null
             ) : // Simple filtered options (for non-hierarchical data like action verbs)
             filteredOptions.length > 0 ? (
               filteredOptions
                 .sort(([, a], [, b]) => {
                   // Sort by count descending, but keep non-zero counts first
-                  if (a === 0 && b === 0) return 0;
-                  if (a === 0) return 1;
-                  if (b === 0) return -1;
-                  return b - a;
+                  if (a === 0 && b === 0) return 0
+                  if (a === 0) return 1
+                  if (b === 0) return -1
+                  return b - a
                 })
                 .map(([option, count]) => (
                   <button
@@ -488,19 +497,19 @@ function SearchableFilterDropdown({
                       count > 0 ? onFilterChange(option) : undefined
                     }
                     disabled={count === 0}
-                    className={`w-full text-left py-1.5 text-xs flex items-center justify-between ${
+                    className={`flex w-full items-center justify-between py-1.5 text-left text-xs ${
                       count === 0
-                        ? "text-gray-400 cursor-not-allowed"
+                        ? 'cursor-not-allowed text-gray-400'
                         : currentFilter === option
-                          ? "bg-un-blue/10 text-un-blue hover:bg-gray-50"
-                          : "text-gray-700 hover:bg-gray-50"
+                          ? 'bg-un-blue/10 text-un-blue hover:bg-gray-50'
+                          : 'text-gray-700 hover:bg-gray-50'
                     }`}
                   >
                     <span className="pl-6">
-                      {titleCase(option.replace(/_/g, " "))}
+                      {titleCase(option.replace(/_/g, ' '))}
                     </span>
                     <span
-                      className={`pr-3 ${count === 0 ? "text-gray-400" : "text-gray-500"}`}
+                      className={`pr-3 ${count === 0 ? 'text-gray-400' : 'text-gray-500'}`}
                     >
                       {count}
                     </span>
@@ -515,24 +524,24 @@ function SearchableFilterDropdown({
         </div>
       )}
     </div>
-  );
+  )
 }
 
 // Helper function to check if paragraph is operative
 function isOperativeParagraph(paragraph: Paragraph): boolean {
-  return paragraph.paragraph_type === "operative";
+  return paragraph.paragraph_type === 'operative'
 }
 
 // Helper function to get operative badge info (for corner display)
 function getOperativeBadgeInfo(paragraph: Paragraph) {
-  const isOperative = paragraph.paragraph_type === "operative";
+  const isOperative = paragraph.paragraph_type === 'operative'
 
   return {
-    color: "bg-un-blue text-white hover:bg-blue-700",
-    letter: "OP",
-    ariaLabel: "Operative paragraph",
+    color: 'bg-un-blue text-white hover:bg-blue-700',
+    letter: 'OP',
+    ariaLabel: 'Operative paragraph',
     shouldShow: isOperative,
-  };
+  }
 }
 
 export function ParagraphsSection({
@@ -541,71 +550,71 @@ export function ParagraphsSection({
   isLoading,
   error,
 }: ParagraphsSectionProps) {
-  const [paragraphFilter, setParagraphFilter] = useState<"all" | "operative">(
-    "operative",
-  );
-  const [deliverableFilter, setDeliverableFilter] = useState<string>("all");
+  const [paragraphFilter, setParagraphFilter] = useState<'all' | 'operative'>(
+    'operative'
+  )
+  const [deliverableFilter, setDeliverableFilter] = useState<string>('all')
   const [isDeliverableDropdownOpen, setIsDeliverableDropdownOpen] =
-    useState(false);
-  const [assigneeFilter, setAssigneeFilter] = useState<string>("all");
-  const [isAssigneeDropdownOpen, setIsAssigneeDropdownOpen] = useState(false);
-  const [actionVerbFilter, setActionVerbFilter] = useState<string>("all");
+    useState(false)
+  const [assigneeFilter, setAssigneeFilter] = useState<string>('all')
+  const [isAssigneeDropdownOpen, setIsAssigneeDropdownOpen] = useState(false)
+  const [actionVerbFilter, setActionVerbFilter] = useState<string>('all')
   const [isActionVerbDropdownOpen, setIsActionVerbDropdownOpen] =
-    useState(false);
-  const [activeHeadingId, setActiveHeadingId] = useState<string | null>(null);
-  const [openTooltip, setOpenTooltip] = useState<string | null>(null);
-  const [isMobileTOCOpen, setIsMobileTOCOpen] = useState(false);
-  const [showFloatingTOC, setShowFloatingTOC] = useState(false);
+    useState(false)
+  const [activeHeadingId, setActiveHeadingId] = useState<string | null>(null)
+  const [openTooltip, setOpenTooltip] = useState<string | null>(null)
+  const [isMobileTOCOpen, setIsMobileTOCOpen] = useState(false)
+  const [showFloatingTOC, setShowFloatingTOC] = useState(false)
 
-  const isMobile = useIsMobile();
-  const paragraphsTitleRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile()
+  const paragraphsTitleRef = useRef<HTMLDivElement>(null)
 
   // Check if any filters are active (excluding paragraph type which defaults to 'operative')
   const hasActiveFilters = useMemo(() => {
     return (
-      deliverableFilter !== "all" ||
-      assigneeFilter !== "all" ||
-      actionVerbFilter !== "all"
-    );
-  }, [deliverableFilter, assigneeFilter, actionVerbFilter]);
+      deliverableFilter !== 'all' ||
+      assigneeFilter !== 'all' ||
+      actionVerbFilter !== 'all'
+    )
+  }, [deliverableFilter, assigneeFilter, actionVerbFilter])
 
   // Reset all filters to default
   const resetFilters = useCallback(() => {
-    setDeliverableFilter("all");
-    setAssigneeFilter("all");
-    setActionVerbFilter("all");
+    setDeliverableFilter('all')
+    setAssigneeFilter('all')
+    setActionVerbFilter('all')
     // Keep paragraph filter as 'operative' since that's the default
-  }, []);
+  }, [])
 
   // Helper function to check if a paragraph matches filters (excluding the filter being calculated)
   const paragraphMatchesOtherFilters = useCallback(
     (
       paragraph: Paragraph,
-      excludeFilter: "deliverable" | "assignee" | "actionVerb",
+      excludeFilter: 'deliverable' | 'assignee' | 'actionVerb'
     ): boolean => {
       // Filter by paragraph type (always applied)
       if (
-        paragraphFilter === "operative" &&
-        paragraph.paragraph_type !== "operative"
+        paragraphFilter === 'operative' &&
+        paragraph.paragraph_type !== 'operative'
       ) {
-        return false;
+        return false
       }
 
       // Filter by entity type or individual entity (if not excluded) - includes both assignees and mentioned_entities
-      if (excludeFilter !== "assignee") {
-        if (assigneeFilter === "with-assignees") {
+      if (excludeFilter !== 'assignee') {
+        if (assigneeFilter === 'with-assignees') {
           if (
             !paragraph.mandates?.some(
               (mandate) =>
                 mandate.assignees?.length > 0 ||
-                mandate.mentioned_entities?.length > 0,
+                mandate.mentioned_entities?.length > 0
             )
           ) {
-            return false;
+            return false
           }
-        } else if (assigneeFilter !== "all") {
-          if (assigneeFilter.includes(":")) {
-            const [filterType, filterEntity] = assigneeFilter.split(":");
+        } else if (assigneeFilter !== 'all') {
+          if (assigneeFilter.includes(':')) {
+            const [filterType, filterEntity] = assigneeFilter.split(':')
             if (
               !paragraph.mandates?.some(
                 (mandate) =>
@@ -613,441 +622,440 @@ export function ParagraphsSection({
                     (assignee) =>
                       assignee.assignee_type === filterType &&
                       (assignee.assignee_normalized || assignee.assignee) ===
-                        filterEntity,
+                        filterEntity
                   ) ||
                   mandate.mentioned_entities?.some(
                     (entity) =>
                       entity.mentioned_entity_type === filterType &&
                       (entity.mentioned_entity_normalized ||
-                        entity.mentioned_entity) === filterEntity,
-                  ),
+                        entity.mentioned_entity) === filterEntity
+                  )
               )
             ) {
-              return false;
+              return false
             }
           } else {
             if (
               !paragraph.mandates?.some(
                 (mandate) =>
                   mandate.assignees?.some(
-                    (assignee) => assignee.assignee_type === assigneeFilter,
+                    (assignee) => assignee.assignee_type === assigneeFilter
                   ) ||
                   mandate.mentioned_entities?.some(
-                    (entity) => entity.mentioned_entity_type === assigneeFilter,
-                  ),
+                    (entity) => entity.mentioned_entity_type === assigneeFilter
+                  )
               )
             ) {
-              return false;
+              return false
             }
           }
         }
       }
 
       // Filter by deliverable type (if not excluded)
-      if (excludeFilter !== "deliverable") {
-        if (deliverableFilter === "with-deliverables") {
+      if (excludeFilter !== 'deliverable') {
+        if (deliverableFilter === 'with-deliverables') {
           if (
             !paragraph.mandates?.some(
-              (mandate) => mandate.deliverables?.length > 0,
+              (mandate) => mandate.deliverables?.length > 0
             )
           ) {
-            return false;
+            return false
           }
-        } else if (deliverableFilter !== "all") {
+        } else if (deliverableFilter !== 'all') {
           if (
             !paragraph.mandates?.some((mandate) =>
               mandate.deliverables?.some(
                 (deliverable) =>
-                  deliverable.deliverable_type === deliverableFilter,
-              ),
+                  deliverable.deliverable_type === deliverableFilter
+              )
             )
           ) {
-            return false;
+            return false
           }
         }
       }
 
       // Filter by action verb (if not excluded)
-      if (excludeFilter !== "actionVerb") {
-        if (actionVerbFilter !== "all") {
+      if (excludeFilter !== 'actionVerb') {
+        if (actionVerbFilter !== 'all') {
           if (
             !paragraph.mandates?.some(
               (mandate) =>
                 mandate.action_verb &&
-                mandate.action_verb.toLowerCase() === actionVerbFilter,
+                mandate.action_verb.toLowerCase() === actionVerbFilter
             )
           ) {
-            return false;
+            return false
           }
         }
       }
 
-      return true;
+      return true
     },
-    [paragraphFilter, assigneeFilter, deliverableFilter, actionVerbFilter],
-  );
+    [paragraphFilter, assigneeFilter, deliverableFilter, actionVerbFilter]
+  )
 
   // Get all possible deliverable types from unfiltered data
   const allDeliverableTypes = useMemo(() => {
-    if (!allParagraphs) return new Set<string>();
+    if (!allParagraphs) return new Set<string>()
 
-    const types = new Set<string>();
+    const types = new Set<string>()
     allParagraphs.forEach((paragraph: Paragraph) => {
       if (paragraph.mandates) {
         paragraph.mandates.forEach((mandate) => {
           mandate.deliverables?.forEach((deliverable) => {
-            types.add(deliverable.deliverable_type);
-          });
-        });
+            types.add(deliverable.deliverable_type)
+          })
+        })
       }
-    });
+    })
 
-    return types;
-  }, [allParagraphs]);
+    return types
+  }, [allParagraphs])
 
   // Calculate deliverable type counts based on current filters (paragraph-level counting)
   const deliverableTypeCounts = useMemo(() => {
-    if (!allParagraphs) return {};
+    if (!allParagraphs) return {}
 
     // Initialize all possible types with 0 count
-    const counts: Record<string, number> = {};
+    const counts: Record<string, number> = {}
     allDeliverableTypes.forEach((type) => {
-      counts[type] = 0;
-    });
+      counts[type] = 0
+    })
 
     allParagraphs.forEach((paragraph: Paragraph) => {
-      if (paragraphMatchesOtherFilters(paragraph, "deliverable")) {
+      if (paragraphMatchesOtherFilters(paragraph, 'deliverable')) {
         if (paragraph.mandates) {
           // Track which deliverable types this paragraph has (to avoid double-counting)
-          const deliverableTypesInParagraph = new Set<string>();
+          const deliverableTypesInParagraph = new Set<string>()
 
           paragraph.mandates.forEach((mandate) => {
             mandate.deliverables?.forEach((deliverable) => {
-              deliverableTypesInParagraph.add(deliverable.deliverable_type);
-            });
-          });
+              deliverableTypesInParagraph.add(deliverable.deliverable_type)
+            })
+          })
 
           // Count this paragraph once for each unique deliverable type it contains
           deliverableTypesInParagraph.forEach((type) => {
-            counts[type] = (counts[type] || 0) + 1;
-          });
+            counts[type] = (counts[type] || 0) + 1
+          })
         }
       }
-    });
+    })
 
-    return counts;
-  }, [allParagraphs, paragraphMatchesOtherFilters, allDeliverableTypes]);
+    return counts
+  }, [allParagraphs, paragraphMatchesOtherFilters, allDeliverableTypes])
 
   // Get all possible entity types from unfiltered data (both assignees and mentioned_entities)
   const allAssigneeTypes = useMemo(() => {
-    if (!allParagraphs) return new Set<string>();
+    if (!allParagraphs) return new Set<string>()
 
-    const types = new Set<string>();
+    const types = new Set<string>()
     allParagraphs.forEach((paragraph: Paragraph) => {
       if (paragraph.mandates) {
         paragraph.mandates.forEach((mandate) => {
           // Include assignee types
           mandate.assignees?.forEach((assignee) => {
-            types.add(assignee.assignee_type);
-          });
+            types.add(assignee.assignee_type)
+          })
           // Include mentioned entity types
           mandate.mentioned_entities?.forEach((entity) => {
-            types.add(entity.mentioned_entity_type);
-          });
-        });
+            types.add(entity.mentioned_entity_type)
+          })
+        })
       }
-    });
+    })
 
-    return types;
-  }, [allParagraphs]);
+    return types
+  }, [allParagraphs])
 
   // Calculate entity type counts based on current filters (paragraph-level counting)
   const assigneeTypeCounts = useMemo(() => {
-    if (!allParagraphs) return {};
+    if (!allParagraphs) return {}
 
     // Initialize all possible types with 0 count
-    const counts: Record<string, number> = {};
+    const counts: Record<string, number> = {}
     allAssigneeTypes.forEach((type) => {
-      counts[type] = 0;
-    });
+      counts[type] = 0
+    })
 
     allParagraphs.forEach((paragraph: Paragraph) => {
-      if (paragraphMatchesOtherFilters(paragraph, "assignee")) {
+      if (paragraphMatchesOtherFilters(paragraph, 'assignee')) {
         if (paragraph.mandates) {
           // Track which entity types this paragraph has (to avoid double-counting)
-          const entityTypesInParagraph = new Set<string>();
+          const entityTypesInParagraph = new Set<string>()
 
           paragraph.mandates.forEach((mandate) => {
             // Include assignee types
             mandate.assignees?.forEach((assignee) => {
-              entityTypesInParagraph.add(assignee.assignee_type);
-            });
+              entityTypesInParagraph.add(assignee.assignee_type)
+            })
             // Include mentioned entity types
             mandate.mentioned_entities?.forEach((entity) => {
-              entityTypesInParagraph.add(entity.mentioned_entity_type);
-            });
-          });
+              entityTypesInParagraph.add(entity.mentioned_entity_type)
+            })
+          })
 
           // Count this paragraph once for each unique entity type it contains
           entityTypesInParagraph.forEach((type) => {
-            counts[type] = (counts[type] || 0) + 1;
-          });
+            counts[type] = (counts[type] || 0) + 1
+          })
         }
       }
-    });
+    })
 
-    return counts;
-  }, [allParagraphs, paragraphMatchesOtherFilters, allAssigneeTypes]);
+    return counts
+  }, [allParagraphs, paragraphMatchesOtherFilters, allAssigneeTypes])
 
   // Get all possible individual entities grouped by type from unfiltered data
   const allAssigneesByType = useMemo(() => {
-    if (!allParagraphs) return {};
+    if (!allParagraphs) return {}
 
-    const groupedEntities: Record<string, Record<string, number>> = {};
+    const groupedEntities: Record<string, Record<string, number>> = {}
 
     allParagraphs.forEach((paragraph: Paragraph) => {
       if (paragraph.mandates) {
         paragraph.mandates.forEach((mandate) => {
           // Include assignees
           mandate.assignees?.forEach((assignee) => {
-            const type = assignee.assignee_type;
-            const entityName =
-              assignee.assignee_normalized || assignee.assignee;
+            const type = assignee.assignee_type
+            const entityName = assignee.assignee_normalized || assignee.assignee
 
             if (!groupedEntities[type]) {
-              groupedEntities[type] = {};
+              groupedEntities[type] = {}
             }
 
             if (!groupedEntities[type][entityName]) {
-              groupedEntities[type][entityName] = 0;
+              groupedEntities[type][entityName] = 0
             }
-          });
+          })
           // Include mentioned entities
           mandate.mentioned_entities?.forEach((entity) => {
-            const type = entity.mentioned_entity_type;
+            const type = entity.mentioned_entity_type
             const entityName =
-              entity.mentioned_entity_normalized || entity.mentioned_entity;
+              entity.mentioned_entity_normalized || entity.mentioned_entity
 
             if (!groupedEntities[type]) {
-              groupedEntities[type] = {};
+              groupedEntities[type] = {}
             }
 
             if (!groupedEntities[type][entityName]) {
-              groupedEntities[type][entityName] = 0;
+              groupedEntities[type][entityName] = 0
             }
-          });
-        });
+          })
+        })
       }
-    });
+    })
 
-    return groupedEntities;
-  }, [allParagraphs]);
+    return groupedEntities
+  }, [allParagraphs])
 
   // Calculate individual entity counts grouped by type based on current filters (paragraph-level counting)
   const assigneesByType = useMemo(() => {
-    if (!allParagraphs) return {};
+    if (!allParagraphs) return {}
 
     // Initialize with all possible entities with 0 count
-    const groupedEntities: Record<string, Record<string, number>> = {};
+    const groupedEntities: Record<string, Record<string, number>> = {}
     Object.entries(allAssigneesByType).forEach(([type, entities]) => {
-      groupedEntities[type] = {};
+      groupedEntities[type] = {}
       Object.keys(entities).forEach((entityName) => {
-        groupedEntities[type][entityName] = 0;
-      });
-    });
+        groupedEntities[type][entityName] = 0
+      })
+    })
 
     allParagraphs.forEach((paragraph: Paragraph) => {
-      if (paragraphMatchesOtherFilters(paragraph, "assignee")) {
+      if (paragraphMatchesOtherFilters(paragraph, 'assignee')) {
         if (paragraph.mandates) {
           // Track which entities this paragraph has (to avoid double-counting)
-          const entitiesInParagraph = new Set<string>();
+          const entitiesInParagraph = new Set<string>()
 
           paragraph.mandates.forEach((mandate) => {
             // Include assignees
             mandate.assignees?.forEach((assignee) => {
-              const type = assignee.assignee_type;
+              const type = assignee.assignee_type
               const entityName =
-                assignee.assignee_normalized || assignee.assignee;
-              entitiesInParagraph.add(`${type}:${entityName}`);
-            });
+                assignee.assignee_normalized || assignee.assignee
+              entitiesInParagraph.add(`${type}:${entityName}`)
+            })
             // Include mentioned entities
             mandate.mentioned_entities?.forEach((entity) => {
-              const type = entity.mentioned_entity_type;
+              const type = entity.mentioned_entity_type
               const entityName =
-                entity.mentioned_entity_normalized || entity.mentioned_entity;
-              entitiesInParagraph.add(`${type}:${entityName}`);
-            });
-          });
+                entity.mentioned_entity_normalized || entity.mentioned_entity
+              entitiesInParagraph.add(`${type}:${entityName}`)
+            })
+          })
 
           // Count this paragraph once for each unique entity it contains
           entitiesInParagraph.forEach((entityKey) => {
-            const [type, entityName] = entityKey.split(":");
+            const [type, entityName] = entityKey.split(':')
 
             if (
               groupedEntities[type] &&
               groupedEntities[type][entityName] !== undefined
             ) {
               groupedEntities[type][entityName] =
-                (groupedEntities[type][entityName] || 0) + 1;
+                (groupedEntities[type][entityName] || 0) + 1
             }
-          });
+          })
         }
       }
-    });
+    })
 
-    return groupedEntities;
-  }, [allParagraphs, paragraphMatchesOtherFilters, allAssigneesByType]);
+    return groupedEntities
+  }, [allParagraphs, paragraphMatchesOtherFilters, allAssigneesByType])
 
   // Calculate count of paragraphs with any entities based on current filters
   const paragraphsWithAssigneesCount = useMemo(() => {
-    if (!allParagraphs) return 0;
+    if (!allParagraphs) return 0
 
     return allParagraphs.filter(
       (paragraph: Paragraph) =>
-        paragraphMatchesOtherFilters(paragraph, "assignee") &&
+        paragraphMatchesOtherFilters(paragraph, 'assignee') &&
         paragraph.mandates?.some(
           (mandate) =>
             mandate.assignees?.length > 0 ||
-            mandate.mentioned_entities?.length > 0,
-        ),
-    ).length;
-  }, [allParagraphs, paragraphMatchesOtherFilters]);
+            mandate.mentioned_entities?.length > 0
+        )
+    ).length
+  }, [allParagraphs, paragraphMatchesOtherFilters])
 
   // Get all possible action verbs from unfiltered data
   const allActionVerbs = useMemo(() => {
-    if (!allParagraphs) return new Set<string>();
+    if (!allParagraphs) return new Set<string>()
 
-    const verbs = new Set<string>();
+    const verbs = new Set<string>()
     allParagraphs.forEach((paragraph: Paragraph) => {
       if (paragraph.mandates) {
         paragraph.mandates.forEach((mandate) => {
           if (mandate.action_verb) {
-            verbs.add(mandate.action_verb.toLowerCase());
+            verbs.add(mandate.action_verb.toLowerCase())
           }
-        });
+        })
       }
-    });
+    })
 
-    return verbs;
-  }, [allParagraphs]);
+    return verbs
+  }, [allParagraphs])
 
   // Calculate action verb counts based on current filters (paragraph-level counting)
   const actionVerbCounts = useMemo(() => {
-    if (!allParagraphs) return {};
+    if (!allParagraphs) return {}
 
     // Initialize all possible verbs with 0 count
-    const counts: Record<string, number> = {};
+    const counts: Record<string, number> = {}
     allActionVerbs.forEach((verb) => {
-      counts[verb] = 0;
-    });
+      counts[verb] = 0
+    })
 
     allParagraphs.forEach((paragraph: Paragraph) => {
-      if (paragraphMatchesOtherFilters(paragraph, "actionVerb")) {
+      if (paragraphMatchesOtherFilters(paragraph, 'actionVerb')) {
         if (paragraph.mandates) {
           // Track which action verbs this paragraph has (to avoid double-counting)
-          const actionVerbsInParagraph = new Set<string>();
+          const actionVerbsInParagraph = new Set<string>()
 
           paragraph.mandates.forEach((mandate) => {
             if (mandate.action_verb) {
-              actionVerbsInParagraph.add(mandate.action_verb.toLowerCase());
+              actionVerbsInParagraph.add(mandate.action_verb.toLowerCase())
             }
-          });
+          })
 
           // Count this paragraph once for each unique action verb it contains
           actionVerbsInParagraph.forEach((verb) => {
-            counts[verb] = (counts[verb] || 0) + 1;
-          });
+            counts[verb] = (counts[verb] || 0) + 1
+          })
         }
       }
-    });
+    })
 
-    return counts;
-  }, [allParagraphs, paragraphMatchesOtherFilters, allActionVerbs]);
+    return counts
+  }, [allParagraphs, paragraphMatchesOtherFilters, allActionVerbs])
 
   // Calculate count of paragraphs with any deliverables based on current filters
   const paragraphsWithDeliverablesCount = useMemo(() => {
-    if (!allParagraphs) return 0;
+    if (!allParagraphs) return 0
 
     return allParagraphs.filter(
       (paragraph: Paragraph) =>
-        paragraphMatchesOtherFilters(paragraph, "deliverable") &&
-        paragraph.mandates?.some((mandate) => mandate.deliverables?.length > 0),
-    ).length;
-  }, [allParagraphs, paragraphMatchesOtherFilters]);
+        paragraphMatchesOtherFilters(paragraph, 'deliverable') &&
+        paragraph.mandates?.some((mandate) => mandate.deliverables?.length > 0)
+    ).length
+  }, [allParagraphs, paragraphMatchesOtherFilters])
 
   // Calculate filtered total counts for "All paragraphs" option in each dropdown
   const deliverableFilteredTotalCount = useMemo(() => {
-    if (!allParagraphs) return 0;
+    if (!allParagraphs) return 0
     return allParagraphs.filter((paragraph: Paragraph) =>
-      paragraphMatchesOtherFilters(paragraph, "deliverable"),
-    ).length;
-  }, [allParagraphs, paragraphMatchesOtherFilters]);
+      paragraphMatchesOtherFilters(paragraph, 'deliverable')
+    ).length
+  }, [allParagraphs, paragraphMatchesOtherFilters])
 
   const assigneeFilteredTotalCount = useMemo(() => {
-    if (!allParagraphs) return 0;
+    if (!allParagraphs) return 0
     return allParagraphs.filter((paragraph: Paragraph) =>
-      paragraphMatchesOtherFilters(paragraph, "assignee"),
-    ).length;
-  }, [allParagraphs, paragraphMatchesOtherFilters]);
+      paragraphMatchesOtherFilters(paragraph, 'assignee')
+    ).length
+  }, [allParagraphs, paragraphMatchesOtherFilters])
 
   const actionVerbFilteredTotalCount = useMemo(() => {
-    if (!allParagraphs) return 0;
+    if (!allParagraphs) return 0
     return allParagraphs.filter((paragraph: Paragraph) =>
-      paragraphMatchesOtherFilters(paragraph, "actionVerb"),
-    ).length;
-  }, [allParagraphs, paragraphMatchesOtherFilters]);
+      paragraphMatchesOtherFilters(paragraph, 'actionVerb')
+    ).length
+  }, [allParagraphs, paragraphMatchesOtherFilters])
 
   // Frontend filtering of paragraphs
   const paragraphs = useMemo(() => {
-    if (!allParagraphs) return allParagraphs;
+    if (!allParagraphs) return allParagraphs
 
     // Helper function to check if a paragraph matches the current filters
     const paragraphMatchesFilters = (paragraph: Paragraph): boolean => {
       // Filter by paragraph type
       if (
-        paragraphFilter === "operative" &&
-        paragraph.paragraph_type !== "operative"
+        paragraphFilter === 'operative' &&
+        paragraph.paragraph_type !== 'operative'
       ) {
-        return false;
+        return false
       }
 
       // Filter by deliverable type
-      if (deliverableFilter === "with-deliverables") {
+      if (deliverableFilter === 'with-deliverables') {
         if (
           !paragraph.mandates?.some(
-            (mandate) => mandate.deliverables?.length > 0,
+            (mandate) => mandate.deliverables?.length > 0
           )
         ) {
-          return false;
+          return false
         }
-      } else if (deliverableFilter !== "all") {
+      } else if (deliverableFilter !== 'all') {
         if (
           !paragraph.mandates?.some((mandate) =>
             mandate.deliverables?.some(
               (deliverable) =>
-                deliverable.deliverable_type === deliverableFilter,
-            ),
+                deliverable.deliverable_type === deliverableFilter
+            )
           )
         ) {
-          return false;
+          return false
         }
       }
 
       // Filter by entity type or individual entity - includes both assignees and mentioned_entities
-      if (assigneeFilter === "with-assignees") {
+      if (assigneeFilter === 'with-assignees') {
         if (
           !paragraph.mandates?.some(
             (mandate) =>
               mandate.assignees?.length > 0 ||
-              mandate.mentioned_entities?.length > 0,
+              mandate.mentioned_entities?.length > 0
           )
         ) {
-          return false;
+          return false
         }
-      } else if (assigneeFilter !== "all") {
-        if (assigneeFilter.includes(":")) {
+      } else if (assigneeFilter !== 'all') {
+        if (assigneeFilter.includes(':')) {
           // Individual entity filter (format: "type:entityName")
-          const [filterType, filterEntity] = assigneeFilter.split(":");
+          const [filterType, filterEntity] = assigneeFilter.split(':')
           if (
             !paragraph.mandates?.some(
               (mandate) =>
@@ -1055,17 +1063,17 @@ export function ParagraphsSection({
                   (assignee) =>
                     assignee.assignee_type === filterType &&
                     (assignee.assignee_normalized || assignee.assignee) ===
-                      filterEntity,
+                      filterEntity
                 ) ||
                 mandate.mentioned_entities?.some(
                   (entity) =>
                     entity.mentioned_entity_type === filterType &&
                     (entity.mentioned_entity_normalized ||
-                      entity.mentioned_entity) === filterEntity,
-                ),
+                      entity.mentioned_entity) === filterEntity
+                )
             )
           ) {
-            return false;
+            return false
           }
         } else {
           // Entity type filter
@@ -1073,504 +1081,502 @@ export function ParagraphsSection({
             !paragraph.mandates?.some(
               (mandate) =>
                 mandate.assignees?.some(
-                  (assignee) => assignee.assignee_type === assigneeFilter,
+                  (assignee) => assignee.assignee_type === assigneeFilter
                 ) ||
                 mandate.mentioned_entities?.some(
-                  (entity) => entity.mentioned_entity_type === assigneeFilter,
-                ),
+                  (entity) => entity.mentioned_entity_type === assigneeFilter
+                )
             )
           ) {
-            return false;
+            return false
           }
         }
       }
 
       // Filter by action verb
-      if (actionVerbFilter !== "all") {
+      if (actionVerbFilter !== 'all') {
         if (
           !paragraph.mandates?.some(
             (mandate) =>
               mandate.action_verb &&
-              mandate.action_verb.toLowerCase() === actionVerbFilter,
+              mandate.action_verb.toLowerCase() === actionVerbFilter
           )
         ) {
-          return false;
+          return false
         }
       }
 
-      return true;
-    };
+      return true
+    }
 
     // Helper function to find parent paragraph index
     const findParentIndex = (currentIndex: number): number | null => {
-      const currentParagraph = allParagraphs[currentIndex];
-      const currentLevel = currentParagraph.paragraph_level || 0;
+      const currentParagraph = allParagraphs[currentIndex]
+      const currentLevel = currentParagraph.paragraph_level || 0
 
       // Look backwards for a paragraph with a lower level (parent)
       for (let i = currentIndex - 1; i >= 0; i--) {
-        const paragraph = allParagraphs[i];
+        const paragraph = allParagraphs[i]
         if (
-          paragraph.type !== "heading" &&
+          paragraph.type !== 'heading' &&
           (paragraph.paragraph_level || 0) < currentLevel
         ) {
-          return i;
+          return i
         }
       }
-      return null;
-    };
+      return null
+    }
 
     // Helper function to find all children of a paragraph
     const findChildrenIndices = (parentIndex: number): number[] => {
-      const parentParagraph = allParagraphs[parentIndex];
-      const parentLevel = parentParagraph.paragraph_level || 0;
-      const childIndices: number[] = [];
+      const parentParagraph = allParagraphs[parentIndex]
+      const parentLevel = parentParagraph.paragraph_level || 0
+      const childIndices: number[] = []
 
       // Look forward for paragraphs with higher levels (children)
       for (let i = parentIndex + 1; i < allParagraphs.length; i++) {
-        const paragraph = allParagraphs[i];
-        if (paragraph.type === "heading") continue;
+        const paragraph = allParagraphs[i]
+        if (paragraph.type === 'heading') continue
 
-        const currentLevel = paragraph.paragraph_level || 0;
+        const currentLevel = paragraph.paragraph_level || 0
         if (currentLevel <= parentLevel) {
           // Found a sibling or parent, stop looking
-          break;
+          break
         }
-        childIndices.push(i);
+        childIndices.push(i)
       }
-      return childIndices;
-    };
+      return childIndices
+    }
 
     // Helper function to check if a heading has any visible content beneath it
     const headingHasVisibleContent = (headingIndex: number): boolean => {
-      const heading = allParagraphs[headingIndex];
-      if (heading.type !== "heading") return false;
+      const heading = allParagraphs[headingIndex]
+      if (heading.type !== 'heading') return false
 
-      const currentLevel = heading.heading_level || 3;
+      const currentLevel = heading.heading_level || 3
 
       // Find the next heading at the same or higher level
-      let nextHeadingIndex = -1;
+      let nextHeadingIndex = -1
       for (let i = headingIndex + 1; i < allParagraphs.length; i++) {
-        const nextParagraph = allParagraphs[i];
+        const nextParagraph = allParagraphs[i]
         if (
-          nextParagraph.type === "heading" &&
+          nextParagraph.type === 'heading' &&
           (nextParagraph.heading_level || 3) <= currentLevel
         ) {
-          nextHeadingIndex = i;
-          break;
+          nextHeadingIndex = i
+          break
         }
       }
 
       // Check if there are any matching paragraphs between this heading and the next
       const endIndex =
-        nextHeadingIndex === -1 ? allParagraphs.length : nextHeadingIndex;
+        nextHeadingIndex === -1 ? allParagraphs.length : nextHeadingIndex
       for (let i = headingIndex + 1; i < endIndex; i++) {
-        const paragraph = allParagraphs[i];
-        if (paragraph.type !== "heading" && shouldIncludeParagraph(i)) {
-          return true;
+        const paragraph = allParagraphs[i]
+        if (paragraph.type !== 'heading' && shouldIncludeParagraph(i)) {
+          return true
         }
       }
 
-      return false;
-    };
+      return false
+    }
 
     // Check if any assignee/deliverable/action filters are active (these trigger parent-child logic)
     const hasEnhancedFilters =
-      deliverableFilter !== "all" ||
-      assigneeFilter !== "all" ||
-      actionVerbFilter !== "all";
+      deliverableFilter !== 'all' ||
+      assigneeFilter !== 'all' ||
+      actionVerbFilter !== 'all'
 
     // Check if any filters are active
-    const hasActiveFilters = paragraphFilter !== "all" || hasEnhancedFilters;
+    const hasActiveFilters = paragraphFilter !== 'all' || hasEnhancedFilters
 
     // Helper function to determine if a paragraph should be included (with parent-child logic)
     const shouldIncludeParagraph = (index: number): boolean => {
-      const paragraph = allParagraphs[index];
+      const paragraph = allParagraphs[index]
 
       // Always apply basic paragraph type filter
       if (
-        paragraphFilter === "operative" &&
-        paragraph.paragraph_type !== "operative"
+        paragraphFilter === 'operative' &&
+        paragraph.paragraph_type !== 'operative'
       ) {
-        return false;
+        return false
       }
 
       // If no enhanced filters are active, use simple matching
       if (!hasEnhancedFilters) {
-        return true; // Only paragraph type filter is active, which we already checked
+        return true // Only paragraph type filter is active, which we already checked
       }
 
       // Check if this paragraph directly matches the enhanced filters
-      const directMatch = paragraphMatchesFilters(paragraph);
+      const directMatch = paragraphMatchesFilters(paragraph)
 
       if (directMatch) {
-        return true;
+        return true
       }
 
       // If paragraph doesn't directly match, check parent-child relationships
 
       // Check if this paragraph is a child of a matching parent
-      const parentIndex = findParentIndex(index);
+      const parentIndex = findParentIndex(index)
       if (parentIndex !== null) {
-        const parentParagraph = allParagraphs[parentIndex];
+        const parentParagraph = allParagraphs[parentIndex]
         if (
-          paragraphFilter === "operative" &&
-          parentParagraph.paragraph_type !== "operative"
+          paragraphFilter === 'operative' &&
+          parentParagraph.paragraph_type !== 'operative'
         ) {
           // Parent doesn't match paragraph type filter, skip
         } else if (paragraphMatchesFilters(parentParagraph)) {
-          return true; // Include child because parent matches
+          return true // Include child because parent matches
         }
       }
 
       // Check if this paragraph is a parent of any matching children
-      const childIndices = findChildrenIndices(index);
+      const childIndices = findChildrenIndices(index)
       for (const childIndex of childIndices) {
-        const childParagraph = allParagraphs[childIndex];
+        const childParagraph = allParagraphs[childIndex]
         if (
-          paragraphFilter === "operative" &&
-          childParagraph.paragraph_type !== "operative"
+          paragraphFilter === 'operative' &&
+          childParagraph.paragraph_type !== 'operative'
         ) {
-          continue; // Child doesn't match paragraph type filter
+          continue // Child doesn't match paragraph type filter
         }
         if (paragraphMatchesFilters(childParagraph)) {
-          return true; // Include parent because child matches
+          return true // Include parent because child matches
         }
       }
 
-      return false;
-    };
+      return false
+    }
 
     // Filter paragraphs
     const filtered = allParagraphs.filter(
       (paragraph: Paragraph, index: number) => {
-        if (paragraph.type === "heading") {
+        if (paragraph.type === 'heading') {
           // If no filters are active, always show headings
           if (!hasActiveFilters) {
-            return true;
+            return true
           }
           // If filters are active, only show headings that have visible content beneath them
-          return headingHasVisibleContent(index);
+          return headingHasVisibleContent(index)
         }
 
         // For non-heading paragraphs, apply the enhanced filtering logic
-        return shouldIncludeParagraph(index);
-      },
-    );
+        return shouldIncludeParagraph(index)
+      }
+    )
 
-    return filtered;
+    return filtered
   }, [
     allParagraphs,
     paragraphFilter,
     deliverableFilter,
     assigneeFilter,
     actionVerbFilter,
-  ]);
+  ])
 
   // Build TOC from paragraphs
   const tocItems = useMemo((): TOCItem[] => {
-    if (!paragraphs || paragraphs.length === 0) return [];
+    if (!paragraphs || paragraphs.length === 0) return []
 
-    const items: TOCItem[] = [];
-    const stack: TOCItem[] = [];
+    const items: TOCItem[] = []
+    const stack: TOCItem[] = []
 
     paragraphs.forEach((paragraph: Paragraph, index: number) => {
-      if (paragraph.type === "heading") {
-        const level = paragraph.heading_level || 3;
+      if (paragraph.type === 'heading') {
+        const level = paragraph.heading_level || 3
         // Include prefix in TOC text if it exists
         const displayText = paragraph.prefix
           ? `${paragraph.prefix} ${paragraph.text}`
-          : paragraph.text;
+          : paragraph.text
         const item: TOCItem = {
           id: `heading-${index}`,
           text: displayText,
           level,
           children: [],
           index,
-        };
+        }
 
         // Remove items from stack that are at same or deeper level
         while (stack.length > 0 && stack[stack.length - 1].level >= level) {
-          stack.pop();
+          stack.pop()
         }
 
         if (stack.length === 0) {
           // Top-level item
-          items.push(item);
+          items.push(item)
         } else {
           // Child item
-          stack[stack.length - 1].children.push(item);
+          stack[stack.length - 1].children.push(item)
         }
 
-        stack.push(item);
+        stack.push(item)
       }
-    });
+    })
 
-    return items;
-  }, [paragraphs]);
+    return items
+  }, [paragraphs])
 
   // Helper function to check if a section should be expanded based on active heading
   const isInActivePath = useCallback(
     (item: TOCItem): boolean => {
-      if (!activeHeadingId) return false;
+      if (!activeHeadingId) return false
 
       // Check if this item or any of its descendants is active
       const checkDescendants = (currentItem: TOCItem): boolean => {
-        if (currentItem.id === activeHeadingId) return true;
-        return currentItem.children.some((child) => checkDescendants(child));
-      };
+        if (currentItem.id === activeHeadingId) return true
+        return currentItem.children.some((child) => checkDescendants(child))
+      }
 
-      return checkDescendants(item);
+      return checkDescendants(item)
     },
-    [activeHeadingId],
-  );
+    [activeHeadingId]
+  )
 
   // Intersection Observer for scroll detection
   useEffect(() => {
-    if (!paragraphs || paragraphs.length === 0 || tocItems.length === 0) return;
+    if (!paragraphs || paragraphs.length === 0 || tocItems.length === 0) return
 
     // Add a small delay to ensure DOM elements are rendered
     const timeoutId = setTimeout(() => {
       const headingElements = paragraphs
         .map((paragraph: Paragraph, index: number) => {
-          if (paragraph.type === "heading") {
-            return document.getElementById(`heading-${index}`);
+          if (paragraph.type === 'heading') {
+            return document.getElementById(`heading-${index}`)
           }
-          return null;
+          return null
         })
-        .filter(Boolean) as HTMLElement[];
+        .filter(Boolean) as HTMLElement[]
 
       if (headingElements.length === 0) {
         // Try again after a longer delay if no elements found
         const retryTimeoutId = setTimeout(() => {
           const retryElements = paragraphs
             .map((paragraph: Paragraph, index: number) => {
-              if (paragraph.type === "heading") {
-                return document.getElementById(`heading-${index}`);
+              if (paragraph.type === 'heading') {
+                return document.getElementById(`heading-${index}`)
               }
-              return null;
+              return null
             })
-            .filter(Boolean) as HTMLElement[];
+            .filter(Boolean) as HTMLElement[]
 
-          if (retryElements.length === 0) return;
+          if (retryElements.length === 0) return
 
           const observer = new IntersectionObserver(
             (entries) => {
-              if (entries.length === 0) return;
+              if (entries.length === 0) return
 
               // Sort entries by their position in the document
               const sortedEntries = entries.sort((a, b) => {
-                const aRect = a.boundingClientRect;
-                const bRect = b.boundingClientRect;
-                return aRect.top - bRect.top;
-              });
+                const aRect = a.boundingClientRect
+                const bRect = b.boundingClientRect
+                return aRect.top - bRect.top
+              })
 
               // Find the best heading to highlight
-              let activeEntry = null;
+              let activeEntry = null
 
               // First, try to find an intersecting heading
               const intersectingEntries = sortedEntries.filter(
-                (entry) => entry.isIntersecting,
-              );
+                (entry) => entry.isIntersecting
+              )
               if (intersectingEntries.length > 0) {
                 // Use the first intersecting heading (topmost)
-                activeEntry = intersectingEntries[0];
+                activeEntry = intersectingEntries[0]
               } else {
                 // No headings are intersecting, find the last heading above the viewport
                 const aboveViewport = sortedEntries.filter(
-                  (entry) => entry.boundingClientRect.bottom < 0,
-                );
+                  (entry) => entry.boundingClientRect.bottom < 0
+                )
                 if (aboveViewport.length > 0) {
-                  activeEntry = aboveViewport[aboveViewport.length - 1]; // Last one above viewport
+                  activeEntry = aboveViewport[aboveViewport.length - 1] // Last one above viewport
                 } else {
                   // All headings are below viewport, use the first one
-                  activeEntry = sortedEntries[0];
+                  activeEntry = sortedEntries[0]
                 }
               }
 
               if (activeEntry) {
-                setActiveHeadingId(activeEntry.target.id);
+                setActiveHeadingId(activeEntry.target.id)
               }
             },
             {
-              rootMargin: "-20% 0px -60% 0px", // Trigger when heading is in upper portion of viewport
+              rootMargin: '-20% 0px -60% 0px', // Trigger when heading is in upper portion of viewport
               threshold: [0, 0.25, 0.5, 0.75, 1],
-            },
-          );
+            }
+          )
 
-          retryElements.forEach((el) => observer.observe(el));
+          retryElements.forEach((el) => observer.observe(el))
 
           // Return cleanup function for retry observer
-          return () => observer.disconnect();
-        }, 100);
+          return () => observer.disconnect()
+        }, 100)
 
-        return () => clearTimeout(retryTimeoutId);
+        return () => clearTimeout(retryTimeoutId)
       }
 
       const observer = new IntersectionObserver(
         (entries) => {
-          if (entries.length === 0) return;
+          if (entries.length === 0) return
 
           // Sort entries by their position in the document
           const sortedEntries = entries.sort((a, b) => {
-            const aRect = a.boundingClientRect;
-            const bRect = b.boundingClientRect;
-            return aRect.top - bRect.top;
-          });
+            const aRect = a.boundingClientRect
+            const bRect = b.boundingClientRect
+            return aRect.top - bRect.top
+          })
 
           // Find the best heading to highlight
-          let activeEntry = null;
+          let activeEntry = null
 
           // First, try to find an intersecting heading
           const intersectingEntries = sortedEntries.filter(
-            (entry) => entry.isIntersecting,
-          );
+            (entry) => entry.isIntersecting
+          )
           if (intersectingEntries.length > 0) {
             // Use the first intersecting heading (topmost)
-            activeEntry = intersectingEntries[0];
+            activeEntry = intersectingEntries[0]
           } else {
             // No headings are intersecting, find the last heading above the viewport
             const aboveViewport = sortedEntries.filter(
-              (entry) => entry.boundingClientRect.bottom < 0,
-            );
+              (entry) => entry.boundingClientRect.bottom < 0
+            )
             if (aboveViewport.length > 0) {
-              activeEntry = aboveViewport[aboveViewport.length - 1]; // Last one above viewport
+              activeEntry = aboveViewport[aboveViewport.length - 1] // Last one above viewport
             } else {
               // All headings are below viewport, use the first one
-              activeEntry = sortedEntries[0];
+              activeEntry = sortedEntries[0]
             }
           }
 
           if (activeEntry) {
-            setActiveHeadingId(activeEntry.target.id);
+            setActiveHeadingId(activeEntry.target.id)
           }
         },
         {
-          rootMargin: "-20% 0px -60% 0px", // Trigger when heading is in upper portion of viewport
+          rootMargin: '-20% 0px -60% 0px', // Trigger when heading is in upper portion of viewport
           threshold: [0, 0.25, 0.5, 0.75, 1],
-        },
-      );
+        }
+      )
 
-      headingElements.forEach((el) => observer.observe(el));
+      headingElements.forEach((el) => observer.observe(el))
 
-      return () => observer.disconnect();
-    }, 50); // Small delay to ensure DOM is ready
+      return () => observer.disconnect()
+    }, 50) // Small delay to ensure DOM is ready
 
-    return () => clearTimeout(timeoutId);
-  }, [paragraphs]); // Remove tocItems from dependencies as it's derived from paragraphs
+    return () => clearTimeout(timeoutId)
+  }, [paragraphs]) // Remove tocItems from dependencies as it's derived from paragraphs
 
   // Set initial active heading when paragraphs first load
   useEffect(() => {
     if (!paragraphs || paragraphs.length === 0 || activeHeadingId !== null)
-      return;
+      return
 
     // Find the first heading and set it as active
-    const firstHeading = paragraphs.find(
-      (p: Paragraph) => p.type === "heading",
-    );
+    const firstHeading = paragraphs.find((p: Paragraph) => p.type === 'heading')
     if (firstHeading) {
-      const firstHeadingIndex = paragraphs.indexOf(firstHeading);
-      setActiveHeadingId(`heading-${firstHeadingIndex}`);
+      const firstHeadingIndex = paragraphs.indexOf(firstHeading)
+      setActiveHeadingId(`heading-${firstHeadingIndex}`)
     }
-  }, [paragraphs, activeHeadingId]);
+  }, [paragraphs, activeHeadingId])
 
   // Intersection Observer for paragraphs title visibility
   useEffect(() => {
-    if (!isMobile || !paragraphsTitleRef.current) return;
+    if (!isMobile || !paragraphsTitleRef.current) return
 
-    const titleElement = paragraphsTitleRef.current;
+    const titleElement = paragraphsTitleRef.current
 
     const checkScrollPosition = () => {
-      const rect = titleElement.getBoundingClientRect();
+      const rect = titleElement.getBoundingClientRect()
       // Show floating TOC when the title has completely scrolled above the viewport
-      setShowFloatingTOC(rect.bottom < 0);
-    };
+      setShowFloatingTOC(rect.bottom < 0)
+    }
 
     // Check initial position
-    checkScrollPosition();
+    checkScrollPosition()
 
     // Use scroll event listener for more reliable position tracking
     const handleScroll = () => {
-      checkScrollPosition();
-    };
+      checkScrollPosition()
+    }
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener('scroll', handleScroll, { passive: true })
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [isMobile]);
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [isMobile])
 
   // TOC navigation handler
   const handleTOCClick = (headingId: string) => {
-    const element = document.getElementById(headingId);
+    const element = document.getElementById(headingId)
     if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" });
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
-  };
+  }
 
   // Close tooltip, mobile TOC, and dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Element;
-      if (!target.closest(".tooltip-container")) {
-        setOpenTooltip(null);
+      const target = event.target as Element
+      if (!target.closest('.tooltip-container')) {
+        setOpenTooltip(null)
       }
-      if (!target.closest(".mobile-toc-container")) {
-        setIsMobileTOCOpen(false);
+      if (!target.closest('.mobile-toc-container')) {
+        setIsMobileTOCOpen(false)
       }
-      if (!target.closest(".deliverable-dropdown")) {
-        setIsDeliverableDropdownOpen(false);
+      if (!target.closest('.deliverable-dropdown')) {
+        setIsDeliverableDropdownOpen(false)
       }
-      if (!target.closest(".assignee-dropdown")) {
-        setIsAssigneeDropdownOpen(false);
+      if (!target.closest('.assignee-dropdown')) {
+        setIsAssigneeDropdownOpen(false)
       }
-      if (!target.closest(".action-verb-dropdown")) {
-        setIsActionVerbDropdownOpen(false);
+      if (!target.closest('.action-verb-dropdown')) {
+        setIsActionVerbDropdownOpen(false)
       }
-    };
+    }
 
     const handleScroll = () => {
       // Only close tooltip on scroll, not dropdowns
-      if (openTooltip === "paragraphs-beta") {
-        setOpenTooltip(null);
+      if (openTooltip === 'paragraphs-beta') {
+        setOpenTooltip(null)
       }
-    };
+    }
 
     const handleResize = () => {
       // Close everything on resize as layout changes
-      if (openTooltip === "paragraphs-beta") {
-        setOpenTooltip(null);
+      if (openTooltip === 'paragraphs-beta') {
+        setOpenTooltip(null)
       }
       if (isDeliverableDropdownOpen) {
-        setIsDeliverableDropdownOpen(false);
+        setIsDeliverableDropdownOpen(false)
       }
       if (isAssigneeDropdownOpen) {
-        setIsAssigneeDropdownOpen(false);
+        setIsAssigneeDropdownOpen(false)
       }
       if (isActionVerbDropdownOpen) {
-        setIsActionVerbDropdownOpen(false);
+        setIsActionVerbDropdownOpen(false)
       }
-    };
+    }
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        if (openTooltip === "paragraphs-beta") {
-          setOpenTooltip(null);
+      if (event.key === 'Escape') {
+        if (openTooltip === 'paragraphs-beta') {
+          setOpenTooltip(null)
         }
         if (isDeliverableDropdownOpen) {
-          setIsDeliverableDropdownOpen(false);
+          setIsDeliverableDropdownOpen(false)
         }
         if (isAssigneeDropdownOpen) {
-          setIsAssigneeDropdownOpen(false);
+          setIsAssigneeDropdownOpen(false)
         }
         if (isActionVerbDropdownOpen) {
-          setIsActionVerbDropdownOpen(false);
+          setIsActionVerbDropdownOpen(false)
         }
         if (isMobileTOCOpen) {
-          setIsMobileTOCOpen(false);
+          setIsMobileTOCOpen(false)
         }
       }
-    };
+    }
 
     if (
       openTooltip ||
@@ -1579,16 +1585,16 @@ export function ParagraphsSection({
       isAssigneeDropdownOpen ||
       isActionVerbDropdownOpen
     ) {
-      document.addEventListener("mousedown", handleClickOutside);
-      window.addEventListener("scroll", handleScroll, false);
-      window.addEventListener("resize", handleResize);
-      document.addEventListener("keydown", handleKeyDown);
+      document.addEventListener('mousedown', handleClickOutside)
+      window.addEventListener('scroll', handleScroll, false)
+      window.addEventListener('resize', handleResize)
+      document.addEventListener('keydown', handleKeyDown)
       return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-        window.removeEventListener("scroll", handleScroll, false);
-        window.removeEventListener("resize", handleResize);
-        document.removeEventListener("keydown", handleKeyDown);
-      };
+        document.removeEventListener('mousedown', handleClickOutside)
+        window.removeEventListener('scroll', handleScroll, false)
+        window.removeEventListener('resize', handleResize)
+        document.removeEventListener('keydown', handleKeyDown)
+      }
     }
   }, [
     openTooltip,
@@ -1596,34 +1602,34 @@ export function ParagraphsSection({
     isDeliverableDropdownOpen,
     isAssigneeDropdownOpen,
     isActionVerbDropdownOpen,
-  ]);
+  ])
 
   const toggleTooltip = (tooltipId: string) => {
-    setOpenTooltip(openTooltip === tooltipId ? null : tooltipId);
-  };
+    setOpenTooltip(openTooltip === tooltipId ? null : tooltipId)
+  }
 
   // Render TOC items recursively
   const renderTOCItem = (
     item: TOCItem,
-    isTopLevel: boolean = false,
+    isTopLevel: boolean = false
   ): React.ReactNode => {
-    const isActive = activeHeadingId === item.id;
-    const hasChildren = item.children.length > 0;
-    const shouldExpand = isInActivePath(item);
+    const isActive = activeHeadingId === item.id
+    const hasChildren = item.children.length > 0
+    const shouldExpand = isInActivePath(item)
 
     return (
       <div key={item.id} className="space-y-1">
         <div className="flex items-center gap-1">
           {/* Always reserve space for expand button to maintain alignment */}
-          <div className="w-4 h-4 flex items-center justify-center shrink-0">
+          <div className="flex h-4 w-4 shrink-0 items-center justify-center">
             {hasChildren && (
               <button
                 onClick={() => handleTOCClick(item.id)}
-                className="p-0.5 hover:bg-gray-100 rounded text-gray-400 hover:text-gray-600"
+                className="rounded p-0.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
                 title={`Go to ${item.text}`}
               >
                 <svg
-                  className={`h-3 w-3 transition-transform ${shouldExpand ? "rotate-90" : ""}`}
+                  className={`h-3 w-3 transition-transform ${shouldExpand ? 'rotate-90' : ''}`}
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -1638,11 +1644,11 @@ export function ParagraphsSection({
           </div>
           <button
             onClick={() => handleTOCClick(item.id)}
-            className={`text-left flex-1 py-1 px-2 rounded text-xs hover:bg-gray-100 transition-colors ${
+            className={`flex-1 rounded px-2 py-1 text-left text-xs transition-colors hover:bg-gray-100 ${
               isActive
-                ? "bg-un-blue/10 text-un-blue font-medium"
-                : "text-gray-700 hover:text-gray-900"
-            } ${isTopLevel ? "font-medium" : ""}`}
+                ? 'bg-un-blue/10 font-medium text-un-blue'
+                : 'text-gray-700 hover:text-gray-900'
+            } ${isTopLevel ? 'font-medium' : ''}`}
             style={{ marginLeft: `${(item.level - 1) * 12}px` }}
           >
             <span className="line-clamp-2 leading-tight">
@@ -1659,8 +1665,8 @@ export function ParagraphsSection({
           </div>
         )}
       </div>
-    );
-  };
+    )
+  }
 
   // Helper function to parse and render text with proper React tooltip components
   const renderProcessedText = (
@@ -1668,72 +1674,72 @@ export function ParagraphsSection({
     actionVerb: string | null,
     links: [string, string][],
     textWithHighlights?: string,
-    mandates?: any[],
+    mandates?: any[]
   ) => {
-    const sourceText = textWithHighlights || text;
+    const sourceText = textWithHighlights || text
 
     // Check if any assignee/deliverable/action verb filters are active for enhanced highlighting
     const hasEnhancedFilters =
-      assigneeFilter !== "all" ||
-      deliverableFilter !== "all" ||
-      actionVerbFilter !== "all";
+      assigneeFilter !== 'all' ||
+      deliverableFilter !== 'all' ||
+      actionVerbFilter !== 'all'
 
     if (!textWithHighlights) {
       // Handle links and special phrase highlighting for non-highlighted text
-      let processedText = sourceText;
+      let processedText = sourceText
 
       // First, highlight "within existing resources" in bold red
-      const withinExistingResourcesRegex = /within existing resources/gi;
+      const withinExistingResourcesRegex = /within existing resources/gi
       processedText = processedText.replace(
         withinExistingResourcesRegex,
-        '<span class="font-bold text-red-600">within existing resources</span>',
-      );
+        '<span class="font-bold text-red-600">within existing resources</span>'
+      )
 
       // Then handle links
       if (links && links.length > 0) {
         links.forEach(([linkText, url]) => {
           const linkRegex = new RegExp(
-            linkText.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
-            "g",
-          );
+            linkText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
+            'g'
+          )
           processedText = processedText.replace(
             linkRegex,
-            `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-un-blue hover:underline font-medium">${linkText}</a>`,
-          );
-        });
+            `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-un-blue hover:underline font-medium">${linkText}</a>`
+          )
+        })
       }
-      return <span dangerouslySetInnerHTML={{ __html: processedText }} />;
+      return <span dangerouslySetInnerHTML={{ __html: processedText }} />
     }
 
     // Parse text and create segments with proper React components
-    const segments: React.ReactNode[] = [];
-    let segmentKey = 0;
+    const segments: React.ReactNode[] = []
+    let segmentKey = 0
 
     // Split text by all special patterns to process sequentially
     const allPatterns = [
-      { pattern: /\*(.*?)\*/g, type: "verb" },
-      { pattern: /<<(.*?)>>/g, type: "assignee" },
-      { pattern: /\{\{(.*?)\}\}/g, type: "mentioned_entity" },
-      { pattern: /\[\[(.*?)\]\]/g, type: "deliverable" },
-      { pattern: /within existing resources/gi, type: "highlight" },
-    ];
+      { pattern: /\*(.*?)\*/g, type: 'verb' },
+      { pattern: /<<(.*?)>>/g, type: 'assignee' },
+      { pattern: /\{\{(.*?)\}\}/g, type: 'mentioned_entity' },
+      { pattern: /\[\[(.*?)\]\]/g, type: 'deliverable' },
+      { pattern: /within existing resources/gi, type: 'highlight' },
+    ]
 
-    let currentText = sourceText;
+    let currentText = sourceText
     const replacements: {
-      start: number;
-      end: number;
-      component: React.ReactNode;
-      text: string;
-    }[] = [];
+      start: number
+      end: number
+      component: React.ReactNode
+      text: string
+    }[] = []
 
     // Find all matches across all patterns
     allPatterns.forEach(({ pattern, type }) => {
-      let match;
+      let match
       while ((match = pattern.exec(sourceText)) !== null) {
-        const matchText = type === "highlight" ? match[0] : match[1];
-        let component: React.ReactNode;
+        const matchText = type === 'highlight' ? match[0] : match[1]
+        let component: React.ReactNode
 
-        if (type === "highlight") {
+        if (type === 'highlight') {
           component = (
             <span
               key={`highlight-${segmentKey++}`}
@@ -1741,23 +1747,23 @@ export function ParagraphsSection({
             >
               {matchText}
             </span>
-          );
-        } else if (type === "verb") {
+          )
+        } else if (type === 'verb') {
           const correspondingMandate = mandates?.find(
             (mandate) =>
               mandate.action_verb &&
-              mandate.action_verb.toLowerCase() === matchText.toLowerCase(),
-          );
+              mandate.action_verb.toLowerCase() === matchText.toLowerCase()
+          )
 
           // Enhanced highlighting for action verb when filter is active
           const isFilteredVerb =
-            actionVerbFilter !== "all" &&
+            actionVerbFilter !== 'all' &&
             correspondingMandate?.action_verb?.toLowerCase() ===
-              actionVerbFilter;
+              actionVerbFilter
           const verbClasses =
             hasEnhancedFilters && isFilteredVerb
-              ? "text-un-blue cursor-help bg-yellow-200 px-1 py-0.5 rounded font-semibold shadow-xs"
-              : "text-un-blue cursor-help";
+              ? 'text-un-blue cursor-help bg-yellow-200 px-1 py-0.5 rounded font-semibold shadow-xs'
+              : 'text-un-blue cursor-help'
 
           component = (
             <Tooltip key={`verb-${segmentKey++}`}>
@@ -1770,25 +1776,25 @@ export function ParagraphsSection({
                   <div className="text-sm">
                     {titleCase(
                       (
-                        correspondingMandate?.action_verb_type || "Unknown"
-                      ).replace(/_/g, " "),
+                        correspondingMandate?.action_verb_type || 'Unknown'
+                      ).replace(/_/g, ' ')
                     )}
                   </div>
                 </div>
               </TooltipContent>
             </Tooltip>
-          );
-        } else if (type === "assignee" || type === "mentioned_entity") {
-          let entityData: any = null;
+          )
+        } else if (type === 'assignee' || type === 'mentioned_entity') {
+          let entityData: any = null
 
           // Search in both assignees and mentioned_entities
           mandates?.forEach((mandate) => {
             // Check assignees
             mandate.assignees?.forEach((assignee: any) => {
               if (assignee.assignee.toLowerCase() === matchText.toLowerCase()) {
-                entityData = { ...assignee, entityType: "assignee" };
+                entityData = { ...assignee, entityType: 'assignee' }
               }
-            });
+            })
             // Check mentioned_entities
             mandate.mentioned_entities?.forEach((entity: any) => {
               if (
@@ -1799,30 +1805,30 @@ export function ParagraphsSection({
                   assignee: entity.mentioned_entity,
                   assignee_normalized: entity.mentioned_entity_normalized,
                   assignee_type: entity.mentioned_entity_type,
-                  entityType: "mentioned_entity",
-                };
+                  entityType: 'mentioned_entity',
+                }
               }
-            });
-          });
+            })
+          })
 
           // Enhanced highlighting for entity when filter is active
           const isFilteredEntity =
-            assigneeFilter !== "all" &&
-            ((assigneeFilter.includes(":") &&
+            assigneeFilter !== 'all' &&
+            ((assigneeFilter.includes(':') &&
               assigneeFilter ===
                 `${entityData?.assignee_type}:${entityData?.assignee_normalized || entityData?.assignee}`) ||
-              (!assigneeFilter.includes(":") &&
-                entityData?.assignee_type === assigneeFilter));
+              (!assigneeFilter.includes(':') &&
+                entityData?.assignee_type === assigneeFilter))
           const entityClasses =
             hasEnhancedFilters && isFilteredEntity
-              ? "bg-yellow-200 border border-un-blue px-2 py-0.5 rounded-full text-sm font-semibold cursor-help shadow-xs"
-              : "bg-gray-200 border border-un-blue px-2 py-0.5 rounded-full text-sm font-medium cursor-help";
+              ? 'bg-yellow-200 border border-un-blue px-2 py-0.5 rounded-full text-sm font-semibold cursor-help shadow-xs'
+              : 'bg-gray-200 border border-un-blue px-2 py-0.5 rounded-full text-sm font-medium cursor-help'
 
           component = (
             <Tooltip key={`entity-${segmentKey++}`}>
               <TooltipTrigger asChild>
                 <span className={entityClasses}>
-                  <Users className="w-3 h-3 inline mr-1 align-middle" />
+                  <Users className="mr-1 inline h-3 w-3 align-middle" />
                   {matchText}
                 </span>
               </TooltipTrigger>
@@ -1832,10 +1838,10 @@ export function ParagraphsSection({
                   <div className="text-sm">
                     <div>
                       {titleCase(
-                        (entityData?.assignee_type || "Unknown").replace(
+                        (entityData?.assignee_type || 'Unknown').replace(
                           /_/g,
-                          " ",
-                        ),
+                          ' '
+                        )
                       )}
                     </div>
                     {entityData?.assignee_normalized && (
@@ -1847,34 +1853,34 @@ export function ParagraphsSection({
                 </div>
               </TooltipContent>
             </Tooltip>
-          );
-        } else if (type === "deliverable") {
-          let deliverableData: any = null;
+          )
+        } else if (type === 'deliverable') {
+          let deliverableData: any = null
           mandates?.forEach((mandate) => {
             mandate.deliverables?.forEach((deliverable: any) => {
               if (
                 deliverable.deliverable.toLowerCase() ===
                 matchText.toLowerCase()
               ) {
-                deliverableData = deliverable;
+                deliverableData = deliverable
               }
-            });
-          });
+            })
+          })
 
           // Enhanced highlighting for deliverable when filter is active
           const isFilteredDeliverable =
-            deliverableFilter !== "all" &&
-            deliverableData?.deliverable_type === deliverableFilter;
+            deliverableFilter !== 'all' &&
+            deliverableData?.deliverable_type === deliverableFilter
           const deliverableClasses =
             hasEnhancedFilters && isFilteredDeliverable
-              ? "bg-yellow-200 border border-gray-350 px-2 py-0.5 rounded-full text-sm font-semibold cursor-help shadow-xs"
-              : "bg-gray-200 border border-gray-350 px-2 py-0.5 rounded-full text-sm font-medium cursor-help";
+              ? 'bg-yellow-200 border border-gray-350 px-2 py-0.5 rounded-full text-sm font-semibold cursor-help shadow-xs'
+              : 'bg-gray-200 border border-gray-350 px-2 py-0.5 rounded-full text-sm font-medium cursor-help'
 
           component = (
             <Tooltip key={`deliverable-${segmentKey++}`}>
               <TooltipTrigger asChild>
                 <span className={deliverableClasses}>
-                  <Package className="w-3 h-3 inline mr-1 align-middle" />
+                  <Package className="mr-1 inline h-3 w-3 align-middle" />
                   {matchText}
                 </span>
               </TooltipTrigger>
@@ -1885,8 +1891,8 @@ export function ParagraphsSection({
                     <div>
                       {titleCase(
                         (
-                          deliverableData?.deliverable_type || "Unknown"
-                        ).replace(/_/g, " "),
+                          deliverableData?.deliverable_type || 'Unknown'
+                        ).replace(/_/g, ' ')
                       )}
                     </div>
                     {deliverableData?.deliverable_normalized && (
@@ -1898,7 +1904,7 @@ export function ParagraphsSection({
                 </div>
               </TooltipContent>
             </Tooltip>
-          );
+          )
         }
 
         replacements.push({
@@ -1906,62 +1912,60 @@ export function ParagraphsSection({
           end: match.index + match[0].length,
           component: component!,
           text: match[0],
-        });
+        })
       }
-      pattern.lastIndex = 0; // Reset regex
-    });
+      pattern.lastIndex = 0 // Reset regex
+    })
 
     // Sort replacements by position and build segments
-    replacements.sort((a, b) => a.start - b.start);
+    replacements.sort((a, b) => a.start - b.start)
 
-    let lastIndex = 0;
+    let lastIndex = 0
     replacements.forEach((replacement, index) => {
       // Add text before this replacement
       if (replacement.start > lastIndex) {
-        const textBefore = sourceText.slice(lastIndex, replacement.start);
+        const textBefore = sourceText.slice(lastIndex, replacement.start)
         if (textBefore) {
-          segments.push(<span key={`text-${segmentKey++}`}>{textBefore}</span>);
+          segments.push(<span key={`text-${segmentKey++}`}>{textBefore}</span>)
         }
       }
 
       // Add the replacement component
-      segments.push(replacement.component);
-      lastIndex = replacement.end;
-    });
+      segments.push(replacement.component)
+      lastIndex = replacement.end
+    })
 
     // Add remaining text
     if (lastIndex < sourceText.length) {
-      const remainingText = sourceText.slice(lastIndex);
+      const remainingText = sourceText.slice(lastIndex)
       if (remainingText) {
-        segments.push(
-          <span key={`text-${segmentKey++}`}>{remainingText}</span>,
-        );
+        segments.push(<span key={`text-${segmentKey++}`}>{remainingText}</span>)
       }
     }
 
-    return <>{segments}</>;
-  };
+    return <>{segments}</>
+  }
 
   return (
     <div className="space-y-4">
       <div ref={paragraphsTitleRef} className="space-y-4">
         {/* Title and Filters Row */}
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           {/* Title Section */}
-          <h3 className="text-base font-semibold flex items-center gap-2">
+          <h3 className="flex items-center gap-2 text-base font-semibold">
             <FileCheck className="h-4 w-4" />
             <span>{explainerTexts.mandateDetail.paragraphs.title}</span>
-            <div className="relative tooltip-container">
+            <div className="tooltip-container relative">
               <button
                 type="button"
-                className="p-0 border-0 bg-transparent cursor-help focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 rounded-sm flex items-center"
+                className="flex cursor-help items-center rounded-sm border-0 bg-transparent p-0 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden"
                 aria-label="Information about paragraph extraction"
-                onClick={() => toggleTooltip("paragraphs-beta")}
+                onClick={() => toggleTooltip('paragraphs-beta')}
               >
                 <HelpCircle className="h-4 w-4 text-muted-foreground" />
               </button>
-              {openTooltip === "paragraphs-beta" && (
-                <div className="absolute left-0 top-6 z-50 w-80 p-3 bg-white border rounded-md shadow-lg text-sm font-normal">
+              {openTooltip === 'paragraphs-beta' && (
+                <div className="absolute top-6 left-0 z-50 w-80 rounded-md border bg-white p-3 text-sm font-normal shadow-lg">
                   <p>
                     {explainerTexts.mandateDetail.paragraphs.betaDisclaimer}
                   </p>
@@ -1971,13 +1975,13 @@ export function ParagraphsSection({
           </h3>
 
           {/* Filters Section */}
-          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-            <span className="text-sm font-medium text-gray-600 hidden sm:block">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <span className="hidden text-sm font-medium text-gray-600 sm:block">
               Filter:
             </span>
 
             {/* Filter buttons - responsive flex */}
-            <div className="flex flex-wrap gap-2 sm:gap-3 items-center">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               {/* Assignee type dropdown */}
               {Object.keys(assigneeTypeCounts).length > 0 && (
                 <Tooltip>
@@ -1992,8 +1996,8 @@ export function ParagraphsSection({
                           setIsAssigneeDropdownOpen(!isAssigneeDropdownOpen)
                         }
                         onFilterChange={(filter) => {
-                          setAssigneeFilter(filter);
-                          setIsAssigneeDropdownOpen(false);
+                          setAssigneeFilter(filter)
+                          setIsAssigneeDropdownOpen(false)
                         }}
                         typeCounts={assigneeTypeCounts}
                         totalCount={allParagraphs?.length || 0}
@@ -2030,12 +2034,12 @@ export function ParagraphsSection({
                         isOpen={isDeliverableDropdownOpen}
                         onToggle={() =>
                           setIsDeliverableDropdownOpen(
-                            !isDeliverableDropdownOpen,
+                            !isDeliverableDropdownOpen
                           )
                         }
                         onFilterChange={(filter) => {
-                          setDeliverableFilter(filter);
-                          setIsDeliverableDropdownOpen(false);
+                          setDeliverableFilter(filter)
+                          setIsDeliverableDropdownOpen(false)
                         }}
                         typeCounts={deliverableTypeCounts}
                         withItemsCount={paragraphsWithDeliverablesCount}
@@ -2074,8 +2078,8 @@ export function ParagraphsSection({
                           setIsActionVerbDropdownOpen(!isActionVerbDropdownOpen)
                         }
                         onFilterChange={(filter) => {
-                          setActionVerbFilter(filter);
-                          setIsActionVerbDropdownOpen(false);
+                          setActionVerbFilter(filter)
+                          setIsActionVerbDropdownOpen(false)
                         }}
                         typeCounts={actionVerbCounts}
                         totalCount={allParagraphs?.length || 0}
@@ -2100,17 +2104,17 @@ export function ParagraphsSection({
               {/* Paragraph type toggle - always visible */}
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <div className="flex items-center border border-gray-300 rounded-md overflow-hidden hover:border-gray-400 transition-all duration-200 bg-gray-100">
+                  <div className="flex items-center overflow-hidden rounded-md border border-gray-300 bg-gray-100 transition-all duration-200 hover:border-gray-400">
                     <button
-                      className={`text-xs h-7 px-3 transition-all duration-200 cursor-pointer ${paragraphFilter === "operative" ? "bg-un-blue text-white" : "bg-transparent text-gray-700 hover:bg-gray-200 hover:text-gray-900"}`}
-                      onClick={() => setParagraphFilter("operative")}
+                      className={`h-7 cursor-pointer px-3 text-xs transition-all duration-200 ${paragraphFilter === 'operative' ? 'bg-un-blue text-white' : 'bg-transparent text-gray-700 hover:bg-gray-200 hover:text-gray-900'}`}
+                      onClick={() => setParagraphFilter('operative')}
                     >
                       Operative
                     </button>
-                    <div className="w-px h-4 bg-gray-300"></div>
+                    <div className="h-4 w-px bg-gray-300"></div>
                     <button
-                      className={`text-xs h-7 px-3 transition-all duration-200 cursor-pointer ${paragraphFilter === "all" ? "bg-un-blue text-white" : "bg-transparent text-gray-700 hover:bg-gray-200 hover:text-gray-900"}`}
-                      onClick={() => setParagraphFilter("all")}
+                      className={`h-7 cursor-pointer px-3 text-xs transition-all duration-200 ${paragraphFilter === 'all' ? 'bg-un-blue text-white' : 'bg-transparent text-gray-700 hover:bg-gray-200 hover:text-gray-900'}`}
+                      onClick={() => setParagraphFilter('all')}
                     >
                       All
                     </button>
@@ -2142,7 +2146,7 @@ export function ParagraphsSection({
                   <TooltipTrigger asChild>
                     <button
                       onClick={resetFilters}
-                      className="text-xs h-7 px-2 rounded-md bg-au-chico text-white hover:bg-shuttle-gray transition-colors flex items-center gap-1 cursor-pointer"
+                      className="flex h-7 cursor-pointer items-center gap-1 rounded-md bg-au-chico px-2 text-xs text-white transition-colors hover:bg-shuttle-gray"
                       aria-label="Reset all filters"
                     >
                       <X className="h-3 w-3" />
@@ -2165,7 +2169,7 @@ export function ParagraphsSection({
           {/* Floating TOC Button */}
           <button
             onClick={() => setIsMobileTOCOpen(!isMobileTOCOpen)}
-            className="fixed top-4 left-4 z-50 bg-white border border-gray-200 rounded-lg p-2 shadow-lg hover:bg-gray-50 transition-colors"
+            className="fixed top-4 left-4 z-50 rounded-lg border border-gray-200 bg-white p-2 shadow-lg transition-colors hover:bg-gray-50"
             aria-label="Toggle table of contents"
           >
             <Menu className="h-4 w-4 text-gray-700" />
@@ -2173,9 +2177,9 @@ export function ParagraphsSection({
 
           {/* Expandable TOC Panel */}
           {isMobileTOCOpen && (
-            <div className="fixed top-14 left-4 z-40 bg-white border border-gray-200 rounded-lg shadow-lg max-w-xs w-80 max-h-96 overflow-y-auto">
+            <div className="fixed top-14 left-4 z-40 max-h-96 w-80 max-w-xs overflow-y-auto rounded-lg border border-gray-200 bg-white shadow-lg">
               <div className="p-4">
-                <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-900">
                   <FileText className="h-4 w-4" />
                   Table of Contents
                 </h4>
@@ -2195,52 +2199,52 @@ export function ParagraphsSection({
       )}
 
       {/* Paragraphs Content with TOC Layout */}
-      <div className={isMobile ? "w-full" : "flex gap-8"}>
+      <div className={isMobile ? 'w-full' : 'flex gap-8'}>
         {/* Main paragraph content */}
-        <div className={isMobile ? "w-full" : "flex-1 max-w-[65%]"}>
-          <div className={isMobile ? "" : "pr-4"}>
+        <div className={isMobile ? 'w-full' : 'max-w-[65%] flex-1'}>
+          <div className={isMobile ? '' : 'pr-4'}>
             {isLoading ? (
               <div className="space-y-3">
                 <div className="space-y-2">
-                  <div className="bg-muted/30 rounded-lg p-3">
-                    <Skeleton className="h-4 w-3/4 mb-2" />
-                    <Skeleton className="h-4 w-full mb-1" />
+                  <div className="rounded-lg bg-muted/30 p-3">
+                    <Skeleton className="mb-2 h-4 w-3/4" />
+                    <Skeleton className="mb-1 h-4 w-full" />
                     <Skeleton className="h-4 w-5/6" />
                   </div>
                   <div className="ml-6 space-y-2">
-                    <div className="bg-muted/20 rounded-lg p-3">
-                      <Skeleton className="h-4 w-4/5 mb-1" />
+                    <div className="rounded-lg bg-muted/20 p-3">
+                      <Skeleton className="mb-1 h-4 w-4/5" />
                       <Skeleton className="h-4 w-full" />
                     </div>
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <div className="bg-muted/30 rounded-lg p-3">
-                    <Skeleton className="h-4 w-2/3 mb-2" />
-                    <Skeleton className="h-4 w-full mb-1" />
+                  <div className="rounded-lg bg-muted/30 p-3">
+                    <Skeleton className="mb-2 h-4 w-2/3" />
+                    <Skeleton className="mb-1 h-4 w-full" />
                     <Skeleton className="h-4 w-4/5" />
                   </div>
                   <div className="ml-6 space-y-2">
-                    <div className="bg-muted/20 rounded-lg p-3">
-                      <Skeleton className="h-4 w-3/4 mb-1" />
+                    <div className="rounded-lg bg-muted/20 p-3">
+                      <Skeleton className="mb-1 h-4 w-3/4" />
                       <Skeleton className="h-4 w-full" />
                     </div>
-                    <div className="bg-muted/20 rounded-lg p-3">
-                      <Skeleton className="h-4 w-5/6 mb-1" />
+                    <div className="rounded-lg bg-muted/20 p-3">
+                      <Skeleton className="mb-1 h-4 w-5/6" />
                       <Skeleton className="h-4 w-full" />
                     </div>
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <div className="bg-muted/30 rounded-lg p-3">
-                    <Skeleton className="h-4 w-3/5 mb-2" />
-                    <Skeleton className="h-4 w-full mb-1" />
+                  <div className="rounded-lg bg-muted/30 p-3">
+                    <Skeleton className="mb-2 h-4 w-3/5" />
+                    <Skeleton className="mb-1 h-4 w-full" />
                     <Skeleton className="h-4 w-3/4" />
                   </div>
                 </div>
               </div>
             ) : error ? (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+              <div className="rounded-lg border border-red-200 bg-red-50 p-4">
                 <p className="text-red-700">
                   Error loading paragraphs: {error}
                 </p>
@@ -2249,62 +2253,62 @@ export function ParagraphsSection({
               <div className="space-y-4">
                 {paragraphs.map((paragraph: Paragraph, index: number) => {
                   // Calculate indentation based on paragraph_level
-                  const indentLevel = paragraph.paragraph_level || 0;
+                  const indentLevel = paragraph.paragraph_level || 0
                   const getIndentClass = (level: number): string => {
-                    if (level <= 1) return "";
+                    if (level <= 1) return ''
                     switch (level) {
                       case 2:
-                        return "ml-6";
+                        return 'ml-6'
                       case 3:
-                        return "ml-12";
+                        return 'ml-12'
                       case 4:
-                        return "ml-18";
+                        return 'ml-18'
                       case 5:
-                        return "ml-24";
+                        return 'ml-24'
                       case 6:
-                        return "ml-30";
+                        return 'ml-30'
                       case 7:
-                        return "ml-36";
+                        return 'ml-36'
                       case 8:
-                        return "ml-42";
+                        return 'ml-42'
                       default:
-                        return "ml-48"; // For very deep nesting
+                        return 'ml-48' // For very deep nesting
                     }
-                  };
-                  const indentClass = getIndentClass(indentLevel);
+                  }
+                  const indentClass = getIndentClass(indentLevel)
 
                   // Generate unique ID for headings (for TOC navigation)
                   const headingId =
-                    paragraph.type === "heading"
+                    paragraph.type === 'heading'
                       ? `heading-${index}`
-                      : undefined;
+                      : undefined
 
                   // Handle different content types
-                  if (paragraph.type === "heading") {
+                  if (paragraph.type === 'heading') {
                     const HeadingTag =
-                      `h${Math.min(paragraph.heading_level || 3, 6)}` as keyof JSX.IntrinsicElements;
+                      `h${Math.min(paragraph.heading_level || 3, 6)}` as keyof JSX.IntrinsicElements
                     const headingClasses = {
-                      1: "text-lg font-bold",
-                      2: "text-base font-bold",
-                      3: "text-base font-semibold",
-                      4: "text-sm font-semibold",
-                      5: "text-sm font-medium",
-                      6: "text-sm font-medium",
-                    };
+                      1: 'text-lg font-bold',
+                      2: 'text-base font-bold',
+                      3: 'text-base font-semibold',
+                      4: 'text-sm font-semibold',
+                      5: 'text-sm font-medium',
+                      6: 'text-sm font-medium',
+                    }
                     const headingClass =
                       headingClasses[
                         paragraph.heading_level as keyof typeof headingClasses
-                      ] || headingClasses[3];
+                      ] || headingClasses[3]
 
                     return (
                       <div key={`${documentSymbol}-${index}`}>
                         <div className={`${indentClass}`}>
                           <HeadingTag
                             id={headingId}
-                            className={`${headingClass} text-foreground mb-3 leading-tight scroll-mt-4`}
+                            className={`${headingClass} mb-3 scroll-mt-4 leading-tight text-foreground`}
                           >
                             {paragraph.prefix && (
-                              <span className="font-medium text-un-blue mr-2">
+                              <span className="mr-2 font-medium text-un-blue">
                                 {paragraph.prefix}
                               </span>
                             )}
@@ -2313,12 +2317,12 @@ export function ParagraphsSection({
                               paragraph.mandates?.[0]?.action_verb || null,
                               paragraph.links,
                               paragraph.textWithHighlights,
-                              paragraph.mandates,
+                              paragraph.mandates
                             )}
                           </HeadingTag>
                         </div>
                       </div>
-                    );
+                    )
                   }
 
                   // Regular paragraphs
@@ -2327,11 +2331,11 @@ export function ParagraphsSection({
                       key={`${documentSymbol}-${index}`}
                       className={`${indentClass} relative`}
                     >
-                      <div className="bg-muted/30 rounded-lg p-3">
+                      <div className="rounded-lg bg-muted/30 p-3">
                         <div className="max-w-4xl">
                           <div className="text-sm leading-relaxed">
                             {paragraph.prefix && (
-                              <span className="font-medium text-un-blue mr-2">
+                              <span className="mr-2 font-medium text-un-blue">
                                 {paragraph.prefix}
                               </span>
                             )}
@@ -2340,7 +2344,7 @@ export function ParagraphsSection({
                               paragraph.mandates?.[0]?.action_verb || null,
                               paragraph.links,
                               paragraph.textWithHighlights,
-                              paragraph.mandates,
+                              paragraph.mandates
                             )}
                           </div>
                         </div>
@@ -2348,14 +2352,14 @@ export function ParagraphsSection({
 
                       {/* Operative badge - floating at top-right corner for all devices */}
                       {(() => {
-                        const badgeInfo = getOperativeBadgeInfo(paragraph);
+                        const badgeInfo = getOperativeBadgeInfo(paragraph)
                         return (
                           badgeInfo.shouldShow && (
                             <div className="absolute -top-1 -right-1 z-10">
                               <Tooltip>
                                 <TooltipTrigger asChild>
                                   <div
-                                    className={`w-7 h-5 rounded-full flex items-center justify-center text-xs font-medium cursor-help ${badgeInfo.color}`}
+                                    className={`flex h-5 w-7 cursor-help items-center justify-center rounded-full text-xs font-medium ${badgeInfo.color}`}
                                     aria-label={badgeInfo.ariaLabel}
                                   >
                                     {badgeInfo.letter}
@@ -2367,14 +2371,14 @@ export function ParagraphsSection({
                               </Tooltip>
                             </div>
                           )
-                        );
+                        )
                       })()}
                     </div>
-                  );
+                  )
                 })}
               </div>
             ) : (
-              <div className="bg-muted/30 rounded-lg p-3">
+              <div className="rounded-lg bg-muted/30 p-3">
                 <p className="text-sm leading-relaxed text-muted-foreground italic">
                   No paragraphs currently available for this document.
                 </p>
@@ -2386,8 +2390,8 @@ export function ParagraphsSection({
         {/* Desktop TOC Sidebar - Right side, only for paragraphs section */}
         {!isMobile && (
           <div className="w-[30%] shrink-0">
-            <div className="sticky top-4 bg-white rounded-lg p-4 mb-8">
-              <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+            <div className="sticky top-4 mb-8 rounded-lg bg-white p-4">
+              <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-900">
                 <FileText className="h-4 w-4" />
                 Table of Contents
               </h4>
@@ -2405,5 +2409,5 @@ export function ParagraphsSection({
         )}
       </div>
     </div>
-  );
+  )
 }

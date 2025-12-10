@@ -1,27 +1,27 @@
-"use client";
+'use client'
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button'
 import {
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
-} from "lucide-react";
+} from 'lucide-react'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { useFilters } from "@/contexts/FilterContext";
+} from '@/components/ui/select'
+import { useFilters } from '@/contexts/FilterContext'
 
 interface PaginationControlsProps {
-  currentPage: number;
-  totalPages: number;
-  totalItems: number;
-  pageSize: number;
-  className?: string;
+  currentPage: number
+  totalPages: number
+  totalItems: number
+  pageSize: number
+  className?: string
 }
 
 export function PaginationControls({
@@ -29,23 +29,23 @@ export function PaginationControls({
   totalPages,
   totalItems,
   pageSize,
-  className = "",
+  className = '',
 }: PaginationControlsProps) {
-  const { setFilter, setMultipleFilters } = useFilters();
+  const { setFilter, setMultipleFilters } = useFilters()
 
   const handlePageChange = (page: number) => {
-    setFilter("page", page.toString());
-  };
+    setFilter('page', page.toString())
+  }
 
   const handlePageSizeChange = (size: string) => {
     setMultipleFilters({
       limit: size,
-      page: "1",
-    });
-  };
+      page: '1',
+    })
+  }
 
   if (totalPages <= 1) {
-    return null;
+    return null
   }
 
   return (
@@ -72,8 +72,8 @@ export function PaginationControls({
       </div>
 
       <div className="flex flex-col items-center space-y-2 md:flex-row md:space-y-0 md:space-x-4">
-        <div className="text-sm text-muted-foreground text-center">
-          Page {currentPage} of {totalPages} ({totalItems.toLocaleString()}{" "}
+        <div className="text-center text-sm text-muted-foreground">
+          Page {currentPage} of {totalPages} ({totalItems.toLocaleString()}{' '}
           items)
         </div>
         <div className="flex items-center space-x-1">
@@ -116,5 +116,5 @@ export function PaginationControls({
         </div>
       </div>
     </div>
-  );
+  )
 }

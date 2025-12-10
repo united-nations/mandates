@@ -1,24 +1,24 @@
-"use client";
+'use client'
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Building } from "lucide-react";
-import { EntityName } from "@/components/EntityName";
-import { useFilters } from "@/contexts/FilterContext";
-import { GenericSidebar } from "@/components/SidebarGeneric";
-import { SidebarListItem } from "@/components/SidebarListItem";
-import { getActiveFiltersText } from "@/lib/utils";
-import type { EntityWithCount, Entity } from "@/types";
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { Building } from 'lucide-react'
+import { EntityName } from '@/components/EntityName'
+import { useFilters } from '@/contexts/FilterContext'
+import { GenericSidebar } from '@/components/SidebarGeneric'
+import { SidebarListItem } from '@/components/SidebarListItem'
+import { getActiveFiltersText } from '@/lib/utils'
+import type { EntityWithCount, Entity } from '@/types'
 
 interface EntityListSidebarProps {
-  entities: EntityWithCount[];
-  allEntities: Entity[];
-  isLoading?: boolean;
-  hideHeader?: boolean;
-  borderless?: boolean;
-  pageType: "main" | "entity" | "organ";
-  organFilter?: string;
+  entities: EntityWithCount[]
+  allEntities: Entity[]
+  isLoading?: boolean
+  hideHeader?: boolean
+  borderless?: boolean
+  pageType: 'main' | 'entity' | 'organ'
+  organFilter?: string
 }
 
 export function EntityListSidebar({
@@ -30,38 +30,38 @@ export function EntityListSidebar({
   pageType,
   organFilter,
 }: EntityListSidebarProps) {
-  const { filters, setFilter } = useFilters();
-  const router = useRouter();
+  const { filters, setFilter } = useFilters()
+  const router = useRouter()
 
-  const maxCount = Math.max(...entities.map((entity) => entity.count), 1);
+  const maxCount = Math.max(...entities.map((entity) => entity.count), 1)
 
   // Build URL with current filters for navigation to entity page
   const buildEntityPageUrl = (entityName: string): string => {
-    const params = new URLSearchParams();
+    const params = new URLSearchParams()
 
     // Add all current filters except 'entity' (since we're navigating to an entity page)
     // and exclude pagination (start fresh on new page)
     Object.entries(filters).forEach(([key, value]) => {
-      if (key !== "entity" && key !== "page" && value && value !== "all") {
-        params.set(key, value);
+      if (key !== 'entity' && key !== 'page' && value && value !== 'all') {
+        params.set(key, value)
       }
-    });
+    })
 
-    const queryString = params.toString();
-    const baseUrl = `/entity/${encodeURIComponent(entityName)}`;
-    return queryString ? `${baseUrl}?${queryString}` : baseUrl;
-  };
+    const queryString = params.toString()
+    const baseUrl = `/entity/${encodeURIComponent(entityName)}`
+    return queryString ? `${baseUrl}?${queryString}` : baseUrl
+  }
 
   const handleEntityClick = (entityName: string) => {
-    if (pageType === "main") {
+    if (pageType === 'main') {
       // On main page: Navigate to entity page with current filters preserved
-      const url = buildEntityPageUrl(entityName);
-      router.push(url);
+      const url = buildEntityPageUrl(entityName)
+      router.push(url)
     } else {
       // On entity/organ pages: Set as filter
-      setFilter("entity", entityName);
+      setFilter('entity', entityName)
     }
-  };
+  }
 
   // Get description based on page type
   const getDescription = () => {
@@ -69,23 +69,23 @@ export function EntityListSidebar({
       filters,
       pageType,
       undefined,
-      organFilter,
-    );
+      organFilter
+    )
 
-    if (pageType === "organ") {
+    if (pageType === 'organ') {
       return (
         <>
           <a
             href="https://systemchart.un.org/"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-un-blue hover:text-shuttle-gray transition-colors no-underline"
+            className="text-un-blue no-underline transition-colors hover:text-shuttle-gray"
           >
             Entities
           </a>
           {` and number of cited source documents ${activeFiltersText}for ${organFilter}`}
         </>
-      );
+      )
     } else {
       return (
         <>
@@ -93,39 +93,39 @@ export function EntityListSidebar({
             href="https://systemchart.un.org/"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-un-blue hover:text-shuttle-gray transition-colors no-underline"
+            className="text-un-blue no-underline transition-colors hover:text-shuttle-gray"
           >
             Entities
           </a>
-          {` and number of cited source documents${activeFiltersText ? " " + activeFiltersText.trim() : ""}`}
+          {` and number of cited source documents${activeFiltersText ? ' ' + activeFiltersText.trim() : ''}`}
         </>
-      );
+      )
     }
-  };
+  }
 
   // Get variant based on page type
-  const variant = pageType === "main" ? "navigation" : "filter";
+  const variant = pageType === 'main' ? 'navigation' : 'filter'
 
   // Search filter function
   const searchFilter = (entity: EntityWithCount, searchTerm: string) => {
-    const shortName = entity.entity.toLowerCase();
+    const shortName = entity.entity.toLowerCase()
     const longName = (
-      allEntities.find((e) => e.entity === entity.entity)?.entity_long || ""
-    ).toLowerCase();
-    return shortName.includes(searchTerm) || longName.includes(searchTerm);
-  };
+      allEntities.find((e) => e.entity === entity.entity)?.entity_long || ''
+    ).toLowerCase()
+    return shortName.includes(searchTerm) || longName.includes(searchTerm)
+  }
 
   // Render item function
   const renderItem = (
     entity: EntityWithCount,
     index: number,
-    variant: "navigation" | "filter",
+    variant: 'navigation' | 'filter'
   ) => {
-    const entityData = allEntities.find((e) => e.entity === entity.entity);
+    const entityData = allEntities.find((e) => e.entity === entity.entity)
     const tooltipContent =
       entityData?.entity_long && entityData.entity !== entityData.entity_long
         ? entityData.entity_long
-        : undefined;
+        : undefined
 
     const item = (
       <SidebarListItem
@@ -144,12 +144,12 @@ export function EntityListSidebar({
         variant={variant}
         tooltipContent={tooltipContent}
       />
-    );
+    )
 
     // For main page, we handle navigation via onClick in handleEntityClick
     // No need to wrap in Link anymore since we're using router.push with filters
-    return item;
-  };
+    return item
+  }
 
   return (
     <GenericSidebar
@@ -168,5 +168,5 @@ export function EntityListSidebar({
       showExpandCollapse={true}
       maxItemsBeforeExpand={10}
     />
-  );
+  )
 }

@@ -1,7 +1,7 @@
-import { Suspense } from "react";
+import { Suspense } from 'react'
 
-import { ExplainerText } from "@/components/ExplainerText";
-import { MandateExplorer } from "@/components/MandateExplorer";
+import { ExplainerText } from '@/components/ExplainerText'
+import { MandateExplorer } from '@/components/MandateExplorer'
 
 export default function Page() {
   return (
@@ -14,5 +14,5 @@ export default function Page() {
         <MandateExplorer pageType="main" />
       </div>
     </Suspense>
-  );
+  )
 }

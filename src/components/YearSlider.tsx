@@ -1,24 +1,23 @@
-"use client";
+'use client'
 
-import React, { useState, useEffect, useMemo } from "react";
-import { Slider } from "@/components/ui/slider";
-import { Bar, BarChart, ResponsiveContainer, XAxis } from "recharts";
+import React, { useState, useEffect, useMemo } from 'react'
+import { Slider } from '@/components/ui/slider'
+import { Bar, BarChart, ResponsiveContainer, XAxis } from 'recharts'
 
 interface YearSliderProps {
-  yearDistribution: { [year: string]: number };
-  yearRange: { min: number; max: number };
-  value: [number, number];
-  onChange: (value: [number, number]) => void;
-  originalYearDistribution?: { [year: string]: number }; // Unfiltered distribution for full spectrum
+  yearDistribution: { [year: string]: number }
+  yearRange: { min: number; max: number }
+  value: [number, number]
+  onChange: (value: [number, number]) => void
+  originalYearDistribution?: { [year: string]: number } // Unfiltered distribution for full spectrum
 }
 
 const CustomizedBar = (props: any) => {
-  const { x, y, width, height, payload, fill, yearRange, selectedRange } =
-    props;
+  const { x, y, width, height, payload, fill, yearRange, selectedRange } = props
   // Determine if this bar is within the selected range
-  const yearNum = parseInt(payload.year, 10);
-  const isSelected = yearNum >= selectedRange[0] && yearNum <= selectedRange[1];
-  const barFill = isSelected ? "#009edb" : "#E2E4EA";
+  const yearNum = parseInt(payload.year, 10)
+  const isSelected = yearNum >= selectedRange[0] && yearNum <= selectedRange[1]
+  const barFill = isSelected ? '#009edb' : '#E2E4EA'
   if (payload.count === 0) {
     return (
       <rect
@@ -29,10 +28,10 @@ const CustomizedBar = (props: any) => {
         fill="hsl(var(--muted-foreground))"
         opacity={0.3}
       />
-    );
+    )
   }
-  return <rect x={x} y={y} width={width} height={height} fill={barFill} />;
-};
+  return <rect x={x} y={y} width={width} height={height} fill={barFill} />
+}
 
 export function YearSlider({
   yearDistribution,
@@ -41,42 +40,42 @@ export function YearSlider({
   onChange,
   originalYearDistribution,
 }: YearSliderProps) {
-  const [localValue, setLocalValue] = useState(value);
+  const [localValue, setLocalValue] = useState(value)
 
   useEffect(() => {
-    setLocalValue(value);
-  }, [value]);
+    setLocalValue(value)
+  }, [value])
 
   const data = useMemo(() => {
-    if (!yearRange) return [];
+    if (!yearRange) return []
 
     // Always use the full spectrum from 1946 to 2025, regardless of current filters
-    const FULL_YEAR_RANGE = { min: 1946, max: 2025 };
+    const FULL_YEAR_RANGE = { min: 1946, max: 2025 }
 
     // Use original distribution if available, otherwise fall back to current distribution
-    const distributionToUse = originalYearDistribution || yearDistribution;
+    const distributionToUse = originalYearDistribution || yearDistribution
 
-    const chartData = [];
-    const maxCount = Math.max(...Object.values(distributionToUse));
+    const chartData = []
+    const maxCount = Math.max(...Object.values(distributionToUse))
 
     // Always show the full spectrum
     for (let year = FULL_YEAR_RANGE.min; year <= FULL_YEAR_RANGE.max; year++) {
-      const count = distributionToUse[year] || 0;
+      const count = distributionToUse[year] || 0
       chartData.push({
         year: String(year),
         count: count,
         // Scale height so there's room for the slider
         displayHeight: count > 0 ? Math.max(5, (count / maxCount) * 80) : 0,
-      });
+      })
     }
-    return chartData;
-  }, [yearDistribution, originalYearDistribution, yearRange]);
+    return chartData
+  }, [yearDistribution, originalYearDistribution, yearRange])
 
   const handleCommit = (committedValue: [number, number]) => {
-    onChange(committedValue);
-  };
+    onChange(committedValue)
+  }
 
-  if (!yearRange) return null;
+  if (!yearRange) return null
 
   return (
     <div>
@@ -107,7 +106,7 @@ export function YearSlider({
             />
           </BarChart>
         </ResponsiveContainer>
-        <div className="absolute bottom-0 left-0 right-0">
+        <div className="absolute right-0 bottom-0 left-0">
           <Slider
             min={1946}
             max={2025}
@@ -117,14 +116,14 @@ export function YearSlider({
               setLocalValue(val as [number, number])
             }
             onValueCommit={(val) => handleCommit(val as [number, number])}
-            className="w-full [&_.bg-primary]:bg-un-blue! **:data-radix-slider-range:bg-un-blue! **:data-radix-slider-thumb:border-un-blue! [&_.border-primary]:border-un-blue!"
+            className="w-full **:data-radix-slider-range:bg-un-blue! **:data-radix-slider-thumb:border-un-blue! [&_.bg-primary]:bg-un-blue! [&_.border-primary]:border-un-blue!"
           />
         </div>
       </div>
-      <div className="flex justify-between text-sm text-muted-foreground mt-2">
+      <div className="mt-2 flex justify-between text-sm text-muted-foreground">
         <span>{localValue[0]}</span>
         <span>{localValue[1]}</span>
       </div>
     </div>
-  );
+  )
 }

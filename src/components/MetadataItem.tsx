@@ -1,9 +1,9 @@
-import { ElementType, ReactNode } from "react";
+import { ElementType, ReactNode } from 'react'
 
 interface MetadataItemProps {
-  label: ReactNode;
-  children: ReactNode;
-  icon?: ElementType;
+  label: ReactNode
+  children: ReactNode
+  icon?: ElementType
 }
 
 export function MetadataItem({
@@ -12,22 +12,22 @@ export function MetadataItem({
   icon: Icon,
 }: MetadataItemProps) {
   return (
-    <div className="text-sm py-1.5">
+    <div className="py-1.5 text-sm">
       {/* Mobile: stacked layout, Desktop: side-by-side */}
       <div className="flex flex-col sm:flex-row sm:gap-3">
         {/* Icon and label container */}
-        <div className="flex gap-3 sm:shrink-0 sm:min-w-[120px]">
+        <div className="flex gap-3 sm:min-w-[120px] sm:shrink-0">
           {Icon && (
-            <Icon className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
+            <Icon className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
           )}
-          <div className="font-medium text-muted-foreground leading-relaxed">
+          <div className="leading-relaxed font-medium text-muted-foreground">
             {label}:
           </div>
         </div>
 
         {/* Content */}
-        <div className="text-foreground sm:flex-1 mt-1 sm:mt-0">{children}</div>
+        <div className="mt-1 text-foreground sm:mt-0 sm:flex-1">{children}</div>
       </div>
     </div>
-  );
+  )
 }

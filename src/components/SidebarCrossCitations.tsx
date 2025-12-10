@@ -1,23 +1,23 @@
-"use client";
+'use client'
 
-import Link from "next/link";
-import { Link as LinkIcon } from "lucide-react";
-import { EntityName } from "@/components/EntityName";
-import { useFilters } from "@/contexts/FilterContext";
-import { GenericSidebar } from "@/components/SidebarGeneric";
-import { SidebarListItem } from "@/components/SidebarListItem";
-import { getActiveFiltersText } from "@/lib/utils";
-import type { CrossCitation, Entity } from "@/types";
+import Link from 'next/link'
+import { Link as LinkIcon } from 'lucide-react'
+import { EntityName } from '@/components/EntityName'
+import { useFilters } from '@/contexts/FilterContext'
+import { GenericSidebar } from '@/components/SidebarGeneric'
+import { SidebarListItem } from '@/components/SidebarListItem'
+import { getActiveFiltersText } from '@/lib/utils'
+import type { CrossCitation, Entity } from '@/types'
 
 interface CrossCitationsSidebarProps {
-  crossCitations: CrossCitation[];
-  allEntities: Entity[];
-  isLoading?: boolean;
-  pageType: "main" | "entity" | "organ";
-  entityFilter?: string;
-  organFilter?: string;
-  hideHeader?: boolean;
-  borderless?: boolean;
+  crossCitations: CrossCitation[]
+  allEntities: Entity[]
+  isLoading?: boolean
+  pageType: 'main' | 'entity' | 'organ'
+  entityFilter?: string
+  organFilter?: string
+  hideHeader?: boolean
+  borderless?: boolean
 }
 
 export function CrossCitationsSidebar({
@@ -30,40 +30,40 @@ export function CrossCitationsSidebar({
   hideHeader = false,
   borderless = false,
 }: CrossCitationsSidebarProps) {
-  const { filters, setFilter } = useFilters();
+  const { filters, setFilter } = useFilters()
 
   const handleEntityClick = (entityName: string) => {
     // On entity/organ pages: Set as crossCitingEntity filter to show intersection
-    setFilter("crossCitingEntity", entityName);
-  };
+    setFilter('crossCitingEntity', entityName)
+  }
 
   // Find max for bar scaling
   const maxEntityCount =
     crossCitations.length > 0
       ? Math.max(...crossCitations.map((c) => c.count))
-      : 1;
+      : 1
 
   // Search filter function
   const searchFilter = (citation: CrossCitation, searchTerm: string) => {
-    const shortName = citation.entity.toLowerCase();
-    const longName = (citation.entity_long || "").toLowerCase();
+    const shortName = citation.entity.toLowerCase()
+    const longName = (citation.entity_long || '').toLowerCase()
     const entityLong =
       allEntities
         .find((e) => e.entity === citation.entity)
-        ?.entity_long?.toLowerCase() || "";
+        ?.entity_long?.toLowerCase() || ''
 
     return (
       shortName.includes(searchTerm) ||
       longName.includes(searchTerm) ||
       entityLong.includes(searchTerm)
-    );
-  };
+    )
+  }
 
   // Render item function for entities
   const renderEntityItem = (
     citation: CrossCitation,
     index: number,
-    variant: "navigation" | "filter",
+    variant: 'navigation' | 'filter'
   ) => (
     <SidebarListItem
       key={citation.entity}
@@ -82,15 +82,15 @@ export function CrossCitationsSidebar({
       onClick={() => handleEntityClick(citation.entity)}
       variant={variant}
     />
-  );
+  )
 
   // Get active filters text
   const activeFiltersText = getActiveFiltersText(
     filters,
     pageType,
     entityFilter,
-    organFilter,
-  );
+    organFilter
+  )
 
   return (
     <GenericSidebar
@@ -109,5 +109,5 @@ export function CrossCitationsSidebar({
       hideHeader={hideHeader}
       borderless={borderless}
     />
-  );
+  )
 }

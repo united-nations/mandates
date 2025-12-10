@@ -1,8 +1,8 @@
-import { forwardRef } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Search, X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { forwardRef } from 'react'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Search, X } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 interface SearchInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   /**
@@ -11,63 +11,63 @@ interface SearchInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
    * - 'bordered': Standard bordered input
    * - 'minimal': Minimal styling with transparent background
    */
-  variant?: "border-bottom" | "bordered" | "minimal";
+  variant?: 'border-bottom' | 'bordered' | 'minimal'
 
   /**
    * Whether to show a clear button when there's content
    * @default false
    */
-  showClearButton?: boolean;
+  showClearButton?: boolean
 
   /**
    * Callback when clear button is clicked
    */
-  onClear?: () => void;
+  onClear?: () => void
 
   /**
    * Additional CSS classes
    */
-  className?: string;
+  className?: string
 }
 
 export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
   (
     {
-      variant = "bordered",
+      variant = 'bordered',
       showClearButton = false,
       onClear,
       className,
       value,
       ...props
     },
-    ref,
+    ref
   ) => {
-    const hasValue = value && value.toString().length > 0;
+    const hasValue = value && value.toString().length > 0
 
     const getVariantStyles = () => {
       switch (variant) {
-        case "border-bottom":
-          return "border-0 border-b border-muted bg-transparent focus-visible:ring-0 focus-visible:border-un-blue rounded-none";
-        case "minimal":
-          return "border-0 bg-transparent focus-visible:ring-0 focus-visible:border-un-blue";
-        case "bordered":
+        case 'border-bottom':
+          return 'border-0 border-b border-muted bg-transparent focus-visible:ring-0 focus-visible:border-un-blue rounded-none'
+        case 'minimal':
+          return 'border-0 bg-transparent focus-visible:ring-0 focus-visible:border-un-blue'
+        case 'bordered':
         default:
-          return "border border-input";
+          return 'border border-input'
       }
-    };
+    }
 
     return (
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
         <Input
           ref={ref}
           value={value}
           className={cn(
-            "pl-10",
-            showClearButton && hasValue && "pr-10",
-            "h-9 text-sm",
+            'pl-10',
+            showClearButton && hasValue && 'pr-10',
+            'h-9 text-sm',
             getVariantStyles(),
-            className,
+            className
           )}
           {...props}
         />
@@ -75,7 +75,7 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
           <Button
             variant="ghost"
             size="sm"
-            className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 p-0 hover:bg-blue-100 rounded-full"
+            className="absolute top-1/2 right-2 h-6 w-6 -translate-y-1/2 rounded-full p-0 hover:bg-blue-100"
             onClick={onClear}
             title="Clear search"
             type="button"
@@ -84,8 +84,8 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
           </Button>
         )}
       </div>
-    );
-  },
-);
+    )
+  }
+)
 
-SearchInput.displayName = "SearchInput";
+SearchInput.displayName = 'SearchInput'

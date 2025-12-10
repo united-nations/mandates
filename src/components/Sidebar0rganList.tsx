@@ -1,24 +1,24 @@
-"use client";
+'use client'
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Landmark } from "lucide-react";
-import { useFilters } from "@/contexts/FilterContext";
-import { GenericSidebar } from "@/components/SidebarGeneric";
-import { SidebarListItem } from "@/components/SidebarListItem";
-import { OrganName } from "@/components/OrganName";
-import { getActiveFiltersText } from "@/lib/utils";
-import type { OrganWithCount, Organ } from "@/types";
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { Landmark } from 'lucide-react'
+import { useFilters } from '@/contexts/FilterContext'
+import { GenericSidebar } from '@/components/SidebarGeneric'
+import { SidebarListItem } from '@/components/SidebarListItem'
+import { OrganName } from '@/components/OrganName'
+import { getActiveFiltersText } from '@/lib/utils'
+import type { OrganWithCount, Organ } from '@/types'
 
 interface OrganListSidebarProps {
-  organs: OrganWithCount[];
-  allOrgans: Organ[];
-  isLoading?: boolean;
-  hideHeader?: boolean;
-  borderless?: boolean;
-  pageType: "main" | "entity" | "organ";
-  entityFilter?: string;
+  organs: OrganWithCount[]
+  allOrgans: Organ[]
+  isLoading?: boolean
+  hideHeader?: boolean
+  borderless?: boolean
+  pageType: 'main' | 'entity' | 'organ'
+  entityFilter?: string
 }
 
 export function OrganListSidebar({
@@ -30,44 +30,44 @@ export function OrganListSidebar({
   pageType,
   entityFilter,
 }: OrganListSidebarProps) {
-  const { filters, setFilter } = useFilters();
-  const router = useRouter();
+  const { filters, setFilter } = useFilters()
+  const router = useRouter()
 
-  const maxCount = Math.max(...organs.map((organ) => organ.count), 1);
+  const maxCount = Math.max(...organs.map((organ) => organ.count), 1)
 
   const findOrganData = (organName: string): Organ | undefined => {
     return allOrgans.find(
-      (organ) => organ.short === organName || organ.long === organName,
-    );
-  };
+      (organ) => organ.short === organName || organ.long === organName
+    )
+  }
 
   // Build URL with current filters for navigation to organ page
   const buildOrganPageUrl = (organName: string): string => {
-    const params = new URLSearchParams();
+    const params = new URLSearchParams()
 
     // Add all current filters except 'organ' (since we're navigating to an organ page)
     // and exclude pagination (start fresh on new page)
     Object.entries(filters).forEach(([key, value]) => {
-      if (key !== "organ" && key !== "page" && value && value !== "all") {
-        params.set(key, value);
+      if (key !== 'organ' && key !== 'page' && value && value !== 'all') {
+        params.set(key, value)
       }
-    });
+    })
 
-    const queryString = params.toString();
-    const baseUrl = `/organ/${encodeURIComponent(organName)}`;
-    return queryString ? `${baseUrl}?${queryString}` : baseUrl;
-  };
+    const queryString = params.toString()
+    const baseUrl = `/organ/${encodeURIComponent(organName)}`
+    return queryString ? `${baseUrl}?${queryString}` : baseUrl
+  }
 
   const handleOrganClick = (organName: string) => {
-    if (pageType === "main") {
+    if (pageType === 'main') {
       // On main page: Navigate to organ page with current filters preserved
-      const url = buildOrganPageUrl(organName);
-      router.push(url);
+      const url = buildOrganPageUrl(organName)
+      router.push(url)
     } else {
       // On entity/organ pages: Set as filter
-      setFilter("organ", organName);
+      setFilter('organ', organName)
     }
-  };
+  }
 
   // Get description based on page type
   const getDescription = () => {
@@ -75,39 +75,39 @@ export function OrganListSidebar({
       filters,
       pageType,
       entityFilter,
-      undefined,
-    );
+      undefined
+    )
 
-    if (pageType === "entity") {
-      return `Organs and bodies issuing and number of cited source documents ${activeFiltersText}for ${entityFilter}`;
+    if (pageType === 'entity') {
+      return `Organs and bodies issuing and number of cited source documents ${activeFiltersText}for ${entityFilter}`
     } else {
-      return `Organs and bodies issuing and number of cited source documents${activeFiltersText ? " " + activeFiltersText.trim() : ""}`;
+      return `Organs and bodies issuing and number of cited source documents${activeFiltersText ? ' ' + activeFiltersText.trim() : ''}`
     }
-  };
+  }
 
   // Get variant based on page type
-  const variant = pageType === "main" ? "navigation" : "filter";
+  const variant = pageType === 'main' ? 'navigation' : 'filter'
 
   // Search filter function
   const searchFilter = (organ: OrganWithCount, searchTerm: string) => {
-    const organData = findOrganData(organ.short);
+    const organData = findOrganData(organ.short)
     return (
       organ.short.toLowerCase().includes(searchTerm) ||
       (organData ? organData.long.toLowerCase().includes(searchTerm) : false)
-    );
-  };
+    )
+  }
 
   // Render item function
   const renderItem = (
     organ: OrganWithCount,
     index: number,
-    variant: "navigation" | "filter",
+    variant: 'navigation' | 'filter'
   ) => {
-    const organData = findOrganData(organ.short);
+    const organData = findOrganData(organ.short)
     const tooltipContent =
       organData && organData.short !== organData.long
         ? organData.long
-        : undefined;
+        : undefined
 
     const item = (
       <SidebarListItem
@@ -126,12 +126,12 @@ export function OrganListSidebar({
         variant={variant}
         tooltipContent={tooltipContent}
       />
-    );
+    )
 
     // For main page, we handle navigation via onClick in handleOrganClick
     // No need to wrap in Link anymore since we're using router.push with filters
-    return item;
-  };
+    return item
+  }
 
   return (
     <GenericSidebar
@@ -150,5 +150,5 @@ export function OrganListSidebar({
       showExpandCollapse={true}
       maxItemsBeforeExpand={4}
     />
-  );
+  )
 }

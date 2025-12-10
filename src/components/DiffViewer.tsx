@@ -1,137 +1,137 @@
-import React from "react";
-import { Eye } from "lucide-react";
+import React from 'react'
+import { Eye } from 'lucide-react'
 
 interface DiffItem {
-  left: string | null;
-  left_best: string | null;
-  left_highlighted: string;
-  right: string | null;
-  right_best: string | null;
-  right_highlighted: string;
-  score: number;
+  left: string | null
+  left_best: string | null
+  left_highlighted: string
+  right: string | null
+  right_best: string | null
+  right_highlighted: string
+  score: number
 }
 
 interface DiffData {
-  score: number;
-  diff: DiffItem[];
+  score: number
+  diff: DiffItem[]
 }
 
 function parseText(text: string) {
-  if (!text) return null;
+  if (!text) return null
 
-  const parts = [];
-  let remaining = text;
-  let key = 0;
+  const parts = []
+  let remaining = text
+  let key = 0
 
   while (remaining) {
     // Find strikethrough
-    const strikeMatch = remaining.match(/~~([^~]+)~~/);
+    const strikeMatch = remaining.match(/~~([^~]+)~~/)
     // Find highlight
-    const highlightMatch = remaining.match(/\*\*([^*]+)\*\*/);
+    const highlightMatch = remaining.match(/\*\*([^*]+)\*\*/)
 
-    const strikeIndex = strikeMatch ? remaining.indexOf(strikeMatch[0]) : -1;
+    const strikeIndex = strikeMatch ? remaining.indexOf(strikeMatch[0]) : -1
     const highlightIndex = highlightMatch
       ? remaining.indexOf(highlightMatch[0])
-      : -1;
+      : -1
 
     if (strikeIndex === -1 && highlightIndex === -1) {
       // No more matches, add remaining text
-      parts.push(<span key={key}>{remaining}</span>);
-      break;
+      parts.push(<span key={key}>{remaining}</span>)
+      break
     }
 
     const nextMatch =
       strikeIndex !== -1 && highlightIndex !== -1
         ? strikeIndex < highlightIndex
-          ? "strike"
-          : "highlight"
+          ? 'strike'
+          : 'highlight'
         : strikeIndex !== -1
-          ? "strike"
-          : "highlight";
+          ? 'strike'
+          : 'highlight'
 
-    const matchIndex = nextMatch === "strike" ? strikeIndex : highlightIndex;
-    const match = nextMatch === "strike" ? strikeMatch : highlightMatch;
+    const matchIndex = nextMatch === 'strike' ? strikeIndex : highlightIndex
+    const match = nextMatch === 'strike' ? strikeMatch : highlightMatch
 
     // Add text before match
     if (matchIndex > 0) {
-      parts.push(<span key={key++}>{remaining.substring(0, matchIndex)}</span>);
+      parts.push(<span key={key++}>{remaining.substring(0, matchIndex)}</span>)
     }
 
     // Add styled match
-    if (nextMatch === "strike" && match) {
+    if (nextMatch === 'strike' && match) {
       parts.push(
         <span
           key={key++}
           style={{
-            backgroundColor: "color-mix(in srgb, red, transparent 70%)",
+            backgroundColor: 'color-mix(in srgb, red, transparent 70%)',
           }}
         >
           {match[1]}
-        </span>,
-      );
+        </span>
+      )
     } else if (match) {
       parts.push(
         <span
           key={key++}
           style={{
-            backgroundColor: "color-mix(in srgb, lightgreen, transparent 70%)",
+            backgroundColor: 'color-mix(in srgb, lightgreen, transparent 70%)',
           }}
         >
           {match[1]}
-        </span>,
-      );
+        </span>
+      )
     }
 
     // Continue with remaining text
-    remaining = remaining.substring(matchIndex + (match?.[0]?.length || 0));
+    remaining = remaining.substring(matchIndex + (match?.[0]?.length || 0))
   }
 
-  return parts;
+  return parts
 }
 
 function Button({
   focus,
   setFocus,
 }: {
-  focus: string | null;
-  setFocus: (position: string | null) => void;
+  focus: string | null
+  setFocus: (position: string | null) => void
 }) {
   return (
-    <div className="flex items-center border border-gray-300 rounded-md overflow-hidden hover:border-gray-400 transition-all duration-200 bg-gray-100">
+    <div className="flex items-center overflow-hidden rounded-md border border-gray-300 bg-gray-100 transition-all duration-200 hover:border-gray-400">
       <button
-        className={`text-xs h-7 px-3 transition-all duration-200 cursor-pointer ${
-          focus === "left"
-            ? "bg-un-blue text-white"
-            : "bg-transparent text-gray-700 hover:bg-gray-200 hover:text-gray-900"
+        className={`h-7 cursor-pointer px-3 text-xs transition-all duration-200 ${
+          focus === 'left'
+            ? 'bg-un-blue text-white'
+            : 'bg-transparent text-gray-700 hover:bg-gray-200 hover:text-gray-900'
         }`}
-        onClick={() => setFocus("left")}
+        onClick={() => setFocus('left')}
       >
         Focus Left
       </button>
-      <div className="w-px h-7 bg-gray-300"></div>
+      <div className="h-7 w-px bg-gray-300"></div>
       <button
-        className={`text-xs h-7 px-3 transition-all duration-200 cursor-pointer ${
+        className={`h-7 cursor-pointer px-3 text-xs transition-all duration-200 ${
           focus === null
-            ? "bg-un-blue text-white"
-            : "bg-transparent text-gray-700 hover:bg-gray-200 hover:text-gray-900"
+            ? 'bg-un-blue text-white'
+            : 'bg-transparent text-gray-700 hover:bg-gray-200 hover:text-gray-900'
         }`}
         onClick={() => setFocus(null)}
       >
         Compare Both
       </button>
-      <div className="w-px h-7 bg-gray-300"></div>
+      <div className="h-7 w-px bg-gray-300"></div>
       <button
-        className={`text-xs h-7 px-3 transition-all duration-200 cursor-pointer ${
-          focus === "right"
-            ? "bg-un-blue text-white"
-            : "bg-transparent text-gray-700 hover:bg-gray-200 hover:text-gray-900"
+        className={`h-7 cursor-pointer px-3 text-xs transition-all duration-200 ${
+          focus === 'right'
+            ? 'bg-un-blue text-white'
+            : 'bg-transparent text-gray-700 hover:bg-gray-200 hover:text-gray-900'
         }`}
-        onClick={() => setFocus("right")}
+        onClick={() => setFocus('right')}
       >
         Focus Right
       </button>
     </div>
-  );
+  )
 }
 
 function FocusToggle({
@@ -139,31 +139,31 @@ function FocusToggle({
   focus,
   setFocus,
 }: {
-  position: "left" | "right";
-  focus: string | null;
-  setFocus: (position: string | null) => void;
+  position: 'left' | 'right'
+  focus: string | null
+  setFocus: (position: string | null) => void
 }) {
-  const isActive = focus === position;
-  const isFaded = focus !== null && focus !== position;
+  const isActive = focus === position
+  const isFaded = focus !== null && focus !== position
 
   return (
     <button
-      className={`p-0.5 rounded transition-all duration-200 ${
+      className={`rounded p-0.5 transition-all duration-200 ${
         isActive
-          ? "text-un-blue bg-un-blue/10"
+          ? 'bg-un-blue/10 text-un-blue'
           : isFaded
-            ? "text-gray-400 opacity-50"
-            : "text-gray-600 hover:text-un-blue hover:bg-gray-100"
+            ? 'text-gray-400 opacity-50'
+            : 'text-gray-600 hover:bg-gray-100 hover:text-un-blue'
       }`}
       onClick={(e) => {
-        e.stopPropagation();
-        setFocus(isActive ? null : position);
+        e.stopPropagation()
+        setFocus(isActive ? null : position)
       }}
-      title={isActive ? "Show both columns" : `Focus on ${position} column`}
+      title={isActive ? 'Show both columns' : `Focus on ${position} column`}
     >
       <Eye className="h-3 w-3" />
     </button>
-  );
+  )
 }
 
 function Item({
@@ -171,63 +171,58 @@ function Item({
   color,
   light,
 }: {
-  content: string;
-  color?: string;
-  light?: boolean;
+  content: string
+  color?: string
+  light?: boolean
 }) {
   const getColorClasses = () => {
-    if (!color) return content ? "bg-card" : "";
+    if (!color) return content ? 'bg-card' : ''
     switch (color) {
-      case "red":
-        return "bg-red-50";
-      case "lightgreen":
-        return "bg-green-50";
-      case "yellow":
-        return "bg-yellow-50";
-      case "blue":
-        return "bg-blue-50";
+      case 'red':
+        return 'bg-red-50'
+      case 'lightgreen':
+        return 'bg-green-50'
+      case 'yellow':
+        return 'bg-yellow-50'
+      case 'blue':
+        return 'bg-blue-50'
       default:
-        return content ? "bg-card" : "";
+        return content ? 'bg-card' : ''
     }
-  };
+  }
 
   return (
     <div
-      className={`
-      rounded-md p-3 text-left flex-1 text-body
-      ${getColorClasses()}
-      ${light ? "opacity-30" : "opacity-100"}
-      transition-opacity min-h-10 flex items-start
-    `}
+      className={`text-body flex-1 rounded-md p-3 text-left ${getColorClasses()} ${light ? 'opacity-30' : 'opacity-100'} flex min-h-10 items-start transition-opacity`}
     >
-      <div className="w-full">{parseText(content || "")}</div>
+      <div className="w-full">{parseText(content || '')}</div>
     </div>
-  );
+  )
 }
 
 function Comparison({
   item,
-  focus = "right",
+  focus = 'right',
 }: {
-  item: DiffItem;
-  focus?: string | null;
+  item: DiffItem
+  focus?: string | null
 }) {
-  const isAdded = item.right && !item.left && !item.left_best;
-  const isRemoved = item.left && !item.right && !item.right_best;
-  if ((focus === "left" && !item.left) || (focus === "right" && !item.right))
-    return <></>;
+  const isAdded = item.right && !item.left && !item.left_best
+  const isRemoved = item.left && !item.right && !item.right_best
+  if ((focus === 'left' && !item.left) || (focus === 'right' && !item.right))
+    return <></>
   return (
-    <div className="grid grid-cols-2 gap-4 w-full">
+    <div className="grid w-full grid-cols-2 gap-4">
       {item.left ? (
         <Item
           content={isRemoved ? item.left : item.left_highlighted}
           color={
             isRemoved
-              ? "red"
+              ? 'red'
               : // isMoved ? 'yellow' : isAligned ? 'blue' :
                 undefined
           }
-          light={focus === "right"}
+          light={focus === 'right'}
         />
       ) : (
         <Item content={item.left_highlighted} light />
@@ -237,20 +232,20 @@ function Comparison({
           content={isAdded ? item.right : item.right_highlighted}
           color={
             isAdded
-              ? "lightgreen"
+              ? 'lightgreen'
               : // : isMoved
                 // ? 'yellow'
                 // : isAligned
                 // ? 'blue'
                 undefined
           }
-          light={focus === "left"}
+          light={focus === 'left'}
         />
       ) : (
         <Item content={item.right_highlighted} light />
       )}
     </div>
-  );
+  )
 }
 
-export { Button, FocusToggle, Comparison, type DiffData };
+export { Button, FocusToggle, Comparison, type DiffData }

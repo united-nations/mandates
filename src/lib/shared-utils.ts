@@ -4,8 +4,8 @@
 export function decodeUrlSegments(segments: string | string[]): string {
   if (Array.isArray(segments)) {
     // For mandate pages with multiple segments
-    return segments.map((segment) => decodeURIComponent(segment)).join("/");
+    return segments.map((segment) => decodeURIComponent(segment)).join('/')
   }
   // For entity/organ pages with single segment
-  return decodeURIComponent(segments);
+  return decodeURIComponent(segments)
 }

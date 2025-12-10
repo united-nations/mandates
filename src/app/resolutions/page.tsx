@@ -1,127 +1,127 @@
-"use client";
+'use client'
 
-import { Suspense, useRef, useState, useEffect } from "react";
-import { useSearchParams, useRouter, usePathname } from "next/navigation";
-import DocumentTable from "@/components/DocumentTable";
-import ResolutionsTreemapView from "@/components/ResolutionsTreemapView";
-import { resolutionsConfig } from "@/lib/document-configs";
-import { Resolution, DocumentFilters } from "@/types";
-import { Button } from "@/components/ui/button";
+import { Suspense, useRef, useState, useEffect } from 'react'
+import { useSearchParams, useRouter, usePathname } from 'next/navigation'
+import DocumentTable from '@/components/DocumentTable'
+import ResolutionsTreemapView from '@/components/ResolutionsTreemapView'
+import { resolutionsConfig } from '@/lib/document-configs'
+import { Resolution, DocumentFilters } from '@/types'
+import { Button } from '@/components/ui/button'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Checkbox } from "@/components/ui/checkbox";
-import { FileText, RotateCcw, ChevronDown } from "lucide-react";
-import { LoadingFallback } from "@/components/LoadingFallback";
+} from '@/components/ui/dropdown-menu'
+import { Checkbox } from '@/components/ui/checkbox'
+import { FileText, RotateCcw, ChevronDown } from 'lucide-react'
+import { LoadingFallback } from '@/components/LoadingFallback'
 
 function ResolutionsPageContent() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const pathname = usePathname();
-  const dimensionTextRef = useRef<HTMLSpanElement>(null);
-  const [dropdownMinWidth, setDropdownMinWidth] = useState<number>(0);
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const pathname = usePathname()
+  const dimensionTextRef = useRef<HTMLSpanElement>(null)
+  const [dropdownMinWidth, setDropdownMinWidth] = useState<number>(0)
 
   // Read all state from URL (single source of truth)
-  const view = searchParams.get("view") || "treemap";
+  const view = searchParams.get('view') || 'treemap'
   const dimension =
-    (searchParams.get("dimension") as "length" | "similarity" | "frequency") ||
-    "length";
+    (searchParams.get('dimension') as 'length' | 'similarity' | 'frequency') ||
+    'length'
 
   // Filters for treemap (read from URL)
   const treemapFilters: DocumentFilters = {
-    organ: searchParams.get("organ") || undefined,
-    is_recurring_series: searchParams.get("is_recurring_series") || undefined,
-    year_range: searchParams.get("year_range") || undefined,
+    organ: searchParams.get('organ') || undefined,
+    is_recurring_series: searchParams.get('is_recurring_series') || undefined,
+    year_range: searchParams.get('year_range') || undefined,
     include_missing_fulltexts:
-      searchParams.get("include_missing_fulltexts") || undefined,
+      searchParams.get('include_missing_fulltexts') || undefined,
     // Note: length_bucket and similarity_bucket are managed by table/treemap components
-  };
+  }
 
   // Helper to update URL with any parameter changes
   const updateURL = (updates: Record<string, string | null>) => {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(searchParams.toString())
 
     Object.entries(updates).forEach(([key, value]) => {
-      if (value === null || value === "" || value === "all") {
-        params.delete(key);
+      if (value === null || value === '' || value === 'all') {
+        params.delete(key)
       } else {
-        params.set(key, value);
+        params.set(key, value)
       }
-    });
+    })
 
-    router.replace(`${pathname}?${params}`, { scroll: false });
-  };
+    router.replace(`${pathname}?${params}`, { scroll: false })
+  }
 
   // View switching
   const switchToTreemap = () => {
     // Reset the bucket filter for the current dimension when switching to treemap
-    const updates: Record<string, string | null> = { view: null };
-    if (dimension === "length") {
-      updates.length_bucket = null;
-    } else if (dimension === "similarity") {
-      updates.similarity_bucket = null;
-    } else if (dimension === "frequency") {
-      updates.frequency_bucket = null;
+    const updates: Record<string, string | null> = { view: null }
+    if (dimension === 'length') {
+      updates.length_bucket = null
+    } else if (dimension === 'similarity') {
+      updates.similarity_bucket = null
+    } else if (dimension === 'frequency') {
+      updates.frequency_bucket = null
     }
-    updateURL(updates);
-  };
+    updateURL(updates)
+  }
 
   const switchToTable = () => {
-    updateURL({ view: "table" });
-  };
+    updateURL({ view: 'table' })
+  }
 
   // Handle treemap cell click - set the appropriate bucket filter and switch to table
   const handleCellClick = (
-    clickedDimension: "length" | "similarity" | "frequency",
-    bucketId: string,
+    clickedDimension: 'length' | 'similarity' | 'frequency',
+    bucketId: string
   ) => {
     updateURL({
-      view: "table",
-      length_bucket: clickedDimension === "length" ? bucketId : null,
-      similarity_bucket: clickedDimension === "similarity" ? bucketId : null,
-      frequency_bucket: clickedDimension === "frequency" ? bucketId : null,
+      view: 'table',
+      length_bucket: clickedDimension === 'length' ? bucketId : null,
+      similarity_bucket: clickedDimension === 'similarity' ? bucketId : null,
+      frequency_bucket: clickedDimension === 'frequency' ? bucketId : null,
       page: null, // Reset pagination
-    });
-  };
+    })
+  }
 
   // Filter handlers
   const handleOrganChange = (value: string) => {
     updateURL({
-      organ: value === "all" ? null : value,
+      organ: value === 'all' ? null : value,
       page: null,
-    });
-  };
+    })
+  }
 
   const handleRecurringSeriesChange = (value: string) => {
     updateURL({
-      is_recurring_series: value === "all" ? null : value,
+      is_recurring_series: value === 'all' ? null : value,
       page: null,
-    });
-  };
+    })
+  }
 
   const handleYearRangeChange = (value: string) => {
     updateURL({
-      year_range: value === "all" ? null : value,
+      year_range: value === 'all' ? null : value,
       page: null,
-    });
-  };
+    })
+  }
 
   const handleIncludeMissingFulltextsChange = (checked: boolean) => {
     updateURL({
-      include_missing_fulltexts: checked ? null : "false",
+      include_missing_fulltexts: checked ? null : 'false',
       page: null,
-    });
-  };
+    })
+  }
 
   const handleResetFilters = () => {
     updateURL({
@@ -134,11 +134,11 @@ function ResolutionsPageContent() {
       include_missing_fulltexts: null,
       title_search: null,
       page: null,
-    });
-  };
+    })
+  }
 
   const handleDimensionChange = (
-    newDimension: "length" | "similarity" | "frequency",
+    newDimension: 'length' | 'similarity' | 'frequency'
   ) => {
     updateURL({
       dimension: newDimension,
@@ -147,83 +147,83 @@ function ResolutionsPageContent() {
       similarity_bucket: null,
       frequency_bucket: null,
       page: null,
-    });
-  };
+    })
+  }
 
   // Get dimension display text
   const dimensionText =
-    dimension === "length"
-      ? "Length"
-      : dimension === "similarity"
-        ? "Similarity to Previous"
-        : "Frequency";
+    dimension === 'length'
+      ? 'Length'
+      : dimension === 'similarity'
+        ? 'Similarity to Previous'
+        : 'Frequency'
 
   // Organ acronyms mapping
   const organAcronyms: Record<string, string> = {
-    "General Assembly": "GA",
-    "Economic and Social Council": "ECOSOC",
-    "Security Council": "SC",
-    "Human Rights Council": "HRC",
-  };
+    'General Assembly': 'GA',
+    'Economic and Social Council': 'ECOSOC',
+    'Security Council': 'SC',
+    'Human Rights Council': 'HRC',
+  }
 
   // Get organ display text for header (using acronyms)
-  const organText = searchParams.get("organ")
-    ? organAcronyms[searchParams.get("organ")!] || "All"
-    : "All";
+  const organText = searchParams.get('organ')
+    ? organAcronyms[searchParams.get('organ')!] || 'All'
+    : 'All'
 
   // Measure the current dimension text width
   useEffect(() => {
     if (dimensionTextRef.current) {
-      const width = dimensionTextRef.current.offsetWidth;
-      setDropdownMinWidth(width);
+      const width = dimensionTextRef.current.offsetWidth
+      setDropdownMinWidth(width)
     }
-  }, [dimensionText]);
+  }, [dimensionText])
 
   // Check if there are any active filters
   const hasActiveFilters =
-    searchParams.get("organ") ||
-    searchParams.get("is_recurring_series") ||
-    searchParams.get("year_range") ||
-    searchParams.get("length_bucket") ||
-    searchParams.get("similarity_bucket") ||
-    searchParams.get("frequency_bucket") ||
-    searchParams.get("title_search") ||
-    searchParams.get("include_missing_fulltexts") === "false";
+    searchParams.get('organ') ||
+    searchParams.get('is_recurring_series') ||
+    searchParams.get('year_range') ||
+    searchParams.get('length_bucket') ||
+    searchParams.get('similarity_bucket') ||
+    searchParams.get('frequency_bucket') ||
+    searchParams.get('title_search') ||
+    searchParams.get('include_missing_fulltexts') === 'false'
 
   // Display values for selects
-  const selectedOrgan = searchParams.get("organ") || "all";
+  const selectedOrgan = searchParams.get('organ') || 'all'
   const selectedRecurringSeries =
-    searchParams.get("is_recurring_series") || "all";
-  const selectedYearRange = searchParams.get("year_range") || "all";
+    searchParams.get('is_recurring_series') || 'all'
+  const selectedYearRange = searchParams.get('year_range') || 'all'
 
   const recurringSeriesOptions = [
-    { value: "all", label: "All Documents" },
-    { value: "true", label: "Recurring Documents" },
-    { value: "false", label: "One-time Documents" },
-  ];
+    { value: 'all', label: 'All Documents' },
+    { value: 'true', label: 'Recurring Documents' },
+    { value: 'false', label: 'One-time Documents' },
+  ]
 
   const yearRangeOptions = [
-    { value: "all", label: "All Years" },
-    { value: "1990-2025", label: "1990-2025" },
-  ];
+    { value: 'all', label: 'All Years' },
+    { value: '1990-2025', label: '1990-2025' },
+  ]
 
   return (
-    <div className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]">
+    <div className="relative right-1/2 left-1/2 -mr-[50vw] -ml-[50vw] w-screen">
       {/* Header with filters - always visible */}
-      <div className="max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-8 sm:px-12 lg:px-16 mb-4 pt-6">
+      <div className="mx-auto mb-4 max-w-4xl px-8 pt-6 sm:px-12 lg:max-w-6xl lg:px-16 xl:max-w-7xl">
         {/* Title row */}
-        <div className="flex items-center gap-3 mb-1">
+        <div className="mb-1 flex items-center gap-3">
           <FileText className="h-8 w-8 text-un-blue" />
           <h1 className="text-2xl font-bold tracking-tight text-foreground">
-            <span className={searchParams.get("organ") ? "text-un-blue" : ""}>
+            <span className={searchParams.get('organ') ? 'text-un-blue' : ''}>
               {organText}
-            </span>{" "}
-            Resolutions by{" "}
+            </span>{' '}
+            Resolutions by{' '}
             <DropdownMenu>
-              <DropdownMenuTrigger className="text-un-blue hover:text-un-blue/80 focus:outline-hidden inline-flex items-center gap-0 transition-colors">
+              <DropdownMenuTrigger className="inline-flex items-center gap-0 text-un-blue transition-colors hover:text-un-blue/80 focus:outline-hidden">
                 <span
                   ref={dimensionTextRef}
-                  className="border-b-2 border-un-blue/20 hover:border-un-blue/40 transition-colors"
+                  className="border-b-2 border-un-blue/20 transition-colors hover:border-un-blue/40"
                 >
                   {dimensionText}
                 </span>
@@ -231,29 +231,29 @@ function ResolutionsPageContent() {
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 align="start"
-                className="w-auto p-0.5 border-un-blue/20 shadow-xs mt-1"
+                className="mt-1 w-auto border-un-blue/20 p-0.5 shadow-xs"
                 style={{ minWidth: dropdownMinWidth }}
               >
-                {dimension !== "length" && (
+                {dimension !== 'length' && (
                   <DropdownMenuItem
-                    onClick={() => handleDimensionChange("length")}
-                    className="cursor-pointer text-sm font-semibold text-un-blue hover:text-un-blue hover:bg-un-blue/10 py-2 px-3 rounded-sm focus:text-un-blue focus:bg-un-blue/10 whitespace-nowrap"
+                    onClick={() => handleDimensionChange('length')}
+                    className="cursor-pointer rounded-sm px-3 py-2 text-sm font-semibold whitespace-nowrap text-un-blue hover:bg-un-blue/10 hover:text-un-blue focus:bg-un-blue/10 focus:text-un-blue"
                   >
                     Word Length
                   </DropdownMenuItem>
                 )}
-                {dimension !== "similarity" && (
+                {dimension !== 'similarity' && (
                   <DropdownMenuItem
-                    onClick={() => handleDimensionChange("similarity")}
-                    className="cursor-pointer text-sm font-semibold text-un-blue hover:text-un-blue hover:bg-un-blue/10 py-2 px-3 rounded-sm focus:text-un-blue focus:bg-un-blue/10 whitespace-nowrap"
+                    onClick={() => handleDimensionChange('similarity')}
+                    className="cursor-pointer rounded-sm px-3 py-2 text-sm font-semibold whitespace-nowrap text-un-blue hover:bg-un-blue/10 hover:text-un-blue focus:bg-un-blue/10 focus:text-un-blue"
                   >
                     Similarity to Previous
                   </DropdownMenuItem>
                 )}
-                {dimension !== "frequency" && (
+                {dimension !== 'frequency' && (
                   <DropdownMenuItem
-                    onClick={() => handleDimensionChange("frequency")}
-                    className="cursor-pointer text-sm font-semibold text-un-blue hover:text-un-blue hover:bg-un-blue/10 py-2 px-3 rounded-sm focus:text-un-blue focus:bg-un-blue/10 whitespace-nowrap"
+                    onClick={() => handleDimensionChange('frequency')}
+                    className="cursor-pointer rounded-sm px-3 py-2 text-sm font-semibold whitespace-nowrap text-un-blue hover:bg-un-blue/10 hover:text-un-blue focus:bg-un-blue/10 focus:text-un-blue"
                   >
                     Frequency
                   </DropdownMenuItem>
@@ -264,17 +264,17 @@ function ResolutionsPageContent() {
         </div>
 
         {/* View toggle and filters row */}
-        <div className="flex items-center justify-between gap-4 mb-3 mt-4">
+        <div className="mt-4 mb-3 flex items-center justify-between gap-4">
           {/* View toggle buttons */}
           <div className="inline-flex h-9 items-center justify-center gap-0.5 rounded-md border border-med-gray bg-muted p-0.5 text-muted-foreground">
             <Button
               variant="ghost"
               size="sm"
               onClick={switchToTreemap}
-              className={`h-full px-3 text-sm font-medium transition-colors rounded-sm ${
-                view === "treemap"
-                  ? "bg-background text-un-blue shadow-xs pointer-events-none"
-                  : "hover:bg-background/60 hover:text-foreground"
+              className={`h-full rounded-sm px-3 text-sm font-medium transition-colors ${
+                view === 'treemap'
+                  ? 'pointer-events-none bg-background text-un-blue shadow-xs'
+                  : 'hover:bg-background/60 hover:text-foreground'
               }`}
             >
               Treemap
@@ -283,10 +283,10 @@ function ResolutionsPageContent() {
               variant="ghost"
               size="sm"
               onClick={switchToTable}
-              className={`h-full px-3 text-sm font-medium transition-colors rounded-sm ${
-                view === "table"
-                  ? "bg-background text-un-blue shadow-xs pointer-events-none"
-                  : "hover:bg-background/60 hover:text-foreground"
+              className={`h-full rounded-sm px-3 text-sm font-medium transition-colors ${
+                view === 'table'
+                  ? 'pointer-events-none bg-background text-un-blue shadow-xs'
+                  : 'hover:bg-background/60 hover:text-foreground'
               }`}
             >
               Table
@@ -297,7 +297,7 @@ function ResolutionsPageContent() {
             <Select value={selectedOrgan} onValueChange={handleOrganChange}>
               <SelectTrigger
                 id="organ-filter"
-                className={`w-[240px] h-9 px-3 text-sm bg-white data-[state=open]:border-un-blue ${selectedOrgan !== "all" ? "border-un-blue" : "border-med-gray"}`}
+                className={`h-9 w-[240px] bg-white px-3 text-sm data-[state=open]:border-un-blue ${selectedOrgan !== 'all' ? 'border-un-blue' : 'border-med-gray'}`}
               >
                 <SelectValue />
               </SelectTrigger>
@@ -315,7 +315,7 @@ function ResolutionsPageContent() {
             >
               <SelectTrigger
                 id="year-range-filter"
-                className={`w-[120px] h-9 px-3 text-sm bg-white data-[state=open]:border-un-blue ${selectedYearRange !== "all" ? "border-un-blue" : "border-med-gray"}`}
+                className={`h-9 w-[120px] bg-white px-3 text-sm data-[state=open]:border-un-blue ${selectedYearRange !== 'all' ? 'border-un-blue' : 'border-med-gray'}`}
               >
                 <SelectValue />
               </SelectTrigger>
@@ -333,7 +333,7 @@ function ResolutionsPageContent() {
             >
               <SelectTrigger
                 id="recurring-filter"
-                className={`w-[200px] h-9 px-3 text-sm bg-white data-[state=open]:border-un-blue ${selectedRecurringSeries !== "all" ? "border-un-blue" : "border-med-gray"}`}
+                className={`h-9 w-[200px] bg-white px-3 text-sm data-[state=open]:border-un-blue ${selectedRecurringSeries !== 'all' ? 'border-un-blue' : 'border-med-gray'}`}
               >
                 <SelectValue />
               </SelectTrigger>
@@ -350,7 +350,7 @@ function ResolutionsPageContent() {
               size="sm"
               onClick={handleResetFilters}
               disabled={!hasActiveFilters}
-              className="h-9 w-9 p-0 border-med-gray bg-trout hover:bg-trout/80 text-white disabled:bg-gray-100 disabled:text-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="h-9 w-9 border-med-gray bg-trout p-0 text-white hover:bg-trout/80 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400 disabled:opacity-50"
               title="Reset filters to default"
             >
               <RotateCcw className="h-4 w-4" />
@@ -360,8 +360,8 @@ function ResolutionsPageContent() {
       </div>
 
       {/* Content */}
-      {view === "treemap" ? (
-        <div className="max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-8 sm:px-12 lg:px-16 mt-4">
+      {view === 'treemap' ? (
+        <div className="mx-auto mt-4 max-w-4xl px-8 sm:px-12 lg:max-w-6xl lg:px-16 xl:max-w-7xl">
           <ResolutionsTreemapView
             filters={treemapFilters}
             dimension={dimension}
@@ -369,18 +369,18 @@ function ResolutionsPageContent() {
           />
 
           {/* Include missing fulltexts checkbox - below treemap */}
-          <div className="flex items-center justify-start gap-2 mt-3 pb-6">
+          <div className="mt-3 flex items-center justify-start gap-2 pb-6">
             <Checkbox
               id="include-missing-fulltexts"
               checked={
-                searchParams.get("include_missing_fulltexts") !== "false"
+                searchParams.get('include_missing_fulltexts') !== 'false'
               }
               onCheckedChange={handleIncludeMissingFulltextsChange}
-              className="border-med-gray data-[state=checked]:bg-un-blue data-[state=checked]:border-un-blue"
+              className="border-med-gray data-[state=checked]:border-un-blue data-[state=checked]:bg-un-blue"
             />
             <label
               htmlFor="include-missing-fulltexts"
-              className="text-sm text-muted-foreground cursor-pointer select-none"
+              className="cursor-pointer text-sm text-muted-foreground select-none"
             >
               Include resolutions with missing fulltexts
             </label>
@@ -393,7 +393,7 @@ function ResolutionsPageContent() {
         />
       )}
     </div>
-  );
+  )
 }
 
 export default function ResolutionsPage() {
@@ -401,5 +401,5 @@ export default function ResolutionsPage() {
     <Suspense fallback={<LoadingFallback />}>
       <ResolutionsPageContent />
     </Suspense>
-  );
+  )
 }
