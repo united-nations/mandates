@@ -1,0 +1,11 @@
+{
+    "recommendations": [
+        "eamodio.gitlens", // https://www.gitkraken.com/gitlens
+        "knisterpeter.vscode-commitizen", // https://www.conventionalcommits.org/
+        "pkief.material-icon-theme",
+        "github.vscode-pull-request-github",
+        "mechatroner.rainbow-csv",
+        "bradlc.vscode-tailwindcss",
+        "esbenp.prettier-vscode"
+    ]
+}
