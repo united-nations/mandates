@@ -33,4 +33,5 @@
     "workbench.iconTheme": "material-icon-theme",
     "jupyter.interactiveWindow.textEditor.executeSelection": true,
     "interactiveWindow.executeWithShiftEnter": true,
+    "typescript.tsdk": "node_modules/typescript/lib",
 }

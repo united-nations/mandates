@@ -62,6 +62,7 @@ export function GenericSidebar<T>({
   const [showAll, setShowAll] = useState(false)
 
   // Filter items based on search term
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     if (!searchTerm.trim()) {
       setFilteredItems(items)
@@ -82,10 +83,6 @@ export function GenericSidebar<T>({
 
   const hasMoreItems =
     showExpandCollapse && filteredItems.length > maxItemsBeforeExpand
-
-  const LoadingSkeletonComponent = () => (
-    <LoadingSkeleton variant="sidebar" count={8} />
-  )
 
   return (
     <div className={borderless ? '' : 'border-l border-gray-200 pl-4'}>
@@ -137,7 +134,7 @@ export function GenericSidebar<T>({
           }}
         >
           {isLoading ? (
-            <LoadingSkeletonComponent />
+            <LoadingSkeleton variant="sidebar" count={8} />
           ) : (
             <div className="space-y-1">
               {itemsToDisplay.map((item, index) =>

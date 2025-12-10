@@ -303,6 +303,7 @@ function SearchableFilterDropdown({
   }, [hierarchicalData, searchTerm])
 
   // Reset search when dropdown closes
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     if (!isOpen) {
       setSearchTerm('')
@@ -1724,7 +1725,7 @@ export function ParagraphsSection({
       { pattern: /within existing resources/gi, type: 'highlight' },
     ]
 
-    let currentText = sourceText
+    const currentText = sourceText
     const replacements: {
       start: number
       end: number

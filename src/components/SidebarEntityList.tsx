@@ -1,7 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
+import React from 'react'
 import { useRouter } from 'next/navigation'
 import { Building } from 'lucide-react'
 import { EntityName } from '@/components/EntityName'

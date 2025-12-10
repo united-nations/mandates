@@ -26,9 +26,14 @@ const CACHE_TTL = 5 * 60 * 1000 // 5 minutes
 
 // Precomputed data for default views
 let precomputedData: {
-  defaultCounts: any
-  defaultSidebar: any
-  defaultFilterOptions: any
+  defaultCounts: {
+    totalMandates: number
+    matchingMandates: number
+    uniqueEntities: number
+    uniqueOrgans: number
+  }
+  defaultSidebar: Record<string, unknown>
+  defaultFilterOptions: Record<string, unknown>
   allEntities: Entity[]
   allOrgans: Organ[]
 } | null = null

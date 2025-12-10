@@ -21,6 +21,7 @@ export function Overlay({
 }: OverlayProps) {
   const [isVisible, setIsVisible] = useState(false)
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     if (isOpen) {
       setIsVisible(true)

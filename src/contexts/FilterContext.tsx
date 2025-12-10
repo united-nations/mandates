@@ -85,6 +85,7 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
       }
     }
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setFilters(newFilters)
   }, [searchParams, pathname, isMainPage, isEntityPage, isOrganPage])
 

@@ -21,8 +21,8 @@ function OrganPageContent() {
   } | null>(null)
 
   // Callback to receive organ details from MandateExplorer
-  const handleOrganDetailsLoaded = (organs: any[]) => {
-    const foundOrgan = organs.find((o: any) => o.short === organName)
+  const handleOrganDetailsLoaded = (organs: Organ[]) => {
+    const foundOrgan = organs.find((o) => o.short === organName)
     if (foundOrgan) {
       setOrganDetails(foundOrgan)
     }

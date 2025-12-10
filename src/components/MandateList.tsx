@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import type { Mandate } from '@/types'
 import { Badge } from '@/components/ui/badge'
 import { motion } from 'framer-motion'
@@ -15,9 +14,7 @@ import {
   FileText,
   Calendar,
   Landmark,
-  Target,
   Info,
-  Search,
 } from 'lucide-react'
 import { explainerTexts } from '@/lib/explainer-texts'
 import Link from 'next/link'
@@ -171,13 +168,12 @@ export function MandateList({
       <div className="space-y-4">
         {mandates.map((mandate, index) => {
           const hasSearchMatches =
-            (mandate as any).match_details &&
-            (mandate as any).match_details.length > 0
-          const searchScore = (mandate as any).searchScore || 0
+            mandate.match_details && mandate.match_details.length > 0
+          const searchScore = mandate.searchScore || 0
           const displaySymbol = mandate.full_document_symbol
           const hasHighlighting =
-            (mandate as any).highlightedFields &&
-            Object.keys((mandate as any).highlightedFields).length > 0
+            mandate.highlightedFields &&
+            Object.keys(mandate.highlightedFields).length > 0
 
           return (
             <div
@@ -201,7 +197,7 @@ export function MandateList({
                   <div className="pr-20 sm:pr-32">
                     <h3 className="text-sm leading-tight font-semibold wrap-break-word hyphens-auto sm:text-base">
                       <HighlightedContent
-                        content={(mandate as any).highlightedFields?.title}
+                        content={mandate.highlightedFields?.title}
                         fallback={mandate.displayTitle || 'Untitled'}
                       />
                     </h3>
@@ -215,7 +211,7 @@ export function MandateList({
                           <span className="font-medium">
                             <HighlightedContent
                               content={
-                                (mandate as any).highlightedFields
+                                mandate.highlightedFields
                                   ?.full_document_symbol
                               }
                               fallback={getTruncatedSymbol(displaySymbol)}
@@ -275,7 +271,7 @@ export function MandateList({
 
                   {/* Search matches in fields not normally displayed */}
                   {hasHighlighting &&
-                    (mandate as any).highlightedFields?.subject_headings && (
+                    mandate.highlightedFields?.subject_headings && (
                       <div className="text-sm">
                         <span className="font-medium text-muted-foreground">
                           Subject headings:
@@ -284,15 +280,13 @@ export function MandateList({
                           className="text-slate-700"
                           dangerouslySetInnerHTML={{
                             __html:
-                              (mandate as any).highlightedFields
+                              mandate.highlightedFields
                                 .subject_headings.length > 200
-                                ? (
-                                    mandate as any
-                                  ).highlightedFields.subject_headings.substring(
+                                ? mandate.highlightedFields.subject_headings.substring(
                                     0,
                                     200
                                   ) + '...'
-                                : (mandate as any).highlightedFields
+                                : mandate.highlightedFields
                                     .subject_headings,
                           }}
                         />

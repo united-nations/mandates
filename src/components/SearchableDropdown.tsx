@@ -55,6 +55,7 @@ export function SearchableDropdown({
         option.description.toLowerCase().includes(searchTerm.toLowerCase()))
   )
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     if (open) {
       setHighlightedIndex(-1)
@@ -66,6 +67,7 @@ export function SearchableDropdown({
     }
   }, [open])
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     setHighlightedIndex(-1)
   }, [searchTerm])

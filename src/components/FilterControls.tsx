@@ -1,11 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
+import { SearchInput } from './SearchInput'
 import {
   X,
-  ChevronDown,
-  ChevronUp,
+  SlidersHorizontal,
+  Filter,
   HelpCircle,
   Search,
   Building,
@@ -14,12 +13,17 @@ import {
   BookOpen,
   Calendar,
   Receipt,
-  FileText,
 } from 'lucide-react'
-import { SearchInput } from '@/components/SearchInput'
-import { AdvancedSearch } from '@/components/AdvancedSearch'
-import { YearSlider } from './YearSlider'
-import { Label } from '@/components/ui/label'
+import { useEffect, useState, useRef } from 'react'
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { Badge } from '@/components/ui/badge'
+import { AdvancedSearch } from './AdvancedSearch'
 import { FilterBadge } from '@/components/FilterBadge'
 import { EntityName } from './EntityName'
 import { OrganName } from './OrganName'
@@ -81,6 +85,7 @@ export function FilterControls({
 
   // Sync search input with filters when filters change externally (e.g., clear all)
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- Intentional sync from external state
     setSearchInput(filters.keyword || '')
   }, [filters.keyword])
 

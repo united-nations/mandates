@@ -29,7 +29,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { Column } from 'primereact/column'
 import { DataTable, DataTableFilterMeta } from 'primereact/datatable'
 import { Dropdown } from 'primereact/dropdown'
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import {
   lengthBuckets,
   similarityBuckets,
@@ -71,10 +71,10 @@ export default function DocumentTable<T extends BaseDocument>({
 
   // DataTable filters state (for UI only - synced with URL)
   const [filters, setFilters] = useState<DataTableFilterMeta>({
-    length_bucket: { value: null, matchMode: 'custom' as any },
-    similarity_bucket: { value: null, matchMode: 'custom' as any },
-    frequency_bucket: { value: null, matchMode: 'custom' as any },
-    title: { value: null, matchMode: 'custom' as any },
+    length_bucket: { value: null, matchMode: 'custom' as const },
+    similarity_bucket: { value: null, matchMode: 'custom' as const },
+    frequency_bucket: { value: null, matchMode: 'custom' as const },
+    title: { value: null, matchMode: 'custom' as const },
   })
 
   const [sortField, setSortField] = useState<string>('year')
@@ -187,17 +187,17 @@ export default function DocumentTable<T extends BaseDocument>({
     setFilters({
       length_bucket: {
         value: lengthBucket || null,
-        matchMode: 'custom' as any,
+        matchMode: 'custom' as const,
       },
       similarity_bucket: {
         value: similarityBucket || null,
-        matchMode: 'custom' as any,
+        matchMode: 'custom' as const,
       },
       frequency_bucket: {
         value: frequencyBucket || null,
-        matchMode: 'custom' as any,
+        matchMode: 'custom' as const,
       },
-      title: { value: titleSearch || null, matchMode: 'custom' as any },
+      title: { value: titleSearch || null, matchMode: 'custom' as const },
     })
 
     // Sync local title search input with URL
@@ -205,11 +205,11 @@ export default function DocumentTable<T extends BaseDocument>({
   }, [searchParams])
 
   // PrimeReact filter change handler
-  const handleFilterChange = (e: any) => {
-    const lengthBucketValue = e.filters.length_bucket?.value
-    const similarityBucketValue = e.filters.similarity_bucket?.value
-    const frequencyBucketValue = e.filters.frequency_bucket?.value
-    const titleValue = e.filters.title?.value
+  const handleFilterChange = (e: { filters: DataTableFilterMeta }) => {
+    const lengthBucketValue = (e.filters.length_bucket as { value: string | null })?.value
+    const similarityBucketValue = (e.filters.similarity_bucket as { value: string | null })?.value
+    const frequencyBucketValue = (e.filters.frequency_bucket as { value: string | null })?.value
+    const titleValue = (e.filters.title as { value: string | null })?.value
 
     // Simply update URL - the useEffect above will handle the refetch
     updateURL({
@@ -222,7 +222,7 @@ export default function DocumentTable<T extends BaseDocument>({
   }
 
   // Sorting handler
-  const handleSort = (e: any) => {
+  const handleSort = (e: { sortField?: string; sortOrder?: 1 | -1 | 0 | null }) => {
     const newSortField = e.sortField as string
     const newSortOrder =
       e.sortField !== sortField ? -1 : sortOrder === 1 ? -1 : 1
@@ -234,8 +234,8 @@ export default function DocumentTable<T extends BaseDocument>({
   }
 
   // Pagination handler
-  const handlePageChange = (e: any) => {
-    const newPage = e.page + 1
+  const handlePageChange = (e: { page?: number; rows?: number }) => {
+    const newPage = (e.page ?? 0) + 1
     updateURL({ page: newPage > 1 ? newPage.toString() : null })
   }
 

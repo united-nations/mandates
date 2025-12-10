@@ -7,17 +7,13 @@ import Image from 'next/image'
 export function AnimatedLogo() {
   const pathname = usePathname()
 
-  // Only render on main page
-  if (pathname !== '/') return null
-
   // Always start hidden to prevent flash
   const [cornerClass, setCornerClass] = useState('corner-slide-hidden')
   const [spriteClass, setSpriteClass] = useState('un20-roll-hidden')
-  const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {
-    // Mark as client-side and handle logic there
-    setIsClient(true)
+    // Only animate on home page
+    if (pathname !== '/') return
 
     // On home page, start the animation sequence
     const cornerTimer = setTimeout(() => {
@@ -34,6 +30,9 @@ export function AnimatedLogo() {
       clearTimeout(spriteTimer)
     }
   }, [pathname])
+
+  // Only render on main page
+  if (pathname !== '/') return null
 
   return (
     <div>

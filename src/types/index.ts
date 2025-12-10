@@ -43,7 +43,7 @@ export interface CitationInfo {
   programme: number | null
   programme_title: string
   'sub-programme': string | null
-  component: any | null
+  component: string | number | null
   description: string
   part_in_document: string
 }
@@ -82,15 +82,15 @@ export interface Mandate {
   printing_date: string[] | null
   pagination: string[] | null
   note: string[] | null
-  citation_reference: any[] | null
-  abstract: any[] | null
-  subject_organs: any[] | null
-  local_shelving: any[] | null
+  citation_reference: string[] | null
+  abstract: string[] | null
+  subject_organs: string[] | null
+  local_shelving: string[] | null
   corporate_subject: string[] | null
-  meeting_subject: any[] | null
+  meeting_subject: string[] | null
   contains_documents: string[] | null
   subject_headings: string[]
-  geographic_headings: any[] | null
+  geographic_headings: string[] | null
   author: string[] | null
   local_subject: string[] | null
   collection_level1: string[] | null
@@ -112,6 +112,7 @@ export interface Mandate {
   searchScore?: number
   highlightedTitle?: string
   highlightedFields?: { [key: string]: string }
+  match_details?: Array<{ field: string; value: string }>
 }
 
 // Entity types

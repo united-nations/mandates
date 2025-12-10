@@ -51,7 +51,9 @@ export default function DiffPage() {
       const titleMap: { [symbol: string]: string } = {}
 
       symbols.forEach((symbol) => {
-        const resolution = resolutions.find((r: any) => r.symbol === symbol)
+        const resolution = resolutions.find(
+          (r: { symbol: string; title?: string }) => r.symbol === symbol
+        )
         if (resolution && resolution.title) {
           titleMap[symbol] = resolution.title
         }

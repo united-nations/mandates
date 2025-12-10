@@ -12,9 +12,21 @@ interface YearSliderProps {
   originalYearDistribution?: { [year: string]: number } // Unfiltered distribution for full spectrum
 }
 
-const CustomizedBar = (props: any) => {
-  const { x, y, width, height, payload, fill, yearRange, selectedRange } = props
+interface CustomizedBarProps {
+  x?: number
+  y?: number
+  width?: number
+  height?: number
+  payload?: { year: string; count?: number }
+  fill?: string
+  yearRange: { min: number; max: number }
+  selectedRange: [number, number]
+}
+
+const CustomizedBar = (props: CustomizedBarProps) => {
+  const { x = 0, y = 0, width = 0, height = 0, payload, fill, yearRange, selectedRange } = props
   // Determine if this bar is within the selected range
+  if (!payload) return null
   const yearNum = parseInt(payload.year, 10)
   const isSelected = yearNum >= selectedRange[0] && yearNum <= selectedRange[1]
   const barFill = isSelected ? '#009edb' : '#E2E4EA'
@@ -95,9 +107,9 @@ export function YearSlider({
             <Bar
               dataKey="displayHeight"
               fill="hsl(var(--primary))"
-              shape={(barProps: any) => (
+              shape={(barProps: unknown) => (
                 <CustomizedBar
-                  {...barProps}
+                  {...(barProps as CustomizedBarProps)}
                   yearRange={yearRange}
                   selectedRange={localValue}
                 />

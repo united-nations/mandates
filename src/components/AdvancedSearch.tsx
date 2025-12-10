@@ -17,6 +17,37 @@ import { titleCase } from 'title-case'
 import { useState, useEffect } from 'react'
 import { getBudgetDocumentOptions } from '@/lib/budget-documents'
 
+// TooltipButton component moved outside of render
+const TooltipButton = ({
+  tooltipId,
+  ariaLabel,
+  tooltipText,
+  openTooltip,
+  toggleTooltip,
+}: {
+  tooltipId: string
+  ariaLabel: string
+  tooltipText: string
+  openTooltip: string | null
+  toggleTooltip: (id: string) => void
+}) => (
+  <div className="tooltip-container relative">
+    <button
+      type="button"
+      className="-ml-1 cursor-help touch-manipulation rounded-sm border-0 bg-transparent p-0 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden"
+      aria-label={ariaLabel}
+      onClick={() => toggleTooltip(tooltipId)}
+    >
+      <HelpCircle className="h-4 w-4 text-muted-foreground" />
+    </button>
+    {openTooltip === tooltipId && (
+      <div className="absolute top-6 right-0 z-50 w-64 rounded-md border bg-popover p-3 text-sm text-popover-foreground shadow-md">
+        <p>{tooltipText}</p>
+      </div>
+    )}
+  </div>
+)
+
 interface AdvancedSearchProps {
   programme: string
   subject: string
@@ -81,32 +112,6 @@ export function AdvancedSearch({
     setOpenTooltip(openTooltip === tooltipId ? null : tooltipId)
   }
 
-  const TooltipButton = ({
-    tooltipId,
-    ariaLabel,
-    tooltipText,
-  }: {
-    tooltipId: string
-    ariaLabel: string
-    tooltipText: string
-  }) => (
-    <div className="tooltip-container relative">
-      <button
-        type="button"
-        className="-ml-1 cursor-help touch-manipulation rounded-sm border-0 bg-transparent p-0 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden"
-        aria-label={ariaLabel}
-        onClick={() => toggleTooltip(tooltipId)}
-      >
-        <HelpCircle className="h-4 w-4 text-muted-foreground" />
-      </button>
-      {openTooltip === tooltipId && (
-        <div className="absolute top-6 right-0 z-50 w-64 rounded-md border bg-popover p-3 text-sm text-popover-foreground shadow-md">
-          <p>{tooltipText}</p>
-        </div>
-      )}
-    </div>
-  )
-
   return (
     <div className="space-y-6">
       {/* Row 1: UN Subjects, Programme, Budget Document */}
@@ -123,6 +128,8 @@ export function AdvancedSearch({
               tooltipId="subjects"
               ariaLabel="More information about UN subjects filter"
               tooltipText={explainerTexts.advancedFilters.subjects.tooltip}
+              openTooltip={openTooltip}
+              toggleTooltip={toggleTooltip}
             />
           </div>
           <SearchableDropdown
@@ -151,6 +158,8 @@ export function AdvancedSearch({
               tooltipId="programme"
               ariaLabel="More information about programme filter"
               tooltipText={explainerTexts.advancedFilters.programme.tooltip}
+              openTooltip={openTooltip}
+              toggleTooltip={toggleTooltip}
             />
           </div>
           <SearchableDropdown
@@ -184,6 +193,8 @@ export function AdvancedSearch({
               tooltipText={
                 explainerTexts.advancedFilters.budgetDocument.tooltip
               }
+              openTooltip={openTooltip}
+              toggleTooltip={toggleTooltip}
             />
           </div>
           <Select value={budgetDocument} onValueChange={onBudgetDocumentChange}>
@@ -224,6 +235,8 @@ export function AdvancedSearch({
               tooltipId="yearRange"
               ariaLabel="More information about year range filter"
               tooltipText={explainerTexts.advancedFilters.yearRange.tooltip}
+              openTooltip={openTooltip}
+              toggleTooltip={toggleTooltip}
             />
           </div>
           <div className="p-4">
