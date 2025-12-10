@@ -7,12 +7,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { FileText } from "lucide-react";
 
-import { LoadingFallback } from "@/components/loading-fallback";
+import { LoadingFallback } from "@/components/LoadingFallback";
 import { decodeUrlSegments } from "@/lib/shared-utils";
 import { useMandateData } from "@/hooks/use-mandate-data";
-import { ParagraphsSection } from "@/components/paragraphs-section";
-import { CitationCounts } from "@/components/citation-counts";
-import { MandateMetadata } from "@/components/mandate-metadata";
+import { ParagraphsSection } from "@/components/ParagraphSection";
+import { CitationCounts } from "@/components/CitationCounts";
+import { MandateMetadata } from "@/components/MandateMetadata";
 import { ScrollToTop } from "@/components/scroll-to-top";
 
 function MandatePageContent() {

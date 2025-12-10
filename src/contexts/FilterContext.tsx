@@ -14,7 +14,7 @@ import {
   ADDITIONAL_FILTER_PARAMS,
   type FilterParamKey,
 } from "@/lib/filter-constants";
-import { LoadingFallback } from "@/components/loading-fallback";
+import { LoadingFallback } from "@/components/LoadingFallback";
 
 export interface FilterType {
   entity?: string;

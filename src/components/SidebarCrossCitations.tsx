@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { Link as LinkIcon } from "lucide-react";
-import { EntityName } from "@/components/entity-name";
+import { EntityName } from "@/components/EntityName";
 import { useFilters } from "@/contexts/FilterContext";
-import { GenericSidebar } from "@/components/generic-sidebar";
-import { SidebarListItem } from "@/components/sidebar-list-item";
+import { GenericSidebar } from "@/components/SidebarGeneric";
+import { SidebarListItem } from "@/components/SidebarListItem";
 import { getActiveFiltersText } from "@/lib/utils";
 import type { CrossCitation, Entity } from "@/types";
 

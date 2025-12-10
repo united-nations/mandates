@@ -1,6 +1,6 @@
 "use client";
 
-import { BackButton } from "@/components/back-button";
+import { BackButton } from "@/components/BackButton";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -31,7 +31,7 @@ import { usePathname } from "next/navigation";
 
 // Dynamic import to prevent SSR and eliminate hydration errors
 const AnimatedLogo = dynamic(
-  () => import("@/components/animated-logo").then((mod) => mod.AnimatedLogo),
+  () => import("@/components/AnimatedLogo").then((mod) => mod.AnimatedLogo),
   {
     ssr: false,
   },

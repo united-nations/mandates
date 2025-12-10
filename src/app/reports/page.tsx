@@ -1,8 +1,8 @@
 "use client";
 
 import { Suspense } from "react";
-import { ReportsExplorer } from "@/components/reports-explorer";
-import { LoadingFallback } from "@/components/loading-fallback";
+import { ReportsExplorer } from "@/components/ReportsExplorer";
+import { LoadingFallback } from "@/components/LoadingFallback";
 
 export default function ReportsPage() {
   return (

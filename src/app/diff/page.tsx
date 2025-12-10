@@ -6,7 +6,7 @@ import {
   Button as DiffButton,
   Comparison,
   type DiffData,
-} from "@/components/diff-viewer";
+} from "@/components/DiffViewer";
 import { FileText, ArrowLeftRight } from "lucide-react";
 
 function extractYear(symbol: string): string {

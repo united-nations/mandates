@@ -10,7 +10,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { EntityName } from "./entity-name";
+import { EntityName } from "./EntityName";
 import {
   FileText,
   Calendar,

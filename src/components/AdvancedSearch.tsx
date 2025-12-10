@@ -1,6 +1,6 @@
 "use client";
 
-import { SearchableDropdown } from "./searchable-dropdown";
+import { SearchableDropdown } from "./SearchableDropdown";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -11,7 +11,7 @@ import {
   SelectSeparator,
 } from "@/components/ui/select";
 import { HelpCircle, Calendar, Target, Receipt, BookOpen } from "lucide-react";
-import { YearSlider } from "./year-slider";
+import { YearSlider } from "./YearSlider";
 import { explainerTexts } from "@/lib/explainer-texts";
 import { titleCase } from "title-case";
 import { useState, useEffect } from "react";

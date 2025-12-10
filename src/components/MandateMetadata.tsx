@@ -7,7 +7,7 @@ import {
   getOriginDocumentDisplayName,
   getBudgetDocumentSlug,
 } from "@/lib/budget-documents";
-import { MetadataItem } from "@/components/metadata-item";
+import { MetadataItem } from "@/components/MetadataItem";
 import type { Mandate } from "@/types";
 
 interface MandateMetadataProps {
@@ -33,7 +33,7 @@ export function MandateMetadata({ mandate }: MandateMetadataProps) {
       <MetadataItem label="Organ">
         {mandate.body ? (
           <Badge
-            variant="stronger"
+            variant="secondary"
             className="text-xs cursor-pointer hover:bg-secondary/80 transition-colors"
             onClick={() => {
               // Navigate to organ detail page
@@ -49,7 +49,7 @@ export function MandateMetadata({ mandate }: MandateMetadataProps) {
 
       <MetadataItem label="Document Type">
         {mandate.type ? (
-          <Badge variant="stronger" className="text-xs">
+          <Badge variant="secondary" className="text-xs">
             {mandate.type}
           </Badge>
         ) : (
@@ -59,7 +59,7 @@ export function MandateMetadata({ mandate }: MandateMetadataProps) {
 
       <MetadataItem label="Year">
         {mandate.year ? (
-          <Badge variant="stronger" className="text-xs">
+          <Badge variant="secondary" className="text-xs">
             {mandate.year}
           </Badge>
         ) : (
@@ -77,7 +77,7 @@ export function MandateMetadata({ mandate }: MandateMetadataProps) {
               return (
                 <Badge
                   key={index}
-                  variant="stronger"
+                  variant="secondary"
                   className="text-xs cursor-pointer hover:bg-secondary/80 transition-colors"
                   onClick={() => {
                     // Navigate to filtered results using the budget document slug

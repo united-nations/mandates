@@ -10,13 +10,13 @@ import {
   AlertCircle,
   Info,
 } from "lucide-react";
-import { EntityName } from "@/components/entity-name";
-import { MandateExplorer } from "@/components/mandate-explorer";
+import { EntityName } from "@/components/EntityName";
+import { MandateExplorer } from "@/components/MandateExplorer";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { MetadataItem } from "@/components/metadata-item";
+import { MetadataItem } from "@/components/MetadataItem";
 import { formatUrlForDisplay } from "@/lib/utils";
-import { LoadingFallback } from "@/components/loading-fallback";
+import { LoadingFallback } from "@/components/LoadingFallback";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import type { ApiResponse } from "@/types";

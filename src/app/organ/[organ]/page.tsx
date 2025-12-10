@@ -3,12 +3,12 @@
 import { Suspense, useState } from "react";
 import { useParams } from "next/navigation";
 import { Landmark, Link as LinkIcon } from "lucide-react";
-import { MandateExplorer } from "@/components/mandate-explorer";
+import { MandateExplorer } from "@/components/MandateExplorer";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { MetadataItem } from "@/components/metadata-item";
+import { MetadataItem } from "@/components/MetadataItem";
 import { formatUrlForDisplay } from "@/lib/utils";
-import { LoadingFallback } from "@/components/loading-fallback";
+import { LoadingFallback } from "@/components/LoadingFallback";
 
 function OrganPageContent() {
   const params = useParams();

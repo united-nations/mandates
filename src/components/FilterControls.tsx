@@ -16,13 +16,13 @@ import {
   Receipt,
   FileText,
 } from "lucide-react";
-import { SearchInput } from "@/components/search-input";
-import { AdvancedSearch } from "@/components/advanced-search";
-import { YearSlider } from "./year-slider";
+import { SearchInput } from "@/components/SearchInput";
+import { AdvancedSearch } from "@/components/AdvancedSearch";
+import { YearSlider } from "./YearSlider";
 import { Label } from "@/components/ui/label";
-import { FilterBadge } from "@/components/filter-badge";
-import { EntityName } from "./entity-name";
-import { OrganName } from "./organ-name";
+import { FilterBadge } from "@/components/FilterBadge";
+import { EntityName } from "./EntityName";
+import { OrganName } from "./OrganName";
 import { titleCase } from "title-case";
 import { explainerTexts } from "@/lib/explainer-texts";
 import { useFilters } from "@/contexts/FilterContext";

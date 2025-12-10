@@ -2,8 +2,8 @@
 
 import { Suspense, useRef, useState, useEffect } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
-import DocumentTable from "@/components/document-table";
-import ResolutionsTreemapView from "@/components/resolutions-treemap-view";
+import DocumentTable from "@/components/DocumentTable";
+import ResolutionsTreemapView from "@/components/ResolutionsTreemapView";
 import { resolutionsConfig } from "@/lib/document-configs";
 import { Resolution, DocumentFilters } from "@/types";
 import { Button } from "@/components/ui/button";
@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FileText, RotateCcw, ChevronDown } from "lucide-react";
-import { LoadingFallback } from "@/components/loading-fallback";
+import { LoadingFallback } from "@/components/LoadingFallback";
 
 function ResolutionsPageContent() {
   const searchParams = useSearchParams();

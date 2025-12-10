@@ -3,10 +3,10 @@
 import { useState, useEffect, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import type { Mandate, ApiResponse, Entity, Organ } from "@/types";
-import { MandateList } from "@/components/mandate-list";
-import { FilterControls } from "@/components/filter-controls";
-import { PaginationControls } from "@/components/pagination-controls";
-import { LoadingSkeleton } from "@/components/loading-skeleton";
+import { MandateList } from "@/components/MandateList";
+import { FilterControls } from "@/components/FilterControls";
+import { PaginationControls } from "@/components/PaginationControls";
+import { LoadingSkeleton } from "@/components/LoadingSkeleton";
 import {
   FileText,
   Landmark,
@@ -16,7 +16,7 @@ import {
   ChevronDown,
   Link as LinkIcon,
 } from "lucide-react";
-import { DataCard } from "@/components/data-card";
+import { DataCard } from "@/components/DataCard";
 import {
   Select,
   SelectContent,
@@ -24,12 +24,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { SidebarAccordion } from "@/components/sidebar-accordion";
+import { SidebarAccordion } from "@/components/SidebarAccordion";
 import { explainerTexts } from "@/lib/explainer-texts";
 
-import { EntityListSidebar } from "@/components/entity-list-sidebar";
-import { OrganListSidebar } from "@/components/organ-list-sidebar";
-import { CrossCitationsSidebar } from "@/components/cross-citations-sidebar";
+import { EntityListSidebar } from "@/components/SidebarEntityList";
+import { OrganListSidebar } from "@/components/Sidebar0rganList";
+import { CrossCitationsSidebar } from "@/components/SidebarCrossCitations";
 import { useFilters } from "@/contexts/FilterContext";
 import { Button } from "@/components/ui/button";
 import { FILTER_PARAMS, FILTER_ONLY_PARAMS } from "@/lib/filter-constants";

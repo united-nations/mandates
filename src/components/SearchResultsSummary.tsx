@@ -1,9 +1,9 @@
 "use client";
 
-import { FilterBadge } from "@/components/filter-badge";
+import { FilterBadge } from "@/components/FilterBadge";
 import { Button } from "@/components/ui/button";
 import { Search, X } from "lucide-react";
-import { EntityName } from "./entity-name";
+import { EntityName } from "./EntityName";
 import { titleCase } from "title-case";
 
 interface SearchResultsSummaryProps {

@@ -5,9 +5,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Landmark } from "lucide-react";
 import { useFilters } from "@/contexts/FilterContext";
-import { GenericSidebar } from "@/components/generic-sidebar";
-import { SidebarListItem } from "@/components/sidebar-list-item";
-import { OrganName } from "@/components/organ-name";
+import { GenericSidebar } from "@/components/SidebarGeneric";
+import { SidebarListItem } from "@/components/SidebarListItem";
+import { OrganName } from "@/components/OrganName";
 import { getActiveFiltersText } from "@/lib/utils";
 import type { OrganWithCount, Organ } from "@/types";
 
