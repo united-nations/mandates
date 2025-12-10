@@ -2,8 +2,8 @@
 
 import { useState, useEffect, ReactNode } from "react";
 import { LucideIcon } from "lucide-react";
-import { LoadingSkeleton } from "@/components/ui/loading-skeleton";
-import { SearchInput } from "@/components/ui/search-input";
+import { LoadingSkeleton } from "@/components/loading-skeleton";
+import { SearchInput } from "@/components/search-input";
 
 interface GenericSidebarProps<T> {
   // Header props

@@ -1,6 +1,6 @@
 "use client";
 
-import { SearchableDropdown } from "./ui/searchable-dropdown";
+import { SearchableDropdown } from "./searchable-dropdown";
 import { Label } from "@/components/ui/label";
 import {
   Select,

@@ -7,7 +7,7 @@ import {
   getOriginDocumentDisplayName,
   getBudgetDocumentSlug,
 } from "@/lib/budget-documents";
-import { MetadataItem } from "@/components/ui/metadata-item";
+import { MetadataItem } from "@/components/metadata-item";
 import type { Mandate } from "@/types";
 
 interface MandateMetadataProps {

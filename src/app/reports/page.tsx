@@ -2,7 +2,7 @@
 
 import { Suspense } from "react";
 import { ReportsExplorer } from "@/components/reports-explorer";
-import { LoadingFallback } from "@/components/ui/loading-fallback";
+import { LoadingFallback } from "@/components/loading-fallback";
 
 export default function ReportsPage() {
   return (

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
-import { Button } from "./button";
+import { Button } from "./ui/button";
 
 interface OverlayProps {
   isOpen: boolean;

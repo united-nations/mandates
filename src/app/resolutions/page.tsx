@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FileText, RotateCcw, ChevronDown } from "lucide-react";
-import { LoadingFallback } from "@/components/ui/loading-fallback";
+import { LoadingFallback } from "@/components/loading-fallback";
 
 function ResolutionsPageContent() {
   const searchParams = useSearchParams();

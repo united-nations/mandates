@@ -6,7 +6,7 @@ import type { Mandate, ApiResponse, Entity, Organ } from "@/types";
 import { MandateList } from "@/components/mandate-list";
 import { FilterControls } from "@/components/filter-controls";
 import { PaginationControls } from "@/components/pagination-controls";
-import { LoadingSkeleton } from "@/components/ui/loading-skeleton";
+import { LoadingSkeleton } from "@/components/loading-skeleton";
 import {
   FileText,
   Landmark,
@@ -24,7 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { SidebarAccordion } from "@/components/ui/sidebar-accordion";
+import { SidebarAccordion } from "@/components/sidebar-accordion";
 import { explainerTexts } from "@/lib/explainer-texts";
 
 import { EntityListSidebar } from "@/components/entity-list-sidebar";

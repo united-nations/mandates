@@ -6,9 +6,9 @@ import { Landmark, Link as LinkIcon } from "lucide-react";
 import { MandateExplorer } from "@/components/mandate-explorer";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { MetadataItem } from "@/components/ui/metadata-item";
+import { MetadataItem } from "@/components/metadata-item";
 import { formatUrlForDisplay } from "@/lib/utils";
-import { LoadingFallback } from "@/components/ui/loading-fallback";
+import { LoadingFallback } from "@/components/loading-fallback";
 
 function OrganPageContent() {
   const params = useParams();

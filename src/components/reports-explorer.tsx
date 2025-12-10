@@ -26,7 +26,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   HierarchicalSelect,
   type HierarchicalOption,
-} from "@/components/ui/hierarchical-select";
+} from "@/components/hierarchical-select";
 
 interface ClusterMetadata {
   cluster_titles: Record<string, string>;

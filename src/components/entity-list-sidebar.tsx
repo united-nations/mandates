@@ -4,10 +4,10 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Building } from "lucide-react";
-import { EntityName } from "@/components/ui/entity-name";
+import { EntityName } from "@/components/entity-name";
 import { useFilters } from "@/contexts/FilterContext";
-import { GenericSidebar } from "@/components/ui/generic-sidebar";
-import { SidebarListItem } from "@/components/ui/sidebar-list-item";
+import { GenericSidebar } from "@/components/generic-sidebar";
+import { SidebarListItem } from "@/components/sidebar-list-item";
 import { getActiveFiltersText } from "@/lib/utils";
 import type { EntityWithCount, Entity } from "@/types";
 
