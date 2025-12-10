@@ -1,12 +1,7 @@
 import { readFile } from 'fs/promises'
 import path from 'path'
 import { parse } from 'csv-parse/sync'
-import type { Mandate, Entity, Organ } from '@/types'
-
-interface EntityDetails {
-  entity: string
-  entity_long: string
-}
+import type { Mandate, Entity, Organ, EntityDetails } from '@/types'
 
 class DataService {
   private static mandatesCache: Mandate[] | null = null
@@ -71,9 +66,6 @@ class DataService {
       this.entitiesCache = rawData.map((item: EntityDetails) => ({
         entity: item['entity'] || '',
         entity_long: item['entity_long'] || '',
-        entity_link: item['entity_link'] || undefined,
-        transparency_portal_link: item['transparency_portal_link'] || undefined,
-        entity_description: item['entity_description'] || undefined,
       }))
 
       return this.entitiesCache

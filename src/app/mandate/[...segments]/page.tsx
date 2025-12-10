@@ -13,7 +13,7 @@ import { useMandateData } from '@/hooks/use-mandate-data'
 import { ParagraphsSection } from '@/components/ParagraphSection'
 import { CitationCounts } from '@/components/CitationCounts'
 import { MandateMetadata } from '@/components/MandateMetadata'
-import { ScrollToTop } from '@/components/scroll-to-top'
+import { ScrollToTop } from '@/components/ScrollToTop'
 
 function MandatePageContent() {
   const params = useParams()

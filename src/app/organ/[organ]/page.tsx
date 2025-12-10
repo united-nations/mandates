@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { MetadataItem } from '@/components/MetadataItem'
 import { formatUrlForDisplay } from '@/lib/utils'
+import type { Organ } from '@/types'
 import { LoadingFallback } from '@/components/LoadingFallback'
 
 function OrganPageContent() {

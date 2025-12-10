@@ -8,7 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { ShareButton } from '@/components/share-button'
+import { ShareButton } from '@/components/ShareButton'
 import { Toaster } from '@/components/ui/sonner'
 import {
   Tooltip,

@@ -19,15 +19,7 @@ import { formatUrlForDisplay } from '@/lib/utils'
 import { LoadingFallback } from '@/components/LoadingFallback'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import type { ApiResponse } from '@/types'
-
-interface Entity {
-  entity: string
-  entity_long: string
-  entity_link?: string
-  transparency_portal_link?: string
-  entity_description?: string
-}
+import type { ApiResponse, Entity } from '@/types'
 
 function EntityPageContent() {
   const params = useParams()
