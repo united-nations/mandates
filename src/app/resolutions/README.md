@@ -30,9 +30,9 @@ The resolutions page displays UN resolutions in two views: **Treemap** (default)
 
 ```typescript
 export const GET = createDocumentHandler<Resolution>(
-  "all_resolutions_dashboard.json",
-  "resolutions",
-);
+  'all_resolutions_dashboard.json',
+  'resolutions'
+)
 ```
 
 - Single-line implementation using shared handler

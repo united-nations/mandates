@@ -1,17 +1,17 @@
-import type { NextConfig } from 'next';
+import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-    output: 'standalone',
-    /* config options here */
-    typescript: {
-        ignoreBuildErrors: true,
-    },
-    eslint: {
-        ignoreDuringBuilds: true,
-    },
-    trailingSlash: false,
-    // Compress responses
-    compress: true,
-};
+  /* config options here */
+  typedRoutes: true,
+  output: 'standalone',
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  // Note: eslint config is no longer supported in next.config.ts in Next.js 16
+  // Configure ESLint directly in .eslintrc.json or eslint.config.js instead
+  trailingSlash: false,
+  // Compress responses
+  compress: true,
+}
 
-export default nextConfig;
+export default nextConfig

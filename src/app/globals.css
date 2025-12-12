@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 /* https://tailwindcss.com/docs/colors#customizing-your-colors */
 /* Define Tailwind brand colors */
@@ -66,12 +66,23 @@
 
   --input: hsl(0 0% 100%); /* White input backgrounds */
 
+  --border: hsl(220 13% 91%);
+  --ring: hsl(220 91.2% 59.8%);
+
   /* card corner radius */
   --radius: 0.5rem;
 
   --radius-lg: 0.5rem;
   --radius-md: calc(0.5rem - 2px);
   --radius-sm: calc(0.5rem - 4px);
+  --sidebar: hsl(0 0% 98%);
+  --sidebar-foreground: hsl(240 5.3% 26.1%);
+  --sidebar-primary: hsl(240 5.9% 10%);
+  --sidebar-primary-foreground: hsl(0 0% 98%);
+  --sidebar-accent: hsl(240 4.8% 95.9%);
+  --sidebar-accent-foreground: hsl(240 5.9% 10%);
+  --sidebar-border: hsl(220 13% 91%);
+  --sidebar-ring: hsl(217.2 91.2% 59.8%);
 }
 
 /* Expose shadcn variables to Tailwind utilities */
@@ -104,6 +115,7 @@
   --color-destructive-foreground: var(--destructive-foreground);
 
   --color-input: var(--input);
+  --color-border: var(--border);
   --color-ring: var(--ring);
 
   /* Expose font weights */
@@ -116,6 +128,34 @@
   --font-weight-bold: 700;
   --font-weight-extrabold: 800;
   --font-weight-black: 900;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
 }
 
 * {
@@ -134,8 +174,8 @@ body {
   background-color: var(--color-background);
   color: var(--color-foreground);
   font-feature-settings:
-    "rlig" 1,
-    "calt" 1;
+    'rlig' 1,
+    'calt' 1;
   /* Ensure font smoothing for better rendering */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -179,25 +219,6 @@ body {
   font-weight: 600;
 }
 
-/* Dark mode variants */
-.dark .search-highlight {
-  background-color: rgba(0, 158, 219, 0.3);
-  color: #87ceeb; /* Light blue for dark mode */
-  border-color: rgba(0, 158, 219, 0.5);
-}
-
-.dark .search-highlight-exact {
-  background-color: rgba(0, 158, 219, 0.4);
-  color: #add8e6; /* Lighter blue for exact matches in dark mode */
-  border-color: rgba(0, 158, 219, 0.6);
-}
-
-.dark .search-highlight-fuzzy {
-  background-color: rgba(0, 158, 219, 0.25);
-  color: #b0e0e6; /* Powder blue for fuzzy matches in dark mode */
-  border-color: rgba(0, 158, 219, 0.4);
-}
-
 /* Legacy mark support for backward compatibility */
 mark {
   background-color: #fef3c7;
@@ -206,12 +227,6 @@ mark {
   border-radius: 3px;
   font-weight: 600;
   border: 1px solid #fcd34d;
-}
-
-.dark mark {
-  background-color: rgba(245, 158, 11, 0.2);
-  color: #fcd34d;
-  border-color: rgba(245, 158, 11, 0.3);
 }
 
 /* Search result animations */
@@ -358,32 +373,6 @@ mark {
   color: var(--color-un-blue);
 }
 
-/* Dark mode variants */
-.dark .custom-table .p-datatable-thead > tr > th:hover {
-  background-color: rgba(0, 158, 219, 0.15);
-}
-
-.dark .custom-table .p-datatable-tbody > tr:hover {
-  background-color: rgba(0, 158, 219, 0.1);
-}
-
-.dark .custom-table .p-datatable-tbody > tr.p-highlight {
-  background-color: rgba(0, 158, 219, 0.2);
-}
-
-.dark .custom-table .p-datatable-tbody > tr.p-highlight:hover {
-  background-color: rgba(0, 158, 219, 0.25);
-}
-
-.dark .custom-table .p-sortable-column:hover {
-  background-color: rgba(0, 158, 219, 0.15);
-}
-
-.dark .custom-table .p-sortable-column.p-highlight {
-  background-color: rgba(0, 158, 219, 0.2);
-  color: #87ceeb;
-}
-
 /* UN80 Corner Logo and UN20 Animation Sprite Keyframes */
 @keyframes corner-slide-in {
   0% {
@@ -470,4 +459,13 @@ body {
 /* Hide scrollbar for Webkit browsers (Chrome, Safari) */
 body::-webkit-scrollbar {
   display: none;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }

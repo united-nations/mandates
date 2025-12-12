@@ -1,7 +1,7 @@
-"use client";
+'use client'
 
-import { Suspense, useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { Suspense, useState, useEffect } from 'react'
+import { useParams } from 'next/navigation'
 import {
   Building,
   Link as LinkIcon,
@@ -9,62 +9,54 @@ import {
   ExternalLink,
   AlertCircle,
   Info,
-} from "lucide-react";
-import { EntityName } from "@/components/ui/entity-name";
-import { MandateExplorer } from "@/components/mandate-explorer";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
-import { MetadataItem } from "@/components/ui/metadata-item";
-import { formatUrlForDisplay } from "@/lib/utils";
-import { LoadingFallback } from "@/components/ui/loading-fallback";
-import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import type { ApiResponse } from "@/types";
-
-interface Entity {
-  entity: string;
-  entity_long: string;
-  entity_link?: string;
-  transparency_portal_link?: string;
-  entity_description?: string;
-}
+} from 'lucide-react'
+import { EntityName } from '@/components/EntityName'
+import { MandateExplorer } from '@/components/MandateExplorer'
+import { Badge } from '@/components/ui/badge'
+import { Skeleton } from '@/components/ui/skeleton'
+import { MetadataItem } from '@/components/MetadataItem'
+import { formatUrlForDisplay } from '@/lib/utils'
+import { LoadingFallback } from '@/components/LoadingFallback'
+import { Button } from '@/components/ui/button'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import type { ApiResponse, Entity } from '@/types'
 
 function EntityPageContent() {
-  const params = useParams();
-  const entityName = decodeURIComponent(params.entity as string);
+  const params = useParams()
+  const entityName = decodeURIComponent(params.entity as string)
 
-  const [entityDetails, setEntityDetails] = useState<Entity | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [entityNotFound, setEntityNotFound] = useState(false);
-  const [mandateCount, setMandateCount] = useState<number | null>(null);
+  const [entityDetails, setEntityDetails] = useState<Entity | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [entityNotFound, setEntityNotFound] = useState(false)
+  const [mandateCount, setMandateCount] = useState<number | null>(null)
 
   // Callback to receive entity details from MandateExplorer (more efficient)
   const handleEntityDetailsLoaded = (entities: Entity[]) => {
-    const foundEntity = entities.find((e) => e.entity === entityName);
+    const foundEntity = entities.find((e) => e.entity === entityName)
     if (foundEntity) {
-      setEntityDetails(foundEntity);
-      setEntityNotFound(false);
+      setEntityDetails(foundEntity)
+      setEntityNotFound(false)
     } else {
-      setEntityNotFound(true);
+      setEntityNotFound(true)
     }
-    setIsLoading(false);
-  };
+    setIsLoading(false)
+  }
 
   // Callback to receive API data including mandate count
   const handleDataLoaded = (data: ApiResponse) => {
-    setMandateCount(data.pagination.totalItems);
-  };
+    setMandateCount(data.pagination.totalItems)
+  }
 
   // Set a timeout to show error if no data is loaded within reasonable time
   useEffect(() => {
     const timer = setTimeout(() => {
       if (!entityDetails && isLoading) {
-        setIsLoading(false);
+        setIsLoading(false)
       }
-    }, 3000); // 3 seconds timeout
+    }, 3000) // 3 seconds timeout
 
-    return () => clearTimeout(timer);
-  }, [entityDetails, isLoading]);
+    return () => clearTimeout(timer)
+  }, [entityDetails, isLoading])
 
   return (
     <div>
@@ -88,13 +80,13 @@ function EntityPageContent() {
           <AlertDescription>
             <div className="space-y-2">
               <p>
-                No source documents have been found for{" "}
+                No source documents have been found for{' '}
                 {entityDetails.entity_long} ({entityName}) in the current
                 version of the registry. Documents for this entity are being
                 processed and will be added soon.
               </p>
               <p className="font-medium">
-                Are you an entity focal point?{" "}
+                Are you an entity focal point?{' '}
                 <a
                   href="https://airtable.com/appId4rDWaFTpzNWz/pagpU0nMIhQMQPICL/form"
                   target="_blank"
@@ -102,7 +94,7 @@ function EntityPageContent() {
                   className="underline hover:no-underline"
                 >
                   Please get in touch
-                </a>{" "}
+                </a>{' '}
                 to expedite this process.
               </p>
             </div>
@@ -111,7 +103,7 @@ function EntityPageContent() {
       )}
 
       <div className="mb-8">
-        <div className="flex items-center gap-4 mb-4">
+        <div className="mb-4 flex items-center gap-4">
           {entityDetails ? (
             <h1 className="text-2xl font-bold tracking-tight">
               {entityDetails.entity_long} ({entityName})
@@ -127,7 +119,7 @@ function EntityPageContent() {
           <Button
             size="sm"
             asChild
-            className="bg-un-blue text-white hover:bg-un-blue/90 transition-colors"
+            className="bg-un-blue text-white transition-colors hover:bg-un-blue/90"
           >
             <a
               href={`https://systemchart.un.org/?entity=${entityName.toLowerCase()}`}
@@ -152,7 +144,7 @@ function EntityPageContent() {
         />
       )}
     </div>
-  );
+  )
 }
 
 export default function EntityPage() {
@@ -160,5 +152,5 @@ export default function EntityPage() {
     <Suspense fallback={<LoadingFallback />}>
       <EntityPageContent />
     </Suspense>
-  );
+  )
 }

@@ -19,7 +19,7 @@ Manages filter state across the application using URL query parameters.
 **Usage:**
 
 ```tsx
-import { useFilter } from "@/contexts/FilterContext";
+import { useFilter } from '@/contexts/FilterContext'
 
-const { filters, setFilter, clearAllFilters } = useFilter();
+const { filters, setFilter, clearAllFilters } = useFilter()
 ```
