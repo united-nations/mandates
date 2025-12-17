@@ -1,4 +1,5 @@
 import WordExtractor from 'word-extractor'
+import { extractText } from 'unpdf'
 import { writeFile, unlink } from 'fs/promises'
 import { join } from 'path'
 import { tmpdir } from 'os'
@@ -8,42 +9,52 @@ export interface DocumentData {
   text: string
   lines: string[]
   lineCount: number
+  format: 'doc' | 'pdf'
 }
 
 export async function fetchDocument(symbol: string): Promise<DocumentData> {
-  // Construct UN documents API URL
-  const docUrl = `https://documents.un.org/api/symbol/access?s=${symbol}&l=en&t=docx`
+  // Try doc format first (docx gives same results)
+  const docUrl = `https://documents.un.org/api/symbol/access?s=${symbol}&l=en&t=doc`
 
-  console.log(`Fetching document: ${docUrl}`)
-
-  // Fetch the document
-  const response = await fetch(docUrl)
-
-  if (!response.ok) {
-    // Try with .doc format if .docx fails
-    const docUrlFallback = `https://documents.un.org/api/symbol/access?s=${symbol}&l=en&t=doc`
-    const fallbackResponse = await fetch(docUrlFallback)
-
-    if (!fallbackResponse.ok) {
-      throw new Error(
-        `Failed to fetch document ${symbol}: ${response.status} ${response.statusText}`
-      )
+  const docResponse = await fetch(docUrl)
+  if (docResponse.ok) {
+    try {
+      const result = await extractWordDocument(docResponse, symbol)
+      console.log(`[${symbol}] Loaded as DOC (${result.lineCount} lines)`)
+      return result
+    } catch {
+      // DOC extraction failed, try PDF
     }
-
-    return await extractDocument(fallbackResponse, symbol)
   }
 
-  return await extractDocument(response, symbol)
+  // Fall back to PDF if doc fails
+  const pdfUrl = `https://documents.un.org/api/symbol/access?s=${symbol}&l=en&t=pdf`
+
+  const pdfResponse = await fetch(pdfUrl, { redirect: 'follow' })
+  if (pdfResponse.ok) {
+    try {
+      const result = await extractPdfDocument(pdfResponse, symbol)
+      console.log(`[${symbol}] Loaded as PDF (${result.lineCount} lines)`)
+      return result
+    } catch (err) {
+      console.error(`[${symbol}] PDF extraction failed:`, err)
+    }
+  }
+
+  throw new Error(
+    `Failed to fetch document ${symbol}: No available format (tried doc, pdf)`
+  )
 }
 
-async function extractDocument(
+async function extractWordDocument(
   response: Response,
   symbol: string
 ): Promise<DocumentData> {
+  const format = 'doc'
   const buffer = await response.arrayBuffer()
   const tempFilePath = join(
     tmpdir(),
-    `${symbol.replace(/\//g, '_')}_${Date.now()}.docx`
+    `${symbol.replace(/\//g, '_')}_${Date.now()}.${format}`
   )
 
   try {
@@ -69,6 +80,7 @@ async function extractDocument(
       text,
       lines,
       lineCount: lines.length,
+      format,
     }
   } catch (extractError) {
     // Clean up temp file even if extraction fails
@@ -77,5 +89,48 @@ async function extractDocument(
     } catch {}
 
     throw extractError
+  }
+}
+
+async function extractPdfDocument(
+  response: Response,
+  symbol: string
+): Promise<DocumentData> {
+  const buffer = await response.arrayBuffer()
+
+  // Extract text from PDF using unpdf (server-side compatible)
+  // mergePages: true returns a single string instead of array of pages
+  const { text } = await extractText(new Uint8Array(buffer), {
+    mergePages: true,
+  })
+
+  // Process text into lines
+  // PDF extraction from scanned documents often returns text without proper line breaks
+  // Use aggressive segmentation patterns for UN resolutions
+  const processedText = text
+    // Normalize whitespace first (OCR often has broken words)
+    .replace(/\s+/g, ' ')
+    // Add line breaks before numbered items (1. 2. etc) - must be followed by uppercase
+    .replace(/ (\d+)\. ([A-Z])/g, '\n$1. $2')
+    // Add line breaks before section markers (A, B, C, D, E as standalone)
+    .replace(/ ([A-E]) (\d+)/g, '\n$1\n$2')
+    // Add line breaks before "The General Assembly"
+    .replace(/ (The General Assembly)/g, '\n$1')
+    // Add line breaks after semicolons followed by numbered items
+    .replace(/; (\d+)\./g, ';\n$1.')
+    // Add line breaks before letter items (a) (b) etc
+    .replace(/ (\([a-z]\) )/g, '\n$1')
+
+  const lines = processedText
+    .split('\n')
+    .map((line: string) => line.trim())
+    .filter((line: string) => line && line.length > 15) // Filter out very short segments
+
+  return {
+    symbol,
+    text,
+    lines,
+    lineCount: lines.length,
+    format: 'pdf',
   }
 }
