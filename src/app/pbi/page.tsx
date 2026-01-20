@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, Fragment } from "react";
 import {
   ChevronDown,
   ChevronRight,
@@ -265,11 +265,8 @@ function YearTable({
             const resolutionTitle = extractResolutionTitle(item.title);
 
             return (
-              <>
-                <tr
-                  key={item.referenced_resolution}
-                  className="hover:bg-gray-50"
-                >
+              <Fragment key={item.referenced_resolution}>
+                <tr className="hover:bg-gray-50">
                   <td
                     className="px-4 py-3 cursor-pointer"
                     onClick={() => toggleRow(item.referenced_resolution)}
@@ -382,7 +379,7 @@ function YearTable({
                     </td>
                   </tr>
                 )}
-              </>
+              </Fragment>
             );
           })}
         </tbody>
@@ -468,11 +465,6 @@ export default function PBIPage() {
     );
   }
 
-  const totalPlenaryAmount = data.reduce(
-    (sum, item) => sum + (item.plenary_amount || 0),
-    0,
-  );
-
   return (
     <div className="container mx-auto p-6 space-y-6">
       <div className="space-y-4">
@@ -481,15 +473,10 @@ export default function PBIPage() {
           Programme Budget Implications
         </h1>
 
-        <div className="bg-muted/30 rounded-lg p-4">
-          <div className="text-sm text-gray-600">
-            <span className="font-semibold">{data.length}</span> draft
-            resolutions with budget implications
-          </div>
-          <div className="text-lg font-semibold text-un-blue mt-1">
-            Total GA Approved: {formatAmount(totalPlenaryAmount)}
-          </div>
-        </div>
+        <p className="text-sm text-gray-500">
+          Data has been automatically extracted from official UN documents. 
+          Please consult the original documents for authoritative information.
+        </p>
       </div>
 
       <div className="space-y-6">
