@@ -7,7 +7,14 @@ import {
   Comparison,
   type DiffData,
 } from '@/components/DiffViewer'
-import { FileText, ArrowLeftRight } from 'lucide-react'
+import { FileText, ArrowLeftRight, AlertTriangle } from 'lucide-react'
+
+interface DiffResponse extends DiffData {
+  formats?: {
+    left: 'doc' | 'pdf'
+    right: 'doc' | 'pdf'
+  }
+}
 
 function extractYear(symbol: string): string {
   // Extract year from UN document symbols like A/RES/77/16 -> 2022 (77th session = 2022)
@@ -34,7 +41,7 @@ export default function DiffPage() {
   const [symbol2, setSymbol2] = useState(
     searchParams.get('symbol2') || 'A/RES/61/156'
   )
-  const [diffData, setDiffData] = useState<DiffData | null>(null)
+  const [diffData, setDiffData] = useState<DiffResponse | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [focus, setFocus] = useState<string | null>(null)
@@ -295,6 +302,12 @@ export default function DiffPage() {
                     {documentTitles[symbol1]}
                   </p>
                 )}
+                {diffData?.formats?.left === 'pdf' && (
+                  <p className="mt-2 flex items-center justify-center gap-1 text-xs text-amber-600">
+                    <AlertTriangle className="h-3 w-3" />
+                    PDF source (lower quality)
+                  </p>
+                )}
               </div>
               <div className="text-center">
                 <h3 className="text-base font-semibold text-foreground">
@@ -306,6 +319,12 @@ export default function DiffPage() {
                 {documentTitles[symbol2] && (
                   <p className="mt-2 text-xs leading-tight text-gray-600">
                     {documentTitles[symbol2]}
+                  </p>
+                )}
+                {diffData?.formats?.right === 'pdf' && (
+                  <p className="mt-2 flex items-center justify-center gap-1 text-xs text-amber-600">
+                    <AlertTriangle className="h-3 w-3" />
+                    PDF source (lower quality)
                   </p>
                 )}
               </div>
