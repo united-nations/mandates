@@ -1,3 +1,14 @@
+/**
+ * @deprecated This component has been moved to the undifferent package.
+ * Import from 'undifferent/react' instead:
+ *
+ * import { DiffViewer, FocusToggle, Comparison } from 'undifferent/react'
+ *
+ * This file is kept for backwards compatibility during migration.
+ */
+
+'use client'
+
 import React from 'react'
 import { Eye } from 'lucide-react'
 
