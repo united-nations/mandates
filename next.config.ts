@@ -12,6 +12,8 @@ const nextConfig: NextConfig = {
   trailingSlash: false,
   // Compress responses
   compress: true,
+  // Externalize server-only packages that use Node.js APIs
+  serverExternalPackages: ['undifferent', 'word-extractor', 'unpdf'],
 }
 
 export default nextConfig
