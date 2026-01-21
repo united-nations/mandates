@@ -14,6 +14,16 @@ const nextConfig: NextConfig = {
   compress: true,
   // Externalize server-only packages that use Node.js APIs
   serverExternalPackages: ['undifferent', 'word-extractor', 'unpdf'],
+  // Redirects
+  async redirects() {
+    return [
+      {
+        source: '/ppb2027',
+        destination: 'https://un-mandates-housekeeping.vercel.app/',
+        permanent: true,
+      },
+    ]
+  },
 }
 
 export default nextConfig
