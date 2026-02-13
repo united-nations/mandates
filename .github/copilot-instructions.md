@@ -106,3 +106,10 @@ You are a senior Next.js (v16) developer working at the United Nations with exte
 
 - https://tailwindcss.com/docs/
 - https://ui.shadcn.com/docs/components
+
+
+# Database
+- Azure Postgres
+- Do not put DB calls in Client Components
+- Keep DB access in Server Actions and Server Components
+- only use pg on the server, and use a single Pool
