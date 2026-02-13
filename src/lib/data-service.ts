@@ -1,82 +1,41 @@
 import { readFile } from 'fs/promises'
 import path from 'path'
-import { parse } from 'csv-parse/sync'
-import type { Mandate, Entity, Organ, EntityDetails } from '@/types'
+import type { Entity, Organ } from '@/types'
+import { getAllEntities, getEntityMap, getEntityByCode } from '@/lib/db/entities'
 
+/**
+ * Data Service
+ *
+ * Provides access to reference data (entities, organs).
+ * Mandate data is now fetched from the database via @/lib/db/mandates.
+ */
 class DataService {
-  private static mandatesCache: Mandate[] | null = null
-  private static entitiesCache: Entity[] | null = null
   private static organsCache: Organ[] | null = null
-  private static entityDetailsMap: Map<string, Entity> | null = null
   private static organDetailsMap: Map<string, Organ> | null = null
 
   /**
-   * Load all mandate data from JSON file
-   */
-  static async getMandates(): Promise<Mandate[]> {
-    if (this.mandatesCache !== null) {
-      return this.mandatesCache
-    }
-
-    try {
-      const filePath = path.join(
-        process.cwd(),
-        'data',
-        'ppb2026_unique_mandates_with_metadata.json'
-      )
-      const fileContent = await readFile(filePath, 'utf-8')
-      const rawData = JSON.parse(fileContent)
-
-      // Transform raw data to match our types
-      this.mandatesCache = rawData.map((item: any) => ({
-        ...item,
-        // Ensure consistent field names
-        full_document_symbol: item.full_document_symbol || item.symbol,
-        description: item.description || null,
-        type: item.type || 'Unknown',
-        citation_info: item.citation_info || [],
-        subject_headings: item.subject_headings || [],
-        entities: item.entities || [],
-        paragraphs: item.paragraphs || [],
-      }))
-
-      return this.mandatesCache!
-    } catch (error) {
-      console.error('Error loading mandates data:', error)
-      return []
-    }
-  }
-
-  /**
-   * Load all entity data from CSV file
+   * Load entities from the database
    */
   static async getEntities(): Promise<Entity[]> {
-    if (this.entitiesCache !== null) {
-      return this.entitiesCache
-    }
-
-    try {
-      const filePath = path.join(process.cwd(), 'data', 'mandate_entities.csv')
-      const fileContent = await readFile(filePath, 'utf-8')
-      const rawData = parse(fileContent, {
-        columns: true,
-        skip_empty_lines: true,
-      }) as EntityDetails[]
-
-      this.entitiesCache = rawData.map((item: EntityDetails) => ({
-        entity: item['entity'] || '',
-        entity_long: item['entity_long'] || '',
-      }))
-
-      return this.entitiesCache
-    } catch (error) {
-      console.error('Error loading entities data:', error)
-      return []
-    }
+    return getAllEntities()
   }
 
   /**
-   * Load all organ data from JSON file
+   * Get entity details map for quick lookups (from database)
+   */
+  static async getEntityDetailsMap(): Promise<Map<string, Entity>> {
+    return getEntityMap()
+  }
+
+  /**
+   * Get entity by short name (from database)
+   */
+  static async getEntityByShortName(shortName: string): Promise<Entity | null> {
+    return getEntityByCode(shortName)
+  }
+
+  /**
+   * Load all organ data from JSON file (kept in JSON as configured)
    */
   static async getOrgans(): Promise<Organ[]> {
     if (this.organsCache !== null) {
@@ -88,7 +47,7 @@ class DataService {
       const fileContent = await readFile(filePath, 'utf-8')
       const rawData = JSON.parse(fileContent)
 
-      this.organsCache = rawData.map((item: any) => ({
+      this.organsCache = rawData.map((item: { short?: string; long?: string; website?: string }) => ({
         short: item.short || '',
         long: item.long || '',
         website: item.website || undefined,
@@ -99,24 +58,6 @@ class DataService {
       console.error('Error loading organs data:', error)
       return []
     }
-  }
-
-  /**
-   * Get entity details map for quick lookups
-   */
-  static async getEntityDetailsMap(): Promise<Map<string, Entity>> {
-    if (this.entityDetailsMap) {
-      return this.entityDetailsMap
-    }
-
-    const entities = await this.getEntities()
-    this.entityDetailsMap = new Map()
-
-    entities.forEach((entity) => {
-      this.entityDetailsMap!.set(entity.entity, entity)
-    })
-
-    return this.entityDetailsMap
   }
 
   /**
@@ -138,14 +79,6 @@ class DataService {
   }
 
   /**
-   * Get entity by short name
-   */
-  static async getEntityByShortName(shortName: string): Promise<Entity | null> {
-    const entityMap = await this.getEntityDetailsMap()
-    return entityMap.get(shortName) || null
-  }
-
-  /**
    * Get organ by short name
    */
   static async getOrganByShortName(shortName: string): Promise<Organ | null> {
@@ -157,35 +90,28 @@ class DataService {
    * Clear all caches (useful for testing or data updates)
    */
   static clearCache(): void {
-    this.mandatesCache = null
-    this.entitiesCache = null
     this.organsCache = null
-    this.entityDetailsMap = null
     this.organDetailsMap = null
   }
 
   /**
-   * Get all data at once (for the unified API)
+   * Get reference data for lookups (entities and organs)
+   * Used by API routes for enriching mandate data
    */
-  static async getAllData(): Promise<{
-    mandates: Mandate[]
+  static async getReferenceData(): Promise<{
     entities: Entity[]
     organs: Organ[]
     entityMap: Map<string, Entity>
     organMap: Map<string, Organ>
   }> {
-    const [mandates, entities, organs, entityMap, organMap] = await Promise.all(
-      [
-        this.getMandates(),
-        this.getEntities(),
-        this.getOrgans(),
-        this.getEntityDetailsMap(),
-        this.getOrganDetailsMap(),
-      ]
-    )
+    const [entities, organs, entityMap, organMap] = await Promise.all([
+      this.getEntities(),
+      this.getOrgans(),
+      this.getEntityDetailsMap(),
+      this.getOrganDetailsMap(),
+    ])
 
     return {
-      mandates,
       entities,
       organs,
       entityMap,

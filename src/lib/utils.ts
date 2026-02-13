@@ -131,32 +131,43 @@ export function getActiveFiltersText(
 }
 
 /**
+ * Clean up a title by removing trailing punctuation and whitespace
+ */
+function cleanTitle(title: string): string {
+  return title.trim().replace(/[\s:]+$/, '').trim()
+}
+
+/**
  * Get the display title for a mandate using the same logic as the API
  * This ensures consistency across all components
  */
 export function getMandateDisplayTitle(mandate: Mandate): string {
-  // Check uniform_title first
+  // Check proper_title first (preferred human-readable title)
+  if (mandate.proper_title && mandate.proper_title.trim()) {
+    return titleCase(cleanTitle(mandate.proper_title).toLowerCase())
+  }
+  // Check uniform_title
   if (
     mandate.uniform_title &&
     mandate.uniform_title.length > 0 &&
     mandate.uniform_title[0].trim()
   ) {
-    return titleCase(mandate.uniform_title[0].trim().toLowerCase())
+    return titleCase(cleanTitle(mandate.uniform_title[0]).toLowerCase())
   }
   // Check title
   if (mandate.title && mandate.title.trim()) {
-    return titleCase(mandate.title.trim().toLowerCase())
+    return titleCase(cleanTitle(mandate.title).toLowerCase())
   }
   // Check top-level description
   if (mandate.description && mandate.description.trim()) {
-    return titleCase(mandate.description.trim().toLowerCase())
+    return titleCase(cleanTitle(mandate.description).toLowerCase())
   }
   // Check citation_info descriptions
   const citationDescription = mandate.citation_info
     ?.find((info) => info.description?.trim())
     ?.description?.trim()
   if (citationDescription) {
-    return titleCase(citationDescription.toLowerCase())
+    return titleCase(cleanTitle(citationDescription).toLowerCase())
   }
   // Final fallback
   return 'Untitled'

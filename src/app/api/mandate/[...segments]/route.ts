@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server'
 import DataService from '@/lib/data-service'
-import type { Mandate, Paragraph } from '@/types'
+import { getMandateBySymbol } from '@/lib/db/mandates'
+import type { Paragraph } from '@/types'
 
 export async function GET(
   request: NextRequest,
@@ -15,33 +16,19 @@ export async function GET(
       .map((segment) => decodeURIComponent(segment))
       .join('/')
 
-    // Get all mandates and find the one we need
-    const mandates = await DataService.getMandates()
-    const mandate = mandates.find(
-      (m) => m.full_document_symbol === documentSymbol
-    )
+    // Fetch mandate from database
+    const mandate = await getMandateBySymbol(documentSymbol)
 
     if (!mandate) {
       return Response.json({ error: 'Mandate not found' }, { status: 404 })
     }
 
-    // Get entity reference data (needed for entity lookups)
-    const { entities } = await DataService.getAllData()
+    // Get entity reference data
+    const entities = await DataService.getEntities()
 
-    // Filter paragraphs if they exist
-    let filteredParagraphs: Paragraph[] = []
-    if (mandate.paragraphs) {
-      // Filter out frontmatter, backmatter, footers, titles, and non-English content
-      filteredParagraphs = mandate.paragraphs.filter(
-        (p) =>
-          !p.is_frontmatter &&
-          p.type !== 'backmatter' &&
-          p.type !== 'frontmatter' &&
-          p.type !== 'footer' &&
-          p.type !== 'title' &&
-          (!p.language || p.language.toLowerCase() === 'english')
-      )
-    }
+    // Paragraphs are not stored in the database yet
+    // TODO: Migrate paragraphs to database or separate storage
+    const filteredParagraphs: Paragraph[] = []
 
     // Return unified response
     return Response.json({

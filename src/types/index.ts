@@ -70,6 +70,7 @@ export interface Mandate {
   symbol_prefix: string[] | null
   symbol_number: string[] | null
   uniform_title: string[] | null
+  proper_title: string | null
   title: string | null
   subtitle: string | null
   //   statement_of_responsibility: string[] | null

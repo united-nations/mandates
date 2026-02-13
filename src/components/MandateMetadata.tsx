@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
-import { titleCase } from 'title-case'
 import {
   getOriginDocumentDisplayName,
   getBudgetDocumentSlug,
@@ -133,7 +132,7 @@ export function MandateMetadata({ mandate }: MandateMetadataProps) {
                   window.location.href = url.toString()
                 }}
               >
-                {titleCase(heading.toLowerCase())}
+                {heading}
               </Badge>
             ))}
             {mandate.subject_headings.length > SUBJECTS_DEFAULT_SHOWN && (

@@ -113,3 +113,4 @@ You are a senior Next.js (v16) developer working at the United Nations with exte
 - Do not put DB calls in Client Components
 - Keep DB access in Server Actions and Server Components
 - only use pg on the server, and use a single Pool
+- you need to initiliaze `.env` before using DATABSE_URL for test fetches
