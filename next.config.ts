@@ -19,7 +19,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/ppb2027',
-        destination: 'mandate-housekeeping.un-two-zero.dev/about/',
+        destination: 'mandate-housekeeping.un-two-zero.dev/',
         permanent: true,
       },
     ]
