@@ -7,6 +7,7 @@
  * the origin_document column in source_document_citations.
  */
 
+import { unstable_cache } from 'next/cache'
 import { queryMany } from '../db/query'
 
 export interface BudgetDocument {
@@ -25,16 +26,21 @@ interface BudgetDocumentRow {
 
 /**
  * Load all budget document options ordered by sort_order.
+ * Cached across requests; revalidates every hour.
  */
-export async function getBudgetDocuments(): Promise<BudgetDocument[]> {
-  const rows = await queryMany<BudgetDocumentRow>(
-    `SELECT slug, display_name, match_pattern, sort_order
-     FROM ppb2026.budget_documents
-     ORDER BY sort_order`,
-    []
-  )
-  return rows
-}
+export const getBudgetDocuments = unstable_cache(
+  async (): Promise<BudgetDocument[]> => {
+    const rows = await queryMany<BudgetDocumentRow>(
+      `SELECT slug, display_name, match_pattern, sort_order
+       FROM ppb2026.budget_documents
+       ORDER BY sort_order`,
+      []
+    )
+    return rows
+  },
+  ['budget-documents'],
+  { revalidate: 3600 }
+)
 
 /**
  * Get the display name for a given slug.

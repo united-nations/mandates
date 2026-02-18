@@ -6,6 +6,7 @@
  */
 
 import { cache } from 'react'
+import { unstable_cache } from 'next/cache'
 import { queryMany, queryOne } from '../db/query'
 import { titleCase } from 'title-case'
 import { getMandateDisplayTitle } from '@/lib/utils'
@@ -735,10 +736,9 @@ export async function getYearStats(filters: FilterOptions = {}): Promise<{
 // ============================================================================
 
 /**
- * Fetch and assemble all data needed for mandate list pages.
- * Cached per request to avoid duplicate DB calls within the same render.
+ * Inner implementation — runs DB queries and assembles the full ApiResponse.
  */
-export const getMandatePageData = cache(async (filters: FilterOptions): Promise<ApiResponse> => {
+async function _getMandatePageDataInner(filters: FilterOptions): Promise<ApiResponse> {
   const page = parseInt(filters.page || '1', 10)
   const limit = parseInt(filters.limit || '10', 10)
 
@@ -819,4 +819,24 @@ export const getMandatePageData = cache(async (filters: FilterOptions): Promise<
       organs,
     },
   }
-})
+}
+
+/**
+ * Public API: fetch and assemble all data needed for mandate list pages.
+ *
+ * Two-layer caching:
+ * 1. unstable_cache  — persists the result across requests for 5 min,
+ *                      keyed by the serialised filters object.
+ *                      Default params (homepage) always hits this cache
+ *                      after the first request, avoiding redundant DB work.
+ * 2. react.cache     — deduplicates within a single render tree in case
+ *                      multiple Server Components call this with the same filters.
+ */
+export const getMandatePageData = cache(
+  (filters: FilterOptions): Promise<ApiResponse> =>
+    unstable_cache(
+      () => _getMandatePageDataInner(filters),
+      [JSON.stringify(filters)],
+      { revalidate: 300 } // 5 min — adjust to taste
+    )()
+)
