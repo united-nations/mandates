@@ -5,9 +5,12 @@
  * All operations are server-side only.
  */
 
+import { cache } from 'react'
 import { queryMany, queryOne } from './query'
 import { titleCase } from 'title-case'
-import type { Mandate, FilterOptions, EntityWithCount, OrganWithCount, CrossCitation } from '@/types'
+import { getMandateDisplayTitle } from '@/lib/utils'
+import DataService from '@/lib/data-service'
+import type { Mandate, FilterOptions, EntityWithCount, OrganWithCount, CrossCitation, ApiResponse } from '@/types'
 
 // ============================================================================
 // Helper Functions
@@ -721,3 +724,88 @@ export async function getYearStats(filters: FilterOptions = {}): Promise<{
     yearDistribution: distribution,
   }
 }
+
+// ============================================================================
+// Page Data Orchestration
+// ============================================================================
+
+/**
+ * Fetch and assemble all data needed for mandate list pages.
+ * Cached per request to avoid duplicate DB calls within the same render.
+ */
+export const getMandatePageData = cache(async (filters: FilterOptions): Promise<ApiResponse> => {
+  const page = parseInt(filters.page || '1', 10)
+  const limit = parseInt(filters.limit || '10', 10)
+
+  const [
+    mandatesResult,
+    counts,
+    entityCounts,
+    organCounts,
+    programmeOptions,
+    subjectOptions,
+    yearStats,
+    referenceData,
+  ] = await Promise.all([
+    getMandates(filters, { page, limit }),
+    getMandateCounts(filters),
+    getEntityCounts(filters),
+    getOrganCounts(filters),
+    getProgrammeOptions(filters),
+    getSubjectOptions(filters),
+    getYearStats(filters),
+    DataService.getReferenceData(),
+  ])
+
+  const { mandates, totalCount } = mandatesResult
+  const { organMap, entities, organs } = referenceData
+
+  let crossCitations: ApiResponse['sidebar']['crossCitations'] = []
+  if (filters.entity) {
+    crossCitations = await getCrossCitations(filters.entity)
+  }
+
+  const enrichedMandates = mandates.map((mandate) => ({
+    ...mandate,
+    displayTitle: getMandateDisplayTitle(mandate),
+    body_long: organMap.get(mandate.body)?.long || mandate.body,
+  }))
+
+  const enrichedOrganCounts = organCounts.map((organ) => ({
+    ...organ,
+    long: organMap.get(organ.short)?.long || organ.short,
+  }))
+
+  const totalPages = Math.ceil(totalCount / limit)
+
+  return {
+    mandates: enrichedMandates,
+    pagination: {
+      page,
+      limit,
+      totalPages,
+      totalItems: totalCount,
+    },
+    counts: {
+      totalDocuments: counts.totalDocuments,
+      totalEntities: counts.totalEntities,
+      totalOrgans: counts.totalOrgans,
+      totalCitations: counts.totalCitations,
+    },
+    sidebar: {
+      entities: entityCounts,
+      organs: enrichedOrganCounts,
+      crossCitations,
+    },
+    filterOptions: {
+      programmes: programmeOptions,
+      subjects: subjectOptions,
+      yearRange: yearStats.yearRange,
+      yearDistribution: yearStats.yearDistribution,
+    },
+    reference: {
+      entities,
+      organs,
+    },
+  }
+})

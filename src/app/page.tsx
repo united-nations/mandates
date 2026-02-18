@@ -3,7 +3,8 @@ import { Suspense } from 'react'
 import { ExplainerText } from '@/components/ExplainerText'
 import { MandateExplorerClient } from '@/components/MandateExplorerClient'
 import { LoadingSkeleton } from '@/components/LoadingSkeleton'
-import { getMandatePageData, parseSearchParams } from '@/lib/data-fetcher'
+import { getMandatePageData } from '@/lib/db/mandates'
+import { parseSearchParams } from '@/lib/filter-constants'
 
 interface PageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>

@@ -54,3 +54,32 @@ export type FilterParamKey = (typeof FILTER_PARAMS)[number]
 export type FilterOnlyParamKey = (typeof FILTER_ONLY_PARAMS)[number]
 export type ControlParamKey = (typeof CONTROL_PARAMS)[number]
 export type AdditionalFilterParamKey = (typeof ADDITIONAL_FILTER_PARAMS)[number]
+
+/**
+ * Parse Next.js searchParams into a FilterOptions object.
+ */
+export function parseSearchParams(
+  searchParams: Record<string, string | string[] | undefined>
+): import('@/types').FilterOptions {
+  const getString = (key: string): string | undefined => {
+    const value = searchParams[key]
+    if (Array.isArray(value)) return value[0]
+    return value || undefined
+  }
+
+  return {
+    entity: getString('entity'),
+    organ: getString('organ'),
+    crossCitingEntity: getString('crossCitingEntity'),
+    keyword: getString('keyword'),
+    programme: getString('programme'),
+    subject: getString('subject'),
+    start_year: getString('start_year'),
+    end_year: getString('end_year'),
+    budget_document: getString('budget_document'),
+    full_document_symbol: getString('full_document_symbol'),
+    sort_by: getString('sort_by') || 'citing_entities_desc',
+    page: getString('page') || '1',
+    limit: getString('limit') || '10',
+  }
+}

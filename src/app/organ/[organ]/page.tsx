@@ -4,7 +4,8 @@ import { MandateExplorerClient } from '@/components/MandateExplorerClient'
 import { MetadataItem } from '@/components/MetadataItem'
 import { formatUrlForDisplay } from '@/lib/utils'
 import { LoadingSkeleton } from '@/components/LoadingSkeleton'
-import { getMandatePageData, parseSearchParams } from '@/lib/data-fetcher'
+import { getMandatePageData } from '@/lib/db/mandates'
+import { parseSearchParams } from '@/lib/filter-constants'
 import DataService from '@/lib/data-service'
 
 interface OrganPageProps {

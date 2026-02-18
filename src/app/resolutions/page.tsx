@@ -4,7 +4,7 @@ import { Suspense, useRef, useState, useEffect } from 'react'
 import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import DocumentTable from '@/components/DocumentTable'
 import ResolutionsTreemapView from '@/components/ResolutionsTreemapView'
-import { resolutionsConfig } from '@/lib/document-configs'
+import { resolutionsConfig } from '@/lib/config'
 import { Resolution, DocumentFilters } from '@/types'
 import { Button } from '@/components/ui/button'
 import {
