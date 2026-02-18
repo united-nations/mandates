@@ -10,7 +10,7 @@ import {
   similarityColors,
   frequencyColors,
   BucketDefinition,
-} from '@/lib/treemap-config'
+} from '@/features/resolutions/treemap-config'
 import {
   squarify,
   TreemapItem,
@@ -18,7 +18,7 @@ import {
   formatNumber,
   formatPercentage,
   formatApproximate,
-} from '@/lib/treemap-utils'
+} from '@/features/resolutions/treemap-utils'
 import {
   Tooltip,
   TooltipContent,

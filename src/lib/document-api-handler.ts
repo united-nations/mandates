@@ -7,7 +7,7 @@ import {
   similarityBuckets,
   frequencyBuckets,
   getBucketForValue,
-} from './treemap-config'
+} from '../features/resolutions/treemap-config'
 
 // Simple permanent in-memory cache
 const documentCache = new Map<string, any[]>()

@@ -34,7 +34,7 @@ import {
   lengthBuckets,
   similarityBuckets,
   frequencyBuckets,
-} from '@/lib/treemap-config'
+} from '@/features/resolutions/treemap-config'
 
 interface ApiResponse<T> {
   data: T[]
