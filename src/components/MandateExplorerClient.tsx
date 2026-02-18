@@ -334,6 +334,7 @@ export function MandateExplorerClient({
                 <FilterControls
                   programmeOptions={filterOptions.programmes}
                   subjectOptions={filterOptions.subjects}
+                  budgetDocuments={filterOptions.budgetDocuments}
                   yearRange={filterOptions.yearRange}
                   yearDistribution={filterOptions.yearDistribution}
                   showAdvancedSearch={showAdvancedSearch}

@@ -106,24 +106,8 @@ export function MandateList({
     return organData ? organData.long : organName
   }
 
-  // Helper function to check if mandate is referenced in Plan Outline
-  const isReferencedInPlanOutline = (mandate: Mandate): boolean => {
-    return (
-      mandate.citation_info?.some(
-        (citation) => citation.origin_document === 'PPB 2026/Plan Outline'
-      ) || false
-    )
-  }
-
   // Helper function to get citation display text
   const getCitationDisplayText = (mandate: Mandate): string => {
-    const isPlanOutline = isReferencedInPlanOutline(mandate)
-    const hasEntities = mandate.num_entities > 0
-
-    if (isPlanOutline && !hasEntities) {
-      return 'Referenced in Plan Outline, but not cited by any entities'
-    }
-
     return `Cited ${mandate.num_citations} time${mandate.num_citations !== 1 ? 's' : ''} by ${mandate.num_entities} entit${mandate.num_entities !== 1 ? 'ies' : 'y'}`
   }
 

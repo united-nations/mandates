@@ -11,6 +11,7 @@ import { titleCase } from 'title-case'
 import { getMandateDisplayTitle } from '@/lib/utils'
 import { getAllEntities } from './entities'
 import { getAllOrgans, getOrganMap } from './organs'
+import { getBudgetDocuments } from './budget-documents'
 import type { Mandate, FilterOptions, EntityWithCount, OrganWithCount, CrossCitation, ApiResponse } from '@/types'
 
 // ============================================================================
@@ -196,16 +197,18 @@ function buildFilterClauses(
     paramIndex++
   }
 
-  // Budget document filter
+  // Budget document filter — match against the regex stored in ppb2026.budget_documents
   if (filters.budget_document) {
     clauses.push(`
       EXISTS (
         SELECT 1 FROM ppb2026.source_document_citations c5
         WHERE c5.ppb_full_document_symbol = d.ppb_full_document_symbol
-        AND c5.origin_document LIKE $${paramIndex}
+        AND c5.origin_document ~ (
+          SELECT match_pattern FROM ppb2026.budget_documents WHERE slug = $${paramIndex}
+        )
       )
     `)
-    params.push(`%${filters.budget_document}%`)
+    params.push(filters.budget_document)
     paramIndex++
   }
 
@@ -749,6 +752,7 @@ export const getMandatePageData = cache(async (filters: FilterOptions): Promise<
     entities,
     organs,
     organMap,
+    budgetDocuments,
   ] = await Promise.all([
     getMandates(filters, { page, limit }),
     getMandateCounts(filters),
@@ -760,6 +764,7 @@ export const getMandatePageData = cache(async (filters: FilterOptions): Promise<
     getAllEntities(),
     getAllOrgans(),
     getOrganMap(),
+    getBudgetDocuments(),
   ])
 
   const { mandates, totalCount } = mandatesResult
@@ -806,6 +811,7 @@ export const getMandatePageData = cache(async (filters: FilterOptions): Promise<
       subjects: subjectOptions,
       yearRange: yearStats.yearRange,
       yearDistribution: yearStats.yearDistribution,
+      budgetDocuments,
     },
     reference: {
       entities,

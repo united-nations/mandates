@@ -7,6 +7,18 @@ create table systemchart.entities
 );
 
 
+create table ppb2026.budget_documents (
+    slug text not null primary key,
+    display_name text not null,
+    match_pattern text not null,
+    sort_order smallint not null default 0
+);
+
+-- Seed: filterable origin_document types
+insert into ppb2026.budget_documents (slug, display_name, match_pattern, sort_order) values
+    ('ppb2026', 'Proposed Programme Budget for 2026', '^PPB 2026$', 1),
+    ('pko',     'Budget of Peacekeeping Operations 2025/26', '^PKM 25/26', 2);
+
 create table ppb2026.source_documents (
     ppb_full_document_symbol text not null primary key,
     ppb_document_source text,

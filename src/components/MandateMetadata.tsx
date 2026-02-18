@@ -2,30 +2,38 @@
 
 import { useMemo, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
-import {
-  getOriginDocumentDisplayName,
-  getBudgetDocumentSlug,
-} from '@/lib/budget-documents'
 import { MetadataItem } from '@/components/MetadataItem'
 import type { Mandate } from '@/types'
+import type { BudgetDocument } from '@/lib/db/budget-documents'
 
 interface MandateMetadataProps {
   mandate: Mandate
+  budgetDocuments: BudgetDocument[]
 }
 
-export function MandateMetadata({ mandate }: MandateMetadataProps) {
+export function MandateMetadata({ mandate, budgetDocuments }: MandateMetadataProps) {
   const [showAllSubjects, setShowAllSubjects] = useState(false)
   const SUBJECTS_DEFAULT_SHOWN = 20
-  const budgetDocuments = useMemo(() => {
-    if (!mandate || !mandate.citation_info) return []
-    const uniqueDocs = new Set<string>()
+
+  // Derive the matching BudgetDocument entries for this mandate's citations
+  const citedBudgetDocuments = useMemo(() => {
+    if (!mandate?.citation_info) return []
+    const uniqueOrigins = new Set<string>()
     mandate.citation_info.forEach((citation) => {
-      if (citation.origin_document) {
-        uniqueDocs.add(citation.origin_document)
-      }
+      if (citation.origin_document) uniqueOrigins.add(citation.origin_document)
     })
-    return Array.from(uniqueDocs)
-  }, [mandate])
+    // Match each origin_document value to a BudgetDocument via its regex
+    const matched = new Map<string, { slug: string; display_name: string }>()
+    for (const origin of uniqueOrigins) {
+      for (const doc of budgetDocuments) {
+        if (new RegExp(doc.match_pattern).test(origin)) {
+          matched.set(doc.slug, doc)
+          break
+        }
+      }
+    }
+    return Array.from(matched.values())
+  }, [mandate, budgetDocuments])
 
   return (
     <div className="space-y-0 rounded-lg">
@@ -67,29 +75,23 @@ export function MandateMetadata({ mandate }: MandateMetadataProps) {
       </MetadataItem>
 
       <MetadataItem label="Budget Document">
-        {budgetDocuments.length > 0 ? (
+        {citedBudgetDocuments.length > 0 ? (
           <div className="flex flex-wrap gap-1.5">
-            {budgetDocuments.map((doc, index) => {
-              const displayName = getOriginDocumentDisplayName(doc)
-              const slug = getBudgetDocumentSlug(displayName)
-
-              return (
-                <Badge
-                  key={index}
-                  variant="secondary"
-                  className="cursor-pointer text-xs transition-colors hover:bg-secondary/80"
-                  onClick={() => {
-                    // Navigate to filtered results using the budget document slug
-                    const url = new URL(window.location.origin + '/')
-                    url.searchParams.set('page', '1')
-                    url.searchParams.set('budget_document', slug)
-                    window.location.href = url.toString()
-                  }}
-                >
-                  {displayName}
-                </Badge>
-              )
-            })}
+            {citedBudgetDocuments.map((doc, index) => (
+              <Badge
+                key={index}
+                variant="secondary"
+                className="cursor-pointer text-xs transition-colors hover:bg-secondary/80"
+                onClick={() => {
+                  const url = new URL(window.location.origin + '/')
+                  url.searchParams.set('page', '1')
+                  url.searchParams.set('budget_document', doc.slug)
+                  window.location.href = url.toString()
+                }}
+              >
+                {doc.display_name}
+              </Badge>
+            ))}
           </div>
         ) : (
           <span className="text-muted-foreground">—</span>

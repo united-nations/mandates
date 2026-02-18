@@ -15,7 +15,7 @@ import { YearSlider } from './YearSlider'
 import { explainerTexts } from '@/lib/en_text_contents'
 import { titleCase } from 'title-case'
 import { useState, useEffect } from 'react'
-import { getBudgetDocumentOptions } from '@/lib/budget-documents'
+import type { BudgetDocument } from '@/lib/db/budget-documents'
 
 // TooltipButton component moved outside of render
 const TooltipButton = ({
@@ -54,6 +54,7 @@ interface AdvancedSearchProps {
   budgetDocument: string
   programmeOptions: { value: string; count: number }[]
   subjectOptions: { value: string; count: number }[]
+  budgetDocuments: BudgetDocument[]
   yearRange: { min: number; max: number } | null
   yearDistribution: { [year: string]: number }
   originalYearDistribution?: { [year: string]: number }
@@ -70,6 +71,7 @@ export function AdvancedSearch({
   budgetDocument,
   programmeOptions,
   subjectOptions,
+  budgetDocuments,
   yearRange,
   yearDistribution,
   originalYearDistribution,
@@ -212,9 +214,9 @@ export function AdvancedSearch({
             <SelectContent>
               <SelectItem value="all">All Budget Documents</SelectItem>
               <SelectSeparator />
-              {getBudgetDocumentOptions().map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
+              {budgetDocuments.map((doc) => (
+                <SelectItem key={doc.slug} value={doc.slug}>
+                  {doc.display_name}
                 </SelectItem>
               ))}
             </SelectContent>

@@ -30,7 +30,7 @@ import { OrganName } from './OrganName'
 import { titleCase } from 'title-case'
 import { explainerTexts } from '@/lib/en_text_contents'
 import { useFilters } from '@/contexts/FilterContext'
-import { getBudgetDocumentDisplayName } from '@/lib/budget-documents'
+import type { BudgetDocument } from '@/lib/db/budget-documents'
 
 interface Entity {
   entity: string
@@ -52,6 +52,7 @@ interface FilterControlsProps {
   setShowAdvancedSearch: (show: boolean) => void
   entitiesData: Entity[]
   allOrgans: Organ[]
+  budgetDocuments: BudgetDocument[]
   // New props for implicit filter logic
   entityFilter?: string
   organFilter?: string
@@ -68,6 +69,7 @@ export function FilterControls({
   setShowAdvancedSearch,
   entitiesData,
   allOrgans,
+  budgetDocuments,
   entityFilter,
   organFilter,
   pageType,
@@ -211,6 +213,7 @@ export function FilterControls({
               }
               programmeOptions={programmeOptions}
               subjectOptions={subjectOptions}
+              budgetDocuments={budgetDocuments}
               yearRange={yearRange}
               yearDistribution={yearDistribution}
               originalYearDistribution={originalYearDistribution}
@@ -387,7 +390,7 @@ export function FilterControls({
                   displayFilters.budget_document !== 'all' && (
                     <FilterBadge
                       icon={Receipt}
-                      label={`Budget: ${getBudgetDocumentDisplayName(displayFilters.budget_document)}`}
+                      label={`Budget: ${budgetDocuments.find((d) => d.slug === displayFilters.budget_document)?.display_name ?? displayFilters.budget_document}`}
                       onClear={() => clearFilter('budget_document')}
                       variant="secondary"
                     />

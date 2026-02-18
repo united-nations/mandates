@@ -200,6 +200,7 @@ export interface ApiResponse {
     subjects: { value: string; count: number }[]
     yearRange: { min: number; max: number }
     yearDistribution: Record<string, number>
+    budgetDocuments: { slug: string; display_name: string; match_pattern: string; sort_order: number }[]
   }
 
   // Reference data for display
