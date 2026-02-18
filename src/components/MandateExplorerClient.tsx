@@ -24,7 +24,7 @@ import {
   SelectItem,
   SelectTrigger,
 } from '@/components/ui/select'
-import { explainerTexts } from '@/lib/explainer-texts'
+import { explainerTexts } from '@/lib/en_text_contents'
 import type { ApiResponse } from '@/types'
 import {
   Building,

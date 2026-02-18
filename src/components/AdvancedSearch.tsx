@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/select'
 import { HelpCircle, Calendar, Target, Receipt, BookOpen } from 'lucide-react'
 import { YearSlider } from './YearSlider'
-import { explainerTexts } from '@/lib/explainer-texts'
+import { explainerTexts } from '@/lib/en_text_contents'
 import { titleCase } from 'title-case'
 import { useState, useEffect } from 'react'
 import { getBudgetDocumentOptions } from '@/lib/budget-documents'

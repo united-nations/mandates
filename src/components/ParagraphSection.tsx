@@ -22,7 +22,7 @@ import { Button } from '@/components/ui/button'
 
 import { Skeleton } from '@/components/ui/skeleton'
 
-import { explainerTexts } from '@/lib/explainer-texts'
+import { explainerTexts } from '@/lib/en_text_contents'
 import { useIsMobile } from '@/hooks/use-mobile'
 import type { Paragraph } from '@/types'
 import { titleCase } from 'title-case'

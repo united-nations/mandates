@@ -28,7 +28,7 @@ import { FilterBadge } from '@/components/FilterBadge'
 import { EntityName } from './EntityName'
 import { OrganName } from './OrganName'
 import { titleCase } from 'title-case'
-import { explainerTexts } from '@/lib/explainer-texts'
+import { explainerTexts } from '@/lib/en_text_contents'
 import { useFilters } from '@/contexts/FilterContext'
 import { getBudgetDocumentDisplayName } from '@/lib/budget-documents'
 

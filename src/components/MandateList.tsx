@@ -16,7 +16,7 @@ import {
   Landmark,
   Info,
 } from 'lucide-react'
-import { explainerTexts } from '@/lib/explainer-texts'
+import { explainerTexts } from '@/lib/en_text_contents'
 import Link from 'next/link'
 
 interface Organ {

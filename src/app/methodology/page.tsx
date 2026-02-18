@@ -1,6 +1,6 @@
 'use client'
 
-import { explainerTexts } from '@/lib/explainer-texts'
+import { explainerTexts } from '@/lib/en_text_contents'
 import { Button } from '@/components/ui/button'
 import { FileText, ArrowRight } from 'lucide-react'
 import { useRouter } from 'next/navigation'
