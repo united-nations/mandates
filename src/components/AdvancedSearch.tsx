@@ -15,7 +15,7 @@ import { YearSlider } from './YearSlider'
 import { explainerTexts } from '@/lib/en_text_contents'
 import { titleCase } from 'title-case'
 import { useState, useEffect } from 'react'
-import type { BudgetDocument } from '@/lib/db/budget-documents'
+import type { BudgetDocument } from '@/lib/data/budget-documents'
 
 // TooltipButton component moved outside of render
 const TooltipButton = ({

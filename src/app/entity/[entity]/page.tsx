@@ -1,29 +1,28 @@
 import { Suspense } from 'react'
-import {
-  ExternalLink,
-  AlertCircle,
-  Info,
-} from 'lucide-react'
+import { ExternalLink, AlertCircle, Info } from 'lucide-react'
 import { MandateExplorerClient } from '@/components/MandateExplorerClient'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { LoadingSkeleton } from '@/components/LoadingSkeleton'
-import { getMandatePageData } from '@/lib/db/mandates'
+import { getMandatePageData } from '@/lib/data/mandates'
 import { parseSearchParams } from '@/lib/filter-constants'
-import { getEntityByCode } from '@/lib/db/entities'
+import { getEntityByCode } from '@/lib/data/entities'
 
 interface EntityPageProps {
   params: Promise<{ entity: string }>
   searchParams: Promise<Record<string, string | string[] | undefined>>
 }
 
-export default async function EntityPage({ params, searchParams }: EntityPageProps) {
+export default async function EntityPage({
+  params,
+  searchParams,
+}: EntityPageProps) {
   const { entity: entityParam } = await params
   const entityName = decodeURIComponent(entityParam)
-  
+
   const urlParams = await searchParams
   const filters = parseSearchParams({ ...urlParams, entity: entityName })
-  
+
   // Fetch entity details and mandate data in parallel
   const [entityDetails, data] = await Promise.all([
     getEntityByCode(entityName),

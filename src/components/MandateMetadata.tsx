@@ -4,14 +4,17 @@ import { useMemo, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { MetadataItem } from '@/components/MetadataItem'
 import type { Mandate } from '@/types'
-import type { BudgetDocument } from '@/lib/db/budget-documents'
+import type { BudgetDocument } from '@/lib/data/budget-documents'
 
 interface MandateMetadataProps {
   mandate: Mandate
   budgetDocuments: BudgetDocument[]
 }
 
-export function MandateMetadata({ mandate, budgetDocuments }: MandateMetadataProps) {
+export function MandateMetadata({
+  mandate,
+  budgetDocuments,
+}: MandateMetadataProps) {
   const [showAllSubjects, setShowAllSubjects] = useState(false)
   const SUBJECTS_DEFAULT_SHOWN = 20
 

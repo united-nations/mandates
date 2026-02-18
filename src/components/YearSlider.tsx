@@ -24,7 +24,16 @@ interface CustomizedBarProps {
 }
 
 const CustomizedBar = (props: CustomizedBarProps) => {
-  const { x = 0, y = 0, width = 0, height = 0, payload, fill, yearRange, selectedRange } = props
+  const {
+    x = 0,
+    y = 0,
+    width = 0,
+    height = 0,
+    payload,
+    fill,
+    yearRange,
+    selectedRange,
+  } = props
   // Determine if this bar is within the selected range
   if (!payload) return null
   const yearNum = parseInt(payload.year, 10)

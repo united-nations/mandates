@@ -6,7 +6,7 @@
  */
 
 import { cache } from 'react'
-import { queryMany, queryOne } from './query'
+import { queryMany, queryOne } from '../db/query'
 import { titleCase } from 'title-case'
 import { getMandateDisplayTitle } from '@/lib/utils'
 import { getAllEntities } from './entities'

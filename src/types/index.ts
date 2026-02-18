@@ -34,18 +34,18 @@ export interface Paragraph {
 }
 
 export interface Mandate {
-    full_document_symbol: string
-    num_citations: number
-    num_entities: number
-    entities: string[]
-    link: string | null
+  full_document_symbol: string
+  num_citations: number
+  num_entities: number
+  entities: string[]
+  link: string | null
   //   priority_area: string
-    year: string
-    body: string
+  year: string
+  body: string
   //   pillar: string
   //   entity_long: string
-    description: string | null
-    type: string
+  description: string | null
+  type: string
   citation_info: {
     origin_document: string
     budget_part: string
@@ -88,7 +88,7 @@ export interface Mandate {
   //   corporate_subject: string[] | null
   //   meeting_subject: string[] | null
   //   contains_documents: string[] | null
-    subject_headings: string[]
+  subject_headings: string[]
   //   geographic_headings: string[] | null
   //   author: string[] | null
   //   local_subject: string[] | null
@@ -200,7 +200,12 @@ export interface ApiResponse {
     subjects: { value: string; count: number }[]
     yearRange: { min: number; max: number }
     yearDistribution: Record<string, number>
-    budgetDocuments: { slug: string; display_name: string; match_pattern: string; sort_order: number }[]
+    budgetDocuments: {
+      slug: string
+      display_name: string
+      match_pattern: string
+      sort_order: number
+    }[]
   }
 
   // Reference data for display
@@ -209,5 +214,3 @@ export interface ApiResponse {
     organs: Organ[]
   }
 }
-
-

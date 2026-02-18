@@ -3,7 +3,7 @@ import { Suspense } from 'react'
 import { ExplainerText } from '@/components/ExplainerText'
 import { MandateExplorerClient } from '@/components/MandateExplorerClient'
 import { LoadingSkeleton } from '@/components/LoadingSkeleton'
-import { getMandatePageData } from '@/lib/db/mandates'
+import { getMandatePageData } from '@/lib/data/mandates'
 import { parseSearchParams } from '@/lib/filter-constants'
 
 interface PageProps {

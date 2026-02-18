@@ -30,7 +30,7 @@ import { OrganName } from './OrganName'
 import { titleCase } from 'title-case'
 import { explainerTexts } from '@/lib/en_text_contents'
 import { useFilters } from '@/contexts/FilterContext'
-import type { BudgetDocument } from '@/lib/db/budget-documents'
+import type { BudgetDocument } from '@/lib/data/budget-documents'
 
 interface Entity {
   entity: string

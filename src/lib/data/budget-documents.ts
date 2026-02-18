@@ -7,7 +7,7 @@
  * the origin_document column in source_document_citations.
  */
 
-import { queryMany } from './query'
+import { queryMany } from '../db/query'
 
 export interface BudgetDocument {
   slug: string

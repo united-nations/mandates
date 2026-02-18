@@ -86,7 +86,8 @@ export function MandateExplorerClient({
   )
 
   // Extract data from props
-  const { mandates, pagination, counts, filterOptions, reference, sidebar } = data
+  const { mandates, pagination, counts, filterOptions, reference, sidebar } =
+    data
   const allOrgans = reference?.organs || []
   const allEntities = reference?.entities || []
   const crossCitations = sidebar?.crossCitations || []

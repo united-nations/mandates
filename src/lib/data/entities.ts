@@ -4,7 +4,7 @@
  * Fetches entity data from systemchart.entities table.
  */
 
-import { queryMany, queryOne } from './query'
+import { queryMany, queryOne } from '../db/query'
 import type { Entity } from '@/types'
 
 /**
