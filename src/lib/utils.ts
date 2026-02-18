@@ -145,32 +145,20 @@ function cleanTitle(title: string): string {
  * This ensures consistency across all components
  */
 export function getMandateDisplayTitle(mandate: Mandate): string {
-  // Check proper_title first (preferred human-readable title)
+  // Security Council resolutions use the catalogue title field directly
+  if (mandate.issuing_body === 'Security Council') {
+    if (mandate.title && mandate.title.trim()) {
+      return titleCase(cleanTitle(mandate.title).toLowerCase())
+    }
+  }
+  // 1. proper_title from source_documents_metadata_clean (strip trailing colon)
   if (mandate.proper_title && mandate.proper_title.trim()) {
-    return titleCase(cleanTitle(mandate.proper_title).toLowerCase())
+    const cleaned = cleanTitle(mandate.proper_title).replace(/:$/, '').trim()
+    if (cleaned) return titleCase(cleaned.toLowerCase())
   }
-  // Check uniform_title
-  if (
-    mandate.uniform_title &&
-    mandate.uniform_title.length > 0 &&
-    mandate.uniform_title[0].trim()
-  ) {
-    return titleCase(cleanTitle(mandate.uniform_title[0]).toLowerCase())
-  }
-  // Check title
-  if (mandate.title && mandate.title.trim()) {
-    return titleCase(cleanTitle(mandate.title).toLowerCase())
-  }
-  // Check top-level description
+  // 2. ppb_description from source_documents
   if (mandate.description && mandate.description.trim()) {
     return titleCase(cleanTitle(mandate.description).toLowerCase())
-  }
-  // Check citation_info descriptions
-  const citationDescription = mandate.citation_info
-    ?.find((info) => info.description?.trim())
-    ?.description?.trim()
-  if (citationDescription) {
-    return titleCase(cleanTitle(citationDescription).toLowerCase())
   }
   // Final fallback
   return 'Untitled'

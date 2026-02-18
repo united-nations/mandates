@@ -39,11 +39,8 @@ export interface Mandate {
   num_entities: number
   entities: string[]
   link: string | null
-  //   priority_area: string
   year: string
   body: string
-  //   pillar: string
-  //   entity_long: string
   description: string | null
   type: string
   citation_info: {
@@ -64,47 +61,12 @@ export interface Mandate {
   body_long?: string
   displayTitle?: string
   document_symbol: string | null
-  //   classification_code: string[] | null
-  //   classification: string[] | null
-  //   doc_type_code: string[] | null
-  symbol_prefix: string[] | null
-  symbol_number: string[] | null
   uniform_title: string[] | null
   proper_title: string | null
   title: string | null
   subtitle: string | null
-  //   statement_of_responsibility: string[] | null
-  //   translated_title: string[] | null
-  //   publish_place: string[] | null
-  //   publisher: string[] | null
-  //   publication_date: string[] | null
-  //   printing_date: string[] | null
-  //   pagination: string[] | null
-  //   note: string[] | null
-  //   citation_reference: string[] | null
-  //   abstract: string[] | null
-  //   subject_organs: string[] | null
-  //   local_shelving: string[] | null
-  //   corporate_subject: string[] | null
-  //   meeting_subject: string[] | null
-  //   contains_documents: string[] | null
+  issuing_body: string | null
   subject_headings: string[]
-  //   geographic_headings: string[] | null
-  //   author: string[] | null
-  //   local_subject: string[] | null
-  //   collection_level1: string[] | null
-  //   collection_level2: string[] | null
-  //   collection_level3: string[] | null
-  //   agenda_doc_symbol: string[] | null
-  //   agenda_item_number: string[] | null
-  //   agenda_item_title: string[] | null
-  //   agenda_subject_heading: string[] | null
-  //   action_note_date: string[] | null
-  //   related_documents: string[] | null
-  //   vote_summary: string[] | null
-  paragraphs?: Paragraph[] | null
-  programme?: string
-  text?: string
 
   // Search-related fields
   searchScore?: number
@@ -115,12 +77,6 @@ export interface Mandate {
 
 // Entity types
 export interface Entity {
-  entity: string
-  entity_long: string
-}
-
-// Internal type for CSV parsing
-export interface EntityDetails {
   entity: string
   entity_long: string
 }

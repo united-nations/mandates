@@ -59,6 +59,7 @@ interface MandateListRow {
   title: string | null
   subtitle: string | null
   subject_terms: string | null
+  issuing_body: string | null
 }
 
 /** Row type for citation query results */
@@ -314,6 +315,7 @@ export async function getMandates(
       m.date_year,
       m.document_type,
       m.issuing_body
+
     FROM counted c
     LEFT JOIN ppb2026.source_documents_metadata_clean m
       ON c.ppb_full_document_symbol = m.ppb_full_document_symbol
@@ -348,8 +350,7 @@ export async function getMandates(
     subtitle: row.subtitle || null,
     subject_headings: parsePostgresArray(row.subject_terms)
       .map(s => titleCase(s.toLowerCase())),
-    symbol_prefix: null,
-    symbol_number: null,
+    issuing_body: row.issuing_body || null,
     // Empty citation_info - will be loaded separately if needed
     citation_info: [],
   }))
@@ -419,7 +420,8 @@ export async function getMandateBySymbol(symbol: string): Promise<Mandate | null
       m.proper_title,
       m.title,
       m.subtitle,
-      m.subject_terms
+      m.subject_terms,
+      m.issuing_body
     FROM ppb2026.source_documents d
     LEFT JOIN ppb2026.source_document_citations c
       ON d.ppb_full_document_symbol = c.ppb_full_document_symbol
@@ -429,7 +431,7 @@ export async function getMandateBySymbol(symbol: string): Promise<Mandate | null
     GROUP BY
       d.ppb_full_document_symbol, d.ppb_link, d.ppb_year, d.ppb_body,
       d.ppb_description, d.ppb_type, m.symbol, m.uniform_title,
-      m.proper_title, m.title, m.subtitle, m.subject_terms
+      m.proper_title, m.title, m.subtitle, m.subject_terms, m.issuing_body
   `
 
   const row = await queryOne<MandateListRow>(query, [symbol])
@@ -455,8 +457,7 @@ export async function getMandateBySymbol(symbol: string): Promise<Mandate | null
     subtitle: row.subtitle || null,
     subject_headings: parsePostgresArray(row.subject_terms)
       .map(s => titleCase(s.toLowerCase())),
-    symbol_prefix: null,
-    symbol_number: null,
+    issuing_body: row.issuing_body || null,
     citation_info: citations,
   }
 }
