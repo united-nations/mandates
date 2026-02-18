@@ -9,7 +9,8 @@ import { cache } from 'react'
 import { queryMany, queryOne } from './query'
 import { titleCase } from 'title-case'
 import { getMandateDisplayTitle } from '@/lib/utils'
-import DataService from '@/lib/data-service'
+import { getAllEntities } from './entities'
+import { getAllOrgans, getOrganMap } from './organs'
 import type { Mandate, FilterOptions, EntityWithCount, OrganWithCount, CrossCitation, ApiResponse } from '@/types'
 
 // ============================================================================
@@ -745,7 +746,9 @@ export const getMandatePageData = cache(async (filters: FilterOptions): Promise<
     programmeOptions,
     subjectOptions,
     yearStats,
-    referenceData,
+    entities,
+    organs,
+    organMap,
   ] = await Promise.all([
     getMandates(filters, { page, limit }),
     getMandateCounts(filters),
@@ -754,11 +757,12 @@ export const getMandatePageData = cache(async (filters: FilterOptions): Promise<
     getProgrammeOptions(filters),
     getSubjectOptions(filters),
     getYearStats(filters),
-    DataService.getReferenceData(),
+    getAllEntities(),
+    getAllOrgans(),
+    getOrganMap(),
   ])
 
   const { mandates, totalCount } = mandatesResult
-  const { organMap, entities, organs } = referenceData
 
   let crossCitations: ApiResponse['sidebar']['crossCitations'] = []
   if (filters.entity) {

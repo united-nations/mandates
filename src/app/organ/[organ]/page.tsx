@@ -6,7 +6,7 @@ import { formatUrlForDisplay } from '@/lib/utils'
 import { LoadingSkeleton } from '@/components/LoadingSkeleton'
 import { getMandatePageData } from '@/lib/db/mandates'
 import { parseSearchParams } from '@/lib/filter-constants'
-import DataService from '@/lib/data-service'
+import { getOrganByShortName } from '@/lib/db/organs'
 
 interface OrganPageProps {
   params: Promise<{ organ: string }>
@@ -22,7 +22,7 @@ export default async function OrganPage({ params, searchParams }: OrganPageProps
   
   // Fetch organ details and mandate data in parallel
   const [organDetails, data] = await Promise.all([
-    DataService.getOrganByShortName(organName),
+    getOrganByShortName(organName),
     getMandatePageData(filters),
   ])
 
