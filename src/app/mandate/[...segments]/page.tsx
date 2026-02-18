@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { FileText } from 'lucide-react'
 
 import { LoadingFallback } from '@/components/LoadingFallback'
-import { decodeUrlSegments } from '@/lib/shared-utils'
+import { decodeUrlSegments } from '@/lib/utils'
 import { useMandateData } from '@/hooks/use-mandate-data'
 import { ParagraphsSection } from '@/components/ParagraphSection'
 import { CitationCounts } from '@/components/CitationCounts'

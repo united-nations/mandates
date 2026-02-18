@@ -1,8 +1,8 @@
+import type { FilterType } from '@/contexts/FilterContext'
+import type { Mandate } from '@/types'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import { titleCase } from 'title-case'
-import type { FilterType } from '@/contexts/FilterContext'
-import type { Mandate } from '@/types'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -134,7 +134,10 @@ export function getActiveFiltersText(
  * Clean up a title by removing trailing punctuation and whitespace
  */
 function cleanTitle(title: string): string {
-  return title.trim().replace(/[\s:]+$/, '').trim()
+  return title
+    .trim()
+    .replace(/[\s:]+$/, '')
+    .trim()
 }
 
 /**
@@ -192,4 +195,16 @@ export const DELIVERABLE_TYPE_LABELS: Record<string, string> = {
  */
 export function getDeliverableTypeLabel(type: string): string {
   return DELIVERABLE_TYPE_LABELS[type] || type
+}
+
+/**
+ * Decode URL segments - used by all dynamic pages
+ */
+export function decodeUrlSegments(segments: string | string[]): string {
+  if (Array.isArray(segments)) {
+    // For mandate pages with multiple segments
+    return segments.map((segment) => decodeURIComponent(segment)).join('/')
+  }
+  // For entity/organ pages with single segment
+  return decodeURIComponent(segments)
 }
