@@ -11,7 +11,9 @@ import { unstable_cache } from 'next/cache'
 import { queryMany, queryOne } from '../db/query'
 import { titleCase } from 'title-case'
 import { getMandateDisplayTitle } from '@/lib/utils'
-import type { Mandate, FilterOptions, OrganWithCount, ApiResponse } from '@/types'
+import type { Mandate, FilterOptions, OrganWithCount, EntityWithCount, ApiResponse } from '@/types'
+import { getAllEntities } from './entities'
+import { getOrganMap } from './organs'
 
 // ============================================================================
 // Types for DB Rows (internal)
@@ -28,11 +30,19 @@ interface DocumentListRow {
   document_type: string | null
   subject_terms: string | null // jsonb → text
   total_count: string
+  // PPB enrichment (null when document has no PPB citations)
+  num_entities: string
+  num_citations: string
+  entities: string[] | null
+  ppb_link: string | null
+  ppb_description: string | null
 }
 
 interface CountsRow {
   total_documents: string
   total_issuing_bodies: string
+  total_entities: string
+  total_citations: string
 }
 
 interface ValueCountRow {
@@ -170,9 +180,21 @@ async function getDocuments(
         d.issuing_body,
         d.document_type,
         d.subject_terms::text as subject_terms,
+        COUNT(DISTINCT c.entity) FILTER (WHERE c.entity IS NOT NULL) as num_entities,
+        COUNT(c.id) as num_citations,
+        ARRAY_AGG(DISTINCT c.entity) FILTER (WHERE c.entity IS NOT NULL) as entities,
+        sd.ppb_link,
+        sd.ppb_description,
         COUNT(*) OVER() as total_count
       FROM public.documents d
+      LEFT JOIN ppb2026.source_documents sd
+        ON d.symbol = sd.ppb_full_document_symbol
+      LEFT JOIN ppb2026.source_document_citations c
+        ON d.symbol = c.ppb_full_document_symbol
       ${whereClause}
+      GROUP BY d.symbol, d.title, d.proper_title, d.uniform_title,
+        d.subtitle, d.date_year, d.issuing_body, d.document_type,
+        d.subject_terms, sd.ppb_link, sd.ppb_description
       ${orderBy}
       LIMIT $${params.length + 1} OFFSET $${params.length + 2}
     )
@@ -193,13 +215,13 @@ async function getDocuments(
     return {
       full_document_symbol: row.symbol,
       document_symbol: row.symbol,
-      num_citations: 0,
-      num_entities: 0,
-      entities: [],
-      link: null, // public.documents has no link column
+      num_citations: parseInt(row.num_citations) || 0,
+      num_entities: parseInt(row.num_entities) || 0,
+      entities: row.entities || [],
+      link: row.ppb_link || null,
       year: row.date_year?.toString() || '',
       body: row.issuing_body || '',
-      description: null,
+      description: row.ppb_description || null,
       type: row.document_type || 'Unknown',
       uniform_title: parseJsonbArray(row.uniform_title ? row.uniform_title : null),
       proper_title: row.proper_title || null,
@@ -216,15 +238,19 @@ async function getDocuments(
 
 async function getDocumentCounts(
   filters: FilterOptions = {}
-): Promise<{ totalDocuments: number; totalIssuingBodies: number }> {
+): Promise<{ totalDocuments: number; totalIssuingBodies: number; totalEntities: number; totalCitations: number }> {
   const { clauses, params } = buildDocumentFilterClauses(filters)
   const whereClause = clauses.length > 0 ? `WHERE ${clauses.join(' AND ')}` : ''
 
   const sql = `
     SELECT
-      COUNT(*) as total_documents,
-      COUNT(DISTINCT d.issuing_body) FILTER (WHERE d.issuing_body IS NOT NULL) as total_issuing_bodies
+      COUNT(DISTINCT d.symbol) as total_documents,
+      COUNT(DISTINCT d.issuing_body) FILTER (WHERE d.issuing_body IS NOT NULL) as total_issuing_bodies,
+      COUNT(DISTINCT c.entity) FILTER (WHERE c.entity IS NOT NULL) as total_entities,
+      COUNT(c.id) as total_citations
     FROM public.documents d
+    LEFT JOIN ppb2026.source_document_citations c
+      ON d.symbol = c.ppb_full_document_symbol
     ${whereClause}
   `
 
@@ -233,6 +259,8 @@ async function getDocumentCounts(
   return {
     totalDocuments: parseInt(row?.total_documents ?? '0'),
     totalIssuingBodies: parseInt(row?.total_issuing_bodies ?? '0'),
+    totalEntities: parseInt(row?.total_entities ?? '0'),
+    totalCitations: parseInt(row?.total_citations ?? '0'),
   }
 }
 
@@ -258,6 +286,40 @@ async function getDocumentIssuingBodyCounts(
   return rows.map((row) => ({
     short: row.short,
     long: row.short, // No normalised long names for arbitrary issuing bodies
+    count: parseInt(row.count) || 0,
+  }))
+}
+
+async function getDocumentEntityCounts(
+  filters: FilterOptions = {}
+): Promise<EntityWithCount[]> {
+  const { clauses, params } = buildDocumentFilterClauses(filters)
+  const whereClause = clauses.length > 0 ? `WHERE ${clauses.join(' AND ')}` : ''
+
+  const sql = `
+    WITH filtered_docs AS (
+      SELECT d.symbol
+      FROM public.documents d
+      ${whereClause}
+    )
+    SELECT
+      c.entity,
+      e.entity_long,
+      COUNT(DISTINCT c.ppb_full_document_symbol) as count
+    FROM filtered_docs fd
+    JOIN ppb2026.source_document_citations c
+      ON fd.symbol = c.ppb_full_document_symbol
+    LEFT JOIN systemchart.entities e ON c.entity = e.entity
+    WHERE c.entity IS NOT NULL AND c.entity != ''
+    GROUP BY c.entity, e.entity_long
+    ORDER BY count DESC
+  `
+
+  const rows = await queryMany<{ entity: string; entity_long: string | null; count: string }>(sql, params)
+
+  return rows.map((row) => ({
+    entity: row.entity,
+    entity_long: row.entity_long || row.entity,
     count: parseInt(row.count) || 0,
   }))
 }
@@ -382,25 +444,36 @@ async function _getDocumentPageDataInner(filters: FilterOptions): Promise<ApiRes
     documentsResult,
     counts,
     issuingBodyCounts,
+    entityCounts,
     subjectOptions,
     documentTypeOptions,
     yearStats,
+    entities,
+    organMap,
   ] = await Promise.all([
     getDocuments(filters, { page, limit }),
     getDocumentCounts(filters),
     getDocumentIssuingBodyCounts(filters),
+    getDocumentEntityCounts(filters),
     getDocumentSubjectOptions(filters),
     getDocumentTypeOptions(filters),
     getDocumentYearStats(filters),
+    getAllEntities(),
+    getOrganMap(),
   ])
 
   const { mandates, totalCount } = documentsResult
 
-  // Enrich mandates with display title
+  // Enrich mandates with display title and organ long names
   const enrichedMandates = mandates.map((mandate) => ({
     ...mandate,
     displayTitle: getMandateDisplayTitle(mandate),
-    body_long: mandate.issuing_body || mandate.body,
+    body_long: organMap.get(mandate.body)?.long || mandate.issuing_body || mandate.body,
+  }))
+
+  const enrichedOrganCounts = issuingBodyCounts.map((organ) => ({
+    ...organ,
+    long: organMap.get(organ.short)?.long || organ.short,
   }))
 
   const totalPages = Math.ceil(totalCount / limit)
@@ -415,15 +488,15 @@ async function _getDocumentPageDataInner(filters: FilterOptions): Promise<ApiRes
     },
     counts: {
       totalDocuments: counts.totalDocuments,
-      totalEntities: 0, // Not available in All mode
+      totalEntities: counts.totalEntities,
       totalOrgans: counts.totalIssuingBodies,
-      totalCitations: 0, // Not available in All mode
+      totalCitations: counts.totalCitations,
     },
     mode: 'documents',
     sidebar: {
-      entities: [], // Not available in All mode
-      organs: issuingBodyCounts,
-      crossCitations: [], // Not available in All mode
+      entities: entityCounts,
+      organs: enrichedOrganCounts,
+      crossCitations: [],
     },
     filterOptions: {
       programmes: [], // Not available in All mode
@@ -434,8 +507,8 @@ async function _getDocumentPageDataInner(filters: FilterOptions): Promise<ApiRes
       documentTypes: documentTypeOptions,
     },
     reference: {
-      entities: [],
-      organs: [], // Issuing bodies are free text, not normalised organs
+      entities,
+      organs: [],
     },
   }
 }

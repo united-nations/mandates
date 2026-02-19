@@ -23,6 +23,21 @@ import type { Mandate, FilterOptions, EntityWithCount, OrganWithCount, CrossCita
  * Parse PostgreSQL array literal format: {"item1","item2","item3"}
  * Returns an array of strings
  */
+/**
+ * Parse a JSONB array (serialised as text) into a string array.
+ * Handles: '["a","b"]', null, empty string.
+ */
+function parseJsonbArray(jsonText: string | null): string[] {
+  if (!jsonText || jsonText.trim() === '') return []
+  try {
+    const parsed = JSON.parse(jsonText)
+    if (Array.isArray(parsed)) return parsed.map(String)
+    return []
+  } catch {
+    return []
+  }
+}
+
 function parsePostgresArray(pgArray: string | null): string[] {
   if (!pgArray || pgArray.trim() === '') return []
   
@@ -457,7 +472,11 @@ export async function getMandateBySymbol(symbol: string): Promise<Mandate | null
   `
 
   const row = await queryOne<MandateListRow>(query, [symbol])
-  if (!row) return null
+
+  // Fallback: if not found in PPB, try public.documents
+  if (!row) {
+    return getDocumentBySymbol(symbol)
+  }
 
   // Fetch citations separately for the detail view
   const citations = await getMandateCitations(symbol)
@@ -484,6 +503,64 @@ export async function getMandateBySymbol(symbol: string): Promise<Mandate | null
     agenda_item_numbers: parsePostgresArray(row.agenda_item_number),
     agenda_item_titles: parsePostgresArray(row.agenda_item_title),
     citation_info: citations,
+  }
+}
+
+/**
+ * Fallback: fetch a single document from public.documents when not found in PPB.
+ * Returns a Mandate-shaped object with whatever metadata is available.
+ */
+async function getDocumentBySymbol(symbol: string): Promise<Mandate | null> {
+  const row = await queryOne<{
+    symbol: string
+    title: string | null
+    proper_title: string | null
+    uniform_title: string | null
+    subtitle: string | null
+    date_year: number | null
+    issuing_body: string | null
+    document_type: string | null
+    subject_terms: string | null
+  }>(`
+    SELECT
+      d.symbol,
+      d.title,
+      d.proper_title,
+      d.uniform_title::text,
+      d.subtitle,
+      d.date_year,
+      d.issuing_body,
+      d.document_type,
+      d.subject_terms::text as subject_terms
+    FROM public.documents d
+    WHERE d.symbol = $1
+  `, [symbol])
+
+  if (!row) return null
+
+  const subjectTerms = row.subject_terms ? parseJsonbArray(row.subject_terms) : []
+
+  return {
+    full_document_symbol: row.symbol,
+    document_symbol: row.symbol,
+    num_citations: 0,
+    num_entities: 0,
+    entities: [],
+    link: null,
+    year: row.date_year?.toString() || '',
+    body: row.issuing_body || '',
+    description: null,
+    type: row.document_type || 'Unknown',
+    uniform_title: row.uniform_title ? parseJsonbArray(row.uniform_title) : null,
+    proper_title: row.proper_title || null,
+    title: row.title || null,
+    subtitle: row.subtitle || null,
+    subject_headings: subjectTerms.map(s => titleCase(s.toLowerCase())),
+    issuing_body: row.issuing_body || null,
+    agenda_document_symbols: [],
+    agenda_item_numbers: [],
+    agenda_item_titles: [],
+    citation_info: [],
   }
 }
 

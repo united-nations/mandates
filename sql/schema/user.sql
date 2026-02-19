@@ -20,16 +20,19 @@ GRANT CONNECT ON DATABASE postgres TO mandates_readonly;
 GRANT USAGE ON SCHEMA public       TO mandates_readonly;
 GRANT USAGE ON SCHEMA ppb2026      TO mandates_readonly;
 GRANT USAGE ON SCHEMA mandates     TO mandates_readonly;
-GRANT USAGE ON SCHEMA systemchart  TO mandates_readonly;
+GRANT USAGE ON SCHEMA systemchart      TO mandates_readonly;
+GRANT USAGE ON SCHEMA digitallibrary   TO mandates_readonly;
 
 -- 4. SELECT on all existing tables, views, and materialized views
-GRANT SELECT ON ALL TABLES IN SCHEMA public       TO mandates_readonly;
-GRANT SELECT ON ALL TABLES IN SCHEMA ppb2026      TO mandates_readonly;
-GRANT SELECT ON ALL TABLES IN SCHEMA mandates     TO mandates_readonly;
-GRANT SELECT ON ALL TABLES IN SCHEMA systemchart  TO mandates_readonly;
+GRANT SELECT ON ALL TABLES IN SCHEMA public           TO mandates_readonly;
+GRANT SELECT ON ALL TABLES IN SCHEMA ppb2026          TO mandates_readonly;
+GRANT SELECT ON ALL TABLES IN SCHEMA mandates         TO mandates_readonly;
+GRANT SELECT ON ALL TABLES IN SCHEMA systemchart      TO mandates_readonly;
+GRANT SELECT ON ALL TABLES IN SCHEMA digitallibrary   TO mandates_readonly;
 
 -- 5. Auto-grant SELECT on any future tables/views created in these schemas
-ALTER DEFAULT PRIVILEGES IN SCHEMA public       GRANT SELECT ON TABLES TO mandates_readonly;
-ALTER DEFAULT PRIVILEGES IN SCHEMA ppb2026      GRANT SELECT ON TABLES TO mandates_readonly;
-ALTER DEFAULT PRIVILEGES IN SCHEMA mandates     GRANT SELECT ON TABLES TO mandates_readonly;
-ALTER DEFAULT PRIVILEGES IN SCHEMA systemchart  GRANT SELECT ON TABLES TO mandates_readonly;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public           GRANT SELECT ON TABLES TO mandates_readonly;
+ALTER DEFAULT PRIVILEGES IN SCHEMA ppb2026          GRANT SELECT ON TABLES TO mandates_readonly;
+ALTER DEFAULT PRIVILEGES IN SCHEMA mandates         GRANT SELECT ON TABLES TO mandates_readonly;
+ALTER DEFAULT PRIVILEGES IN SCHEMA systemchart      GRANT SELECT ON TABLES TO mandates_readonly;
+ALTER DEFAULT PRIVILEGES IN SCHEMA digitallibrary   GRANT SELECT ON TABLES TO mandates_readonly;
