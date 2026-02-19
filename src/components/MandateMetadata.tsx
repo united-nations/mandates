@@ -39,120 +39,139 @@ export function MandateMetadata({
   }, [mandate, budgetDocuments])
 
   return (
-    <div className="space-y-0 rounded-lg">
-      <MetadataItem label="Organ">
-        {mandate.body ? (
-          <Badge
-            variant="secondary"
-            className="cursor-pointer text-xs transition-colors hover:bg-secondary/80"
-            onClick={() => {
-              // Navigate to organ detail page
-              window.location.href = `/organ/${encodeURIComponent(mandate.body)}`
-            }}
-          >
-            {mandate.body}
-          </Badge>
-        ) : (
-          <span className="text-muted-foreground">—</span>
-        )}
-      </MetadataItem>
+    <div className="rounded-lg">
+      <div className="space-y-0">
+        <MetadataItem label="Organ">
+          {mandate.body ? (
+            <Badge
+              variant="secondary"
+              className="cursor-pointer text-xs transition-colors hover:bg-secondary/80"
+              onClick={() => {
+                window.location.href = `/organ/${encodeURIComponent(mandate.body)}`
+              }}
+            >
+              {mandate.body}
+            </Badge>
+          ) : (
+            <span className="text-muted-foreground">—</span>
+          )}
+        </MetadataItem>
 
-      <MetadataItem label="Document Type">
-        {mandate.type ? (
-          <Badge variant="secondary" className="text-xs">
-            {mandate.type}
-          </Badge>
-        ) : (
-          <span className="text-muted-foreground">—</span>
-        )}
-      </MetadataItem>
+        <MetadataItem label="Document Type">
+          {mandate.type ? (
+            <Badge variant="secondary" className="text-xs">
+              {mandate.type}
+            </Badge>
+          ) : (
+            <span className="text-muted-foreground">—</span>
+          )}
+        </MetadataItem>
 
-      <MetadataItem label="Year">
-        {mandate.year ? (
-          <Badge variant="secondary" className="text-xs">
-            {mandate.year}
-          </Badge>
-        ) : (
-          <span className="text-muted-foreground">—</span>
-        )}
-      </MetadataItem>
+        <MetadataItem label="Year">
+          {mandate.year ? (
+            <Badge variant="secondary" className="text-xs">
+              {mandate.year}
+            </Badge>
+          ) : (
+            <span className="text-muted-foreground">—</span>
+          )}
+        </MetadataItem>
 
-      <MetadataItem label="Budget Document">
-        {citedBudgetDocuments.length > 0 ? (
-          <div className="flex flex-wrap gap-1.5">
-            {citedBudgetDocuments.map((doc, index) => (
-              <Badge
-                key={index}
-                variant="secondary"
-                className="cursor-pointer text-xs transition-colors hover:bg-secondary/80"
-                onClick={() => {
-                  const url = new URL(window.location.origin + '/')
-                  url.searchParams.set('page', '1')
-                  url.searchParams.set('budget_document', doc.slug)
-                  window.location.href = url.toString()
-                }}
-              >
-                {doc.display_name}
-              </Badge>
-            ))}
-          </div>
-        ) : (
-          <span className="text-muted-foreground">—</span>
+        <MetadataItem label="Budget Document">
+          {citedBudgetDocuments.length > 0 ? (
+            <div className="flex flex-wrap gap-1.5">
+              {citedBudgetDocuments.map((doc, index) => (
+                <Badge
+                  key={index}
+                  variant="secondary"
+                  className="cursor-pointer text-xs transition-colors hover:bg-secondary/80"
+                  onClick={() => {
+                    const url = new URL(window.location.origin + '/')
+                    url.searchParams.set('page', '1')
+                    url.searchParams.set('budget_document', doc.slug)
+                    window.location.href = url.toString()
+                  }}
+                >
+                  {doc.display_name}
+                </Badge>
+              ))}
+            </div>
+          ) : (
+            <span className="text-muted-foreground">—</span>
+          )}
+        </MetadataItem>
+
+        {(mandate.agenda_item_numbers?.length > 0 || mandate.agenda_item_titles?.length > 0) && (
+          <MetadataItem label={(mandate.agenda_item_numbers?.length ?? 0) > 1 ? 'Agenda Items' : 'Agenda Item'}>
+            <div className="flex flex-wrap gap-1.5">
+              {(mandate.agenda_item_numbers ?? []).map((num, i) => (
+                <Badge key={i} variant="secondary" className="text-xs font-normal">
+                  <span className="font-medium">{num}</span>
+                  {mandate.agenda_item_titles?.[i] && (
+                    <span className="ml-1 text-muted-foreground">
+                      {mandate.agenda_item_titles[i]}
+                    </span>
+                  )}
+                </Badge>
+              ))}
+            </div>
+          </MetadataItem>
         )}
-      </MetadataItem>
+      </div>
 
       {mandate.subject_headings && mandate.subject_headings.length > 0 && (
-        <MetadataItem
-          label={
-            <a
-              href="https://metadata.un.org/thesaurus/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:underline"
-            >
-              UN Library Subjects
-            </a>
-          }
-        >
-          <div className="flex flex-wrap gap-1.5">
-            {(showAllSubjects ||
-            mandate.subject_headings.length <= SUBJECTS_DEFAULT_SHOWN
-              ? mandate.subject_headings
-                  .slice()
-                  .sort((a, b) => a.localeCompare(b))
-              : mandate.subject_headings
-                  .slice()
-                  .sort((a, b) => a.localeCompare(b))
-                  .slice(0, SUBJECTS_DEFAULT_SHOWN)
-            ).map((heading, index) => (
-              <Badge
-                key={index}
-                variant="outline"
-                className="cursor-pointer border-un-blue! text-xs font-normal transition-colors hover:bg-un-blue/10"
-                onClick={() => {
-                  // Navigate to filtered results with only the subject filter
-                  const url = new URL(window.location.origin + '/')
-                  url.searchParams.set('page', '1')
-                  url.searchParams.set('subject', heading.trim())
-                  window.location.href = url.toString()
-                }}
+        <div className="mt-3 border-t pt-3">
+          <MetadataItem
+            label={
+              <a
+                href="https://metadata.un.org/thesaurus/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:underline"
               >
-                {heading}
-              </Badge>
-            ))}
-            {mandate.subject_headings.length > SUBJECTS_DEFAULT_SHOWN && (
-              <button
-                type="button"
-                className="ml-1 text-sm text-un-blue hover:text-un-blue/80"
-                onClick={() => setShowAllSubjects(!showAllSubjects)}
-              >
-                {showAllSubjects
-                  ? 'Show less'
-                  : `Show ${mandate.subject_headings.length - SUBJECTS_DEFAULT_SHOWN} more`}
-              </button>
-            )}
-          </div>
-        </MetadataItem>
+                UN Library Subjects
+              </a>
+            }
+          >
+            <div className="flex flex-wrap gap-1.5">
+              {(showAllSubjects ||
+              mandate.subject_headings.length <= SUBJECTS_DEFAULT_SHOWN
+                ? mandate.subject_headings
+                    .slice()
+                    .sort((a, b) => a.localeCompare(b))
+                : mandate.subject_headings
+                    .slice()
+                    .sort((a, b) => a.localeCompare(b))
+                    .slice(0, SUBJECTS_DEFAULT_SHOWN)
+              ).map((heading, index) => (
+                <Badge
+                  key={index}
+                  variant="secondary"
+                  className="cursor-pointer text-xs font-normal transition-colors hover:bg-secondary/80"
+                  onClick={() => {
+                    const url = new URL(window.location.origin + '/')
+                    url.searchParams.set('page', '1')
+                    url.searchParams.set('subject', heading.trim())
+                    window.location.href = url.toString()
+                  }}
+                >
+                  {heading}
+                </Badge>
+              ))}
+              {mandate.subject_headings.length > SUBJECTS_DEFAULT_SHOWN && (
+                <button
+                  type="button"
+                  className="ml-1 text-sm text-un-blue hover:text-un-blue/80"
+                  onClick={() => setShowAllSubjects(!showAllSubjects)}
+                >
+                  {showAllSubjects
+                    ? 'Show less'
+                    : `Show ${mandate.subject_headings.length - SUBJECTS_DEFAULT_SHOWN} more`}
+                </button>
+              )}
+            </div>
+          </MetadataItem>
+        </div>
       )}
     </div>
   )

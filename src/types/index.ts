@@ -72,6 +72,9 @@ export interface Mandate {
   subtitle: string | null
   issuing_body: string | null
   subject_headings: string[]
+  agenda_document_symbols: string[]
+  agenda_item_numbers: string[]
+  agenda_item_titles: string[]
 
   // Search-related fields
   searchScore?: number
