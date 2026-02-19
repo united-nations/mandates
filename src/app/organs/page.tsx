@@ -430,7 +430,7 @@ export default function OrgansPage() {
       <p className="mt-2 mb-10" />
 
       {/* Funds and Programmes */}
-      {/* <div className="overflow-hidden rounded-lg border border-border bg-white shadow-sm">
+      <div className="overflow-hidden rounded-lg border border-border bg-white shadow-sm">
         <Table className="w-full table-fixed break-words">
           <TableHeader>
             <TableRow className="bg-muted/30 hover:bg-muted/30">
@@ -509,7 +509,7 @@ export default function OrgansPage() {
             })}
           </TableBody>
         </Table>
-      </div> */}
+      </div>
 
       <p className="mt-2 mb-6" />
     </div>
