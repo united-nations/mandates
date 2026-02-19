@@ -91,7 +91,7 @@ function parseRichText(raw: string): React.ReactNode[] {
           : url
         : label
             .replace(/^https?:\/\//, '')
-            .replace(/^www\./, '')
+            .replace(/^www\d*\./, '')
             .replace(/\/$/, '')
 
       nodes.push(
