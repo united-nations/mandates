@@ -15,6 +15,7 @@ interface OrganContact {
   governing_bodies: string
   intergov_bodies_link: string
   secretariats: string
+  order: string | null
 }
 
 /**
@@ -39,7 +40,11 @@ function parseBulletList(raw: string): string[] {
  *   - plain text
  */
 function parseRichText(raw: string): React.ReactNode[] {
-  if (!raw || raw.trim() === '-' || raw.toLowerCase().trim() === 'to be updated')
+  if (
+    !raw ||
+    raw.trim() === '-' ||
+    raw.toLowerCase().trim() === 'to be updated'
+  )
     return []
 
   // Split into lines (each line is typically a bullet)
@@ -61,8 +66,12 @@ function parseRichText(raw: string): React.ReactNode[] {
     while ((match = linkPattern.exec(remaining)) !== null) {
       // Add any text before this match
       if (match.index > lastIndex) {
-        const before = remaining.slice(lastIndex, match.index).replace(/^:\s*/, '').trim()
-        if (before) nodes.push(<span key={`t-${i}-${lastIndex}`}>{before} </span>)
+        const before = remaining
+          .slice(lastIndex, match.index)
+          .replace(/^:\s*/, '')
+          .trim()
+        if (before)
+          nodes.push(<span key={`t-${i}-${lastIndex}`}>{before} </span>)
       }
 
       const label = match[1] || match[3] || ''
@@ -77,8 +86,13 @@ function parseRichText(raw: string): React.ReactNode[] {
         : rawUrl
       const href = looksLikeEmail ? `mailto:${url}` : rawUrl
       const displayLabel = looksLikeEmail
-        ? (label.includes('@') ? label : url)
-        : label.replace(/^https?:\/\//, '').replace(/\/$/, '')
+        ? label.includes('@')
+          ? label
+          : url
+        : label
+            .replace(/^https?:\/\//, '')
+            .replace(/^www\./, '')
+            .replace(/\/$/, '')
 
       nodes.push(
         <a
@@ -86,14 +100,15 @@ function parseRichText(raw: string): React.ReactNode[] {
           href={href}
           target={looksLikeEmail ? undefined : '_blank'}
           rel={looksLikeEmail ? undefined : 'noopener noreferrer'}
-          className="inline-flex items-center gap-1 text-un-blue underline decoration-un-blue/30 underline-offset-2 transition-colors hover:text-un-blue/80 hover:decoration-un-blue/60"
+          className="text-un-blue underline decoration-un-blue/30 underline-offset-2 transition-colors hover:text-un-blue/80 hover:decoration-un-blue"
         >
-          {looksLikeEmail ? (
-            <Mail className="inline h-3 w-3 shrink-0" />
-          ) : null}
           {displayLabel}
-          {!looksLikeEmail && <ExternalLink className="inline h-3 w-3 shrink-0" />}
-        </a>,
+          {looksLikeEmail ? (
+            <Mail className="mb-0.5 ml-0.5 inline h-3 w-3" />
+          ) : (
+            <ExternalLink className="mb-0.5 ml-0.5 inline h-3 w-3" />
+          )}
+        </a>
       )
 
       lastIndex = match.index + match[0].length
@@ -104,20 +119,24 @@ function parseRichText(raw: string): React.ReactNode[] {
       const tail = remaining.slice(lastIndex).replace(/^:\s*/, '').trim()
       if (tail) {
         // Check for bare email addresses
-        const emailMatch = tail.match(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/)
+        const emailMatch = tail.match(
+          /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/
+        )
         if (emailMatch) {
           const before = tail.slice(0, emailMatch.index).trim()
-          const after = tail.slice((emailMatch.index ?? 0) + emailMatch[0].length).trim()
+          const after = tail
+            .slice((emailMatch.index ?? 0) + emailMatch[0].length)
+            .trim()
           if (before) nodes.push(<span key={`bt-${i}`}>{before} </span>)
           nodes.push(
             <a
               key={`em-${i}`}
               href={`mailto:${emailMatch[1]}`}
-              className="inline-flex items-center gap-1 text-un-blue underline decoration-un-blue/30 underline-offset-2 transition-colors hover:text-un-blue/80 hover:decoration-un-blue/60"
+              className="text-un-blue underline decoration-un-blue/30 underline-offset-2 transition-colors hover:text-un-blue/80 hover:decoration-un-blue"
             >
-              <Mail className="inline h-3 w-3 shrink-0" />
               {emailMatch[1]}
-            </a>,
+              <Mail className="mb-0.5 ml-0.5 inline h-3 w-3" />
+            </a>
           )
           if (after) nodes.push(<span key={`at-${i}`}> {after}</span>)
         } else {
@@ -128,11 +147,7 @@ function parseRichText(raw: string): React.ReactNode[] {
 
     if (nodes.length === 0) return null
 
-    return (
-      <div key={i} className="py-0.5">
-        {nodes}
-      </div>
-    )
+    return <li key={i}>{nodes}</li>
   })
 }
 
@@ -146,12 +161,16 @@ export default function OrgansPage() {
 
   const unBodies = allContacts
     .filter((c) => !c.entity)
-    .sort((a, b) =>
-      a.governing_bodies
-        .replace(/^[-\s]+/, '')
-        .trim()
-        .localeCompare(b.governing_bodies.replace(/^[-\s]+/, '').trim()),
-    )
+    .sort((a, b) => {
+      // Items with order come first, sorted by order ascending
+      const orderA = a.order ? parseInt(a.order, 10) : Infinity
+      const orderB = b.order ? parseInt(b.order, 10) : Infinity
+      if (orderA !== orderB) return orderA - orderB
+      // Then alphabetically by body name
+      const nameA = a.governing_bodies.replace(/^[-\s]+/, '').trim()
+      const nameB = b.governing_bodies.replace(/^[-\s]+/, '').trim()
+      return nameA.localeCompare(nameB)
+    })
 
   return (
     <div className="mx-auto max-w-6xl">
@@ -161,7 +180,7 @@ export default function OrgansPage() {
           <h1 className="text-2xl font-bold tracking-tight text-foreground">
             Intergovernmental Bodies &amp; Contacts
           </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <p className="mt-0.5 text-sm text-muted-foreground">
             Directory of governing bodies across the UN system with links to
             their pages and secretariat contacts.
           </p>
@@ -214,14 +233,21 @@ export default function OrgansPage() {
                     <ul className="list-disc space-y-0.5 pl-4 marker:text-un-blue">
                       {parseBulletList(contact.governing_bodies).map(
                         (item, i) => (
-                          <li key={i}>{item}</li>
-                        ),
+                          <li
+                            key={i}
+                            className="font-medium text-foreground/75"
+                          >
+                            {item}
+                          </li>
+                        )
                       )}
                     </ul>
                   </TableCell>
                   <TableCell className="align-top text-sm">
                     {links.filter(Boolean).length > 0 ? (
-                      <div className="space-y-0.5">{links}</div>
+                      <ul className="list-disc space-y-0.5 pl-4 marker:text-un-blue">
+                        {links}
+                      </ul>
                     ) : (
                       <span className="text-xs text-muted-foreground italic">
                         —
@@ -230,7 +256,9 @@ export default function OrgansPage() {
                   </TableCell>
                   <TableCell className="align-top text-sm">
                     {hasSecretariat ? (
-                      <div className="space-y-0.5">{secretariat}</div>
+                      <ul className="list-disc space-y-0.5 pl-4 marker:text-un-blue">
+                        {secretariat}
+                      </ul>
                     ) : (
                       <span className="text-xs text-muted-foreground italic">
                         To be updated
@@ -280,7 +308,9 @@ export default function OrgansPage() {
                   </TableCell>
                   <TableCell className="align-top text-sm">
                     {links.filter(Boolean).length > 0 ? (
-                      <div className="space-y-0.5">{links}</div>
+                      <ul className="list-disc space-y-0.5 pl-4 marker:text-un-blue">
+                        {links}
+                      </ul>
                     ) : (
                       <span className="text-xs text-muted-foreground italic">
                         —
@@ -289,7 +319,9 @@ export default function OrgansPage() {
                   </TableCell>
                   <TableCell className="align-top text-sm">
                     {hasSecretariat ? (
-                      <div className="space-y-0.5">{secretariat}</div>
+                      <ul className="list-disc space-y-0.5 pl-4 marker:text-un-blue">
+                        {secretariat}
+                      </ul>
                     ) : (
                       <span className="text-xs text-muted-foreground italic">
                         To be updated

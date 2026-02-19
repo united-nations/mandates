@@ -1,6 +1,7 @@
 'use client'
 
-import { Link as LinkIcon } from 'lucide-react'
+import { Building2, Link as LinkIcon } from 'lucide-react'
+import Link from 'next/link'
 
 export default function ResourcesPage() {
   return (
@@ -70,25 +71,22 @@ export default function ResourcesPage() {
             Results information for the proposed programme budget 2026.
           </div>
         </a>
-        {/* Card 4: systemchart.un.org */}
-        <a
-          href="https://systemchart.un.org/"
-          target="_blank"
-          rel="noopener noreferrer"
+        {/* Card 4: Intergovernmental Bodies & Contacts */}
+        <Link
+          href="/organs"
           className="block flex flex-col items-start rounded-lg border border-muted p-4 text-left transition hover:border-un-blue"
         >
-          <img
-            src="/images/screenshots/systemchart_un_org.png"
-            alt="systemchart.un.org screenshot"
-            className="mb-3 h-32 w-full rounded-md object-cover"
-          />
+          <div className="mb-3 flex h-32 w-full items-center justify-center rounded-md bg-muted/30">
+            <Building2 className="h-12 w-12 text-un-blue" strokeWidth={1.5} />
+          </div>
           <div className="mb-1 text-base font-medium text-un-blue">
-            UN System Chart
+            Intergovernmental Bodies &amp; Contacts
           </div>
           <div className="text-sm text-muted-foreground">
-            Interactive organizational chart of the United Nations system.
+            Directory of governing bodies across the UN system with links and
+            secretariat contacts.
           </div>
-        </a>
+        </Link>
       </div>
     </div>
   )
