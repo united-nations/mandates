@@ -84,7 +84,7 @@ export default async function EntityPage({
             </h1>
           </div>
 
-          <Button
+          {/* <Button
             size="sm"
             asChild
             className="bg-un-blue text-white transition-colors hover:bg-un-blue/90"
@@ -98,7 +98,7 @@ export default async function EntityPage({
               <ExternalLink className="h-4 w-4" />
               View in UN System Chart
             </a>
-          </Button>
+          </Button> */}
         </div>
       )}
 

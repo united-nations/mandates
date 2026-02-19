@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Landmark } from 'lucide-react'
 import { useFilters } from '@/contexts/FilterContext'
@@ -78,9 +79,29 @@ export function OrganListSidebar({
     )
 
     if (pageType === 'entity') {
-      return `Organs and bodies issuing and number of cited source documents ${activeFiltersText}for ${entityFilter}`
+      return (
+        <>
+          <Link
+            href="/organs"
+            className="text-un-blue no-underline transition-colors hover:text-shuttle-gray"
+          >
+            Organs and bodies
+          </Link>
+          {` issuing and number of cited source documents ${activeFiltersText}for ${entityFilter}`}
+        </>
+      )
     } else {
-      return `Organs and bodies issuing and number of cited source documents${activeFiltersText ? ' ' + activeFiltersText.trim() : ''}`
+      return (
+        <>
+          <Link
+            href="/organs"
+            className="text-un-blue no-underline transition-colors hover:text-shuttle-gray"
+          >
+            Organs and bodies
+          </Link>
+          {` issuing and number of cited source documents${activeFiltersText ? ' ' + activeFiltersText.trim() : ''}`}
+        </>
+      )
     }
   }
 
