@@ -178,33 +178,94 @@ export default function OrgansPage() {
         <Building2 className="h-8 w-8 text-un-blue" />
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-foreground">
-            Intergovernmental Bodies &amp; Contacts
+            Intergovernmental Organs &amp; Bodies
           </h1>
-          <p className="mt-0.5 text-sm text-muted-foreground">
+          {/* <p className="mt-0.5 text-sm text-muted-foreground">
             Directory of governing bodies across the UN system with links to
             their pages and secretariat contacts.
+          </p> */}
+          <p className="mt-0.5 max-w-[55%] text-sm text-muted-foreground">
+            For informational purposes only. The relevant rules of the
+            organization concerned should be consulted in order to establish the
+            legal status, functions and reporting lines of each entity listed.
           </p>
         </div>
       </div>
 
-      {/* UN System Entities */}
-      <h2 className="mb-3 text-lg font-semibold text-foreground">
-        UN System Entities
-      </h2>
-      <div className="rounded-lg border border-border bg-white shadow-sm">
-        <Table>
+      {/* Principal & Subsidiary UN Bodies */}
+      <div className="overflow-hidden rounded-lg border border-border bg-white shadow-sm">
+        <Table className="w-full table-fixed break-words">
           <TableHeader>
             <TableRow className="bg-muted/30 hover:bg-muted/30">
-              <TableHead className="w-45 font-semibold text-foreground">
-                Entity
+              <TableHead className="w-[40%] font-semibold text-foreground">
+                Principal UN Organs
               </TableHead>
-              <TableHead className="w-60 font-semibold text-foreground">
-                Governing Bodies
+              <TableHead className="w-[30%] font-semibold text-foreground">
+                Official Page
               </TableHead>
-              <TableHead className="font-semibold text-foreground">
+              <TableHead className="w-[30%] font-semibold text-foreground">
+                Secretariat Contact
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {unBodies.map((contact, idx) => {
+              const links = parseRichText(contact.intergov_bodies_link)
+              const secretariat = parseRichText(contact.secretariats)
+              const hasSecretariat = secretariat.filter(Boolean).length > 0
+
+              return (
+                <TableRow key={idx}>
+                  <TableCell className="align-top font-semibold text-foreground">
+                    {contact.governing_bodies.replace(/^[-\s]+/, '').trim()}
+                  </TableCell>
+                  <TableCell className="align-top text-sm">
+                    {links.filter(Boolean).length > 0 ? (
+                      <ul className="list-disc space-y-0.5 pl-4 marker:text-un-blue">
+                        {links}
+                      </ul>
+                    ) : (
+                      <span className="text-xs text-muted-foreground italic">
+                        —
+                      </span>
+                    )}
+                  </TableCell>
+                  <TableCell className="align-top text-sm">
+                    {hasSecretariat ? (
+                      <ul className="list-disc space-y-0.5 pl-4 marker:text-un-blue">
+                        {secretariat}
+                      </ul>
+                    ) : (
+                      <span className="text-xs text-muted-foreground italic">
+                        To be updated
+                      </span>
+                    )}
+                  </TableCell>
+                </TableRow>
+              )
+            })}
+          </TableBody>
+        </Table>
+      </div>
+
+      <p className="mb-10 text-xs text-muted-foreground"></p>
+
+      <div className="overflow-hidden rounded-lg border border-border bg-white shadow-sm">
+        <Table className="w-full table-fixed break-words">
+          <TableHeader>
+            <TableRow className="bg-muted/30 hover:bg-muted/30">
+              <TableHead
+                colSpan={2}
+                className="w-[40%] font-semibold text-foreground"
+              >
+                Intergovernmental Organs & Bodies
+                <br />
+                of Specialized Agencies
+              </TableHead>
+              <TableHead className="w-[30%] font-semibold text-foreground">
                 Official Pages
               </TableHead>
-              <TableHead className="font-semibold text-foreground">
+              <TableHead className="w-[30%] font-semibold text-foreground">
                 Secretariat Contacts
               </TableHead>
             </TableRow>
@@ -272,71 +333,8 @@ export default function OrgansPage() {
         </Table>
       </div>
 
-      <p className="mt-2 mb-10 text-xs text-muted-foreground">
-        {entityContacts.length} entities listed
-      </p>
-
-      {/* Principal & Subsidiary UN Bodies */}
-      <h2 className="mb-3 text-lg font-semibold text-foreground">
-        Principal &amp; Subsidiary UN Bodies
-      </h2>
-      <div className="rounded-lg border border-border bg-white shadow-sm">
-        <Table>
-          <TableHeader>
-            <TableRow className="bg-muted/30 hover:bg-muted/30">
-              <TableHead className="w-60 font-semibold text-foreground">
-                Body
-              </TableHead>
-              <TableHead className="font-semibold text-foreground">
-                Official Page
-              </TableHead>
-              <TableHead className="font-semibold text-foreground">
-                Secretariat Contact
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {unBodies.map((contact, idx) => {
-              const links = parseRichText(contact.intergov_bodies_link)
-              const secretariat = parseRichText(contact.secretariats)
-              const hasSecretariat = secretariat.filter(Boolean).length > 0
-
-              return (
-                <TableRow key={idx}>
-                  <TableCell className="align-top font-semibold text-foreground">
-                    {contact.governing_bodies.replace(/^[-\s]+/, '').trim()}
-                  </TableCell>
-                  <TableCell className="align-top text-sm">
-                    {links.filter(Boolean).length > 0 ? (
-                      <ul className="list-disc space-y-0.5 pl-4 marker:text-un-blue">
-                        {links}
-                      </ul>
-                    ) : (
-                      <span className="text-xs text-muted-foreground italic">
-                        —
-                      </span>
-                    )}
-                  </TableCell>
-                  <TableCell className="align-top text-sm">
-                    {hasSecretariat ? (
-                      <ul className="list-disc space-y-0.5 pl-4 marker:text-un-blue">
-                        {secretariat}
-                      </ul>
-                    ) : (
-                      <span className="text-xs text-muted-foreground italic">
-                        To be updated
-                      </span>
-                    )}
-                  </TableCell>
-                </TableRow>
-              )
-            })}
-          </TableBody>
-        </Table>
-      </div>
-
       <p className="mt-2 text-xs text-muted-foreground">
-        {unBodies.length} bodies listed
+        {entityContacts.length} entities listed
       </p>
     </div>
   )
