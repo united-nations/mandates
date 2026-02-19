@@ -196,7 +196,8 @@ export default function OrgansPage() {
             their pages and secretariat contacts.
           </p> */}
           <p className="mt-0.5 max-w-[55%] text-sm text-muted-foreground">
-            For informational purposes only. The relevant rules of the
+            This draft overview is for informational purposes only and
+            exhaustiveness is not guaranteed. The relevant rules of the
             organization concerned should be consulted in order to establish the
             legal status, functions and reporting lines of each entity listed.
           </p>
