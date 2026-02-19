@@ -259,174 +259,6 @@ export default function OrgansPage() {
           </TableBody>
         </Table>
       </div>
-
-      <p className="mb-10 text-xs text-muted-foreground"></p>
-
-      <div className="overflow-hidden rounded-lg border border-border bg-white shadow-sm">
-        <Table className="w-full table-fixed break-words">
-          <TableHeader>
-            <TableRow className="bg-muted/30 hover:bg-muted/30">
-              <TableHead
-                colSpan={2}
-                className="w-[40%] font-semibold text-foreground"
-              >
-                Specialized Agencies
-              </TableHead>
-              <TableHead className="w-[30%] font-semibold text-foreground">
-                Official Pages
-              </TableHead>
-              <TableHead className="w-[30%] font-semibold text-foreground">
-                Secretariat Contacts
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {specializedAgencies.map((contact, idx) => {
-              const links = parseRichText(contact.intergov_bodies_link)
-              const secretariat = parseRichText(contact.secretariats)
-              const hasSecretariat = secretariat.filter(Boolean).length > 0
-
-              return (
-                <TableRow key={idx} className="hover:bg-muted/10">
-                  <TableCell className="align-top">
-                    <div>
-                      <div className="font-semibold text-foreground">
-                        {contact.entity}
-                      </div>
-                      {contact.entity_long && (
-                        <div className="text-xs text-muted-foreground">
-                          {contact.entity_long}
-                        </div>
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell className="align-top text-sm text-foreground">
-                    <ul className="list-disc space-y-0.5 pl-4 marker:text-un-blue">
-                      {parseBulletList(contact.governing_bodies).map(
-                        (item, i) => (
-                          <li
-                            key={i}
-                            className="font-medium text-foreground/75"
-                          >
-                            {item}
-                          </li>
-                        )
-                      )}
-                    </ul>
-                  </TableCell>
-                  <TableCell className="align-top text-sm">
-                    {links.filter(Boolean).length > 0 ? (
-                      <ul className="list-disc space-y-0.5 pl-4 marker:text-un-blue">
-                        {links}
-                      </ul>
-                    ) : (
-                      <span className="text-xs text-muted-foreground italic">
-                        —
-                      </span>
-                    )}
-                  </TableCell>
-                  <TableCell className="align-top text-sm">
-                    {hasSecretariat ? (
-                      <ul className="list-disc space-y-0.5 pl-4 marker:text-un-blue">
-                        {secretariat}
-                      </ul>
-                    ) : (
-                      <span className="text-xs text-muted-foreground italic">
-                        To be updated
-                      </span>
-                    )}
-                  </TableCell>
-                </TableRow>
-              )
-            })}
-          </TableBody>
-        </Table>
-      </div>
-
-      <p className="mt-2 mb-10" />
-
-      {/* Related Organizations */}
-      <div className="overflow-hidden rounded-lg border border-border bg-white shadow-sm">
-        <Table className="w-full table-fixed break-words">
-          <TableHeader>
-            <TableRow className="bg-muted/30 hover:bg-muted/30">
-              <TableHead
-                colSpan={2}
-                className="w-[40%] font-semibold text-foreground"
-              >
-                Related Organizations
-              </TableHead>
-              <TableHead className="w-[30%] font-semibold text-foreground">
-                Official Pages
-              </TableHead>
-              <TableHead className="w-[30%] font-semibold text-foreground">
-                Secretariat Contacts
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {relatedOrganizations.map((contact, idx) => {
-              const links = parseRichText(contact.intergov_bodies_link)
-              const secretariat = parseRichText(contact.secretariats)
-              const hasSecretariat = secretariat.filter(Boolean).length > 0
-
-              return (
-                <TableRow key={idx} className="hover:bg-muted/10">
-                  <TableCell className="align-top">
-                    <div>
-                      <div className="font-semibold text-foreground">
-                        {contact.entity}
-                      </div>
-                      {contact.entity_long && (
-                        <div className="text-xs text-muted-foreground">
-                          {contact.entity_long}
-                        </div>
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell className="align-top text-sm text-foreground">
-                    <ul className="list-disc space-y-0.5 pl-4 marker:text-un-blue">
-                      {parseBulletList(contact.governing_bodies).map(
-                        (item, i) => (
-                          <li
-                            key={i}
-                            className="font-medium text-foreground/75"
-                          >
-                            {item}
-                          </li>
-                        )
-                      )}
-                    </ul>
-                  </TableCell>
-                  <TableCell className="align-top text-sm">
-                    {links.filter(Boolean).length > 0 ? (
-                      <ul className="list-disc space-y-0.5 pl-4 marker:text-un-blue">
-                        {links}
-                      </ul>
-                    ) : (
-                      <span className="text-xs text-muted-foreground italic">
-                        —
-                      </span>
-                    )}
-                  </TableCell>
-                  <TableCell className="align-top text-sm">
-                    {hasSecretariat ? (
-                      <ul className="list-disc space-y-0.5 pl-4 marker:text-un-blue">
-                        {secretariat}
-                      </ul>
-                    ) : (
-                      <span className="text-xs text-muted-foreground italic">
-                        To be updated
-                      </span>
-                    )}
-                  </TableCell>
-                </TableRow>
-              )
-            })}
-          </TableBody>
-        </Table>
-      </div>
-
       <p className="mt-2 mb-10" />
 
       {/* Funds and Programmes */}
@@ -510,8 +342,173 @@ export default function OrgansPage() {
           </TableBody>
         </Table>
       </div>
+      <p className="mt-2 mb-10" />
 
-      <p className="mt-2 mb-6" />
+      {/* Specialized Agencies */}
+      <div className="overflow-hidden rounded-lg border border-border bg-white shadow-sm">
+        <Table className="w-full table-fixed break-words">
+          <TableHeader>
+            <TableRow className="bg-muted/30 hover:bg-muted/30">
+              <TableHead
+                colSpan={2}
+                className="w-[40%] font-semibold text-foreground"
+              >
+                Specialized Agencies
+              </TableHead>
+              <TableHead className="w-[30%] font-semibold text-foreground">
+                Official Pages
+              </TableHead>
+              <TableHead className="w-[30%] font-semibold text-foreground">
+                Secretariat Contacts
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {specializedAgencies.map((contact, idx) => {
+              const links = parseRichText(contact.intergov_bodies_link)
+              const secretariat = parseRichText(contact.secretariats)
+              const hasSecretariat = secretariat.filter(Boolean).length > 0
+
+              return (
+                <TableRow key={idx} className="hover:bg-muted/10">
+                  <TableCell className="align-top">
+                    <div>
+                      <div className="font-semibold text-foreground">
+                        {contact.entity}
+                      </div>
+                      {contact.entity_long && (
+                        <div className="text-xs text-muted-foreground">
+                          {contact.entity_long}
+                        </div>
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell className="align-top text-sm text-foreground">
+                    <ul className="list-disc space-y-0.5 pl-4 marker:text-un-blue">
+                      {parseBulletList(contact.governing_bodies).map(
+                        (item, i) => (
+                          <li
+                            key={i}
+                            className="font-medium text-foreground/75"
+                          >
+                            {item}
+                          </li>
+                        )
+                      )}
+                    </ul>
+                  </TableCell>
+                  <TableCell className="align-top text-sm">
+                    {links.filter(Boolean).length > 0 ? (
+                      <ul className="list-disc space-y-0.5 pl-4 marker:text-un-blue">
+                        {links}
+                      </ul>
+                    ) : (
+                      <span className="text-xs text-muted-foreground italic">
+                        —
+                      </span>
+                    )}
+                  </TableCell>
+                  <TableCell className="align-top text-sm">
+                    {hasSecretariat ? (
+                      <ul className="list-disc space-y-0.5 pl-4 marker:text-un-blue">
+                        {secretariat}
+                      </ul>
+                    ) : (
+                      <span className="text-xs text-muted-foreground italic">
+                        To be updated
+                      </span>
+                    )}
+                  </TableCell>
+                </TableRow>
+              )
+            })}
+          </TableBody>
+        </Table>
+      </div>
+      <p className="mt-2 mb-10" />
+
+      {/* Related Organizations */}
+      <div className="overflow-hidden rounded-lg border border-border bg-white shadow-sm">
+        <Table className="w-full table-fixed break-words">
+          <TableHeader>
+            <TableRow className="bg-muted/30 hover:bg-muted/30">
+              <TableHead
+                colSpan={2}
+                className="w-[40%] font-semibold text-foreground"
+              >
+                Related Organizations
+              </TableHead>
+              <TableHead className="w-[30%] font-semibold text-foreground">
+                Official Pages
+              </TableHead>
+              <TableHead className="w-[30%] font-semibold text-foreground">
+                Secretariat Contacts
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {relatedOrganizations.map((contact, idx) => {
+              const links = parseRichText(contact.intergov_bodies_link)
+              const secretariat = parseRichText(contact.secretariats)
+              const hasSecretariat = secretariat.filter(Boolean).length > 0
+
+              return (
+                <TableRow key={idx} className="hover:bg-muted/10">
+                  <TableCell className="align-top">
+                    <div>
+                      <div className="font-semibold text-foreground">
+                        {contact.entity}
+                      </div>
+                      {contact.entity_long && (
+                        <div className="text-xs text-muted-foreground">
+                          {contact.entity_long}
+                        </div>
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell className="align-top text-sm text-foreground">
+                    <ul className="list-disc space-y-0.5 pl-4 marker:text-un-blue">
+                      {parseBulletList(contact.governing_bodies).map(
+                        (item, i) => (
+                          <li
+                            key={i}
+                            className="font-medium text-foreground/75"
+                          >
+                            {item}
+                          </li>
+                        )
+                      )}
+                    </ul>
+                  </TableCell>
+                  <TableCell className="align-top text-sm">
+                    {links.filter(Boolean).length > 0 ? (
+                      <ul className="list-disc space-y-0.5 pl-4 marker:text-un-blue">
+                        {links}
+                      </ul>
+                    ) : (
+                      <span className="text-xs text-muted-foreground italic">
+                        —
+                      </span>
+                    )}
+                  </TableCell>
+                  <TableCell className="align-top text-sm">
+                    {hasSecretariat ? (
+                      <ul className="list-disc space-y-0.5 pl-4 marker:text-un-blue">
+                        {secretariat}
+                      </ul>
+                    ) : (
+                      <span className="text-xs text-muted-foreground italic">
+                        To be updated
+                      </span>
+                    )}
+                  </TableCell>
+                </TableRow>
+              )
+            })}
+          </TableBody>
+        </Table>
+      </div>
+      <p className="mt-2 mb-10" />
     </div>
   )
 }
