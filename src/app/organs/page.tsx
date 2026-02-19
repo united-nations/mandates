@@ -16,6 +16,7 @@ interface OrganContact {
   intergov_bodies_link: string
   secretariats: string
   order: string | null
+  system_grouping: string | null
 }
 
 /**
@@ -159,6 +160,13 @@ export default function OrgansPage() {
     .filter((c) => c.entity)
     .sort((a, b) => a.entity!.localeCompare(b.entity!))
 
+  const specializedAgencies = entityContacts.filter(
+    (c) => c.system_grouping === 'Specialized Agencies'
+  )
+  const fundsAndProgrammes = entityContacts.filter(
+    (c) => c.system_grouping === 'Funds and Programmes'
+  )
+
   const unBodies = allContacts
     .filter((c) => !c.entity)
     .sort((a, b) => {
@@ -178,45 +186,106 @@ export default function OrgansPage() {
         <Building2 className="h-8 w-8 text-un-blue" />
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-foreground">
-            Intergovernmental Bodies &amp; Contacts
+            Intergovernmental Organs &amp; Bodies
           </h1>
-          <p className="mt-0.5 text-sm text-muted-foreground">
+          {/* <p className="mt-0.5 text-sm text-muted-foreground">
             Directory of governing bodies across the UN system with links to
             their pages and secretariat contacts.
+          </p> */}
+          <p className="mt-0.5 max-w-[55%] text-sm text-muted-foreground">
+            For informational purposes only. The relevant rules of the
+            organization concerned should be consulted in order to establish the
+            legal status, functions and reporting lines of each entity listed.
           </p>
         </div>
       </div>
 
-      {/* UN System Entities */}
-      <h2 className="mb-3 text-lg font-semibold text-foreground">
-        UN System Entities
-      </h2>
-      <div className="rounded-lg border border-border bg-white shadow-sm">
-        <Table>
+      {/* Principal & Subsidiary UN Bodies */}
+      <div className="overflow-hidden rounded-lg border border-border bg-white shadow-sm">
+        <Table className="w-full table-fixed break-words">
           <TableHeader>
             <TableRow className="bg-muted/30 hover:bg-muted/30">
-              <TableHead className="w-45 font-semibold text-foreground">
-                Entity
+              <TableHead className="w-[40%] font-semibold text-foreground">
+                Principal UN Organs
               </TableHead>
-              <TableHead className="w-60 font-semibold text-foreground">
-                Governing Bodies
+              <TableHead className="w-[30%] font-semibold text-foreground">
+                Official Page
               </TableHead>
-              <TableHead className="font-semibold text-foreground">
-                Official Pages
-              </TableHead>
-              <TableHead className="font-semibold text-foreground">
-                Secretariat Contacts
+              <TableHead className="w-[30%] font-semibold text-foreground">
+                Secretariat Contact
               </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {entityContacts.map((contact, idx) => {
+            {unBodies.map((contact, idx) => {
               const links = parseRichText(contact.intergov_bodies_link)
               const secretariat = parseRichText(contact.secretariats)
               const hasSecretariat = secretariat.filter(Boolean).length > 0
 
               return (
-                <TableRow key={idx}>
+                <TableRow key={idx} className="hover:bg-muted/10">
+                  <TableCell className="align-top font-semibold text-foreground">
+                    {contact.governing_bodies.replace(/^[-\s]+/, '').trim()}
+                  </TableCell>
+                  <TableCell className="align-top text-sm">
+                    {links.filter(Boolean).length > 0 ? (
+                      <ul className="list-disc space-y-0.5 pl-4 marker:text-un-blue">
+                        {links}
+                      </ul>
+                    ) : (
+                      <span className="text-xs text-muted-foreground italic">
+                        —
+                      </span>
+                    )}
+                  </TableCell>
+                  <TableCell className="align-top text-sm">
+                    {hasSecretariat ? (
+                      <ul className="list-disc space-y-0.5 pl-4 marker:text-un-blue">
+                        {secretariat}
+                      </ul>
+                    ) : (
+                      <span className="text-xs text-muted-foreground italic">
+                        To be updated
+                      </span>
+                    )}
+                  </TableCell>
+                </TableRow>
+              )
+            })}
+          </TableBody>
+        </Table>
+      </div>
+
+      <p className="mb-10 text-xs text-muted-foreground"></p>
+
+      <div className="overflow-hidden rounded-lg border border-border bg-white shadow-sm">
+        <Table className="w-full table-fixed break-words">
+          <TableHeader>
+            <TableRow className="bg-muted/30 hover:bg-muted/30">
+              <TableHead
+                colSpan={2}
+                className="w-[40%] font-semibold text-foreground"
+              >
+                Intergovernmental Organs & Bodies of
+                <br />
+                Specialized Agencies
+              </TableHead>
+              <TableHead className="w-[30%] font-semibold text-foreground">
+                Official Pages
+              </TableHead>
+              <TableHead className="w-[30%] font-semibold text-foreground">
+                Secretariat Contacts
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {specializedAgencies.map((contact, idx) => {
+              const links = parseRichText(contact.intergov_bodies_link)
+              const secretariat = parseRichText(contact.secretariats)
+              const hasSecretariat = secretariat.filter(Boolean).length > 0
+
+              return (
+                <TableRow key={idx} className="hover:bg-muted/10">
                   <TableCell className="align-top">
                     <div>
                       <div className="font-semibold text-foreground">
@@ -272,39 +341,61 @@ export default function OrgansPage() {
         </Table>
       </div>
 
-      <p className="mt-2 mb-10 text-xs text-muted-foreground">
-        {entityContacts.length} entities listed
-      </p>
+      <p className="mt-2 mb-10" />
 
-      {/* Principal & Subsidiary UN Bodies */}
-      <h2 className="mb-3 text-lg font-semibold text-foreground">
-        Principal &amp; Subsidiary UN Bodies
-      </h2>
-      <div className="rounded-lg border border-border bg-white shadow-sm">
-        <Table>
+      <div className="overflow-hidden rounded-lg border border-border bg-white shadow-sm">
+        <Table className="w-full table-fixed break-words">
           <TableHeader>
             <TableRow className="bg-muted/30 hover:bg-muted/30">
-              <TableHead className="w-60 font-semibold text-foreground">
-                Body
+              <TableHead
+                colSpan={2}
+                className="w-[40%] font-semibold text-foreground"
+              >
+                Intergovernmental Organs & Bodies of
+                <br />
+                Funds and Programmes
               </TableHead>
-              <TableHead className="font-semibold text-foreground">
-                Official Page
+              <TableHead className="w-[30%] font-semibold text-foreground">
+                Official Pages
               </TableHead>
-              <TableHead className="font-semibold text-foreground">
-                Secretariat Contact
+              <TableHead className="w-[30%] font-semibold text-foreground">
+                Secretariat Contacts
               </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {unBodies.map((contact, idx) => {
+            {fundsAndProgrammes.map((contact, idx) => {
               const links = parseRichText(contact.intergov_bodies_link)
               const secretariat = parseRichText(contact.secretariats)
               const hasSecretariat = secretariat.filter(Boolean).length > 0
 
               return (
-                <TableRow key={idx}>
-                  <TableCell className="align-top font-semibold text-foreground">
-                    {contact.governing_bodies.replace(/^[-\s]+/, '').trim()}
+                <TableRow key={idx} className="hover:bg-muted/10">
+                  <TableCell className="align-top">
+                    <div>
+                      <div className="font-semibold text-foreground">
+                        {contact.entity}
+                      </div>
+                      {contact.entity_long && (
+                        <div className="text-xs text-muted-foreground">
+                          {contact.entity_long}
+                        </div>
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell className="align-top text-sm text-foreground">
+                    <ul className="list-disc space-y-0.5 pl-4 marker:text-un-blue">
+                      {parseBulletList(contact.governing_bodies).map(
+                        (item, i) => (
+                          <li
+                            key={i}
+                            className="font-medium text-foreground/75"
+                          >
+                            {item}
+                          </li>
+                        )
+                      )}
+                    </ul>
                   </TableCell>
                   <TableCell className="align-top text-sm">
                     {links.filter(Boolean).length > 0 ? (
@@ -335,9 +426,7 @@ export default function OrgansPage() {
         </Table>
       </div>
 
-      <p className="mt-2 text-xs text-muted-foreground">
-        {unBodies.length} bodies listed
-      </p>
+      <p className="mt-2 mb-6" />
     </div>
   )
 }

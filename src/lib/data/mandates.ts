@@ -30,12 +30,23 @@ function parsePostgresArray(pgArray: string | null): string[] {
   const cleaned = pgArray.trim().replace(/^\{|\}$/g, '')
   if (cleaned === '') return []
   
-  // Match all quoted strings
-  const matches = cleaned.match(/"([^"]*)"/g)
-  if (!matches) return []
-  
-  // Remove quotes and return
-  return matches.map(match => match.slice(1, -1))
+  // Parse CSV respecting quoted strings
+  const result: string[] = []
+  let current = ''
+  let inQuotes = false
+  for (let i = 0; i < cleaned.length; i++) {
+    const ch = cleaned[i]
+    if (ch === '"') {
+      inQuotes = !inQuotes
+    } else if (ch === ',' && !inQuotes) {
+      result.push(current.trim())
+      current = ''
+    } else {
+      current += ch
+    }
+  }
+  if (current.trim()) result.push(current.trim())
+  return result
 }
 
 // ============================================================================
@@ -61,6 +72,9 @@ interface MandateListRow {
   subtitle: string | null
   subject_terms: string | null
   issuing_body: string | null
+  agenda_document_symbol: string | null
+  agenda_item_number: string | null
+  agenda_item_title: string | null
 }
 
 /** Row type for citation query results */
@@ -352,6 +366,9 @@ export async function getMandates(
     subject_headings: parsePostgresArray(row.subject_terms)
       .map(s => titleCase(s.toLowerCase())),
     issuing_body: row.issuing_body || null,
+    agenda_document_symbols: [],
+    agenda_item_numbers: [],
+    agenda_item_titles: [],
     // Empty citation_info - will be loaded separately if needed
     citation_info: [],
   }))
@@ -422,7 +439,10 @@ export async function getMandateBySymbol(symbol: string): Promise<Mandate | null
       m.title,
       m.subtitle,
       m.subject_terms,
-      m.issuing_body
+      m.issuing_body,
+      m.agenda_document_symbol,
+      m.agenda_item_number,
+      m.agenda_item_title
     FROM ppb2026.source_documents d
     LEFT JOIN ppb2026.source_document_citations c
       ON d.ppb_full_document_symbol = c.ppb_full_document_symbol
@@ -432,7 +452,8 @@ export async function getMandateBySymbol(symbol: string): Promise<Mandate | null
     GROUP BY
       d.ppb_full_document_symbol, d.ppb_link, d.ppb_year, d.ppb_body,
       d.ppb_description, d.ppb_type, m.symbol, m.uniform_title,
-      m.proper_title, m.title, m.subtitle, m.subject_terms, m.issuing_body
+      m.proper_title, m.title, m.subtitle, m.subject_terms, m.issuing_body,
+      m.agenda_document_symbol, m.agenda_item_number, m.agenda_item_title
   `
 
   const row = await queryOne<MandateListRow>(query, [symbol])
@@ -459,6 +480,9 @@ export async function getMandateBySymbol(symbol: string): Promise<Mandate | null
     subject_headings: parsePostgresArray(row.subject_terms)
       .map(s => titleCase(s.toLowerCase())),
     issuing_body: row.issuing_body || null,
+    agenda_document_symbols: parsePostgresArray(row.agenda_document_symbol),
+    agenda_item_numbers: parsePostgresArray(row.agenda_item_number),
+    agenda_item_titles: parsePostgresArray(row.agenda_item_title),
     citation_info: citations,
   }
 }
