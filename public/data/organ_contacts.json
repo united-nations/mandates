@@ -126,6 +126,42 @@
     "system_grouping":"Specialized Agencies"
   },
   {
+    "entity":"UN-Habitat",
+    "entity_long":"United Nations Human Settlements Programme",
+    "governing_bodies":"- General Assembly\n- UN-Habitat Assembly\n- Executive Board\n- Committee of Permanent Representatives\n",
+    "intergov_bodies_link":"- <https:\/\/unhabitat.org\/governance>\n",
+    "secretariats":"To be updated\n",
+    "order":null,
+    "system_grouping":"Funds and Programmes"
+  },
+  {
+    "entity":"UNCDF",
+    "entity_long":"United Nations Capital Development Fund",
+    "governing_bodies":"- General Assembly\n- Executive Board (UNDP, UNFPA and UNOPS)\n",
+    "intergov_bodies_link":"- <https:\/\/www.undp.org\/executive-board>\n",
+    "secretariats":"- Secretariat of the Board: <https:\/\/www.undp.org\/executive-board\/secretariat-board>\n\n",
+    "order":null,
+    "system_grouping":"Funds and Programmes"
+  },
+  {
+    "entity":"UNDP",
+    "entity_long":"United Nations Development Programme",
+    "governing_bodies":"- General Assembly\n- Executive Board (UNDP, UNFPA and UNOPS)\n",
+    "intergov_bodies_link":"- <https:\/\/www.undp.org\/executive-board>\n",
+    "secretariats":"- Secretariat of the Board: <https:\/\/www.undp.org\/executive-board\/secretariat-board>\n\n",
+    "order":null,
+    "system_grouping":"Funds and Programmes"
+  },
+  {
+    "entity":"UNEP",
+    "entity_long":"United Nations Environment Programme",
+    "governing_bodies":"- General Assembly\n- United Nations Environment Assembly\n- Committee of Permanent Representatives\n",
+    "intergov_bodies_link":"- <https:\/\/www.unep.org\/environmentassembly\/>\n- <https:\/\/www.unep.org\/cpr>\n",
+    "secretariats":"- UNEA Secretariat: <https:\/\/www.unep.org\/environmentassembly\/unea7\/contacts> \n",
+    "order":null,
+    "system_grouping":"Funds and Programmes"
+  },
+  {
     "entity":"UNESCO",
     "entity_long":"United Nations Educational, Scientific and Cultural Organization",
     "governing_bodies":"- General Conference\n- Executive Board\n",
@@ -133,6 +169,24 @@
     "secretariats":"- Secretariat of the General Conference: <https:\/\/www.unesco.org\/en\/general-conference\/secretariat>\n",
     "order":null,
     "system_grouping":"Specialized Agencies"
+  },
+  {
+    "entity":"UNFPA",
+    "entity_long":"United Nations Population Fund",
+    "governing_bodies":"- General Assembly\n- Executive Board (UNDP, UNFPA and UNOPS)\n",
+    "intergov_bodies_link":"- <https:\/\/www.undp.org\/executive-board>\n",
+    "secretariats":"- Secretariat of the Board: <https:\/\/www.undp.org\/executive-board\/secretariat-board>\n",
+    "order":null,
+    "system_grouping":"Funds and Programmes"
+  },
+  {
+    "entity":"UNICEF",
+    "entity_long":"United Nations Children's Fund",
+    "governing_bodies":"- General Assembly\n- Executive Board\n",
+    "intergov_bodies_link":"- <https:\/\/www.unicef.org\/executiveboard\/>\n",
+    "secretariats":"- Board Secretariat: <https:\/\/www.unicef.org\/executiveboard\/board-secretariat>\n",
+    "order":null,
+    "system_grouping":"Funds and Programmes"
   },
   {
     "entity":"UNIDO",
@@ -151,6 +205,15 @@
     "secretariats":"- Contact to Council of Administration: [ca.secretariat@upu.int](mailto:ca.secretariat@upu.int)\n- Contact to Postal Operations Council: [poc.secretariat@upu.int](http:\/\/poc.secretariat@upu.int)\n",
     "order":null,
     "system_grouping":"Specialized Agencies"
+  },
+  {
+    "entity":"WFP",
+    "entity_long":"World Food Programme",
+    "governing_bodies":"- General Assembly\n- Executive Board\n",
+    "intergov_bodies_link":"- <https:\/\/executiveboard.wfp.org\/>\n",
+    "secretariats":"- Executive Board Secretariat: <https:\/\/executiveboard.wfp.org\/executive-board-secretariat>\n",
+    "order":null,
+    "system_grouping":"Funds and Programmes"
   },
   {
     "entity":"WHO",
