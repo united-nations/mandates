@@ -97,13 +97,21 @@ function buildDocumentFilterClauses(
     paramIndex++
   }
 
-  // Keyword search — full-text on title + LIKE on symbol
+  // Keyword search — full-text on combined fields + LIKE fallback
   if (filters.keyword) {
     const keyword = filters.keyword.trim()
     clauses.push(`(
-      to_tsvector('english', COALESCE(d.title, '')) @@ plainto_tsquery('english', $${paramIndex})
+      to_tsvector('english',
+        COALESCE(d.title, '') || ' ' ||
+        COALESCE(d.proper_title, '') || ' ' ||
+        COALESCE(d.uniform_title::text, '')
+      ) @@ plainto_tsquery('english', $${paramIndex})
       OR LOWER(d.symbol) LIKE $${paramIndex + 1}
       OR LOWER(d.title) LIKE $${paramIndex + 1}
+      OR LOWER(d.proper_title) LIKE $${paramIndex + 1}
+      OR LOWER(d.uniform_title::text) LIKE $${paramIndex + 1}
+      OR LOWER(d.subtitle) LIKE $${paramIndex + 1}
+      OR LOWER(d.subject_terms::text) LIKE $${paramIndex + 1}
     )`)
     params.push(keyword, `%${keyword.toLowerCase()}%`)
     paramIndex += 2
