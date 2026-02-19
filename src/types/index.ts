@@ -105,8 +105,12 @@ export interface OrganWithCount {
   count: number
 }
 
+// Data mode — PPB (default) vs all public.documents
+export type DataMode = 'ppb' | 'documents'
+
 // Filter types
 export interface FilterOptions {
+  mode?: string
   entity?: string
   organ?: string
   crossCitingEntity?: string
@@ -116,6 +120,7 @@ export interface FilterOptions {
   start_year?: string
   end_year?: string
   budget_document?: string
+  document_type?: string
   full_document_symbol?: string
   sort_by?: string
   page?: string
@@ -155,6 +160,9 @@ export interface ApiResponse {
     crossCitations: CrossCitation[]
   }
 
+  // Current data mode
+  mode: DataMode
+
   // Filter options for dropdowns
   filterOptions: {
     programmes: { value: string; count: number }[]
@@ -167,6 +175,7 @@ export interface ApiResponse {
       match_pattern: string
       sort_order: number
     }[]
+    documentTypes?: { value: string; count: number }[]
   }
 
   // Reference data for display

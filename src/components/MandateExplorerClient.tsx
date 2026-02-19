@@ -41,8 +41,10 @@ import { useCallback, useState } from 'react'
 import { OrganListSidebar } from '@/components/Sidebar0rganList'
 import { CrossCitationsSidebar } from '@/components/SidebarCrossCitations'
 import { EntityListSidebar } from '@/components/SidebarEntityList'
+import { ModeToggle } from '@/components/ModeToggle'
 import { Button } from '@/components/ui/button'
 import { useFilters } from '@/contexts/FilterContext'
+import type { DataMode } from '@/types'
 
 interface MandateExplorerClientProps {
   /** Pre-fetched data from Server Component */
@@ -88,6 +90,8 @@ export function MandateExplorerClient({
   // Extract data from props
   const { mandates, pagination, counts, filterOptions, reference, sidebar } =
     data
+  const mode: DataMode = data.mode ?? 'ppb'
+  const isAllMode = mode === 'documents'
   const allOrgans = reference?.organs || []
   const allEntities = reference?.entities || []
   const crossCitations = sidebar?.crossCitations || []
@@ -99,7 +103,11 @@ export function MandateExplorerClient({
         title={explainerTexts.dataCards.sourceDocuments.title}
         value={counts.totalDocuments}
         icon={FileText}
-        description={explainerTexts.dataCards.sourceDocuments.description}
+        description={
+          isAllMode
+            ? 'Total UN documents matching your filters'
+            : explainerTexts.dataCards.sourceDocuments.description
+        }
         isOpen={sourceDocumentsPopover}
         onOpenChange={setSourceDocumentsPopover}
       />
@@ -107,44 +115,54 @@ export function MandateExplorerClient({
         title={
           pageType === 'organ'
             ? 'UN Organ / Body'
-            : explainerTexts.dataCards.unOrgans.title
+            : isAllMode
+              ? 'Issuing Bodies'
+              : explainerTexts.dataCards.unOrgans.title
         }
         value={pageType === 'organ' ? organFilter || '' : counts.totalOrgans}
         icon={Landmark}
-        description={explainerTexts.dataCards.unOrgans.description}
+        description={
+          isAllMode
+            ? 'Distinct issuing bodies in results'
+            : explainerTexts.dataCards.unOrgans.description
+        }
         isOpen={unOrgansPopover}
         onOpenChange={setUnOrgansPopover}
       />
-      <DataCard
-        title={
-          pageType === 'entity'
-            ? 'Entity'
-            : explainerTexts.dataCards.unEntities.title
-        }
-        value={
-          pageType === 'entity' ? entityFilter || '' : counts.totalEntities
-        }
-        icon={Building}
-        description={explainerTexts.dataCards.unEntities.description}
-        isOpen={unEntitiesPopover}
-        onOpenChange={setUnEntitiesPopover}
-      />
-      <DataCard
-        title={
-          pageType === 'entity'
-            ? explainerTexts.dataCards.citationsByEntity.title
-            : explainerTexts.dataCards.citations.title
-        }
-        value={counts.totalCitations}
-        icon={Quote}
-        description={
-          pageType === 'entity'
-            ? explainerTexts.dataCards.citationsByEntity.description
-            : explainerTexts.dataCards.citations.description
-        }
-        isOpen={citationsPopover}
-        onOpenChange={setCitationsPopover}
-      />
+      {!isAllMode && (
+        <DataCard
+          title={
+            pageType === 'entity'
+              ? 'Entity'
+              : explainerTexts.dataCards.unEntities.title
+          }
+          value={
+            pageType === 'entity' ? entityFilter || '' : counts.totalEntities
+          }
+          icon={Building}
+          description={explainerTexts.dataCards.unEntities.description}
+          isOpen={unEntitiesPopover}
+          onOpenChange={setUnEntitiesPopover}
+        />
+      )}
+      {!isAllMode && (
+        <DataCard
+          title={
+            pageType === 'entity'
+              ? explainerTexts.dataCards.citationsByEntity.title
+              : explainerTexts.dataCards.citations.title
+          }
+          value={counts.totalCitations}
+          icon={Quote}
+          description={
+            pageType === 'entity'
+              ? explainerTexts.dataCards.citationsByEntity.description
+              : explainerTexts.dataCards.citations.description
+          }
+          isOpen={citationsPopover}
+          onOpenChange={setCitationsPopover}
+        />
+      )}
     </>
   )
 
@@ -159,7 +177,7 @@ export function MandateExplorerClient({
           scrollPadding: '0 1rem',
         }}
       >
-        <div className="flex min-w-max gap-4 px-4 sm:grid sm:min-w-0 sm:grid-cols-2 sm:px-0 lg:grid-cols-4">
+        <div className={`flex min-w-max gap-4 px-4 sm:grid sm:min-w-0 sm:grid-cols-2 sm:px-0 ${isAllMode ? 'lg:grid-cols-2' : 'lg:grid-cols-4'}`}>
           {dataCardsSection}
         </div>
       </section>
@@ -172,7 +190,7 @@ export function MandateExplorerClient({
               items={[
                 {
                   id: 'organs',
-                  title: 'UN Organs',
+                  title: isAllMode ? 'Issuing Bodies' : 'UN Organs',
                   icon: Landmark,
                   content: (
                     <OrganListSidebar
@@ -188,24 +206,29 @@ export function MandateExplorerClient({
                     />
                   ),
                 },
-                {
-                  id: 'entities',
-                  title: 'UN Entities',
-                  icon: Building,
-                  content: (
-                    <EntityListSidebar
-                      entities={sidebar?.entities || []}
-                      allEntities={allEntities.map((entity) => ({
-                        entity: entity.entity,
-                        entity_long: entity.entity_long,
-                        count: 0,
-                      }))}
-                      hideHeader={true}
-                      borderless={true}
-                      pageType="main"
-                    />
-                  ),
-                },
+                // Only show entities sidebar in PPB mode
+                ...(!isAllMode
+                  ? [
+                      {
+                        id: 'entities',
+                        title: 'UN Entities',
+                        icon: Building,
+                        content: (
+                          <EntityListSidebar
+                            entities={sidebar?.entities || []}
+                            allEntities={allEntities.map((entity) => ({
+                              entity: entity.entity,
+                              entity_long: entity.entity_long,
+                              count: 0,
+                            }))}
+                            hideHeader={true}
+                            borderless={true}
+                            pageType="main"
+                          />
+                        ),
+                      },
+                    ]
+                  : []),
               ]}
             />
           )}
@@ -278,11 +301,20 @@ export function MandateExplorerClient({
             <div className="min-w-0 flex-1">
               {/* Section Title and Sort Controls + FilterControls */}
               <div className="mb-4">
+                {/* Mode toggle — only on main page */}
+                {pageType === 'main' && (
+                  <div className="mb-3">
+                    <ModeToggle currentMode={mode} />
+                  </div>
+                )}
+
                 <div className="mb-2 flex flex-wrap items-center justify-between gap-3">
                   <div className="flex items-center gap-2">
                     <FileText className="h-6 w-6 text-un-blue" />
                     <h2 className="text-2xl font-bold tracking-tight">
-                      {explainerTexts.dataCards.sectionTitle}
+                      {isAllMode
+                        ? 'All UN Documents'
+                        : explainerTexts.dataCards.sectionTitle}
                       {pageType === 'entity' && <> cited by {entityFilter}</>}
                       {pageType === 'organ' && <> issued by {organFilter}</>}
                     </h2>
@@ -314,20 +346,30 @@ export function MandateExplorerClient({
                             Search Relevance
                           </SelectItem>
                         ) : null}
-                        <SelectItem value="citing_entities_desc">
-                          Number of citing entities ↓
-                        </SelectItem>
-                        <SelectItem value="citing_entities_asc">
-                          Number of citing entities ↑
-                        </SelectItem>
-                        <SelectItem value="citations_desc">
-                          Citations ↓
-                        </SelectItem>
-                        <SelectItem value="citations_asc">
-                          Citations ↑
-                        </SelectItem>
+                        {!isAllMode && (
+                          <>
+                            <SelectItem value="citing_entities_desc">
+                              Number of citing entities ↓
+                            </SelectItem>
+                            <SelectItem value="citing_entities_asc">
+                              Number of citing entities ↑
+                            </SelectItem>
+                            <SelectItem value="citations_desc">
+                              Citations ↓
+                            </SelectItem>
+                            <SelectItem value="citations_asc">
+                              Citations ↑
+                            </SelectItem>
+                          </>
+                        )}
                         <SelectItem value="year_desc">Year ↓</SelectItem>
                         <SelectItem value="year_asc">Year ↑</SelectItem>
+                        {isAllMode && (
+                          <>
+                            <SelectItem value="title_asc">Title A→Z</SelectItem>
+                            <SelectItem value="title_desc">Title Z→A</SelectItem>
+                          </>
+                        )}
                       </SelectContent>
                     </Select>
                   </div>
@@ -335,6 +377,7 @@ export function MandateExplorerClient({
                 <FilterControls
                   programmeOptions={filterOptions.programmes}
                   subjectOptions={filterOptions.subjects}
+                  documentTypeOptions={filterOptions.documentTypes}
                   budgetDocuments={filterOptions.budgetDocuments}
                   yearRange={filterOptions.yearRange}
                   yearDistribution={filterOptions.yearDistribution}
@@ -345,6 +388,7 @@ export function MandateExplorerClient({
                   entityFilter={entityFilter}
                   organFilter={organFilter}
                   pageType={pageType}
+                  mode={mode}
                 />
               </div>
               <div className="flex flex-col gap-6 lg:flex-row">
@@ -405,11 +449,13 @@ export function MandateExplorerClient({
                     allOrgans={allOrgans}
                     pageType={pageType}
                   />
-                  <EntityListSidebar
-                    entities={sidebar?.entities || []}
-                    allEntities={allEntities}
-                    pageType={pageType}
-                  />
+                  {!isAllMode && (
+                    <EntityListSidebar
+                      entities={sidebar?.entities || []}
+                      allEntities={allEntities}
+                      pageType={pageType}
+                    />
+                  )}
                 </>
               )}
             </div>

@@ -802,6 +802,7 @@ async function _getMandatePageDataInner(filters: FilterOptions): Promise<ApiResp
       totalOrgans: counts.totalOrgans,
       totalCitations: counts.totalCitations,
     },
+    mode: 'ppb',
     sidebar: {
       entities: entityCounts,
       organs: enrichedOrganCounts,

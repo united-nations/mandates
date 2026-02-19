@@ -31,6 +31,7 @@ import { titleCase } from 'title-case'
 import { explainerTexts } from '@/lib/en_text_contents'
 import { useFilters } from '@/contexts/FilterContext'
 import type { BudgetDocument } from '@/lib/data/budget-documents'
+import type { DataMode } from '@/types'
 
 interface Entity {
   entity: string
@@ -45,6 +46,7 @@ interface Organ {
 interface FilterControlsProps {
   programmeOptions: { value: string; count: number }[]
   subjectOptions: { value: string; count: number }[]
+  documentTypeOptions?: { value: string; count: number }[]
   yearRange: { min: number; max: number } | null
   yearDistribution: { [year: string]: number }
   originalYearDistribution?: { [year: string]: number }
@@ -57,11 +59,13 @@ interface FilterControlsProps {
   entityFilter?: string
   organFilter?: string
   pageType: 'main' | 'entity' | 'organ'
+  mode?: DataMode
 }
 
 export function FilterControls({
   programmeOptions,
   subjectOptions,
+  documentTypeOptions,
   yearRange,
   yearDistribution,
   originalYearDistribution,
@@ -73,6 +77,7 @@ export function FilterControls({
   entityFilter,
   organFilter,
   pageType,
+  mode = 'ppb',
 }: FilterControlsProps) {
   const {
     filters,
@@ -163,11 +168,12 @@ export function FilterControls({
       delete displayFilters.organ
     }
 
-    // Remove pagination, sorting, and keyword from display (keyword is counted separately)
+    // Remove pagination, sorting, keyword, and mode from display (keyword is counted separately)
     delete displayFilters.page
     delete displayFilters.limit
     delete displayFilters.sort_by
     delete displayFilters.keyword
+    delete displayFilters.mode
 
     return displayFilters
   }
@@ -206,19 +212,25 @@ export function FilterControls({
               programme={filters.programme || ''}
               subject={filters.subject || ''}
               budgetDocument={filters.budget_document || ''}
+              documentType={filters.document_type || ''}
               onProgrammeChange={(value) => setFilter('programme', value)}
               onSubjectChange={(value) => setFilter('subject', value)}
               onBudgetDocumentChange={(value) =>
                 setFilter('budget_document', value)
               }
+              onDocumentTypeChange={(value) =>
+                setFilter('document_type', value)
+              }
               programmeOptions={programmeOptions}
               subjectOptions={subjectOptions}
+              documentTypeOptions={documentTypeOptions}
               budgetDocuments={budgetDocuments}
               yearRange={yearRange}
               yearDistribution={yearDistribution}
               originalYearDistribution={originalYearDistribution}
               selectedYearRange={selectedYearRange}
               onYearRangeChange={handleYearRangeChange}
+              mode={mode}
             />
           </div>
         </div>
@@ -392,6 +404,16 @@ export function FilterControls({
                       icon={Receipt}
                       label={`Budget: ${budgetDocuments.find((d) => d.slug === displayFilters.budget_document)?.display_name ?? displayFilters.budget_document}`}
                       onClear={() => clearFilter('budget_document')}
+                      variant="secondary"
+                    />
+                  )}
+
+                {displayFilters.document_type &&
+                  displayFilters.document_type !== 'all' && (
+                    <FilterBadge
+                      icon={Receipt}
+                      label={`Type: ${displayFilters.document_type}`}
+                      onClear={() => clearFilter('document_type')}
                       variant="secondary"
                     />
                   )}

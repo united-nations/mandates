@@ -17,6 +17,7 @@ import {
 import { LoadingFallback } from '@/components/LoadingFallback'
 
 export interface FilterType {
+  mode?: string
   entity?: string
   organ?: string
   crossCitingEntity?: string
@@ -26,6 +27,7 @@ export interface FilterType {
   start_year?: string
   end_year?: string
   budget_document?: string
+  document_type?: string
   sort_by?: string
   page?: string
   limit?: string

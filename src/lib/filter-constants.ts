@@ -5,6 +5,7 @@
 
 // All filter parameters that can be passed to the API
 export const FILTER_PARAMS = [
+  'mode',
   'entity',
   'organ',
   'crossCitingEntity',
@@ -14,6 +15,7 @@ export const FILTER_PARAMS = [
   'start_year',
   'end_year',
   'budget_document',
+  'document_type',
   'sort_by',
   'page',
   'limit',
@@ -30,6 +32,7 @@ export const FILTER_ONLY_PARAMS = [
   'start_year',
   'end_year',
   'budget_document',
+  'document_type',
 ] as const
 
 // Parameters that are handled separately (pagination and sorting)
@@ -37,6 +40,7 @@ export const CONTROL_PARAMS = ['sort_by', 'page', 'limit'] as const
 
 // Additional filter parameters for entity/organ pages (exclude the implicit ones)
 export const ADDITIONAL_FILTER_PARAMS = [
+  'mode',
   'crossCitingEntity',
   'keyword',
   'programme',
@@ -44,6 +48,7 @@ export const ADDITIONAL_FILTER_PARAMS = [
   'start_year',
   'end_year',
   'budget_document',
+  'document_type',
   'sort_by',
   'page',
   'limit',
@@ -67,7 +72,11 @@ export function parseSearchParams(
     return value || undefined
   }
 
+  const mode = getString('mode') || 'ppb'
+  const defaultSort = mode === 'documents' ? 'year_desc' : 'citing_entities_desc'
+
   return {
+    mode,
     entity: getString('entity'),
     organ: getString('organ'),
     crossCitingEntity: getString('crossCitingEntity'),
@@ -77,8 +86,9 @@ export function parseSearchParams(
     start_year: getString('start_year'),
     end_year: getString('end_year'),
     budget_document: getString('budget_document'),
+    document_type: getString('document_type'),
     full_document_symbol: getString('full_document_symbol'),
-    sort_by: getString('sort_by') || 'citing_entities_desc',
+    sort_by: getString('sort_by') || defaultSort,
     page: getString('page') || '1',
     limit: getString('limit') || '10',
   }
