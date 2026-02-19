@@ -36,6 +36,16 @@ interface DocumentListRow {
   entities: string[] | null
   ppb_link: string | null
   ppb_description: string | null
+  // Resolution stats enrichment
+  word_count: number | null
+  similarity_to_previous: string | null // numeric → string from pg
+  previous_symbol: string | null
+  has_within_existing_resources: boolean | null
+  is_recurring_series: boolean | null
+  series_symbol_count: number | null
+  series_first_year: number | null
+  series_last_year: number | null
+  pdf_url: string | null
 }
 
 interface CountsRow {
@@ -147,6 +157,14 @@ function buildDocumentOrderByClause(sortBy?: string): string {
       return 'ORDER BY d.title ASC NULLS LAST'
     case 'title_desc':
       return 'ORDER BY d.title DESC NULLS LAST'
+    case 'word_count_desc':
+      return 'ORDER BY rs.word_count DESC NULLS LAST, d.symbol'
+    case 'word_count_asc':
+      return 'ORDER BY rs.word_count ASC NULLS LAST, d.symbol'
+    case 'similarity_desc':
+      return 'ORDER BY rs.similarity_to_previous DESC NULLS LAST, d.symbol'
+    case 'similarity_asc':
+      return 'ORDER BY rs.similarity_to_previous ASC NULLS LAST, d.symbol'
     default:
       return 'ORDER BY d.date_year DESC NULLS LAST, d.symbol'
   }
@@ -185,16 +203,31 @@ async function getDocuments(
         ARRAY_AGG(DISTINCT c.entity) FILTER (WHERE c.entity IS NOT NULL) as entities,
         sd.ppb_link,
         sd.ppb_description,
+        rs.word_count,
+        rs.similarity_to_previous,
+        rs.previous_symbol,
+        rs.has_within_existing_resources,
+        rs.is_recurring_series,
+        rs.series_symbol_count,
+        rs.series_first_year,
+        rs.series_last_year,
+        rs.pdf_url,
         COUNT(*) OVER() as total_count
       FROM public.documents d
       LEFT JOIN ppb2026.source_documents sd
         ON d.symbol = sd.ppb_full_document_symbol
       LEFT JOIN ppb2026.source_document_citations c
         ON d.symbol = c.ppb_full_document_symbol
+      LEFT JOIN public.resolution_stats rs
+        ON d.symbol = rs.symbol
       ${whereClause}
       GROUP BY d.symbol, d.title, d.proper_title, d.uniform_title,
         d.subtitle, d.date_year, d.issuing_body, d.document_type,
-        d.subject_terms, sd.ppb_link, sd.ppb_description
+        d.subject_terms, sd.ppb_link, sd.ppb_description,
+        rs.word_count, rs.similarity_to_previous, rs.previous_symbol,
+        rs.has_within_existing_resources, rs.is_recurring_series,
+        rs.series_symbol_count, rs.series_first_year, rs.series_last_year,
+        rs.pdf_url
       ${orderBy}
       LIMIT $${params.length + 1} OFFSET $${params.length + 2}
     )
@@ -230,6 +263,15 @@ async function getDocuments(
       issuing_body: row.issuing_body || null,
       subject_headings: subjectTerms.map((s) => titleCase(s.toLowerCase())),
       citation_info: [],
+      word_count: row.word_count ?? null,
+      similarity_to_previous: row.similarity_to_previous != null ? parseFloat(row.similarity_to_previous) : null,
+      previous_symbol: row.previous_symbol ?? null,
+      has_within_existing_resources: row.has_within_existing_resources ?? null,
+      is_recurring_series: row.is_recurring_series ?? null,
+      series_symbol_count: row.series_symbol_count ?? null,
+      series_first_year: row.series_first_year ?? null,
+      series_last_year: row.series_last_year ?? null,
+      pdf_url: row.pdf_url ?? null,
     }
   })
 

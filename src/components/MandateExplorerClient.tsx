@@ -370,6 +370,10 @@ export function MandateExplorerClient({
                             <SelectItem value="title_desc">Title Z→A</SelectItem>
                           </>
                         )}
+                        <SelectItem value="word_count_desc">Length ↓</SelectItem>
+                        <SelectItem value="word_count_asc">Length ↑</SelectItem>
+                        <SelectItem value="similarity_desc">Similarity ↓</SelectItem>
+                        <SelectItem value="similarity_asc">Similarity ↑</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>

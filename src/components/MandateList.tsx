@@ -10,7 +10,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { EntityName } from './EntityName'
-import { FileText, Calendar, Landmark, Info } from 'lucide-react'
+import { FileText, Calendar, Landmark, Info, BarChart2, Copy, Zap } from 'lucide-react'
 import { explainerTexts } from '@/lib/en_text_contents'
 import Link from 'next/link'
 
@@ -113,6 +113,15 @@ export function MandateList({
     }
     return symbol
   }
+
+  // Format word count compactly: 1468 → "1.5k words"
+  const formatWordCount = (count: number): string => {
+    if (count >= 1000) return `${(count / 1000).toFixed(1)}k words`
+    return `${count} words`
+  }
+
+  // Format similarity as percentage: 0.4913 → "49%"
+  const formatSimilarity = (sim: number): string => `${Math.round(sim * 100)}% similar`
 
   // Helper function to generate mandate page URL
   const getMandateUrl = (mandate: Mandate): string => {
@@ -242,6 +251,48 @@ export function MandateList({
                         </TooltipTrigger>
                         <TooltipContent>
                           <p>{explainerTexts.mandateList.year}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    )}
+
+                    {!!mandate.word_count && (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div className="flex items-center gap-1.5">
+                            <BarChart2 className="h-3 w-3 sm:h-4 sm:w-4" />
+                            <span className="font-medium">{formatWordCount(mandate.word_count)}</span>
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Approximate word count of the document</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    )}
+
+                    {mandate.similarity_to_previous != null && mandate.similarity_to_previous >= 0.5 && (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div className="flex items-center gap-1.5">
+                            <Copy className="h-3 w-3 sm:h-4 sm:w-4" />
+                            <span className="font-medium">{formatSimilarity(mandate.similarity_to_previous)}</span>
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Text similarity to the previous document in this recurring series</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    )}
+
+                    {mandate.has_within_existing_resources && (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div className="flex items-center gap-1.5">
+                            <Zap className="h-3 w-3 sm:h-4 sm:w-4" />
+                            <span className="font-medium">Within existing resources</span>
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>This resolution includes language requesting implementation within existing resources</p>
                         </TooltipContent>
                       </Tooltip>
                     )}

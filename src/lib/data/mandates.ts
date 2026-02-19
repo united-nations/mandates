@@ -90,6 +90,16 @@ interface MandateListRow {
   agenda_document_symbol: string | null
   agenda_item_number: string | null
   agenda_item_title: string | null
+  // Resolution stats
+  word_count: number | null
+  similarity_to_previous: string | null // numeric → string from pg
+  previous_symbol: string | null
+  has_within_existing_resources: boolean | null
+  is_recurring_series: boolean | null
+  series_symbol_count: number | null
+  series_first_year: number | null
+  series_last_year: number | null
+  pdf_url: string | null
 }
 
 /** Row type for citation query results */
@@ -290,6 +300,14 @@ function buildOrderByClause(sortBy?: string): string {
       return 'ORDER BY COALESCE(m.date_year, c.ppb_year) DESC NULLS LAST'
     case 'year_asc':
       return 'ORDER BY COALESCE(m.date_year, c.ppb_year) ASC NULLS LAST'
+    case 'word_count_desc':
+      return 'ORDER BY rs.word_count DESC NULLS LAST'
+    case 'word_count_asc':
+      return 'ORDER BY rs.word_count ASC NULLS LAST'
+    case 'similarity_desc':
+      return 'ORDER BY rs.similarity_to_previous DESC NULLS LAST'
+    case 'similarity_asc':
+      return 'ORDER BY rs.similarity_to_previous ASC NULLS LAST'
     default:
       return 'ORDER BY num_entities DESC, num_citations DESC'
   }
@@ -344,11 +362,22 @@ export async function getMandates(
       m.subject_terms,
       m.date_year,
       m.document_type,
-      m.issuing_body
+      m.issuing_body,
+      rs.word_count,
+      rs.similarity_to_previous,
+      rs.previous_symbol,
+      rs.has_within_existing_resources,
+      rs.is_recurring_series,
+      rs.series_symbol_count,
+      rs.series_first_year,
+      rs.series_last_year,
+      rs.pdf_url
 
     FROM counted c
     LEFT JOIN ppb2026.source_documents_metadata_clean m
       ON c.ppb_full_document_symbol = m.ppb_full_document_symbol
+    LEFT JOIN public.resolution_stats rs
+      ON c.ppb_full_document_symbol = rs.symbol
     ${orderBy}
     LIMIT $${params.length + 1} OFFSET $${params.length + 2}
   `
@@ -386,6 +415,15 @@ export async function getMandates(
     agenda_item_titles: [],
     // Empty citation_info - will be loaded separately if needed
     citation_info: [],
+    word_count: row.word_count ?? null,
+    similarity_to_previous: row.similarity_to_previous != null ? parseFloat(row.similarity_to_previous) : null,
+    previous_symbol: row.previous_symbol ?? null,
+    has_within_existing_resources: row.has_within_existing_resources ?? null,
+    is_recurring_series: row.is_recurring_series ?? null,
+    series_symbol_count: row.series_symbol_count ?? null,
+    series_first_year: row.series_first_year ?? null,
+    series_last_year: row.series_last_year ?? null,
+    pdf_url: row.pdf_url ?? null,
   }))
 
   return { mandates, totalCount }
@@ -457,18 +495,33 @@ export async function getMandateBySymbol(symbol: string): Promise<Mandate | null
       m.issuing_body,
       m.agenda_document_symbol,
       m.agenda_item_number,
-      m.agenda_item_title
+      m.agenda_item_title,
+      rs.word_count,
+      rs.similarity_to_previous,
+      rs.previous_symbol,
+      rs.has_within_existing_resources,
+      rs.is_recurring_series,
+      rs.series_symbol_count,
+      rs.series_first_year,
+      rs.series_last_year,
+      rs.pdf_url
     FROM ppb2026.source_documents d
     LEFT JOIN ppb2026.source_document_citations c
       ON d.ppb_full_document_symbol = c.ppb_full_document_symbol
     LEFT JOIN ppb2026.source_documents_metadata_clean m
       ON d.ppb_full_document_symbol = m.ppb_full_document_symbol
+    LEFT JOIN public.resolution_stats rs
+      ON d.ppb_full_document_symbol = rs.symbol
     WHERE d.ppb_full_document_symbol = $1
     GROUP BY
       d.ppb_full_document_symbol, d.ppb_link, d.ppb_year, d.ppb_body,
       d.ppb_description, d.ppb_type, m.symbol, m.uniform_title,
       m.proper_title, m.title, m.subtitle, m.subject_terms, m.issuing_body,
-      m.agenda_document_symbol, m.agenda_item_number, m.agenda_item_title
+      m.agenda_document_symbol, m.agenda_item_number, m.agenda_item_title,
+      rs.word_count, rs.similarity_to_previous, rs.previous_symbol,
+      rs.has_within_existing_resources, rs.is_recurring_series,
+      rs.series_symbol_count, rs.series_first_year, rs.series_last_year,
+      rs.pdf_url
   `
 
   const row = await queryOne<MandateListRow>(query, [symbol])
@@ -503,6 +556,15 @@ export async function getMandateBySymbol(symbol: string): Promise<Mandate | null
     agenda_item_numbers: parsePostgresArray(row.agenda_item_number),
     agenda_item_titles: parsePostgresArray(row.agenda_item_title),
     citation_info: citations,
+    word_count: row.word_count ?? null,
+    similarity_to_previous: row.similarity_to_previous != null ? parseFloat(row.similarity_to_previous) : null,
+    previous_symbol: row.previous_symbol ?? null,
+    has_within_existing_resources: row.has_within_existing_resources ?? null,
+    is_recurring_series: row.is_recurring_series ?? null,
+    series_symbol_count: row.series_symbol_count ?? null,
+    series_first_year: row.series_first_year ?? null,
+    series_last_year: row.series_last_year ?? null,
+    pdf_url: row.pdf_url ?? null,
   }
 }
 

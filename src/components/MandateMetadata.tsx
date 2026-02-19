@@ -119,6 +119,63 @@ export function MandateMetadata({
         )}
       </div>
 
+      {/* Document Analysis — populated from resolution stats pipeline */}
+      {(mandate.word_count != null || mandate.similarity_to_previous != null || mandate.has_within_existing_resources != null || mandate.is_recurring_series) && (
+        <div className="mt-3 border-t pt-3 space-y-0">
+          {mandate.word_count != null && mandate.word_count > 0 && (
+            <MetadataItem label="Word Count">
+              <Badge variant="secondary" className="text-xs">
+                {mandate.word_count.toLocaleString()}
+              </Badge>
+            </MetadataItem>
+          )}
+
+          {mandate.similarity_to_previous != null && (
+            <MetadataItem label="Similarity to Previous">
+              <div className="flex items-center gap-2">
+                <Badge variant="secondary" className="text-xs">
+                  {Math.round(mandate.similarity_to_previous * 100)}%
+                </Badge>
+                {mandate.previous_symbol && (
+                  <a
+                    href={`/mandate/${mandate.previous_symbol.split('/').map(encodeURIComponent).join('/')}`}
+                    className="text-xs text-un-blue hover:underline font-mono"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {mandate.previous_symbol}
+                  </a>
+                )}
+              </div>
+            </MetadataItem>
+          )}
+
+          {mandate.has_within_existing_resources != null && (
+            <MetadataItem label="Within Existing Resources">
+              <Badge
+                variant="secondary"
+                className={`text-xs ${mandate.has_within_existing_resources ? 'bg-amber-100 text-amber-800' : ''}`}
+              >
+                {mandate.has_within_existing_resources ? 'Yes' : 'No'}
+              </Badge>
+            </MetadataItem>
+          )}
+
+          {mandate.is_recurring_series && (
+            <MetadataItem label="Recurring Series">
+              <Badge variant="secondary" className="text-xs">
+                {mandate.series_symbol_count != null ? `${mandate.series_symbol_count} documents` : 'Yes'}
+                {mandate.series_first_year && mandate.series_last_year && mandate.series_first_year !== mandate.series_last_year
+                  ? `, ${mandate.series_first_year}–${mandate.series_last_year}`
+                  : mandate.series_last_year
+                  ? `, ${mandate.series_last_year}`
+                  : ''}
+              </Badge>
+            </MetadataItem>
+          )}
+        </div>
+      )}
+
       {mandate.subject_headings && mandate.subject_headings.length > 0 && (
         <div className="mt-3 border-t pt-3">
           <MetadataItem

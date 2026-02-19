@@ -76,6 +76,17 @@ export interface Mandate {
   agenda_item_numbers: string[]
   agenda_item_titles: string[]
 
+  // Resolution stats (from public.resolution_stats — may be null when not yet computed)
+  word_count?: number | null
+  similarity_to_previous?: number | null
+  previous_symbol?: string | null
+  has_within_existing_resources?: boolean | null
+  is_recurring_series?: boolean | null
+  series_symbol_count?: number | null
+  series_first_year?: number | null
+  series_last_year?: number | null
+  pdf_url?: string | null
+
   // Search-related fields
   searchScore?: number
   highlightedTitle?: string
