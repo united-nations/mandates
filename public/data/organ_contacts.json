@@ -1,0 +1,212 @@
+[
+  {
+    "entity":"FAO",
+    "entity_long":"Food and Agriculture Organization",
+    "governing_bodies":"- Conference\n- Council\n- Council Committees\n- Technical Committees\n- Regional Conferences\n",
+    "intergov_bodies_link":"-  <https:\/\/www.fao.org\/governing-bodies\/en>\n",
+    "secretariats":"- FAO Conference: [fao-conference@fao.org](mailto:fao-conference@fao.org)\n"
+  },
+  {
+    "entity":"ICAO",
+    "entity_long":"International Civil Aviation Organization",
+    "governing_bodies":"- ICAO Assembly\n- ICAO Council\n- ICAO Committee\n",
+    "intergov_bodies_link":"- <https:\/\/www.icao.int\/icao-assembly>\n- <https:\/\/www.icao.int\/icao-council>\n- <https:\/\/www.icao.int\/committees-conference>\n",
+    "secretariats":"To be updated\n"
+  },
+  {
+    "entity":"IFAD",
+    "entity_long":"International Fund for Agricultural Development",
+    "governing_bodies":"- Governing Council\n- Executive Board\n",
+    "intergov_bodies_link":"- <https:\/\/www.ifad.org\/en\/governing-bodies>\n",
+    "secretariats":"To be updated\n"
+  },
+  {
+    "entity":"ILO",
+    "entity_long":"International Labor Organization",
+    "governing_bodies":"- Governing Body of the International Labour Office and its Committees\n- General Conference\n",
+    "intergov_bodies_link":"- <https:\/\/www.ilo.org\/ilo-governing-body>\n",
+    "secretariats":"- Contacts: Participation, credentials and registration of speakers: [governingbody@ilo.org](mailto:governingbody@ilo.org)\n- Amendments, comments and general inquiries: [reloff@ilo.org](mailto:reloff@ilo.org)\n- Prepared statements for interpreters: [interpreterspeeches@ilo.org](mailto:interpreterspeeches@ilo.org)\n- Meeting reservation: [cmu@ilo.org](mailto:cmu@ilo.org)\n"
+  },
+  {
+    "entity":"IMF",
+    "entity_long":"International Monetary Fund",
+    "governing_bodies":"- Board of Governors\n",
+    "intergov_bodies_link":"- <https:\/\/www.imf.org\/en\/about\/factsheets\/sheets\/2022\/how-the-imf-makes-decisions> \n",
+    "secretariats":"To be updated\n"
+  },
+  {
+    "entity":"IMO",
+    "entity_long":"International Maritime Organization",
+    "governing_bodies":"- Assembly\n- Council\n- Five Main Committees\n",
+    "intergov_bodies_link":"- <https:\/\/www.imo.org\/en\/about\/pages\/structure.aspx> \n",
+    "secretariats":"To be updated\n"
+  },
+  {
+    "entity":"ITU",
+    "entity_long":"International Telecommunication Union",
+    "governing_bodies":"- ITU Council\n",
+    "intergov_bodies_link":"- <https:\/\/www.itu.int\/hub\/membership\/how-we-are-governed\/>\n",
+    "secretariats":"- ITU Council: [gbs@itu.int](mailto:gbs@itu.int)\n"
+  },
+  {
+    "entity":"PAHO",
+    "entity_long":"Pan American Health Organization",
+    "governing_bodies":"- The Pan American Sanitary Conference\n- Directing Council\n- Executive Committee\n",
+    "intergov_bodies_link":"- <https:\/\/www.paho.org\/en\/governance> \n",
+    "secretariats":"To be updated\n"
+  },
+  {
+    "entity":"UN Tourism",
+    "entity_long":"World Tourism Organization",
+    "governing_bodies":"- General Assembly\n- Regional Commissions\n- Executive Council\n- Committees\n- Secretariat\n",
+    "intergov_bodies_link":"- <https:\/\/www.untourism.int\/structure>\n",
+    "secretariats":"To be updated\n"
+  },
+  {
+    "entity":"UN-HABITAT",
+    "entity_long":"United Nations Human Settlements Programme",
+    "governing_bodies":"- General Assembly\n- UN-Habitat Assembly\n",
+    "intergov_bodies_link":"- <https:\/\/unhabitat.org\/governance> \n",
+    "secretariats":"To be updated\n"
+  },
+  {
+    "entity":"UNCDF",
+    "entity_long":"United Nations Capital Development Fund",
+    "governing_bodies":"- General Assembly\n- Executive Board (shared with UNDP\/UNFPA\/UNOPS)\n",
+    "intergov_bodies_link":"- <https:\/\/www.undp.org\/executive-board>\n",
+    "secretariats":"- Secretariat Executive Board: <https:\/\/www.undp.org\/executive-board\/secretariat-board>, [mahsa.jafari@undp.org](mailto:mahsa.jafari@undp.org)\n"
+  },
+  {
+    "entity":"UNDP",
+    "entity_long":"United Nations Development Programme",
+    "governing_bodies":"- General Assembly\n- Executive Board (shared with UNDP\/UNFPA\/UNOPS)\n",
+    "intergov_bodies_link":"- <https:\/\/www.undp.org\/executive-board>\n",
+    "secretariats":"- Secretariat Executive Board: <https:\/\/www.undp.org\/executive-board\/secretariat-board>, [mahsa.jafari@undp.org](mailto:mahsa.jafari@undp.org)\n"
+  },
+  {
+    "entity":"UNEP",
+    "entity_long":"United Nations Environment Programme",
+    "governing_bodies":"- General Assembly\n- United Nations Environment Assembly\n",
+    "intergov_bodies_link":"- UN Environment Assembly: <https:\/\/www.unep.org\/environmentassembly\/>\n- UN Environment Committee of Permanent Representative: <https:\/\/www.unep.org\/cpr>\n",
+    "secretariats":"- UN Environment Assembly: <https:\/\/www.unep.org\/environmentassembly\/unea7\/contacts> \n"
+  },
+  {
+    "entity":"UNESCO",
+    "entity_long":"United Nations Educational, Scientific and Cultural Organization",
+    "governing_bodies":"- General Conference\n- Executive Board\n",
+    "intergov_bodies_link":"- <https:\/\/www.unesco.org\/en\/legal-affairs\/governing-bodies>\n",
+    "secretariats":"- Secretariat of the General Conference: <https:\/\/www.unesco.org\/en\/general-conference\/secretariat>\n"
+  },
+  {
+    "entity":"UNFPA",
+    "entity_long":"United Nations Population Fund",
+    "governing_bodies":"- General Assembly\n- Executive Board\n",
+    "intergov_bodies_link":"- <https:\/\/www.undp.org\/executive-board>\n",
+    "secretariats":"- Secretariat EB: <https:\/\/www.undp.org\/executive-board\/secretariat-board>, [mahsa.jafari@undp.org](mailto:mahsa.jafari@undp.org)\n"
+  },
+  {
+    "entity":"UNICEF",
+    "entity_long":"United Nations Children's Fund",
+    "governing_bodies":"- General Assembly\n- Executive Board\n",
+    "intergov_bodies_link":"- <https:\/\/www.unicef.org\/executiveboard\/>\n",
+    "secretariats":"- Secretariat EB: <https:\/\/www.unicef.org\/executiveboard\/board-secretariat>\n"
+  },
+  {
+    "entity":"UNIDO",
+    "entity_long":"United Nations Industrial Development Organization",
+    "governing_bodies":"- General Conference\n- Industrial Development Board\n- Programme and Budget Committee\n",
+    "intergov_bodies_link":"- <https:\/\/www.unido.org\/who-we-are\/structure>\n",
+    "secretariats":"To be updated\n"
+  },
+  {
+    "entity":"UPU",
+    "entity_long":"Universal Postal Union",
+    "governing_bodies":"- Congress\n- Council of Administration\n- Postal Operations Council\n- International Bureau\n",
+    "intergov_bodies_link":"- <https:\/\/www.upu.int\/en\/universal-postal-union\/about-upu\/bodies>\n",
+    "secretariats":"- Contact to Council of Administration: [ca.secretariat@upu.int](mailto:ca.secretariat@upu.int)\n- Contact to Postal Operations Council: [poc.secretariat@upu.int](http:\/\/poc.secretariat@upu.int)\n"
+  },
+  {
+    "entity":"WFP",
+    "entity_long":"World Food Programme",
+    "governing_bodies":"- General Assembly\n- Executive Board\n",
+    "intergov_bodies_link":"- <https:\/\/executiveboard.wfp.org\/>\n",
+    "secretariats":"- Secretariat Executive Board: <https:\/\/executiveboard.wfp.org\/executive-board-secretariat>\n"
+  },
+  {
+    "entity":"WHO",
+    "entity_long":"World Health Organization",
+    "governing_bodies":"- World Health Assembly\n- Executive Board\n",
+    "intergov_bodies_link":"- <https:\/\/www.who.int\/about\/governance\/executive-board>\n",
+    "secretariats":"To be updated\n"
+  },
+  {
+    "entity":"WIPO",
+    "entity_long":"World Intellectual Property Organization",
+    "governing_bodies":"- WIPO General Assembly\n- Assemblies of the Member States of each Union\n- WIPO Coordination Committee\n- WIPO Conference\n",
+    "intergov_bodies_link":"- <https:\/\/www.wipo.int\/en\/web\/assemblies> \n",
+    "secretariats":"- Contact page for the Assemblies of the MS: <https:\/\/www3.wipo.int\/contact\/en\/area.jsp?area=assemblies> \n"
+  },
+  {
+    "entity":"WMO",
+    "entity_long":"World Meteorological Organization",
+    "governing_bodies":"- World Meteorological Congress\n- Executive Council\n- Regional Associations\n- Technical Commissions\n- Secretariat\n",
+    "intergov_bodies_link":"- <https:\/\/wmo.int\/about-wmo\/governance>\n",
+    "secretariats":"To be updated\n"
+  },
+  {
+    "entity":"World Bank",
+    "entity_long":"World Bank",
+    "governing_bodies":"- Board of Governors\n",
+    "intergov_bodies_link":"- <https:\/\/www.worldbank.org\/en\/about\/leadership\/governors> \n",
+    "secretariats":"To be updated\n"
+  },
+  {
+    "entity":null,
+    "entity_long":null,
+    "governing_bodies":"Human Rights Council\n",
+    "intergov_bodies_link":"- <https:\/\/www.ohchr.org\/en\/hrbodies\/hrc\/home>\n",
+    "secretariats":"- OHCHR Human Rights Council Branch (HRCB): <https:\/\/www.ohchr.org\/en\/contact-us>\n"
+  },
+  {
+    "entity":null,
+    "entity_long":null,
+    "governing_bodies":"Disarmament Commission\n",
+    "intergov_bodies_link":"- <https:\/\/disarmament.unoda.org\/en\/united-nations-disarmament-commission>\n",
+    "secretariats":"To be updated\n"
+  },
+  {
+    "entity":null,
+    "entity_long":null,
+    "governing_bodies":"International Law Commision\n",
+    "intergov_bodies_link":"- <https:\/\/legal.un.org\/ilc\/>\n",
+    "secretariats":"To be updated\n"
+  },
+  {
+    "entity":null,
+    "entity_long":null,
+    "governing_bodies":"ECOSOC\n",
+    "intergov_bodies_link":"- <https:\/\/ecosoc.un.org\/en>\n",
+    "secretariats":"- ECOSOC Secretariat: <https:\/\/ecosoc.un.org\/en\/about-us\/contact>\n"
+  },
+  {
+    "entity":null,
+    "entity_long":null,
+    "governing_bodies":"General Assembly\n",
+    "intergov_bodies_link":"- <https:\/\/www.un.org\/en\/ga\/>\n",
+    "secretariats":"- General Assembly Secretariat: <https:\/\/www.un.org\/en\/ga\/about\/secretariat.shtml>\n"
+  },
+  {
+    "entity":null,
+    "entity_long":null,
+    "governing_bodies":"United Nations Commission on International Trade Law\n",
+    "intergov_bodies_link":"- <https:\/\/uncitral.un.org\/>\n",
+    "secretariats":"- Contact to UNCITRAL: [uncitral@un.org](mailto:uncitral@un.org)\n"
+  },
+  {
+    "entity":null,
+    "entity_long":null,
+    "governing_bodies":"Security Council\n",
+    "intergov_bodies_link":"- <https:\/\/main.un.org\/securitycouncil\/en>\n",
+    "secretariats":"- Security Council Affairs Division: <https:\/\/main.un.org\/securitycouncil\/en\/content\/secretariat-branch>\n"
+  }
+]
