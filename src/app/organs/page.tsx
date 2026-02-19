@@ -1,10 +1,10 @@
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from '@/components/ui/table'
 import { Building2, ExternalLink, Mail } from 'lucide-react'
 import contactsData from '../../../public/data/organ_contacts.json'
@@ -266,9 +266,9 @@ export default function OrgansPage() {
                 colSpan={2}
                 className="w-[40%] font-semibold text-foreground"
               >
-                Intergovernmental Organs & Bodies
+                Intergovernmental Organs & Bodies of
                 <br />
-                of Specialized Agencies
+                Specialized Agencies
               </TableHead>
               <TableHead className="w-[30%] font-semibold text-foreground">
                 Official Pages
@@ -351,9 +351,9 @@ export default function OrgansPage() {
                 colSpan={2}
                 className="w-[40%] font-semibold text-foreground"
               >
-                Intergovernmental Organs & Bodies
+                Intergovernmental Organs & Bodies of
                 <br />
-                of Funds and Programmes
+                Funds and Programmes
               </TableHead>
               <TableHead className="w-[30%] font-semibold text-foreground">
                 Official Pages
