@@ -1,10 +1,10 @@
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
 } from '@/components/ui/table'
 import { Building2, ExternalLink, Mail } from 'lucide-react'
 import contactsData from '../../../public/data/organ_contacts.json'
@@ -16,6 +16,7 @@ interface OrganContact {
   intergov_bodies_link: string
   secretariats: string
   order: string | null
+  system_grouping: string | null
 }
 
 /**
@@ -159,6 +160,13 @@ export default function OrgansPage() {
     .filter((c) => c.entity)
     .sort((a, b) => a.entity!.localeCompare(b.entity!))
 
+  const specializedAgencies = entityContacts.filter(
+    (c) => c.system_grouping === 'Specialized Agencies'
+  )
+  const fundsAndProgrammes = entityContacts.filter(
+    (c) => c.system_grouping === 'Funds and Programmes'
+  )
+
   const unBodies = allContacts
     .filter((c) => !c.entity)
     .sort((a, b) => {
@@ -215,7 +223,7 @@ export default function OrgansPage() {
               const hasSecretariat = secretariat.filter(Boolean).length > 0
 
               return (
-                <TableRow key={idx}>
+                <TableRow key={idx} className="hover:bg-muted/10">
                   <TableCell className="align-top font-semibold text-foreground">
                     {contact.governing_bodies.replace(/^[-\s]+/, '').trim()}
                   </TableCell>
@@ -271,13 +279,13 @@ export default function OrgansPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {entityContacts.map((contact, idx) => {
+            {specializedAgencies.map((contact, idx) => {
               const links = parseRichText(contact.intergov_bodies_link)
               const secretariat = parseRichText(contact.secretariats)
               const hasSecretariat = secretariat.filter(Boolean).length > 0
 
               return (
-                <TableRow key={idx}>
+                <TableRow key={idx} className="hover:bg-muted/10">
                   <TableCell className="align-top">
                     <div>
                       <div className="font-semibold text-foreground">
@@ -333,9 +341,92 @@ export default function OrgansPage() {
         </Table>
       </div>
 
-      <p className="mt-2 text-xs text-muted-foreground">
-        {entityContacts.length} entities listed
-      </p>
+      <p className="mt-2 mb-10" />
+
+      <div className="overflow-hidden rounded-lg border border-border bg-white shadow-sm">
+        <Table className="w-full table-fixed break-words">
+          <TableHeader>
+            <TableRow className="bg-muted/30 hover:bg-muted/30">
+              <TableHead
+                colSpan={2}
+                className="w-[40%] font-semibold text-foreground"
+              >
+                Intergovernmental Organs & Bodies
+                <br />
+                of Funds and Programmes
+              </TableHead>
+              <TableHead className="w-[30%] font-semibold text-foreground">
+                Official Pages
+              </TableHead>
+              <TableHead className="w-[30%] font-semibold text-foreground">
+                Secretariat Contacts
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {fundsAndProgrammes.map((contact, idx) => {
+              const links = parseRichText(contact.intergov_bodies_link)
+              const secretariat = parseRichText(contact.secretariats)
+              const hasSecretariat = secretariat.filter(Boolean).length > 0
+
+              return (
+                <TableRow key={idx} className="hover:bg-muted/10">
+                  <TableCell className="align-top">
+                    <div>
+                      <div className="font-semibold text-foreground">
+                        {contact.entity}
+                      </div>
+                      {contact.entity_long && (
+                        <div className="text-xs text-muted-foreground">
+                          {contact.entity_long}
+                        </div>
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell className="align-top text-sm text-foreground">
+                    <ul className="list-disc space-y-0.5 pl-4 marker:text-un-blue">
+                      {parseBulletList(contact.governing_bodies).map(
+                        (item, i) => (
+                          <li
+                            key={i}
+                            className="font-medium text-foreground/75"
+                          >
+                            {item}
+                          </li>
+                        )
+                      )}
+                    </ul>
+                  </TableCell>
+                  <TableCell className="align-top text-sm">
+                    {links.filter(Boolean).length > 0 ? (
+                      <ul className="list-disc space-y-0.5 pl-4 marker:text-un-blue">
+                        {links}
+                      </ul>
+                    ) : (
+                      <span className="text-xs text-muted-foreground italic">
+                        —
+                      </span>
+                    )}
+                  </TableCell>
+                  <TableCell className="align-top text-sm">
+                    {hasSecretariat ? (
+                      <ul className="list-disc space-y-0.5 pl-4 marker:text-un-blue">
+                        {secretariat}
+                      </ul>
+                    ) : (
+                      <span className="text-xs text-muted-foreground italic">
+                        To be updated
+                      </span>
+                    )}
+                  </TableCell>
+                </TableRow>
+              )
+            })}
+          </TableBody>
+        </Table>
+      </div>
+
+      <p className="mt-2 mb-6" />
     </div>
   )
 }
