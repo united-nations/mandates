@@ -1,18 +1,20 @@
-// Core data types based on the JSON structure
+// Core data types based on the DB schema (mandates.paragraphs)
 export interface Paragraph {
+  /** UUID from mandates.paragraphs */
+  id?: string
+  /** 0-based position within the document */
+  position?: number
   text: string
-  is_frontmatter: boolean
   type: string // "title", "paragraph", "heading", etc.
   heading_level: number | null
   paragraph_type: string | null // "preambular", "operative", etc.
   paragraph_level: number | null
-  prefix: string | null // "1.", "2.", etc. - renamed from paragraph_prefix, can also apply to headers
-  links: [string, string][] | [] // Array of [text, url] tuples
-  language: string | null // Language of the text block
-  symbol?: string
-  index?: number
+  prefix: string | null // "1.", "(a)", "(i)", etc.
+  /** Links from mandates.paragraph_links: [linked_symbol, linked_url] pairs */
+  links: [string, string][] | []
   mandates?: {
     action_verb: string
+    action_verb_normalized?: string
     action_verb_type: string
     assignees: {
       assignee: string
@@ -30,7 +32,10 @@ export interface Paragraph {
       deliverable_type: string
     }[]
   }[]
+  /** NLP highlight annotations (from text_with_highlights column) */
   textWithHighlights?: string
+  /** Uncertainty annotations from the extraction pipeline */
+  uncertainties?: string
 }
 
 export interface Mandate {

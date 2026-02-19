@@ -6,6 +6,7 @@ import { FileText } from 'lucide-react'
 import { getMandateBySymbol } from '@/lib/data/mandates'
 import { getAllEntities } from '@/lib/data/entities'
 import { getBudgetDocuments } from '@/lib/data/budget-documents'
+import { getParagraphsBySymbol } from '@/lib/data/paragraphs'
 import { ParagraphsSection } from '@/components/ParagraphSection'
 import { CitationCounts } from '@/components/CitationCounts'
 import { MandateMetadata } from '@/components/MandateMetadata'
@@ -19,10 +20,11 @@ export default async function MandatePage({ params }: MandatePageProps) {
   const { segments } = await params
   const documentSymbol = decodeUrlSegments(segments)
 
-  const [mandate, entities, budgetDocuments] = await Promise.all([
+  const [mandate, entities, budgetDocuments, paragraphs] = await Promise.all([
     getMandateBySymbol(documentSymbol),
     getAllEntities(),
     getBudgetDocuments(),
+    getParagraphsBySymbol(documentSymbol),
   ])
 
   if (!mandate) notFound()
@@ -72,7 +74,7 @@ export default async function MandatePage({ params }: MandatePageProps) {
         <MandateMetadata mandate={mandate} budgetDocuments={budgetDocuments} />
         <CitationCounts mandate={mandate} entities={entities} />
         <ParagraphsSection
-          paragraphs={[]}
+          paragraphs={paragraphs}
           documentSymbol={documentSymbol}
           isLoading={false}
           error={null}
