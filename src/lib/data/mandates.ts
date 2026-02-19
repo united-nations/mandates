@@ -258,9 +258,9 @@ function buildOrderByClause(sortBy?: string): string {
     case 'citations_asc':
       return 'ORDER BY CASE WHEN num_entities = 0 THEN 0 ELSE num_citations END ASC'
     case 'year_desc':
-      return 'ORDER BY d.ppb_year DESC NULLS LAST'
+      return 'ORDER BY COALESCE(m.date_year, c.ppb_year) DESC NULLS LAST'
     case 'year_asc':
-      return 'ORDER BY d.ppb_year ASC NULLS LAST'
+      return 'ORDER BY COALESCE(m.date_year, c.ppb_year) ASC NULLS LAST'
     default:
       return 'ORDER BY num_entities DESC, num_citations DESC'
   }
