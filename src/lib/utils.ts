@@ -141,27 +141,37 @@ function cleanTitle(title: string): string {
 }
 
 /**
+ * Core title formatting logic shared across mandate page and insights table.
+ * - Security Council: uses the catalogue `title` field
+ * - All others: uses `proper_title` only (no PPB description fallback)
+ */
+export function formatDocumentTitle(
+  title: string | null | undefined,
+  proper_title: string | null | undefined,
+  issuing_body: string | null | undefined
+): string {
+  if (issuing_body === 'Security Council') {
+    if (title && title.trim()) {
+      return titleCase(cleanTitle(title).toLowerCase())
+    }
+  }
+  if (proper_title && proper_title.trim()) {
+    const cleaned = cleanTitle(proper_title)
+    if (cleaned) return titleCase(cleaned.toLowerCase())
+  }
+  return 'Untitled'
+}
+
+/**
  * Get the display title for a mandate using the same logic as the API
  * This ensures consistency across all components
  */
 export function getMandateDisplayTitle(mandate: Mandate): string {
-  // Security Council resolutions use the catalogue title field directly
-  if (mandate.issuing_body === 'Security Council') {
-    if (mandate.title && mandate.title.trim()) {
-      return titleCase(cleanTitle(mandate.title).toLowerCase())
-    }
-  }
-  // 1. proper_title from source_documents_metadata_clean (strip trailing colon)
-  if (mandate.proper_title && mandate.proper_title.trim()) {
-    const cleaned = cleanTitle(mandate.proper_title).replace(/:$/, '').trim()
-    if (cleaned) return titleCase(cleaned.toLowerCase())
-  }
-  // 2. ppb_description from source_documents
-  if (mandate.description && mandate.description.trim()) {
-    return titleCase(cleanTitle(mandate.description).toLowerCase())
-  }
-  // Final fallback
-  return 'Untitled'
+  return formatDocumentTitle(
+    mandate.title,
+    mandate.proper_title,
+    mandate.issuing_body
+  )
 }
 
 /**

@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/tooltip'
 import { FilterProvider } from '@/contexts/FilterContext'
 import {
+  BarChart2,
   BookOpen,
   ExternalLink,
   Home,
@@ -41,6 +42,7 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const isMainPage = pathname === '/'
   const isDiffPage = pathname === '/diff'
+  const isInsightsPage = pathname === '/insights'
 
   return (
     <>
@@ -102,7 +104,7 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
                       variant="ghost"
                       size="icon"
                       aria-label="Open navigation menu"
-                      className="inline-flex h-auto shrink-0 items-center gap-1 bg-trout! px-2 py-1 text-xs text-white! hover:bg-trout/90! sm:gap-2 sm:px-2.5 sm:py-1.5 sm:text-sm"
+                      className="inline-flex h-auto shrink-0 items-center gap-1 bg-trout! px-2 py-1 text-xs text-white! shadow hover:bg-trout/90! sm:gap-2 sm:px-2.5 sm:py-1.5 sm:text-sm"
                     >
                       <Menu className="h-3 w-3 sm:h-4 sm:w-4" />
                     </Button>
@@ -129,6 +131,30 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
                       )}
                     </DropdownMenuItem>
                     <DropdownMenuItem
+                      asChild={pathname !== '/insights'}
+                      className={
+                        pathname === '/insights'
+                          ? 'cursor-default text-muted-foreground opacity-60'
+                          : ''
+                      }
+                    >
+                      {pathname === '/insights' ? (
+                        <span className="flex items-center gap-2">
+                          <BarChart2 className="h-4 w-4" />
+                          Insights
+                        </span>
+                      ) : (
+                        <Link
+                          href="/insights"
+                          className="flex items-center gap-2"
+                        >
+                          <BarChart2 className="h-4 w-4" />
+                          Insights
+                        </Link>
+                      )}
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem
                       asChild={pathname !== '/methodology'}
                       className={
                         pathname === '/methodology'
@@ -151,6 +177,7 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
                         </Link>
                       )}
                     </DropdownMenuItem>
+
                     <DropdownMenuItem
                       asChild={pathname !== '/resources'}
                       className={
@@ -180,14 +207,16 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
             </div>
           </header>
 
-          {/* Back Button - shown on all pages except main page and diff page */}
-          {!isMainPage && !isDiffPage && (
+          {/* Back Button - shown on all pages except main page, diff page and insights page */}
+          {!isMainPage && !isDiffPage && !isInsightsPage && (
             <div className="mx-auto mb-2 w-full max-w-4xl px-8 pt-6 sm:px-12 lg:max-w-6xl lg:px-16 xl:max-w-7xl">
               <BackButton />
             </div>
           )}
 
-          <main className="mx-auto w-full max-w-4xl px-8 py-6 sm:px-12 lg:max-w-6xl lg:px-16 xl:max-w-7xl">
+          <main
+            className={`mx-auto w-full px-8 py-6 sm:px-12 lg:px-16 ${isInsightsPage ? 'max-w-none xl:max-w-screen-2xl' : 'max-w-4xl lg:max-w-6xl xl:max-w-7xl'}`}
+          >
             {children}
           </main>
 

@@ -21,7 +21,7 @@ interface OrganRow {
 export const getAllOrgans = unstable_cache(
   async (): Promise<Organ[]> => {
     const rows = await queryMany<OrganRow>(
-      `SELECT short, long, website FROM ppb2026.organs ORDER BY sort_order`,
+      `SELECT short, long, website FROM ppb2026.organs ORDER BY sort_order ASC NULLS LAST, short ASC`,
       []
     )
     return rows.map((r) => ({
