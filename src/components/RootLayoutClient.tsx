@@ -197,21 +197,23 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
           </main>
 
           {/* Fixed Feedback Button */}
-          <Button
-            asChild
-            className="fixed right-6 bottom-6 z-50 shadow-lg transition-shadow hover:shadow-xl"
-            size="default"
-          >
-            <a
-              href="https://airtable.com/appId4rDWaFTpzNWz/pagpU0nMIhQMQPICL/form"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2"
+          {!isResolutionsPage && (
+            <Button
+              asChild
+              className="fixed right-6 bottom-6 z-50 shadow-lg transition-shadow hover:shadow-xl"
+              size="default"
             >
-              <MessageCircle className="h-4 w-4" />
-              Give Feedback
-            </a>
-          </Button>
+              <a
+                href="https://airtable.com/appId4rDWaFTpzNWz/pagpU0nMIhQMQPICL/form"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2"
+              >
+                <MessageCircle className="h-4 w-4" />
+                Give Feedback
+              </a>
+            </Button>
+          )}
 
           {/* UN80 Logo with UN20 Animation - fixed at bottom */}
           <AnimatedLogo />

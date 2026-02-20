@@ -616,7 +616,7 @@ export default function DocumentTable<T extends BaseDocument>({
           onChange={(e) => setTitleSearchInput(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Press Enter to search..."
-          className={`h-6 px-2 text-xs ${isFiltered ? 'border-2 border-un-blue' : ''}`}
+          className={`h-6.5 rounded-md border px-2 text-xs transition-colors ${isFiltered ? 'border-2 border-un-blue' : 'border-gray-200 hover:border-gray-300'}`}
         />
         {isFiltered && (
           <button
@@ -650,48 +650,48 @@ export default function DocumentTable<T extends BaseDocument>({
       className="max-w-[20rem] truncate sm:max-w-[24rem] md:max-w-md lg:max-w-lg xl:max-w-160"
       title={row.title || row.combined_title}
     >
-      <span className="font-medium">{row.title || row.combined_title}</span>
+      <span className="font-normal">{row.title || row.combined_title}</span>
     </div>
   )
 
   const symbolTemplate = (row: T) => (
-    <div className="font-mono text-sm">
+    <div className="font-mono text-[0.8125rem] tracking-tight">
       {row.url ? (
         <a
           href={row.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-un-blue hover:text-un-blue/80 hover:underline"
+          className="text-un-blue transition-colors hover:text-un-blue/70 hover:underline"
         >
           {row.symbol}
         </a>
       ) : (
-        <span>{row.symbol}</span>
+        <span className="text-muted-foreground">{row.symbol}</span>
       )}
     </div>
   )
 
   const yearTemplate = (row: T) => (
-    <div>{row.year === 0 ? 'N/A' : row.year}</div>
+    <div className="tabular-nums text-muted-foreground">
+      {row.year === 0 ? <span className="text-gray-400">N/A</span> : row.year}
+    </div>
   )
 
   const lengthTemplate = (row: T) => {
     if (!row.word_count)
       return (
-        <div>
-          <span className="text-gray-400">N/A</span>
-        </div>
+        <div className="text-gray-400">N/A</div>
       )
     const roundedCount = Math.round(row.word_count / 50) * 50
-    return <div>~{roundedCount.toLocaleString()}</div>
+    return <div className="tabular-nums">~{roundedCount.toLocaleString()}</div>
   }
 
   const recurrenceTemplate = (row: T) => (
     <Tooltip>
       <TooltipTrigger asChild>
-        <div className="cursor-help text-sm">
-          <div className="font-medium">{row.series_symbol_count} total</div>
-          <div className="text-muted-foreground">
+        <div className="cursor-help">
+          <div className="tabular-nums font-medium">{row.series_symbol_count} total</div>
+          <div className="tabular-nums text-xs text-muted-foreground">
             {row.series_first_year === 0 || row.series_last_year === 0
               ? 'N/A'
               : row.series_first_year === row.series_last_year
@@ -720,7 +720,7 @@ export default function DocumentTable<T extends BaseDocument>({
 
   const frequencyTemplate = (row: T) => {
     if (row.series_symbol_count === 1) {
-      return <div className="text-sm">One-time</div>
+      return <div className="text-muted-foreground">One-time</div>
     }
 
     if (
@@ -735,7 +735,7 @@ export default function DocumentTable<T extends BaseDocument>({
       return (
         <Tooltip>
           <TooltipTrigger asChild>
-            <div className="cursor-help text-sm">{displayText}</div>
+            <div className="cursor-help">{displayText}</div>
           </TooltipTrigger>
           <TooltipContent className="p-0">
             {row.previous_symbol ? (
@@ -758,7 +758,7 @@ export default function DocumentTable<T extends BaseDocument>({
       )
     }
 
-    return <div className="text-sm text-gray-400">N/A</div>
+    return <div className="text-gray-400">N/A</div>
   }
 
   const similarityTemplate = (row: T) => {
@@ -767,9 +767,11 @@ export default function DocumentTable<T extends BaseDocument>({
       return <div className="text-gray-400">N/A</div>
     }
 
-    const red = Math.round(similarity * 255)
-    const green = Math.round((1 - similarity) * 255)
-    const color = `rgb(${red}, ${green}, 0)`
+    // Use a more refined color scale (muted warm to cool)
+    const hue = (1 - similarity) * 120 // 120 (green) to 0 (red)
+    const saturation = 55
+    const lightness = 42
+    const color = `hsl(${hue}, ${saturation}%, ${lightness}%)`
 
     let interpretation = ''
     if (similarity < 0.2) interpretation = 'Very different'
@@ -781,7 +783,7 @@ export default function DocumentTable<T extends BaseDocument>({
     return (
       <Tooltip>
         <TooltipTrigger asChild>
-          <div style={{ color }} className="cursor-help">
+          <div style={{ color }} className="cursor-help tabular-nums font-medium">
             ~{similarity.toFixed(2)}
           </div>
         </TooltipTrigger>
@@ -823,13 +825,13 @@ export default function DocumentTable<T extends BaseDocument>({
     }
 
     return (
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5">
         {resolution.has_within_existing_resources ? (
-          <Check className="h-4 w-4 text-faded-jade" />
+          <Check className="h-3.5 w-3.5 text-faded-jade" />
         ) : (
-          <X className="h-4 w-4 text-au-chico" />
+          <X className="h-3.5 w-3.5 text-au-chico" />
         )}
-        <span className="text-sm text-muted-foreground">
+        <span className="tabular-nums text-muted-foreground">
           ({resolution.count_within_existing_resources || 0})
         </span>
       </div>
@@ -839,7 +841,7 @@ export default function DocumentTable<T extends BaseDocument>({
   const similarityHeaderTemplate = () => (
     <Tooltip>
       <TooltipTrigger asChild>
-        <span className="cursor-help">Similarity</span>
+        <span className="cursor-help border-b border-dashed border-current">Similarity</span>
       </TooltipTrigger>
       <TooltipContent>
         <p>
@@ -854,13 +856,13 @@ export default function DocumentTable<T extends BaseDocument>({
   const withinResourcesHeaderTemplate = () => (
     <Tooltip>
       <TooltipTrigger asChild>
-        <span className="cursor-help">Within Resources</span>
+        <span className="cursor-help border-b border-dashed border-current">Within Resources</span>
       </TooltipTrigger>
       <TooltipContent>
         <p>
           Shows if a resolution includes
           <br />
-          "within existing resources" and how often
+          &ldquo;within existing resources&rdquo; and how often
         </p>
       </TooltipContent>
     </Tooltip>
@@ -868,7 +870,8 @@ export default function DocumentTable<T extends BaseDocument>({
 
   const lengthHeaderTemplate = () => (
     <span>
-      Length <span className="font-normal text-muted-foreground">[words]</span>
+      Length{' '}
+      <span className="text-xs font-normal text-muted-foreground">[words]</span>
     </span>
   )
 
@@ -932,8 +935,8 @@ export default function DocumentTable<T extends BaseDocument>({
       </Button>
     ),
     CurrentPageReport: () => (
-      <div className="mt-2 w-full text-center text-sm text-muted-foreground">
-        Page {pagination.page} of {pagination.totalPages} •{' '}
+      <div className="mt-2 w-full text-center text-xs tabular-nums text-muted-foreground">
+        Page {pagination.page} of {pagination.totalPages} &middot;{' '}
         {pagination.total.toLocaleString()} items total
       </div>
     ),
@@ -1012,12 +1015,11 @@ export default function DocumentTable<T extends BaseDocument>({
         </div>
       )}
 
-      <div className="mx-auto mt-8 max-w-[95vw] overflow-x-auto px-4">
+      <div className="mx-auto mt-4 max-w-[95vw] overflow-x-auto px-4 pb-6">
         <DataTable
           value={documents}
           loading={loading}
           stripedRows
-          showGridlines
           size="small"
           tableStyle={{ width: '100%', minWidth: '1200px' }}
           paginator

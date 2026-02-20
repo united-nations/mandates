@@ -249,21 +249,55 @@ mark {
 }
 
 /* PrimeReact DataTable custom styling with UN Blue */
+
+/* Global table wrapper - clean borders */
+.custom-table .p-datatable-wrapper {
+  border: 1px solid var(--color-gray-200);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+/* Remove default PrimeReact outer borders since wrapper handles it */
+.custom-table .p-datatable-table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+/* Header row */
 .custom-table .p-datatable-thead > tr > th {
-  background-color: rgba(0, 158, 219, 0.1);
+  background-color: hsl(var(--muted));
   border-color: var(--color-gray-200);
+  border-bottom: 2px solid var(--color-gray-200);
+  border-right: none;
+  border-left: none;
+  border-top: none;
   color: hsl(var(--foreground));
   font-weight: 600;
-  padding-top: 0.5rem;
-  padding-bottom: 0rem;
+  font-size: 0.8125rem;
+  letter-spacing: 0.01em;
+  padding: 0.625rem 0.75rem 0.375rem;
 }
 
 /* Reduce spacing in filter row - minimal space above, slight space below */
 .custom-table .p-datatable-thead > tr:has(.p-column-filter) > th {
-  padding-top: 0rem !important;
-  padding-bottom: 0.65rem !important;
-  margin-top: -0.15rem !important;
+  padding-top: 0.25rem !important;
+  padding-bottom: 0.5rem !important;
+  border-bottom: 1px solid var(--color-gray-200) !important;
   vertical-align: top !important;
+  background-color: hsl(var(--muted));
+}
+
+/* Body cells - consistent padding and borders */
+.custom-table .p-datatable-tbody > tr > td {
+  border-color: var(--color-gray-100);
+  border-bottom: 1px solid var(--color-gray-100);
+  border-right: none;
+  border-left: none;
+  border-top: none;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8125rem;
+  color: hsl(var(--foreground));
+  vertical-align: middle;
 }
 
 /* Custom styling for column filter dropdowns */
@@ -275,6 +309,11 @@ mark {
   background-color: white;
   display: flex;
   align-items: center;
+  transition: border-color 0.15s ease;
+}
+
+.p-column-filter.p-dropdown:hover {
+  border-color: var(--color-gray-300);
 }
 
 .p-column-filter .p-dropdown-trigger {
@@ -329,48 +368,68 @@ mark {
 }
 
 .p-dropdown-panel.text-xs .p-dropdown-item:hover {
-  background-color: rgba(0, 158, 219, 0.1);
+  background-color: rgba(0, 158, 219, 0.08);
   color: var(--color-un-blue);
 }
 
 .p-dropdown-panel.text-xs .p-dropdown-item.p-highlight {
-  background-color: rgba(0, 158, 219, 0.15);
+  background-color: rgba(0, 158, 219, 0.12);
   color: var(--color-un-blue);
 }
 
+/* Alternating row stripes */
 .custom-table .p-datatable-tbody > tr.p-row-odd {
-  background-color: #f6f7f8;
+  background-color: hsl(var(--muted) / 0.4);
 }
 
+.custom-table .p-datatable-tbody > tr.p-row-even {
+  background-color: white;
+}
+
+/* Hover states */
 .custom-table .p-datatable-thead > tr > th:hover {
-  background-color: rgba(0, 158, 219, 0.08);
+  background-color: hsl(var(--muted));
 }
 
 .custom-table .p-datatable-tbody > tr:hover {
-  background-color: rgba(0, 158, 219, 0.05);
+  background-color: rgba(0, 158, 219, 0.04) !important;
 }
 
 .custom-table .p-datatable-tbody > tr.p-highlight {
-  background-color: rgba(0, 158, 219, 0.1);
+  background-color: rgba(0, 158, 219, 0.08);
   color: hsl(var(--foreground));
 }
 
 .custom-table .p-datatable-tbody > tr.p-highlight:hover {
-  background-color: rgba(0, 158, 219, 0.15);
+  background-color: rgba(0, 158, 219, 0.12);
 }
 
 /* Sortable column headers */
 .custom-table .p-sortable-column:hover {
-  background-color: rgba(0, 158, 219, 0.08);
+  background-color: rgba(0, 158, 219, 0.06) !important;
 }
 
 .custom-table .p-sortable-column.p-highlight {
-  background-color: rgba(0, 158, 219, 0.1);
+  background-color: rgba(0, 158, 219, 0.08);
   color: var(--color-un-blue);
 }
 
 .custom-table .p-sortable-column .p-sortable-column-icon {
   color: var(--color-un-blue);
+  font-size: 0.75rem;
+}
+
+/* Paginator cleanup */
+.custom-table .p-paginator {
+  border: none;
+  background: transparent;
+  padding: 0.75rem 0;
+}
+
+/* Loading overlay */
+.custom-table .p-datatable-loading-overlay {
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(1px);
 }
 
 /* UN80 Corner Logo and UN20 Animation Sprite Keyframes */
