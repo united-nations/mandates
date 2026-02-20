@@ -191,10 +191,6 @@ export default function OrgansPage() {
           <h1 className="text-2xl font-bold tracking-tight text-foreground">
             Intergovernmental Organs &amp; Bodies
           </h1>
-          {/* <p className="mt-0.5 text-sm text-muted-foreground">
-            Directory of governing bodies across the UN system with links to
-            their pages and secretariat contacts.
-          </p> */}
           <p className="mt-0.5 max-w-[55%] text-sm text-muted-foreground">
             This draft overview is for informational purposes only and
             exhaustiveness is not guaranteed. The relevant rules of the

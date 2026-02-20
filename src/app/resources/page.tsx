@@ -73,17 +73,17 @@ export default function ResourcesPage() {
         </a>
         {/* Card 4: Intergovernmental Bodies & Contacts */}
         <Link
-          href="/organs"
+          href="/intergov"
           className="block flex flex-col items-start rounded-lg border border-muted p-4 text-left transition hover:border-un-blue"
         >
           <div className="mb-3 flex h-32 w-full items-center justify-center rounded-md bg-muted/30">
             <Building2 className="h-12 w-12 text-un-blue" strokeWidth={1.5} />
           </div>
           <div className="mb-1 text-base font-medium text-un-blue">
-            Intergovernmental Bodies &amp; Contacts
+            Intergovernmental Organs &amp; Bodies 
           </div>
           <div className="text-sm text-muted-foreground">
-            Directory of governing bodies across the UN system with links and
+            List of governing bodies across the UN system with links and
             secretariat contacts.
           </div>
         </Link>

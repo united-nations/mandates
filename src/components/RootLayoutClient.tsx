@@ -19,6 +19,7 @@ import {
 import { FilterProvider } from '@/contexts/FilterContext'
 import {
   BookOpen,
+  Building2,
   ExternalLink,
   Home,
   Info,
@@ -112,7 +113,7 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
                       asChild={pathname !== '/'}
                       className={
                         pathname === '/'
-                          ? 'cursor-default text-muted-foreground opacity-60'
+                          ? 'cursor-default bg-un-blue/10 text-un-blue font-medium'
                           : ''
                       }
                     >
@@ -129,10 +130,33 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
                       )}
                     </DropdownMenuItem>
                     <DropdownMenuItem
+                      asChild={pathname !== '/intergov'}
+                      className={
+                        pathname === '/intergov'
+                          ? 'cursor-default bg-un-blue/10 text-un-blue font-medium'
+                          : ''
+                      }
+                    >
+                      {pathname === '/intergov' ? (
+                        <span className="flex items-center gap-2">
+                          <Building2 className="h-4 w-4" />
+                          Intergovernmental Organs & Bodies
+                        </span>
+                      ) : (
+                        <Link
+                          href="/intergov"
+                          className="flex items-center gap-2"
+                        >
+                          <Building2 className="h-4 w-4" />
+                          Intergovernmental Organs & Bodies
+                        </Link>
+                      )}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
                       asChild={pathname !== '/methodology'}
                       className={
                         pathname === '/methodology'
-                          ? 'cursor-default text-muted-foreground opacity-60'
+                          ? 'cursor-default bg-un-blue/10 text-un-blue font-medium'
                           : ''
                       }
                     >
@@ -155,7 +179,7 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
                       asChild={pathname !== '/resources'}
                       className={
                         pathname === '/resources'
-                          ? 'cursor-default text-muted-foreground opacity-60'
+                          ? 'cursor-default bg-un-blue/10 text-un-blue font-medium'
                           : ''
                       }
                     >
