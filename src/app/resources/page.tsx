@@ -1,6 +1,6 @@
 'use client'
 
-import { Link as LinkIcon } from 'lucide-react'
+import { Link as LinkIcon, GitCompare } from 'lucide-react'
 
 export default function ResourcesPage() {
   return (
@@ -68,6 +68,23 @@ export default function ResourcesPage() {
           </div>
           <div className="text-sm text-muted-foreground">
             Results information for the proposed programme budget 2026.
+          </div>
+        </a>
+        {/* Card 4: diff.un-two-zero.dev */}
+        <a
+          href="https://diff.un-two-zero.dev/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block flex flex-col items-start rounded-lg border border-muted p-4 text-left transition hover:border-un-blue"
+        >
+          <div className="mb-3 flex h-32 w-full items-center justify-center rounded-md bg-un-blue/10">
+            <GitCompare className="h-16 w-16 text-un-blue" />
+          </div>
+          <div className="mb-1 text-base font-medium text-un-blue">
+            UN Document Diff Viewer
+          </div>
+          <div className="text-sm text-muted-foreground">
+            Compare and diff UN documents with highlighted changes.
           </div>
         </a>
       </div>
