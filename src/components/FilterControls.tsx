@@ -230,7 +230,6 @@ export function FilterControls({
               originalYearDistribution={originalYearDistribution}
               selectedYearRange={selectedYearRange}
               onYearRangeChange={handleYearRangeChange}
-              mode={mode}
             />
           </div>
         </div>

@@ -55,7 +55,7 @@ export function EntityListSidebar({
     if (pageType === 'main') {
       // On main page: Navigate to entity page with current filters preserved
       const url = buildEntityPageUrl(entityName)
-      router.push(url)
+      router.push(url as never)
     } else {
       // On entity/organ pages: Set as filter
       setFilter('entity', entityName)

@@ -73,7 +73,7 @@ export default function ResourcesPage() {
         </a>
         {/* Card 4: Intergovernmental Bodies & Contacts */}
         <Link
-          href="/organs"
+          href={"/organs" as never}
           className="block flex flex-col items-start rounded-lg border border-muted p-4 text-left transition hover:border-un-blue"
         >
           <div className="mb-3 flex h-32 w-full items-center justify-center rounded-md bg-muted/30">

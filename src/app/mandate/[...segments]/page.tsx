@@ -3,7 +3,7 @@ import { getMandateDisplayTitle, decodeUrlSegments } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { FileText } from 'lucide-react'
 
-import { getMandateBySymbol } from '@/lib/data/mandates'
+import { getMandateBySymbol } from '@/lib/data/unified'
 import { getAllEntities } from '@/lib/data/entities'
 import { getBudgetDocuments } from '@/lib/data/budget-documents'
 import { getParagraphsBySymbol } from '@/lib/data/paragraphs'

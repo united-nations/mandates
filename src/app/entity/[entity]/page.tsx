@@ -4,7 +4,7 @@ import { MandateExplorerClient } from '@/components/MandateExplorerClient'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { LoadingSkeleton } from '@/components/LoadingSkeleton'
-import { getMandatePageData } from '@/lib/data/mandates'
+import { getPageData } from '@/lib/data/unified'
 import { parseSearchParams } from '@/lib/filter-constants'
 import { getEntityByCode } from '@/lib/data/entities'
 
@@ -26,7 +26,7 @@ export default async function EntityPage({
   // Fetch entity details and mandate data in parallel
   const [entityDetails, data] = await Promise.all([
     getEntityByCode(entityName),
-    getMandatePageData(filters),
+    getPageData(filters),
   ])
 
   const entityNotFound = !entityDetails

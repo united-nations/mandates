@@ -52,7 +52,7 @@ export function BackButton({
         const mainPageUrl = preservedParams.toString()
           ? `/?${preservedParams.toString()}`
           : '/'
-        router.push(mainPageUrl)
+        router.push(mainPageUrl as never)
       } else if (isMandate && hasOpener && !window.opener.closed) {
         // For mandate pages opened from another page, use stored return URL
         const returnUrl = sessionStorage.getItem('mandateReturnUrl')

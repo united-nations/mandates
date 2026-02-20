@@ -24,7 +24,7 @@ export function MandateSearchBox() {
         params.set('sort_by', 'citing_entities_desc')
       }
     }
-    router.push(`${pathname}?${params.toString()}`, { scroll: false })
+    router.push(`${pathname}?${params.toString()}` as never, { scroll: false })
   }
 
   const handleClear = () => {

@@ -48,8 +48,6 @@ const TooltipButton = ({
   </div>
 )
 
-import type { DataMode } from '@/types'
-
 interface AdvancedSearchProps {
   programme: string
   subject: string
@@ -68,7 +66,6 @@ interface AdvancedSearchProps {
   onBudgetDocumentChange: (value: string) => void
   onDocumentTypeChange?: (value: string) => void
   onYearRangeChange: (value: [number, number]) => void
-  mode?: DataMode
 }
 
 export function AdvancedSearch({
@@ -89,7 +86,6 @@ export function AdvancedSearch({
   onBudgetDocumentChange,
   onDocumentTypeChange,
   onYearRangeChange,
-  mode = 'ppb',
 }: AdvancedSearchProps) {
   const [openTooltip, setOpenTooltip] = useState<string | null>(null)
 
@@ -120,23 +116,21 @@ export function AdvancedSearch({
     disabled: s.count === 0,
   }))
 
-  const toggleTooltip = (tooltipId: string) => {
-    setOpenTooltip(openTooltip === tooltipId ? null : tooltipId)
-  }
-
-  const isPpb = mode === 'ppb'
-
   const documentTypeDropdownOptions = (documentTypeOptions || []).map((dt) => ({
     value: dt.value,
     label: `${dt.value} (${dt.count})`,
     disabled: dt.count === 0,
   }))
 
+  const toggleTooltip = (tooltipId: string) => {
+    setOpenTooltip(openTooltip === tooltipId ? null : tooltipId)
+  }
+
   return (
     <div className="space-y-6">
-      {/* Row 1: Filters — content varies by mode */}
-      <div className={`grid grid-cols-1 gap-6 ${isPpb ? 'md:grid-cols-3' : 'md:grid-cols-2'}`}>
-        {/* UN Subjects — available in both modes */}
+      {/* Row 1: Filters — unified 4-column grid */}
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
+        {/* UN Subjects */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -168,90 +162,86 @@ export function AdvancedSearch({
           />
         </div>
 
-        {/* PPB-only: Programme */}
-        {isPpb && (
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Label className="text-sm font-semibold text-slate-700">
-                  {explainerTexts.advancedFilters.programme.label}
-                </Label>
-                <Target className="h-4 w-4 text-slate-500" />
-              </div>
-              <TooltipButton
-                tooltipId="programme"
-                ariaLabel="More information about programme filter"
-                tooltipText={explainerTexts.advancedFilters.programme.tooltip}
-                openTooltip={openTooltip}
-                toggleTooltip={toggleTooltip}
-              />
+        {/* Programme */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Label className="text-sm font-semibold text-slate-700">
+                {explainerTexts.advancedFilters.programme.label}
+              </Label>
+              <Target className="h-4 w-4 text-slate-500" />
             </div>
-            <SearchableDropdown
-              options={programmeDropdownOptions}
-              value={programme}
-              onChange={onProgrammeChange}
-              placeholder={explainerTexts.advancedFilters.programme.placeholder}
-              searchPlaceholder={
-                explainerTexts.advancedFilters.programme.searchPlaceholder
-              }
-              emptyPlaceholder={
-                explainerTexts.advancedFilters.programme.emptyPlaceholder
-              }
-              className="h-11 border-slate-300 bg-white text-sm focus:border-blue-500 focus:ring-blue-500"
+            <TooltipButton
+              tooltipId="programme"
+              ariaLabel="More information about programme filter"
+              tooltipText={explainerTexts.advancedFilters.programme.tooltip}
+              openTooltip={openTooltip}
+              toggleTooltip={toggleTooltip}
             />
           </div>
-        )}
+          <SearchableDropdown
+            options={programmeDropdownOptions}
+            value={programme}
+            onChange={onProgrammeChange}
+            placeholder={explainerTexts.advancedFilters.programme.placeholder}
+            searchPlaceholder={
+              explainerTexts.advancedFilters.programme.searchPlaceholder
+            }
+            emptyPlaceholder={
+              explainerTexts.advancedFilters.programme.emptyPlaceholder
+            }
+            className="h-11 border-slate-300 bg-white text-sm focus:border-blue-500 focus:ring-blue-500"
+          />
+        </div>
 
-        {/* PPB-only: Budget Document */}
-        {isPpb && (
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Label
-                  htmlFor="budget-document"
-                  className="text-sm font-semibold text-slate-700"
-                >
-                  {explainerTexts.advancedFilters.budgetDocument.label}
-                </Label>
-                <Receipt className="h-4 w-4 text-slate-500" />
-              </div>
-              <TooltipButton
-                tooltipId="budgetDocument"
-                ariaLabel="More information about budget document filter"
-                tooltipText={
-                  explainerTexts.advancedFilters.budgetDocument.tooltip
-                }
-                openTooltip={openTooltip}
-                toggleTooltip={toggleTooltip}
-              />
-            </div>
-            <Select value={budgetDocument} onValueChange={onBudgetDocumentChange}>
-              <SelectTrigger
-                id="budget-document"
-                className="h-11 border-slate-300 bg-white text-sm focus:border-blue-500 focus:ring-blue-500"
+        {/* Budget Document */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Label
+                htmlFor="budget-document"
+                className="text-sm font-semibold text-slate-700"
               >
-                <SelectValue
-                  placeholder={
-                    explainerTexts.advancedFilters.budgetDocument.placeholder
-                  }
-                  className="text-left"
-                />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Budget Documents</SelectItem>
-                <SelectSeparator />
-                {budgetDocuments.map((doc) => (
-                  <SelectItem key={doc.slug} value={doc.slug}>
-                    {doc.display_name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+                {explainerTexts.advancedFilters.budgetDocument.label}
+              </Label>
+              <Receipt className="h-4 w-4 text-slate-500" />
+            </div>
+            <TooltipButton
+              tooltipId="budgetDocument"
+              ariaLabel="More information about budget document filter"
+              tooltipText={
+                explainerTexts.advancedFilters.budgetDocument.tooltip
+              }
+              openTooltip={openTooltip}
+              toggleTooltip={toggleTooltip}
+            />
           </div>
-        )}
+          <Select value={budgetDocument} onValueChange={onBudgetDocumentChange}>
+            <SelectTrigger
+              id="budget-document"
+              className="h-11 border-slate-300 bg-white text-sm focus:border-blue-500 focus:ring-blue-500"
+            >
+              <SelectValue
+                placeholder={
+                  explainerTexts.advancedFilters.budgetDocument.placeholder
+                }
+                className="text-left"
+              />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Budget Documents</SelectItem>
+              <SelectSeparator />
+              {budgetDocuments.map((doc) => (
+                <SelectItem key={doc.slug} value={doc.slug}>
+                  {doc.display_name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-        {/* All-mode only: Document Type */}
-        {!isPpb && documentTypeDropdownOptions.length > 0 && (
+        {/* Document Type */}
+        {documentTypeDropdownOptions.length > 0 && (
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -273,6 +263,7 @@ export function AdvancedSearch({
           </div>
         )}
       </div>
+
       {/* Row 2: Year Range */}
       {yearRange && (
         <div className="space-y-3">

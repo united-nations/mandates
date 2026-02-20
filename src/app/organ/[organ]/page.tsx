@@ -4,7 +4,7 @@ import { MandateExplorerClient } from '@/components/MandateExplorerClient'
 import { MetadataItem } from '@/components/MetadataItem'
 import { formatUrlForDisplay } from '@/lib/utils'
 import { LoadingSkeleton } from '@/components/LoadingSkeleton'
-import { getMandatePageData } from '@/lib/data/mandates'
+import { getPageData } from '@/lib/data/unified'
 import { parseSearchParams } from '@/lib/filter-constants'
 import { getOrganByShortName } from '@/lib/data/organs'
 
@@ -26,7 +26,7 @@ export default async function OrganPage({
   // Fetch organ details and mandate data in parallel
   const [organDetails, data] = await Promise.all([
     getOrganByShortName(organName),
-    getMandatePageData(filters),
+    getPageData(filters),
   ])
 
   return (

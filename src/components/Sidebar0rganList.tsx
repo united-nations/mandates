@@ -62,7 +62,7 @@ export function OrganListSidebar({
     if (pageType === 'main') {
       // On main page: Navigate to organ page with current filters preserved
       const url = buildOrganPageUrl(organName)
-      router.push(url)
+      router.push(url as never)
     } else {
       // On entity/organ pages: Set as filter
       setFilter('organ', organName)
@@ -82,7 +82,7 @@ export function OrganListSidebar({
       return (
         <>
           <Link
-            href="/organs"
+            href={"/organs" as never}
             className="text-un-blue no-underline transition-colors hover:text-shuttle-gray"
           >
             Organs and bodies
@@ -94,7 +94,7 @@ export function OrganListSidebar({
       return (
         <>
           <Link
-            href="/organs"
+            href={"/organs" as never}
             className="text-un-blue no-underline transition-colors hover:text-shuttle-gray"
           >
             Organs and bodies

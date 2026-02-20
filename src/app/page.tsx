@@ -3,8 +3,7 @@ import { Suspense } from 'react'
 import { ExplainerText } from '@/components/ExplainerText'
 import { MandateExplorerClient } from '@/components/MandateExplorerClient'
 import { LoadingSkeleton } from '@/components/LoadingSkeleton'
-import { getMandatePageData } from '@/lib/data/mandates'
-import { getDocumentPageData } from '@/lib/data/documents'
+import { getPageData } from '@/lib/data/unified'
 import { parseSearchParams } from '@/lib/filter-constants'
 
 interface PageProps {
@@ -15,10 +14,7 @@ export default async function Page({ searchParams }: PageProps) {
   const params = await searchParams
   const filters = parseSearchParams(params)
 
-  const data =
-    filters.mode === 'documents'
-      ? await getDocumentPageData(filters)
-      : await getMandatePageData(filters)
+  const data = await getPageData(filters)
 
   return (
     <div className="space-y-6 pb-16">

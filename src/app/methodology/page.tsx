@@ -32,7 +32,7 @@ export default function MethodologyPage() {
           variant="outline"
           size="sm"
           className="mt-6 mb-20 inline-flex h-auto shrink-0 items-center gap-1 bg-trout! px-2 py-1 text-xs text-white! transition-colors hover:bg-trout/90! sm:gap-2 sm:px-2.5 sm:py-1.5 sm:text-sm"
-          onClick={() => router.push('/resources')}
+          onClick={() => router.push('/resources' as never)}
         >
           More Resources
           <ArrowRight className="h-3 w-3 sm:h-4 sm:w-4" />
