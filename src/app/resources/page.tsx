@@ -70,25 +70,6 @@ export default function ResourcesPage() {
             Results information for the proposed programme budget 2026.
           </div>
         </a>
-        {/* Card 4: systemchart.un.org */}
-        <a
-          href="https://systemchart.un.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="block flex flex-col items-start rounded-lg border border-muted p-4 text-left transition hover:border-un-blue"
-        >
-          <img
-            src="/images/screenshots/systemchart_un_org.png"
-            alt="systemchart.un.org screenshot"
-            className="mb-3 h-32 w-full rounded-md object-cover"
-          />
-          <div className="mb-1 text-base font-medium text-un-blue">
-            UN System Chart
-          </div>
-          <div className="text-sm text-muted-foreground">
-            Interactive organizational chart of the United Nations system.
-          </div>
-        </a>
       </div>
     </div>
   )
