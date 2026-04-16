@@ -206,9 +206,15 @@ export default function DocumentTable<T extends BaseDocument>({
 
   // PrimeReact filter change handler
   const handleFilterChange = (e: { filters: DataTableFilterMeta }) => {
-    const lengthBucketValue = (e.filters.length_bucket as { value: string | null })?.value
-    const similarityBucketValue = (e.filters.similarity_bucket as { value: string | null })?.value
-    const frequencyBucketValue = (e.filters.frequency_bucket as { value: string | null })?.value
+    const lengthBucketValue = (
+      e.filters.length_bucket as { value: string | null }
+    )?.value
+    const similarityBucketValue = (
+      e.filters.similarity_bucket as { value: string | null }
+    )?.value
+    const frequencyBucketValue = (
+      e.filters.frequency_bucket as { value: string | null }
+    )?.value
     const titleValue = (e.filters.title as { value: string | null })?.value
 
     // Simply update URL - the useEffect above will handle the refetch
@@ -222,7 +228,10 @@ export default function DocumentTable<T extends BaseDocument>({
   }
 
   // Sorting handler
-  const handleSort = (e: { sortField?: string; sortOrder?: 1 | -1 | 0 | null }) => {
+  const handleSort = (e: {
+    sortField?: string
+    sortOrder?: 1 | -1 | 0 | null
+  }) => {
     const newSortField = e.sortField as string
     const newSortOrder =
       e.sortField !== sortField ? -1 : sortOrder === 1 ? -1 : 1
@@ -672,16 +681,13 @@ export default function DocumentTable<T extends BaseDocument>({
   )
 
   const yearTemplate = (row: T) => (
-    <div className="tabular-nums text-muted-foreground">
+    <div className="text-muted-foreground tabular-nums">
       {row.year === 0 ? <span className="text-gray-400">N/A</span> : row.year}
     </div>
   )
 
   const lengthTemplate = (row: T) => {
-    if (!row.word_count)
-      return (
-        <div className="text-gray-400">N/A</div>
-      )
+    if (!row.word_count) return <div className="text-gray-400">N/A</div>
     const roundedCount = Math.round(row.word_count / 50) * 50
     return <div className="tabular-nums">~{roundedCount.toLocaleString()}</div>
   }
@@ -690,8 +696,10 @@ export default function DocumentTable<T extends BaseDocument>({
     <Tooltip>
       <TooltipTrigger asChild>
         <div className="cursor-help">
-          <div className="tabular-nums font-medium">{row.series_symbol_count} total</div>
-          <div className="tabular-nums text-xs text-muted-foreground">
+          <div className="font-medium tabular-nums">
+            {row.series_symbol_count} total
+          </div>
+          <div className="text-xs text-muted-foreground tabular-nums">
             {row.series_first_year === 0 || row.series_last_year === 0
               ? 'N/A'
               : row.series_first_year === row.series_last_year
@@ -783,7 +791,10 @@ export default function DocumentTable<T extends BaseDocument>({
     return (
       <Tooltip>
         <TooltipTrigger asChild>
-          <div style={{ color }} className="cursor-help tabular-nums font-medium">
+          <div
+            style={{ color }}
+            className="cursor-help font-medium tabular-nums"
+          >
             ~{similarity.toFixed(2)}
           </div>
         </TooltipTrigger>
@@ -831,7 +842,7 @@ export default function DocumentTable<T extends BaseDocument>({
         ) : (
           <X className="h-3.5 w-3.5 text-au-chico" />
         )}
-        <span className="tabular-nums text-muted-foreground">
+        <span className="text-muted-foreground tabular-nums">
           ({resolution.count_within_existing_resources || 0})
         </span>
       </div>
@@ -841,7 +852,9 @@ export default function DocumentTable<T extends BaseDocument>({
   const similarityHeaderTemplate = () => (
     <Tooltip>
       <TooltipTrigger asChild>
-        <span className="cursor-help border-b border-dashed border-current">Similarity</span>
+        <span className="cursor-help border-b border-dashed border-current">
+          Similarity
+        </span>
       </TooltipTrigger>
       <TooltipContent>
         <p>
@@ -856,7 +869,9 @@ export default function DocumentTable<T extends BaseDocument>({
   const withinResourcesHeaderTemplate = () => (
     <Tooltip>
       <TooltipTrigger asChild>
-        <span className="cursor-help border-b border-dashed border-current">Within Resources</span>
+        <span className="cursor-help border-b border-dashed border-current">
+          Within Resources
+        </span>
       </TooltipTrigger>
       <TooltipContent>
         <p>
@@ -935,7 +950,7 @@ export default function DocumentTable<T extends BaseDocument>({
       </Button>
     ),
     CurrentPageReport: () => (
-      <div className="mt-2 w-full text-center text-xs tabular-nums text-muted-foreground">
+      <div className="mt-2 w-full text-center text-xs text-muted-foreground tabular-nums">
         Page {pagination.page} of {pagination.totalPages} &middot;{' '}
         {pagination.total.toLocaleString()} items total
       </div>

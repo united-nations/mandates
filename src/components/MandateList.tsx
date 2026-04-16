@@ -10,12 +10,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { EntityName } from './EntityName'
-import {
-  FileText,
-  Calendar,
-  Landmark,
-  Info,
-} from 'lucide-react'
+import { FileText, Calendar, Landmark, Info } from 'lucide-react'
 import { explainerTexts } from '@/lib/explainer-texts'
 import Link from 'next/link'
 
@@ -211,8 +206,7 @@ export function MandateList({
                           <span className="font-medium">
                             <HighlightedContent
                               content={
-                                mandate.highlightedFields
-                                  ?.full_document_symbol
+                                mandate.highlightedFields?.full_document_symbol
                               }
                               fallback={getTruncatedSymbol(displaySymbol)}
                             />
@@ -280,14 +274,13 @@ export function MandateList({
                           className="text-slate-700"
                           dangerouslySetInnerHTML={{
                             __html:
-                              mandate.highlightedFields
-                                .subject_headings.length > 200
+                              mandate.highlightedFields.subject_headings
+                                .length > 200
                                 ? mandate.highlightedFields.subject_headings.substring(
                                     0,
                                     200
                                   ) + '...'
-                                : mandate.highlightedFields
-                                    .subject_headings,
+                                : mandate.highlightedFields.subject_headings,
                           }}
                         />
                       </div>

@@ -20,6 +20,7 @@ import { FilterProvider } from '@/contexts/FilterContext'
 import {
   BookOpen,
   ExternalLink,
+  GitCompare,
   Home,
   Info,
   Menu,
@@ -152,6 +153,17 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
                           Methodology
                         </Link>
                       )}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <a
+                        href="https://diff.un-two-zero.dev/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2"
+                      >
+                        <GitCompare className="h-4 w-4" />
+                        UN Document Diff Viewer
+                      </a>
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       asChild={pathname !== '/resources'}
