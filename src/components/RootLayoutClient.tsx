@@ -21,6 +21,7 @@ import {
   BookOpen,
   Building2,
   ExternalLink,
+  GitCompare,
   Home,
   Info,
   Menu,
@@ -113,7 +114,7 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
                       asChild={pathname !== '/'}
                       className={
                         pathname === '/'
-                          ? 'cursor-default bg-un-blue/10 text-un-blue font-medium'
+                          ? 'cursor-default bg-un-blue/10 font-medium text-un-blue'
                           : ''
                       }
                     >
@@ -133,7 +134,7 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
                       asChild={pathname !== '/intergov'}
                       className={
                         pathname === '/intergov'
-                          ? 'cursor-default bg-un-blue/10 text-un-blue font-medium'
+                          ? 'cursor-default bg-un-blue/10 font-medium text-un-blue'
                           : ''
                       }
                     >
@@ -156,7 +157,7 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
                       asChild={pathname !== '/methodology'}
                       className={
                         pathname === '/methodology'
-                          ? 'cursor-default bg-un-blue/10 text-un-blue font-medium'
+                          ? 'cursor-default bg-un-blue/10 font-medium text-un-blue'
                           : ''
                       }
                     >
@@ -175,11 +176,22 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
                         </Link>
                       )}
                     </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <a
+                        href="https://diff.un-two-zero.dev/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2"
+                      >
+                        <GitCompare className="h-4 w-4" />
+                        UN Document Diff Viewer
+                      </a>
+                    </DropdownMenuItem>
                     <DropdownMenuItem
                       asChild={pathname !== '/resources'}
                       className={
                         pathname === '/resources'
-                          ? 'cursor-default bg-un-blue/10 text-un-blue font-medium'
+                          ? 'cursor-default bg-un-blue/10 font-medium text-un-blue'
                           : ''
                       }
                     >
@@ -216,21 +228,23 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
           </main>
 
           {/* Fixed Feedback Button */}
-          <Button
-            asChild
-            className="fixed right-6 bottom-6 z-50 shadow-lg transition-shadow hover:shadow-xl"
-            size="default"
-          >
-            <a
-              href="https://airtable.com/appId4rDWaFTpzNWz/pagpU0nMIhQMQPICL/form"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2"
+          {
+            <Button
+              asChild
+              className="fixed right-6 bottom-6 z-50 shadow-lg transition-shadow hover:shadow-xl"
+              size="default"
             >
-              <MessageCircle className="h-4 w-4" />
-              Give Feedback
-            </a>
-          </Button>
+              <a
+                href="https://airtable.com/appId4rDWaFTpzNWz/pagpU0nMIhQMQPICL/form"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2"
+              >
+                <MessageCircle className="h-4 w-4" />
+                Give Feedback
+              </a>
+            </Button>
+          }
 
           {/* UN80 Logo with UN20 Animation - fixed at bottom */}
           <AnimatedLogo />

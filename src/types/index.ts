@@ -44,8 +44,11 @@ export interface Mandate {
   num_entities: number
   entities: string[]
   link: string | null
+  //   priority_area: string
   year: string
   body: string
+  //   pillar: string
+  //   entity_long: string
   description: string | null
   type: string
   citation_info: {
@@ -70,11 +73,14 @@ export interface Mandate {
   proper_title: string | null
   title: string | null
   subtitle: string | null
-  issuing_body: string | null
   subject_headings: string[]
-  agenda_document_symbols: string[]
-  agenda_item_numbers: string[]
-  agenda_item_titles: string[]
+  issuing_body?: string | null
+  agenda_document_symbols?: string[]
+  agenda_item_numbers?: string[]
+  agenda_item_titles?: string[]
+  paragraphs?: Paragraph[] | null
+  programme?: string
+  text?: string
 
   // Search-related fields
   searchScore?: number

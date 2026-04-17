@@ -1,18 +1,18 @@
 'use client'
 
-import type { Mandate } from '@/types'
 import { Badge } from '@/components/ui/badge'
-import { motion } from 'framer-motion'
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { EntityName } from './EntityName'
-import { FileText, Calendar, Landmark, Info } from 'lucide-react'
 import { explainerTexts } from '@/lib/en_text_contents'
+import type { Mandate } from '@/types'
+import { motion } from 'framer-motion'
+import { Calendar, FileText, Info, Landmark } from 'lucide-react'
 import Link from 'next/link'
+import { EntityName } from './EntityName'
 
 interface Organ {
   short: string

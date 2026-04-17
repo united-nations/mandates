@@ -101,7 +101,7 @@ export function MandateMetadata({
           )}
         </MetadataItem>
 
-        {(mandate.agenda_item_numbers?.length > 0 || mandate.agenda_item_titles?.length > 0) && (
+        {((mandate.agenda_item_numbers?.length ?? 0) > 0 || (mandate.agenda_item_titles?.length ?? 0) > 0) && (
           <MetadataItem label={(mandate.agenda_item_numbers?.length ?? 0) > 1 ? 'Agenda Items' : 'Agenda Item'}>
             <div className="flex flex-wrap gap-1.5">
               {(mandate.agenda_item_numbers ?? []).map((num, i) => (

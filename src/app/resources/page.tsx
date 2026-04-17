@@ -80,7 +80,7 @@ export default function ResourcesPage() {
             <Building2 className="h-12 w-12 text-un-blue" strokeWidth={1.5} />
           </div>
           <div className="mb-1 text-base font-medium text-un-blue">
-            Intergovernmental Organs &amp; Bodies 
+            Intergovernmental Organs &amp; Bodies
           </div>
           <div className="text-sm text-muted-foreground">
             List of governing bodies across the UN system with links and
