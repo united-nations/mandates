@@ -4,6 +4,34 @@ import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import Image from 'next/image'
 
+const styles = `
+  @keyframes corner-slide-in {
+    0% { opacity: 0; transform: translateX(-120px); }
+    100% { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes un20-roll-in {
+    0% { opacity: 0; transform: translateX(-60px) rotate(-360deg) scale(0.3); }
+    70% { opacity: 0.8; transform: translateX(0) rotate(0deg) scale(1.1); }
+    100% { opacity: 1; transform: translateX(0) rotate(0deg) scale(1); }
+  }
+  .corner-slide-entrance {
+    animation: corner-slide-in 0.8s ease-out forwards;
+    animation-delay: 3s;
+    opacity: 0;
+    transform: translateX(-120px);
+  }
+  .corner-slide-loaded { opacity: 1; transform: translateX(0); }
+  .corner-slide-hidden { opacity: 0; transform: translateX(-120px); }
+  .un20-roll-entrance {
+    animation: un20-roll-in 1s ease-out forwards;
+    animation-delay: 4s;
+    opacity: 0;
+    transform: translateX(-60px) rotate(-360deg) scale(0.3);
+  }
+  .un20-roll-loaded { opacity: 1; transform: translateX(0) rotate(0deg) scale(1); }
+  .un20-roll-hidden { opacity: 0; transform: translateX(-60px) rotate(-360deg) scale(0.3); }
+`
+
 export function AnimatedLogo() {
   const pathname = usePathname()
 
@@ -36,6 +64,7 @@ export function AnimatedLogo() {
 
   return (
     <div>
+      <style>{styles}</style>
       <a
         href="https://un-two-zero.network/"
         target="_blank"

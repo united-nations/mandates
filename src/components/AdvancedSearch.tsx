@@ -1,21 +1,21 @@
 'use client'
 
-import { SearchableDropdown } from './SearchableDropdown'
 import { Label } from '@/components/ui/label'
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  SelectSeparator,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectSeparator,
+    SelectTrigger,
+    SelectValue,
 } from '@/components/ui/select'
-import { HelpCircle, Calendar, Target, Receipt, BookOpen } from 'lucide-react'
-import { YearSlider } from './YearSlider'
-import { explainerTexts } from '@/lib/en_text_contents'
-import { titleCase } from 'title-case'
-import { useState, useEffect } from 'react'
 import type { BudgetDocument } from '@/lib/data/budget-documents'
+import { explainerTexts } from '@/lib/en_text_contents'
+import { BookOpen, Calendar, HelpCircle, Receipt, Target } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { titleCase } from 'title-case'
+import { SearchableDropdown } from './SearchableDropdown'
+import { YearSlider } from './YearSlider'
 
 // TooltipButton component moved outside of render
 const TooltipButton = ({
