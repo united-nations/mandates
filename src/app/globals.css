@@ -2,7 +2,6 @@
 @import 'tw-animate-css';
 
 /* https://tailwindcss.com/docs/colors#customizing-your-colors */
-/* Define Tailwind brand colors */
 @theme {
   --color-un-blue: #009edb;
 
@@ -17,23 +16,9 @@
   --color-geyser: #dde2e6;
   --color-iron: #d9dcdf;
   --color-card-gray: #f6f7f8;
-
-
-  /* Font weights for Roboto */
-  /* --font-weight-thin: 100;
-  --font-weight-extralight: 200;
-  --font-weight-light: 300;
-  --font-weight-normal: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
-  --font-weight-extrabold: 800;
-  --font-weight-black: 900; */
 }
 
-/* Define shadcn semantic colors as CSS variables */
-/* use Tailwind colors with var()  */
-/* https://tailwindcss.com/docs/theme#referencing-other-variables */
+/* shadcn semantic colors */
 :root {
   --background: white;
   --foreground: black;
@@ -44,16 +29,14 @@
   --dashboard-card: hsl(220 15% 92%);
   --dashboard-card-foreground: hsl(220 15% 25%);
 
-  --popover: hsl(220 20% 97%); /* Very light cool gray, almost white */
+  --popover: hsl(220 20% 97%);
   --popover-foreground: hsl(220 15% 25%);
 
-  --primary: hsl(
-    220 30% 30%
-  ); /* Darker cool blue/gray for primary actions/text */
-  --primary-foreground: hsl(0 0% 100%); /* White text on primary */
+  --primary: hsl(220 30% 30%);
+  --primary-foreground: hsl(0 0% 100%);
 
-  --secondary: hsl(220 15% 90%); /* Lighter gray for secondary elements */
-  --secondary-foreground: hsl(220 15% 35%); /* Darker text on secondary */
+  --secondary: hsl(220 15% 90%);
+  --secondary-foreground: hsl(220 15% 35%);
 
   --muted: hsl(220 15% 88%);
   --muted-foreground: hsl(220 10% 50%);
@@ -64,17 +47,16 @@
   --destructive: var(--color-au-chico);
   --destructive-foreground: hsl(0 0% 100%);
 
-  --input: hsl(0 0% 100%); /* White input backgrounds */
+  --input: hsl(0 0% 100%);
 
   --border: hsl(220 13% 91%);
   --ring: hsl(220 91.2% 59.8%);
 
-  /* card corner radius */
   --radius: 0.5rem;
-
   --radius-lg: 0.5rem;
   --radius-md: calc(0.5rem - 2px);
   --radius-sm: calc(0.5rem - 4px);
+
   --sidebar: hsl(0 0% 98%);
   --sidebar-foreground: hsl(240 5.3% 26.1%);
   --sidebar-primary: hsl(240 5.9% 10%);
@@ -89,36 +71,25 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
-
   --color-dashboard-card: var(--dashboard-card);
   --color-dashboard-card-foreground: var(--dashboard-card-foreground);
-
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
-
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
-
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
-
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
-
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
-
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
-
   --color-input: var(--input);
   --color-border: var(--border);
   --color-ring: var(--ring);
-
-  /* Expose font weights */
   --font-weight-thin: 100;
   --font-weight-extralight: 200;
   --font-weight-light: 300;
@@ -128,38 +99,34 @@
   --font-weight-bold: 700;
   --font-weight-extrabold: 800;
   --font-weight-black: 900;
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
 
   @keyframes accordion-down {
-    from {
-      height: 0;
-    }
-    to {
-      height: var(--radix-accordion-content-height);
-    }
+    from { height: 0; }
+    to { height: var(--radix-accordion-content-height); }
   }
-
   @keyframes accordion-up {
-    from {
-      height: var(--radix-accordion-content-height);
-    }
-    to {
-      height: 0;
-    }
+    from { height: var(--radix-accordion-content-height); }
+    to { height: 0; }
   }
 }
 
-* {
-  border-color: var(--color-gray-200);
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
 
 /* Remove focus rings globally */
@@ -171,260 +138,12 @@
 }
 
 body {
-  background-color: var(--color-background);
-  color: var(--color-foreground);
-  font-feature-settings:
-    'rlig' 1,
-    'calt' 1;
-  /* Ensure font smoothing for better rendering */
+  font-feature-settings: 'rlig' 1, 'calt' 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom --------------------------------------------------------------------------------- */
-
-/* Enhanced search highlighting styles using UN Blue */
-.search-highlight {
-  background-color: color-mix(in srgb, var(--color-un-blue) 15%, transparent);
-  color: var(--color-un-blue);
-  padding: 2px 4px;
-  border-radius: 4px;
-  font-weight: 600;
-  border: 1px solid color-mix(in srgb, var(--color-un-blue) 30%, transparent);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease;
-}
-
-.search-highlight-exact {
-  background-color: color-mix(in srgb, var(--color-un-blue) 25%, transparent);
-  color: var(--color-un-blue);
-  border-color: color-mix(in srgb, var(--color-un-blue) 50%, transparent);
-  font-weight: 700;
-}
-
-.search-highlight-fuzzy {
-  background-color: color-mix(in srgb, var(--color-un-blue) 12%, transparent);
-  color: var(--color-un-blue);
-  border-color: color-mix(in srgb, var(--color-un-blue) 25%, transparent);
-  font-weight: 600;
-}
-
-/* Legacy mark support for backward compatibility */
-mark {
-  background-color: var(--color-amber-100);
-  color: var(--color-amber-800);
-  padding: 1px 3px;
-  border-radius: 3px;
-  font-weight: 600;
-  border: 1px solid var(--color-amber-300);
-}
-
-/* Search result animations */
-.search-result-enter {
-  opacity: 0;
-  transform: translateY(10px);
-}
-
-.search-result-enter-active {
-  opacity: 1;
-  transform: translateY(0);
-  transition:
-    opacity 300ms,
-    transform 300ms;
-}
-
-/* Search input focus improvements */
-.search-input:focus {
-  box-shadow: 0 0 0 2px hsl(var(--ring));
-}
-
-/* PrimeReact DataTable custom styling with UN Blue */
-
-/* Global table wrapper - clean borders */
-.custom-table .p-datatable-wrapper {
-  border: 1px solid var(--color-gray-200);
-  border-radius: 0.5rem;
-  overflow: hidden;
-}
-
-/* Remove default PrimeReact outer borders since wrapper handles it */
-.custom-table .p-datatable-table {
-  border-collapse: separate;
-  border-spacing: 0;
-}
-
-/* Header row */
-.custom-table .p-datatable-thead > tr > th {
-  background-color: hsl(var(--muted));
-  border-color: var(--color-gray-200);
-  border-bottom: 2px solid var(--color-gray-200);
-  border-right: none;
-  border-left: none;
-  border-top: none;
-  color: hsl(var(--foreground));
-  font-weight: 600;
-  font-size: 0.8125rem;
-  letter-spacing: 0.01em;
-  padding: 0.625rem 0.75rem 0.375rem;
-}
-
-/* Reduce spacing in filter row - minimal space above, slight space below */
-.custom-table .p-datatable-thead > tr:has(.p-column-filter) > th {
-  padding-top: 0.25rem !important;
-  padding-bottom: 0.5rem !important;
-  border-bottom: 1px solid var(--color-gray-200) !important;
-  vertical-align: top !important;
-  background-color: hsl(var(--muted));
-}
-
-/* Body cells - consistent padding and borders */
-.custom-table .p-datatable-tbody > tr > td {
-  border-color: var(--color-gray-100);
-  border-bottom: 1px solid var(--color-gray-100);
-  border-right: none;
-  border-left: none;
-  border-top: none;
-  padding: 0.5rem 0.75rem;
-  font-size: 0.8125rem;
-  color: hsl(var(--foreground));
-  vertical-align: middle;
-}
-
-/* Custom styling for column filter dropdowns */
-.p-column-filter.p-dropdown {
-  font-size: 0.75rem;
-  min-height: 1.75rem;
-  border: 1px solid var(--color-gray-200);
-  border-radius: 0.375rem;
-  background-color: white;
-  display: flex;
-  align-items: center;
-  transition: border-color 0.15s ease;
-}
-
-.p-column-filter.p-dropdown:hover {
-  border-color: var(--color-gray-300);
-}
-
-.p-column-filter .p-dropdown-trigger {
-  width: 1.5rem;
-  color: hsl(var(--muted-foreground));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.p-column-filter .p-dropdown-label {
-  padding: 0rem 0.5rem;
-  font-size: 0.75rem;
-  color: hsl(var(--foreground));
-  font-weight: 400;
-  display: flex;
-  align-items: center;
-  text-align: left;
-  line-height: 1.75rem;
-}
-
-/* Filtered column styling - UN blue border */
-.p-column-filter.border-un-blue {
-  border-color: var(--color-un-blue) !important;
-}
-
-/* Hide PrimeReact's default filter clear button - we have our own */
-.p-column-filter-clear-button {
-  display: none !important;
-}
-
-.p-column-filter + .p-dropdown-panel .p-dropdown-items .p-dropdown-item {
-  padding: 0.35rem 0.75rem;
-  font-size: 0.75rem;
-}
-
-.p-dropdown-panel.text-xs {
-  border: 1px solid var(--color-gray-200);
-  border-radius: 0.375rem;
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-}
-
-.p-dropdown-panel.text-xs .p-dropdown-items {
-  max-height: 200px;
-  overflow-y: auto;
-}
-
-.p-dropdown-panel.text-xs .p-dropdown-item {
-  font-size: 0.75rem;
-  padding: 0.35rem 0.75rem;
-  color: hsl(var(--foreground));
-}
-
-.p-dropdown-panel.text-xs .p-dropdown-item:hover {
-  background-color: color-mix(in srgb, var(--color-un-blue) 8%, transparent);
-  color: var(--color-un-blue);
-}
-
-.p-dropdown-panel.text-xs .p-dropdown-item.p-highlight {
-  background-color: color-mix(in srgb, var(--color-un-blue) 12%, transparent);
-  color: var(--color-un-blue);
-}
-
-/* Alternating row stripes */
-.custom-table .p-datatable-tbody > tr.p-row-odd {
-  background-color: hsl(var(--muted) / 0.4);
-}
-
-.custom-table .p-datatable-tbody > tr.p-row-even {
-  background-color: white;
-}
-
-/* Hover states */
-.custom-table .p-datatable-thead > tr > th:hover {
-  background-color: hsl(var(--muted));
-}
-
-.custom-table .p-datatable-tbody > tr:hover {
-  background-color: color-mix(in srgb, var(--color-un-blue) 4%, transparent) !important;
-}
-
-.custom-table .p-datatable-tbody > tr.p-highlight {
-  background-color: color-mix(in srgb, var(--color-un-blue) 8%, transparent);
-  color: hsl(var(--foreground));
-}
-
-.custom-table .p-datatable-tbody > tr.p-highlight:hover {
-  background-color: color-mix(in srgb, var(--color-un-blue) 12%, transparent);
-}
-
-/* Sortable column headers */
-.custom-table .p-sortable-column:hover {
-  background-color: color-mix(in srgb, var(--color-un-blue) 6%, transparent) !important;
-}
-
-.custom-table .p-sortable-column.p-highlight {
-  background-color: color-mix(in srgb, var(--color-un-blue) 8%, transparent);
-  color: var(--color-un-blue);
-}
-
-.custom-table .p-sortable-column .p-sortable-column-icon {
-  color: var(--color-un-blue);
-  font-size: 0.75rem;
-}
-
-/* Paginator cleanup */
-.custom-table .p-paginator {
-  border: none;
-  background: transparent;
-  padding: 0.75rem 0;
-}
-
-/* Loading overlay */
-.custom-table .p-datatable-loading-overlay {
-  background-color: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(1px);
-}
-
-/* Remove scrollbar */
-
-/* Prevent layout shifts by always showing scrollbar */
+/* Prevent layout shifts — hide scrollbar but keep gutter */
 html {
   overflow-y: scroll;
   scrollbar-gutter: stable;
@@ -434,16 +153,6 @@ body {
   overflow-y: scroll;
 }
 
-/* Hide scrollbar for Webkit browsers (Chrome, Safari) */
 body::-webkit-scrollbar {
   display: none;
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
 }
