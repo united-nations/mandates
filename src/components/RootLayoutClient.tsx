@@ -130,7 +130,7 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
                         </Link>
                       )}
                     </DropdownMenuItem>
-                    <DropdownMenuItem
+                    {/* <DropdownMenuItem
                       asChild={pathname !== '/intergov'}
                       className={
                         pathname === '/intergov'
@@ -152,7 +152,7 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
                           Intergovernmental Organs & Bodies
                         </Link>
                       )}
-                    </DropdownMenuItem>
+                    </DropdownMenuItem> */}
                     <DropdownMenuItem
                       asChild={pathname !== '/methodology'}
                       className={

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, ReactNode } from 'react'
+import { useState, ReactNode } from 'react'
 import { LucideIcon } from 'lucide-react'
 import { LoadingSkeleton } from '@/components/LoadingSkeleton'
 import { SearchInput } from '@/components/SearchInput'
@@ -57,22 +57,12 @@ export function GenericSidebar<T>({
   variant = 'filter',
   emptyMessage = 'No items found',
 }: GenericSidebarProps<T>) {
-  const [filteredItems, setFilteredItems] = useState<T[]>(items)
   const [searchTerm, setSearchTerm] = useState('')
   const [showAll, setShowAll] = useState(false)
 
-  // Filter items based on search term
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-  useEffect(() => {
-    if (!searchTerm.trim()) {
-      setFilteredItems(items)
-    } else {
-      const filtered = items.filter((item) =>
-        searchFilter(item, searchTerm.toLowerCase())
-      )
-      setFilteredItems(filtered)
-    }
-  }, [searchTerm, items, searchFilter])
+  const filteredItems = searchTerm.trim()
+    ? items.filter((item) => searchFilter(item, searchTerm.toLowerCase()))
+    : items
 
   // Determine items to display (with expand/collapse logic)
   const itemsToDisplay = showExpandCollapse

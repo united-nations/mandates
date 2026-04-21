@@ -1,7 +1,6 @@
 'use client'
 
-import { Building2, Link as LinkIcon } from 'lucide-react'
-import Link from 'next/link'
+import { Link as LinkIcon } from 'lucide-react'
 
 export default function ResourcesPage() {
   return (
@@ -18,7 +17,7 @@ export default function ResourcesPage() {
           href="https://open.un.org/"
           target="_blank"
           rel="noopener noreferrer"
-          className="block flex flex-col items-start rounded-lg border border-muted p-4 text-left transition hover:border-un-blue"
+          className="block flex-col items-start rounded-lg border border-muted p-4 text-left transition hover:border-un-blue"
         >
           <img
             src="/images/screenshots/open_un_org.png"
@@ -38,7 +37,7 @@ export default function ResourcesPage() {
           href="https://unsceb.org/financial-statistics"
           target="_blank"
           rel="noopener noreferrer"
-          className="block flex flex-col items-start rounded-lg border border-muted p-4 text-left transition hover:border-un-blue"
+          className="flex flex-col items-start rounded-lg border border-muted p-4 text-left transition hover:border-un-blue"
         >
           <img
             src="/images/screenshots/unsceb_org.png"
@@ -57,7 +56,7 @@ export default function ResourcesPage() {
           href="https://results.un.org/"
           target="_blank"
           rel="noopener noreferrer"
-          className="block flex flex-col items-start rounded-lg border border-muted p-4 text-left transition hover:border-un-blue"
+          className="block flex-col items-start rounded-lg border border-muted p-4 text-left transition hover:border-un-blue"
         >
           <img
             src="/images/screenshots/results_un_org.png"
@@ -72,7 +71,7 @@ export default function ResourcesPage() {
           </div>
         </a>
         {/* Card 4: Intergovernmental Bodies & Contacts */}
-        <Link
+        {/* <Link
           href="/intergov"
           className="block flex flex-col items-start rounded-lg border border-muted p-4 text-left transition hover:border-un-blue"
         >
@@ -85,8 +84,8 @@ export default function ResourcesPage() {
           <div className="text-sm text-muted-foreground">
             List of governing bodies across the UN system with links and
             secretariat contacts.
-          </div>
-        </Link>
+          </div> */}
+        {/* </Link> */}
       </div>
     </div>
   )

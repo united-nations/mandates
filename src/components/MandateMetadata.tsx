@@ -101,11 +101,22 @@ export function MandateMetadata({
           )}
         </MetadataItem>
 
-        {((mandate.agenda_item_numbers?.length ?? 0) > 0 || (mandate.agenda_item_titles?.length ?? 0) > 0) && (
-          <MetadataItem label={(mandate.agenda_item_numbers?.length ?? 0) > 1 ? 'Agenda Items' : 'Agenda Item'}>
+        {((mandate.agenda_item_numbers?.length ?? 0) > 0 ||
+          (mandate.agenda_item_titles?.length ?? 0) > 0) && (
+          <MetadataItem
+            label={
+              (mandate.agenda_item_numbers?.length ?? 0) > 1
+                ? 'Agenda Items'
+                : 'Agenda Item'
+            }
+          >
             <div className="flex flex-wrap gap-1.5">
               {(mandate.agenda_item_numbers ?? []).map((num, i) => (
-                <Badge key={i} variant="secondary" className="text-xs font-normal">
+                <Badge
+                  key={i}
+                  variant="secondary"
+                  className="text-xs font-normal"
+                >
                   <span className="font-medium">{num}</span>
                   {mandate.agenda_item_titles?.[i] && (
                     <span className="ml-1 text-muted-foreground">

@@ -30,8 +30,6 @@ const CustomizedBar = (props: CustomizedBarProps) => {
     width = 0,
     height = 0,
     payload,
-    fill,
-    yearRange,
     selectedRange,
   } = props
   // Determine if this bar is within the selected range

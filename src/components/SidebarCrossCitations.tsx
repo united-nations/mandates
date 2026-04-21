@@ -1,13 +1,12 @@
 'use client'
 
-import Link from 'next/link'
-import { Link as LinkIcon } from 'lucide-react'
 import { EntityName } from '@/components/EntityName'
-import { useFilters } from '@/contexts/FilterContext'
 import { GenericSidebar } from '@/components/SidebarGeneric'
 import { SidebarListItem } from '@/components/SidebarListItem'
+import { useFilters } from '@/contexts/FilterContext'
 import { getActiveFiltersText } from '@/lib/utils'
 import type { CrossCitation, Entity } from '@/types'
+import { Link as LinkIcon } from 'lucide-react'
 
 interface CrossCitationsSidebarProps {
   crossCitations: CrossCitation[]
