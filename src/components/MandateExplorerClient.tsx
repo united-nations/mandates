@@ -291,13 +291,11 @@ export function MandateExplorerClient({
                     <Button
                       variant="ghost"
                       onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}
-                      className="flex shrink-0 items-center gap-2 px-2 text-left whitespace-nowrap text-slate-600 hover:bg-transparent hover:text-slate-900"
+                      className="flex shrink-0 items-center gap-2 px-2 text-left whitespace-nowrap text-sm font-medium text-muted-foreground hover:bg-transparent hover:text-foreground"
                     >
-                      <span className="text-sm font-medium">
-                        {showAdvancedSearch
-                          ? 'Hide Advanced Filters'
-                          : 'Show Advanced Filters'}
-                      </span>
+                      {showAdvancedSearch
+                        ? 'Hide Advanced Filters'
+                        : 'Show Advanced Filters'}
                       {showAdvancedSearch ? (
                         <ChevronUp className="h-4 w-4" />
                       ) : (
@@ -305,7 +303,10 @@ export function MandateExplorerClient({
                       )}
                     </Button>
                     <Select value={sortBy} onValueChange={handleSortChange}>
-                      <SelectTrigger className="w-20" id="sort-by">
+                      <SelectTrigger
+                        className="w-auto gap-2 border-0 px-2 text-sm font-medium text-muted-foreground shadow-none hover:bg-transparent hover:text-foreground [&_svg]:opacity-100"
+                        id="sort-by"
+                      >
                         Sort
                       </SelectTrigger>
                       <SelectContent align="end">

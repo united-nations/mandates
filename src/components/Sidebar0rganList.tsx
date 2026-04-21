@@ -87,7 +87,7 @@ export function OrganListSidebar({
           >
             Organs and bodies
           </Link>
-          {` issuing and number of cited source documents ${activeFiltersText}for ${entityFilter}`}
+          {` issuing mandates and number of cited source documents ${activeFiltersText}for ${entityFilter}`}
         </>
       )
     } else {
@@ -99,7 +99,7 @@ export function OrganListSidebar({
           >
             Organs and bodies
           </Link>
-          {` issuing and number of cited source documents${activeFiltersText ? ' ' + activeFiltersText.trim() : ''}`}
+          {` issuing mandates and number of cited source documents${activeFiltersText ? ' ' + activeFiltersText.trim() : ''}`}
         </>
       )
     }

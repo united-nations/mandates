@@ -50,7 +50,7 @@
   --input: hsl(0 0% 100%);
 
   --border: hsl(220 13% 91%);
-  --ring: hsl(220 91.2% 59.8%);
+  /* --ring: hsl(220 91.2% 59.8%); */
 
   --radius: 0.5rem;
   --radius-lg: 0.5rem;
@@ -111,12 +111,20 @@
   --animate-accordion-up: accordion-up 0.2s ease-out;
 
   @keyframes accordion-down {
-    from { height: 0; }
-    to { height: var(--radix-accordion-content-height); }
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
   }
   @keyframes accordion-up {
-    from { height: var(--radix-accordion-content-height); }
-    to { height: 0; }
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
   }
 }
 
@@ -129,30 +137,13 @@
   }
 }
 
-/* Remove focus rings globally */
-*:focus,
-*:focus-visible {
-  outline: none !important;
-  box-shadow: none !important;
-  --tw-ring-shadow: none !important;
+/* Hide focus ring for mouse/touch users only; keyboard users retain visible focus */
+*:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none;
 }
 
 body {
-  font-feature-settings: 'rlig' 1, 'calt' 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-/* Prevent layout shifts — hide scrollbar but keep gutter */
-html {
-  overflow-y: scroll;
-  scrollbar-gutter: stable;
-}
-
-body {
-  overflow-y: scroll;
-}
-
-body::-webkit-scrollbar {
-  display: none;
 }

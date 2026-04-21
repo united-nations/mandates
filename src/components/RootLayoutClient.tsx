@@ -1,4 +1,5 @@
 'use client'
+// Separate client boundary so RootLayout stays a Server Component while usePathname and context providers work here.
 
 import { BackButton } from '@/components/BackButton'
 import { Button } from '@/components/ui/button'

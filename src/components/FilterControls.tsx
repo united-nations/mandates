@@ -201,7 +201,7 @@ export function FilterControls({
       {/* Advanced Filters - Enhanced container (now above search bar) */}
       {showAdvancedSearch && (
         <div className="bg-white/50">
-          <div className="p-6 pt-4">
+          <div className="py-4 pl-1">
             <AdvancedSearch
               programme={filters.programme || ''}
               subject={filters.subject || ''}
@@ -252,7 +252,7 @@ export function FilterControls({
       {/* Filter Chips - Enhanced styling */}
       {(hasSearch || hasFilters) && (
         <div className="rounded-md border border-slate-200">
-          <div className="p-6 pt-4">
+          <div className="px-3 py-3">
             <div className="space-y-4">
               {/* Only show Active Filters label, count, and Clear All if there are visible chips or search */}
               {(hasSearch ||
