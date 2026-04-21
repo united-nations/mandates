@@ -40,7 +40,7 @@ export function SearchResultsSummary({
   if (!hasSearch && !hasFilters) return null
 
   return (
-    <div className="mb-6 rounded-lg p-4" style={{ backgroundColor: '#F6F7F8' }}>
+    <div className="mb-6 rounded-lg bg-card-gray p-4">
       <div className="mb-3 flex items-center justify-between gap-4">
         <div className="flex items-center gap-2">
           <Search className="h-4 w-4 text-muted-foreground" />

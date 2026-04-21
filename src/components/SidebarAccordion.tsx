@@ -1,13 +1,13 @@
 'use client'
 
-import { ReactNode } from 'react'
-import { LucideIcon } from 'lucide-react'
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
 } from '@/components/ui/accordion'
+import { LucideIcon } from 'lucide-react'
+import { ReactNode } from 'react'
 
 interface SidebarAccordionItem {
   id: string

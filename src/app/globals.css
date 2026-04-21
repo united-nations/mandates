@@ -17,7 +17,7 @@
   --color-geyser: #dde2e6;
   --color-iron: #d9dcdf;
   --color-card-gray: #f6f7f8;
-  --color-med-gray: #d9dcdf;
+
 
   /* Font weights for Roboto */
   /* --font-weight-thin: 100;
@@ -185,48 +185,38 @@ body {
 
 /* Enhanced search highlighting styles using UN Blue */
 .search-highlight {
-  background-color: rgba(0, 158, 219, 0.15); /* UN Blue with transparency */
-  color: var(--color-un-blue); /* UN Blue */
+  background-color: color-mix(in srgb, var(--color-un-blue) 15%, transparent);
+  color: var(--color-un-blue);
   padding: 2px 4px;
   border-radius: 4px;
   font-weight: 600;
-  border: 1px solid rgba(0, 158, 219, 0.3);
+  border: 1px solid color-mix(in srgb, var(--color-un-blue) 30%, transparent);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   transition: all 0.2s ease;
 }
 
 .search-highlight-exact {
-  background-color: rgba(
-    0,
-    158,
-    219,
-    0.25
-  ); /* Stronger UN Blue for exact matches */
-  color: var(--color-un-blue); /* UN Blue */
-  border-color: rgba(0, 158, 219, 0.5);
+  background-color: color-mix(in srgb, var(--color-un-blue) 25%, transparent);
+  color: var(--color-un-blue);
+  border-color: color-mix(in srgb, var(--color-un-blue) 50%, transparent);
   font-weight: 700;
 }
 
 .search-highlight-fuzzy {
-  background-color: rgba(
-    0,
-    158,
-    219,
-    0.12
-  ); /* Lighter UN Blue for fuzzy matches */
-  color: var(--color-un-blue); /* UN Blue */
-  border-color: rgba(0, 158, 219, 0.25);
+  background-color: color-mix(in srgb, var(--color-un-blue) 12%, transparent);
+  color: var(--color-un-blue);
+  border-color: color-mix(in srgb, var(--color-un-blue) 25%, transparent);
   font-weight: 600;
 }
 
 /* Legacy mark support for backward compatibility */
 mark {
-  background-color: #fef3c7;
-  color: #92400e;
+  background-color: var(--color-amber-100);
+  color: var(--color-amber-800);
   padding: 1px 3px;
   border-radius: 3px;
   font-weight: 600;
-  border: 1px solid #fcd34d;
+  border: 1px solid var(--color-amber-300);
 }
 
 /* Search result animations */
@@ -368,12 +358,12 @@ mark {
 }
 
 .p-dropdown-panel.text-xs .p-dropdown-item:hover {
-  background-color: rgba(0, 158, 219, 0.08);
+  background-color: color-mix(in srgb, var(--color-un-blue) 8%, transparent);
   color: var(--color-un-blue);
 }
 
 .p-dropdown-panel.text-xs .p-dropdown-item.p-highlight {
-  background-color: rgba(0, 158, 219, 0.12);
+  background-color: color-mix(in srgb, var(--color-un-blue) 12%, transparent);
   color: var(--color-un-blue);
 }
 
@@ -392,25 +382,25 @@ mark {
 }
 
 .custom-table .p-datatable-tbody > tr:hover {
-  background-color: rgba(0, 158, 219, 0.04) !important;
+  background-color: color-mix(in srgb, var(--color-un-blue) 4%, transparent) !important;
 }
 
 .custom-table .p-datatable-tbody > tr.p-highlight {
-  background-color: rgba(0, 158, 219, 0.08);
+  background-color: color-mix(in srgb, var(--color-un-blue) 8%, transparent);
   color: hsl(var(--foreground));
 }
 
 .custom-table .p-datatable-tbody > tr.p-highlight:hover {
-  background-color: rgba(0, 158, 219, 0.12);
+  background-color: color-mix(in srgb, var(--color-un-blue) 12%, transparent);
 }
 
 /* Sortable column headers */
 .custom-table .p-sortable-column:hover {
-  background-color: rgba(0, 158, 219, 0.06) !important;
+  background-color: color-mix(in srgb, var(--color-un-blue) 6%, transparent) !important;
 }
 
 .custom-table .p-sortable-column.p-highlight {
-  background-color: rgba(0, 158, 219, 0.08);
+  background-color: color-mix(in srgb, var(--color-un-blue) 8%, transparent);
   color: var(--color-un-blue);
 }
 

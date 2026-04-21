@@ -161,7 +161,7 @@ export function MandateList({
               className="block cursor-pointer"
             >
               <motion.div
-                className="relative cursor-pointer rounded-lg bg-[#F6F7F8] p-3 transition-all hover:bg-un-blue/10 sm:p-4"
+                className="relative cursor-pointer rounded-lg bg-card-gray p-3 transition-all hover:bg-un-blue/10 sm:p-4"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: index * 0.05 }}

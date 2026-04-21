@@ -36,7 +36,7 @@ const CustomizedBar = (props: CustomizedBarProps) => {
   if (!payload) return null
   const yearNum = parseInt(payload.year, 10)
   const isSelected = yearNum >= selectedRange[0] && yearNum <= selectedRange[1]
-  const barFill = isSelected ? '#009edb' : '#E2E4EA'
+  const barFill = isSelected ? 'var(--color-un-blue)' : 'var(--color-gray-200)'
   if (payload.count === 0) {
     return (
       <rect

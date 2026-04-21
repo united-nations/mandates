@@ -1,14 +1,13 @@
 'use client'
 
-import React from 'react'
-import { useRouter } from 'next/navigation'
-import { Building } from 'lucide-react'
 import { EntityName } from '@/components/EntityName'
-import { useFilters } from '@/contexts/FilterContext'
 import { GenericSidebar } from '@/components/SidebarGeneric'
 import { SidebarListItem } from '@/components/SidebarListItem'
+import { useFilters } from '@/contexts/FilterContext'
 import { getActiveFiltersText } from '@/lib/utils'
-import type { EntityWithCount, Entity } from '@/types'
+import type { Entity, EntityWithCount } from '@/types'
+import { Building } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 interface EntityListSidebarProps {
   entities: EntityWithCount[]
