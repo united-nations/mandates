@@ -1,64 +1,33 @@
-'use client'
-
-import { Suspense } from 'react'
-import { useParams } from 'next/navigation'
-import { getMandateDisplayTitle } from '@/lib/utils'
-import { Badge } from '@/components/ui/badge'
+import { notFound } from 'next/navigation'
+import { getMandateDisplayTitle, decodeUrlSegments } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { FileText } from 'lucide-react'
 
-import { LoadingFallback } from '@/components/LoadingFallback'
-import { decodeUrlSegments } from '@/lib/shared-utils'
-import { useMandateData } from '@/hooks/use-mandate-data'
+import { getMandateBySymbol } from '@/lib/data/mandates'
+import { getAllEntities } from '@/lib/data/entities'
+import { getBudgetDocuments } from '@/lib/data/budget-documents'
+import { getParagraphsBySymbol } from '@/lib/data/paragraphs'
 import { ParagraphsSection } from '@/components/ParagraphSection'
 import { CitationCounts } from '@/components/CitationCounts'
 import { MandateMetadata } from '@/components/MandateMetadata'
 import { ScrollToTop } from '@/components/ScrollToTop'
 
-function MandatePageContent() {
-  const params = useParams()
-  const segments = params.segments as string[]
+interface MandatePageProps {
+  params: Promise<{ segments: string[] }>
+}
 
-  // Reconstruct the full document symbol from segments
+export default async function MandatePage({ params }: MandatePageProps) {
+  const { segments } = await params
   const documentSymbol = decodeUrlSegments(segments)
 
-  // Use unified hook for mandate and paragraphs data
-  const {
-    mandate,
-    paragraphs,
-    entities,
-    isLoading: loading,
-    error,
-  } = useMandateData({ documentSymbol })
+  const [mandate, entities, budgetDocuments, paragraphs] = await Promise.all([
+    getMandateBySymbol(documentSymbol),
+    getAllEntities(),
+    getBudgetDocuments(),
+    getParagraphsBySymbol(documentSymbol),
+  ])
 
-  if (loading) {
-    return (
-      <div className="pb-8">
-        <div className="mb-6">
-          <div className="mb-2 h-8 w-64 animate-pulse rounded bg-gray-200" />
-          <div className="h-6 w-48 animate-pulse rounded bg-gray-200" />
-        </div>
-        <div className="space-y-4">
-          <div className="h-20 w-full animate-pulse rounded bg-gray-200" />
-          <div className="h-40 w-full animate-pulse rounded bg-gray-200" />
-        </div>
-      </div>
-    )
-  }
-
-  if (error || !mandate) {
-    return (
-      <div className="pb-8">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-red-600">Mandate Not Found</h1>
-          <p className="mt-2 text-muted-foreground">
-            Could not find mandate with document symbol:{' '}
-            <code className="rounded bg-muted px-2 py-1">{documentSymbol}</code>
-          </p>
-        </div>
-      </div>
-    )
-  }
+  if (!mandate) notFound()
 
   return (
     <div className="pb-12">
@@ -101,34 +70,18 @@ function MandatePageContent() {
       </div>
 
       {/* Content */}
-      <div>
-        <div className="space-y-10 sm:pr-2">
-          {/* Metadata Section */}
-          <MandateMetadata mandate={mandate} />
-
-          {/* Citations Section */}
-          <CitationCounts mandate={mandate} entities={entities} />
-
-          {/* Paragraphs Section with TOC */}
-          <ParagraphsSection
-            paragraphs={paragraphs}
-            documentSymbol={documentSymbol}
-            isLoading={loading}
-            error={error}
-          />
-        </div>
+      <div className="space-y-10 sm:pr-2">
+        <MandateMetadata mandate={mandate} budgetDocuments={budgetDocuments} />
+        <CitationCounts mandate={mandate} entities={entities} />
+        <ParagraphsSection
+          paragraphs={paragraphs}
+          documentSymbol={documentSymbol}
+          isLoading={false}
+          error={null}
+        />
       </div>
 
-      {/* Scroll to Top Button */}
       <ScrollToTop />
     </div>
-  )
-}
-
-export default function MandatePage() {
-  return (
-    <Suspense fallback={<LoadingFallback variant="mandate" />}>
-      <MandatePageContent />
-    </Suspense>
   )
 }

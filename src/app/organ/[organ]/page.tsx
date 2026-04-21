@@ -1,82 +1,66 @@
-'use client'
-
-import { Suspense, useState } from 'react'
-import { useParams } from 'next/navigation'
-import { Landmark, Link as LinkIcon } from 'lucide-react'
-import { MandateExplorer } from '@/components/MandateExplorer'
-import { Badge } from '@/components/ui/badge'
-import { Skeleton } from '@/components/ui/skeleton'
+import { Suspense } from 'react'
+import { Link as LinkIcon } from 'lucide-react'
+import { MandateExplorerClient } from '@/components/MandateExplorerClient'
 import { MetadataItem } from '@/components/MetadataItem'
 import { formatUrlForDisplay } from '@/lib/utils'
-import type { Organ } from '@/types'
-import { LoadingFallback } from '@/components/LoadingFallback'
+import { LoadingSkeleton } from '@/components/LoadingSkeleton'
+import { getMandatePageData } from '@/lib/data/mandates'
+import { parseSearchParams } from '@/lib/filter-constants'
+import { getOrganByShortName } from '@/lib/data/organs'
 
-function OrganPageContent() {
-  const params = useParams()
-  const organName = decodeURIComponent(params.organ as string)
+interface OrganPageProps {
+  params: Promise<{ organ: string }>
+  searchParams: Promise<Record<string, string | string[] | undefined>>
+}
 
-  const [organDetails, setOrganDetails] = useState<{
-    short: string
-    long: string
-    website?: string
-  } | null>(null)
+export default async function OrganPage({
+  params,
+  searchParams,
+}: OrganPageProps) {
+  const { organ: organParam } = await params
+  const organName = decodeURIComponent(organParam)
 
-  // Callback to receive organ details from MandateExplorer
-  const handleOrganDetailsLoaded = (organs: Organ[]) => {
-    const foundOrgan = organs.find((o) => o.short === organName)
-    if (foundOrgan) {
-      setOrganDetails(foundOrgan)
-    }
-  }
+  const urlParams = await searchParams
+  const filters = parseSearchParams({ ...urlParams, organ: organName })
+
+  // Fetch organ details and mandate data in parallel
+  const [organDetails, data] = await Promise.all([
+    getOrganByShortName(organName),
+    getMandatePageData(filters),
+  ])
 
   return (
     <div>
       <div className="mb-6">
         <div className="mb-2 flex items-center gap-4">
-          {/* <div className="rounded-lg bg-un-blue/10 p-2 w-12 flex items-center justify-center">
-            <Landmark className="h-6 w-6 text-un-blue" />
-          </div> */}
           <h1 className="text-2xl font-bold tracking-tight">
-            {organDetails?.long} ({organName})
+            {organDetails?.long || organName} ({organName})
           </h1>
         </div>
 
-        {!organDetails ? (
-          <div className="mt-4 ml-0 space-y-2">
-            <Skeleton className="h-6 w-48" />
-          </div>
-        ) : (
+        {organDetails?.website && (
           <div className="ml-0 space-y-0">
-            {organDetails.website && (
-              <MetadataItem label="Website" icon={LinkIcon}>
-                <a
-                  href={organDetails.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-un-blue underline transition-colors hover:text-un-blue/80"
-                >
-                  {formatUrlForDisplay(organDetails.website, 35)}
-                </a>
-              </MetadataItem>
-            )}
+            <MetadataItem label="Website" icon={LinkIcon}>
+              <a
+                href={organDetails.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-un-blue underline transition-colors hover:text-un-blue/80"
+              >
+                {formatUrlForDisplay(organDetails.website, 35)}
+              </a>
+            </MetadataItem>
           </div>
         )}
       </div>
 
-      {/* Mandate Explorer - now passes callback to receive organ details */}
-      <MandateExplorer
-        pageType="organ"
-        organFilter={organName}
-        onOrganDetailsLoaded={handleOrganDetailsLoaded}
-      />
+      <Suspense fallback={<LoadingSkeleton variant="list" count={4} />}>
+        <MandateExplorerClient
+          data={data}
+          pageType="organ"
+          organFilter={organName}
+        />
+      </Suspense>
     </div>
-  )
-}
-
-export default function OrganPage() {
-  return (
-    <Suspense fallback={<LoadingFallback />}>
-      <OrganPageContent />
-    </Suspense>
   )
 }

@@ -10,7 +10,7 @@ export function LoadingFallback({
   message = 'Loading...',
 }: LoadingFallbackProps) {
   if (variant === 'simple') {
-    return <div>{message}</div>
+    return <div />
   }
 
   if (variant === 'mandate') {

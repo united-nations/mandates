@@ -1,8 +1,8 @@
+import type { FilterType } from '@/contexts/FilterContext'
+import type { Mandate } from '@/types'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import { titleCase } from 'title-case'
-import type { FilterType } from '@/contexts/FilterContext'
-import type { Mandate } from '@/types'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -131,32 +131,34 @@ export function getActiveFiltersText(
 }
 
 /**
+ * Clean up a title by removing trailing punctuation and whitespace
+ */
+function cleanTitle(title: string): string {
+  return title
+    .trim()
+    .replace(/[\s:]+$/, '')
+    .trim()
+}
+
+/**
  * Get the display title for a mandate using the same logic as the API
  * This ensures consistency across all components
  */
 export function getMandateDisplayTitle(mandate: Mandate): string {
-  // Check uniform_title first
-  if (
-    mandate.uniform_title &&
-    mandate.uniform_title.length > 0 &&
-    mandate.uniform_title[0].trim()
-  ) {
-    return titleCase(mandate.uniform_title[0].trim().toLowerCase())
+  // Security Council resolutions use the catalogue title field directly
+  if (mandate.issuing_body === 'Security Council') {
+    if (mandate.title && mandate.title.trim()) {
+      return titleCase(cleanTitle(mandate.title).toLowerCase())
+    }
   }
-  // Check title
-  if (mandate.title && mandate.title.trim()) {
-    return titleCase(mandate.title.trim().toLowerCase())
+  // 1. proper_title from source_documents_metadata_clean (strip trailing colon)
+  if (mandate.proper_title && mandate.proper_title.trim()) {
+    const cleaned = cleanTitle(mandate.proper_title).replace(/:$/, '').trim()
+    if (cleaned) return titleCase(cleaned.toLowerCase())
   }
-  // Check top-level description
+  // 2. ppb_description from source_documents
   if (mandate.description && mandate.description.trim()) {
-    return titleCase(mandate.description.trim().toLowerCase())
-  }
-  // Check citation_info descriptions
-  const citationDescription = mandate.citation_info
-    ?.find((info) => info.description?.trim())
-    ?.description?.trim()
-  if (citationDescription) {
-    return titleCase(citationDescription.toLowerCase())
+    return titleCase(cleanTitle(mandate.description).toLowerCase())
   }
   // Final fallback
   return 'Untitled'
@@ -181,4 +183,16 @@ export const DELIVERABLE_TYPE_LABELS: Record<string, string> = {
  */
 export function getDeliverableTypeLabel(type: string): string {
   return DELIVERABLE_TYPE_LABELS[type] || type
+}
+
+/**
+ * Decode URL segments - used by all dynamic pages
+ */
+export function decodeUrlSegments(segments: string | string[]): string {
+  if (Array.isArray(segments)) {
+    // For mandate pages with multiple segments
+    return segments.map((segment) => decodeURIComponent(segment)).join('/')
+  }
+  // For entity/organ pages with single segment
+  return decodeURIComponent(segments)
 }

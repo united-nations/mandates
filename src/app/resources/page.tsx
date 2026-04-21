@@ -1,6 +1,7 @@
 'use client'
 
-import { Link as LinkIcon } from 'lucide-react'
+import { Building2, Link as LinkIcon } from 'lucide-react'
+import Link from 'next/link'
 
 export default function ResourcesPage() {
   return (
@@ -70,6 +71,22 @@ export default function ResourcesPage() {
             Results information for the proposed programme budget 2026.
           </div>
         </a>
+        {/* Card 4: Intergovernmental Bodies & Contacts */}
+        <Link
+          href="/intergov"
+          className="block flex flex-col items-start rounded-lg border border-muted p-4 text-left transition hover:border-un-blue"
+        >
+          <div className="mb-3 flex h-32 w-full items-center justify-center rounded-md bg-muted/30">
+            <Building2 className="h-12 w-12 text-un-blue" strokeWidth={1.5} />
+          </div>
+          <div className="mb-1 text-base font-medium text-un-blue">
+            Intergovernmental Organs &amp; Bodies
+          </div>
+          <div className="text-sm text-muted-foreground">
+            List of governing bodies across the UN system with links and
+            secretariat contacts.
+          </div>
+        </Link>
       </div>
     </div>
   )

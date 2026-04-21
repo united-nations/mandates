@@ -72,33 +72,9 @@ export function EntityListSidebar({
     )
 
     if (pageType === 'organ') {
-      return (
-        <>
-          <a
-            href="https://systemchart.un.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-un-blue no-underline transition-colors hover:text-shuttle-gray"
-          >
-            Entities
-          </a>
-          {` and number of cited source documents ${activeFiltersText}for ${organFilter}`}
-        </>
-      )
+      return `Entities and number of cited source documents ${activeFiltersText}for ${organFilter}`
     } else {
-      return (
-        <>
-          <a
-            href="https://systemchart.un.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-un-blue no-underline transition-colors hover:text-shuttle-gray"
-          >
-            Entities
-          </a>
-          {` and number of cited source documents${activeFiltersText ? ' ' + activeFiltersText.trim() : ''}`}
-        </>
-      )
+      return `Entities and number of cited source documents${activeFiltersText ? ' ' + activeFiltersText.trim() : ''}`
     }
   }
 

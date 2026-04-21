@@ -1,67 +1,41 @@
-'use client'
-
-import { Suspense, useState, useEffect } from 'react'
-import { useParams } from 'next/navigation'
-import {
-  Building,
-  Link as LinkIcon,
-  Landmark,
-  ExternalLink,
-  AlertCircle,
-  Info,
-} from 'lucide-react'
-import { EntityName } from '@/components/EntityName'
-import { MandateExplorer } from '@/components/MandateExplorer'
-import { Badge } from '@/components/ui/badge'
-import { Skeleton } from '@/components/ui/skeleton'
-import { MetadataItem } from '@/components/MetadataItem'
-import { formatUrlForDisplay } from '@/lib/utils'
-import { LoadingFallback } from '@/components/LoadingFallback'
+import { Suspense } from 'react'
+import { ExternalLink, AlertCircle, Info } from 'lucide-react'
+import { MandateExplorerClient } from '@/components/MandateExplorerClient'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import type { ApiResponse, Entity } from '@/types'
+import { LoadingSkeleton } from '@/components/LoadingSkeleton'
+import { getMandatePageData } from '@/lib/data/mandates'
+import { parseSearchParams } from '@/lib/filter-constants'
+import { getEntityByCode } from '@/lib/data/entities'
 
-function EntityPageContent() {
-  const params = useParams()
-  const entityName = decodeURIComponent(params.entity as string)
+interface EntityPageProps {
+  params: Promise<{ entity: string }>
+  searchParams: Promise<Record<string, string | string[] | undefined>>
+}
 
-  const [entityDetails, setEntityDetails] = useState<Entity | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [entityNotFound, setEntityNotFound] = useState(false)
-  const [mandateCount, setMandateCount] = useState<number | null>(null)
+export default async function EntityPage({
+  params,
+  searchParams,
+}: EntityPageProps) {
+  const { entity: entityParam } = await params
+  const entityName = decodeURIComponent(entityParam)
 
-  // Callback to receive entity details from MandateExplorer (more efficient)
-  const handleEntityDetailsLoaded = (entities: Entity[]) => {
-    const foundEntity = entities.find((e) => e.entity === entityName)
-    if (foundEntity) {
-      setEntityDetails(foundEntity)
-      setEntityNotFound(false)
-    } else {
-      setEntityNotFound(true)
-    }
-    setIsLoading(false)
-  }
+  const urlParams = await searchParams
+  const filters = parseSearchParams({ ...urlParams, entity: entityName })
 
-  // Callback to receive API data including mandate count
-  const handleDataLoaded = (data: ApiResponse) => {
-    setMandateCount(data.pagination.totalItems)
-  }
+  // Fetch entity details and mandate data in parallel
+  const [entityDetails, data] = await Promise.all([
+    getEntityByCode(entityName),
+    getMandatePageData(filters),
+  ])
 
-  // Set a timeout to show error if no data is loaded within reasonable time
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (!entityDetails && isLoading) {
-        setIsLoading(false)
-      }
-    }, 3000) // 3 seconds timeout
-
-    return () => clearTimeout(timer)
-  }, [entityDetails, isLoading])
+  const entityNotFound = !entityDetails
+  const mandateCount = data.pagination.totalItems
 
   return (
     <div>
-      {/* Show error if entity not found after loading */}
-      {!isLoading && entityNotFound && (
+      {/* Show error if entity not found */}
+      {entityNotFound && (
         <Alert variant="destructive" className="mb-6 max-w-2xl">
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Entity Not Found</AlertTitle>
@@ -73,7 +47,7 @@ function EntityPageContent() {
       )}
 
       {/* Show info message if entity exists but has no mandates */}
-      {!isLoading && entityDetails && mandateCount === 0 && (
+      {entityDetails && mandateCount === 0 && (
         <Alert className="mb-6 max-w-2xl border-un-blue/30 bg-un-blue/5 text-un-blue">
           <Info className="h-4 w-4" />
           <AlertTitle>Source Documents Not Yet Available</AlertTitle>
@@ -102,21 +76,15 @@ function EntityPageContent() {
         </Alert>
       )}
 
-      <div className="mb-8">
-        <div className="mb-4 flex items-center gap-4">
-          {entityDetails ? (
+      {entityDetails && (
+        <div className="mb-8">
+          <div className="mb-4 flex items-center gap-4">
             <h1 className="text-2xl font-bold tracking-tight">
               {entityDetails.entity_long} ({entityName})
             </h1>
-          ) : isLoading ? (
-            <div className="space-y-2">
-              <Skeleton className="h-8 w-96" />
-            </div>
-          ) : null}
-        </div>
+          </div>
 
-        {entityDetails && (
-          <Button
+          {/* <Button
             size="sm"
             asChild
             className="bg-un-blue text-white transition-colors hover:bg-un-blue/90"
@@ -130,27 +98,20 @@ function EntityPageContent() {
               <ExternalLink className="h-4 w-4" />
               View in UN System Chart
             </a>
-          </Button>
-        )}
-      </div>
+          </Button> */}
+        </div>
+      )}
 
-      {/* Only show Mandate Explorer if entity exists or we're still loading */}
+      {/* Only show Mandate Explorer if entity exists */}
       {!entityNotFound && (
-        <MandateExplorer
-          pageType="entity"
-          entityFilter={entityName}
-          onEntityDetailsLoaded={handleEntityDetailsLoaded}
-          onDataLoaded={handleDataLoaded}
-        />
+        <Suspense fallback={<LoadingSkeleton variant="list" count={4} />}>
+          <MandateExplorerClient
+            data={data}
+            pageType="entity"
+            entityFilter={entityName}
+          />
+        </Suspense>
       )}
     </div>
-  )
-}
-
-export default function EntityPage() {
-  return (
-    <Suspense fallback={<LoadingFallback />}>
-      <EntityPageContent />
-    </Suspense>
   )
 }

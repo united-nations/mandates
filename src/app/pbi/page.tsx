@@ -1,15 +1,15 @@
 'use client'
 
-import { useState, useEffect, useMemo, Fragment } from 'react'
 import {
-  ChevronDown,
-  ChevronRight,
-  DollarSign,
-  ArrowLeftRight,
-  ExternalLink,
-  ArrowUp,
-  ArrowDown,
+    ArrowDown,
+    ArrowLeftRight,
+    ArrowUp,
+    ChevronDown,
+    ChevronRight,
+    DollarSign,
+    ExternalLink,
 } from 'lucide-react'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 
 type SortField = 'resolution' | 'amount'
 type SortDirection = 'asc' | 'desc'

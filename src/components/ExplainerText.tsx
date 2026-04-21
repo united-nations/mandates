@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { explainerTexts } from '@/lib/explainer-texts'
+import { explainerTexts } from '@/lib/en_text_contents'
 
 export function ExplainerText() {
   return (

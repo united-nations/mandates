@@ -1,18 +1,18 @@
 'use client'
 
-import type { Mandate } from '@/types'
 import { Badge } from '@/components/ui/badge'
-import { motion } from 'framer-motion'
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { EntityName } from './EntityName'
-import { FileText, Calendar, Landmark, Info } from 'lucide-react'
-import { explainerTexts } from '@/lib/explainer-texts'
+import { explainerTexts } from '@/lib/en_text_contents'
+import type { Mandate } from '@/types'
+import { motion } from 'framer-motion'
+import { Calendar, FileText, Info, Landmark } from 'lucide-react'
 import Link from 'next/link'
+import { EntityName } from './EntityName'
 
 interface Organ {
   short: string
@@ -101,24 +101,8 @@ export function MandateList({
     return organData ? organData.long : organName
   }
 
-  // Helper function to check if mandate is referenced in Plan Outline
-  const isReferencedInPlanOutline = (mandate: Mandate): boolean => {
-    return (
-      mandate.citation_info?.some(
-        (citation) => citation.origin_document === 'PPB 2026/Plan Outline'
-      ) || false
-    )
-  }
-
   // Helper function to get citation display text
   const getCitationDisplayText = (mandate: Mandate): string => {
-    const isPlanOutline = isReferencedInPlanOutline(mandate)
-    const hasEntities = mandate.num_entities > 0
-
-    if (isPlanOutline && !hasEntities) {
-      return 'Referenced in Plan Outline, but not cited by any entities'
-    }
-
     return `Cited ${mandate.num_citations} time${mandate.num_citations !== 1 ? 's' : ''} by ${mandate.num_entities} entit${mandate.num_entities !== 1 ? 'ies' : 'y'}`
   }
 

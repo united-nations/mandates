@@ -1,18 +1,20 @@
-// Core data types based on the JSON structure
+// Core data types based on the DB schema (mandates.paragraphs)
 export interface Paragraph {
+  /** UUID from mandates.paragraphs */
+  id?: string
+  /** 0-based position within the document */
+  position?: number
   text: string
-  is_frontmatter: boolean
   type: string // "title", "paragraph", "heading", etc.
   heading_level: number | null
   paragraph_type: string | null // "preambular", "operative", etc.
   paragraph_level: number | null
-  prefix: string | null // "1.", "2.", etc. - renamed from paragraph_prefix, can also apply to headers
-  links: [string, string][] | [] // Array of [text, url] tuples
-  language: string | null // Language of the text block
-  symbol?: string
-  index?: number
+  prefix: string | null // "1.", "(a)", "(i)", etc.
+  /** Links from mandates.paragraph_links: [linked_symbol, linked_url] pairs */
+  links: [string, string][] | []
   mandates?: {
     action_verb: string
+    action_verb_normalized?: string
     action_verb_type: string
     assignees: {
       assignee: string
@@ -30,7 +32,10 @@ export interface Paragraph {
       deliverable_type: string
     }[]
   }[]
+  /** NLP highlight annotations (from text_with_highlights column) */
   textWithHighlights?: string
+  /** Uncertainty annotations from the extraction pipeline */
+  uncertainties?: string
 }
 
 export interface Mandate {
@@ -64,43 +69,15 @@ export interface Mandate {
   body_long?: string
   displayTitle?: string
   document_symbol: string | null
-  //   classification_code: string[] | null
-  //   classification: string[] | null
-  //   doc_type_code: string[] | null
-  symbol_prefix: string[] | null
-  symbol_number: string[] | null
   uniform_title: string[] | null
+  proper_title: string | null
   title: string | null
   subtitle: string | null
-  //   statement_of_responsibility: string[] | null
-  //   translated_title: string[] | null
-  //   publish_place: string[] | null
-  //   publisher: string[] | null
-  //   publication_date: string[] | null
-  //   printing_date: string[] | null
-  //   pagination: string[] | null
-  //   note: string[] | null
-  //   citation_reference: string[] | null
-  //   abstract: string[] | null
-  //   subject_organs: string[] | null
-  //   local_shelving: string[] | null
-  //   corporate_subject: string[] | null
-  //   meeting_subject: string[] | null
-  //   contains_documents: string[] | null
   subject_headings: string[]
-  //   geographic_headings: string[] | null
-  //   author: string[] | null
-  //   local_subject: string[] | null
-  //   collection_level1: string[] | null
-  //   collection_level2: string[] | null
-  //   collection_level3: string[] | null
-  //   agenda_doc_symbol: string[] | null
-  //   agenda_item_number: string[] | null
-  //   agenda_item_title: string[] | null
-  //   agenda_subject_heading: string[] | null
-  //   action_note_date: string[] | null
-  //   related_documents: string[] | null
-  //   vote_summary: string[] | null
+  issuing_body?: string | null
+  agenda_document_symbols?: string[]
+  agenda_item_numbers?: string[]
+  agenda_item_titles?: string[]
   paragraphs?: Paragraph[] | null
   programme?: string
   text?: string
@@ -114,12 +91,6 @@ export interface Mandate {
 
 // Entity types
 export interface Entity {
-  entity: string
-  entity_long: string
-}
-
-// Internal type for CSV parsing
-export interface EntityDetails {
   entity: string
   entity_long: string
 }
@@ -199,106 +170,17 @@ export interface ApiResponse {
     subjects: { value: string; count: number }[]
     yearRange: { min: number; max: number }
     yearDistribution: Record<string, number>
+    budgetDocuments: {
+      slug: string
+      display_name: string
+      match_pattern: string
+      sort_order: number
+    }[]
   }
 
   // Reference data for display
   reference: {
     entities: Entity[]
     organs: Organ[]
-  }
-}
-
-// Base document interface for both resolutions and reports
-export interface BaseDocument {
-  symbol: string
-  original_symbol: string
-  organ: string
-  organ_level1: string | null
-  organ_level2: string | null
-  organ_prefix: string | null
-  document_type: string
-  issuing_body: string
-  year: number
-  title: string
-  uniform_title: string | null
-  combined_title: string
-  normalized_title: string
-  group_title: string
-  is_potential_duplicate: boolean
-  is_addendum: boolean
-  is_revision: boolean
-  is_corrigendum: boolean
-  agenda_doc_symbol: string[]
-  agenda_item_title: string[]
-  agenda_subject_heading: string[]
-  related_documents: string[]
-  is_recurring_series: boolean
-  series_symbol_count: number
-  series_first_year: number
-  series_last_year: number
-  series_year_range: number
-  is_latest_version: boolean
-  distance_to_previous: number | null
-  previous_symbol: string | null
-  similarity_to_previous: number | null
-  word_count: number | null
-  pdf_status: string
-  url: string
-}
-
-// Resolution-specific interface
-export interface Resolution extends BaseDocument {
-  has_within_existing_resources: boolean | null
-  count_within_existing_resources: number | null
-}
-
-// Document configuration for different document types
-export interface DocumentConfig<T extends BaseDocument> {
-  type: 'resolutions'
-  title: string
-  apiEndpoint: string
-  dataFile: string
-  defaultOrgan: string
-  organOptions: Array<{ value: string; label: string }>
-  columns: {
-    symbol: boolean
-    year: boolean
-    title: boolean
-    length: boolean
-    recurrence: boolean
-    previous: boolean
-    similarity: boolean
-    withinResources: boolean
-  }
-}
-
-// Document filter types (for resolutions page)
-export interface DocumentFilters {
-  organ?: string
-  is_recurring_series?: string
-  year_range?: string
-  length_bucket?: string
-  similarity_bucket?: string
-  include_missing_fulltexts?: string
-}
-
-// Treemap aggregate types
-export interface BucketData {
-  count: number
-  percentage: number
-  avg_value?: number // avg word count or avg similarity
-}
-
-export interface AggregateResponse {
-  totals: {
-    count: number
-    resolutions_with_word_count: number
-    resolutions_with_similarity: number
-    resolutions_with_frequency: number
-  }
-  buckets: {
-    length: Record<string, BucketData>
-    similarity: Record<string, BucketData>
-    frequency: Record<string, BucketData>
   }
 }
