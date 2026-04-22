@@ -2,16 +2,24 @@
 
 import { Label } from '@/components/ui/label'
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectSeparator,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectSeparator,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select'
 import type { BudgetDocument } from '@/lib/data/budget-documents'
 import { explainerTexts } from '@/lib/en_text_contents'
-import { BookOpen, Calendar, FileType, HelpCircle, List, Receipt, Target } from 'lucide-react'
+import {
+  BookOpen,
+  Calendar,
+  FileType,
+  HelpCircle,
+  List,
+  Receipt,
+  Target,
+} from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { titleCase } from 'title-case'
 import { SearchableDropdown } from './SearchableDropdown'
@@ -264,9 +272,15 @@ export function AdvancedSearch({
             }))}
             value={documentType}
             onChange={onDocumentTypeChange}
-            placeholder={explainerTexts.advancedFilters.documentType.placeholder}
-            searchPlaceholder={explainerTexts.advancedFilters.documentType.searchPlaceholder}
-            emptyPlaceholder={explainerTexts.advancedFilters.documentType.emptyPlaceholder}
+            placeholder={
+              explainerTexts.advancedFilters.documentType.placeholder
+            }
+            searchPlaceholder={
+              explainerTexts.advancedFilters.documentType.searchPlaceholder
+            }
+            emptyPlaceholder={
+              explainerTexts.advancedFilters.documentType.emptyPlaceholder
+            }
             className="h-11 border-slate-300 bg-white text-sm focus:border-blue-500 focus:ring-blue-500"
           />
         </div>
@@ -296,8 +310,12 @@ export function AdvancedSearch({
             value={agendaItem}
             onChange={onAgendaItemChange}
             placeholder={explainerTexts.advancedFilters.agendaItem.placeholder}
-            searchPlaceholder={explainerTexts.advancedFilters.agendaItem.searchPlaceholder}
-            emptyPlaceholder={explainerTexts.advancedFilters.agendaItem.emptyPlaceholder}
+            searchPlaceholder={
+              explainerTexts.advancedFilters.agendaItem.searchPlaceholder
+            }
+            emptyPlaceholder={
+              explainerTexts.advancedFilters.agendaItem.emptyPlaceholder
+            }
             className="h-11 border-slate-300 bg-white text-sm focus:border-blue-500 focus:ring-blue-500"
           />
         </div>

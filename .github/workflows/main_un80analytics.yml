@@ -15,20 +15,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-      with:
-        lfs: true
-
-    - name: Checkout LFS objects
-      run: git lfs checkout
-
-    - name: Verify data is available for Docker build
-      run: |
-        echo "Contents of data directory:"
-        ls -la data/
-        echo "Size of JSON file:"
-        du -h data/ppb2026_unique_mandates_with_metadata.json
-        echo "First few lines of JSON (should be actual JSON, not LFS pointer):"
-        head -n 3 data/ppb2026_unique_mandates_with_metadata.json
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2

@@ -262,7 +262,7 @@ export function SearchableDropdown({
                       </span>
                       <div className="ml-2 flex shrink-0 items-center gap-1.5">
                         {option.count !== undefined && (
-                          <span className="rounded-full bg-muted px-1.5 py-0.5 text-xs tabular-nums text-muted-foreground">
+                          <span className="rounded-full bg-muted px-1.5 py-0.5 text-xs text-muted-foreground tabular-nums">
                             {option.count}
                           </span>
                         )}

@@ -291,7 +291,7 @@ export function MandateExplorerClient({
                     <Button
                       variant="ghost"
                       onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}
-                      className="flex shrink-0 items-center gap-2 px-2 text-left whitespace-nowrap text-sm font-medium text-muted-foreground hover:bg-transparent hover:text-foreground"
+                      className="flex shrink-0 items-center gap-2 px-2 text-left text-sm font-medium whitespace-nowrap text-muted-foreground hover:bg-transparent hover:text-foreground"
                     >
                       {showAdvancedSearch
                         ? 'Hide Advanced Filters'

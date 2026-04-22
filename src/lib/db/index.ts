@@ -14,11 +14,7 @@ export const getPool = (): Pool => {
   if (!globalForDb._pgPool) {
     globalForDb._pgPool = new Pool({
       connectionString: process.env.DATABASE_URL,
-      ssl:
-        process.env.NODE_ENV === 'production'
-          ? { rejectUnauthorized: false }
-          : undefined,
-      max: 20,
+      max: 5,
     })
 
     globalForDb._pgPool.on('error', (err) => {

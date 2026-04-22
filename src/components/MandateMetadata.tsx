@@ -137,7 +137,9 @@ export function MandateMetadata({
                   >
                     <span className="font-medium">{num}</span>
                     {title && (
-                      <span className="ml-1 text-muted-foreground">{title}</span>
+                      <span className="ml-1 text-muted-foreground">
+                        {title}
+                      </span>
                     )}
                   </Badge>
                 )

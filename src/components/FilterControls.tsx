@@ -158,8 +158,12 @@ export function FilterControls({
               agendaItem={filters.agenda_item || ''}
               onProgrammeChange={(value) => setFilter('programme', value)}
               onSubjectChange={(value) => setFilter('subject', value)}
-              onBudgetDocumentChange={(value) => setFilter('budget_document', value)}
-              onDocumentTypeChange={(value) => setFilter('document_type', value)}
+              onBudgetDocumentChange={(value) =>
+                setFilter('budget_document', value)
+              }
+              onDocumentTypeChange={(value) =>
+                setFilter('document_type', value)
+              }
               onAgendaItemChange={(value) => setFilter('agenda_item', value)}
               programmeOptions={programmeOptions}
               subjectOptions={subjectOptions}
@@ -208,136 +212,135 @@ export function FilterControls({
             <span className="text-xs font-medium text-muted-foreground">
               Active filters
             </span>
-                {hasSearch && (
-                  <FilterBadge
-                    icon={Search}
-                    label={`"${filters.keyword}"`}
-                    onClear={() => clearFilter('keyword')}
-                    variant="secondary"
-                  />
-                )}
+            {hasSearch && (
+              <FilterBadge
+                icon={Search}
+                label={`"${filters.keyword}"`}
+                onClear={() => clearFilter('keyword')}
+                variant="secondary"
+              />
+            )}
 
-                {/* Entity chip - only show if not on entity page or if it's an additional filter */}
-                {displayFilters.entity && displayFilters.entity !== 'all' && (
-                  <FilterBadge
-                    icon={Building}
-                    label={
-                      <>
-                        Entity:&nbsp;
-                        <EntityName
-                          entityName={displayFilters.entity}
-                          entityLong={
-                            entitiesData.find(
-                              (e) => e.entity === displayFilters.entity
-                            )?.entity_long
-                          }
-                        />
-                      </>
-                    }
-                    onClear={() => clearFilter('entity')}
-                    variant="secondary"
-                  />
-                )}
-
-                {/* Cross-citing Entity chip */}
-                {displayFilters.crossCitingEntity &&
-                  displayFilters.crossCitingEntity !== 'all' && (
-                    <FilterBadge
-                      icon={Building}
-                      label={
-                        <>
-                          Cross-citing Entity:&nbsp;
-                          <EntityName
-                            entityName={displayFilters.crossCitingEntity}
-                            entityLong={
-                              entitiesData.find(
-                                (e) =>
-                                  e.entity === displayFilters.crossCitingEntity
-                              )?.entity_long
-                            }
-                          />
-                        </>
+            {/* Entity chip - only show if not on entity page or if it's an additional filter */}
+            {displayFilters.entity && displayFilters.entity !== 'all' && (
+              <FilterBadge
+                icon={Building}
+                label={
+                  <>
+                    Entity:&nbsp;
+                    <EntityName
+                      entityName={displayFilters.entity}
+                      entityLong={
+                        entitiesData.find(
+                          (e) => e.entity === displayFilters.entity
+                        )?.entity_long
                       }
-                      onClear={() => clearFilter('crossCitingEntity')}
-                      variant="secondary"
                     />
-                  )}
+                  </>
+                }
+                onClear={() => clearFilter('entity')}
+                variant="secondary"
+              />
+            )}
 
-                {/* Organ chip - only show if not on organ page or if it's an additional filter */}
-                {displayFilters.organ && displayFilters.organ !== 'all' && (
-                  <FilterBadge
-                    icon={Landmark}
-                    label={
-                      <>
-                        Organ:&nbsp;
-                        <OrganName
-                          organName={displayFilters.organ}
-                          allOrgans={allOrgans}
-                        />
-                      </>
-                    }
-                    onClear={() => clearFilter('organ')}
-                    variant="secondary"
-                  />
-                )}
+            {/* Cross-citing Entity chip */}
+            {displayFilters.crossCitingEntity &&
+              displayFilters.crossCitingEntity !== 'all' && (
+                <FilterBadge
+                  icon={Building}
+                  label={
+                    <>
+                      Cross-citing Entity:&nbsp;
+                      <EntityName
+                        entityName={displayFilters.crossCitingEntity}
+                        entityLong={
+                          entitiesData.find(
+                            (e) => e.entity === displayFilters.crossCitingEntity
+                          )?.entity_long
+                        }
+                      />
+                    </>
+                  }
+                  onClear={() => clearFilter('crossCitingEntity')}
+                  variant="secondary"
+                />
+              )}
 
-                {displayFilters.programme && (
-                  <FilterBadge
-                    icon={Target}
-                    label={`Programme: ${displayFilters.programme}`}
-                    onClear={() => clearFilter('programme')}
-                    variant="secondary"
-                  />
-                )}
-
-                {displayFilters.subject && (
-                  <FilterBadge
-                    icon={BookOpen}
-                    label={`Subject: ${titleCase(displayFilters.subject)}`}
-                    onClear={() => clearFilter('subject')}
-                    variant="secondary"
-                  />
-                )}
-
-                {displayFilters.document_type && (
-                  <FilterBadge
-                    icon={FileType}
-                    label={`Type: ${displayFilters.document_type}`}
-                    onClear={() => clearFilter('document_type')}
-                    variant="secondary"
-                  />
-                )}
-
-                {displayFilters.agenda_item && (
-                  <FilterBadge
-                    icon={List}
-                    label={`Agenda: ${displayFilters.agenda_item}`}
-                    onClear={() => clearFilter('agenda_item')}
-                    variant="secondary"
-                  />
-                )}
-
-                {yearRangeDisplay && (
-                  <FilterBadge
-                    icon={Calendar}
-                    label={`Year: ${yearRangeDisplay}`}
-                    onClear={() => {
-                      clearFilter('start_year')
-                      clearFilter('end_year')
-                    }}
-                    variant="secondary"
-                  />
-                )}
-
-                {displayFilters.budget_document &&
-                  displayFilters.budget_document !== 'all' && (
-                    <FilterBadge
-                      icon={Receipt}
-                      label={`Budget: ${budgetDocuments.find((d) => d.slug === displayFilters.budget_document)?.display_name ?? displayFilters.budget_document}`}
-                      onClear={() => clearFilter('budget_document')}
-                      variant="secondary"
+            {/* Organ chip - only show if not on organ page or if it's an additional filter */}
+            {displayFilters.organ && displayFilters.organ !== 'all' && (
+              <FilterBadge
+                icon={Landmark}
+                label={
+                  <>
+                    Organ:&nbsp;
+                    <OrganName
+                      organName={displayFilters.organ}
+                      allOrgans={allOrgans}
                     />
-                  )}
+                  </>
+                }
+                onClear={() => clearFilter('organ')}
+                variant="secondary"
+              />
+            )}
+
+            {displayFilters.programme && (
+              <FilterBadge
+                icon={Target}
+                label={`Programme: ${displayFilters.programme}`}
+                onClear={() => clearFilter('programme')}
+                variant="secondary"
+              />
+            )}
+
+            {displayFilters.subject && (
+              <FilterBadge
+                icon={BookOpen}
+                label={`Subject: ${titleCase(displayFilters.subject)}`}
+                onClear={() => clearFilter('subject')}
+                variant="secondary"
+              />
+            )}
+
+            {displayFilters.document_type && (
+              <FilterBadge
+                icon={FileType}
+                label={`Type: ${displayFilters.document_type}`}
+                onClear={() => clearFilter('document_type')}
+                variant="secondary"
+              />
+            )}
+
+            {displayFilters.agenda_item && (
+              <FilterBadge
+                icon={List}
+                label={`Agenda: ${displayFilters.agenda_item}`}
+                onClear={() => clearFilter('agenda_item')}
+                variant="secondary"
+              />
+            )}
+
+            {yearRangeDisplay && (
+              <FilterBadge
+                icon={Calendar}
+                label={`Year: ${yearRangeDisplay}`}
+                onClear={() => {
+                  clearFilter('start_year')
+                  clearFilter('end_year')
+                }}
+                variant="secondary"
+              />
+            )}
+
+            {displayFilters.budget_document &&
+              displayFilters.budget_document !== 'all' && (
+                <FilterBadge
+                  icon={Receipt}
+                  label={`Budget: ${budgetDocuments.find((d) => d.slug === displayFilters.budget_document)?.display_name ?? displayFilters.budget_document}`}
+                  onClear={() => clearFilter('budget_document')}
+                  variant="secondary"
+                />
+              )}
 
             <Button
               variant="default"

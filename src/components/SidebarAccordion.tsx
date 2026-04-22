@@ -1,10 +1,10 @@
 'use client'
 
 import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
 } from '@/components/ui/accordion'
 import { LucideIcon } from 'lucide-react'
 import { ReactNode } from 'react'
