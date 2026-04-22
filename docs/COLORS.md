@@ -97,3 +97,15 @@ Pattern: `color-mix(in srgb, var(--color-un-blue) X%, transparent)`
 - **Never** use Tailwind arbitrary color values (`bg-[#...]`).
 - SVG `fill`/`stroke` props that need a color at runtime: use `var(--color-*)`.
 - UN Blue opacity tints in `.css` files: use `color-mix(in srgb, var(--color-un-blue) X%, transparent)`.
+
+---
+
+remaining hardcoded color offenders:
+
+File Classes
+FilterBadge.tsx:53 bg-slate-100 text-slate-800 border-slate-200 hover:bg-slate-200
+FilterBadge.tsx:65 hover:bg-slate-300
+RootLayoutClient.tsx:74 border-slate-200 bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-700
+MandateList.tsx:258 text-slate-700
+AdvancedSearch.tsx (6 labels + 6 icons) text-slate-700, text-slate-500
+DiffViewer.tsx:199 bg-blue-50

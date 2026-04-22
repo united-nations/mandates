@@ -37,23 +37,23 @@ html {
   --background: white;
   --foreground: black;
 
-  --card: hsl(220 20% 97%);
-  --card-foreground: hsl(220 15% 25%);
+  --card: hsl(0 0% 97%);
+  --card-foreground: hsl(0 0% 25%);
 
-  --dashboard-card: hsl(220 15% 92%);
-  --dashboard-card-foreground: hsl(220 15% 25%);
+  --dashboard-card: hsl(0 0% 92%);
+  --dashboard-card-foreground: hsl(0 0% 25%);
 
-  --popover: hsl(220 20% 97%);
-  --popover-foreground: hsl(220 15% 25%);
+  --popover: hsl(0 0% 97%);
+  --popover-foreground: hsl(0 0% 25%);
 
-  --primary: hsl(220 30% 30%);
+  --primary: hsl(0 0% 20%);
   --primary-foreground: hsl(0 0% 100%);
 
-  --secondary: hsl(220 15% 90%);
-  --secondary-foreground: hsl(220 15% 35%);
+  --secondary: hsl(0 0% 90%);
+  --secondary-foreground: hsl(0 0% 35%);
 
-  --muted: hsl(220 15% 88%);
-  --muted-foreground: hsl(220 10% 50%);
+  --muted: hsl(0 0% 88%);
+  --muted-foreground: hsl(0 0% 50%);
 
   --accent: var(--color-un-blue);
   --accent-foreground: hsl(0 0% 100%);
@@ -63,8 +63,8 @@ html {
 
   --input: hsl(0 0% 100%);
 
-  --border: hsl(220 13% 91%);
-  /* --ring: hsl(220 91.2% 59.8%); */
+  --border: hsl(0 0% 91%);
+  --ring: var(--color-un-blue);
 
   --radius: 0.5rem;
   --radius-lg: 0.5rem;
@@ -72,13 +72,13 @@ html {
   --radius-sm: calc(0.5rem - 4px);
 
   --sidebar: hsl(0 0% 98%);
-  --sidebar-foreground: hsl(240 5.3% 26.1%);
-  --sidebar-primary: hsl(240 5.9% 10%);
+  --sidebar-foreground: hsl(0 0% 26%);
+  --sidebar-primary: hsl(0 0% 10%);
   --sidebar-primary-foreground: hsl(0 0% 98%);
-  --sidebar-accent: hsl(240 4.8% 95.9%);
-  --sidebar-accent-foreground: hsl(240 5.9% 10%);
-  --sidebar-border: hsl(220 13% 91%);
-  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+  --sidebar-accent: hsl(0 0% 96%);
+  --sidebar-accent-foreground: hsl(0 0% 10%);
+  --sidebar-border: hsl(0 0% 91%);
+  --sidebar-ring: var(--color-un-blue);
 }
 
 /* Expose shadcn variables to Tailwind utilities */

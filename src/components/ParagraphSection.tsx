@@ -1959,7 +1959,7 @@ export function ParagraphsSection({
             <div className="tooltip-container relative">
               <button
                 type="button"
-                className="flex cursor-help items-center rounded-sm border-0 bg-transparent p-0 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden"
+                className="flex cursor-help items-center rounded-sm border-0 bg-transparent p-0 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden"
                 aria-label="Information about paragraph extraction"
                 onClick={() => toggleTooltip('paragraphs-beta')}
               >

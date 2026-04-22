@@ -75,7 +75,7 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
           <Button
             variant="ghost"
             size="sm"
-            className="absolute top-1/2 right-2 h-6 w-6 -translate-y-1/2 rounded-full p-0 hover:bg-blue-100"
+            className="absolute top-1/2 right-2 h-6 w-6 -translate-y-1/2 rounded-full p-0 hover:bg-muted"
             onClick={onClear}
             title="Clear search"
             type="button"

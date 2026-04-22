@@ -42,7 +42,7 @@ const TooltipButton = ({
   <div className="tooltip-container relative">
     <button
       type="button"
-      className="-ml-1 cursor-help touch-manipulation rounded-sm border-0 bg-transparent p-0 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden"
+      className="-ml-1 cursor-help touch-manipulation rounded-sm border-0 bg-transparent p-0 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden"
       aria-label={ariaLabel}
       onClick={() => toggleTooltip(tooltipId)}
     >
@@ -167,7 +167,7 @@ export function AdvancedSearch({
             emptyPlaceholder={
               explainerTexts.advancedFilters.subjects.emptyPlaceholder
             }
-            className="h-11 border-slate-300 bg-white text-sm focus:border-blue-500 focus:ring-blue-500"
+            className="h-11 border-border bg-background text-sm focus:border-ring focus:ring-ring"
           />
         </div>
         <div className="space-y-3">
@@ -197,7 +197,7 @@ export function AdvancedSearch({
             emptyPlaceholder={
               explainerTexts.advancedFilters.programme.emptyPlaceholder
             }
-            className="h-11 border-slate-300 bg-white text-sm focus:border-blue-500 focus:ring-blue-500"
+            className="h-11 border-border bg-background text-sm focus:border-ring focus:ring-ring"
           />
         </div>
         <div className="space-y-3">
@@ -224,7 +224,7 @@ export function AdvancedSearch({
           <Select value={budgetDocument} onValueChange={onBudgetDocumentChange}>
             <SelectTrigger
               id="budget-document"
-              className="h-11 border-slate-300 bg-white text-sm focus:border-blue-500 focus:ring-blue-500"
+              className="h-11 border-border bg-background text-sm focus:border-ring focus:ring-ring"
             >
               <SelectValue
                 placeholder={
@@ -281,7 +281,7 @@ export function AdvancedSearch({
             emptyPlaceholder={
               explainerTexts.advancedFilters.documentType.emptyPlaceholder
             }
-            className="h-11 border-slate-300 bg-white text-sm focus:border-blue-500 focus:ring-blue-500"
+            className="h-11 border-border bg-background text-sm focus:border-ring focus:ring-ring"
           />
         </div>
         <div className="space-y-3">
@@ -316,7 +316,7 @@ export function AdvancedSearch({
             emptyPlaceholder={
               explainerTexts.advancedFilters.agendaItem.emptyPlaceholder
             }
-            className="h-11 border-slate-300 bg-white text-sm focus:border-blue-500 focus:ring-blue-500"
+            className="h-11 border-border bg-background text-sm focus:border-ring focus:ring-ring"
           />
         </div>
       </div>
