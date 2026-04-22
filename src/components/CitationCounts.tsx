@@ -168,7 +168,7 @@ export function CitationCounts({ mandate, entities }: CitationCountsProps) {
                     onClick={() => {
                       // Navigate to filtered results with only the programme filter
                       const url = new URL(window.location.origin + '/')
-                      url.searchParams.set('page', '1')
+                      url.searchParams.delete('page')
                       url.searchParams.set('programme', programmeTitle)
                       window.location.href = url.toString()
                     }}

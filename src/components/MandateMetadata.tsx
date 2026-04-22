@@ -64,7 +64,7 @@ export function MandateMetadata({
               className="cursor-pointer text-xs transition-colors hover:bg-secondary/80"
               onClick={() => {
                 const url = new URL(window.location.origin + '/')
-                url.searchParams.set('page', '1')
+                url.searchParams.delete('page')
                 url.searchParams.set('document_type', mandate.type)
                 window.location.href = url.toString()
               }}
@@ -96,7 +96,7 @@ export function MandateMetadata({
                   className="cursor-pointer text-xs transition-colors hover:bg-secondary/80"
                   onClick={() => {
                     const url = new URL(window.location.origin + '/')
-                    url.searchParams.set('page', '1')
+                    url.searchParams.delete('page')
                     url.searchParams.set('budget_document', doc.slug)
                     window.location.href = url.toString()
                   }}
@@ -130,7 +130,7 @@ export function MandateMetadata({
                     onClick={() => {
                       if (!title) return
                       const url = new URL(window.location.origin + '/')
-                      url.searchParams.set('page', '1')
+                      url.searchParams.delete('page')
                       url.searchParams.set('agenda_item', title)
                       window.location.href = url.toString()
                     }}
@@ -180,7 +180,7 @@ export function MandateMetadata({
                   className="cursor-pointer text-xs font-normal transition-colors hover:bg-secondary/80"
                   onClick={() => {
                     const url = new URL(window.location.origin + '/')
-                    url.searchParams.set('page', '1')
+                    url.searchParams.delete('page')
                     url.searchParams.set('subject', heading.trim())
                     window.location.href = url.toString()
                   }}

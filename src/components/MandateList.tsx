@@ -270,6 +270,24 @@ export function MandateList({
                       </div>
                     )}
 
+                  {/* Match field badges */}
+                  {hasSearchMatches && mandate.match_details && (
+                    <div className="flex flex-wrap gap-1">
+                      {mandate.match_details.map((m) => (
+                        <span
+                          key={m.field}
+                          className="rounded bg-[#e8f4fb] px-1.5 py-0.5 text-[10px] text-[#00557a]"
+                        >
+                          {m.field === 'symbol'
+                            ? 'symbol'
+                            : m.field === 'subject'
+                              ? 'subject'
+                              : 'title'}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
                   {/* Citations and Entities */}
                   {(mandate.num_citations > 0 ||
                     (mandate.entities && mandate.entities.length > 0)) && (

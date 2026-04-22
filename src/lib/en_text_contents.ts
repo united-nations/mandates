@@ -65,7 +65,7 @@ export const explainerTexts = {
     keywordSearch: {
       label: 'Keyword Search',
       betaTag: 'beta',
-      placeholder: 'Search for document titles...',
+      placeholder: 'Search titles, symbols, subjects...',
       tooltip:
         'Search for specific terms to find mandate source documents. Press Enter to search.',
     },

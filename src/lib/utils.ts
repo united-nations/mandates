@@ -52,7 +52,7 @@ export function highlightSearchTerms(text: string, searchTerm: string): string {
   // Replace matches with highlighted version
   return text.replace(
     regex,
-    '<mark class="bg-yellow-200 text-yellow-900 px-0.5 rounded">$1</mark>'
+    '<mark class="bg-[#b3d9f0] text-[#00557a] px-0.5 rounded">$1</mark>'
   )
 }
 

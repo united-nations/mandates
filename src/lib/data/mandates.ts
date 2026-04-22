@@ -9,7 +9,7 @@ import { cache } from 'react'
 import { unstable_cache } from 'next/cache'
 import { queryMany, queryOne } from '../db/query'
 import { titleCase } from 'title-case'
-import { getMandateDisplayTitle } from '@/lib/utils'
+import { getMandateDisplayTitle, safeHighlightSearchTerms } from '@/lib/utils'
 import { getAllEntities } from './entities'
 import { getAllOrgans, getOrganMap } from './organs'
 import { getBudgetDocuments } from './budget-documents'
@@ -251,7 +251,12 @@ function buildFilterClauses(
     paramIndex++
   }
 
-  // Keyword search
+  // Keyword search — only fields shown on the card:
+  //   ppb_full_document_symbol  (symbol badge)
+  //   ppb_description           (title fallback)
+  //   proper_title              (primary display title)
+  //   title                     (display title for Security Council docs)
+  //   subject_terms             (subject heading badges)
   if (filters.keyword) {
     const keyword = `%${filters.keyword.toLowerCase()}%`
     clauses.push(`(
@@ -261,7 +266,7 @@ function buildFilterClauses(
         SELECT 1 FROM ppb2026.source_documents_metadata_clean m3
         WHERE m3.ppb_full_document_symbol = d.ppb_full_document_symbol
         AND (
-          LOWER(m3.uniform_title) LIKE $${paramIndex}
+          LOWER(m3.proper_title) LIKE $${paramIndex}
           OR LOWER(m3.title) LIKE $${paramIndex}
           OR LOWER(m3.subject_terms::text) LIKE $${paramIndex}
         )
@@ -317,7 +322,38 @@ export async function getMandates(
 
   const { clauses, params } = buildFilterClauses(filters)
   const whereClause = clauses.length > 0 ? `WHERE ${clauses.join(' AND ')}` : ''
-  const orderBy = buildOrderByClause(filters.sort_by)
+
+  // Keyword rank params — pushed after filter params so indexes are stable
+  // Ranks: 0=exact symbol, 1=symbol prefix, 2=title/description match, 3=subject-only
+  let keywordRankExpr = ''
+  if (filters.keyword) {
+    const kw = filters.keyword.toLowerCase()
+    const exactIdx = params.length + 1
+    const prefixIdx = params.length + 2
+    const containsIdx = params.length + 3
+    params.push(kw)
+    params.push(`${kw}%`)
+    params.push(`%${kw}%`)
+    keywordRankExpr = `,
+      CASE
+        WHEN LOWER(c.ppb_full_document_symbol) = $${exactIdx} THEN 0
+        WHEN LOWER(c.ppb_full_document_symbol) LIKE $${prefixIdx} THEN 1
+        WHEN (
+          LOWER(COALESCE(m.proper_title, '')) LIKE $${containsIdx}
+          OR LOWER(COALESCE(m.title, '')) LIKE $${containsIdx}
+          OR LOWER(COALESCE(c.ppb_description, '')) LIKE $${containsIdx}
+        ) THEN 2
+        ELSE 3
+      END AS keyword_rank`
+  }
+
+  // When keyword is active with no explicit sort, rank by relevance only.
+  // When an explicit sort_by is chosen, use relevance as primary then the chosen sort.
+  const orderBy = filters.keyword
+    ? filters.sort_by
+      ? `ORDER BY keyword_rank ASC, ${buildOrderByClause(filters.sort_by).replace('ORDER BY ', '')}`
+      : 'ORDER BY keyword_rank ASC'
+    : buildOrderByClause(filters.sort_by)
 
   // Main query with aggregations
   const query = `
@@ -353,7 +389,7 @@ export async function getMandates(
       m.date_year,
       m.document_type,
       m.issuing_body
-
+      ${keywordRankExpr}
     FROM counted c
     LEFT JOIN ppb2026.source_documents_metadata_clean m
       ON c.ppb_full_document_symbol = m.ppb_full_document_symbol
@@ -903,11 +939,43 @@ async function _getMandatePageDataInner(filters: FilterOptions): Promise<ApiResp
     crossCitations = await getCrossCitations(filters.entity)
   }
 
-  const enrichedMandates = mandates.map((mandate) => ({
-    ...mandate,
-    displayTitle: getMandateDisplayTitle(mandate),
-    body_long: organMap.get(mandate.body)?.long || mandate.body,
-  }))
+  const enrichedMandates = mandates.map((mandate) => {
+    const base = {
+      ...mandate,
+      displayTitle: getMandateDisplayTitle(mandate),
+      body_long: organMap.get(mandate.body)?.long || mandate.body,
+    }
+
+    if (!filters.keyword) return base
+
+    const kw = filters.keyword
+    const highlightedFields: Record<string, string> = {}
+    const matchedFields: Array<{ field: string; value: string }> = []
+
+    const ht = safeHighlightSearchTerms(base.displayTitle, kw)
+    if (ht && ht !== base.displayTitle) {
+      highlightedFields.title = ht
+      matchedFields.push({ field: 'title', value: base.displayTitle ?? '' })
+    }
+
+    const hs = safeHighlightSearchTerms(base.full_document_symbol, kw)
+    if (hs && hs !== base.full_document_symbol) {
+      highlightedFields.full_document_symbol = hs
+      matchedFields.push({ field: 'symbol', value: base.full_document_symbol })
+    }
+
+    const matchedSubjects = base.subject_headings
+      .map((s) => safeHighlightSearchTerms(s, kw) ?? s)
+      .filter((s, i) => s !== base.subject_headings[i])
+    if (matchedSubjects.length > 0) {
+      highlightedFields.subject_headings = matchedSubjects.join(', ')
+      matchedFields.push({ field: 'subject', value: matchedSubjects.join(', ') })
+    }
+
+    if (Object.keys(highlightedFields).length === 0) return base
+
+    return { ...base, highlightedFields, match_details: matchedFields }
+  })
 
   const enrichedOrganCounts = organCounts.map((organ) => ({
     ...organ,

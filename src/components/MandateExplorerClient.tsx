@@ -61,7 +61,7 @@ export function MandateExplorerClient({
   organFilter,
   pageType,
 }: MandateExplorerClientProps) {
-  const { filters, setFilter, isPending } = useFilters()
+  const { filters, setFilter, clearFilter, isPending } = useFilters()
   const searchParams = useSearchParams()
 
   // UI state
@@ -75,14 +75,21 @@ export function MandateExplorerClient({
 
   // Get current values from URL
   const pageSize = parseInt(searchParams.get('limit') || '10', 10)
-  const sortBy = searchParams.get('sort_by') || 'citing_entities_desc'
+  // When keyword is active and no explicit sort chosen, show "Search Relevance" as selected
+  const sortBy =
+    searchParams.get('sort_by') ||
+    (filters.keyword ? 'default' : 'citing_entities_desc')
 
-  // Handle sort change
+  // Handle sort change — "default" means relevance (no sort_by param in URL)
   const handleSortChange = useCallback(
     (value: string) => {
-      setFilter('sort_by', value)
+      if (value === 'default') {
+        clearFilter('sort_by')
+      } else {
+        setFilter('sort_by', value)
+      }
     },
-    [setFilter]
+    [setFilter, clearFilter]
   )
 
   // Extract data from props

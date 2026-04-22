@@ -104,9 +104,9 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
       newParams.set(key, value)
     }
 
-    // Always reset pagination when filters change
+    // Always reset pagination when filters change (page 1 is implicit — omit from URL)
     if (key !== 'page' && key !== 'limit') {
-      newParams.set('page', '1')
+      newParams.delete('page')
     }
 
     // Navigate with new params
@@ -154,10 +154,10 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
   const clearAllFilters = () => {
     const newParams = new URLSearchParams()
 
-    // Keep only pagination params
+    // Keep only pagination params (skip page 1 — it's the implicit default)
     const page = searchParams.get('page')
     const limit = searchParams.get('limit')
-    if (page) newParams.set('page', page)
+    if (page && page !== '1') newParams.set('page', page)
     if (limit) newParams.set('limit', limit)
 
     startTransition(() => {

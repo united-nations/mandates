@@ -14,15 +14,11 @@ export function MandateSearchBox() {
 
   const handleSearch = (searchTerm: string = keyword) => {
     const params = new URLSearchParams(searchParams.toString())
-    params.set('page', '1')
+    params.delete('page')
     if (searchTerm.trim()) {
       params.set('keyword', searchTerm.trim())
     } else {
       params.delete('keyword')
-      // When clearing search, if sort was relevance, reset to default (citing entities)
-      if (params.get('sort_by') === 'default') {
-        params.set('sort_by', 'citing_entities_desc')
-      }
     }
     router.push(`${pathname}?${params.toString()}`, { scroll: false })
   }
