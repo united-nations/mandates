@@ -353,7 +353,9 @@ export function MandateExplorerClient({
               <div className="flex flex-col gap-6 lg:flex-row">
                 {/* Mandates List */}
                 <div className="flex-1">
-                  <div className={`mb-6 transition-opacity duration-150 ${isPending ? 'opacity-50' : 'opacity-100'}`}>
+                  <div
+                    className={`mb-6 transition-opacity duration-150 ${isPending ? 'opacity-50' : 'opacity-100'}`}
+                  >
                     <MandateList
                       mandates={mandates}
                       organsData={allOrgans}

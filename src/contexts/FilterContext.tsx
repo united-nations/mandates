@@ -111,7 +111,9 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
 
     // Navigate with new params
     const newUrl = `${pathname}?${newParams.toString()}`
-    startTransition(() => { router.push(newUrl, { scroll: false }) })
+    startTransition(() => {
+      router.push(newUrl, { scroll: false })
+    })
 
     // Scroll to top on entity/organ pages when filters change (but not pagination)
     if ((isEntityPage || isOrganPage) && key !== 'page' && key !== 'limit') {
@@ -133,7 +135,9 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
 
     // Navigate with new params
     const newUrl = `${pathname}?${newParams.toString()}`
-    startTransition(() => { router.push(newUrl, { scroll: false }) })
+    startTransition(() => {
+      router.push(newUrl, { scroll: false })
+    })
 
     // Scroll to top on entity/organ pages when filters change
     if (isEntityPage || isOrganPage) {
@@ -156,7 +160,9 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
     if (page) newParams.set('page', page)
     if (limit) newParams.set('limit', limit)
 
-    startTransition(() => { router.push(`${pathname}?${newParams.toString()}`, { scroll: false }) })
+    startTransition(() => {
+      router.push(`${pathname}?${newParams.toString()}`, { scroll: false })
+    })
 
     // Scroll to top on entity/organ pages when filters are cleared
     if (isEntityPage || isOrganPage) {
