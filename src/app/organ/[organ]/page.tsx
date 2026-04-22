@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 import { Link as LinkIcon } from 'lucide-react'
-import { MandateExplorerClient } from '@/components/MandateExplorerClient'
+import { MandateExplorerServer } from '@/app/_mandateExplorerServer'
 import { MetadataItem } from '@/components/MetadataItem'
 import { formatUrlForDisplay } from '@/lib/utils'
 import { LoadingSkeleton } from '@/components/LoadingSkeleton'
@@ -23,11 +23,11 @@ export default async function OrganPage({
   const urlParams = await searchParams
   const filters = parseSearchParams({ ...urlParams, organ: organName })
 
-  // Fetch organ details and mandate data in parallel
-  const [organDetails, data] = await Promise.all([
-    getOrganByShortName(organName),
-    getMandatePageData(filters),
-  ])
+  // Fetch organ details eagerly (needed for header), defer mandate data
+  const organDetails = await getOrganByShortName(organName)
+
+  // Start mandate fetch without awaiting — streams in via Suspense below
+  const dataPromise = getMandatePageData(filters)
 
   return (
     <div>
@@ -55,8 +55,8 @@ export default async function OrganPage({
       </div>
 
       <Suspense fallback={<LoadingSkeleton variant="list" count={4} />}>
-        <MandateExplorerClient
-          data={data}
+        <MandateExplorerServer
+          dataPromise={dataPromise}
           pageType="organ"
           organFilter={organName}
         />

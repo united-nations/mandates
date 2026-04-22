@@ -18,6 +18,20 @@
   --color-card-gray: #f6f7f8;
 }
 
+html {
+  scrollbar-gutter: stable;
+}
+
+/* Radix scroll-lock adds padding-right to body to compensate for the scrollbar
+   disappearing. But scrollbar-gutter already reserves that space on html, so the
+   padding is redundant and causes a layout shift. Cancel it in supporting browsers. */
+@supports (scrollbar-gutter: stable) {
+  body[style*="overflow: hidden"],
+  body[style*="overflow:hidden"] {
+    padding-right: 0 !important;
+  }
+}
+
 /* shadcn semantic colors */
 :root {
   --background: white;

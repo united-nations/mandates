@@ -967,6 +967,6 @@ export const getMandatePageData = cache(
     unstable_cache(
       () => _getMandatePageDataInner(filters),
       [JSON.stringify(filters)],
-      { revalidate: 300 } // 5 min — adjust to taste
+      { revalidate: 3600 } // 1 hour — data changes infrequently
     )()
 )

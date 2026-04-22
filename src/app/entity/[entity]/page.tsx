@@ -1,7 +1,6 @@
 import { Suspense } from 'react'
-import { ExternalLink, AlertCircle, Info } from 'lucide-react'
-import { MandateExplorerClient } from '@/components/MandateExplorerClient'
-import { Button } from '@/components/ui/button'
+import { AlertCircle } from 'lucide-react'
+import { MandateExplorerServer } from '@/app/_mandateExplorerServer'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { LoadingSkeleton } from '@/components/LoadingSkeleton'
 import { getMandatePageData } from '@/lib/data/mandates'
@@ -23,14 +22,12 @@ export default async function EntityPage({
   const urlParams = await searchParams
   const filters = parseSearchParams({ ...urlParams, entity: entityName })
 
-  // Fetch entity details and mandate data in parallel
-  const [entityDetails, data] = await Promise.all([
-    getEntityByCode(entityName),
-    getMandatePageData(filters),
-  ])
-
+  // Fetch entity details eagerly (needed for header/alerts), defer mandate data
+  const entityDetails = await getEntityByCode(entityName)
   const entityNotFound = !entityDetails
-  const mandateCount = data.pagination.totalItems
+
+  // Start mandate fetch without awaiting — streams in via Suspense below
+  const dataPromise = getMandatePageData(filters)
 
   return (
     <div>
@@ -42,36 +39,6 @@ export default async function EntityPage({
           <AlertDescription>
             The entity "{entityName}" does not exist or has not yet been added
             to the UN Mandate Source Registry.
-          </AlertDescription>
-        </Alert>
-      )}
-
-      {/* Show info message if entity exists but has no mandates */}
-      {entityDetails && mandateCount === 0 && (
-        <Alert className="mb-6 max-w-2xl border-un-blue/30 bg-un-blue/5 text-un-blue">
-          <Info className="h-4 w-4" />
-          <AlertTitle>Source Documents Not Yet Available</AlertTitle>
-          <AlertDescription>
-            <div className="space-y-2">
-              <p>
-                No source documents have been found for{' '}
-                {entityDetails.entity_long} ({entityName}) in the current
-                version of the registry. Documents for this entity are being
-                processed and will be added soon.
-              </p>
-              <p className="font-medium">
-                Are you an entity focal point?{' '}
-                <a
-                  href="https://airtable.com/appId4rDWaFTpzNWz/pagpU0nMIhQMQPICL/form"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline hover:no-underline"
-                >
-                  Please get in touch
-                </a>{' '}
-                to expedite this process.
-              </p>
-            </div>
           </AlertDescription>
         </Alert>
       )}
@@ -102,11 +69,10 @@ export default async function EntityPage({
         </div>
       )}
 
-      {/* Only show Mandate Explorer if entity exists */}
       {!entityNotFound && (
         <Suspense fallback={<LoadingSkeleton variant="list" count={4} />}>
-          <MandateExplorerClient
-            data={data}
+          <MandateExplorerServer
+            dataPromise={dataPromise}
             pageType="entity"
             entityFilter={entityName}
           />

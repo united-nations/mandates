@@ -99,7 +99,7 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
               </div>
               <div className="flex items-center gap-2 pt-2">
                 <ShareButton />
-                <DropdownMenu>
+                <DropdownMenu modal={false}>
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="ghost"

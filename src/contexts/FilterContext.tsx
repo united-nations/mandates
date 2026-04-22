@@ -5,6 +5,7 @@ import {
   useContext,
   useState,
   useEffect,
+  useTransition,
   ReactNode,
   Suspense,
 } from 'react'
@@ -35,6 +36,7 @@ export interface FilterType {
 
 interface FilterContextType {
   filters: FilterType
+  isPending: boolean
   setFilter: (key: FilterParamKey, value: string | undefined) => void
   setMultipleFilters: (updates: Partial<FilterType>) => void
   clearFilter: (key: FilterParamKey) => void
@@ -47,6 +49,7 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
+  const [isPending, startTransition] = useTransition()
 
   // Determine page type
   const isMainPage = pathname === '/'
@@ -108,7 +111,7 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
 
     // Navigate with new params
     const newUrl = `${pathname}?${newParams.toString()}`
-    router.push(newUrl, { scroll: false })
+    startTransition(() => { router.push(newUrl, { scroll: false }) })
 
     // Scroll to top on entity/organ pages when filters change (but not pagination)
     if ((isEntityPage || isOrganPage) && key !== 'page' && key !== 'limit') {
@@ -130,7 +133,7 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
 
     // Navigate with new params
     const newUrl = `${pathname}?${newParams.toString()}`
-    router.push(newUrl, { scroll: false })
+    startTransition(() => { router.push(newUrl, { scroll: false }) })
 
     // Scroll to top on entity/organ pages when filters change
     if (isEntityPage || isOrganPage) {
@@ -153,7 +156,7 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
     if (page) newParams.set('page', page)
     if (limit) newParams.set('limit', limit)
 
-    router.push(`${pathname}?${newParams.toString()}`, { scroll: false })
+    startTransition(() => { router.push(`${pathname}?${newParams.toString()}`, { scroll: false }) })
 
     // Scroll to top on entity/organ pages when filters are cleared
     if (isEntityPage || isOrganPage) {
@@ -163,6 +166,7 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
 
   const contextValue: FilterContextType = {
     filters,
+    isPending,
     setFilter,
     setMultipleFilters,
     clearFilter,
