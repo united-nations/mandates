@@ -14,6 +14,8 @@ export const FILTER_PARAMS = [
   'start_year',
   'end_year',
   'budget_document',
+  'document_type',
+  'agenda_item',
   'sort_by',
   'page',
   'limit',
@@ -30,6 +32,8 @@ export const FILTER_ONLY_PARAMS = [
   'start_year',
   'end_year',
   'budget_document',
+  'document_type',
+  'agenda_item',
 ] as const
 
 // Parameters that are handled separately (pagination and sorting)
@@ -44,6 +48,8 @@ export const ADDITIONAL_FILTER_PARAMS = [
   'start_year',
   'end_year',
   'budget_document',
+  'document_type',
+  'agenda_item',
   'sort_by',
   'page',
   'limit',
@@ -77,6 +83,8 @@ export function parseSearchParams(
     start_year: getString('start_year'),
     end_year: getString('end_year'),
     budget_document: getString('budget_document'),
+    document_type: getString('document_type'),
+    agenda_item: getString('agenda_item'),
     full_document_symbol: getString('full_document_symbol'),
     sort_by: getString('sort_by') || 'citing_entities_desc',
     page: getString('page') || '1',

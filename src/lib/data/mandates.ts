@@ -228,6 +228,29 @@ function buildFilterClauses(
     paramIndex++
   }
 
+  // Document type filter — uses ppb_type from source_documents (well-populated)
+  if (filters.document_type) {
+    clauses.push(`LOWER(d.ppb_type) = LOWER($${paramIndex})`)
+    params.push(filters.document_type)
+    paramIndex++
+  }
+
+  // Agenda item filter — agenda_item_title is a text[] array column
+  if (filters.agenda_item) {
+    clauses.push(`
+      EXISTS (
+        SELECT 1 FROM ppb2026.source_documents_metadata_clean m7
+        WHERE m7.ppb_full_document_symbol = d.ppb_full_document_symbol
+        AND EXISTS (
+          SELECT 1 FROM UNNEST(m7.agenda_item_title::text[]) t
+          WHERE LOWER(t) LIKE $${paramIndex}
+        )
+      )
+    `)
+    params.push(`%${filters.agenda_item.toLowerCase()}%`)
+    paramIndex++
+  }
+
   // Keyword search
   if (filters.keyword) {
     const keyword = `%${filters.keyword.toLowerCase()}%`
@@ -654,7 +677,7 @@ export async function getProgrammeOptions(filters: FilterOptions = {}): Promise<
       ON fd.ppb_full_document_symbol = c.ppb_full_document_symbol
     WHERE c.programme_title IS NOT NULL AND c.programme_title != ''
     GROUP BY c.programme_title
-    ORDER BY c.programme_title
+    ORDER BY count DESC, c.programme_title
   `
 
   const rows = await queryMany<ValueCountRow>(query, params)
@@ -695,14 +718,91 @@ export async function getSubjectOptions(filters: FilterOptions = {}): Promise<{ 
     FROM subjects
     WHERE subject IS NOT NULL AND subject != ''
     GROUP BY subject
-    ORDER BY subject
+    ORDER BY count DESC, subject
   `
 
   const rows = await queryMany<ValueCountRow>(query, params)
 
-  // Normalize subjects to title case for consistent display
+  // Normalize to title case then deduplicate (different raw strings can produce the same display value)
+  const merged = new Map<string, number>()
+  for (const row of rows) {
+    const key = titleCase(row.value.trim())
+    merged.set(key, (merged.get(key) ?? 0) + (parseInt(row.count) || 0))
+  }
+  return Array.from(merged.entries())
+    .map(([value, count]) => ({ value, count }))
+    .sort((a, b) => b.count - a.count || a.value.localeCompare(b.value))
+}
+
+/**
+ * Get document type options from ppb_type (well-populated field on source_documents)
+ */
+export async function getDocumentTypeOptions(filters: FilterOptions = {}): Promise<{ value: string; count: number }[]> {
+  const { clauses, params } = buildFilterClauses(filters)
+  const whereClause = clauses.length > 0 ? `WHERE ${clauses.join(' AND ')}` : ''
+
+  const query = `
+    WITH filtered_docs AS (
+      SELECT DISTINCT d.ppb_full_document_symbol, d.ppb_type
+      FROM ppb2026.source_documents d
+      LEFT JOIN ppb2026.source_document_citations c
+        ON d.ppb_full_document_symbol = c.ppb_full_document_symbol
+      ${whereClause}
+    )
+    SELECT
+      ppb_type as value,
+      COUNT(DISTINCT ppb_full_document_symbol) as count
+    FROM filtered_docs
+    WHERE ppb_type IS NOT NULL AND ppb_type != ''
+    GROUP BY ppb_type
+    ORDER BY count DESC, ppb_type
+  `
+
+  const rows = await queryMany<ValueCountRow>(query, params)
+
   return rows.map((row) => ({
-    value: titleCase(row.value),
+    value: row.value,
+    count: parseInt(row.count) || 0,
+  }))
+}
+
+/**
+ * Get agenda item options — parallel UNNEST of number + title arrays
+ */
+export async function getAgendaItemOptions(filters: FilterOptions = {}): Promise<{ value: string; count: number }[]> {
+  const { clauses, params } = buildFilterClauses(filters)
+  const whereClause = clauses.length > 0 ? `WHERE ${clauses.join(' AND ')}` : ''
+
+  const query = `
+    WITH filtered_docs AS (
+      SELECT DISTINCT d.ppb_full_document_symbol
+      FROM ppb2026.source_documents d
+      LEFT JOIN ppb2026.source_document_citations c
+        ON d.ppb_full_document_symbol = c.ppb_full_document_symbol
+      ${whereClause}
+    ),
+    agenda_items AS (
+      SELECT
+        fd.ppb_full_document_symbol,
+        UNNEST(m.agenda_item_title::text[]) as item
+      FROM filtered_docs fd
+      JOIN ppb2026.source_documents_metadata_clean m
+        ON fd.ppb_full_document_symbol = m.ppb_full_document_symbol
+      WHERE m.agenda_item_title IS NOT NULL
+    )
+    SELECT
+      item as value,
+      COUNT(DISTINCT ppb_full_document_symbol) as count
+    FROM agenda_items
+    WHERE item IS NOT NULL AND item != ''
+    GROUP BY item
+    ORDER BY count DESC, item
+  `
+
+  const rows = await queryMany<ValueCountRow>(query, params)
+
+  return rows.map((row) => ({
+    value: row.value,
     count: parseInt(row.count) || 0,
   }))
 }
@@ -773,6 +873,8 @@ async function _getMandatePageDataInner(filters: FilterOptions): Promise<ApiResp
     organCounts,
     programmeOptions,
     subjectOptions,
+    documentTypeOptions,
+    agendaItemOptions,
     yearStats,
     entities,
     organs,
@@ -785,6 +887,8 @@ async function _getMandatePageDataInner(filters: FilterOptions): Promise<ApiResp
     getOrganCounts(filters),
     getProgrammeOptions(filters),
     getSubjectOptions(filters),
+    getDocumentTypeOptions(filters),
+    getAgendaItemOptions(filters),
     getYearStats(filters),
     getAllEntities(),
     getAllOrgans(),
@@ -834,6 +938,8 @@ async function _getMandatePageDataInner(filters: FilterOptions): Promise<ApiResp
     filterOptions: {
       programmes: programmeOptions,
       subjects: subjectOptions,
+      documentTypes: documentTypeOptions,
+      agendaItems: agendaItemOptions,
       yearRange: yearStats.yearRange,
       yearDistribution: yearStats.yearDistribution,
       budgetDocuments,

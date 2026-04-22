@@ -110,6 +110,20 @@ export const explainerTexts = {
       tooltip:
         'Filter by the budget document where the entity cites the mandate.',
     },
+    documentType: {
+      label: 'Document Type',
+      placeholder: 'Filter by Document Type...',
+      searchPlaceholder: 'Search document types...',
+      emptyPlaceholder: 'No document types found.',
+      tooltip: 'Filter by the type of document, such as Resolution or Decision.',
+    },
+    agendaItem: {
+      label: 'Agenda Item',
+      placeholder: 'Filter by Agenda Item...',
+      searchPlaceholder: 'Search agenda items...',
+      emptyPlaceholder: 'No agenda items found.',
+      tooltip: 'Filter by the UN agenda item under which the document was adopted.',
+    },
     yearRange: {
       label: 'Year Range',
       tooltip:

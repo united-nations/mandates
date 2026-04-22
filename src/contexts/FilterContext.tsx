@@ -26,6 +26,8 @@ export interface FilterType {
   start_year?: string
   end_year?: string
   budget_document?: string
+  document_type?: string
+  agenda_item?: string
   sort_by?: string
   page?: string
   limit?: string

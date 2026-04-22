@@ -59,7 +59,16 @@ export function MandateMetadata({
 
         <MetadataItem label="Document Type">
           {mandate.type ? (
-            <Badge variant="secondary" className="text-xs">
+            <Badge
+              variant="secondary"
+              className="cursor-pointer text-xs transition-colors hover:bg-secondary/80"
+              onClick={() => {
+                const url = new URL(window.location.origin + '/')
+                url.searchParams.set('page', '1')
+                url.searchParams.set('document_type', mandate.type)
+                window.location.href = url.toString()
+              }}
+            >
               {mandate.type}
             </Badge>
           ) : (
@@ -111,20 +120,28 @@ export function MandateMetadata({
             }
           >
             <div className="flex flex-wrap gap-1.5">
-              {(mandate.agenda_item_numbers ?? []).map((num, i) => (
-                <Badge
-                  key={i}
-                  variant="secondary"
-                  className="text-xs font-normal"
-                >
-                  <span className="font-medium">{num}</span>
-                  {mandate.agenda_item_titles?.[i] && (
-                    <span className="ml-1 text-muted-foreground">
-                      {mandate.agenda_item_titles[i]}
-                    </span>
-                  )}
-                </Badge>
-              ))}
+              {(mandate.agenda_item_numbers ?? []).map((num, i) => {
+                const title = mandate.agenda_item_titles?.[i]
+                return (
+                  <Badge
+                    key={i}
+                    variant="secondary"
+                    className="cursor-pointer text-xs font-normal transition-colors hover:bg-secondary/80"
+                    onClick={() => {
+                      if (!title) return
+                      const url = new URL(window.location.origin + '/')
+                      url.searchParams.set('page', '1')
+                      url.searchParams.set('agenda_item', title)
+                      window.location.href = url.toString()
+                    }}
+                  >
+                    <span className="font-medium">{num}</span>
+                    {title && (
+                      <span className="ml-1 text-muted-foreground">{title}</span>
+                    )}
+                  </Badge>
+                )
+              })}
             </div>
           </MetadataItem>
         )}

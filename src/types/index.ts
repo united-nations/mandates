@@ -125,6 +125,8 @@ export interface FilterOptions {
   start_year?: string
   end_year?: string
   budget_document?: string
+  document_type?: string
+  agenda_item?: string
   full_document_symbol?: string
   sort_by?: string
   page?: string
@@ -168,6 +170,8 @@ export interface ApiResponse {
   filterOptions: {
     programmes: { value: string; count: number }[]
     subjects: { value: string; count: number }[]
+    documentTypes: { value: string; count: number }[]
+    agendaItems: { value: string; count: number }[]
     yearRange: { min: number; max: number }
     yearDistribution: Record<string, number>
     budgetDocuments: {

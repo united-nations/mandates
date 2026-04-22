@@ -1,26 +1,22 @@
-create table systemchart.entities
-(
-	entity varchar(255) not null
-		primary key,
-	entity_long text,
-	updated_at timestamp with time zone default (CURRENT_TIMESTAMP AT TIME ZONE 'America/New_York'::text)
+create table systemchart.entities (
+    entity varchar(255) not null primary key,
+    entity_long text,
+    updated_at timestamp with time zone default (
+        CURRENT_TIMESTAMP AT TIME ZONE 'America/New_York'::text
+    )
 );
-
-
 create table ppb2026.budget_documents (
     slug text not null primary key,
     display_name text not null,
     match_pattern text not null,
     sort_order smallint not null default 0
 );
-
 create table ppb2026.organs (
     short text not null primary key,
     long text not null,
     website text,
     sort_order smallint not null default 0
 );
-
 create table ppb2026.source_documents (
     ppb_full_document_symbol text not null primary key,
     ppb_document_source text,

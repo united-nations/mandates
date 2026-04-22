@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/select'
 import type { BudgetDocument } from '@/lib/data/budget-documents'
 import { explainerTexts } from '@/lib/en_text_contents'
-import { BookOpen, Calendar, HelpCircle, Receipt, Target } from 'lucide-react'
+import { BookOpen, Calendar, FileType, HelpCircle, List, Receipt, Target } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { titleCase } from 'title-case'
 import { SearchableDropdown } from './SearchableDropdown'
@@ -52,8 +52,12 @@ interface AdvancedSearchProps {
   programme: string
   subject: string
   budgetDocument: string
+  documentType: string
+  agendaItem: string
   programmeOptions: { value: string; count: number }[]
   subjectOptions: { value: string; count: number }[]
+  documentTypeOptions: { value: string; count: number }[]
+  agendaItemOptions: { value: string; count: number }[]
   budgetDocuments: BudgetDocument[]
   yearRange: { min: number; max: number } | null
   yearDistribution: { [year: string]: number }
@@ -62,6 +66,8 @@ interface AdvancedSearchProps {
   onProgrammeChange: (value: string) => void
   onSubjectChange: (value: string) => void
   onBudgetDocumentChange: (value: string) => void
+  onDocumentTypeChange: (value: string) => void
+  onAgendaItemChange: (value: string) => void
   onYearRangeChange: (value: [number, number]) => void
 }
 
@@ -69,8 +75,12 @@ export function AdvancedSearch({
   programme,
   subject,
   budgetDocument,
+  documentType,
+  agendaItem,
   programmeOptions,
   subjectOptions,
+  documentTypeOptions,
+  agendaItemOptions,
   budgetDocuments,
   yearRange,
   yearDistribution,
@@ -79,6 +89,8 @@ export function AdvancedSearch({
   onProgrammeChange,
   onSubjectChange,
   onBudgetDocumentChange,
+  onDocumentTypeChange,
+  onAgendaItemChange,
   onYearRangeChange,
 }: AdvancedSearchProps) {
   const [openTooltip, setOpenTooltip] = useState<string | null>(null)
@@ -100,13 +112,15 @@ export function AdvancedSearch({
 
   const programmeDropdownOptions = programmeOptions.map((p) => ({
     value: p.value,
-    label: `${titleCase(p.value)} (${p.count})`,
+    label: titleCase(p.value),
+    count: p.count,
     disabled: p.count === 0,
   }))
 
   const subjectDropdownOptions = subjectOptions.map((s) => ({
     value: s.value,
-    label: `${titleCase(s.value)} (${s.count})`,
+    label: titleCase(s.value),
+    count: s.count,
     disabled: s.count === 0,
   }))
 
@@ -223,7 +237,72 @@ export function AdvancedSearch({
           </Select>
         </div>
       </div>
-      {/* Row 2: Year Range */}
+      {/* Row 2: Document Type, Agenda Item */}
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Label className="text-sm font-semibold text-slate-700">
+                {explainerTexts.advancedFilters.documentType.label}
+              </Label>
+              <FileType className="h-4 w-4 text-slate-500" />
+            </div>
+            <TooltipButton
+              tooltipId="documentType"
+              ariaLabel="More information about document type filter"
+              tooltipText={explainerTexts.advancedFilters.documentType.tooltip}
+              openTooltip={openTooltip}
+              toggleTooltip={toggleTooltip}
+            />
+          </div>
+          <SearchableDropdown
+            options={documentTypeOptions.map((d) => ({
+              value: d.value,
+              label: d.value,
+              count: d.count,
+              disabled: d.count === 0,
+            }))}
+            value={documentType}
+            onChange={onDocumentTypeChange}
+            placeholder={explainerTexts.advancedFilters.documentType.placeholder}
+            searchPlaceholder={explainerTexts.advancedFilters.documentType.searchPlaceholder}
+            emptyPlaceholder={explainerTexts.advancedFilters.documentType.emptyPlaceholder}
+            className="h-11 border-slate-300 bg-white text-sm focus:border-blue-500 focus:ring-blue-500"
+          />
+        </div>
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Label className="text-sm font-semibold text-slate-700">
+                {explainerTexts.advancedFilters.agendaItem.label}
+              </Label>
+              <List className="h-4 w-4 text-slate-500" />
+            </div>
+            <TooltipButton
+              tooltipId="agendaItem"
+              ariaLabel="More information about agenda item filter"
+              tooltipText={explainerTexts.advancedFilters.agendaItem.tooltip}
+              openTooltip={openTooltip}
+              toggleTooltip={toggleTooltip}
+            />
+          </div>
+          <SearchableDropdown
+            options={agendaItemOptions.map((a) => ({
+              value: a.value,
+              label: a.value,
+              count: a.count,
+              disabled: a.count === 0,
+            }))}
+            value={agendaItem}
+            onChange={onAgendaItemChange}
+            placeholder={explainerTexts.advancedFilters.agendaItem.placeholder}
+            searchPlaceholder={explainerTexts.advancedFilters.agendaItem.searchPlaceholder}
+            emptyPlaceholder={explainerTexts.advancedFilters.agendaItem.emptyPlaceholder}
+            className="h-11 border-slate-300 bg-white text-sm focus:border-blue-500 focus:ring-blue-500"
+          />
+        </div>
+      </div>
+      {/* Row 3: Year Range */}
       {yearRange && (
         <div className="space-y-3">
           <div className="flex items-center justify-between">

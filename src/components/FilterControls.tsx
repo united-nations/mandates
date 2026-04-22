@@ -3,9 +3,6 @@
 import { SearchInput } from './SearchInput'
 import {
   X,
-  SlidersHorizontal,
-  Filter,
-  HelpCircle,
   Search,
   Building,
   Landmark,
@@ -13,16 +10,11 @@ import {
   BookOpen,
   Calendar,
   Receipt,
+  FileType,
+  List,
 } from 'lucide-react'
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Badge } from '@/components/ui/badge'
 import { AdvancedSearch } from './AdvancedSearch'
 import { FilterBadge } from '@/components/FilterBadge'
 import { EntityName } from './EntityName'
@@ -45,6 +37,8 @@ interface Organ {
 interface FilterControlsProps {
   programmeOptions: { value: string; count: number }[]
   subjectOptions: { value: string; count: number }[]
+  documentTypeOptions: { value: string; count: number }[]
+  agendaItemOptions: { value: string; count: number }[]
   yearRange: { min: number; max: number } | null
   yearDistribution: { [year: string]: number }
   originalYearDistribution?: { [year: string]: number }
@@ -53,7 +47,6 @@ interface FilterControlsProps {
   entitiesData: Entity[]
   allOrgans: Organ[]
   budgetDocuments: BudgetDocument[]
-  // New props for implicit filter logic
   entityFilter?: string
   organFilter?: string
   pageType: 'main' | 'entity' | 'organ'
@@ -62,11 +55,12 @@ interface FilterControlsProps {
 export function FilterControls({
   programmeOptions,
   subjectOptions,
+  documentTypeOptions,
+  agendaItemOptions,
   yearRange,
   yearDistribution,
   originalYearDistribution,
   showAdvancedSearch,
-  setShowAdvancedSearch,
   entitiesData,
   allOrgans,
   budgetDocuments,
@@ -82,7 +76,6 @@ export function FilterControls({
     clearAllFilters,
   } = useFilters()
 
-  const [openTooltip, setOpenTooltip] = useState<string | null>(null)
   const [searchInput, setSearchInput] = useState(filters.keyword || '')
 
   // Sync search input with filters when filters change externally (e.g., clear all)
@@ -91,57 +84,12 @@ export function FilterControls({
     setSearchInput(filters.keyword || '')
   }, [filters.keyword])
 
-  // Close tooltip when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Element
-      if (!target.closest('.tooltip-container')) {
-        setOpenTooltip(null)
-      }
-    }
-
-    if (openTooltip) {
-      document.addEventListener('mousedown', handleClickOutside)
-      return () => document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [openTooltip])
-
-  const toggleTooltip = (tooltipId: string) => {
-    setOpenTooltip(openTooltip === tooltipId ? null : tooltipId)
-  }
-
   const handleSearch = () => {
     const trimmedValue = searchInput.trim()
     if (trimmedValue !== (filters.keyword || '').trim()) {
       setFilter('keyword', trimmedValue || undefined)
     }
   }
-
-  const TooltipButton = ({
-    tooltipId,
-    ariaLabel,
-    tooltipText,
-  }: {
-    tooltipId: string
-    ariaLabel: string
-    tooltipText: string
-  }) => (
-    <div className="tooltip-container relative">
-      <button
-        type="button"
-        className="-ml-1 cursor-help touch-manipulation rounded-sm border-0 bg-transparent p-0 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden"
-        aria-label={ariaLabel}
-        onClick={() => toggleTooltip(tooltipId)}
-      >
-        <HelpCircle className="h-4 w-4 text-muted-foreground" />
-      </button>
-      {openTooltip === tooltipId && (
-        <div className="absolute top-6 right-0 z-50 w-64 rounded-md border bg-popover p-3 text-sm text-popover-foreground">
-          <p>{tooltipText}</p>
-        </div>
-      )}
-    </div>
-  )
 
   // Get filters that should be displayed as chips (context-aware)
   const getDisplayFilters = () => {
@@ -206,13 +154,17 @@ export function FilterControls({
               programme={filters.programme || ''}
               subject={filters.subject || ''}
               budgetDocument={filters.budget_document || ''}
+              documentType={filters.document_type || ''}
+              agendaItem={filters.agenda_item || ''}
               onProgrammeChange={(value) => setFilter('programme', value)}
               onSubjectChange={(value) => setFilter('subject', value)}
-              onBudgetDocumentChange={(value) =>
-                setFilter('budget_document', value)
-              }
+              onBudgetDocumentChange={(value) => setFilter('budget_document', value)}
+              onDocumentTypeChange={(value) => setFilter('document_type', value)}
+              onAgendaItemChange={(value) => setFilter('agenda_item', value)}
               programmeOptions={programmeOptions}
               subjectOptions={subjectOptions}
+              documentTypeOptions={documentTypeOptions}
+              agendaItemOptions={agendaItemOptions}
               budgetDocuments={budgetDocuments}
               yearRange={yearRange}
               yearDistribution={yearDistribution}
@@ -249,40 +201,13 @@ export function FilterControls({
         </div>
       </div>
 
-      {/* Filter Chips - Enhanced styling */}
+      {/* Filter Chips */}
       {(hasSearch || hasFilters) && (
-        <div className="rounded-md border border-slate-200">
-          <div className="px-3 py-3">
-            <div className="space-y-4">
-              {/* Only show Active Filters label, count, and Clear All if there are visible chips or search */}
-              {(hasSearch ||
-                Object.values(displayFilters).filter((v) => v && v !== 'all')
-                  .length > 0) && (
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-semibold text-slate-700">
-                      Active Filters
-                    </span>
-                    <span className="rounded-full bg-slate-100 px-2 py-1 text-xs text-slate-500">
-                      {(hasSearch ? 1 : 0) +
-                        Object.values(displayFilters).filter(
-                          (v) => v && v !== 'all'
-                        ).length}
-                    </span>
-                  </div>
-                  <Button
-                    variant="default"
-                    size="sm"
-                    onClick={clearAllFilters}
-                    className="-mr-3 shrink-0 bg-trout text-white hover:bg-trout/90"
-                  >
-                    <X className="h-3 w-3 sm:h-4 sm:w-4" />
-                    <span className="text-xs sm:text-sm">Clear All</span>
-                  </Button>
-                </div>
-              )}
-
-              <div className="flex flex-wrap gap-2">
+        <div className="rounded-md border border-border px-3 py-2.5">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs font-medium text-muted-foreground">
+              Active filters
+            </span>
                 {hasSearch && (
                   <FilterBadge
                     icon={Search}
@@ -374,6 +299,24 @@ export function FilterControls({
                   />
                 )}
 
+                {displayFilters.document_type && (
+                  <FilterBadge
+                    icon={FileType}
+                    label={`Type: ${displayFilters.document_type}`}
+                    onClear={() => clearFilter('document_type')}
+                    variant="secondary"
+                  />
+                )}
+
+                {displayFilters.agenda_item && (
+                  <FilterBadge
+                    icon={List}
+                    label={`Agenda: ${displayFilters.agenda_item}`}
+                    onClear={() => clearFilter('agenda_item')}
+                    variant="secondary"
+                  />
+                )}
+
                 {yearRangeDisplay && (
                   <FilterBadge
                     icon={Calendar}
@@ -395,8 +338,16 @@ export function FilterControls({
                       variant="secondary"
                     />
                   )}
-              </div>
-            </div>
+
+            <Button
+              variant="default"
+              size="sm"
+              onClick={clearAllFilters}
+              className="ml-auto shrink-0 bg-trout text-white hover:bg-trout/90"
+            >
+              <X className="h-4 w-4" />
+              Clear All
+            </Button>
           </div>
         </div>
       )}

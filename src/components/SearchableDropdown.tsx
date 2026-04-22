@@ -17,6 +17,7 @@ import { explainerTexts } from '@/lib/en_text_contents'
 export interface SearchableDropdownOption {
   value: string
   label: string
+  count?: number
   description?: string
   disabled?: boolean
 }
@@ -251,19 +252,24 @@ export function SearchableDropdown({
                       onMouseEnter={() => setHighlightedIndex(index)}
                       disabled={option.disabled}
                     >
-                      <div className="flex min-w-0 flex-1 flex-col items-start text-left">
-                        <span className="text-left font-medium whitespace-normal">
-                          {option.label}
-                        </span>
+                      <span className="min-w-0 flex-1 text-left font-normal whitespace-normal">
+                        {option.label}
                         {option.description && (
-                          <span className="text-left text-xs whitespace-normal text-muted-foreground">
+                          <span className="block text-xs whitespace-normal text-muted-foreground">
                             {option.description}
                           </span>
                         )}
+                      </span>
+                      <div className="ml-2 flex shrink-0 items-center gap-1.5">
+                        {option.count !== undefined && (
+                          <span className="rounded-full bg-muted px-1.5 py-0.5 text-xs tabular-nums text-muted-foreground">
+                            {option.count}
+                          </span>
+                        )}
+                        {value === option.value && (
+                          <Check className="h-4 w-4 text-un-blue" />
+                        )}
                       </div>
-                      {value === option.value && (
-                        <Check className="h-4 w-4 shrink-0" />
-                      )}
                     </Button>
                   )
                 })
