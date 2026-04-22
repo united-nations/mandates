@@ -3,19 +3,18 @@
 # 1. Base image
 FROM node:20-alpine AS base
 WORKDIR /app
+RUN corepack enable && corepack prepare pnpm@latest --activate
 
 # 2. Install dependencies
 FROM base AS deps
-COPY package.json package-lock.json* ./
-RUN npm ci
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
 
 # 3. Build the application
 FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-# Create a public directory if it doesn't exist
-RUN mkdir -p public
-RUN npm run build
+RUN pnpm build
 
 # 4. Production image
 FROM base AS runner
@@ -27,4 +26,4 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 
-CMD ["node", "server.js"] 
+CMD ["node", "server.js"]
