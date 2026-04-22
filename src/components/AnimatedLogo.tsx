@@ -78,16 +78,18 @@ export function AnimatedLogo() {
           alt="UN80 Logo"
           width={110}
           height={110}
+          unoptimized
           className="block"
         />
         {/* UN20 Animation Sprite on top */}
         <div className="absolute inset-0 flex items-center justify-start pt-2 pl-3">
-          <Image
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
             src="/images/un20animation.svg"
             alt="UN20 Animation"
-            width={30}
-            height={30}
-            className={`block ${spriteClass}`}
+            width={31}
+            height={29}
+            className={spriteClass}
           />
         </div>
       </a>

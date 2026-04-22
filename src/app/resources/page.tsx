@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { Link as LinkIcon } from 'lucide-react'
 
 export default function ResourcesPage() {
@@ -19,11 +20,14 @@ export default function ResourcesPage() {
           rel="noopener noreferrer"
           className="block flex-col items-start rounded-lg border border-muted p-4 text-left transition hover:border-un-blue"
         >
-          <img
-            src="/images/screenshots/open_un_org.png"
-            alt="open.un.org screenshot"
-            className="mb-3 h-32 w-full rounded-md object-cover"
-          />
+          <div className="relative mb-3 h-32 w-full overflow-hidden rounded-md">
+            <Image
+              src="/images/screenshots/open_un_org.png"
+              alt="open.un.org screenshot"
+              fill
+              className="object-cover"
+            />
+          </div>
           <div className="mb-1 text-base font-medium text-un-blue">
             UN Transparency Portal
           </div>
@@ -39,11 +43,14 @@ export default function ResourcesPage() {
           rel="noopener noreferrer"
           className="flex flex-col items-start rounded-lg border border-muted p-4 text-left transition hover:border-un-blue"
         >
-          <img
-            src="/images/screenshots/unsceb_org.png"
-            alt="unsceb.org/financial-statistics screenshot"
-            className="mb-3 h-32 w-full rounded-md object-cover"
-          />
+          <div className="relative mb-3 h-32 w-full overflow-hidden rounded-md">
+            <Image
+              src="/images/screenshots/unsceb_org.png"
+              alt="unsceb.org/financial-statistics screenshot"
+              fill
+              className="object-cover"
+            />
+          </div>
           <div className="mb-1 text-base font-medium text-un-blue">
             CEB Financial Statistics
           </div>
@@ -58,11 +65,14 @@ export default function ResourcesPage() {
           rel="noopener noreferrer"
           className="block flex-col items-start rounded-lg border border-muted p-4 text-left transition hover:border-un-blue"
         >
-          <img
-            src="/images/screenshots/results_un_org.png"
-            alt="results.un.org screenshot"
-            className="mb-3 h-32 w-full rounded-md object-cover"
-          />
+          <div className="relative mb-3 h-32 w-full overflow-hidden rounded-md">
+            <Image
+              src="/images/screenshots/results_un_org.png"
+              alt="results.un.org screenshot"
+              fill
+              className="object-cover"
+            />
+          </div>
           <div className="mb-1 text-base font-medium text-un-blue">
             Programme Budget Results
           </div>

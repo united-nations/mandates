@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { explainerTexts } from '@/lib/en_text_contents'
 import { Button } from '@/components/ui/button'
 import { FileText, ArrowRight } from 'lucide-react'
@@ -15,16 +16,23 @@ export default function MethodologyPage() {
           Methodology
         </h1>
       </div>
-      <div className="mb-4 max-w-[780px] space-y-4 text-left text-muted-foreground sm:text-justify">
+      <div className="mb-4 max-w-195 space-y-4 text-left text-muted-foreground sm:text-justify">
         {explainerTexts.mainHeader.fullDescription.map((paragraph, index) => (
           <p key={index} className="leading-relaxed">
             {paragraph}
           </p>
         ))}
       </div>
-      <img src="/images/methodology.svg" alt="Methodology" className="w-full" />
+      <Image
+        src="/images/methodology.svg"
+        alt="Methodology"
+        width={248}
+        height={135}
+        unoptimized
+        style={{ width: '100%', height: 'auto' }}
+      />
       <hr className="my-8 border-muted" />
-      <div className="max-w-[780px] text-left">
+      <div className="max-w-195 text-left">
         <p className="text-sm leading-relaxed text-muted-foreground italic sm:text-justify">
           {explainerTexts.mainHeader.disclaimer}
         </p>
