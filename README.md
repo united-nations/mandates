@@ -19,7 +19,7 @@ This is a Next.js application that serves as a dashboard to explore and filter U
 
 ### Prerequisites
 
-Make sure you have Node.js (v20 or higher) and npm installed on your machine.
+Make sure you have Node.js (v22 or higher) and pnpm installed on your machine.
 Ø
 ### Development
 
@@ -36,6 +36,21 @@ npm run dev
 ```
 
 This will start the application on `http://localhost:9002`.
+
+## 🐳 Docker
+
+Build and run the container locally from the **repo root** (the build context must be the root so the Dockerfile can access files outside `website/`):
+
+```bash
+docker build -f website/Dockerfile -t un-mandates .
+docker run -p 3000:3000 un-mandates
+```
+
+The app will be available at `http://localhost:3000`.
+
+### CI/CD
+
+Pushes to `dev` and `main` automatically build and deploy the container to Azure Web App via GitHub Actions (see [`.github/workflows/`](.github/workflows/)). No manual steps are needed.
 
 ## ⚙️ Available Scripts
 

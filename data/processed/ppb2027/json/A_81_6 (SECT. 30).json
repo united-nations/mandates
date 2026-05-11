@@ -1,0 +1,3200 @@
+[
+  {
+    "block_type": "frontmatter",
+    "text": "[Frontmatter]",
+    "table_content": null,
+    "hyperlinks": null,
+    "children": [
+      {
+        "block_type": "heading-x",
+        "text": "Eighty-first session",
+        "table_content": null,
+        "hyperlinks": [],
+        "children": [
+          {
+            "block_type": "other",
+            "text": "Items 138 and 139 of the preliminary list**",
+            "table_content": null,
+            "hyperlinks": [],
+            "children": []
+          }
+        ]
+      },
+      {
+        "block_type": "heading-x",
+        "text": "Proposed programme budget for 2027 – Programme planning",
+        "table_content": null,
+        "hyperlinks": [],
+        "children": [
+          {
+            "block_type": "other",
+            "text": "*\tThe present document (A/81/6 (Sect. 30)/Part A), consisting of the programme plan and programme performance information (part II; see General Assembly resolution 77/267, para. 10), will be replaced by a document containing parts A and B (A/81/6 (Sect. 30)) once part B is issued.",
+            "table_content": null,
+            "hyperlinks": [
+              [
+                "77/267",
+                "https://docs.un.org/en/A/RES/77/267"
+              ]
+            ],
+            "children": []
+          },
+          {
+            "block_type": "other",
+            "text": "**\tA/81/50.",
+            "table_content": null,
+            "hyperlinks": [
+              [
+                "A/81/50",
+                "https://docs.un.org/en/A/81/50"
+              ]
+            ],
+            "children": []
+          },
+          {
+            "block_type": "other",
+            "text": "***\tIn keeping with paragraph 10 of General Assembly resolution 77/267, the part consisting of the programme plan and programme performance information (part II) is submitted through the Committee for Programme and Coordination for the consideration of the Assembly.",
+            "table_content": null,
+            "hyperlinks": [
+              [
+                "77/267",
+                "https://docs.un.org/en/A/RES/77/267"
+              ]
+            ],
+            "children": []
+          }
+        ]
+      },
+      {
+        "block_type": "heading-x",
+        "text": "Proposed programme budget for 2027",
+        "table_content": null,
+        "hyperlinks": [],
+        "children": []
+      },
+      {
+        "block_type": "heading-sub",
+        "text": "Part IX – Internal oversight",
+        "table_content": null,
+        "hyperlinks": [],
+        "children": []
+      },
+      {
+        "block_type": "heading",
+        "text": "Section 30",
+        "table_content": null,
+        "hyperlinks": [],
+        "children": [
+          {
+            "block_type": "heading-x",
+            "text": "Internal oversight",
+            "table_content": null,
+            "hyperlinks": [],
+            "children": []
+          },
+          {
+            "block_type": "heading-sub-sub",
+            "text": "Programme 26 – Internal oversight",
+            "table_content": null,
+            "hyperlinks": [],
+            "children": []
+          }
+        ]
+      },
+      {
+        "block_type": "heading",
+        "text": "Contents",
+        "table_content": null,
+        "hyperlinks": [],
+        "children": [
+          {
+            "block_type": "table-content",
+            "text": null,
+            "table_content": [
+              [
+                {
+                  "text": "",
+                  "hyperlinks": []
+                },
+                {
+                  "text": "",
+                  "hyperlinks": []
+                },
+                {
+                  "text": "",
+                  "hyperlinks": []
+                },
+                {
+                  "text": "Page",
+                  "hyperlinks": []
+                }
+              ],
+              [
+                {
+                  "text": "Proposed programme plan for 2027 and programme performance in 2025***\t",
+                  "hyperlinks": []
+                },
+                {
+                  "text": "Proposed programme plan for 2027 and programme performance in 2025***\t",
+                  "hyperlinks": []
+                },
+                {
+                  "text": "Proposed programme plan for 2027 and programme performance in 2025***\t",
+                  "hyperlinks": []
+                },
+                {
+                  "text": "2",
+                  "hyperlinks": []
+                }
+              ],
+              [
+                {
+                  "text": "\tOverall orientation\t",
+                  "hyperlinks": []
+                },
+                {
+                  "text": "\tOverall orientation\t",
+                  "hyperlinks": []
+                },
+                {
+                  "text": "\tOverall orientation\t",
+                  "hyperlinks": []
+                },
+                {
+                  "text": "2",
+                  "hyperlinks": []
+                }
+              ],
+              [
+                {
+                  "text": "\tProgramme of work\t\t",
+                  "hyperlinks": []
+                },
+                {
+                  "text": "\tProgramme of work\t\t",
+                  "hyperlinks": []
+                },
+                {
+                  "text": "\tProgramme of work\t\t",
+                  "hyperlinks": []
+                },
+                {
+                  "text": "4",
+                  "hyperlinks": []
+                }
+              ],
+              [
+                {
+                  "text": "\tSubprogramme 1. Internal audit\t",
+                  "hyperlinks": []
+                },
+                {
+                  "text": "\tSubprogramme 1. Internal audit\t",
+                  "hyperlinks": []
+                },
+                {
+                  "text": "\tSubprogramme 1. Internal audit\t",
+                  "hyperlinks": []
+                },
+                {
+                  "text": "4",
+                  "hyperlinks": []
+                }
+              ],
+              [
+                {
+                  "text": "\tSubprogramme 2. Inspection and evaluation\t",
+                  "hyperlinks": []
+                },
+                {
+                  "text": "\tSubprogramme 2. Inspection and evaluation\t",
+                  "hyperlinks": []
+                },
+                {
+                  "text": "\tSubprogramme 2. Inspection and evaluation\t",
+                  "hyperlinks": []
+                },
+                {
+                  "text": "8",
+                  "hyperlinks": []
+                }
+              ],
+              [
+                {
+                  "text": "\tSubprogramme 3. Investigations\t",
+                  "hyperlinks": []
+                },
+                {
+                  "text": "\tSubprogramme 3. Investigations\t",
+                  "hyperlinks": []
+                },
+                {
+                  "text": "\tSubprogramme 3. Investigations\t",
+                  "hyperlinks": []
+                },
+                {
+                  "text": "12",
+                  "hyperlinks": []
+                }
+              ]
+            ],
+            "hyperlinks": [],
+            "children": []
+          },
+          {
+            "block_type": "image",
+            "text": "",
+            "table_content": null,
+            "hyperlinks": [],
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "block_type": "a/b",
+    "text": "A.\tProposed programme plan for 2027 and programme performance in 2025",
+    "table_content": null,
+    "hyperlinks": [],
+    "children": [
+      {
+        "block_type": "heading",
+        "text": "Overall orientation",
+        "table_content": null,
+        "hyperlinks": [],
+        "children": [
+          {
+            "block_type": "heading-sub",
+            "text": "Mandates and background",
+            "table_content": null,
+            "hyperlinks": [],
+            "children": [
+              {
+                "block_type": "paragraph-1",
+                "text": "30.1\tThe Office of Internal Oversight Services (OIOS) is responsible for assisting the Secretary-General in fulfilling his internal oversight responsibilities in respect of the resources and staff of the Organization through the provision of internal audit, inspection and evaluation, and investigation services. The mandate derives from the priorities established in relevant General Assembly resolutions and decisions, including resolutions 48/218 B, 54/244, 59/272, 64/263, 69/253 and 79/282. The Office will continue to maintain its operational independence in carrying out its objectives. The Independent Audit Advisory Committee provides the Office with advice to strengthen the programme’s risk-based planning and budgeting.",
+                "table_content": null,
+                "hyperlinks": [
+                  [
+                    "48/218",
+                    "https://docs.un.org/en/A/RES/48/218B"
+                  ],
+                  [
+                    "54/244",
+                    "https://docs.un.org/en/A/RES/54/244"
+                  ],
+                  [
+                    "59/272",
+                    "https://docs.un.org/en/A/RES/59/272"
+                  ],
+                  [
+                    "64/263",
+                    "https://docs.un.org/en/A/RES/64/263"
+                  ],
+                  [
+                    "69/253",
+                    "https://docs.un.org/en/A/RES/69/253"
+                  ],
+                  [
+                    "79/282",
+                    "https://docs.un.org/en/A/RES/79/282"
+                  ]
+                ],
+                "children": []
+              }
+            ]
+          },
+          {
+            "block_type": "heading-sub",
+            "text": "Strategy and external factors for 2027",
+            "table_content": null,
+            "hyperlinks": [],
+            "children": [
+              {
+                "block_type": "paragraph-1",
+                "text": "30.2\tIn support of the Secretary-General’s focus on building a more sustainable and inclusive future and on reforming the Organization to better deliver against this vision, the strategy for 2027 prioritizes internal oversight coverage of the work of the Organization in the following management areas: (a) implementation of the reforms of the management, peace and security, and development pillars; (b) strengthening of organizational culture; (c) procurement and supply chain management, including management of fraud and corruption risks; (d) management of mission drawdown or transition; and (e) strengthening of the protection against retaliation (whistle-blower) system. The Office will also continue to cover the programmes and strategies of the Organization, including cross-cutting areas such as the provision of support to Member States on the achievement of the Sustainable Development Goals and the Pact for the Future, as well as the implementation of the Secretary-General’s strategies on gender equality, racial equality, environmental sustainability, disability inclusion and data.",
+                "table_content": null,
+                "hyperlinks": [],
+                "children": []
+              },
+              {
+                "block_type": "paragraph-1",
+                "text": "30.3\tEffective engagement with the senior leadership of the Organization will help the programme to identify risks to the Organization and provide timely assurance and advice on issues relating to the efficient, economical, effective and ethical management of the Organization’s resources.",
+                "table_content": null,
+                "hyperlinks": [],
+                "children": []
+              },
+              {
+                "block_type": "paragraph-1",
+                "text": "30.4\tThe Office will strengthen the delivery of its mandated activities by: (a) strengthening the use of enterprise risk management in planning internal audit and evaluation and inspection activities (subprogrammes 1 and 2); (b) enhancing the methodology for measuring the impact of audit recommendations (subprogramme 1); (c) enhancing guidance for thematic and outcome evaluations of programmes (subprogramme 2); and (d) enhancing guidance on using data analytics to improve investigation planning and the timeliness of investigations (subprogramme 3).",
+                "table_content": null,
+                "hyperlinks": [],
+                "children": []
+              },
+              {
+                "block_type": "paragraph-1",
+                "text": "30.5\tWith regard to cooperation with other entities at the global, regional, national and local levels, the Office will consult closely on its programme of work with the Board of Auditors and the Joint Inspection Unit and liaise, as appropriate, with relevant offices involved in the internal justice system of the Organization.",
+                "table_content": null,
+                "hyperlinks": [],
+                "children": []
+              },
+              {
+                "block_type": "paragraph-1",
+                "text": "30.6\tWith regard to inter-agency coordination and liaison, the Office will share knowledge on good practices and innovations in oversight methodologies with the other internal oversight functions of the United Nations system through the meetings of the Representatives of Internal Audit Services of the United Nations Organizations, the United Nations Representatives of Investigative Services and the United Nations Evaluation Group.",
+                "table_content": null,
+                "hyperlinks": [],
+                "children": []
+              },
+              {
+                "block_type": "paragraph-1",
+                "text": "30.7\tWith regard to the external factors, the overall plan for 2027 is based on the planning assumption that the Office will have unimpeded access to the staff and records of the Organization and other required information.",
+                "table_content": null,
+                "hyperlinks": [],
+                "children": []
+              },
+              {
+                "block_type": "paragraph-1",
+                "text": "30.8\tThe Office integrates a gender perspective into its operational activities, deliverables and results, as appropriate. Subprogrammes 1 and 2 will cover the management of risks relating to mainstreaming a gender perspective. Subprogramme 3 will continue to integrate a gender perspective into its victim-centred methodology for all investigations, including sexual exploitation and abuse and workplace sexual harassment.",
+                "table_content": null,
+                "hyperlinks": [],
+                "children": []
+              },
+              {
+                "block_type": "paragraph-1",
+                "text": "30.9\tIn line with the United Nations Disability Inclusion Strategy, the Office will further advance disability inclusion by covering the management of risks relating to implementation of the Strategy.",
+                "table_content": null,
+                "hyperlinks": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "block_type": "heading-sub",
+            "text": "Adjustments arising from the UN80 Initiative",
+            "table_content": null,
+            "hyperlinks": [],
+            "children": [
+              {
+                "block_type": "paragraph-1",
+                "text": "30.10\tThe proposed programme plan for 2027 reflects changes arising from the UN80 Initiative. In particular, the tables of deliverables reflect updated deliverables for 2026, in line with the approved programme budget for 2026.",
+                "table_content": null,
+                "hyperlinks": [],
+                "children": []
+              },
+              {
+                "block_type": "paragraph-1",
+                "text": "30.11\tOIOS will be guided by any future decisions taken in the context of the UN80 Initiative, in accordance with the applicable rules and procedures, including decisions, resolutions and established practice of the competent intergovernmental organs. This includes, among others, any decisions concerning proposals to strengthen and harmonize mechanisms to manage for results across the United Nations system, including how results are measured and communicated. OIOS will consider the UN80 Initiative as an important input for focus areas to be considered for inclusion in its programme of work for 2027.",
+                "table_content": null,
+                "hyperlinks": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "block_type": "heading-sub",
+            "text": "Legislative mandates",
+            "table_content": null,
+            "hyperlinks": [],
+            "children": [
+              {
+                "block_type": "paragraph-1",
+                "text": "30.12\tThe list below, which was reviewed in the preparation of the proposed programme budget, provides all mandates entrusted to the programme.",
+                "table_content": null,
+                "hyperlinks": [],
+                "children": []
+              },
+              {
+                "block_type": "italic",
+                "text": "General Assembly resolutions",
+                "table_content": null,
+                "hyperlinks": [],
+                "children": [
+                  {
+                    "block_type": "table-content",
+                    "text": null,
+                    "table_content": [
+                      [
+                        {
+                          "text": "48/218 B; 60/254",
+                          "hyperlinks": [
+                            [
+                              "48/218",
+                              "https://docs.un.org/en/A/RES/48/218B"
+                            ],
+                            [
+                              "60/254",
+                              "https://docs.un.org/en/A/RES/60/254"
+                            ]
+                          ]
+                        },
+                        {
+                          "text": "Review of the efficiency of the administrative and financial functioning of the United Nations",
+                          "hyperlinks": []
+                        }
+                      ],
+                      [
+                        {
+                          "text": "59/272",
+                          "hyperlinks": [
+                            [
+                              "59/272",
+                              "https://docs.un.org/en/A/RES/59/272"
+                            ]
+                          ]
+                        },
+                        {
+                          "text": "Review of the implementation of General Assembly resolutions 48/218 B and 54/244",
+                          "hyperlinks": [
+                            [
+                              "48/218",
+                              "https://docs.un.org/en/A/RES/48/218B"
+                            ],
+                            [
+                              "54/244",
+                              "https://docs.un.org/en/A/RES/54/244"
+                            ]
+                          ]
+                        }
+                      ],
+                      [
+                        {
+                          "text": "61/245",
+                          "hyperlinks": [
+                            [
+                              "61/245",
+                              "https://docs.un.org/en/A/RES/61/245"
+                            ]
+                          ]
+                        },
+                        {
+                          "text": "Comprehensive review of governance and oversight within the United Nations and its funds, programmes and specialized agencies",
+                          "hyperlinks": []
+                        }
+                      ]
+                    ],
+                    "hyperlinks": [
+                      [
+                        "48/218",
+                        "https://docs.un.org/en/A/RES/48/218B"
+                      ],
+                      [
+                        "60/254",
+                        "https://docs.un.org/en/A/RES/60/254"
+                      ],
+                      [
+                        "59/272",
+                        "https://docs.un.org/en/A/RES/59/272"
+                      ],
+                      [
+                        "48/218",
+                        "https://docs.un.org/en/A/RES/48/218B"
+                      ],
+                      [
+                        "54/244",
+                        "https://docs.un.org/en/A/RES/54/244"
+                      ],
+                      [
+                        "61/245",
+                        "https://docs.un.org/en/A/RES/61/245"
+                      ]
+                    ],
+                    "children": []
+                  },
+                  {
+                    "block_type": "table-content",
+                    "text": null,
+                    "table_content": [
+                      [
+                        {
+                          "text": "61/275",
+                          "hyperlinks": [
+                            [
+                              "61/275",
+                              "https://docs.un.org/en/A/RES/61/275"
+                            ]
+                          ]
+                        },
+                        {
+                          "text": "Terms of reference for the Independent Audit Advisory Committee and strengthening the Office of Internal Oversight Services",
+                          "hyperlinks": []
+                        }
+                      ],
+                      [
+                        {
+                          "text": "79/282",
+                          "hyperlinks": [
+                            [
+                              "79/282",
+                              "https://docs.un.org/en/A/RES/79/282"
+                            ]
+                          ]
+                        },
+                        {
+                          "text": "Review of the implementation of General Assembly resolutions 48/218 B, 54/244, 59/272, 64/263, 69/253 and 74/257",
+                          "hyperlinks": [
+                            [
+                              "48/218",
+                              "https://docs.un.org/en/A/RES/48/218B"
+                            ],
+                            [
+                              "54/244",
+                              "https://docs.un.org/en/A/RES/54/244"
+                            ],
+                            [
+                              "59/272",
+                              "https://docs.un.org/en/A/RES/59/272"
+                            ],
+                            [
+                              "64/263",
+                              "https://docs.un.org/en/A/RES/64/263"
+                            ],
+                            [
+                              "69/253",
+                              "https://docs.un.org/en/A/RES/69/253"
+                            ],
+                            [
+                              "74/257",
+                              "https://docs.un.org/en/A/RES/74/257"
+                            ]
+                          ]
+                        }
+                      ]
+                    ],
+                    "hyperlinks": [
+                      [
+                        "61/275",
+                        "https://docs.un.org/en/A/RES/61/275"
+                      ],
+                      [
+                        "79/282",
+                        "https://docs.un.org/en/A/RES/79/282"
+                      ],
+                      [
+                        "48/218",
+                        "https://docs.un.org/en/A/RES/48/218B"
+                      ],
+                      [
+                        "54/244",
+                        "https://docs.un.org/en/A/RES/54/244"
+                      ],
+                      [
+                        "59/272",
+                        "https://docs.un.org/en/A/RES/59/272"
+                      ],
+                      [
+                        "64/263",
+                        "https://docs.un.org/en/A/RES/64/263"
+                      ],
+                      [
+                        "69/253",
+                        "https://docs.un.org/en/A/RES/69/253"
+                      ],
+                      [
+                        "74/257",
+                        "https://docs.un.org/en/A/RES/74/257"
+                      ]
+                    ],
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "block_type": "heading-sub-sub",
+                "text": "Subprogramme 1 – Internal audit",
+                "table_content": null,
+                "hyperlinks": [],
+                "children": [
+                  {
+                    "block_type": "italic",
+                    "text": "General Assembly resolutions",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": [
+                      {
+                        "block_type": "table-content",
+                        "text": null,
+                        "table_content": [
+                          [
+                            {
+                              "text": "72/266 A and B",
+                              "hyperlinks": [
+                                [
+                                  "72/266",
+                                  "https://docs.un.org/en/A/RES/72/266A"
+                                ]
+                              ]
+                            },
+                            {
+                              "text": "Shifting the management paradigm in the United Nations",
+                              "hyperlinks": []
+                            }
+                          ]
+                        ],
+                        "hyperlinks": [
+                          [
+                            "72/266",
+                            "https://docs.un.org/en/A/RES/72/266A"
+                          ]
+                        ],
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "block_type": "heading-sub-sub",
+                "text": "Subprogramme 2 – Inspection and evaluation",
+                "table_content": null,
+                "hyperlinks": [],
+                "children": [
+                  {
+                    "block_type": "italic",
+                    "text": "General Assembly resolutions",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": [
+                      {
+                        "block_type": "table-content",
+                        "text": null,
+                        "table_content": [
+                          [
+                            {
+                              "text": "55/231",
+                              "hyperlinks": [
+                                [
+                                  "55/231",
+                                  "https://docs.un.org/en/A/RES/55/231"
+                                ]
+                              ]
+                            },
+                            {
+                              "text": "Results-based budgeting",
+                              "hyperlinks": []
+                            }
+                          ]
+                        ],
+                        "hyperlinks": [
+                          [
+                            "55/231",
+                            "https://docs.un.org/en/A/RES/55/231"
+                          ]
+                        ],
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "block_type": "heading-sub-sub",
+                "text": "Subprogramme 3 – Investigations",
+                "table_content": null,
+                "hyperlinks": [],
+                "children": [
+                  {
+                    "block_type": "italic",
+                    "text": "General Assembly resolutions",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": [
+                      {
+                        "block_type": "table-content",
+                        "text": null,
+                        "table_content": [
+                          [
+                            {
+                              "text": "59/287",
+                              "hyperlinks": [
+                                [
+                                  "59/287",
+                                  "https://docs.un.org/en/A/RES/59/287"
+                                ]
+                              ]
+                            },
+                            {
+                              "text": "Report of the Office of Internal Oversight Services on strengthening the investigation functions in the United Nations",
+                              "hyperlinks": []
+                            }
+                          ],
+                          [
+                            {
+                              "text": "62/247",
+                              "hyperlinks": [
+                                [
+                                  "62/247",
+                                  "https://docs.un.org/en/A/RES/62/247"
+                                ]
+                              ]
+                            },
+                            {
+                              "text": "Strengthening investigations",
+                              "hyperlinks": []
+                            }
+                          ],
+                          [
+                            {
+                              "text": "77/278",
+                              "hyperlinks": [
+                                [
+                                  "77/278",
+                                  "https://docs.un.org/en/A/RES/77/278"
+                                ]
+                              ]
+                            },
+                            {
+                              "text": "Human resources management",
+                              "hyperlinks": []
+                            }
+                          ]
+                        ],
+                        "hyperlinks": [
+                          [
+                            "59/287",
+                            "https://docs.un.org/en/A/RES/59/287"
+                          ],
+                          [
+                            "62/247",
+                            "https://docs.un.org/en/A/RES/62/247"
+                          ],
+                          [
+                            "77/278",
+                            "https://docs.un.org/en/A/RES/77/278"
+                          ]
+                        ],
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "block_type": "heading-sub",
+            "text": "Deliverables",
+            "table_content": null,
+            "hyperlinks": [],
+            "children": [
+              {
+                "block_type": "paragraph-1",
+                "text": "30.13\tTable 30.1 lists all cross-cutting deliverables of the programme.",
+                "table_content": null,
+                "hyperlinks": [],
+                "children": []
+              },
+              {
+                "block_type": "table",
+                "text": "Table 30.1",
+                "table_content": null,
+                "hyperlinks": [],
+                "children": []
+              },
+              {
+                "block_type": "heading-sub-sub",
+                "text": "Cross-cutting deliverables for the period 2025–2027, by category and subcategory",
+                "table_content": null,
+                "hyperlinks": [],
+                "children": [
+                  {
+                    "block_type": "table-content",
+                    "text": null,
+                    "table_content": [
+                      [
+                        {
+                          "text": "Category and subcategory",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "2025 planned",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "2025 actual",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "2026 planned",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "2027 planned",
+                          "hyperlinks": []
+                        }
+                      ],
+                      [
+                        {
+                          "text": "",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "",
+                          "hyperlinks": []
+                        }
+                      ],
+                      [
+                        {
+                          "text": "A.\tFacilitation of the intergovernmental process and expert bodies",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "",
+                          "hyperlinks": []
+                        }
+                      ],
+                      [
+                        {
+                          "text": "\tParliamentary documentation (number of documents)",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "2",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "2",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "2",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "2",
+                          "hyperlinks": []
+                        }
+                      ],
+                      [
+                        {
+                          "text": "\t1.\tReport on the activities of the Office of Internal Oversight Services (Parts I and II)",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "2",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "2",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "2",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "2",
+                          "hyperlinks": []
+                        }
+                      ],
+                      [
+                        {
+                          "text": "\tSubstantive services for meetings (number of three-hour meetings)",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "17",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "22",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "17",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "17",
+                          "hyperlinks": []
+                        }
+                      ],
+                      [
+                        {
+                          "text": "\t2.\tThe Fifth Committee",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "8",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "10",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "8",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "8",
+                          "hyperlinks": []
+                        }
+                      ],
+                      [
+                        {
+                          "text": "\t3.\tThe Committee for Programme and Coordination",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "3",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "3",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "3",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "3",
+                          "hyperlinks": []
+                        }
+                      ],
+                      [
+                        {
+                          "text": "\t4.\tThe Advisory Committee on Administrative and Budgetary Questions",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "2",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "4",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "2",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "2",
+                          "hyperlinks": []
+                        }
+                      ],
+                      [
+                        {
+                          "text": "\t5.\tThe Independent Audit Advisory Committee",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "4",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "5",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "4",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "4",
+                          "hyperlinks": []
+                        }
+                      ],
+                      [
+                        {
+                          "text": "C.\tSubstantive deliverables",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "",
+                          "hyperlinks": []
+                        }
+                      ],
+                      [
+                        {
+                          "text": "\tDatabases and substantive digital materials: comprehensive database and dashboard for monitoring the status of implementation of the approximately 1,000 open recommendations of the Office.",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "\tDatabases and substantive digital materials: comprehensive database and dashboard for monitoring the status of implementation of the approximately 1,000 open recommendations of the Office.",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "\tDatabases and substantive digital materials: comprehensive database and dashboard for monitoring the status of implementation of the approximately 1,000 open recommendations of the Office.",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "\tDatabases and substantive digital materials: comprehensive database and dashboard for monitoring the status of implementation of the approximately 1,000 open recommendations of the Office.",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "\tDatabases and substantive digital materials: comprehensive database and dashboard for monitoring the status of implementation of the approximately 1,000 open recommendations of the Office.",
+                          "hyperlinks": []
+                        }
+                      ],
+                      [
+                        {
+                          "text": "E.\tEnabling deliverables",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "",
+                          "hyperlinks": []
+                        }
+                      ],
+                      [
+                        {
+                          "text": "\tContent on communications platforms; briefings and presentations on oversight activities; and refresher training to programme managers on the Office’s recommendation monitoring system.",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "\tContent on communications platforms; briefings and presentations on oversight activities; and refresher training to programme managers on the Office’s recommendation monitoring system.",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "\tContent on communications platforms; briefings and presentations on oversight activities; and refresher training to programme managers on the Office’s recommendation monitoring system.",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "\tContent on communications platforms; briefings and presentations on oversight activities; and refresher training to programme managers on the Office’s recommendation monitoring system.",
+                          "hyperlinks": []
+                        },
+                        {
+                          "text": "\tContent on communications platforms; briefings and presentations on oversight activities; and refresher training to programme managers on the Office’s recommendation monitoring system.",
+                          "hyperlinks": []
+                        }
+                      ]
+                    ],
+                    "hyperlinks": [],
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "block_type": "heading-sub",
+            "text": "Evaluation activities",
+            "table_content": null,
+            "hyperlinks": [],
+            "children": [
+              {
+                "block_type": "paragraph-1",
+                "text": "30.14 \tThe OIOS-commissioned quality assessments of the three OIOS functions (investigations, internal audit, and inspection and evaluation) have guided the proposed programme plan for 2027. The capping review is expected to be completed in 2026.",
+                "table_content": null,
+                "hyperlinks": [],
+                "children": []
+              },
+              {
+                "block_type": "paragraph-1",
+                "text": "30.15\tIn response to the results of the quality assessments referenced above, OIOS has implemented improvements aimed at enhancing efficiency and effectiveness in areas such as work planning, the use of information and communications technology (ICT) to monitor and report on programme performance, and quality assurance and internal control.",
+                "table_content": null,
+                "hyperlinks": [],
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "block_type": "heading",
+        "text": "Programme of work",
+        "table_content": null,
+        "hyperlinks": [],
+        "children": [
+          {
+            "block_type": "subprogramme",
+            "text": "Subprogramme 1 – Internal audit",
+            "table_content": null,
+            "hyperlinks": [],
+            "children": [
+              {
+                "block_type": "heading-sub",
+                "text": "Objective",
+                "table_content": null,
+                "hyperlinks": [],
+                "children": [
+                  {
+                    "block_type": "paragraph-1",
+                    "text": "30.16\tThe objective, to which this subprogramme contributes, is to improve the efficiency, economy, effectiveness and impact of the Organization’s programmes, in keeping with best management practices.",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "block_type": "heading-sub",
+                "text": "Strategy",
+                "table_content": null,
+                "hyperlinks": [],
+                "children": [
+                  {
+                    "block_type": "paragraph-1",
+                    "text": "30.17\tTo contribute to the objective, the subprogramme will:",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": [
+                      {
+                        "block_type": "paragraph-2",
+                        "text": "(a)\tConduct internal audit activities to recommend improvements to key controls and processes and identify accountability issues, with a strengthened focus on providing assurance regarding the effectiveness and efficiency of programme performance monitoring and reporting, as well as the organizational capabilities required for Secretariat entities to implement their mandates more effectively and efficiently;",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "paragraph-2",
+                        "text": "(b)\tSupport the efforts undertaken by the Department of Management Strategy, Policy and Compliance to strengthen the United Nations Secretariat accountability system, through assurance and advice to the Department;",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "paragraph-2",
+                        "text": "(c)\tFocus on data governance and data security in the use of ICT in the Organization;",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "paragraph-2",
+                        "text": "(d)\tStrengthen annual work-planning processes by identifying and monitoring audit assignments that systematically cover United Nations cross-cutting priorities in the management, programme and strategy areas (including reforms, organizational culture, procurement and supply chain, mission drawdown or transition and Sustainable Development Goal support) and take into consideration a gender perspective, disability inclusion, racism, human rights and the environment, as appropriate;",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "paragraph-2",
+                        "text": "(e)\tImplement recommendations resulting from the quality assessment of the internal audit function.",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "block_type": "paragraph-1",
+                    "text": "30.18\tThe above-mentioned work is expected to result in:",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": [
+                      {
+                        "block_type": "paragraph-2",
+                        "text": "(a)\tStrengthened accountability and transparency in the use of resources by United Nations organizations and entities;",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "paragraph-2",
+                        "text": "(b)\tImproved risk identification and mitigation by United Nations organizations and entities;",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "paragraph-2",
+                        "text": "(c)\tHigh quality of internal audit assurance provided to the Secretary-General, heads of organizations and entities and Member States on the adequacy and effectiveness of risk management and internal control systems.",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "block_type": "heading-sub",
+                "text": "Programme performance in 2025",
+                "table_content": null,
+                "hyperlinks": [],
+                "children": [
+                  {
+                    "block_type": "heading-sub-sub",
+                    "text": "Strengthened accountability regarding staff time and attendance",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": [
+                      {
+                        "block_type": "paragraph-1",
+                        "text": "30.19\tTo support the Secretary-General in fulfilling his internal oversight responsibilities for the Organization’s resources and staff, the subprogramme, in 2025, completed a series of seven thematic audits of time and attendance management containing 54 recommendations aimed at strengthening the governance of time and attendance management by promoting awareness and consistent policy interpretation, systematically tracking non-compliance trends and enhancing timely corrective action by entities. The audits also contained recommendations to recover approximately $1.4 million in overpayments, related mostly to danger pay, and resulted in an advisory report highlighting control failures and financial exposure resulting from the inadequate implementation of existing policies and systems.",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "paragraph-1",
+                        "text": "30.20\tProgress towards the objective is presented in the performance measure below (see figure 30.I).",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "figure",
+                        "text": "Figure 30.I",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "block_type": "heading-sub-sub",
+                    "text": "Performance measure: cumulative audit recommendations accepted that strengthen accountability regarding staff time and attendance",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": [
+                      {
+                        "block_type": "image",
+                        "text": "",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "block_type": "heading-sub",
+                "text": "Planned results for 2027",
+                "table_content": null,
+                "hyperlinks": [],
+                "children": [
+                  {
+                    "block_type": "heading-sub-sub",
+                    "text": "Result 1: strengthened monitoring systems to improve performance management to support programme delivery – Programme performance in 2025 and target for 2027",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": [
+                      {
+                        "block_type": "paragraph-1",
+                        "text": "30.21\tThe subprogramme’s work contributed to the completion of 36 audit assignments and the issuance of 70 recommendations relating to strengthening performance management monitoring systems that were all accepted by the relevant programme managers, which met the planned target.",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "paragraph-1",
+                        "text": "30.22\tProgress towards the objective and the target for 2027 are presented in the performance measure below (see figure 30.II).",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "figure",
+                        "text": "Figure 30.II",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "block_type": "heading-sub-sub",
+                    "text": "Performance measure: audit recommendations accepted that strengthen programme performance management",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": [
+                      {
+                        "block_type": "image",
+                        "text": "",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "block_type": "heading-sub-sub",
+                    "text": "Result 2: enhanced delivery of United Nations mandates and programmes through strengthened organizational capabilities – Programme performance in 2025 and target for 2027",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": [
+                      {
+                        "block_type": "paragraph-1",
+                        "text": "30.23\tThe subprogramme’s work contributed to the completion of seven audit assignments and the issuance of 47 recommendations aimed at strengthening the organizational capabilities of entities that were all accepted by the relevant programme managers, which met the planned target.",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "paragraph-1",
+                        "text": "30.24\tProgress towards the objective and the target for 2027 are presented in the performance measure below (see figure 30.III).",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "figure",
+                        "text": "Figure 30.III",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "block_type": "heading-sub-sub",
+                    "text": "Performance measure: audit recommendations accepted that strengthen organizational capabilities in innovation, data analytics, digital transformation, strategic foresight and behavioural science (annual)",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": [
+                      {
+                        "block_type": "image",
+                        "text": "",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "block_type": "heading-sub-sub",
+                    "text": "Result 3: increased efficiencies in the administration of the Organization – Proposed programme plan for 2027",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": [
+                      {
+                        "block_type": "paragraph-1",
+                        "text": "30.25\tThe internal audit function is an independent and objective assurance and advisory activity designed to add value and improve the Organization’s operations. The subprogramme conducts internal audit activities, including by examining changes to management structures and operations, in order to recommend improvements to key controls and processes for improvements aimed at increasing efficiencies in implementing mandates.",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "italic",
+                        "text": "Lessons learned and planned change",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": [
+                          {
+                            "block_type": "paragraph-1",
+                            "text": "30.26\tThe lesson for the subprogramme, informed by several rounds of reforms aimed at modernizing structures, reducing duplication and streamlining administrative and operational support, was that assessing operational efficiency had become critical in the context of budgetary constraints and liquidity crises faced by the Organization. In applying the lesson, the subprogramme will focus on assessing efficiency enhancement measures and identifying any further opportunities to simplify processes, reduce administrative burden and strengthen coherence among structures and programmes.",
+                            "table_content": null,
+                            "hyperlinks": [],
+                            "children": []
+                          }
+                        ]
+                      },
+                      {
+                        "block_type": "paragraph-1",
+                        "text": "30.27\tExpected progress towards the objective is presented in the performance measure below (see figure 30.IV).",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "figure",
+                        "text": "Figure 30.IV",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "block_type": "heading-sub-sub",
+                    "text": "Performance measure: audit recommendations accepted that contribute to enhanced efficiencies in the Organization",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": [
+                      {
+                        "block_type": "image",
+                        "text": "",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "block_type": "heading-sub",
+                "text": "Deliverables",
+                "table_content": null,
+                "hyperlinks": [],
+                "children": [
+                  {
+                    "block_type": "paragraph-1",
+                    "text": "30.28\tTable 30.2 lists all deliverables of the subprogramme.",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": []
+                  },
+                  {
+                    "block_type": "table",
+                    "text": "Table 30.2",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": []
+                  },
+                  {
+                    "block_type": "heading-sub-sub",
+                    "text": "Subprogramme 1: deliverables for the period 2025–2027, by category and subcategory",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": [
+                      {
+                        "block_type": "table-content",
+                        "text": null,
+                        "table_content": [
+                          [
+                            {
+                              "text": "Category and subcategory",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "2025 planned",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "2025 actual",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "2026 planneda",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "2027 planned",
+                              "hyperlinks": []
+                            }
+                          ],
+                          [
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            }
+                          ],
+                          [
+                            {
+                              "text": "A.\tFacilitation of the intergovernmental process and expert bodies",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            }
+                          ],
+                          [
+                            {
+                              "text": "\tParliamentary documentation (number of documents)",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "1",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "1",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "–",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "1",
+                              "hyperlinks": []
+                            }
+                          ],
+                          [
+                            {
+                              "text": "\t1.\tBiennial report on procurement (resolutions 72/266 B and 74/256) ",
+                              "hyperlinks": [
+                                [
+                                  "72/266",
+                                  "https://docs.un.org/en/A/RES/72/266B"
+                                ],
+                                [
+                                  "74/256",
+                                  "https://docs.un.org/en/A/RES/74/256"
+                                ]
+                              ]
+                            },
+                            {
+                              "text": "1",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "1",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "–",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "1",
+                              "hyperlinks": []
+                            }
+                          ],
+                          [
+                            {
+                              "text": "B.\tGeneration and transfer of knowledge",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            }
+                          ],
+                          [
+                            {
+                              "text": "\tPublications (number of publications)",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "140",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "114",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "130",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "130",
+                              "hyperlinks": []
+                            }
+                          ],
+                          [
+                            {
+                              "text": "\t2.\tInternal audit reports (assurance and advisory)",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "140",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "114",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "130 [140]",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "130",
+                              "hyperlinks": []
+                            }
+                          ]
+                        ],
+                        "hyperlinks": [
+                          [
+                            "72/266",
+                            "https://docs.un.org/en/A/RES/72/266B"
+                          ],
+                          [
+                            "74/256",
+                            "https://docs.un.org/en/A/RES/74/256"
+                          ]
+                        ],
+                        "children": []
+                      },
+                      {
+                        "block_type": "other",
+                        "text": "a\tReflects updated planned deliverables for 2026. Values in square brackets represent the number of planned deliverables reflected in A/80/6 (Sect. 30).",
+                        "table_content": null,
+                        "hyperlinks": [
+                          [
+                            "A/80/6 (Sect. 30)",
+                            "https://docs.un.org/en/A/80/6(Sect.30)"
+                          ]
+                        ],
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "block_type": "subprogramme",
+            "text": "Subprogramme 2 – Inspection and evaluation",
+            "table_content": null,
+            "hyperlinks": [],
+            "children": [
+              {
+                "block_type": "heading-sub",
+                "text": "Objective",
+                "table_content": null,
+                "hyperlinks": [],
+                "children": [
+                  {
+                    "block_type": "paragraph-1",
+                    "text": "30.29\tThe objective, to which this subprogramme contributes, is to strengthen relevance, efficiency, effectiveness and impact in the implementation of programmes and legislative mandates of the Organization and improve decision-making, accountability and learning.",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "block_type": "heading-sub",
+                "text": "Strategy",
+                "table_content": null,
+                "hyperlinks": [],
+                "children": [
+                  {
+                    "block_type": "paragraph-1",
+                    "text": "30.30\tTo contribute to the objective, the subprogramme will:",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": [
+                      {
+                        "block_type": "paragraph-2",
+                        "text": "(a)\tFocus, in conducting evaluations, on programmatic results and outcomes achieved by Secretariat entities in the areas of the peace and security, sustainable development, human rights and humanitarian assistance;",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "paragraph-2",
+                        "text": "(b)\tSupport accountability for programme improvement through the monitoring of the implementation of evaluation recommendations and their outcomes;",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "paragraph-2",
+                        "text": "(c)\tIntegrate the Secretary-General’s cross-cutting strategies into evaluation design and implementation;",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "paragraph-2",
+                        "text": "(d)\tRefine its inspection and evaluation methodology and further develop and strengthen evaluation design and data collection and analysis methods;",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "paragraph-2",
+                        "text": "(e)\tProvide evaluation methodological guidance and quality assurance support to Secretariat entities and to the wider Organization, including through collaboration with the Department of Management Strategy, Policy and Compliance, and by developing and implementing community of practice workshops, methodology seminars and other capacity-building measures;",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "paragraph-2",
+                        "text": "(f)\tEnhance evaluation knowledge-sharing through the production of the biennial report on strengthening evaluation, as well as evaluation newsletters and evaluation synthesis reports;",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "paragraph-2",
+                        "text": "(g)\tSupport system-wide evaluation through collaboration with the United Nations Sustainable Development Group System-wide Evaluation Office.",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "block_type": "paragraph-1",
+                    "text": "30.31\tThe above-mentioned work is expected to result in:",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": [
+                      {
+                        "block_type": "paragraph-2",
+                        "text": "(a)\tIncreased learning and accountability of Secretariat entities towards achieving their planned programmatic outcomes;",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "paragraph-2",
+                        "text": "(b)\tStrengthened evaluation capacity and performance, and greater use of evaluation findings to inform programme design planning and the achievement of results within the Organization.",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "block_type": "heading-sub",
+                "text": "Programme performance in 2025",
+                "table_content": null,
+                "hyperlinks": [],
+                "children": [
+                  {
+                    "block_type": "heading-sub-sub",
+                    "text": "Strengthened self-evaluation capacity in the Secretariat",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": [
+                      {
+                        "block_type": "paragraph-1",
+                        "text": "30.32\tSelf-evaluation is an important component of the Secretariat architecture for assessing programme performance and results, which has become increasingly more critical in the context of recent organizational changes. Over the years, the subprogramme has provided methodological and technical support and guidance regarding evaluations to Secretariat entities, with an objective to strengthen their own skills and capacity for conducting self-assessments of their performance and results. In 2025, the subprogramme provided consultations to the Economic Commission for Africa on conducting evaluation on the outcome of its work on building national statistical systems. It also supported the Office of Disarmament Affairs in developing a theory of change to inform its evaluation of the administrative support that it provides to the Conference on Disarmament.",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "paragraph-1",
+                        "text": "30.33\tProgress towards the objective is presented in the performance measure below (see table 30.3).",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "table",
+                        "text": "Table 30.3",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "block_type": "heading-sub-sub",
+                    "text": "Performance measure",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": [
+                      {
+                        "block_type": "table-content",
+                        "text": null,
+                        "table_content": [
+                          [
+                            {
+                              "text": "2023 (actual)",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "2024 (actual)",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "2025 (actual)",
+                              "hyperlinks": []
+                            }
+                          ],
+                          [
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            }
+                          ],
+                          [
+                            {
+                              "text": "The Department of Safety and Security evaluated its performance regarding implementation of its strategy aimed at mainstreaming a gender perspective\nThe United Nations Assistance Mission in Somalia evaluated its implementation of the Data Strategy of the Secretary-General for Action by Everyone, Everywhere",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "The Department of Political and Peacebuilding Affairs evaluated results achieved through innovation measures taken by the Department\nThe United Nations Office to the African Union evaluated outcomes achieved through its Joint United Nations-African Union Framework for Enhanced Partnership in Peace and Security",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "The Economic Commission for Africa evaluated the outcomes of its work on building national statistical systems for gender statistics\nThe Office for Disarmament Affairs evaluated its substantive and administrative support to the Conference on Disarmament",
+                              "hyperlinks": []
+                            }
+                          ]
+                        ],
+                        "hyperlinks": [],
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "block_type": "heading-sub",
+                "text": "Planned results for 2027",
+                "table_content": null,
+                "hyperlinks": [],
+                "children": [
+                  {
+                    "block_type": "heading-sub-sub",
+                    "text": "Result 1: strengthening the resident coordinator system – Programme performance in 2025 and target for 2027",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": [
+                      {
+                        "block_type": "paragraph-1",
+                        "text": "30.34\tThe subprogramme’s work contributed to a more effective resident coordinator system through independent evaluations that assessed the outcomes achieved and lessons learned, resulting in recommendations accepted by the Development Coordination Office, which met the planned target.",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "paragraph-1",
+                        "text": "30.35\tProgress towards the objective and the target for 2027 are presented in the performance measure below (see table 30.4).",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "table",
+                        "text": "Table 30.4",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "block_type": "heading-sub-sub",
+                    "text": "Performance measure",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": [
+                      {
+                        "block_type": "table-content",
+                        "text": null,
+                        "table_content": [
+                          [
+                            {
+                              "text": "2023 (actual)",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "2024 (actual)",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "2025 (actual)",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "2026 (planned)",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "2027 (planned)",
+                              "hyperlinks": []
+                            }
+                          ],
+                          [
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            }
+                          ],
+                          [
+                            {
+                              "text": "Recommendations accepted to enhance the achievement of the Sustainable Development Goals through more coherent United Nations policy advice",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "Recommendations accepted to ensure an effective resident coordinator system in countries in armed conflict, and leading and coordinating responses to humanitarian crises",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "Recommendations and findings accepted by Development Coordination Office to strengthen resident coordinator system support for least developed country graduation",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "Recommendations accepted by Development Coordination Office to improve global support for the resident coordinators ",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "Recommendations accepted by Development Coordination Office to improve global support for the resident coordinators",
+                              "hyperlinks": []
+                            }
+                          ]
+                        ],
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "table-content",
+                        "text": null,
+                        "table_content": [
+                          [
+                            {
+                              "text": "2023 (actual)",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "2024 (actual)",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "2025 (actual)",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "2026 (planned)",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "2027 (planned)",
+                              "hyperlinks": []
+                            }
+                          ],
+                          [
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            }
+                          ],
+                          [
+                            {
+                              "text": "–",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "–",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "Strengthened programmatic performance in the five areas of the Pact for the Future through the undertaking of eleven evaluation, inspection and synthesis reports on programmatic and cross-cutting thematic areas",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "Strengthened programmatic performance in the five areas of the Pact for the Future through the undertaking of nine evaluation, inspection and synthesis reports, on programmatic and cross-cutting thematic areas",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "Strengthened programmatic performance in the five areas of the Pact for the Future through the undertaking of eleven evaluation, inspection and synthesis reports, on programmatic and cross-cutting thematic areas",
+                              "hyperlinks": []
+                            }
+                          ]
+                        ],
+                        "hyperlinks": [],
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "block_type": "heading-sub-sub",
+                    "text": "Result 2: enhanced programme outcomes – Programme performance in 2025 and target for 2027",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": [
+                      {
+                        "block_type": "paragraph-1",
+                        "text": "30.36\tThe subprogramme’s work contributed to enhanced programme performance in the five broad focus areas of the Pact for the Future through 11 evaluation, inspection and synthesis reports, which exceeded the planned target of 9 evaluation, inspection and synthesis reports.",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "paragraph-1",
+                        "text": "30.37\tProgress towards the objective and the target for 2027 are presented in the performance measure below (see table 30.5).",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "table",
+                        "text": "Table 30.5",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "block_type": "heading-sub-sub",
+                    "text": "Performance measure",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": [
+                      {
+                        "block_type": "table-content",
+                        "text": null,
+                        "table_content": [
+                          [
+                            {
+                              "text": "2023 (actual)",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "2024 (actual)",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "2025 (actual)",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "2026 (planned)",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "2027 (planned)",
+                              "hyperlinks": []
+                            }
+                          ],
+                          [
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            }
+                          ],
+                          [
+                            {
+                              "text": "Recommendations accepted to enhance the achievement of the Sustainable Development Goals through more coherent United Nations policy advice",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "Recommendations accepted to ensure an effective resident coordinator system in countries in armed conflict, and leading and coordinating responses to humanitarian crises",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "Recommendations and findings accepted by Development Coordination Office to strengthen resident coordinator system support for least developed country graduation",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "Recommendations accepted by Development Coordination Office to improve global support for the resident coordinators ",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "Recommendations accepted by Development Coordination Office to improve global support for the resident coordinators",
+                              "hyperlinks": []
+                            }
+                          ]
+                        ],
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "table-content",
+                        "text": null,
+                        "table_content": [
+                          [
+                            {
+                              "text": "2023 (actual)",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "2024 (actual)",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "2025 (actual)",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "2026 (planned)",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "2027 (planned)",
+                              "hyperlinks": []
+                            }
+                          ],
+                          [
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            }
+                          ],
+                          [
+                            {
+                              "text": "–",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "–",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "Strengthened programmatic performance in the five areas of the Pact for the Future through the undertaking of eleven evaluation, inspection and synthesis reports on programmatic and cross-cutting thematic areas",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "Strengthened programmatic performance in the five areas of the Pact for the Future through the undertaking of nine evaluation, inspection and synthesis reports, on programmatic and cross-cutting thematic areas",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "Strengthened programmatic performance in the five areas of the Pact for the Future through the undertaking of eleven evaluation, inspection and synthesis reports, on programmatic and cross-cutting thematic areas",
+                              "hyperlinks": []
+                            }
+                          ]
+                        ],
+                        "hyperlinks": [],
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "block_type": "heading-sub-sub",
+                    "text": "Result 3: better mandate implementation through enhanced programme planning – Proposed programme plan for 2027",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": [
+                      {
+                        "block_type": "paragraph-1",
+                        "text": "30.38\tProgramme planning remains a critical enabler for efficient and effective mandate implementation. The subprogramme has begun to assess more critically Secretariat entities’ modalities of mandate implementation to determine whether programmes have been planned and deployed to achieve programmatic results in the most efficient and effective manner.",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "italic",
+                        "text": "Lessons learned and planned change",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": [
+                          {
+                            "block_type": "paragraph-1",
+                            "text": "30.39\tThe lesson for the subprogramme was the need to strengthen its approach for conducting evaluations with a more strategic and deliberate focus on how Secretariat entities are designing their modalities of mandate implementation in order to achieve outcomes. In applying the lesson, the subprogramme will strengthen its evaluation and inspection methods and approaches to provide more robust assessments of the efficient and effective implementation of programme modalities. An enhanced assessment of programme planning will contribute to the greater acceptance of recommendations in order to strengthen that planning process.",
+                            "table_content": null,
+                            "hyperlinks": [],
+                            "children": []
+                          }
+                        ]
+                      },
+                      {
+                        "block_type": "paragraph-1",
+                        "text": "30.40\tExpected progress towards the objective is presented in the performance measure below (see figure 30.V).",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "figure",
+                        "text": "Figure 30.V",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "block_type": "heading-sub-sub",
+                    "text": "Performance measure: percentage of recommendations from evaluations and inspections on programme planning (annual)",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": [
+                      {
+                        "block_type": "image",
+                        "text": "",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "block_type": "heading-sub",
+                "text": "Deliverables",
+                "table_content": null,
+                "hyperlinks": [],
+                "children": [
+                  {
+                    "block_type": "paragraph-1",
+                    "text": "30.41\tTable 30.6 lists all deliverables of the subprogramme.",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": []
+                  },
+                  {
+                    "block_type": "table",
+                    "text": "Table 30.6",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": []
+                  },
+                  {
+                    "block_type": "heading-sub-sub",
+                    "text": "Subprogramme 2: deliverables for the period 2025–2027, by category and subcategory",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": [
+                      {
+                        "block_type": "table-content",
+                        "text": null,
+                        "table_content": [
+                          [
+                            {
+                              "text": "Category and subcategory",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "2025 planned",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "2025 actual",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "2026 planneda",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "2027 planned",
+                              "hyperlinks": []
+                            }
+                          ],
+                          [
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            }
+                          ],
+                          [
+                            {
+                              "text": "A.\tFacilitation of the intergovernmental process and expert bodies",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            }
+                          ],
+                          [
+                            {
+                              "text": "\tParliamentary documentation (number of documents)",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "1",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "2",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "4",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "1",
+                              "hyperlinks": []
+                            }
+                          ],
+                          [
+                            {
+                              "text": "\t1.\tEvaluation reports on various programmes for the Committee for Programme and Coordination",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "–",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "1",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "–",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "1",
+                              "hyperlinks": []
+                            }
+                          ],
+                          [
+                            {
+                              "text": "\t2.\tEvaluation reports on various programmes for the Fifth Committee",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "–",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "–",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "–",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "–",
+                              "hyperlinks": []
+                            }
+                          ],
+                          [
+                            {
+                              "text": "\t3.\tTriennial reviews of the implementation of the recommendations on the evaluations of various programmes",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "1",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "1",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "3",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "–",
+                              "hyperlinks": []
+                            }
+                          ],
+                          [
+                            {
+                              "text": "\t4.\tEvaluation of the International Residual Mechanism for Criminal Tribunals for the Security Council",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "–",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "–",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "1",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "–",
+                              "hyperlinks": []
+                            }
+                          ],
+                          [
+                            {
+                              "text": "B.\tGeneration and transfer of knowledge",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            }
+                          ],
+                          [
+                            {
+                              "text": "\tPublications (number of publications)",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "12",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "13",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "11",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "12",
+                              "hyperlinks": []
+                            }
+                          ],
+                          [
+                            {
+                              "text": "\t5.\tEvaluation and inspection reports",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "12",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "13",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "11 [13]",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "12",
+                              "hyperlinks": []
+                            }
+                          ],
+                          [
+                            {
+                              "text": "E.\tEnabling deliverables",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            }
+                          ],
+                          [
+                            {
+                              "text": "\tInternal justice and oversight: advisory notes, memorandums and guidance to all Secretariat entities, including training programmes.",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "\tInternal justice and oversight: advisory notes, memorandums and guidance to all Secretariat entities, including training programmes.",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "\tInternal justice and oversight: advisory notes, memorandums and guidance to all Secretariat entities, including training programmes.",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "\tInternal justice and oversight: advisory notes, memorandums and guidance to all Secretariat entities, including training programmes.",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "\tInternal justice and oversight: advisory notes, memorandums and guidance to all Secretariat entities, including training programmes.",
+                              "hyperlinks": []
+                            }
+                          ]
+                        ],
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "other",
+                        "text": "a\tReflects updated planned deliverables for 2026. Values in square brackets represent the number of planned deliverables reflected in A/80/6 (Sect. 30).",
+                        "table_content": null,
+                        "hyperlinks": [
+                          [
+                            "A/80/6 (Sect. 30)",
+                            "https://docs.un.org/en/A/80/6(Sect.30)"
+                          ]
+                        ],
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "block_type": "subprogramme",
+            "text": "Subprogramme 3 – Investigations",
+            "table_content": null,
+            "hyperlinks": [],
+            "children": [
+              {
+                "block_type": "heading-sub",
+                "text": "Objective",
+                "table_content": null,
+                "hyperlinks": [],
+                "children": [
+                  {
+                    "block_type": "paragraph-1",
+                    "text": "30.42\tThe objective, to which this subprogramme contributes, is to enhance accountability and ethical behaviour within the Organization.",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "block_type": "heading-sub",
+                "text": "Strategy",
+                "table_content": null,
+                "hyperlinks": [],
+                "children": [
+                  {
+                    "block_type": "paragraph-1",
+                    "text": "30.43\tTo contribute to the objective, the subprogramme will:",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": [
+                      {
+                        "block_type": "paragraph-2",
+                        "text": "(a)\tReceive and record all complaints of possible violations of United Nations regulations, rules and pertinent administrative policies, and decide whether they warrant OIOS investigation or some other action;",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "paragraph-2",
+                        "text": "(b)\tInvestigate reports of possible violations of United Nations regulations, rules and pertinent administrative policies;",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "paragraph-2",
+                        "text": "(c)\tEnable the prevention of and response to complaints of misconduct, including: (i) sexual misconduct, including sexual exploitation and abuse, as well as sexual harassment; and (ii) fraud and corruption, including procurement fraud and medical insurance fraud;",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "paragraph-2",
+                        "text": "(d)\tSupport the investigative capacity and capability of: (i) members of troop contingents who are responsible for undertaking investigations into misconduct; and (ii) officials who are responsible for the appointment of investigative panels or entities into misconduct.",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "block_type": "paragraph-1",
+                    "text": "30.44\tThe above-mentioned work is expected to result in:",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": [
+                      {
+                        "block_type": "paragraph-2",
+                        "text": "(a)\tImproved ability of the Secretary-General and his delegates to make appropriate decisions on jurisdictional or disciplinary action or corrective measures;",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "paragraph-2",
+                        "text": "(b)\tImproved ability of United Nations entities to identify and address misconduct;",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "paragraph-2",
+                        "text": "(c)\tImproved detection of issues and better control of risks such as sexual exploitation and abuse, sexual harassment, racial discrimination, fraud and corruption.",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "block_type": "heading-sub",
+                "text": "Programme performance in 2025",
+                "table_content": null,
+                "hyperlinks": [],
+                "children": [
+                  {
+                    "block_type": "heading-sub-sub",
+                    "text": "The Organization’s ability to protect its resources and hold its personnel accountable strengthened",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": [
+                      {
+                        "block_type": "paragraph-1",
+                        "text": "30.45\tThe subprogramme responded to an increase in the number of allegations of misconduct reported to OIOS by opening and completing a corresponding higher number of investigations, which, in turn, informed subsequent corrective action taken by the Organization to protect its financial and human resources and hold its personnel accountable. In 2025, the subprogramme completed 641 investigations and opened 595 new investigations. In addition, the subprogramme referred 901 matters to responsible officials within and outside of the Secretariat, to enable the Organization to address reports of unsatisfactory conduct in the most appropriate and efficient way.",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "paragraph-1",
+                        "text": "30.46\tProgress towards the objective is presented in the performance measure below (see figure 30.VI).",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "figure",
+                        "text": "Figure 30.VI",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "block_type": "heading-sub-sub",
+                    "text": "Performance measure: number of allegations of misconduct addressed through investigations or referral (annual)",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": [
+                      {
+                        "block_type": "image",
+                        "text": "",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "block_type": "heading-sub",
+                "text": "Planned results for 2027",
+                "table_content": null,
+                "hyperlinks": [],
+                "children": [
+                  {
+                    "block_type": "heading-sub-sub",
+                    "text": "Result 1: strengthened response to misconduct investigations requiring a victim-centred response – Programme performance in 2025 and target for 2027",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": [
+                      {
+                        "block_type": "paragraph-1",
+                        "text": "30.47\tThe subprogramme’s work contributed to 14 per cent of investigations into allegations of sexual exploitation and abuse being completed within the target of six months, which did not meet the planned target of 80 per cent. The target was not met owing to several factors, including a high volume of new investigations in 2025 and backlog from previous years, the complexity of investigations, which often required deoxyribonucleic acid forensic analysis, as well as delays in investigations conducted jointly with national authorities, whose procedures and timelines differ from those of the Organization.",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "paragraph-1",
+                        "text": "30.48\tProgress towards the objective and the target for 2027 are presented in the performance measure below (see figure 30.VII).",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "figure",
+                        "text": "Figure 30.VII",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "block_type": "heading-sub-sub",
+                    "text": "Performance measure: OIOS investigations of sexual exploitation and abuse completed within six months",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": [
+                      {
+                        "block_type": "note",
+                        "text": "(Percentage)",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "image",
+                        "text": "",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "block_type": "heading-sub-sub",
+                    "text": "Result 2: improved handling of and timely decision-making on misconduct complaints – Programme performance in 2025 and target for 2027",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": [
+                      {
+                        "block_type": "paragraph-1",
+                        "text": "30.49\tThe subprogramme’s work contributed to the timely handling of incoming complaints of possible misconduct being completed within seven days, which exceeded the planned target of nine days.",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "paragraph-1",
+                        "text": "30.50\tProgress towards the objective and the target for 2027 are presented in the performance measure below (see figure 30.VIII).",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "figure",
+                        "text": "Figure 30.VIII",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "block_type": "heading-sub-sub",
+                    "text": "Performance measure: timely handling of misconduct complaints (annual)",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": [
+                      {
+                        "block_type": "note",
+                        "text": "(Number of days for case to be created after report was made)",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "image",
+                        "text": "",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "block_type": "heading-sub-sub",
+                    "text": "Result 3: timely investigation of cases with a potential financial loss to the Organization – Proposed programme plan for 2027",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": [
+                      {
+                        "block_type": "paragraph-1",
+                        "text": "30.51\tThe timely handling of reports of possible misconduct that could entail financial losses to the Organization helps to safeguard its resources and enables the recovery of any accrued losses. Fraud and corruption remain the most frequent categories of misconduct investigated by OIOS, and such investigations are prioritized owing to the high risk posed by fraud and corruption to the Organization.",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "italic",
+                        "text": "Lessons learned and planned change",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": [
+                          {
+                            "block_type": "paragraph-1",
+                            "text": "30.52\tThe lesson for the subprogramme was that the timely handling of reports of misconduct with potential financial implications was important because, the longer cases remained open, the greater the risk that implicated individuals might leave the Organization or dissipate assets, making recovery increasingly difficult. This was recently illustrated by a cluster of interconnected insurance fraud cases linked to a broader scheme, in which timeliness was critical, given that unnecessary delays might have compromised the availability and integrity of financial and ICT evidence. In applying the lesson, the subprogramme will prioritize investigations involving potential financial loss, recognizing that prompt action is essential to limit losses and strengthen recovery prospects. The subprogramme will adopt a new timeliness target: completion of at least 65 per cent of such investigations within 12 months in 2026, increasing to 80 per cent in 2027.",
+                            "table_content": null,
+                            "hyperlinks": [],
+                            "children": []
+                          }
+                        ]
+                      },
+                      {
+                        "block_type": "paragraph-1",
+                        "text": "30.53\tExpected progress towards the objective is presented in the performance measure below (see figure 30.IX).",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "figure",
+                        "text": "Figure 30.IX",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "block_type": "heading-sub-sub",
+                    "text": "Performance measure: percentage of investigations into matters with possible financial loss completed within twelve months",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": [
+                      {
+                        "block_type": "image",
+                        "text": "",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "block_type": "heading-sub",
+                "text": "Deliverables",
+                "table_content": null,
+                "hyperlinks": [],
+                "children": [
+                  {
+                    "block_type": "paragraph-1",
+                    "text": "30.54\tTable 30.7 lists all deliverables of the subprogramme.",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": []
+                  },
+                  {
+                    "block_type": "table",
+                    "text": "Table 30.7",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": []
+                  },
+                  {
+                    "block_type": "heading-sub-sub",
+                    "text": "Subprogramme 3: deliverables for the period 2025–2027, by category and subcategory",
+                    "table_content": null,
+                    "hyperlinks": [],
+                    "children": [
+                      {
+                        "block_type": "table-content",
+                        "text": null,
+                        "table_content": [
+                          [
+                            {
+                              "text": "Category and subcategory",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "2025 planned",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "2025 actual",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "2026 planned",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "2027 planned",
+                              "hyperlinks": []
+                            }
+                          ],
+                          [
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            }
+                          ],
+                          [
+                            {
+                              "text": "B.\tGeneration and transfer of knowledge",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            }
+                          ],
+                          [
+                            {
+                              "text": "\tPublications (number of publications)",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "275",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "669",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "275",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "350",
+                              "hyperlinks": []
+                            }
+                          ],
+                          [
+                            {
+                              "text": "\tInvestigation and closure reports",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "275",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "669",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "275",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "350",
+                              "hyperlinks": []
+                            }
+                          ],
+                          [
+                            {
+                              "text": "E.\tEnabling deliverables",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "",
+                              "hyperlinks": []
+                            }
+                          ],
+                          [
+                            {
+                              "text": "\tInternal justice and oversight: capacity-building relating to combating fraud and corruption, especially medical insurance fraud, focusing on peace operations.",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "\tInternal justice and oversight: capacity-building relating to combating fraud and corruption, especially medical insurance fraud, focusing on peace operations.",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "\tInternal justice and oversight: capacity-building relating to combating fraud and corruption, especially medical insurance fraud, focusing on peace operations.",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "\tInternal justice and oversight: capacity-building relating to combating fraud and corruption, especially medical insurance fraud, focusing on peace operations.",
+                              "hyperlinks": []
+                            },
+                            {
+                              "text": "\tInternal justice and oversight: capacity-building relating to combating fraud and corruption, especially medical insurance fraud, focusing on peace operations.",
+                              "hyperlinks": []
+                            }
+                          ]
+                        ],
+                        "hyperlinks": [],
+                        "children": []
+                      },
+                      {
+                        "block_type": "image",
+                        "text": "",
+                        "table_content": null,
+                        "hyperlinks": [],
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
