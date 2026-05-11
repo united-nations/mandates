@@ -1,57 +1,33 @@
 'use client'
 
-/**
- * MandateExplorerClient - Client component for mandate exploration
- *
- * This component handles all interactive UI elements:
- * - Filter controls and search
- * - Sort selection
- * - Pagination (via URL)
- * - Sidebar navigation
- *
- * Data is passed as props from the Server Component parent.
- * URL changes trigger server-side re-render with new data.
- */
-
 import { DataCard } from '@/components/DataCard'
+import { EntityName } from '@/components/EntityName'
 import { FilterControls } from '@/components/FilterControls'
-import { MandateList } from '@/components/MandateList'
+import { OrganName } from '@/components/OrganName'
 import { PaginationControls } from '@/components/PaginationControls'
-import { SidebarAccordion } from '@/components/SidebarAccordion'
+import { PopoverFilterList } from '@/components/PopoverFilterList'
+import { CitationDistribution } from '@/components/SidebarCitationDistribution'
+import { DocumentTypeSidebar } from '@/components/SidebarDocumentTypeList'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
 } from '@/components/ui/select'
+import { useFilters } from '@/contexts/FilterContext'
 import { explainerTexts } from '@/lib/en_text_contents'
 import type { ApiResponse } from '@/types'
-import {
-  Building,
-  ChevronDown,
-  ChevronUp,
-  FileText,
-  Landmark,
-  Link as LinkIcon,
-  Quote,
-} from 'lucide-react'
-import { useSearchParams } from 'next/navigation'
+import { Building, FileText, Landmark, Quote } from 'lucide-react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useState } from 'react'
-
-import { OrganListSidebar } from '@/components/Sidebar0rganList'
-import { CrossCitationsSidebar } from '@/components/SidebarCrossCitations'
-import { EntityListSidebar } from '@/components/SidebarEntityList'
-import { Button } from '@/components/ui/button'
-import { useFilters } from '@/contexts/FilterContext'
+import { MandateCompactList } from './table/MandateCompactList'
+import { MandateDataTable } from './table/MandateDataTable'
+import { YearBarCard } from './YearBarCard'
 
 interface MandateExplorerClientProps {
-  /** Pre-fetched data from Server Component */
   data: ApiResponse
-  /** Explicit entity filter for entity pages */
   entityFilter?: string
-  /** Explicit organ filter for organ pages */
   organFilter?: string
-  /** Page type for conditional rendering */
   pageType: 'main' | 'entity' | 'organ'
 }
 
@@ -61,26 +37,20 @@ export function MandateExplorerClient({
   organFilter,
   pageType,
 }: MandateExplorerClientProps) {
-  const { filters, setFilter, clearFilter, isPending } = useFilters()
+  const { filters, setFilter, clearFilter } = useFilters()
   const searchParams = useSearchParams()
+  const router = useRouter()
 
-  // UI state
-  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false)
-
-  // Data card popover states
   const [sourceDocumentsPopover, setSourceDocumentsPopover] = useState(false)
   const [unOrgansPopover, setUnOrgansPopover] = useState(false)
   const [unEntitiesPopover, setUnEntitiesPopover] = useState(false)
   const [citationsPopover, setCitationsPopover] = useState(false)
 
-  // Get current values from URL
   const pageSize = parseInt(searchParams.get('limit') || '10', 10)
-  // When keyword is active and no explicit sort chosen, show "Search Relevance" as selected
   const sortBy =
     searchParams.get('sort_by') ||
     (filters.keyword ? 'default' : 'citing_entities_desc')
 
-  // Handle sort change — "default" means relevance (no sort_by param in URL)
   const handleSortChange = useCallback(
     (value: string) => {
       if (value === 'default') {
@@ -92,14 +62,109 @@ export function MandateExplorerClient({
     [setFilter, clearFilter]
   )
 
-  // Extract data from props
   const { mandates, pagination, counts, filterOptions, reference, sidebar } =
     data
   const allOrgans = reference?.organs || []
   const allEntities = reference?.entities || []
-  const crossCitations = sidebar?.crossCitations || []
 
-  // Data cards section
+  // Preview items for mini bar charts on cards
+  const organs = sidebar?.organs || []
+  const entities = sidebar?.entities || []
+  const documentTypes = filterOptions.documentTypes ?? []
+  const citationBins = sidebar?.citationDistribution || []
+
+  const docTypePreview = documentTypes
+    .slice(0, 4)
+    .map((d) => ({ name: d.value, count: d.count }))
+
+  const organsPreview = organs
+    .slice(0, 4)
+    .map((o) => ({ name: o.short, count: o.count }))
+
+  const entitiesPreview = entities
+    .slice(0, 4)
+    .map((e) => ({ name: e.entity, count: e.count }))
+
+  const citationPreview = citationBins.map((b) => ({
+    name: b.bin,
+    count: b.count,
+  }))
+
+  // Build URL with current filters for navigation
+  const buildPageUrl = (
+    base: string,
+    excludeKey: string
+  ): string => {
+    const params = new URLSearchParams()
+    Object.entries(filters).forEach(([key, value]) => {
+      if (key !== excludeKey && key !== 'page' && value && value !== 'all') {
+        params.set(key, value)
+      }
+    })
+    const qs = params.toString()
+    return qs ? `${base}?${qs}` : base
+  }
+
+  // Organ popover items
+  const organItems = organs.map((organ) => {
+    const organData = allOrgans.find(
+      (o) => o.short === organ.short || o.long === organ.short
+    )
+    return {
+      key: organ.short,
+      label: (
+        <OrganName
+          organName={organ.short}
+          allOrgans={allOrgans}
+          asChild={true}
+        />
+      ),
+      count: organ.count,
+      isActive: filters.organ === organ.short,
+      tooltipContent:
+        organData && organData.short !== organData.long
+          ? organData.long
+          : undefined,
+    }
+  })
+
+  const handleOrganClick = (organName: string) => {
+    if (pageType === 'main') {
+      router.push(buildPageUrl(`/organ/${encodeURIComponent(organName)}`, 'organ'))
+    } else {
+      setFilter('organ', organName)
+    }
+  }
+
+  // Entity popover items
+  const entityItems = entities.map((entity) => {
+    const entityData = allEntities.find((e) => e.entity === entity.entity)
+    return {
+      key: entity.entity,
+      label: (
+        <EntityName
+          entityName={entity.entity}
+          entityLong={entityData?.entity_long}
+          asChild={true}
+        />
+      ),
+      count: entity.count,
+      isActive: filters.entity === entity.entity,
+      tooltipContent:
+        entityData?.entity_long && entityData.entity !== entityData.entity_long
+          ? entityData.entity_long
+          : undefined,
+    }
+  })
+
+  const handleEntityClick = (entityName: string) => {
+    if (pageType === 'main') {
+      router.push(buildPageUrl(`/entity/${encodeURIComponent(entityName)}`, 'entity'))
+    } else {
+      setFilter('entity', entityName)
+    }
+  }
+
   const dataCardsSection = (
     <>
       <DataCard
@@ -109,7 +174,12 @@ export function MandateExplorerClient({
         description={explainerTexts.dataCards.sourceDocuments.description}
         isOpen={sourceDocumentsPopover}
         onOpenChange={setSourceDocumentsPopover}
-      />
+        previewItems={docTypePreview}
+        totalItems={documentTypes.length}
+        activeFilterCount={filters.document_type ? 1 : 0}
+      >
+        <DocumentTypeSidebar documentTypes={documentTypes} />
+      </DataCard>
       <DataCard
         title={
           pageType === 'organ'
@@ -121,7 +191,22 @@ export function MandateExplorerClient({
         description={explainerTexts.dataCards.unOrgans.description}
         isOpen={unOrgansPopover}
         onOpenChange={setUnOrgansPopover}
-      />
+        previewItems={pageType === 'organ' ? undefined : organsPreview}
+        totalItems={organs.length}
+        activeFilterCount={filters.organ ? 1 : 0}
+      >
+        <PopoverFilterList
+          items={organItems}
+          onItemClick={handleOrganClick}
+          searchPlaceholder="Search organs and bodies..."
+          searchFilter={(item, term) =>
+            item.key.toLowerCase().includes(term) ||
+            (item.tooltipContent?.toLowerCase().includes(term) ?? false)
+          }
+          variant={pageType === 'main' ? 'navigation' : 'filter'}
+          emptyMessage="No organs found"
+        />
+      </DataCard>
       <DataCard
         title={
           pageType === 'entity'
@@ -135,297 +220,157 @@ export function MandateExplorerClient({
         description={explainerTexts.dataCards.unEntities.description}
         isOpen={unEntitiesPopover}
         onOpenChange={setUnEntitiesPopover}
-      />
-      <DataCard
-        title={
-          pageType === 'entity'
-            ? explainerTexts.dataCards.citationsByEntity.title
-            : explainerTexts.dataCards.citations.title
+        previewItems={pageType === 'entity' ? undefined : entitiesPreview}
+        totalItems={entities.length}
+        activeFilterCount={
+          filters.entity || filters.crossCitingEntity ? 1 : 0
         }
-        value={counts.totalCitations}
-        icon={Quote}
-        description={
-          pageType === 'entity'
-            ? explainerTexts.dataCards.citationsByEntity.description
-            : explainerTexts.dataCards.citations.description
-        }
-        isOpen={citationsPopover}
-        onOpenChange={setCitationsPopover}
-      />
+      >
+        <PopoverFilterList
+          items={entityItems}
+          onItemClick={handleEntityClick}
+          searchPlaceholder="Search entities..."
+          searchFilter={(item, term) =>
+            item.key.toLowerCase().includes(term) ||
+            (item.tooltipContent?.toLowerCase().includes(term) ?? false)
+          }
+          variant={pageType === 'main' ? 'navigation' : 'filter'}
+          emptyMessage="No entities found"
+        />
+      </DataCard>
     </>
   )
 
   return (
     <div>
       {/* Summary Cards */}
-      <section
-        aria-labelledby="summary-heading"
-        className="-mx-4 overflow-x-auto scroll-smooth sm:mx-0 sm:overflow-x-visible"
-        style={{
-          scrollSnapType: 'x mandatory',
-          scrollPadding: '0 1rem',
-        }}
-      >
-        <div className="flex min-w-max gap-4 px-4 sm:grid sm:min-w-0 sm:grid-cols-2 sm:px-0 lg:grid-cols-4">
-          {dataCardsSection}
+      <section aria-labelledby="summary-heading" className="space-y-4">
+        <div
+          className="-mx-4 overflow-x-auto scroll-smooth sm:mx-0 sm:overflow-x-visible"
+          style={{
+            scrollSnapType: 'x mandatory',
+            scrollPadding: '0 1rem',
+          }}
+        >
+          <div className="flex min-w-max gap-4 px-4 sm:grid sm:min-w-0 sm:grid-cols-3 sm:px-0">
+            {dataCardsSection}
+          </div>
+        </div>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          {filterOptions.yearRange && (
+            <div className="sm:col-span-2">
+              <YearBarCard
+                yearDistribution={filterOptions.yearDistributionUnfiltered ?? filterOptions.yearDistribution}
+                yearRange={filterOptions.yearRange}
+                activeFilterCount={
+                  filters.start_year || filters.end_year ? 1 : 0
+                }
+              />
+            </div>
+          )}
+          <DataCard
+            title={
+              pageType === 'entity'
+                ? explainerTexts.dataCards.citationsByEntity.title
+                : explainerTexts.dataCards.citations.title
+            }
+            value={counts.totalCitations}
+            icon={Quote}
+            description={
+              pageType === 'entity'
+                ? explainerTexts.dataCards.citationsByEntity.description
+                : explainerTexts.dataCards.citations.description
+            }
+            isOpen={citationsPopover}
+            onOpenChange={setCitationsPopover}
+            previewItems={citationPreview}
+            totalItems={citationBins.length}
+            activeFilterCount={
+              filters.min_citations || filters.max_citations ? 1 : 0
+            }
+          >
+            <CitationDistribution bins={citationBins} />
+          </DataCard>
         </div>
       </section>
 
-      <div>
-        <div className="mt-6 pt-4">
-          {/* Collapsible sidebars for smaller screens */}
-          {pageType === 'main' && (
-            <SidebarAccordion
-              items={[
-                {
-                  id: 'organs',
-                  title: 'UN Organs',
-                  icon: Landmark,
-                  content: (
-                    <OrganListSidebar
-                      organs={sidebar?.organs || []}
-                      allOrgans={allOrgans.map((organ) => ({
-                        short: organ.short,
-                        long: organ.long,
-                        count: 0,
-                      }))}
-                      hideHeader={true}
-                      borderless={true}
-                      pageType="main"
-                    />
-                  ),
-                },
-                {
-                  id: 'entities',
-                  title: 'UN Entities',
-                  icon: Building,
-                  content: (
-                    <EntityListSidebar
-                      entities={sidebar?.entities || []}
-                      allEntities={allEntities.map((entity) => ({
-                        entity: entity.entity,
-                        entity_long: entity.entity_long,
-                        count: 0,
-                      }))}
-                      hideHeader={true}
-                      borderless={true}
-                      pageType="main"
-                    />
-                  ),
-                },
-              ]}
-            />
-          )}
-
-          {/* Collapsible sidebars for entity pages */}
-          {pageType === 'entity' && (
-            <SidebarAccordion
-              items={[
-                {
-                  id: 'organs',
-                  title: 'UN Organs',
-                  icon: Landmark,
-                  content: (
-                    <OrganListSidebar
-                      organs={sidebar?.organs || []}
-                      allOrgans={allOrgans}
-                      pageType={pageType}
-                      entityFilter={entityFilter}
-                      hideHeader={true}
-                      borderless={true}
-                    />
-                  ),
-                },
-                {
-                  id: 'cross-citations',
-                  title: 'Cross-Citations',
-                  icon: LinkIcon,
-                  content: (
-                    <CrossCitationsSidebar
-                      crossCitations={crossCitations}
-                      allEntities={allEntities}
-                      pageType={pageType}
-                      entityFilter={entityFilter}
-                      organFilter={organFilter}
-                      hideHeader={true}
-                      borderless={true}
-                    />
-                  ),
-                },
-              ]}
-            />
-          )}
-
-          {/* Collapsible sidebars for organ pages */}
-          {pageType === 'organ' && (
-            <SidebarAccordion
-              items={[
-                {
-                  id: 'entities',
-                  title: 'UN Entities',
-                  icon: Building,
-                  content: (
-                    <EntityListSidebar
-                      entities={sidebar?.entities || []}
-                      allEntities={allEntities}
-                      pageType={pageType}
-                      organFilter={organFilter}
-                      hideHeader={true}
-                      borderless={true}
-                    />
-                  ),
-                },
-              ]}
-            />
-          )}
-
-          {/* Main content with mandates list and sidebars */}
-          <div className="flex flex-col gap-6 lg:flex-row">
-            {/* Main mandates content */}
-            <div className="min-w-0 flex-1">
-              {/* Section Title and Sort Controls + FilterControls */}
-              <div className="mb-4">
-                <div className="mb-2 flex flex-wrap items-center justify-between gap-3">
-                  <div className="flex items-center gap-2">
-                    <FileText className="h-6 w-6 text-un-blue" />
-                    <h2 className="text-2xl font-bold tracking-tight">
-                      {explainerTexts.dataCards.sectionTitle}
-                      {pageType === 'entity' && <> cited by {entityFilter}</>}
-                      {pageType === 'organ' && <> issued by {organFilter}</>}
-                    </h2>
-                  </div>
-                  <div className="ml-auto flex items-center gap-2">
-                    <Button
-                      variant="ghost"
-                      onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}
-                      className="flex shrink-0 items-center gap-2 px-2 text-left text-sm font-medium whitespace-nowrap text-muted-foreground hover:bg-transparent hover:text-foreground"
-                    >
-                      {showAdvancedSearch
-                        ? 'Hide Advanced Filters'
-                        : 'Show Advanced Filters'}
-                      {showAdvancedSearch ? (
-                        <ChevronUp className="h-4 w-4" />
-                      ) : (
-                        <ChevronDown className="h-4 w-4" />
-                      )}
-                    </Button>
-                    <Select value={sortBy} onValueChange={handleSortChange}>
-                      <SelectTrigger
-                        className="w-auto gap-2 border-0 px-2 text-sm font-medium text-muted-foreground shadow-none hover:bg-transparent hover:text-foreground [&_svg]:opacity-100"
-                        id="sort-by"
-                      >
-                        Sort
-                      </SelectTrigger>
-                      <SelectContent align="end">
-                        {filters.keyword ? (
-                          <SelectItem value="default">
-                            Search Relevance
-                          </SelectItem>
-                        ) : null}
-                        <SelectItem value="citing_entities_desc">
-                          Number of citing entities ↓
-                        </SelectItem>
-                        <SelectItem value="citing_entities_asc">
-                          Number of citing entities ↑
-                        </SelectItem>
-                        <SelectItem value="citations_desc">
-                          Citations ↓
-                        </SelectItem>
-                        <SelectItem value="citations_asc">
-                          Citations ↑
-                        </SelectItem>
-                        <SelectItem value="year_desc">Year ↓</SelectItem>
-                        <SelectItem value="year_asc">Year ↑</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                <FilterControls
-                  programmeOptions={filterOptions.programmes}
-                  subjectOptions={filterOptions.subjects}
-                  documentTypeOptions={filterOptions.documentTypes ?? []}
-                  agendaItemOptions={filterOptions.agendaItems ?? []}
-                  budgetDocuments={filterOptions.budgetDocuments}
-                  yearRange={filterOptions.yearRange}
-                  yearDistribution={filterOptions.yearDistribution}
-                  showAdvancedSearch={showAdvancedSearch}
-                  setShowAdvancedSearch={setShowAdvancedSearch}
-                  entitiesData={allEntities}
-                  allOrgans={allOrgans}
-                  entityFilter={entityFilter}
-                  organFilter={organFilter}
-                  pageType={pageType}
-                />
-              </div>
-              <div className="flex flex-col gap-6 lg:flex-row">
-                {/* Mandates List */}
-                <div className="flex-1">
-                  <div
-                    className={`mb-6 transition-opacity duration-150 ${isPending ? 'opacity-50' : 'opacity-100'}`}
-                  >
-                    <MandateList
-                      mandates={mandates}
-                      organsData={allOrgans}
-                      entitiesData={allEntities}
-                    />
-                    <div className="mt-4">
-                      <PaginationControls
-                        currentPage={pagination.page}
-                        totalPages={pagination.totalPages}
-                        pageSize={pageSize}
-                        totalItems={pagination.totalItems}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
+      <div className="mt-6 pt-4">
+        {/* Section Title and Sort (mobile) + FilterControls */}
+        <div className="mb-4">
+          <div className="mb-2 flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <FileText className="h-6 w-6 text-un-blue" />
+              <h2 className="text-2xl font-bold tracking-tight">
+                {explainerTexts.dataCards.sectionTitle}
+                {pageType === 'entity' && <> cited by {entityFilter}</>}
+                {pageType === 'organ' && <> issued by {organFilter}</>}
+              </h2>
             </div>
-
-            {/* Right sidebar */}
-            <div className="hidden shrink-0 space-y-6 lg:block lg:w-80">
-              {pageType === 'entity' && (
-                <>
-                  <OrganListSidebar
-                    organs={sidebar?.organs || []}
-                    allOrgans={allOrgans}
-                    pageType={pageType}
-                    entityFilter={entityFilter}
-                  />
-                  <CrossCitationsSidebar
-                    crossCitations={crossCitations}
-                    allEntities={allEntities}
-                    pageType={pageType}
-                    entityFilter={entityFilter}
-                    organFilter={organFilter}
-                  />
-                </>
-              )}
-
-              {pageType === 'organ' && (
-                <EntityListSidebar
-                  entities={sidebar?.entities || []}
-                  allEntities={allEntities}
-                  pageType={pageType}
-                  organFilter={organFilter}
-                />
-              )}
-
-              {pageType === 'main' && (
-                <>
-                  <OrganListSidebar
-                    organs={sidebar?.organs || []}
-                    allOrgans={allOrgans}
-                    pageType={pageType}
-                  />
-                  <EntityListSidebar
-                    entities={sidebar?.entities || []}
-                    allEntities={allEntities}
-                    pageType={pageType}
-                  />
-                </>
-              )}
+            <div className="ml-auto flex items-center gap-2 lg:hidden">
+              <Select value={sortBy} onValueChange={handleSortChange}>
+                <SelectTrigger
+                  className="w-auto gap-2 border-0 px-2 text-sm font-medium text-muted-foreground shadow-none hover:bg-transparent hover:text-foreground [&_svg]:opacity-100"
+                  id="sort-by"
+                >
+                  Sort
+                </SelectTrigger>
+                <SelectContent align="end">
+                  {filters.keyword ? (
+                    <SelectItem value="default">Search Relevance</SelectItem>
+                  ) : null}
+                  <SelectItem value="citing_entities_desc">
+                    Number of citing entities ↓
+                  </SelectItem>
+                  <SelectItem value="citing_entities_asc">
+                    Number of citing entities ↑
+                  </SelectItem>
+                  <SelectItem value="citations_desc">Citations ↓</SelectItem>
+                  <SelectItem value="citations_asc">Citations ↑</SelectItem>
+                  <SelectItem value="year_desc">Year ↓</SelectItem>
+                  <SelectItem value="year_asc">Year ↑</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
+          <FilterControls
+            entitiesData={allEntities}
+            allOrgans={allOrgans}
+            budgetDocuments={filterOptions.budgetDocuments}
+            entityFilter={entityFilter}
+            organFilter={organFilter}
+            pageType={pageType}
+          />
+        </div>
+
+        {/* Data table (desktop) */}
+        <div className="hidden lg:block">
+          <MandateDataTable
+            mandates={mandates}
+            organsData={allOrgans}
+            entitiesData={allEntities}
+            filterOptions={filterOptions}
+            pageType={pageType}
+            entityFilter={entityFilter}
+            organFilter={organFilter}
+          />
+        </div>
+
+        {/* Compact list (mobile) */}
+        <div className="block lg:hidden">
+          <MandateCompactList
+            mandates={mandates}
+            organsData={allOrgans}
+            entitiesData={allEntities}
+          />
+        </div>
+
+        <div className="mt-4">
+          <PaginationControls
+            currentPage={pagination.page}
+            totalPages={pagination.totalPages}
+            pageSize={pageSize}
+            totalItems={pagination.totalItems}
+          />
         </div>
       </div>
     </div>

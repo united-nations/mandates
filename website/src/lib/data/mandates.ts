@@ -13,7 +13,7 @@ import { getMandateDisplayTitle, safeHighlightSearchTerms } from '@/lib/utils'
 import { getAllEntities } from './entities'
 import { getAllOrgans, getOrganMap } from './organs'
 import { getBudgetDocuments } from './budget-documents'
-import type { Mandate, FilterOptions, EntityWithCount, OrganWithCount, CrossCitation, ApiResponse } from '@/types'
+import type { Mandate, FilterOptions, EntityWithCount, OrganWithCount, CrossCitation, CitationBin, ApiResponse } from '@/types'
 
 // ============================================================================
 // Helper Functions
@@ -137,7 +137,7 @@ interface YearRow {
 function buildFilterClauses(
   filters: FilterOptions,
   paramOffset = 0
-): { clauses: string[]; params: SqlParam[] } {
+): { clauses: string[]; params: SqlParam[]; havingClauses: string[] } {
   const clauses: string[] = []
   const params: SqlParam[] = []
   let paramIndex = paramOffset + 1
@@ -283,7 +283,21 @@ function buildFilterClauses(
     paramIndex++
   }
 
-  return { clauses, params }
+  // Citation count filters (applied as HAVING after GROUP BY)
+  const havingClauses: string[] = []
+  const havingParams: SqlParam[] = []
+  if (filters.min_citations) {
+    havingClauses.push(`COUNT(c.id) >= $${paramIndex}`)
+    havingParams.push(parseInt(filters.min_citations))
+    paramIndex++
+  }
+  if (filters.max_citations) {
+    havingClauses.push(`COUNT(c.id) <= $${paramIndex}`)
+    havingParams.push(parseInt(filters.max_citations))
+    paramIndex++
+  }
+
+  return { clauses, params: [...params, ...havingParams], havingClauses }
 }
 
 /**
@@ -320,8 +334,9 @@ export async function getMandates(
   const limit = options.limit ?? 10
   const offset = (page - 1) * limit
 
-  const { clauses, params } = buildFilterClauses(filters)
+  const { clauses, params, havingClauses } = buildFilterClauses(filters)
   const whereClause = clauses.length > 0 ? `WHERE ${clauses.join(' AND ')}` : ''
+  const havingClause = havingClauses.length > 0 ? `HAVING ${havingClauses.join(' AND ')}` : ''
 
   // Keyword rank params — pushed after filter params so indexes are stable
   // Ranks: 0=exact symbol, 1=symbol prefix, 2=title/description match, 3=subject-only
@@ -373,6 +388,7 @@ export async function getMandates(
         ON d.ppb_full_document_symbol = c.ppb_full_document_symbol
       ${whereClause}
       GROUP BY d.ppb_full_document_symbol, d.ppb_link, d.ppb_year, d.ppb_body, d.ppb_description, d.ppb_type
+      ${havingClause}
     ),
     counted AS (
       SELECT *, COUNT(*) OVER() as total_count
@@ -559,19 +575,33 @@ export async function getMandateCounts(filters: FilterOptions = {}): Promise<{
   totalOrgans: number
   totalCitations: number
 }> {
-  const { clauses, params } = buildFilterClauses(filters)
+  const { clauses, params, havingClauses } = buildFilterClauses(filters)
   const whereClause = clauses.length > 0 ? `WHERE ${clauses.join(' AND ')}` : ''
+  const havingClause = havingClauses.length > 0 ? `HAVING ${havingClauses.join(' AND ')}` : ''
 
   const query = `
+    WITH filtered_docs AS (
+      SELECT
+        d.ppb_full_document_symbol,
+        d.ppb_body,
+        COUNT(c.id) as citation_count,
+        COUNT(DISTINCT c.entity) FILTER (WHERE c.entity IS NOT NULL) as entity_count
+      FROM ppb2026.source_documents d
+      LEFT JOIN ppb2026.source_document_citations c
+        ON d.ppb_full_document_symbol = c.ppb_full_document_symbol
+      ${whereClause}
+      GROUP BY d.ppb_full_document_symbol, d.ppb_body
+      ${havingClause}
+    )
     SELECT
-      COUNT(DISTINCT d.ppb_full_document_symbol) as total_documents,
-      COUNT(DISTINCT c.entity) FILTER (WHERE c.entity IS NOT NULL) as total_entities,
-      COUNT(DISTINCT d.ppb_body) FILTER (WHERE d.ppb_body IS NOT NULL) as total_organs,
-      COUNT(c.id) as total_citations
-    FROM ppb2026.source_documents d
-    LEFT JOIN ppb2026.source_document_citations c
-      ON d.ppb_full_document_symbol = c.ppb_full_document_symbol
-    ${whereClause}
+      COUNT(*) as total_documents,
+      COUNT(DISTINCT ppb_body) FILTER (WHERE ppb_body IS NOT NULL) as total_organs,
+      SUM(citation_count) as total_citations,
+      (SELECT COUNT(DISTINCT c.entity) FROM filtered_docs fd2
+       JOIN ppb2026.source_document_citations c
+         ON fd2.ppb_full_document_symbol = c.ppb_full_document_symbol
+       WHERE c.entity IS NOT NULL) as total_entities
+    FROM filtered_docs
   `
 
   const row = await queryOne<CountsRow>(query, params)
@@ -588,16 +618,19 @@ export async function getMandateCounts(filters: FilterOptions = {}): Promise<{
  * Get entity counts for the sidebar
  */
 export async function getEntityCounts(filters: FilterOptions = {}): Promise<EntityWithCount[]> {
-  const { clauses, params } = buildFilterClauses(filters)
+  const { clauses, params, havingClauses } = buildFilterClauses(filters)
   const whereClause = clauses.length > 0 ? `WHERE ${clauses.join(' AND ')}` : ''
+  const havingClause = havingClauses.length > 0 ? `HAVING ${havingClauses.join(' AND ')}` : ''
 
   const query = `
     WITH filtered_docs AS (
-      SELECT DISTINCT d.ppb_full_document_symbol
+      SELECT d.ppb_full_document_symbol
       FROM ppb2026.source_documents d
       LEFT JOIN ppb2026.source_document_citations c
         ON d.ppb_full_document_symbol = c.ppb_full_document_symbol
       ${whereClause}
+      GROUP BY d.ppb_full_document_symbol
+      ${havingClause}
     )
     SELECT
       c.entity,
@@ -625,8 +658,10 @@ export async function getEntityCounts(filters: FilterOptions = {}): Promise<Enti
  * Get organ counts for the sidebar
  */
 export async function getOrganCounts(filters: FilterOptions = {}): Promise<OrganWithCount[]> {
-  const { clauses, params } = buildFilterClauses(filters)
+  const { clauses, params, havingClauses } = buildFilterClauses(filters)
   const whereClause = clauses.length > 0 ? `WHERE ${clauses.join(' AND ')}` : ''
+  const allHaving = ['d.ppb_body IS NOT NULL', "d.ppb_body != ''", ...havingClauses]
+  const havingClause = `HAVING ${allHaving.join(' AND ')}`
 
   const query = `
     SELECT
@@ -637,7 +672,7 @@ export async function getOrganCounts(filters: FilterOptions = {}): Promise<Organ
       ON d.ppb_full_document_symbol = c.ppb_full_document_symbol
     ${whereClause}
     GROUP BY d.ppb_body
-    HAVING d.ppb_body IS NOT NULL AND d.ppb_body != ''
+    ${havingClause}
     ORDER BY count DESC
   `
 
@@ -694,16 +729,19 @@ export async function getCrossCitations(entityCode: string): Promise<CrossCitati
  * Get programme options with counts
  */
 export async function getProgrammeOptions(filters: FilterOptions = {}): Promise<{ value: string; count: number }[]> {
-  const { clauses, params } = buildFilterClauses(filters)
+  const { clauses, params, havingClauses } = buildFilterClauses(filters)
   const whereClause = clauses.length > 0 ? `WHERE ${clauses.join(' AND ')}` : ''
+  const havingClause = havingClauses.length > 0 ? `HAVING ${havingClauses.join(' AND ')}` : ''
 
   const query = `
     WITH filtered_docs AS (
-      SELECT DISTINCT d.ppb_full_document_symbol
+      SELECT d.ppb_full_document_symbol
       FROM ppb2026.source_documents d
       LEFT JOIN ppb2026.source_document_citations c
         ON d.ppb_full_document_symbol = c.ppb_full_document_symbol
       ${whereClause}
+      GROUP BY d.ppb_full_document_symbol
+      ${havingClause}
     )
     SELECT
       c.programme_title as value,
@@ -728,16 +766,19 @@ export async function getProgrammeOptions(filters: FilterOptions = {}): Promise<
  * Get subject options with counts
  */
 export async function getSubjectOptions(filters: FilterOptions = {}): Promise<{ value: string; count: number }[]> {
-  const { clauses, params } = buildFilterClauses(filters)
+  const { clauses, params, havingClauses } = buildFilterClauses(filters)
   const whereClause = clauses.length > 0 ? `WHERE ${clauses.join(' AND ')}` : ''
+  const havingClause = havingClauses.length > 0 ? `HAVING ${havingClauses.join(' AND ')}` : ''
 
   const query = `
     WITH filtered_docs AS (
-      SELECT DISTINCT d.ppb_full_document_symbol
+      SELECT d.ppb_full_document_symbol
       FROM ppb2026.source_documents d
       LEFT JOIN ppb2026.source_document_citations c
         ON d.ppb_full_document_symbol = c.ppb_full_document_symbol
       ${whereClause}
+      GROUP BY d.ppb_full_document_symbol
+      ${havingClause}
     ),
     subjects AS (
       SELECT
@@ -774,16 +815,19 @@ export async function getSubjectOptions(filters: FilterOptions = {}): Promise<{ 
  * Get document type options from ppb_type (well-populated field on source_documents)
  */
 export async function getDocumentTypeOptions(filters: FilterOptions = {}): Promise<{ value: string; count: number }[]> {
-  const { clauses, params } = buildFilterClauses(filters)
+  const { clauses, params, havingClauses } = buildFilterClauses(filters)
   const whereClause = clauses.length > 0 ? `WHERE ${clauses.join(' AND ')}` : ''
+  const havingClause = havingClauses.length > 0 ? `HAVING ${havingClauses.join(' AND ')}` : ''
 
   const query = `
     WITH filtered_docs AS (
-      SELECT DISTINCT d.ppb_full_document_symbol, d.ppb_type
+      SELECT d.ppb_full_document_symbol, d.ppb_type
       FROM ppb2026.source_documents d
       LEFT JOIN ppb2026.source_document_citations c
         ON d.ppb_full_document_symbol = c.ppb_full_document_symbol
       ${whereClause}
+      GROUP BY d.ppb_full_document_symbol, d.ppb_type
+      ${havingClause}
     )
     SELECT
       ppb_type as value,
@@ -806,16 +850,19 @@ export async function getDocumentTypeOptions(filters: FilterOptions = {}): Promi
  * Get agenda item options — parallel UNNEST of number + title arrays
  */
 export async function getAgendaItemOptions(filters: FilterOptions = {}): Promise<{ value: string; count: number }[]> {
-  const { clauses, params } = buildFilterClauses(filters)
+  const { clauses, params, havingClauses } = buildFilterClauses(filters)
   const whereClause = clauses.length > 0 ? `WHERE ${clauses.join(' AND ')}` : ''
+  const havingClause = havingClauses.length > 0 ? `HAVING ${havingClauses.join(' AND ')}` : ''
 
   const query = `
     WITH filtered_docs AS (
-      SELECT DISTINCT d.ppb_full_document_symbol
+      SELECT d.ppb_full_document_symbol
       FROM ppb2026.source_documents d
       LEFT JOIN ppb2026.source_document_citations c
         ON d.ppb_full_document_symbol = c.ppb_full_document_symbol
       ${whereClause}
+      GROUP BY d.ppb_full_document_symbol
+      ${havingClause}
     ),
     agenda_items AS (
       SELECT
@@ -850,20 +897,27 @@ export async function getYearStats(filters: FilterOptions = {}): Promise<{
   yearRange: { min: number; max: number }
   yearDistribution: Record<string, number>
 }> {
-  const { clauses, params } = buildFilterClauses(filters)
+  const { clauses, params, havingClauses } = buildFilterClauses(filters)
   const whereClause = clauses.length > 0 ? `WHERE ${clauses.join(' AND ')}` : ''
+  const havingClause = havingClauses.length > 0 ? `HAVING ${havingClauses.join(' AND ')}` : ''
 
   const query = `
+    WITH filtered_docs AS (
+      SELECT d.ppb_full_document_symbol, d.ppb_year
+      FROM ppb2026.source_documents d
+      LEFT JOIN ppb2026.source_document_citations c
+        ON d.ppb_full_document_symbol = c.ppb_full_document_symbol
+      ${whereClause}
+      GROUP BY d.ppb_full_document_symbol, d.ppb_year
+      ${havingClause}
+    )
     SELECT
-      d.ppb_year as year,
-      COUNT(DISTINCT d.ppb_full_document_symbol) as count
-    FROM ppb2026.source_documents d
-    LEFT JOIN ppb2026.source_document_citations c
-      ON d.ppb_full_document_symbol = c.ppb_full_document_symbol
-    ${whereClause}
-    GROUP BY d.ppb_year
-    HAVING d.ppb_year IS NOT NULL
-    ORDER BY d.ppb_year
+      ppb_year as year,
+      COUNT(DISTINCT ppb_full_document_symbol) as count
+    FROM filtered_docs
+    WHERE ppb_year IS NOT NULL
+    GROUP BY ppb_year
+    ORDER BY ppb_year
   `
 
   const rows = await queryMany<YearRow>(query, params)
@@ -891,6 +945,72 @@ export async function getYearStats(filters: FilterOptions = {}): Promise<{
   }
 }
 
+/**
+ * Get citation count distribution for histogram
+ */
+export async function getCitationDistribution(filters: FilterOptions = {}): Promise<CitationBin[]> {
+  const { clauses, params, havingClauses } = buildFilterClauses(filters)
+  const whereClause = clauses.length > 0 ? `WHERE ${clauses.join(' AND ')}` : ''
+  const havingClause = havingClauses.length > 0 ? `HAVING ${havingClauses.join(' AND ')}` : ''
+
+  const query = `
+    WITH doc_citations AS (
+      SELECT d.ppb_full_document_symbol, COUNT(c.id) as citation_count
+      FROM ppb2026.source_documents d
+      LEFT JOIN ppb2026.source_document_citations c
+        ON d.ppb_full_document_symbol = c.ppb_full_document_symbol
+      ${whereClause}
+      GROUP BY d.ppb_full_document_symbol
+      ${havingClause}
+    ),
+    binned AS (
+      SELECT
+        CASE
+          WHEN citation_count = 1 THEN '1'
+          WHEN citation_count BETWEEN 2 AND 5 THEN '2–5'
+          WHEN citation_count BETWEEN 6 AND 10 THEN '6–10'
+          ELSE '11+'
+        END as bin,
+        CASE
+          WHEN citation_count = 1 THEN 1
+          WHEN citation_count BETWEEN 2 AND 5 THEN 2
+          WHEN citation_count BETWEEN 6 AND 10 THEN 3
+          ELSE 4
+        END as sort_order,
+        CASE
+          WHEN citation_count = 1 THEN 1
+          WHEN citation_count BETWEEN 2 AND 5 THEN 2
+          WHEN citation_count BETWEEN 6 AND 10 THEN 6
+          ELSE 11
+        END as min_citations,
+        CASE
+          WHEN citation_count = 1 THEN 1
+          WHEN citation_count BETWEEN 2 AND 5 THEN 5
+          WHEN citation_count BETWEEN 6 AND 10 THEN 10
+          ELSE 999999
+        END as max_citations
+      FROM doc_citations
+    )
+    SELECT
+      bin,
+      COUNT(*) as count,
+      MIN(min_citations) as min_citations,
+      MIN(max_citations) as max_citations
+    FROM binned
+    GROUP BY bin, sort_order
+    ORDER BY sort_order
+  `
+
+  const rows = await queryMany<{ bin: string; count: string; min_citations: string; max_citations: string }>(query, params)
+
+  return rows.map((row) => ({
+    bin: row.bin,
+    count: parseInt(row.count) || 0,
+    minCitations: parseInt(row.min_citations),
+    maxCitations: parseInt(row.max_citations),
+  }))
+}
+
 // ============================================================================
 // Page Data Orchestration
 // ============================================================================
@@ -907,11 +1027,13 @@ async function _getMandatePageDataInner(filters: FilterOptions): Promise<ApiResp
     counts,
     entityCounts,
     organCounts,
+    citationDistribution,
     programmeOptions,
     subjectOptions,
     documentTypeOptions,
     agendaItemOptions,
     yearStats,
+    yearStatsForChart,
     entities,
     organs,
     organMap,
@@ -921,11 +1043,13 @@ async function _getMandatePageDataInner(filters: FilterOptions): Promise<ApiResp
     getMandateCounts(filters),
     getEntityCounts(filters),
     getOrganCounts(filters),
+    getCitationDistribution(filters),
     getProgrammeOptions(filters),
     getSubjectOptions(filters),
     getDocumentTypeOptions(filters),
     getAgendaItemOptions(filters),
     getYearStats(filters),
+    getYearStats({ ...filters, start_year: undefined, end_year: undefined }),
     getAllEntities(),
     getAllOrgans(),
     getOrganMap(),
@@ -1002,6 +1126,7 @@ async function _getMandatePageDataInner(filters: FilterOptions): Promise<ApiResp
       entities: entityCounts,
       organs: enrichedOrganCounts,
       crossCitations,
+      citationDistribution,
     },
     filterOptions: {
       programmes: programmeOptions,
@@ -1010,6 +1135,7 @@ async function _getMandatePageDataInner(filters: FilterOptions): Promise<ApiResp
       agendaItems: agendaItemOptions,
       yearRange: yearStats.yearRange,
       yearDistribution: yearStats.yearDistribution,
+      yearDistributionUnfiltered: yearStatsForChart.yearDistribution,
       budgetDocuments,
     },
     reference: {

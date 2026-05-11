@@ -128,6 +128,8 @@ export interface FilterOptions {
   document_type?: string
   agenda_item?: string
   full_document_symbol?: string
+  min_citations?: string
+  max_citations?: string
   sort_by?: string
   page?: string
   limit?: string
@@ -138,6 +140,14 @@ export interface CrossCitation {
   entity: string
   entity_long: string
   count: number
+}
+
+// Citation distribution types
+export interface CitationBin {
+  bin: string
+  count: number
+  minCitations: number
+  maxCitations: number
 }
 
 // API Response types
@@ -164,6 +174,7 @@ export interface ApiResponse {
     entities: EntityWithCount[]
     organs: OrganWithCount[]
     crossCitations: CrossCitation[]
+    citationDistribution: CitationBin[]
   }
 
   // Filter options for dropdowns
@@ -174,6 +185,7 @@ export interface ApiResponse {
     agendaItems: { value: string; count: number }[]
     yearRange: { min: number; max: number }
     yearDistribution: Record<string, number>
+    yearDistributionUnfiltered: Record<string, number>
     budgetDocuments: {
       slug: string
       display_name: string

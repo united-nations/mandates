@@ -16,6 +16,8 @@ export const FILTER_PARAMS = [
   'budget_document',
   'document_type',
   'agenda_item',
+  'min_citations',
+  'max_citations',
   'sort_by',
   'page',
   'limit',
@@ -34,6 +36,8 @@ export const FILTER_ONLY_PARAMS = [
   'budget_document',
   'document_type',
   'agenda_item',
+  'min_citations',
+  'max_citations',
 ] as const
 
 // Parameters that are handled separately (pagination and sorting)
@@ -50,6 +54,8 @@ export const ADDITIONAL_FILTER_PARAMS = [
   'budget_document',
   'document_type',
   'agenda_item',
+  'min_citations',
+  'max_citations',
   'sort_by',
   'page',
   'limit',
@@ -86,6 +92,8 @@ export function parseSearchParams(
     document_type: getString('document_type'),
     agenda_item: getString('agenda_item'),
     full_document_symbol: getString('full_document_symbol'),
+    min_citations: getString('min_citations'),
+    max_citations: getString('max_citations'),
     sort_by: getString('sort_by') || 'citing_entities_desc',
     page: getString('page') || '1',
     limit: getString('limit') || '10',

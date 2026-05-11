@@ -29,6 +29,8 @@ export interface FilterType {
   budget_document?: string
   document_type?: string
   agenda_item?: string
+  min_citations?: string
+  max_citations?: string
   sort_by?: string
   page?: string
   limit?: string

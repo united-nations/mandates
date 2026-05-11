@@ -15,7 +15,6 @@ import {
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { AdvancedSearch } from './AdvancedSearch'
 import { FilterBadge } from '@/components/FilterBadge'
 import { EntityName } from './EntityName'
 import { OrganName } from './OrganName'
@@ -35,15 +34,6 @@ interface Organ {
 }
 
 interface FilterControlsProps {
-  programmeOptions: { value: string; count: number }[]
-  subjectOptions: { value: string; count: number }[]
-  documentTypeOptions: { value: string; count: number }[]
-  agendaItemOptions: { value: string; count: number }[]
-  yearRange: { min: number; max: number } | null
-  yearDistribution: { [year: string]: number }
-  originalYearDistribution?: { [year: string]: number }
-  showAdvancedSearch: boolean
-  setShowAdvancedSearch: (show: boolean) => void
   entitiesData: Entity[]
   allOrgans: Organ[]
   budgetDocuments: BudgetDocument[]
@@ -53,14 +43,6 @@ interface FilterControlsProps {
 }
 
 export function FilterControls({
-  programmeOptions,
-  subjectOptions,
-  documentTypeOptions,
-  agendaItemOptions,
-  yearRange,
-  yearDistribution,
-  originalYearDistribution,
-  showAdvancedSearch,
   entitiesData,
   allOrgans,
   budgetDocuments,
@@ -68,17 +50,10 @@ export function FilterControls({
   organFilter,
   pageType,
 }: FilterControlsProps) {
-  const {
-    filters,
-    setFilter,
-    setMultipleFilters,
-    clearFilter,
-    clearAllFilters,
-  } = useFilters()
+  const { filters, setFilter, clearFilter, clearAllFilters } = useFilters()
 
   const [searchInput, setSearchInput] = useState(filters.keyword || '')
 
-  // Sync search input with filters when filters change externally (e.g., clear all)
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- Intentional sync from external state
     setSearchInput(filters.keyword || '')
@@ -91,11 +66,9 @@ export function FilterControls({
     }
   }
 
-  // Get filters that should be displayed as chips (context-aware)
   const getDisplayFilters = () => {
     const displayFilters = { ...filters }
 
-    // Remove implicit filters based on page type and explicit filters
     if (
       pageType === 'entity' &&
       entityFilter &&
@@ -111,7 +84,6 @@ export function FilterControls({
       delete displayFilters.organ
     }
 
-    // Remove pagination, sorting, and keyword from display (keyword is counted separately)
     delete displayFilters.page
     delete displayFilters.limit
     delete displayFilters.sort_by
@@ -126,60 +98,14 @@ export function FilterControls({
   )
   const hasSearch = filters.keyword && filters.keyword.trim().length > 0
 
-  // Convert year range to display format
   const yearRangeDisplay =
     filters.start_year && filters.end_year
       ? `${filters.start_year}-${filters.end_year}`
       : null
 
-  const handleYearRangeChange = (range: [number, number]) => {
-    setMultipleFilters({
-      start_year: range[0].toString(),
-      end_year: range[1].toString(),
-    })
-  }
-
-  const selectedYearRange: [number, number] | null =
-    filters.start_year && filters.end_year
-      ? [parseInt(filters.start_year), parseInt(filters.end_year)]
-      : null
-
   return (
-    <div className="">
-      {/* Advanced Filters - Enhanced container (now above search bar) */}
-      {showAdvancedSearch && (
-        <div className="bg-white/50">
-          <div className="py-4 pl-1">
-            <AdvancedSearch
-              programme={filters.programme || ''}
-              subject={filters.subject || ''}
-              budgetDocument={filters.budget_document || ''}
-              documentType={filters.document_type || ''}
-              agendaItem={filters.agenda_item || ''}
-              onProgrammeChange={(value) => setFilter('programme', value)}
-              onSubjectChange={(value) => setFilter('subject', value)}
-              onBudgetDocumentChange={(value) =>
-                setFilter('budget_document', value)
-              }
-              onDocumentTypeChange={(value) =>
-                setFilter('document_type', value)
-              }
-              onAgendaItemChange={(value) => setFilter('agenda_item', value)}
-              programmeOptions={programmeOptions}
-              subjectOptions={subjectOptions}
-              documentTypeOptions={documentTypeOptions}
-              agendaItemOptions={agendaItemOptions}
-              budgetDocuments={budgetDocuments}
-              yearRange={yearRange}
-              yearDistribution={yearDistribution}
-              originalYearDistribution={originalYearDistribution}
-              selectedYearRange={selectedYearRange}
-              onYearRangeChange={handleYearRangeChange}
-            />
-          </div>
-        </div>
-      )}
-      {/* Search bar only in a row */}
+    <div>
+      {/* Search bar */}
       <div className="mb-4 flex items-center gap-2">
         <div className="relative grow">
           <SearchInput
@@ -221,7 +147,6 @@ export function FilterControls({
               />
             )}
 
-            {/* Entity chip - only show if not on entity page or if it's an additional filter */}
             {displayFilters.entity && displayFilters.entity !== 'all' && (
               <FilterBadge
                 icon={Building}
@@ -243,7 +168,6 @@ export function FilterControls({
               />
             )}
 
-            {/* Cross-citing Entity chip */}
             {displayFilters.crossCitingEntity &&
               displayFilters.crossCitingEntity !== 'all' && (
                 <FilterBadge
@@ -266,7 +190,6 @@ export function FilterControls({
                 />
               )}
 
-            {/* Organ chip - only show if not on organ page or if it's an additional filter */}
             {displayFilters.organ && displayFilters.organ !== 'all' && (
               <FilterBadge
                 icon={Landmark}
