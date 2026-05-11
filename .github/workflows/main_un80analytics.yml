@@ -32,7 +32,7 @@ jobs:
         context: .
         push: true
         tags: undashboarddevregistry.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_5b8d2f85ffcb4b208ff0f52d22680741 }}/imagedashboard:${{ github.sha }}
-        file: ./Dockerfile
+        file: ./website/Dockerfile
 
   deploy:
     runs-on: ubuntu-latest

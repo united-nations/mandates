@@ -7,13 +7,13 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 
 # 2. Install dependencies
 FROM base AS deps
-COPY package.json pnpm-lock.yaml ./
+COPY website/package.json website/pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
 
 # 3. Build the application
 FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
-COPY . .
+COPY website/ .
 RUN pnpm build
 
 # 4. Production image
