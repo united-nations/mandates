@@ -329,7 +329,3 @@ def parse_ppb_docs(year):
         output_file.parent.mkdir(parents=True, exist_ok=True)
         json.dump(hierarchy, output_file.open("w"), indent=2, ensure_ascii=False)
         q.update(1)
-
-if __name__ == "__main__":
-    year = 2027
-    parse_ppb_docs(year)

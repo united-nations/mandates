@@ -417,8 +417,7 @@ def extract_mandates(year: int):
     return df
 
 
-if __name__ == "__main__":
-    year = 2027
+def extract(year):
     print("Processing documents to extract mandates…")
     df = extract_mandates(year)
     _df = df.copy()

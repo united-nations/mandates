@@ -11,7 +11,7 @@ def get_ppb_symbols(symbol):
     symbols = natsorted(symbols)
     return symbols
 
-def download_ppb_documents(symbol):
+def download_ppb_docs(symbol):
     doc_dir = Path("../data/downloads/ppb2027")
     doc_dir.mkdir(parents=True, exist_ok=True)
     for symbol in get_ppb_symbols(symbol):
@@ -22,6 +22,3 @@ def download_ppb_documents(symbol):
             path.write_bytes(res.content)
             print(f"Saved {path}")
 
-if __name__ == "__main__":
-    symbol = "A/81/6"
-    download_ppb_documents(symbol)
