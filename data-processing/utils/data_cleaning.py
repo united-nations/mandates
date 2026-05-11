@@ -11,6 +11,7 @@ def normalize_title(title: str):
 
 def normalize_symbol(symbol: str):
     if isinstance(symbol, str):
+        symbol = symbol.replace('\n', '').replace('\r', '').replace('\xa0', ' ')
         symbol = re.sub(r"^[^a-zA-Z0-9]+", "", symbol)
         return symbol.strip()
     return symbol
@@ -18,12 +19,16 @@ def normalize_symbol(symbol: str):
 
 def link_to_symbol(link: str):
     if isinstance(link, str):
-        if link.startswith("https://undocs.org/en/"):
-            return link.replace("https://undocs.org/en/", "").upper()
-        elif link.startswith("https://docs.un.org/en/"):
-            return link.replace("https://docs.un.org/en/", "").upper()
-        else:
-            return None
+        for prefix in [
+            "https://undocs.org/en/",
+            "https://docs.un.org/en/",
+            "https://www.undocs.org/en/",
+            "https://docs.un.org/",
+            "https://www.undocs.org/",
+        ]:
+            if link.startswith(prefix):
+                return link[len(prefix):].upper()
+        return None
     return None
 
 def extract_organ(symbol_prefix):

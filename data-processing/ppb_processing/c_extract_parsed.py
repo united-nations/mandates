@@ -19,7 +19,8 @@ def find_section_with_heading(
         current_hierarchy = []
     found_blocks = []
     for block in data:
-        if block["text"] == heading_title:
+        block_text = block["text"] or ""
+        if block_text == heading_title or block_text.endswith(" – " + heading_title):
             block["hierarchy"] = deepcopy(current_hierarchy)
             found_blocks.append(block)
         if block["children"] and len(block["children"]) > 0:
@@ -51,6 +52,7 @@ def get_mandates(
         )
 
     mandates = []
+    current_subprogramme = subprogramme  # tracks last-seen SP heading across siblings
     for block in section["children"]:
         # the filename check is a dirty hack
         if block["block_type"].startswith("paragraph-") or "ACABQ" in file_name:
@@ -74,29 +76,34 @@ def get_mandates(
                     mandates.append(mandate)
         elif block["block_type"] == "table-content":
             for row in block["table_content"]:
-                if row[0]["hyperlinks"]:
-                    for text, url in row[0]["hyperlinks"]:
-                        description = row[1]["text"].strip() if len(row) > 1 else None
-                        mandate = (
-                            text,
-                            url,
-                            description,
-                            mandate_source,
-                            subprogramme,
-                            entity,
-                        )
-                        mandates.append(mandate)
+                cell_text = row[0]["text"].strip()
+                if not cell_text and not row[0]["hyperlinks"]:
+                    continue  # skip empty rows
+                description = row[1]["text"].strip() if len(row) > 1 else None
+                hyperlinks = row[0]["hyperlinks"]
+                cell_parts = [p.strip() for p in cell_text.split(";") if p.strip()]
+
+                if hyperlinks:
+                    used = set()
+                    for anchor, url in hyperlinks:
+                        symbol = anchor  # fallback if no cell part matches
+                        for i, part in enumerate(cell_parts):
+                            if i not in used and anchor in part:
+                                symbol = part
+                                used.add(i)
+                                break
+                        mandates.append((symbol, url, description, mandate_source, subprogramme, entity))
+                    # emit unlinked parts that weren't covered by a hyperlink
+                    for i, part in enumerate(cell_parts):
+                        if i not in used:
+                            mandates.append((part, None, description, mandate_source, subprogramme, entity))
                 else:
-                    description = row[1]["text"].strip() if len(row) > 1 else None
-                    mandate = (
-                        row[0]["text"],
-                        None,
-                        description,
-                        mandate_source,
-                        subprogramme,
-                        entity,
-                    )
-                    mandates.append(mandate)
+                    for part in cell_parts or [cell_text]:
+                        # secondary split for space-concatenated symbols like "ECE/CES/105 ECE/CES/107"
+                        sub_parts = re.split(r'\s+(?=[A-Z][A-Z0-9]*/)', part)
+                        for sub in sub_parts:
+                            if sub.strip():
+                                mandates.append((sub.strip(), None, description, mandate_source, subprogramme, entity))
         elif block["block_type"] in ["italic", "heading-x"]:
             mandates.extend(
                 get_mandates(
@@ -108,10 +115,12 @@ def get_mandates(
                 )
             )
         elif block["block_type"] in ["subprogramme", "heading-sub-sub"]:
+            if block["block_type"] == "subprogramme" or re.match(r"^Subprog[ar]?amme\s+\d+", block["text"]):
+                current_subprogramme = block["text"]
             mandates.extend(
                 get_mandates(
                     block,
-                    subprogramme=block["text"],
+                    subprogramme=current_subprogramme,
                     entity=entity,
                     file_name=file_name,
                 )
@@ -125,15 +134,18 @@ def get_mandates(
 
 
 def get_subprogramme(subprogramme):
-    if subprogramme and not pd.isna(subprogramme) and subprogramme.startswith("Subprogramme"):
-        number = re.match(r"^Subprogramme\s+(\d+)", subprogramme).group(1)
-        try:
-            title = subprogramme.split("–")[1].strip()
-            return (number, title)
-        except IndexError:
-            print(f"Warning: Could not extract subprogramme title: {subprogramme}")
-            return (number, None)
-    return (None, None)
+    if not subprogramme or pd.isna(subprogramme):
+        return (None, None)
+    m = re.match(r"^Subprog[ar]?amme\s+(\d+)", subprogramme)
+    if not m:
+        return (None, None)
+    number = m.group(1)
+    try:
+        title = subprogramme.split("–")[1].strip()
+        return (number, title)
+    except IndexError:
+        print(f"Warning: Could not extract subprogramme title: {subprogramme}")
+        return (number, None)
 
 
 def get_section_text(section: dict):
