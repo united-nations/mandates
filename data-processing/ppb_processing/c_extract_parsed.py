@@ -139,13 +139,13 @@ def get_mandates(
 
 
 def get_subprogramme(subprogramme):
-    if subprogramme and subprogramme.startswith("Subprogramme"):
+    if subprogramme and not pd.isna(subprogramme) and subprogramme.startswith("Subprogramme"):
         number = re.match(r"^Subprogramme\s+(\d+)", subprogramme).group(1)
         try:
             title = subprogramme.split("–")[1].strip()
             return (number, title)
         except IndexError:
-            # print(f"Warning: Could not extract subprogramme title: {subprogramme}")
+            print(f"Warning: Could not extract subprogramme title: {subprogramme}")
             return (number, None)
     return (None, None)
 
@@ -236,8 +236,8 @@ def add_metadata(df: pd.DataFrame, data):
     else:
         df["programme"] = pd.NA
         df["programme_title"] = normalize_title(programme)
-    # df["subprogramme_title"] = df["subprogramme"].apply(get_subprogramme).str[1]
-    # df["subprogramme"] = df["subprogramme"].apply(get_subprogramme).str[0]
+    df["subprogramme_title"] = df["subprogramme"].apply(get_subprogramme).str[1]
+    df["subprogramme"] = df["subprogramme"].apply(get_subprogramme).str[0]
     return df
 
 
@@ -405,7 +405,7 @@ def extract_mandates(year: int):
             "programme",
             "programme_title",
             "subprogramme",
-            # "subprogramme_title",
+            "subprogramme_title",
             # "component",
             "description",
             "link",
