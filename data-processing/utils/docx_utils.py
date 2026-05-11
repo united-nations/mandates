@@ -7,31 +7,6 @@ from lxml import etree
 from natsort import natsorted, ns
 
 
-def get_docx_files(folder: Path) -> List[Path]:
-    """Return a naturally-sorted list of all .docx files in `folder`,
-    excluding temporary files (~$*)."""
-    print(f"Looking for docx files in: {folder}")
-    if not folder.exists():
-        print(f"Error: Folder does not exist: {folder}")
-        return []
-
-    # Gather and filter
-    docx_files = [f for f in folder.glob("*.docx") if not f.name.startswith("~$")]
-
-    # Natural sort (ignoring case)
-    docx_files = natsorted(docx_files, key=lambda p: p.name, alg=ns.IGNORECASE)
-    print(f"Found {len(docx_files)} .docx files")
-
-    # Sample printout
-    if docx_files:
-        print("Sample files:")
-        for f in docx_files[:5]:
-            print(f"  - {f.name}")
-        if len(docx_files) > 5:
-            print(f"  - … and {len(docx_files) - 5} more")
-    return docx_files
-
-
 HYPERLINK_RE = re.compile(r'HYPERLINK\s+"([^"]+)"', re.I)
 
 

@@ -11,13 +11,13 @@ def get_ppb_symbols(symbol):
     symbols = natsorted(symbols)
     return symbols
 
-def download_ppb_docs(symbol):
-    doc_dir = Path("../data/downloads/ppb2027")
+def download_ppb_docs(symbol, year):
+    doc_dir = Path(f"../data/downloads/ppb{year}")
     doc_dir.mkdir(parents=True, exist_ok=True)
-    for symbol in get_ppb_symbols(symbol):
+    for doc_symbol in get_ppb_symbols(symbol):
         for doc_type in ("pdf", "docx",):
-            res = get(symbol, doc_type)
-            safe_symbol = symbol.replace("/", "_")
+            res = get(doc_symbol, doc_type)
+            safe_symbol = doc_symbol.replace("/", "_")
             path = doc_dir / f"{safe_symbol}.{doc_type}"
             path.write_bytes(res.content)
             print(f"Saved {path}")

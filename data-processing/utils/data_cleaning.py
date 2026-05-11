@@ -1,26 +1,19 @@
+import re
+
 import pandas as pd
 
 
-def parse_subjects_to_list(subjects_str):
-    """Convert subjects string to a clean Python list."""
-    if pd.isna(subjects_str) or subjects_str is None:
-        return []
+def normalize_title(title: str):
+    if isinstance(title, str):
+        return re.sub(r"\s+", " ", title).strip()
+    return title
 
-    # Split by pipe separator and clean each subject
-    subjects_list = [subject.strip() for subject in str(subjects_str).split("|")]
 
-    # Remove any empty strings that might result from splitting
-    subjects_list = [subject for subject in subjects_list if subject]
-
-    # Remove duplicates while preserving order
-    seen = set()
-    deduplicated_list = []
-    for subject in subjects_list:
-        if subject not in seen:
-            seen.add(subject)
-            deduplicated_list.append(subject)
-
-    return deduplicated_list
+def normalize_symbol(symbol: str):
+    if isinstance(symbol, str):
+        symbol = re.sub(r"^[^a-zA-Z0-9]+", "", symbol)
+        return symbol.strip()
+    return symbol
 
 
 def link_to_symbol(link: str):

@@ -1,5 +1,4 @@
 import json
-import os
 import re
 from copy import deepcopy
 from pathlib import Path
@@ -9,13 +8,15 @@ from natsort import natsorted
 from rich import print
 from tqdm import tqdm
 
-from utils.data_cleaning import link_to_symbol
+from utils.data_cleaning import link_to_symbol, normalize_title, normalize_symbol
 from utils.llm_extract_mandates import llm_extract_mandates
 
 
 def find_section_with_heading(
-    data: dict, heading_title: str, current_hierarchy: list = []
+    data: dict, heading_title: str, current_hierarchy: list | None = None
 ):
+    if current_hierarchy is None:
+        current_hierarchy = []
     found_blocks = []
     for block in data:
         if block["text"] == heading_title:
@@ -31,21 +32,6 @@ def find_section_with_heading(
             current_hierarchy.pop()
     return found_blocks
 
-
-def normalize_title(title: str):
-    if isinstance(title, str):
-        return re.sub(r"\s+", " ", title).strip()
-    return title
-
-
-def normalize_symbol(symbol: str):
-    # normali
-    if isinstance(symbol, str):
-        # remove leading non-alphanumeric characters
-        symbol = re.sub(r"^[^a-zA-Z0-9]+", "", symbol)
-        # remove leading and trailing spaces
-        return symbol.strip()
-    return symbol
 
 
 def get_mandates(
@@ -238,8 +224,9 @@ def add_metadata(df: pd.DataFrame, data):
     else:
         df["programme"] = pd.NA
         df["programme_title"] = normalize_title(programme)
-    df["subprogramme_title"] = df["subprogramme"].apply(get_subprogramme).str[1]
-    df["subprogramme"] = df["subprogramme"].apply(get_subprogramme).str[0]
+    _subprogramme_parsed = df["subprogramme"].apply(get_subprogramme)
+    df["subprogramme_title"] = _subprogramme_parsed.str[1]
+    df["subprogramme"] = _subprogramme_parsed.str[0]
     return df
 
 
@@ -286,7 +273,7 @@ def extract_mandates_for_file(data: dict, file_name: str):
     return df
 
 
-def find_entity(row):
+def find_entity(row, df_sections_and_entities):
     if not pd.isna(row["entity-long"]):
         return row["entity-long"]
     try:
@@ -295,17 +282,8 @@ def find_entity(row):
         ]["entity"].values[0]
     except:
         print(f"Could not find entity for section: {row['section_title']}, {row}")
-        # raise ValueError(
-        #     f"Could not find entity for section: {row['section_title']}, {row}"
-        # )
         entity = None
     return entity
-
-
-df_sections_and_entities = pd.read_csv(
-    "../data/references/ppb_sections_and_entities.tsv", sep="\t"
-)
-df_entity_names = pd.read_csv("../data/references/entity_names.tsv", sep="\t")
 
 
 def reconstruct_mandate_source(symbol: str):
@@ -323,6 +301,11 @@ def reconstruct_mandate_source(symbol: str):
 
 
 def extract_mandates(year: int):
+    df_sections_and_entities = pd.read_csv(
+        "../data/references/ppb_sections_and_entities.tsv", sep="\t"
+    )
+    df_entity_names = pd.read_csv("../data/references/entity_names.tsv", sep="\t")
+
     dfs = []
     q = tqdm(
         natsorted(Path(f"../data/processed/ppb{year}/json").glob("*.json")),
@@ -330,18 +313,21 @@ def extract_mandates(year: int):
     )
     for file in q:
         q.set_description(f"Processing file: {file.name}")
-        with open(file, "r") as f:
-            data = json.load(f)
-        df = extract_mandates_for_file(data, file.name)
-        if df is not None:
-            df["file"] = file.name
-            addendum = re.search(r"ADD\.(\d+)(\.|_)", file.name.upper())
-            df["addendum"] = addendum.group(1) if addendum else None
-            dfs.append(df)
+        try:
+            with open(file, "r") as f:
+                data = json.load(f)
+            df = extract_mandates_for_file(data, file.name)
+            if df is not None:
+                df["file"] = file.name
+                addendum = re.search(r"ADD\.(\d+)(\.|_)", file.name.upper())
+                df["addendum"] = addendum.group(1) if addendum else None
+                dfs.append(df)
+        except Exception as e:
+            print(f"[yellow]Warning: skipping {file.name}: {e}[/yellow]")
         q.update(1)
     df = pd.concat(dfs)
     # when entity long is na, infer from section title and lookup table
-    df["entity-long"] = df.apply(find_entity, axis=1)
+    df["entity-long"] = df.apply(lambda row: find_entity(row, df_sections_and_entities), axis=1)
     df["entity"] = df["entity-long"].map(
         df_entity_names.set_index("entity_full_name")["entity_short_name"]
     )
@@ -357,27 +343,6 @@ def extract_mandates(year: int):
     df["mandate_source"] = df["mandate_source"].fillna(
         df["full_document_symbol"].apply(reconstruct_mandate_source)
     )
-    # df_priority_areas = pd.read_csv(
-    #     "../data/processed/ppb2026/share/mandates_plan_outline.csv"
-    # )
-    # df_priority_areas = df_priority_areas.rename(
-    #     columns={
-    #         "Mandate Symbol Full": "mandate_symbol_full",
-    #         "Priority Area": "priority_area",
-    #     }
-    # )
-    # df_priority_areas = df_priority_areas[["mandate_symbol_full", "priority_area"]]
-    # df = df.merge(
-    #     df_priority_areas,
-    #     right_on="mandate_symbol_full",
-    #     left_on="full_document_symbol",
-    #     how="left",
-    # )
-    # df_entity_priority_areas = pd.read_csv("../data/references/entity_priority_areas.csv")
-    # df["priority_area"] = df["priority_area"].fillna(
-    #     df["entity"].map(df_entity_priority_areas.set_index("entity")["priority_area"])
-    # )
-
     df_no_llm = df[df["part_in_document"] != "Mandates and background (LLM)"]
     df_llm = df[df["part_in_document"] == "Mandates and background (LLM)"]
     df_llm.to_csv(

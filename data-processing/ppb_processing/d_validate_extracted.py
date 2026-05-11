@@ -1,25 +1,9 @@
-import os
 import re
 
 import pandas as pd
 from rich import print
 
-from utils.data_cleaning import link_to_symbol
-
-
-def normalize_title(title: str):
-    if isinstance(title, str):
-        return re.sub(r"\s+", " ", title).strip()
-    return title
-
-
-def normalize_symbol(symbol: str):
-    if isinstance(symbol, str):
-        # remove leading non-alphanumeric characters
-        symbol = re.sub(r"^[^a-zA-Z0-9]+", "", symbol)
-        # remove leading and trailing spaces
-        return symbol.strip()
-    return symbol
+from utils.data_cleaning import link_to_symbol, normalize_title, normalize_symbol
 
 
 def compare_value_counts(series_1, series_2):
@@ -185,7 +169,7 @@ def validate(year):
     df["programme_title"] = df["programme_title"].apply(normalize_title)
     df["symbol"] = df["symbol"].apply(normalize_symbol)
 
-    manual_df = pd.read_csv("../data/references/ppb2025_mandates_validation.csv")
+    manual_df = pd.read_csv(f"../data/references/ppb{year}_mandates_validation.csv")
     for column in manual_df.columns:
         manual_df = manual_df.rename(columns={column: column.replace(" ", "_").lower()})
     manual_df["section_title"] = manual_df["section_title"].apply(normalize_title)

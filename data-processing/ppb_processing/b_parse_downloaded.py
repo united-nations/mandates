@@ -233,7 +233,7 @@ def annotate_elements(doc: docx.Document):
             continue
         # annex headers consist of two lines with different styles that we combine
         if elements[-1].block_type == "annex" and block_type_ == "heading":
-            combined_text = elements[-1].text + " " + element.text.strip()
+            combined_text = elements[-1].text + " – " + element.text.strip()
             elements[-1].text = combined_text
             state.position[-1] = (elements[-1].block_type, combined_text)
             continue
