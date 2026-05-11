@@ -164,7 +164,9 @@ def get_section_text(section: dict):
             )
         if "children" in block:
             for child in block["children"]:
-                text += get_section_text(child)[0]
+                child_text, _, child_hyperlinks = get_section_text(child)
+                text += child_text
+                hyperlinks.extend(child_hyperlinks)
         if block["hyperlinks"]:
             hyperlinks.extend(block["hyperlinks"])
     entity = None
@@ -376,17 +378,17 @@ def extract_mandates(year: int):
     #     df["entity"].map(df_entity_priority_areas.set_index("entity")["priority_area"])
     # )
 
-    # df_no_llm = df[df["part_in_document"] != "Mandates and background (LLM)"]
-    # df_llm = df[df["part_in_document"] == "Mandates and background (LLM)"]
-    # df_llm.to_csv(
-    #     f"data/processed/ppb{year}/llm/ppb{year}_mandates_background_llm.csv",
-    #     index=False,
-    # )
+    df_no_llm = df[df["part_in_document"] != "Mandates and background (LLM)"]
+    df_llm = df[df["part_in_document"] == "Mandates and background (LLM)"]
+    df_llm.to_csv(
+        f"../data/processed/ppb{year}/mandates_background_llm.csv",
+        index=False,
+    )
     # df_llm = pd.read_csv(
-    #     f"data/processed/ppb{year}/llm/ppb{year}_mandates_background_llm_revised.csv"
+    #     f"../data/processed/ppb{year}/mandates_background_llm_revised.csv"
     # )
-    # df_llm["part_in_document"] = df_llm["part_in_document"].str.replace(" (LLM)", "")
-    # df = pd.concat([df_no_llm, df_llm])
+    df_llm["part_in_document"] = df_llm["part_in_document"].str.replace(" (LLM)", "")
+    df = pd.concat([df_no_llm, df_llm])
     df = df.rename(
         columns={"mandate_description": "description", "mandate_source": "source"}
     )
