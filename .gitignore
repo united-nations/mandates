@@ -1,50 +1,24 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# Nestjs specific
+*/dist
+*/node_modules
+*/build
+*/tmp
 
-.playwright-mcp
-.claude
-.VSCodeCounter
-
-# dependencies
-/node_modules
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
-
-# testing
-/coverage
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# misc
-.DS_Store
-*.pem
-
-# debug
+# Logs
+logs
+*.log
 npm-debug.log*
+pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.pnpm-debug.log*
+lerna-debug.log*
 
-# vercel
-.vercel
+# dotenv environment variable files
+.env
+.env.development
+.env.test
+.env.production
 
-# typescript
-*.tsbuildinfo
-next-env.d.ts
-
-.genkit/*
-.env*
-!.env.example
-
-# firebase
-firebase-debug.log
-firestore-debug.log
+# temp directory
+.temp
+.tmp
