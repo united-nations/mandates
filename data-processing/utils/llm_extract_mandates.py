@@ -109,6 +109,7 @@ def llm_extract_mandates(
         "Only extract references that match UN citation patterns "
         '(e.g., "1261 (1999)", "76/274", "Article 8" [of the Charter of the United Nations], "Decision 51/43", "A/71/818", "E/RES/2019/1", "PRST/2015/4", etc.) '
         "Skip references that are wrapped in '~~' (e.g., '~~1261 (1999)~~'); these should not be extracted."
+        "Do not extract sub-article references (e.g. 'article 5 of its Statute', 'paragraph 6 (A) (ii) of its statute') when they refer to internal provisions of an already-cited document rather than a separately citable mandate. "
         "Do not infer, guess or normalize any citation; skip any incomplete or ambiguous ones."
     )
     try:

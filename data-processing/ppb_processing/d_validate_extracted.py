@@ -169,7 +169,7 @@ def validate(year):
     df["programme_title"] = df["programme_title"].apply(normalize_title)
     df["symbol"] = df["symbol"].apply(normalize_symbol)
 
-    manual_df = pd.read_csv(f"../data/references/ppb{year}_mandates_validation.csv")
+    manual_df = pd.read_csv(f"../data/references/ppb2025_mandates_validation.csv")
     for column in manual_df.columns:
         manual_df = manual_df.rename(columns={column: column.replace(" ", "_").lower()})
     manual_df["section_title"] = manual_df["section_title"].apply(normalize_title)

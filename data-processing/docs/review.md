@@ -132,6 +132,19 @@ The output (`mandates_background_llm.csv`) contains only the sections where the 
 
 This is working as designed. The `@cache` decorator (joblib) means each unique section text is only sent to the API once.
 
+### Quality review of LLM-extracted rows
+
+The 15 original LLM rows (across 7 files) were manually reviewed against the source prose:
+
+| Category | Count | Examples |
+|----------|-------|---------|
+| True positives | 11 | `32/197`, `671 (XXV) A`, `1998/46` (SECT. 11); Charter Articles 13/98/102/104/105 (SECT. 8); `19/1` (SECT. 14); `73/9` (SECT. 19); `553 (XXVI)` (SECT. 21); `2001/321` (SECT. 31) |
+| ✅ False positives (fixed) | 3 | `paragraph 6 (A) (ii)` and `article I (A) (2)` (SECT. 25 — sub-article references within cited documents); `article 5` (SECT. 31 — JIU Statute internal provision) |
+| Acceptable duplicates | 1 | `2001/321` (SECT. 31) — also in Legislative mandates table, but both rows carry different context |
+| False negatives | 0 | Regex scan across all M&B sections found no missed unlinked symbols |
+
+**Fix applied:** System prompt updated to exclude sub-article references (e.g. "article 5 of its Statute", "paragraph 6 (A) (ii) of its statute") that refer to internal provisions of an already-cited document. After re-run, LLM CSV reduced from 15 to 12 rows — all 3 false positives removed, all true positives retained.
+
 ---
 
 ## Remaining Open Gaps
