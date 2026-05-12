@@ -234,7 +234,7 @@ export function MandateExplorerClient({
     <DropdownMenu open={ppbDropdownOpen} onOpenChange={setPpbDropdownOpen}>
       <DropdownMenuTrigger asChild>
         <button
-          className="inline-flex items-center gap-0.5 border-b border-current pb-px"
+          className="inline-flex items-center gap-0.5 border-b border-current pb-px -mb-px"
           onClick={(e) => e.stopPropagation()}
         >
           {activePpb.short}
