@@ -25,7 +25,6 @@ import type { ApiResponse } from '@/types'
 import { Building, ChevronDown, FileText, Landmark, Quote } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
 import { useCallback, useState } from 'react'
-import { ColumnPicker } from './table/ColumnPicker'
 import { MandateCompactList } from './table/MandateCompactList'
 import { MandateDataTable } from './table/MandateDataTable'
 import { useColumnVisibility } from './table/useColumnVisibility'
@@ -321,18 +320,7 @@ export function MandateExplorerClient({
             entitiesData={allEntities}
             allOrgans={allOrgans}
             budgetDocuments={filterOptions.budgetDocuments}
-            toolbarSlot={
-              <>
-                {modeToggle}
-                <div className="hidden lg:block">
-                  <ColumnPicker
-                    visibleColumns={visibleColumns}
-                    onToggle={handleToggleColumn}
-                    onReset={handleResetColumns}
-                  />
-                </div>
-              </>
-            }
+            toolbarSlot={modeToggle}
           />
         </div>
 
@@ -344,6 +332,8 @@ export function MandateExplorerClient({
             entitiesData={allEntities}
             filterOptions={filterOptions}
             visibleColumns={visibleColumns}
+            onToggleColumn={handleToggleColumn}
+            onResetColumns={handleResetColumns}
           />
         </div>
 

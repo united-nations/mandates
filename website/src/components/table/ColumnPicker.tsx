@@ -32,9 +32,11 @@ export function ColumnPicker({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="flex items-center gap-1.5 rounded px-2 py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground">
+        <button
+          aria-label="Toggle columns"
+          className="inline-flex items-center justify-center rounded p-1 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+        >
           <SlidersHorizontal className="h-3.5 w-3.5" />
-          Columns
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-48">

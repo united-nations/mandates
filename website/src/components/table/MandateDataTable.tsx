@@ -23,6 +23,7 @@ import { useRouter } from 'next/navigation'
 import { titleCase } from 'title-case'
 import { EntityName } from '../EntityName'
 import { ColumnHeaderFilter } from './ColumnHeaderFilter'
+import { ColumnPicker } from './ColumnPicker'
 import {
   COLUMN_DEFINITIONS,
   getMandateUrl,
@@ -44,6 +45,8 @@ interface MandateDataTableProps {
   entitiesData: Entity[]
   filterOptions: FilterOptions
   visibleColumns: Set<string>
+  onToggleColumn: (columnId: string) => void
+  onResetColumns: () => void
 }
 
 export function MandateDataTable({
@@ -52,6 +55,8 @@ export function MandateDataTable({
   entitiesData,
   filterOptions,
   visibleColumns,
+  onToggleColumn,
+  onResetColumns,
 }: MandateDataTableProps) {
   const { filters, setFilter, isPending } = useFilters()
   const router = useRouter()
@@ -111,12 +116,20 @@ export function MandateDataTable({
                     key={col.id}
                     className={`${col.widthClass} ${col.minWidthClass || ''} ${col.align === 'right' ? 'text-right' : ''} h-10 px-3 text-[10px] font-medium tracking-wider uppercase text-gray-400`}
                   >
-                    <ColumnHeaderFilter
-                      column={col}
-                      currentSort={currentSort}
-                      filterOptions={getFilterOptions(col.id)}
-                      yearRange={filterOptions.yearRange}
-                    />
+                    {col.id === 'detail' ? (
+                      <ColumnPicker
+                        visibleColumns={visibleColumns}
+                        onToggle={onToggleColumn}
+                        onReset={onResetColumns}
+                      />
+                    ) : (
+                      <ColumnHeaderFilter
+                        column={col}
+                        currentSort={currentSort}
+                        filterOptions={getFilterOptions(col.id)}
+                        yearRange={filterOptions.yearRange}
+                      />
+                    )}
                   </TableHead>
                 ))}
               </TableRow>
