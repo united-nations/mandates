@@ -84,7 +84,7 @@ export function DataCard({
       <PopoverTrigger asChild>
         <Card
           className={cn(
-            'relative h-full min-w-[220px] cursor-pointer snap-center border-0 bg-un-blue/10 px-4 py-3 shadow-none transition-all hover:scale-[1.02] sm:min-w-0'
+            'relative h-full cursor-pointer border-0 bg-un-blue/10 px-4 py-3 shadow-none transition-all hover:scale-[1.02]'
           )}
         >
           <div className="flex items-center gap-2">

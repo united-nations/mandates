@@ -28,7 +28,7 @@ import {
 import { useFilters } from '@/contexts/FilterContext'
 import { explainerTexts } from '@/lib/en_text_contents'
 import type { ApiResponse } from '@/types'
-import { Building, ChevronDown, FileText, Landmark, Quote } from 'lucide-react'
+import { ArrowUpDown, Building, ChevronDown, FileText, Landmark, Quote } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
 import { useCallback, useState } from 'react'
 import { ColumnPicker } from './table/ColumnPicker'
@@ -257,7 +257,7 @@ export function MandateExplorerClient({
   )
 
   const modeToggle = (
-    <div className="inline-flex h-8 items-center rounded-md bg-muted p-0.5">
+    <div className="inline-flex flex-wrap items-center rounded-md bg-muted p-0.5 whitespace-nowrap">
       <Tooltip open={ppbDropdownOpen ? false : undefined} key={ppbDropdownOpen ? 'dropdown-open' : 'dropdown-closed'}>
         <TooltipTrigger asChild>
           <div
@@ -265,7 +265,7 @@ export function MandateExplorerClient({
             tabIndex={0}
             onClick={() => { if (!ppbDropdownOpen) handleModeChange('active_mandates') }}
             onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleModeChange('active_mandates') }}
-            className={`inline-flex h-7 cursor-pointer items-center gap-1 rounded-sm px-2.5 text-xs font-medium transition-all ${
+            className={`inline-flex h-7 grow cursor-pointer items-center gap-1 rounded-sm px-2.5 text-xs font-medium transition-all ${
               currentMode === 'active_mandates'
                 ? 'bg-background text-foreground shadow'
                 : 'text-muted-foreground hover:text-foreground'
@@ -285,7 +285,7 @@ export function MandateExplorerClient({
         <TooltipTrigger asChild>
           <button
             onClick={() => handleModeChange('all_resolutions')}
-            className={`inline-flex h-7 items-center rounded-sm px-2.5 text-xs font-medium transition-all ${
+            className={`inline-flex h-7 grow items-center rounded-sm px-2.5 text-xs font-medium transition-all ${
               currentMode === 'all_resolutions'
                 ? 'bg-background text-foreground shadow'
                 : 'text-muted-foreground hover:text-foreground'
@@ -307,16 +307,8 @@ export function MandateExplorerClient({
     <div>
       {/* Summary Cards */}
       <section aria-labelledby="summary-heading" className="space-y-4">
-        <div
-          className="-mx-4 overflow-x-auto scroll-smooth sm:mx-0 sm:overflow-x-visible"
-          style={{
-            scrollSnapType: 'x mandatory',
-            scrollPadding: '0 1rem',
-          }}
-        >
-          <div className="flex min-w-max gap-4 px-4 sm:grid sm:min-w-0 sm:grid-cols-3 sm:px-0">
-            {dataCardsSection}
-          </div>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          {dataCardsSection}
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <DataCard
@@ -342,45 +334,42 @@ export function MandateExplorerClient({
       <div className="mt-6 pt-4">
         {/* Section Title and Sort (mobile) + FilterControls */}
         <div className="mb-4">
-          <div className="mb-2 flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
-              <h2 className="text-2xl font-bold tracking-tight">
-                {explainerTexts.dataCards.sectionTitle}
-              </h2>
-            </div>
-            <div className="ml-auto flex items-center gap-2 lg:hidden">
-              <Select value={sortBy} onValueChange={handleSortChange}>
-                <SelectTrigger
-                  className="w-auto gap-2 border-0 px-2 text-sm font-medium text-muted-foreground shadow-none hover:bg-transparent hover:text-foreground [&_svg]:opacity-100"
-                  id="sort-by"
-                >
-                  Sort
-                </SelectTrigger>
-                <SelectContent align="end">
-                  {filters.keyword ? (
-                    <SelectItem value="default">Search Relevance</SelectItem>
-                  ) : null}
-                  <SelectItem value="citing_entities_desc">
-                    Number of citing entities ↓
-                  </SelectItem>
-                  <SelectItem value="citing_entities_asc">
-                    Number of citing entities ↑
-                  </SelectItem>
-                  <SelectItem value="citations_desc">Citations ↓</SelectItem>
-                  <SelectItem value="citations_asc">Citations ↑</SelectItem>
-                  <SelectItem value="year_desc">Year ↓</SelectItem>
-                  <SelectItem value="year_asc">Year ↑</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          <div className="mb-2">
+            <h2 className="text-2xl font-bold tracking-tight">
+              {explainerTexts.dataCards.sectionTitle}
+            </h2>
           </div>
           <FilterControls
             entitiesData={allEntities}
             allOrgans={allOrgans}
             budgetDocuments={filterOptions.budgetDocuments}
             toolbarSlot={
-              <div className="flex shrink-0 items-center gap-2">
+              <>
                 {modeToggle}
+                <Select value={sortBy} onValueChange={handleSortChange}>
+                  <SelectTrigger
+                    className="h-auto w-auto gap-1.5 rounded border-0 bg-transparent px-2 py-1 text-xs font-medium text-muted-foreground shadow-none ring-0 ring-offset-0 transition-colors hover:bg-accent hover:text-foreground focus:ring-0 focus:ring-offset-0 [&_svg]:size-3.5 [&_svg]:opacity-70"
+                    id="sort-by"
+                  >
+                    <ArrowUpDown className="size-3.5" />
+                    Sort
+                  </SelectTrigger>
+                  <SelectContent align="end">
+                    {filters.keyword ? (
+                      <SelectItem value="default">Search Relevance</SelectItem>
+                    ) : null}
+                    <SelectItem value="citing_entities_desc">
+                      Number of citing entities ↓
+                    </SelectItem>
+                    <SelectItem value="citing_entities_asc">
+                      Number of citing entities ↑
+                    </SelectItem>
+                    <SelectItem value="citations_desc">Citations ↓</SelectItem>
+                    <SelectItem value="citations_asc">Citations ↑</SelectItem>
+                    <SelectItem value="year_desc">Year ↓</SelectItem>
+                    <SelectItem value="year_asc">Year ↑</SelectItem>
+                  </SelectContent>
+                </Select>
                 <div className="hidden lg:block">
                   <ColumnPicker
                     visibleColumns={visibleColumns}
@@ -388,7 +377,7 @@ export function MandateExplorerClient({
                     onReset={handleResetColumns}
                   />
                 </div>
-              </div>
+              </>
             }
           />
         </div>

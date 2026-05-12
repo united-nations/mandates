@@ -88,9 +88,9 @@ export function FilterControls({
 
   return (
     <div>
-      {/* Search bar */}
-      <div className="mb-4 flex items-center gap-2">
-        <div className="relative grow">
+      {/* Search bar + toolbar */}
+      <div className="mb-4 flex flex-wrap items-center gap-2">
+        <div className="relative min-w-0 grow basis-48">
           <SearchInput
             id="keyword-search"
             placeholder={explainerTexts.filters.keywordSearch.placeholder}
@@ -112,7 +112,9 @@ export function FilterControls({
             }}
           />
         </div>
-        {toolbarSlot}
+        <div className="contents">
+          {toolbarSlot}
+        </div>
       </div>
 
       {/* Filter Chips */}
