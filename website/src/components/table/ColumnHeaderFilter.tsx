@@ -30,7 +30,6 @@ interface ColumnHeaderFilterProps {
   currentSort?: string
   filterOptions?: FilterOption[]
   yearRange?: { min: number; max: number }
-  locked?: boolean
 }
 
 export function ColumnHeaderFilter({
@@ -38,7 +37,6 @@ export function ColumnHeaderFilter({
   currentSort,
   filterOptions,
   yearRange,
-  locked,
 }: ColumnHeaderFilterProps) {
   const { filters, setFilter, clearFilter, setMultipleFilters } = useFilters()
 
@@ -92,7 +90,7 @@ export function ColumnHeaderFilter({
         </button>
       )}
 
-      {column.filterParam && column.filterType && !locked && (
+      {column.filterParam && column.filterType && (
         <FilterPopover
           column={column}
           isActive={isFilterActive}
@@ -111,12 +109,6 @@ export function ColumnHeaderFilter({
           clearFilter={(key) => clearFilter(key as FilterParamKey)}
           setMultipleFilters={setMultipleFilters}
         />
-      )}
-
-      {locked && isFilterActive && (
-        <div className="flex h-5 w-5 items-center justify-center rounded bg-un-blue text-white">
-          <Filter className="h-3 w-3" />
-        </div>
       )}
     </div>
   )

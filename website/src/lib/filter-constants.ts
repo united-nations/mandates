@@ -43,29 +43,10 @@ export const FILTER_ONLY_PARAMS = [
 // Parameters that are handled separately (pagination and sorting)
 export const CONTROL_PARAMS = ['sort_by', 'page', 'limit'] as const
 
-// Additional filter parameters for entity/organ pages (exclude the implicit ones)
-export const ADDITIONAL_FILTER_PARAMS = [
-  'crossCitingEntity',
-  'keyword',
-  'programme',
-  'subject',
-  'start_year',
-  'end_year',
-  'budget_document',
-  'document_type',
-  'agenda_item',
-  'min_citations',
-  'max_citations',
-  'sort_by',
-  'page',
-  'limit',
-] as const
-
 // Type utilities
 export type FilterParamKey = (typeof FILTER_PARAMS)[number]
 export type FilterOnlyParamKey = (typeof FILTER_ONLY_PARAMS)[number]
 export type ControlParamKey = (typeof CONTROL_PARAMS)[number]
-export type AdditionalFilterParamKey = (typeof ADDITIONAL_FILTER_PARAMS)[number]
 
 /**
  * Parse Next.js searchParams into a FilterOptions object.

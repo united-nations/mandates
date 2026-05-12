@@ -1,4 +1,3 @@
-import type { FilterType } from '@/contexts/FilterContext'
 import type { Mandate } from '@/types'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
@@ -71,66 +70,6 @@ export function safeHighlightSearchTerms(
 }
 
 /**
- * Get active filters text for sidebar descriptions
- * @param filters - Current filters
- * @param pageType - Type of page ('main' | 'entity' | 'organ')
- * @param entityFilter - Current entity filter (for entity pages)
- * @param organFilter - Current organ filter (for organ pages)
- * @returns Formatted text describing active filters, or empty string if none
- */
-export function getActiveFiltersText(
-  filters: FilterType,
-  pageType: 'main' | 'entity' | 'organ',
-  entityFilter?: string,
-  organFilter?: string
-): string {
-  const activeFilters: string[] = []
-
-  // Define which filters to check based on page type
-  const filtersToCheck = { ...filters }
-
-  // Exclude implicit filters and pagination
-  delete filtersToCheck.page
-  delete filtersToCheck.limit
-  delete filtersToCheck.sort_by
-
-  // Exclude implicit filters based on page type
-  if (pageType === 'entity' && entityFilter) {
-    // On entity page, exclude the entity filter itself
-    delete filtersToCheck.entity
-  } else if (pageType === 'organ' && organFilter) {
-    // On organ page, exclude the organ filter itself
-    delete filtersToCheck.organ
-  }
-
-  // Check each remaining filter
-  if (filtersToCheck.entity) activeFilters.push('entity')
-  if (filtersToCheck.organ) activeFilters.push('organ')
-  if (filtersToCheck.crossCitingEntity)
-    activeFilters.push('cross-citing entity')
-  if (filtersToCheck.keyword) activeFilters.push('keyword')
-  if (filtersToCheck.programme) activeFilters.push('programme')
-  if (filtersToCheck.subject) activeFilters.push('subject')
-  if (filtersToCheck.start_year || filtersToCheck.end_year)
-    activeFilters.push('year range')
-  if (filtersToCheck.budget_document) activeFilters.push('budget document')
-
-  if (activeFilters.length === 0) {
-    return ''
-  }
-
-  if (activeFilters.length === 1) {
-    return `(with ${activeFilters[0]} filter) `
-  }
-
-  if (activeFilters.length === 2) {
-    return `(with ${activeFilters[0]} and ${activeFilters[1]} filters) `
-  }
-
-  return `(with ${activeFilters.length} active filters) `
-}
-
-/**
  * Clean up a title by removing trailing punctuation and whitespace
  */
 function cleanTitle(title: string): string {
@@ -185,14 +124,9 @@ export function getDeliverableTypeLabel(type: string): string {
   return DELIVERABLE_TYPE_LABELS[type] || type
 }
 
-/**
- * Decode URL segments - used by all dynamic pages
- */
 export function decodeUrlSegments(segments: string | string[]): string {
   if (Array.isArray(segments)) {
-    // For mandate pages with multiple segments
     return segments.map((segment) => decodeURIComponent(segment)).join('/')
   }
-  // For entity/organ pages with single segment
   return decodeURIComponent(segments)
 }

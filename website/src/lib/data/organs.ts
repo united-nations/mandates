@@ -42,12 +42,3 @@ export async function getOrganMap(): Promise<Map<string, Organ>> {
   return new Map(organs.map((o) => [o.short, o]))
 }
 
-/**
- * Get a single organ by its short name.
- */
-export async function getOrganByShortName(
-  shortName: string
-): Promise<Organ | null> {
-  const map = await getOrganMap()
-  return map.get(shortName) ?? null
-}

@@ -241,7 +241,6 @@ export function MandateExplorerClient({
         <div className="mb-4">
           <div className="mb-2 flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              <FileText className="h-6 w-6 text-un-blue" />
               <h2 className="text-2xl font-bold tracking-tight">
                 {explainerTexts.dataCards.sectionTitle}
               </h2>

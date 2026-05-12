@@ -88,10 +88,6 @@ export function MandateDataTable({
     }
   }
 
-  const isColumnLocked = (_columnId: string) => {
-    return false
-  }
-
   const findOrganLong = (short: string) =>
     organsData.find((o) => o.short === short)?.long || short
 
@@ -120,7 +116,6 @@ export function MandateDataTable({
                       currentSort={currentSort}
                       filterOptions={getFilterOptions(col.id)}
                       yearRange={filterOptions.yearRange}
-                      locked={isColumnLocked(col.id)}
                     />
                   </TableHead>
                 ))}

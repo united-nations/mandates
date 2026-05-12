@@ -20,11 +20,9 @@ import {
 import { FilterProvider } from '@/contexts/FilterContext'
 import {
   BookOpen,
-  Building2,
   ExternalLink,
   GitCompare,
   Home,
-  Info,
   Menu,
   MessageCircle,
 } from 'lucide-react'
@@ -74,7 +72,6 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
                             className="inline-flex h-auto cursor-pointer items-center gap-1 rounded-full border border-slate-200 bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-200 hover:text-slate-700"
                           >
                             work in progress
-                            <Info className="h-3 w-3" />
                           </Button>
                         </TooltipTrigger>
                         <TooltipContent side="bottom" className="max-w-56">
@@ -132,29 +129,6 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
                         </Link>
                       )}
                     </DropdownMenuItem>
-                    {/* <DropdownMenuItem
-                      asChild={pathname !== '/intergov'}
-                      className={
-                        pathname === '/intergov'
-                          ? 'cursor-default bg-un-blue/10 font-medium text-un-blue'
-                          : ''
-                      }
-                    >
-                      {pathname === '/intergov' ? (
-                        <span className="flex items-center gap-2">
-                          <Building2 className="h-4 w-4" />
-                          Intergovernmental Organs & Bodies
-                        </span>
-                      ) : (
-                        <Link
-                          href="/intergov"
-                          className="flex items-center gap-2"
-                        >
-                          <Building2 className="h-4 w-4" />
-                          Intergovernmental Organs & Bodies
-                        </Link>
-                      )}
-                    </DropdownMenuItem> */}
                     <DropdownMenuItem
                       asChild={pathname !== '/methodology'}
                       className={
