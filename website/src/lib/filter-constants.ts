@@ -18,6 +18,8 @@ export const FILTER_PARAMS = [
   'agenda_item',
   'min_citations',
   'max_citations',
+  'mode',
+  'ppb_version',
   'sort_by',
   'page',
   'limit',
@@ -41,7 +43,7 @@ export const FILTER_ONLY_PARAMS = [
 ] as const
 
 // Parameters that are handled separately (pagination and sorting)
-export const CONTROL_PARAMS = ['sort_by', 'page', 'limit'] as const
+export const CONTROL_PARAMS = ['mode', 'ppb_version', 'sort_by', 'page', 'limit'] as const
 
 // Type utilities
 export type FilterParamKey = (typeof FILTER_PARAMS)[number]
@@ -61,6 +63,8 @@ export function parseSearchParams(
   }
 
   return {
+    mode: (getString('mode') as 'active_mandates' | 'all_resolutions') || 'active_mandates',
+    ppb_version: getString('ppb_version') || 'ppb2026',
     entity: getString('entity'),
     organ: getString('organ'),
     crossCitingEntity: getString('crossCitingEntity'),
@@ -75,7 +79,7 @@ export function parseSearchParams(
     full_document_symbol: getString('full_document_symbol'),
     min_citations: getString('min_citations'),
     max_citations: getString('max_citations'),
-    sort_by: getString('sort_by') || 'citing_entities_desc',
+    sort_by: getString('sort_by') || undefined,
     page: getString('page') || '1',
     limit: getString('limit') || '25',
   }

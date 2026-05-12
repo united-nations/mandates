@@ -14,10 +14,21 @@ import {
   SelectItem,
   SelectTrigger,
 } from '@/components/ui/select'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { useFilters } from '@/contexts/FilterContext'
 import { explainerTexts } from '@/lib/en_text_contents'
 import type { ApiResponse } from '@/types'
-import { Building, FileText, Landmark, Quote } from 'lucide-react'
+import { Building, ChevronDown, FileText, Landmark, Quote } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
 import { useCallback, useState } from 'react'
 import { ColumnPicker } from './table/ColumnPicker'
@@ -33,20 +44,22 @@ interface MandateExplorerClientProps {
 export function MandateExplorerClient({
   data,
 }: MandateExplorerClientProps) {
-  const { filters, setFilter, clearFilter } = useFilters()
+  const { filters, setFilter, setMultipleFilters, clearFilter } = useFilters()
   const searchParams = useSearchParams()
 
   const [sourceDocumentsPopover, setSourceDocumentsPopover] = useState(false)
   const [unOrgansPopover, setUnOrgansPopover] = useState(false)
   const [unEntitiesPopover, setUnEntitiesPopover] = useState(false)
   const [citationsPopover, setCitationsPopover] = useState(false)
+  const [ppbDropdownOpen, setPpbDropdownOpen] = useState(false)
   const { visibleColumns, handleToggleColumn, handleResetColumns } =
     useColumnVisibility()
 
   const pageSize = parseInt(searchParams.get('limit') || '25', 10)
+  const defaultSort = filters.mode === 'all_resolutions' ? 'year_desc' : 'citing_entities_desc'
   const sortBy =
     searchParams.get('sort_by') ||
-    (filters.keyword ? 'default' : 'citing_entities_desc')
+    (filters.keyword ? 'default' : defaultSort)
 
   const handleSortChange = useCallback(
     (value: string) => {
@@ -200,6 +213,96 @@ export function MandateExplorerClient({
     </>
   )
 
+  const handleModeChange = useCallback(
+    (value: string) => {
+      setFilter('mode', value)
+    },
+    [setFilter]
+  )
+
+  const currentMode = filters.mode || 'active_mandates'
+  const currentPpbVersion = filters.ppb_version || 'ppb2026'
+
+  const ppbVersions = [
+    { value: 'ppb2026', short: 'PPB 2026', long: 'Proposed Programme Budget for 2026 & Budget of Peacekeeping Operations 2025/26' },
+    { value: 'ppb2027', short: 'PPB 2027', long: 'Incomplete Preview' },
+  ]
+
+  const activePpb = ppbVersions.find((v) => v.value === currentPpbVersion) || ppbVersions[0]
+
+  const ppbDropdown = (
+    <DropdownMenu open={ppbDropdownOpen} onOpenChange={setPpbDropdownOpen}>
+      <DropdownMenuTrigger asChild>
+        <button
+          className="inline-flex items-center gap-0.5 border-b border-current pb-px"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {activePpb.short}
+          <ChevronDown className="h-3 w-3" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" className="w-64">
+        {ppbVersions.map((v) => (
+          <DropdownMenuItem
+            key={v.value}
+            onClick={() => setMultipleFilters({ mode: 'active_mandates', ppb_version: v.value })}
+            className={`flex flex-col items-start gap-0.5 ${currentPpbVersion === v.value ? 'bg-accent' : ''}`}
+          >
+            <span className="font-medium">{v.short}</span>
+            <span className="text-xs text-muted-foreground">{v.long}</span>
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+
+  const modeToggle = (
+    <div className="inline-flex h-8 items-center rounded-md bg-muted p-0.5">
+      <Tooltip open={ppbDropdownOpen ? false : undefined} key={ppbDropdownOpen ? 'dropdown-open' : 'dropdown-closed'}>
+        <TooltipTrigger asChild>
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={() => { if (!ppbDropdownOpen) handleModeChange('active_mandates') }}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleModeChange('active_mandates') }}
+            className={`inline-flex h-7 cursor-pointer items-center gap-1 rounded-sm px-2.5 text-xs font-medium transition-all ${
+              currentMode === 'active_mandates'
+                ? 'bg-background text-foreground shadow'
+                : 'text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            <span>Cited Active Mandates</span>
+            {ppbDropdown}
+          </div>
+        </TooltipTrigger>
+        <TooltipContent side="bottom" className="max-w-xs">
+          Documents cited by UN entities in the {activePpb.long}.
+          Includes resolutions, decisions, conventions, and other formal
+          documents with full citation data.
+        </TooltipContent>
+      </Tooltip>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button
+            onClick={() => handleModeChange('all_resolutions')}
+            className={`inline-flex h-7 items-center rounded-sm px-2.5 text-xs font-medium transition-all ${
+              currentMode === 'all_resolutions'
+                ? 'bg-background text-foreground shadow'
+                : 'text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            All Resolutions
+          </button>
+        </TooltipTrigger>
+        <TooltipContent side="bottom" className="max-w-xs">
+          ~37,000 resolutions from the UN Digital Library (1946–present).
+          Where a resolution is also cited in a PPB, entity and citation
+          data is available.
+        </TooltipContent>
+      </Tooltip>
+    </div>
+  )
+
   return (
     <div>
       {/* Summary Cards */}
@@ -276,12 +379,15 @@ export function MandateExplorerClient({
             allOrgans={allOrgans}
             budgetDocuments={filterOptions.budgetDocuments}
             toolbarSlot={
-              <div className="hidden shrink-0 lg:block">
-                <ColumnPicker
-                  visibleColumns={visibleColumns}
-                  onToggle={handleToggleColumn}
-                  onReset={handleResetColumns}
-                />
+              <div className="flex shrink-0 items-center gap-2">
+                {modeToggle}
+                <div className="hidden lg:block">
+                  <ColumnPicker
+                    visibleColumns={visibleColumns}
+                    onToggle={handleToggleColumn}
+                    onReset={handleResetColumns}
+                  />
+                </div>
               </div>
             }
           />

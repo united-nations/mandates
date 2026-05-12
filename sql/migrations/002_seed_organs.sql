@@ -81,64 +81,82 @@ values (
         13
     ),
     (
+        'HRB',
+        'Human Rights Bodies',
+        'https://www.ohchr.org/en/treaty-bodies',
+        14
+    ),
+    (
         'HRC',
         'Human Rights Council',
         'https://www.ohchr.org/hrbodies/hrc/home',
-        14
+        15
     ),
     (
         'INCB',
         'International Narcotics Control Board',
         'https://www.incb.org/',
-        15
+        16
     ),
     (
         'Other',
         'Other United Nations Bodies',
         null,
-        16
+        17
+    ),
+    (
+        'PF',
+        'Programmes and Funds',
+        null,
+        18
     ),
     (
         'SC',
         'Security Council',
         'https://main.un.org/securitycouncil/',
-        17
+        19
+    ),
+    (
+        'TC',
+        'Trusteeship Council',
+        'https://www.un.org/en/about-us/trusteeship-council',
+        20
     ),
     (
         'UNCLOS',
         'United Nations Convention on the Law of the Sea',
         'https://www.imo.org/en/ourwork/legal/pages/unitednationsconventiononthelawofsea.aspx',
-        18
+        21
     ),
     (
         'UNCTAD',
         'United Nations Conference on Trade and Development',
         null,
-        19
+        22
     ),
     (
         'UNEA',
         'United Nations Environment Assembly',
         'https://www.unep.org/environmentassembly/',
-        20
+        23
     ),
     (
         'UNHA and Other',
         'United Nations Habitat Assembly and Other Related Bodies',
         'https://unhabitat.org/governance/un-habitat-assembly',
-        21
+        24
     ),
     (
         'UNTOC COP',
         'Conference of the Parties to the United Nations Convention against Transnational Organized Crime',
         'https://www.unodc.org/unodc/en/organized-crime/intro/conference-of-the-parties.html',
-        22
+        25
     ),
     (
         'WTO',
         'World Trade Organization',
         'https://www.wto.org/',
-        23
+        26
     ) on conflict (short) do
 update
 set long = excluded.long,

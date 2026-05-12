@@ -30,6 +30,8 @@ export interface FilterType {
   agenda_item?: string
   min_citations?: string
   max_citations?: string
+  mode?: string
+  ppb_version?: string
   sort_by?: string
   page?: string
   limit?: string
@@ -111,8 +113,12 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
   const clearAllFilters = () => {
     const newParams = new URLSearchParams()
 
+    const mode = searchParams.get('mode')
+    const ppbVersion = searchParams.get('ppb_version')
     const page = searchParams.get('page')
     const limit = searchParams.get('limit')
+    if (mode) newParams.set('mode', mode)
+    if (ppbVersion) newParams.set('ppb_version', ppbVersion)
     if (page && page !== '1') newParams.set('page', page)
     if (limit) newParams.set('limit', limit)
 

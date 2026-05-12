@@ -103,3 +103,42 @@ create table ppb2026.source_documents_metadata_clean (
     symbol_without_prefix_split text,
     symbol_without_prefix_split_n double precision
 );
+
+-- Unified view: PPB source documents + Digital Library resolutions
+create or replace view public.unified_documents as
+-- PPB source documents
+select
+    ppb_full_document_symbol,
+    ppb_description,
+    ppb_link,
+    ppb_year,
+    ppb_body,
+    ppb_type,
+    true as is_ppb
+from ppb2026.source_documents
+union all
+-- Digital Library resolutions not already in PPB
+select
+    dl.document_symbol as ppb_full_document_symbol,
+    dl.title as ppb_description,
+    null as ppb_link,
+    extract(year from dl.date_publication)::smallint as ppb_year,
+    coalesce(
+        o.short,
+        case dl.un_body
+            when 'Other UN Bodies and Entities' then 'Other'
+            else null
+        end
+    ) as ppb_body,
+    'Resolutions' as ppb_type,
+    false as is_ppb
+from digitallibrary.documents dl
+left join ppb2026.organs o on o.long = dl.un_body
+where dl.document_symbol ~ '/RES/'
+    and dl.deleted_at is null
+    and not exists (
+        select 1 from ppb2026.source_documents p
+        where p.ppb_full_document_symbol = dl.document_symbol
+    );
+
+grant select on public.unified_documents to mandates_readonly;

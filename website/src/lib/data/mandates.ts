@@ -64,6 +64,8 @@ interface MandateListRow {
   num_entities: string
   num_citations: string
   entities: string[] | null
+  programmes: string[] | null
+  origin_documents: string[] | null
   total_count: string
   document_symbol: string | null
   uniform_title: string | null
@@ -141,6 +143,31 @@ function buildFilterClauses(
   const clauses: string[] = []
   const params: SqlParam[] = []
   let paramIndex = paramOffset + 1
+
+  // Mode filter: active mandates filters by PPB version via citation origin_document
+  if (filters.mode !== 'all_resolutions') {
+    const version = filters.ppb_version || 'ppb2026'
+    if (version === 'ppb2026') {
+      clauses.push(`
+        EXISTS (
+          SELECT 1 FROM ppb2026.source_document_citations c_ppb
+          WHERE c_ppb.ppb_full_document_symbol = d.ppb_full_document_symbol
+          AND (c_ppb.origin_document ~ '^PPB 2026$' OR c_ppb.origin_document ~ '^PKM 25/26')
+        )
+      `)
+    } else {
+      clauses.push(`
+        EXISTS (
+          SELECT 1 FROM ppb2026.source_document_citations c_ppb
+          WHERE c_ppb.ppb_full_document_symbol = d.ppb_full_document_symbol
+          AND c_ppb.origin_document ~ $${paramIndex}
+        )
+      `)
+      const pattern = version === 'ppb2027' ? '^PPB 2027$' : `^${version}$`
+      params.push(pattern)
+      paramIndex++
+    }
+  }
 
   // Entity filter - document must have a citation by this entity
   if (filters.entity) {
@@ -362,13 +389,18 @@ export async function getMandates(
       END AS keyword_rank`
   }
 
+  // Default sort: year_desc for all_resolutions (most docs have 0 citations),
+  // citing_entities_desc for active_mandates
+  const effectiveSortBy = filters.sort_by
+    || (filters.mode === 'all_resolutions' ? 'year_desc' : 'citing_entities_desc')
+
   // When keyword is active with no explicit sort, rank by relevance only.
   // When an explicit sort_by is chosen, use relevance as primary then the chosen sort.
   const orderBy = filters.keyword
     ? filters.sort_by
       ? `ORDER BY keyword_rank ASC, ${buildOrderByClause(filters.sort_by).replace('ORDER BY ', '')}`
       : 'ORDER BY keyword_rank ASC'
-    : buildOrderByClause(filters.sort_by)
+    : buildOrderByClause(effectiveSortBy)
 
   // Main query with aggregations
   const query = `
@@ -382,8 +414,10 @@ export async function getMandates(
         d.ppb_type,
         COUNT(DISTINCT c.entity) FILTER (WHERE c.entity IS NOT NULL) as num_entities,
         COUNT(c.id) as num_citations,
-        ARRAY_AGG(DISTINCT c.entity) FILTER (WHERE c.entity IS NOT NULL) as entities
-      FROM ppb2026.source_documents d
+        ARRAY_AGG(DISTINCT c.entity) FILTER (WHERE c.entity IS NOT NULL) as entities,
+        ARRAY_AGG(DISTINCT c.programme_title) FILTER (WHERE c.programme_title IS NOT NULL AND c.programme_title != '') as programmes,
+        ARRAY_AGG(DISTINCT c.origin_document) FILTER (WHERE c.origin_document IS NOT NULL) as origin_documents
+      FROM public.unified_documents d
       LEFT JOIN ppb2026.source_document_citations c
         ON d.ppb_full_document_symbol = c.ppb_full_document_symbol
       ${whereClause}
@@ -404,7 +438,8 @@ export async function getMandates(
       m.subject_terms,
       m.date_year,
       m.document_type,
-      m.issuing_body
+      m.issuing_body,
+      m.agenda_item_title
       ${keywordRankExpr}
     FROM counted c
     LEFT JOIN ppb2026.source_documents_metadata_clean m
@@ -441,11 +476,24 @@ export async function getMandates(
     subject_headings: parsePostgresArray(row.subject_terms)
       .map(s => titleCase(s.toLowerCase())),
     issuing_body: row.issuing_body || null,
+    programme: (row.programmes && row.programmes.length > 0) ? row.programmes.join(', ') : undefined,
     agenda_document_symbols: [],
     agenda_item_numbers: [],
-    agenda_item_titles: [],
-    // Empty citation_info - will be loaded separately if needed
-    citation_info: [],
+    agenda_item_titles: parsePostgresArray(row.agenda_item_title),
+    citation_info: (row.origin_documents || []).map((od: string) => ({
+      origin_document: od,
+      budget_part: '',
+      section: '',
+      section_title: '',
+      entity: '',
+      entity_long: '',
+      programme: null,
+      programme_title: '',
+      'sub-programme': null,
+      component: '',
+      description: '',
+      part_in_document: '',
+    })),
   }))
 
   return { mandates, totalCount }
@@ -518,7 +566,7 @@ export async function getMandateBySymbol(symbol: string): Promise<Mandate | null
       m.agenda_document_symbol,
       m.agenda_item_number,
       m.agenda_item_title
-    FROM ppb2026.source_documents d
+    FROM public.unified_documents d
     LEFT JOIN ppb2026.source_document_citations c
       ON d.ppb_full_document_symbol = c.ppb_full_document_symbol
     LEFT JOIN ppb2026.source_documents_metadata_clean m
@@ -586,7 +634,7 @@ export async function getMandateCounts(filters: FilterOptions = {}): Promise<{
         d.ppb_body,
         COUNT(c.id) as citation_count,
         COUNT(DISTINCT c.entity) FILTER (WHERE c.entity IS NOT NULL) as entity_count
-      FROM ppb2026.source_documents d
+      FROM public.unified_documents d
       LEFT JOIN ppb2026.source_document_citations c
         ON d.ppb_full_document_symbol = c.ppb_full_document_symbol
       ${whereClause}
@@ -625,7 +673,7 @@ export async function getEntityCounts(filters: FilterOptions = {}): Promise<Enti
   const query = `
     WITH filtered_docs AS (
       SELECT d.ppb_full_document_symbol
-      FROM ppb2026.source_documents d
+      FROM public.unified_documents d
       LEFT JOIN ppb2026.source_document_citations c
         ON d.ppb_full_document_symbol = c.ppb_full_document_symbol
       ${whereClause}
@@ -667,7 +715,7 @@ export async function getOrganCounts(filters: FilterOptions = {}): Promise<Organ
     SELECT
       d.ppb_body as short,
       COUNT(DISTINCT d.ppb_full_document_symbol) as count
-    FROM ppb2026.source_documents d
+    FROM public.unified_documents d
     LEFT JOIN ppb2026.source_document_citations c
       ON d.ppb_full_document_symbol = c.ppb_full_document_symbol
     ${whereClause}
@@ -736,7 +784,7 @@ export async function getProgrammeOptions(filters: FilterOptions = {}): Promise<
   const query = `
     WITH filtered_docs AS (
       SELECT d.ppb_full_document_symbol
-      FROM ppb2026.source_documents d
+      FROM public.unified_documents d
       LEFT JOIN ppb2026.source_document_citations c
         ON d.ppb_full_document_symbol = c.ppb_full_document_symbol
       ${whereClause}
@@ -773,7 +821,7 @@ export async function getSubjectOptions(filters: FilterOptions = {}): Promise<{ 
   const query = `
     WITH filtered_docs AS (
       SELECT d.ppb_full_document_symbol
-      FROM ppb2026.source_documents d
+      FROM public.unified_documents d
       LEFT JOIN ppb2026.source_document_citations c
         ON d.ppb_full_document_symbol = c.ppb_full_document_symbol
       ${whereClause}
@@ -822,7 +870,7 @@ export async function getDocumentTypeOptions(filters: FilterOptions = {}): Promi
   const query = `
     WITH filtered_docs AS (
       SELECT d.ppb_full_document_symbol, d.ppb_type
-      FROM ppb2026.source_documents d
+      FROM public.unified_documents d
       LEFT JOIN ppb2026.source_document_citations c
         ON d.ppb_full_document_symbol = c.ppb_full_document_symbol
       ${whereClause}
@@ -857,7 +905,7 @@ export async function getAgendaItemOptions(filters: FilterOptions = {}): Promise
   const query = `
     WITH filtered_docs AS (
       SELECT d.ppb_full_document_symbol
-      FROM ppb2026.source_documents d
+      FROM public.unified_documents d
       LEFT JOIN ppb2026.source_document_citations c
         ON d.ppb_full_document_symbol = c.ppb_full_document_symbol
       ${whereClause}
@@ -904,7 +952,7 @@ export async function getYearStats(filters: FilterOptions = {}): Promise<{
   const query = `
     WITH filtered_docs AS (
       SELECT d.ppb_full_document_symbol, d.ppb_year
-      FROM ppb2026.source_documents d
+      FROM public.unified_documents d
       LEFT JOIN ppb2026.source_document_citations c
         ON d.ppb_full_document_symbol = c.ppb_full_document_symbol
       ${whereClause}
@@ -956,7 +1004,7 @@ export async function getCitationDistribution(filters: FilterOptions = {}): Prom
   const query = `
     WITH doc_citations AS (
       SELECT d.ppb_full_document_symbol, COUNT(c.id) as citation_count
-      FROM ppb2026.source_documents d
+      FROM public.unified_documents d
       LEFT JOIN ppb2026.source_document_citations c
         ON d.ppb_full_document_symbol = c.ppb_full_document_symbol
       ${whereClause}

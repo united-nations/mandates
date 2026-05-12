@@ -22,6 +22,7 @@ import type { ColumnDef } from './MandateColumns'
 
 interface FilterOption {
   value: string
+  label?: string
   count?: number
 }
 
@@ -233,7 +234,7 @@ function PillFilter({
   const filtered = useMemo(() => {
     if (!searchQuery) return options
     const q = searchQuery.toLowerCase()
-    return options.filter((o) => o.value.toLowerCase().includes(q))
+    return options.filter((o) => (o.label ?? o.value).toLowerCase().includes(q))
   }, [options, searchQuery])
 
   const displayed =
@@ -282,7 +283,7 @@ function PillFilter({
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
-              <span>{titleCase(option.value)}</span>
+              <span>{option.label ?? titleCase(option.value)}</span>
               {option.count !== undefined && (
                 <span
                   className={`text-[9px] ${isSelected ? 'text-blue-200' : 'text-gray-400'}`}
@@ -415,7 +416,7 @@ function SimpleSelectFilter({
                   : 'hover:bg-accent hover:text-accent-foreground'
               }`}
             >
-              {option.value}
+              {option.label ?? option.value}
             </button>
           )
         })}

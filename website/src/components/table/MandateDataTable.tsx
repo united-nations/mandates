@@ -81,7 +81,7 @@ export function MandateDataTable({
       case 'budget_document':
         return filterOptions.budgetDocuments.map((d) => ({
           value: d.slug,
-          count: undefined,
+          label: d.display_name,
         }))
       default:
         return undefined
@@ -160,6 +160,34 @@ export function MandateDataTable({
         </TooltipProvider>
       </div>
     </div>
+  )
+}
+
+function PillList({ items }: { items: string[] }) {
+  if (items.length === 0) return null
+  const pill = (text: string, i: number) => (
+    <span
+      key={i}
+      className="shrink-0 rounded-full bg-gray-100 px-1.5 py-0.5 text-[10px] text-gray-600"
+    >
+      {text}
+    </span>
+  )
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <div className="max-w-[200px] overflow-hidden cursor-default">
+          <div className="flex items-center gap-1">
+            {items.map(pill)}
+          </div>
+        </div>
+      </TooltipTrigger>
+      <TooltipContent className="max-w-sm bg-white border shadow-lg p-2">
+        <div className="flex flex-wrap gap-1">
+          {items.map(pill)}
+        </div>
+      </TooltipContent>
+    </Tooltip>
   )
 }
 
@@ -301,45 +329,13 @@ function CellContent({
         <ChevronRight className="h-4 w-4 text-muted-foreground" />
       )
 
-    case 'subjects': {
-      const subjects = mandate.subject_headings || []
-      if (subjects.length === 0) return null
-      return (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div className="max-w-[200px] overflow-hidden cursor-default">
-              <div className="flex items-center gap-1">
-                {subjects.map((s) => (
-                  <span
-                    key={s}
-                    className="shrink-0 rounded-full bg-gray-100 px-1.5 py-0.5 text-[10px] text-gray-600"
-                  >
-                    {titleCase(s)}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </TooltipTrigger>
-          <TooltipContent className="max-w-sm bg-white border shadow-lg p-2">
-            <div className="flex flex-wrap gap-1">
-              {subjects.map((s) => (
-                <span
-                  key={s}
-                  className="rounded-full bg-gray-100 px-1.5 py-0.5 text-[10px] text-gray-600"
-                >
-                  {titleCase(s)}
-                </span>
-              ))}
-            </div>
-          </TooltipContent>
-        </Tooltip>
-      )
-    }
+    case 'subjects':
+      return <PillList items={(mandate.subject_headings || []).map(s => titleCase(s))} />
 
     case 'programme':
-      return mandate.programme ? (
-        <span className="text-xs">{mandate.programme}</span>
-      ) : null
+      return mandate.programme
+        ? <PillList items={mandate.programme.split(', ')} />
+        : null
 
     case 'budget_document': {
       if (!mandate.citation_info || mandate.citation_info.length === 0)
@@ -355,9 +351,7 @@ function CellContent({
           return bd?.display_name || doc
         })
         .filter((v, i, a) => a.indexOf(v) === i)
-      return (
-        <span className="text-xs">{matched.join(', ')}</span>
-      )
+      return <PillList items={matched} />
     }
 
     case 'document_type':
@@ -365,22 +359,8 @@ function CellContent({
         <span className="text-xs">{mandate.type}</span>
       ) : null
 
-    case 'agenda_item': {
-      const items = mandate.agenda_item_titles || []
-      if (items.length === 0) return null
-      return (
-        <div className="flex flex-wrap gap-1">
-          {items.map((item, i) => (
-            <span
-              key={i}
-              className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] text-gray-700"
-            >
-              {item}
-            </span>
-          ))}
-        </div>
-      )
-    }
+    case 'agenda_item':
+      return <PillList items={mandate.agenda_item_titles || []} />
 
     default:
       return null

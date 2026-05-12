@@ -4,6 +4,12 @@
 -- Add new rows here when new budget documents become available.
 insert into ppb2026.budget_documents (slug, display_name, match_pattern, sort_order)
 values (
+        'ppb2027',
+        'Proposed Programme Budget for 2027',
+        '^PPB 2027$',
+        0
+    ),
+    (
         'ppb2026',
         'Proposed Programme Budget for 2026',
         '^PPB 2026$',

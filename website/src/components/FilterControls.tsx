@@ -69,6 +69,8 @@ export function FilterControls({
     delete displayFilters.limit
     delete displayFilters.sort_by
     delete displayFilters.keyword
+    delete displayFilters.mode
+    delete displayFilters.ppb_version
 
     return displayFilters
   }

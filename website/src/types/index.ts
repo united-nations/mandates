@@ -130,6 +130,8 @@ export interface FilterOptions {
   full_document_symbol?: string
   min_citations?: string
   max_citations?: string
+  mode?: 'active_mandates' | 'all_resolutions'
+  ppb_version?: string
   sort_by?: string
   page?: string
   limit?: string
