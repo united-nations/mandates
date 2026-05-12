@@ -26,10 +26,11 @@ export function ExplainerText() {
         >
           mandate implementation
         </Link>
-        . <br />
+        .
+        <br />
         <Link
           href="/methodology"
-          className="inline text-sm font-bold text-un-blue underline transition-colors hover:text-shuttle-gray"
+          className="mt-1 inline-block font-bold text-un-blue no-underline transition-colors hover:text-shuttle-gray"
         >
           Learn More
         </Link>

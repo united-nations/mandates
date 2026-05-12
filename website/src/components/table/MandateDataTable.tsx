@@ -219,7 +219,12 @@ function CellContent({
       return mandate.body ? (
         <Tooltip>
           <TooltipTrigger asChild>
-            <span>{mandate.body}</span>
+            <Badge
+              variant="secondary"
+              className="border-0 bg-gray-200! text-[10px] font-medium text-gray-600! whitespace-nowrap"
+            >
+              {mandate.body}
+            </Badge>
           </TooltipTrigger>
           <TooltipContent>
             <p>{findOrganLong(mandate.body)}</p>

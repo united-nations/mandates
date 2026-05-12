@@ -1,5 +1,6 @@
 'use client'
 
+import { Badge } from '@/components/ui/badge'
 import { useFilters } from '@/contexts/FilterContext'
 import type { Entity, Mandate, Organ } from '@/types'
 import { ChevronRight } from 'lucide-react'
@@ -44,7 +45,12 @@ export function MandateCompactList({
               {mandate.body && (
                 <>
                   <span className="text-gray-300">·</span>
-                  <span>{mandate.body}</span>
+                  <Badge
+                    variant="secondary"
+                    className="border-0 bg-gray-200! text-[10px] font-medium text-gray-600! whitespace-nowrap"
+                  >
+                    {mandate.body}
+                  </Badge>
                 </>
               )}
               {mandate.year && mandate.year !== '-' && (
