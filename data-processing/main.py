@@ -2,6 +2,7 @@ from ppb_processing.a_download import download_ppb_docs
 from ppb_processing.b_parse_downloaded import parse_ppb_docs
 from ppb_processing.c_extract_parsed import extract
 from ppb_processing.d_validate_extracted import validate
+from ppb_processing.e_export_excel import export_excel
 
 if __name__ == "__main__":
     year = 2027
@@ -14,3 +15,5 @@ if __name__ == "__main__":
     extract(year)
     # d
     validate(year)
+    # e
+    export_excel(year, symbol)
