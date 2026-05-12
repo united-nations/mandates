@@ -9,12 +9,6 @@ import { PopoverFilterList } from '@/components/PopoverFilterList'
 import { CitationDistribution } from '@/components/SidebarCitationDistribution'
 import { DocumentTypeSidebar } from '@/components/SidebarDocumentTypeList'
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-} from '@/components/ui/select'
-import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
@@ -28,7 +22,7 @@ import {
 import { useFilters } from '@/contexts/FilterContext'
 import { explainerTexts } from '@/lib/en_text_contents'
 import type { ApiResponse } from '@/types'
-import { ArrowUpDown, Building, ChevronDown, FileText, Landmark, Quote } from 'lucide-react'
+import { Building, ChevronDown, FileText, Landmark, Quote } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
 import { useCallback, useState } from 'react'
 import { ColumnPicker } from './table/ColumnPicker'
@@ -44,7 +38,7 @@ interface MandateExplorerClientProps {
 export function MandateExplorerClient({
   data,
 }: MandateExplorerClientProps) {
-  const { filters, setFilter, setMultipleFilters, clearFilter } = useFilters()
+  const { filters, setFilter, setMultipleFilters } = useFilters()
   const searchParams = useSearchParams()
 
   const [sourceDocumentsPopover, setSourceDocumentsPopover] = useState(false)
@@ -56,22 +50,6 @@ export function MandateExplorerClient({
     useColumnVisibility()
 
   const pageSize = parseInt(searchParams.get('limit') || '25', 10)
-  const defaultSort = filters.mode === 'all_resolutions' ? 'year_desc' : 'citing_entities_desc'
-  const sortBy =
-    searchParams.get('sort_by') ||
-    (filters.keyword ? 'default' : defaultSort)
-
-  const handleSortChange = useCallback(
-    (value: string) => {
-      if (value === 'default') {
-        clearFilter('sort_by')
-      } else {
-        setFilter('sort_by', value)
-      }
-    },
-    [setFilter, clearFilter]
-  )
-
   const { mandates, pagination, counts, filterOptions, reference, sidebar } =
     data
   const allOrgans = reference?.organs || []
@@ -346,30 +324,6 @@ export function MandateExplorerClient({
             toolbarSlot={
               <>
                 {modeToggle}
-                <Select value={sortBy} onValueChange={handleSortChange}>
-                  <SelectTrigger
-                    className="h-auto w-auto gap-1.5 rounded border-0 bg-transparent px-2 py-1 text-xs font-medium text-muted-foreground shadow-none ring-0 ring-offset-0 transition-colors hover:bg-accent hover:text-foreground focus:ring-0 focus:ring-offset-0 [&_svg]:size-3.5 [&_svg]:opacity-70"
-                    id="sort-by"
-                  >
-                    <ArrowUpDown className="size-3.5" />
-                    Sort
-                  </SelectTrigger>
-                  <SelectContent align="end">
-                    {filters.keyword ? (
-                      <SelectItem value="default">Search Relevance</SelectItem>
-                    ) : null}
-                    <SelectItem value="citing_entities_desc">
-                      Number of citing entities ↓
-                    </SelectItem>
-                    <SelectItem value="citing_entities_asc">
-                      Number of citing entities ↑
-                    </SelectItem>
-                    <SelectItem value="citations_desc">Citations ↓</SelectItem>
-                    <SelectItem value="citations_asc">Citations ↑</SelectItem>
-                    <SelectItem value="year_desc">Year ↓</SelectItem>
-                    <SelectItem value="year_asc">Year ↑</SelectItem>
-                  </SelectContent>
-                </Select>
                 <div className="hidden lg:block">
                   <ColumnPicker
                     visibleColumns={visibleColumns}
