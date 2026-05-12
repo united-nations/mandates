@@ -3,6 +3,7 @@
 import { useFilters } from '@/contexts/FilterContext'
 import type { Entity, Mandate, Organ } from '@/types'
 import { ChevronRight } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { getMandateUrl } from './MandateColumns'
 
 interface MandateCompactListProps {
@@ -15,11 +16,11 @@ export function MandateCompactList({
   mandates,
 }: MandateCompactListProps) {
   const { isPending } = useFilters()
+  const router = useRouter()
 
   const handleClick = (mandate: Mandate, e: React.MouseEvent) => {
     e.preventDefault()
-    sessionStorage.setItem('mandateReturnUrl', window.location.href)
-    window.open(getMandateUrl(mandate.full_document_symbol), '_blank')
+    router.push(getMandateUrl(mandate.full_document_symbol))
   }
 
   return (

@@ -73,13 +73,13 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
                             variant="ghost"
                             className="inline-flex h-auto cursor-pointer items-center gap-1 rounded-full border border-slate-200 bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-200 hover:text-slate-700"
                           >
-                            beta version
+                            work in progress
                             <Info className="h-3 w-3" />
                           </Button>
                         </TooltipTrigger>
                         <TooltipContent side="bottom" className="max-w-56">
                           <p className="text-sm">
-                            This beta version focuses on data about the UN
+                            This version focuses on data about the UN
                             secretariat.
                             <br />
                             Go to the{' '}
@@ -103,11 +103,12 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="ghost"
-                      size="icon"
+                      size="sm"
                       aria-label="Open navigation menu"
                       className="inline-flex h-auto shrink-0 items-center gap-1 bg-trout! px-2 py-1 text-xs text-white! hover:bg-trout/90! sm:gap-2 sm:px-2.5 sm:py-1.5 sm:text-sm"
                     >
                       <Menu className="h-3 w-3 sm:h-4 sm:w-4" />
+                      <span>Menu</span>
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">

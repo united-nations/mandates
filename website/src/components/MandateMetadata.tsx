@@ -47,7 +47,7 @@ export function MandateMetadata({
               variant="secondary"
               className="cursor-pointer text-xs transition-colors hover:bg-secondary/80"
               onClick={() => {
-                window.location.href = `/organ/${encodeURIComponent(mandate.body)}`
+                window.location.href = `/?organ=${encodeURIComponent(mandate.body)}`
               }}
             >
               {mandate.body}

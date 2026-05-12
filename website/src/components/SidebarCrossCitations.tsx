@@ -4,7 +4,6 @@ import { EntityName } from '@/components/EntityName'
 import { GenericSidebar } from '@/components/SidebarGeneric'
 import { SidebarListItem } from '@/components/SidebarListItem'
 import { useFilters } from '@/contexts/FilterContext'
-import { getActiveFiltersText } from '@/lib/utils'
 import type { CrossCitation, Entity } from '@/types'
 import { Link as LinkIcon } from 'lucide-react'
 
@@ -12,9 +11,6 @@ interface CrossCitationsSidebarProps {
   crossCitations: CrossCitation[]
   allEntities: Entity[]
   isLoading?: boolean
-  pageType: 'main' | 'entity' | 'organ'
-  entityFilter?: string
-  organFilter?: string
   hideHeader?: boolean
   borderless?: boolean
 }
@@ -23,26 +19,20 @@ export function CrossCitationsSidebar({
   crossCitations,
   allEntities,
   isLoading = false,
-  pageType,
-  entityFilter,
-  organFilter,
   hideHeader = false,
   borderless = false,
 }: CrossCitationsSidebarProps) {
   const { filters, setFilter } = useFilters()
 
   const handleEntityClick = (entityName: string) => {
-    // On entity/organ pages: Set as crossCitingEntity filter to show intersection
     setFilter('crossCitingEntity', entityName)
   }
 
-  // Find max for bar scaling
   const maxEntityCount =
     crossCitations.length > 0
       ? Math.max(...crossCitations.map((c) => c.count))
       : 1
 
-  // Search filter function
   const searchFilter = (citation: CrossCitation, searchTerm: string) => {
     const shortName = citation.entity.toLowerCase()
     const longName = (citation.entity_long || '').toLowerCase()
@@ -58,10 +48,9 @@ export function CrossCitationsSidebar({
     )
   }
 
-  // Render item function for entities
   const renderEntityItem = (
     citation: CrossCitation,
-    index: number,
+    _index: number,
     variant: 'navigation' | 'filter'
   ) => (
     <SidebarListItem
@@ -83,19 +72,11 @@ export function CrossCitationsSidebar({
     />
   )
 
-  // Get active filters text
-  const activeFiltersText = getActiveFiltersText(
-    filters,
-    pageType,
-    entityFilter,
-    organFilter
-  )
-
   return (
     <GenericSidebar
       icon={LinkIcon}
       title="Cross-Citations"
-      description={`Other entities and the number of source documents ${activeFiltersText}cited by both ${entityFilter} and the other entities`}
+      description="Other entities and the number of source documents cited by both entities"
       items={crossCitations}
       isLoading={isLoading}
       searchPlaceholder="Search entities..."

@@ -1,14 +1,11 @@
 'use client'
 
 import React from 'react'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { Landmark } from 'lucide-react'
 import { useFilters } from '@/contexts/FilterContext'
 import { GenericSidebar } from '@/components/SidebarGeneric'
 import { SidebarListItem } from '@/components/SidebarListItem'
 import { OrganName } from '@/components/OrganName'
-import { getActiveFiltersText } from '@/lib/utils'
 import type { OrganWithCount, Organ } from '@/types'
 
 interface OrganListSidebarProps {
@@ -17,8 +14,6 @@ interface OrganListSidebarProps {
   isLoading?: boolean
   hideHeader?: boolean
   borderless?: boolean
-  pageType: 'main' | 'entity' | 'organ'
-  entityFilter?: string
 }
 
 export function OrganListSidebar({
@@ -27,11 +22,8 @@ export function OrganListSidebar({
   isLoading = false,
   hideHeader = false,
   borderless = false,
-  pageType,
-  entityFilter,
 }: OrganListSidebarProps) {
   const { filters, setFilter } = useFilters()
-  const router = useRouter()
 
   const maxCount = Math.max(...organs.map((organ) => organ.count), 1)
 
@@ -41,74 +33,14 @@ export function OrganListSidebar({
     )
   }
 
-  // Build URL with current filters for navigation to organ page
-  const buildOrganPageUrl = (organName: string): string => {
-    const params = new URLSearchParams()
-
-    // Add all current filters except 'organ' (since we're navigating to an organ page)
-    // and exclude pagination (start fresh on new page)
-    Object.entries(filters).forEach(([key, value]) => {
-      if (key !== 'organ' && key !== 'page' && value && value !== 'all') {
-        params.set(key, value)
-      }
-    })
-
-    const queryString = params.toString()
-    const baseUrl = `/organ/${encodeURIComponent(organName)}`
-    return queryString ? `${baseUrl}?${queryString}` : baseUrl
-  }
-
   const handleOrganClick = (organName: string) => {
-    if (pageType === 'main') {
-      // On main page: Navigate to organ page with current filters preserved
-      const url = buildOrganPageUrl(organName)
-      router.push(url)
-    } else {
-      // On entity/organ pages: Set as filter
-      setFilter('organ', organName)
-    }
+    setFilter('organ', organName)
   }
 
-  // Get description based on page type
   const getDescription = () => {
-    const activeFiltersText = getActiveFiltersText(
-      filters,
-      pageType,
-      entityFilter,
-      undefined
-    )
-
-    if (pageType === 'entity') {
-      return (
-        <>
-          <Link
-            href="/organs"
-            className="text-un-blue no-underline transition-colors hover:text-shuttle-gray"
-          >
-            Organs and bodies
-          </Link>
-          {` issuing mandates and number of cited source documents ${activeFiltersText}for ${entityFilter}`}
-        </>
-      )
-    } else {
-      return (
-        <>
-          <Link
-            href="/organs"
-            className="text-un-blue no-underline transition-colors hover:text-shuttle-gray"
-          >
-            Organs and bodies
-          </Link>
-          {` issuing mandates and number of cited source documents${activeFiltersText ? ' ' + activeFiltersText.trim() : ''}`}
-        </>
-      )
-    }
+    return 'Organs and bodies issuing mandates and number of cited source documents'
   }
 
-  // Get variant based on page type
-  const variant = pageType === 'main' ? 'navigation' : 'filter'
-
-  // Search filter function
   const searchFilter = (organ: OrganWithCount, searchTerm: string) => {
     const organData = findOrganData(organ.short)
     return (
@@ -117,10 +49,9 @@ export function OrganListSidebar({
     )
   }
 
-  // Render item function
   const renderItem = (
     organ: OrganWithCount,
-    index: number,
+    _index: number,
     variant: 'navigation' | 'filter'
   ) => {
     const organData = findOrganData(organ.short)
@@ -129,7 +60,7 @@ export function OrganListSidebar({
         ? organData.long
         : undefined
 
-    const item = (
+    return (
       <SidebarListItem
         key={organ.short}
         label={
@@ -147,10 +78,6 @@ export function OrganListSidebar({
         tooltipContent={tooltipContent}
       />
     )
-
-    // For main page, we handle navigation via onClick in handleOrganClick
-    // No need to wrap in Link anymore since we're using router.push with filters
-    return item
   }
 
   return (
@@ -165,7 +92,7 @@ export function OrganListSidebar({
       renderItem={renderItem}
       hideHeader={hideHeader}
       borderless={borderless}
-      variant={variant}
+      variant="filter"
       emptyMessage="No organs found"
       showExpandCollapse={true}
       maxItemsBeforeExpand={4}

@@ -96,6 +96,6 @@ export function parseSearchParams(
     max_citations: getString('max_citations'),
     sort_by: getString('sort_by') || 'citing_entities_desc',
     page: getString('page') || '1',
-    limit: getString('limit') || '10',
+    limit: getString('limit') || '25',
   }
 }

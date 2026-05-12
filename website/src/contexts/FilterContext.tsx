@@ -12,7 +12,6 @@ import {
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 import {
   FILTER_PARAMS,
-  ADDITIONAL_FILTER_PARAMS,
   type FilterParamKey,
 } from '@/lib/filter-constants'
 import { LoadingFallback } from '@/components/LoadingFallback'
@@ -53,50 +52,22 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
   const searchParams = useSearchParams()
   const [isPending, startTransition] = useTransition()
 
-  // Determine page type
-  const isMainPage = pathname === '/'
-  const isEntityPage = pathname.startsWith('/entity/')
-  const isOrganPage = pathname.startsWith('/organ/')
-
-  // Each page starts completely fresh
   const [filters, setFilters] = useState<FilterType>({})
 
-  // Single useEffect to handle both pathname changes and URL params reading
   useEffect(() => {
     const newFilters: FilterType = {}
 
-    if (isMainPage) {
-      // Main page: Only read URL params (for filters set on this page)
-      FILTER_PARAMS.forEach((key) => {
-        const value = searchParams.get(key)
-        if (value) {
-          newFilters[key] = value
-        }
-      })
-    } else if (isEntityPage || isOrganPage) {
-      // Entity/organ pages: Only read additional filters (not implicit ones)
-      ADDITIONAL_FILTER_PARAMS.forEach((key) => {
-        const value = searchParams.get(key)
-        if (value) {
-          newFilters[key] = value
-        }
-      })
-
-      // Only include cross-filters (entity on organ page, organ on entity page)
-      if (isEntityPage) {
-        const organValue = searchParams.get('organ')
-        if (organValue) newFilters.organ = organValue
-      } else if (isOrganPage) {
-        const entityValue = searchParams.get('entity')
-        if (entityValue) newFilters.entity = entityValue
+    FILTER_PARAMS.forEach((key) => {
+      const value = searchParams.get(key)
+      if (value) {
+        newFilters[key] = value
       }
-    }
+    })
 
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setFilters(newFilters)
-  }, [searchParams, pathname, isMainPage, isEntityPage, isOrganPage])
+  }, [searchParams, pathname])
 
-  // Update a single filter and sync to URL
   const setFilter = (key: FilterParamKey, value: string | undefined) => {
     const newParams = new URLSearchParams(searchParams.toString())
 
@@ -106,24 +77,16 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
       newParams.set(key, value)
     }
 
-    // Always reset pagination when filters change (page 1 is implicit — omit from URL)
     if (key !== 'page' && key !== 'limit') {
       newParams.delete('page')
     }
 
-    // Navigate with new params
     const newUrl = `${pathname}?${newParams.toString()}`
     startTransition(() => {
       router.push(newUrl, { scroll: false })
     })
-
-    // Scroll to top on entity/organ pages when filters change (but not pagination)
-    if ((isEntityPage || isOrganPage) && key !== 'page' && key !== 'limit') {
-      window.scrollTo({ top: 0, behavior: 'instant' })
-    }
   }
 
-  // Update multiple filters atomically
   const setMultipleFilters = (updates: Partial<FilterType>) => {
     const newParams = new URLSearchParams(searchParams.toString())
 
@@ -135,28 +98,19 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
       }
     })
 
-    // Navigate with new params
     const newUrl = `${pathname}?${newParams.toString()}`
     startTransition(() => {
       router.push(newUrl, { scroll: false })
     })
-
-    // Scroll to top on entity/organ pages when filters change
-    if (isEntityPage || isOrganPage) {
-      window.scrollTo({ top: 0, behavior: 'instant' })
-    }
   }
 
-  // Clear a single filter
   const clearFilter = (key: FilterParamKey) => {
     setFilter(key, undefined)
   }
 
-  // Clear all filters
   const clearAllFilters = () => {
     const newParams = new URLSearchParams()
 
-    // Keep only pagination params (skip page 1 — it's the implicit default)
     const page = searchParams.get('page')
     const limit = searchParams.get('limit')
     if (page && page !== '1') newParams.set('page', page)
@@ -165,11 +119,6 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
     startTransition(() => {
       router.push(`${pathname}?${newParams.toString()}`, { scroll: false })
     })
-
-    // Scroll to top on entity/organ pages when filters are cleared
-    if (isEntityPage || isOrganPage) {
-      window.scrollTo({ top: 0, behavior: 'instant' })
-    }
   }
 
   const contextValue: FilterContextType = {

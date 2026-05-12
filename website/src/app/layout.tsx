@@ -15,14 +15,19 @@ const roboto = Roboto({
 
 export default function RootLayout({
   children,
+  modal,
 }: Readonly<{
   children: React.ReactNode
+  modal: React.ReactNode
 }>) {
   return (
     <html lang="en" className={roboto.className}>
       <GoogleAnalytics gaId="G-HYTYJM0JGC" />
       <body className="min-h-screen bg-background text-foreground">
-        <RootLayoutClient>{children}</RootLayoutClient>
+        <RootLayoutClient>
+          {children}
+          {modal}
+        </RootLayoutClient>
       </body>
     </html>
   )

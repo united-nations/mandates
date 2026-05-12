@@ -9,6 +9,7 @@ import React, {
   type JSX,
 } from 'react'
 import {
+  ChevronDown,
   FileCheck,
   FileText,
   HelpCircle,
@@ -37,6 +38,7 @@ interface ParagraphsSectionProps {
   documentSymbol: string
   isLoading: boolean
   error: string | null
+  compact?: boolean
 }
 
 // TOC data structure
@@ -528,21 +530,8 @@ function SearchableFilterDropdown({
   )
 }
 
-// Helper function to check if paragraph is operative
-function isOperativeParagraph(paragraph: Paragraph): boolean {
-  return paragraph.paragraph_type === 'operative'
-}
-
-// Helper function to get operative badge info (for corner display)
-function getOperativeBadgeInfo(paragraph: Paragraph) {
-  const isOperative = paragraph.paragraph_type === 'operative'
-
-  return {
-    color: 'bg-un-blue text-white hover:bg-blue-700',
-    letter: 'OP',
-    ariaLabel: 'Operative paragraph',
-    shouldShow: isOperative,
-  }
+function cleanPrefix(prefix: string) {
+  return prefix.replace(/[.\(\)\[\]]/g, '').trim()
 }
 
 export function ParagraphsSection({
@@ -550,10 +539,10 @@ export function ParagraphsSection({
   documentSymbol,
   isLoading,
   error,
+  compact = false,
 }: ParagraphsSectionProps) {
-  const [paragraphFilter, setParagraphFilter] = useState<'all' | 'operative'>(
-    'operative'
-  )
+  const [paragraphFilter] = useState<'all' | 'operative'>('operative')
+  const [showPreamble, setShowPreamble] = useState(false)
   const [deliverableFilter, setDeliverableFilter] = useState<string>('all')
   const [isDeliverableDropdownOpen, setIsDeliverableDropdownOpen] =
     useState(false)
@@ -1822,8 +1811,8 @@ export function ParagraphsSection({
                 entityData?.assignee_type === assigneeFilter))
           const entityClasses =
             hasEnhancedFilters && isFilteredEntity
-              ? 'bg-yellow-200 border border-un-blue px-2 py-0.5 rounded-full text-sm font-semibold cursor-help shadow-xs'
-              : 'bg-gray-200 border border-un-blue px-2 py-0.5 rounded-full text-sm font-medium cursor-help'
+              ? 'bg-yellow-200 px-2 py-0.5 rounded-full text-sm font-semibold cursor-help shadow-xs'
+              : 'bg-gray-200 px-2 py-0.5 rounded-full text-sm font-medium cursor-help'
 
           component = (
             <Tooltip key={`entity-${segmentKey++}`}>
@@ -2102,45 +2091,6 @@ export function ParagraphsSection({
                 </Tooltip>
               )}
 
-              {/* Paragraph type toggle - always visible */}
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className="flex items-center overflow-hidden rounded-md border border-gray-300 bg-gray-100 transition-all duration-200 hover:border-gray-400">
-                    <button
-                      className={`h-7 cursor-pointer px-3 text-xs transition-all duration-200 ${paragraphFilter === 'operative' ? 'bg-un-blue text-white' : 'bg-transparent text-gray-700 hover:bg-gray-200 hover:text-gray-900'}`}
-                      onClick={() => setParagraphFilter('operative')}
-                    >
-                      Operative
-                    </button>
-                    <div className="h-4 w-px bg-gray-300"></div>
-                    <button
-                      className={`h-7 cursor-pointer px-3 text-xs transition-all duration-200 ${paragraphFilter === 'all' ? 'bg-un-blue text-white' : 'bg-transparent text-gray-700 hover:bg-gray-200 hover:text-gray-900'}`}
-                      onClick={() => setParagraphFilter('all')}
-                    >
-                      All
-                    </button>
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent className="max-w-sm" side="top">
-                  <div className="space-y-2">
-                    <div className="font-medium">Filter by Paragraph Type</div>
-                    <div className="text-sm">
-                      <div>
-                        <strong>Operative:</strong> Main paragraphs that express
-                        the opinions of Member States and contain the action
-                        that they are agreeing to take.
-                      </div>
-                      <div className="mt-1">
-                        <strong>Preambular:</strong> Introductory paragraphs
-                        that present the background to the action part of the
-                        resolution.
-                      </div>
-                      {/* https://www.un.org/en/ga/second/72/editingguidelines.pdf */}
-                    </div>
-                  </div>
-                </TooltipContent>
-              </Tooltip>
-
               {/* Reset button - only visible when filters are active */}
               {hasActiveFilters && (
                 <Tooltip>
@@ -2200,10 +2150,10 @@ export function ParagraphsSection({
       )}
 
       {/* Paragraphs Content with TOC Layout */}
-      <div className={isMobile ? 'w-full' : 'flex gap-8'}>
+      <div className={isMobile || compact ? 'w-full' : 'flex gap-8'}>
         {/* Main paragraph content */}
-        <div className={isMobile ? 'w-full' : 'max-w-[65%] flex-1'}>
-          <div className={isMobile ? '' : 'pr-4'}>
+        <div className={isMobile || compact ? 'w-full' : 'max-w-[65%] flex-1'}>
+          <div className={isMobile || compact ? '' : 'pr-4'}>
             {isLoading ? (
               <div className="space-y-3">
                 <div className="space-y-2">
@@ -2252,8 +2202,77 @@ export function ParagraphsSection({
               </div>
             ) : paragraphs && paragraphs.length > 0 ? (
               <div className="space-y-4">
+                {/* Collapsible preambular section */}
+                {(() => {
+                  const preambularParagraphs = (allParagraphs || []).filter(
+                    (p: Paragraph) =>
+                      p.paragraph_type === 'preambular' &&
+                      p.type !== 'heading' &&
+                      p.text?.trim()
+                  )
+                  if (preambularParagraphs.length === 0) return null
+                  return (
+                    <>
+                      <button
+                        onClick={() => setShowPreamble(!showPreamble)}
+                        className="flex items-center gap-2 py-1.5 text-xs text-gray-500 hover:text-gray-700"
+                      >
+                        <ChevronDown
+                          className={`h-3.5 w-3.5 transition-transform ${showPreamble ? '' : '-rotate-90'}`}
+                        />
+                        {showPreamble ? 'Hide' : 'Show'}{' '}
+                        {preambularParagraphs.length} preambular paragraph
+                        {preambularParagraphs.length !== 1 && 's'}
+                      </button>
+                      {showPreamble && (
+                        <div className="space-y-2">
+                          {preambularParagraphs.map(
+                            (paragraph: Paragraph, i: number) => {
+                              const label = paragraph.prefix
+                                ? cleanPrefix(paragraph.prefix)
+                                : null
+                              const indentLevel =
+                                paragraph.paragraph_level || 0
+                              const indent =
+                                indentLevel > 1
+                                  ? (indentLevel - 1) * 24
+                                  : 0
+                              return (
+                                <div
+                                  key={`preamble-${i}`}
+                                  style={{ marginLeft: indent }}
+                                >
+                                  <div className="rounded-lg bg-muted/30 p-3">
+                                    <div className="flex items-start gap-2">
+                                      {label && (
+                                        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-un-blue text-[10px] font-medium text-white">
+                                          {label}
+                                        </span>
+                                      )}
+                                      <div className="flex-1 text-sm leading-relaxed text-gray-700">
+                                        {renderProcessedText(
+                                          paragraph.text,
+                                          paragraph.mandates?.[0]
+                                            ?.action_verb || null,
+                                          paragraph.links,
+                                          paragraph.textWithHighlights,
+                                          paragraph.mandates
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              )
+                            }
+                          )}
+                        </div>
+                      )}
+                    </>
+                  )
+                })()}
+
+                {/* Operative paragraphs */}
                 {paragraphs.map((paragraph: Paragraph, index: number) => {
-                  // Calculate indentation based on paragraph_level
                   const indentLevel = paragraph.paragraph_level || 0
                   const getIndentClass = (level: number): string => {
                     if (level <= 1) return ''
@@ -2273,18 +2292,16 @@ export function ParagraphsSection({
                       case 8:
                         return 'ml-42'
                       default:
-                        return 'ml-48' // For very deep nesting
+                        return 'ml-48'
                     }
                   }
                   const indentClass = getIndentClass(indentLevel)
 
-                  // Generate unique ID for headings (for TOC navigation)
                   const headingId =
                     paragraph.type === 'heading'
                       ? `heading-${index}`
                       : undefined
 
-                  // Handle different content types
                   if (paragraph.type === 'heading') {
                     const HeadingTag =
                       `h${Math.min(paragraph.heading_level || 3, 6)}` as keyof JSX.IntrinsicElements
@@ -2326,54 +2343,35 @@ export function ParagraphsSection({
                     )
                   }
 
-                  // Regular paragraphs
+                  const label = paragraph.prefix
+                    ? cleanPrefix(paragraph.prefix)
+                    : null
+
                   return (
                     <div
                       key={`${documentSymbol}-${index}`}
-                      className={`${indentClass} relative`}
+                      className={`${indentClass}`}
                     >
                       <div className="rounded-lg bg-muted/30 p-3">
-                        <div className="max-w-4xl">
-                          <div className="text-sm leading-relaxed">
-                            {paragraph.prefix && (
-                              <span className="mr-2 font-medium text-un-blue">
-                                {paragraph.prefix}
-                              </span>
-                            )}
-                            {renderProcessedText(
-                              paragraph.text,
-                              paragraph.mandates?.[0]?.action_verb || null,
-                              paragraph.links,
-                              paragraph.textWithHighlights,
-                              paragraph.mandates
-                            )}
+                        <div className="flex items-start gap-2">
+                          {label && (
+                            <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-un-blue text-[10px] font-medium text-white">
+                              {label}
+                            </span>
+                          )}
+                          <div className="max-w-4xl flex-1">
+                            <div className="text-sm leading-relaxed">
+                              {renderProcessedText(
+                                paragraph.text,
+                                paragraph.mandates?.[0]?.action_verb || null,
+                                paragraph.links,
+                                paragraph.textWithHighlights,
+                                paragraph.mandates
+                              )}
+                            </div>
                           </div>
                         </div>
                       </div>
-
-                      {/* Operative badge - floating at top-right corner for all devices */}
-                      {(() => {
-                        const badgeInfo = getOperativeBadgeInfo(paragraph)
-                        return (
-                          badgeInfo.shouldShow && (
-                            <div className="absolute -top-1 -right-1 z-10">
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <div
-                                    className={`flex h-5 w-7 cursor-help items-center justify-center rounded-full text-xs font-medium ${badgeInfo.color}`}
-                                    aria-label={badgeInfo.ariaLabel}
-                                  >
-                                    {badgeInfo.letter}
-                                  </div>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>Operative paragraph</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </div>
-                          )
-                        )
-                      })()}
                     </div>
                   )
                 })}
@@ -2389,7 +2387,7 @@ export function ParagraphsSection({
         </div>
 
         {/* Desktop TOC Sidebar - Right side, only for paragraphs section */}
-        {!isMobile && (
+        {!isMobile && !compact && (
           <div className="w-[30%] shrink-0">
             <div className="sticky top-4 mb-8 rounded-lg bg-white p-4">
               <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-900">

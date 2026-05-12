@@ -23,9 +23,10 @@ interface DataCardProps {
   isOpen?: boolean
   onOpenChange?: (open: boolean) => void
   previewItems?: PreviewItem[]
+  customPreview?: ReactNode
   totalItems?: number
   children?: ReactNode
-  activeFilterCount?: number
+  popoverClassName?: string
 }
 
 function MiniBar({ item, maxCount }: { item: PreviewItem; maxCount: number }) {
@@ -64,9 +65,10 @@ export function DataCard({
   isOpen = false,
   onOpenChange,
   previewItems,
+  customPreview,
   totalItems,
   children,
-  activeFilterCount = 0,
+  popoverClassName,
 }: DataCardProps) {
   const previewSlice = previewItems?.slice(0, 4)
   const maxCount = previewSlice
@@ -82,8 +84,7 @@ export function DataCard({
       <PopoverTrigger asChild>
         <Card
           className={cn(
-            'relative h-full min-w-[220px] cursor-pointer snap-center border-0 bg-un-blue/10 px-4 py-3 shadow-none transition-all hover:scale-[1.02] sm:min-w-0',
-            activeFilterCount > 0 && 'ring-2 ring-un-blue/40'
+            'relative h-full min-w-[220px] cursor-pointer snap-center border-0 bg-un-blue/10 px-4 py-3 shadow-none transition-all hover:scale-[1.02] sm:min-w-0'
           )}
         >
           <div className="flex items-center gap-2">
@@ -107,19 +108,14 @@ export function DataCard({
               )}
             </div>
           )}
-          {activeFilterCount > 0 && (
-            <div className="mt-1.5 flex items-center gap-1">
-              <div className="size-1.5 rounded-full bg-un-blue" />
-              <span className="text-[10px] font-medium text-un-blue">
-                {activeFilterCount} filter{activeFilterCount > 1 ? 's' : ''}{' '}
-                active
-              </span>
-            </div>
-          )}
+          {customPreview}
         </Card>
       </PopoverTrigger>
       <PopoverContent
-        className="max-h-[60vh] w-[calc(100vw-2rem)] overflow-y-auto sm:w-96"
+        className={cn(
+          'max-h-[60vh] overflow-y-auto',
+          popoverClassName || 'w-[calc(100vw-2rem)] sm:w-96'
+        )}
         side="bottom"
         align="start"
       >

@@ -87,7 +87,7 @@ export function CitationCounts({ mandate, entities }: CitationCountsProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8">
+    <div className="@container grid grid-cols-1 gap-6 @min-[700px]:grid-cols-2 @min-[700px]:gap-8">
       {/* Entities Mentioned */}
       {entityCounts.length > 0 && (
         <div className="space-y-3">
@@ -110,8 +110,7 @@ export function CitationCounts({ mandate, entities }: CitationCountsProps) {
                         variant="secondary"
                         className="shrink-0 cursor-pointer border-0 bg-un-blue! px-2.5 py-0.5 text-xs text-white! transition-colors hover:bg-un-blue/90!"
                         onClick={() => {
-                          // Navigate to entity detail page
-                          window.location.href = `/entity/${encodeURIComponent(shortName)}`
+                          window.location.href = `/?entity=${encodeURIComponent(shortName)}`
                         }}
                       >
                         {shortName}

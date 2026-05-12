@@ -23,7 +23,7 @@ export default async function Page({ searchParams }: PageProps) {
       <ExplainerText />
 
       <Suspense fallback={<LoadingSkeleton variant="list" count={4} />}>
-        <MandateExplorerServer dataPromise={dataPromise} pageType="main" />
+        <MandateExplorerServer dataPromise={dataPromise} />
       </Suspense>
     </div>
   )

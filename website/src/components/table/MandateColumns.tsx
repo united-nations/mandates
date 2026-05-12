@@ -131,7 +131,7 @@ export const DEFAULT_VISIBLE_COLUMNS = new Set(
 )
 
 export const TOGGLEABLE_COLUMNS = COLUMN_DEFINITIONS.filter(
-  (c) => !c.defaultVisible
+  (c) => c.id !== 'detail'
 )
 
 export function getMandateUrl(symbol: string): string {

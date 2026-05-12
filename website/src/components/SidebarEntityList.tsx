@@ -4,10 +4,8 @@ import { EntityName } from '@/components/EntityName'
 import { GenericSidebar } from '@/components/SidebarGeneric'
 import { SidebarListItem } from '@/components/SidebarListItem'
 import { useFilters } from '@/contexts/FilterContext'
-import { getActiveFiltersText } from '@/lib/utils'
 import type { Entity, EntityWithCount } from '@/types'
 import { Building } from 'lucide-react'
-import { useRouter } from 'next/navigation'
 
 interface EntityListSidebarProps {
   entities: EntityWithCount[]
@@ -15,8 +13,6 @@ interface EntityListSidebarProps {
   isLoading?: boolean
   hideHeader?: boolean
   borderless?: boolean
-  pageType: 'main' | 'entity' | 'organ'
-  organFilter?: string
 }
 
 export function EntityListSidebar({
@@ -25,62 +21,19 @@ export function EntityListSidebar({
   isLoading = false,
   hideHeader = false,
   borderless = false,
-  pageType,
-  organFilter,
 }: EntityListSidebarProps) {
   const { filters, setFilter } = useFilters()
-  const router = useRouter()
 
   const maxCount = Math.max(...entities.map((entity) => entity.count), 1)
 
-  // Build URL with current filters for navigation to entity page
-  const buildEntityPageUrl = (entityName: string): string => {
-    const params = new URLSearchParams()
-
-    // Add all current filters except 'entity' (since we're navigating to an entity page)
-    // and exclude pagination (start fresh on new page)
-    Object.entries(filters).forEach(([key, value]) => {
-      if (key !== 'entity' && key !== 'page' && value && value !== 'all') {
-        params.set(key, value)
-      }
-    })
-
-    const queryString = params.toString()
-    const baseUrl = `/entity/${encodeURIComponent(entityName)}`
-    return queryString ? `${baseUrl}?${queryString}` : baseUrl
-  }
-
   const handleEntityClick = (entityName: string) => {
-    if (pageType === 'main') {
-      // On main page: Navigate to entity page with current filters preserved
-      const url = buildEntityPageUrl(entityName)
-      router.push(url)
-    } else {
-      // On entity/organ pages: Set as filter
-      setFilter('entity', entityName)
-    }
+    setFilter('entity', entityName)
   }
 
-  // Get description based on page type
   const getDescription = () => {
-    const activeFiltersText = getActiveFiltersText(
-      filters,
-      pageType,
-      undefined,
-      organFilter
-    )
-
-    if (pageType === 'organ') {
-      return `Entities and number of cited source documents ${activeFiltersText}for ${organFilter}`
-    } else {
-      return `Entities and number of cited source documents${activeFiltersText ? ' ' + activeFiltersText.trim() : ''}`
-    }
+    return 'Entities and number of cited source documents'
   }
 
-  // Get variant based on page type
-  const variant = pageType === 'main' ? 'navigation' : 'filter'
-
-  // Search filter function
   const searchFilter = (entity: EntityWithCount, searchTerm: string) => {
     const shortName = entity.entity.toLowerCase()
     const longName = (
@@ -89,10 +42,9 @@ export function EntityListSidebar({
     return shortName.includes(searchTerm) || longName.includes(searchTerm)
   }
 
-  // Render item function
   const renderItem = (
     entity: EntityWithCount,
-    index: number,
+    _index: number,
     variant: 'navigation' | 'filter'
   ) => {
     const entityData = allEntities.find((e) => e.entity === entity.entity)
@@ -101,7 +53,7 @@ export function EntityListSidebar({
         ? entityData.entity_long
         : undefined
 
-    const item = (
+    return (
       <SidebarListItem
         key={entity.entity}
         label={
@@ -119,10 +71,6 @@ export function EntityListSidebar({
         tooltipContent={tooltipContent}
       />
     )
-
-    // For main page, we handle navigation via onClick in handleEntityClick
-    // No need to wrap in Link anymore since we're using router.push with filters
-    return item
   }
 
   return (
@@ -137,8 +85,8 @@ export function EntityListSidebar({
       renderItem={renderItem}
       hideHeader={hideHeader}
       borderless={borderless}
-      variant={variant}
-      emptyMessage="No entities found. Note that the beta version only includes entities that are part of the UN Secretariat. This will be expanded in the coming weeks."
+      variant="filter"
+      emptyMessage="No entities found. Note that this version only includes entities that are part of the UN Secretariat. This will be expanded in the coming weeks."
       showExpandCollapse={true}
       maxItemsBeforeExpand={10}
     />

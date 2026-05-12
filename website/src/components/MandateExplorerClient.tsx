@@ -18,35 +18,32 @@ import { useFilters } from '@/contexts/FilterContext'
 import { explainerTexts } from '@/lib/en_text_contents'
 import type { ApiResponse } from '@/types'
 import { Building, FileText, Landmark, Quote } from 'lucide-react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { useCallback, useState } from 'react'
+import { ColumnPicker } from './table/ColumnPicker'
 import { MandateCompactList } from './table/MandateCompactList'
 import { MandateDataTable } from './table/MandateDataTable'
+import { useColumnVisibility } from './table/useColumnVisibility'
 import { YearBarCard } from './YearBarCard'
 
 interface MandateExplorerClientProps {
   data: ApiResponse
-  entityFilter?: string
-  organFilter?: string
-  pageType: 'main' | 'entity' | 'organ'
 }
 
 export function MandateExplorerClient({
   data,
-  entityFilter,
-  organFilter,
-  pageType,
 }: MandateExplorerClientProps) {
   const { filters, setFilter, clearFilter } = useFilters()
   const searchParams = useSearchParams()
-  const router = useRouter()
 
   const [sourceDocumentsPopover, setSourceDocumentsPopover] = useState(false)
   const [unOrgansPopover, setUnOrgansPopover] = useState(false)
   const [unEntitiesPopover, setUnEntitiesPopover] = useState(false)
   const [citationsPopover, setCitationsPopover] = useState(false)
+  const { visibleColumns, handleToggleColumn, handleResetColumns } =
+    useColumnVisibility()
 
-  const pageSize = parseInt(searchParams.get('limit') || '10', 10)
+  const pageSize = parseInt(searchParams.get('limit') || '25', 10)
   const sortBy =
     searchParams.get('sort_by') ||
     (filters.keyword ? 'default' : 'citing_entities_desc')
@@ -90,21 +87,6 @@ export function MandateExplorerClient({
     count: b.count,
   }))
 
-  // Build URL with current filters for navigation
-  const buildPageUrl = (
-    base: string,
-    excludeKey: string
-  ): string => {
-    const params = new URLSearchParams()
-    Object.entries(filters).forEach(([key, value]) => {
-      if (key !== excludeKey && key !== 'page' && value && value !== 'all') {
-        params.set(key, value)
-      }
-    })
-    const qs = params.toString()
-    return qs ? `${base}?${qs}` : base
-  }
-
   // Organ popover items
   const organItems = organs.map((organ) => {
     const organData = allOrgans.find(
@@ -129,11 +111,7 @@ export function MandateExplorerClient({
   })
 
   const handleOrganClick = (organName: string) => {
-    if (pageType === 'main') {
-      router.push(buildPageUrl(`/organ/${encodeURIComponent(organName)}`, 'organ'))
-    } else {
-      setFilter('organ', organName)
-    }
+    setFilter('organ', organName)
   }
 
   // Entity popover items
@@ -158,11 +136,7 @@ export function MandateExplorerClient({
   })
 
   const handleEntityClick = (entityName: string) => {
-    if (pageType === 'main') {
-      router.push(buildPageUrl(`/entity/${encodeURIComponent(entityName)}`, 'entity'))
-    } else {
-      setFilter('entity', entityName)
-    }
+    setFilter('entity', entityName)
   }
 
   const dataCardsSection = (
@@ -176,24 +150,18 @@ export function MandateExplorerClient({
         onOpenChange={setSourceDocumentsPopover}
         previewItems={docTypePreview}
         totalItems={documentTypes.length}
-        activeFilterCount={filters.document_type ? 1 : 0}
       >
         <DocumentTypeSidebar documentTypes={documentTypes} />
       </DataCard>
       <DataCard
-        title={
-          pageType === 'organ'
-            ? 'UN Organ / Body'
-            : explainerTexts.dataCards.unOrgans.title
-        }
-        value={pageType === 'organ' ? organFilter || '' : counts.totalOrgans}
+        title={explainerTexts.dataCards.unOrgans.title}
+        value={counts.totalOrgans}
         icon={Landmark}
         description={explainerTexts.dataCards.unOrgans.description}
         isOpen={unOrgansPopover}
         onOpenChange={setUnOrgansPopover}
-        previewItems={pageType === 'organ' ? undefined : organsPreview}
+        previewItems={organsPreview}
         totalItems={organs.length}
-        activeFilterCount={filters.organ ? 1 : 0}
       >
         <PopoverFilterList
           items={organItems}
@@ -203,28 +171,19 @@ export function MandateExplorerClient({
             item.key.toLowerCase().includes(term) ||
             (item.tooltipContent?.toLowerCase().includes(term) ?? false)
           }
-          variant={pageType === 'main' ? 'navigation' : 'filter'}
+          variant="filter"
           emptyMessage="No organs found"
         />
       </DataCard>
       <DataCard
-        title={
-          pageType === 'entity'
-            ? 'Entity'
-            : explainerTexts.dataCards.unEntities.title
-        }
-        value={
-          pageType === 'entity' ? entityFilter || '' : counts.totalEntities
-        }
+        title={explainerTexts.dataCards.unEntities.title}
+        value={counts.totalEntities}
         icon={Building}
         description={explainerTexts.dataCards.unEntities.description}
         isOpen={unEntitiesPopover}
         onOpenChange={setUnEntitiesPopover}
-        previewItems={pageType === 'entity' ? undefined : entitiesPreview}
+        previewItems={entitiesPreview}
         totalItems={entities.length}
-        activeFilterCount={
-          filters.entity || filters.crossCitingEntity ? 1 : 0
-        }
       >
         <PopoverFilterList
           items={entityItems}
@@ -234,7 +193,7 @@ export function MandateExplorerClient({
             item.key.toLowerCase().includes(term) ||
             (item.tooltipContent?.toLowerCase().includes(term) ?? false)
           }
-          variant={pageType === 'main' ? 'navigation' : 'filter'}
+          variant="filter"
           emptyMessage="No entities found"
         />
       </DataCard>
@@ -257,40 +216,23 @@ export function MandateExplorerClient({
           </div>
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          {filterOptions.yearRange && (
-            <div className="sm:col-span-2">
-              <YearBarCard
-                yearDistribution={filterOptions.yearDistributionUnfiltered ?? filterOptions.yearDistribution}
-                yearRange={filterOptions.yearRange}
-                activeFilterCount={
-                  filters.start_year || filters.end_year ? 1 : 0
-                }
-              />
-            </div>
-          )}
           <DataCard
-            title={
-              pageType === 'entity'
-                ? explainerTexts.dataCards.citationsByEntity.title
-                : explainerTexts.dataCards.citations.title
-            }
+            title={explainerTexts.dataCards.citations.title}
             value={counts.totalCitations}
             icon={Quote}
-            description={
-              pageType === 'entity'
-                ? explainerTexts.dataCards.citationsByEntity.description
-                : explainerTexts.dataCards.citations.description
-            }
+            description={explainerTexts.dataCards.citations.description}
             isOpen={citationsPopover}
             onOpenChange={setCitationsPopover}
             previewItems={citationPreview}
             totalItems={citationBins.length}
-            activeFilterCount={
-              filters.min_citations || filters.max_citations ? 1 : 0
-            }
           >
             <CitationDistribution bins={citationBins} />
           </DataCard>
+          {filterOptions.yearRange && (
+            <YearBarCard
+              yearDistribution={filterOptions.yearDistributionUnfiltered ?? filterOptions.yearDistribution}
+            />
+          )}
         </div>
       </section>
 
@@ -302,8 +244,6 @@ export function MandateExplorerClient({
               <FileText className="h-6 w-6 text-un-blue" />
               <h2 className="text-2xl font-bold tracking-tight">
                 {explainerTexts.dataCards.sectionTitle}
-                {pageType === 'entity' && <> cited by {entityFilter}</>}
-                {pageType === 'organ' && <> issued by {organFilter}</>}
               </h2>
             </div>
             <div className="ml-auto flex items-center gap-2 lg:hidden">
@@ -336,9 +276,15 @@ export function MandateExplorerClient({
             entitiesData={allEntities}
             allOrgans={allOrgans}
             budgetDocuments={filterOptions.budgetDocuments}
-            entityFilter={entityFilter}
-            organFilter={organFilter}
-            pageType={pageType}
+            toolbarSlot={
+              <div className="hidden shrink-0 lg:block">
+                <ColumnPicker
+                  visibleColumns={visibleColumns}
+                  onToggle={handleToggleColumn}
+                  onReset={handleResetColumns}
+                />
+              </div>
+            }
           />
         </div>
 
@@ -349,9 +295,7 @@ export function MandateExplorerClient({
             organsData={allOrgans}
             entitiesData={allEntities}
             filterOptions={filterOptions}
-            pageType={pageType}
-            entityFilter={entityFilter}
-            organFilter={organFilter}
+            visibleColumns={visibleColumns}
           />
         </div>
 

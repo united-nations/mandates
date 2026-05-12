@@ -8,10 +8,11 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { explainerTexts } from '@/lib/en_text_contents'
+import { useFilters } from '@/contexts/FilterContext'
 import type { Mandate } from '@/types'
 import { motion } from 'framer-motion'
 import { Calendar, FileText, Info, Landmark } from 'lucide-react'
-import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { EntityName } from './EntityName'
 
 interface Organ {
@@ -37,6 +38,7 @@ const EntityBadges = ({
   entities: string[]
   entitiesData: Entity[]
 }) => {
+  const { setFilter } = useFilters()
   const validEntities = entities.filter((entity) => entity !== null).sort()
 
   if (validEntities.length === 0) {
@@ -46,24 +48,23 @@ const EntityBadges = ({
   return (
     <div className="flex flex-wrap items-center gap-1">
       {validEntities.map((entity) => (
-        <Link
+        <Badge
           key={entity}
-          href={`/entity/${encodeURIComponent(entity)}`}
-          prefetch={false}
+          variant="secondary"
+          className="cursor-pointer border-0 bg-un-blue/75! text-xs font-bold text-white! transition-colors hover:bg-un-blue/60!"
+          onClick={(e) => {
+            e.stopPropagation()
+            setFilter('entity', entity)
+          }}
         >
-          <Badge
-            variant="secondary"
-            className="cursor-pointer border-0 bg-un-blue/75! text-xs font-bold text-white! transition-colors hover:bg-un-blue/60!"
-          >
-            <EntityName
-              entityName={entity}
-              entityLong={
-                entitiesData.find((e) => e.entity === entity)?.entity_long
-              }
-              showUnderline={false}
-            />
-          </Badge>
-        </Link>
+          <EntityName
+            entityName={entity}
+            entityLong={
+              entitiesData.find((e) => e.entity === entity)?.entity_long
+            }
+            showUnderline={false}
+          />
+        </Badge>
       ))}
     </div>
   )
@@ -88,6 +89,8 @@ export function MandateList({
   organsData,
   entitiesData,
 }: MandateListProps) {
+  const router = useRouter()
+
   // Helper function to find organ data by matching both short and long names
   const findOrganData = (organName: string): Organ | undefined => {
     return organsData.find(
@@ -129,17 +132,9 @@ export function MandateList({
     return `/mandate/${segments.join('/')}`
   }
 
-  // Helper function to handle mandate click
   const handleMandateClick = (mandate: Mandate, event: React.MouseEvent) => {
     event.preventDefault()
-    const url = getMandateUrl(mandate)
-    const currentUrl = window.location.href
-
-    // Store the current URL for return navigation
-    sessionStorage.setItem('mandateReturnUrl', currentUrl)
-
-    // Open the window with clean URL
-    window.open(url, '_blank')
+    router.push(getMandateUrl(mandate))
   }
 
   return (

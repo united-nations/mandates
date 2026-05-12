@@ -37,18 +37,14 @@ interface FilterControlsProps {
   entitiesData: Entity[]
   allOrgans: Organ[]
   budgetDocuments: BudgetDocument[]
-  entityFilter?: string
-  organFilter?: string
-  pageType: 'main' | 'entity' | 'organ'
+  toolbarSlot?: React.ReactNode
 }
 
 export function FilterControls({
   entitiesData,
   allOrgans,
   budgetDocuments,
-  entityFilter,
-  organFilter,
-  pageType,
+  toolbarSlot,
 }: FilterControlsProps) {
   const { filters, setFilter, clearFilter, clearAllFilters } = useFilters()
 
@@ -68,21 +64,6 @@ export function FilterControls({
 
   const getDisplayFilters = () => {
     const displayFilters = { ...filters }
-
-    if (
-      pageType === 'entity' &&
-      entityFilter &&
-      displayFilters.entity === entityFilter
-    ) {
-      delete displayFilters.entity
-    }
-    if (
-      pageType === 'organ' &&
-      organFilter &&
-      displayFilters.organ === organFilter
-    ) {
-      delete displayFilters.organ
-    }
 
     delete displayFilters.page
     delete displayFilters.limit
@@ -129,6 +110,7 @@ export function FilterControls({
             }}
           />
         </div>
+        {toolbarSlot}
       </div>
 
       {/* Filter Chips */}

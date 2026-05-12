@@ -17,18 +17,14 @@ import {
 } from '@/components/ui/tooltip'
 import { useFilters } from '@/contexts/FilterContext'
 import type { BudgetDocument } from '@/lib/data/budget-documents'
-import type { FilterParamKey } from '@/lib/filter-constants'
 import type { Entity, Mandate, Organ } from '@/types'
 import { ChevronRight } from 'lucide-react'
-import Link from 'next/link'
-import { useCallback, useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { titleCase } from 'title-case'
 import { EntityName } from '../EntityName'
 import { ColumnHeaderFilter } from './ColumnHeaderFilter'
-import { ColumnPicker } from './ColumnPicker'
 import {
   COLUMN_DEFINITIONS,
-  DEFAULT_VISIBLE_COLUMNS,
   getMandateUrl,
 } from './MandateColumns'
 
@@ -47,30 +43,7 @@ interface MandateDataTableProps {
   organsData: Organ[]
   entitiesData: Entity[]
   filterOptions: FilterOptions
-  pageType: 'main' | 'entity' | 'organ'
-  entityFilter?: string
-  organFilter?: string
-}
-
-const STORAGE_KEY = 'mandate-table-columns'
-
-function loadVisibleColumns(): Set<string> {
-  if (typeof window === 'undefined') return DEFAULT_VISIBLE_COLUMNS
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY)
-    if (stored) {
-      const ids = JSON.parse(stored) as string[]
-      const all = new Set(COLUMN_DEFINITIONS.map((c) => c.id))
-      const valid = ids.filter((id) => all.has(id))
-      if (valid.length > 0) {
-        const alwaysVisible = COLUMN_DEFINITIONS.filter(
-          (c) => c.defaultVisible
-        ).map((c) => c.id)
-        return new Set([...alwaysVisible, ...valid])
-      }
-    }
-  } catch {}
-  return DEFAULT_VISIBLE_COLUMNS
+  visibleColumns: Set<string>
 }
 
 export function MandateDataTable({
@@ -78,49 +51,10 @@ export function MandateDataTable({
   organsData,
   entitiesData,
   filterOptions,
-  pageType,
-  entityFilter,
-  organFilter,
+  visibleColumns,
 }: MandateDataTableProps) {
-  const { filters, clearFilter, isPending } = useFilters()
-  const [visibleColumns, setVisibleColumns] = useState(DEFAULT_VISIBLE_COLUMNS)
-
-  useEffect(() => {
-    setVisibleColumns(loadVisibleColumns())
-  }, [])
-
-  const handleToggleColumn = useCallback(
-    (columnId: string) => {
-      setVisibleColumns((prev) => {
-        const next = new Set(prev)
-        if (next.has(columnId)) {
-          next.delete(columnId)
-          const col = COLUMN_DEFINITIONS.find((c) => c.id === columnId)
-          if (col?.filterParam) {
-            if (col.filterType === 'yearRange') {
-              clearFilter('start_year')
-              clearFilter('end_year')
-            } else {
-              clearFilter(col.filterParam as FilterParamKey)
-            }
-          }
-        } else {
-          next.add(columnId)
-        }
-        const toggleable = [...next].filter(
-          (id) => !DEFAULT_VISIBLE_COLUMNS.has(id)
-        )
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(toggleable))
-        return next
-      })
-    },
-    [clearFilter]
-  )
-
-  const handleResetColumns = useCallback(() => {
-    setVisibleColumns(DEFAULT_VISIBLE_COLUMNS)
-    localStorage.removeItem(STORAGE_KEY)
-  }, [])
+  const { filters, setFilter, isPending } = useFilters()
+  const router = useRouter()
 
   const currentSort =
     filters.sort_by || (filters.keyword ? 'default' : 'citing_entities_desc')
@@ -154,9 +88,7 @@ export function MandateDataTable({
     }
   }
 
-  const isColumnLocked = (columnId: string) => {
-    if (columnId === 'entity_list' && pageType === 'entity') return true
-    if (columnId === 'organ' && pageType === 'organ') return true
+  const isColumnLocked = (_columnId: string) => {
     return false
   }
 
@@ -165,21 +97,11 @@ export function MandateDataTable({
 
   const handleRowClick = (mandate: Mandate, e: React.MouseEvent) => {
     e.preventDefault()
-    sessionStorage.setItem('mandateReturnUrl', window.location.href)
-    window.open(getMandateUrl(mandate.full_document_symbol), '_blank')
+    router.push(getMandateUrl(mandate.full_document_symbol))
   }
 
   return (
     <div>
-      {/* Toolbar */}
-      <div className="mb-2 flex items-center justify-end">
-        <ColumnPicker
-          visibleColumns={visibleColumns}
-          onToggle={handleToggleColumn}
-          onReset={handleResetColumns}
-        />
-      </div>
-
       {/* Table */}
       <div
         className={`rounded-lg border border-gray-200 overflow-hidden transition-opacity duration-150 ${isPending ? 'opacity-50' : 'opacity-100'}`}
@@ -222,6 +144,7 @@ export function MandateDataTable({
                         entitiesData={entitiesData}
                         findOrganLong={findOrganLong}
                         budgetDocuments={filterOptions.budgetDocuments}
+                        onEntityClick={(entity) => setFilter('entity', entity)}
                       />
                     </TableCell>
                   ))}
@@ -251,12 +174,14 @@ function CellContent({
   entitiesData,
   findOrganLong,
   budgetDocuments,
+  onEntityClick,
 }: {
   columnId: string
   mandate: Mandate
   entitiesData: Entity[]
   findOrganLong: (short: string) => string
   budgetDocuments: BudgetDocument[]
+  onEntityClick: (entity: string) => void
 }) {
   switch (columnId) {
     case 'symbol': {
@@ -325,25 +250,23 @@ function CellContent({
       const remaining = entities.length - maxShow
 
       const pill = (entity: string) => (
-        <Link
+        <Badge
           key={entity}
-          href={`/entity/${encodeURIComponent(entity)}`}
-          prefetch={false}
-          onClick={(e) => e.stopPropagation()}
+          variant="secondary"
+          className="cursor-pointer border-0 bg-un-blue/75! text-[10px] font-bold whitespace-nowrap text-white! transition-colors hover:bg-un-blue/60!"
+          onClick={(e) => {
+            e.stopPropagation()
+            onEntityClick(entity)
+          }}
         >
-          <Badge
-            variant="secondary"
-            className="cursor-pointer border-0 bg-un-blue/75! text-[10px] font-bold whitespace-nowrap text-white! transition-colors hover:bg-un-blue/60!"
-          >
-            <EntityName
-              entityName={entity}
-              entityLong={
-                entitiesData.find((e) => e.entity === entity)?.entity_long
-              }
-              showUnderline={false}
-            />
-          </Badge>
-        </Link>
+          <EntityName
+            entityName={entity}
+            entityLong={
+              entitiesData.find((e) => e.entity === entity)?.entity_long
+            }
+            showUnderline={false}
+          />
+        </Badge>
       )
 
       if (remaining <= 0) {
