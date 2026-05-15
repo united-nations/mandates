@@ -64,7 +64,15 @@ export function MandateDataTable({
   const currentSort =
     filters.sort_by || (filters.keyword ? 'default' : 'citing_entities_desc')
 
-  const columns = COLUMN_DEFINITIONS.filter((col) => visibleColumns.has(col.id))
+  const columns = COLUMN_DEFINITIONS.filter(
+    (col) => visibleColumns.has(col.id)
+  ).sort((a, b) => {
+    // The detail column (column picker + expand chevron) always stays rightmost,
+    // even when extra columns are toggled on.
+    if (a.id === 'detail') return 1
+    if (b.id === 'detail') return -1
+    return 0
+  })
 
   const getFilterOptions = (columnId: string) => {
     switch (columnId) {
@@ -114,7 +122,7 @@ export function MandateDataTable({
                 {columns.map((col) => (
                   <TableHead
                     key={col.id}
-                    className={`${col.widthClass} ${col.minWidthClass || ''} ${col.align === 'right' ? 'text-right' : ''} h-10 px-3 text-[10px] font-medium tracking-wider uppercase text-gray-400`}
+                    className={`${col.widthClass} ${col.minWidthClass || ''} ${col.align === 'right' ? 'text-right' : ''} ${col.id === 'detail' ? 'sticky right-0 z-10 bg-gray-50' : ''} h-10 px-3 text-[10px] font-medium tracking-wider uppercase text-gray-400`}
                   >
                     {col.id === 'detail' ? (
                       <ColumnPicker
@@ -138,13 +146,13 @@ export function MandateDataTable({
               {mandates.map((mandate) => (
                 <TableRow
                   key={mandate.full_document_symbol}
-                  className="cursor-pointer border-b border-gray-100 hover:bg-gray-50"
+                  className="group cursor-pointer border-b border-gray-100 hover:bg-gray-50"
                   onClick={(e) => handleRowClick(mandate, e)}
                 >
                   {columns.map((col) => (
                     <TableCell
                       key={col.id}
-                      className={`${col.align === 'right' ? 'text-right' : ''} overflow-hidden px-3 py-2 align-top text-sm`}
+                      className={`${col.align === 'right' ? 'text-right' : ''} ${col.id === 'detail' ? 'sticky right-0 z-10 bg-white group-hover:bg-gray-50' : ''} overflow-hidden px-3 py-2 align-top text-sm`}
                     >
                       <CellContent
                         columnId={col.id}
