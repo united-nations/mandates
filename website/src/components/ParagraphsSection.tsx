@@ -43,6 +43,17 @@ interface ParagraphsSectionProps {
   entities?: Entity[]
 }
 
+type ParagraphMandate = NonNullable<Paragraph['mandates']>[number]
+
+type EntityTooltipData = {
+  assignee: string
+  assignee_normalized: string
+  assignee_type: string
+  entityType: 'assignee' | 'mentioned_entity'
+}
+
+type DeliverableTooltipData = ParagraphMandate['deliverables'][number]
+
 // TOC data structure
 interface TOCItem {
   id: string
@@ -309,9 +320,9 @@ function SearchableFilterDropdown({
   }, [hierarchicalData, searchTerm])
 
   // Reset search when dropdown closes
-  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     if (!isOpen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional reset on close
       setSearchTerm('')
     }
   }, [isOpen])
@@ -1679,7 +1690,7 @@ export function ParagraphsSection({
     actionVerb: string | null,
     links: [string, string][],
     textWithHighlights?: string,
-    mandates?: any[]
+    mandates?: ParagraphMandate[]
   ) => {
     const sourceText = textWithHighlights || text
 
@@ -1790,31 +1801,33 @@ export function ParagraphsSection({
             </Tooltip>
           )
         } else if (type === 'assignee' || type === 'mentioned_entity') {
-          let entityData: any = null
-
-          // Search in both assignees and mentioned_entities
-          mandates?.forEach((mandate) => {
-            // Check assignees
-            mandate.assignees?.forEach((assignee: any) => {
-              if (assignee.assignee.toLowerCase() === matchText.toLowerCase()) {
-                entityData = { ...assignee, entityType: 'assignee' }
-              }
-            })
-            // Check mentioned_entities
-            mandate.mentioned_entities?.forEach((entity: any) => {
-              if (
-                entity.mentioned_entity.toLowerCase() ===
-                matchText.toLowerCase()
-              ) {
-                entityData = {
-                  assignee: entity.mentioned_entity,
-                  assignee_normalized: entity.mentioned_entity_normalized,
-                  assignee_type: entity.mentioned_entity_type,
-                  entityType: 'mentioned_entity',
-                }
-              }
-            })
-          })
+          // Search assignees and mentioned_entities; last match wins (preserves
+          // the prior forEach-assignment order: per mandate, assignees then
+          // mentioned_entities).
+          const needle = matchText.toLowerCase()
+          const entityCandidates: EntityTooltipData[] = (mandates ?? [])
+            .flatMap((mandate) => [
+              ...(mandate.assignees ?? [])
+                .filter((a) => a.assignee.toLowerCase() === needle)
+                .map(
+                  (a): EntityTooltipData => ({
+                    ...a,
+                    entityType: 'assignee',
+                  })
+                ),
+              ...(mandate.mentioned_entities ?? [])
+                .filter((e) => e.mentioned_entity.toLowerCase() === needle)
+                .map(
+                  (e): EntityTooltipData => ({
+                    assignee: e.mentioned_entity,
+                    assignee_normalized: e.mentioned_entity_normalized,
+                    assignee_type: e.mentioned_entity_type,
+                    entityType: 'mentioned_entity',
+                  })
+                ),
+            ])
+          const entityData: EntityTooltipData | null =
+            entityCandidates[entityCandidates.length - 1] ?? null
 
           // Enhanced highlighting for entity when filter is active
           const isFilteredEntity =
@@ -1860,17 +1873,14 @@ export function ParagraphsSection({
             </Tooltip>
           )
         } else if (type === 'deliverable') {
-          let deliverableData: any = null
-          mandates?.forEach((mandate) => {
-            mandate.deliverables?.forEach((deliverable: any) => {
-              if (
-                deliverable.deliverable.toLowerCase() ===
-                matchText.toLowerCase()
-              ) {
-                deliverableData = deliverable
-              }
-            })
-          })
+          // Last match wins (preserves prior forEach-assignment behavior).
+          const deliverableMatches = (mandates ?? [])
+            .flatMap((m) => m.deliverables ?? [])
+            .filter(
+              (d) => d.deliverable.toLowerCase() === matchText.toLowerCase()
+            )
+          const deliverableData: DeliverableTooltipData | null =
+            deliverableMatches[deliverableMatches.length - 1] ?? null
 
           // Enhanced highlighting for deliverable when filter is active
           const isFilteredDeliverable =

@@ -56,20 +56,21 @@ export function SearchableDropdown({
         option.description.toLowerCase().includes(searchTerm.toLowerCase()))
   )
 
-  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     if (open) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional reset on open
       setHighlightedIndex(-1)
       if (inputRef.current) {
         inputRef.current.focus()
       }
     } else {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional reset on close
       setSearchTerm('')
     }
   }, [open])
 
-  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reset highlight when query changes
     setHighlightedIndex(-1)
   }, [searchTerm])
 

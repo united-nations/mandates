@@ -3,7 +3,7 @@ import { explainerTexts } from '@/lib/en_text_contents'
 
 export function ExplainerText() {
   return (
-    <div className="mt-4 max-w-full text-left text-muted-foreground sm:max-w-[calc(66.667%-(var(--spacing)*4/3))] sm:text-justify">
+    <div className="mt-4 max-w-full text-left text-muted-foreground sm:max-w-[calc(75%-var(--spacing))] sm:text-justify">
       <p className="mb-0 leading-tight">
         Developed as part of the{' '}
         <Link

@@ -16,6 +16,7 @@ export const FILTER_PARAMS = [
   'budget_document',
   'document_type',
   'agenda_item',
+  'full_document_symbol',
   'min_citations',
   'max_citations',
   'mode',
@@ -38,6 +39,7 @@ export const FILTER_ONLY_PARAMS = [
   'budget_document',
   'document_type',
   'agenda_item',
+  'full_document_symbol',
   'min_citations',
   'max_citations',
 ] as const

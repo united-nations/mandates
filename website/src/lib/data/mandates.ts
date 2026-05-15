@@ -865,17 +865,49 @@ export async function getCrossCitations(
 // Filter Options Queries
 // ============================================================================
 
+type FacetOption = { value: string; count: number }
+
+/**
+ * Shared facet-option builder. Every facet does the same dance: drop its own
+ * active value (faceted-search rule, see omitOwnDimension), build the shared
+ * filtered_docs CTE, run a per-facet SELECT, and coerce the count to a number.
+ * Only the inner SELECT and (rarely) the post-processing differ, so those are
+ * the two injection points; everything else lives here once.
+ */
+async function getFacetOptions(
+  filters: FilterOptions,
+  dimension: keyof FilterOptions,
+  opts: {
+    cteOpts?: { selectCols: string; groupCols: string }
+    buildQuery: (ctx: {
+      cte: string
+      versionClause: (alias: string) => string
+    }) => string
+    postProcess?: (rows: ValueCountRow[]) => FacetOption[]
+  }
+): Promise<FacetOption[]> {
+  const scoped = omitOwnDimension(filters, dimension)
+  const { cte, params, versionClause } = buildFilteredDocsCTE(scoped, {
+    selectCols: opts.cteOpts?.selectCols ?? 'd.ppb_full_document_symbol',
+    groupCols: opts.cteOpts?.groupCols ?? 'd.ppb_full_document_symbol',
+  })
+
+  const query = opts.buildQuery({ cte, versionClause })
+  const rows = await queryMany<ValueCountRow>(query, params)
+
+  const postProcess =
+    opts.postProcess ??
+    ((r: ValueCountRow[]) =>
+      r.map((row) => ({ value: row.value, count: parseInt(row.count) || 0 })))
+  return postProcess(rows)
+}
+
 /**
  * Get programme options with counts
  */
-export async function getProgrammeOptions(filters: FilterOptions = {}): Promise<{ value: string; count: number }[]> {
-  filters = omitOwnDimension(filters, 'programme')
-  const { cte, params, versionClause } = buildFilteredDocsCTE(filters, {
-    selectCols: 'd.ppb_full_document_symbol',
-    groupCols: 'd.ppb_full_document_symbol',
-  })
-
-  const query = `
+export async function getProgrammeOptions(filters: FilterOptions = {}): Promise<FacetOption[]> {
+  return getFacetOptions(filters, 'programme', {
+    buildQuery: ({ cte, versionClause }) => `
     WITH ${cte}
     SELECT
       c.programme_title as value,
@@ -887,27 +919,16 @@ export async function getProgrammeOptions(filters: FilterOptions = {}): Promise<
     WHERE c.programme_title IS NOT NULL AND c.programme_title != ''
     GROUP BY c.programme_title
     ORDER BY count DESC, c.programme_title
-  `
-
-  const rows = await queryMany<ValueCountRow>(query, params)
-
-  return rows.map((row) => ({
-    value: row.value,
-    count: parseInt(row.count) || 0,
-  }))
+  `,
+  })
 }
 
 /**
  * Get subject options with counts
  */
-export async function getSubjectOptions(filters: FilterOptions = {}): Promise<{ value: string; count: number }[]> {
-  filters = omitOwnDimension(filters, 'subject')
-  const { cte, params } = buildFilteredDocsCTE(filters, {
-    selectCols: 'd.ppb_full_document_symbol',
-    groupCols: 'd.ppb_full_document_symbol',
-  })
-
-  const query = `
+export async function getSubjectOptions(filters: FilterOptions = {}): Promise<FacetOption[]> {
+  return getFacetOptions(filters, 'subject', {
+    buildQuery: ({ cte }) => `
     WITH ${cte},
     subjects AS (
       SELECT
@@ -925,32 +946,31 @@ export async function getSubjectOptions(filters: FilterOptions = {}): Promise<{ 
     WHERE subject IS NOT NULL AND subject != ''
     GROUP BY subject
     ORDER BY count DESC, subject
-  `
-
-  const rows = await queryMany<ValueCountRow>(query, params)
-
-  // Normalize to title case then deduplicate (different raw strings can produce the same display value)
-  const merged = new Map<string, number>()
-  for (const row of rows) {
-    const key = titleCase(row.value.trim())
-    merged.set(key, (merged.get(key) ?? 0) + (parseInt(row.count) || 0))
-  }
-  return Array.from(merged.entries())
-    .map(([value, count]) => ({ value, count }))
-    .sort((a, b) => b.count - a.count || a.value.localeCompare(b.value))
+  `,
+    // Normalize to title case then deduplicate (different raw strings can produce the same display value)
+    postProcess: (rows) => {
+      const merged = new Map<string, number>()
+      for (const row of rows) {
+        const key = titleCase(row.value.trim())
+        merged.set(key, (merged.get(key) ?? 0) + (parseInt(row.count) || 0))
+      }
+      return Array.from(merged.entries())
+        .map(([value, count]) => ({ value, count }))
+        .sort((a, b) => b.count - a.count || a.value.localeCompare(b.value))
+    },
+  })
 }
 
 /**
  * Get document type options from ppb_type (well-populated field on source_documents)
  */
-export async function getDocumentTypeOptions(filters: FilterOptions = {}): Promise<{ value: string; count: number }[]> {
-  filters = omitOwnDimension(filters, 'document_type')
-  const { cte, params } = buildFilteredDocsCTE(filters, {
-    selectCols: 'd.ppb_full_document_symbol, d.ppb_type',
-    groupCols: 'd.ppb_full_document_symbol, d.ppb_type',
-  })
-
-  const query = `
+export async function getDocumentTypeOptions(filters: FilterOptions = {}): Promise<FacetOption[]> {
+  return getFacetOptions(filters, 'document_type', {
+    cteOpts: {
+      selectCols: 'd.ppb_full_document_symbol, d.ppb_type',
+      groupCols: 'd.ppb_full_document_symbol, d.ppb_type',
+    },
+    buildQuery: ({ cte }) => `
     WITH ${cte}
     SELECT
       ppb_type as value,
@@ -959,27 +979,16 @@ export async function getDocumentTypeOptions(filters: FilterOptions = {}): Promi
     WHERE ppb_type IS NOT NULL AND ppb_type != ''
     GROUP BY ppb_type
     ORDER BY count DESC, ppb_type
-  `
-
-  const rows = await queryMany<ValueCountRow>(query, params)
-
-  return rows.map((row) => ({
-    value: row.value,
-    count: parseInt(row.count) || 0,
-  }))
+  `,
+  })
 }
 
 /**
  * Get agenda item options — parallel UNNEST of number + title arrays
  */
-export async function getAgendaItemOptions(filters: FilterOptions = {}): Promise<{ value: string; count: number }[]> {
-  filters = omitOwnDimension(filters, 'agenda_item')
-  const { cte, params } = buildFilteredDocsCTE(filters, {
-    selectCols: 'd.ppb_full_document_symbol',
-    groupCols: 'd.ppb_full_document_symbol',
-  })
-
-  const query = `
+export async function getAgendaItemOptions(filters: FilterOptions = {}): Promise<FacetOption[]> {
+  return getFacetOptions(filters, 'agenda_item', {
+    buildQuery: ({ cte }) => `
     WITH ${cte},
     agenda_items AS (
       SELECT
@@ -997,14 +1006,8 @@ export async function getAgendaItemOptions(filters: FilterOptions = {}): Promise
     WHERE item IS NOT NULL AND item != ''
     GROUP BY item
     ORDER BY count DESC, item
-  `
-
-  const rows = await queryMany<ValueCountRow>(query, params)
-
-  return rows.map((row) => ({
-    value: row.value,
-    count: parseInt(row.count) || 0,
-  }))
+  `,
+  })
 }
 
 /**

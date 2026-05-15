@@ -95,7 +95,9 @@ function YearSelector({
   )
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- sync local slider to committed URL range
     setLocalRange(committedRange)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters.start_year, filters.end_year])
 
   const applyFilter = useCallback(
