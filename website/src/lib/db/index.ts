@@ -14,7 +14,11 @@ export const getPool = (): Pool => {
   if (!globalForDb._pgPool) {
     globalForDb._pgPool = new Pool({
       connectionString: process.env.DATABASE_URL,
-      max: 5,
+      // Each explorer load fires ~16 queries concurrently; with max:5 the
+      // fast ones starved for seconds behind the slow ones. Overridable via
+      // env so total connections (instances × max) can be tuned to the
+      // Azure Postgres tier's connection limit.
+      max: Number(process.env.DATABASE_POOL_MAX) || 15,
     })
 
     globalForDb._pgPool.on('error', (err) => {

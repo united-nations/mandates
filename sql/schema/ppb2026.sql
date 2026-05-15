@@ -112,8 +112,15 @@ create table ppb2026.source_documents_metadata_clean (
     symbol_without_prefix_split_n double precision
 );
 
--- Unified view: PPB source documents + Digital Library resolutions
-create or replace view public.unified_documents as
+-- Unified set: PPB source documents + Digital Library resolutions.
+-- Materialized (not a plain view) — the Digital Library branch full-scans
+-- ~380k rows with a regex + anti-join (~700ms) and is referenced ~16x per
+-- explorer load. Refresh after any underlying-data import:
+--   REFRESH MATERIALIZED VIEW public.unified_documents;
+-- (see sql/refresh_unified_documents.sql / migration 011 for rationale).
+drop view if exists public.unified_documents;
+drop materialized view if exists public.unified_documents;
+create materialized view public.unified_documents as
 -- PPB source documents
 select
     ppb_full_document_symbol,
@@ -147,6 +154,13 @@ where dl.document_symbol ~ '/RES/'
     and not exists (
         select 1 from ppb2026.source_documents p
         where p.ppb_full_document_symbol = dl.document_symbol
-    );
+    )
+with data;
+
+create index unified_documents_symbol_idx
+    on public.unified_documents (ppb_full_document_symbol);
+create index unified_documents_body_idx on public.unified_documents (ppb_body);
+create index unified_documents_type_idx on public.unified_documents (ppb_type);
+create index unified_documents_year_idx on public.unified_documents (ppb_year);
 
 grant select on public.unified_documents to mandates_readonly;
