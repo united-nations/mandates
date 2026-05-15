@@ -315,17 +315,18 @@ def make_hierarchy(elements: list[Element], level=0):
 
     return hierarchy
 
-def parse_ppb_docs(year):
-    files = Path(f"../data/downloads/ppb{year}").glob("*.docx")
-    output_dir = Path(f"../data/processed/ppb{year}/json")
-    output_dir.mkdir(parents=True, exist_ok=True)
-    q = tqdm(natsorted(files))
-    for input_file in q:
-        q.set_description(f"Processing {input_file.stem}")
-        doc = docx.Document(input_file)
-        elements = annotate_elements(doc)
-        hierarchy = make_hierarchy(elements, 0)
-        output_file = output_dir / f"{input_file.stem.upper()}.json"
-        output_file.parent.mkdir(parents=True, exist_ok=True)
-        json.dump(hierarchy, output_file.open("w"), indent=2, ensure_ascii=False)
-        q.update(1)
+def parse_budget_docs(year):
+    for name in [f"ppb{year}", f"pkm{year-1}"]:
+        files = Path(f"../data/downloads/{name}").glob("*.docx")
+        output_dir = Path(f"../data/processed/{name}/json")
+        output_dir.mkdir(parents=True, exist_ok=True)
+        q = tqdm(natsorted(files))
+        for input_file in q:
+            q.set_description(f"Processing {input_file.stem}")
+            doc = docx.Document(input_file)
+            elements = annotate_elements(doc)
+            hierarchy = make_hierarchy(elements, 0)
+            output_file = output_dir / f"{input_file.stem.upper()}.json"
+            output_file.parent.mkdir(parents=True, exist_ok=True)
+            json.dump(hierarchy, output_file.open("w"), indent=2, ensure_ascii=False)
+            q.update(1)
