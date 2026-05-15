@@ -145,24 +145,32 @@ function buildFilterClauses(
   let paramIndex = paramOffset + 1
 
   // Version scoping: every citation-based filter must match citations that
-  // originate from the selected PPB version, otherwise filters like `entity`
-  // leak citations from other versions (e.g. PPB 2026 DCO rows showing up
-  // under ppb_version=ppb2027). `versionClause(alias)` returns the SQL
-  // predicate to AND into any citation subquery / join, reusing a single
-  // bound pattern param across all call sites.
+  // originate from the selected budget version, otherwise filters like
+  // `entity` leak citations from other versions (e.g. PPB 2026 DCO rows
+  // showing up under ppb_version=ppb2027).
+  //
+  // A version is a data-driven grouping of budget documents
+  // (ppb2026.budget_versions <- ppb2026.budget_documents.version_slug):
+  //   ppb2026 = PPB 2026 + Peacekeeping 2025/26
+  //   ppb2027 = PPB 2027 + Peacekeeping 2026/27
+  // so a citation belongs to version V iff its origin_document matches the
+  // match_pattern of any budget_document whose version_slug = V. The
+  // selected slug is bound once and reused across every call site; an
+  // unknown/absent slug falls back to the table's default version (no
+  // regex is ever built from user input -> no ReDoS surface).
   let versionClause: (alias: string) => string = () => 'TRUE'
   if (filters.mode !== 'all_resolutions') {
-    const version = filters.ppb_version || 'ppb2026'
-    if (version === 'ppb2026') {
-      versionClause = (a) =>
-        `(${a}.origin_document ~ '^PPB 2026$' OR ${a}.origin_document ~ '^PKM 25/26')`
-    } else {
-      const pattern = version === 'ppb2027' ? '^PPB 2027$' : `^${version}$`
-      params.push(pattern)
-      const patternIdx = paramIndex
-      paramIndex++
-      versionClause = (a) => `${a}.origin_document ~ $${patternIdx}`
-    }
+    params.push(filters.ppb_version ?? null)
+    const vIdx = paramIndex
+    paramIndex++
+    versionClause = (a) => `EXISTS (
+        SELECT 1 FROM ppb2026.budget_documents bd
+        WHERE bd.version_slug = COALESCE(
+          $${vIdx},
+          (SELECT slug FROM ppb2026.budget_versions WHERE is_default LIMIT 1)
+        )
+        AND ${a}.origin_document ~ bd.match_pattern
+      )`
 
     // Mode membership: the document must be cited in the selected version.
     clauses.push(`

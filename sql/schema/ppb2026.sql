@@ -5,10 +5,18 @@ create table systemchart.entities (
         CURRENT_TIMESTAMP AT TIME ZONE 'America/New_York'::text
     )
 );
+create table ppb2026.budget_versions (
+    slug text not null primary key,
+    display_name text not null,
+    ppb_year int not null,
+    is_default boolean not null default false,
+    sort_order smallint not null default 0
+);
 create table ppb2026.budget_documents (
     slug text not null primary key,
     display_name text not null,
     match_pattern text not null,
+    version_slug text references ppb2026.budget_versions(slug),
     sort_order smallint not null default 0
 );
 create table ppb2026.organs (
