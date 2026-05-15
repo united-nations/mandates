@@ -71,22 +71,20 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
                             variant="ghost"
                             className="inline-flex h-auto cursor-pointer items-center gap-1 rounded-full border border-slate-200 bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-200 hover:text-slate-700"
                           >
-                            work in progress
+                            beta version
                           </Button>
                         </TooltipTrigger>
                         <TooltipContent side="bottom" className="max-w-56">
                           <p className="text-sm">
-                            This version focuses on data about the UN
-                            secretariat.
-                            <br />
-                            Go to the{' '}
+                            The development of the mandate registry is still
+                            ongoing. Go to the{' '}
                             <Link
                               href="/methodology"
                               className="font-medium text-un-blue underline hover:text-shuttle-gray"
                             >
                               Methodology
                             </Link>{' '}
-                            page for more details.
+                            page for information on the current scope.
                           </p>
                         </TooltipContent>
                       </Tooltip>
