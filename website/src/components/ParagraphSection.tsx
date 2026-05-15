@@ -25,7 +25,8 @@ import { Skeleton } from '@/components/ui/skeleton'
 
 import { explainerTexts } from '@/lib/en_text_contents'
 import { useIsMobile } from '@/hooks/use-mobile'
-import type { Paragraph } from '@/types'
+import type { Entity, Paragraph } from '@/types'
+import { EntityName } from '@/components/EntityName'
 import { titleCase } from 'title-case'
 import {
   Tooltip,
@@ -39,6 +40,7 @@ interface ParagraphsSectionProps {
   isLoading: boolean
   error: string | null
   compact?: boolean
+  entities?: Entity[]
 }
 
 // TOC data structure
@@ -247,6 +249,7 @@ interface SearchableFilterDropdownProps {
   hierarchicalData?: Record<string, Record<string, number>>
   withItemsCount?: number
   withItemsLabel?: string
+  entityLongMap?: Record<string, string>
 }
 
 function SearchableFilterDropdown({
@@ -263,6 +266,7 @@ function SearchableFilterDropdown({
   hierarchicalData,
   withItemsCount,
   withItemsLabel,
+  entityLongMap,
 }: SearchableFilterDropdownProps) {
   const [searchTerm, setSearchTerm] = useState('')
 
@@ -466,7 +470,10 @@ function SearchableFilterDropdown({
                               }`}
                             >
                               <span className="pl-10 text-xs">
-                                {titleCase(entityName)}
+                                <EntityName
+                                  entityName={titleCase(entityName)}
+                                  entityLong={entityLongMap?.[entityName]}
+                                />
                               </span>
                               <span
                                 className={`pr-3 text-xs ${entityCount === 0 ? 'text-gray-400' : 'text-gray-400'}`}
@@ -540,7 +547,15 @@ export function ParagraphsSection({
   isLoading,
   error,
   compact = false,
+  entities,
 }: ParagraphsSectionProps) {
+  const entityLongMap = useMemo(
+    () =>
+      Object.fromEntries(
+        (entities ?? []).map((e) => [e.entity, e.entity_long])
+      ),
+    [entities]
+  )
   const [paragraphFilter] = useState<'all' | 'operative'>('operative')
   const [showPreamble, setShowPreamble] = useState(false)
   const [deliverableFilter, setDeliverableFilter] = useState<string>('all')
@@ -1996,6 +2011,7 @@ export function ParagraphsSection({
                         hierarchicalData={assigneesByType}
                         withItemsCount={paragraphsWithAssigneesCount}
                         withItemsLabel="With entities"
+                        entityLongMap={entityLongMap}
                       />
                     </div>
                   </TooltipTrigger>

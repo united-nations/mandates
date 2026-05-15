@@ -76,7 +76,7 @@ export function SidebarListItem({
 
   // Different styles based on variant
   const baseStyles =
-    'flex items-center justify-between p-2 rounded-sm cursor-pointer group border-b border-muted/30 last:border-b-0'
+    'flex items-center justify-between p-1.5 rounded-sm cursor-pointer group border-b border-muted/30 last:border-b-0'
 
   const variantStyles = {
     navigation: {
@@ -105,7 +105,7 @@ export function SidebarListItem({
     >
       <div className="min-w-0 flex-1">
         <div
-          className={cn('truncate text-sm font-medium', currentVariant.label)}
+          className={cn('truncate text-xs font-medium', currentVariant.label)}
         >
           {label}
         </div>
@@ -114,16 +114,16 @@ export function SidebarListItem({
         <span className="flex w-full items-center">
           <span
             className={cn(
-              'flex max-w-[32px] min-w-[28px] shrink-0 justify-end pr-2 text-right font-mono text-xs text-un-blue',
+              'flex max-w-[32px] min-w-[28px] shrink-0 justify-end pr-2 text-right text-xs tabular-nums text-un-blue',
               countClassName
             )}
           >
             {count.toLocaleString()}
           </span>
           {showProgressBar && (
-            <span className="relative h-2 flex-1 rounded bg-un-blue/10">
+            <span className="relative h-1.5 flex-1 rounded bg-un-blue/10">
               <span
-                className="absolute top-0 left-0 h-2 rounded bg-un-blue/60"
+                className="absolute top-0 left-0 h-1.5 rounded bg-un-blue/60"
                 style={{
                   width: `${progressPercentage}%`,
                   minWidth: count > 0 ? 2 : 0,

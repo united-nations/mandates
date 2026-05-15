@@ -15,6 +15,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from '@/components/ui/hover-card'
 import { useFilters } from '@/contexts/FilterContext'
 import type { BudgetDocument } from '@/lib/data/budget-documents'
 import type { Entity, Mandate, Organ } from '@/types'
@@ -29,7 +34,9 @@ import {
   getMandateUrl,
 } from './MandateColumns'
 
-interface FilterOptions {
+// Facet option lists for the column filter popovers. Named FilterFacets to
+// avoid colliding with the data-layer FilterOptions (active filter *values*).
+interface FilterFacets {
   programmes: { value: string; count: number }[]
   subjects: { value: string; count: number }[]
   documentTypes: { value: string; count: number }[]
@@ -43,7 +50,7 @@ interface MandateDataTableProps {
   mandates: Mandate[]
   organsData: Organ[]
   entitiesData: Entity[]
-  filterOptions: FilterOptions
+  filterOptions: FilterFacets
   visibleColumns: Set<string>
   onToggleColumn: (columnId: string) => void
   onResetColumns: () => void
@@ -106,7 +113,12 @@ export function MandateDataTable({
 
   const handleRowClick = (mandate: Mandate, e: React.MouseEvent) => {
     e.preventDefault()
-    router.push(getMandateUrl(mandate.full_document_symbol))
+    router.push(
+      getMandateUrl(mandate.full_document_symbol, {
+        ppb_version: filters.ppb_version,
+        mode: filters.mode,
+      })
+    )
   }
 
   return (
@@ -298,7 +310,7 @@ function CellContent({
       const visible = entities.slice(0, maxShow)
       const remaining = entities.length - maxShow
 
-      const pill = (entity: string) => (
+      const pill = (entity: string, inPopup: boolean) => (
         <Badge
           key={entity}
           variant="secondary"
@@ -308,40 +320,44 @@ function CellContent({
             onEntityClick(entity)
           }}
         >
-          <EntityName
-            entityName={entity}
-            entityLong={
-              entitiesData.find((e) => e.entity === entity)?.entity_long
-            }
-            showUnderline={false}
-          />
+          {inPopup ? (
+            <EntityName
+              entityName={entity}
+              entityLong={
+                entitiesData.find((e) => e.entity === entity)?.entity_long
+              }
+              showUnderline={false}
+            />
+          ) : (
+            entity
+          )}
         </Badge>
       )
 
       if (remaining <= 0) {
         return (
           <div className="flex items-center gap-1 overflow-hidden">
-            {entities.map(pill)}
+            {entities.map((e) => pill(e, false))}
           </div>
         )
       }
 
       return (
-        <Tooltip>
-          <TooltipTrigger asChild>
+        <HoverCard openDelay={100} closeDelay={100}>
+          <HoverCardTrigger asChild>
             <div className="flex items-center gap-1 overflow-hidden cursor-default">
-              {visible.map(pill)}
+              {visible.map((e) => pill(e, false))}
               <span className="text-[10px] text-gray-400 shrink-0">
                 +{remaining}
               </span>
             </div>
-          </TooltipTrigger>
-          <TooltipContent className="max-w-sm bg-white border shadow-lg p-2">
+          </HoverCardTrigger>
+          <HoverCardContent className="w-auto max-w-sm bg-white border shadow-lg p-2">
             <div className="flex flex-wrap gap-1">
-              {entities.map(pill)}
+              {entities.map((e) => pill(e, true))}
             </div>
-          </TooltipContent>
-        </Tooltip>
+          </HoverCardContent>
+        </HoverCard>
       )
     }
 

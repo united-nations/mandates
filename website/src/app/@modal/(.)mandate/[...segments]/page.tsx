@@ -6,6 +6,7 @@ import { FileText } from 'lucide-react'
 import { getMandateBySymbol } from '@/lib/data/mandates'
 import { getAllEntities } from '@/lib/data/entities'
 import { getBudgetDocuments } from '@/lib/data/budget-documents'
+import { getAllOrgans } from '@/lib/data/organs'
 import { getParagraphsBySymbol } from '@/lib/data/paragraphs'
 import { ParagraphsSection } from '@/components/ParagraphSection'
 import { CitationCounts } from '@/components/CitationCounts'
@@ -13,20 +14,27 @@ import { MandateMetadata } from '@/components/MandateMetadata'
 
 interface ModalMandatePageProps {
   params: Promise<{ segments: string[] }>
+  searchParams: Promise<Record<string, string | string[] | undefined>>
 }
 
 export default async function ModalMandatePage({
   params,
+  searchParams,
 }: ModalMandatePageProps) {
   const { segments } = await params
   const documentSymbol = decodeUrlSegments(segments)
+  const sp = await searchParams
+  const ppbVersion =
+    typeof sp.ppb_version === 'string' ? sp.ppb_version : undefined
 
-  const [mandate, entities, budgetDocuments, paragraphs] = await Promise.all([
-    getMandateBySymbol(documentSymbol),
-    getAllEntities(),
-    getBudgetDocuments(),
-    getParagraphsBySymbol(documentSymbol),
-  ])
+  const [mandate, entities, budgetDocuments, organs, paragraphs] =
+    await Promise.all([
+      getMandateBySymbol(documentSymbol, ppbVersion),
+      getAllEntities(),
+      getBudgetDocuments(),
+      getAllOrgans(),
+      getParagraphsBySymbol(documentSymbol),
+    ])
 
   if (!mandate) notFound()
 
@@ -72,7 +80,11 @@ export default async function ModalMandatePage({
 
       {/* Content */}
       <div className="space-y-10 sm:pr-2">
-        <MandateMetadata mandate={mandate} budgetDocuments={budgetDocuments} />
+        <MandateMetadata
+          mandate={mandate}
+          budgetDocuments={budgetDocuments}
+          organs={organs}
+        />
         <CitationCounts mandate={mandate} entities={entities} />
         <ParagraphsSection
           paragraphs={paragraphs}
@@ -80,6 +92,7 @@ export default async function ModalMandatePage({
           isLoading={false}
           error={null}
           compact
+          entities={entities}
         />
       </div>
     </div>

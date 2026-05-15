@@ -194,6 +194,13 @@ export interface ApiResponse {
       match_pattern: string
       sort_order: number
     }[]
+    budgetVersions: {
+      slug: string
+      display_name: string
+      ppb_year: number
+      is_default: boolean
+      sort_order: number
+    }[]
   }
 
   // Reference data for display

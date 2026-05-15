@@ -57,7 +57,7 @@ export function FilterBadge({
   return (
     <Badge variant={variant} className={badgeClasses}>
       {Icon && <Icon className="h-3 w-3" />}
-      <span className="text-sm font-medium">{label}</span>
+      <span className="text-xs font-medium">{label}</span>
       {showClearButton && onClear && (
         <Button
           variant="ghost"

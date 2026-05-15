@@ -3,45 +3,31 @@
 import {
   createContext,
   useContext,
-  useState,
-  useEffect,
+  useMemo,
   useTransition,
   ReactNode,
   Suspense,
 } from 'react'
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 import {
-  FILTER_PARAMS,
+  parseSearchParams,
   type FilterParamKey,
 } from '@/lib/filter-constants'
+import type { FilterOptions } from '@/types'
 import { LoadingFallback } from '@/components/LoadingFallback'
 
-export interface FilterType {
-  entity?: string
-  organ?: string
-  crossCitingEntity?: string
-  keyword?: string
-  programme?: string
-  subject?: string
-  start_year?: string
-  end_year?: string
-  budget_document?: string
-  document_type?: string
-  agenda_item?: string
-  min_citations?: string
-  max_citations?: string
-  mode?: string
-  ppb_version?: string
-  sort_by?: string
-  page?: string
-  limit?: string
-}
+/**
+ * Filter state is the URL. We derive it directly from searchParams via the
+ * shared parseSearchParams (the same parser the server uses) — no useState
+ * mirror, so there is a single source of truth and no URL/state lag.
+ */
+export type FilterType = FilterOptions
 
 interface FilterContextType {
-  filters: FilterType
+  filters: FilterOptions
   isPending: boolean
   setFilter: (key: FilterParamKey, value: string | undefined) => void
-  setMultipleFilters: (updates: Partial<FilterType>) => void
+  setMultipleFilters: (updates: Partial<FilterOptions>) => void
   clearFilter: (key: FilterParamKey) => void
   clearAllFilters: () => void
 }
@@ -54,21 +40,10 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
   const searchParams = useSearchParams()
   const [isPending, startTransition] = useTransition()
 
-  const [filters, setFilters] = useState<FilterType>({})
-
-  useEffect(() => {
-    const newFilters: FilterType = {}
-
-    FILTER_PARAMS.forEach((key) => {
-      const value = searchParams.get(key)
-      if (value) {
-        newFilters[key] = value
-      }
-    })
-
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setFilters(newFilters)
-  }, [searchParams, pathname])
+  const filters = useMemo(
+    () => parseSearchParams(Object.fromEntries(searchParams.entries())),
+    [searchParams]
+  )
 
   const setFilter = (key: FilterParamKey, value: string | undefined) => {
     const newParams = new URLSearchParams(searchParams.toString())

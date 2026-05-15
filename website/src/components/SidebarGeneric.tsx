@@ -105,6 +105,7 @@ export function GenericSidebar<T>({
             setSearchTerm(e.target.value)
           }
           variant="border-bottom"
+          className="h-8 text-xs"
         />
 
         <div

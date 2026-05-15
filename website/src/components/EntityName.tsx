@@ -3,6 +3,7 @@
 import {
   Tooltip,
   TooltipContent,
+  TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 
@@ -32,11 +33,15 @@ export function EntityName({
   }
 
   return (
-    <Tooltip>
-      <TooltipTrigger className="cursor-help">{displayName}</TooltipTrigger>
-      <TooltipContent>
-        <p>{longName}</p>
-      </TooltipContent>
-    </Tooltip>
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <span className="cursor-help">{displayName}</span>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{longName}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   )
 }

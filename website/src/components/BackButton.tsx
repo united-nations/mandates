@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-react'
-import { useRouter } from 'next/navigation'
+import { useSafeBack } from '@/hooks/use-safe-back'
 
 interface BackButtonProps {
   label?: string
@@ -13,15 +13,7 @@ export function BackButton({
   label = 'Go Back',
   className = '',
 }: BackButtonProps) {
-  const router = useRouter()
-
-  const handleClick = () => {
-    if (typeof window !== 'undefined' && window.history.length > 1) {
-      window.history.back()
-    } else {
-      router.push('/')
-    }
-  }
+  const handleClick = useSafeBack()
 
   return (
     <Button

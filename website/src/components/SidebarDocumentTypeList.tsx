@@ -42,6 +42,7 @@ export function DocumentTypeSidebar({
             setSearchTerm(e.target.value)
           }
           variant="border-bottom"
+          className="h-8 text-xs"
         />
       )}
       <div className="space-y-0.5">

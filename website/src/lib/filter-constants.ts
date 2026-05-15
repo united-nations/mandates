@@ -64,7 +64,9 @@ export function parseSearchParams(
 
   return {
     mode: (getString('mode') as 'active_mandates' | 'all_resolutions') || 'active_mandates',
-    ppb_version: getString('ppb_version') || 'ppb2026',
+    // No hardcoded default: when absent, the data layer's versionClause
+    // COALESCEs to ppb2026.budget_versions.is_default (single source of truth).
+    ppb_version: getString('ppb_version'),
     entity: getString('entity'),
     organ: getString('organ'),
     crossCitingEntity: getString('crossCitingEntity'),

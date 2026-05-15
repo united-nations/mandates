@@ -16,12 +16,17 @@ interface MandateCompactListProps {
 export function MandateCompactList({
   mandates,
 }: MandateCompactListProps) {
-  const { isPending } = useFilters()
+  const { filters, isPending } = useFilters()
   const router = useRouter()
 
   const handleClick = (mandate: Mandate, e: React.MouseEvent) => {
     e.preventDefault()
-    router.push(getMandateUrl(mandate.full_document_symbol))
+    router.push(
+      getMandateUrl(mandate.full_document_symbol, {
+        ppb_version: filters.ppb_version,
+        mode: filters.mode,
+      })
+    )
   }
 
   return (

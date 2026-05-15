@@ -198,14 +198,20 @@ export function MandateExplorerClient({
   )
 
   const currentMode = filters.mode || 'active_mandates'
-  const currentPpbVersion = filters.ppb_version || 'ppb2026'
 
-  const ppbVersions = [
-    { value: 'ppb2026', short: 'PPB 2026', long: 'Proposed Programme Budget for 2026 & Budget of Peacekeeping Operations 2025/26' },
-    { value: 'ppb2027', short: 'PPB 2027', long: 'Incomplete Preview' },
-  ]
-
-  const activePpb = ppbVersions.find((v) => v.value === currentPpbVersion) || ppbVersions[0]
+  // Versions are data-driven (ppb2026.budget_versions). The default comes from
+  // is_default in the DB, not a hardcoded slug.
+  const ppbVersions = (filterOptions.budgetVersions ?? []).map((v) => ({
+    value: v.slug,
+    short: `${v.ppb_year}`,
+    long: v.display_name,
+    isDefault: v.is_default,
+  }))
+  const defaultVersion =
+    ppbVersions.find((v) => v.isDefault) ?? ppbVersions[0]
+  const currentPpbVersion = filters.ppb_version || defaultVersion?.value
+  const activePpb =
+    ppbVersions.find((v) => v.value === currentPpbVersion) ?? defaultVersion
 
   const ppbDropdown = (
     <DropdownMenu open={ppbDropdownOpen} onOpenChange={setPpbDropdownOpen}>
@@ -214,7 +220,7 @@ export function MandateExplorerClient({
           className="inline-flex items-center gap-0.5 border-b border-current pb-px -mb-px"
           onClick={(e) => e.stopPropagation()}
         >
-          {activePpb.short}
+          {activePpb?.short ?? ''}
           <ChevronDown className="h-3 w-3" />
         </button>
       </DropdownMenuTrigger>
@@ -253,7 +259,8 @@ export function MandateExplorerClient({
           </div>
         </TooltipTrigger>
         <TooltipContent side="bottom" className="max-w-xs">
-          Documents cited by UN entities in the {activePpb.long}.
+          Documents cited by UN entities in the{' '}
+          {activePpb?.long ?? 'proposed budget'}.
           Includes resolutions, decisions, conventions, and other formal
           documents with full citation data.
         </TooltipContent>
@@ -271,10 +278,10 @@ export function MandateExplorerClient({
             All Resolutions
           </button>
         </TooltipTrigger>
-        <TooltipContent side="bottom" className="max-w-xs">
-          ~37,000 resolutions from the UN Digital Library (1946–present).
-          Where a resolution is also cited in a PPB, entity and citation
-          data is available.
+        <TooltipContent side="bottom" collisionPadding={8} className="max-w-xs">
+          ~40,000 resolutions from the Dag Hammarskjöld Library
+          (1946–present). Where a resolution is also cited in a PPB, entity
+          and citation data is available.
         </TooltipContent>
       </Tooltip>
     </div>

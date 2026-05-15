@@ -3,17 +3,19 @@
 import { useMemo, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { MetadataItem } from '@/components/MetadataItem'
-import type { Mandate } from '@/types'
+import type { Mandate, Organ } from '@/types'
 import type { BudgetDocument } from '@/lib/data/budget-documents'
 
 interface MandateMetadataProps {
   mandate: Mandate
   budgetDocuments: BudgetDocument[]
+  organs: Organ[]
 }
 
 export function MandateMetadata({
   mandate,
   budgetDocuments,
+  organs,
 }: MandateMetadataProps) {
   const [showAllSubjects, setShowAllSubjects] = useState(false)
   const SUBJECTS_DEFAULT_SHOWN = 20
@@ -43,15 +45,30 @@ export function MandateMetadata({
       <div className="space-y-0">
         <MetadataItem label="Organ">
           {mandate.body ? (
-            <Badge
-              variant="secondary"
-              className="cursor-pointer text-xs transition-colors hover:bg-secondary/80"
-              onClick={() => {
-                window.location.href = `/?organ=${encodeURIComponent(mandate.body)}`
-              }}
-            >
-              {mandate.body}
-            </Badge>
+            (() => {
+              const organData = organs.find(
+                (o) => o.short === mandate.body || o.long === mandate.body
+              )
+              const longName = organData?.long
+              return (
+                <div className="flex items-center gap-2">
+                  <Badge
+                    variant="secondary"
+                    className="shrink-0 cursor-pointer text-xs transition-colors hover:bg-secondary/80"
+                    onClick={() => {
+                      window.location.href = `/?organ=${encodeURIComponent(mandate.body)}`
+                    }}
+                  >
+                    {mandate.body}
+                  </Badge>
+                  {longName && longName !== mandate.body && (
+                    <span className="text-xs text-muted-foreground">
+                      {longName}
+                    </span>
+                  )}
+                </div>
+              )
+            })()
           ) : (
             <span className="text-muted-foreground">—</span>
           )}

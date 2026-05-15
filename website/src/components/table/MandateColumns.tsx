@@ -29,15 +29,6 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
     align: 'left',
   },
   {
-    id: 'organ',
-    label: 'Organ',
-    defaultVisible: true,
-    filterParam: 'organ',
-    filterType: 'pill',
-    widthClass: 'w-[80px]',
-    align: 'left',
-  },
-  {
     id: 'year',
     label: 'Year',
     defaultVisible: true,
@@ -48,9 +39,18 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
     align: 'left',
   },
   {
-    id: 'citations',
-    label: 'Cit.',
+    id: 'organ',
+    label: 'Organ',
     defaultVisible: true,
+    filterParam: 'organ',
+    filterType: 'pill',
+    widthClass: 'w-[80px]',
+    align: 'left',
+  },
+  {
+    id: 'citations',
+    label: 'Citations',
+    defaultVisible: false,
     sortKeys: { asc: 'citations_asc', desc: 'citations_desc' },
     widthClass: 'w-[50px]',
     align: 'right',
@@ -134,10 +134,20 @@ export const TOGGLEABLE_COLUMNS = COLUMN_DEFINITIONS.filter(
   (c) => c.id !== 'detail'
 )
 
-export function getMandateUrl(symbol: string): string {
+export function getMandateUrl(
+  symbol: string,
+  query?: { ppb_version?: string; mode?: string }
+): string {
   if (!symbol) return '/mandate/unknown'
   const segments = symbol
     .split('/')
     .map((segment) => encodeURIComponent(segment))
-  return `/mandate/${segments.join('/')}`
+  const base = `/mandate/${segments.join('/')}`
+  // Carry the active budget version (and mode) so the detail/modal view
+  // scopes its citation counts to the same version as the list it came from.
+  const params = new URLSearchParams()
+  if (query?.ppb_version) params.set('ppb_version', query.ppb_version)
+  if (query?.mode) params.set('mode', query.mode)
+  const qs = params.toString()
+  return qs ? `${base}?${qs}` : base
 }
