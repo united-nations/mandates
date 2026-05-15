@@ -144,29 +144,34 @@ function buildFilterClauses(
   const params: SqlParam[] = []
   let paramIndex = paramOffset + 1
 
-  // Mode filter: active mandates filters by PPB version via citation origin_document
+  // Version scoping: every citation-based filter must match citations that
+  // originate from the selected PPB version, otherwise filters like `entity`
+  // leak citations from other versions (e.g. PPB 2026 DCO rows showing up
+  // under ppb_version=ppb2027). `versionClause(alias)` returns the SQL
+  // predicate to AND into any citation subquery / join, reusing a single
+  // bound pattern param across all call sites.
+  let versionClause: (alias: string) => string = () => 'TRUE'
   if (filters.mode !== 'all_resolutions') {
     const version = filters.ppb_version || 'ppb2026'
     if (version === 'ppb2026') {
-      clauses.push(`
-        EXISTS (
-          SELECT 1 FROM ppb2026.source_document_citations c_ppb
-          WHERE c_ppb.ppb_full_document_symbol = d.ppb_full_document_symbol
-          AND (c_ppb.origin_document ~ '^PPB 2026$' OR c_ppb.origin_document ~ '^PKM 25/26')
-        )
-      `)
+      versionClause = (a) =>
+        `(${a}.origin_document ~ '^PPB 2026$' OR ${a}.origin_document ~ '^PKM 25/26')`
     } else {
-      clauses.push(`
-        EXISTS (
-          SELECT 1 FROM ppb2026.source_document_citations c_ppb
-          WHERE c_ppb.ppb_full_document_symbol = d.ppb_full_document_symbol
-          AND c_ppb.origin_document ~ $${paramIndex}
-        )
-      `)
       const pattern = version === 'ppb2027' ? '^PPB 2027$' : `^${version}$`
       params.push(pattern)
+      const patternIdx = paramIndex
       paramIndex++
+      versionClause = (a) => `${a}.origin_document ~ $${patternIdx}`
     }
+
+    // Mode membership: the document must be cited in the selected version.
+    clauses.push(`
+      EXISTS (
+        SELECT 1 FROM ppb2026.source_document_citations c_ppb
+        WHERE c_ppb.ppb_full_document_symbol = d.ppb_full_document_symbol
+        AND ${versionClause('c_ppb')}
+      )
+    `)
   }
 
   // Entity filter - document must have a citation by this entity
@@ -176,6 +181,7 @@ function buildFilterClauses(
         SELECT 1 FROM ppb2026.source_document_citations c2
         WHERE c2.ppb_full_document_symbol = d.ppb_full_document_symbol
         AND c2.entity = $${paramIndex}
+        AND ${versionClause('c2')}
       )
     `)
     params.push(filters.entity)
@@ -189,6 +195,7 @@ function buildFilterClauses(
         SELECT 1 FROM ppb2026.source_document_citations c3
         WHERE c3.ppb_full_document_symbol = d.ppb_full_document_symbol
         AND c3.entity = $${paramIndex}
+        AND ${versionClause('c3')}
       )
     `)
     params.push(filters.crossCitingEntity)
@@ -221,6 +228,7 @@ function buildFilterClauses(
         SELECT 1 FROM ppb2026.source_document_citations c4
         WHERE c4.ppb_full_document_symbol = d.ppb_full_document_symbol
         AND LOWER(c4.programme_title) LIKE $${paramIndex}
+        AND ${versionClause('c4')}
       )
     `)
     params.push(`%${filters.programme.toLowerCase()}%`)
@@ -249,6 +257,7 @@ function buildFilterClauses(
         AND c5.origin_document ~ (
           SELECT match_pattern FROM ppb2026.budget_documents WHERE slug = $${paramIndex}
         )
+        AND ${versionClause('c5')}
       )
     `)
     params.push(filters.budget_document)
