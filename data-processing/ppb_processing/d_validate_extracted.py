@@ -160,7 +160,7 @@ def check_missing_values(df):
     print(df[df["source"].isna()][["section", "source"]])
 
 
-def validate(year):
+def validate_ppb(year):
     df = pd.read_csv(f"../data/processed/ppb{year}/all_mandates.csv")
     for column in df.columns:
         df = df.rename(columns={column: column.replace(" ", "_").lower()})
@@ -179,3 +179,71 @@ def validate(year):
     manual_df["link"] = manual_df["link_id"]
     _validate(manual_df, df)
     # check_missing_values(df)
+
+
+def validate_pkm(year):
+    """Sanity-check the PKM extraction.
+
+    There is no manual ground-truth file for peacekeeping missions, so instead
+    of a manual-vs-auto diff this runs structural checks that surface the known
+    failure modes: non-mandate cross-references extracted as mandates, mandate
+    citations without resolvable links, missions with no extracted mandates,
+    and duplicates.
+    """
+    df = pd.read_csv(f"../data/processed/pkm{year}/all_mandates.csv")
+    for column in df.columns:
+        df = df.rename(columns={column: column.replace(" ", "_").lower()})
+    df["symbol"] = df["symbol"].apply(normalize_symbol)
+
+    lookup = pd.read_csv("../data/references/peacekeeping_mission_budgets.csv")
+    expected = set(lookup[lookup["budget_cycle"] == year]["short_name"])
+
+    print("---------- Rows per mission ----------")
+    counts = df["entity"].value_counts(dropna=False)
+    print(counts.to_string())
+    missing_missions = expected - set(df["entity"].dropna())
+    if missing_missions:
+        print(f"[red]Missions with NO extracted mandates: {sorted(missing_missions)}[/red]")
+
+    print("---------- Rows missing entity ----------")
+    print(df[df["entity"].isna()][["file", "symbol", "link"]].to_string())
+
+    print("---------- Rows without a resolvable link ----------")
+    no_link = df[df["link"].isna()]
+    print(f"{len(no_link)} of {len(df)} rows have no link")
+    print(no_link[["entity", "symbol", "description"]].to_string())
+
+    print("---------- Likely non-mandate cross-references ----------")
+    # real mandates are GA/SC/HRC/ECOSOC resolutions; anything else extracted
+    # from the mandate section (A/80/604, A/80/605, S/2025/..., etc.) is a
+    # report cross-reference, not a legislative mandate
+    fds = df["full_document_symbol"].fillna("")
+    is_resolution = fds.str.contains(r"/RES/|RES/\d|\bresolution\b", case=False, regex=True)
+    not_res = df[~is_resolution]
+    print(f"{len(not_res)} of {len(df)} rows are not */RES/* documents")
+    print(
+        not_res[["entity", "symbol", "full_document_symbol", "source"]]
+        .value_counts(dropna=False)
+        .to_string()
+    )
+
+    print("---------- Duplicate (entity, symbol) ----------")
+    dups = df[df.duplicated(subset=["entity", "symbol"], keep=False)]
+    print(
+        dups[["entity", "symbol"]]
+        .value_counts()
+        .loc[lambda s: s > 1]
+        .to_string()
+    )
+
+    print("---------- Symbols with no link (possible un-linked mandates) ----------")
+    print(
+        df[df["link"].isna() & df["source"].notna()][
+            ["entity", "symbol", "source"]
+        ].to_string()
+    )
+
+def validate(year):
+    validate_ppb(year)
+    validate_pkm(year - 1)
+    

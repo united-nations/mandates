@@ -123,18 +123,16 @@ def _write_data_sheet(wb, df, sheet_name="Mandates"):
     ws.freeze_panes = "A2"
 
 
-def _write_info_sheet(wb, df, year, symbol):
+def _write_info_sheet(wb, df, title, meta):
     ws = wb.create_sheet("Info", 0)
     ws.column_dimensions["A"].width = 30
     ws.column_dimensions["B"].width = 90
 
-    ws["A1"] = f"UN Mandates Export — PPB {year}"
+    ws["A1"] = title
     ws["A1"].font = INFO_TITLE_FONT
     ws.merge_cells("A1:B1")
 
-    meta = [
-        ("Year", year),
-        ("Origin document symbol", symbol),
+    meta = list(meta) + [
         ("Total mandates", len(df)),
         (
             "Unique entities",
@@ -171,18 +169,14 @@ def _write_info_sheet(wb, df, year, symbol):
     ws.sheet_view.showGridLines = False
 
 
-def export_excel(year, symbol):
-    in_path = Path(f"../data/processed/ppb{year}/all_mandates.csv")
-    out_path = Path(f"../data/processed/ppb{year}/all_mandates_formatted.xlsx")
+def _export(in_path: Path, out_path: Path, title: str, meta: list):
     print(f"[bold]Exporting[/bold] {in_path} → {out_path}")
-
     df = pd.read_csv(in_path)
 
     wb = Workbook()
-    default = wb.active
-    wb.remove(default)
+    wb.remove(wb.active)
 
-    _write_info_sheet(wb, df, year, symbol)
+    _write_info_sheet(wb, df, title, meta)
     _write_data_sheet(wb, df, sheet_name="Mandates")
 
     wb.active = wb.sheetnames.index("Mandates")
@@ -190,4 +184,26 @@ def export_excel(year, symbol):
     wb.save(out_path)
     print(
         f"[green]Wrote[/green] {out_path} ({len(df)} rows, {len(df.columns)} columns)"
+    )
+
+
+def export_excel(year, symbol):
+    _export(
+        Path(f"../data/processed/ppb{year}/all_mandates.csv"),
+        Path(f"../data/processed/ppb{year}/all_mandates_formatted.xlsx"),
+        f"UN Mandates Export — PPB {year}",
+        [("Year", year), ("Origin document symbol", symbol)],
+    )
+
+
+def export_excel_pkm(year, symbol="A/80/604"):
+    """``year`` is the budget-cycle start year (e.g. 2026 -> 2026/27)."""
+    _export(
+        Path(f"../data/processed/pkm{year}/all_mandates.csv"),
+        Path(f"../data/processed/pkm{year}/all_mandates_formatted.xlsx"),
+        f"UN Mandates Export — Peacekeeping Missions {year}/{year + 1}",
+        [
+            ("Budget cycle", f"{year}/{year + 1}"),
+            ("Origin document symbol", symbol),
+        ],
     )
