@@ -102,7 +102,7 @@ export function DataCard({
                 <MiniBar key={i} item={item} maxCount={maxCount} />
               ))}
               {remaining > 0 && (
-                <div className="pt-0.5 text-right text-[10px] text-muted-foreground">
+                <div className="w-14 text-right text-[10px] text-muted-foreground">
                   +{remaining} more
                 </div>
               )}

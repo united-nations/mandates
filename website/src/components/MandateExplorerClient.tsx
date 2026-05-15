@@ -28,7 +28,7 @@ import { useCallback, useState } from 'react'
 import { MandateCompactList } from './table/MandateCompactList'
 import { MandateDataTable } from './table/MandateDataTable'
 import { useColumnVisibility } from './table/useColumnVisibility'
-import { YearBarCard } from './YearBarCard'
+// import { YearBarCard } from './YearBarCard' // Years card hidden — see summary cards section
 
 interface MandateExplorerClientProps {
   data: ApiResponse
@@ -284,10 +284,8 @@ export function MandateExplorerClient({
     <div>
       {/* Summary Cards */}
       <section aria-labelledby="summary-heading" className="space-y-4">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {dataCardsSection}
-        </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <DataCard
             title={explainerTexts.dataCards.citations.title}
             value={counts.totalCitations}
@@ -300,11 +298,13 @@ export function MandateExplorerClient({
           >
             <CitationDistribution bins={citationBins} />
           </DataCard>
+          {/* Years card hidden — keep code for potential re-enable
           {filterOptions.yearRange && (
             <YearBarCard
               yearDistribution={filterOptions.yearDistributionUnfiltered ?? filterOptions.yearDistribution}
             />
           )}
+          */}
         </div>
       </section>
 
