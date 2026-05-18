@@ -114,7 +114,16 @@ def get_mandates(
                     file_name=file_name,
                 )
             )
-        elif block["block_type"] in ["subprogramme", "heading-sub-sub"]:
+        elif block["block_type"] in [
+            "subprogramme",
+            "heading-sub-sub",
+            # PKM SG reports nest the mandate-citing paragraphs under
+            # heading-sub subsections ("A. Mandate", "B. Budget
+            # implementation", ...) of the "I. Mandate ..." section; recurse
+            # into them so the citations are not dropped.
+            "heading-sub",
+            "a/b",
+        ]:
             if block["block_type"] == "subprogramme" or re.match(r"^Subprog[ar]?amme\s+\d+", block["text"]):
                 current_subprogramme = block["text"]
             mandates.extend(
