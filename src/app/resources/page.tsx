@@ -70,6 +70,25 @@ export default function ResourcesPage() {
             Results information for the proposed programme budget 2026.
           </div>
         </a>
+        {/* Card 4: transcripts.un.org */}
+        <a
+          href="https://transcripts.un.org/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block flex flex-col items-start rounded-lg border border-muted p-4 text-left transition hover:border-un-blue"
+        >
+          <img
+            src="/images/screenshots/transcripts_un_org.png"
+            alt="transcripts.un.org screenshot"
+            className="mb-3 h-32 w-full rounded-md object-cover"
+          />
+          <div className="mb-1 text-base font-medium text-un-blue">
+            UN Transcripts (Public Preview)
+          </div>
+          <div className="text-sm text-muted-foreground">
+            Automatic transcripts of meetings across the mandate lifecycle.
+          </div>
+        </a>
       </div>
     </div>
   )
