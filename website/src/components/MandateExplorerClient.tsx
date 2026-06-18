@@ -229,7 +229,7 @@ export function MandateExplorerClient({
           <DropdownMenuItem
             key={v.value}
             onClick={() => setMultipleFilters({ mode: 'active_mandates', ppb_version: v.value })}
-            className={`flex flex-col items-start gap-0.5 ${currentPpbVersion === v.value ? 'bg-accent' : ''}`}
+            className={`my-0.5 flex flex-col items-start gap-0.5 ${currentPpbVersion === v.value ? 'bg-accent' : ''}`}
           >
             <span className="font-medium">{v.short}</span>
             <span className="text-xs text-muted-foreground">{v.long}</span>
