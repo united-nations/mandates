@@ -16,9 +16,15 @@ create table ppb2026.budget_documents (
     slug text not null primary key,
     display_name text not null,
     match_pattern text not null,
-    version_slug text references ppb2026.budget_versions(slug),
     sort_order smallint not null default 0
 );
+create table ppb2026.budget_document_versions (
+    doc_slug text not null references ppb2026.budget_documents(slug) on delete cascade,
+    version_slug text not null references ppb2026.budget_versions(slug),
+    primary key (doc_slug, version_slug)
+);
+create index budget_document_versions_version_slug_idx
+    on ppb2026.budget_document_versions (version_slug);
 create table ppb2026.organs (
     short text not null primary key,
     long text not null,
@@ -47,7 +53,7 @@ create table ppb2026.source_documents_metadata_raw (
 create table ppb2026.source_document_citations (
     id bigserial primary key,
     ppb_full_document_symbol text not null references ppb2026.source_documents on delete cascade,
-    entity varchar(255) not null references systemchart.entities on update cascade,
+    entity varchar(255) references systemchart.entities on update cascade,
     origin_document text,
     part_in_document text,
     section text,

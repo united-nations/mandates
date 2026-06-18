@@ -159,7 +159,8 @@ interface FilterClauses {
 function versionPredicateSql(citationAlias: string, versionParam: string): string {
   return `EXISTS (
       SELECT 1 FROM ppb2026.budget_documents bd
-      WHERE bd.version_slug = COALESCE(
+      JOIN ppb2026.budget_document_versions bdv ON bdv.doc_slug = bd.slug
+      WHERE bdv.version_slug = COALESCE(
         ${versionParam},
         (SELECT slug FROM ppb2026.budget_versions WHERE is_default LIMIT 1)
       )
