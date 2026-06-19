@@ -7,9 +7,10 @@ from ppb_processing.e_export_excel import export_excel, export_excel_pkm
 if __name__ == "__main__":
     year = 2027
     symbol = "A/81/6"
-    # a: PPB only (PKM mandates are maintained by hand)
+    # a: download PPB + PKM source docs (PKM kept for verification of the
+    #    curated mandate citations)
     download_budget_docs(symbol, year)
-    # b: PPB only
+    # b: only PPB needs parsing - PKM citations are maintained by hand
     parse_budget_docs(year)
     # c: PPB pipeline + load curated PKM mandates
     extract(year)
