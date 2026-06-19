@@ -205,6 +205,23 @@ function buildFilterClauses(
         AND ${versionClause('c_ppb')}
       )
     `)
+  } else {
+    // All-resolutions mode: catalog scope is "anything matching one of the 8
+    // symbol families (A/RES, A/DEC, S/RES, S/PRST, E/RES, E/DEC, A/HRC/RES,
+    // A/HRC/PRST) ∪ anything cited in the latest budget version". The
+    // 8-pattern definition lives in the matview (column is_catalog_pattern,
+    // set in migration 020) so the regex stays in exactly one place; the
+    // "latest version" predicate reuses versionPredicateSql.
+    clauses.push(`
+      (
+        d.is_catalog_pattern
+        OR EXISTS (
+          SELECT 1 FROM ppb2026.source_document_citations c_latest
+          WHERE c_latest.ppb_full_document_symbol = d.ppb_full_document_symbol
+          AND ${versionPredicateSql('c_latest', 'NULL')}
+        )
+      )
+    `)
   }
 
   // Entity filter - document must have a citation by this entity
@@ -1269,7 +1286,7 @@ async function _getMandatePageDataInner(filters: FilterOptions): Promise<ApiResp
 // older deploy are never served to newer client code (the cache key is only
 // the filters, and entries persist for `revalidate`). This is the
 // data-version guard the refactor plan called for.
-const PAGE_DATA_CACHE_VERSION = 'v3-latest-version-counts'
+const PAGE_DATA_CACHE_VERSION = 'v4-all-resolutions-catalog-scope'
 
 export const getMandatePageData = cache(
   (filters: FilterOptions): Promise<ApiResponse> =>
