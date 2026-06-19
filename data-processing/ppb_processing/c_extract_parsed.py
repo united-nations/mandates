@@ -114,16 +114,7 @@ def get_mandates(
                     file_name=file_name,
                 )
             )
-        elif block["block_type"] in [
-            "subprogramme",
-            "heading-sub-sub",
-            # PKM SG reports nest the mandate-citing paragraphs under
-            # heading-sub subsections ("A. Mandate", "B. Budget
-            # implementation", ...) of the "I. Mandate ..." section; recurse
-            # into them so the citations are not dropped.
-            "heading-sub",
-            "a/b",
-        ]:
+        elif block["block_type"] in ["subprogramme", "heading-sub-sub"]:
             if block["block_type"] == "subprogramme" or re.match(r"^Subprog[ar]?amme\s+\d+", block["text"]):
                 current_subprogramme = block["text"]
             mandates.extend(
@@ -426,167 +417,103 @@ def extract(year):
 # document body and is resolved from the lookup table instead.
 
 
-def load_pkm_mission_lookup(year: int) -> dict:
-    """Map parsed-JSON filename -> (short, full) mission name for a budget cycle.
+# Section titles for peacekeeping reports do not follow a single template, so
+# default to "Financing of <full name>" and override only the three exceptions
+# (Middle East grouping, UNSOS resolution-based heading, RSCE administrative
+# heading).
+_PKM_SECTION_TITLE_OVERRIDES = {
+    "UNDOF": (
+        "Financing of the United Nations peacekeeping forces in the Middle "
+        "East: United Nations Disengagement Observer Force"
+    ),
+    "UNIFIL": (
+        "Financing of the United Nations peacekeeping forces in the Middle "
+        "East: United Nations Interim Force in Lebanon"
+    ),
+    "UNSOS": (
+        "Financing of the activities arising from Security Council "
+        "resolution 1863 (2009)"
+    ),
+    "RSCE": (
+        "Administrative and budgetary aspects of the financing of the "
+        "United Nations peacekeeping operations"
+    ),
+}
 
-    Filenames mirror b_parse_downloaded: ``<symbol with / -> _>.json`` upper-cased
-    (e.g. ``A/80/604/Add.1`` -> ``A_80_604_ADD.1.json``).
+# MINUSMA's SG report is a closure/performance report, so the section is
+# "Mandate performance" rather than the regular "Mandate".
+_PKM_PART_IN_DOCUMENT_OVERRIDES = {"MINUSMA": "Mandate performance"}
+
+
+def _symbol_to_link(symbol: str, source: str) -> str | None:
+    """Turn "350 (1974)" -> https://docs.un.org/en/S/RES/350(1974) etc.
+
+    Mirrors the link form produced by the parsed-JSON pipeline so downstream
+    consumers (link_to_symbol, the seed migration) work unchanged.
     """
-    df = pd.read_csv("../data/references/peacekeeping_mission_budgets.csv")
-    df = df[df["budget_cycle"] == year]
-    return {
-        row["document_symbol"].replace("/", "_").upper() + ".json": (
-            row["short_name"],
-            row["full_name"],
-        )
-        for _, row in df.iterrows()
-        if pd.notna(row["document_symbol"])
-    }
-
-
-# the mandate subsection is enumerated inconsistently across missions, e.g.
-# "A. Mandate and planning assumptions" (heading-sub), "1. Mandate and planned
-# results" (heading-sub-sub) or "II. Mandate and planning assumptions"
-# (entity-group) -- match any heading block whose label starts with "Mandate".
-PKM_HEADING_TYPES = {"heading", "heading-sub", "heading-sub-sub", "entity-group"}
-PKM_MANDATE_RE = re.compile(
-    r"^(?:[IVXLCDM]+|[A-Z]|\d+)[.\s]+Mandate", re.IGNORECASE
-)
-
-
-def find_pkm_mandate_section(data: list) -> dict | None:
-    """Find the "<n>. Mandate ..." subsection (recursively) in a PKM document."""
-    for block in data:
-        if (
-            block["block_type"] in PKM_HEADING_TYPES
-            and block["text"]
-            and PKM_MANDATE_RE.match(block["text"])
-        ):
-            return block
-        if block["children"]:
-            found = find_pkm_mandate_section(block["children"])
-            if found:
-                return found
+    if source == "Security Council resolutions":
+        # "NNN (YYYY)" or "NNNN (YYYY)" -> S/RES/NNNN(YYYY)
+        m = re.fullmatch(r"(\d+)\s*\((\d{4})\)", symbol.strip())
+        if not m:
+            return None
+        return f"https://docs.un.org/en/S/RES/{m.group(1)}({m.group(2)})"
+    if source == "General Assembly resolutions":
+        # "76/274" or "72/266 B" -> A/RES/76/274 or A/RES/72/266B
+        compact = symbol.replace(" ", "")
+        return f"https://docs.un.org/en/A/RES/{compact}"
     return None
 
 
-def pkm_agenda_title(data: list) -> str | None:
-    """The GA agenda-item title from the document's first heading-x.
+def load_pkm_mandates(year: int) -> None:
+    """Read the curated peacekeeping-mission mandates and emit the same
+    ``all_mandates.csv`` / ``.xlsx`` shape the parsed-JSON extractor used to
+    produce.
 
-    Format: "<session> – Agenda item <n> – <agenda title> – <report title>".
-    The DB stores the third segment (the agenda title) as ``section_title``.
+    PKM mandate citations are stable (one canonical sentence per mission per
+    budget cycle, refreshed annually), so we maintain them by hand in
+    ``data/references/peacekeeping_mission_mandates.csv`` instead of running
+    download/parse/extract. The curated CSV holds only what a human owns
+    (entity, symbol, source, description); entity-long name, link,
+    full document symbol, origin document, section title and part-in-document
+    are joined or derived here.
     """
-    def first_heading_x(blocks):
-        for b in blocks:
-            if b["block_type"] == "heading-x" and b["text"]:
-                return b["text"]
-            if b["children"]:
-                found = first_heading_x(b["children"])
-                if found:
-                    return found
-        return None
+    print("Loading curated peacekeeping mission mandates…")
+    curated = pd.read_csv("../data/references/peacekeeping_mission_mandates.csv")
+    missions = pd.read_csv("../data/references/peacekeeping_mission_budgets.csv")
+    missions = missions[missions["budget_cycle"] == year][
+        ["short_name", "full_name", "document_symbol"]
+    ].drop_duplicates()
+    df = curated.merge(
+        missions, left_on="entity", right_on="short_name", how="left"
+    )
+    missing = df[df["full_name"].isna()]["entity"].unique().tolist()
+    if missing:
+        print(f"[yellow]Warning: no mission lookup for: {missing}[/yellow]")
 
-    heading = first_heading_x(data)
-    if not heading:
-        return None
-    parts = [p.strip() for p in heading.split(" – ") if p.strip()]
-    return parts[2] if len(parts) >= 3 else None
-
-
-def pkm_origin_and_section(file_name: str, year: int) -> tuple[str, str | None]:
-    """Derive ``origin_document`` and ``section`` matching the existing DB rows.
-
-    ``A_80_604_ADD.1.json`` -> origin "PKM 26/27 (A/80/604)", section "Add.1".
-    """
-    stem = Path(file_name).stem
-    m = re.match(r"^(.*)_ADD\.(\d+)$", stem, re.IGNORECASE)
-    if m:
-        base = m.group(1).replace("_", "/")
-        section = f"Add.{m.group(2)}"
-    else:
-        base = stem.replace("_", "/")
-        section = None
     yy = year % 100
-    origin = f"PKM {yy:02d}/{yy + 1:02d} ({base})"
-    return origin, section
-
-
-def extract_pkm(year: int):
-    """Extract legislative mandates from peacekeeping mission budget reports.
-
-    ``year`` is the start year of the budget cycle (matching the ``budget_cycle``
-    column and the ``pkm{year}`` download/parse folders).
-    """
-    print("Processing peacekeeping mission documents to extract mandates…")
-    mission_lookup = load_pkm_mission_lookup(year)
-    print(f"Loaded lookup table with {len(mission_lookup)} missions")
-
-    rows = []
-    files = natsorted(Path(f"../data/processed/pkm{year}/json").glob("*.json"))
-    for file in tqdm(files, desc="Processing PKM files"):
-        short_name, full_name = mission_lookup.get(file.name, (None, None))
-        if short_name is None:
-            print(f"[yellow]Warning: {file.name} not in lookup table[/yellow]")
-        try:
-            with open(file) as f:
-                data = json.load(f)
-            section = find_pkm_mandate_section(data)
-            if section is None:
-                print(f"[yellow]Warning: no mandate section in {file.name}[/yellow]")
-                continue
-            origin_document, section_no = pkm_origin_and_section(file.name, year)
-            section_title = pkm_agenda_title(data)
-            # strip the leading enumerator ("A.\t", "II.\t", "1.\t") so that
-            # part_in_document matches the DB values ("Mandate and planning
-            # assumptions", "Mandate", "Mandate and planned results")
-            part_in_document = re.sub(
-                r"^(?:[IVXLCDM]+|[A-Z]|\d+)[.\s]+", "", section["text"]
-            ).strip()
-            # reuse the shared paragraph/table mandate extractor
-            for symbol, link, description, source, _sp, _ent in get_mandates(
-                section, file_name=file.name
-            ):
-                rows.append(
-                    {
-                        "origin_document": origin_document,
-                        "file": file.name,
-                        "entity": short_name,
-                        "entity-long": full_name,
-                        "section": section_no,
-                        "section_title": section_title,
-                        "part_in_document": part_in_document,
-                        "description": description,
-                        "link": link,
-                        "symbol": symbol,
-                        "source": source,
-                    }
-                )
-        except Exception as e:
-            print(f"[yellow]Warning: skipping {file.name}: {e}[/yellow]")
-
-    df = pd.DataFrame(rows)
-    df["symbol"] = df["symbol"].apply(normalize_symbol)
-    df["symbol"] = (
-        df["symbol"].str.split(";").apply(lambda x: [normalize_symbol(s) for s in x] if x else None)
+    df["origin_document"] = df["document_symbol"].apply(
+        lambda s: f"PKM {yy:02d}/{yy + 1:02d} ({s})"
     )
-    df = df.explode("symbol")
+    df["file"] = df["document_symbol"].apply(
+        lambda s: s.replace("/", "_").upper() + ".json"
+    )
+    df["entity-long"] = df["full_name"]
+    df["section"] = None
+    df["section_title"] = df.apply(
+        lambda r: _PKM_SECTION_TITLE_OVERRIDES.get(
+            r["entity"], f"Financing of the {r['full_name']}"
+        ),
+        axis=1,
+    )
+    df["part_in_document"] = df["entity"].map(_PKM_PART_IN_DOCUMENT_OVERRIDES).fillna(
+        "Mandate"
+    )
+    df["link"] = df.apply(
+        lambda r: _symbol_to_link(r["symbol"], r["source"]), axis=1
+    )
     df["full_document_symbol"] = df["link"].apply(link_to_symbol)
-    # The mandate paragraphs hyperlink genuine legislative mandates (GA/SC/HRC/
-    # ECOSOC resolutions) but also cross-reference SG/ACABQ reports, prior-year
-    # budget documents and SG letters in the same sentences. Only the former are
-    # mandates: derive the source purely from the document symbol and drop rows
-    # that do not resolve to a resolution. This also removes budget-table cells
-    # mis-parsed as symbols (no link -> no source).
-    n_before = len(df)
-    df["source"] = df["full_document_symbol"].apply(reconstruct_mandate_source)
-    df = df[df["source"].notna()].copy()
-    # same resolution is often hyperlinked several times within a paragraph;
-    # keep distinct (entity, symbol, sentence) citations but drop exact repeats
-    df = df.drop_duplicates(subset=["entity", "symbol", "description"])
-    print(
-        f"Filtered {n_before} -> {len(df)} rows "
-        f"(dropped non-mandate cross-references and exact duplicates)"
-    )
+    df["description"] = curated["description"]
+
     df = df[
         [
             "origin_document",
@@ -604,12 +531,16 @@ def extract_pkm(year: int):
         ]
     ]
 
+    out_dir = Path(f"../data/processed/pkm{year}")
+    out_dir.mkdir(parents=True, exist_ok=True)
     _df = df.copy()
     for col in _df.columns:
         _df = _df.rename(columns={col: col.replace("_", " ").title()})
-    _df.to_csv(f"../data/processed/pkm{year}/all_mandates.csv", index=False)
-    _df.to_excel(f"../data/processed/pkm{year}/all_mandates.xlsx", index=False)
+    _df.to_csv(out_dir / "all_mandates.csv", index=False)
+    _df.to_excel(out_dir / "all_mandates.xlsx", index=False)
     print(
-        f"✅ Extracted {len(df)} mandate rows from {df['file'].nunique()} PKM files "
-        f"({df['symbol'].notna().sum()} with a symbol)"
+        f"✅ Loaded {len(df)} curated mandate rows from "
+        f"{df['entity'].nunique()} missions"
     )
+
+
