@@ -316,7 +316,9 @@ def make_hierarchy(elements: list[Element], level=0):
     return hierarchy
 
 def parse_budget_docs(year):
-    for name in [f"ppb{year}", f"pkm{year-1}"]:
+    # PKM is no longer parsed - mandate citations come from the curated
+    # reference CSV via load_pkm_mandates().
+    for name in [f"ppb{year}"]:
         files = Path(f"../data/downloads/{name}").glob("*.docx")
         output_dir = Path(f"../data/processed/{name}/json")
         output_dir.mkdir(parents=True, exist_ok=True)
