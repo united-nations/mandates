@@ -18,6 +18,7 @@ import {
   BookOpen,
   ExternalLink,
   GitCompare,
+  Grid3x3,
   Home,
   Menu,
 } from 'lucide-react'
@@ -165,6 +166,29 @@ export function SiteHeader() {
                   >
                     <BookOpen className="h-4 w-4" />
                     Methodology
+                  </Link>
+                )}
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                asChild={pathname !== '/citation-matrix'}
+                className={
+                  pathname === '/citation-matrix'
+                    ? 'cursor-default bg-un-blue/10 font-medium text-un-blue'
+                    : ''
+                }
+              >
+                {pathname === '/citation-matrix' ? (
+                  <span className="flex items-center gap-2">
+                    <Grid3x3 className="h-4 w-4" />
+                    Citation Matrix
+                  </span>
+                ) : (
+                  <Link
+                    href="/citation-matrix"
+                    className="flex items-center gap-2"
+                  >
+                    <Grid3x3 className="h-4 w-4" />
+                    Citation Matrix
                   </Link>
                 )}
               </DropdownMenuItem>
