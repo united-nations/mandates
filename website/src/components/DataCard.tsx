@@ -34,7 +34,7 @@ function MiniBar({ item, maxCount }: { item: PreviewItem; maxCount: number }) {
 
   return (
     <div className="flex items-center gap-1.5">
-      <div className="w-14 shrink-0 truncate text-right text-xs text-muted-foreground">
+      <div className="w-14 shrink-0 truncate text-right text-xs text-foreground">
         {item.name}
       </div>
       <div className="relative h-1.5 flex-1 rounded-full bg-un-blue/10">
@@ -43,7 +43,7 @@ function MiniBar({ item, maxCount }: { item: PreviewItem; maxCount: number }) {
           style={{ width: `${Math.max(barWidth, 4)}%` }}
         />
       </div>
-      <div className="w-8 shrink-0 text-right text-xs tabular-nums text-muted-foreground">
+      <div className="w-8 shrink-0 text-right text-xs tabular-nums text-foreground">
         {item.count.toLocaleString()}
       </div>
     </div>
@@ -102,7 +102,7 @@ export function DataCard({
                 <MiniBar key={i} item={item} maxCount={maxCount} />
               ))}
               {remaining > 0 && (
-                <div className="w-14 text-right text-xs text-muted-foreground">
+                <div className="w-14 text-right text-xs whitespace-nowrap text-foreground">
                   +{remaining} more
                 </div>
               )}

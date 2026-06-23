@@ -31,7 +31,7 @@ export default function ResourcesPage() {
           <div className="mb-1 text-base font-medium text-un-blue">
             UN Transparency Portal
           </div>
-          <div className="text-sm text-muted-foreground">
+          <div className="text-sm text-foreground">
             Visual exploration of the budget of the UN secretariat and UN
             system.
           </div>
@@ -54,7 +54,7 @@ export default function ResourcesPage() {
           <div className="mb-1 text-base font-medium text-un-blue">
             CEB Financial Statistics
           </div>
-          <div className="text-sm text-muted-foreground">
+          <div className="text-sm text-foreground">
             Financial statistics from the UN System Chief Executives Board.
           </div>
         </a>
@@ -76,7 +76,7 @@ export default function ResourcesPage() {
           <div className="mb-1 text-base font-medium text-un-blue">
             Programme Budget Results
           </div>
-          <div className="text-sm text-muted-foreground">
+          <div className="text-sm text-foreground">
             Results information for the proposed programme budget 2026.
           </div>
         </a>
