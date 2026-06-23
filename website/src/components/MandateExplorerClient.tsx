@@ -254,7 +254,7 @@ export function MandateExplorerClient({
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
-            <span>Cited Active Mandates</span>
+            <span>Cited Mandate Sources</span>
             {ppbDropdown}
           </div>
         </TooltipTrigger>
@@ -275,7 +275,7 @@ export function MandateExplorerClient({
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
-            All Resolutions
+            All Documents
           </button>
         </TooltipTrigger>
         <TooltipContent side="bottom" collisionPadding={8} className="max-w-xs">
