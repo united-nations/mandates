@@ -177,7 +177,7 @@ export function MandateList({
                     </h3>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground sm:gap-4 sm:text-sm">
+                  <div className="flex flex-wrap items-center gap-2 text-xs text-foreground sm:gap-4 sm:text-sm">
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <div className="flex items-center gap-1.5">
