@@ -1,15 +1,39 @@
 short_name,full_name,document_url,document_symbol,budget_cycle,notes
-UNDOF,United Nations Disengagement Observer Force,https://docs.un.org/en/A/80/596,A/80/596,2026,Item 156(a)
-UNFICYP,United Nations Peacekeeping Force in Cyprus,https://docs.un.org/en/A/80/607,A/80/607,2026,Item 151
-UNIFIL,United Nations Interim Force in Lebanon,https://docs.un.org/en/A/80/634,A/80/634,2026,Item 156(b)
-UNISFA,United Nations Interim Security Force for Abyei,https://docs.un.org/en/A/80/614,A/80/614,2026,Item 149
-UNMIK,United Nations Interim Administration Mission in Kosovo,https://docs.un.org/en/A/80/615,A/80/615,2026,Item 154
-UNSOS,United Nations Support Office in Somalia,https://docs.un.org/en/A/80/628,A/80/628,2026,Item 159 (financing of activities arising from SC res 1863 (2009))
-UNSOH,United Nations Support Office in Haiti,https://docs.un.org/en/A/80/630,A/80/630,2026,Item 177; budgets 1 Oct 2025-30 Jun 2026 and 1 Jul 2026-30 Jun 2027
-MONUSCO,United Nations Organization Stabilization Mission in the Democratic Republic of the Congo,https://docs.un.org/en/A/80/624,A/80/624,2026,Item 152
-MINUSCA,United Nations Multidimensional Integrated Stabilization Mission in the Central African Republic,https://docs.un.org/en/A/80/623,A/80/623,2026,Item 150
-MINUSMA,United Nations Multidimensional Integrated Stabilization Mission in Mali,https://docs.un.org/en/A/80/590,A/80/590,2026,"Item 155; performance report only (1 Jul 2024-30 Jun 2025) - mission closed, no future budget"
-MINURSO,United Nations Mission for the Referendum in Western Sahara,https://docs.un.org/en/A/80/600,A/80/600,2026,Item 158
-UNMISS,United Nations Mission in South Sudan,https://docs.un.org/en/A/80/621,A/80/621,2026,Item 157
-UNLB,United Nations Logistics Base at Brindisi,https://docs.un.org/en/A/80/605,A/80/605,2026,Administrative services
-RSCE,Regional Service Centre in Entebbe,https://docs.un.org/en/A/80/611,A/80/611,2026,Administrative services
+UNDOF,United Nations Disengagement Observer Force,https://docs.un.org/en/A/78/744/Add.1,A/78/744/Add.1,2024,
+UNDOF,United Nations Disengagement Observer Force,https://docs.un.org/en/A/79/724/Add.1,A/79/724/Add.1,2025,
+UNDOF,United Nations Disengagement Observer Force,https://docs.un.org/en/A/80/604/Add.1,A/80/604/Add.1,2026,
+UNFICYP,United Nations Peacekeeping Force in Cyprus,https://docs.un.org/en/A/78/744/Add.2,A/78/744/Add.2,2024,
+UNFICYP,United Nations Peacekeeping Force in Cyprus,https://docs.un.org/en/A/79/724/Add.2,A/79/724/Add.2,2025,
+UNFICYP,United Nations Peacekeeping Force in Cyprus,https://docs.un.org/en/A/80/604/Add.2,A/80/604/Add.2,2026,
+UNIFIL,United Nations Interim Force in Lebanon,https://docs.un.org/en/A/78/744/Add.3,A/78/744/Add.3,2024,
+UNIFIL,United Nations Interim Force in Lebanon,https://docs.un.org/en/A/79/724/Add.7,A/79/724/Add.7,2025,
+UNIFIL,United Nations Interim Force in Lebanon,https://docs.un.org/en/A/80/604/Add.12,A/80/604/Add.12,2026,
+UNISFA,United Nations Interim Security Force for Abyei,https://docs.un.org/en/A/78/744/Add.4,A/78/744/Add.4,2024,
+UNISFA,United Nations Interim Security Force for Abyei,https://docs.un.org/en/A/79/724/Add.11,A/79/724/Add.11,2025,
+UNISFA,United Nations Interim Security Force for Abyei,https://docs.un.org/en/A/80/604/Add.10,A/80/604/Add.10,2026,
+UNMIK,United Nations Interim Administration Mission in Kosovo,https://docs.un.org/en/A/78/744/Add.7,A/78/744/Add.7,2024,
+UNMIK,United Nations Interim Administration Mission in Kosovo,https://docs.un.org/en/A/79/724/Add.4,A/79/724/Add.4,2025,
+UNMIK,United Nations Interim Administration Mission in Kosovo,https://docs.un.org/en/A/80/604/Add.6,A/80/604/Add.6,2026,
+UNSOS,United Nations Support Office in Somalia,https://docs.un.org/en/A/78/744/Add.8,A/78/744/Add.8,2024,Support Office
+UNSOS,United Nations Support Office in Somalia,https://docs.un.org/en/A/79/724/Add.10,A/79/724/Add.10,2025,Support Office
+UNSOS,United Nations Support Office in Somalia,https://docs.un.org/en/A/80/604/Add.7,A/80/604/Add.7,2026,Support Office
+UNSOH,United Nations Support Office in Haiti,https://docs.un.org/en/A/80/604/Add.8,A/80/604/Add.8,2026,Support Office; established 30 Sep 2025 by SC res 2793; first budget 1 Oct 2025-30 Jun 2026
+MONUSCO,United Nations Organization Stabilization Mission in the Democratic Republic of the Congo,https://docs.un.org/en/A/78/744/Add.9,A/78/744/Add.9,2024,
+MONUSCO,United Nations Organization Stabilization Mission in the Democratic Republic of the Congo,https://docs.un.org/en/A/79/724/Add.9,A/79/724/Add.9,2025,
+MONUSCO,United Nations Organization Stabilization Mission in the Democratic Republic of the Congo,https://docs.un.org/en/A/80/604/Add.11,A/80/604/Add.11,2026,
+MINUSCA,United Nations Multidimensional Integrated Stabilization Mission in the Central African Republic,https://docs.un.org/en/A/78/744/Add.10,A/78/744/Add.10,2024,
+MINUSCA,United Nations Multidimensional Integrated Stabilization Mission in the Central African Republic,https://docs.un.org/en/A/79/724/Add.13,A/79/724/Add.13,2025,
+MINUSCA,United Nations Multidimensional Integrated Stabilization Mission in the Central African Republic,https://docs.un.org/en/A/80/604/Add.9,A/80/604/Add.9,2026,
+MINUSMA,United Nations Multidimensional Integrated Stabilization Mission in Mali,https://docs.un.org/en/A/78/744/Add.11,A/78/744/Add.11,2024,Mission closed 31 Dec 2023 (liquidation ended 30 Jun 2024); no recurring budget since - residual performance only (A/80/647)
+MINURSO,United Nations Mission for the Referendum in Western Sahara,https://docs.un.org/en/A/78/744/Add.12,A/78/744/Add.12,2024,
+MINURSO,United Nations Mission for the Referendum in Western Sahara,https://docs.un.org/en/A/79/724/Add.8,A/79/724/Add.8,2025,
+MINURSO,United Nations Mission for the Referendum in Western Sahara,https://docs.un.org/en/A/80/604/Add.3,A/80/604/Add.3,2026,
+UNMISS,United Nations Mission in South Sudan,https://docs.un.org/en/A/78/744/Add.13,A/78/744/Add.13,2024,
+UNMISS,United Nations Mission in South Sudan,https://docs.un.org/en/A/79/724/Add.12,A/79/724/Add.12,2025,
+UNMISS,United Nations Mission in South Sudan,https://docs.un.org/en/A/80/604/Add.13,A/80/604/Add.13,2026,
+UNLB,United Nations Logistics Base at Brindisi,https://docs.un.org/en/A/78/744/Add.5,A/78/744/Add.5,2024,Administrative services
+UNLB,United Nations Logistics Base at Brindisi,https://docs.un.org/en/A/79/724/Add.6,A/79/724/Add.6,2025,Administrative services
+UNLB,United Nations Logistics Base at Brindisi,https://docs.un.org/en/A/80/604/Add.5,A/80/604/Add.5,2026,Administrative services
+RSCE,Regional Service Centre in Entebbe,https://docs.un.org/en/A/78/744/Add.6,A/78/744/Add.6,2024,Administrative services
+RSCE,Regional Service Centre in Entebbe,https://docs.un.org/en/A/79/724/Add.5,A/79/724/Add.5,2025,Administrative services
+RSCE,Regional Service Centre in Entebbe,https://docs.un.org/en/A/80/604/Add.4,A/80/604/Add.4,2026,Administrative services

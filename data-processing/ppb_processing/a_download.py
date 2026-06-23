@@ -19,13 +19,9 @@ def get_pkm_symbols(year):
     return symbols
 
 def download_budget_docs(symbol, year):
-    # PKM source PDFs/docx are still downloaded so the curated citations in
-    # data/references/peacekeeping_mission_mandates.csv can be verified
-    # against the SG reports they came from. They are no longer parsed or
-    # extracted - load_pkm_mandates() reads the curated CSV directly.
     inputs = [
         (f"ppb{year}", get_ppb_symbols(symbol)),
-        (f"pkm{year-1}", get_pkm_symbols(year - 1)),
+        (f"pkm{year-1}", get_pkm_symbols(year - 1))
     ]
     for (name, symbols) in inputs:
         doc_dir = Path(f"../data/downloads/{name}")
