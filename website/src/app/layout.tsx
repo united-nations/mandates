@@ -23,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={roboto.className}>
       <GoogleAnalytics gaId="G-HYTYJM0JGC" />
-      <body className="min-h-screen bg-background text-foreground">
+      <body className="flex min-h-screen flex-col bg-background text-foreground">
         <RootLayoutClient>
           {children}
           {modal}
