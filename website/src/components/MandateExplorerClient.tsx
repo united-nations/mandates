@@ -337,6 +337,8 @@ export function MandateExplorerClient({
             mandates={mandates}
             organsData={allOrgans}
             entitiesData={allEntities}
+            organCounts={organs}
+            entityCounts={entities}
             filterOptions={filterOptions}
             visibleColumns={visibleColumns}
             onToggleColumn={handleToggleColumn}

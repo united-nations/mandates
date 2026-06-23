@@ -410,13 +410,20 @@ function SimpleSelectFilter({
               onClick={() =>
                 isSelected ? onClear() : onSelect(option.value)
               }
-              className={`flex w-full items-center rounded px-2 py-1.5 text-left text-sm transition-colors ${
+              className={`flex w-full items-center justify-between gap-2 rounded px-2 py-1.5 text-left text-sm transition-colors ${
                 isSelected
                   ? 'bg-un-blue/10 font-medium text-un-blue'
                   : 'hover:bg-accent hover:text-accent-foreground'
               }`}
             >
-              {option.label ?? option.value}
+              <span>{option.label ?? option.value}</span>
+              {option.count !== undefined && (
+                <span
+                  className={`text-[10px] ${isSelected ? 'text-un-blue/60' : 'text-gray-400'}`}
+                >
+                  {option.count}
+                </span>
+              )}
             </button>
           )
         })}

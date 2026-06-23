@@ -12,7 +12,7 @@ import { titleCase } from 'title-case'
 import { getMandateDisplayTitle, safeHighlightSearchTerms } from '@/lib/utils'
 import { getAllEntities } from './entities'
 import { getAllOrgans, getOrganMap } from './organs'
-import { getBudgetDocuments, getBudgetVersions } from './budget-documents'
+import { getBudgetVersions } from './budget-documents'
 import type { Mandate, FilterOptions, EntityWithCount, OrganWithCount, CrossCitation, CitationBin, ApiResponse } from '@/types'
 
 // ============================================================================
@@ -1027,6 +1027,90 @@ export async function getAgendaItemOptions(filters: FilterOptions = {}): Promise
 }
 
 /**
+ * Get budget document options applicable to the selected budget version, with
+ * citation counts under the current filters. "Applicable" = present in
+ * ppb2026.budget_document_versions for COALESCE(filters.ppb_version, default
+ * version). This mirrors versionPredicateSql, so the filter dropdown stays in
+ * lockstep with the version toggle (no hardcoded 2026 → which-docs mapping).
+ *
+ * Returned shape extends the reference BudgetDocument with `count`. Ordered by
+ * count DESC (sort_order as tiebreaker so curated order shows when counts tie).
+ */
+export async function getBudgetDocumentOptions(
+  filters: FilterOptions = {}
+): Promise<{
+  slug: string
+  display_name: string
+  match_pattern: string
+  sort_order: number
+  count: number
+}[]> {
+  const scoped = omitOwnDimension(filters, 'budget_document')
+  const { cte, params } = buildFilteredDocsCTE(scoped, {
+    selectCols: 'd.ppb_full_document_symbol',
+    groupCols: 'd.ppb_full_document_symbol',
+  })
+
+  // Bind ppb_version separately for the applicable-docs filter and the citation
+  // version scope below. In active_mandates mode buildFilteredDocsCTE already
+  // bound the same value, but rebinding is harmless and lets all_resolutions
+  // mode (where the inner CTE skips version scoping) still narrow the budget
+  // doc universe + citation count to the selected version.
+  params.push(filters.ppb_version ?? null)
+  const vIdx = params.length
+
+  const query = `
+    WITH ${cte},
+    applicable_docs AS (
+      SELECT bd.slug, bd.display_name, bd.match_pattern, bd.sort_order
+      FROM ppb2026.budget_documents bd
+      JOIN ppb2026.budget_document_versions bdv ON bdv.doc_slug = bd.slug
+      WHERE bdv.version_slug = COALESCE(
+        $${vIdx},
+        (SELECT slug FROM ppb2026.budget_versions WHERE is_default LIMIT 1)
+      )
+    ),
+    doc_counts AS (
+      SELECT
+        ad.slug,
+        COUNT(DISTINCT fd.ppb_full_document_symbol) as count
+      FROM filtered_docs fd
+      JOIN ppb2026.source_document_citations c
+        ON c.ppb_full_document_symbol = fd.ppb_full_document_symbol
+        AND ${versionPredicateSql('c', `$${vIdx}`)}
+      JOIN applicable_docs ad
+        ON c.origin_document ~ ad.match_pattern
+      GROUP BY ad.slug
+    )
+    SELECT
+      ad.slug,
+      ad.display_name,
+      ad.match_pattern,
+      ad.sort_order,
+      COALESCE(dc.count, 0) as count
+    FROM applicable_docs ad
+    LEFT JOIN doc_counts dc ON dc.slug = ad.slug
+    ORDER BY COALESCE(dc.count, 0) DESC, ad.sort_order
+  `
+
+  const rows = await queryMany<{
+    slug: string
+    display_name: string
+    match_pattern: string
+    sort_order: number
+    count: string
+  }>(query, params)
+
+  return rows.map((r) => ({
+    slug: r.slug,
+    display_name: r.display_name,
+    match_pattern: r.match_pattern,
+    sort_order: r.sort_order,
+    count: parseInt(r.count) || 0,
+  }))
+}
+
+/**
  * Get year range and distribution
  */
 export async function getYearStats(filters: FilterOptions = {}): Promise<{
@@ -1177,7 +1261,7 @@ async function _getMandatePageDataInner(filters: FilterOptions): Promise<ApiResp
     getAllEntities(),
     getAllOrgans(),
     getOrganMap(),
-    getBudgetDocuments(),
+    getBudgetDocumentOptions(filters),
     getBudgetVersions(),
   ])
 

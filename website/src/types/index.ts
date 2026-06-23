@@ -193,6 +193,7 @@ export interface ApiResponse {
       display_name: string
       match_pattern: string
       sort_order: number
+      count: number
     }[]
     budgetVersions: {
       slug: string
