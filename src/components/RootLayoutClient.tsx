@@ -156,7 +156,7 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <a
-                        href="https://diff.un-two-zero.dev/"
+                        href="https://diff.un-two-zero.org/"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-2"

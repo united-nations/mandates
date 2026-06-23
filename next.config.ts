@@ -24,7 +24,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: '/diff',
-        destination: 'https://diff.un-two-zero.dev/',
+        destination: 'https://diff.un-two-zero.org/',
         permanent: true,
       },
     ]
