@@ -46,14 +46,16 @@ export function SiteHeader() {
           pageWidth,
         )}
       >
-        {/* Emblem aspect ≈ 1.198:1. Outboard variant sits in the page margin
-            immediately to the left of the centered container on very wide
-            viewports; inline variant folds back next to the wordmark below. */}
+        {/* Emblem aspect ≈ 1.198:1. Outboard variant tucks into the
+            container's left padding so its right edge sits 7.26px from where
+            the wordmark begins (matches the inline emblem→wordmark gap on
+            un-transcribed). The 56.74px offset = lg:px-16 (64px) − 7.26px.
+            Inline variant takes over below 1408px viewports. */}
         <Link
           href="/"
           aria-label="Mandate Source Registry — home"
           className={cn(
-            'absolute top-1/2 end-[calc(100%-24.74px)] h-10 w-[47.9px] -translate-y-1/2 transition-opacity hover:opacity-75',
+            'absolute top-1/2 end-[calc(100%-56.74px)] h-10 w-[47.9px] -translate-y-1/2 transition-opacity hover:opacity-75',
             outboardOnly,
           )}
         >
