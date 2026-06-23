@@ -205,6 +205,23 @@ function buildFilterClauses(
         AND ${versionClause('c_ppb')}
       )
     `)
+  } else {
+    // All-resolutions mode: catalog scope is "anything matching one of the 8
+    // symbol families (A/RES, A/DEC, S/RES, S/PRST, E/RES, E/DEC, A/HRC/RES,
+    // A/HRC/PRST) ∪ anything cited in the latest budget version". The
+    // 8-pattern definition lives in the matview (column is_catalog_pattern,
+    // set in migration 020) so the regex stays in exactly one place; the
+    // "latest version" predicate reuses versionPredicateSql.
+    clauses.push(`
+      (
+        d.is_catalog_pattern
+        OR EXISTS (
+          SELECT 1 FROM ppb2026.source_document_citations c_latest
+          WHERE c_latest.ppb_full_document_symbol = d.ppb_full_document_symbol
+          AND ${versionPredicateSql('c_latest', 'NULL')}
+        )
+      )
+    `)
   }
 
   // Entity filter - document must have a citation by this entity
@@ -720,26 +737,24 @@ export async function getMandateCounts(filters: FilterOptions = {}): Promise<{
   totalOrgans: number
   totalCitations: number
 }> {
-  const { cte, params, versionClause } = buildFilteredDocsCTE(filters, {
-    selectCols: `
-        d.ppb_full_document_symbol,
-        d.ppb_body,
-        COUNT(c.id) as citation_count,
-        COUNT(DISTINCT c.entity) FILTER (WHERE c.entity IS NOT NULL) as entity_count`,
+  const { cte, params } = buildFilteredDocsCTE(filters, {
+    selectCols: 'd.ppb_full_document_symbol, d.ppb_body',
     groupCols: 'd.ppb_full_document_symbol, d.ppb_body',
   })
 
+  // Citations and UN Entities cards always reflect the latest budget version
+  // (budget_versions.is_default) so the header reads as "what the current
+  // proposed budget cites", independent of the page's mode tab. Source
+  // Documents and UN Organs remain mode-driven catalog totals.
   const query = `
     WITH ${cte}
     SELECT
       COUNT(*) as total_documents,
       COUNT(DISTINCT ppb_body) FILTER (WHERE ppb_body IS NOT NULL) as total_organs,
-      SUM(citation_count) as total_citations,
-      (SELECT COUNT(DISTINCT c.entity) FROM filtered_docs fd2
-       JOIN ppb2026.source_document_citations c
-         ON fd2.ppb_full_document_symbol = c.ppb_full_document_symbol
-         AND ${versionClause('c')}
-       WHERE c.entity IS NOT NULL) as total_entities
+      (SELECT COUNT(*) FROM ppb2026.source_document_citations c
+       WHERE ${versionPredicateSql('c', 'NULL')}) as total_citations,
+      (SELECT COUNT(DISTINCT c.entity) FROM ppb2026.source_document_citations c
+       WHERE ${versionPredicateSql('c', 'NULL')} AND c.entity IS NOT NULL) as total_entities
     FROM filtered_docs
   `
 
@@ -1271,7 +1286,7 @@ async function _getMandatePageDataInner(filters: FilterOptions): Promise<ApiResp
 // older deploy are never served to newer client code (the cache key is only
 // the filters, and entries persist for `revalidate`). This is the
 // data-version guard the refactor plan called for.
-const PAGE_DATA_CACHE_VERSION = 'v2-version-scoped'
+const PAGE_DATA_CACHE_VERSION = 'v4-all-resolutions-catalog-scope'
 
 export const getMandatePageData = cache(
   (filters: FilterOptions): Promise<ApiResponse> =>
