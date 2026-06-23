@@ -153,8 +153,8 @@ importers:
         specifier: ^4.3.2
         version: 4.3.2
       undifferent:
-        specifier: github:un-eosg-analytics/undifferent
-        version: https://codeload.github.com/un-eosg-analytics/undifferent/tar.gz/f1e46074e99ae0ca1914c0319696f75be7aa095d(next@16.2.4(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)
+        specifier: github:un-eosg-analytics/undifferent#e6c57a7ee8536b2d7798e58cb1f6d605c09a1c54
+        version: git+https://git@github.com:un-eosg-analytics/undifferent.git#e6c57a7ee8536b2d7798e58cb1f6d605c09a1c54(next@16.2.4(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)
       unpdf:
         specifier: ^1.4.0
         version: 1.6.0
@@ -3175,8 +3175,8 @@ packages:
   undici-types@7.19.2:
     resolution: {integrity: sha512-qYVnV5OEm2AW8cJMCpdV20CDyaN3g0AjDlOGf1OW4iaDEx8MwdtChUp4zu4H0VP3nDRF/8RKWH+IPp9uW0YGZg==}
 
-  undifferent@https://codeload.github.com/un-eosg-analytics/undifferent/tar.gz/f1e46074e99ae0ca1914c0319696f75be7aa095d:
-    resolution: {tarball: https://codeload.github.com/un-eosg-analytics/undifferent/tar.gz/f1e46074e99ae0ca1914c0319696f75be7aa095d}
+  undifferent@git+https://git@github.com:un-eosg-analytics/undifferent.git#e6c57a7ee8536b2d7798e58cb1f6d605c09a1c54:
+    resolution: {commit: e6c57a7ee8536b2d7798e58cb1f6d605c09a1c54, repo: git@github.com:un-eosg-analytics/undifferent.git, type: git}
     version: 0.1.0
     peerDependencies:
       react: '>=18'
@@ -6401,7 +6401,7 @@ snapshots:
 
   undici-types@7.19.2: {}
 
-  undifferent@https://codeload.github.com/un-eosg-analytics/undifferent/tar.gz/f1e46074e99ae0ca1914c0319696f75be7aa095d(next@16.2.4(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4):
+  undifferent@git+https://git@github.com:un-eosg-analytics/undifferent.git#e6c57a7ee8536b2d7798e58cb1f6d605c09a1c54(next@16.2.4(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4):
     dependencies:
       '@next/third-parties': 16.1.6(next@16.2.4(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)
       diff: 8.0.4

@@ -67,7 +67,7 @@
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.4.1",
     "title-case": "^4.3.2",
-    "undifferent": "github:un-eosg-analytics/undifferent",
+    "undifferent": "github:un-eosg-analytics/undifferent#e6c57a7ee8536b2d7798e58cb1f6d605c09a1c54",
     "unpdf": "^1.4.0",
     "word-extractor": "^1.0.4",
     "zod": "^4.3.6"
