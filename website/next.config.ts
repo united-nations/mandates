@@ -3,8 +3,6 @@ import type { NextConfig } from 'next'
 const nextConfig: NextConfig = {
   output: 'standalone', //  for Docker
 
-  serverExternalPackages: ['undifferent'],
-
   async redirects() {
     return [
       {
