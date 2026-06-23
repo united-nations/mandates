@@ -279,9 +279,11 @@ export function MandateExplorerClient({
           </button>
         </TooltipTrigger>
         <TooltipContent side="bottom" collisionPadding={8} className="max-w-xs">
-          ~40,000 resolutions from the Dag Hammarskjöld Library
-          (1946–present). Where a resolution is also cited in a PPB, entity
-          and citation data is available.
+          ~42,000 resolutions, decisions and presidential statements of
+          the General Assembly, Security Council, ECOSOC and Human Rights
+          Council (Dag Hammarskjöld Library, 1946–present), plus any other
+          documents cited in the latest proposed budget. Where a document
+          is cited in a PPB, entity and citation data is available.
         </TooltipContent>
       </Tooltip>
     </div>
