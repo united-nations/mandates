@@ -12,11 +12,6 @@ const nextConfig: NextConfig = {
         destination: 'https://mandate-housekeeping.un-two-zero.dev/',
         permanent: true,
       },
-      {
-        source: '/diff',
-        destination: 'https://diff.un-two-zero.dev/',
-        permanent: true,
-      },
     ]
   },
 }

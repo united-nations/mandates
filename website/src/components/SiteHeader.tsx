@@ -168,16 +168,21 @@ export function SiteHeader() {
                   </Link>
                 )}
               </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <a
-                  href="https://diff.un-two-zero.dev/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2"
-                >
-                  <GitCompare className="h-4 w-4" />
-                  UN Document Diff Viewer
-                </a>
+              <DropdownMenuItem
+                asChild={pathname !== '/diff'}
+                className={pathname === '/diff' ? 'cursor-default' : ''}
+              >
+                {pathname === '/diff' ? (
+                  <span className="flex items-center gap-2 font-medium">
+                    <GitCompare className="h-4 w-4" />
+                    UN Document Diff Viewer
+                  </span>
+                ) : (
+                  <Link href="/diff" className="flex items-center gap-2">
+                    <GitCompare className="h-4 w-4" />
+                    UN Document Diff Viewer
+                  </Link>
+                )}
               </DropdownMenuItem>
               <DropdownMenuItem
                 asChild={pathname !== '/resources'}

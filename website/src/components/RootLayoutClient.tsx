@@ -23,15 +23,14 @@ const AnimatedLogo = dynamic(
 export function RootLayoutClient({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const isMainPage = pathname === '/'
-  const isDiffPage = pathname === '/diff'
 
   return (
     <TooltipProvider>
       <FilterProvider>
         <SiteHeader />
 
-        {/* Back Button - shown on all pages except main page and diff page */}
-        {!isMainPage && !isDiffPage && (
+        {/* Back Button - shown on all pages except main page */}
+        {!isMainPage && (
           <div className="mx-auto mb-2 w-full max-w-4xl px-8 pt-6 sm:px-12 lg:max-w-6xl lg:px-16 xl:max-w-7xl">
             <BackButton />
           </div>
