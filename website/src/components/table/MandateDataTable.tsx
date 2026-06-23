@@ -134,7 +134,7 @@ export function MandateDataTable({
                 {columns.map((col) => (
                   <TableHead
                     key={col.id}
-                    className={`${col.widthClass} ${col.minWidthClass || ''} ${col.align === 'right' ? 'text-right' : ''} ${col.id === 'detail' ? 'sticky right-0 z-10 bg-gray-50' : ''} h-10 px-3 text-[10px] font-medium tracking-wider uppercase text-gray-400`}
+                    className={`${col.widthClass} ${col.minWidthClass || ''} ${col.align === 'right' ? 'text-right' : ''} ${col.id === 'detail' ? 'sticky right-0 z-10 bg-gray-50' : ''} h-10 px-3 text-xs font-medium tracking-wider uppercase text-muted-foreground`}
                   >
                     {col.id === 'detail' ? (
                       <ColumnPicker
@@ -201,7 +201,7 @@ function PillList({ items }: { items: string[] }) {
   const pill = (text: string, i: number) => (
     <span
       key={i}
-      className="shrink-0 rounded-full bg-gray-100 px-1.5 py-0.5 text-[10px] text-gray-600"
+      className="shrink-0 rounded-full bg-gray-100 px-1.5 py-0.5 text-xs text-gray-700"
     >
       {text}
     </span>
@@ -282,7 +282,7 @@ function CellContent({
           <TooltipTrigger asChild>
             <Badge
               variant="secondary"
-              className="border-0 bg-gray-200! text-[10px] font-medium text-gray-600! whitespace-nowrap"
+              className="border-0 bg-gray-200! text-xs font-medium text-gray-700! whitespace-nowrap"
             >
               {mandate.body}
             </Badge>
@@ -314,7 +314,7 @@ function CellContent({
         <Badge
           key={entity}
           variant="secondary"
-          className="cursor-pointer border-0 bg-un-blue/75! text-[10px] font-bold whitespace-nowrap text-white! transition-colors hover:bg-un-blue/60!"
+          className="cursor-pointer border-0 bg-un-blue/75! text-xs font-bold whitespace-nowrap text-white! transition-colors hover:bg-un-blue/60!"
           onClick={(e) => {
             e.stopPropagation()
             onEntityClick(entity)
@@ -347,7 +347,7 @@ function CellContent({
           <HoverCardTrigger asChild>
             <div className="flex items-center gap-1 overflow-hidden cursor-default">
               {visible.map((e) => pill(e, false))}
-              <span className="text-[10px] text-gray-400 shrink-0">
+              <span className="text-xs text-muted-foreground shrink-0">
                 +{remaining}
               </span>
             </div>

@@ -271,7 +271,7 @@ export function MandateList({
                       {mandate.match_details.map((m) => (
                         <span
                           key={m.field}
-                          className="rounded bg-[#e8f4fb] px-1.5 py-0.5 text-[10px] text-[#00557a]"
+                          className="rounded bg-[#e8f4fb] px-1.5 py-0.5 text-xs text-[#00557a]"
                         >
                           {m.field === 'symbol'
                             ? 'symbol'
