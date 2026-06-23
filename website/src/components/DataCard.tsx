@@ -33,20 +33,20 @@ function MiniBar({ item, maxCount }: { item: PreviewItem; maxCount: number }) {
   const barWidth = maxCount > 0 ? (item.count / maxCount) * 100 : 0
 
   return (
-    <div className="flex items-center gap-1.5">
-      <div className="w-14 shrink-0 truncate text-right text-xs text-foreground">
+    <>
+      <div className="self-center text-right text-xs whitespace-nowrap text-foreground">
         {item.name}
       </div>
-      <div className="relative h-1.5 flex-1 rounded-full bg-un-blue/10">
+      <div className="relative h-1.5 self-center rounded-full bg-un-blue/10">
         <div
           className="h-1.5 rounded-full bg-un-blue/50"
           style={{ width: `${Math.max(barWidth, 4)}%` }}
         />
       </div>
-      <div className="w-8 shrink-0 text-right text-xs tabular-nums text-foreground">
+      <div className="self-center text-right text-xs tabular-nums text-foreground">
         {item.count.toLocaleString()}
       </div>
-    </div>
+    </>
   )
 }
 
@@ -97,12 +97,12 @@ export function DataCard({
             </span>
           </div>
           {previewSlice && previewSlice.length > 0 && (
-            <div className="mt-2 space-y-0.5">
+            <div className="mt-2 grid grid-cols-[auto_1fr_auto] gap-x-1.5 gap-y-0.5">
               {previewSlice.map((item, i) => (
                 <MiniBar key={i} item={item} maxCount={maxCount} />
               ))}
               {remaining > 0 && (
-                <div className="w-14 text-right text-xs whitespace-nowrap text-foreground">
+                <div className="text-right text-xs whitespace-nowrap text-foreground">
                   +{remaining} more
                 </div>
               )}
