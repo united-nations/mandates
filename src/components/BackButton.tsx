@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import type { Route } from 'next'
 import { FILTER_PARAMS } from '@/lib/filter-constants'
 
 interface BackButtonProps {
@@ -52,7 +53,7 @@ export function BackButton({
         const mainPageUrl = preservedParams.toString()
           ? `/?${preservedParams.toString()}`
           : '/'
-        router.push(mainPageUrl)
+        router.push(mainPageUrl as Route)
       } else if (isMandate && hasOpener && !window.opener.closed) {
         // For mandate pages opened from another page, use stored return URL
         const returnUrl = sessionStorage.getItem('mandateReturnUrl')

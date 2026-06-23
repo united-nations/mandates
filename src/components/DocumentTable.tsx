@@ -26,6 +26,7 @@ import {
   X,
 } from 'lucide-react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import type { Route } from 'next'
 import { Column } from 'primereact/column'
 import { DataTable, DataTableFilterMeta } from 'primereact/datatable'
 import { Dropdown } from 'primereact/dropdown'
@@ -102,7 +103,7 @@ export default function DocumentTable<T extends BaseDocument>({
       }
     })
 
-    router.replace(`${pathname}?${params}`, { scroll: false })
+    router.replace(`${pathname}?${params}` as Route, { scroll: false })
   }
 
   // Fetch documents from API
@@ -264,7 +265,7 @@ export default function DocumentTable<T extends BaseDocument>({
   }
 
   const handleResetFilters = () => {
-    router.replace(pathname)
+    router.replace(pathname as Route)
   }
 
   // Series click handler

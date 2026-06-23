@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { useRouter } from 'next/navigation'
+import type { Route } from 'next'
 import { Building } from 'lucide-react'
 import { EntityName } from '@/components/EntityName'
 import { useFilters } from '@/contexts/FilterContext'
@@ -55,7 +56,7 @@ export function EntityListSidebar({
     if (pageType === 'main') {
       // On main page: Navigate to entity page with current filters preserved
       const url = buildEntityPageUrl(entityName)
-      router.push(url)
+      router.push(url as Route)
     } else {
       // On entity/organ pages: Set as filter
       setFilter('entity', entityName)

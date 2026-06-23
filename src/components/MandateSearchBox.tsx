@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
+import type { Route } from 'next'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Search, X } from 'lucide-react'
@@ -24,7 +25,7 @@ export function MandateSearchBox() {
         params.set('sort_by', 'citing_entities_desc')
       }
     }
-    router.push(`${pathname}?${params.toString()}`, { scroll: false })
+    router.push(`${pathname}?${params.toString()}` as Route, { scroll: false })
   }
 
   const handleClear = () => {

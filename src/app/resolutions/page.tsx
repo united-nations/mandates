@@ -2,6 +2,7 @@
 
 import { Suspense, useRef, useState, useEffect } from 'react'
 import { useSearchParams, useRouter, usePathname } from 'next/navigation'
+import type { Route } from 'next'
 import DocumentTable from '@/components/DocumentTable'
 import ResolutionsTreemapView from '@/components/ResolutionsTreemapView'
 import { resolutionsConfig } from '@/lib/document-configs'
@@ -59,7 +60,7 @@ function ResolutionsPageContent() {
       }
     })
 
-    router.replace(`${pathname}?${params}`, { scroll: false })
+    router.replace(`${pathname}?${params}` as Route, { scroll: false })
   }
 
   // View switching

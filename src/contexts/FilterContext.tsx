@@ -9,6 +9,7 @@ import {
   Suspense,
 } from 'react'
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
+import type { Route } from 'next'
 import {
   FILTER_PARAMS,
   ADDITIONAL_FILTER_PARAMS,
@@ -106,7 +107,7 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
 
     // Navigate with new params
     const newUrl = `${pathname}?${newParams.toString()}`
-    router.push(newUrl, { scroll: false })
+    router.push(newUrl as Route, { scroll: false })
 
     // Scroll to top on entity/organ pages when filters change (but not pagination)
     if ((isEntityPage || isOrganPage) && key !== 'page' && key !== 'limit') {
@@ -128,7 +129,7 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
 
     // Navigate with new params
     const newUrl = `${pathname}?${newParams.toString()}`
-    router.push(newUrl, { scroll: false })
+    router.push(newUrl as Route, { scroll: false })
 
     // Scroll to top on entity/organ pages when filters change
     if (isEntityPage || isOrganPage) {
@@ -151,7 +152,9 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
     if (page) newParams.set('page', page)
     if (limit) newParams.set('limit', limit)
 
-    router.push(`${pathname}?${newParams.toString()}`, { scroll: false })
+    router.push(`${pathname}?${newParams.toString()}` as Route, {
+      scroll: false,
+    })
 
     // Scroll to top on entity/organ pages when filters are cleared
     if (isEntityPage || isOrganPage) {

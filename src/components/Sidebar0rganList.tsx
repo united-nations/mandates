@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { useRouter } from 'next/navigation'
+import type { Route } from 'next'
 import { Landmark } from 'lucide-react'
 import { useFilters } from '@/contexts/FilterContext'
 import { GenericSidebar } from '@/components/SidebarGeneric'
@@ -61,7 +62,7 @@ export function OrganListSidebar({
     if (pageType === 'main') {
       // On main page: Navigate to organ page with current filters preserved
       const url = buildOrganPageUrl(organName)
-      router.push(url)
+      router.push(url as Route)
     } else {
       // On entity/organ pages: Set as filter
       setFilter('organ', organName)

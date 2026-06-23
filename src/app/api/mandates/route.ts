@@ -27,13 +27,22 @@ const CACHE_TTL = 5 * 60 * 1000 // 5 minutes
 // Precomputed data for default views
 let precomputedData: {
   defaultCounts: {
-    totalMandates: number
-    matchingMandates: number
-    uniqueEntities: number
-    uniqueOrgans: number
+    totalDocuments: number
+    totalEntities: number
+    totalOrgans: number
+    totalCitations: number
   }
-  defaultSidebar: Record<string, unknown>
-  defaultFilterOptions: Record<string, unknown>
+  defaultSidebar: {
+    entities: EntityWithCount[]
+    organs: OrganWithCount[]
+    crossCitations: CrossCitation[]
+  }
+  defaultFilterOptions: {
+    programmes: { value: string; count: number }[]
+    subjects: { value: string; count: number }[]
+    yearRange: { min: number; max: number }
+    yearDistribution: Record<string, number>
+  }
   allEntities: Entity[]
   allOrgans: Organ[]
 } | null = null
