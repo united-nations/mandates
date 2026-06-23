@@ -21,8 +21,16 @@ import {
   HoverCardTrigger,
 } from '@/components/ui/hover-card'
 import { useFilters } from '@/contexts/FilterContext'
-import type { BudgetDocument } from '@/lib/data/budget-documents'
-import type { Entity, Mandate, Organ } from '@/types'
+import type {
+  ApiResponse,
+  Entity,
+  EntityWithCount,
+  Mandate,
+  Organ,
+  OrganWithCount,
+} from '@/types'
+
+type BudgetDocumentOption = ApiResponse['filterOptions']['budgetDocuments'][number]
 import { ChevronRight } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { titleCase } from 'title-case'
@@ -43,13 +51,18 @@ interface FilterFacets {
   agendaItems: { value: string; count: number }[]
   yearRange: { min: number; max: number }
   yearDistribution: Record<string, number>
-  budgetDocuments: BudgetDocument[]
+  budgetDocuments: BudgetDocumentOption[]
 }
 
 interface MandateDataTableProps {
   mandates: Mandate[]
   organsData: Organ[]
   entitiesData: Entity[]
+  /** Count-bearing facets for the organ/entity column filters. The reference
+   *  lists (organsData/entitiesData) are kept separate because they're also
+   *  used for short↔long lookups in cell rendering. */
+  organCounts: OrganWithCount[]
+  entityCounts: EntityWithCount[]
   filterOptions: FilterFacets
   visibleColumns: Set<string>
   onToggleColumn: (columnId: string) => void
@@ -60,6 +73,8 @@ export function MandateDataTable({
   mandates,
   organsData,
   entitiesData,
+  organCounts,
+  entityCounts,
   filterOptions,
   visibleColumns,
   onToggleColumn,
@@ -84,12 +99,11 @@ export function MandateDataTable({
   const getFilterOptions = (columnId: string) => {
     switch (columnId) {
       case 'organ':
-        return organsData.map((o) => ({ value: o.short, count: undefined }))
+        // organCounts is already ordered by count DESC from the DB (faceted on
+        // all other active filters, see getOrganCounts).
+        return organCounts.map((o) => ({ value: o.short, count: o.count }))
       case 'entity_list':
-        return entitiesData.map((e) => ({
-          value: e.entity,
-          count: undefined,
-        }))
+        return entityCounts.map((e) => ({ value: e.entity, count: e.count }))
       case 'subjects':
         return filterOptions.subjects
       case 'programme':
@@ -99,9 +113,12 @@ export function MandateDataTable({
       case 'agenda_item':
         return filterOptions.agendaItems
       case 'budget_document':
+        // Already scoped to the active budget version + ordered by count DESC
+        // in getBudgetDocumentOptions.
         return filterOptions.budgetDocuments.map((d) => ({
           value: d.slug,
           label: d.display_name,
+          count: d.count,
         }))
       default:
         return undefined
@@ -236,7 +253,7 @@ function CellContent({
   mandate: Mandate
   entitiesData: Entity[]
   findOrganLong: (short: string) => string
-  budgetDocuments: BudgetDocument[]
+  budgetDocuments: BudgetDocumentOption[]
   onEntityClick: (entity: string) => void
 }) {
   switch (columnId) {
