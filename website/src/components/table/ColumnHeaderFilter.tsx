@@ -286,7 +286,7 @@ function PillFilter({
               <span>{option.label ?? titleCase(option.value)}</span>
               {option.count !== undefined && (
                 <span
-                  className={`text-[9px] ${isSelected ? 'text-blue-200' : 'text-gray-400'}`}
+                  className={`text-xs ${isSelected ? 'text-blue-200' : 'text-muted-foreground'}`}
                 >
                   {option.count}
                 </span>

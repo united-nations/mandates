@@ -52,7 +52,7 @@ export function MandateCompactList({
                   <span className="text-gray-300">·</span>
                   <Badge
                     variant="secondary"
-                    className="border-0 bg-gray-200! text-[10px] font-medium text-gray-600! whitespace-nowrap"
+                    className="border-0 bg-gray-200! text-xs font-medium text-gray-700! whitespace-nowrap"
                   >
                     {mandate.body}
                   </Badge>
