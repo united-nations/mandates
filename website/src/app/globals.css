@@ -53,7 +53,7 @@ html {
   --secondary-foreground: hsl(0 0% 35%);
 
   --muted: hsl(0 0% 88%);
-  --muted-foreground: hsl(0 0% 50%);
+  --muted-foreground: hsl(0 0% 35%);
 
   --accent: hsl(0 0% 96%);
   --accent-foreground: hsl(0 0% 15%);

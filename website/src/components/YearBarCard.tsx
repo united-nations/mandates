@@ -236,11 +236,11 @@ function YearSelector({
           )
         })}
       </div>
-      <div className="mt-1 flex justify-between text-[10px] text-muted-foreground">
+      <div className="mt-1 flex justify-between text-xs text-muted-foreground">
         <span>{FULL_MIN}</span>
         <span>{FULL_MAX}</span>
       </div>
-      <p className="mt-2 text-center text-[10px] text-muted-foreground">
+      <p className="mt-2 text-center text-xs text-muted-foreground">
         Click or drag to select a year range
       </p>
     </div>
@@ -282,7 +282,7 @@ export function YearBarCard({
             selectedRange={selectedRange}
             className="mt-2 h-10"
           />
-          <div className="mt-1 flex justify-between text-[10px] text-muted-foreground">
+          <div className="mt-1 flex justify-between text-xs text-muted-foreground">
             <span>{FULL_MIN}</span>
             <span>{FULL_MAX}</span>
           </div>
