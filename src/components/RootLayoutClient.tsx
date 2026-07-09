@@ -166,7 +166,7 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
                       {pathname === '/contacts' ? (
                         <span className="flex items-center gap-2">
                           <Landmark className="h-4 w-4" />
-                          Intergovernmental Organs &amp; Bodies
+                          Other UN System Organs &amp; Bodies
                         </span>
                       ) : (
                         <Link
@@ -174,7 +174,7 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
                           className="flex items-center gap-2"
                         >
                           <Landmark className="h-4 w-4" />
-                          Intergovernmental Organs &amp; Bodies
+                          Other UN System Organs &amp; Bodies
                         </Link>
                       )}
                     </DropdownMenuItem>
