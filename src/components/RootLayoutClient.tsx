@@ -23,6 +23,7 @@ import {
   GitCompare,
   Home,
   Info,
+  Landmark,
   Menu,
   MessageCircle,
 } from 'lucide-react'
@@ -151,6 +152,29 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
                         >
                           <BookOpen className="h-4 w-4" />
                           Methodology
+                        </Link>
+                      )}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      asChild={pathname !== '/contacts'}
+                      className={
+                        pathname === '/contacts'
+                          ? 'cursor-default text-muted-foreground opacity-60'
+                          : ''
+                      }
+                    >
+                      {pathname === '/contacts' ? (
+                        <span className="flex items-center gap-2">
+                          <Landmark className="h-4 w-4" />
+                          Other UN System Organs &amp; Bodies
+                        </span>
+                      ) : (
+                        <Link
+                          href="/contacts"
+                          className="flex items-center gap-2"
+                        >
+                          <Landmark className="h-4 w-4" />
+                          Other UN System Organs &amp; Bodies
                         </Link>
                       )}
                     </DropdownMenuItem>
