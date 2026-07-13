@@ -389,3 +389,6 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# Claude worktrees
+.claude/worktrees/
