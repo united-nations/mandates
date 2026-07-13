@@ -2,7 +2,7 @@ import json
 import os
 import re
 from copy import deepcopy
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 import docx
@@ -19,6 +19,18 @@ def block_type(el):
     # Annex I, II
     if re.match(r"^Annex\s[IVXLCDM]+", text):
         return "annex"
+    # Frontmatter spine ("Part I", "Section 1", "Contents"). Most sections style
+    # these as H1/HCh, but some (e.g. Sect. 1) use ad-hoc styles that would fall
+    # through to "heading-x" and get merged into the neighbouring headings,
+    # leaving add_metadata unable to find the part/section. Match on text so the
+    # spine is recognised regardless of style; for H1/HCh-styled sections these
+    # rules return exactly what the style branches below would have returned.
+    if re.match(r"^Part\s+[IVXLCDM]+$", text):
+        return "heading-sub"
+    if re.match(r"^Section\s+\d+[A-Z]?$", text):
+        return "heading"
+    if text == "Contents":
+        return "heading"
     if style == "HCh":
         # roman numerals like I., XIV.
         if re.match(r"^[IVXL]+\.\s", text):
@@ -138,6 +150,12 @@ order = {
 @dataclass
 class ParserState:
     position: list[tuple[str, str]]
+    # uids of the ancestors in `position`, kept in lockstep with it. Sibling
+    # headings frequently share the same (block_type, text) -- every entity in
+    # Sect. 1 has its own "B. Proposed post and non-post resource requirements
+    # for 2027" -- so identity, not the label, is what make_hierarchy must nest
+    # by.
+    id_path: list[int] = field(default_factory=list)
     italic_env: bool = False
 
     @property
@@ -158,10 +176,12 @@ class Element:
     text: str
     table_content: list[list[str]] | None
     hyperlinks: list[str] | None
+    uid: int = -1
+    id_path: list[int] = field(default_factory=list)
 
 
 def annotate_elements(doc: docx.Document):
-    state = ParserState(position=[("frontmatter", "[Frontmatter]")])
+    state = ParserState(position=[("frontmatter", "[Frontmatter]")], id_path=[0])
     elements = [
         Element(
             position=[],
@@ -169,6 +189,8 @@ def annotate_elements(doc: docx.Document):
             text="[Frontmatter]",
             table_content=None,
             hyperlinks=None,
+            uid=0,
+            id_path=[],
         )
     ]
     for i, element in enumerate(doc.iter_inner_content()):
@@ -250,59 +272,60 @@ def annotate_elements(doc: docx.Document):
         ):
             while "italic" in [bt for bt, _ in state.position]:
                 state.position.pop()
+                state.id_path.pop()
             state.italic_env = False
         if block_type_ == "italic":
             state.italic_env = True
         while order[block_type_] <= state.parent_type_order:
             state.position.pop()
+            state.id_path.pop()
+        uid = len(elements)
         element = Element(
             position=deepcopy(state.position),
             block_type=block_type_,
             text=text,
             table_content=table_content,
             hyperlinks=hyperlinks,
+            uid=uid,
+            id_path=list(state.id_path),
         )
         if element.text or block_type_ in ("table-content", "image"):
             elements.append(element)
             state.position.append((block_type_, text))
+            state.id_path.append(uid)
     return elements
 
 
 def make_hierarchy(elements: list[Element], level=0):
+    """Nest a flat element list into a tree using each element's id_path.
+
+    Nesting keys on the ancestor's uid rather than its (block_type, text): sibling
+    headings routinely share a label -- in Sect. 1 every policymaking organ has its
+    own "B. Proposed post and non-post resource requirements for 2027" -- and keying
+    on the label attaches every same-named sibling's children to all of them, which
+    duplicates whole subtrees combinatorially (it inflated Sect. 1 to 115 MB).
+    """
     if not elements:
         return []
 
-    # Group elements by their level
     by_level = {}
     for el in elements:
-        el_level = len(el.position)
-        if el_level >= level:  # Only consider relevant levels
-            if el_level not in by_level:
-                by_level[el_level] = []
-            by_level[el_level].append(el)
+        el_level = len(el.id_path)
+        if el_level >= level:
+            by_level.setdefault(el_level, []).append(el)
 
-    # Build hierarchy for the target level - O(n) total
     if level not in by_level:
         return []
 
-    # Create a mapping for quick child lookup - O(n)
+    # map each parent's uid -> its descendants
     children_map = {}
     for current_level in range(level + 1, max(by_level.keys()) + 1):
-        if current_level not in by_level:
-            continue
-        for el in by_level[current_level]:
-            if len(el.position) > level:
-                parent_key = el.position[level]
-                if parent_key not in children_map:
-                    children_map[parent_key] = []
-                children_map[parent_key].append(el)
+        for el in by_level.get(current_level, []):
+            children_map.setdefault(el.id_path[level], []).append(el)
 
-    # Build final hierarchy - O(n)
     hierarchy = []
     for el in by_level[level]:
-        parent_key = (el.block_type, el.text)
-        children = children_map.get(parent_key, [])
-
+        children = children_map.get(el.uid, [])
         hierarchy.append(
             {
                 "block_type": el.block_type,
