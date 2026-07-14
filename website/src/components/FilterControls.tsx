@@ -12,6 +12,7 @@ import {
   Receipt,
   FileType,
   List,
+  Network,
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
@@ -193,6 +194,35 @@ export function FilterControls({
               />
             )}
 
+            {displayFilters.budget_part && (
+              <FilterBadge
+                icon={Network}
+                label={`Part: ${displayFilters.budget_part}`}
+                onClear={() => clearFilter('budget_part')}
+                variant="secondary"
+              />
+            )}
+
+            {displayFilters.section && (
+              <FilterBadge
+                icon={Network}
+                label={`Section: ${displayFilters.section}`}
+                onClear={() => clearFilter('section')}
+                variant="secondary"
+              />
+            )}
+
+            {displayFilters.subprogramme && (
+              <FilterBadge
+                icon={Network}
+                label={displayFilters.subprogramme}
+                onClear={() => clearFilter('subprogramme')}
+                variant="secondary"
+              />
+            )}
+
+            {/* Superseded by the section filter, but still reachable from old
+                ?programme= links, so it still needs a chip to be clearable. */}
             {displayFilters.programme && (
               <FilterBadge
                 icon={Target}

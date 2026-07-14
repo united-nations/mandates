@@ -1,10 +1,10 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { Building, Target } from 'lucide-react'
+import { Building, Network } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
-import { titleCase } from 'title-case'
 import type { Mandate, Entity } from '@/types'
+import { BudgetLocationList } from '@/components/BudgetLocationList'
 
 interface CitationCountsProps {
   mandate: Mandate
@@ -13,7 +13,6 @@ interface CitationCountsProps {
 
 export function CitationCounts({ mandate, entities }: CitationCountsProps) {
   const [showAllEntities, setShowAllEntities] = useState(false)
-  const [showAllProgrammes, setShowAllProgrammes] = useState(false)
 
   // Build entity map from entities data
   const entityMap = useMemo(() => {
@@ -59,30 +58,9 @@ export function CitationCounts({ mandate, entities }: CitationCountsProps) {
     )
   }, [mandate, getEntityLongName])
 
-  const programmeCounts = useMemo(() => {
-    if (!mandate || !mandate.citation_info) return []
+  const budgetLocations = mandate.budget_locations ?? []
 
-    const counts: { [key: string]: number } = {}
-
-    mandate.citation_info.forEach((citation) => {
-      const programmeTitle = citation.programme_title
-      if (programmeTitle) {
-        if (!counts[programmeTitle]) {
-          counts[programmeTitle] = 0
-        }
-        counts[programmeTitle]++
-      }
-    })
-
-    return Object.entries(counts).sort(([titleA, countA], [titleB, countB]) => {
-      if (countB !== countA) {
-        return countB - countA
-      }
-      return titleA.localeCompare(titleB)
-    })
-  }, [mandate])
-
-  if (entityCounts.length === 0 && programmeCounts.length === 0) {
+  if (entityCounts.length === 0 && budgetLocations.length === 0) {
     return null
   }
 
@@ -142,54 +120,19 @@ export function CitationCounts({ mandate, entities }: CitationCountsProps) {
         </div>
       )}
 
-      {/* Programme Counts */}
-      {programmeCounts.length > 0 && (
+      {/* Where in the budget those citations sit. This used to be a second
+          list, "N Programmes Citing this Document" — but a programme is a
+          strict function of the citing entity (no entity spans more than one
+          section, and every section has exactly one programme), so it was the
+          entity list restated. The budget path is the information that list was
+          missing. */}
+      {budgetLocations.length > 0 && (
         <div className="space-y-3">
           <h3 className="flex items-center gap-2 text-base font-semibold">
-            <Target className="h-4 w-4" />
-            {programmeCounts.length}{' '}
-            {programmeCounts.length === 1 ? 'Programme' : 'Programmes'} Citing
-            this Document
+            <Network className="h-4 w-4" />
+            Cited in the Budget
           </h3>
-          <div className="space-y-1.5 text-xs">
-            {(showAllProgrammes
-              ? programmeCounts
-              : programmeCounts.slice(0, 5)
-            ).map(([programmeTitle, count]) => (
-              <div key={programmeTitle} className="flex items-center gap-2">
-                <span className="shrink-0 font-mono text-muted-foreground">
-                  {count}x
-                </span>
-                <div className="min-w-0 flex-1">
-                  <Badge
-                    variant="secondary"
-                    className="cursor-pointer border-0 px-2.5 py-0.5 text-xs transition-colors hover:bg-secondary/80"
-                    onClick={() => {
-                      // Navigate to filtered results with only the programme filter
-                      const url = new URL(window.location.origin + '/')
-                      url.searchParams.delete('page')
-                      url.searchParams.set('programme', programmeTitle)
-                      window.location.href = url.toString()
-                    }}
-                  >
-                    {titleCase(programmeTitle)}
-                  </Badge>
-                </div>
-              </div>
-            ))}
-            {programmeCounts.length > 5 && (
-              <div className="mt-2 w-full">
-                <button
-                  onClick={() => setShowAllProgrammes(!showAllProgrammes)}
-                  className="inline-block text-left text-sm text-un-blue hover:text-un-blue/80"
-                >
-                  {showAllProgrammes
-                    ? 'Show less'
-                    : `Show ${programmeCounts.length - 5} more`}
-                </button>
-              </div>
-            )}
-          </div>
+          <BudgetLocationList locations={budgetLocations} />
         </div>
       )}
     </div>

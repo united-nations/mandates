@@ -13,7 +13,7 @@ import { getMandateDisplayTitle, safeHighlightSearchTerms } from '@/lib/utils'
 import { getAllEntities } from './entities'
 import { getAllOrgans, getOrganMap } from './organs'
 import { getBudgetVersions } from './budget-documents'
-import type { Mandate, FilterOptions, EntityWithCount, OrganWithCount, CrossCitation, CitationBin, ApiResponse } from '@/types'
+import type { Mandate, FilterOptions, EntityWithCount, OrganWithCount, CrossCitation, CitationBin, ApiResponse, BudgetLocation, BudgetPartNode, BudgetSectionNode, BudgetEntityNode } from '@/types'
 
 // ============================================================================
 // Helper Functions
@@ -65,6 +65,7 @@ interface MandateListRow {
   num_citations: string
   entities: string[] | null
   programmes: string[] | null
+  budget_locations: RawBudgetLocation[] | null
   origin_documents: string[] | null
   total_count: string
   document_symbol: string | null
@@ -83,6 +84,10 @@ interface MandateListRow {
 interface CitationQueryRow {
   origin_document: string | null
   budget_part: string | null
+  budget_part_number: string | null
+  part_title: string | null
+  part_sort: number | null
+  sub_programme_number: number | null
   section: string | null
   section_title: string | null
   entity: string | null
@@ -271,7 +276,8 @@ function buildFilterClauses(
     paramIndex++
   }
 
-  // Programme filter
+  // Programme filter. Superseded by the section filter — every section has
+  // exactly one programme — but kept so existing ?programme= links keep working.
   if (filters.programme) {
     clauses.push(`
       EXISTS (
@@ -282,6 +288,42 @@ function buildFilterClauses(
       )
     `)
     params.push(`%${filters.programme.toLowerCase()}%`)
+    paramIndex++
+  }
+
+  // Budget hierarchy filters. Each level is an independent exact-match
+  // predicate on the citations, so they compose: part IV + subprogramme 2
+  // narrows to documents cited at both. Addendum suffixes ("3 (Add.2)") are
+  // stripped so that filtering on section 3 also catches its addenda.
+  const hierarchyLevels: {
+    value: string | undefined
+    column: (placeholder: string) => string
+  }[] = [
+    {
+      value: filters.budget_part,
+      column: (p) => `ch.budget_part_number = ${p}`,
+    },
+    {
+      value: filters.section,
+      column: (p) =>
+        `regexp_replace(ch.section, '\\s*\\(Add\\..*\\)$', '') = ${p}`,
+    },
+    {
+      value: filters.subprogramme,
+      column: (p) => `ch.sub_programme = ${p}`,
+    },
+  ]
+  for (const level of hierarchyLevels) {
+    if (!level.value) continue
+    clauses.push(`
+      EXISTS (
+        SELECT 1 FROM ppb2026.source_document_citations ch
+        WHERE ch.ppb_full_document_symbol = d.ppb_full_document_symbol
+        AND ${level.column(`$${paramIndex}`)}
+        AND ${versionClause('ch')}
+      )
+    `)
+    params.push(level.value)
     paramIndex++
   }
 
@@ -406,12 +448,16 @@ function buildFilteredDocsCTE(
   const havingClause =
     havingClauses.length > 0 ? `HAVING ${havingClauses.join(' AND ')}` : ''
 
+  // bp is joined by primary key purely so that selectCols can reach the part
+  // title and sort order without every caller repeating the join.
   const cte = `${opts.name ?? 'filtered_docs'} AS (
       SELECT ${opts.selectCols}
       FROM public.unified_documents d
       LEFT JOIN ppb2026.source_document_citations c
         ON d.ppb_full_document_symbol = c.ppb_full_document_symbol
         AND ${versionClause('c')}
+      LEFT JOIN ppb2026.budget_parts bp
+        ON bp.part_number = c.budget_part_number
       ${whereClause}
       GROUP BY ${opts.groupCols}
       ${havingClause}
@@ -481,6 +527,18 @@ export async function getMandates(
         COUNT(c.id) as num_citations,
         ARRAY_AGG(DISTINCT c.entity) FILTER (WHERE c.entity IS NOT NULL) as entities,
         ARRAY_AGG(DISTINCT c.programme_title) FILTER (WHERE c.programme_title IS NOT NULL AND c.programme_title != '') as programmes,
+        JSONB_AGG(DISTINCT JSONB_BUILD_OBJECT(
+          'part', c.budget_part_number,
+          'part_title', bp.part_title,
+          'section', c.section,
+          'section_title', c.section_title,
+          'programme', c.programme,
+          'programme_title', c.programme_title,
+          'entity', c.entity,
+          'subprogramme', c.sub_programme,
+          'subprogramme_number', c.sub_programme_number,
+          'part_sort', bp.sort_order
+        )) FILTER (WHERE c.budget_part_number IS NOT NULL) as budget_locations,
         ARRAY_AGG(DISTINCT c.origin_document) FILTER (WHERE c.origin_document IS NOT NULL) as origin_documents`,
     groupCols:
       'd.ppb_full_document_symbol, d.ppb_link, d.ppb_year, d.ppb_body, d.ppb_description, d.ppb_type',
@@ -582,7 +640,7 @@ export async function getMandates(
     subject_headings: parsePostgresArray(row.subject_terms)
       .map(s => titleCase(s.toLowerCase())),
     issuing_body: row.issuing_body || null,
-    programme: (row.programmes && row.programmes.length > 0) ? row.programmes.join(', ') : undefined,
+    budget_locations: sortBudgetLocations(row.budget_locations),
     agenda_document_symbols: [],
     agenda_item_numbers: [],
     agenda_item_titles: parsePostgresArray(row.agenda_item_title),
@@ -608,26 +666,40 @@ export async function getMandates(
 /**
  * Fetch detailed citation info for a specific mandate
  * Used for enriching individual mandates on detail pages
+ *
+ * Returns both shapes over the same rows: `citation_info` (the long-standing
+ * denormalized view) and `budget_locations` (the hierarchy, ordered down the
+ * budget). Locations exist only for citations that sit inside the regular-budget
+ * part structure, so PKM and Plan Outline citations appear in citation_info but
+ * not in budget_locations.
  */
 export async function getMandateCitations(
   symbol: string,
   version?: string | null
-): Promise<Mandate['citation_info']> {
+): Promise<{
+  citations: Mandate['citation_info']
+  budgetLocations: BudgetLocation[]
+}> {
   const query = `
     SELECT
       c.origin_document,
       c.budget_part,
+      c.budget_part_number,
+      bp.part_title,
+      bp.sort_order AS part_sort,
       c.section,
       c.section_title,
       c.entity,
       c.programme,
       c.programme_title,
       c.sub_programme,
+      c.sub_programme_number,
       c.component,
       c.part_in_document,
       e.entity_long
     FROM ppb2026.source_document_citations c
     LEFT JOIN systemchart.entities e ON c.entity = e.entity
+    LEFT JOIN ppb2026.budget_parts bp ON bp.part_number = c.budget_part_number
     WHERE c.ppb_full_document_symbol = $1
       AND ${versionPredicateSql('c', '$2')}
     ORDER BY c.entity, c.programme
@@ -635,7 +707,7 @@ export async function getMandateCitations(
 
   const rows = await queryMany<CitationQueryRow>(query, [symbol, version ?? null])
 
-  return rows.map((row) => ({
+  const citations = rows.map((row) => ({
     origin_document: row.origin_document || '',
     budget_part: row.budget_part || '',
     section: row.section || '',
@@ -649,6 +721,26 @@ export async function getMandateCitations(
     description: '', // Not stored in citations table
     part_in_document: row.part_in_document || '',
   }))
+
+  const budgetLocations = sortBudgetLocations(
+    rows
+      .filter((row) => row.budget_part_number !== null)
+      .map((row) => ({
+        part: row.budget_part_number!,
+        part_title: row.part_title ?? '',
+        part_sort: row.part_sort ?? 0,
+        section: row.section ?? '',
+        section_title: row.section_title ?? '',
+        programme: row.programme,
+        programme_title: row.programme_title,
+        entity: row.entity,
+        entity_long: row.entity_long,
+        subprogramme: row.sub_programme,
+        subprogramme_number: row.sub_programme_number,
+      }))
+  )
+
+  return { citations, budgetLocations }
 }
 
 /**
@@ -697,7 +789,7 @@ export async function getMandateBySymbol(
   if (!row) return null
 
   // Fetch citations separately for the detail view
-  const citations = await getMandateCitations(symbol, version)
+  const { citations, budgetLocations } = await getMandateCitations(symbol, version)
 
   return {
     full_document_symbol: row.ppb_full_document_symbol,
@@ -721,6 +813,7 @@ export async function getMandateBySymbol(
     agenda_item_numbers: parsePostgresArray(row.agenda_item_number),
     agenda_item_titles: parsePostgresArray(row.agenda_item_title),
     citation_info: citations,
+    budget_locations: budgetLocations,
   }
 }
 
@@ -916,6 +1009,227 @@ async function getFacetOptions(
     ((r: ValueCountRow[]) =>
       r.map((row) => ({ value: row.value, count: parseInt(row.count) || 0 })))
   return postProcess(rows)
+}
+
+/** A budget location as it comes back from JSONB_BUILD_OBJECT, before sorting. */
+type RawBudgetLocation = BudgetLocation & { part_sort?: number }
+
+/**
+ * Put a document's citation sites into reading order: down the budget, then by
+ * section, then entity, then subprogramme. JSONB_AGG(DISTINCT …) cannot carry
+ * an ORDER BY, so the ordering happens here.
+ */
+function sortBudgetLocations(
+  locations: RawBudgetLocation[] | null
+): BudgetLocation[] {
+  if (!locations?.length) return []
+  return [...locations]
+    .sort(
+      (a, b) =>
+        (a.part_sort ?? 0) - (b.part_sort ?? 0) ||
+        a.section.localeCompare(b.section, undefined, { numeric: true }) ||
+        (a.entity ?? '').localeCompare(b.entity ?? '') ||
+        (a.subprogramme_number ?? -1) - (b.subprogramme_number ?? -1)
+    )
+    .map((location) => ({
+      part: location.part,
+      part_title: location.part_title,
+      section: location.section,
+      section_title: location.section_title,
+      programme: location.programme,
+      programme_title: location.programme_title,
+      entity: location.entity,
+      entity_long: location.entity_long,
+      subprogramme: location.subprogramme,
+      subprogramme_number: location.subprogramme_number,
+    }))
+}
+
+/**
+ * The budget hierarchy as a tree, with the number of distinct documents cited
+ * at each node. Backs the Budget location column's filter.
+ *
+ * Counts are computed independently at every level via GROUPING SETS, so a
+ * document cited by two sections of the same part counts once for that part
+ * rather than twice. GROUPING() returns 1 when a column is *absent* from the
+ * current grouping set, which is what tells "this level was not grouped" apart
+ * from "the value here is genuinely NULL" (citations with no subprogramme).
+ */
+export async function getBudgetHierarchy(
+  filters: FilterOptions = {}
+): Promise<BudgetPartNode[]> {
+  // Scope by every active filter except the hierarchy's own levels, so the tree
+  // keeps showing where a user can still navigate after clicking a node. Same
+  // convention as the other facet lists (see omitOwnDimension).
+  const scoped: FilterOptions = { ...filters }
+  delete scoped.budget_part
+  delete scoped.section
+  delete scoped.subprogramme
+
+  const partCols = 'c.budget_part_number, bp.part_title, bp.sort_order'
+  const sectionCols =
+    'c.section, c.section_title, bs.sort_order, c.programme, c.programme_title'
+  const entityCols = 'c.entity, e.entity_long'
+  const subprogrammeCols = 'c.sub_programme, c.sub_programme_number'
+
+  const { cte, params, versionClause } = buildFilteredDocsCTE(scoped, {
+    selectCols: 'd.ppb_full_document_symbol',
+    groupCols: 'd.ppb_full_document_symbol',
+  })
+
+  const query = `
+    WITH ${cte}
+    SELECT
+      3 - (
+        GROUPING(c.section) + GROUPING(c.entity) + GROUPING(c.sub_programme)
+      ) AS depth,
+      c.budget_part_number AS part,
+      bp.part_title,
+      bp.sort_order AS part_sort,
+      c.section,
+      c.section_title,
+      bs.sort_order AS section_sort,
+      c.programme,
+      c.programme_title,
+      c.entity,
+      e.entity_long,
+      c.sub_programme,
+      c.sub_programme_number,
+      COUNT(DISTINCT c.ppb_full_document_symbol) AS count
+    FROM filtered_docs fd
+    JOIN ppb2026.source_document_citations c
+      ON fd.ppb_full_document_symbol = c.ppb_full_document_symbol
+      AND ${versionClause('c')}
+    JOIN ppb2026.budget_parts bp
+      ON bp.part_number = c.budget_part_number
+    LEFT JOIN ppb2026.budget_sections bs
+      ON bs.section = regexp_replace(c.section, '\\s*\\(Add\\..*\\)$', '')
+    LEFT JOIN systemchart.entities e
+      ON e.entity = c.entity
+    GROUP BY GROUPING SETS (
+      (${partCols}),
+      (${partCols}, ${sectionCols}),
+      (${partCols}, ${sectionCols}, ${entityCols}),
+      (${partCols}, ${sectionCols}, ${entityCols}, ${subprogrammeCols})
+    )
+  `
+
+  return buildBudgetTree(await queryMany<HierarchyRow>(query, params))
+}
+
+interface HierarchyRow {
+  depth: string
+  part: string
+  part_title: string
+  part_sort: number
+  section: string | null
+  section_title: string | null
+  section_sort: number | null
+  programme: number | null
+  programme_title: string | null
+  entity: string | null
+  entity_long: string | null
+  sub_programme: string | null
+  sub_programme_number: number | null
+  count: string
+}
+
+/**
+ * Rows arrive with the four depths interleaved, so each node is keyed by its
+ * full path. Section values contain spaces ("3 (Add.2)"), so paths are joined
+ * on a character that cannot occur in the data rather than on whitespace.
+ */
+function buildBudgetTree(rows: HierarchyRow[]): BudgetPartNode[] {
+  const SEP = '\u0000'
+  const parts = new Map<string, BudgetPartNode & { sort: number }>()
+  const sections = new Map<string, BudgetSectionNode & { sort: number }>()
+  const entities = new Map<string, BudgetEntityNode>()
+  const sectionParent = new Map<string, string>()
+  const entityParent = new Map<string, string>()
+
+  const count = (row: HierarchyRow) => parseInt(row.count, 10) || 0
+
+  // GROUPING SETS returns the four depths in no particular order, so walk them
+  // shallowest-first: a subprogramme row can otherwise arrive before the entity
+  // row it hangs under, find no parent, and be silently dropped.
+  const shallowestFirst = [...rows].sort(
+    (a, b) => parseInt(a.depth, 10) - parseInt(b.depth, 10)
+  )
+
+  for (const row of shallowestFirst) {
+    const depth = parseInt(row.depth, 10)
+    const sectionKey = `${row.part}${SEP}${row.section}`
+    const entityKey = `${sectionKey}${SEP}${row.entity}`
+
+    if (depth === 0) {
+      parts.set(row.part, {
+        part: row.part,
+        part_title: row.part_title,
+        count: count(row),
+        sections: [],
+        sort: row.part_sort,
+      })
+    } else if (depth === 1 && row.section !== null) {
+      sectionParent.set(sectionKey, row.part)
+      sections.set(sectionKey, {
+        section: row.section,
+        section_title: row.section_title ?? '',
+        programme: row.programme,
+        programme_title: row.programme_title,
+        count: count(row),
+        entities: [],
+        sort: row.section_sort ?? 0,
+      })
+    } else if (depth === 2 && row.entity !== null) {
+      entityParent.set(entityKey, sectionKey)
+      entities.set(entityKey, {
+        entity: row.entity,
+        entity_long: row.entity_long,
+        count: count(row),
+        subprogrammes: [],
+      })
+    } else if (depth === 3 && row.sub_programme !== null) {
+      entities.get(entityKey)?.subprogrammes.push({
+        subprogramme: row.sub_programme,
+        number: row.sub_programme_number,
+        count: count(row),
+      })
+    }
+  }
+
+  for (const [key, entity] of entities) {
+    // "All Subprogrammes" carries no number and belongs at the top of its entity.
+    entity.subprogrammes.sort((a, b) => (a.number ?? -1) - (b.number ?? -1))
+    sections.get(entityParent.get(key) ?? '')?.entities.push(entity)
+  }
+
+  // Attach in budget order, dropping the sort keys as we go: they are an
+  // artefact of assembly and have no business being serialised to the client.
+  const orderedSections = [...sections.entries()].sort(
+    ([, a], [, b]) => a.sort - b.sort
+  )
+  for (const [key, section] of orderedSections) {
+    section.entities.sort(
+      (a, b) => b.count - a.count || a.entity.localeCompare(b.entity)
+    )
+    parts.get(sectionParent.get(key) ?? '')?.sections.push({
+      section: section.section,
+      section_title: section.section_title,
+      programme: section.programme,
+      programme_title: section.programme_title,
+      count: section.count,
+      entities: section.entities,
+    })
+  }
+
+  return [...parts.values()]
+    .sort((a, b) => a.sort - b.sort)
+    .map((part) => ({
+      part: part.part,
+      part_title: part.part_title,
+      count: part.count,
+      sections: part.sections,
+    }))
 }
 
 /**
@@ -1236,6 +1550,7 @@ async function _getMandatePageDataInner(filters: FilterOptions): Promise<ApiResp
     organCounts,
     citationDistribution,
     programmeOptions,
+    budgetHierarchy,
     subjectOptions,
     documentTypeOptions,
     agendaItemOptions,
@@ -1253,6 +1568,7 @@ async function _getMandatePageDataInner(filters: FilterOptions): Promise<ApiResp
     getOrganCounts(filters),
     getCitationDistribution(filters),
     getProgrammeOptions(filters),
+    getBudgetHierarchy(filters),
     getSubjectOptions(filters),
     getDocumentTypeOptions(filters),
     getAgendaItemOptions(filters),
@@ -1338,6 +1654,7 @@ async function _getMandatePageDataInner(filters: FilterOptions): Promise<ApiResp
       citationDistribution,
     },
     filterOptions: {
+      budgetHierarchy,
       programmes: programmeOptions,
       subjects: subjectOptions,
       documentTypes: documentTypeOptions,
@@ -1370,7 +1687,7 @@ async function _getMandatePageDataInner(filters: FilterOptions): Promise<ApiResp
 // older deploy are never served to newer client code (the cache key is only
 // the filters, and entries persist for `revalidate`). This is the
 // data-version guard the refactor plan called for.
-const PAGE_DATA_CACHE_VERSION = 'v4-all-resolutions-catalog-scope'
+const PAGE_DATA_CACHE_VERSION = 'v5-budget-hierarchy'
 
 export const getMandatePageData = cache(
   (filters: FilterOptions): Promise<ApiResponse> =>

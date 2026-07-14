@@ -23,6 +23,7 @@ import {
 import { useFilters } from '@/contexts/FilterContext'
 import type {
   ApiResponse,
+  BudgetPartNode,
   Entity,
   EntityWithCount,
   Mandate,
@@ -37,6 +38,7 @@ import { titleCase } from 'title-case'
 import { EntityName } from '../EntityName'
 import { ColumnHeaderFilter } from './ColumnHeaderFilter'
 import { ColumnPicker } from './ColumnPicker'
+import { BudgetLocationCell } from './BudgetLocationCell'
 import {
   COLUMN_DEFINITIONS,
   getMandateUrl,
@@ -45,6 +47,7 @@ import {
 // Facet option lists for the column filter popovers. Named FilterFacets to
 // avoid colliding with the data-layer FilterOptions (active filter *values*).
 interface FilterFacets {
+  budgetHierarchy: BudgetPartNode[]
   programmes: { value: string; count: number }[]
   subjects: { value: string; count: number }[]
   documentTypes: { value: string; count: number }[]
@@ -106,8 +109,6 @@ export function MandateDataTable({
         return entityCounts.map((e) => ({ value: e.entity, count: e.count }))
       case 'subjects':
         return filterOptions.subjects
-      case 'programme':
-        return filterOptions.programmes
       case 'document_type':
         return filterOptions.documentTypes
       case 'agenda_item':
@@ -165,6 +166,7 @@ export function MandateDataTable({
                         currentSort={currentSort}
                         filterOptions={getFilterOptions(col.id)}
                         yearRange={filterOptions.yearRange}
+                        budgetHierarchy={filterOptions.budgetHierarchy}
                       />
                     )}
                   </TableHead>
@@ -386,10 +388,8 @@ function CellContent({
     case 'subjects':
       return <PillList items={(mandate.subject_headings || []).map(s => titleCase(s))} />
 
-    case 'programme':
-      return mandate.programme
-        ? <PillList items={mandate.programme.split(', ')} />
-        : null
+    case 'budget_location':
+      return <BudgetLocationCell locations={mandate.budget_locations ?? []} />
 
     case 'budget_document': {
       if (!mandate.citation_info || mandate.citation_info.length === 0)
