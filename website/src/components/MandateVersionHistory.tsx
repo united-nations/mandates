@@ -77,33 +77,33 @@ export function MandateVersionHistory({
           return (
             <li
               key={m.document_symbol}
-              className={`flex items-baseline gap-3 py-1.5 text-sm ${
+              className={`flex items-center gap-3 py-1.5 text-sm ${
                 isCurrent ? 'bg-blue-50/60' : ''
               }`}
             >
-              <span className="w-12 shrink-0 font-mono text-xs text-muted-foreground">
+              <span className="w-10 shrink-0 font-mono text-xs text-muted-foreground">
                 {m.year ?? '—'}
               </span>
               {isCurrent ? (
-                <span className="shrink-0 font-mono text-xs font-medium">
+                <span className="w-36 shrink-0 truncate font-mono text-xs font-medium">
                   {m.document_symbol}
                 </span>
               ) : (
                 <Link
                   href={getMandateUrl(m.document_symbol)}
-                  className="shrink-0 font-mono text-xs font-medium text-un-blue hover:underline"
+                  className="w-36 shrink-0 truncate font-mono text-xs font-medium text-un-blue hover:underline"
                 >
                   {m.document_symbol}
                 </Link>
               )}
+              <span className="min-w-0 flex-1 truncate text-xs text-muted-foreground">
+                {m.title}
+              </span>
               {!series.is_collection && m.is_latest && (
-                <span className="shrink-0 rounded bg-emerald-50 px-1.5 py-0.5 text-[10px] font-medium text-emerald-700">
+                <span className="ml-auto shrink-0 rounded bg-un-blue px-1.5 py-0.5 text-[10px] font-medium text-white">
                   latest
                 </span>
               )}
-              <span className="min-w-0 truncate text-xs text-muted-foreground">
-                {m.title}
-              </span>
             </li>
           )
         })}
