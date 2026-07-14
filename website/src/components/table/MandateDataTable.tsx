@@ -36,7 +36,6 @@ import { ChevronRight } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { titleCase } from 'title-case'
 import { EntityBadge, FoundationalTag } from '../EntityBadge'
-import { EntityName } from '../EntityName'
 import { isFoundational } from '@/lib/foundational'
 import { ColumnHeaderFilter } from './ColumnHeaderFilter'
 import { ColumnPicker } from './ColumnPicker'
@@ -340,8 +339,9 @@ function CellContent({
       const visible = entities.slice(0, maxShow)
       const remaining = entities.length - maxShow
 
-      const pill = (entity: string, inPopup: boolean) =>
-        inPopup ? (
+      const pill = (entity: string, inPopup: boolean) => {
+        const longName = entitiesData.find((e) => e.entity === entity)?.entity_long
+        return inPopup ? (
           <span key={entity} className="flex items-center gap-1.5">
             <EntityBadge
               entity={entity}
@@ -350,28 +350,23 @@ function CellContent({
               className="font-bold"
               onClick={() => onEntityClick(entity)}
             />
-            <EntityName
-              entityName={entity}
-              entityLong={
-                entitiesData.find((e) => e.entity === entity)?.entity_long
-              }
-              showUnderline={false}
-            />
+            {longName && longName !== entity && (
+              <span className="text-xs text-muted-foreground">{longName}</span>
+            )}
             {isFoundational(entity, foundational) && <FoundationalTag />}
           </span>
         ) : (
           <EntityBadge
             key={entity}
             entity={entity}
-            entityLong={
-              entitiesData.find((e) => e.entity === entity)?.entity_long
-            }
+            entityLong={longName}
             foundational={isFoundational(entity, foundational)}
             variant="muted"
             className="font-bold"
             onClick={() => onEntityClick(entity)}
           />
         )
+      }
 
       if (remaining <= 0) {
         return (

@@ -8,7 +8,7 @@
      (see lib/foundational.ts). The colour is only a hint — it is always paired
      with a tooltip, and with an explicit badge where there is room, because two
      shades of blue carry no meaning on their own. */
-  --color-un-blue-deep: #005b7f;
+  --color-un-blue-deep: #0077b0;
 
   --color-trout: #495057;
   --color-shuttle-gray: #5a6c7d;
