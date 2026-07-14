@@ -12,6 +12,7 @@ import {
   Receipt,
   FileType,
   List,
+  Network,
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
@@ -21,6 +22,7 @@ import { OrganName } from './OrganName'
 import { titleCase } from 'title-case'
 import { explainerTexts } from '@/lib/en_text_contents'
 import { useFilters } from '@/contexts/FilterContext'
+import { FOUNDATIONAL_LABEL } from '@/lib/foundational'
 import type { BudgetDocument } from '@/lib/data/budget-documents'
 
 interface Entity {
@@ -193,6 +195,44 @@ export function FilterControls({
               />
             )}
 
+            {displayFilters.budget_part && (
+              <FilterBadge
+                icon={Network}
+                label={`Part: ${displayFilters.budget_part}`}
+                onClear={() => clearFilter('budget_part')}
+                variant="secondary"
+              />
+            )}
+
+            {displayFilters.section && (
+              <FilterBadge
+                icon={Network}
+                label={`Section: ${displayFilters.section}`}
+                onClear={() => clearFilter('section')}
+                variant="secondary"
+              />
+            )}
+
+            {displayFilters.subprogramme && (
+              <FilterBadge
+                icon={Network}
+                label={displayFilters.subprogramme}
+                onClear={() => clearFilter('subprogramme')}
+                variant="secondary"
+              />
+            )}
+
+            {displayFilters.foundational === 'true' && (
+              <FilterBadge
+                icon={Network}
+                label={FOUNDATIONAL_LABEL}
+                onClear={() => clearFilter('foundational')}
+                variant="secondary"
+              />
+            )}
+
+            {/* Superseded by the section filter, but still reachable from old
+                ?programme= links, so it still needs a chip to be clearable. */}
             {displayFilters.programme && (
               <FilterBadge
                 icon={Target}

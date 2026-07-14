@@ -7,6 +7,7 @@ All colors must come from CSS variables defined in `src/app/globals.css`. Never 
 | Token            | Variable                   | Hex       | Tailwind class                                 |
 | ---------------- | -------------------------- | --------- | ---------------------------------------------- |
 | UN Blue          | `--color-un-blue`          | `#009edb` | `text-un-blue`, `bg-un-blue`, `border-un-blue` |
+| UN Blue Deep     | `--color-un-blue-deep`     | `#0077b0` | `bg-un-blue-deep` — foundational entity badges only (see `lib/foundational.ts`); never the sole carrier of meaning, always paired with a tooltip |
 | Trout            | `--color-trout`            | `#495057` | `text-trout`                                   |
 | Shuttle Gray     | `--color-shuttle-gray`     | `#5a6c7d` | `text-shuttle-gray`                            |
 | Camouflage Green | `--color-camouflage-green` | `#7d8471` | `bg-camouflage-green`                          |

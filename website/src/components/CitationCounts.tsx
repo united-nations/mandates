@@ -1,197 +1,139 @@
 'use client'
 
-import { useState, useMemo } from 'react'
-import { Building, Target } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
-import { titleCase } from 'title-case'
-import type { Mandate, Entity } from '@/types'
+import { EntityBadge, FoundationalTag } from '@/components/EntityBadge'
+import { BudgetLocationTree } from '@/components/BudgetLocationTree'
+import { TooltipProvider } from '@/components/ui/tooltip'
+import { isFoundational } from '@/lib/foundational'
+import type { Entity, Mandate } from '@/types'
+import { Building, Network } from 'lucide-react'
+import { useMemo, useState } from 'react'
+
+/**
+ * Who cites this document, and where in the budget they cite it from.
+ *
+ * Entities are the unit nearly everyone reasons about, so the flat entity list
+ * is the default. The budget structure is a specialist lens, so it is one click
+ * away rather than always on screen — the toggle regroups the *same* entities
+ * under Part › Section rather than showing anything new.
+ *
+ * There used to be a second list, "N Programmes Citing this Document". It was
+ * the entity list restated: a programme is a strict function of the citing
+ * entity, since no entity spans more than one section and every section has
+ * exactly one programme. It is gone.
+ *
+ * The per-entity "2x" counts are gone too. They counted extraction rows, not
+ * citation sites: an entity that cites a document in both its "Mandates and
+ * background" narrative and its Legislative mandates table produced two rows at
+ * the *same* budget location. That fact is now shown as what it actually means
+ * — a foundational citation — instead of as an unexplained multiplier.
+ */
 
 interface CitationCountsProps {
   mandate: Mandate
   entities: Entity[]
 }
 
-export function CitationCounts({ mandate, entities }: CitationCountsProps) {
-  const [showAllEntities, setShowAllEntities] = useState(false)
-  const [showAllProgrammes, setShowAllProgrammes] = useState(false)
+const VISIBLE = 5
 
-  // Build entity map from entities data
-  const entityMap = useMemo(() => {
-    const map = new Map()
-    entities.forEach((entity) => {
-      map.set(entity.entity, entity)
-    })
+export function CitationCounts({ mandate, entities }: CitationCountsProps) {
+  const [showAll, setShowAll] = useState(false)
+  const [groupByBudget, setGroupByBudget] = useState(false)
+
+  const foundationalEntities = mandate.foundational_entities ?? []
+  const budgetLocations = mandate.budget_locations ?? []
+
+  const entityLongNames = useMemo(() => {
+    const map = new Map<string, string>()
+    entities.forEach((entity) => map.set(entity.entity, entity.entity_long))
     return map
   }, [entities])
 
-  // Create entity lookup function using the API-provided entity map
-  const getEntityLongName = (shortName: string): string => {
-    const entity = entityMap.get(shortName)
-    return entity?.entity_long || shortName
-  }
-
-  const entityCounts = useMemo(() => {
-    if (!mandate || !mandate.citation_info) return []
-
-    const counts: { [key: string]: { longName: string; count: number } } = {}
-
-    mandate.citation_info.forEach((citation) => {
-      const shortName = citation.entity
-      if (shortName) {
-        if (!counts[shortName]) {
-          // Use lookup function instead of citation data
-          counts[shortName] = {
-            longName: getEntityLongName(shortName),
-            count: 0,
-          }
-        }
-        counts[shortName].count++
-      }
+  // Distinct citing entities, foundational ones first — they are the ones a
+  // reader scanning for "why does this entity exist" wants to see.
+  const citingEntities = useMemo(() => {
+    const seen = new Set<string>()
+    for (const citation of mandate.citation_info ?? []) {
+      if (citation.entity) seen.add(citation.entity)
+    }
+    return [...seen].sort((a, b) => {
+      const aFound = foundationalEntities.includes(a)
+      const bFound = foundationalEntities.includes(b)
+      if (aFound !== bFound) return aFound ? -1 : 1
+      return a.localeCompare(b)
     })
+  }, [mandate.citation_info, foundationalEntities])
 
-    return Object.entries(counts).sort(
-      ([shortNameA, dataA], [shortNameB, dataB]) => {
-        if (dataB.count !== dataA.count) {
-          return dataB.count - dataA.count
-        }
-        return shortNameA.localeCompare(shortNameB)
-      }
-    )
-  }, [mandate, getEntityLongName])
+  if (citingEntities.length === 0 && budgetLocations.length === 0) return null
 
-  const programmeCounts = useMemo(() => {
-    if (!mandate || !mandate.citation_info) return []
-
-    const counts: { [key: string]: number } = {}
-
-    mandate.citation_info.forEach((citation) => {
-      const programmeTitle = citation.programme_title
-      if (programmeTitle) {
-        if (!counts[programmeTitle]) {
-          counts[programmeTitle] = 0
-        }
-        counts[programmeTitle]++
-      }
-    })
-
-    return Object.entries(counts).sort(([titleA, countA], [titleB, countB]) => {
-      if (countB !== countA) {
-        return countB - countA
-      }
-      return titleA.localeCompare(titleB)
-    })
-  }, [mandate])
-
-  if (entityCounts.length === 0 && programmeCounts.length === 0) {
-    return null
-  }
+  const shown = showAll ? citingEntities : citingEntities.slice(0, VISIBLE)
 
   return (
-    <div className="@container grid grid-cols-1 gap-6 @min-[700px]:grid-cols-2 @min-[700px]:gap-8">
-      {/* Entities Mentioned */}
-      {entityCounts.length > 0 && (
-        <div className="space-y-3">
+    <TooltipProvider>
+      <div className="space-y-3">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <h3 className="flex items-center gap-2 text-base font-semibold">
             <Building className="h-4 w-4" />
-            {entityCounts.length}{' '}
-            {entityCounts.length === 1 ? 'Entity' : 'Entities'} Citing this
+            {citingEntities.length}{' '}
+            {citingEntities.length === 1 ? 'Entity' : 'Entities'} Citing this
             Document
           </h3>
-          <div className="space-y-1.5 text-xs">
-            {(showAllEntities ? entityCounts : entityCounts.slice(0, 5)).map(
-              ([shortName, data]) => (
-                <div key={shortName} className="flex items-center gap-2">
-                  <span className="shrink-0 font-mono text-muted-foreground">
-                    {data.count}x
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <Badge
-                        variant="secondary"
-                        className="shrink-0 cursor-pointer border-0 bg-un-blue! px-2.5 py-0.5 text-xs text-white! transition-colors hover:bg-un-blue/90!"
-                        onClick={() => {
-                          window.location.href = `/?entity=${encodeURIComponent(shortName)}`
-                        }}
-                      >
-                        {shortName}
-                      </Badge>
-                      <span
-                        className="truncate text-xs text-muted-foreground"
-                        title={data.longName}
-                      >
-                        {data.longName}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              )
-            )}
-            {entityCounts.length > 5 && (
-              <div className="mt-2 w-full">
-                <button
-                  onClick={() => setShowAllEntities(!showAllEntities)}
-                  className="inline-block text-left text-sm text-un-blue hover:text-un-blue/80"
-                >
-                  {showAllEntities
-                    ? 'Show less'
-                    : `Show ${entityCounts.length - 5} more`}
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
 
-      {/* Programme Counts */}
-      {programmeCounts.length > 0 && (
-        <div className="space-y-3">
-          <h3 className="flex items-center gap-2 text-base font-semibold">
-            <Target className="h-4 w-4" />
-            {programmeCounts.length}{' '}
-            {programmeCounts.length === 1 ? 'Programme' : 'Programmes'} Citing
-            this Document
-          </h3>
+          {budgetLocations.length > 0 && (
+            <button
+              onClick={() => setGroupByBudget(!groupByBudget)}
+              aria-pressed={groupByBudget}
+              className="inline-flex items-center gap-1.5 text-xs text-un-blue hover:text-un-blue/80"
+            >
+              <Network className="h-3.5 w-3.5" />
+              {groupByBudget ? 'Show as list' : 'Group by budget location'}
+            </button>
+          )}
+        </div>
+
+        {groupByBudget ? (
+          <BudgetLocationTree
+            locations={budgetLocations}
+            foundationalEntities={foundationalEntities}
+          />
+        ) : (
           <div className="space-y-1.5 text-xs">
-            {(showAllProgrammes
-              ? programmeCounts
-              : programmeCounts.slice(0, 5)
-            ).map(([programmeTitle, count]) => (
-              <div key={programmeTitle} className="flex items-center gap-2">
-                <span className="shrink-0 font-mono text-muted-foreground">
-                  {count}x
+            {shown.map((entity) => (
+              <div key={entity} className="flex items-center gap-2">
+                <EntityBadge
+                  entity={entity}
+                  entityLong={entityLongNames.get(entity)}
+                  foundational={isFoundational(entity, foundationalEntities)}
+                  onClick={() => {
+                    window.location.href = `/?entity=${encodeURIComponent(entity)}`
+                  }}
+                />
+                <span
+                  className="min-w-0 flex-1 truncate text-muted-foreground"
+                  title={entityLongNames.get(entity)}
+                >
+                  {entityLongNames.get(entity) ?? entity}
                 </span>
-                <div className="min-w-0 flex-1">
-                  <Badge
-                    variant="secondary"
-                    className="cursor-pointer border-0 px-2.5 py-0.5 text-xs transition-colors hover:bg-secondary/80"
-                    onClick={() => {
-                      // Navigate to filtered results with only the programme filter
-                      const url = new URL(window.location.origin + '/')
-                      url.searchParams.delete('page')
-                      url.searchParams.set('programme', programmeTitle)
-                      window.location.href = url.toString()
-                    }}
-                  >
-                    {titleCase(programmeTitle)}
-                  </Badge>
-                </div>
+                {isFoundational(entity, foundationalEntities) && (
+                  <FoundationalTag />
+                )}
               </div>
             ))}
-            {programmeCounts.length > 5 && (
+
+            {citingEntities.length > VISIBLE && (
               <div className="mt-2 w-full">
                 <button
-                  onClick={() => setShowAllProgrammes(!showAllProgrammes)}
+                  onClick={() => setShowAll(!showAll)}
                   className="inline-block text-left text-sm text-un-blue hover:text-un-blue/80"
                 >
-                  {showAllProgrammes
+                  {showAll
                     ? 'Show less'
-                    : `Show ${programmeCounts.length - 5} more`}
+                    : `Show ${citingEntities.length - VISIBLE} more`}
                 </button>
               </div>
             )}
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </TooltipProvider>
   )
 }

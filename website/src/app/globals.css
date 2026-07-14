@@ -4,6 +4,11 @@
 /* https://tailwindcss.com/docs/colors#customizing-your-colors */
 @theme {
   --color-un-blue: #009edb;
+  /* Darker UN blue. Marks an entity badge whose citation is a general mandate
+     (see lib/foundational.ts). The colour is only a hint — it is always paired
+     with a tooltip, and with an explicit badge where there is room, because two
+     shades of blue carry no meaning on their own. */
+  --color-un-blue-deep: #0077b0;
 
   --color-trout: #495057;
   --color-shuttle-gray: #5a6c7d;

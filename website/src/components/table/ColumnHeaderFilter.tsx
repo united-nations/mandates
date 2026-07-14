@@ -18,6 +18,8 @@ import {
 import { useMemo, useState } from 'react'
 import { titleCase } from 'title-case'
 import type { FilterParamKey } from '@/lib/filter-constants'
+import type { BudgetPartNode } from '@/types'
+import { BudgetHierarchyTree } from './BudgetHierarchyTree'
 import type { ColumnDef } from './MandateColumns'
 
 interface FilterOption {
@@ -31,6 +33,7 @@ interface ColumnHeaderFilterProps {
   currentSort?: string
   filterOptions?: FilterOption[]
   yearRange?: { min: number; max: number }
+  budgetHierarchy?: BudgetPartNode[]
 }
 
 export function ColumnHeaderFilter({
@@ -38,16 +41,22 @@ export function ColumnHeaderFilter({
   currentSort,
   filterOptions,
   yearRange,
+  budgetHierarchy,
 }: ColumnHeaderFilterProps) {
   const { filters, setFilter, clearFilter, setMultipleFilters } = useFilters()
 
   const getFilterValue = (param: string): string | undefined =>
     (filters as Record<string, string | undefined>)[param]
 
+  // The hierarchy filter writes to whichever level was clicked, so the column
+  // reads as filtered if any of them is set. `entity` is intentionally shared
+  // with the Entities column — it is the same filter, reached two ways.
   const isFilterActive = column.filterParam
     ? column.filterType === 'yearRange'
       ? !!(filters.start_year || filters.end_year)
-      : !!getFilterValue(column.filterParam)
+      : column.filterType === 'hierarchy'
+        ? !!(filters.budget_part || filters.section || filters.subprogramme)
+        : !!getFilterValue(column.filterParam)
     : false
 
   const sortDirection = column.sortKeys
@@ -97,6 +106,7 @@ export function ColumnHeaderFilter({
           isActive={isFilterActive}
           options={filterOptions}
           yearRange={yearRange}
+          budgetHierarchy={budgetHierarchy}
           currentValue={
             column.filterType === 'yearRange'
               ? undefined
@@ -120,6 +130,7 @@ interface FilterPopoverProps {
   isActive: boolean
   options?: FilterOption[]
   yearRange?: { min: number; max: number }
+  budgetHierarchy?: BudgetPartNode[]
   currentValue?: string
   startYear?: string
   endYear?: string
@@ -133,6 +144,7 @@ function FilterPopover({
   isActive,
   options,
   yearRange,
+  budgetHierarchy,
   currentValue,
   startYear,
   endYear,
@@ -155,7 +167,14 @@ function FilterPopover({
           <Filter className="h-3 w-3" />
         </button>
       </PopoverTrigger>
-      <PopoverContent align="start" className="w-auto p-3" sideOffset={4}>
+      <PopoverContent
+        align="start"
+        className={column.filterType === 'hierarchy' ? 'w-[420px] p-3' : 'w-auto p-3'}
+        sideOffset={4}
+      >
+        {column.filterType === 'hierarchy' && (
+          <BudgetHierarchyTree hierarchy={budgetHierarchy ?? []} />
+        )}
         {column.filterType === 'pill' && (
           <PillFilter
             filterParam={column.filterParam!}

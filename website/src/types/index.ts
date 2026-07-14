@@ -43,6 +43,12 @@ export interface Mandate {
   num_citations: number
   num_entities: number
   entities: string[]
+  /**
+   * The subset of `entities` that cite this document in their "Mandates and
+   * background" narrative — see lib/foundational.ts. Pair-level: a document can
+   * be foundational for UNEP and routine for DESA.
+   */
+  foundational_entities?: string[]
   link: string | null
   //   priority_area: string
   year: string
@@ -79,7 +85,13 @@ export interface Mandate {
   agenda_item_numbers?: string[]
   agenda_item_titles?: string[]
   paragraphs?: Paragraph[] | null
-  programme?: string
+  /**
+   * Every place in the budget this document is cited, for the active budget
+   * version. Populated by the list query and by the detail page; empty for
+   * documents whose only citations are PKM or Plan Outline ones, which sit
+   * outside the part structure.
+   */
+  budget_locations?: BudgetLocation[]
   text?: string
 
   // Search-related fields
@@ -87,6 +99,61 @@ export interface Mandate {
   highlightedTitle?: string
   highlightedFields?: { [key: string]: string }
   match_details?: Array<{ field: string; value: string }>
+}
+
+// Budget hierarchy types
+//
+// The regular-budget containment is
+// Part ⊃ Programme ⊃ Section ⊃ Entity ⊃ Subprogramme, but programme is not a
+// level of its own here: every section belongs to exactly one programme, so the
+// programme number and title ride along on the section without losing anything.
+// (Only two programmes group more than one section — 10 over sections 12–13 and
+// 25 over 29A–29F — which just shows the same programme label on sibling
+// sections.) PKM and Plan Outline citations sit outside this structure and
+// carry no part.
+
+/** One citation's place in the budget, as shown in the Budget location column. */
+export interface BudgetLocation {
+  part: string
+  part_title: string
+  section: string
+  section_title: string
+  programme: number | null
+  programme_title: string | null
+  entity: string | null
+  entity_long: string | null
+  /** Composed label, e.g. "Subprogramme 2. Inclusive social development" */
+  subprogramme: string | null
+  subprogramme_number: number | null
+}
+
+export interface BudgetSubprogrammeNode {
+  subprogramme: string
+  number: number | null
+  count: number
+}
+
+export interface BudgetEntityNode {
+  entity: string
+  entity_long: string | null
+  count: number
+  subprogrammes: BudgetSubprogrammeNode[]
+}
+
+export interface BudgetSectionNode {
+  section: string
+  section_title: string
+  programme: number | null
+  programme_title: string | null
+  count: number
+  entities: BudgetEntityNode[]
+}
+
+export interface BudgetPartNode {
+  part: string
+  part_title: string
+  count: number
+  sections: BudgetSectionNode[]
 }
 
 // Entity types
@@ -120,6 +187,18 @@ export interface FilterOptions {
   organ?: string
   crossCitingEntity?: string
   keyword?: string
+  /** Budget part, as a roman numeral ("IV"). */
+  budget_part?: string
+  /** Budget section, as printed ("9", "29A"). */
+  section?: string
+  /** Composed subprogramme label ("Subprogramme 2. Inclusive social development"). */
+  subprogramme?: string
+  /** "true" to keep only foundational citations (see lib/foundational.ts). */
+  foundational?: string
+  /**
+   * Superseded by `section` — every section has exactly one programme. Kept so
+   * that existing ?programme= links keep working.
+   */
   programme?: string
   subject?: string
   start_year?: string
@@ -181,6 +260,7 @@ export interface ApiResponse {
 
   // Filter options for dropdowns
   filterOptions: {
+    budgetHierarchy: BudgetPartNode[]
     programmes: { value: string; count: number }[]
     subjects: { value: string; count: number }[]
     documentTypes: { value: string; count: number }[]

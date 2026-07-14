@@ -6,7 +6,7 @@ export interface ColumnDef {
   defaultVisible: boolean
   sortKeys?: { asc: string; desc: string }
   filterParam?: string
-  filterType?: 'pill' | 'yearRange' | 'simpleSelect'
+  filterType?: 'pill' | 'yearRange' | 'simpleSelect' | 'hierarchy'
   widthClass: string
   minWidthClass?: string
   align?: 'left' | 'right' | 'center'
@@ -88,12 +88,20 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
     align: 'left',
   },
   {
-    id: 'programme',
-    label: 'Programme',
+    // Where in the budget each document is cited: part › section › entity ›
+    // subprogramme. Replaces the old Programme column — every section has
+    // exactly one programme, so the programme rode along on the section label
+    // and a column of its own said nothing the section did not.
+    //
+    // Its filter is the hierarchy tree rather than a flat facet list, which is
+    // the only reason `filterType: 'hierarchy'` exists.
+    id: 'budget_location',
+    label: 'Budget Location',
     defaultVisible: false,
-    filterParam: 'programme',
-    filterType: 'pill',
-    widthClass: 'w-[150px]',
+    filterParam: 'budget_part',
+    filterType: 'hierarchy',
+    widthClass: 'w-[260px]',
+    minWidthClass: 'min-w-[200px]',
     align: 'left',
   },
   {

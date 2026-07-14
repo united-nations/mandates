@@ -23,6 +23,7 @@ import {
 import { useFilters } from '@/contexts/FilterContext'
 import type {
   ApiResponse,
+  BudgetPartNode,
   Entity,
   EntityWithCount,
   Mandate,
@@ -34,9 +35,11 @@ type BudgetDocumentOption = ApiResponse['filterOptions']['budgetDocuments'][numb
 import { ChevronRight } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { titleCase } from 'title-case'
-import { EntityName } from '../EntityName'
+import { EntityBadge, FoundationalTag } from '../EntityBadge'
+import { isFoundational } from '@/lib/foundational'
 import { ColumnHeaderFilter } from './ColumnHeaderFilter'
 import { ColumnPicker } from './ColumnPicker'
+import { BudgetLocationCell } from './BudgetLocationCell'
 import {
   COLUMN_DEFINITIONS,
   getMandateUrl,
@@ -45,6 +48,7 @@ import {
 // Facet option lists for the column filter popovers. Named FilterFacets to
 // avoid colliding with the data-layer FilterOptions (active filter *values*).
 interface FilterFacets {
+  budgetHierarchy: BudgetPartNode[]
   programmes: { value: string; count: number }[]
   subjects: { value: string; count: number }[]
   documentTypes: { value: string; count: number }[]
@@ -106,8 +110,6 @@ export function MandateDataTable({
         return entityCounts.map((e) => ({ value: e.entity, count: e.count }))
       case 'subjects':
         return filterOptions.subjects
-      case 'programme':
-        return filterOptions.programmes
       case 'document_type':
         return filterOptions.documentTypes
       case 'agenda_item':
@@ -165,6 +167,7 @@ export function MandateDataTable({
                         currentSort={currentSort}
                         filterOptions={getFilterOptions(col.id)}
                         yearRange={filterOptions.yearRange}
+                        budgetHierarchy={filterOptions.budgetHierarchy}
                       />
                     )}
                   </TableHead>
@@ -319,37 +322,51 @@ function CellContent({
       return <span className="tabular-nums">{mandate.num_citations}</span>
 
     case 'entity_list': {
+      const foundational = mandate.foundational_entities ?? []
+      // Foundational citers first: an entity that cites the document as the
+      // instrument its mandate derives from is the most interesting one in the
+      // row, and only the first two entities are visible before the "+N".
       const entities = (mandate.entities || [])
         .filter((e) => e !== null)
-        .sort()
+        .sort((a, b) => {
+          const aFound = foundational.includes(a)
+          const bFound = foundational.includes(b)
+          if (aFound !== bFound) return aFound ? -1 : 1
+          return a.localeCompare(b)
+        })
       if (entities.length === 0) return null
       const maxShow = 2
       const visible = entities.slice(0, maxShow)
       const remaining = entities.length - maxShow
 
-      const pill = (entity: string, inPopup: boolean) => (
-        <Badge
-          key={entity}
-          variant="secondary"
-          className="cursor-pointer border-0 bg-un-blue/75! text-xs font-bold whitespace-nowrap text-white! transition-colors hover:bg-un-blue/60!"
-          onClick={(e) => {
-            e.stopPropagation()
-            onEntityClick(entity)
-          }}
-        >
-          {inPopup ? (
-            <EntityName
-              entityName={entity}
-              entityLong={
-                entitiesData.find((e) => e.entity === entity)?.entity_long
-              }
-              showUnderline={false}
+      const pill = (entity: string, inPopup: boolean) => {
+        const longName = entitiesData.find((e) => e.entity === entity)?.entity_long
+        return inPopup ? (
+          <span key={entity} className="flex items-center gap-1.5">
+            <EntityBadge
+              entity={entity}
+              foundational={isFoundational(entity, foundational)}
+              variant="muted"
+              className="font-bold"
+              onClick={() => onEntityClick(entity)}
             />
-          ) : (
-            entity
-          )}
-        </Badge>
-      )
+            {longName && longName !== entity && (
+              <span className="text-xs text-muted-foreground">{longName}</span>
+            )}
+            {isFoundational(entity, foundational) && <FoundationalTag />}
+          </span>
+        ) : (
+          <EntityBadge
+            key={entity}
+            entity={entity}
+            entityLong={longName}
+            foundational={isFoundational(entity, foundational)}
+            variant="muted"
+            className="font-bold"
+            onClick={() => onEntityClick(entity)}
+          />
+        )
+      }
 
       if (remaining <= 0) {
         return (
@@ -386,10 +403,8 @@ function CellContent({
     case 'subjects':
       return <PillList items={(mandate.subject_headings || []).map(s => titleCase(s))} />
 
-    case 'programme':
-      return mandate.programme
-        ? <PillList items={mandate.programme.split(', ')} />
-        : null
+    case 'budget_location':
+      return <BudgetLocationCell locations={mandate.budget_locations ?? []} />
 
     case 'budget_document': {
       if (!mandate.citation_info || mandate.citation_info.length === 0)
