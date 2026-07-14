@@ -22,6 +22,7 @@ import { OrganName } from './OrganName'
 import { titleCase } from 'title-case'
 import { explainerTexts } from '@/lib/en_text_contents'
 import { useFilters } from '@/contexts/FilterContext'
+import { FOUNDATIONAL_LABEL } from '@/lib/foundational'
 import type { BudgetDocument } from '@/lib/data/budget-documents'
 
 interface Entity {
@@ -217,6 +218,15 @@ export function FilterControls({
                 icon={Network}
                 label={displayFilters.subprogramme}
                 onClear={() => clearFilter('subprogramme')}
+                variant="secondary"
+              />
+            )}
+
+            {displayFilters.foundational === 'true' && (
+              <FilterBadge
+                icon={Network}
+                label={FOUNDATIONAL_LABEL}
+                onClear={() => clearFilter('foundational')}
                 variant="secondary"
               />
             )}

@@ -2,6 +2,10 @@
 
 import { SearchInput } from '@/components/SearchInput'
 import { useFilters } from '@/contexts/FilterContext'
+import {
+  FOUNDATIONAL_LABEL,
+  FOUNDATIONAL_TOOLTIP,
+} from '@/lib/foundational'
 import type { BudgetPartNode } from '@/types'
 import { ChevronRight } from 'lucide-react'
 import { useMemo, useState } from 'react'
@@ -85,6 +89,25 @@ export function BudgetHierarchyTree({ hierarchy }: BudgetHierarchyTreeProps) {
         }
         variant="border-bottom"
       />
+
+      {/* Cuts across the tree rather than sitting in it: a citation is
+          foundational or not at every level at once. */}
+      <label
+        className="flex cursor-pointer items-center gap-2 text-xs"
+        title={FOUNDATIONAL_TOOLTIP}
+      >
+        <input
+          type="checkbox"
+          checked={filters.foundational === 'true'}
+          onChange={(e) =>
+            e.target.checked
+              ? setFilter('foundational', 'true')
+              : clearFilter('foundational')
+          }
+          className="h-3.5 w-3.5 accent-un-blue-deep"
+        />
+        <span>{FOUNDATIONAL_LABEL} mandates only</span>
+      </label>
 
       <div className="max-h-[420px] space-y-px overflow-y-auto">
         {matches.map((part) => {

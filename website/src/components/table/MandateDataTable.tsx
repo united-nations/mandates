@@ -35,7 +35,9 @@ type BudgetDocumentOption = ApiResponse['filterOptions']['budgetDocuments'][numb
 import { ChevronRight } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { titleCase } from 'title-case'
+import { EntityBadge, FoundationalTag } from '../EntityBadge'
 import { EntityName } from '../EntityName'
+import { isFoundational } from '@/lib/foundational'
 import { ColumnHeaderFilter } from './ColumnHeaderFilter'
 import { ColumnPicker } from './ColumnPicker'
 import { BudgetLocationCell } from './BudgetLocationCell'
@@ -321,25 +323,33 @@ function CellContent({
       return <span className="tabular-nums">{mandate.num_citations}</span>
 
     case 'entity_list': {
+      const foundational = mandate.foundational_entities ?? []
+      // Foundational citers first: an entity that cites the document as the
+      // instrument its mandate derives from is the most interesting one in the
+      // row, and only the first two entities are visible before the "+N".
       const entities = (mandate.entities || [])
         .filter((e) => e !== null)
-        .sort()
+        .sort((a, b) => {
+          const aFound = foundational.includes(a)
+          const bFound = foundational.includes(b)
+          if (aFound !== bFound) return aFound ? -1 : 1
+          return a.localeCompare(b)
+        })
       if (entities.length === 0) return null
       const maxShow = 2
       const visible = entities.slice(0, maxShow)
       const remaining = entities.length - maxShow
 
-      const pill = (entity: string, inPopup: boolean) => (
-        <Badge
-          key={entity}
-          variant="secondary"
-          className="cursor-pointer border-0 bg-un-blue/75! text-xs font-bold whitespace-nowrap text-white! transition-colors hover:bg-un-blue/60!"
-          onClick={(e) => {
-            e.stopPropagation()
-            onEntityClick(entity)
-          }}
-        >
-          {inPopup ? (
+      const pill = (entity: string, inPopup: boolean) =>
+        inPopup ? (
+          <span key={entity} className="flex items-center gap-1.5">
+            <EntityBadge
+              entity={entity}
+              foundational={isFoundational(entity, foundational)}
+              variant="muted"
+              className="font-bold"
+              onClick={() => onEntityClick(entity)}
+            />
             <EntityName
               entityName={entity}
               entityLong={
@@ -347,11 +357,21 @@ function CellContent({
               }
               showUnderline={false}
             />
-          ) : (
-            entity
-          )}
-        </Badge>
-      )
+            {isFoundational(entity, foundational) && <FoundationalTag />}
+          </span>
+        ) : (
+          <EntityBadge
+            key={entity}
+            entity={entity}
+            entityLong={
+              entitiesData.find((e) => e.entity === entity)?.entity_long
+            }
+            foundational={isFoundational(entity, foundational)}
+            variant="muted"
+            className="font-bold"
+            onClick={() => onEntityClick(entity)}
+          />
+        )
 
       if (remaining <= 0) {
         return (

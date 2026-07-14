@@ -1,19 +1,20 @@
 'use client'
 
+import { EntityBadge, FoundationalTag } from '@/components/EntityBadge'
 import { Badge } from '@/components/ui/badge'
+import { isFoundational } from '@/lib/foundational'
 import type { BudgetLocation } from '@/types'
 
 /**
  * Where a document sits in the budget, as a tree — the same shape as the
  * Budget Location column's filter, pruned to this one document.
  *
- * Alternative presentation to BudgetLocationList (which is entity-led and flat).
- * Both are rendered on the detail page for now so the two can be compared.
- *
- * A document is usually cited once, in which case this collapses to a single
- * three-line branch. The value shows up in the tail: a document cited by 25
- * entities across 22 sections becomes a handful of part groups rather than 25
- * repetitive rows.
+ * Reached from the "Group by budget location" toggle on the detail page: it
+ * regroups the same citing entities under Part › Section rather than showing
+ * anything new. A document is usually cited once, so this often collapses to a
+ * single three-line branch; the value shows up in the tail, where a document
+ * cited by 25 entities across 22 sections becomes a handful of part groups
+ * rather than 25 repetitive rows.
  */
 
 interface SubprogrammeLeaf {
@@ -41,8 +42,10 @@ interface PartNode {
 
 export function BudgetLocationTree({
   locations,
+  foundationalEntities = [],
 }: {
   locations: BudgetLocation[]
+  foundationalEntities?: string[]
 }) {
   const tree = buildTree(locations)
 
@@ -70,15 +73,17 @@ export function BudgetLocationTree({
                 <div key={entity.entity ?? section.section} className="pl-4">
                   <div className="flex items-center gap-2">
                     {entity.entity && (
-                      <Badge
-                        variant="secondary"
-                        className="shrink-0 cursor-pointer border-0 bg-un-blue! px-2.5 py-0.5 text-xs text-white! transition-colors hover:bg-un-blue/90!"
+                      <EntityBadge
+                        entity={entity.entity}
+                        entityLong={entity.entity_long}
+                        foundational={isFoundational(
+                          entity.entity,
+                          foundationalEntities
+                        )}
                         onClick={() => {
                           window.location.href = `/?entity=${encodeURIComponent(entity.entity!)}`
                         }}
-                      >
-                        {entity.entity}
-                      </Badge>
+                      />
                     )}
                     {entity.entity_long && (
                       <span
@@ -87,6 +92,9 @@ export function BudgetLocationTree({
                       >
                         {entity.entity_long}
                       </span>
+                    )}
+                    {isFoundational(entity.entity, foundationalEntities) && (
+                      <FoundationalTag />
                     )}
                   </div>
 

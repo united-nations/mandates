@@ -13,6 +13,7 @@ import { getMandateDisplayTitle, safeHighlightSearchTerms } from '@/lib/utils'
 import { getAllEntities } from './entities'
 import { getAllOrgans, getOrganMap } from './organs'
 import { getBudgetVersions } from './budget-documents'
+import { FOUNDATIONAL_PART_IN_DOCUMENT } from '@/lib/foundational'
 import type { Mandate, FilterOptions, EntityWithCount, OrganWithCount, CrossCitation, CitationBin, ApiResponse, BudgetLocation, BudgetPartNode, BudgetSectionNode, BudgetEntityNode } from '@/types'
 
 // ============================================================================
@@ -64,6 +65,7 @@ interface MandateListRow {
   num_entities: string
   num_citations: string
   entities: string[] | null
+  foundational_entities: string[] | null
   programmes: string[] | null
   budget_locations: RawBudgetLocation[] | null
   origin_documents: string[] | null
@@ -327,6 +329,34 @@ function buildFilterClauses(
     paramIndex++
   }
 
+  // Foundational filter: the document is cited in an entity's "Mandates and
+  // background" narrative, not only in its Legislative mandates table.
+  //
+  // Being foundational is a property of the (document, entity) pair, so when an
+  // entity is also selected the two compose into a single predicate — "cited by
+  // DESA, foundationally" — rather than the weaker "foundational for somebody
+  // and, separately, cited by DESA".
+  if (filters.foundational === 'true') {
+    const entityPredicate = filters.entity
+      ? `AND cf.entity = $${paramIndex + 1}`
+      : ''
+    clauses.push(`
+      EXISTS (
+        SELECT 1 FROM ppb2026.source_document_citations cf
+        WHERE cf.ppb_full_document_symbol = d.ppb_full_document_symbol
+        AND cf.part_in_document = $${paramIndex}
+        ${entityPredicate}
+        AND ${versionClause('cf')}
+      )
+    `)
+    params.push(FOUNDATIONAL_PART_IN_DOCUMENT)
+    paramIndex++
+    if (filters.entity) {
+      params.push(filters.entity)
+      paramIndex++
+    }
+  }
+
   // Subject filter (searches in metadata subject_terms)
   if (filters.subject) {
     clauses.push(`
@@ -526,6 +556,14 @@ export async function getMandates(
         COUNT(DISTINCT c.entity) FILTER (WHERE c.entity IS NOT NULL) as num_entities,
         COUNT(c.id) as num_citations,
         ARRAY_AGG(DISTINCT c.entity) FILTER (WHERE c.entity IS NOT NULL) as entities,
+        -- Entities that cite this document in their "Mandates and background"
+        -- narrative rather than only in their Legislative mandates table. This
+        -- is a property of the (document, entity) pair, not of the document:
+        -- a resolution can be constitutive for UNEP and routine for DESA.
+        ARRAY_AGG(DISTINCT c.entity) FILTER (
+          WHERE c.entity IS NOT NULL
+          AND c.part_in_document = '${FOUNDATIONAL_PART_IN_DOCUMENT}'
+        ) as foundational_entities,
         ARRAY_AGG(DISTINCT c.programme_title) FILTER (WHERE c.programme_title IS NOT NULL AND c.programme_title != '') as programmes,
         JSONB_AGG(DISTINCT JSONB_BUILD_OBJECT(
           'part', c.budget_part_number,
@@ -627,6 +665,7 @@ export async function getMandates(
     num_citations: parseInt(row.num_citations) || 0,
     num_entities: parseInt(row.num_entities) || 0,
     entities: row.entities || [],
+    foundational_entities: row.foundational_entities || [],
     link: row.ppb_link || null,
     year: row.ppb_year?.toString() || '',
     body: row.ppb_body || '',
@@ -679,6 +718,7 @@ export async function getMandateCitations(
 ): Promise<{
   citations: Mandate['citation_info']
   budgetLocations: BudgetLocation[]
+  foundationalEntities: string[]
 }> {
   const query = `
     SELECT
@@ -722,25 +762,52 @@ export async function getMandateCitations(
     part_in_document: row.part_in_document || '',
   }))
 
-  const budgetLocations = sortBudgetLocations(
-    rows
-      .filter((row) => row.budget_part_number !== null)
-      .map((row) => ({
-        part: row.budget_part_number!,
-        part_title: row.part_title ?? '',
-        part_sort: row.part_sort ?? 0,
-        section: row.section ?? '',
-        section_title: row.section_title ?? '',
-        programme: row.programme,
-        programme_title: row.programme_title,
-        entity: row.entity,
-        entity_long: row.entity_long,
-        subprogramme: row.sub_programme,
-        subprogramme_number: row.sub_programme_number,
-      }))
-  )
+  // The same location can arrive twice — once from the entity's "Mandates and
+  // background" narrative and once from its Legislative mandates table — so
+  // dedupe on the location itself. (In PPB 2027 this accounts for every
+  // duplicated citation: 131 of 131.)
+  const seen = new Map<string, BudgetLocation & { part_sort: number }>()
+  for (const row of rows) {
+    if (row.budget_part_number === null) continue
+    const location = {
+      part: row.budget_part_number,
+      part_title: row.part_title ?? '',
+      part_sort: row.part_sort ?? 0,
+      section: row.section ?? '',
+      section_title: row.section_title ?? '',
+      programme: row.programme,
+      programme_title: row.programme_title,
+      entity: row.entity,
+      entity_long: row.entity_long,
+      subprogramme: row.sub_programme,
+      subprogramme_number: row.sub_programme_number,
+    }
+    const key = [
+      location.part,
+      location.section,
+      location.entity,
+      location.subprogramme,
+    ].join('\u0000')
+    if (!seen.has(key)) seen.set(key, location)
+  }
 
-  return { citations, budgetLocations }
+  const foundationalEntities = [
+    ...new Set(
+      rows
+        .filter(
+          (row) =>
+            row.entity !== null &&
+            row.part_in_document === FOUNDATIONAL_PART_IN_DOCUMENT
+        )
+        .map((row) => row.entity as string)
+    ),
+  ]
+
+  return {
+    citations,
+    budgetLocations: sortBudgetLocations([...seen.values()]),
+    foundationalEntities,
+  }
 }
 
 /**
@@ -789,7 +856,8 @@ export async function getMandateBySymbol(
   if (!row) return null
 
   // Fetch citations separately for the detail view
-  const { citations, budgetLocations } = await getMandateCitations(symbol, version)
+  const { citations, budgetLocations, foundationalEntities } =
+    await getMandateCitations(symbol, version)
 
   return {
     full_document_symbol: row.ppb_full_document_symbol,
@@ -814,6 +882,7 @@ export async function getMandateBySymbol(
     agenda_item_titles: parsePostgresArray(row.agenda_item_title),
     citation_info: citations,
     budget_locations: budgetLocations,
+    foundational_entities: foundationalEntities,
   }
 }
 

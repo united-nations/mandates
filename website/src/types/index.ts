@@ -43,6 +43,12 @@ export interface Mandate {
   num_citations: number
   num_entities: number
   entities: string[]
+  /**
+   * The subset of `entities` that cite this document in their "Mandates and
+   * background" narrative — see lib/foundational.ts. Pair-level: a document can
+   * be foundational for UNEP and routine for DESA.
+   */
+  foundational_entities?: string[]
   link: string | null
   //   priority_area: string
   year: string
@@ -187,6 +193,8 @@ export interface FilterOptions {
   section?: string
   /** Composed subprogramme label ("Subprogramme 2. Inclusive social development"). */
   subprogramme?: string
+  /** "true" to keep only foundational citations (see lib/foundational.ts). */
+  foundational?: string
   /**
    * Superseded by `section` — every section has exactly one programme. Kept so
    * that existing ?programme= links keep working.
