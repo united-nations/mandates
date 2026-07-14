@@ -101,6 +101,21 @@ WHERE s.full_document_symbol IS NOT NULL
   AND s.full_document_symbol != ''
 ON CONFLICT (ppb_full_document_symbol) DO NOTHING;
 
+-- 7b. Register any entity we are about to cite that systemchart.entities does
+--     not yet hold -- source_document_citations.entity is FK'd to it. Every
+--     established Section 1 entity already exists (the pipeline emits the 2026
+--     names); this covers genuinely new offices such as UNSDG-SWEO (United
+--     Nations Sustainable Development Group System-Wide Evaluation Office).
+--     ON CONFLICT DO NOTHING so curated long names are never overwritten -- e.g.
+--     DCO keeps "Development Coordination Office", not the CSV's "Resident
+--     coordinator system".
+INSERT INTO systemchart.entities (entity, entity_long)
+SELECT DISTINCT s.entity, s.entity_long
+FROM _ppb2027_s1_staging s
+WHERE s.entity IS NOT NULL
+  AND s.entity != ''
+ON CONFLICT (entity) DO NOTHING;
+
 -- 8. Insert the Section 1 citations.
 INSERT INTO ppb2026.source_document_citations (
     ppb_full_document_symbol,
