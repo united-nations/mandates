@@ -12,6 +12,16 @@ from utils.data_cleaning import link_to_symbol, normalize_title, normalize_symbo
 from utils.llm_extract_mandates import llm_extract_mandates
 
 
+# Legislative-mandate table cells list several symbols in one cell. They are
+# usually ";"-separated, but a few cells use "," instead ("61/261, 62/228").
+# Only split on a comma that is followed by another resolution symbol, so that
+# qualifiers stay attached to the symbol they belong to ("79/1, annex I",
+# "79/258, sect. IX", "Single Convention on Narcotic Drugs of 1961, article 11").
+CELL_SPLIT_RE = re.compile(
+    r";|,(?=\s*(?:\d{1,3}/\d{1,4}\b|\d{3,4}\s*\((?:19|20)\d{2}\)))"
+)
+
+
 def find_section_with_heading(
     data: dict, heading_title: str, current_hierarchy: list | None = None
 ):
@@ -81,7 +91,7 @@ def get_mandates(
                     continue  # skip empty rows
                 description = row[1]["text"].strip() if len(row) > 1 else None
                 hyperlinks = row[0]["hyperlinks"]
-                cell_parts = [p.strip() for p in cell_text.split(";") if p.strip()]
+                cell_parts = [p.strip() for p in CELL_SPLIT_RE.split(cell_text) if p.strip()]
 
                 if hyperlinks:
                     used = set()
@@ -242,9 +252,94 @@ def add_metadata(df: pd.DataFrame, data):
     return df
 
 
+# Sect. 1's table 1.4 is the only place in the whole PPB that ties a mandate to a
+# budget line (one row per policymaking organ, with its founding resolutions and
+# its 2026/2027 figures). We extract it correctly -- see
+# get_policymaking_organ_mandates -- but keep it switched off for now: none of the
+# nine organs exists as a budget entity in entity_names.tsv or in
+# source_document_citations (PPB 2026 did not extract this table either), so
+# enabling it would mint nine new entities in the explorer. Turn on once we have
+# decided how to model them (one entity per organ vs. a single "Policymaking
+# organs" entity) and have added them to entity_names.tsv.
+EXTRACT_POLICYMAKING_ORGANS = False
+
+
+# Symbols as cited inside a Table 1.4 "Mandate:" cell: GA/SC resolution and
+# decision numbers ("41/213", "79/247"), and the old roman-numeral-session form
+# ("1798 (XVII)", "14 (I)", "248 (III)"), plus modern SC form ("2250 (2015)").
+# The surrounding guards keep document symbols out: the same cells cite reports
+# of the Secretary-General ("(A/52/303)"), whose tail would otherwise look like
+# a resolution number ("52/303").
+ORGAN_SYMBOL_RE = re.compile(
+    r"(?<![\w/])(?:\d{1,4}\s*\((?:[IVXLCDM]+|(?:19|20)\d{2})\)|\d{1,3}/\d{1,4})(?![\w/])"
+)
+
+
+def get_policymaking_organ_mandates(data: list, file_name: str):
+    """Extract mandates from the "Policymaking organs" overview table (Sect. 1).
+
+    Unlike every other entity, the policymaking organs have no "Legislative
+    mandates" subsection: each organ is a row of the overview table (table 1.4)
+    and its mandate is given in the "Additional information" column as a
+    "Mandate: General Assembly resolutions 1798 (XVII) and 41/213" cell.
+
+    Not every symbol in those cells is hyperlinked (decisions and the second
+    symbol of an "X and Y" pair usually are not), so symbols are read from the
+    cell text and matched back to a hyperlink where one exists. Non-resolution
+    mandate sources in the same cells (rules of procedure, reports of the
+    Secretary-General) are intentionally not emitted as mandates.
+    """
+    mandates = []
+
+    def walk(blocks, entity=None):
+        for block in blocks:
+            if block["block_type"] == "entity-group":
+                entity = normalize_title(
+                    re.sub(r"^[0-9IVXLCDM]+\.\s*", "", block["text"] or "")
+                )
+            if block["block_type"] == "table-content" and block["table_content"]:
+                organ = None
+                for row in block["table_content"]:
+                    if row and row[0]["text"].strip():
+                        organ = normalize_title(
+                            re.sub(r"^\(?[0-9a-z]+\)?[.\s]+", "", row[0]["text"].strip())
+                        )
+                    for cell in row[1:]:
+                        text = cell["text"].strip()
+                        if not text.startswith("Mandate:"):
+                            continue
+                        links = {a.strip(): u for a, u in (cell["hyperlinks"] or [])}
+                        source = (
+                            "Security Council resolutions"
+                            if "Security Council" in text
+                            else "General Assembly resolutions"
+                        )
+                        for m in ORGAN_SYMBOL_RE.finditer(text):
+                            symbol = normalize_symbol(m.group(0))
+                            url = next(
+                                (
+                                    u
+                                    for a, u in links.items()
+                                    if normalize_symbol(a) == symbol
+                                ),
+                                None,
+                            )
+                            mandates.append(
+                                (symbol, url, organ, source, None, entity)
+                            )
+            if block["children"]:
+                walk(block["children"], entity)
+
+    walk(data)
+    return mandates
+
+
 def extract_mandates_for_file(data: dict, file_name: str):
     # extract mandates
     mandates = []
+    if EXTRACT_POLICYMAKING_ORGANS:
+        organ_mandates = get_policymaking_organ_mandates(data, file_name)
+        mandates.extend([(*d, "Legislative mandates") for d in organ_mandates])
     for section in find_section_with_heading(data, "Legislative mandates"):
         _mandates = get_mandates(section, file_name=file_name)
         _mandates = [(*d, "Legislative mandates") for d in _mandates]

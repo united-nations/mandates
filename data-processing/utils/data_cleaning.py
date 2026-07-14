@@ -13,6 +13,10 @@ def normalize_symbol(symbol: str):
     if isinstance(symbol, str):
         symbol = symbol.replace('\n', '').replace('\r', '').replace('\xa0', ' ')
         symbol = re.sub(r"^[^a-zA-Z0-9]+", "", symbol)
+        # hyperlink anchors sometimes swallow a trailing conjunction or comma
+        # from the surrounding sentence ("2535 (2020) and")
+        symbol = re.sub(r"[\s,]+and\s*$", "", symbol)
+        symbol = re.sub(r"[\s,;]+$", "", symbol)
         return symbol.strip()
     return symbol
 
