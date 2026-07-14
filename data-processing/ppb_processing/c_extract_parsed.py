@@ -179,18 +179,31 @@ def get_section_text(section: dict):
     return text.strip(), entity, hyperlinks
 
 
+# The budget part appears in the fascicle frontmatter either on one line
+# ("Part IV – International cooperation for development") or split across two
+# blocks ("Part I" followed by "Overall policymaking, direction and coordination").
+PART_RE = re.compile(r"^Part\s+([IVXLCDM]+)\s*(?:[–—-]\s*(.+))?$")
+
+
+def get_part(frontmatter):
+    for i, block in enumerate(frontmatter):
+        match = PART_RE.match(block["text"].strip())
+        if not match:
+            continue
+        number, title = match.group(1), match.group(2)
+        if not title and i + 1 < len(frontmatter):
+            title = frontmatter[i + 1]["text"].strip()
+        return number, normalize_title(title) if title else None
+    return None, None
+
+
 def add_metadata(df: pd.DataFrame, data):
     frontmatter = [block for block in data if block["block_type"] == "frontmatter"][0][
         "children"
     ]
-    df["part"] = next(
-        (
-            block["text"].split(" ")[1]
-            for block in frontmatter
-            if block["text"].startswith("Part")
-        ),
-        None,
-    )
+    part, part_title = get_part(frontmatter)
+    df["part"] = part
+    df["part_title"] = part_title
     section = next(
         (block for block in frontmatter if block["text"].startswith("Section")), None
     )
@@ -376,6 +389,7 @@ def extract_mandates(year: int):
             "file",
             "addendum",
             "part",
+            "part_title",
             "section",
             "section_title",
             "entity-long",

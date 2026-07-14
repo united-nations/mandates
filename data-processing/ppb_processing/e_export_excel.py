@@ -15,6 +15,7 @@ COLUMN_DESCRIPTIONS = {
     "File": "Filename of the parsed JSON the row originates from.",
     "Addendum": "Addendum identifier within the origin document, if any.",
     "Part": "Part identifier within the origin document.",
+    "Part Title": "Title of the budget part.",
     "Section": "Section number within the origin document.",
     "Section Title": "Title of the section.",
     "Entity-Long": "Full name of the UN entity responsible.",

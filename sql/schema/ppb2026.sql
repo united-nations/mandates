@@ -50,6 +50,22 @@ create table ppb2026.source_documents_metadata_raw (
     last_updated timestamp with time zone default now() not null,
     raw_json jsonb
 );
+-- The regular-budget hierarchy: Part → Section → Programme → Subprogramme →
+-- Entity. Parts and sections are canonical here; the rest stays denormalized on
+-- the citations. The section → part grouping is identical in PPB 2026 and 2027,
+-- so budget_part_number is always derivable from the section (see
+-- migrations/021_budget_hierarchy.sql). Peacekeeping (PKM) and Plan Outline
+-- citations sit outside this structure and carry no part.
+create table ppb2026.budget_parts (
+    part_number text primary key,
+    part_title text not null,
+    sort_order smallint not null
+);
+create table ppb2026.budget_sections (
+    section text primary key,
+    part_number text not null references ppb2026.budget_parts,
+    sort_order smallint not null
+);
 create table ppb2026.source_document_citations (
     id bigserial primary key,
     ppb_full_document_symbol text not null references ppb2026.source_documents on delete cascade,
@@ -62,10 +78,14 @@ create table ppb2026.source_document_citations (
     sub_programme text,
     pillar text,
     budget_part text,
+    budget_part_number text references ppb2026.budget_parts,
     programme smallint,
     programme_title text,
     component text,
-    last_updated timestamp with time zone default now() not null
+    last_updated timestamp with time zone default now() not null,
+    sub_programme_number smallint generated always as (
+        nullif(substring(sub_programme from '^Subprogramme\s+(\d+)'), '')::smallint
+    ) stored
 );
 create unique index ux_ppb2026_citations_natural on ppb2026.source_document_citations (
     ppb_full_document_symbol,
@@ -84,6 +104,8 @@ create unique index ux_ppb2026_citations_natural on ppb2026.source_document_cita
 );
 create index ix_ppb2026_citations_symbol on ppb2026.source_document_citations (ppb_full_document_symbol);
 create index ix_ppb2026_citations_entity on ppb2026.source_document_citations (entity);
+create index ix_citations_budget_part_number on ppb2026.source_document_citations (budget_part_number);
+create index ix_citations_section on ppb2026.source_document_citations (section);
 create table ppb2026.source_documents_metadata_clean (
     symbol text,
     symbol_split text,
