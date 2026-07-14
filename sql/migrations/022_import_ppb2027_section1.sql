@@ -133,7 +133,14 @@ SELECT
     END
 FROM _ppb2027_s1_staging s
 WHERE s.full_document_symbol IS NOT NULL
-  AND s.full_document_symbol != '';
+  AND s.full_document_symbol != ''
+-- Citations are coarser than CSV rows: the natural key
+-- (ux_ppb2026_citations_natural) excludes description/link/symbol, so a
+-- resolution cited in several sentences of the same "Mandates and background"
+-- subsection (e.g. SRSG-CAAC's S/RES/1261(1999)) yields several identical
+-- citation rows that collapse to one. Skip the repeats, as migration 007 does
+-- for every other section.
+ON CONFLICT DO NOTHING;
 
 -- 9. Cleanup.
 DROP TABLE _ppb2027_s1_staging;
