@@ -252,6 +252,18 @@ def add_metadata(df: pd.DataFrame, data):
     return df
 
 
+# Sect. 1's table 1.4 is the only place in the whole PPB that ties a mandate to a
+# budget line (one row per policymaking organ, with its founding resolutions and
+# its 2026/2027 figures). We extract it correctly -- see
+# get_policymaking_organ_mandates -- but keep it switched off for now: none of the
+# nine organs exists as a budget entity in entity_names.tsv or in
+# source_document_citations (PPB 2026 did not extract this table either), so
+# enabling it would mint nine new entities in the explorer. Turn on once we have
+# decided how to model them (one entity per organ vs. a single "Policymaking
+# organs" entity) and have added them to entity_names.tsv.
+EXTRACT_POLICYMAKING_ORGANS = False
+
+
 # Symbols as cited inside a Table 1.4 "Mandate:" cell: GA/SC resolution and
 # decision numbers ("41/213", "79/247"), and the old roman-numeral-session form
 # ("1798 (XVII)", "14 (I)", "248 (III)"), plus modern SC form ("2250 (2015)").
@@ -325,8 +337,9 @@ def get_policymaking_organ_mandates(data: list, file_name: str):
 def extract_mandates_for_file(data: dict, file_name: str):
     # extract mandates
     mandates = []
-    organ_mandates = get_policymaking_organ_mandates(data, file_name)
-    mandates.extend([(*d, "Legislative mandates") for d in organ_mandates])
+    if EXTRACT_POLICYMAKING_ORGANS:
+        organ_mandates = get_policymaking_organ_mandates(data, file_name)
+        mandates.extend([(*d, "Legislative mandates") for d in organ_mandates])
     for section in find_section_with_heading(data, "Legislative mandates"):
         _mandates = get_mandates(section, file_name=file_name)
         _mandates = [(*d, "Legislative mandates") for d in _mandates]
