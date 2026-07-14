@@ -724,6 +724,99 @@ export async function getMandateBySymbol(
   }
 }
 
+/**
+ * Resolution series (migration 021): all documents sharing this symbol's
+ * normalized title + organ, newest first. Returns null when the document is
+ * not in a recurring group (singleton, SC number-only title, or not a /RES/
+ * document), so callers can simply skip rendering.
+ *
+ * Claims follow the two-tier model: `superseded_by` is only non-null when
+ * every safety gate passed (non-collection group, unambiguous latest doc);
+ * `is_collection` groups get the weaker "newer related resolutions exist"
+ * semantics and must never be presented as ordered versions.
+ */
+export interface ResolutionSeriesMember {
+  document_symbol: string
+  title: string | null
+  year: number | null
+  is_latest: boolean
+}
+
+export interface ResolutionSeriesInfo {
+  series_count: number
+  first_year: number | null
+  last_year: number | null
+  is_collection: boolean
+  has_newer: boolean
+  is_latest: boolean
+  superseded_by: string | null
+  members: ResolutionSeriesMember[]
+}
+
+interface SeriesRow {
+  document_symbol: string
+  title: string | null
+  year: number
+  member_is_latest: boolean
+  series_count: number
+  series_first_year: number
+  series_last_year: number
+  is_collection: boolean
+  has_newer: boolean
+  doc_is_latest: boolean
+  superseded_by: string | null
+}
+
+export async function getResolutionSeries(
+  symbol: string
+): Promise<ResolutionSeriesInfo | null> {
+  const query = `
+    WITH me AS (
+      SELECT series_key, un_body, is_collection, has_newer,
+             is_latest, superseded_by
+      FROM digitallibrary.resolution_series
+      WHERE document_symbol = $1
+      LIMIT 1
+    )
+    SELECT
+      rs.document_symbol,
+      d.title,
+      rs.year,
+      rs.is_latest AS member_is_latest,
+      rs.series_count,
+      rs.series_first_year,
+      rs.series_last_year,
+      me.is_collection,
+      me.has_newer,
+      me.is_latest AS doc_is_latest,
+      me.superseded_by
+    FROM me
+    JOIN digitallibrary.resolution_series rs
+      ON rs.series_key = me.series_key AND rs.un_body = me.un_body
+    LEFT JOIN digitallibrary.documents d ON d.recid = rs.recid
+    ORDER BY rs.year DESC, rs.document_symbol DESC
+  `
+  const rows = await queryMany<SeriesRow>(query, [symbol])
+  if (rows.length <= 1) return null
+
+  const head = rows[0]
+  return {
+    series_count: head.series_count,
+    first_year: head.series_first_year || null,
+    last_year: head.series_last_year || null,
+    is_collection: head.is_collection,
+    has_newer: head.has_newer,
+    is_latest: head.doc_is_latest,
+    superseded_by: head.superseded_by,
+    members: rows.map((r) => ({
+      document_symbol: r.document_symbol,
+      title: r.title,
+      year: r.year || null,
+      is_latest: r.member_is_latest,
+    })),
+  }
+}
+
 // ============================================================================
 // Aggregation Queries (for sidebar and counts)
 // ============================================================================
