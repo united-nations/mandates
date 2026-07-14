@@ -5,6 +5,7 @@ import { Building, Network } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import type { Mandate, Entity } from '@/types'
 import { BudgetLocationList } from '@/components/BudgetLocationList'
+import { BudgetLocationTree } from '@/components/BudgetLocationTree'
 
 interface CitationCountsProps {
   mandate: Mandate
@@ -133,6 +134,21 @@ export function CitationCounts({ mandate, entities }: CitationCountsProps) {
             Cited in the Budget
           </h3>
           <BudgetLocationList locations={budgetLocations} />
+        </div>
+      )}
+
+      {/* TEMPORARY: the same locations as a tree, so the two presentations can
+          be compared side by side. Delete whichever one loses. */}
+      {budgetLocations.length > 0 && (
+        <div className="space-y-3">
+          <h3 className="flex items-center gap-2 text-base font-semibold">
+            <Network className="h-4 w-4" />
+            Cited in the Budget
+            <span className="font-normal text-muted-foreground">
+              — tree variant
+            </span>
+          </h3>
+          <BudgetLocationTree locations={budgetLocations} />
         </div>
       )}
     </div>
