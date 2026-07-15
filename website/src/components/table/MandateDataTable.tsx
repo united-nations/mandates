@@ -165,7 +165,7 @@ export function MandateDataTable({
           <Table>
             <TableHeader>
               <TableRow className="border-b bg-gray-50 hover:bg-gray-50">
-                {grouped && <TableHead className="w-9 px-2" />}
+                {grouped && <TableHead className="w-12 px-2" />}
                 {columns.map((col) => (
                   <TableHead
                     key={col.id}
@@ -202,7 +202,7 @@ export function MandateDataTable({
                       onClick={(e) => handleRowClick(mandate, e)}
                     >
                       {grouped && (
-                        <TableCell className="w-9 px-2 py-2.5 align-top">
+                        <TableCell className="w-12 px-2 py-2.5 align-top">
                           <GroupBadge
                             mandate={mandate}
                             expanded={isExpanded}

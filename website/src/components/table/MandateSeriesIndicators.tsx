@@ -11,7 +11,7 @@ import { getMandateUrl } from './MandateColumns'
 
 /**
  * Grouped-mode expander at the left edge of a series representative row:
- * a circled member count with a chevron, no text. The tooltip carries the
+ * a circled member count with a chevron beside it, no text. The tooltip carries the
  * two-tier vocabulary — collections say "related", never "versions".
  */
 export function GroupBadge({
@@ -43,16 +43,18 @@ export function GroupBadge({
             e.stopPropagation()
             onToggle()
           }}
-          className="inline-flex h-5 items-center justify-center gap-px rounded-full border border-gray-300 bg-white px-1 text-[10px] font-medium text-gray-600 transition-colors hover:border-un-blue hover:text-un-blue"
+          className="group/expander inline-flex items-center gap-0.5"
           aria-expanded={expanded}
           aria-label={tooltip}
         >
+          <span className="flex h-5 w-5 items-center justify-center rounded-full border border-gray-300 bg-white text-[10px] font-medium text-gray-600 transition-colors group-hover/expander:border-un-blue group-hover/expander:text-un-blue">
+            {group.size > 99 ? '99+' : group.size}
+          </span>
           {expanded ? (
-            <ChevronUp className="h-2.5 w-2.5" />
+            <ChevronUp className="h-4 w-4 text-muted-foreground" />
           ) : (
-            <ChevronDown className="h-2.5 w-2.5" />
+            <ChevronDown className="h-4 w-4 text-muted-foreground" />
           )}
-          {group.size}
         </button>
       </TooltipTrigger>
       <TooltipContent>

@@ -62,7 +62,7 @@ export function MandateCompactList({
                 className={`flex cursor-pointer items-center gap-3 border-b border-gray-100 px-3 py-2.5 transition-colors hover:bg-gray-50 ${dimmed ? 'opacity-60' : ''}`}
               >
                 {grouped && (
-                  <span className="w-8 shrink-0">
+                  <span className="w-11 shrink-0">
                     <GroupBadge
                       mandate={mandate}
                       expanded={isExpanded}
