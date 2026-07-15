@@ -8,6 +8,7 @@ import { PaginationControls } from '@/components/PaginationControls'
 import { PopoverFilterList } from '@/components/PopoverFilterList'
 import { CitationDistribution } from '@/components/SidebarCitationDistribution'
 import { DocumentTypeSidebar } from '@/components/SidebarDocumentTypeList'
+import { Switch } from '@/components/ui/switch'
 import {
   Tooltip,
   TooltipContent,
@@ -289,6 +290,28 @@ export function MandateExplorerClient({
     </div>
   )
 
+  const groupToggle = (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <label className="inline-flex h-8 cursor-pointer items-center gap-1.5 text-xs font-medium whitespace-nowrap text-muted-foreground">
+          <Switch
+            checked={filters.group === '1'}
+            onCheckedChange={(checked) =>
+              setFilter('group', checked ? '1' : undefined)
+            }
+          />
+          Group versions
+        </label>
+      </TooltipTrigger>
+      <TooltipContent side="bottom" className="max-w-xs">
+        Collapse recurring resolutions to one row per series — the most
+        recent matching version, expandable to its earlier versions.
+        Versions are identified automatically by matching titles within
+        the same organ.
+      </TooltipContent>
+    </Tooltip>
+  )
+
   return (
     <div>
       {/* Summary Cards */}
@@ -329,7 +352,12 @@ export function MandateExplorerClient({
             entitiesData={allEntities}
             allOrgans={allOrgans}
             budgetDocuments={filterOptions.budgetDocuments}
-            toolbarSlot={modeToggle}
+            toolbarSlot={
+              <div className="flex flex-wrap items-center gap-3">
+                {modeToggle}
+                {groupToggle}
+              </div>
+            }
           />
         </div>
 

@@ -33,6 +33,7 @@ import type {
 type BudgetDocumentOption = ApiResponse['filterOptions']['budgetDocuments'][number]
 import { ChevronRight } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { Fragment, useState } from 'react'
 import { titleCase } from 'title-case'
 import { EntityName } from '../EntityName'
 import { ColumnHeaderFilter } from './ColumnHeaderFilter'
@@ -41,6 +42,11 @@ import {
   COLUMN_DEFINITIONS,
   getMandateUrl,
 } from './MandateColumns'
+import {
+  GroupBadge,
+  GroupMemberLine,
+  SeriesMarkers,
+} from './MandateSeriesIndicators'
 
 // Facet option lists for the column filter popovers. Named FilterFacets to
 // avoid colliding with the data-layer FilterOptions (active filter *values*).
@@ -82,6 +88,17 @@ export function MandateDataTable({
 }: MandateDataTableProps) {
   const { filters, setFilter, isPending } = useFilters()
   const router = useRouter()
+
+  const grouped = filters.group === '1'
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set())
+  const toggleGroup = (symbol: string) => {
+    setExpandedGroups((prev) => {
+      const next = new Set(prev)
+      if (next.has(symbol)) next.delete(symbol)
+      else next.add(symbol)
+      return next
+    })
+  }
 
   const currentSort =
     filters.sort_by || (filters.keyword ? 'default' : 'citing_entities_desc')
@@ -172,29 +189,77 @@ export function MandateDataTable({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {mandates.map((mandate) => (
-                <TableRow
-                  key={mandate.full_document_symbol}
-                  className="group cursor-pointer border-b border-gray-100 hover:bg-gray-50"
-                  onClick={(e) => handleRowClick(mandate, e)}
-                >
-                  {columns.map((col) => (
-                    <TableCell
-                      key={col.id}
-                      className={`${col.align === 'right' ? 'text-right' : ''} ${col.id === 'detail' ? 'sticky right-0 z-10 bg-white group-hover:bg-gray-50' : ''} overflow-hidden px-3 py-2 align-top text-sm`}
+              {mandates.map((mandate) => {
+                const isExpanded = expandedGroups.has(
+                  mandate.full_document_symbol
+                )
+                const dimmed = !grouped && !!mandate.series?.superseded_by
+                return (
+                  <Fragment key={mandate.full_document_symbol}>
+                    <TableRow
+                      className={`group cursor-pointer border-b border-gray-100 hover:bg-gray-50 ${dimmed ? 'opacity-60' : ''}`}
+                      onClick={(e) => handleRowClick(mandate, e)}
                     >
-                      <CellContent
-                        columnId={col.id}
-                        mandate={mandate}
-                        entitiesData={entitiesData}
-                        findOrganLong={findOrganLong}
-                        budgetDocuments={filterOptions.budgetDocuments}
-                        onEntityClick={(entity) => setFilter('entity', entity)}
-                      />
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
+                      {columns.map((col) => (
+                        <TableCell
+                          key={col.id}
+                          className={`${col.align === 'right' ? 'text-right' : ''} ${col.id === 'detail' ? 'sticky right-0 z-10 bg-white group-hover:bg-gray-50' : ''} overflow-hidden px-3 py-2 align-top text-sm`}
+                        >
+                          <CellContent
+                            columnId={col.id}
+                            mandate={mandate}
+                            entitiesData={entitiesData}
+                            findOrganLong={findOrganLong}
+                            budgetDocuments={filterOptions.budgetDocuments}
+                            onEntityClick={(entity) =>
+                              setFilter('entity', entity)
+                            }
+                          />
+                          {col.id === 'symbol' &&
+                            (grouped && (mandate.group?.size ?? 1) > 1 ? (
+                              <div>
+                                <GroupBadge
+                                  mandate={mandate}
+                                  expanded={isExpanded}
+                                  onToggle={() =>
+                                    toggleGroup(mandate.full_document_symbol)
+                                  }
+                                />
+                              </div>
+                            ) : (
+                              <span className="ml-1.5">
+                                <SeriesMarkers mandate={mandate} />
+                              </span>
+                            ))}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                    {grouped &&
+                      isExpanded &&
+                      (mandate.group?.members ?? []).map((member) => (
+                        <TableRow
+                          key={member.symbol}
+                          className="cursor-pointer border-b border-gray-100 bg-gray-50/60 hover:bg-gray-100"
+                          onClick={() =>
+                            router.push(
+                              getMandateUrl(member.symbol, {
+                                ppb_version: filters.ppb_version,
+                                mode: filters.mode,
+                              })
+                            )
+                          }
+                        >
+                          <TableCell
+                            colSpan={columns.length}
+                            className="px-3 py-1.5 pl-10"
+                          >
+                            <GroupMemberLine member={member} />
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                  </Fragment>
+                )
+              })}
               {mandates.length === 0 && (
                 <TableRow>
                   <TableCell

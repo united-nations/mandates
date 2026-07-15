@@ -77,6 +77,19 @@ interface MandateListRow {
   agenda_document_symbol: string | null
   agenda_item_number: string | null
   agenda_item_title: string | null
+  // resolution series facts (LEFT JOIN on digitallibrary.resolution_series)
+  superseded_by?: string | null
+  is_collection?: boolean | null
+  has_newer?: boolean | null
+  is_latest?: boolean | null
+  series_count?: number | null
+  // grouped mode only
+  group_size?: string | null
+  group_min_year?: number | null
+  group_max_year?: number | null
+  group_members?:
+    | { symbol: string; year: number | null; title: string | null }[]
+    | null
 }
 
 /** Row type for citation query results */
@@ -526,16 +539,23 @@ export async function getMandates(
       : 'ORDER BY keyword_rank ASC'
     : buildOrderByClause(effectiveSortBy)
 
-  // Main query with aggregations. filtered_docs (membership + version-scoped
-  // citation aggregates) comes from the shared builder.
-  const query = `
-    WITH ${cte},
-    counted AS (
-      SELECT *, COUNT(*) OVER() as total_count
-      FROM filtered_docs
-    )
-    SELECT
-      c.*,
+  // Series facts joined by symbol. The matview has 14 known duplicate
+  // symbols (distinct recids), so dedupe to keep the join 1:1.
+  const seriesLookupCte = `series_lookup AS (
+      SELECT DISTINCT ON (document_symbol)
+        document_symbol, series_key, un_body AS series_organ, series_count,
+        is_collection, has_newer, is_latest, superseded_by
+      FROM digitallibrary.resolution_series
+      ORDER BY document_symbol, recid
+    )`
+  const seriesCols = `
+      rs.superseded_by,
+      rs.is_collection,
+      rs.has_newer,
+      rs.is_latest,
+      rs.series_count,`
+
+  const metadataCols = `
       m.symbol as document_symbol,
       m.uniform_title,
       m.proper_title,
@@ -545,14 +565,105 @@ export async function getMandates(
       m.date_year,
       m.document_type,
       m.issuing_body,
-      m.agenda_item_title
+      m.agenda_item_title`
+
+  // Main query. filtered_docs (membership + version-scoped citation
+  // aggregates) comes from the shared builder.
+  //
+  // Grouped mode (filters.group === '1') collapses the FILTERED rows to one
+  // representative per resolution series (newest matching member). Grouping
+  // after filtering means every filter — including keyword search — applies
+  // to members, so a search hitting an old version still surfaces its group.
+  // Members for inline expansion are attached per page row via LATERAL,
+  // strictly after LIMIT so only the visible page pays for it.
+  const grouped = filters.group === '1'
+  let query: string
+  if (grouped) {
+    // buildOrderByClause references m./c. aliases; inside page_ord those are
+    // plain columns of the page CTE, so strip the qualifiers.
+    const outerOrderBy = orderBy.replace(/\b[mc]\./g, '')
+    query = `
+    WITH ${cte},
+    ${seriesLookupCte},
+    enriched AS (
+      SELECT f.*,${seriesCols}
+        COALESCE(rs.series_key || '¦' || rs.series_organ,
+                 'sym:' || f.ppb_full_document_symbol) AS grp_key
+      FROM filtered_docs f
+      LEFT JOIN series_lookup rs
+        ON rs.document_symbol = f.ppb_full_document_symbol
+    ),
+    ranked AS (
+      SELECT e.*,
+        COUNT(*) OVER (PARTITION BY e.grp_key) AS group_size,
+        MIN(e.ppb_year) OVER (PARTITION BY e.grp_key) AS group_min_year,
+        MAX(e.ppb_year) OVER (PARTITION BY e.grp_key) AS group_max_year,
+        ROW_NUMBER() OVER (
+          PARTITION BY e.grp_key
+          ORDER BY e.ppb_year DESC NULLS LAST, e.ppb_full_document_symbol DESC
+        ) AS grp_rn
+      FROM enriched e
+    ),
+    counted AS (
+      SELECT *, COUNT(*) OVER() as total_count
+      FROM ranked
+      WHERE grp_rn = 1
+    ),
+    page AS (
+      SELECT
+        c.*,${metadataCols}
+        ${keywordRankExpr}
+      FROM counted c
+      LEFT JOIN ppb2026.source_documents_metadata_clean m
+        ON c.ppb_full_document_symbol = m.ppb_full_document_symbol
+      ${orderBy}
+      LIMIT $${bind(limit)} OFFSET $${bind(offset)}
+    ),
+    page_ord AS (
+      SELECT p.*, ROW_NUMBER() OVER (${outerOrderBy}) AS page_ord
+      FROM page p
+    )
+    SELECT po.*, gm.group_members
+    FROM page_ord po
+    LEFT JOIN LATERAL (
+      SELECT jsonb_agg(
+               jsonb_build_object(
+                 'symbol', x.ppb_full_document_symbol,
+                 'year', x.ppb_year,
+                 'title', x.ppb_description
+               )
+             ) AS group_members
+      FROM (
+        SELECT e2.ppb_full_document_symbol, e2.ppb_year, e2.ppb_description
+        FROM enriched e2
+        WHERE e2.grp_key = po.grp_key
+          AND e2.ppb_full_document_symbol <> po.ppb_full_document_symbol
+        ORDER BY e2.ppb_year DESC NULLS LAST, e2.ppb_full_document_symbol DESC
+        LIMIT 100
+      ) x
+    ) gm ON true
+    ORDER BY po.page_ord
+  `
+  } else {
+    query = `
+    WITH ${cte},
+    ${seriesLookupCte},
+    counted AS (
+      SELECT *, COUNT(*) OVER() as total_count
+      FROM filtered_docs
+    )
+    SELECT
+      c.*,${seriesCols}${metadataCols}
       ${keywordRankExpr}
     FROM counted c
+    LEFT JOIN series_lookup rs
+      ON rs.document_symbol = c.ppb_full_document_symbol
     LEFT JOIN ppb2026.source_documents_metadata_clean m
       ON c.ppb_full_document_symbol = m.ppb_full_document_symbol
     ${orderBy}
     LIMIT $${bind(limit)} OFFSET $${bind(offset)}
   `
+  }
 
   const rows = await queryMany<MandateListRow>(query, params)
 
@@ -564,6 +675,24 @@ export async function getMandates(
 
   // Transform DB rows to Mandate type
   const mandates: Mandate[] = rows.map((row) => ({
+    series:
+      row.series_count != null
+        ? {
+            superseded_by: row.superseded_by ?? null,
+            is_collection: !!row.is_collection,
+            has_newer: !!row.has_newer,
+            is_latest: !!row.is_latest,
+            series_count: row.series_count,
+          }
+        : null,
+    group: grouped
+      ? {
+          size: parseInt(row.group_size ?? '1') || 1,
+          min_year: row.group_min_year ?? null,
+          max_year: row.group_max_year ?? null,
+          members: row.group_members ?? [],
+        }
+      : undefined,
     full_document_symbol: row.ppb_full_document_symbol,
     document_symbol: row.document_symbol || null,
     num_citations: parseInt(row.num_citations) || 0,
