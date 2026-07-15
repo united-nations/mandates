@@ -61,6 +61,15 @@ export function MandateCompactList({
                 onClick={(e) => handleClick(mandate, e)}
                 className={`flex cursor-pointer items-center gap-3 border-b border-gray-100 px-3 py-2.5 transition-colors hover:bg-gray-50 ${dimmed ? 'opacity-60' : ''}`}
               >
+                {grouped && (
+                  <span className="w-8 shrink-0">
+                    <GroupBadge
+                      mandate={mandate}
+                      expanded={isExpanded}
+                      onToggle={() => toggleGroup(mandate.full_document_symbol)}
+                    />
+                  </span>
+                )}
                 <div className="min-w-0 flex-1">
                   <div className="truncate text-sm font-medium">
                     {mandate.displayTitle || 'Untitled'}
@@ -90,13 +99,6 @@ export function MandateCompactList({
                       </>
                     )}
                   </div>
-                  {grouped && (
-                    <GroupBadge
-                      mandate={mandate}
-                      expanded={isExpanded}
-                      onToggle={() => toggleGroup(mandate.full_document_symbol)}
-                    />
-                  )}
                 </div>
                 <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
               </div>

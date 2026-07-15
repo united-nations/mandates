@@ -165,6 +165,7 @@ export function MandateDataTable({
           <Table>
             <TableHeader>
               <TableRow className="border-b bg-gray-50 hover:bg-gray-50">
+                {grouped && <TableHead className="w-9 px-2" />}
                 {columns.map((col) => (
                   <TableHead
                     key={col.id}
@@ -200,6 +201,17 @@ export function MandateDataTable({
                       className={`group cursor-pointer border-b border-gray-100 hover:bg-gray-50 ${dimmed ? 'opacity-60' : ''}`}
                       onClick={(e) => handleRowClick(mandate, e)}
                     >
+                      {grouped && (
+                        <TableCell className="w-9 px-2 py-2.5 align-top">
+                          <GroupBadge
+                            mandate={mandate}
+                            expanded={isExpanded}
+                            onToggle={() =>
+                              toggleGroup(mandate.full_document_symbol)
+                            }
+                          />
+                        </TableCell>
+                      )}
                       {columns.map((col) => (
                         <TableCell
                           key={col.id}
@@ -216,21 +228,12 @@ export function MandateDataTable({
                             }
                           />
                           {col.id === 'symbol' &&
-                            (grouped && (mandate.group?.size ?? 1) > 1 ? (
-                              <div>
-                                <GroupBadge
-                                  mandate={mandate}
-                                  expanded={isExpanded}
-                                  onToggle={() =>
-                                    toggleGroup(mandate.full_document_symbol)
-                                  }
-                                />
-                              </div>
-                            ) : (
+                            (!grouped ||
+                              (mandate.group?.size ?? 1) <= 1) && (
                               <span className="ml-1.5">
                                 <SeriesMarkers mandate={mandate} />
                               </span>
-                            ))}
+                            )}
                         </TableCell>
                       ))}
                     </TableRow>
@@ -250,8 +253,8 @@ export function MandateDataTable({
                           }
                         >
                           <TableCell
-                            colSpan={columns.length}
-                            className="px-3 py-1.5 pl-10"
+                            colSpan={columns.length + 1}
+                            className="px-3 py-1.5 pl-11"
                           >
                             <GroupMemberLine member={member} />
                           </TableCell>
@@ -263,7 +266,7 @@ export function MandateDataTable({
               {mandates.length === 0 && (
                 <TableRow>
                   <TableCell
-                    colSpan={columns.length}
+                    colSpan={grouped ? columns.length + 1 : columns.length}
                     className="py-8 text-center text-sm text-muted-foreground"
                   >
                     No mandates found matching the current filters.

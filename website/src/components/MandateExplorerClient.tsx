@@ -299,6 +299,7 @@ export function MandateExplorerClient({
             onCheckedChange={(checked) =>
               setFilter('group', checked ? '1' : undefined)
             }
+            className="data-[state=unchecked]:bg-gray-300"
           />
           Group versions
         </label>
