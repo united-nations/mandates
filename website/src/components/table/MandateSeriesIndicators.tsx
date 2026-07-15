@@ -6,12 +6,12 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import type { Mandate } from '@/types'
-import { History, Layers, Minus, Plus } from 'lucide-react'
+import { ChevronDown, ChevronUp, History, Layers } from 'lucide-react'
 import { getMandateUrl } from './MandateColumns'
 
 /**
  * Grouped-mode expander at the left edge of a series representative row:
- * a circled member count with a +/− icon, no text. The tooltip carries the
+ * a circled member count with a chevron, no text. The tooltip carries the
  * two-tier vocabulary — collections say "related", never "versions".
  */
 export function GroupBadge({
@@ -48,9 +48,9 @@ export function GroupBadge({
           aria-label={tooltip}
         >
           {expanded ? (
-            <Minus className="h-2.5 w-2.5" />
+            <ChevronUp className="h-2.5 w-2.5" />
           ) : (
-            <Plus className="h-2.5 w-2.5" />
+            <ChevronDown className="h-2.5 w-2.5" />
           )}
           {group.size}
         </button>
