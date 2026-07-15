@@ -25,6 +25,7 @@ export const FILTER_PARAMS = [
   'max_citations',
   'mode',
   'ppb_version',
+  'group',
   'sort_by',
   'page',
   'limit',
@@ -53,7 +54,7 @@ export const FILTER_ONLY_PARAMS = [
 ] as const
 
 // Parameters that are handled separately (pagination and sorting)
-export const CONTROL_PARAMS = ['mode', 'ppb_version', 'sort_by', 'page', 'limit'] as const
+export const CONTROL_PARAMS = ['mode', 'ppb_version', 'group', 'sort_by', 'page', 'limit'] as const
 
 // Type utilities
 export type FilterParamKey = (typeof FILTER_PARAMS)[number]
@@ -77,6 +78,7 @@ export function parseSearchParams(
     // No hardcoded default: when absent, the data layer's versionClause
     // COALESCEs to ppb2026.budget_versions.is_default (single source of truth).
     ppb_version: getString('ppb_version'),
+    group: getString('group'),
     entity: getString('entity'),
     organ: getString('organ'),
     crossCitingEntity: getString('crossCitingEntity'),

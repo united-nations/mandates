@@ -73,6 +73,7 @@ export function FilterControls({
     delete displayFilters.keyword
     delete displayFilters.mode
     delete displayFilters.ppb_version
+    delete displayFilters.group
 
     return displayFilters
   }

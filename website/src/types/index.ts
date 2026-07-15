@@ -94,6 +94,11 @@ export interface Mandate {
   budget_locations?: BudgetLocation[]
   text?: string
 
+  // Resolution series facts (migration 021; null/absent when not in a series)
+  series?: MandateSeriesInfo | null
+  // Grouped mode only: this row represents a series and carries its matching co-members
+  group?: MandateGroupInfo | null
+
   // Search-related fields
   searchScore?: number
   highlightedTitle?: string
@@ -182,6 +187,23 @@ export interface OrganWithCount {
 }
 
 // Filter types
+export interface MandateSeriesInfo {
+  superseded_by: string | null
+  is_collection: boolean
+  has_newer: boolean
+  is_latest: boolean
+  series_count: number
+}
+
+export interface MandateGroupInfo {
+  /** number of documents in this group matching the current filters */
+  size: number
+  min_year: number | null
+  max_year: number | null
+  /** matching co-members (representative excluded), newest first, capped at 100 */
+  members: { symbol: string; year: number | null; title: string | null }[]
+}
+
 export interface FilterOptions {
   entity?: string
   organ?: string
@@ -211,6 +233,8 @@ export interface FilterOptions {
   max_citations?: string
   mode?: 'active_mandates' | 'all_resolutions'
   ppb_version?: string
+  /** '1' collapses the list to one row per resolution series (group versions) */
+  group?: string
   sort_by?: string
   page?: string
   limit?: string

@@ -1,11 +1,18 @@
 'use client'
 
 import { Badge } from '@/components/ui/badge'
+import { TooltipProvider } from '@/components/ui/tooltip'
 import { useFilters } from '@/contexts/FilterContext'
 import type { Entity, Mandate, Organ } from '@/types'
 import { ChevronRight } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { Fragment, useState } from 'react'
 import { getMandateUrl } from './MandateColumns'
+import {
+  GroupBadge,
+  GroupMemberLine,
+  SeriesMarkers,
+} from './MandateSeriesIndicators'
 
 interface MandateCompactListProps {
   mandates: Mandate[]
@@ -19,6 +26,17 @@ export function MandateCompactList({
   const { filters, isPending } = useFilters()
   const router = useRouter()
 
+  const grouped = filters.group === '1'
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set())
+  const toggleGroup = (symbol: string) => {
+    setExpandedGroups((prev) => {
+      const next = new Set(prev)
+      if (next.has(symbol)) next.delete(symbol)
+      else next.add(symbol)
+      return next
+    })
+  }
+
   const handleClick = (mandate: Mandate, e: React.MouseEvent) => {
     e.preventDefault()
     router.push(
@@ -30,50 +48,87 @@ export function MandateCompactList({
   }
 
   return (
-    <div
-      className={`rounded-lg border border-gray-200 overflow-hidden transition-opacity duration-150 ${isPending ? 'opacity-50' : 'opacity-100'}`}
-    >
-      {mandates.map((mandate) => (
-        <div
-          key={mandate.full_document_symbol}
-          onClick={(e) => handleClick(mandate, e)}
-          className="flex cursor-pointer items-center gap-3 border-b border-gray-100 px-3 py-2.5 transition-colors hover:bg-gray-50"
-        >
-          <div className="min-w-0 flex-1">
-            <div className="truncate text-sm font-medium">
-              {mandate.displayTitle || 'Untitled'}
-            </div>
-            <div className="mt-0.5 flex items-center gap-2 text-xs text-muted-foreground">
-              <span className="font-medium text-un-blue">
-                {mandate.full_document_symbol}
-              </span>
-              {mandate.body && (
-                <>
-                  <span className="text-gray-300">·</span>
-                  <Badge
-                    variant="secondary"
-                    className="border-0 bg-gray-200! text-xs font-medium text-gray-700! whitespace-nowrap"
+    <TooltipProvider>
+      <div
+        className={`rounded-lg border border-gray-200 overflow-hidden transition-opacity duration-150 ${isPending ? 'opacity-50' : 'opacity-100'}`}
+      >
+        {mandates.map((mandate) => {
+          const isExpanded = expandedGroups.has(mandate.full_document_symbol)
+          const dimmed = !grouped && !!mandate.series?.superseded_by
+          return (
+            <Fragment key={mandate.full_document_symbol}>
+              <div
+                onClick={(e) => handleClick(mandate, e)}
+                className={`flex cursor-pointer items-center gap-3 border-b border-gray-100 px-3 py-2.5 transition-colors hover:bg-gray-50 ${dimmed ? 'opacity-60' : ''}`}
+              >
+                {grouped && (
+                  <span className="w-11 shrink-0">
+                    <GroupBadge
+                      mandate={mandate}
+                      expanded={isExpanded}
+                      onToggle={() => toggleGroup(mandate.full_document_symbol)}
+                    />
+                  </span>
+                )}
+                <div className="min-w-0 flex-1">
+                  <div className="truncate text-sm font-medium">
+                    {mandate.displayTitle || 'Untitled'}
+                  </div>
+                  <div className="mt-0.5 flex items-center gap-2 text-xs text-muted-foreground">
+                    <span className="font-medium text-un-blue">
+                      {mandate.full_document_symbol}
+                    </span>
+                    {(!grouped || (mandate.group?.size ?? 1) <= 1) && (
+                      <SeriesMarkers mandate={mandate} />
+                    )}
+                    {mandate.body && (
+                      <>
+                        <span className="text-gray-300">·</span>
+                        <Badge
+                          variant="secondary"
+                          className="border-0 bg-gray-200! text-xs font-medium text-gray-700! whitespace-nowrap"
+                        >
+                          {mandate.body}
+                        </Badge>
+                      </>
+                    )}
+                    {mandate.year && mandate.year !== '-' && (
+                      <>
+                        <span className="text-gray-300">·</span>
+                        <span>{mandate.year}</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+                <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+              </div>
+              {grouped &&
+                isExpanded &&
+                (mandate.group?.members ?? []).map((member) => (
+                  <div
+                    key={member.symbol}
+                    onClick={() =>
+                      router.push(
+                        getMandateUrl(member.symbol, {
+                          ppb_version: filters.ppb_version,
+                          mode: filters.mode,
+                        })
+                      )
+                    }
+                    className="cursor-pointer border-b border-gray-100 bg-gray-50/60 px-3 py-1.5 pl-8 transition-colors hover:bg-gray-100"
                   >
-                    {mandate.body}
-                  </Badge>
-                </>
-              )}
-              {mandate.year && mandate.year !== '-' && (
-                <>
-                  <span className="text-gray-300">·</span>
-                  <span>{mandate.year}</span>
-                </>
-              )}
-            </div>
+                    <GroupMemberLine member={member} />
+                  </div>
+                ))}
+            </Fragment>
+          )
+        })}
+        {mandates.length === 0 && (
+          <div className="py-8 text-center text-sm text-muted-foreground">
+            No mandates found matching the current filters.
           </div>
-          <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
-        </div>
-      ))}
-      {mandates.length === 0 && (
-        <div className="py-8 text-center text-sm text-muted-foreground">
-          No mandates found matching the current filters.
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </TooltipProvider>
   )
 }

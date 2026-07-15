@@ -81,7 +81,7 @@ export function MandateVersionHistory({
                 isCurrent ? 'bg-blue-50/60' : ''
               }`}
             >
-              <span className="w-10 shrink-0 font-mono text-xs text-muted-foreground">
+              <span className="w-10 shrink-0 text-xs text-muted-foreground">
                 {m.year ?? '—'}
               </span>
               {isCurrent ? (
