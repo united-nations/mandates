@@ -205,14 +205,16 @@ export function MandateDataTable({
                       onClick={(e) => handleRowClick(mandate, e)}
                     >
                       {grouped && (
-                        <TableCell className="w-12 px-2 py-2.5 align-top">
-                          <GroupBadge
-                            mandate={mandate}
-                            expanded={isExpanded}
-                            onToggle={() =>
-                              toggleGroup(mandate.full_document_symbol)
-                            }
-                          />
+                        <TableCell className="w-12 px-2 py-2 align-top">
+                          <span className="flex h-5 items-center">
+                            <GroupBadge
+                              mandate={mandate}
+                              expanded={isExpanded}
+                              onToggle={() =>
+                                toggleGroup(mandate.full_document_symbol)
+                              }
+                            />
+                          </span>
                         </TableCell>
                       )}
                       {columns.map((col) => (

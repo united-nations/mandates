@@ -355,8 +355,8 @@ export function MandateExplorerClient({
             budgetDocuments={filterOptions.budgetDocuments}
             toolbarSlot={
               <div className="flex flex-wrap items-center gap-3">
-                {modeToggle}
                 {groupToggle}
+                {modeToggle}
               </div>
             }
           />
