@@ -91,7 +91,7 @@ export function SiteHeader() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <span className="cursor-help rounded-md bg-un-blue/10 px-1.5 py-0.5 text-[10px] leading-none font-semibold whitespace-nowrap text-un-blue md:px-2 md:py-1 md:text-xs">
-                  beta version
+                  Beta Version
                 </span>
               </TooltipTrigger>
               <TooltipContent side="bottom" className="max-w-56">
