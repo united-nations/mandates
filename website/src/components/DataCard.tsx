@@ -29,13 +29,20 @@ interface DataCardProps {
   popoverClassName?: string
 }
 
+// Abbreviations applied only to the card-face preview labels (not the popover,
+// which renders the full names via `children`) to keep the mini-bar rows on one line.
+const PREVIEW_LABEL_ABBREVIATIONS: Record<string, string> = {
+  'Ministerial Declarations': 'Min. Decl.',
+}
+
 function MiniBar({ item, maxCount }: { item: PreviewItem; maxCount: number }) {
   const barWidth = maxCount > 0 ? (item.count / maxCount) * 100 : 0
+  const label = PREVIEW_LABEL_ABBREVIATIONS[item.name] ?? item.name
 
   return (
     <>
       <div className="self-center text-right text-sm whitespace-nowrap text-foreground">
-        {item.name}
+        {label}
       </div>
       <div className="relative h-1.5 self-center rounded-full bg-un-blue/10">
         <div
