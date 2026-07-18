@@ -89,8 +89,8 @@
       "contacts": [],
       "note": null,
       "mandateRegistry": {
-        "label": "Mandate Registry",
-        "name": "UN Mandate Source Registry — mandate sources cited in the programme budget",
+        "name": "Mandate Source Registry",
+        "category": "Mandate Registry",
         "url": "/secretariat",
         "tier": 3,
         "features": [
@@ -130,8 +130,8 @@
       "contacts": [],
       "note": null,
       "mandateRegistry": {
-        "label": "Implementation Tracker",
-        "name": "UN-Habitat Assembly Resolution Tracker — status, financial requirements and funding gaps",
+        "name": "Resolution Tracker",
+        "category": "Implementation Tracker",
         "url": "https://unhabitat.org/unhabitat-resolutions",
         "tier": 4,
         "features": [
@@ -176,8 +176,8 @@
       "contacts": [],
       "note": null,
       "mandateRegistry": {
-        "label": "Decision Tracking",
-        "name": "Executive Board decisions and annual decision-tracking tables (PDF)",
+        "name": "Decision Tracking Tables",
+        "category": "Decision Tracking",
         "url": "https://www.undp.org/executive-board/decisions-of-the-board",
         "tier": 4,
         "features": [
@@ -215,8 +215,8 @@
       "contacts": [],
       "note": null,
       "mandateRegistry": {
-        "label": "Implementation Tracker",
-        "name": "UNEA Monitoring & Reporting Portal",
+        "name": "Monitoring & Reporting Portal",
+        "category": "Implementation Tracker",
         "url": "https://unea.unep.org/monitoring/",
         "tier": 4,
         "features": [
@@ -242,8 +242,8 @@
       "contacts": [],
       "note": null,
       "mandateRegistry": {
-        "label": "Decision Tracking",
-        "name": "Decisions of the Board with annual decision-tracking tables (PDF)",
+        "name": "Decision Tracking Tables",
+        "category": "Decision Tracking",
         "url": "https://www.unfpa.org/executive-board/decisions-board-listing",
         "tier": 4,
         "features": [
@@ -277,8 +277,8 @@
       "contacts": [],
       "note": null,
       "mandateRegistry": {
-        "label": "Decision Tracking",
-        "name": "Executive Board decision-monitoring tables (PDF)",
+        "name": "Decision Monitoring Tables",
+        "category": "Decision Tracking",
         "url": "https://www.unicef.org/executiveboard/documents/decision-monitoring-tables",
         "tier": 4,
         "features": [
@@ -312,8 +312,8 @@
       "contacts": [],
       "note": null,
       "mandateRegistry": {
-        "label": "Documents Database",
-        "name": "Executive Board documents database",
+        "name": "Executive Board Documents",
+        "category": "Documents Database",
         "url": "https://executiveboard.wfp.org/documents",
         "tier": 3,
         "features": [
@@ -364,8 +364,8 @@
       "contacts": [],
       "note": null,
       "mandateRegistry": {
-        "label": "Resolutions Database",
-        "name": "FAO Conference Resolutions Portal",
+        "name": "Conference Resolutions Portal",
+        "category": "Resolutions Database",
         "url": "https://resolutionsportal.fao.org/",
         "tier": 3,
         "features": [
@@ -398,8 +398,8 @@
       "contacts": [],
       "note": null,
       "mandateRegistry": {
-        "label": "Resolutions in Force",
-        "name": "Assembly Resolutions in Force (Doc 10184)",
+        "name": "Assembly Resolutions in Force",
+        "category": "Resolutions in Force",
         "url": "https://www.icao.int/events/a41/resolutions",
         "tier": 2,
         "features": [
@@ -429,8 +429,8 @@
       "contacts": [],
       "note": null,
       "mandateRegistry": {
-        "label": "Session Documents",
-        "name": "IFAD Members Platform — per-session Governing Council and Executive Board documents",
+        "name": "Members Platform",
+        "category": "Session Documents",
         "url": "https://webapps.ifad.org/members/gc",
         "tier": 1,
         "features": [
@@ -471,8 +471,8 @@
       "contacts": [],
       "note": null,
       "mandateRegistry": {
-        "label": "Decisions Database",
-        "name": "Governing Body documents and records of decisions",
+        "name": "Governing Body Documents",
+        "category": "Decisions Database",
         "url": "https://www.ilo.org/governing-body/all-gb-documents",
         "tier": 3,
         "features": [
@@ -502,8 +502,8 @@
       "contacts": [],
       "note": null,
       "mandateRegistry": {
-        "label": "Decisions Database",
-        "name": "Selected Decisions and Selected Documents of the IMF",
+        "name": "Selected Decisions",
+        "category": "Decisions Database",
         "url": "https://www.imf.org/en/publications/selected-decisions/selected-decisions-list",
         "tier": 3,
         "features": [
@@ -538,8 +538,8 @@
       "contacts": [],
       "note": null,
       "mandateRegistry": {
-        "label": "Session Documents",
-        "name": "Index of IMO Resolutions (texts via IMODOCS, free registration)",
+        "name": "Index of IMO Resolutions",
+        "category": "Session Documents",
         "url": "https://www.imo.org/en/knowledgecentre/indexofimoresolutions/pages/default.aspx",
         "tier": 1,
         "features": [
@@ -574,8 +574,8 @@
       "contacts": [],
       "note": null,
       "mandateRegistry": {
-        "label": "Resolutions in Force",
-        "name": "Resolutions and Decisions of the Council — annual in-force compilation",
+        "name": "Council Resolutions & Decisions",
+        "category": "Resolutions in Force",
         "url": "https://www.itu.int/pub/S-CONF-CL",
         "tier": 2,
         "features": [
@@ -615,8 +615,8 @@
       "contacts": [],
       "note": null,
       "mandateRegistry": {
-        "label": "Session Documents",
-        "name": "UN Tourism E-Library — General Assembly documents series",
+        "name": "E-Library GA Documents",
+        "category": "Session Documents",
         "url": "https://www.e-unwto.org/loi/unwtogad",
         "tier": 1,
         "features": [
@@ -673,8 +673,8 @@
       "contacts": [],
       "note": null,
       "mandateRegistry": {
-        "label": "Session Documents",
-        "name": "Policymaking-organs session pages with per-session decisions and resolutions",
+        "name": "Session Documents",
+        "category": "Session Documents",
         "url": "https://www.unido.org/resources/policymaking-organs/general-conference/sessions/14th-session/decisions-and-resolutions-general-conference",
         "tier": 1,
         "features": [
@@ -720,8 +720,8 @@
       "contacts": [],
       "note": null,
       "mandateRegistry": {
-        "label": "Session Documents",
-        "name": "Acts of the Union and Compendium of Congress decisions",
+        "name": "Acts of the Union",
+        "category": "Session Documents",
         "url": "https://www.upu.int/en/Universal-Postal-Union/About-UPU/Acts",
         "tier": 1,
         "features": [
@@ -750,8 +750,8 @@
       "contacts": [],
       "note": null,
       "mandateRegistry": {
-        "label": "Resolutions Database",
-        "name": "Portal of Resolutions and Decisions — WHA, Executive Board and regional committees",
+        "name": "Resolutions Portal",
+        "category": "Resolutions Database",
         "url": "https://resolutionsportal.who.int/",
         "tier": 3,
         "features": [
@@ -786,8 +786,8 @@
       ],
       "note": null,
       "mandateRegistry": {
-        "label": "Session Documents",
-        "name": "Meeting documents by body, incl. annual Assemblies lists of decisions",
+        "name": "Meeting Documents",
+        "category": "Session Documents",
         "url": "https://www.wipo.int/meetings/en/topic_bodies.jsp",
         "tier": 1,
         "features": [
@@ -816,8 +816,8 @@
       "contacts": [],
       "note": null,
       "mandateRegistry": {
-        "label": "Implementation Tracker",
-        "name": "WMO Resolutions and Decisions database with per-request implementation tracker",
+        "name": "Resolutions & Decisions Database",
+        "category": "Implementation Tracker",
         "url": "https://tools.wmo.int/wmo-resolutions/index.php",
         "tier": 4,
         "features": [
@@ -844,8 +844,8 @@
       "contacts": [],
       "note": null,
       "mandateRegistry": {
-        "label": "Resolutions Database",
-        "name": "Boards of Governors resolutions in the Documents & Reports database",
+        "name": "Governors' Resolutions",
+        "category": "Resolutions Database",
         "url": "https://www.worldbank.org/en/about/leadership/governors",
         "tier": 3,
         "features": [
@@ -901,8 +901,8 @@
       ],
       "note": null,
       "mandateRegistry": {
-        "label": "Resolutions Database",
-        "name": "General Conference resolutions archive",
+        "name": "GC Resolutions Archive",
+        "category": "Resolutions Database",
         "url": "https://www.iaea.org/gc-archives/type/resolutions",
         "tier": 3,
         "features": [
@@ -932,8 +932,8 @@
       "contacts": [],
       "note": null,
       "mandateRegistry": {
-        "label": "Session Documents",
-        "name": "Assembly of States Parties resolutions by session, with topical index",
+        "name": "ASP Resolutions",
+        "category": "Session Documents",
         "url": "https://asp.icc-cpi.int/resolutions",
         "tier": 1,
         "features": [
@@ -956,8 +956,8 @@
       "contacts": [],
       "note": null,
       "mandateRegistry": {
-        "label": "Resolutions Database",
-        "name": "Council Resolutions database",
+        "name": "Council Resolutions Database",
+        "category": "Resolutions Database",
         "url": "https://governingbodies.iom.int/council-resolutions",
         "tier": 3,
         "features": [
@@ -990,8 +990,8 @@
       ],
       "note": null,
       "mandateRegistry": {
-        "label": "Session Documents",
-        "name": "Per-session Assembly and Council documents",
+        "name": "Session Documents",
+        "category": "Session Documents",
         "url": "https://isa.org.jm/sessions/30th-session-2025/",
         "tier": 1,
         "features": [
@@ -1014,8 +1014,8 @@
       "contacts": [],
       "note": null,
       "mandateRegistry": {
-        "label": "Session Documents",
-        "name": "OPCW documents catalogue — Conference and Executive Council decisions by session",
+        "name": "Documents Catalogue",
+        "category": "Session Documents",
         "url": "https://www.opcw.org/resources/documents",
         "tier": 1,
         "features": [
@@ -1047,8 +1047,8 @@
       ],
       "note": null,
       "mandateRegistry": {
-        "label": "Documents Database",
-        "name": "WTO Documents Online",
+        "name": "Documents Online",
+        "category": "Documents Database",
         "url": "https://docs.wto.org/dol2fe/Pages/FE_Search/FE_S_S001.aspx",
         "tier": 3,
         "features": [

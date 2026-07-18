@@ -21,6 +21,15 @@
   --color-geyser: #dde2e6;
   --color-iron: #d9dcdf;
   --color-card-gray: #f6f7f8;
+
+  /* Registry-tier traffic-light ramp (/system mandate-registry column).
+     Ordinal quality scale, worst→best. CVD-validated as a set (protan/deutan/
+     tritan ΔE ≥ 10 adjacent, ≥ 3:1 on white) — change only as a set, and only
+     after re-validating. Never color-alone: always paired with the dot count. */
+  --color-tier-1: #ab3a2c;
+  --color-tier-2: #c9820f;
+  --color-tier-3: #2aa392;
+  --color-tier-4: #276b35;
 }
 
 html {

@@ -359,10 +359,10 @@ export type UnSystemRegistryFeature =
  * (archive → in-force compilation → database → tracker).
  */
 export interface UnSystemRegistry {
-  /** Short category label shown on the chip, e.g. "Resolutions Database". */
-  label: string
-  /** Proper name/description of the actual system, shown in the tooltip. */
+  /** Short proper name of the system, used as the link text, e.g. "Resolutions Portal". */
   name: string
+  /** Taxonomy category, shown in the link tooltip, e.g. "Resolutions Database". */
+  category: string
   url: string
   tier: 1 | 2 | 3 | 4
   features: UnSystemRegistryFeature[]

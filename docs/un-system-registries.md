@@ -111,11 +111,23 @@ Tier in parentheses; all URLs verified July 2026.
 ## Display scheme (planned)
 
 The `/system` page's Mandate Registry column shows one flagship system per
-organization: a link chip with a four-dot fill meter (filled count = tier)
-and a category label (Mandate Registry / Implementation Tracker / Decision
-Tracking / Resolutions Database / Decisions Database / Documents Database /
-Resolutions in Force / Session Documents). The tooltip gives the system's
-proper name plus the six-feature checklist (absent features struck through).
+organization as two elements:
+
+- a **four-dot tier meter** (filled count = tier) colored by a
+  traffic-light ramp, worst→best: tier 1 `#ab3a2c` (red), tier 2 `#c9820f`
+  (amber), tier 3 `#2aa392` (teal), tier 4 `#276b35` (green). The ramp is
+  CVD-validated as a set (protan/deutan/tritan adjacent ΔE ≥ 10, all steps
+  ≥ 3:1 on white; teal replaces lime at tier 3 because amber↔lime collapses
+  under protanopia) — tokens `--color-tier-1…4` in `globals.css`, change
+  only as a set. The dot count, not the color, is the primary signal. Its
+  tooltip shows the full four-rung ladder with the current tier highlighted.
+- a **link named after the actual system** (e.g. "Resolutions Portal",
+  "Acts of the Union"), whose tooltip gives the taxonomy category (Mandate
+  Registry / Implementation Tracker / Decision Tracking / Resolutions
+  Database / Decisions Database / Documents Database / Resolutions in Force /
+  Session Documents) plus the six-feature checklist, absent features struck
+  through.
+
 Tier 0 renders as an em dash with an explanatory tooltip (UNESCO: proposal
 pending; CTBTO: restricted; UNCDF: see UNDP). Data lives in the
 `mandateRegistry` / `registryNote` fields of

@@ -8,7 +8,7 @@ import type {
   UnSystemEntity,
   UnSystemGrouping,
 } from '@/types'
-import { ExternalLink, Mail } from 'lucide-react'
+import { ExternalLink, Info, Mail } from 'lucide-react'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 const { bodies, organizations } = unSystemData as UnSystemData
 
 const sections: { grouping: UnSystemGrouping; title: string | null }[] = [
-  { grouping: 'secretariat', title: null },
+  { grouping: 'secretariat', title: 'UN Secretariat' },
   { grouping: 'fund-programme', title: 'Funds and Programmes' },
   { grouping: 'specialized-agency', title: 'Specialized Agencies' },
   { grouping: 'related-organization', title: 'Related Organizations' },
@@ -113,12 +113,15 @@ export default function UnSystemPage() {
         Governing bodies across the United Nations system, with links to each
         body&apos;s official page and secretariat contact.
       </p>
-      <p className="mt-3 mb-8 max-w-195 text-sm text-muted-foreground italic">
-        This draft overview is for informational purposes only and
-        exhaustiveness is not guaranteed. The relevant rules of the
-        organization concerned should be consulted in order to establish the
-        legal status, functions and reporting lines of each entity listed.
-      </p>
+      <div className="mt-3 mb-8 flex max-w-195 items-start gap-2 border-l-2 border-un-blue/40 bg-un-blue/5 px-3 py-2 text-sm text-muted-foreground">
+        <Info className="mt-0.5 h-4 w-4 shrink-0 text-un-blue" aria-hidden />
+        <p>
+          This draft overview is for informational purposes only and
+          exhaustiveness is not guaranteed. The relevant rules of the
+          organization concerned should be consulted in order to establish the
+          legal status, functions and reporting lines of each entity listed.
+        </p>
+      </div>
 
       {sections.map(({ grouping, title }) => (
         <section key={grouping} className="mb-10">
