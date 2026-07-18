@@ -35,13 +35,20 @@ const LEVEL_PARAM: Record<BudgetTreeLevel, FilterParamKey> = {
   subprogramme: 'subprogramme',
 }
 
-/** The budget hierarchy, shallowest to deepest. */
-const LEVEL_ORDER: BudgetTreeLevel[] = [
-  'stream',
-  'part',
+/**
+ * Every budget-location filter param. The tree is single-select: picking any
+ * node clears all of these except the one it sets, so at most one budget
+ * location applies at a time. `programme` is legacy (superseded by section, only
+ * reachable via old ?programme= links) but cleared for cleanliness. `foundational`
+ * is deliberately excluded — it is a cross-cutting toggle, not a location.
+ */
+const BUDGET_LOCATION_PARAMS: FilterParamKey[] = [
+  'budget_document',
+  'budget_part',
   'section',
   'entity',
   'subprogramme',
+  'programme',
 ]
 
 export function BudgetHierarchyTree({ hierarchy }: BudgetHierarchyTreeProps) {
@@ -69,12 +76,13 @@ export function BudgetHierarchyTree({ hierarchy }: BudgetHierarchyTreeProps) {
       clearFilter(param)
       return
     }
-    // Selecting a node clears any active filters deeper in the hierarchy, so a
-    // broad pick (a Part) replaces a narrower one (an Entity) rather than
-    // intersecting with it and stranding the user on an empty result.
-    const deeper = LEVEL_ORDER.slice(LEVEL_ORDER.indexOf(level) + 1)
+    // Single-select: picking any node replaces the entire budget-location
+    // selection, so only one applies at a time (never an empty intersection of
+    // conflicting levels or streams).
     const updates: Partial<FilterOptions> = { [param]: value }
-    for (const lvl of deeper) updates[LEVEL_PARAM[lvl]] = undefined
+    for (const other of BUDGET_LOCATION_PARAMS) {
+      if (other !== param) updates[other] = undefined
+    }
     setMultipleFilters(updates)
   }
 
