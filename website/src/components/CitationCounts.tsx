@@ -4,7 +4,7 @@ import { EntityBadge, FoundationalTag } from '@/components/EntityBadge'
 import { BudgetLocationTree } from '@/components/BudgetLocationTree'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { isFoundational } from '@/lib/foundational'
-import type { Entity, Mandate } from '@/types'
+import type { BudgetStream, Entity, Mandate } from '@/types'
 import { Building, Network } from 'lucide-react'
 import { useMemo, useState } from 'react'
 
@@ -31,16 +31,21 @@ import { useMemo, useState } from 'react'
 interface CitationCountsProps {
   mandate: Mandate
   entities: Entity[]
+  /** This document's budget hierarchy (getBudgetHierarchy scoped to it). */
+  budgetStreams: BudgetStream[]
 }
 
 const VISIBLE = 5
 
-export function CitationCounts({ mandate, entities }: CitationCountsProps) {
+export function CitationCounts({
+  mandate,
+  entities,
+  budgetStreams,
+}: CitationCountsProps) {
   const [showAll, setShowAll] = useState(false)
   const [groupByBudget, setGroupByBudget] = useState(false)
 
   const foundationalEntities = mandate.foundational_entities ?? []
-  const budgetLocations = mandate.budget_locations ?? []
 
   const entityLongNames = useMemo(() => {
     const map = new Map<string, string>()
@@ -63,7 +68,7 @@ export function CitationCounts({ mandate, entities }: CitationCountsProps) {
     })
   }, [mandate.citation_info, foundationalEntities])
 
-  if (citingEntities.length === 0 && budgetLocations.length === 0) return null
+  if (citingEntities.length === 0 && budgetStreams.length === 0) return null
 
   const shown = showAll ? citingEntities : citingEntities.slice(0, VISIBLE)
 
@@ -78,7 +83,7 @@ export function CitationCounts({ mandate, entities }: CitationCountsProps) {
             Document
           </h3>
 
-          {budgetLocations.length > 0 && (
+          {budgetStreams.length > 0 && (
             <button
               onClick={() => setGroupByBudget(!groupByBudget)}
               aria-pressed={groupByBudget}
@@ -92,7 +97,7 @@ export function CitationCounts({ mandate, entities }: CitationCountsProps) {
 
         {groupByBudget ? (
           <BudgetLocationTree
-            locations={budgetLocations}
+            streams={budgetStreams}
             foundationalEntities={foundationalEntities}
           />
         ) : (

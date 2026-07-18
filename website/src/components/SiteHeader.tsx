@@ -16,6 +16,7 @@ import {
 import { cn } from '@/lib/utils'
 import {
   BookOpen,
+  Building2,
   ExternalLink,
   GitCompare,
   Home,
@@ -43,7 +44,7 @@ export function SiteHeader() {
         className={cn(
           'relative mx-auto flex items-center gap-4',
           pagePadding,
-          pageWidth,
+          pageWidth
         )}
       >
         {/* Emblem aspect ≈ 1.198:1. Outboard variant tucks into the
@@ -55,8 +56,8 @@ export function SiteHeader() {
           href="/"
           aria-label="Mandate Source Registry — home"
           className={cn(
-            'absolute top-1/2 end-[calc(100%-56.74px)] h-10 w-[47.9px] -translate-y-1/2 transition-opacity hover:opacity-75',
-            outboardOnly,
+            'absolute end-[calc(100%-56.74px)] top-1/2 h-10 w-[47.9px] -translate-y-1/2 transition-opacity hover:opacity-75',
+            outboardOnly
           )}
         >
           <Image
@@ -85,7 +86,9 @@ export function SiteHeader() {
               shrink and the badge stays visible. md+: original inline layout. */}
           <span className="flex flex-col items-start gap-1 md:flex-row md:items-center md:gap-2.5">
             <span className="text-lg leading-none tracking-tight text-foreground md:text-[23.83px]">
-              <span className="hidden font-bold md:inline">United Nations </span>
+              <span className="hidden font-bold md:inline">
+                United Nations{' '}
+              </span>
               <span className="font-light">Mandate Source Registry</span>
             </span>
             <Tooltip>
@@ -146,6 +149,26 @@ export function SiteHeader() {
                 )}
               </DropdownMenuItem>
               <DropdownMenuItem
+                asChild={pathname !== '/entities'}
+                className={
+                  pathname === '/entities'
+                    ? 'cursor-default bg-un-blue/10 font-medium text-un-blue'
+                    : ''
+                }
+              >
+                {pathname === '/entities' ? (
+                  <span className="flex items-center gap-2">
+                    <Building2 className="h-4 w-4" />
+                    Entities
+                  </span>
+                ) : (
+                  <Link href="/entities" className="flex items-center gap-2">
+                    <Building2 className="h-4 w-4" />
+                    Entities
+                  </Link>
+                )}
+              </DropdownMenuItem>
+              <DropdownMenuItem
                 asChild={pathname !== '/methodology'}
                 className={
                   pathname === '/methodology'
@@ -159,10 +182,7 @@ export function SiteHeader() {
                     Methodology
                   </span>
                 ) : (
-                  <Link
-                    href="/methodology"
-                    className="flex items-center gap-2"
-                  >
+                  <Link href="/methodology" className="flex items-center gap-2">
                     <BookOpen className="h-4 w-4" />
                     Methodology
                   </Link>
@@ -193,10 +213,7 @@ export function SiteHeader() {
                     More Resources
                   </span>
                 ) : (
-                  <Link
-                    href="/resources"
-                    className="flex items-center gap-2"
-                  >
+                  <Link href="/resources" className="flex items-center gap-2">
                     <ExternalLink className="h-4 w-4" />
                     More Resources
                   </Link>

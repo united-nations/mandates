@@ -3,7 +3,11 @@ import { getMandateDisplayTitle, decodeUrlSegments } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { FileText } from 'lucide-react'
 
-import { getMandateBySymbol, getResolutionSeries } from '@/lib/data/mandates'
+import {
+  getBudgetHierarchy,
+  getMandateBySymbol,
+  getResolutionSeries,
+} from '@/lib/data/mandates'
 import { getAllEntities } from '@/lib/data/entities'
 import { getBudgetDocuments } from '@/lib/data/budget-documents'
 import { getAllOrgans } from '@/lib/data/organs'
@@ -28,15 +32,26 @@ export default async function ModalMandatePage({
   const ppbVersion =
     typeof sp.ppb_version === 'string' ? sp.ppb_version : undefined
 
-  const [mandate, entities, budgetDocuments, organs, paragraphs, series] =
-    await Promise.all([
-      getMandateBySymbol(documentSymbol, ppbVersion),
-      getAllEntities(),
-      getBudgetDocuments(),
-      getAllOrgans(),
-      getParagraphsBySymbol(documentSymbol),
-      getResolutionSeries(documentSymbol),
-    ])
+  const [
+    mandate,
+    entities,
+    budgetDocuments,
+    organs,
+    paragraphs,
+    series,
+    budgetStreams,
+  ] = await Promise.all([
+    getMandateBySymbol(documentSymbol, ppbVersion),
+    getAllEntities(),
+    getBudgetDocuments(),
+    getAllOrgans(),
+    getParagraphsBySymbol(documentSymbol),
+    getResolutionSeries(documentSymbol),
+    getBudgetHierarchy({
+      full_document_symbol: documentSymbol,
+      ppb_version: ppbVersion,
+    }),
+  ])
 
   if (!mandate) notFound()
 
@@ -93,7 +108,11 @@ export default async function ModalMandatePage({
             series={series}
           />
         )}
-        <CitationCounts mandate={mandate} entities={entities} />
+        <CitationCounts
+          mandate={mandate}
+          entities={entities}
+          budgetStreams={budgetStreams}
+        />
         <ParagraphsSection
           paragraphs={paragraphs}
           documentSymbol={documentSymbol}
