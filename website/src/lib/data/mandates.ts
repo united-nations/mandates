@@ -580,6 +580,7 @@ export async function getMandates(
         ) as foundational_entities,
         ARRAY_AGG(DISTINCT c.programme_title) FILTER (WHERE c.programme_title IS NOT NULL AND c.programme_title != '') as programmes,
         JSONB_AGG(DISTINCT JSONB_BUILD_OBJECT(
+          'stream', (SELECT bd.doc_type FROM ppb2026.budget_documents bd WHERE c.origin_document ~ bd.match_pattern LIMIT 1),
           'part', c.budget_part_number,
           'part_title', bp.part_title,
           'section', c.section,
@@ -589,8 +590,9 @@ export async function getMandates(
           'entity', c.entity,
           'subprogramme', c.sub_programme,
           'subprogramme_number', c.sub_programme_number,
+          'is_support', (c.section_title LIKE 'Administrative and budgetary aspects%'),
           'part_sort', bp.sort_order
-        )) FILTER (WHERE c.budget_part_number IS NOT NULL) as budget_locations,
+        )) FILTER (WHERE c.origin_document IS NOT NULL) as budget_locations,
         ARRAY_AGG(DISTINCT c.origin_document) FILTER (WHERE c.origin_document IS NOT NULL) as origin_documents`,
     groupCols:
       'd.ppb_full_document_symbol, d.ppb_link, d.ppb_year, d.ppb_body, d.ppb_description, d.ppb_type',
@@ -900,6 +902,7 @@ export async function getMandateCitations(
   for (const row of rows) {
     if (row.budget_part_number === null) continue
     const location = {
+      stream: 'ppb' as const,
       part: row.budget_part_number,
       part_title: row.part_title ?? '',
       part_sort: row.part_sort ?? 0,
@@ -1306,24 +1309,33 @@ async function getFacetOptions(
 /** A budget location as it comes back from JSONB_BUILD_OBJECT, before sorting. */
 type RawBudgetLocation = BudgetLocation & { part_sort?: number }
 
+/** Streams in reading order: the regular budget, then peacekeeping, then plan. */
+const STREAM_SORT: Record<string, number> = { ppb: 0, pko: 1, plan_outline: 2 }
+
 /**
- * Put a document's citation sites into reading order: down the budget, then by
- * section, then entity, then subprogramme. JSONB_AGG(DISTINCT …) cannot carry
- * an ORDER BY, so the ordering happens here.
+ * Put a document's citation sites into reading order: by stream, then down the
+ * budget (part, section, entity, subprogramme). JSONB_AGG(DISTINCT …) cannot
+ * carry an ORDER BY, so the ordering happens here. pko/plan_outline citations
+ * have no part/section, so those comparisons fall through harmlessly.
  */
 function sortBudgetLocations(
   locations: RawBudgetLocation[] | null
 ): BudgetLocation[] {
   if (!locations?.length) return []
   return [...locations]
+    .filter((location) => location.stream != null)
     .sort(
       (a, b) =>
+        (STREAM_SORT[a.stream] ?? 9) - (STREAM_SORT[b.stream] ?? 9) ||
         (a.part_sort ?? 0) - (b.part_sort ?? 0) ||
-        a.section.localeCompare(b.section, undefined, { numeric: true }) ||
+        (a.section ?? '').localeCompare(b.section ?? '', undefined, {
+          numeric: true,
+        }) ||
         (a.entity ?? '').localeCompare(b.entity ?? '') ||
         (a.subprogramme_number ?? -1) - (b.subprogramme_number ?? -1)
     )
     .map((location) => ({
+      stream: location.stream,
       part: location.part,
       part_title: location.part_title,
       section: location.section,
@@ -1334,6 +1346,7 @@ function sortBudgetLocations(
       entity_long: location.entity_long,
       subprogramme: location.subprogramme,
       subprogramme_number: location.subprogramme_number,
+      is_support: location.is_support,
     }))
 }
 

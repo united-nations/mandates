@@ -117,12 +117,17 @@ export interface Mandate {
 // sections.) PKM and Plan Outline citations sit outside this structure and
 // carry no part.
 
-/** One citation's place in the budget, as shown in the Budget location column. */
+/**
+ * One citation's place in the budget, as shown in the Budget location column.
+ * The stream is always present; part/section only exist for the ppb stream
+ * (pko carries an entity but no part/section, plan_outline neither).
+ */
 export interface BudgetLocation {
-  part: string
-  part_title: string
-  section: string
-  section_title: string
+  stream: BudgetStreamType
+  part: string | null
+  part_title: string | null
+  section: string | null
+  section_title: string | null
   programme: number | null
   programme_title: string | null
   entity: string | null
@@ -130,6 +135,8 @@ export interface BudgetLocation {
   /** Composed label, e.g. "Subprogramme 2. Inclusive social development" */
   subprogramme: string | null
   subprogramme_number: number | null
+  /** pko only: an individual mission (false) vs. the shared support account (true). */
+  is_support?: boolean
 }
 
 export interface BudgetSubprogrammeNode {
