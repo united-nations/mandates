@@ -110,6 +110,18 @@ create index ix_ppb2026_citations_symbol on ppb2026.source_document_citations (p
 create index ix_ppb2026_citations_entity on ppb2026.source_document_citations (entity);
 create index ix_citations_budget_part_number on ppb2026.source_document_citations (budget_part_number);
 create index ix_citations_section on ppb2026.source_document_citations (section);
+-- Subject heading -> UNBIS thesaurus domain/sub-domain mapping (see migration
+-- 027). Seeded from data/references/subject_thesaurus.csv (UNBIS v20250708).
+-- subject_norm is upper(trim()) of the heading; a subject may map to >1 domain.
+create table ppb2026.subject_thesaurus (
+    subject_norm    text not null,
+    domain_code     text not null,
+    domain_label    text not null,
+    domain_uri      text not null,
+    subdomain_label text,
+    subdomain_uri   text,
+    primary key (subject_norm, domain_code)
+);
 create table ppb2026.source_documents_metadata_clean (
     symbol text,
     symbol_split text,
@@ -386,3 +398,4 @@ create index unified_documents_type_idx on public.unified_documents (ppb_type);
 create index unified_documents_year_idx on public.unified_documents (ppb_year);
 
 grant select on public.unified_documents to mandates_readonly;
+grant select on ppb2026.subject_thesaurus to mandates_readonly;
