@@ -98,7 +98,7 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
       ppbPartNodes.push({
         key: `part-${part.part}`,
         node: (
-          <div className={cn(compact && SECTION_BOX, 'space-y-1.5')}>
+          <div className={cn(compact && SECTION_BOX, compact && 'h-full', 'space-y-1.5')}>
             <h3 className={showSections ? 'text-base' : 'text-sm'}>
               <span className="font-medium text-gray-500">
                 Part {part.part}.
@@ -241,9 +241,9 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
                   <StreamHeading type="ppb" />
                 </div>
                 {compact ? (
-                  <div className="columns-2 gap-x-8">
+                  <div className="grid grid-cols-2 gap-x-8 gap-y-5">
                     {ppbPartNodes.map((part) => (
-                      <div key={part.key} className="mb-5 break-inside-avoid">
+                      <div key={part.key} className="h-full">
                         {part.node}
                       </div>
                     ))}
@@ -426,10 +426,10 @@ function EntityPill({
       entity={entity}
       onSelect={onSelect}
       className={cn(
-        'inline-flex items-baseline gap-1 rounded-full px-2.5 py-0.5 text-xs transition-colors',
+        'inline-flex items-baseline gap-1 rounded-full border px-2.5 py-0.5 text-xs transition-colors',
         active
-          ? 'bg-un-blue text-white'
-          : 'bg-gray-100 hover:bg-un-blue/10 hover:text-un-blue'
+          ? 'border-un-blue bg-un-blue text-white'
+          : 'border-gray-200 bg-white hover:border-un-blue hover:text-un-blue'
       )}
     >
       <span className="font-medium">{entity.entity}</span>
