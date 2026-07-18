@@ -13,7 +13,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
-import { Building2, Globe, Info, Landmark, Menu, Tags } from 'lucide-react'
+import { Building2, Gavel, Globe, Info, Landmark, Menu, Tags } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -26,6 +26,7 @@ const pagePadding = 'px-8 sm:px-12 lg:px-16'
 const navItems = [
   { href: '/secretariat', label: 'UN Secretariat Mandates', icon: Landmark },
   { href: '/entities', label: 'Entities', icon: Building2 },
+  { href: '/organs', label: 'Organs', icon: Gavel },
   { href: '/subjects', label: 'Subjects', icon: Tags },
   { href: '/system', label: 'UN System Mandates', icon: Globe },
   { href: '/about', label: 'About', icon: Info },
@@ -44,7 +45,7 @@ export function SiteHeader() {
         className={cn(
           'relative mx-auto flex items-center gap-4',
           pagePadding,
-          pageWidth,
+          pageWidth
         )}
       >
         {/* Emblem aspect ≈ 1.198:1. Outboard variant tucks into the
@@ -56,8 +57,8 @@ export function SiteHeader() {
           href="/secretariat"
           aria-label="Mandate Source Registry — home"
           className={cn(
-            'absolute top-1/2 end-[calc(100%-56.74px)] h-10 w-[47.9px] -translate-y-1/2 transition-opacity hover:opacity-75',
-            outboardOnly,
+            'absolute end-[calc(100%-56.74px)] top-1/2 h-10 w-[47.9px] -translate-y-1/2 transition-opacity hover:opacity-75',
+            outboardOnly
           )}
         >
           <Image
@@ -86,7 +87,9 @@ export function SiteHeader() {
               shrink and the badge stays visible. md+: original inline layout. */}
           <span className="flex flex-col items-start gap-1 md:flex-row md:items-center md:gap-2.5">
             <span className="text-lg leading-none tracking-tight text-foreground md:text-[23.83px]">
-              <span className="hidden font-bold md:inline">United Nations </span>
+              <span className="hidden font-bold md:inline">
+                United Nations{' '}
+              </span>
               <span className="font-light">Mandate Source Registry</span>
             </span>
             <Tooltip>
@@ -125,7 +128,7 @@ export function SiteHeader() {
                     'rounded-md px-3 py-1.5 text-sm whitespace-nowrap transition-colors',
                     active
                       ? 'bg-un-blue/10 font-medium text-un-blue'
-                      : 'text-foreground/80 hover:bg-muted hover:text-foreground',
+                      : 'text-foreground/80 hover:bg-muted hover:text-foreground'
                   )}
                 >
                   {label}

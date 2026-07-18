@@ -36,7 +36,8 @@ import { Fragment, useState } from 'react'
 import { titleCase } from 'title-case'
 import { EntityBadge, FoundationalTag } from '../EntityBadge'
 import { isFoundational } from '@/lib/foundational'
-import { ColumnHeaderFilter } from './ColumnHeaderFilter'
+import { ORGAN_CATEGORIES } from '@/lib/organ-groups'
+import { ColumnHeaderFilter, type FilterGroup } from './ColumnHeaderFilter'
 import { ColumnPicker } from './ColumnPicker'
 import { BudgetLocationCell } from './BudgetLocationCell'
 import { COLUMN_DEFINITIONS, getMandateUrl } from './MandateColumns'
@@ -115,8 +116,13 @@ export function MandateDataTable({
     switch (columnId) {
       case 'organ':
         // organCounts is already ordered by count DESC from the DB (faceted on
-        // all other active filters, see getOrganCounts).
-        return organCounts.map((o) => ({ value: o.short, count: o.count }))
+        // all other active filters, see getOrganCounts). label = short so the
+        // acronym renders verbatim (titleCase would mangle e.g. ECOSOC).
+        return organCounts.map((o) => ({
+          value: o.short,
+          label: o.short,
+          count: o.count,
+        }))
       case 'entity_list':
         return entityCounts.map((e) => ({ value: e.entity, count: e.count }))
       case 'subjects':
@@ -129,6 +135,12 @@ export function MandateDataTable({
         return undefined
     }
   }
+
+  // Organs group by their place in the UN system (shared with the /organs page).
+  const getFilterGroups = (columnId: string): FilterGroup[] | undefined =>
+    columnId === 'organ'
+      ? ORGAN_CATEGORIES.map((c) => ({ label: c.label, values: c.organs }))
+      : undefined
 
   const findOrganLong = (short: string) =>
     organsData.find((o) => o.short === short)?.long || short
@@ -170,6 +182,7 @@ export function MandateDataTable({
                         column={col}
                         currentSort={currentSort}
                         filterOptions={getFilterOptions(col.id)}
+                        filterGroups={getFilterGroups(col.id)}
                         yearRange={filterOptions.yearRange}
                         budgetHierarchy={filterOptions.budgetHierarchy}
                       />

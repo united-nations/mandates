@@ -14,8 +14,9 @@ import { getAllEntities } from './entities'
 import { getAllOrgans, getOrganMap } from './organs'
 import { getBudgetVersions } from './budget-documents'
 import { FOUNDATIONAL_PART_IN_DOCUMENT } from '@/lib/foundational'
+import { ORGAN_CATEGORIES } from '@/lib/organ-groups'
 import { SUBJECT_DOMAIN_LABELS } from '@/lib/filter-constants'
-import type { Mandate, FilterOptions, EntityWithCount, OrganWithCount, CrossCitation, CitationBin, ApiResponse, BudgetLocation, BudgetPartNode, BudgetSectionNode, BudgetEntityNode, BudgetStream, BudgetPkoGroupNode, SubjectDomain, SubjectSubdomain, SubjectLeaf } from '@/types'
+import type { Mandate, FilterOptions, EntityWithCount, OrganWithCount, OrganGroup, CrossCitation, CitationBin, ApiResponse, BudgetLocation, BudgetPartNode, BudgetSectionNode, BudgetEntityNode, BudgetStream, BudgetPkoGroupNode, SubjectDomain, SubjectSubdomain, SubjectLeaf } from '@/types'
 
 // ============================================================================
 // Helper Functions
@@ -1215,6 +1216,72 @@ export async function getOrganCounts(filters: FilterOptions = {}): Promise<Organ
     long: row.short, // Will be enriched with organ data later
     count: parseInt(row.count) || 0,
   }))
+}
+
+/**
+ * Organs grouped by editorial category for the /organs directory.
+ *
+ * The parallel to getBudgetHierarchy (which backs /entities): merges the
+ * canonical organ list (names + websites, ppb2026.organs) with document counts,
+ * folds them into ORGAN_CATEGORIES, and drops organs with no documents.
+ * Categories keep their declared order; within a category, organs keep their
+ * declared order. Any organ present in the DB but absent from every category is
+ * appended to the last (catch-all) category so it is never lost.
+ *
+ * Directory scope: every organ that appears on any document in the mirror
+ * (public.unified_documents), counted across the whole mirror — deliberately
+ * NOT the explorer's active-mandates/version scoping, which would hide organs
+ * whose documents aren't in the explorable catalog (the ECOSOC commissions,
+ * UNCLOS, etc.). Consequence: filtering the table to one of those organs can
+ * currently return no rows; reconciling the explorable catalog with the full
+ * organ set is tracked separately (a ppb2026/2027 catalog-scope question).
+ */
+export async function getOrganHierarchy(): Promise<OrganGroup[]> {
+  const [organs, countRows] = await Promise.all([
+    getAllOrgans(),
+    queryMany<{ short: string; count: string }>(
+      `SELECT ppb_body AS short, COUNT(DISTINCT ppb_full_document_symbol) AS count
+       FROM public.unified_documents
+       WHERE ppb_body IS NOT NULL AND ppb_body != ''
+       GROUP BY ppb_body`,
+      []
+    ),
+  ])
+  const countBy = new Map(
+    countRows.map((r) => [r.short, parseInt(r.count, 10) || 0])
+  )
+  const listed = new Set(ORGAN_CATEGORIES.flatMap((c) => c.organs))
+
+  const build = (short: string): OrganWithCount | null => {
+    const organ = organs.find((o) => o.short === short)
+    const count = countBy.get(short) ?? 0
+    if (!organ || count === 0) return null
+    return {
+      short: organ.short,
+      long: organ.long,
+      website: organ.website,
+      count,
+    }
+  }
+
+  const groups: OrganGroup[] = ORGAN_CATEGORIES.map((category) => {
+    const members = [...category.organs]
+    // Fold any DB organ not placed in a category into the catch-all bucket.
+    if (category.id === ORGAN_CATEGORIES[ORGAN_CATEGORIES.length - 1].id) {
+      for (const organ of organs) {
+        if (!listed.has(organ.short)) members.push(organ.short)
+      }
+    }
+    return {
+      id: category.id,
+      label: category.label,
+      organs: members
+        .map(build)
+        .filter((o): o is OrganWithCount => o !== null),
+    }
+  })
+
+  return groups.filter((g) => g.organs.length > 0)
 }
 
 /**
