@@ -2,18 +2,27 @@
 
 import { SearchInput } from '@/components/SearchInput'
 import { sectionLabel } from '@/components/table/BudgetStreamTree'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 import { BUDGET_STREAM_LABELS } from '@/lib/filter-constants'
+import { cn } from '@/lib/utils'
 import type { BudgetEntityNode, BudgetStream } from '@/types'
-import { ChevronRight } from 'lucide-react'
+import { ChevronRight, MousePointerClick, Rows3, Tag } from 'lucide-react'
 import Link from 'next/link'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 /**
- * The entity directory: every budget-holding entity as a card, grouped by the
- * budget hierarchy (Programme Budget → Part → Section, Peacekeeping → Missions /
- * Support account). Reads the same `BudgetStream[]` as the table's budget filter
- * (getBudgetHierarchy). Clicking a card opens the main list filtered to that
- * entity; the Plan Outline tile filters by its stream.
+ * The entity directory: every budget-holding entity, grouped by the budget
+ * hierarchy (Programme Budget → Part → Section, Peacekeeping → Missions /
+ * Support account). Reads the same `BudgetStream[]` as the table's budget
+ * filter (getBudgetHierarchy). Two view toggles, persisted in localStorage:
+ * compact (acronym pills) vs. full (cards with names), and whether to break
+ * each part into its sections. Every entity links to the main list filtered to
+ * it; hovering shows the full name and a "click to show mandates" hint.
  */
 
 interface EntitiesDirectoryProps {
@@ -22,9 +31,27 @@ interface EntitiesDirectoryProps {
 
 export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
   const [search, setSearch] = useState('')
-  const term = search.trim().toLowerCase()
+  const [compact, setCompact] = useState(true)
+  const [showSections, setShowSections] = useState(false)
 
-  const matches = (entity: BudgetEntityNode) =>
+  // Restore saved preferences after mount (avoids an SSR hydration mismatch).
+  useEffect(() => {
+    const c = localStorage.getItem('entities.compact')
+    const s = localStorage.getItem('entities.showSections')
+    /* eslint-disable react-hooks/set-state-in-effect -- one-time restore of persisted UI prefs */
+    if (c !== null) setCompact(c === '1')
+    if (s !== null) setShowSections(s === '1')
+    /* eslint-enable react-hooks/set-state-in-effect */
+  }, [])
+  useEffect(() => {
+    localStorage.setItem('entities.compact', compact ? '1' : '0')
+  }, [compact])
+  useEffect(() => {
+    localStorage.setItem('entities.showSections', showSections ? '1' : '0')
+  }, [showSections])
+
+  const term = search.trim().toLowerCase()
+  const match = (entity: BudgetEntityNode) =>
     !term ||
     entity.entity.toLowerCase().includes(term) ||
     (entity.entity_long?.toLowerCase().includes(term) ?? false)
@@ -32,106 +59,171 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
   const totalEntities = useMemo(() => countEntities(streams), [streams])
 
   return (
-    <div className="space-y-8">
-      <div className="max-w-md">
-        <SearchInput
-          placeholder="Search entities by acronym or name..."
-          value={search}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setSearch(e.target.value)
+    <TooltipProvider delayDuration={200}>
+      <div className="space-y-8">
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="max-w-md min-w-48 flex-1">
+            <SearchInput
+              placeholder="Search entities by acronym or name..."
+              value={search}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setSearch(e.target.value)
+              }
+              variant="border-bottom"
+            />
+          </div>
+          <Toggle
+            active={showSections}
+            onClick={() => setShowSections((v) => !v)}
+            icon={Rows3}
+          >
+            View sections
+          </Toggle>
+          <Toggle
+            active={compact}
+            onClick={() => setCompact((v) => !v)}
+            icon={Tag}
+          >
+            Compact
+          </Toggle>
+        </div>
+
+        {streams.map((stream) => {
+          if (stream.type === 'plan_outline') {
+            if (term) return null
+            return (
+              <section key={stream.type} className="space-y-3">
+                <StreamHeading type={stream.type} />
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Link
+                      href="/?budget_document=plan_outline"
+                      className="inline-flex max-w-md items-center gap-2 rounded-xl bg-muted/50 px-4 py-2.5 text-sm transition-colors hover:bg-muted"
+                    >
+                      <span className="font-semibold">{stream.label}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {stream.count} documents
+                      </span>
+                    </Link>
+                  </TooltipTrigger>
+                  <ClickTooltip />
+                </Tooltip>
+              </section>
+            )
           }
-          variant="border-bottom"
-        />
-      </div>
 
-      {streams.map((stream) => {
-        const key = stream.type
+          if (stream.type === 'ppb') {
+            const parts = stream.parts
+              .map((part) => ({
+                ...part,
+                sections: part.sections
+                  .map((s) => ({ ...s, entities: s.entities.filter(match) }))
+                  .filter((s) => s.entities.length > 0),
+              }))
+              .filter((p) => p.sections.length > 0)
+            if (parts.length === 0) return null
 
-        if (stream.type === 'plan_outline') {
-          if (term) return null
-          return (
-            <section key={key} className="space-y-3">
-              <StreamHeading type={stream.type} />
-              <Link
-                href="/?budget_document=plan_outline"
-                className="group flex max-w-md items-center justify-between gap-2 rounded-md border border-border bg-card px-3 py-2.5 transition-colors hover:border-un-blue/40 hover:bg-accent"
-              >
-                <span className="text-sm">
-                  {stream.label}
-                  <span className="ml-2 text-xs text-muted-foreground">
-                    {stream.count} documents
-                  </span>
-                </span>
-                <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground/50 group-hover:text-un-blue" />
-              </Link>
-            </section>
-          )
-        }
+            return (
+              <section key={stream.type} className="space-y-6">
+                <StreamHeading type={stream.type} />
+                {parts.map((part) => {
+                  const flat = part.sections.flatMap((s) => s.entities)
+                  return (
+                    <div key={part.part} className="space-y-3">
+                      <h3 className="text-base">
+                        <span className="font-medium text-muted-foreground">
+                          Part {part.part}.
+                        </span>{' '}
+                        <span className="font-semibold text-foreground">
+                          {part.part_title}
+                        </span>
+                      </h3>
+                      {showSections ? (
+                        part.sections.map((section) => (
+                          <div key={section.section} className="space-y-2">
+                            <SubHeading>{sectionLabel(section)}</SubHeading>
+                            <EntityGroup
+                              entities={section.entities}
+                              compact={compact}
+                            />
+                          </div>
+                        ))
+                      ) : (
+                        <EntityGroup entities={flat} compact={compact} />
+                      )}
+                    </div>
+                  )
+                })}
+              </section>
+            )
+          }
 
-        if (stream.type === 'pko') {
-          const groups = stream.groups
-            .map((g) => ({ ...g, entities: g.entities.filter(matches) }))
+          // pko
+          const pkoGroups = stream.groups
+            .map((g) => ({ ...g, entities: g.entities.filter(match) }))
             .filter((g) => g.entities.length > 0)
-          if (groups.length === 0) return null
+          if (pkoGroups.length === 0) return null
+          const pkoFlat = pkoGroups.flatMap((g) => g.entities)
+
           return (
-            <section key={key} className="space-y-4">
+            <section key={stream.type} className="space-y-4">
               <StreamHeading type={stream.type} />
-              {groups.map((group) => (
-                <div key={group.group} className="space-y-2">
-                  <SubHeading>{group.label}</SubHeading>
-                  <CardGrid entities={group.entities} />
-                </div>
-              ))}
+              {showSections ? (
+                pkoGroups.map((group) => (
+                  <div key={group.group} className="space-y-2">
+                    <SubHeading>{group.label}</SubHeading>
+                    <EntityGroup entities={group.entities} compact={compact} />
+                  </div>
+                ))
+              ) : (
+                <EntityGroup entities={pkoFlat} compact={compact} />
+              )}
             </section>
           )
-        }
+        })}
 
-        // ppb
-        const parts = stream.parts
-          .map((part) => ({
-            ...part,
-            sections: part.sections
-              .map((s) => ({ ...s, entities: s.entities.filter(matches) }))
-              .filter((s) => s.entities.length > 0),
-          }))
-          .filter((p) => p.sections.length > 0)
-        if (parts.length === 0) return null
+        {term && countMatches(streams, match) === 0 && (
+          <p className="text-sm text-muted-foreground">
+            No entities match “{search.trim()}”.
+          </p>
+        )}
 
-        return (
-          <section key={key} className="space-y-5">
-            <StreamHeading type={stream.type} />
-            {parts.map((part) => (
-              <div key={part.part} className="space-y-3">
-                <h3 className="text-sm font-semibold">
-                  <span className="text-muted-foreground">
-                    Part {part.part}.
-                  </span>{' '}
-                  {part.part_title}
-                </h3>
-                {part.sections.map((section) => (
-                  <div key={section.section} className="space-y-2">
-                    <SubHeading>{sectionLabel(section)}</SubHeading>
-                    <CardGrid entities={section.entities} />
-                  </div>
-                ))}
-              </div>
-            ))}
-          </section>
-        )
-      })}
+        {!term && (
+          <p className="pt-2 text-xs text-muted-foreground">
+            {totalEntities} entities across the budget.
+          </p>
+        )}
+      </div>
+    </TooltipProvider>
+  )
+}
 
-      {term && countMatches(streams, matches) === 0 && (
-        <p className="text-sm text-muted-foreground">
-          No entities match “{search.trim()}”.
-        </p>
+function Toggle({
+  active,
+  onClick,
+  icon: Icon,
+  children,
+}: {
+  active: boolean
+  onClick: () => void
+  icon: typeof Rows3
+  children: React.ReactNode
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={cn(
+        'inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors',
+        active
+          ? 'bg-un-blue text-white hover:bg-un-blue/90'
+          : 'bg-muted text-muted-foreground hover:bg-accent'
       )}
-
-      {!term && (
-        <p className="pt-2 text-xs text-muted-foreground">
-          {totalEntities} entities across the budget.
-        </p>
-      )}
-    </div>
+    >
+      <Icon className="h-3.5 w-3.5" />
+      {children}
+    </button>
   )
 }
 
@@ -144,38 +236,102 @@ function StreamHeading({ type }: { type: keyof typeof BUDGET_STREAM_LABELS }) {
 }
 
 function SubHeading({ children }: { children: React.ReactNode }) {
-  return <p className="text-xs text-muted-foreground">{children}</p>
+  return <p className="text-sm text-muted-foreground">{children}</p>
 }
 
-function CardGrid({ entities }: { entities: BudgetEntityNode[] }) {
+function EntityGroup({
+  entities,
+  compact,
+}: {
+  entities: BudgetEntityNode[]
+  compact: boolean
+}) {
+  if (compact) {
+    return (
+      <div className="flex flex-wrap gap-1.5">
+        {entities.map((entity) => (
+          <EntityPill key={entity.entity} entity={entity} />
+        ))}
+      </div>
+    )
+  }
   return (
     <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {entities.map((entity) => (
-        <Link
-          key={entity.entity}
-          href={`/?entity=${encodeURIComponent(entity.entity)}`}
-          className="group flex items-start justify-between gap-2 rounded-md border border-border bg-card px-3 py-2 transition-colors hover:border-un-blue/40 hover:bg-accent"
-        >
-          <div className="min-w-0">
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-sm font-semibold">{entity.entity}</span>
-              <span className="font-mono text-[10px] text-muted-foreground">
-                {entity.count}
-              </span>
-            </div>
-            {entity.entity_long && (
-              <div
-                className="truncate text-xs text-muted-foreground"
-                title={entity.entity_long}
-              >
-                {entity.entity_long}
-              </div>
-            )}
-          </div>
-          <ChevronRight className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground/40 group-hover:text-un-blue" />
-        </Link>
+        <EntityCard key={entity.entity} entity={entity} />
       ))}
     </div>
+  )
+}
+
+/** Wraps an entity link in the shared hover tooltip (full name + click hint). */
+function EntityLink({
+  entity,
+  className,
+  children,
+}: {
+  entity: BudgetEntityNode
+  className: string
+  children: React.ReactNode
+}) {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Link
+          href={`/?entity=${encodeURIComponent(entity.entity)}`}
+          className={className}
+        >
+          {children}
+        </Link>
+      </TooltipTrigger>
+      <ClickTooltip name={entity.entity_long} />
+    </Tooltip>
+  )
+}
+
+function ClickTooltip({ name }: { name?: string | null }) {
+  return (
+    <TooltipContent side="top" className="max-w-xs">
+      {name && <div className="font-medium">{name}</div>}
+      <div className="mt-0.5 flex items-center gap-1 text-un-blue">
+        <MousePointerClick className="h-3.5 w-3.5" />
+        Click to show mandates
+      </div>
+    </TooltipContent>
+  )
+}
+
+function EntityPill({ entity }: { entity: BudgetEntityNode }) {
+  return (
+    <EntityLink
+      entity={entity}
+      className="inline-flex items-baseline gap-1.5 rounded-full bg-muted px-3 py-1 text-sm transition-colors hover:bg-accent"
+    >
+      <span className="font-medium">{entity.entity}</span>
+      <span className="text-xs text-muted-foreground">{entity.count}</span>
+    </EntityLink>
+  )
+}
+
+function EntityCard({ entity }: { entity: BudgetEntityNode }) {
+  return (
+    <EntityLink
+      entity={entity}
+      className="group flex items-start justify-between gap-2 rounded-xl bg-muted/50 px-4 py-2.5 transition-colors hover:bg-muted"
+    >
+      <div className="min-w-0">
+        <div className="flex items-baseline gap-1.5">
+          <span className="font-semibold">{entity.entity}</span>
+          <span className="text-xs text-muted-foreground">{entity.count}</span>
+        </div>
+        {entity.entity_long && (
+          <div className="truncate text-sm text-muted-foreground">
+            {entity.entity_long}
+          </div>
+        )}
+      </div>
+      <ChevronRight className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground/40 group-hover:text-un-blue" />
+    </EntityLink>
   )
 }
 
@@ -196,17 +352,17 @@ function countEntities(streams: BudgetStream[]): number {
 
 function countMatches(
   streams: BudgetStream[],
-  matches: (e: BudgetEntityNode) => boolean
+  match: (e: BudgetEntityNode) => boolean
 ): number {
   let n = 0
   for (const stream of streams) {
     if (stream.type === 'ppb') {
       for (const part of stream.parts)
         for (const section of part.sections)
-          n += section.entities.filter(matches).length
+          n += section.entities.filter(match).length
     } else if (stream.type === 'pko') {
       for (const group of stream.groups)
-        n += group.entities.filter(matches).length
+        n += group.entities.filter(match).length
     }
   }
   return n
