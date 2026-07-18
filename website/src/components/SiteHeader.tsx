@@ -13,7 +13,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
-import { Building2, Globe, Info, Landmark, Menu } from 'lucide-react'
+import { Building2, Globe, Info, Landmark, Menu, Tags } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -26,6 +26,7 @@ const pagePadding = 'px-8 sm:px-12 lg:px-16'
 const navItems = [
   { href: '/secretariat', label: 'UN Secretariat Mandates', icon: Landmark },
   { href: '/entities', label: 'Entities', icon: Building2 },
+  { href: '/subjects', label: 'Subjects', icon: Tags },
   { href: '/system', label: 'UN System Mandates', icon: Globe },
   { href: '/about', label: 'About', icon: Info },
 ]

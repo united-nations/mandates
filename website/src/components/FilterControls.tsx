@@ -13,6 +13,7 @@ import {
   FileType,
   List,
   Network,
+  Tags,
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
@@ -23,7 +24,10 @@ import { titleCase } from 'title-case'
 import { explainerTexts } from '@/lib/en_text_contents'
 import { useFilters } from '@/contexts/FilterContext'
 import { FOUNDATIONAL_LABEL } from '@/lib/foundational'
-import { BUDGET_STREAM_LABELS } from '@/lib/filter-constants'
+import {
+  BUDGET_STREAM_LABELS,
+  SUBJECT_DOMAIN_LABELS,
+} from '@/lib/filter-constants'
 
 interface Entity {
   entity: string
@@ -244,6 +248,18 @@ export function FilterControls({
                 icon={BookOpen}
                 label={`Subject: ${titleCase(displayFilters.subject)}`}
                 onClear={() => clearFilter('subject')}
+                variant="secondary"
+              />
+            )}
+
+            {displayFilters.subject_domain && (
+              <FilterBadge
+                icon={Tags}
+                label={`Subject domain: ${
+                  SUBJECT_DOMAIN_LABELS[displayFilters.subject_domain] ??
+                  displayFilters.subject_domain
+                }`}
+                onClear={() => clearFilter('subject_domain')}
                 variant="secondary"
               />
             )}

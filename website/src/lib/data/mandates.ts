@@ -14,7 +14,8 @@ import { getAllEntities } from './entities'
 import { getAllOrgans, getOrganMap } from './organs'
 import { getBudgetVersions } from './budget-documents'
 import { FOUNDATIONAL_PART_IN_DOCUMENT } from '@/lib/foundational'
-import type { Mandate, FilterOptions, EntityWithCount, OrganWithCount, CrossCitation, CitationBin, ApiResponse, BudgetLocation, BudgetPartNode, BudgetSectionNode, BudgetEntityNode, BudgetStream, BudgetPkoGroupNode } from '@/types'
+import { SUBJECT_DOMAIN_LABELS } from '@/lib/filter-constants'
+import type { Mandate, FilterOptions, EntityWithCount, OrganWithCount, CrossCitation, CitationBin, ApiResponse, BudgetLocation, BudgetPartNode, BudgetSectionNode, BudgetEntityNode, BudgetStream, BudgetPkoGroupNode, SubjectDomain, SubjectSubdomain, SubjectLeaf } from '@/types'
 
 // ============================================================================
 // Helper Functions
@@ -382,6 +383,26 @@ function buildFilterClauses(
       )
     `)
     params.push(`%${filters.subject.toLowerCase()}%`)
+    paramIndex++
+  }
+
+  // Subject-domain filter — the top level of the UNBIS subject hierarchy
+  // (/subjects page). A document matches if any of its subject headings maps to
+  // this domain in ppb2026.subject_thesaurus. Unmapped headings (sub-national
+  // place names) get an effective domain of '17' (Geographical Descriptors),
+  // exactly as getSubjectHierarchy routes them, so the filter and the page agree.
+  if (filters.subject_domain) {
+    clauses.push(`
+      EXISTS (
+        SELECT 1
+        FROM UNNEST(d.subjects) s
+        LEFT JOIN ppb2026.subject_thesaurus t
+          ON t.subject_norm = UPPER(TRIM(s))
+        WHERE TRIM(s) <> ''
+          AND COALESCE(t.domain_code, '17') = $${paramIndex}
+      )
+    `)
+    params.push(filters.subject_domain)
     paramIndex++
   }
 
@@ -1679,6 +1700,180 @@ export async function getProgrammeOptions(filters: FilterOptions = {}): Promise<
     ORDER BY count DESC, c.programme_title
   `,
   })
+}
+
+/**
+ * Build the /subjects hierarchy: every subject heading on a (filtered) document,
+ * grouped by the UNBIS thesaurus into domain (01-18) -> sub-domain -> leaf, with
+ * distinct-document counts at each level.
+ *
+ * A heading's domain comes from ppb2026.subject_thesaurus (seeded from the UNBIS
+ * dump); headings with no thesaurus match are all sub-national place names, so
+ * they are routed into domain 17 (Geographical Descriptors) under a synthetic
+ * "Places (unclassified)" sub-domain — the same routing the subject_domain
+ * filter uses, so the page and the filtered explorer agree. A heading can map to
+ * more than one domain and is then shown under each (per design), which is why
+ * domain counts can overlap and do not sum to a grand total.
+ *
+ * Domains, sub-domains and leaves are each ordered by document count, so the
+ * heaviest subjects surface first — this is a browse entry point, not a
+ * canonical thesaurus print-out.
+ */
+export async function getSubjectHierarchy(
+  filters: FilterOptions = {}
+): Promise<SubjectDomain[]> {
+  // Scope by every active filter except the hierarchy's own levels, so the tree
+  // keeps showing where a user can still navigate after clicking a node (same
+  // convention as getBudgetHierarchy and the facet lists).
+  const scoped: FilterOptions = { ...filters }
+  delete scoped.subject
+  delete scoped.subject_domain
+
+  const { cte, params } = buildFilteredDocsCTE(scoped, {
+    selectCols: 'd.ppb_full_document_symbol, d.subjects',
+    groupCols: 'd.ppb_full_document_symbol, d.subjects',
+  })
+
+  const query = `
+    WITH ${cte},
+    subj AS (
+      SELECT DISTINCT
+        fd.ppb_full_document_symbol AS sym,
+        UPPER(TRIM(s)) AS subject_norm
+      FROM filtered_docs fd, UNNEST(fd.subjects) s
+      WHERE TRIM(s) <> ''
+    ),
+    mapped AS (
+      SELECT
+        subj.sym,
+        subj.subject_norm,
+        COALESCE(t.domain_code, '17') AS domain_code,
+        COALESCE(
+          t.subdomain_label,
+          CASE WHEN t.domain_code IS NULL THEN 'PLACES (UNCLASSIFIED)' END
+        ) AS subdomain_label,
+        t.subdomain_uri
+      FROM subj
+      LEFT JOIN ppb2026.subject_thesaurus t
+        ON t.subject_norm = subj.subject_norm
+    )
+    SELECT
+      domain_code,
+      subdomain_label,
+      subdomain_uri,
+      subject_norm,
+      GROUPING(subdomain_label) AS g_sub,
+      GROUPING(subject_norm)    AS g_subj,
+      COUNT(DISTINCT sym)       AS count
+    FROM mapped
+    GROUP BY GROUPING SETS (
+      (domain_code),
+      (domain_code, subdomain_label, subdomain_uri),
+      (domain_code, subdomain_label, subdomain_uri, subject_norm)
+    )
+  `
+
+  const rows = await queryMany<SubjectHierarchyRow>(query, params)
+  return buildSubjectTree(rows)
+}
+
+interface SubjectHierarchyRow {
+  domain_code: string
+  subdomain_label: string | null
+  subdomain_uri: string | null
+  subject_norm: string | null
+  g_sub: number | string
+  g_subj: number | string
+  count: string
+}
+
+/**
+ * Assemble the nested SubjectDomain[] from the GROUPING SETS rows. Three depths
+ * arrive interleaved and are told apart by the GROUPING() flags:
+ *   g_sub=1,g_subj=1 -> domain total
+ *   g_sub=0,g_subj=1 -> sub-domain total (subdomain_label NULL = domain-direct)
+ *   g_sub=0,g_subj=0 -> leaf subject
+ */
+function buildSubjectTree(rows: SubjectHierarchyRow[]): SubjectDomain[] {
+  const toDisplay = (norm: string) => titleCase(norm.trim().toLowerCase())
+  const n = (v: string) => parseInt(v, 10) || 0
+
+  interface DomainAcc {
+    code: string
+    count: number
+    directSubjects: SubjectLeaf[]
+    subdomains: Map<string, SubjectSubdomain>
+  }
+  const domains = new Map<string, DomainAcc>()
+  const ensureDomain = (code: string): DomainAcc => {
+    let d = domains.get(code)
+    if (!d) {
+      d = { code, count: 0, directSubjects: [], subdomains: new Map() }
+      domains.set(code, d)
+    }
+    return d
+  }
+
+  // The three GROUPING SETS depths arrive interleaved. Process shallowest-first
+  // (domain, then sub-domain, then leaf) so every sub-domain entry exists before
+  // its leaves are attached — otherwise a leaf arriving before its sub-domain
+  // total finds no parent and is silently dropped.
+  const depth = (row: SubjectHierarchyRow) =>
+    (Number(row.g_sub) === 1 ? 0 : 1) + (Number(row.g_subj) === 1 ? 0 : 1)
+  const ordered = [...rows].sort((a, b) => depth(a) - depth(b))
+
+  for (const row of ordered) {
+    const grpSub = Number(row.g_sub) === 1
+    const grpSubj = Number(row.g_subj) === 1
+    const domain = ensureDomain(row.domain_code)
+
+    if (grpSub && grpSubj) {
+      // Domain total.
+      domain.count = n(row.count)
+    } else if (!grpSub && grpSubj) {
+      // Sub-domain total. NULL label = the domain-direct bucket (no sub-domain);
+      // its leaves go straight to directSubjects, so no map entry is needed.
+      if (row.subdomain_label !== null) {
+        domain.subdomains.set(row.subdomain_label, {
+          label: toDisplay(row.subdomain_label),
+          uri: row.subdomain_uri,
+          count: n(row.count),
+          subjects: [],
+        })
+      }
+    } else if (!grpSub && !grpSubj && row.subject_norm !== null) {
+      // Leaf subject.
+      const leaf: SubjectLeaf = {
+        subject: toDisplay(row.subject_norm),
+        count: n(row.count),
+      }
+      if (row.subdomain_label === null) {
+        domain.directSubjects.push(leaf)
+      } else {
+        domain.subdomains.get(row.subdomain_label)?.subjects.push(leaf)
+      }
+    }
+  }
+
+  const byCount = <T extends { count: number }>(a: T, b: T) => b.count - a.count
+
+  const result: SubjectDomain[] = []
+  for (const d of domains.values()) {
+    d.directSubjects.sort(byCount)
+    const subdomains = [...d.subdomains.values()]
+    for (const sd of subdomains) sd.subjects.sort(byCount)
+    subdomains.sort(byCount)
+    result.push({
+      code: d.code,
+      label: SUBJECT_DOMAIN_LABELS[d.code] ?? toDisplay(d.code),
+      uri: `http://metadata.un.org/thesaurus/${d.code}`,
+      count: d.count,
+      directSubjects: d.directSubjects,
+      subdomains,
+    })
+  }
+  result.sort(byCount)
+  return result
 }
 
 /**

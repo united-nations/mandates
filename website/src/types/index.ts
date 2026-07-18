@@ -197,6 +197,38 @@ export type BudgetStream =
   | { type: 'pko'; label: string; count: number; groups: BudgetPkoGroupNode[] }
   | { type: 'plan_outline'; label: string; count: number }
 
+// Subject hierarchy (top level of the /subjects page) — the UNBIS thesaurus
+// imposed on the flat subject headings carried on unified_documents.subjects.
+// Three levels: domain (01-18) -> sub-domain -> leaf subject. `count` is
+// documents at that level; counts overlap across domains because a subject may
+// map to more than one domain (see getSubjectHierarchy).
+
+/** A leaf subject heading; links to /secretariat?subject=<subject>. */
+export interface SubjectLeaf {
+  /** Title-cased display heading, also used verbatim as the filter value. */
+  subject: string
+  count: number
+}
+
+/** A UNBIS sub-domain grouping leaf subjects within a domain. */
+export interface SubjectSubdomain {
+  label: string
+  uri: string | null
+  count: number
+  subjects: SubjectLeaf[]
+}
+
+/** A top-level UNBIS subject domain (01-18). */
+export interface SubjectDomain {
+  code: string
+  label: string
+  uri: string
+  count: number
+  /** Subjects that map to the domain but to no sub-domain (rendered first). */
+  directSubjects: SubjectLeaf[]
+  subdomains: SubjectSubdomain[]
+}
+
 // Entity types
 export interface Entity {
   entity: string
@@ -259,6 +291,8 @@ export interface FilterOptions {
    */
   programme?: string
   subject?: string
+  /** UNBIS thesaurus subject domain, as a two-digit code ("01".."18"). */
+  subject_domain?: string
   start_year?: string
   end_year?: string
   budget_document?: string
