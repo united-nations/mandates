@@ -251,7 +251,14 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
                   <StreamHeading type="ppb" />
                 </div>
                 {compact ? (
-                  <div className="grid grid-cols-2 gap-x-8 gap-y-5">
+                  <div
+                    className="grid grid-flow-col grid-cols-2 gap-x-8 gap-y-5"
+                    style={{
+                      gridTemplateRows: `repeat(${Math.ceil(
+                        ppbPartNodes.length / 2
+                      )}, auto)`,
+                    }}
+                  >
                     {ppbPartNodes.map((part) => (
                       <div key={part.key} className="h-full">
                         {part.node}
