@@ -38,7 +38,7 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
 
         {/* Back Button - shown on all pages except main page and diff page */}
         {!isMainPage && !isDiffPage && (
-          <div className="mx-auto mb-2 w-full max-w-4xl px-8 pt-6 sm:px-12 lg:max-w-6xl lg:px-16 xl:max-w-7xl">
+          <div className="mx-auto mb-2 w-full max-w-4xl px-8 pt-6 sm:px-12 lg:max-w-6xl lg:px-16">
             <BackButton />
           </div>
         )}
@@ -47,7 +47,7 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
           className={
             isFullBleed
               ? 'w-full'
-              : 'mx-auto w-full max-w-4xl px-8 py-6 sm:px-12 lg:max-w-6xl lg:px-16 xl:max-w-7xl'
+              : 'mx-auto w-full max-w-4xl px-8 py-6 sm:px-12 lg:max-w-6xl lg:px-16'
           }
         >
           {children}

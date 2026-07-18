@@ -61,7 +61,6 @@ function ComingSoon({ items }: { items?: string[] }) {
 }
 
 const CONTENT = 'mx-auto max-w-6xl px-6 py-12 md:px-12 lg:px-16'
-const CONTENT_WIDE = 'mx-auto max-w-7xl px-6 py-12 md:px-12 lg:px-16'
 
 export default async function Page({ searchParams }: PageProps) {
   const params = await searchParams
@@ -132,11 +131,20 @@ export default async function Page({ searchParams }: PageProps) {
         title="Which mandates do they implement?"
         description="The resolutions, decisions, and other documents that UN entities cite in support of their resource requirements. Search and filter the full registry."
       />
-      <section className={CONTENT_WIDE}>
-        <Suspense fallback={<LoadingSkeleton variant="list" count={4} />}>
+      {/* The explorer manages its own widths internally: the stat cards sit in
+          the narrow column, the table and its controls break out to the wide
+          column. Only the trends expander is constrained here. */}
+      <section className="py-12">
+        <Suspense
+          fallback={
+            <div className="mx-auto max-w-7xl px-6 md:px-12 lg:px-16">
+              <LoadingSkeleton variant="list" count={4} />
+            </div>
+          }
+        >
           <MandateExplorerServer dataPromise={dataPromise} />
         </Suspense>
-        <div className="mt-10">
+        <div className="mx-auto mt-10 max-w-6xl px-6 md:px-12 lg:px-16">
           <ExpandableCard title="Trends over time" variant="filled">
             <ComingSoon
               items={[
