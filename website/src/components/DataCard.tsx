@@ -29,13 +29,20 @@ interface DataCardProps {
   popoverClassName?: string
 }
 
+// Abbreviations applied only to the card-face preview labels (not the popover,
+// which renders the full names via `children`) to keep the mini-bar rows on one line.
+const PREVIEW_LABEL_ABBREVIATIONS: Record<string, string> = {
+  'Ministerial Declarations': 'Min. Decl.',
+}
+
 function MiniBar({ item, maxCount }: { item: PreviewItem; maxCount: number }) {
   const barWidth = maxCount > 0 ? (item.count / maxCount) * 100 : 0
+  const label = PREVIEW_LABEL_ABBREVIATIONS[item.name] ?? item.name
 
   return (
     <>
-      <div className="self-center text-right text-xs whitespace-nowrap text-foreground">
-        {item.name}
+      <div className="self-center text-right text-sm whitespace-nowrap text-foreground">
+        {label}
       </div>
       <div className="relative h-1.5 self-center rounded-full bg-un-blue/10">
         <div
@@ -43,7 +50,7 @@ function MiniBar({ item, maxCount }: { item: PreviewItem; maxCount: number }) {
           style={{ width: `${Math.max(barWidth, 4)}%` }}
         />
       </div>
-      <div className="self-center text-right text-xs tabular-nums text-foreground">
+      <div className="self-center text-right text-sm tabular-nums text-foreground">
         {item.count.toLocaleString()}
       </div>
     </>
@@ -89,7 +96,7 @@ export function DataCard({
         >
           <div className="flex items-center gap-2">
             <Icon className="size-4 shrink-0 text-un-blue" />
-            <span className="text-sm leading-tight font-medium text-un-blue">
+            <span className="text-base leading-tight font-medium text-un-blue">
               {title}
             </span>
             <span className="ml-auto text-2xl leading-tight font-bold tabular-nums text-foreground">
@@ -102,7 +109,7 @@ export function DataCard({
                 <MiniBar key={i} item={item} maxCount={maxCount} />
               ))}
               {remaining > 0 && (
-                <div className="text-right text-xs whitespace-nowrap text-foreground">
+                <div className="text-right text-sm whitespace-nowrap text-foreground">
                   +{remaining} more
                 </div>
               )}

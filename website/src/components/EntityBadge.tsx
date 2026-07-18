@@ -78,7 +78,7 @@ export function FoundationalTag() {
       <TooltipTrigger asChild>
         <Badge
           variant="secondary"
-          className="shrink-0 cursor-help border-0 bg-un-blue-deep/10! px-2 py-0.5 text-[11px] font-medium text-un-blue-deep! whitespace-nowrap"
+          className="shrink-0 cursor-help border-0 bg-un-blue-deep/10! px-2 py-0.5 text-[12px] font-medium text-un-blue-deep! whitespace-nowrap"
         >
           {FOUNDATIONAL_LABEL}
         </Badge>
