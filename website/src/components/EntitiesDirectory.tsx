@@ -37,8 +37,7 @@ interface EntitiesDirectoryProps {
  * Peacekeeping stream, the Plan Outline): a faint UN-blue wash with a left
  * accent border, so each group reads as one bounded unit.
  */
-const SECTION_BOX =
-  'rounded-lg border-l-2 border-un-blue/40 bg-un-blue/5 px-4 py-3'
+const SECTION_BOX = 'border-l-4 border-un-blue bg-un-blue/10 px-4 py-3'
 
 export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
   const [search, setSearch] = useState('')
@@ -189,10 +188,10 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
                 selectDoc('plan_outline')
               }}
               className={cn(
-                'flex items-center gap-2 rounded-lg border-l-2 border-un-blue/40 px-4 py-3 text-sm transition-colors',
+                'flex items-center gap-2 border-l-4 border-un-blue px-4 py-3 text-sm transition-colors',
                 planActive
-                  ? 'bg-un-blue/10'
-                  : 'bg-un-blue/5 hover:bg-un-blue/10'
+                  ? 'bg-un-blue/20'
+                  : 'bg-un-blue/10 hover:bg-un-blue/20'
               )}
             >
               <span className="font-semibold">{planStream.label}</span>
