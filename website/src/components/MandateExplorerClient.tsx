@@ -37,7 +37,7 @@ export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
   const { visibleColumns, handleToggleColumn, handleResetColumns } =
     useColumnVisibility()
 
-  const pageSize = parseInt(searchParams.get('limit') || '25', 10)
+  const pageSize = parseInt(searchParams.get('limit') || '15', 10)
   const { mandates, pagination, filterOptions, reference, sidebar } = data
   const allOrgans = reference?.organs || []
   const allEntities = reference?.entities || []

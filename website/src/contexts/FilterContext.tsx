@@ -30,6 +30,7 @@ interface FilterContextType {
   isPending: boolean
   setFilter: (key: FilterParamKey, value: string | undefined) => void
   setMultipleFilters: (updates: Partial<FilterOptions>) => void
+  setOnlyFilter: (key: FilterParamKey, value: string | undefined) => void
   clearFilter: (key: FilterParamKey) => void
   clearAllFilters: () => void
 }
@@ -97,6 +98,26 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
     [searchParams, applyParams]
   )
 
+  // Reset to a single facet: drop every other filter but keep the control
+  // params (view mode, budget version, grouping, page size). Used by the
+  // cross-section directories so clicking an organ/entity/subject yields a
+  // clean, shareable single-facet view of the mandates.
+  const setOnlyFilter = useCallback(
+    (key: FilterParamKey, value: string | undefined) => {
+      const newParams = new URLSearchParams()
+      const PRESERVED = CONTROL_PARAMS.filter(
+        (p) => p !== 'sort_by' && p !== 'page'
+      )
+      for (const k of PRESERVED) {
+        const v = searchParams.get(k)
+        if (v) newParams.set(k, v)
+      }
+      writeParam(newParams, key, value)
+      applyParams(newParams)
+    },
+    [searchParams, applyParams]
+  )
+
   const clearFilter = useCallback(
     (key: FilterParamKey) => {
       setFilter(key, undefined)
@@ -129,6 +150,7 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
       isPending,
       setFilter,
       setMultipleFilters,
+      setOnlyFilter,
       clearFilter,
       clearAllFilters,
     }),
@@ -137,6 +159,7 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
       isPending,
       setFilter,
       setMultipleFilters,
+      setOnlyFilter,
       clearFilter,
       clearAllFilters,
     ]
