@@ -25,7 +25,29 @@ const STREAM_SHORT: Record<BudgetStreamType, string> = {
   plan_outline: 'Plan Outline',
 }
 
-const VISIBLE = 2
+const STREAM_ORDER: BudgetStreamType[] = ['ppb', 'pko', 'plan_outline']
+
+/** Minimum lines to show before collapsing into "+N more". */
+const MIN_VISIBLE = 2
+
+/**
+ * Choose which lines to show. One representative per stream first — so PKO and
+ * Plan Outline are never buried behind a long tail of PPB entities — then pad
+ * with more locations up to MIN_VISIBLE. Locations arrive pre-sorted (PPB down
+ * the budget, then PKO, then Plan Outline), so the representatives are the
+ * first of each stream.
+ */
+function pickVisible(locations: BudgetLocation[]): BudgetLocation[] {
+  const shown = STREAM_ORDER.map((stream) =>
+    locations.find((location) => location.stream === stream)
+  ).filter((location): location is BudgetLocation => location !== undefined)
+
+  for (const location of locations) {
+    if (shown.length >= MIN_VISIBLE) break
+    if (!shown.includes(location)) shown.push(location)
+  }
+  return shown
+}
 
 export function BudgetLocationCell({
   locations,
@@ -34,8 +56,8 @@ export function BudgetLocationCell({
 }) {
   if (locations.length === 0) return null
 
-  const shown = locations.slice(0, VISIBLE)
-  const hidden = locations.length - shown.length
+  const shown = pickVisible(locations)
+  const overflow = locations.filter((location) => !shown.includes(location))
 
   return (
     <div className="space-y-0.5 text-xs">
@@ -52,15 +74,15 @@ export function BudgetLocationCell({
         </Tooltip>
       ))}
 
-      {hidden > 0 && (
+      {overflow.length > 0 && (
         <Tooltip>
           <TooltipTrigger asChild>
             <div className="cursor-default text-muted-foreground">
-              +{hidden} more
+              +{overflow.length} more
             </div>
           </TooltipTrigger>
           <TooltipContent side="left" className="max-w-sm space-y-2">
-            {locations.slice(VISIBLE).map((location) => (
+            {overflow.map((location) => (
               <FullPath key={locationKey(location)} location={location} />
             ))}
           </TooltipContent>
