@@ -126,34 +126,47 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
             return (
               <section key={stream.type} className="space-y-5">
                 <StreamHeading type={stream.type} />
-                {parts.map((part) => {
-                  const flat = part.sections.flatMap((s) => s.entities)
-                  return (
-                    <div key={part.part} className="space-y-1.5">
-                      <h3 className={showSections ? 'text-base' : 'text-sm'}>
-                        <span className="font-medium text-muted-foreground">
-                          Part {part.part}.
-                        </span>{' '}
-                        <span className="font-semibold text-foreground">
-                          {part.part_title}
-                        </span>
-                      </h3>
-                      {showSections ? (
-                        part.sections.map((section) => (
-                          <div key={section.section} className="space-y-1.5">
-                            <SubHeading>{sectionLabel(section)}</SubHeading>
-                            <EntityGroup
-                              entities={section.entities}
-                              compact={compact}
-                            />
-                          </div>
-                        ))
-                      ) : (
-                        <EntityGroup entities={flat} compact={compact} />
-                      )}
-                    </div>
-                  )
-                })}
+                {/* Compact view flows parts into two columns to save space. */}
+                <div
+                  className={
+                    compact ? 'flex flex-wrap gap-x-8 gap-y-4' : 'space-y-5'
+                  }
+                >
+                  {parts.map((part) => {
+                    const flat = part.sections.flatMap((s) => s.entities)
+                    return (
+                      <div
+                        key={part.part}
+                        className={cn(
+                          'space-y-1.5',
+                          compact && 'w-[calc(50%-1rem)] min-w-0'
+                        )}
+                      >
+                        <h3 className={showSections ? 'text-base' : 'text-sm'}>
+                          <span className="font-medium text-muted-foreground">
+                            Part {part.part}.
+                          </span>{' '}
+                          <span className="font-semibold text-foreground">
+                            {part.part_title}
+                          </span>
+                        </h3>
+                        {showSections ? (
+                          part.sections.map((section) => (
+                            <div key={section.section} className="space-y-1.5">
+                              <SubHeading>{sectionLabel(section)}</SubHeading>
+                              <EntityGroup
+                                entities={section.entities}
+                                compact={compact}
+                              />
+                            </div>
+                          ))
+                        ) : (
+                          <EntityGroup entities={flat} compact={compact} />
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
               </section>
             )
           }
