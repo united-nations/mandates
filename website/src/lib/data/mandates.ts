@@ -20,47 +20,57 @@ import type { Mandate, FilterOptions, EntityWithCount, OrganWithCount, CrossCita
 // Helper Functions
 // ============================================================================
 
-/**
- * Parse PostgreSQL array literal format: {"item1","item2","item3"}
- * Returns an array of strings
- */
-function parsePostgresArray(pgArray: string | null): string[] {
-  if (!pgArray || pgArray.trim() === '') return []
-  
-  // Remove outer braces
-  const cleaned = pgArray.trim().replace(/^\{|\}$/g, '')
-  if (cleaned === '') return []
-  
-  // Parse CSV respecting quoted strings
-  const result: string[] = []
-  let current = ''
-  let inQuotes = false
-  for (let i = 0; i < cleaned.length; i++) {
-    const ch = cleaned[i]
-    if (ch === '"') {
-      inQuotes = !inQuotes
-    } else if (ch === ',' && !inQuotes) {
-      result.push(current.trim())
-      current = ''
-    } else {
-      current += ch
-    }
-  }
-  if (current.trim()) result.push(current.trim())
-  return result
-}
-
 // ============================================================================
 // Types for DB Rows (internal)
 // ============================================================================
 
-/** Row type for mandate list query results */
+/** MARC 991 agenda entry as stored in digitallibrary.documents.agenda_items. */
+interface DlAgendaItem {
+  doc: string | null
+  item: string | null
+  desc: string | null
+  topic: string | null
+}
+
+/** Digital Library subjects (TEXT[]) -> title-cased, deduped display headings. */
+function dlSubjectHeadings(subjects: string[] | null | undefined): string[] {
+  const seen = new Set<string>()
+  const out: string[] = []
+  for (const s of subjects ?? []) {
+    const v = titleCase(s.trim().toLowerCase())
+    if (v && !seen.has(v)) {
+      seen.add(v)
+      out.push(v)
+    }
+  }
+  return out
+}
+
+/** Pull one field (natural-language `desc` title, or `item` number) out of the
+ * agenda_items JSONB, dropping nulls/dupes while preserving order. */
+function dlAgendaField(
+  items: DlAgendaItem[] | null | undefined,
+  key: 'item' | 'desc' | 'doc'
+): string[] {
+  const seen = new Set<string>()
+  const out: string[] = []
+  for (const a of items ?? []) {
+    const v = a?.[key]
+    if (v && !seen.has(v)) {
+      seen.add(v)
+      out.push(v)
+    }
+  }
+  return out
+}
+
 interface MandateListRow {
   ppb_full_document_symbol: string
   ppb_link: string | null
   ppb_year: number | null
   ppb_body: string | null
   ppb_description: string | null
+  display_title: string | null
   ppb_type: string | null
   num_entities: string
   num_citations: string
@@ -70,16 +80,9 @@ interface MandateListRow {
   budget_locations: RawBudgetLocation[] | null
   origin_documents: string[] | null
   total_count: string
-  document_symbol: string | null
-  uniform_title: string | null
-  proper_title: string | null
-  title: string | null
-  subtitle: string | null
-  subject_terms: string | null
-  issuing_body: string | null
-  agenda_document_symbol: string | null
-  agenda_item_number: string | null
-  agenda_item_title: string | null
+  // Digital Library metadata surfaced on unified_documents
+  subjects: string[] | null
+  agenda_items: DlAgendaItem[] | null
   // resolution series facts (LEFT JOIN on digitallibrary.resolution_series)
   superseded_by?: string | null
   is_collection?: boolean | null
@@ -370,13 +373,12 @@ function buildFilterClauses(
     }
   }
 
-  // Subject filter (searches in metadata subject_terms)
+  // Subject filter — Digital Library subjects (TEXT[]) surfaced on the matview.
   if (filters.subject) {
     clauses.push(`
       EXISTS (
-        SELECT 1 FROM ppb2026.source_documents_metadata_clean m2
-        WHERE m2.ppb_full_document_symbol = d.ppb_full_document_symbol
-        AND LOWER(m2.subject_terms::text) LIKE $${paramIndex}
+        SELECT 1 FROM UNNEST(d.subjects) s
+        WHERE LOWER(s) LIKE $${paramIndex}
       )
     `)
     params.push(`%${filters.subject.toLowerCase()}%`)
@@ -407,16 +409,13 @@ function buildFilterClauses(
     paramIndex++
   }
 
-  // Agenda item filter — agenda_item_title is a text[] array column
+  // Agenda item filter — Digital Library agenda_items (JSONB [{doc,item,desc,topic}]);
+  // the agenda title is the natural-language "desc".
   if (filters.agenda_item) {
     clauses.push(`
       EXISTS (
-        SELECT 1 FROM ppb2026.source_documents_metadata_clean m7
-        WHERE m7.ppb_full_document_symbol = d.ppb_full_document_symbol
-        AND EXISTS (
-          SELECT 1 FROM UNNEST(m7.agenda_item_title::text[]) t
-          WHERE LOWER(t) LIKE $${paramIndex}
-        )
+        SELECT 1 FROM jsonb_array_elements(COALESCE(d.agenda_items, '[]'::jsonb)) a
+        WHERE LOWER(a->>'desc') LIKE $${paramIndex}
       )
     `)
     params.push(`%${filters.agenda_item.toLowerCase()}%`)
@@ -425,23 +424,18 @@ function buildFilterClauses(
 
   // Keyword search — only fields shown on the card:
   //   ppb_full_document_symbol  (symbol badge)
-  //   ppb_description           (title fallback)
-  //   proper_title              (primary display title)
-  //   title                     (display title for Security Council docs)
-  //   subject_terms             (subject heading badges)
+  //   ppb_description           (raw description / title fallback)
+  //   display_title             (the rendered title)
+  //   subjects                  (subject heading badges)
   if (filters.keyword) {
     const keyword = `%${filters.keyword.toLowerCase()}%`
     clauses.push(`(
       LOWER(d.ppb_full_document_symbol) LIKE $${paramIndex}
       OR LOWER(d.ppb_description) LIKE $${paramIndex}
+      OR LOWER(COALESCE(d.display_title, '')) LIKE $${paramIndex}
       OR EXISTS (
-        SELECT 1 FROM ppb2026.source_documents_metadata_clean m3
-        WHERE m3.ppb_full_document_symbol = d.ppb_full_document_symbol
-        AND (
-          LOWER(m3.proper_title) LIKE $${paramIndex}
-          OR LOWER(m3.title) LIKE $${paramIndex}
-          OR LOWER(m3.subject_terms::text) LIKE $${paramIndex}
-        )
+        SELECT 1 FROM UNNEST(COALESCE(d.subjects, '{}'::text[])) s
+        WHERE LOWER(s) LIKE $${paramIndex}
       )
     )`)
     params.push(keyword)
@@ -539,9 +533,9 @@ function buildOrderByClause(sortBy?: string): string {
     case 'citations_asc':
       return 'ORDER BY CASE WHEN num_entities = 0 THEN 0 ELSE num_citations END ASC'
     case 'year_desc':
-      return 'ORDER BY COALESCE(m.date_year, c.ppb_year) DESC NULLS LAST'
+      return 'ORDER BY c.ppb_year DESC NULLS LAST'
     case 'year_asc':
-      return 'ORDER BY COALESCE(m.date_year, c.ppb_year) ASC NULLS LAST'
+      return 'ORDER BY c.ppb_year ASC NULLS LAST'
     default:
       return 'ORDER BY num_entities DESC, num_citations DESC'
   }
@@ -566,7 +560,10 @@ export async function getMandates(
         d.ppb_year,
         d.ppb_body,
         d.ppb_description,
+        d.display_title,
         d.ppb_type,
+        d.subjects,
+        d.agenda_items,
         COUNT(DISTINCT c.entity) FILTER (WHERE c.entity IS NOT NULL) as num_entities,
         COUNT(c.id) as num_citations,
         ARRAY_AGG(DISTINCT c.entity) FILTER (WHERE c.entity IS NOT NULL) as entities,
@@ -595,7 +592,7 @@ export async function getMandates(
         )) FILTER (WHERE c.origin_document IS NOT NULL) as budget_locations,
         ARRAY_AGG(DISTINCT c.origin_document) FILTER (WHERE c.origin_document IS NOT NULL) as origin_documents`,
     groupCols:
-      'd.ppb_full_document_symbol, d.ppb_link, d.ppb_year, d.ppb_body, d.ppb_description, d.ppb_type',
+      'd.ppb_full_document_symbol, d.ppb_link, d.ppb_year, d.ppb_body, d.ppb_description, d.display_title, d.ppb_type, d.subjects, d.agenda_items',
   })
 
   // Bind a value and return its 1-based placeholder index. Using the index
@@ -617,8 +614,7 @@ export async function getMandates(
         WHEN LOWER(c.ppb_full_document_symbol) = $${exactIdx} THEN 0
         WHEN LOWER(c.ppb_full_document_symbol) LIKE $${prefixIdx} THEN 1
         WHEN (
-          LOWER(COALESCE(m.proper_title, '')) LIKE $${containsIdx}
-          OR LOWER(COALESCE(m.title, '')) LIKE $${containsIdx}
+          LOWER(COALESCE(c.display_title, '')) LIKE $${containsIdx}
           OR LOWER(COALESCE(c.ppb_description, '')) LIKE $${containsIdx}
         ) THEN 2
         ELSE 3
@@ -652,19 +648,11 @@ export async function getMandates(
       rs.is_collection,
       rs.has_newer,
       rs.is_latest,
-      rs.series_count,`
+      rs.series_count`
 
-  const metadataCols = `
-      m.symbol as document_symbol,
-      m.uniform_title,
-      m.proper_title,
-      m.title,
-      m.subtitle,
-      m.subject_terms,
-      m.date_year,
-      m.document_type,
-      m.issuing_body,
-      m.agenda_item_title`
+  // Subject/agenda/display-title metadata now rides on the matview (d.subjects,
+  // d.agenda_items, d.display_title) and flows through filtered_docs -> c.*, so
+  // no source_documents_metadata_clean join is needed here anymore.
 
   // Main query. filtered_docs (membership + version-scoped citation
   // aggregates) comes from the shared builder.
@@ -685,7 +673,7 @@ export async function getMandates(
     WITH ${cte},
     ${seriesLookupCte},
     enriched AS (
-      SELECT f.*,${seriesCols}
+      SELECT f.*,${seriesCols},
         COALESCE(rs.series_key || '¦' || rs.series_organ,
                  'sym:' || f.ppb_full_document_symbol) AS grp_key
       FROM filtered_docs f
@@ -710,11 +698,8 @@ export async function getMandates(
     ),
     page AS (
       SELECT
-        c.*,${metadataCols}
-        ${keywordRankExpr}
+        c.*${keywordRankExpr}
       FROM counted c
-      LEFT JOIN ppb2026.source_documents_metadata_clean m
-        ON c.ppb_full_document_symbol = m.ppb_full_document_symbol
       ${orderBy}
       LIMIT $${bind(limit)} OFFSET $${bind(offset)}
     ),
@@ -752,13 +737,10 @@ export async function getMandates(
       FROM filtered_docs
     )
     SELECT
-      c.*,${seriesCols}${metadataCols}
-      ${keywordRankExpr}
+      c.*,${seriesCols}${keywordRankExpr}
     FROM counted c
     LEFT JOIN series_lookup rs
       ON rs.document_symbol = c.ppb_full_document_symbol
-    LEFT JOIN ppb2026.source_documents_metadata_clean m
-      ON c.ppb_full_document_symbol = m.ppb_full_document_symbol
     ${orderBy}
     LIMIT $${bind(limit)} OFFSET $${bind(offset)}
   `
@@ -793,7 +775,7 @@ export async function getMandates(
         }
       : undefined,
     full_document_symbol: row.ppb_full_document_symbol,
-    document_symbol: row.document_symbol || null,
+    document_symbol: row.ppb_full_document_symbol || null,
     num_citations: parseInt(row.num_citations) || 0,
     num_entities: parseInt(row.num_entities) || 0,
     entities: row.entities || [],
@@ -802,19 +784,19 @@ export async function getMandates(
     year: row.ppb_year?.toString() || '',
     body: row.ppb_body || '',
     description: row.ppb_description || null,
+    display_title: row.display_title || null,
     type: row.ppb_type || 'Unknown',
-    // Metadata fields
-    uniform_title: row.uniform_title ? [row.uniform_title] : null,
-    proper_title: row.proper_title || null,
-    title: row.title || null,
-    subtitle: row.subtitle || null,
-    subject_headings: parsePostgresArray(row.subject_terms)
-      .map(s => titleCase(s.toLowerCase())),
-    issuing_body: row.issuing_body || null,
+    // Metadata fields (from the Digital Library, via the matview)
+    uniform_title: null,
+    proper_title: null,
+    title: null,
+    subtitle: null,
+    subject_headings: dlSubjectHeadings(row.subjects),
+    issuing_body: null,
     budget_locations: sortBudgetLocations(row.budget_locations),
     agenda_document_symbols: [],
-    agenda_item_numbers: [],
-    agenda_item_titles: parsePostgresArray(row.agenda_item_title),
+    agenda_item_numbers: dlAgendaField(row.agenda_items, 'item'),
+    agenda_item_titles: dlAgendaField(row.agenda_items, 'desc'),
     citation_info: (row.origin_documents || []).map((od: string) => ({
       origin_document: od,
       budget_part: '',
@@ -957,32 +939,21 @@ export async function getMandateBySymbol(
       d.ppb_year,
       d.ppb_body,
       d.ppb_description,
+      d.display_title,
       d.ppb_type,
+      d.subjects,
+      d.agenda_items,
       COUNT(DISTINCT c.entity) FILTER (WHERE c.entity IS NOT NULL) as num_entities,
       COUNT(c.id) as num_citations,
-      ARRAY_AGG(DISTINCT c.entity) FILTER (WHERE c.entity IS NOT NULL) as entities,
-      m.symbol as document_symbol,
-      m.uniform_title,
-      m.proper_title,
-      m.title,
-      m.subtitle,
-      m.subject_terms,
-      m.issuing_body,
-      m.agenda_document_symbol,
-      m.agenda_item_number,
-      m.agenda_item_title
+      ARRAY_AGG(DISTINCT c.entity) FILTER (WHERE c.entity IS NOT NULL) as entities
     FROM public.unified_documents d
     LEFT JOIN ppb2026.source_document_citations c
       ON d.ppb_full_document_symbol = c.ppb_full_document_symbol
       AND ${versionPredicateSql('c', '$2')}
-    LEFT JOIN ppb2026.source_documents_metadata_clean m
-      ON d.ppb_full_document_symbol = m.ppb_full_document_symbol
     WHERE d.ppb_full_document_symbol = $1
     GROUP BY
       d.ppb_full_document_symbol, d.ppb_link, d.ppb_year, d.ppb_body,
-      d.ppb_description, d.ppb_type, m.symbol, m.uniform_title,
-      m.proper_title, m.title, m.subtitle, m.subject_terms, m.issuing_body,
-      m.agenda_document_symbol, m.agenda_item_number, m.agenda_item_title
+      d.ppb_description, d.display_title, d.ppb_type, d.subjects, d.agenda_items
   `
 
   const row = await queryOne<MandateListRow>(query, [symbol, version ?? null])
@@ -994,7 +965,7 @@ export async function getMandateBySymbol(
 
   return {
     full_document_symbol: row.ppb_full_document_symbol,
-    document_symbol: row.document_symbol || null,
+    document_symbol: row.ppb_full_document_symbol || null,
     num_citations: parseInt(row.num_citations) || 0,
     num_entities: parseInt(row.num_entities) || 0,
     entities: row.entities || [],
@@ -1002,17 +973,17 @@ export async function getMandateBySymbol(
     year: row.ppb_year?.toString() || '',
     body: row.ppb_body || '',
     description: row.ppb_description || null,
+    display_title: row.display_title || null,
     type: row.ppb_type || 'Unknown',
-    uniform_title: row.uniform_title ? [row.uniform_title] : null,
-    proper_title: row.proper_title || null,
-    title: row.title || null,
-    subtitle: row.subtitle || null,
-    subject_headings: parsePostgresArray(row.subject_terms)
-      .map(s => titleCase(s.toLowerCase())),
-    issuing_body: row.issuing_body || null,
-    agenda_document_symbols: parsePostgresArray(row.agenda_document_symbol),
-    agenda_item_numbers: parsePostgresArray(row.agenda_item_number),
-    agenda_item_titles: parsePostgresArray(row.agenda_item_title),
+    uniform_title: null,
+    proper_title: null,
+    title: null,
+    subtitle: null,
+    subject_headings: dlSubjectHeadings(row.subjects),
+    issuing_body: null,
+    agenda_document_symbols: dlAgendaField(row.agenda_items, 'doc'),
+    agenda_item_numbers: dlAgendaField(row.agenda_items, 'item'),
+    agenda_item_titles: dlAgendaField(row.agenda_items, 'desc'),
     citation_info: citations,
     budget_locations: budgetLocations,
     foundational_entities: foundationalEntities,
@@ -1715,16 +1686,18 @@ export async function getProgrammeOptions(filters: FilterOptions = {}): Promise<
  */
 export async function getSubjectOptions(filters: FilterOptions = {}): Promise<FacetOption[]> {
   return getFacetOptions(filters, 'subject', {
+    cteOpts: {
+      selectCols: 'd.ppb_full_document_symbol, d.subjects',
+      groupCols: 'd.ppb_full_document_symbol, d.subjects',
+    },
     buildQuery: ({ cte }) => `
     WITH ${cte},
     subjects AS (
       SELECT
         fd.ppb_full_document_symbol,
-        LOWER(UNNEST(m.subject_terms::text[])) as subject
+        LOWER(UNNEST(fd.subjects)) as subject
       FROM filtered_docs fd
-      JOIN ppb2026.source_documents_metadata_clean m
-        ON fd.ppb_full_document_symbol = m.ppb_full_document_symbol
-      WHERE m.subject_terms IS NOT NULL AND m.subject_terms != ''
+      WHERE fd.subjects IS NOT NULL
     )
     SELECT
       subject as value,
@@ -1775,16 +1748,18 @@ export async function getDocumentTypeOptions(filters: FilterOptions = {}): Promi
  */
 export async function getAgendaItemOptions(filters: FilterOptions = {}): Promise<FacetOption[]> {
   return getFacetOptions(filters, 'agenda_item', {
+    cteOpts: {
+      selectCols: 'd.ppb_full_document_symbol, d.agenda_items',
+      groupCols: 'd.ppb_full_document_symbol, d.agenda_items',
+    },
     buildQuery: ({ cte }) => `
     WITH ${cte},
     agenda_items AS (
       SELECT
         fd.ppb_full_document_symbol,
-        UNNEST(m.agenda_item_title::text[]) as item
+        (elem->>'desc') as item
       FROM filtered_docs fd
-      JOIN ppb2026.source_documents_metadata_clean m
-        ON fd.ppb_full_document_symbol = m.ppb_full_document_symbol
-      WHERE m.agenda_item_title IS NOT NULL
+      CROSS JOIN LATERAL jsonb_array_elements(COALESCE(fd.agenda_items, '[]'::jsonb)) elem
     )
     SELECT
       item as value,

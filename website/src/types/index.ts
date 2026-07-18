@@ -56,6 +56,13 @@ export interface Mandate {
   //   pillar: string
   //   entity_long: string
   description: string | null
+  /**
+   * Digital Library-derived display title (from unified_documents.display_title):
+   * the clean, catalogue-quality title covering resolutions/decisions/PRSTs incl.
+   * DL-only docs. Preferred by getMandateDisplayTitle; falls back to the raw
+   * description when absent.
+   */
+  display_title: string | null
   type: string
   citation_info: {
     origin_document: string
