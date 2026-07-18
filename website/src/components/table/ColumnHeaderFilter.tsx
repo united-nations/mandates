@@ -8,17 +8,11 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { useFilters } from '@/contexts/FilterContext'
-import {
-  ChevronDown,
-  ChevronUp,
-  Filter,
-  Search,
-  X,
-} from 'lucide-react'
+import { ChevronDown, ChevronUp, Filter, Search, X } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { titleCase } from 'title-case'
 import type { FilterParamKey } from '@/lib/filter-constants'
-import type { BudgetPartNode } from '@/types'
+import type { BudgetStream } from '@/types'
 import { BudgetHierarchyTree } from './BudgetHierarchyTree'
 import type { ColumnDef } from './MandateColumns'
 
@@ -33,7 +27,7 @@ interface ColumnHeaderFilterProps {
   currentSort?: string
   filterOptions?: FilterOption[]
   yearRange?: { min: number; max: number }
-  budgetHierarchy?: BudgetPartNode[]
+  budgetHierarchy?: BudgetStream[]
 }
 
 export function ColumnHeaderFilter({
@@ -114,9 +108,7 @@ export function ColumnHeaderFilter({
           }
           startYear={filters.start_year}
           endYear={filters.end_year}
-          setFilter={(key, value) =>
-            setFilter(key as FilterParamKey, value)
-          }
+          setFilter={(key, value) => setFilter(key as FilterParamKey, value)}
           clearFilter={(key) => clearFilter(key as FilterParamKey)}
           setMultipleFilters={setMultipleFilters}
         />
@@ -130,7 +122,7 @@ interface FilterPopoverProps {
   isActive: boolean
   options?: FilterOption[]
   yearRange?: { min: number; max: number }
-  budgetHierarchy?: BudgetPartNode[]
+  budgetHierarchy?: BudgetStream[]
   currentValue?: string
   startYear?: string
   endYear?: string
@@ -169,7 +161,9 @@ function FilterPopover({
       </PopoverTrigger>
       <PopoverContent
         align="start"
-        className={column.filterType === 'hierarchy' ? 'w-[420px] p-3' : 'w-auto p-3'}
+        className={
+          column.filterType === 'hierarchy' ? 'w-[420px] p-3' : 'w-auto p-3'
+        }
         sideOffset={4}
       >
         {column.filterType === 'hierarchy' && (
@@ -267,12 +261,12 @@ function PillFilter({
     <div className="w-64 space-y-3">
       {showSearch && (
         <div className="relative">
-          <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400" />
+          <Search className="absolute top-1/2 left-2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
           <Input
             placeholder={`Search ${filterParam}...`}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="h-8 text-sm pl-7 focus-visible:ring-1 focus-visible:ring-offset-0"
+            className="h-8 pl-7 text-sm focus-visible:ring-1 focus-visible:ring-offset-0"
           />
         </div>
       )}
@@ -293,9 +287,7 @@ function PillFilter({
           return (
             <button
               key={option.value}
-              onClick={() =>
-                isSelected ? onClear() : onSelect(option.value)
-              }
+              onClick={() => (isSelected ? onClear() : onSelect(option.value))}
               className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-colors ${
                 isSelected
                   ? 'bg-un-blue text-white'
@@ -314,7 +306,7 @@ function PillFilter({
           )
         })}
         {displayed.length === 0 && (
-          <p className="text-xs text-gray-400 py-2">No options found</p>
+          <p className="py-2 text-xs text-gray-400">No options found</p>
         )}
       </div>
 
@@ -366,7 +358,7 @@ function YearRangeFilter({
           value={start}
           onChange={(e) => setStart(e.target.value.replace(/\D/g, ''))}
           onKeyDown={(e) => e.key === 'Enter' && handleApply()}
-          className="h-7 w-16 rounded border border-input bg-transparent px-2 text-xs text-center focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          className="h-7 w-16 rounded border border-input bg-transparent px-2 text-center text-xs focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
         />
         <span className="text-xs text-muted-foreground">–</span>
         <input
@@ -377,9 +369,14 @@ function YearRangeFilter({
           value={end}
           onChange={(e) => setEnd(e.target.value.replace(/\D/g, ''))}
           onKeyDown={(e) => e.key === 'Enter' && handleApply()}
-          className="h-7 w-16 rounded border border-input bg-transparent px-2 text-xs text-center focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          className="h-7 w-16 rounded border border-input bg-transparent px-2 text-center text-xs focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
         />
-        <Button size="sm" variant="ghost" onClick={handleApply} className="h-7 px-2 text-xs">
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={handleApply}
+          className="h-7 px-2 text-xs"
+        >
           Apply
         </Button>
       </div>
@@ -420,15 +417,13 @@ function SimpleSelectFilter({
           Clear filter
         </button>
       )}
-      <div className="max-h-64 overflow-y-auto space-y-0.5">
+      <div className="max-h-64 space-y-0.5 overflow-y-auto">
         {options.map((option) => {
           const isSelected = currentValue === option.value
           return (
             <button
               key={option.value}
-              onClick={() =>
-                isSelected ? onClear() : onSelect(option.value)
-              }
+              onClick={() => (isSelected ? onClear() : onSelect(option.value))}
               className={`flex w-full items-center justify-between gap-2 rounded px-2 py-1.5 text-left text-sm transition-colors ${
                 isSelected
                   ? 'bg-un-blue/10 font-medium text-un-blue'

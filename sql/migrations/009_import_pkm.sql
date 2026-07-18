@@ -31,11 +31,12 @@ BEGIN;
 --    Newest cycle sorts first, so demote the 2025/26 entry.
 UPDATE ppb2026.budget_documents SET sort_order = 3 WHERE slug = 'pko';
 
-INSERT INTO ppb2026.budget_documents (slug, display_name, match_pattern, sort_order)
-VALUES ('pko2627', 'Budget of Peacekeeping Operations 2026/27', '^PKM 26/27', 2)
+INSERT INTO ppb2026.budget_documents (slug, display_name, match_pattern, doc_type, sort_order)
+VALUES ('pko2627', 'Budget of Peacekeeping Operations 2026/27', '^PKM 26/27', 'pko', 2)
 ON CONFLICT (slug) DO UPDATE
 SET display_name = EXCLUDED.display_name,
     match_pattern = EXCLUDED.match_pattern,
+    doc_type = EXCLUDED.doc_type,
     sort_order = EXCLUDED.sort_order;
 
 -- 2. Ensure all referenced missions exist in systemchart.entities.

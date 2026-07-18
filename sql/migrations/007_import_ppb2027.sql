@@ -11,11 +11,12 @@
 BEGIN;
 
 -- 1. Add budget_documents entry for PPB 2027
-INSERT INTO ppb2026.budget_documents (slug, display_name, match_pattern, sort_order)
-VALUES ('ppb2027', 'Proposed Programme Budget for 2027', '^PPB 2027$', 0)
+INSERT INTO ppb2026.budget_documents (slug, display_name, match_pattern, doc_type, sort_order)
+VALUES ('ppb2027', 'Proposed Programme Budget for 2027', '^PPB 2027$', 'ppb', 0)
 ON CONFLICT (slug) DO UPDATE
 SET display_name = EXCLUDED.display_name,
     match_pattern = EXCLUDED.match_pattern,
+    doc_type = EXCLUDED.doc_type,
     sort_order = EXCLUDED.sort_order;
 
 -- 2. Create temp staging table for CSV import

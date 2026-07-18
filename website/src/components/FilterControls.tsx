@@ -23,7 +23,7 @@ import { titleCase } from 'title-case'
 import { explainerTexts } from '@/lib/en_text_contents'
 import { useFilters } from '@/contexts/FilterContext'
 import { FOUNDATIONAL_LABEL } from '@/lib/foundational'
-import type { BudgetDocument } from '@/lib/data/budget-documents'
+import { BUDGET_STREAM_LABELS } from '@/lib/filter-constants'
 
 interface Entity {
   entity: string
@@ -38,14 +38,12 @@ interface Organ {
 interface FilterControlsProps {
   entitiesData: Entity[]
   allOrgans: Organ[]
-  budgetDocuments: BudgetDocument[]
   toolbarSlot?: React.ReactNode
 }
 
 export function FilterControls({
   entitiesData,
   allOrgans,
-  budgetDocuments,
   toolbarSlot,
 }: FilterControlsProps) {
   const { filters, setFilter, clearFilter, clearAllFilters } = useFilters()
@@ -115,9 +113,7 @@ export function FilterControls({
             }}
           />
         </div>
-        <div className="contents">
-          {toolbarSlot}
-        </div>
+        <div className="contents">{toolbarSlot}</div>
       </div>
 
       {/* Filter Chips */}
@@ -286,7 +282,7 @@ export function FilterControls({
               displayFilters.budget_document !== 'all' && (
                 <FilterBadge
                   icon={Receipt}
-                  label={`Budget: ${budgetDocuments.find((d) => d.slug === displayFilters.budget_document)?.display_name ?? displayFilters.budget_document}`}
+                  label={`Budget: ${BUDGET_STREAM_LABELS[displayFilters.budget_document as keyof typeof BUDGET_STREAM_LABELS] ?? displayFilters.budget_document}`}
                   onClear={() => clearFilter('budget_document')}
                   variant="secondary"
                 />

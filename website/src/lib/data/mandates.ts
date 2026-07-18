@@ -14,53 +14,63 @@ import { getAllEntities } from './entities'
 import { getAllOrgans, getOrganMap } from './organs'
 import { getBudgetVersions } from './budget-documents'
 import { FOUNDATIONAL_PART_IN_DOCUMENT } from '@/lib/foundational'
-import type { Mandate, FilterOptions, EntityWithCount, OrganWithCount, CrossCitation, CitationBin, ApiResponse, BudgetLocation, BudgetPartNode, BudgetSectionNode, BudgetEntityNode } from '@/types'
+import type { Mandate, FilterOptions, EntityWithCount, OrganWithCount, CrossCitation, CitationBin, ApiResponse, BudgetLocation, BudgetPartNode, BudgetSectionNode, BudgetEntityNode, BudgetStream, BudgetPkoGroupNode } from '@/types'
 
 // ============================================================================
 // Helper Functions
 // ============================================================================
 
-/**
- * Parse PostgreSQL array literal format: {"item1","item2","item3"}
- * Returns an array of strings
- */
-function parsePostgresArray(pgArray: string | null): string[] {
-  if (!pgArray || pgArray.trim() === '') return []
-  
-  // Remove outer braces
-  const cleaned = pgArray.trim().replace(/^\{|\}$/g, '')
-  if (cleaned === '') return []
-  
-  // Parse CSV respecting quoted strings
-  const result: string[] = []
-  let current = ''
-  let inQuotes = false
-  for (let i = 0; i < cleaned.length; i++) {
-    const ch = cleaned[i]
-    if (ch === '"') {
-      inQuotes = !inQuotes
-    } else if (ch === ',' && !inQuotes) {
-      result.push(current.trim())
-      current = ''
-    } else {
-      current += ch
-    }
-  }
-  if (current.trim()) result.push(current.trim())
-  return result
-}
-
 // ============================================================================
 // Types for DB Rows (internal)
 // ============================================================================
 
-/** Row type for mandate list query results */
+/** MARC 991 agenda entry as stored in digitallibrary.documents.agenda_items. */
+interface DlAgendaItem {
+  doc: string | null
+  item: string | null
+  desc: string | null
+  topic: string | null
+}
+
+/** Digital Library subjects (TEXT[]) -> title-cased, deduped display headings. */
+function dlSubjectHeadings(subjects: string[] | null | undefined): string[] {
+  const seen = new Set<string>()
+  const out: string[] = []
+  for (const s of subjects ?? []) {
+    const v = titleCase(s.trim().toLowerCase())
+    if (v && !seen.has(v)) {
+      seen.add(v)
+      out.push(v)
+    }
+  }
+  return out
+}
+
+/** Pull one field (natural-language `desc` title, or `item` number) out of the
+ * agenda_items JSONB, dropping nulls/dupes while preserving order. */
+function dlAgendaField(
+  items: DlAgendaItem[] | null | undefined,
+  key: 'item' | 'desc' | 'doc'
+): string[] {
+  const seen = new Set<string>()
+  const out: string[] = []
+  for (const a of items ?? []) {
+    const v = a?.[key]
+    if (v && !seen.has(v)) {
+      seen.add(v)
+      out.push(v)
+    }
+  }
+  return out
+}
+
 interface MandateListRow {
   ppb_full_document_symbol: string
   ppb_link: string | null
   ppb_year: number | null
   ppb_body: string | null
   ppb_description: string | null
+  display_title: string | null
   ppb_type: string | null
   num_entities: string
   num_citations: string
@@ -70,16 +80,9 @@ interface MandateListRow {
   budget_locations: RawBudgetLocation[] | null
   origin_documents: string[] | null
   total_count: string
-  document_symbol: string | null
-  uniform_title: string | null
-  proper_title: string | null
-  title: string | null
-  subtitle: string | null
-  subject_terms: string | null
-  issuing_body: string | null
-  agenda_document_symbol: string | null
-  agenda_item_number: string | null
-  agenda_item_title: string | null
+  // Digital Library metadata surfaced on unified_documents
+  subjects: string[] | null
+  agenda_items: DlAgendaItem[] | null
   // resolution series facts (LEFT JOIN on digitallibrary.resolution_series)
   superseded_by?: string | null
   is_collection?: boolean | null
@@ -370,28 +373,28 @@ function buildFilterClauses(
     }
   }
 
-  // Subject filter (searches in metadata subject_terms)
+  // Subject filter — Digital Library subjects (TEXT[]) surfaced on the matview.
   if (filters.subject) {
     clauses.push(`
       EXISTS (
-        SELECT 1 FROM ppb2026.source_documents_metadata_clean m2
-        WHERE m2.ppb_full_document_symbol = d.ppb_full_document_symbol
-        AND LOWER(m2.subject_terms::text) LIKE $${paramIndex}
+        SELECT 1 FROM UNNEST(d.subjects) s
+        WHERE LOWER(s) LIKE $${paramIndex}
       )
     `)
     params.push(`%${filters.subject.toLowerCase()}%`)
     paramIndex++
   }
 
-  // Budget document filter — match against the regex stored in ppb2026.budget_documents
+  // Budget stream filter — the top level of the budget hierarchy. The value is
+  // a doc_type (ppb | pko | plan_outline); a document matches if it has a
+  // citation from any budget document of that stream in the active version.
   if (filters.budget_document) {
     clauses.push(`
       EXISTS (
         SELECT 1 FROM ppb2026.source_document_citations c5
+        JOIN ppb2026.budget_documents bd5 ON c5.origin_document ~ bd5.match_pattern
         WHERE c5.ppb_full_document_symbol = d.ppb_full_document_symbol
-        AND c5.origin_document ~ (
-          SELECT match_pattern FROM ppb2026.budget_documents WHERE slug = $${paramIndex}
-        )
+        AND bd5.doc_type = $${paramIndex}
         AND ${versionClause('c5')}
       )
     `)
@@ -406,16 +409,13 @@ function buildFilterClauses(
     paramIndex++
   }
 
-  // Agenda item filter — agenda_item_title is a text[] array column
+  // Agenda item filter — Digital Library agenda_items (JSONB [{doc,item,desc,topic}]);
+  // the agenda title is the natural-language "desc".
   if (filters.agenda_item) {
     clauses.push(`
       EXISTS (
-        SELECT 1 FROM ppb2026.source_documents_metadata_clean m7
-        WHERE m7.ppb_full_document_symbol = d.ppb_full_document_symbol
-        AND EXISTS (
-          SELECT 1 FROM UNNEST(m7.agenda_item_title::text[]) t
-          WHERE LOWER(t) LIKE $${paramIndex}
-        )
+        SELECT 1 FROM jsonb_array_elements(COALESCE(d.agenda_items, '[]'::jsonb)) a
+        WHERE LOWER(a->>'desc') LIKE $${paramIndex}
       )
     `)
     params.push(`%${filters.agenda_item.toLowerCase()}%`)
@@ -424,23 +424,18 @@ function buildFilterClauses(
 
   // Keyword search — only fields shown on the card:
   //   ppb_full_document_symbol  (symbol badge)
-  //   ppb_description           (title fallback)
-  //   proper_title              (primary display title)
-  //   title                     (display title for Security Council docs)
-  //   subject_terms             (subject heading badges)
+  //   ppb_description           (raw description / title fallback)
+  //   display_title             (the rendered title)
+  //   subjects                  (subject heading badges)
   if (filters.keyword) {
     const keyword = `%${filters.keyword.toLowerCase()}%`
     clauses.push(`(
       LOWER(d.ppb_full_document_symbol) LIKE $${paramIndex}
       OR LOWER(d.ppb_description) LIKE $${paramIndex}
+      OR LOWER(COALESCE(d.display_title, '')) LIKE $${paramIndex}
       OR EXISTS (
-        SELECT 1 FROM ppb2026.source_documents_metadata_clean m3
-        WHERE m3.ppb_full_document_symbol = d.ppb_full_document_symbol
-        AND (
-          LOWER(m3.proper_title) LIKE $${paramIndex}
-          OR LOWER(m3.title) LIKE $${paramIndex}
-          OR LOWER(m3.subject_terms::text) LIKE $${paramIndex}
-        )
+        SELECT 1 FROM UNNEST(COALESCE(d.subjects, '{}'::text[])) s
+        WHERE LOWER(s) LIKE $${paramIndex}
       )
     )`)
     params.push(keyword)
@@ -538,9 +533,9 @@ function buildOrderByClause(sortBy?: string): string {
     case 'citations_asc':
       return 'ORDER BY CASE WHEN num_entities = 0 THEN 0 ELSE num_citations END ASC'
     case 'year_desc':
-      return 'ORDER BY COALESCE(m.date_year, c.ppb_year) DESC NULLS LAST'
+      return 'ORDER BY c.ppb_year DESC NULLS LAST'
     case 'year_asc':
-      return 'ORDER BY COALESCE(m.date_year, c.ppb_year) ASC NULLS LAST'
+      return 'ORDER BY c.ppb_year ASC NULLS LAST'
     default:
       return 'ORDER BY num_entities DESC, num_citations DESC'
   }
@@ -565,7 +560,10 @@ export async function getMandates(
         d.ppb_year,
         d.ppb_body,
         d.ppb_description,
+        d.display_title,
         d.ppb_type,
+        d.subjects,
+        d.agenda_items,
         COUNT(DISTINCT c.entity) FILTER (WHERE c.entity IS NOT NULL) as num_entities,
         COUNT(c.id) as num_citations,
         ARRAY_AGG(DISTINCT c.entity) FILTER (WHERE c.entity IS NOT NULL) as entities,
@@ -579,6 +577,7 @@ export async function getMandates(
         ) as foundational_entities,
         ARRAY_AGG(DISTINCT c.programme_title) FILTER (WHERE c.programme_title IS NOT NULL AND c.programme_title != '') as programmes,
         JSONB_AGG(DISTINCT JSONB_BUILD_OBJECT(
+          'stream', (SELECT bd.doc_type FROM ppb2026.budget_documents bd WHERE c.origin_document ~ bd.match_pattern LIMIT 1),
           'part', c.budget_part_number,
           'part_title', bp.part_title,
           'section', c.section,
@@ -588,11 +587,12 @@ export async function getMandates(
           'entity', c.entity,
           'subprogramme', c.sub_programme,
           'subprogramme_number', c.sub_programme_number,
+          'is_support', (c.section_title LIKE 'Administrative and budgetary aspects%'),
           'part_sort', bp.sort_order
-        )) FILTER (WHERE c.budget_part_number IS NOT NULL) as budget_locations,
+        )) FILTER (WHERE c.origin_document IS NOT NULL) as budget_locations,
         ARRAY_AGG(DISTINCT c.origin_document) FILTER (WHERE c.origin_document IS NOT NULL) as origin_documents`,
     groupCols:
-      'd.ppb_full_document_symbol, d.ppb_link, d.ppb_year, d.ppb_body, d.ppb_description, d.ppb_type',
+      'd.ppb_full_document_symbol, d.ppb_link, d.ppb_year, d.ppb_body, d.ppb_description, d.display_title, d.ppb_type, d.subjects, d.agenda_items',
   })
 
   // Bind a value and return its 1-based placeholder index. Using the index
@@ -614,8 +614,7 @@ export async function getMandates(
         WHEN LOWER(c.ppb_full_document_symbol) = $${exactIdx} THEN 0
         WHEN LOWER(c.ppb_full_document_symbol) LIKE $${prefixIdx} THEN 1
         WHEN (
-          LOWER(COALESCE(m.proper_title, '')) LIKE $${containsIdx}
-          OR LOWER(COALESCE(m.title, '')) LIKE $${containsIdx}
+          LOWER(COALESCE(c.display_title, '')) LIKE $${containsIdx}
           OR LOWER(COALESCE(c.ppb_description, '')) LIKE $${containsIdx}
         ) THEN 2
         ELSE 3
@@ -649,19 +648,11 @@ export async function getMandates(
       rs.is_collection,
       rs.has_newer,
       rs.is_latest,
-      rs.series_count,`
+      rs.series_count`
 
-  const metadataCols = `
-      m.symbol as document_symbol,
-      m.uniform_title,
-      m.proper_title,
-      m.title,
-      m.subtitle,
-      m.subject_terms,
-      m.date_year,
-      m.document_type,
-      m.issuing_body,
-      m.agenda_item_title`
+  // Subject/agenda/display-title metadata now rides on the matview (d.subjects,
+  // d.agenda_items, d.display_title) and flows through filtered_docs -> c.*, so
+  // no source_documents_metadata_clean join is needed here anymore.
 
   // Main query. filtered_docs (membership + version-scoped citation
   // aggregates) comes from the shared builder.
@@ -682,7 +673,7 @@ export async function getMandates(
     WITH ${cte},
     ${seriesLookupCte},
     enriched AS (
-      SELECT f.*,${seriesCols}
+      SELECT f.*,${seriesCols},
         COALESCE(rs.series_key || '¦' || rs.series_organ,
                  'sym:' || f.ppb_full_document_symbol) AS grp_key
       FROM filtered_docs f
@@ -707,11 +698,8 @@ export async function getMandates(
     ),
     page AS (
       SELECT
-        c.*,${metadataCols}
-        ${keywordRankExpr}
+        c.*${keywordRankExpr}
       FROM counted c
-      LEFT JOIN ppb2026.source_documents_metadata_clean m
-        ON c.ppb_full_document_symbol = m.ppb_full_document_symbol
       ${orderBy}
       LIMIT $${bind(limit)} OFFSET $${bind(offset)}
     ),
@@ -749,13 +737,10 @@ export async function getMandates(
       FROM filtered_docs
     )
     SELECT
-      c.*,${seriesCols}${metadataCols}
-      ${keywordRankExpr}
+      c.*,${seriesCols}${keywordRankExpr}
     FROM counted c
     LEFT JOIN series_lookup rs
       ON rs.document_symbol = c.ppb_full_document_symbol
-    LEFT JOIN ppb2026.source_documents_metadata_clean m
-      ON c.ppb_full_document_symbol = m.ppb_full_document_symbol
     ${orderBy}
     LIMIT $${bind(limit)} OFFSET $${bind(offset)}
   `
@@ -790,7 +775,7 @@ export async function getMandates(
         }
       : undefined,
     full_document_symbol: row.ppb_full_document_symbol,
-    document_symbol: row.document_symbol || null,
+    document_symbol: row.ppb_full_document_symbol || null,
     num_citations: parseInt(row.num_citations) || 0,
     num_entities: parseInt(row.num_entities) || 0,
     entities: row.entities || [],
@@ -799,19 +784,19 @@ export async function getMandates(
     year: row.ppb_year?.toString() || '',
     body: row.ppb_body || '',
     description: row.ppb_description || null,
+    display_title: row.display_title || null,
     type: row.ppb_type || 'Unknown',
-    // Metadata fields
-    uniform_title: row.uniform_title ? [row.uniform_title] : null,
-    proper_title: row.proper_title || null,
-    title: row.title || null,
-    subtitle: row.subtitle || null,
-    subject_headings: parsePostgresArray(row.subject_terms)
-      .map(s => titleCase(s.toLowerCase())),
-    issuing_body: row.issuing_body || null,
+    // Metadata fields (from the Digital Library, via the matview)
+    uniform_title: null,
+    proper_title: null,
+    title: null,
+    subtitle: null,
+    subject_headings: dlSubjectHeadings(row.subjects),
+    issuing_body: null,
     budget_locations: sortBudgetLocations(row.budget_locations),
     agenda_document_symbols: [],
-    agenda_item_numbers: [],
-    agenda_item_titles: parsePostgresArray(row.agenda_item_title),
+    agenda_item_numbers: dlAgendaField(row.agenda_items, 'item'),
+    agenda_item_titles: dlAgendaField(row.agenda_items, 'desc'),
     citation_info: (row.origin_documents || []).map((od: string) => ({
       origin_document: od,
       budget_part: '',
@@ -899,6 +884,7 @@ export async function getMandateCitations(
   for (const row of rows) {
     if (row.budget_part_number === null) continue
     const location = {
+      stream: 'ppb' as const,
       part: row.budget_part_number,
       part_title: row.part_title ?? '',
       part_sort: row.part_sort ?? 0,
@@ -953,32 +939,21 @@ export async function getMandateBySymbol(
       d.ppb_year,
       d.ppb_body,
       d.ppb_description,
+      d.display_title,
       d.ppb_type,
+      d.subjects,
+      d.agenda_items,
       COUNT(DISTINCT c.entity) FILTER (WHERE c.entity IS NOT NULL) as num_entities,
       COUNT(c.id) as num_citations,
-      ARRAY_AGG(DISTINCT c.entity) FILTER (WHERE c.entity IS NOT NULL) as entities,
-      m.symbol as document_symbol,
-      m.uniform_title,
-      m.proper_title,
-      m.title,
-      m.subtitle,
-      m.subject_terms,
-      m.issuing_body,
-      m.agenda_document_symbol,
-      m.agenda_item_number,
-      m.agenda_item_title
+      ARRAY_AGG(DISTINCT c.entity) FILTER (WHERE c.entity IS NOT NULL) as entities
     FROM public.unified_documents d
     LEFT JOIN ppb2026.source_document_citations c
       ON d.ppb_full_document_symbol = c.ppb_full_document_symbol
       AND ${versionPredicateSql('c', '$2')}
-    LEFT JOIN ppb2026.source_documents_metadata_clean m
-      ON d.ppb_full_document_symbol = m.ppb_full_document_symbol
     WHERE d.ppb_full_document_symbol = $1
     GROUP BY
       d.ppb_full_document_symbol, d.ppb_link, d.ppb_year, d.ppb_body,
-      d.ppb_description, d.ppb_type, m.symbol, m.uniform_title,
-      m.proper_title, m.title, m.subtitle, m.subject_terms, m.issuing_body,
-      m.agenda_document_symbol, m.agenda_item_number, m.agenda_item_title
+      d.ppb_description, d.display_title, d.ppb_type, d.subjects, d.agenda_items
   `
 
   const row = await queryOne<MandateListRow>(query, [symbol, version ?? null])
@@ -990,7 +965,7 @@ export async function getMandateBySymbol(
 
   return {
     full_document_symbol: row.ppb_full_document_symbol,
-    document_symbol: row.document_symbol || null,
+    document_symbol: row.ppb_full_document_symbol || null,
     num_citations: parseInt(row.num_citations) || 0,
     num_entities: parseInt(row.num_entities) || 0,
     entities: row.entities || [],
@@ -998,17 +973,17 @@ export async function getMandateBySymbol(
     year: row.ppb_year?.toString() || '',
     body: row.ppb_body || '',
     description: row.ppb_description || null,
+    display_title: row.display_title || null,
     type: row.ppb_type || 'Unknown',
-    uniform_title: row.uniform_title ? [row.uniform_title] : null,
-    proper_title: row.proper_title || null,
-    title: row.title || null,
-    subtitle: row.subtitle || null,
-    subject_headings: parsePostgresArray(row.subject_terms)
-      .map(s => titleCase(s.toLowerCase())),
-    issuing_body: row.issuing_body || null,
-    agenda_document_symbols: parsePostgresArray(row.agenda_document_symbol),
-    agenda_item_numbers: parsePostgresArray(row.agenda_item_number),
-    agenda_item_titles: parsePostgresArray(row.agenda_item_title),
+    uniform_title: null,
+    proper_title: null,
+    title: null,
+    subtitle: null,
+    subject_headings: dlSubjectHeadings(row.subjects),
+    issuing_body: null,
+    agenda_document_symbols: dlAgendaField(row.agenda_items, 'doc'),
+    agenda_item_numbers: dlAgendaField(row.agenda_items, 'item'),
+    agenda_item_titles: dlAgendaField(row.agenda_items, 'desc'),
     citation_info: citations,
     budget_locations: budgetLocations,
     foundational_entities: foundationalEntities,
@@ -1305,24 +1280,33 @@ async function getFacetOptions(
 /** A budget location as it comes back from JSONB_BUILD_OBJECT, before sorting. */
 type RawBudgetLocation = BudgetLocation & { part_sort?: number }
 
+/** Streams in reading order: the regular budget, then peacekeeping, then plan. */
+const STREAM_SORT: Record<string, number> = { ppb: 0, pko: 1, plan_outline: 2 }
+
 /**
- * Put a document's citation sites into reading order: down the budget, then by
- * section, then entity, then subprogramme. JSONB_AGG(DISTINCT …) cannot carry
- * an ORDER BY, so the ordering happens here.
+ * Put a document's citation sites into reading order: by stream, then down the
+ * budget (part, section, entity, subprogramme). JSONB_AGG(DISTINCT …) cannot
+ * carry an ORDER BY, so the ordering happens here. pko/plan_outline citations
+ * have no part/section, so those comparisons fall through harmlessly.
  */
 function sortBudgetLocations(
   locations: RawBudgetLocation[] | null
 ): BudgetLocation[] {
   if (!locations?.length) return []
   return [...locations]
+    .filter((location) => location.stream != null)
     .sort(
       (a, b) =>
+        (STREAM_SORT[a.stream] ?? 9) - (STREAM_SORT[b.stream] ?? 9) ||
         (a.part_sort ?? 0) - (b.part_sort ?? 0) ||
-        a.section.localeCompare(b.section, undefined, { numeric: true }) ||
+        (a.section ?? '').localeCompare(b.section ?? '', undefined, {
+          numeric: true,
+        }) ||
         (a.entity ?? '').localeCompare(b.entity ?? '') ||
         (a.subprogramme_number ?? -1) - (b.subprogramme_number ?? -1)
     )
     .map((location) => ({
+      stream: location.stream,
       part: location.part,
       part_title: location.part_title,
       section: location.section,
@@ -1333,12 +1317,23 @@ function sortBudgetLocations(
       entity_long: location.entity_long,
       subprogramme: location.subprogramme,
       subprogramme_number: location.subprogramme_number,
+      is_support: location.is_support,
     }))
 }
 
 /**
- * The budget hierarchy as a tree, with the number of distinct documents cited
- * at each node. Backs the Budget location column's filter.
+ * The budget hierarchy as a tree of streams, with the number of distinct
+ * documents cited at each node. Backs the budget location filter and the
+ * /entities overview.
+ *
+ * The top level is the budget-document stream (ppb2026.budget_documents.doc_type):
+ *   ppb          — Part → Section → Entity → Subprogramme (the regular budget).
+ *   pko          — Peacekeeping Operations: Missions vs. Support account → entity.
+ *                  A mission's several financing fascicles ("Add.N") collapse to
+ *                  one entity, since they are instances of the same mission.
+ *   plan_outline — a leaf (the Plan Outline has no entity/part structure).
+ * Which concrete document backs each stream depends on the active version; a
+ * mission's per-fascicle counts are unioned by grouping on entity, not section.
  *
  * Counts are computed independently at every level via GROUPING SETS, so a
  * document cited by two sections of the same part counts once for that part
@@ -1348,64 +1343,206 @@ function sortBudgetLocations(
  */
 export async function getBudgetHierarchy(
   filters: FilterOptions = {}
-): Promise<BudgetPartNode[]> {
-  // Scope by every active filter except the hierarchy's own levels, so the tree
-  // keeps showing where a user can still navigate after clicking a node. Same
-  // convention as the other facet lists (see omitOwnDimension).
+): Promise<BudgetStream[]> {
+  // Scope by every active filter except the hierarchy's own levels (including
+  // the top-level budget_document stream), so the tree keeps showing where a
+  // user can still navigate after clicking a node. Same convention as the other
+  // facet lists (see omitOwnDimension).
   const scoped: FilterOptions = { ...filters }
   delete scoped.budget_part
   delete scoped.section
   delete scoped.subprogramme
-
-  const partCols = 'c.budget_part_number, bp.part_title, bp.sort_order'
-  const sectionCols =
-    'c.section, c.section_title, bs.sort_order, c.programme, c.programme_title'
-  const entityCols = 'c.entity, e.entity_long'
-  const subprogrammeCols = 'c.sub_programme, c.sub_programme_number'
+  delete scoped.budget_document
 
   const { cte, params, versionClause } = buildFilteredDocsCTE(scoped, {
     selectCols: 'd.ppb_full_document_symbol',
     groupCols: 'd.ppb_full_document_symbol',
   })
 
-  const query = `
-    WITH ${cte}
+  // Shared: every filtered doc's version-scoped citations, tagged with the
+  // budget-document stream. Each citation matches exactly one budget document
+  // (the match_patterns are mutually exclusive).
+  const citesCte = `
+    cites AS (
+      SELECT
+        c.ppb_full_document_symbol AS sym,
+        c.budget_part_number, c.section, c.section_title,
+        c.programme, c.programme_title, c.entity,
+        c.sub_programme, c.sub_programme_number,
+        bd.doc_type, bd.display_name AS stream_label, bd.sort_order AS stream_sort,
+        (c.section_title LIKE 'Administrative and budgetary aspects%') AS is_support
+      FROM filtered_docs fd
+      JOIN ppb2026.source_document_citations c
+        ON fd.ppb_full_document_symbol = c.ppb_full_document_symbol
+        AND ${versionClause('c')}
+      JOIN ppb2026.budget_documents bd
+        ON c.origin_document ~ bd.match_pattern
+    )`
+
+  // Stream totals + the active version's display name for each stream.
+  const totalsQuery = `
+    WITH ${cte}, ${citesCte}
+    SELECT doc_type,
+           MIN(stream_label) AS label,
+           MIN(stream_sort)  AS sort_order,
+           COUNT(DISTINCT sym) AS count
+    FROM cites
+    GROUP BY doc_type`
+
+  const partCols = 'p.budget_part_number, bp.part_title, bp.sort_order'
+  const sectionCols =
+    'p.section, p.section_title, bs.sort_order, p.programme, p.programme_title'
+  const entityCols = 'p.entity, e.entity_long'
+  const subprogrammeCols = 'p.sub_programme, p.sub_programme_number'
+
+  const ppbQuery = `
+    WITH ${cte}, ${citesCte},
+    p AS (SELECT * FROM cites WHERE doc_type = 'ppb')
     SELECT
       3 - (
-        GROUPING(c.section) + GROUPING(c.entity) + GROUPING(c.sub_programme)
+        GROUPING(p.section) + GROUPING(p.entity) + GROUPING(p.sub_programme)
       ) AS depth,
-      c.budget_part_number AS part,
+      p.budget_part_number AS part,
       bp.part_title,
       bp.sort_order AS part_sort,
-      c.section,
-      c.section_title,
+      p.section,
+      p.section_title,
       bs.sort_order AS section_sort,
-      c.programme,
-      c.programme_title,
-      c.entity,
+      p.programme,
+      p.programme_title,
+      p.entity,
       e.entity_long,
-      c.sub_programme,
-      c.sub_programme_number,
-      COUNT(DISTINCT c.ppb_full_document_symbol) AS count
-    FROM filtered_docs fd
-    JOIN ppb2026.source_document_citations c
-      ON fd.ppb_full_document_symbol = c.ppb_full_document_symbol
-      AND ${versionClause('c')}
+      p.sub_programme,
+      p.sub_programme_number,
+      COUNT(DISTINCT p.sym) AS count
+    FROM p
     JOIN ppb2026.budget_parts bp
-      ON bp.part_number = c.budget_part_number
+      ON bp.part_number = p.budget_part_number
     LEFT JOIN ppb2026.budget_sections bs
-      ON bs.section = regexp_replace(c.section, '\\s*\\(Add\\..*\\)$', '')
+      ON bs.section = regexp_replace(p.section, '\\s*\\(Add\\..*\\)$', '')
     LEFT JOIN systemchart.entities e
-      ON e.entity = c.entity
+      ON e.entity = p.entity
     GROUP BY GROUPING SETS (
       (${partCols}),
       (${partCols}, ${sectionCols}),
       (${partCols}, ${sectionCols}, ${entityCols}),
       (${partCols}, ${sectionCols}, ${entityCols}, ${subprogrammeCols})
-    )
-  `
+    )`
 
-  return buildBudgetTree(await queryMany<HierarchyRow>(query, params))
+  // PKO: split by support-account flag, then entity. Grouping on entity (not
+  // section) collapses each mission's Add.N financing fascicles into one row.
+  const pkoQuery = `
+    WITH ${cte}, ${citesCte},
+    pk AS (
+      SELECT * FROM cites
+      WHERE doc_type = 'pko' AND entity IS NOT NULL AND entity <> ''
+    )
+    SELECT
+      pk.is_support,
+      GROUPING(pk.entity) AS grp,
+      pk.entity,
+      e.entity_long,
+      COUNT(DISTINCT pk.sym) AS count
+    FROM pk
+    LEFT JOIN systemchart.entities e ON e.entity = pk.entity
+    GROUP BY GROUPING SETS ((pk.is_support), (pk.is_support, pk.entity, e.entity_long))`
+
+  const [totals, ppbRows, pkoRows] = await Promise.all([
+    queryMany<StreamTotalRow>(totalsQuery, params),
+    queryMany<HierarchyRow>(ppbQuery, params),
+    queryMany<PkoRow>(pkoQuery, params),
+  ])
+
+  const byType = new Map(
+    totals.map((t) => [
+      t.doc_type,
+      { label: t.label, sort: t.sort_order, count: parseInt(t.count, 10) || 0 },
+    ])
+  )
+
+  const streams: BudgetStream[] = []
+  const ppb = byType.get('ppb')
+  if (ppb)
+    streams.push({
+      type: 'ppb',
+      label: ppb.label,
+      count: ppb.count,
+      parts: buildBudgetTree(ppbRows),
+    })
+  const pko = byType.get('pko')
+  if (pko)
+    streams.push({
+      type: 'pko',
+      label: pko.label,
+      count: pko.count,
+      groups: buildPkoGroups(pkoRows),
+    })
+  const plan = byType.get('plan_outline')
+  if (plan)
+    streams.push({ type: 'plan_outline', label: plan.label, count: plan.count })
+
+  return streams.sort(
+    (a, b) => (byType.get(a.type)?.sort ?? 0) - (byType.get(b.type)?.sort ?? 0)
+  )
+}
+
+interface StreamTotalRow {
+  doc_type: string
+  label: string
+  sort_order: number
+  count: string
+}
+
+interface PkoRow {
+  is_support: boolean
+  grp: number | string
+  entity: string | null
+  entity_long: string | null
+  count: string
+}
+
+/**
+ * Assemble the PKO stream's two groups from the GROUPING SETS rows. `grp === 1`
+ * (entity grouped out) is the group total; the rest are per-mission entity rows.
+ */
+function buildPkoGroups(rows: PkoRow[]): BudgetPkoGroupNode[] {
+  const groups = new Map<'missions' | 'support', BudgetPkoGroupNode>()
+  const ensure = (isSupport: boolean) => {
+    const key = isSupport ? 'support' : 'missions'
+    if (!groups.has(key))
+      groups.set(key, {
+        group: key,
+        label: isSupport ? 'Support account' : 'Missions',
+        count: 0,
+        entities: [],
+      })
+    return groups.get(key)!
+  }
+
+  for (const row of rows) {
+    const group = ensure(row.is_support)
+    const count = parseInt(row.count, 10) || 0
+    if (Number(row.grp) === 1) {
+      group.count = count
+    } else if (row.entity) {
+      group.entities.push({
+        entity: row.entity,
+        entity_long: row.entity_long,
+        count,
+        subprogrammes: [],
+      })
+    }
+  }
+
+  for (const group of groups.values())
+    group.entities.sort(
+      (a, b) => b.count - a.count || a.entity.localeCompare(b.entity)
+    )
+
+  // Missions first, then the support account.
+  return (['missions', 'support'] as const)
+    .map((key) => groups.get(key))
+    .filter((g): g is BudgetPkoGroupNode => g !== undefined)
 }
 
 interface HierarchyRow {
@@ -1549,16 +1686,18 @@ export async function getProgrammeOptions(filters: FilterOptions = {}): Promise<
  */
 export async function getSubjectOptions(filters: FilterOptions = {}): Promise<FacetOption[]> {
   return getFacetOptions(filters, 'subject', {
+    cteOpts: {
+      selectCols: 'd.ppb_full_document_symbol, d.subjects',
+      groupCols: 'd.ppb_full_document_symbol, d.subjects',
+    },
     buildQuery: ({ cte }) => `
     WITH ${cte},
     subjects AS (
       SELECT
         fd.ppb_full_document_symbol,
-        LOWER(UNNEST(m.subject_terms::text[])) as subject
+        LOWER(UNNEST(fd.subjects)) as subject
       FROM filtered_docs fd
-      JOIN ppb2026.source_documents_metadata_clean m
-        ON fd.ppb_full_document_symbol = m.ppb_full_document_symbol
-      WHERE m.subject_terms IS NOT NULL AND m.subject_terms != ''
+      WHERE fd.subjects IS NOT NULL
     )
     SELECT
       subject as value,
@@ -1609,16 +1748,18 @@ export async function getDocumentTypeOptions(filters: FilterOptions = {}): Promi
  */
 export async function getAgendaItemOptions(filters: FilterOptions = {}): Promise<FacetOption[]> {
   return getFacetOptions(filters, 'agenda_item', {
+    cteOpts: {
+      selectCols: 'd.ppb_full_document_symbol, d.agenda_items',
+      groupCols: 'd.ppb_full_document_symbol, d.agenda_items',
+    },
     buildQuery: ({ cte }) => `
     WITH ${cte},
     agenda_items AS (
       SELECT
         fd.ppb_full_document_symbol,
-        UNNEST(m.agenda_item_title::text[]) as item
+        (elem->>'desc') as item
       FROM filtered_docs fd
-      JOIN ppb2026.source_documents_metadata_clean m
-        ON fd.ppb_full_document_symbol = m.ppb_full_document_symbol
-      WHERE m.agenda_item_title IS NOT NULL
+      CROSS JOIN LATERAL jsonb_array_elements(COALESCE(fd.agenda_items, '[]'::jsonb)) elem
     )
     SELECT
       item as value,
@@ -1629,90 +1770,6 @@ export async function getAgendaItemOptions(filters: FilterOptions = {}): Promise
     ORDER BY count DESC, item
   `,
   })
-}
-
-/**
- * Get budget document options applicable to the selected budget version, with
- * citation counts under the current filters. "Applicable" = present in
- * ppb2026.budget_document_versions for COALESCE(filters.ppb_version, default
- * version). This mirrors versionPredicateSql, so the filter dropdown stays in
- * lockstep with the version toggle (no hardcoded 2026 → which-docs mapping).
- *
- * Returned shape extends the reference BudgetDocument with `count`. Ordered by
- * count DESC (sort_order as tiebreaker so curated order shows when counts tie).
- */
-export async function getBudgetDocumentOptions(
-  filters: FilterOptions = {}
-): Promise<{
-  slug: string
-  display_name: string
-  match_pattern: string
-  sort_order: number
-  count: number
-}[]> {
-  const scoped = omitOwnDimension(filters, 'budget_document')
-  const { cte, params } = buildFilteredDocsCTE(scoped, {
-    selectCols: 'd.ppb_full_document_symbol',
-    groupCols: 'd.ppb_full_document_symbol',
-  })
-
-  // Bind ppb_version separately for the applicable-docs filter and the citation
-  // version scope below. In active_mandates mode buildFilteredDocsCTE already
-  // bound the same value, but rebinding is harmless and lets all_resolutions
-  // mode (where the inner CTE skips version scoping) still narrow the budget
-  // doc universe + citation count to the selected version.
-  params.push(filters.ppb_version ?? null)
-  const vIdx = params.length
-
-  const query = `
-    WITH ${cte},
-    applicable_docs AS (
-      SELECT bd.slug, bd.display_name, bd.match_pattern, bd.sort_order
-      FROM ppb2026.budget_documents bd
-      JOIN ppb2026.budget_document_versions bdv ON bdv.doc_slug = bd.slug
-      WHERE bdv.version_slug = COALESCE(
-        $${vIdx},
-        (SELECT slug FROM ppb2026.budget_versions WHERE is_default LIMIT 1)
-      )
-    ),
-    doc_counts AS (
-      SELECT
-        ad.slug,
-        COUNT(DISTINCT fd.ppb_full_document_symbol) as count
-      FROM filtered_docs fd
-      JOIN ppb2026.source_document_citations c
-        ON c.ppb_full_document_symbol = fd.ppb_full_document_symbol
-        AND ${versionPredicateSql('c', `$${vIdx}`)}
-      JOIN applicable_docs ad
-        ON c.origin_document ~ ad.match_pattern
-      GROUP BY ad.slug
-    )
-    SELECT
-      ad.slug,
-      ad.display_name,
-      ad.match_pattern,
-      ad.sort_order,
-      COALESCE(dc.count, 0) as count
-    FROM applicable_docs ad
-    LEFT JOIN doc_counts dc ON dc.slug = ad.slug
-    ORDER BY COALESCE(dc.count, 0) DESC, ad.sort_order
-  `
-
-  const rows = await queryMany<{
-    slug: string
-    display_name: string
-    match_pattern: string
-    sort_order: number
-    count: string
-  }>(query, params)
-
-  return rows.map((r) => ({
-    slug: r.slug,
-    display_name: r.display_name,
-    match_pattern: r.match_pattern,
-    sort_order: r.sort_order,
-    count: parseInt(r.count) || 0,
-  }))
 }
 
 /**
@@ -1850,7 +1907,6 @@ async function _getMandatePageDataInner(filters: FilterOptions): Promise<ApiResp
     entities,
     organs,
     organMap,
-    budgetDocuments,
     budgetVersions,
   ] = await Promise.all([
     getMandates(filters, { page, limit }),
@@ -1868,7 +1924,6 @@ async function _getMandatePageDataInner(filters: FilterOptions): Promise<ApiResp
     getAllEntities(),
     getAllOrgans(),
     getOrganMap(),
-    getBudgetDocumentOptions(filters),
     getBudgetVersions(),
   ])
 
@@ -1953,7 +2008,6 @@ async function _getMandatePageDataInner(filters: FilterOptions): Promise<ApiResp
       yearRange: yearStats.yearRange,
       yearDistribution: yearStats.yearDistribution,
       yearDistributionUnfiltered: yearStatsForChart.yearDistribution,
-      budgetDocuments,
       budgetVersions,
     },
     reference: {

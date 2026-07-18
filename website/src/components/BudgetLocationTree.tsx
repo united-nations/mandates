@@ -1,121 +1,115 @@
 'use client'
 
 import { EntityBadge, FoundationalTag } from '@/components/EntityBadge'
+import { sectionLabel } from '@/components/table/BudgetStreamTree'
 import { Badge } from '@/components/ui/badge'
+import { BUDGET_STREAM_LABELS } from '@/lib/filter-constants'
 import { isFoundational } from '@/lib/foundational'
-import type { BudgetLocation } from '@/types'
+import type { BudgetEntityNode, BudgetPartNode, BudgetStream } from '@/types'
+import Link from 'next/link'
 
 /**
- * Where a document sits in the budget, as a tree — the same shape as the
- * Budget Location column's filter, pruned to this one document.
- *
- * Reached from the "Group by budget location" toggle on the detail page: it
- * regroups the same citing entities under Part › Section rather than showing
- * anything new. A document is usually cited once, so this often collapses to a
- * single three-line branch; the value shows up in the tail, where a document
- * cited by 25 entities across 22 sections becomes a handful of part groups
- * rather than 25 repetitive rows.
+ * Where a document sits in the budget — the detail page's "group by budget
+ * location" view. Deliberately its own presentation (Part › Section › entity
+ * badges › subprogramme pills), distinct from the table's column-filter tree;
+ * both are driven by the same `BudgetStream[]` structure (getBudgetHierarchy,
+ * here scoped to this one document). A document is usually cited from a single
+ * stream, so this normally shows one budget branch.
  */
 
-interface SubprogrammeLeaf {
-  label: string
-  number: number | null
-}
-
-interface EntityNode {
-  entity: string | null
-  entity_long: string | null
-  subprogrammes: SubprogrammeLeaf[]
-}
-
-interface SectionNode {
-  section: string
-  label: string
-  entities: EntityNode[]
-}
-
-interface PartNode {
-  part: string
-  part_title: string
-  sections: SectionNode[]
-}
-
 export function BudgetLocationTree({
-  locations,
+  streams,
   foundationalEntities = [],
 }: {
-  locations: BudgetLocation[]
+  streams: BudgetStream[]
   foundationalEntities?: string[]
 }) {
-  const tree = buildTree(locations)
-
   return (
     <div className="space-y-3 text-xs">
-      {tree.map((part) => (
-        <div key={part.part} className="space-y-1">
-          <a
-            href={`/?budget_part=${encodeURIComponent(part.part)}`}
-            className="block font-medium hover:text-un-blue hover:underline"
-          >
-            Part {part.part}. {part.part_title}
-          </a>
+      {streams.map((stream) => {
+        if (stream.type === 'ppb') {
+          // The regular budget: render parts directly, matching the long-standing
+          // Part › Section › Entity › Subprogramme layout.
+          return stream.parts.map((part) => (
+            <PartBlock
+              key={part.part}
+              part={part}
+              foundationalEntities={foundationalEntities}
+            />
+          ))
+        }
 
-          {part.sections.map((section) => (
-            <div key={section.section} className="space-y-1 pl-4">
-              <a
-                href={`/?section=${encodeURIComponent(section.section)}`}
-                className="block text-muted-foreground hover:text-un-blue hover:underline"
-              >
-                {section.label}
-              </a>
-
-              {section.entities.map((entity) => (
-                <div key={entity.entity ?? section.section} className="pl-4">
-                  <div className="flex items-center gap-2">
-                    {entity.entity && (
-                      <EntityBadge
-                        entity={entity.entity}
-                        entityLong={entity.entity_long}
-                        foundational={isFoundational(
-                          entity.entity,
-                          foundationalEntities
-                        )}
-                        onClick={() => {
-                          window.location.href = `/?entity=${encodeURIComponent(entity.entity!)}`
-                        }}
+        if (stream.type === 'pko') {
+          return (
+            <div key={stream.type} className="space-y-1">
+              <span className="block font-medium">
+                {BUDGET_STREAM_LABELS.pko}
+              </span>
+              {stream.groups.map((group) => (
+                <div key={group.group} className="space-y-1 pl-4">
+                  <span className="block text-muted-foreground">
+                    {group.label}
+                  </span>
+                  {group.entities.map((entity) => (
+                    <div key={entity.entity} className="pl-4">
+                      <EntityRow
+                        entity={entity}
+                        foundationalEntities={foundationalEntities}
                       />
-                    )}
-                    {entity.entity_long && (
-                      <span
-                        className="truncate text-muted-foreground"
-                        title={entity.entity_long}
-                      >
-                        {entity.entity_long}
-                      </span>
-                    )}
-                    {isFoundational(entity.entity, foundationalEntities) && (
-                      <FoundationalTag />
-                    )}
-                  </div>
-
-                  {entity.subprogrammes.length > 0 && (
-                    <div className="mt-1 flex flex-wrap gap-1 pl-4">
-                      {entity.subprogrammes.map((subprogramme) => (
-                        <Badge
-                          key={subprogramme.label}
-                          variant="secondary"
-                          className="cursor-pointer border-0 px-2 py-0.5 text-[11px] font-normal transition-colors hover:bg-secondary/80"
-                          onClick={() => {
-                            window.location.href = `/?subprogramme=${encodeURIComponent(subprogramme.label)}`
-                          }}
-                        >
-                          {subprogramme.label}
-                        </Badge>
-                      ))}
                     </div>
-                  )}
+                  ))}
                 </div>
               ))}
+            </div>
+          )
+        }
+
+        // plan_outline — a leaf.
+        return (
+          <Link
+            key={stream.type}
+            href="/?budget_document=plan_outline"
+            className="block font-medium hover:text-un-blue hover:underline"
+          >
+            {stream.label}
+          </Link>
+        )
+      })}
+    </div>
+  )
+}
+
+function PartBlock({
+  part,
+  foundationalEntities,
+}: {
+  part: BudgetPartNode
+  foundationalEntities: string[]
+}) {
+  return (
+    <div className="space-y-1">
+      <a
+        href={`/?budget_part=${encodeURIComponent(part.part)}`}
+        className="block font-medium hover:text-un-blue hover:underline"
+      >
+        Part {part.part}. {part.part_title}
+      </a>
+
+      {part.sections.map((section) => (
+        <div key={section.section} className="space-y-1 pl-4">
+          <a
+            href={`/?section=${encodeURIComponent(section.section)}`}
+            className="block text-muted-foreground hover:text-un-blue hover:underline"
+          >
+            {sectionLabel(section)}
+          </a>
+
+          {section.entities.map((entity) => (
+            <div key={entity.entity} className="pl-4">
+              <EntityRow
+                entity={entity}
+                foundationalEntities={foundationalEntities}
+              />
             </div>
           ))}
         </div>
@@ -124,76 +118,53 @@ export function BudgetLocationTree({
   )
 }
 
-/**
- * "Section 9 · Programme 7 — Economic and social affairs". The section and
- * programme titles are identical for most sections, so the programme title is
- * only spelled out where it genuinely differs.
- */
-function sectionLabel(location: BudgetLocation): string {
-  const prefix =
-    location.programme !== null
-      ? `Section ${location.section} · Programme ${location.programme}`
-      : `Section ${location.section}`
+function EntityRow({
+  entity,
+  foundationalEntities,
+}: {
+  entity: BudgetEntityNode
+  foundationalEntities: string[]
+}) {
+  const foundational = isFoundational(entity.entity, foundationalEntities)
 
-  const sameTitle =
-    location.programme_title !== null &&
-    location.programme_title.toLowerCase() ===
-      location.section_title.toLowerCase()
+  return (
+    <>
+      <div className="flex items-center gap-2">
+        <EntityBadge
+          entity={entity.entity}
+          entityLong={entity.entity_long}
+          foundational={foundational}
+          onClick={() => {
+            window.location.href = `/?entity=${encodeURIComponent(entity.entity)}`
+          }}
+        />
+        {entity.entity_long && (
+          <span
+            className="truncate text-muted-foreground"
+            title={entity.entity_long}
+          >
+            {entity.entity_long}
+          </span>
+        )}
+        {foundational && <FoundationalTag />}
+      </div>
 
-  if (location.programme_title === null || sameTitle) {
-    return `${prefix} — ${location.section_title}`
-  }
-  return `${prefix} — ${location.section_title} / ${location.programme_title}`
-}
-
-/**
- * Locations arrive already ordered down the budget, so appending to the last
- * matching node preserves that order without a second sort.
- */
-function buildTree(locations: BudgetLocation[]): PartNode[] {
-  const parts: PartNode[] = []
-
-  for (const location of locations) {
-    let part = parts.find((p) => p.part === location.part)
-    if (!part) {
-      part = {
-        part: location.part,
-        part_title: location.part_title,
-        sections: [],
-      }
-      parts.push(part)
-    }
-
-    let section = part.sections.find((s) => s.section === location.section)
-    if (!section) {
-      section = {
-        section: location.section,
-        label: sectionLabel(location),
-        entities: [],
-      }
-      part.sections.push(section)
-    }
-
-    let entity = section.entities.find((e) => e.entity === location.entity)
-    if (!entity) {
-      entity = {
-        entity: location.entity,
-        entity_long: location.entity_long,
-        subprogrammes: [],
-      }
-      section.entities.push(entity)
-    }
-
-    if (
-      location.subprogramme &&
-      !entity.subprogrammes.some((s) => s.label === location.subprogramme)
-    ) {
-      entity.subprogrammes.push({
-        label: location.subprogramme,
-        number: location.subprogramme_number,
-      })
-    }
-  }
-
-  return parts
+      {entity.subprogrammes.length > 0 && (
+        <div className="mt-1 flex flex-wrap gap-1 pl-4">
+          {entity.subprogrammes.map((sp) => (
+            <Badge
+              key={sp.subprogramme}
+              variant="secondary"
+              className="cursor-pointer border-0 px-2 py-0.5 text-[11px] font-normal transition-colors hover:bg-secondary/80"
+              onClick={() => {
+                window.location.href = `/?subprogramme=${encodeURIComponent(sp.subprogramme)}`
+              }}
+            >
+              {sp.subprogramme}
+            </Badge>
+          ))}
+        </div>
+      )}
+    </>
+  )
 }

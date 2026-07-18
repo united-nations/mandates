@@ -16,6 +16,10 @@ create table ppb2026.budget_documents (
     slug text not null primary key,
     display_name text not null,
     match_pattern text not null,
+    -- Top-level budget stream this document belongs to. Drives the budget
+    -- hierarchy tree's first level; see migration 026.
+    doc_type text not null
+        check (doc_type in ('ppb', 'pko', 'plan_outline')),
     sort_order smallint not null default 0
 );
 create table ppb2026.budget_document_versions (
@@ -304,24 +308,54 @@ grant select on digitallibrary.resolution_series to mandates_readonly;
 -- explorer load. Refresh after any underlying-data import:
 --   REFRESH MATERIALIZED VIEW public.unified_documents;
 -- (see sql/refresh_unified_documents.sql / migration 011 for rationale).
+-- display_title comes from the Digital Library mirror (documents.unfck.org);
+-- membership uses is_catalog_pattern (the 8 symbol families) and a
+-- whitespace/case-normalized symbol join. See migration 024 for rationale.
 drop view if exists public.unified_documents;
 drop materialized view if exists public.unified_documents;
 create materialized view public.unified_documents as
--- PPB source documents
+with dl_catalog as (
+    -- Deduplicated Digital Library catalog rows (the 8 symbol families).
+    select distinct on (symbol_normalized)
+        document_symbol,
+        symbol_normalized,
+        title,
+        display_title,
+        date_publication,
+        un_body,
+        subjects,
+        agenda_items
+    from digitallibrary.documents
+    where deleted_at is null
+      and document_symbol ~ '^(A/RES/|A/DEC/|S/RES/|S/PRST/|E/RES/|E/DEC/|A/HRC/RES/|A/HRC/PRST/)'
+    order by symbol_normalized, recid desc
+),
+src_norm as (
+    select distinct upper(regexp_replace(ppb_full_document_symbol, '[[:space:]]', '', 'g')) as k
+    from ppb2026.source_documents
+)
+-- PPB source documents (enriched from DL where the symbol matches)
 select
-    ppb_full_document_symbol,
-    ppb_description,
-    ppb_link,
-    ppb_year,
-    ppb_body,
-    ppb_type,
-    true as is_ppb
-from ppb2026.source_documents
+    sd.ppb_full_document_symbol,
+    sd.ppb_description,
+    coalesce(dl.display_title, sd.ppb_description) as display_title,
+    sd.ppb_link,
+    coalesce(sd.ppb_year, extract(year from dl.date_publication)::smallint) as ppb_year,
+    sd.ppb_body,
+    sd.ppb_type,
+    dl.subjects,
+    dl.agenda_items,
+    true as is_ppb,
+    sd.ppb_full_document_symbol ~ '^(A/RES/|A/DEC/|S/RES/|S/PRST/|E/RES/|E/DEC/|A/HRC/RES/|A/HRC/PRST/)' as is_catalog_pattern
+from ppb2026.source_documents sd
+left join dl_catalog dl
+    on dl.symbol_normalized = upper(regexp_replace(sd.ppb_full_document_symbol, '[[:space:]]', '', 'g'))
 union all
--- Digital Library resolutions not already in PPB
+-- Digital Library catalog rows not already represented in PPB (normalized match)
 select
     dl.document_symbol as ppb_full_document_symbol,
     dl.title as ppb_description,
+    dl.display_title,
     null as ppb_link,
     extract(year from dl.date_publication)::smallint as ppb_year,
     coalesce(
@@ -331,16 +365,18 @@ select
             else null
         end
     ) as ppb_body,
-    'Resolutions' as ppb_type,
-    false as is_ppb
-from digitallibrary.documents dl
+    case
+        when dl.document_symbol ~ '/PRST/' then 'Presidential Statements'
+        when dl.document_symbol ~ '/DEC/'  then 'Decisions'
+        else 'Resolutions'
+    end as ppb_type,
+    dl.subjects,
+    dl.agenda_items,
+    false as is_ppb,
+    true as is_catalog_pattern
+from dl_catalog dl
 left join ppb2026.organs o on o.long = dl.un_body
-where dl.document_symbol ~ '/RES/'
-    and dl.deleted_at is null
-    and not exists (
-        select 1 from ppb2026.source_documents p
-        where p.ppb_full_document_symbol = dl.document_symbol
-    )
+where not exists (select 1 from src_norm sn where sn.k = dl.symbol_normalized)
 with data;
 
 create index unified_documents_symbol_idx

@@ -37,8 +37,8 @@ BEGIN;
 
 -- 1. Ensure the PPB 2027 budget_documents entry exists (created by 007; this is
 --    idempotent and lets the migration stand alone).
-INSERT INTO ppb2026.budget_documents (slug, display_name, match_pattern, sort_order)
-VALUES ('ppb2027', 'Proposed Programme Budget for 2027', '^PPB 2027$', 0)
+INSERT INTO ppb2026.budget_documents (slug, display_name, match_pattern, doc_type, sort_order)
+VALUES ('ppb2027', 'Proposed Programme Budget for 2027', '^PPB 2027$', 'ppb', 0)
 ON CONFLICT (slug) DO NOTHING;
 
 -- 2. Staging table mirroring all_mandates.csv (same shape as migration 007).

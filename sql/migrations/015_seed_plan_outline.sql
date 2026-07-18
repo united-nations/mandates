@@ -8,11 +8,12 @@
 
 begin;
 
-insert into ppb2026.budget_documents (slug, display_name, match_pattern, sort_order)
-values ('plan-outline-a80-6', 'Plan Outline 2026-2028', '^Plan Outline 2026-2028$', 4)
+insert into ppb2026.budget_documents (slug, display_name, match_pattern, doc_type, sort_order)
+values ('plan-outline-a80-6', 'Plan Outline 2026-2028', '^Plan Outline 2026-2028$', 'plan_outline', 4)
 on conflict (slug) do update
 set display_name  = excluded.display_name,
     match_pattern = excluded.match_pattern,
+    doc_type      = excluded.doc_type,
     sort_order    = excluded.sort_order;
 
 insert into ppb2026.budget_document_versions (doc_slug, version_slug)

@@ -56,6 +56,13 @@ export interface Mandate {
   //   pillar: string
   //   entity_long: string
   description: string | null
+  /**
+   * Digital Library-derived display title (from unified_documents.display_title):
+   * the clean, catalogue-quality title covering resolutions/decisions/PRSTs incl.
+   * DL-only docs. Preferred by getMandateDisplayTitle; falls back to the raw
+   * description when absent.
+   */
+  display_title: string | null
   type: string
   citation_info: {
     origin_document: string
@@ -117,12 +124,17 @@ export interface Mandate {
 // sections.) PKM and Plan Outline citations sit outside this structure and
 // carry no part.
 
-/** One citation's place in the budget, as shown in the Budget location column. */
+/**
+ * One citation's place in the budget, as shown in the Budget location column.
+ * The stream is always present; part/section only exist for the ppb stream
+ * (pko carries an entity but no part/section, plan_outline neither).
+ */
 export interface BudgetLocation {
-  part: string
-  part_title: string
-  section: string
-  section_title: string
+  stream: BudgetStreamType
+  part: string | null
+  part_title: string | null
+  section: string | null
+  section_title: string | null
   programme: number | null
   programme_title: string | null
   entity: string | null
@@ -130,6 +142,8 @@ export interface BudgetLocation {
   /** Composed label, e.g. "Subprogramme 2. Inclusive social development" */
   subprogramme: string | null
   subprogramme_number: number | null
+  /** pko only: an individual mission (false) vs. the shared support account (true). */
+  is_support?: boolean
 }
 
 export interface BudgetSubprogrammeNode {
@@ -160,6 +174,28 @@ export interface BudgetPartNode {
   count: number
   sections: BudgetSectionNode[]
 }
+
+// Budget streams (top level of the hierarchy) — the budget-document type a
+// citation comes from. Every citing entity lives in exactly one stream:
+//   ppb          — Proposed Programme Budget: Part → Section → Entity → Subprogramme.
+//   pko          — Peacekeeping Operations financing: Missions + Support account.
+//   plan_outline — the strategic Plan Outline: no sub-structure (a leaf).
+// Which concrete document backs each stream depends on the active budget
+// version; the type is stable across versions (see ppb2026.budget_documents.doc_type).
+export type BudgetStreamType = 'ppb' | 'pko' | 'plan_outline'
+
+/** One group inside the Peacekeeping Operations stream. */
+export interface BudgetPkoGroupNode {
+  group: 'missions' | 'support'
+  label: string
+  count: number
+  entities: BudgetEntityNode[]
+}
+
+export type BudgetStream =
+  | { type: 'ppb'; label: string; count: number; parts: BudgetPartNode[] }
+  | { type: 'pko'; label: string; count: number; groups: BudgetPkoGroupNode[] }
+  | { type: 'plan_outline'; label: string; count: number }
 
 // Entity types
 export interface Entity {
@@ -284,7 +320,7 @@ export interface ApiResponse {
 
   // Filter options for dropdowns
   filterOptions: {
-    budgetHierarchy: BudgetPartNode[]
+    budgetHierarchy: BudgetStream[]
     programmes: { value: string; count: number }[]
     subjects: { value: string; count: number }[]
     documentTypes: { value: string; count: number }[]
@@ -292,13 +328,6 @@ export interface ApiResponse {
     yearRange: { min: number; max: number }
     yearDistribution: Record<string, number>
     yearDistributionUnfiltered: Record<string, number>
-    budgetDocuments: {
-      slug: string
-      display_name: string
-      match_pattern: string
-      sort_order: number
-      count: number
-    }[]
     budgetVersions: {
       slug: string
       display_name: string
