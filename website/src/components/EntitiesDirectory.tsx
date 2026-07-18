@@ -32,6 +32,14 @@ interface EntitiesDirectoryProps {
   streams: BudgetStream[]
 }
 
+/**
+ * Shared container for a compact grouping (a Programme Budget part, the
+ * Peacekeeping stream, the Plan Outline): a faint UN-blue wash with a left
+ * accent border, so each group reads as one bounded unit.
+ */
+const SECTION_BOX =
+  'rounded-lg border-l-2 border-un-blue/40 bg-un-blue/5 px-4 py-3'
+
 export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
   const [search, setSearch] = useState('')
   const [compact, setCompact] = useState(true)
@@ -91,7 +99,7 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
       ppbPartNodes.push({
         key: `part-${part.part}`,
         node: (
-          <div className="space-y-1.5">
+          <div className={cn(compact && SECTION_BOX, 'space-y-1.5')}>
             <h3 className={showSections ? 'text-base' : 'text-sm'}>
               <span className="font-medium text-gray-500">
                 Part {part.part}.
@@ -137,28 +145,30 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
         <div className="mb-3">
           <StreamHeading type="pko" />
         </div>
-        {showSections ? (
-          <div className="space-y-3">
-            {pkoGroups.map((group) => (
-              <div key={group.group} className="space-y-1.5">
-                <SubHeading>{group.label}</SubHeading>
-                <EntityGroup
-                  entities={group.entities}
-                  compact={compact}
-                  active={active}
-                  onSelect={select}
-                />
-              </div>
-            ))}
-          </div>
-        ) : (
-          <EntityGroup
-            entities={pkoGroups.flatMap((g) => g.entities)}
-            compact={compact}
-            active={active}
-            onSelect={select}
-          />
-        )}
+        <div className={cn(compact && SECTION_BOX)}>
+          {showSections ? (
+            <div className="space-y-3">
+              {pkoGroups.map((group) => (
+                <div key={group.group} className="space-y-1.5">
+                  <SubHeading>{group.label}</SubHeading>
+                  <EntityGroup
+                    entities={group.entities}
+                    compact={compact}
+                    active={active}
+                    onSelect={select}
+                  />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <EntityGroup
+              entities={pkoGroups.flatMap((g) => g.entities)}
+              compact={compact}
+              active={active}
+              onSelect={select}
+            />
+          )}
+        </div>
       </div>
     ) : null
 
@@ -179,10 +189,10 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
                 selectDoc('plan_outline')
               }}
               className={cn(
-                'inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-colors',
+                'flex items-center gap-2 rounded-lg border-l-2 border-un-blue/40 px-4 py-3 text-sm transition-colors',
                 planActive
-                  ? 'border-un-blue bg-un-blue/5'
-                  : 'border-gray-200 bg-white hover:border-un-blue hover:shadow-sm'
+                  ? 'bg-un-blue/10'
+                  : 'bg-un-blue/5 hover:bg-un-blue/10'
               )}
             >
               <span className="font-semibold">{planStream.label}</span>
