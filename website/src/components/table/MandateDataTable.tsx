@@ -133,8 +133,9 @@ export function MandateDataTable({
         return filterOptions.agendaItems
       case 'budget_document':
         // Already scoped to the active budget version + ordered by count DESC
-        // in getBudgetDocumentOptions.
-        return filterOptions.budgetDocuments.map((d) => ({
+        // in getBudgetDocumentOptions. Guard against a partial filterOptions
+        // payload (matches the ?? [] treatment of documentTypes/budgetVersions).
+        return (filterOptions.budgetDocuments ?? []).map((d) => ({
           value: d.slug,
           label: d.display_name,
           count: d.count,
@@ -227,7 +228,7 @@ export function MandateDataTable({
                             mandate={mandate}
                             entitiesData={entitiesData}
                             findOrganLong={findOrganLong}
-                            budgetDocuments={filterOptions.budgetDocuments}
+                            budgetDocuments={filterOptions.budgetDocuments ?? []}
                             onEntityClick={(entity) =>
                               setFilter('entity', entity)
                             }
