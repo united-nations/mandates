@@ -5,6 +5,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import { useFilters } from '@/contexts/FilterContext'
 import { BUDGET_STREAM_LABELS } from '@/lib/filter-constants'
 import type { BudgetLocation, BudgetStreamType } from '@/types'
 
@@ -33,14 +34,23 @@ const MIN_VISIBLE = 2
 /**
  * Choose which lines to show. One representative per stream first — so PKO and
  * Plan Outline are never buried behind a long tail of PPB entities — then pad
- * with more locations up to MIN_VISIBLE. Locations arrive pre-sorted (PPB down
- * the budget, then PKO, then Plan Outline), so the representatives are the
- * first of each stream.
+ * with more locations up to MIN_VISIBLE. When a stream is being filtered on, it
+ * leads (so filtering by Plan Outline shows the Plan Outline line first);
+ * otherwise the default order (PPB, PKO, Plan Outline) applies. Locations arrive
+ * pre-sorted down the budget, so the representatives are the first of each stream.
  */
-function pickVisible(locations: BudgetLocation[]): BudgetLocation[] {
-  const shown = STREAM_ORDER.map((stream) =>
-    locations.find((location) => location.stream === stream)
-  ).filter((location): location is BudgetLocation => location !== undefined)
+function pickVisible(
+  locations: BudgetLocation[],
+  activeStream?: BudgetStreamType
+): BudgetLocation[] {
+  const order =
+    activeStream && STREAM_ORDER.includes(activeStream)
+      ? [activeStream, ...STREAM_ORDER.filter((s) => s !== activeStream)]
+      : STREAM_ORDER
+
+  const shown = order
+    .map((stream) => locations.find((location) => location.stream === stream))
+    .filter((location): location is BudgetLocation => location !== undefined)
 
   for (const location of locations) {
     if (shown.length >= MIN_VISIBLE) break
@@ -54,9 +64,12 @@ export function BudgetLocationCell({
 }: {
   locations: BudgetLocation[]
 }) {
+  const { filters } = useFilters()
+
   if (locations.length === 0) return null
 
-  const shown = pickVisible(locations)
+  const activeStream = filters.budget_document as BudgetStreamType | undefined
+  const shown = pickVisible(locations, activeStream)
   const overflow = locations.filter((location) => !shown.includes(location))
 
   return (
