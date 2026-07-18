@@ -195,63 +195,69 @@ export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
       */}
 
       <div className="pt-4">
-        {/* Active filters sit above the summary stat cards. */}
-        <ActiveFilters
-          entitiesData={allEntities}
-          allOrgans={allOrgans}
-          className="mb-4"
-        />
-        {/* Summary stats repeated here (as a row) above the table. */}
-        <div className="mb-6">
-          <HeaderStats data={data} orientation="row" />
-        </div>
-        <div className="mb-4">
-          <FilterControls
+        {/* Narrow band: active filters + the summary stat cards line up with
+            the rest of the page (max-w-6xl). */}
+        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-16">
+          {/* Active filters sit above the summary stat cards. */}
+          <ActiveFilters
             entitiesData={allEntities}
             allOrgans={allOrgans}
-            toolbarSlot={
-              <div className="flex flex-wrap items-center gap-3">
-                {groupToggle}
-                {modeToggle}
-              </div>
-            }
+            className="mb-4"
           />
+          {/* Summary stats repeated here (as a row) above the table. */}
+          <div className="mb-6">
+            <HeaderStats data={data} orientation="row" />
+          </div>
         </div>
 
-        {/* The Section 1 (2027 advance A/81/6) preliminary-citations note now
-            lives in the Methodology section on the page. */}
+        {/* Wide band: the table and everything that operates on it — search,
+            the group/scope toggles, and pagination — get the extra width. */}
+        <div className="mx-auto max-w-7xl px-6 md:px-12 lg:px-16">
+          <div className="mb-4">
+            <FilterControls
+              entitiesData={allEntities}
+              allOrgans={allOrgans}
+              toolbarSlot={
+                <div className="flex flex-wrap items-center gap-3">
+                  {groupToggle}
+                  {modeToggle}
+                </div>
+              }
+            />
+          </div>
 
-        {/* Data table (desktop) */}
-        <div className="hidden lg:block">
-          <MandateDataTable
-            mandates={mandates}
-            organsData={allOrgans}
-            entitiesData={allEntities}
-            organCounts={organs}
-            entityCounts={entities}
-            filterOptions={filterOptions}
-            visibleColumns={visibleColumns}
-            onToggleColumn={handleToggleColumn}
-            onResetColumns={handleResetColumns}
-          />
-        </div>
+          {/* Data table (desktop) */}
+          <div className="hidden lg:block">
+            <MandateDataTable
+              mandates={mandates}
+              organsData={allOrgans}
+              entitiesData={allEntities}
+              organCounts={organs}
+              entityCounts={entities}
+              filterOptions={filterOptions}
+              visibleColumns={visibleColumns}
+              onToggleColumn={handleToggleColumn}
+              onResetColumns={handleResetColumns}
+            />
+          </div>
 
-        {/* Compact list (mobile) */}
-        <div className="block lg:hidden">
-          <MandateCompactList
-            mandates={mandates}
-            organsData={allOrgans}
-            entitiesData={allEntities}
-          />
-        </div>
+          {/* Compact list (mobile) */}
+          <div className="block lg:hidden">
+            <MandateCompactList
+              mandates={mandates}
+              organsData={allOrgans}
+              entitiesData={allEntities}
+            />
+          </div>
 
-        <div className="mt-4">
-          <PaginationControls
-            currentPage={pagination.page}
-            totalPages={pagination.totalPages}
-            pageSize={pageSize}
-            totalItems={pagination.totalItems}
-          />
+          <div className="mt-4">
+            <PaginationControls
+              currentPage={pagination.page}
+              totalPages={pagination.totalPages}
+              pageSize={pageSize}
+              totalItems={pagination.totalItems}
+            />
+          </div>
         </div>
       </div>
     </div>

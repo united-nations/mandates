@@ -19,8 +19,9 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 // Mirrors the page container used by <main> in RootLayoutClient so the header
-// content lines up with the main column.
-const pageWidth = 'max-w-4xl lg:max-w-6xl xl:max-w-7xl'
+// content lines up with the main column. Capped at 6xl: the wide 7xl format is
+// reserved for the data tables themselves, not the chrome around them.
+const pageWidth = 'max-w-4xl lg:max-w-6xl'
 const pagePadding = 'px-8 sm:px-12 lg:px-16'
 
 const navItems = [

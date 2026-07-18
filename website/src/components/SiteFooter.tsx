@@ -9,7 +9,7 @@ import {
 import { cn } from '@/lib/utils'
 import Image from 'next/image'
 
-const pageWidth = 'max-w-4xl lg:max-w-6xl xl:max-w-7xl'
+const pageWidth = 'max-w-4xl lg:max-w-6xl'
 const pagePadding = 'px-8 sm:px-12 lg:px-16'
 
 // ---------------------------------------------------------------------------
