@@ -139,20 +139,15 @@ export default function UnSystemPage() {
         {/* Disclaimer stays in the narrow column; only the directory tables
             below break out to the wide column. */}
         <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-16">
-          <div className="mb-10 border-l-2 border-un-blue/40 bg-un-blue/5 px-3 py-2 text-sm text-gray-600">
-            <div className="flex max-w-3xl items-start gap-2">
-              <Info
-                className="mt-0.5 h-4 w-4 shrink-0 text-un-blue"
-                aria-hidden
-              />
-              <p>
-                This draft overview is for informational purposes only and
-                exhaustiveness is not guaranteed. The relevant rules of the
-                organization concerned should be consulted in order to establish
-                the legal status, functions and reporting lines of each entity
-                listed.
-              </p>
-            </div>
+          <div className="mb-10 flex items-start gap-2 border-l-2 border-un-blue/40 bg-un-blue/5 px-3 py-2 text-sm text-gray-600">
+            <Info className="mt-0.5 h-4 w-4 shrink-0 text-un-blue" aria-hidden />
+            <p>
+              This draft overview is for informational purposes only and
+              exhaustiveness is not guaranteed. The relevant rules of the
+              organization concerned should be consulted in order to establish
+              the legal status, functions and reporting lines of each entity
+              listed.
+            </p>
           </div>
         </div>
 
