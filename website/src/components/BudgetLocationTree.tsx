@@ -68,7 +68,7 @@ export function BudgetLocationTree({
         return (
           <Link
             key={stream.type}
-            href="/?budget_document=plan_outline"
+            href="/secretariat?budget_document=plan_outline"
             className="block font-medium hover:text-un-blue hover:underline"
           >
             {stream.label}
@@ -89,7 +89,7 @@ function PartBlock({
   return (
     <div className="space-y-1">
       <a
-        href={`/?budget_part=${encodeURIComponent(part.part)}`}
+        href={`/secretariat?budget_part=${encodeURIComponent(part.part)}`}
         className="block font-medium hover:text-un-blue hover:underline"
       >
         Part {part.part}. {part.part_title}
@@ -98,7 +98,7 @@ function PartBlock({
       {part.sections.map((section) => (
         <div key={section.section} className="space-y-1 pl-4">
           <a
-            href={`/?section=${encodeURIComponent(section.section)}`}
+            href={`/secretariat?section=${encodeURIComponent(section.section)}`}
             className="block text-muted-foreground hover:text-un-blue hover:underline"
           >
             {sectionLabel(section)}
@@ -135,7 +135,7 @@ function EntityRow({
           entityLong={entity.entity_long}
           foundational={foundational}
           onClick={() => {
-            window.location.href = `/?entity=${encodeURIComponent(entity.entity)}`
+            window.location.href = `/secretariat?entity=${encodeURIComponent(entity.entity)}`
           }}
         />
         {entity.entity_long && (
@@ -157,7 +157,7 @@ function EntityRow({
               variant="secondary"
               className="cursor-pointer border-0 px-2 py-0.5 text-[11px] font-normal transition-colors hover:bg-secondary/80"
               onClick={() => {
-                window.location.href = `/?subprogramme=${encodeURIComponent(sp.subprogramme)}`
+                window.location.href = `/secretariat?subprogramme=${encodeURIComponent(sp.subprogramme)}`
               }}
             >
               {sp.subprogramme}

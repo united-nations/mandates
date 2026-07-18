@@ -80,7 +80,7 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
-                href="/?budget_document=plan_outline"
+                href="/secretariat?budget_document=plan_outline"
                 className="inline-flex items-center gap-2 rounded-xl bg-muted/50 px-3 py-2 text-sm transition-colors hover:bg-muted"
               >
                 <span className="font-semibold">{stream.label}</span>
@@ -324,7 +324,7 @@ function EntityLink({
     <Tooltip>
       <TooltipTrigger asChild>
         <Link
-          href={`/?entity=${encodeURIComponent(entity.entity)}`}
+          href={`/secretariat?entity=${encodeURIComponent(entity.entity)}`}
           className={className}
         >
           {children}
