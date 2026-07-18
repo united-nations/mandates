@@ -355,6 +355,12 @@ export type UnSystemRegistryPoint =
 /** true = point earned; 'partial' = half a point (linked but weak form). */
 export type UnSystemPointValue = boolean | 'partial'
 
+/** One point's state plus the org-specific evidence note from the research dossier. */
+export interface UnSystemPointEntry {
+  value: UnSystemPointValue
+  note: string | null
+}
+
 /**
  * An organization's mandate-registry-like system, scored on the 5-point
  * scheme in docs/un-system-registries.md (documents · active mandates ·
@@ -368,7 +374,7 @@ export interface UnSystemRegistry {
   /** Taxonomy category, shown in the link tooltip, e.g. "Resolutions Database". */
   category: string
   url: string
-  points: Record<UnSystemRegistryPoint, UnSystemPointValue>
+  points: Record<UnSystemRegistryPoint, UnSystemPointEntry>
   interoperability: null
 }
 

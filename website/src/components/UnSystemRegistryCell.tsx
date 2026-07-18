@@ -30,6 +30,15 @@ const POINT_LABELS: Record<UnSystemRegistryPoint, string> = {
   results: 'Results-linked',
 }
 
+/** Generic point definitions, shown when no org-specific evidence note exists. */
+const POINT_DEFINITIONS: Record<UnSystemRegistryPoint, string> = {
+  documents: 'decision texts are compiled and publicly findable',
+  mandates: 'the system knows which decisions are active vs superseded',
+  budget: 'specific mandates are linked to budget or financial information',
+  implementation: 'implementation status is reported per decision',
+  results: 'results are reported against specific decisions',
+}
+
 // Traffic-light ramp by total score; CVD-validated as a set in globals.css.
 const FILLED: Record<number, string> = {
   1: 'bg-tier-1',
@@ -45,16 +54,10 @@ const RING: Record<number, string> = {
 }
 
 function score(registry: UnSystemRegistry): number {
-  return POINT_ORDER.reduce(
-    (sum, key) =>
-      sum +
-      (registry.points[key] === true
-        ? 1
-        : registry.points[key] === 'partial'
-          ? 0.5
-          : 0),
-    0,
-  )
+  return POINT_ORDER.reduce((sum, key) => {
+    const value = registry.points[key].value
+    return sum + (value === true ? 1 : value === 'partial' ? 0.5 : 0)
+  }, 0)
 }
 
 function colorStep(total: number): number {
@@ -68,9 +71,9 @@ function Dot({ value, step }: { value: UnSystemPointValue; step: number }) {
   return (
     <span
       className={cn(
-        'h-1.5 w-1.5 rounded-full',
+        'h-2 w-2 shrink-0 rounded-full',
         value === true && FILLED[step],
-        value === 'partial' && `border bg-transparent ${RING[step]}`,
+        value === 'partial' && `border-[1.5px] bg-transparent ${RING[step]}`,
         value === false && 'bg-gray-300',
       )}
     />
@@ -88,37 +91,44 @@ function PointDots({ registry }: { registry: UnSystemRegistry }) {
   const step = colorStep(total)
   return (
     <span
-      className="inline-flex items-center gap-0.5"
+      className="inline-flex items-center gap-1"
       role="img"
       aria-label={`${total} of 5 points`}
     >
       {POINT_ORDER.map((key) => (
-        <Dot key={key} value={registry.points[key]} step={step} />
+        <Dot key={key} value={registry.points[key].value} step={step} />
       ))}
     </span>
   )
 }
 
-/** Tooltip body: the five points by name with this organization's state. */
+/**
+ * Tooltip body: each point with its state and the org-specific evidence
+ * from the research dossier (falling back to the generic definition).
+ */
 function PointLegend({ registry }: { registry: UnSystemRegistry }) {
   const step = colorStep(score(registry))
   return (
-    <div>
+    <div className="max-w-80">
       <p className="text-sm font-medium">{score(registry)} of 5 points</p>
-      <ul className="mt-1 space-y-1">
+      <ul className="mt-1.5 space-y-1.5">
         {POINT_ORDER.map((key) => {
-          const value = registry.points[key]
+          const { value, note } = registry.points[key]
           return (
-            <li
-              key={key}
-              className={cn(
-                'flex items-center gap-2 text-xs',
-                value === false && 'text-muted-foreground',
-              )}
-            >
-              <Dot value={value} step={step} />
-              {POINT_LABELS[key]}
-              {value === 'partial' && ' (partial)'}
+            <li key={key} className="flex gap-2 text-xs">
+              <span className="flex h-4 items-center">
+                <Dot value={value} step={step} />
+              </span>
+              <span className={cn(value === false && 'text-muted-foreground')}>
+                <span className="font-medium">
+                  {POINT_LABELS[key]}
+                  {value === 'partial' && ' (partial)'}
+                </span>
+                <span className="text-muted-foreground">
+                  {' — '}
+                  {note ?? POINT_DEFINITIONS[key]}
+                </span>
+              </span>
             </li>
           )
         })}
@@ -128,9 +138,9 @@ function PointLegend({ registry }: { registry: UnSystemRegistry }) {
 }
 
 /**
- * Point-meter column cell: the traffic-light dots with a point-breakdown
- * tooltip — or an em dash with an explanatory tooltip when the organization
- * has no registry-like system.
+ * Point-meter column cell: the traffic-light dots with an evidence-backed
+ * point-breakdown tooltip — or an em dash with an explanatory tooltip when
+ * the organization has no registry-like system.
  */
 export function UnSystemRegistryDots({
   registry,
@@ -161,7 +171,7 @@ export function UnSystemRegistryDots({
       <TooltipTrigger className="cursor-help">
         <PointDots registry={registry} />
       </TooltipTrigger>
-      <TooltipContent side="top">
+      <TooltipContent side="top" className="max-w-none">
         <PointLegend registry={registry} />
       </TooltipContent>
     </Tooltip>
@@ -170,7 +180,8 @@ export function UnSystemRegistryDots({
 
 /**
  * Registry-link column cell: the system's proper name, with the taxonomy
- * category in the tooltip.
+ * category in the tooltip. The external-link icon flows inline after the
+ * last word so it never detaches when the name wraps.
  */
 export function UnSystemRegistryLink({
   registry,
@@ -180,8 +191,10 @@ export function UnSystemRegistryLink({
   if (!registry) return null
 
   const internal = registry.url.startsWith('/')
-  const linkClass =
-    'inline-flex items-center gap-1 text-sm text-un-blue hover:underline'
+  const linkClass = 'text-sm text-un-blue hover:underline'
+  // Bind the icon to the last word so it can never wrap onto a line alone.
+  const words = registry.name.split(' ')
+  const lastWord = words.pop()
 
   return (
     <Tooltip>
@@ -197,8 +210,14 @@ export function UnSystemRegistryLink({
             rel="noopener noreferrer"
             className={linkClass}
           >
-            {registry.name}
-            <ExternalLink className="h-3.5 w-3.5 shrink-0" />
+            {words.length > 0 && `${words.join(' ')} `}
+            <span className="whitespace-nowrap">
+              {lastWord}
+              <ExternalLink
+                aria-hidden
+                className="mb-0.5 ml-1 inline h-3.5 w-3.5"
+              />
+            </span>
           </a>
         )}
       </TooltipTrigger>
