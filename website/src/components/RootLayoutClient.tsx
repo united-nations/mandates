@@ -22,7 +22,9 @@ const AnimatedLogo = dynamic(
 
 export function RootLayoutClient({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const isMainPage = pathname === '/'
+  // Top-level nav destinations don't get a back button — it's reserved for
+  // detail pages reached from within the app.
+  const isMainPage = ['/secretariat', '/system', '/about'].includes(pathname)
   const isDiffPage = pathname === '/diff'
 
   return (

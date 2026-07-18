@@ -29,7 +29,7 @@ export function ExplainerText() {
         .
         <br />
         <Link
-          href="/methodology"
+          href="/about"
           className="mt-1 inline-block font-bold text-un-blue no-underline transition-colors hover:text-shuttle-gray"
         >
           Learn More

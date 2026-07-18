@@ -1,7 +1,8 @@
 import { Suspense } from 'react'
 
-import { ExplainerText } from '@/components/ExplainerText'
 import { MandateExplorerServer } from '@/app/_mandateExplorerServer'
+import { ExplainerText } from '@/components/ExplainerText'
+import { ShareButton } from '@/components/ShareButton'
 import { LoadingSkeleton } from '@/components/LoadingSkeleton'
 import { getMandatePageData } from '@/lib/data/mandates'
 import { parseSearchParams } from '@/lib/filter-constants'
@@ -20,7 +21,12 @@ export default async function Page({ searchParams }: PageProps) {
 
   return (
     <div className="space-y-6 pb-16">
-      <ExplainerText />
+      <div className="flex items-start justify-between gap-4">
+        <ExplainerText />
+        <div className="mt-4 shrink-0">
+          <ShareButton />
+        </div>
+      </div>
 
       <Suspense fallback={<LoadingSkeleton variant="list" count={4} />}>
         <MandateExplorerServer dataPromise={dataPromise} />

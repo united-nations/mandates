@@ -41,7 +41,7 @@ export function AnimatedLogo() {
 
   useEffect(() => {
     // Only animate on home page
-    if (pathname !== '/') return
+    if (pathname !== '/secretariat') return
 
     // On home page, start the animation sequence
     const cornerTimer = setTimeout(() => {
@@ -60,7 +60,7 @@ export function AnimatedLogo() {
   }, [pathname])
 
   // Only render on main page
-  if (pathname !== '/') return null
+  if (pathname !== '/secretariat') return null
 
   return (
     <div>

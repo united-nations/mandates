@@ -9,7 +9,7 @@ import { useCallback } from 'react'
  * landed directly on a detail page, opened it in a new tab, or pasted the
  * URL). This guarantees a "back" affordance always lands somewhere sensible.
  */
-export function useSafeBack(fallback = '/') {
+export function useSafeBack(fallback = '/secretariat') {
   const router = useRouter()
 
   return useCallback(() => {

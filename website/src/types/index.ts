@@ -314,3 +314,33 @@ export interface ApiResponse {
     organs: Organ[]
   }
 }
+
+// UN system directory (src/data/un-system.json)
+export type UnSystemGrouping =
+  | 'principal-organ'
+  | 'fund-programme'
+  | 'specialized-agency'
+  | 'related-organization'
+
+export interface UnSystemPage {
+  label: string | null
+  url: string
+}
+
+export interface UnSystemContact {
+  label: string | null
+  url?: string
+  email?: string
+}
+
+export interface UnSystemEntity {
+  code: string
+  name: string
+  grouping: UnSystemGrouping
+  order: number | null
+  governingBodies: string[]
+  officialPages: UnSystemPage[]
+  contacts: UnSystemContact[]
+  note: string | null
+  mandateRegistry: { url: string } | null
+}
