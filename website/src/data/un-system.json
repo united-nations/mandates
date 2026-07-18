@@ -72,22 +72,44 @@
       "name": "United Nations Secretariat and Peacekeeping Operations",
       "grouping": "secretariat",
       "governingBodies": [
-        { "ref": "un-ga" },
-        { "ref": "un-ecosoc" },
-        { "ref": "un-sc" },
-        { "ref": "un-hrc" }
+        {
+          "ref": "un-ga"
+        },
+        {
+          "ref": "un-ecosoc"
+        },
+        {
+          "ref": "un-sc"
+        },
+        {
+          "ref": "un-hrc"
+        }
       ],
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": { "url": "/secretariat" }
+      "mandateRegistry": {
+        "label": "Mandate Registry",
+        "name": "UN Mandate Source Registry — mandate sources cited in the programme budget",
+        "url": "/secretariat",
+        "tier": 3,
+        "features": [
+          "sources",
+          "searchable",
+          "in-force",
+          "resources"
+        ]
+      },
+      "registryNote": null
     },
     {
       "code": "UN-Habitat",
       "name": "United Nations Human Settlements Programme",
       "grouping": "fund-programme",
       "governingBodies": [
-        { "ref": "un-ga" },
+        {
+          "ref": "un-ga"
+        },
         {
           "name": "UN-Habitat Assembly",
           "url": "https://unhabitat.org/governance",
@@ -107,34 +129,73 @@
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": null
+      "mandateRegistry": {
+        "label": "Implementation Tracker",
+        "name": "UN-Habitat Assembly Resolution Tracker — status, financial requirements and funding gaps",
+        "url": "https://unhabitat.org/unhabitat-resolutions",
+        "tier": 4,
+        "features": [
+          "sources",
+          "implementation",
+          "resources"
+        ]
+      },
+      "registryNote": null
     },
     {
       "code": "UNCDF",
       "name": "United Nations Capital Development Fund",
       "grouping": "fund-programme",
-      "governingBodies": [{ "ref": "un-ga" }, { "ref": "undp-board" }],
+      "governingBodies": [
+        {
+          "ref": "un-ga"
+        },
+        {
+          "ref": "undp-board"
+        }
+      ],
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": null
+      "mandateRegistry": null,
+      "registryNote": "No system of its own: UNCDF is governed by the Executive Board of UNDP, UNFPA and UNOPS — see UNDP."
     },
     {
       "code": "UNDP",
       "name": "United Nations Development Programme",
       "grouping": "fund-programme",
-      "governingBodies": [{ "ref": "un-ga" }, { "ref": "undp-board" }],
+      "governingBodies": [
+        {
+          "ref": "un-ga"
+        },
+        {
+          "ref": "undp-board"
+        }
+      ],
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": null
+      "mandateRegistry": {
+        "label": "Decision Tracking",
+        "name": "Executive Board decisions and annual decision-tracking tables (PDF)",
+        "url": "https://www.undp.org/executive-board/decisions-of-the-board",
+        "tier": 4,
+        "features": [
+          "sources",
+          "requests",
+          "implementation"
+        ]
+      },
+      "registryNote": null
     },
     {
       "code": "UNEP",
       "name": "United Nations Environment Programme",
       "grouping": "fund-programme",
       "governingBodies": [
-        { "ref": "un-ga" },
+        {
+          "ref": "un-ga"
+        },
         {
           "name": "United Nations Environment Assembly",
           "url": "https://www.unep.org/environmentassembly/",
@@ -153,24 +214,54 @@
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": null
+      "mandateRegistry": {
+        "label": "Implementation Tracker",
+        "name": "UNEA Monitoring & Reporting Portal",
+        "url": "https://unea.unep.org/monitoring/",
+        "tier": 4,
+        "features": [
+          "sources",
+          "implementation"
+        ]
+      },
+      "registryNote": null
     },
     {
       "code": "UNFPA",
       "name": "United Nations Population Fund",
       "grouping": "fund-programme",
-      "governingBodies": [{ "ref": "un-ga" }, { "ref": "undp-board" }],
+      "governingBodies": [
+        {
+          "ref": "un-ga"
+        },
+        {
+          "ref": "undp-board"
+        }
+      ],
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": null
+      "mandateRegistry": {
+        "label": "Decision Tracking",
+        "name": "Decisions of the Board with annual decision-tracking tables (PDF)",
+        "url": "https://www.unfpa.org/executive-board/decisions-board-listing",
+        "tier": 4,
+        "features": [
+          "sources",
+          "requests",
+          "implementation"
+        ]
+      },
+      "registryNote": null
     },
     {
       "code": "UNICEF",
       "name": "United Nations Children's Fund",
       "grouping": "fund-programme",
       "governingBodies": [
-        { "ref": "un-ga" },
+        {
+          "ref": "un-ga"
+        },
         {
           "name": "Executive Board",
           "url": "https://www.unicef.org/executiveboard/",
@@ -185,14 +276,27 @@
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": null
+      "mandateRegistry": {
+        "label": "Decision Tracking",
+        "name": "Executive Board decision-monitoring tables (PDF)",
+        "url": "https://www.unicef.org/executiveboard/documents/decision-monitoring-tables",
+        "tier": 4,
+        "features": [
+          "sources",
+          "requests",
+          "implementation"
+        ]
+      },
+      "registryNote": null
     },
     {
       "code": "WFP",
       "name": "World Food Programme",
       "grouping": "fund-programme",
       "governingBodies": [
-        { "ref": "un-ga" },
+        {
+          "ref": "un-ga"
+        },
         {
           "name": "Executive Board",
           "url": "https://executiveboard.wfp.org/",
@@ -207,7 +311,17 @@
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": null
+      "mandateRegistry": {
+        "label": "Documents Database",
+        "name": "Executive Board documents database",
+        "url": "https://executiveboard.wfp.org/documents",
+        "tier": 3,
+        "features": [
+          "sources",
+          "searchable"
+        ]
+      },
+      "registryNote": null
     },
     {
       "code": "FAO",
@@ -219,7 +333,10 @@
           "url": "https://www.fao.org/governing-bodies/en",
           "overview": true,
           "contacts": [
-            { "label": "Conference contact", "email": "fao-conference@fao.org" }
+            {
+              "label": "Conference contact",
+              "email": "fao-conference@fao.org"
+            }
           ]
         },
         {
@@ -246,15 +363,32 @@
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": null
+      "mandateRegistry": {
+        "label": "Resolutions Database",
+        "name": "FAO Conference Resolutions Portal",
+        "url": "https://resolutionsportal.fao.org/",
+        "tier": 3,
+        "features": [
+          "sources",
+          "searchable",
+          "in-force"
+        ]
+      },
+      "registryNote": null
     },
     {
       "code": "ICAO",
       "name": "International Civil Aviation Organization",
       "grouping": "specialized-agency",
       "governingBodies": [
-        { "name": "Assembly", "url": "https://www.icao.int/icao-assembly" },
-        { "name": "Council", "url": "https://www.icao.int/icao-council" },
+        {
+          "name": "Assembly",
+          "url": "https://www.icao.int/icao-assembly"
+        },
+        {
+          "name": "Council",
+          "url": "https://www.icao.int/icao-council"
+        },
         {
           "name": "Committees of the Conference",
           "url": "https://www.icao.int/committees-conference"
@@ -263,7 +397,17 @@
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": null
+      "mandateRegistry": {
+        "label": "Resolutions in Force",
+        "name": "Assembly Resolutions in Force (Doc 10184)",
+        "url": "https://www.icao.int/events/a41/resolutions",
+        "tier": 2,
+        "features": [
+          "sources",
+          "in-force"
+        ]
+      },
+      "registryNote": null
     },
     {
       "code": "IFAD",
@@ -284,7 +428,16 @@
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": null
+      "mandateRegistry": {
+        "label": "Session Documents",
+        "name": "IFAD Members Platform — per-session Governing Council and Executive Board documents",
+        "url": "https://webapps.ifad.org/members/gc",
+        "tier": 1,
+        "features": [
+          "sources"
+        ]
+      },
+      "registryNote": null
     },
     {
       "code": "ILO",
@@ -307,14 +460,27 @@
               "label": "Prepared statements for interpreters",
               "email": "interpreterspeeches@ilo.org"
             },
-            { "label": "Meeting reservation", "email": "cmu@ilo.org" }
+            {
+              "label": "Meeting reservation",
+              "email": "cmu@ilo.org"
+            }
           ]
         }
       ],
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": null
+      "mandateRegistry": {
+        "label": "Decisions Database",
+        "name": "Governing Body documents and records of decisions",
+        "url": "https://www.ilo.org/governing-body/all-gb-documents",
+        "tier": 3,
+        "features": [
+          "sources",
+          "searchable"
+        ]
+      },
+      "registryNote": null
     },
     {
       "code": "IMF",
@@ -335,7 +501,17 @@
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": null
+      "mandateRegistry": {
+        "label": "Decisions Database",
+        "name": "Selected Decisions and Selected Documents of the IMF",
+        "url": "https://www.imf.org/en/publications/selected-decisions/selected-decisions-list",
+        "tier": 3,
+        "features": [
+          "sources",
+          "searchable"
+        ]
+      },
+      "registryNote": null
     },
     {
       "code": "IMO",
@@ -361,7 +537,16 @@
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": null
+      "mandateRegistry": {
+        "label": "Session Documents",
+        "name": "Index of IMO Resolutions (texts via IMODOCS, free registration)",
+        "url": "https://www.imo.org/en/knowledgecentre/indexofimoresolutions/pages/default.aspx",
+        "tier": 1,
+        "features": [
+          "sources"
+        ]
+      },
+      "registryNote": null
     },
     {
       "code": "ITU",
@@ -377,13 +562,28 @@
           "name": "Council",
           "url": "https://www.itu.int/hub/membership/how-we-are-governed/",
           "overview": true,
-          "contacts": [{ "label": "Council contact", "email": "gbs@itu.int" }]
+          "contacts": [
+            {
+              "label": "Council contact",
+              "email": "gbs@itu.int"
+            }
+          ]
         }
       ],
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": null
+      "mandateRegistry": {
+        "label": "Resolutions in Force",
+        "name": "Resolutions and Decisions of the Council — annual in-force compilation",
+        "url": "https://www.itu.int/pub/S-CONF-CL",
+        "tier": 2,
+        "features": [
+          "sources",
+          "in-force"
+        ]
+      },
+      "registryNote": null
     },
     {
       "code": "UN Tourism",
@@ -414,7 +614,16 @@
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": null
+      "mandateRegistry": {
+        "label": "Session Documents",
+        "name": "UN Tourism E-Library — General Assembly documents series",
+        "url": "https://www.e-unwto.org/loi/unwtogad",
+        "tier": 1,
+        "features": [
+          "sources"
+        ]
+      },
+      "registryNote": null
     },
     {
       "code": "UNESCO",
@@ -441,7 +650,8 @@
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": null
+      "mandateRegistry": null,
+      "registryNote": "No centralized system. UNESCO has proposed establishing a decision-tracking system aligned with the UN Mandate Register (43 C/OEWG/2/INF.3.REV.2, 2026)."
     },
     {
       "code": "UNIDO",
@@ -462,7 +672,16 @@
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": null
+      "mandateRegistry": {
+        "label": "Session Documents",
+        "name": "Policymaking-organs session pages with per-session decisions and resolutions",
+        "url": "https://www.unido.org/resources/policymaking-organs/general-conference/sessions/14th-session/decisions-and-resolutions-general-conference",
+        "tier": 1,
+        "features": [
+          "sources"
+        ]
+      },
+      "registryNote": null
     },
     {
       "code": "UPU",
@@ -500,7 +719,16 @@
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": null
+      "mandateRegistry": {
+        "label": "Session Documents",
+        "name": "Acts of the Union and Compendium of Congress decisions",
+        "url": "https://www.upu.int/en/Universal-Postal-Union/About-UPU/Acts",
+        "tier": 1,
+        "features": [
+          "sources"
+        ]
+      },
+      "registryNote": null
     },
     {
       "code": "WHO",
@@ -521,7 +749,17 @@
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": null
+      "mandateRegistry": {
+        "label": "Resolutions Database",
+        "name": "Portal of Resolutions and Decisions — WHA, Executive Board and regional committees",
+        "url": "https://resolutionsportal.who.int/",
+        "tier": 3,
+        "features": [
+          "sources",
+          "searchable"
+        ]
+      },
+      "registryNote": null
     },
     {
       "code": "WIPO",
@@ -547,7 +785,16 @@
         }
       ],
       "note": null,
-      "mandateRegistry": null
+      "mandateRegistry": {
+        "label": "Session Documents",
+        "name": "Meeting documents by body, incl. annual Assemblies lists of decisions",
+        "url": "https://www.wipo.int/meetings/en/topic_bodies.jsp",
+        "tier": 1,
+        "features": [
+          "sources"
+        ]
+      },
+      "registryNote": null
     },
     {
       "code": "WMO",
@@ -568,7 +815,20 @@
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": null
+      "mandateRegistry": {
+        "label": "Implementation Tracker",
+        "name": "WMO Resolutions and Decisions database with per-request implementation tracker",
+        "url": "https://tools.wmo.int/wmo-resolutions/index.php",
+        "tier": 4,
+        "features": [
+          "sources",
+          "searchable",
+          "in-force",
+          "requests",
+          "implementation"
+        ]
+      },
+      "registryNote": null
     },
     {
       "code": "World Bank",
@@ -583,7 +843,17 @@
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": null
+      "mandateRegistry": {
+        "label": "Resolutions Database",
+        "name": "Boards of Governors resolutions in the Documents & Reports database",
+        "url": "https://www.worldbank.org/en/about/leadership/governors",
+        "tier": 3,
+        "features": [
+          "sources",
+          "searchable"
+        ]
+      },
+      "registryNote": null
     },
     {
       "code": "CTBTO",
@@ -603,7 +873,8 @@
         }
       ],
       "note": null,
-      "mandateRegistry": null
+      "mandateRegistry": null,
+      "registryNote": "Preparatory Commission documents are distributed through a members-only system; no public compilation."
     },
     {
       "code": "IAEA",
@@ -629,7 +900,17 @@
         }
       ],
       "note": null,
-      "mandateRegistry": null
+      "mandateRegistry": {
+        "label": "Resolutions Database",
+        "name": "General Conference resolutions archive",
+        "url": "https://www.iaea.org/gc-archives/type/resolutions",
+        "tier": 3,
+        "features": [
+          "sources",
+          "searchable"
+        ]
+      },
+      "registryNote": null
     },
     {
       "code": "ICC",
@@ -650,7 +931,16 @@
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": null
+      "mandateRegistry": {
+        "label": "Session Documents",
+        "name": "Assembly of States Parties resolutions by session, with topical index",
+        "url": "https://asp.icc-cpi.int/resolutions",
+        "tier": 1,
+        "features": [
+          "sources"
+        ]
+      },
+      "registryNote": null
     },
     {
       "code": "IOM",
@@ -665,7 +955,17 @@
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": null
+      "mandateRegistry": {
+        "label": "Resolutions Database",
+        "name": "Council Resolutions database",
+        "url": "https://governingbodies.iom.int/council-resolutions",
+        "tier": 3,
+        "features": [
+          "sources",
+          "searchable"
+        ]
+      },
+      "registryNote": null
     },
     {
       "code": "ISA",
@@ -676,7 +976,10 @@
           "name": "Assembly",
           "url": "https://isa.org.jm/organs/the-assembly/"
         },
-        { "name": "Council", "url": "https://isa.org.jm/organs/the-council/" }
+        {
+          "name": "Council",
+          "url": "https://isa.org.jm/organs/the-council/"
+        }
       ],
       "officialPages": [],
       "contacts": [
@@ -686,7 +989,16 @@
         }
       ],
       "note": null,
-      "mandateRegistry": null
+      "mandateRegistry": {
+        "label": "Session Documents",
+        "name": "Per-session Assembly and Council documents",
+        "url": "https://isa.org.jm/sessions/30th-session-2025/",
+        "tier": 1,
+        "features": [
+          "sources"
+        ]
+      },
+      "registryNote": null
     },
     {
       "code": "OPCW",
@@ -701,7 +1013,16 @@
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": null
+      "mandateRegistry": {
+        "label": "Session Documents",
+        "name": "OPCW documents catalogue — Conference and Executive Council decisions by session",
+        "url": "https://www.opcw.org/resources/documents",
+        "tier": 1,
+        "features": [
+          "sources"
+        ]
+      },
+      "registryNote": null
     },
     {
       "code": "WTO",
@@ -725,7 +1046,17 @@
         }
       ],
       "note": null,
-      "mandateRegistry": null
+      "mandateRegistry": {
+        "label": "Documents Database",
+        "name": "WTO Documents Online",
+        "url": "https://docs.wto.org/dol2fe/Pages/FE_Search/FE_S_S001.aspx",
+        "tier": 3,
+        "features": [
+          "sources",
+          "searchable"
+        ]
+      },
+      "registryNote": null
     }
   ]
 }

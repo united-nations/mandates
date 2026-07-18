@@ -345,6 +345,29 @@ export interface UnSystemBody {
 /** A governing-body entry: either a reference into the shared bodies registry or an inline body. */
 export type UnSystemBodyEntry = { ref: string } | UnSystemBody
 
+export type UnSystemRegistryFeature =
+  | 'sources'
+  | 'searchable'
+  | 'in-force'
+  | 'requests'
+  | 'implementation'
+  | 'resources'
+
+/**
+ * An organization's mandate-registry-like system, per the taxonomy in
+ * docs/un-system-registries.md. `tier` is the 1–4 ladder position
+ * (archive → in-force compilation → database → tracker).
+ */
+export interface UnSystemRegistry {
+  /** Short category label shown on the chip, e.g. "Resolutions Database". */
+  label: string
+  /** Proper name/description of the actual system, shown in the tooltip. */
+  name: string
+  url: string
+  tier: 1 | 2 | 3 | 4
+  features: UnSystemRegistryFeature[]
+}
+
 export interface UnSystemEntity {
   code: string
   name: string
@@ -354,7 +377,9 @@ export interface UnSystemEntity {
   officialPages: UnSystemPage[]
   contacts: UnSystemContact[]
   note: string | null
-  mandateRegistry: { url: string } | null
+  mandateRegistry: UnSystemRegistry | null
+  /** Shown when mandateRegistry is null: why there is none (or where it lives instead). */
+  registryNote: string | null
 }
 
 export interface UnSystemData {

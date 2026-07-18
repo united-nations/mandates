@@ -1,4 +1,5 @@
 import { UnSystemBodyLine } from '@/components/UnSystemBodyLine'
+import { UnSystemRegistryCell } from '@/components/UnSystemRegistryCell'
 import unSystemData from '@/data/un-system.json'
 import type {
   UnSystemBody,
@@ -7,9 +8,8 @@ import type {
   UnSystemEntity,
   UnSystemGrouping,
 } from '@/types'
-import { BookMarked, ExternalLink, Mail } from 'lucide-react'
+import { ExternalLink, Mail } from 'lucide-react'
 import type { Metadata } from 'next'
-import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'UN System Mandates',
@@ -94,15 +94,10 @@ function EntityRow({ entity }: { entity: UnSystemEntity }) {
         )}
       </ul>
       <div>
-        {entity.mandateRegistry && (
-          <Link
-            href={entity.mandateRegistry.url}
-            className="inline-flex items-center gap-1.5 rounded-md bg-un-blue/10 px-2 py-1 text-xs font-medium text-un-blue transition-colors hover:bg-un-blue/20"
-          >
-            <BookMarked className="h-3.5 w-3.5" />
-            Mandate Registry
-          </Link>
-        )}
+        <UnSystemRegistryCell
+          registry={entity.mandateRegistry}
+          note={entity.registryNote}
+        />
       </div>
     </li>
   )

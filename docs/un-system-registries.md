@@ -111,9 +111,13 @@ Tier in parentheses; all URLs verified July 2026.
 ## Display scheme (planned)
 
 The `/system` page's Mandate Registry column shows one flagship system per
-organization: a chip whose visible label names the category (Mandate
-Registry / Implementation Tracker / Decision Tracking / Resolutions Database
-/ Resolutions in Force), whose tooltip names the actual system, with the
-tier communicated visually. Tier 0 renders as an em dash, with explanatory
-tooltips for UNESCO (proposal pending) and CTBTO (restricted). Data lives in
-the `mandateRegistry` field of `website/src/data/un-system.json`.
+organization: a link chip with a four-dot fill meter (filled count = tier)
+and a category label (Mandate Registry / Implementation Tracker / Decision
+Tracking / Resolutions Database / Decisions Database / Documents Database /
+Resolutions in Force / Session Documents). The tooltip gives the system's
+proper name plus the six-feature checklist (absent features struck through).
+Tier 0 renders as an em dash with an explanatory tooltip (UNESCO: proposal
+pending; CTBTO: restricted; UNCDF: see UNDP). Data lives in the
+`mandateRegistry` / `registryNote` fields of
+`website/src/data/un-system.json`; rendering in
+`website/src/components/UnSystemRegistryCell.tsx`.
