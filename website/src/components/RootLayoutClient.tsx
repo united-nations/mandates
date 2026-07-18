@@ -4,11 +4,9 @@
 import { BackButton } from '@/components/BackButton'
 import { SiteFooter } from '@/components/SiteFooter'
 import { SiteHeader } from '@/components/SiteHeader'
-import { Button } from '@/components/ui/button'
 import { Toaster } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { FilterProvider } from '@/contexts/FilterContext'
-import { MessageCircle } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import { usePathname } from 'next/navigation'
 
@@ -53,22 +51,9 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
           {children}
         </main>
 
-        {/* Fixed Feedback Button */}
-        <Button
-          asChild
-          className="fixed right-6 bottom-6 z-50 shadow-lg transition-shadow hover:shadow-xl"
-          size="default"
-        >
-          <a
-            href="https://airtable.com/appId4rDWaFTpzNWz/pagpU0nMIhQMQPICL/form"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2"
-          >
-            <MessageCircle className="h-4 w-4" />
-            Give Feedback
-          </a>
-        </Button>
+        {/* Feedback button is the Sentry user-feedback widget, mounted
+            globally in src/instrumentation-client.ts (fixed bottom-right).
+            It replaced the old Airtable "Give Feedback" link. */}
 
         {/* UN80 Logo with UN20 Animation - fixed at bottom */}
         <AnimatedLogo />
