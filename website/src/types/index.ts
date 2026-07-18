@@ -59,8 +59,8 @@ export interface Mandate {
   /**
    * Digital Library-derived display title (from unified_documents.display_title):
    * the clean, catalogue-quality title covering resolutions/decisions/PRSTs incl.
-   * DL-only docs. Preferred by getMandateDisplayTitle; falls back to the legacy
-   * metadata_clean/description chain when absent.
+   * DL-only docs. Preferred by getMandateDisplayTitle; falls back to the raw
+   * description when absent.
    */
   display_title: string | null
   type: string

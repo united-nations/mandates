@@ -318,7 +318,9 @@ with dl_catalog as (
         title,
         display_title,
         date_publication,
-        un_body
+        un_body,
+        subjects,
+        agenda_items
     from digitallibrary.documents
     where deleted_at is null
       and document_symbol ~ '^(A/RES/|A/DEC/|S/RES/|S/PRST/|E/RES/|E/DEC/|A/HRC/RES/|A/HRC/PRST/)'
@@ -337,6 +339,8 @@ select
     coalesce(sd.ppb_year, extract(year from dl.date_publication)::smallint) as ppb_year,
     sd.ppb_body,
     sd.ppb_type,
+    dl.subjects,
+    dl.agenda_items,
     true as is_ppb,
     sd.ppb_full_document_symbol ~ '^(A/RES/|A/DEC/|S/RES/|S/PRST/|E/RES/|E/DEC/|A/HRC/RES/|A/HRC/PRST/)' as is_catalog_pattern
 from ppb2026.source_documents sd
@@ -362,6 +366,8 @@ select
         when dl.document_symbol ~ '/DEC/'  then 'Decisions'
         else 'Resolutions'
     end as ppb_type,
+    dl.subjects,
+    dl.agenda_items,
     false as is_ppb,
     true as is_catalog_pattern
 from dl_catalog dl
