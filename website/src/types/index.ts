@@ -317,7 +317,7 @@ export interface ApiResponse {
 
 // UN system directory (src/data/un-system.json)
 export type UnSystemGrouping =
-  | 'principal-organ'
+  | 'secretariat'
   | 'fund-programme'
   | 'specialized-agency'
   | 'related-organization'
@@ -333,14 +333,31 @@ export interface UnSystemContact {
   email?: string
 }
 
+export interface UnSystemBody {
+  name: string
+  url?: string
+  /** True when `url` is a shared governing-bodies overview page rather than a page about this specific body. */
+  overview?: boolean
+  contacts?: UnSystemContact[]
+  note?: string
+}
+
+/** A governing-body entry: either a reference into the shared bodies registry or an inline body. */
+export type UnSystemBodyEntry = { ref: string } | UnSystemBody
+
 export interface UnSystemEntity {
   code: string
   name: string
   grouping: UnSystemGrouping
-  order: number | null
-  governingBodies: string[]
+  governingBodies: UnSystemBodyEntry[]
+  /** Org-level pages/contacts not attributable to a specific governing body (secretariat pages, general contacts). */
   officialPages: UnSystemPage[]
   contacts: UnSystemContact[]
   note: string | null
   mandateRegistry: { url: string } | null
+}
+
+export interface UnSystemData {
+  bodies: Record<string, UnSystemBody>
+  organizations: UnSystemEntity[]
 }

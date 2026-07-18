@@ -1,7 +1,15 @@
-import { UnSystemEntityLinks } from '@/components/UnSystemEntityLinks'
+import { UnSystemBodyLine } from '@/components/UnSystemBodyLine'
 import unSystemData from '@/data/un-system.json'
-import type { UnSystemEntity, UnSystemGrouping } from '@/types'
+import type {
+  UnSystemBody,
+  UnSystemBodyEntry,
+  UnSystemData,
+  UnSystemEntity,
+  UnSystemGrouping,
+} from '@/types'
+import { BookMarked, ExternalLink, Mail } from 'lucide-react'
 import type { Metadata } from 'next'
+import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'UN System Mandates',
@@ -9,48 +17,91 @@ export const metadata: Metadata = {
     'Governing bodies, official pages and secretariat contacts across the United Nations system.',
 }
 
-const entities = unSystemData as UnSystemEntity[]
+const { bodies, organizations } = unSystemData as UnSystemData
 
-const sections: { grouping: UnSystemGrouping; title: string }[] = [
-  { grouping: 'principal-organ', title: 'Principal Organs of the United Nations' },
+const sections: { grouping: UnSystemGrouping; title: string | null }[] = [
+  { grouping: 'secretariat', title: null },
   { grouping: 'fund-programme', title: 'Funds and Programmes' },
   { grouping: 'specialized-agency', title: 'Specialized Agencies' },
   { grouping: 'related-organization', title: 'Related Organizations' },
 ]
 
-function entitiesFor(grouping: UnSystemGrouping) {
-  return entities
-    .filter((e) => e.grouping === grouping)
-    .sort((a, b) =>
-      a.order !== null || b.order !== null
-        ? (a.order ?? Infinity) - (b.order ?? Infinity)
-        : a.code.localeCompare(b.code),
-    )
+function resolveBody(entry: UnSystemBodyEntry): UnSystemBody {
+  return 'ref' in entry ? bodies[entry.ref] : entry
+}
+
+function OrgLevelLink({
+  label,
+  href,
+  email,
+}: {
+  label: string | null
+  href: string
+  email?: boolean
+}) {
+  return (
+    <li className="leading-snug">
+      <a
+        href={email ? `mailto:${href}` : href}
+        target={email ? undefined : '_blank'}
+        rel={email ? undefined : 'noopener noreferrer'}
+        className="inline-flex items-center gap-1 text-muted-foreground transition-colors hover:text-un-blue"
+      >
+        {label ?? href}
+        {email ? (
+          <Mail className="h-3 w-3 shrink-0" />
+        ) : (
+          <ExternalLink className="h-3 w-3 shrink-0" />
+        )}
+      </a>
+    </li>
+  )
 }
 
 function EntityRow({ entity }: { entity: UnSystemEntity }) {
-  const isPrincipalOrgan = entity.grouping === 'principal-organ'
   return (
-    <li className="grid grid-cols-[1fr_auto] items-baseline gap-x-4 gap-y-1 px-4 py-3 sm:grid-cols-[minmax(0,2fr)_minmax(0,3fr)_auto]">
+    <li className="grid grid-cols-1 items-baseline gap-x-4 gap-y-2 px-4 py-3 sm:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
       <div>
-        <span className="font-semibold text-foreground">
-          {isPrincipalOrgan ? entity.name : entity.code}
-        </span>
-        {!isPrincipalOrgan && entity.name !== entity.code && (
+        <div className="font-semibold text-foreground">{entity.code}</div>
+        {entity.name !== entity.code && (
           <div className="text-sm text-muted-foreground">{entity.name}</div>
         )}
+        {entity.mandateRegistry && (
+          <Link
+            href={entity.mandateRegistry.url}
+            className="mt-1.5 inline-flex items-center gap-1.5 rounded-md bg-un-blue/10 px-2 py-1 text-xs font-medium text-un-blue transition-colors hover:bg-un-blue/20"
+          >
+            <BookMarked className="h-3.5 w-3.5" />
+            Mandate Registry
+          </Link>
+        )}
       </div>
-      <div className="col-span-2 text-sm text-foreground/75 sm:col-span-1">
-        {entity.governingBodies.join(' · ')}
-      </div>
-      <div className="col-start-2 row-start-1 self-center justify-self-end sm:col-start-3">
-        <UnSystemEntityLinks
-          entity={isPrincipalOrgan ? entity.name : entity.code}
-          pages={entity.officialPages}
-          contacts={entity.contacts}
-          note={entity.note}
-        />
-      </div>
+      <ul className="space-y-1 text-sm text-foreground/75">
+        {entity.governingBodies.map(resolveBody).map((body) => (
+          <UnSystemBodyLine key={body.name} body={body} />
+        ))}
+        {(entity.officialPages.length > 0 || entity.contacts.length > 0) && (
+          <li className="mt-1.5">
+            <ul className="space-y-1 text-xs">
+              {entity.officialPages.map((page) => (
+                <OrgLevelLink
+                  key={page.url}
+                  label={page.label}
+                  href={page.url}
+                />
+              ))}
+              {entity.contacts.map((contact) => (
+                <OrgLevelLink
+                  key={contact.url ?? contact.email}
+                  label={contact.label}
+                  href={contact.url ?? contact.email!}
+                  email={!!contact.email}
+                />
+              ))}
+            </ul>
+          </li>
+        )}
+      </ul>
     </li>
   )
 }
@@ -61,36 +112,39 @@ export default function UnSystemPage() {
       <h1 className="text-2xl font-bold tracking-tight text-foreground">
         United Nations System
       </h1>
-      <p className="mt-1 mb-8 max-w-195 text-sm text-muted-foreground">
+      <p className="mt-1 max-w-195 text-sm text-muted-foreground">
         Governing bodies across the United Nations system, with links to each
         body&apos;s official page and secretariat contact.
+      </p>
+      <p className="mt-3 mb-8 max-w-195 text-sm text-muted-foreground italic">
+        This draft overview is for informational purposes only and
+        exhaustiveness is not guaranteed. The relevant rules of the
+        organization concerned should be consulted in order to establish the
+        legal status, functions and reporting lines of each entity listed.
       </p>
 
       {sections.map(({ grouping, title }) => (
         <section key={grouping} className="mb-10">
-          <h2 className="mb-3 text-lg font-semibold text-foreground">
-            {title}
-          </h2>
-          {grouping !== 'principal-organ' && (
-            <div className="hidden grid-cols-[minmax(0,2fr)_minmax(0,3fr)_auto] gap-x-4 px-4 pb-1.5 text-xs font-medium tracking-wide text-muted-foreground uppercase sm:grid">
-              <span>Organization</span>
-              <span>Governing bodies</span>
-            </div>
+          {title && (
+            <>
+              <h2 className="mb-3 text-lg font-semibold text-foreground">
+                {title}
+              </h2>
+              <div className="hidden grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-x-4 px-4 pb-1.5 text-xs font-medium tracking-wide text-muted-foreground uppercase sm:grid">
+                <span>Organization</span>
+                <span>Governing bodies</span>
+              </div>
+            </>
           )}
           <ul className="divide-y divide-border rounded-lg border border-border">
-            {entitiesFor(grouping).map((entity) => (
-              <EntityRow key={entity.code} entity={entity} />
-            ))}
+            {organizations
+              .filter((entity) => entity.grouping === grouping)
+              .map((entity) => (
+                <EntityRow key={entity.code} entity={entity} />
+              ))}
           </ul>
         </section>
       ))}
-
-      <p className="mt-12 mb-20 max-w-195 text-xs leading-relaxed text-muted-foreground italic">
-        This overview is for informational purposes only and exhaustiveness is
-        not guaranteed. The relevant rules of the organization concerned should
-        be consulted in order to establish the legal status, functions and
-        reporting lines of each entity listed.
-      </p>
     </div>
   )
 }

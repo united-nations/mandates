@@ -1,783 +1,736 @@
-[
-  {
-    "code": "GA",
-    "name": "General Assembly",
-    "grouping": "principal-organ",
-    "order": 1,
-    "governingBodies": [],
-    "officialPages": [
-      {
-        "label": null,
-        "url": "https://www.un.org/en/ga/"
-      }
-    ],
-    "contacts": [
-      {
-        "label": "General Assembly Secretariat",
-        "url": "https://www.un.org/en/ga/about/secretariat.shtml"
-      }
-    ],
-    "note": null,
-    "mandateRegistry": null
+{
+  "bodies": {
+    "un-ga": {
+      "name": "General Assembly",
+      "url": "https://www.un.org/en/ga/",
+      "contacts": [
+        {
+          "label": "General Assembly Secretariat",
+          "url": "https://www.un.org/en/ga/about/secretariat.shtml"
+        }
+      ]
+    },
+    "un-sc": {
+      "name": "Security Council",
+      "url": "https://main.un.org/securitycouncil/en",
+      "contacts": [
+        {
+          "label": "Security Council Secretariat Branch",
+          "url": "https://main.un.org/securitycouncil/en/content/secretariat-branch"
+        }
+      ]
+    },
+    "un-ecosoc": {
+      "name": "Economic and Social Council",
+      "url": "https://ecosoc.un.org/en",
+      "contacts": [
+        {
+          "label": "ECOSOC Secretariat",
+          "url": "https://ecosoc.un.org/en/about-us/contact"
+        }
+      ]
+    },
+    "un-hrc": {
+      "name": "Human Rights Council",
+      "url": "https://www.ohchr.org/en/hrc-homepage",
+      "contacts": []
+    },
+    "un-icj": {
+      "name": "International Court of Justice",
+      "url": "https://www.icj-cij.org",
+      "contacts": [
+        {
+          "label": "Contact the Court",
+          "url": "https://www.icj-cij.org/contact-the-court"
+        },
+        {
+          "label": "Information Department",
+          "email": "information@icj-cij.org"
+        }
+      ]
+    },
+    "un-tc": {
+      "name": "Trusteeship Council",
+      "url": "https://www.un.org/en/about-us/trusteeship-council",
+      "contacts": [],
+      "note": "The Council suspended its activities in 1994, when Palau, the last of the original 11 trust territories, gained its independence."
+    },
+    "undp-board": {
+      "name": "Executive Board (UNDP, UNFPA and UNOPS)",
+      "url": "https://www.undp.org/executive-board",
+      "contacts": [
+        {
+          "label": "Secretariat of the Board",
+          "url": "https://www.undp.org/executive-board/secretariat-board"
+        }
+      ]
+    }
   },
-  {
-    "code": "SC",
-    "name": "Security Council",
-    "grouping": "principal-organ",
-    "order": 2,
-    "governingBodies": [],
-    "officialPages": [
-      {
-        "label": null,
-        "url": "https://main.un.org/securitycouncil/en"
-      }
-    ],
-    "contacts": [
-      {
-        "label": "Security Council Secretariat Branch",
-        "url": "https://main.un.org/securitycouncil/en/content/secretariat-branch"
-      }
-    ],
-    "note": null,
-    "mandateRegistry": null
-  },
-  {
-    "code": "ECOSOC",
-    "name": "Economic and Social Council",
-    "grouping": "principal-organ",
-    "order": 3,
-    "governingBodies": [],
-    "officialPages": [
-      {
-        "label": null,
-        "url": "https://ecosoc.un.org/en"
-      }
-    ],
-    "contacts": [
-      {
-        "label": "ECOSOC Secretariat",
-        "url": "https://ecosoc.un.org/en/about-us/contact"
-      }
-    ],
-    "note": null,
-    "mandateRegistry": null
-  },
-  {
-    "code": "ICJ",
-    "name": "International Court of Justice",
-    "grouping": "principal-organ",
-    "order": 4,
-    "governingBodies": [],
-    "officialPages": [
-      {
-        "label": null,
-        "url": "https://www.icj-cij.org"
-      }
-    ],
-    "contacts": [
-      {
-        "label": "Contact the Court",
-        "url": "https://www.icj-cij.org/contact-the-court"
-      },
-      {
-        "label": "Information Department",
-        "email": "information@icj-cij.org"
-      }
-    ],
-    "note": null,
-    "mandateRegistry": null
-  },
-  {
-    "code": "TC",
-    "name": "Trusteeship Council",
-    "grouping": "principal-organ",
-    "order": 5,
-    "governingBodies": [],
-    "officialPages": [
-      {
-        "label": null,
-        "url": "https://www.un.org/en/about-us/trusteeship-council"
-      }
-    ],
-    "contacts": [],
-    "note": "The Council suspended its activities in 1994, when Palau, the last of the original 11 trust territories, gained its independence.",
-    "mandateRegistry": null
-  },
-  {
-    "code": "CTBTO",
-    "name": "Preparatory Commission for the Comprehensive Nuclear-Test-Ban Treaty Organization",
-    "grouping": "related-organization",
-    "order": null,
-    "governingBodies": [
-      "Preparatory Commission"
-    ],
-    "officialPages": [
-      {
-        "label": null,
-        "url": "https://www.ctbto.org/our-mission/the-organization/the-preparatory-commission"
-      }
-    ],
-    "contacts": [
-      {
-        "label": "The Provisional Technical Secretariat",
-        "url": "https://www.ctbto.org/our-mission/the-organization/the-provisional-technical-secretariat"
-      }
-    ],
-    "note": null,
-    "mandateRegistry": null
-  },
-  {
-    "code": "FAO",
-    "name": "Food and Agriculture Organization",
-    "grouping": "specialized-agency",
-    "order": null,
-    "governingBodies": [
-      "Conference",
-      "Council",
-      "Council Committees",
-      "Technical Committees",
-      "Regional Conferences"
-    ],
-    "officialPages": [
-      {
-        "label": null,
-        "url": "https://www.fao.org/governing-bodies/en"
-      }
-    ],
-    "contacts": [
-      {
-        "label": "Conference contact",
-        "email": "fao-conference@fao.org"
-      }
-    ],
-    "note": null,
-    "mandateRegistry": null
-  },
-  {
-    "code": "IAEA",
-    "name": "International Atomic Energy Agency",
-    "grouping": "related-organization",
-    "order": null,
-    "governingBodies": [
-      "General Conferences",
-      "Board of Governors"
-    ],
-    "officialPages": [
-      {
-        "label": null,
-        "url": "https://www.iaea.org/about/governance"
-      }
-    ],
-    "contacts": [
-      {
-        "label": "IAEA Conference Services Section",
-        "email": "MTCD-CSS-Exhibitions.Contact-Point@iaea.org"
-      }
-    ],
-    "note": null,
-    "mandateRegistry": null
-  },
-  {
-    "code": "ICAO",
-    "name": "International Civil Aviation Organization",
-    "grouping": "specialized-agency",
-    "order": null,
-    "governingBodies": [
-      "Assembly",
-      "Council",
-      "Committees of the Conference"
-    ],
-    "officialPages": [
-      {
-        "label": "Assembly",
-        "url": "https://www.icao.int/icao-assembly"
-      },
-      {
-        "label": "Council",
-        "url": "https://www.icao.int/icao-council"
-      },
-      {
-        "label": "Committees of the Conference",
-        "url": "https://www.icao.int/committees-conference"
-      }
-    ],
-    "contacts": [],
-    "note": null,
-    "mandateRegistry": null
-  },
-  {
-    "code": "ICC",
-    "name": "International Criminal Court",
-    "grouping": "related-organization",
-    "order": null,
-    "governingBodies": [
-      "Assembly of States Parties"
-    ],
-    "officialPages": [
-      {
-        "label": null,
-        "url": "https://asp.icc-cpi.int/"
-      }
-    ],
-    "contacts": [
-      {
-        "label": "Secretariat of the Assembly of States Parties",
-        "url": "https://asp.icc-cpi.int/secretariat-contact"
-      }
-    ],
-    "note": null,
-    "mandateRegistry": null
-  },
-  {
-    "code": "IFAD",
-    "name": "International Fund for Agricultural Development",
-    "grouping": "specialized-agency",
-    "order": null,
-    "governingBodies": [
-      "Governing Council",
-      "Executive Board"
-    ],
-    "officialPages": [
-      {
-        "label": null,
-        "url": "https://www.ifad.org/en/governing-bodies"
-      }
-    ],
-    "contacts": [],
-    "note": null,
-    "mandateRegistry": null
-  },
-  {
-    "code": "ILO",
-    "name": "International Labour Organization",
-    "grouping": "specialized-agency",
-    "order": null,
-    "governingBodies": [
-      "Governing Body of the International Labour Office"
-    ],
-    "officialPages": [
-      {
-        "label": null,
-        "url": "https://www.ilo.org/ilo-governing-body"
-      }
-    ],
-    "contacts": [
-      {
-        "label": "Participation, credentials and registration of speakers",
-        "email": "governingbody@ilo.org"
-      },
-      {
-        "label": "Amendments, comments and general inquiries",
-        "email": "reloff@ilo.org"
-      },
-      {
-        "label": "Prepared statements for interpreters",
-        "email": "interpreterspeeches@ilo.org"
-      },
-      {
-        "label": "Meeting reservation",
-        "email": "cmu@ilo.org"
-      }
-    ],
-    "note": null,
-    "mandateRegistry": null
-  },
-  {
-    "code": "IMF",
-    "name": "International Monetary Fund",
-    "grouping": "specialized-agency",
-    "order": null,
-    "governingBodies": [
-      "Board of Governors",
-      "Executive Board"
-    ],
-    "officialPages": [
-      {
-        "label": null,
-        "url": "https://www.imf.org/en/about/factsheets/sheets/2022/how-the-imf-makes-decisions"
-      }
-    ],
-    "contacts": [],
-    "note": null,
-    "mandateRegistry": null
-  },
-  {
-    "code": "IMO",
-    "name": "International Maritime Organization",
-    "grouping": "specialized-agency",
-    "order": null,
-    "governingBodies": [
-      "Assembly",
-      "Council",
-      "Five Main Committees"
-    ],
-    "officialPages": [
-      {
-        "label": null,
-        "url": "https://www.imo.org/en/about/pages/structure.aspx"
-      }
-    ],
-    "contacts": [],
-    "note": null,
-    "mandateRegistry": null
-  },
-  {
-    "code": "IOM",
-    "name": "International Organization for Migration",
-    "grouping": "related-organization",
-    "order": null,
-    "governingBodies": [
-      "Council"
-    ],
-    "officialPages": [
-      {
-        "label": null,
-        "url": "https://governingbodies.iom.int/iom-governing-bodies"
-      }
-    ],
-    "contacts": [],
-    "note": null,
-    "mandateRegistry": null
-  },
-  {
-    "code": "ISA",
-    "name": "International Seabed Authority",
-    "grouping": "related-organization",
-    "order": null,
-    "governingBodies": [
-      "Assembly",
-      "Council"
-    ],
-    "officialPages": [
-      {
-        "label": "Assembly",
-        "url": "https://isa.org.jm/organs/the-assembly/"
-      },
-      {
-        "label": "Council",
-        "url": "https://isa.org.jm/organs/the-council/"
-      }
-    ],
-    "contacts": [
-      {
-        "label": "Secretariat",
-        "url": "https://isa.org.jm/organs/the-secretariat/"
-      }
-    ],
-    "note": null,
-    "mandateRegistry": null
-  },
-  {
-    "code": "ITU",
-    "name": "International Telecommunication Union",
-    "grouping": "specialized-agency",
-    "order": null,
-    "governingBodies": [
-      "Plenipotentiary Conference",
-      "Council"
-    ],
-    "officialPages": [
-      {
-        "label": null,
-        "url": "https://www.itu.int/hub/membership/how-we-are-governed/"
-      }
-    ],
-    "contacts": [
-      {
-        "label": "Council contact",
-        "email": "gbs@itu.int"
-      }
-    ],
-    "note": null,
-    "mandateRegistry": null
-  },
-  {
-    "code": "OPCW",
-    "name": "Organisation for the Prohibition of Chemical Weapons",
-    "grouping": "related-organization",
-    "order": null,
-    "governingBodies": [
-      "Executive Council"
-    ],
-    "officialPages": [
-      {
-        "label": null,
-        "url": "https://www.opcw.org/about-us/executive-council"
-      }
-    ],
-    "contacts": [],
-    "note": null,
-    "mandateRegistry": null
-  },
-  {
-    "code": "UN Tourism",
-    "name": "World Tourism Organization",
-    "grouping": "specialized-agency",
-    "order": null,
-    "governingBodies": [
-      "General Assembly",
-      "Regional Commissions",
-      "Executive Council",
-      "Committees"
-    ],
-    "officialPages": [
-      {
-        "label": null,
-        "url": "https://www.untourism.int/structure"
-      }
-    ],
-    "contacts": [],
-    "note": null,
-    "mandateRegistry": null
-  },
-  {
-    "code": "UN-Habitat",
-    "name": "United Nations Human Settlements Programme",
-    "grouping": "fund-programme",
-    "order": null,
-    "governingBodies": [
-      "General Assembly",
-      "UN-Habitat Assembly",
-      "Executive Board",
-      "Committee of Permanent Representatives"
-    ],
-    "officialPages": [
-      {
-        "label": null,
-        "url": "https://unhabitat.org/governance"
-      }
-    ],
-    "contacts": [],
-    "note": null,
-    "mandateRegistry": null
-  },
-  {
-    "code": "UNCDF",
-    "name": "United Nations Capital Development Fund",
-    "grouping": "fund-programme",
-    "order": null,
-    "governingBodies": [
-      "General Assembly",
-      "Executive Board (UNDP, UNFPA and UNOPS)"
-    ],
-    "officialPages": [
-      {
-        "label": null,
-        "url": "https://www.undp.org/executive-board"
-      }
-    ],
-    "contacts": [
-      {
-        "label": "Secretariat of the Board",
-        "url": "https://www.undp.org/executive-board/secretariat-board"
-      }
-    ],
-    "note": null,
-    "mandateRegistry": null
-  },
-  {
-    "code": "UNDP",
-    "name": "United Nations Development Programme",
-    "grouping": "fund-programme",
-    "order": null,
-    "governingBodies": [
-      "General Assembly",
-      "Executive Board (UNDP, UNFPA and UNOPS)"
-    ],
-    "officialPages": [
-      {
-        "label": null,
-        "url": "https://www.undp.org/executive-board"
-      }
-    ],
-    "contacts": [
-      {
-        "label": "Secretariat of the Board",
-        "url": "https://www.undp.org/executive-board/secretariat-board"
-      }
-    ],
-    "note": null,
-    "mandateRegistry": null
-  },
-  {
-    "code": "UNEP",
-    "name": "United Nations Environment Programme",
-    "grouping": "fund-programme",
-    "order": null,
-    "governingBodies": [
-      "General Assembly",
-      "United Nations Environment Assembly",
-      "Committee of Permanent Representatives"
-    ],
-    "officialPages": [
-      {
-        "label": "UN Environment Assembly",
-        "url": "https://www.unep.org/environmentassembly/"
-      },
-      {
-        "label": "Committee of Permanent Representatives",
-        "url": "https://www.unep.org/cpr"
-      }
-    ],
-    "contacts": [
-      {
-        "label": "UNEA Secretariat",
-        "url": "https://www.unep.org/environmentassembly/unea7/contacts"
-      }
-    ],
-    "note": null,
-    "mandateRegistry": null
-  },
-  {
-    "code": "UNESCO",
-    "name": "United Nations Educational, Scientific and Cultural Organization",
-    "grouping": "specialized-agency",
-    "order": null,
-    "governingBodies": [
-      "General Conference",
-      "Executive Board"
-    ],
-    "officialPages": [
-      {
-        "label": null,
-        "url": "https://www.unesco.org/en/legal-affairs/governing-bodies"
-      }
-    ],
-    "contacts": [
-      {
-        "label": "Secretariat of the General Conference",
-        "url": "https://www.unesco.org/en/general-conference/secretariat"
-      }
-    ],
-    "note": null,
-    "mandateRegistry": null
-  },
-  {
-    "code": "UNFPA",
-    "name": "United Nations Population Fund",
-    "grouping": "fund-programme",
-    "order": null,
-    "governingBodies": [
-      "General Assembly",
-      "Executive Board (UNDP, UNFPA and UNOPS)"
-    ],
-    "officialPages": [
-      {
-        "label": null,
-        "url": "https://www.undp.org/executive-board"
-      }
-    ],
-    "contacts": [
-      {
-        "label": "Secretariat of the Board",
-        "url": "https://www.undp.org/executive-board/secretariat-board"
-      }
-    ],
-    "note": null,
-    "mandateRegistry": null
-  },
-  {
-    "code": "UNICEF",
-    "name": "United Nations Children's Fund",
-    "grouping": "fund-programme",
-    "order": null,
-    "governingBodies": [
-      "General Assembly",
-      "Executive Board"
-    ],
-    "officialPages": [
-      {
-        "label": null,
-        "url": "https://www.unicef.org/executiveboard/"
-      }
-    ],
-    "contacts": [
-      {
-        "label": "Board Secretariat",
-        "url": "https://www.unicef.org/executiveboard/board-secretariat"
-      }
-    ],
-    "note": null,
-    "mandateRegistry": null
-  },
-  {
-    "code": "UNIDO",
-    "name": "United Nations Industrial Development Organization",
-    "grouping": "specialized-agency",
-    "order": null,
-    "governingBodies": [
-      "General Conference",
-      "Industrial Development Board"
-    ],
-    "officialPages": [
-      {
-        "label": null,
-        "url": "https://www.unido.org/who-we-are/structure"
-      }
-    ],
-    "contacts": [],
-    "note": null,
-    "mandateRegistry": null
-  },
-  {
-    "code": "UPU",
-    "name": "Universal Postal Union",
-    "grouping": "specialized-agency",
-    "order": null,
-    "governingBodies": [
-      "Congress",
-      "Council of Administration",
-      "Postal Operations Council"
-    ],
-    "officialPages": [
-      {
-        "label": null,
-        "url": "https://www.upu.int/en/universal-postal-union/about-upu/bodies"
-      }
-    ],
-    "contacts": [
-      {
-        "label": "Contact to Council of Administration",
-        "email": "ca.secretariat@upu.int"
-      },
-      {
-        "label": "Contact to Postal Operations Council",
-        "email": "poc.secretariat@upu.int"
-      }
-    ],
-    "note": null,
-    "mandateRegistry": null
-  },
-  {
-    "code": "WFP",
-    "name": "World Food Programme",
-    "grouping": "fund-programme",
-    "order": null,
-    "governingBodies": [
-      "General Assembly",
-      "Executive Board"
-    ],
-    "officialPages": [
-      {
-        "label": null,
-        "url": "https://executiveboard.wfp.org/"
-      }
-    ],
-    "contacts": [
-      {
-        "label": "Executive Board Secretariat",
-        "url": "https://executiveboard.wfp.org/executive-board-secretariat"
-      }
-    ],
-    "note": null,
-    "mandateRegistry": null
-  },
-  {
-    "code": "WHO",
-    "name": "World Health Organization",
-    "grouping": "specialized-agency",
-    "order": null,
-    "governingBodies": [
-      "World Health Assembly",
-      "Executive Board"
-    ],
-    "officialPages": [
-      {
-        "label": null,
-        "url": "https://www.who.int/about/governance/executive-board"
-      }
-    ],
-    "contacts": [],
-    "note": null,
-    "mandateRegistry": null
-  },
-  {
-    "code": "WIPO",
-    "name": "World Intellectual Property Organization",
-    "grouping": "specialized-agency",
-    "order": null,
-    "governingBodies": [
-      "General Assembly",
-      "Coordination Committee"
-    ],
-    "officialPages": [
-      {
-        "label": null,
-        "url": "https://www.wipo.int/en/web/assemblies"
-      }
-    ],
-    "contacts": [
-      {
-        "label": "Diplomatic Engagement and Assemblies Affairs Division",
-        "url": "https://www.wipo.int/en/web/about-wipo/activities-by-unit/details?id=1018"
-      }
-    ],
-    "note": null,
-    "mandateRegistry": null
-  },
-  {
-    "code": "WMO",
-    "name": "World Meteorological Organization",
-    "grouping": "specialized-agency",
-    "order": null,
-    "governingBodies": [
-      "World Meteorological Congress",
-      "Executive Council"
-    ],
-    "officialPages": [
-      {
-        "label": null,
-        "url": "https://wmo.int/about-wmo/governance"
-      }
-    ],
-    "contacts": [],
-    "note": null,
-    "mandateRegistry": null
-  },
-  {
-    "code": "WTO",
-    "name": "World Trade Organization",
-    "grouping": "related-organization",
-    "order": null,
-    "governingBodies": [
-      "Ministerial Conference",
-      "General Council"
-    ],
-    "officialPages": [
-      {
-        "label": "Ministerial Conference",
-        "url": "https://www.wto.org/english/thewto_e/minist_e/minist_e.htm"
-      },
-      {
-        "label": "General Council",
-        "url": "https://www.wto.org/english/thewto_e/gcounc_e/gcounc_e.htm"
-      }
-    ],
-    "contacts": [
-      {
-        "label": "Contact WTO",
-        "url": "https://www.wto.org/english/info_e/cont_e.htm"
-      }
-    ],
-    "note": null,
-    "mandateRegistry": null
-  },
-  {
-    "code": "World Bank",
-    "name": "World Bank",
-    "grouping": "specialized-agency",
-    "order": null,
-    "governingBodies": [
-      "Board of Governors"
-    ],
-    "officialPages": [
-      {
-        "label": null,
-        "url": "https://www.worldbank.org/en/about/leadership/governors"
-      }
-    ],
-    "contacts": [],
-    "note": null,
-    "mandateRegistry": null
-  }
-]
+  "organizations": [
+    {
+      "code": "UN Secretariat",
+      "name": "United Nations Secretariat and Peacekeeping Operations",
+      "grouping": "secretariat",
+      "governingBodies": [
+        { "ref": "un-ga" },
+        { "ref": "un-ecosoc" },
+        { "ref": "un-sc" },
+        { "ref": "un-hrc" }
+      ],
+      "officialPages": [
+        {
+          "label": "About the Secretariat",
+          "url": "https://www.un.org/en/about-us/secretariat"
+        }
+      ],
+      "contacts": [],
+      "note": null,
+      "mandateRegistry": { "url": "/secretariat" }
+    },
+    {
+      "code": "UN-Habitat",
+      "name": "United Nations Human Settlements Programme",
+      "grouping": "fund-programme",
+      "governingBodies": [
+        { "ref": "un-ga" },
+        {
+          "name": "UN-Habitat Assembly",
+          "url": "https://unhabitat.org/governance",
+          "overview": true
+        },
+        {
+          "name": "Executive Board",
+          "url": "https://unhabitat.org/governance",
+          "overview": true
+        },
+        {
+          "name": "Committee of Permanent Representatives",
+          "url": "https://unhabitat.org/governance",
+          "overview": true
+        }
+      ],
+      "officialPages": [],
+      "contacts": [],
+      "note": null,
+      "mandateRegistry": null
+    },
+    {
+      "code": "UNCDF",
+      "name": "United Nations Capital Development Fund",
+      "grouping": "fund-programme",
+      "governingBodies": [{ "ref": "un-ga" }, { "ref": "undp-board" }],
+      "officialPages": [],
+      "contacts": [],
+      "note": null,
+      "mandateRegistry": null
+    },
+    {
+      "code": "UNDP",
+      "name": "United Nations Development Programme",
+      "grouping": "fund-programme",
+      "governingBodies": [{ "ref": "un-ga" }, { "ref": "undp-board" }],
+      "officialPages": [],
+      "contacts": [],
+      "note": null,
+      "mandateRegistry": null
+    },
+    {
+      "code": "UNEP",
+      "name": "United Nations Environment Programme",
+      "grouping": "fund-programme",
+      "governingBodies": [
+        { "ref": "un-ga" },
+        {
+          "name": "United Nations Environment Assembly",
+          "url": "https://www.unep.org/environmentassembly/",
+          "contacts": [
+            {
+              "label": "UNEA Secretariat",
+              "url": "https://www.unep.org/environmentassembly/unea7/contacts"
+            }
+          ]
+        },
+        {
+          "name": "Committee of Permanent Representatives",
+          "url": "https://www.unep.org/cpr"
+        }
+      ],
+      "officialPages": [],
+      "contacts": [],
+      "note": null,
+      "mandateRegistry": null
+    },
+    {
+      "code": "UNFPA",
+      "name": "United Nations Population Fund",
+      "grouping": "fund-programme",
+      "governingBodies": [{ "ref": "un-ga" }, { "ref": "undp-board" }],
+      "officialPages": [],
+      "contacts": [],
+      "note": null,
+      "mandateRegistry": null
+    },
+    {
+      "code": "UNICEF",
+      "name": "United Nations Children's Fund",
+      "grouping": "fund-programme",
+      "governingBodies": [
+        { "ref": "un-ga" },
+        {
+          "name": "Executive Board",
+          "url": "https://www.unicef.org/executiveboard/",
+          "contacts": [
+            {
+              "label": "Board Secretariat",
+              "url": "https://www.unicef.org/executiveboard/board-secretariat"
+            }
+          ]
+        }
+      ],
+      "officialPages": [],
+      "contacts": [],
+      "note": null,
+      "mandateRegistry": null
+    },
+    {
+      "code": "WFP",
+      "name": "World Food Programme",
+      "grouping": "fund-programme",
+      "governingBodies": [
+        { "ref": "un-ga" },
+        {
+          "name": "Executive Board",
+          "url": "https://executiveboard.wfp.org/",
+          "contacts": [
+            {
+              "label": "Executive Board Secretariat",
+              "url": "https://executiveboard.wfp.org/executive-board-secretariat"
+            }
+          ]
+        }
+      ],
+      "officialPages": [],
+      "contacts": [],
+      "note": null,
+      "mandateRegistry": null
+    },
+    {
+      "code": "FAO",
+      "name": "Food and Agriculture Organization",
+      "grouping": "specialized-agency",
+      "governingBodies": [
+        {
+          "name": "Conference",
+          "url": "https://www.fao.org/governing-bodies/en",
+          "overview": true,
+          "contacts": [
+            { "label": "Conference contact", "email": "fao-conference@fao.org" }
+          ]
+        },
+        {
+          "name": "Council",
+          "url": "https://www.fao.org/governing-bodies/en",
+          "overview": true
+        },
+        {
+          "name": "Council Committees",
+          "url": "https://www.fao.org/governing-bodies/en",
+          "overview": true
+        },
+        {
+          "name": "Technical Committees",
+          "url": "https://www.fao.org/governing-bodies/en",
+          "overview": true
+        },
+        {
+          "name": "Regional Conferences",
+          "url": "https://www.fao.org/governing-bodies/en",
+          "overview": true
+        }
+      ],
+      "officialPages": [],
+      "contacts": [],
+      "note": null,
+      "mandateRegistry": null
+    },
+    {
+      "code": "ICAO",
+      "name": "International Civil Aviation Organization",
+      "grouping": "specialized-agency",
+      "governingBodies": [
+        { "name": "Assembly", "url": "https://www.icao.int/icao-assembly" },
+        { "name": "Council", "url": "https://www.icao.int/icao-council" },
+        {
+          "name": "Committees of the Conference",
+          "url": "https://www.icao.int/committees-conference"
+        }
+      ],
+      "officialPages": [],
+      "contacts": [],
+      "note": null,
+      "mandateRegistry": null
+    },
+    {
+      "code": "IFAD",
+      "name": "International Fund for Agricultural Development",
+      "grouping": "specialized-agency",
+      "governingBodies": [
+        {
+          "name": "Governing Council",
+          "url": "https://www.ifad.org/en/governing-bodies",
+          "overview": true
+        },
+        {
+          "name": "Executive Board",
+          "url": "https://www.ifad.org/en/governing-bodies",
+          "overview": true
+        }
+      ],
+      "officialPages": [],
+      "contacts": [],
+      "note": null,
+      "mandateRegistry": null
+    },
+    {
+      "code": "ILO",
+      "name": "International Labour Organization",
+      "grouping": "specialized-agency",
+      "governingBodies": [
+        {
+          "name": "Governing Body of the International Labour Office",
+          "url": "https://www.ilo.org/ilo-governing-body",
+          "contacts": [
+            {
+              "label": "Participation, credentials and registration of speakers",
+              "email": "governingbody@ilo.org"
+            },
+            {
+              "label": "Amendments, comments and general inquiries",
+              "email": "reloff@ilo.org"
+            },
+            {
+              "label": "Prepared statements for interpreters",
+              "email": "interpreterspeeches@ilo.org"
+            },
+            { "label": "Meeting reservation", "email": "cmu@ilo.org" }
+          ]
+        }
+      ],
+      "officialPages": [],
+      "contacts": [],
+      "note": null,
+      "mandateRegistry": null
+    },
+    {
+      "code": "IMF",
+      "name": "International Monetary Fund",
+      "grouping": "specialized-agency",
+      "governingBodies": [
+        {
+          "name": "Board of Governors",
+          "url": "https://www.imf.org/en/about/factsheets/sheets/2022/how-the-imf-makes-decisions",
+          "overview": true
+        },
+        {
+          "name": "Executive Board",
+          "url": "https://www.imf.org/en/about/factsheets/sheets/2022/how-the-imf-makes-decisions",
+          "overview": true
+        }
+      ],
+      "officialPages": [],
+      "contacts": [],
+      "note": null,
+      "mandateRegistry": null
+    },
+    {
+      "code": "IMO",
+      "name": "International Maritime Organization",
+      "grouping": "specialized-agency",
+      "governingBodies": [
+        {
+          "name": "Assembly",
+          "url": "https://www.imo.org/en/about/pages/structure.aspx",
+          "overview": true
+        },
+        {
+          "name": "Council",
+          "url": "https://www.imo.org/en/about/pages/structure.aspx",
+          "overview": true
+        },
+        {
+          "name": "Five Main Committees",
+          "url": "https://www.imo.org/en/about/pages/structure.aspx",
+          "overview": true
+        }
+      ],
+      "officialPages": [],
+      "contacts": [],
+      "note": null,
+      "mandateRegistry": null
+    },
+    {
+      "code": "ITU",
+      "name": "International Telecommunication Union",
+      "grouping": "specialized-agency",
+      "governingBodies": [
+        {
+          "name": "Plenipotentiary Conference",
+          "url": "https://www.itu.int/hub/membership/how-we-are-governed/",
+          "overview": true
+        },
+        {
+          "name": "Council",
+          "url": "https://www.itu.int/hub/membership/how-we-are-governed/",
+          "overview": true,
+          "contacts": [{ "label": "Council contact", "email": "gbs@itu.int" }]
+        }
+      ],
+      "officialPages": [],
+      "contacts": [],
+      "note": null,
+      "mandateRegistry": null
+    },
+    {
+      "code": "UN Tourism",
+      "name": "World Tourism Organization",
+      "grouping": "specialized-agency",
+      "governingBodies": [
+        {
+          "name": "General Assembly",
+          "url": "https://www.untourism.int/structure",
+          "overview": true
+        },
+        {
+          "name": "Regional Commissions",
+          "url": "https://www.untourism.int/structure",
+          "overview": true
+        },
+        {
+          "name": "Executive Council",
+          "url": "https://www.untourism.int/structure",
+          "overview": true
+        },
+        {
+          "name": "Committees",
+          "url": "https://www.untourism.int/structure",
+          "overview": true
+        }
+      ],
+      "officialPages": [],
+      "contacts": [],
+      "note": null,
+      "mandateRegistry": null
+    },
+    {
+      "code": "UNESCO",
+      "name": "United Nations Educational, Scientific and Cultural Organization",
+      "grouping": "specialized-agency",
+      "governingBodies": [
+        {
+          "name": "General Conference",
+          "url": "https://www.unesco.org/en/legal-affairs/governing-bodies",
+          "overview": true,
+          "contacts": [
+            {
+              "label": "Secretariat of the General Conference",
+              "url": "https://www.unesco.org/en/general-conference/secretariat"
+            }
+          ]
+        },
+        {
+          "name": "Executive Board",
+          "url": "https://www.unesco.org/en/legal-affairs/governing-bodies",
+          "overview": true
+        }
+      ],
+      "officialPages": [],
+      "contacts": [],
+      "note": null,
+      "mandateRegistry": null
+    },
+    {
+      "code": "UNIDO",
+      "name": "United Nations Industrial Development Organization",
+      "grouping": "specialized-agency",
+      "governingBodies": [
+        {
+          "name": "General Conference",
+          "url": "https://www.unido.org/who-we-are/structure",
+          "overview": true
+        },
+        {
+          "name": "Industrial Development Board",
+          "url": "https://www.unido.org/who-we-are/structure",
+          "overview": true
+        }
+      ],
+      "officialPages": [],
+      "contacts": [],
+      "note": null,
+      "mandateRegistry": null
+    },
+    {
+      "code": "UPU",
+      "name": "Universal Postal Union",
+      "grouping": "specialized-agency",
+      "governingBodies": [
+        {
+          "name": "Congress",
+          "url": "https://www.upu.int/en/universal-postal-union/about-upu/bodies",
+          "overview": true
+        },
+        {
+          "name": "Council of Administration",
+          "url": "https://www.upu.int/en/universal-postal-union/about-upu/bodies",
+          "overview": true,
+          "contacts": [
+            {
+              "label": "Contact to Council of Administration",
+              "email": "ca.secretariat@upu.int"
+            }
+          ]
+        },
+        {
+          "name": "Postal Operations Council",
+          "url": "https://www.upu.int/en/universal-postal-union/about-upu/bodies",
+          "overview": true,
+          "contacts": [
+            {
+              "label": "Contact to Postal Operations Council",
+              "email": "poc.secretariat@upu.int"
+            }
+          ]
+        }
+      ],
+      "officialPages": [],
+      "contacts": [],
+      "note": null,
+      "mandateRegistry": null
+    },
+    {
+      "code": "WHO",
+      "name": "World Health Organization",
+      "grouping": "specialized-agency",
+      "governingBodies": [
+        {
+          "name": "World Health Assembly",
+          "url": "https://www.who.int/about/governance/executive-board",
+          "overview": true
+        },
+        {
+          "name": "Executive Board",
+          "url": "https://www.who.int/about/governance/executive-board",
+          "overview": true
+        }
+      ],
+      "officialPages": [],
+      "contacts": [],
+      "note": null,
+      "mandateRegistry": null
+    },
+    {
+      "code": "WIPO",
+      "name": "World Intellectual Property Organization",
+      "grouping": "specialized-agency",
+      "governingBodies": [
+        {
+          "name": "General Assembly",
+          "url": "https://www.wipo.int/en/web/assemblies",
+          "overview": true
+        },
+        {
+          "name": "Coordination Committee",
+          "url": "https://www.wipo.int/en/web/assemblies",
+          "overview": true
+        }
+      ],
+      "officialPages": [],
+      "contacts": [
+        {
+          "label": "Diplomatic Engagement and Assemblies Affairs Division",
+          "url": "https://www.wipo.int/en/web/about-wipo/activities-by-unit/details?id=1018"
+        }
+      ],
+      "note": null,
+      "mandateRegistry": null
+    },
+    {
+      "code": "WMO",
+      "name": "World Meteorological Organization",
+      "grouping": "specialized-agency",
+      "governingBodies": [
+        {
+          "name": "World Meteorological Congress",
+          "url": "https://wmo.int/about-wmo/governance",
+          "overview": true
+        },
+        {
+          "name": "Executive Council",
+          "url": "https://wmo.int/about-wmo/governance",
+          "overview": true
+        }
+      ],
+      "officialPages": [],
+      "contacts": [],
+      "note": null,
+      "mandateRegistry": null
+    },
+    {
+      "code": "World Bank",
+      "name": "World Bank",
+      "grouping": "specialized-agency",
+      "governingBodies": [
+        {
+          "name": "Board of Governors",
+          "url": "https://www.worldbank.org/en/about/leadership/governors"
+        }
+      ],
+      "officialPages": [],
+      "contacts": [],
+      "note": null,
+      "mandateRegistry": null
+    },
+    {
+      "code": "CTBTO",
+      "name": "Preparatory Commission for the Comprehensive Nuclear-Test-Ban Treaty Organization",
+      "grouping": "related-organization",
+      "governingBodies": [
+        {
+          "name": "Preparatory Commission",
+          "url": "https://www.ctbto.org/our-mission/the-organization/the-preparatory-commission"
+        }
+      ],
+      "officialPages": [],
+      "contacts": [
+        {
+          "label": "The Provisional Technical Secretariat",
+          "url": "https://www.ctbto.org/our-mission/the-organization/the-provisional-technical-secretariat"
+        }
+      ],
+      "note": null,
+      "mandateRegistry": null
+    },
+    {
+      "code": "IAEA",
+      "name": "International Atomic Energy Agency",
+      "grouping": "related-organization",
+      "governingBodies": [
+        {
+          "name": "General Conferences",
+          "url": "https://www.iaea.org/about/governance",
+          "overview": true
+        },
+        {
+          "name": "Board of Governors",
+          "url": "https://www.iaea.org/about/governance",
+          "overview": true
+        }
+      ],
+      "officialPages": [],
+      "contacts": [
+        {
+          "label": "IAEA Conference Services Section",
+          "email": "MTCD-CSS-Exhibitions.Contact-Point@iaea.org"
+        }
+      ],
+      "note": null,
+      "mandateRegistry": null
+    },
+    {
+      "code": "ICC",
+      "name": "International Criminal Court",
+      "grouping": "related-organization",
+      "governingBodies": [
+        {
+          "name": "Assembly of States Parties",
+          "url": "https://asp.icc-cpi.int/",
+          "contacts": [
+            {
+              "label": "Secretariat of the Assembly of States Parties",
+              "url": "https://asp.icc-cpi.int/secretariat-contact"
+            }
+          ]
+        }
+      ],
+      "officialPages": [],
+      "contacts": [],
+      "note": null,
+      "mandateRegistry": null
+    },
+    {
+      "code": "IOM",
+      "name": "International Organization for Migration",
+      "grouping": "related-organization",
+      "governingBodies": [
+        {
+          "name": "Council",
+          "url": "https://governingbodies.iom.int/iom-governing-bodies"
+        }
+      ],
+      "officialPages": [],
+      "contacts": [],
+      "note": null,
+      "mandateRegistry": null
+    },
+    {
+      "code": "ISA",
+      "name": "International Seabed Authority",
+      "grouping": "related-organization",
+      "governingBodies": [
+        {
+          "name": "Assembly",
+          "url": "https://isa.org.jm/organs/the-assembly/"
+        },
+        { "name": "Council", "url": "https://isa.org.jm/organs/the-council/" }
+      ],
+      "officialPages": [],
+      "contacts": [
+        {
+          "label": "Secretariat",
+          "url": "https://isa.org.jm/organs/the-secretariat/"
+        }
+      ],
+      "note": null,
+      "mandateRegistry": null
+    },
+    {
+      "code": "OPCW",
+      "name": "Organisation for the Prohibition of Chemical Weapons",
+      "grouping": "related-organization",
+      "governingBodies": [
+        {
+          "name": "Executive Council",
+          "url": "https://www.opcw.org/about-us/executive-council"
+        }
+      ],
+      "officialPages": [],
+      "contacts": [],
+      "note": null,
+      "mandateRegistry": null
+    },
+    {
+      "code": "WTO",
+      "name": "World Trade Organization",
+      "grouping": "related-organization",
+      "governingBodies": [
+        {
+          "name": "Ministerial Conference",
+          "url": "https://www.wto.org/english/thewto_e/minist_e/minist_e.htm"
+        },
+        {
+          "name": "General Council",
+          "url": "https://www.wto.org/english/thewto_e/gcounc_e/gcounc_e.htm"
+        }
+      ],
+      "officialPages": [],
+      "contacts": [
+        {
+          "label": "Contact WTO",
+          "url": "https://www.wto.org/english/info_e/cont_e.htm"
+        }
+      ],
+      "note": null,
+      "mandateRegistry": null
+    }
+  ]
+}
