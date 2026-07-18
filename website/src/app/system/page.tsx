@@ -1,5 +1,8 @@
 import { UnSystemBodyLine } from '@/components/UnSystemBodyLine'
-import { UnSystemRegistryCell } from '@/components/UnSystemRegistryCell'
+import {
+  UnSystemRegistryDots,
+  UnSystemRegistryLink,
+} from '@/components/UnSystemRegistryCell'
 import unSystemData from '@/data/un-system.json'
 import type {
   UnSystemBody,
@@ -60,7 +63,7 @@ function OrgLevelLink({
 
 function EntityRow({ entity }: { entity: UnSystemEntity }) {
   return (
-    <li className="grid grid-cols-1 items-baseline gap-x-4 gap-y-2 px-4 py-3 sm:grid-cols-[minmax(0,2fr)_minmax(0,3fr)_minmax(0,1fr)]">
+    <li className="grid grid-cols-1 items-baseline gap-x-4 gap-y-2 px-4 py-3 sm:grid-cols-[minmax(0,2fr)_minmax(0,3fr)_2.25rem_minmax(0,1fr)]">
       <div>
         <div className="font-semibold text-foreground">{entity.code}</div>
         {entity.name !== entity.code && (
@@ -94,10 +97,13 @@ function EntityRow({ entity }: { entity: UnSystemEntity }) {
         )}
       </ul>
       <div>
-        <UnSystemRegistryCell
+        <UnSystemRegistryDots
           registry={entity.mandateRegistry}
           note={entity.registryNote}
         />
+      </div>
+      <div>
+        <UnSystemRegistryLink registry={entity.mandateRegistry} />
       </div>
     </li>
   )
@@ -105,7 +111,7 @@ function EntityRow({ entity }: { entity: UnSystemEntity }) {
 
 export default function UnSystemPage() {
   return (
-    <div className="mx-auto max-w-4xl">
+    <div>
       <h1 className="text-2xl font-bold tracking-tight text-foreground">
         United Nations System
       </h1>
@@ -130,11 +136,11 @@ export default function UnSystemPage() {
               <h2 className="mb-3 text-lg font-semibold text-foreground">
                 {title}
               </h2>
-              <div className="hidden grid-cols-[minmax(0,2fr)_minmax(0,3fr)_minmax(0,1fr)] gap-x-4 px-4 pb-1.5 text-xs font-medium tracking-wide text-muted-foreground uppercase sm:grid">
+              <div className="hidden grid-cols-[minmax(0,2fr)_minmax(0,3fr)_2.25rem_minmax(0,1fr)] gap-x-4 px-4 pb-1.5 text-xs font-medium tracking-wide text-muted-foreground uppercase sm:grid">
                 {/* Pulled out of the box inset so it left-aligns with the section title. */}
                 <span className="-ms-4">Organization</span>
                 <span>Governing bodies</span>
-                <span>Mandate Registry</span>
+                <span className="col-span-2">Mandate Registry</span>
               </div>
             </>
           )}

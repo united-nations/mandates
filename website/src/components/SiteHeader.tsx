@@ -35,9 +35,6 @@ export function SiteHeader() {
   // ~46px of side margin; 1408px is comfortable for xl:max-w-7xl.
   const outboardOnly = 'hidden min-[1408px]:block'
   const inlineOnly = 'min-[1408px]:hidden'
-  // /system constrains its body to max-w-4xl inside the padded main column;
-  // max-w-5xl at lg:px-16 gives the header the same 896px content width.
-  const isNarrowPage = pathname === '/system'
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-border bg-background/95 py-3 backdrop-blur-sm supports-backdrop-filter:bg-background/60">
@@ -45,7 +42,7 @@ export function SiteHeader() {
         className={cn(
           'relative mx-auto flex items-center gap-4',
           pagePadding,
-          isNarrowPage ? 'max-w-4xl lg:max-w-5xl' : pageWidth,
+          pageWidth,
         )}
       >
         {/* Emblem aspect ≈ 1.198:1. Outboard variant tucks into the
