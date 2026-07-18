@@ -1,5 +1,6 @@
 'use client'
 
+import { ActiveFilters } from '@/components/ActiveFilters'
 import { FilterControls } from '@/components/FilterControls'
 import { HeaderStats } from '@/components/HeaderStats'
 import { PaginationControls } from '@/components/PaginationControls'
@@ -194,6 +195,12 @@ export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
       */}
 
       <div className="pt-4">
+        {/* Active filters sit above the summary stat cards. */}
+        <ActiveFilters
+          entitiesData={allEntities}
+          allOrgans={allOrgans}
+          className="mb-4"
+        />
         {/* Summary stats repeated here (as a row) above the table. */}
         <div className="mb-6">
           <HeaderStats data={data} orientation="row" />

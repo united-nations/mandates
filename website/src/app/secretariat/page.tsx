@@ -154,7 +154,7 @@ export default async function Page({ searchParams }: PageProps) {
         id="subjects"
         imageSrc="/images/banners/hero-banner-system-expenses.png"
         title="Which topics are the mandates about?"
-        description="Every subject applied to a mandate document, grouped into broad thematic domains. Select a topic to filter the mandates below."
+        description="Every subject applied to a mandate document, grouped into broad thematic domains. Select a topic to filter the mandates above."
       />
       <section className={CONTENT}>
         <SubjectsCompact domains={subjectDomains} />
