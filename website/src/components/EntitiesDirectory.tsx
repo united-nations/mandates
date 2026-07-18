@@ -138,34 +138,44 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
         .map((g) => ({ ...g, entities: g.entities.filter(match) }))
         .filter((g) => g.entities.length > 0)
     : []
+  // Missions and the Support account are the Peacekeeping stream's top-level
+  // split — its analogue to the Programme Budget's parts (there is no section
+  // level below). So they always show as their own boxes, quieter than a PPB
+  // part (no "Part N." number) and not gated behind the section toggle.
   const pkoNode =
     pkoGroups.length > 0 ? (
       <div>
         <div className="mb-3">
           <StreamHeading type="pko" />
         </div>
-        <div className={cn(compact && SECTION_BOX)}>
-          {showSections ? (
-            <div className="space-y-3">
-              {pkoGroups.map((group) => (
-                <div key={group.group} className="space-y-1.5">
-                  <SubHeading>{group.label}</SubHeading>
-                  <EntityGroup
-                    entities={group.entities}
-                    compact={compact}
-                    active={active}
-                    onSelect={select}
-                  />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <EntityGroup
-              entities={pkoGroups.flatMap((g) => g.entities)}
-              compact={compact}
-              active={active}
-              onSelect={select}
-            />
+        <div className="space-y-5">
+          {pkoGroups.map((group) =>
+            compact ? (
+              <div
+                key={group.group}
+                className={cn(SECTION_BOX, 'space-y-1.5')}
+              >
+                <h3 className="text-sm font-semibold text-gray-900">
+                  {group.label}
+                </h3>
+                <EntityGroup
+                  entities={group.entities}
+                  compact={compact}
+                  active={active}
+                  onSelect={select}
+                />
+              </div>
+            ) : (
+              <div key={group.group} className="space-y-1.5">
+                <SubHeading>{group.label}</SubHeading>
+                <EntityGroup
+                  entities={group.entities}
+                  compact={compact}
+                  active={active}
+                  onSelect={select}
+                />
+              </div>
+            )
           )}
         </div>
       </div>
