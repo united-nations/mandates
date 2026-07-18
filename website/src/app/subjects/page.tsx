@@ -2,6 +2,7 @@ import { Tags } from 'lucide-react'
 import type { Metadata } from 'next'
 import { getSubjectHierarchy } from '@/lib/data/mandates'
 import { SubjectsDirectory } from '@/components/SubjectsDirectory'
+import { SubjectsCompact } from '@/components/SubjectsCompact'
 
 export const metadata: Metadata = {
   title: 'Subjects',
@@ -29,7 +30,16 @@ export default async function SubjectsPage() {
         heading to see everything within it.
       </p>
 
-      <SubjectsDirectory domains={domains} />
+      {/* Prototype: compact treemap + pill-map version intended for embedding
+          on the main page. The full browse is kept below for comparison. */}
+      <SubjectsCompact domains={domains} />
+
+      <div className="my-12 border-t border-border pt-8">
+        <h2 className="mb-6 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+          Full browse (current page)
+        </h2>
+        <SubjectsDirectory domains={domains} />
+      </div>
     </div>
   )
 }
