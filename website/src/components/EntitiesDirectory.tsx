@@ -81,7 +81,7 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
             <TooltipTrigger asChild>
               <Link
                 href="/?budget_document=plan_outline"
-                className="flex items-center gap-2 rounded-xl bg-muted/50 px-3 py-2 text-sm transition-colors hover:bg-muted"
+                className="inline-flex items-center gap-2 rounded-xl bg-muted/50 px-3 py-2 text-sm transition-colors hover:bg-muted"
               >
                 <span className="font-semibold">{stream.label}</span>
                 <span className="text-xs text-muted-foreground">
