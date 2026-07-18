@@ -8,7 +8,12 @@ from natsort import natsorted
 from rich import print
 from tqdm import tqdm
 
-from utils.data_cleaning import link_to_symbol, normalize_title, normalize_symbol
+from utils.data_cleaning import (
+    link_to_symbol,
+    map_body_source_to_organ,
+    normalize_title,
+    normalize_symbol,
+)
 from utils.llm_extract_mandates import llm_extract_mandates
 
 
@@ -477,6 +482,11 @@ def extract_mandates(year: int):
     df = df.rename(
         columns={"mandate_description": "description", "mandate_source": "source"}
     )
+    # Attribute each mandate to its organ from the body-header source. The
+    # fascicles only hyperlink principal-organ resolutions, so unlinked
+    # commission/treaty mandates ("Commission on Narcotic Drugs resolutions",
+    # ...) would otherwise import with no organ. See ppb_body_source_map.tsv.
+    df["organ"] = df["source"].apply(map_body_source_to_organ)
     df = df[
         [
             "origin_document",
@@ -500,6 +510,7 @@ def extract_mandates(year: int):
             "symbol",
             "full_document_symbol",
             "source",
+            "organ",
         ]
     ]
     return df

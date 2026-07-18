@@ -1,4 +1,5 @@
 import re
+from functools import lru_cache
 
 import pandas as pd
 
@@ -34,6 +35,37 @@ def link_to_symbol(link: str):
                 return link[len(prefix):].upper()
         return None
     return None
+
+@lru_cache(maxsize=1)
+def _body_source_map():
+    """(pattern_lower, organ_short) rules ordered by ascending priority.
+
+    Loaded once from data/references/ppb_body_source_map.tsv (the canonical
+    body-header -> organ mapping, mirrored in SQL migration 028).
+    """
+    df = pd.read_csv(
+        "../data/references/ppb_body_source_map.tsv", sep="\t", comment="#"
+    ).sort_values("priority")
+    return [(str(p).lower(), str(o)) for p, o in zip(df["pattern"], df["organ_short"])]
+
+
+def map_body_source_to_organ(source):
+    """Map a mandate body-header (ppb_document_source) to an organ short code.
+
+    The fascicles group unlinked mandates under body headers such as "Commission
+    on Narcotic Drugs resolutions" and only hyperlink the principal-organ
+    families, so the organ is not otherwise recoverable. Returns the first
+    matching pattern's organ, or None when nothing matches (empty/generic
+    source). Kept in sync with ppb2026.body_source_organ_map (migration 028).
+    """
+    if not isinstance(source, str) or not source.strip():
+        return None
+    s = source.lower()
+    for pattern, organ in _body_source_map():
+        if pattern in s:
+            return organ
+    return None
+
 
 def extract_organ(symbol_prefix):
     """Extract UN organ from symbol prefix."""

@@ -1,0 +1,61 @@
+pattern	organ_short	priority
+# Body-header (ppb_document_source) -> organ (ppb2026.organs.short) mapping.
+#
+# The PPB fascicles list mandates grouped under plain-text body headers (e.g.
+# "Commission on Narcotic Drugs resolutions") and only hyperlink the principal-
+# organ families (A/RES, E/RES, S/RES). The pipeline therefore captures the body
+# header as `source`/`ppb_document_source` but leaves the organ unset. This table
+# maps that header text to an organ short code so every cited mandate is
+# attributed to its body (matching the manual 2026 curation conventions:
+# validated to reproduce 60/62 of the 2026 human decisions).
+#
+# Matching is first-match by ascending `priority`, case-insensitive substring
+# (source ILIKE '%pattern%'). Order specifics before generics; SC before Charter
+# so "Security Council … Article 29 of the Charter …" resolves to SC.
+#
+# CANONICAL COPY. The SQL side mirrors this in migration 028
+# (ppb2026.body_source_organ_map); keep the two in sync when editing.
+UN-Habitat	UNHA and Other	10
+Habitat Assembly	UNHA and Other	20
+Committee of Permanent Representatives	UNHA and Other	30
+Executive Board	UNHA and Other	40
+Governing Council of the United Nations Environment Programme	UNEA	50
+Governing Council of UNEP	UNEA	60
+Environment Assembly	UNEA	70
+Environment Programme	UNEA	80
+Commission on Narcotic Drugs	CND	90
+Crime Prevention and Criminal Justice	CCPCJ	100
+Commission on Population and Development	CPD	110
+Commission for Social Development	CSD	120
+Status of Women	CSW	130
+Commission on Human Rights	HRC	140
+Economic Commission for Africa	ECA	150
+Economic Commission for Europe	ECE	160
+Economic Commission for Latin America	ECLAC	170
+ECLAC	ECLAC	180
+Economic and Social Commission for Asia	ESCAP	190
+Economic and Social Commission for Western Asia	ESCWA	200
+Convention against Transnational Organized Crime	UNTOC COP	210
+Law of the Sea	UNCLOS	220
+Fish Stocks	UNCLOS	230
+International Narcotics Control Board	INCB	240
+World Trade Organization	WTO	250
+Trade and Development	UNCTAD	260
+Convention against Corruption	Other	270
+transport agreements	Other	280
+Escaz	Other	290
+Access to Information, Public Participation	Other	300
+Covenant	Other	310
+Universal Declaration	Other	320
+Conventions and	Other	330
+Conference declarations	Other	340
+Framework Convention on Climate Change	Other	350
+Conference on Disarmament	Other	360
+Governing Council	Other	370
+Security Council	SC	380
+Economic and Social Council	ECOSOC	390
+ECOSOC	ECOSOC	400
+Human Rights Council	HRC	410
+General Assembly	GA	420
+Charter of the United Nations	Charter	430
+Secretary-General	Other	440
