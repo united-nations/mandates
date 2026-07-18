@@ -60,7 +60,7 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
 
   return (
     <TooltipProvider delayDuration={200}>
-      <div className="space-y-8">
+      <div className="space-y-6">
         <div className="flex flex-wrap items-center gap-3">
           <div className="max-w-md min-w-48 flex-1">
             <SearchInput
@@ -124,13 +124,13 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
             if (parts.length === 0) return null
 
             return (
-              <section key={stream.type} className="space-y-6">
+              <section key={stream.type} className="space-y-5">
                 <StreamHeading type={stream.type} />
                 {parts.map((part) => {
                   const flat = part.sections.flatMap((s) => s.entities)
                   return (
-                    <div key={part.part} className="space-y-3">
-                      <h3 className="text-base">
+                    <div key={part.part} className="space-y-1.5">
+                      <h3 className={showSections ? 'text-base' : 'text-sm'}>
                         <span className="font-medium text-muted-foreground">
                           Part {part.part}.
                         </span>{' '}
@@ -140,7 +140,7 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
                       </h3>
                       {showSections ? (
                         part.sections.map((section) => (
-                          <div key={section.section} className="space-y-2">
+                          <div key={section.section} className="space-y-1.5">
                             <SubHeading>{sectionLabel(section)}</SubHeading>
                             <EntityGroup
                               entities={section.entities}
@@ -166,11 +166,11 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
           const pkoFlat = pkoGroups.flatMap((g) => g.entities)
 
           return (
-            <section key={stream.type} className="space-y-4">
+            <section key={stream.type} className="space-y-3">
               <StreamHeading type={stream.type} />
               {showSections ? (
                 pkoGroups.map((group) => (
-                  <div key={group.group} className="space-y-2">
+                  <div key={group.group} className="space-y-1.5">
                     <SubHeading>{group.label}</SubHeading>
                     <EntityGroup entities={group.entities} compact={compact} />
                   </div>
@@ -248,7 +248,7 @@ function EntityGroup({
 }) {
   if (compact) {
     return (
-      <div className="flex flex-wrap gap-1.5">
+      <div className="flex flex-wrap gap-1">
         {entities.map((entity) => (
           <EntityPill key={entity.entity} entity={entity} />
         ))}
@@ -305,10 +305,10 @@ function EntityPill({ entity }: { entity: BudgetEntityNode }) {
   return (
     <EntityLink
       entity={entity}
-      className="inline-flex items-baseline gap-1.5 rounded-full bg-muted px-3 py-1 text-sm transition-colors hover:bg-accent"
+      className="inline-flex items-baseline gap-1 rounded-full bg-muted px-2.5 py-0.5 text-xs transition-colors hover:bg-accent"
     >
       <span className="font-medium">{entity.entity}</span>
-      <span className="text-xs text-muted-foreground">{entity.count}</span>
+      <span className="text-[10px] text-muted-foreground">{entity.count}</span>
     </EntityLink>
   )
 }
@@ -317,20 +317,22 @@ function EntityCard({ entity }: { entity: BudgetEntityNode }) {
   return (
     <EntityLink
       entity={entity}
-      className="group flex items-start justify-between gap-2 rounded-xl bg-muted/50 px-4 py-2.5 transition-colors hover:bg-muted"
+      className="group flex items-start justify-between gap-2 rounded-xl bg-muted/50 px-3 py-2 transition-colors hover:bg-muted"
     >
       <div className="min-w-0">
         <div className="flex items-baseline gap-1.5">
-          <span className="font-semibold">{entity.entity}</span>
-          <span className="text-xs text-muted-foreground">{entity.count}</span>
+          <span className="text-sm font-semibold">{entity.entity}</span>
+          <span className="text-[10px] text-muted-foreground">
+            {entity.count}
+          </span>
         </div>
         {entity.entity_long && (
-          <div className="truncate text-sm text-muted-foreground">
+          <div className="truncate text-xs text-muted-foreground">
             {entity.entity_long}
           </div>
         )}
       </div>
-      <ChevronRight className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground/40 group-hover:text-un-blue" />
+      <ChevronRight className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground/40 group-hover:text-un-blue" />
     </EntityLink>
   )
 }
