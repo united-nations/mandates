@@ -60,20 +60,11 @@ function OrgLevelLink({
 
 function EntityRow({ entity }: { entity: UnSystemEntity }) {
   return (
-    <li className="grid grid-cols-1 items-baseline gap-x-4 gap-y-2 px-4 py-3 sm:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
+    <li className="grid grid-cols-1 items-baseline gap-x-4 gap-y-2 px-4 py-3 sm:grid-cols-[minmax(0,2fr)_minmax(0,3fr)_minmax(0,1fr)]">
       <div>
         <div className="font-semibold text-foreground">{entity.code}</div>
         {entity.name !== entity.code && (
           <div className="text-sm text-muted-foreground">{entity.name}</div>
-        )}
-        {entity.mandateRegistry && (
-          <Link
-            href={entity.mandateRegistry.url}
-            className="mt-1.5 inline-flex items-center gap-1.5 rounded-md bg-un-blue/10 px-2 py-1 text-xs font-medium text-un-blue transition-colors hover:bg-un-blue/20"
-          >
-            <BookMarked className="h-3.5 w-3.5" />
-            Mandate Registry
-          </Link>
         )}
       </div>
       <ul className="space-y-1 text-sm text-foreground/75">
@@ -102,6 +93,17 @@ function EntityRow({ entity }: { entity: UnSystemEntity }) {
           </li>
         )}
       </ul>
+      <div>
+        {entity.mandateRegistry && (
+          <Link
+            href={entity.mandateRegistry.url}
+            className="inline-flex items-center gap-1.5 rounded-md bg-un-blue/10 px-2 py-1 text-xs font-medium text-un-blue transition-colors hover:bg-un-blue/20"
+          >
+            <BookMarked className="h-3.5 w-3.5" />
+            Mandate Registry
+          </Link>
+        )}
+      </div>
     </li>
   )
 }
@@ -130,9 +132,11 @@ export default function UnSystemPage() {
               <h2 className="mb-3 text-lg font-semibold text-foreground">
                 {title}
               </h2>
-              <div className="hidden grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-x-4 px-4 pb-1.5 text-xs font-medium tracking-wide text-muted-foreground uppercase sm:grid">
-                <span>Organization</span>
+              <div className="hidden grid-cols-[minmax(0,2fr)_minmax(0,3fr)_minmax(0,1fr)] gap-x-4 px-4 pb-1.5 text-xs font-medium tracking-wide text-muted-foreground uppercase sm:grid">
+                {/* Pulled out of the box inset so it left-aligns with the section title. */}
+                <span className="-ms-4">Organization</span>
                 <span>Governing bodies</span>
+                <span>Mandate Registry</span>
               </div>
             </>
           )}

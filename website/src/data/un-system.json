@@ -77,12 +77,7 @@
         { "ref": "un-sc" },
         { "ref": "un-hrc" }
       ],
-      "officialPages": [
-        {
-          "label": "About the Secretariat",
-          "url": "https://www.un.org/en/about-us/secretariat"
-        }
-      ],
+      "officialPages": [],
       "contacts": [],
       "note": null,
       "mandateRegistry": { "url": "/secretariat" }
