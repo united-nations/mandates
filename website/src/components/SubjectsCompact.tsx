@@ -1,19 +1,19 @@
 'use client'
 
-import { SearchInput } from '@/components/SearchInput'
 import { SubjectTreemap } from '@/components/SubjectTreemap'
+import { ChartSearchInput } from '@/components/ui/chart-search-input'
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import { useSectionFilter } from '@/hooks/use-section-filter'
 import { SUBJECT_DOMAIN_LABELS } from '@/lib/filter-constants'
 import { domainColor } from '@/lib/subjectDomainColors'
 import { cn } from '@/lib/utils'
 import type { SubjectDomain } from '@/types'
 import { MousePointerClick, X } from 'lucide-react'
-import Link from 'next/link'
 import { useMemo, useState } from 'react'
 
 /**
@@ -47,6 +47,7 @@ export function SubjectsCompact({ domains }: SubjectsCompactProps) {
   const [selectedDomain, setSelectedDomain] = useState<string | null>(null)
   const [search, setSearch] = useState('')
   const term = search.trim().toLowerCase()
+  const { active, select } = useSectionFilter('subject')
 
   // Domain display order (already count-sorted by getSubjectHierarchy); used to
   // cluster same-domain pills together.
@@ -114,16 +115,11 @@ export function SubjectsCompact({ domains }: SubjectsCompactProps) {
         />
 
         <div className="flex flex-wrap items-center gap-3">
-          <div className="max-w-md min-w-48 flex-1">
-            <SearchInput
-              placeholder="Search all subjects..."
-              value={search}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setSearch(e.target.value)
-              }
-              variant="border-bottom"
-            />
-          </div>
+          <ChartSearchInput
+            placeholder="Search all subjects..."
+            value={search}
+            onChange={setSearch}
+          />
           {selectedLabel && !term && (
             <button
               type="button"
@@ -142,16 +138,21 @@ export function SubjectsCompact({ domains }: SubjectsCompactProps) {
         {pills.length > 0 ? (
           <div className="flex flex-wrap gap-1">
             {pills.map((leaf) => (
-              <SubjectPill key={`${leaf.code}-${leaf.subject}`} leaf={leaf} />
+              <SubjectPill
+                key={`${leaf.code}-${leaf.subject}`}
+                leaf={leaf}
+                active={active === leaf.subject}
+                onSelect={select}
+              />
             ))}
           </div>
         ) : (
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-gray-500">
             No subjects match “{search.trim()}”.
           </p>
         )}
 
-        <p className="text-xs text-muted-foreground">
+        <p className="text-xs text-gray-500">
           {term
             ? `${totalMatches.toLocaleString()} matching subject${totalMatches === 1 ? '' : 's'}${
                 totalMatches > pills.length ? ` (showing ${pills.length})` : ''
@@ -165,22 +166,35 @@ export function SubjectsCompact({ domains }: SubjectsCompactProps) {
   )
 }
 
-function SubjectPill({ leaf }: { leaf: FlatLeaf }) {
+function SubjectPill({
+  leaf,
+  active,
+  onSelect,
+}: {
+  leaf: FlatLeaf
+  active: boolean
+  onSelect: (value: string) => void
+}) {
   const color = domainColor(leaf.code)
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Link
+        <a
           href={`/secretariat?subject=${encodeURIComponent(leaf.subject)}`}
+          onClick={(e) => {
+            e.preventDefault()
+            onSelect(leaf.subject)
+          }}
           className={cn(
             'inline-flex items-baseline gap-1 rounded-full px-2.5 py-0.5 text-xs transition-[filter] hover:brightness-110',
             color.bg,
-            color.text
+            color.text,
+            active && 'ring-2 ring-un-blue ring-offset-1'
           )}
         >
           <span className="font-medium">{leaf.subject}</span>
           <span className="text-[10px] opacity-80">{leaf.count}</span>
-        </Link>
+        </a>
       </TooltipTrigger>
       <TooltipContent side="top" className="max-w-xs">
         <div className="font-medium">

@@ -1,33 +1,27 @@
 'use client'
 
-import { SearchInput } from '@/components/SearchInput'
+import { ChartSearchInput } from '@/components/ui/chart-search-input'
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import { useSectionFilter } from '@/hooks/use-section-filter'
 import { cn } from '@/lib/utils'
 import type { OrganGroup, OrganWithCount } from '@/types'
-import {
-  ChevronRight,
-  ExternalLink,
-  MousePointerClick,
-  Tag,
-} from 'lucide-react'
-import Link from 'next/link'
-import { useEffect, useMemo, useState } from 'react'
+import { ChevronRight, ExternalLink, MousePointerClick } from 'lucide-react'
+import { useMemo, useState } from 'react'
 
 /**
  * The organ directory: every intergovernmental organ that adopts mandates,
  * grouped by its place in the UN system (see lib/organ-groups.ts). Reads the
  * same category structure the table's Organ filter groups by (getOrganHierarchy).
  *
- * Deliberately simpler than the entity directory: organs are a small fixed set,
- * so there is no section toggle and no two-column flow — just category headings
- * over the organs. One view toggle, persisted in localStorage: full (cards with
- * names + official-site links) vs. compact (acronym pills). Each organ links to
- * the main list filtered to it; hovering shows a "click to show mandates" hint.
+ * On the single page, selecting an organ sets a single-facet view of the
+ * mandates section and scrolls to it (see useSectionFilter); the active organ
+ * is highlighted. Cards use the same four-column truncated layout as the full
+ * entity list.
  */
 
 interface OrgansDirectoryProps {
@@ -36,18 +30,8 @@ interface OrgansDirectoryProps {
 
 export function OrgansDirectory({ groups }: OrgansDirectoryProps) {
   const [search, setSearch] = useState('')
-  const [compact, setCompact] = useState(false)
   const term = search.trim().toLowerCase()
-
-  // Restore the saved preference after mount (avoids an SSR hydration mismatch).
-  useEffect(() => {
-    const c = localStorage.getItem('organs.compact')
-    /* eslint-disable-next-line react-hooks/set-state-in-effect -- one-time restore of a persisted UI pref */
-    if (c !== null) setCompact(c === '1')
-  }, [])
-  useEffect(() => {
-    localStorage.setItem('organs.compact', compact ? '1' : '0')
-  }, [compact])
+  const { active, select } = useSectionFilter('organ')
 
   const totalOrgans = useMemo(
     () => groups.reduce((n, g) => n + g.organs.length, 0),
@@ -72,23 +56,11 @@ export function OrgansDirectory({ groups }: OrgansDirectoryProps) {
     <TooltipProvider delayDuration={200}>
       <div className="space-y-6">
         <div className="flex flex-wrap items-center gap-3">
-          <div className="max-w-md min-w-48 flex-1">
-            <SearchInput
-              placeholder="Search organs by acronym or name..."
-              value={search}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setSearch(e.target.value)
-              }
-              variant="border-bottom"
-            />
-          </div>
-          <Toggle
-            active={compact}
-            onClick={() => setCompact((v) => !v)}
-            icon={Tag}
-          >
-            Compact
-          </Toggle>
+          <ChartSearchInput
+            placeholder="Search organs by acronym or name..."
+            value={search}
+            onChange={setSearch}
+          />
         </div>
 
         {filtered.length > 0 ? (
@@ -98,18 +70,27 @@ export function OrgansDirectory({ groups }: OrgansDirectoryProps) {
                 <div className="mb-3">
                   <GroupHeading>{group.label}</GroupHeading>
                 </div>
-                <OrganGroup organs={group.organs} compact={compact} />
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                  {group.organs.map((organ) => (
+                    <OrganCard
+                      key={organ.short}
+                      organ={organ}
+                      active={active === organ.short}
+                      onSelect={select}
+                    />
+                  ))}
+                </div>
               </div>
             ))}
           </div>
         ) : (
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-gray-500">
             No organs match “{search.trim()}”.
           </p>
         )}
 
         {!term && (
-          <p className="pt-2 text-xs text-muted-foreground">
+          <p className="pt-2 text-xs text-gray-500">
             {totalOrgans} organs adopting mandates.
           </p>
         )}
@@ -118,111 +99,52 @@ export function OrgansDirectory({ groups }: OrgansDirectoryProps) {
   )
 }
 
-function Toggle({
-  active,
-  onClick,
-  icon: Icon,
-  children,
-}: {
-  active: boolean
-  onClick: () => void
-  icon: typeof Tag
-  children: React.ReactNode
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={active}
-      className={cn(
-        'inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors',
-        active
-          ? 'bg-un-blue text-white hover:bg-un-blue/90'
-          : 'bg-muted text-muted-foreground hover:bg-accent'
-      )}
-    >
-      <Icon className="h-3.5 w-3.5" />
-      {children}
-    </button>
-  )
-}
-
 function GroupHeading({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="border-b border-border pb-1.5 text-xs font-semibold tracking-wide text-un-blue uppercase">
+    <h2 className="border-b border-gray-200 pb-1.5 text-xs font-semibold tracking-wide text-un-blue uppercase">
       {children}
     </h2>
   )
 }
 
-function OrganGroup({
-  organs,
-  compact,
+function OrganCard({
+  organ,
+  active,
+  onSelect,
 }: {
-  organs: OrganWithCount[]
-  compact: boolean
+  organ: OrganWithCount
+  active: boolean
+  onSelect: (value: string) => void
 }) {
-  if (compact) {
-    return (
-      <div className="flex flex-wrap gap-1">
-        {organs.map((organ) => (
-          <OrganPill key={organ.short} organ={organ} />
-        ))}
-      </div>
-    )
-  }
-  return (
-    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
-      {organs.map((organ) => (
-        <OrganCard key={organ.short} organ={organ} />
-      ))}
-    </div>
-  )
-}
-
-function OrganPill({ organ }: { organ: OrganWithCount }) {
-  const hasLong = organ.long && organ.long !== organ.short
-  return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <Link
-          href={`/secretariat?organ=${encodeURIComponent(organ.short)}`}
-          className="inline-flex items-baseline gap-1 rounded-full bg-muted px-2.5 py-0.5 text-xs transition-colors hover:bg-accent"
-        >
-          <span className="font-medium">{organ.short}</span>
-          <span className="text-[10px] text-muted-foreground">
-            {organ.count}
-          </span>
-        </Link>
-      </TooltipTrigger>
-      <ClickTooltip name={hasLong ? organ.long : undefined} />
-    </Tooltip>
-  )
-}
-
-function OrganCard({ organ }: { organ: OrganWithCount }) {
   const hasLong = organ.long && organ.long !== organ.short
 
   return (
-    <div className="group flex items-start justify-between gap-2 rounded-xl bg-muted/50 px-3 py-2 transition-colors hover:bg-muted">
+    <div
+      className={cn(
+        'group flex items-start justify-between gap-2 rounded-lg border px-3 py-2 transition-colors',
+        active
+          ? 'border-un-blue bg-un-blue/5'
+          : 'border-gray-200 bg-white hover:border-un-blue hover:shadow-sm'
+      )}
+    >
       <Tooltip>
         <TooltipTrigger asChild>
-          <Link
+          <a
             href={`/secretariat?organ=${encodeURIComponent(organ.short)}`}
+            onClick={(e) => {
+              e.preventDefault()
+              onSelect(organ.short)
+            }}
             className="min-w-0 flex-1"
           >
             <div className="flex items-baseline gap-1.5">
               <span className="text-sm font-semibold">{organ.short}</span>
-              <span className="text-[10px] text-muted-foreground">
-                {organ.count}
-              </span>
+              <span className="text-[10px] text-gray-500">{organ.count}</span>
             </div>
             {hasLong && (
-              <div className="text-xs leading-snug text-muted-foreground">
-                {organ.long}
-              </div>
+              <div className="truncate text-xs text-gray-500">{organ.long}</div>
             )}
-          </Link>
+          </a>
         </TooltipTrigger>
         <ClickTooltip name={hasLong ? organ.long : undefined} />
       </Tooltip>
@@ -234,12 +156,17 @@ function OrganCard({ organ }: { organ: OrganWithCount }) {
             target="_blank"
             rel="noopener noreferrer"
             title="Official website"
-            className="text-muted-foreground/40 hover:text-un-blue"
+            className="text-gray-300 hover:text-un-blue"
           >
             <ExternalLink className="h-3.5 w-3.5" />
           </a>
         )}
-        <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/40 group-hover:text-un-blue" />
+        <ChevronRight
+          className={cn(
+            'h-3.5 w-3.5',
+            active ? 'text-un-blue' : 'text-gray-300 group-hover:text-un-blue'
+          )}
+        />
       </div>
     </div>
   )

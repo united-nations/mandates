@@ -24,8 +24,12 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   // Top-level nav destinations don't get a back button — it's reserved for
   // detail pages reached from within the app.
-  const isMainPage = ['/secretariat', '/system', '/about'].includes(pathname)
+  const isMainPage = ['/secretariat', '/system'].includes(pathname)
   const isDiffPage = pathname === '/diff'
+  // The redesigned /secretariat and /system pages are full-bleed (hero
+  // banners, colour bands) and manage their own per-section widths, so they
+  // opt out of the shared centred/padded main column.
+  const isFullBleed = ['/secretariat', '/system'].includes(pathname)
 
   return (
     <TooltipProvider>
@@ -39,7 +43,13 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
           </div>
         )}
 
-        <main className="mx-auto w-full max-w-4xl px-8 py-6 sm:px-12 lg:max-w-6xl lg:px-16 xl:max-w-7xl">
+        <main
+          className={
+            isFullBleed
+              ? 'w-full'
+              : 'mx-auto w-full max-w-4xl px-8 py-6 sm:px-12 lg:max-w-6xl lg:px-16 xl:max-w-7xl'
+          }
+        >
           {children}
         </main>
 
