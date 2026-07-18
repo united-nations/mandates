@@ -54,9 +54,9 @@ The DB has two schemas: `ppb2026` (source documents/organs, the budget side) and
 
 ### Next.js app structure (`website/src/`)
 
-- App Router. `app/page.tsx` is the mandate explorer (server entry: `app/_mandateExplorerServer.tsx`).
+- App Router. `app/secretariat/page.tsx` is the mandate explorer (server entry: `app/_mandateExplorerServer.tsx`); `/` redirects to `/secretariat`.
 - Intercepting routes: `app/@modal/(.)mandate/[...segments]` renders a mandate as a modal over the list; `app/mandate/[...segments]` is the full page for the same. Keep both in sync when changing mandate detail rendering.
-- Other routes: `methodology/`, `resources/`, `pbi/`, `api/health/`.
+- Other routes: `system/` (UN system directory, data in `src/data/un-system.json`), `about/` (methodology + resources), `pbi/`, `api/health/`. Old `/methodology`, `/resources`, `/contact(s)` redirect to the new routes.
 - `components/ui/` = shadcn primitives (never edit directly; add via `pnpm dlx shadcn@latest add <component>`). Compose feature components in `components/` and `components/table/`.
 - Shared: `lib/utils.ts`, `lib/filter-constants.ts`, `lib/en_text_contents.ts`; `contexts/`, `hooks/`, `types/index.ts`, `messages/`.
 - `next.config.ts`: `output: 'standalone'` for Docker; `undifferent` is a `serverExternalPackages`; `/ppb2027` and `/diff` are permanent redirects to external apps.

@@ -1,6 +1,5 @@
 'use client'
 
-import { ShareButton } from '@/components/ShareButton'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -14,14 +13,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
-import {
-  BookOpen,
-  Building2,
-  ExternalLink,
-  GitCompare,
-  Home,
-  Menu,
-} from 'lucide-react'
+import { Building2, Globe, Info, Landmark, Menu } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -30,6 +22,13 @@ import { usePathname } from 'next/navigation'
 // content lines up with the main column.
 const pageWidth = 'max-w-4xl lg:max-w-6xl xl:max-w-7xl'
 const pagePadding = 'px-8 sm:px-12 lg:px-16'
+
+const navItems = [
+  { href: '/secretariat', label: 'UN Secretariat Mandates', icon: Landmark },
+  { href: '/entities', label: 'Entities', icon: Building2 },
+  { href: '/system', label: 'UN System Mandates', icon: Globe },
+  { href: '/about', label: 'About', icon: Info },
+]
 
 export function SiteHeader() {
   const pathname = usePathname()
@@ -44,7 +43,7 @@ export function SiteHeader() {
         className={cn(
           'relative mx-auto flex items-center gap-4',
           pagePadding,
-          pageWidth
+          pageWidth,
         )}
       >
         {/* Emblem aspect ≈ 1.198:1. Outboard variant tucks into the
@@ -53,11 +52,11 @@ export function SiteHeader() {
             un-transcribed). The 56.74px offset = lg:px-16 (64px) − 7.26px.
             Inline variant takes over below 1408px viewports. */}
         <Link
-          href="/"
+          href="/secretariat"
           aria-label="Mandate Source Registry — home"
           className={cn(
-            'absolute end-[calc(100%-56.74px)] top-1/2 h-10 w-[47.9px] -translate-y-1/2 transition-opacity hover:opacity-75',
-            outboardOnly
+            'absolute top-1/2 end-[calc(100%-56.74px)] h-10 w-[47.9px] -translate-y-1/2 transition-opacity hover:opacity-75',
+            outboardOnly,
           )}
         >
           <Image
@@ -70,7 +69,7 @@ export function SiteHeader() {
           />
         </Link>
         <Link
-          href="/"
+          href="/secretariat"
           aria-label="Mandate Source Registry — home"
           className="inline-flex items-center gap-2.5 transition-opacity hover:opacity-75"
         >
@@ -86,9 +85,7 @@ export function SiteHeader() {
               shrink and the badge stays visible. md+: original inline layout. */}
           <span className="flex flex-col items-start gap-1 md:flex-row md:items-center md:gap-2.5">
             <span className="text-lg leading-none tracking-tight text-foreground md:text-[23.83px]">
-              <span className="hidden font-bold md:inline">
-                United Nations{' '}
-              </span>
+              <span className="hidden font-bold md:inline">United Nations </span>
               <span className="font-light">Mandate Source Registry</span>
             </span>
             <Tooltip>
@@ -102,10 +99,10 @@ export function SiteHeader() {
                   The development of the mandate registry is still ongoing. Go
                   to the{' '}
                   <Link
-                    href="/methodology"
+                    href="/about"
                     className="font-medium text-un-blue underline hover:text-shuttle-gray"
                   >
-                    Methodology
+                    About
                   </Link>{' '}
                   page for information on the current scope.
                 </p>
@@ -113,112 +110,68 @@ export function SiteHeader() {
             </Tooltip>
           </span>
         </Link>
-        <div className="ms-auto flex items-center gap-2">
-          <ShareButton />
+        <div className="ms-auto flex items-center">
+          {/* Inline nav on wide viewports */}
+          <nav className="hidden items-center gap-1 lg:flex">
+            {navItems.map(({ href, label }) => {
+              const active = pathname === href
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  aria-current={active ? 'page' : undefined}
+                  className={cn(
+                    'rounded-md px-3 py-1.5 text-sm whitespace-nowrap transition-colors',
+                    active
+                      ? 'bg-un-blue/10 font-medium text-un-blue'
+                      : 'text-foreground/80 hover:bg-muted hover:text-foreground',
+                  )}
+                >
+                  {label}
+                </Link>
+              )
+            })}
+          </nav>
+          {/* Collapsed nav below lg */}
           <DropdownMenu modal={false}>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
                 size="sm"
                 aria-label="Open navigation menu"
-                className="inline-flex h-auto shrink-0 items-center gap-1 bg-trout! px-2 py-1 text-xs text-white! hover:bg-trout/90! sm:gap-2 sm:px-2.5 sm:py-1.5 sm:text-sm"
+                className="inline-flex h-auto shrink-0 items-center gap-1 bg-trout! px-2 py-1 text-xs text-white! hover:bg-trout/90! sm:gap-2 sm:px-2.5 sm:py-1.5 sm:text-sm lg:hidden"
               >
                 <Menu className="h-3 w-3 sm:h-4 sm:w-4" />
                 <span>Menu</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem
-                asChild={pathname !== '/'}
-                className={
-                  pathname === '/'
-                    ? 'cursor-default bg-un-blue/10 font-medium text-un-blue'
-                    : ''
-                }
-              >
-                {pathname === '/' ? (
-                  <span className="flex items-center gap-2">
-                    <Home className="h-4 w-4" />
-                    Mandate Source Registry
-                  </span>
-                ) : (
-                  <Link href="/" className="flex items-center gap-2">
-                    <Home className="h-4 w-4" />
-                    Mandate Source Registry
-                  </Link>
-                )}
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                asChild={pathname !== '/entities'}
-                className={
-                  pathname === '/entities'
-                    ? 'cursor-default bg-un-blue/10 font-medium text-un-blue'
-                    : ''
-                }
-              >
-                {pathname === '/entities' ? (
-                  <span className="flex items-center gap-2">
-                    <Building2 className="h-4 w-4" />
-                    Entities
-                  </span>
-                ) : (
-                  <Link href="/entities" className="flex items-center gap-2">
-                    <Building2 className="h-4 w-4" />
-                    Entities
-                  </Link>
-                )}
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                asChild={pathname !== '/methodology'}
-                className={
-                  pathname === '/methodology'
-                    ? 'cursor-default bg-un-blue/10 font-medium text-un-blue'
-                    : ''
-                }
-              >
-                {pathname === '/methodology' ? (
-                  <span className="flex items-center gap-2">
-                    <BookOpen className="h-4 w-4" />
-                    Methodology
-                  </span>
-                ) : (
-                  <Link href="/methodology" className="flex items-center gap-2">
-                    <BookOpen className="h-4 w-4" />
-                    Methodology
-                  </Link>
-                )}
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <a
-                  href="https://diff.un-two-zero.dev/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2"
-                >
-                  <GitCompare className="h-4 w-4" />
-                  UN Document Diff Viewer
-                </a>
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                asChild={pathname !== '/resources'}
-                className={
-                  pathname === '/resources'
-                    ? 'cursor-default bg-un-blue/10 font-medium text-un-blue'
-                    : ''
-                }
-              >
-                {pathname === '/resources' ? (
-                  <span className="flex items-center gap-2">
-                    <ExternalLink className="h-4 w-4" />
-                    More Resources
-                  </span>
-                ) : (
-                  <Link href="/resources" className="flex items-center gap-2">
-                    <ExternalLink className="h-4 w-4" />
-                    More Resources
-                  </Link>
-                )}
-              </DropdownMenuItem>
+              {navItems.map(({ href, label, icon: Icon }) => {
+                const active = pathname === href
+                return (
+                  <DropdownMenuItem
+                    key={href}
+                    asChild={!active}
+                    className={
+                      active
+                        ? 'cursor-default bg-un-blue/10 font-medium text-un-blue'
+                        : ''
+                    }
+                  >
+                    {active ? (
+                      <span className="flex items-center gap-2">
+                        <Icon className="h-4 w-4" />
+                        {label}
+                      </span>
+                    ) : (
+                      <Link href={href} className="flex items-center gap-2">
+                        <Icon className="h-4 w-4" />
+                        {label}
+                      </Link>
+                    )}
+                  </DropdownMenuItem>
+                )
+              })}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

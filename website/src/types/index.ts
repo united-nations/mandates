@@ -343,3 +343,92 @@ export interface ApiResponse {
     organs: Organ[]
   }
 }
+
+// UN system directory (src/data/un-system.json)
+export type UnSystemGrouping =
+  | 'secretariat'
+  | 'fund-programme'
+  | 'specialized-agency'
+  | 'related-organization'
+
+export interface UnSystemPage {
+  label: string | null
+  url: string
+}
+
+export interface UnSystemContact {
+  label: string | null
+  url?: string
+  email?: string
+}
+
+export interface UnSystemBody {
+  name: string
+  url?: string
+  /** True when `url` is a shared governing-bodies overview page rather than a page about this specific body. */
+  overview?: boolean
+  contacts?: UnSystemContact[]
+  note?: string
+}
+
+/** A governing-body entry: either a reference into the shared bodies registry or an inline body. */
+export type UnSystemBodyEntry = { ref: string } | UnSystemBody
+
+export type UnSystemRegistryPoint =
+  | 'documents'
+  | 'mandates'
+  | 'budget'
+  | 'implementation'
+  | 'results'
+
+/** true = point earned; 'partial' = half a point (linked but weak form). */
+export type UnSystemPointValue = boolean | 'partial'
+
+/** One point's state plus the org-specific evidence note from the research dossier. */
+export interface UnSystemPointEntry {
+  value: UnSystemPointValue
+  note: string | null
+}
+
+/**
+ * An organization's mandate-registry-like system, scored on the 5-point
+ * scheme in docs/un-system-registries.md (documents · active mandates ·
+ * budget-linked · implementation-linked · results-linked). Points 3–5 count
+ * only when tied to specific governing-body decisions, not to strategic
+ * plans or org-wide totals. `interoperability` (point 6) is reserved.
+ */
+export interface UnSystemRegistry {
+  /** Short proper name of the system, used as the link text, e.g. "Resolutions Portal". */
+  name: string
+  /** Taxonomy category, shown in the link tooltip, e.g. "Resolutions Database". */
+  category: string
+  url: string
+  points: Record<UnSystemRegistryPoint, UnSystemPointEntry>
+  interoperability: null
+}
+
+/** Org-specific budget/results portal that is NOT linked to mandates — mentioned, not scored. */
+export interface UnSystemRelatedPortal {
+  name: string
+  url: string
+}
+
+export interface UnSystemEntity {
+  code: string
+  name: string
+  grouping: UnSystemGrouping
+  governingBodies: UnSystemBodyEntry[]
+  /** Org-level pages/contacts not attributable to a specific governing body (secretariat pages, general contacts). */
+  officialPages: UnSystemPage[]
+  contacts: UnSystemContact[]
+  note: string | null
+  mandateRegistry: UnSystemRegistry | null
+  /** Shown when mandateRegistry is null: why there is none (or where it lives instead). */
+  registryNote: string | null
+  related: UnSystemRelatedPortal[]
+}
+
+export interface UnSystemData {
+  bodies: Record<string, UnSystemBody>
+  organizations: UnSystemEntity[]
+}

@@ -83,7 +83,7 @@ export function MandateMetadata({
               variant="secondary"
               className="cursor-pointer text-xs transition-colors hover:bg-secondary/80"
               onClick={() => {
-                const url = new URL(window.location.origin + '/')
+                const url = new URL(window.location.origin + '/secretariat')
                 url.searchParams.delete('page')
                 url.searchParams.set('document_type', mandate.type)
                 window.location.href = url.toString()
@@ -115,7 +115,7 @@ export function MandateMetadata({
                   variant="secondary"
                   className="cursor-pointer text-xs transition-colors hover:bg-secondary/80"
                   onClick={() => {
-                    const url = new URL(window.location.origin + '/')
+                    const url = new URL(window.location.origin + '/secretariat')
                     url.searchParams.delete('page')
                     url.searchParams.set('budget_document', type)
                     window.location.href = url.toString()
@@ -149,7 +149,7 @@ export function MandateMetadata({
                     className="cursor-pointer text-xs font-normal transition-colors hover:bg-secondary/80"
                     onClick={() => {
                       if (!title) return
-                      const url = new URL(window.location.origin + '/')
+                      const url = new URL(window.location.origin + '/secretariat')
                       url.searchParams.delete('page')
                       url.searchParams.set('agenda_item', title)
                       window.location.href = url.toString()
@@ -199,7 +199,7 @@ export function MandateMetadata({
                   variant="secondary"
                   className="cursor-pointer text-xs font-normal transition-colors hover:bg-secondary/80"
                   onClick={() => {
-                    const url = new URL(window.location.origin + '/')
+                    const url = new URL(window.location.origin + '/secretariat')
                     url.searchParams.delete('page')
                     url.searchParams.set('subject', heading.trim())
                     window.location.href = url.toString()
