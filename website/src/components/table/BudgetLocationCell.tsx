@@ -28,35 +28,23 @@ const STREAM_SHORT: Record<BudgetStreamType, string> = {
 
 const STREAM_ORDER: BudgetStreamType[] = ['ppb', 'pko', 'plan_outline']
 
-/** Minimum lines to show before collapsing into "+N more". */
-const MIN_VISIBLE = 2
+const VISIBLE = 2
 
 /**
- * Choose which lines to show. One representative per stream first — so PKO and
- * Plan Outline are never buried behind a long tail of PPB entities — then pad
- * with more locations up to MIN_VISIBLE. When a stream is being filtered on, it
- * leads (so filtering by Plan Outline shows the Plan Outline line first);
- * otherwise the default order (PPB, PKO, Plan Outline) applies. Locations arrive
- * pre-sorted down the budget, so the representatives are the first of each stream.
+ * When a stream is being filtered on, float its locations to the front so the
+ * cell leads with what was filtered (e.g. filtering by Plan Outline shows the
+ * Plan Outline line first); otherwise locations keep their default order (down
+ * the budget: PPB, then PKO, then Plan Outline).
  */
-function pickVisible(
+function orderLocations(
   locations: BudgetLocation[],
   activeStream?: BudgetStreamType
 ): BudgetLocation[] {
-  const order =
-    activeStream && STREAM_ORDER.includes(activeStream)
-      ? [activeStream, ...STREAM_ORDER.filter((s) => s !== activeStream)]
-      : STREAM_ORDER
-
-  const shown = order
-    .map((stream) => locations.find((location) => location.stream === stream))
-    .filter((location): location is BudgetLocation => location !== undefined)
-
-  for (const location of locations) {
-    if (shown.length >= MIN_VISIBLE) break
-    if (!shown.includes(location)) shown.push(location)
-  }
-  return shown
+  if (!activeStream || !STREAM_ORDER.includes(activeStream)) return locations
+  return [
+    ...locations.filter((location) => location.stream === activeStream),
+    ...locations.filter((location) => location.stream !== activeStream),
+  ]
 }
 
 export function BudgetLocationCell({
@@ -69,8 +57,9 @@ export function BudgetLocationCell({
   if (locations.length === 0) return null
 
   const activeStream = filters.budget_document as BudgetStreamType | undefined
-  const shown = pickVisible(locations, activeStream)
-  const overflow = locations.filter((location) => !shown.includes(location))
+  const ordered = orderLocations(locations, activeStream)
+  const shown = ordered.slice(0, VISIBLE)
+  const overflow = ordered.slice(VISIBLE)
 
   return (
     <div className="space-y-0.5 text-xs">
