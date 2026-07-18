@@ -22,10 +22,18 @@ interface FilterOption {
   count?: number
 }
 
+/** Optional grouping for a pill filter: renders each run of options under a
+ *  heading. Values reference `FilterOption.value`; empty groups are hidden. */
+export interface FilterGroup {
+  label: string
+  values: string[]
+}
+
 interface ColumnHeaderFilterProps {
   column: ColumnDef
   currentSort?: string
   filterOptions?: FilterOption[]
+  filterGroups?: FilterGroup[]
   yearRange?: { min: number; max: number }
   budgetHierarchy?: BudgetStream[]
 }
@@ -34,6 +42,7 @@ export function ColumnHeaderFilter({
   column,
   currentSort,
   filterOptions,
+  filterGroups,
   yearRange,
   budgetHierarchy,
 }: ColumnHeaderFilterProps) {
@@ -99,6 +108,7 @@ export function ColumnHeaderFilter({
           column={column}
           isActive={isFilterActive}
           options={filterOptions}
+          groups={filterGroups}
           yearRange={yearRange}
           budgetHierarchy={budgetHierarchy}
           currentValue={
@@ -121,6 +131,7 @@ interface FilterPopoverProps {
   column: ColumnDef
   isActive: boolean
   options?: FilterOption[]
+  groups?: FilterGroup[]
   yearRange?: { min: number; max: number }
   budgetHierarchy?: BudgetStream[]
   currentValue?: string
@@ -135,6 +146,7 @@ function FilterPopover({
   column,
   isActive,
   options,
+  groups,
   yearRange,
   budgetHierarchy,
   currentValue,
@@ -173,6 +185,7 @@ function FilterPopover({
           <PillFilter
             filterParam={column.filterParam!}
             options={options || []}
+            groups={groups}
             currentValue={currentValue}
             onSelect={(value) => {
               setFilter(column.filterParam!, value)
@@ -228,12 +241,14 @@ function FilterPopover({
 function PillFilter({
   filterParam,
   options,
+  groups,
   currentValue,
   onSelect,
   onClear,
 }: {
   filterParam: string
   options: FilterOption[]
+  groups?: FilterGroup[]
   currentValue?: string
   onSelect: (value: string) => void
   onClear: () => void
@@ -249,6 +264,45 @@ function PillFilter({
     const q = searchQuery.toLowerCase()
     return options.filter((o) => (o.label ?? o.value).toLowerCase().includes(q))
   }, [options, searchQuery])
+
+  const renderPill = (option: FilterOption) => {
+    const isSelected = currentValue === option.value
+    return (
+      <button
+        key={option.value}
+        onClick={() => (isSelected ? onClear() : onSelect(option.value))}
+        className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-colors ${
+          isSelected
+            ? 'bg-un-blue text-white'
+            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+        }`}
+      >
+        <span>{option.label ?? titleCase(option.value)}</span>
+        {option.count !== undefined && (
+          <span
+            className={`text-xs ${isSelected ? 'text-blue-200' : 'text-muted-foreground'}`}
+          >
+            {option.count}
+          </span>
+        )}
+      </button>
+    )
+  }
+
+  // Grouped mode: a curated, bounded set — show every filtered option under its
+  // category heading, no lazy truncation. Empty groups (all filtered out) hide.
+  const grouped = useMemo(() => {
+    if (!groups) return null
+    const byValue = new Map(filtered.map((o) => [o.value, o]))
+    return groups
+      .map((g) => ({
+        label: g.label,
+        options: g.values
+          .map((v) => byValue.get(v))
+          .filter((o): o is FilterOption => o !== undefined),
+      }))
+      .filter((g) => g.options.length > 0)
+  }, [groups, filtered])
 
   const displayed =
     !showAll && !searchQuery && filtered.length > lazyThreshold
@@ -281,42 +335,40 @@ function PillFilter({
         </button>
       )}
 
-      <div className="flex max-h-64 flex-wrap gap-1.5 overflow-y-auto">
-        {displayed.map((option) => {
-          const isSelected = currentValue === option.value
-          return (
-            <button
-              key={option.value}
-              onClick={() => (isSelected ? onClear() : onSelect(option.value))}
-              className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-colors ${
-                isSelected
-                  ? 'bg-un-blue text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              <span>{option.label ?? titleCase(option.value)}</span>
-              {option.count !== undefined && (
-                <span
-                  className={`text-xs ${isSelected ? 'text-blue-200' : 'text-muted-foreground'}`}
-                >
-                  {option.count}
-                </span>
-              )}
-            </button>
-          )
-        })}
-        {displayed.length === 0 && (
-          <p className="py-2 text-xs text-gray-400">No options found</p>
-        )}
-      </div>
+      {grouped ? (
+        <div className="max-h-72 space-y-3 overflow-y-auto">
+          {grouped.map((group) => (
+            <div key={group.label} className="space-y-1.5">
+              <p className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+                {group.label}
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {group.options.map(renderPill)}
+              </div>
+            </div>
+          ))}
+          {grouped.length === 0 && (
+            <p className="py-2 text-xs text-gray-400">No options found</p>
+          )}
+        </div>
+      ) : (
+        <>
+          <div className="flex max-h-64 flex-wrap gap-1.5 overflow-y-auto">
+            {displayed.map(renderPill)}
+            {displayed.length === 0 && (
+              <p className="py-2 text-xs text-gray-400">No options found</p>
+            )}
+          </div>
 
-      {hasMore && (
-        <button
-          onClick={() => setShowAll(true)}
-          className="text-xs text-gray-500 hover:text-gray-700"
-        >
-          Show {filtered.length - lazyThreshold} more...
-        </button>
+          {hasMore && (
+            <button
+              onClick={() => setShowAll(true)}
+              className="text-xs text-gray-500 hover:text-gray-700"
+            >
+              Show {filtered.length - lazyThreshold} more...
+            </button>
+          )}
+        </>
       )}
     </div>
   )

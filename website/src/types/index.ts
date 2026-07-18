@@ -220,6 +220,15 @@ export interface OrganWithCount {
   short: string
   long: string
   count: number
+  website?: string
+}
+
+// Organs grouped by editorial category (see lib/organ-groups.ts), for the
+// /organs directory and the grouped Organ column filter.
+export interface OrganGroup {
+  id: string
+  label: string
+  organs: OrganWithCount[]
 }
 
 // Filter types
