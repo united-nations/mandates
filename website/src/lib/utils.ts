@@ -84,6 +84,14 @@ function cleanTitle(title: string): string {
  * This ensures consistency across all components
  */
 export function getMandateDisplayTitle(mandate: Mandate): string {
+  // 0. Digital Library-derived display title (unified_documents.display_title).
+  // Authoritative and broadest coverage (resolutions/decisions/PRSTs, incl.
+  // DL-only docs). Routed through the same cleanup as the legacy sources so the
+  // rendered casing is unchanged; strip a trailing colon just in case.
+  if (mandate.display_title && mandate.display_title.trim()) {
+    const cleaned = cleanTitle(mandate.display_title).replace(/:$/, '').trim()
+    if (cleaned) return titleCase(cleaned.toLowerCase())
+  }
   // Security Council resolutions use the catalogue title field directly
   if (mandate.issuing_body === 'Security Council') {
     if (mandate.title && mandate.title.trim()) {

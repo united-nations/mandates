@@ -61,6 +61,7 @@ interface MandateListRow {
   ppb_year: number | null
   ppb_body: string | null
   ppb_description: string | null
+  display_title: string | null
   ppb_type: string | null
   num_entities: string
   num_citations: string
@@ -565,6 +566,7 @@ export async function getMandates(
         d.ppb_year,
         d.ppb_body,
         d.ppb_description,
+        d.display_title,
         d.ppb_type,
         COUNT(DISTINCT c.entity) FILTER (WHERE c.entity IS NOT NULL) as num_entities,
         COUNT(c.id) as num_citations,
@@ -592,7 +594,7 @@ export async function getMandates(
         )) FILTER (WHERE c.budget_part_number IS NOT NULL) as budget_locations,
         ARRAY_AGG(DISTINCT c.origin_document) FILTER (WHERE c.origin_document IS NOT NULL) as origin_documents`,
     groupCols:
-      'd.ppb_full_document_symbol, d.ppb_link, d.ppb_year, d.ppb_body, d.ppb_description, d.ppb_type',
+      'd.ppb_full_document_symbol, d.ppb_link, d.ppb_year, d.ppb_body, d.ppb_description, d.display_title, d.ppb_type',
   })
 
   // Bind a value and return its 1-based placeholder index. Using the index
@@ -799,6 +801,7 @@ export async function getMandates(
     year: row.ppb_year?.toString() || '',
     body: row.ppb_body || '',
     description: row.ppb_description || null,
+    display_title: row.display_title || null,
     type: row.ppb_type || 'Unknown',
     // Metadata fields
     uniform_title: row.uniform_title ? [row.uniform_title] : null,
@@ -953,6 +956,7 @@ export async function getMandateBySymbol(
       d.ppb_year,
       d.ppb_body,
       d.ppb_description,
+      d.display_title,
       d.ppb_type,
       COUNT(DISTINCT c.entity) FILTER (WHERE c.entity IS NOT NULL) as num_entities,
       COUNT(c.id) as num_citations,
@@ -976,7 +980,7 @@ export async function getMandateBySymbol(
     WHERE d.ppb_full_document_symbol = $1
     GROUP BY
       d.ppb_full_document_symbol, d.ppb_link, d.ppb_year, d.ppb_body,
-      d.ppb_description, d.ppb_type, m.symbol, m.uniform_title,
+      d.ppb_description, d.display_title, d.ppb_type, m.symbol, m.uniform_title,
       m.proper_title, m.title, m.subtitle, m.subject_terms, m.issuing_body,
       m.agenda_document_symbol, m.agenda_item_number, m.agenda_item_title
   `
@@ -998,6 +1002,7 @@ export async function getMandateBySymbol(
     year: row.ppb_year?.toString() || '',
     body: row.ppb_body || '',
     description: row.ppb_description || null,
+    display_title: row.display_title || null,
     type: row.ppb_type || 'Unknown',
     uniform_title: row.uniform_title ? [row.uniform_title] : null,
     proper_title: row.proper_title || null,
