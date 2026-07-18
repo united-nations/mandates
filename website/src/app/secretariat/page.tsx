@@ -180,7 +180,7 @@ export default async function Page({ searchParams }: PageProps) {
         <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-16">
           <h2 className="mb-8 text-2xl font-bold text-gray-900">Background</h2>
           <div className="divide-y divide-gray-200">
-            <ExpandableCard id="methodology" title="Methodology & scope">
+            <ExpandableCard id="methodology" title="Methodology and Scope">
               <div className="space-y-4">
                 {explainerTexts.mainHeader.fullDescription.map(
                   (paragraph, index) => (
@@ -193,7 +193,7 @@ export default async function Page({ searchParams }: PageProps) {
                   width={248}
                   height={135}
                   unoptimized
-                  className="h-auto w-full max-w-md"
+                  className="h-auto w-3/4"
                 />
                 <p>
                   Section&nbsp;1 (Overall policymaking, direction and
