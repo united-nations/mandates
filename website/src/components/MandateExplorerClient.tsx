@@ -1,6 +1,7 @@
 'use client'
 
 import { FilterControls } from '@/components/FilterControls'
+import { HeaderStats } from '@/components/HeaderStats'
 import { PaginationControls } from '@/components/PaginationControls'
 import { Switch } from '@/components/ui/switch'
 import {
@@ -15,9 +16,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useFilters } from '@/contexts/FilterContext'
-import { explainerTexts } from '@/lib/en_text_contents'
 import type { ApiResponse } from '@/types'
-import { ChevronDown, Info } from 'lucide-react'
+import { ChevronDown } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
 import { useCallback, useState } from 'react'
 import { MandateCompactList } from './table/MandateCompactList'
@@ -194,13 +194,11 @@ export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
       */}
 
       <div className="pt-4">
-        {/* Section Title and Sort (mobile) + FilterControls */}
+        {/* Summary stats repeated here (as a row) above the table. */}
+        <div className="mb-6">
+          <HeaderStats data={data} orientation="row" />
+        </div>
         <div className="mb-4">
-          <div className="mb-2">
-            <h2 className="text-2xl font-bold tracking-tight">
-              {explainerTexts.dataCards.sectionTitle}
-            </h2>
-          </div>
           <FilterControls
             entitiesData={allEntities}
             allOrgans={allOrgans}
@@ -213,21 +211,8 @@ export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
           />
         </div>
 
-        {/* Section 1 of the 2027 budget is sourced from the preliminary
-            A/81/6 (Sect. 1); its citations may change in the final version. */}
-        {activePpb?.short === '2027' && (
-          <div className="mb-4 flex items-start gap-2 border-l-2 border-un-blue/40 bg-un-blue/5 px-3 py-2 text-sm text-muted-foreground">
-            <Info
-              className="mt-0.5 h-4 w-4 shrink-0 text-un-blue"
-              aria-hidden
-            />
-            <p>
-              Section&nbsp;1 (Overall policymaking, direction and coordination)
-              citations are preliminary, drawn from the advance version of
-              A/81/6&nbsp;(Sect.&nbsp;1), and may change in the final budget.
-            </p>
-          </div>
-        )}
+        {/* The Section 1 (2027 advance A/81/6) preliminary-citations note now
+            lives in the Methodology section on the page. */}
 
         {/* Data table (desktop) */}
         <div className="hidden lg:block">

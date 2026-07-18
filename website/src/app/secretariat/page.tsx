@@ -7,6 +7,7 @@ import {
   Target,
 } from 'lucide-react'
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import { Suspense } from 'react'
 
 import { HeaderStatsServer } from '@/app/_headerStatsServer'
@@ -82,11 +83,13 @@ export default async function Page({ searchParams }: PageProps) {
     <div>
       {/* Intro */}
       <section className="mx-auto max-w-6xl px-6 pt-10 md:px-12 lg:px-16">
-        <ExplainerText />
-        <div className="mt-8">
-          <Suspense fallback={<HeaderStatsSkeleton />}>
-            <HeaderStatsServer dataPromise={dataPromise} />
-          </Suspense>
+        <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
+          <ExplainerText />
+          <div className="w-full shrink-0 sm:w-64">
+            <Suspense fallback={<HeaderStatsSkeleton />}>
+              <HeaderStatsServer dataPromise={dataPromise} />
+            </Suspense>
+          </div>
         </div>
       </section>
 
@@ -127,7 +130,7 @@ export default async function Page({ searchParams }: PageProps) {
         id="mandates"
         imageSrc="/images/banners/hero-banner-system-revenue.png"
         title="Which mandates do they implement?"
-        description="The resolutions, decisions, and statements that UN entities cite in support of their resource requirements. Search and filter the full registry."
+        description="The resolutions, decisions, and other documents that UN entities cite in support of their resource requirements. Search and filter the full registry."
       />
       <section className={CONTENT_WIDE}>
         <Suspense fallback={<LoadingSkeleton variant="list" count={4} />}>
@@ -151,10 +154,15 @@ export default async function Page({ searchParams }: PageProps) {
         id="subjects"
         imageSrc="/images/banners/hero-banner-system-expenses.png"
         title="Which topics are the mandates about?"
-        description="Every subject heading applied to a mandate document, arranged by the UNBIS thesaurus of 18 domains. Select a topic to filter the mandates below."
+        description="Every subject applied to a mandate document, grouped into broad thematic domains. Select a topic to filter the mandates below."
       />
       <section className={CONTENT}>
         <SubjectsCompact domains={subjectDomains} />
+        <p className="mt-4 max-w-3xl text-xs leading-relaxed text-gray-500">
+          Subjects are organised by the United Nations Bibliographic Information
+          System (UNBIS) thesaurus: 18 top-level domains, each broken into
+          sub-domains and individual subject headings.
+        </p>
         <div className="mt-10">
           <ExpandableCard title="Topic trends" variant="filled">
             <ComingSoon
@@ -179,6 +187,20 @@ export default async function Page({ searchParams }: PageProps) {
                     <p key={index}>{paragraph}</p>
                   )
                 )}
+                <Image
+                  src="/images/methodology.svg"
+                  alt="How mandate source documents are identified"
+                  width={248}
+                  height={135}
+                  unoptimized
+                  className="h-auto w-full max-w-md"
+                />
+                <p>
+                  Section&nbsp;1 (Overall policymaking, direction and
+                  coordination) citations in the 2027 proposed programme budget
+                  are preliminary, drawn from the advance version of
+                  A/81/6&nbsp;(Sect.&nbsp;1), and may change in the final budget.
+                </p>
                 <p className="italic text-gray-500">
                   {explainerTexts.mainHeader.disclaimer}
                 </p>

@@ -176,7 +176,7 @@ function OrganGroup({
     )
   }
   return (
-    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {organs.map((organ) => (
         <OrganCard
           key={organ.short}
@@ -266,9 +266,7 @@ function OrganCard({
               <span className="text-[10px] text-gray-500">{organ.count}</span>
             </div>
             {hasLong && (
-              <div className="text-xs leading-snug text-gray-500">
-                {organ.long}
-              </div>
+              <div className="truncate text-xs text-gray-500">{organ.long}</div>
             )}
           </a>
         </TooltipTrigger>

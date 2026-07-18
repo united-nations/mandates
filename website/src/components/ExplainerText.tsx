@@ -3,8 +3,8 @@ import { explainerTexts } from '@/lib/en_text_contents'
 
 export function ExplainerText() {
   return (
-    <div className="mt-4 max-w-full text-left text-foreground sm:max-w-[calc(75%-var(--spacing))] sm:text-justify">
-      <p className="mb-0 leading-tight">
+    <div className="max-w-3xl text-left text-foreground">
+      <p className="mb-0 text-base leading-relaxed md:text-lg">
         Developed as part of the{' '}
         <Link
           href={explainerTexts.mainHeader.un80Link}

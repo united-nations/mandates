@@ -18,6 +18,8 @@ import { ReactNode } from 'react'
 
 interface HeaderStatsProps {
   data: ApiResponse
+  /** 'column' (default) stacks the three cards; 'row' spreads them across. */
+  orientation?: 'column' | 'row'
 }
 
 function StatRow({
@@ -67,7 +69,7 @@ function StatRow({
   )
 }
 
-export function HeaderStats({ data }: HeaderStatsProps) {
+export function HeaderStats({ data, orientation = 'column' }: HeaderStatsProps) {
   const { filters, setFilter } = useFilters()
 
   const { counts, filterOptions, reference, sidebar } = data
@@ -116,7 +118,14 @@ export function HeaderStats({ data }: HeaderStatsProps) {
   })
 
   return (
-    <div className="flex w-full flex-col gap-2 sm:w-64">
+    <div
+      className={cn(
+        'w-full gap-2',
+        orientation === 'row'
+          ? 'grid grid-cols-1 sm:grid-cols-3'
+          : 'flex flex-col sm:w-64'
+      )}
+    >
       <StatRow
         icon={Landmark}
         label={explainerTexts.dataCards.unOrgans.title}
