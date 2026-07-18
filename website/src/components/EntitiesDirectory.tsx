@@ -133,16 +133,6 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
     }
   }
 
-  // Split the parts column-wise (I–VI | VII–XII). Each column is a flex box
-  // that stretches to the taller column's height and spreads its parts with
-  // justify-between, so the two columns line up at the very top and bottom
-  // without forcing individual boxes onto shared rows.
-  const ppbHalf = Math.ceil(ppbPartNodes.length / 2)
-  const ppbColumns = [
-    ppbPartNodes.slice(0, ppbHalf),
-    ppbPartNodes.slice(ppbHalf),
-  ]
-
   const pkoGroups = pkoStream
     ? pkoStream.groups
         .map((g) => ({ ...g, entities: g.entities.filter(match) }))
@@ -261,15 +251,10 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
                   <StreamHeading type="ppb" />
                 </div>
                 {compact ? (
-                  <div className="flex items-stretch gap-x-8">
-                    {ppbColumns.map((col, i) => (
-                      <div
-                        key={i}
-                        className="flex flex-1 flex-col justify-between gap-y-5"
-                      >
-                        {col.map((part) => (
-                          <div key={part.key}>{part.node}</div>
-                        ))}
+                  <div className="columns-2 gap-x-8">
+                    {ppbPartNodes.map((part) => (
+                      <div key={part.key} className="mb-5 break-inside-avoid">
+                        {part.node}
                       </div>
                     ))}
                   </div>
