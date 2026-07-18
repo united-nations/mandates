@@ -23,6 +23,10 @@ import { useEffect, useMemo, useState } from 'react'
  * compact (acronym pills) vs. full (cards with names), and whether to break
  * each part into its sections. Every entity links to the main list filtered to
  * it; hovering shows the full name and a "click to show mandates" hint.
+ *
+ * Compact view flows the whole thing into a balanced two-column CSS multi-column
+ * layout — headings and their entities stay together (break-inside-avoid) and
+ * fill both columns evenly. Full view stacks everything in one column.
  */
 
 interface EntitiesDirectoryProps {
@@ -58,6 +62,126 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
 
   const totalEntities = useMemo(() => countEntities(streams), [streams])
 
+  // Flatten the streams into one ordered list of blocks (headings + entity
+  // groups). The compact multi-column layout balances this flow across two
+  // columns; the full view just stacks it.
+  const blocks: { key: string; heading?: boolean; node: React.ReactNode }[] = []
+  for (const stream of streams) {
+    if (stream.type === 'plan_outline') {
+      if (term) continue
+      blocks.push({
+        key: 'po-h',
+        heading: true,
+        node: <StreamHeading type="plan_outline" />,
+      })
+      blocks.push({
+        key: 'po',
+        node: (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link
+                href="/?budget_document=plan_outline"
+                className="flex items-center gap-2 rounded-xl bg-muted/50 px-3 py-2 text-sm transition-colors hover:bg-muted"
+              >
+                <span className="font-semibold">{stream.label}</span>
+                <span className="text-xs text-muted-foreground">
+                  {stream.count} documents
+                </span>
+              </Link>
+            </TooltipTrigger>
+            <ClickTooltip />
+          </Tooltip>
+        ),
+      })
+      continue
+    }
+
+    if (stream.type === 'ppb') {
+      const parts = stream.parts
+        .map((part) => ({
+          ...part,
+          sections: part.sections
+            .map((s) => ({ ...s, entities: s.entities.filter(match) }))
+            .filter((s) => s.entities.length > 0),
+        }))
+        .filter((p) => p.sections.length > 0)
+      if (parts.length === 0) continue
+
+      blocks.push({
+        key: 'ppb-h',
+        heading: true,
+        node: <StreamHeading type="ppb" />,
+      })
+      for (const part of parts) {
+        const flat = part.sections.flatMap((s) => s.entities)
+        blocks.push({
+          key: `part-${part.part}`,
+          node: (
+            <div className="space-y-1.5">
+              <h3 className={showSections ? 'text-base' : 'text-sm'}>
+                <span className="font-medium text-muted-foreground">
+                  Part {part.part}.
+                </span>{' '}
+                <span className="font-semibold text-foreground">
+                  {part.part_title}
+                </span>
+              </h3>
+              {showSections ? (
+                part.sections.map((section) => (
+                  <div key={section.section} className="space-y-1.5">
+                    <SubHeading>{sectionLabel(section)}</SubHeading>
+                    <EntityGroup
+                      entities={section.entities}
+                      compact={compact}
+                    />
+                  </div>
+                ))
+              ) : (
+                <EntityGroup entities={flat} compact={compact} />
+              )}
+            </div>
+          ),
+        })
+      }
+      continue
+    }
+
+    // pko
+    const pkoGroups = stream.groups
+      .map((g) => ({ ...g, entities: g.entities.filter(match) }))
+      .filter((g) => g.entities.length > 0)
+    if (pkoGroups.length === 0) continue
+
+    blocks.push({
+      key: 'pko-h',
+      heading: true,
+      node: <StreamHeading type="pko" />,
+    })
+    if (showSections) {
+      for (const group of pkoGroups) {
+        blocks.push({
+          key: `pko-${group.group}`,
+          node: (
+            <div className="space-y-1.5">
+              <SubHeading>{group.label}</SubHeading>
+              <EntityGroup entities={group.entities} compact={compact} />
+            </div>
+          ),
+        })
+      }
+    } else {
+      blocks.push({
+        key: 'pko',
+        node: (
+          <EntityGroup
+            entities={pkoGroups.flatMap((g) => g.entities)}
+            compact={compact}
+          />
+        ),
+      })
+    }
+  }
+
   return (
     <TooltipProvider delayDuration={200}>
       <div className="space-y-6">
@@ -88,112 +212,21 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
           </Toggle>
         </div>
 
-        {streams.map((stream) => {
-          if (stream.type === 'plan_outline') {
-            if (term) return null
-            return (
-              <section key={stream.type} className="space-y-3">
-                <StreamHeading type={stream.type} />
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Link
-                      href="/?budget_document=plan_outline"
-                      className="inline-flex max-w-md items-center gap-2 rounded-xl bg-muted/50 px-4 py-2.5 text-sm transition-colors hover:bg-muted"
-                    >
-                      <span className="font-semibold">{stream.label}</span>
-                      <span className="text-xs text-muted-foreground">
-                        {stream.count} documents
-                      </span>
-                    </Link>
-                  </TooltipTrigger>
-                  <ClickTooltip />
-                </Tooltip>
-              </section>
-            )
-          }
-
-          if (stream.type === 'ppb') {
-            const parts = stream.parts
-              .map((part) => ({
-                ...part,
-                sections: part.sections
-                  .map((s) => ({ ...s, entities: s.entities.filter(match) }))
-                  .filter((s) => s.entities.length > 0),
-              }))
-              .filter((p) => p.sections.length > 0)
-            if (parts.length === 0) return null
-
-            return (
-              <section key={stream.type} className="space-y-5">
-                <StreamHeading type={stream.type} />
-                {/* Compact view flows parts into two columns to save space. */}
-                <div
-                  className={
-                    compact ? 'flex flex-wrap gap-x-8 gap-y-4' : 'space-y-5'
-                  }
-                >
-                  {parts.map((part) => {
-                    const flat = part.sections.flatMap((s) => s.entities)
-                    return (
-                      <div
-                        key={part.part}
-                        className={cn(
-                          'space-y-1.5',
-                          compact && 'w-[calc(50%-1rem)] min-w-0'
-                        )}
-                      >
-                        <h3 className={showSections ? 'text-base' : 'text-sm'}>
-                          <span className="font-medium text-muted-foreground">
-                            Part {part.part}.
-                          </span>{' '}
-                          <span className="font-semibold text-foreground">
-                            {part.part_title}
-                          </span>
-                        </h3>
-                        {showSections ? (
-                          part.sections.map((section) => (
-                            <div key={section.section} className="space-y-1.5">
-                              <SubHeading>{sectionLabel(section)}</SubHeading>
-                              <EntityGroup
-                                entities={section.entities}
-                                compact={compact}
-                              />
-                            </div>
-                          ))
-                        ) : (
-                          <EntityGroup entities={flat} compact={compact} />
-                        )}
-                      </div>
-                    )
-                  })}
-                </div>
-              </section>
-            )
-          }
-
-          // pko
-          const pkoGroups = stream.groups
-            .map((g) => ({ ...g, entities: g.entities.filter(match) }))
-            .filter((g) => g.entities.length > 0)
-          if (pkoGroups.length === 0) return null
-          const pkoFlat = pkoGroups.flatMap((g) => g.entities)
-
-          return (
-            <section key={stream.type} className="space-y-3">
-              <StreamHeading type={stream.type} />
-              {showSections ? (
-                pkoGroups.map((group) => (
-                  <div key={group.group} className="space-y-1.5">
-                    <SubHeading>{group.label}</SubHeading>
-                    <EntityGroup entities={group.entities} compact={compact} />
-                  </div>
-                ))
-              ) : (
-                <EntityGroup entities={pkoFlat} compact={compact} />
-              )}
-            </section>
-          )
-        })}
+        {blocks.length > 0 && (
+          <div className={compact ? 'columns-2 gap-x-8' : ''}>
+            {blocks.map((block) => (
+              <div
+                key={block.key}
+                className={cn(
+                  'break-inside-avoid',
+                  block.heading ? 'mb-3' : 'mb-5'
+                )}
+              >
+                {block.node}
+              </div>
+            ))}
+          </div>
+        )}
 
         {term && countMatches(streams, match) === 0 && (
           <p className="text-sm text-muted-foreground">
