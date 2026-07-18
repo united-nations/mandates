@@ -1,7 +1,6 @@
 import { Tags } from 'lucide-react'
 import type { Metadata } from 'next'
 import { getSubjectHierarchy } from '@/lib/data/mandates'
-import { SubjectsDirectory } from '@/components/SubjectsDirectory'
 import { SubjectsCompact } from '@/components/SubjectsCompact'
 
 export const metadata: Metadata = {
@@ -30,16 +29,10 @@ export default async function SubjectsPage() {
         heading to see everything within it.
       </p>
 
-      {/* Prototype: compact treemap + pill-map version intended for embedding
-          on the main page. The full browse is kept below for comparison. */}
+      {/* Compact treemap + pill-map. The full-hierarchy browse
+          (SubjectsDirectory) is retained in the codebase for a separate
+          main-page integration but is intentionally not rendered here. */}
       <SubjectsCompact domains={domains} />
-
-      <div className="my-12 border-t border-border pt-8">
-        <h2 className="mb-6 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-          Full browse (current page)
-        </h2>
-        <SubjectsDirectory domains={domains} />
-      </div>
     </div>
   )
 }
