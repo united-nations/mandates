@@ -12,6 +12,31 @@ export const BUDGET_STREAM_LABELS = {
   plan_outline: 'Plan Outline',
 } as const
 
+// Friendly labels for the 18 UNBIS thesaurus subject domains (the values the
+// `subject_domain` filter carries: a two-digit domain code). Source of truth
+// for the domain code -> display name used by filter chips and the /subjects
+// page, so the DB's shouty uppercase labels never surface in the UI.
+export const SUBJECT_DOMAIN_LABELS: Record<string, string> = {
+  '01': 'Political and Legal Questions',
+  '02': 'Economic Development and Development Finance',
+  '03': 'Natural Resources and the Environment',
+  '04': 'Agriculture, Forestry and Fishing',
+  '05': 'Industry',
+  '06': 'Transport and Communications',
+  '07': 'International Trade',
+  '08': 'Population',
+  '09': 'Human Settlements',
+  '10': 'Health',
+  '11': 'Education',
+  '12': 'Employment',
+  '13': 'Humanitarian Aid and Relief',
+  '14': 'Social Conditions and Equity',
+  '15': 'Culture',
+  '16': 'Science and Technology',
+  '17': 'Geographical Descriptors',
+  '18': 'Organizational Questions',
+} as const
+
 // All filter parameters that can be passed to the API
 export const FILTER_PARAMS = [
   'entity',
@@ -24,6 +49,7 @@ export const FILTER_PARAMS = [
   'foundational',
   'programme',
   'subject',
+  'subject_domain',
   'start_year',
   'end_year',
   'budget_document',
@@ -52,6 +78,7 @@ export const FILTER_ONLY_PARAMS = [
   'foundational',
   'programme',
   'subject',
+  'subject_domain',
   'start_year',
   'end_year',
   'budget_document',
@@ -107,6 +134,7 @@ export function parseSearchParams(
     foundational: getString('foundational'),
     programme: getString('programme'),
     subject: getString('subject'),
+    subject_domain: getString('subject_domain'),
     start_year: getString('start_year'),
     end_year: getString('end_year'),
     budget_document: getString('budget_document'),

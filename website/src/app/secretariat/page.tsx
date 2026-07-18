@@ -1,8 +1,9 @@
 import { Suspense } from 'react'
 
 import { MandateExplorerServer } from '@/app/_mandateExplorerServer'
+import { HeaderStatsServer } from '@/app/_headerStatsServer'
 import { ExplainerText } from '@/components/ExplainerText'
-import { ShareButton } from '@/components/ShareButton'
+import { HeaderStatsSkeleton } from '@/components/HeaderStats.skeleton'
 import { LoadingSkeleton } from '@/components/LoadingSkeleton'
 import { getMandatePageData } from '@/lib/data/mandates'
 import { parseSearchParams } from '@/lib/filter-constants'
@@ -21,10 +22,12 @@ export default async function Page({ searchParams }: PageProps) {
 
   return (
     <div className="space-y-6 pb-16">
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <ExplainerText />
-        <div className="mt-4 shrink-0">
-          <ShareButton />
+        <div className="mt-1 shrink-0 sm:mt-4">
+          <Suspense fallback={<HeaderStatsSkeleton />}>
+            <HeaderStatsServer dataPromise={dataPromise} />
+          </Suspense>
         </div>
       </div>
 
