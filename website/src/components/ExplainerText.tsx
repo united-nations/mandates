@@ -15,9 +15,11 @@ export function ExplainerText() {
           UN80 Initiative
         </Link>
         , this registry serves as a transparency tool for understanding UN
-        mandates and programmes. It compiles the source documents that UN
-        entities cite when explaining why their programmes exist and why they
-        require resources, enabling better dialogue on{' '}
+        mandates and programmes.
+        <br />
+        It compiles the source documents that UN entities cite when explaining
+        why their programmes exist and why they require resources, enabling
+        better dialogue on{' '}
         <Link
           href={explainerTexts.mainHeader.mandateImplementationLink}
           target="_blank"
@@ -27,13 +29,6 @@ export function ExplainerText() {
           mandate implementation
         </Link>
         .
-        <br />
-        <Link
-          href="/secretariat#methodology"
-          className="mt-1 inline-block font-bold text-un-blue no-underline transition-colors hover:text-shuttle-gray"
-        >
-          Learn More
-        </Link>
       </p>
     </div>
   )

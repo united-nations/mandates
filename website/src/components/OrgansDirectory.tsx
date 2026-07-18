@@ -10,8 +10,8 @@ import {
 import { useSectionFilter } from '@/hooks/use-section-filter'
 import { cn } from '@/lib/utils'
 import type { OrganGroup, OrganWithCount } from '@/types'
-import { ChevronRight, ExternalLink, MousePointerClick, Tag } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { ChevronRight, ExternalLink, MousePointerClick } from 'lucide-react'
+import { useMemo, useState } from 'react'
 
 /**
  * The organ directory: every intergovernmental organ that adopts mandates,
@@ -20,8 +20,8 @@ import { useEffect, useMemo, useState } from 'react'
  *
  * On the single page, selecting an organ sets a single-facet view of the
  * mandates section and scrolls to it (see useSectionFilter); the active organ
- * is highlighted. One view toggle, persisted in localStorage: full (cards with
- * names + official-site links) vs. compact (acronym pills).
+ * is highlighted. Cards use the same four-column truncated layout as the full
+ * entity list.
  */
 
 interface OrgansDirectoryProps {
@@ -30,19 +30,8 @@ interface OrgansDirectoryProps {
 
 export function OrgansDirectory({ groups }: OrgansDirectoryProps) {
   const [search, setSearch] = useState('')
-  const [compact, setCompact] = useState(false)
   const term = search.trim().toLowerCase()
   const { active, select } = useSectionFilter('organ')
-
-  // Restore the saved preference after mount (avoids an SSR hydration mismatch).
-  useEffect(() => {
-    const c = localStorage.getItem('organs.compact')
-    /* eslint-disable-next-line react-hooks/set-state-in-effect -- one-time restore of a persisted UI pref */
-    if (c !== null) setCompact(c === '1')
-  }, [])
-  useEffect(() => {
-    localStorage.setItem('organs.compact', compact ? '1' : '0')
-  }, [compact])
 
   const totalOrgans = useMemo(
     () => groups.reduce((n, g) => n + g.organs.length, 0),
@@ -72,13 +61,6 @@ export function OrgansDirectory({ groups }: OrgansDirectoryProps) {
             value={search}
             onChange={setSearch}
           />
-          <Toggle
-            active={compact}
-            onClick={() => setCompact((v) => !v)}
-            icon={Tag}
-          >
-            Compact
-          </Toggle>
         </div>
 
         {filtered.length > 0 ? (
@@ -88,12 +70,16 @@ export function OrgansDirectory({ groups }: OrgansDirectoryProps) {
                 <div className="mb-3">
                   <GroupHeading>{group.label}</GroupHeading>
                 </div>
-                <OrganGroup
-                  organs={group.organs}
-                  compact={compact}
-                  active={active}
-                  onSelect={select}
-                />
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                  {group.organs.map((organ) => (
+                    <OrganCard
+                      key={organ.short}
+                      organ={organ}
+                      active={active === organ.short}
+                      onSelect={select}
+                    />
+                  ))}
+                </div>
               </div>
             ))}
           </div>
@@ -113,121 +99,11 @@ export function OrgansDirectory({ groups }: OrgansDirectoryProps) {
   )
 }
 
-function Toggle({
-  active,
-  onClick,
-  icon: Icon,
-  children,
-}: {
-  active: boolean
-  onClick: () => void
-  icon: typeof Tag
-  children: React.ReactNode
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={active}
-      className={cn(
-        'inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors',
-        active
-          ? 'bg-un-blue text-white hover:bg-un-blue/90'
-          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-      )}
-    >
-      <Icon className="h-3.5 w-3.5" />
-      {children}
-    </button>
-  )
-}
-
 function GroupHeading({ children }: { children: React.ReactNode }) {
   return (
     <h2 className="border-b border-gray-200 pb-1.5 text-xs font-semibold tracking-wide text-un-blue uppercase">
       {children}
     </h2>
-  )
-}
-
-function OrganGroup({
-  organs,
-  compact,
-  active,
-  onSelect,
-}: {
-  organs: OrganWithCount[]
-  compact: boolean
-  active?: string
-  onSelect: (value: string) => void
-}) {
-  if (compact) {
-    return (
-      <div className="flex flex-wrap gap-1">
-        {organs.map((organ) => (
-          <OrganPill
-            key={organ.short}
-            organ={organ}
-            active={active === organ.short}
-            onSelect={onSelect}
-          />
-        ))}
-      </div>
-    )
-  }
-  return (
-    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      {organs.map((organ) => (
-        <OrganCard
-          key={organ.short}
-          organ={organ}
-          active={active === organ.short}
-          onSelect={onSelect}
-        />
-      ))}
-    </div>
-  )
-}
-
-function OrganPill({
-  organ,
-  active,
-  onSelect,
-}: {
-  organ: OrganWithCount
-  active: boolean
-  onSelect: (value: string) => void
-}) {
-  const hasLong = organ.long && organ.long !== organ.short
-  return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <a
-          href={`/secretariat?organ=${encodeURIComponent(organ.short)}`}
-          onClick={(e) => {
-            e.preventDefault()
-            onSelect(organ.short)
-          }}
-          className={cn(
-            'inline-flex items-baseline gap-1 rounded-full px-2.5 py-0.5 text-xs transition-colors',
-            active
-              ? 'bg-un-blue text-white'
-              : 'bg-gray-100 hover:bg-un-blue/10 hover:text-un-blue'
-          )}
-        >
-          <span className="font-medium">{organ.short}</span>
-          <span
-            className={cn(
-              'text-[10px]',
-              active ? 'text-white/80' : 'text-gray-500'
-            )}
-          >
-            {organ.count}
-          </span>
-        </a>
-      </TooltipTrigger>
-      <ClickTooltip name={hasLong ? organ.long : undefined} />
-    </Tooltip>
   )
 }
 

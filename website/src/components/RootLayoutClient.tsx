@@ -26,10 +26,10 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
   // detail pages reached from within the app.
   const isMainPage = ['/secretariat', '/system'].includes(pathname)
   const isDiffPage = pathname === '/diff'
-  // The redesigned /secretariat is a full-bleed single page (banners, colour
-  // bands) that manages its own per-section widths, so it opts out of the
-  // shared centred/padded main column.
-  const isFullBleed = pathname === '/secretariat'
+  // The redesigned /secretariat and /system pages are full-bleed (hero
+  // banners, colour bands) and manage their own per-section widths, so they
+  // opt out of the shared centred/padded main column.
+  const isFullBleed = ['/secretariat', '/system'].includes(pathname)
 
   return (
     <TooltipProvider>
