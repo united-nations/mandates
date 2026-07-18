@@ -33,6 +33,10 @@ jobs:
           push: true
           tags: undashboarddevregistry.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_d1ee42b2ff344239bfca6eb86ed892e4 }}/lowercaseimage:${{ github.sha }}
           file: ./website/Dockerfile
+          # Inlined into the client bundle at build time so the Sentry feedback
+          # widget mounts. Public value; add it as a repo secret (or var).
+          build-args: |
+            NEXT_PUBLIC_SENTRY_DSN=${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
 
   deploy:
     runs-on: ubuntu-latest
