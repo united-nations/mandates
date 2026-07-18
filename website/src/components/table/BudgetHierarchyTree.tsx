@@ -8,7 +8,12 @@ import {
 import { useFilters } from '@/contexts/FilterContext'
 import type { FilterParamKey } from '@/lib/filter-constants'
 import { FOUNDATIONAL_LABEL, FOUNDATIONAL_TOOLTIP } from '@/lib/foundational'
-import type { BudgetStream, BudgetPartNode, BudgetPkoGroupNode } from '@/types'
+import type {
+  BudgetStream,
+  BudgetPartNode,
+  BudgetPkoGroupNode,
+  FilterOptions,
+} from '@/types'
 import { useMemo, useState } from 'react'
 
 /**
@@ -30,8 +35,17 @@ const LEVEL_PARAM: Record<BudgetTreeLevel, FilterParamKey> = {
   subprogramme: 'subprogramme',
 }
 
+/** The budget hierarchy, shallowest to deepest. */
+const LEVEL_ORDER: BudgetTreeLevel[] = [
+  'stream',
+  'part',
+  'section',
+  'entity',
+  'subprogramme',
+]
+
 export function BudgetHierarchyTree({ hierarchy }: BudgetHierarchyTreeProps) {
-  const { filters, setFilter, clearFilter } = useFilters()
+  const { filters, setFilter, clearFilter, setMultipleFilters } = useFilters()
   const [search, setSearch] = useState('')
 
   const active = {
@@ -51,8 +65,17 @@ export function BudgetHierarchyTree({ hierarchy }: BudgetHierarchyTreeProps) {
 
   const select = (level: BudgetTreeLevel, value: string) => {
     const param = LEVEL_PARAM[level]
-    if (active[level] === value) clearFilter(param)
-    else setFilter(param, value)
+    if (active[level] === value) {
+      clearFilter(param)
+      return
+    }
+    // Selecting a node clears any active filters deeper in the hierarchy, so a
+    // broad pick (a Part) replaces a narrower one (an Entity) rather than
+    // intersecting with it and stranding the user on an empty result.
+    const deeper = LEVEL_ORDER.slice(LEVEL_ORDER.indexOf(level) + 1)
+    const updates: Partial<FilterOptions> = { [param]: value }
+    for (const lvl of deeper) updates[LEVEL_PARAM[lvl]] = undefined
+    setMultipleFilters(updates)
   }
 
   if (hierarchy.length === 0) {
