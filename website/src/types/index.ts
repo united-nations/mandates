@@ -161,6 +161,28 @@ export interface BudgetPartNode {
   sections: BudgetSectionNode[]
 }
 
+// Budget streams (top level of the hierarchy) — the budget-document type a
+// citation comes from. Every citing entity lives in exactly one stream:
+//   ppb          — Proposed Programme Budget: Part → Section → Entity → Subprogramme.
+//   pko          — Peacekeeping Operations financing: Missions + Support account.
+//   plan_outline — the strategic Plan Outline: no sub-structure (a leaf).
+// Which concrete document backs each stream depends on the active budget
+// version; the type is stable across versions (see ppb2026.budget_documents.doc_type).
+export type BudgetStreamType = 'ppb' | 'pko' | 'plan_outline'
+
+/** One group inside the Peacekeeping Operations stream. */
+export interface BudgetPkoGroupNode {
+  group: 'missions' | 'support'
+  label: string
+  count: number
+  entities: BudgetEntityNode[]
+}
+
+export type BudgetStream =
+  | { type: 'ppb'; label: string; count: number; parts: BudgetPartNode[] }
+  | { type: 'pko'; label: string; count: number; groups: BudgetPkoGroupNode[] }
+  | { type: 'plan_outline'; label: string; count: number }
+
 // Entity types
 export interface Entity {
   entity: string
@@ -284,7 +306,7 @@ export interface ApiResponse {
 
   // Filter options for dropdowns
   filterOptions: {
-    budgetHierarchy: BudgetPartNode[]
+    budgetHierarchy: BudgetStream[]
     programmes: { value: string; count: number }[]
     subjects: { value: string; count: number }[]
     documentTypes: { value: string; count: number }[]
@@ -292,13 +314,6 @@ export interface ApiResponse {
     yearRange: { min: number; max: number }
     yearDistribution: Record<string, number>
     yearDistributionUnfiltered: Record<string, number>
-    budgetDocuments: {
-      slug: string
-      display_name: string
-      match_pattern: string
-      sort_order: number
-      count: number
-    }[]
     budgetVersions: {
       slug: string
       display_name: string

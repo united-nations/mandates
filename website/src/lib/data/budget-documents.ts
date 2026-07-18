@@ -9,20 +9,17 @@
 
 import { unstable_cache } from 'next/cache'
 import { queryMany } from '../db/query'
+import type { BudgetStreamType } from '@/types'
 
 export interface BudgetDocument {
   slug: string
   display_name: string
   match_pattern: string
+  doc_type: BudgetStreamType
   sort_order: number
 }
 
-interface BudgetDocumentRow {
-  slug: string
-  display_name: string
-  match_pattern: string
-  sort_order: number
-}
+type BudgetDocumentRow = BudgetDocument
 
 /**
  * Load all budget document options ordered by sort_order.
@@ -31,7 +28,7 @@ interface BudgetDocumentRow {
 export const getBudgetDocuments = unstable_cache(
   async (): Promise<BudgetDocument[]> => {
     const rows = await queryMany<BudgetDocumentRow>(
-      `SELECT slug, display_name, match_pattern, sort_order
+      `SELECT slug, display_name, match_pattern, doc_type, sort_order
        FROM ppb2026.budget_documents
        ORDER BY sort_order`,
       []

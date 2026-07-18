@@ -23,7 +23,14 @@ import {
 import { useFilters } from '@/contexts/FilterContext'
 import { explainerTexts } from '@/lib/en_text_contents'
 import type { ApiResponse } from '@/types'
-import { Building, ChevronDown, FileText, Info, Landmark, Quote } from 'lucide-react'
+import {
+  Building,
+  ChevronDown,
+  FileText,
+  Info,
+  Landmark,
+  Quote,
+} from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
 import { useCallback, useState } from 'react'
 import { MandateCompactList } from './table/MandateCompactList'
@@ -35,9 +42,7 @@ interface MandateExplorerClientProps {
   data: ApiResponse
 }
 
-export function MandateExplorerClient({
-  data,
-}: MandateExplorerClientProps) {
+export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
   const { filters, setFilter, setMultipleFilters } = useFilters()
   const searchParams = useSearchParams()
 
@@ -208,8 +213,7 @@ export function MandateExplorerClient({
     long: v.display_name,
     isDefault: v.is_default,
   }))
-  const defaultVersion =
-    ppbVersions.find((v) => v.isDefault) ?? ppbVersions[0]
+  const defaultVersion = ppbVersions.find((v) => v.isDefault) ?? ppbVersions[0]
   const currentPpbVersion = filters.ppb_version || defaultVersion?.value
   const activePpb =
     ppbVersions.find((v) => v.value === currentPpbVersion) ?? defaultVersion
@@ -218,7 +222,7 @@ export function MandateExplorerClient({
     <DropdownMenu open={ppbDropdownOpen} onOpenChange={setPpbDropdownOpen}>
       <DropdownMenuTrigger asChild>
         <button
-          className="inline-flex items-center gap-0.5 border-b border-current pb-px -mb-px"
+          className="-mb-px inline-flex items-center gap-0.5 border-b border-current pb-px"
           onClick={(e) => e.stopPropagation()}
         >
           {activePpb?.short ?? ''}
@@ -229,7 +233,12 @@ export function MandateExplorerClient({
         {ppbVersions.map((v) => (
           <DropdownMenuItem
             key={v.value}
-            onClick={() => setMultipleFilters({ mode: 'active_mandates', ppb_version: v.value })}
+            onClick={() =>
+              setMultipleFilters({
+                mode: 'active_mandates',
+                ppb_version: v.value,
+              })
+            }
             className={`my-0.5 flex flex-col items-start gap-0.5 ${currentPpbVersion === v.value ? 'bg-accent' : ''}`}
           >
             <span className="font-medium">{v.short}</span>
@@ -242,13 +251,21 @@ export function MandateExplorerClient({
 
   const modeToggle = (
     <div className="inline-flex flex-wrap items-center rounded-md bg-muted p-0.5 whitespace-nowrap">
-      <Tooltip open={ppbDropdownOpen ? false : undefined} key={ppbDropdownOpen ? 'dropdown-open' : 'dropdown-closed'}>
+      <Tooltip
+        open={ppbDropdownOpen ? false : undefined}
+        key={ppbDropdownOpen ? 'dropdown-open' : 'dropdown-closed'}
+      >
         <TooltipTrigger asChild>
           <div
             role="button"
             tabIndex={0}
-            onClick={() => { if (!ppbDropdownOpen) handleModeChange('active_mandates') }}
-            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleModeChange('active_mandates') }}
+            onClick={() => {
+              if (!ppbDropdownOpen) handleModeChange('active_mandates')
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ')
+                handleModeChange('active_mandates')
+            }}
             className={`inline-flex h-7 grow cursor-pointer items-center gap-1 rounded-sm px-2.5 text-xs font-medium transition-all ${
               currentMode === 'active_mandates'
                 ? 'bg-background text-foreground shadow'
@@ -261,9 +278,9 @@ export function MandateExplorerClient({
         </TooltipTrigger>
         <TooltipContent side="bottom" className="max-w-xs">
           Documents cited by UN entities in the{' '}
-          {activePpb?.long ?? 'proposed budget'}.
-          Includes resolutions, decisions, conventions, and other formal
-          documents with full citation data.
+          {activePpb?.long ?? 'proposed budget'}. Includes resolutions,
+          decisions, conventions, and other formal documents with full citation
+          data.
         </TooltipContent>
       </Tooltip>
       <Tooltip>
@@ -280,11 +297,11 @@ export function MandateExplorerClient({
           </button>
         </TooltipTrigger>
         <TooltipContent side="bottom" collisionPadding={8} className="max-w-xs">
-          ~42,000 resolutions, decisions and presidential statements of
-          the General Assembly, Security Council, ECOSOC and Human Rights
-          Council (Dag Hammarskjöld Library, 1946–present), plus any other
-          documents cited in the latest proposed budget. Where a document
-          is cited in a PPB, entity and citation data is available.
+          ~42,000 resolutions, decisions and presidential statements of the
+          General Assembly, Security Council, ECOSOC and Human Rights Council
+          (Dag Hammarskjöld Library, 1946–present), plus any other documents
+          cited in the latest proposed budget. Where a document is cited in a
+          PPB, entity and citation data is available.
         </TooltipContent>
       </Tooltip>
     </div>
@@ -305,10 +322,9 @@ export function MandateExplorerClient({
         </label>
       </TooltipTrigger>
       <TooltipContent side="bottom" className="max-w-xs">
-        Collapse recurring resolutions to one row per series — the most
-        recent matching version, expandable to its earlier versions.
-        Versions are identified automatically by matching titles within
-        the same organ.
+        Collapse recurring resolutions to one row per series — the most recent
+        matching version, expandable to its earlier versions. Versions are
+        identified automatically by matching titles within the same organ.
       </TooltipContent>
     </Tooltip>
   )
@@ -352,7 +368,6 @@ export function MandateExplorerClient({
           <FilterControls
             entitiesData={allEntities}
             allOrgans={allOrgans}
-            budgetDocuments={filterOptions.budgetDocuments}
             toolbarSlot={
               <div className="flex flex-wrap items-center gap-3">
                 {groupToggle}
@@ -366,7 +381,10 @@ export function MandateExplorerClient({
             A/81/6 (Sect. 1); its citations may change in the final version. */}
         {activePpb?.short === '2027' && (
           <div className="mb-4 flex items-start gap-2 border-l-2 border-un-blue/40 bg-un-blue/5 px-3 py-2 text-sm text-muted-foreground">
-            <Info className="mt-0.5 h-4 w-4 shrink-0 text-un-blue" aria-hidden />
+            <Info
+              className="mt-0.5 h-4 w-4 shrink-0 text-un-blue"
+              aria-hidden
+            />
             <p>
               Section&nbsp;1 (Overall policymaking, direction and coordination)
               citations are preliminary, drawn from the advance version of

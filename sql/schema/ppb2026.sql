@@ -16,6 +16,10 @@ create table ppb2026.budget_documents (
     slug text not null primary key,
     display_name text not null,
     match_pattern text not null,
+    -- Top-level budget stream this document belongs to. Drives the budget
+    -- hierarchy tree's first level; see migration 024.
+    doc_type text not null
+        check (doc_type in ('ppb', 'pko', 'plan_outline')),
     sort_order smallint not null default 0
 );
 create table ppb2026.budget_document_versions (

@@ -2,6 +2,7 @@
 
 import { FilterBadge } from '@/components/FilterBadge'
 import { Button } from '@/components/ui/button'
+import { BUDGET_STREAM_LABELS } from '@/lib/filter-constants'
 import { Search, X } from 'lucide-react'
 import { EntityName } from './EntityName'
 import { titleCase } from 'title-case'
@@ -144,7 +145,7 @@ export function SearchResultsSummary({
         {appliedFilters.budget_document &&
           appliedFilters.budget_document !== 'all' && (
             <FilterBadge
-              label={`Budget Doc: ${appliedFilters.budget_document}`}
+              label={`Budget: ${BUDGET_STREAM_LABELS[appliedFilters.budget_document as keyof typeof BUDGET_STREAM_LABELS] ?? appliedFilters.budget_document}`}
               onClear={() => onClearFilter('budget_document')}
               variant="secondary"
             />

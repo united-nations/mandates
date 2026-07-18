@@ -3,8 +3,9 @@
 import { useMemo, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { MetadataItem } from '@/components/MetadataItem'
-import type { Mandate, Organ } from '@/types'
+import type { BudgetStreamType, Mandate, Organ } from '@/types'
 import type { BudgetDocument } from '@/lib/data/budget-documents'
+import { BUDGET_STREAM_LABELS } from '@/lib/filter-constants'
 
 interface MandateMetadataProps {
   mandate: Mandate
@@ -20,24 +21,26 @@ export function MandateMetadata({
   const [showAllSubjects, setShowAllSubjects] = useState(false)
   const SUBJECTS_DEFAULT_SHOWN = 20
 
-  // Derive the matching BudgetDocument entries for this mandate's citations
-  const citedBudgetDocuments = useMemo(() => {
+  // Which budget streams (ppb / pko / plan_outline) this mandate is cited in.
+  // Match each origin_document to its budget document, collapse to the stream,
+  // and order ppb → pko → plan_outline.
+  const citedStreams = useMemo(() => {
     if (!mandate?.citation_info) return []
     const uniqueOrigins = new Set<string>()
     mandate.citation_info.forEach((citation) => {
       if (citation.origin_document) uniqueOrigins.add(citation.origin_document)
     })
-    // Match each origin_document value to a BudgetDocument via its regex
-    const matched = new Map<string, { slug: string; display_name: string }>()
+    const types = new Set<BudgetStreamType>()
     for (const origin of uniqueOrigins) {
       for (const doc of budgetDocuments) {
         if (new RegExp(doc.match_pattern).test(origin)) {
-          matched.set(doc.slug, doc)
+          types.add(doc.doc_type)
           break
         }
       }
     }
-    return Array.from(matched.values())
+    const order: BudgetStreamType[] = ['ppb', 'pko', 'plan_outline']
+    return order.filter((t) => types.has(t))
   }, [mandate, budgetDocuments])
 
   return (
@@ -104,21 +107,21 @@ export function MandateMetadata({
         </MetadataItem>
 
         <MetadataItem label="Budget Document">
-          {citedBudgetDocuments.length > 0 ? (
+          {citedStreams.length > 0 ? (
             <div className="flex flex-wrap gap-1.5">
-              {citedBudgetDocuments.map((doc, index) => (
+              {citedStreams.map((type) => (
                 <Badge
-                  key={index}
+                  key={type}
                   variant="secondary"
                   className="cursor-pointer text-xs transition-colors hover:bg-secondary/80"
                   onClick={() => {
                     const url = new URL(window.location.origin + '/')
                     url.searchParams.delete('page')
-                    url.searchParams.set('budget_document', doc.slug)
+                    url.searchParams.set('budget_document', type)
                     window.location.href = url.toString()
                   }}
                 >
-                  {doc.display_name}
+                  {BUDGET_STREAM_LABELS[type]}
                 </Badge>
               ))}
             </div>

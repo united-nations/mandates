@@ -22,8 +22,7 @@ import {
 } from '@/components/ui/hover-card'
 import { useFilters } from '@/contexts/FilterContext'
 import type {
-  ApiResponse,
-  BudgetPartNode,
+  BudgetStream,
   Entity,
   EntityWithCount,
   Mandate,
@@ -31,7 +30,6 @@ import type {
   OrganWithCount,
 } from '@/types'
 
-type BudgetDocumentOption = ApiResponse['filterOptions']['budgetDocuments'][number]
 import { ChevronRight } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { Fragment, useState } from 'react'
@@ -41,10 +39,7 @@ import { isFoundational } from '@/lib/foundational'
 import { ColumnHeaderFilter } from './ColumnHeaderFilter'
 import { ColumnPicker } from './ColumnPicker'
 import { BudgetLocationCell } from './BudgetLocationCell'
-import {
-  COLUMN_DEFINITIONS,
-  getMandateUrl,
-} from './MandateColumns'
+import { COLUMN_DEFINITIONS, getMandateUrl } from './MandateColumns'
 import {
   GroupBadge,
   GroupMemberLine,
@@ -54,14 +49,13 @@ import {
 // Facet option lists for the column filter popovers. Named FilterFacets to
 // avoid colliding with the data-layer FilterOptions (active filter *values*).
 interface FilterFacets {
-  budgetHierarchy: BudgetPartNode[]
+  budgetHierarchy: BudgetStream[]
   programmes: { value: string; count: number }[]
   subjects: { value: string; count: number }[]
   documentTypes: { value: string; count: number }[]
   agendaItems: { value: string; count: number }[]
   yearRange: { min: number; max: number }
   yearDistribution: Record<string, number>
-  budgetDocuments: BudgetDocumentOption[]
 }
 
 interface MandateDataTableProps {
@@ -107,8 +101,8 @@ export function MandateDataTable({
   const currentSort =
     filters.sort_by || (filters.keyword ? 'default' : 'citing_entities_desc')
 
-  const columns = COLUMN_DEFINITIONS.filter(
-    (col) => visibleColumns.has(col.id)
+  const columns = COLUMN_DEFINITIONS.filter((col) =>
+    visibleColumns.has(col.id)
   ).sort((a, b) => {
     // The detail column (column picker + expand chevron) always stays rightmost,
     // even when extra columns are toggled on.
@@ -131,14 +125,6 @@ export function MandateDataTable({
         return filterOptions.documentTypes
       case 'agenda_item':
         return filterOptions.agendaItems
-      case 'budget_document':
-        // Already scoped to the active budget version + ordered by count DESC
-        // in getBudgetDocumentOptions.
-        return filterOptions.budgetDocuments.map((d) => ({
-          value: d.slug,
-          label: d.display_name,
-          count: d.count,
-        }))
       default:
         return undefined
     }
@@ -161,7 +147,7 @@ export function MandateDataTable({
     <div>
       {/* Table */}
       <div
-        className={`rounded-lg border border-gray-200 overflow-hidden transition-opacity duration-150 ${isPending ? 'opacity-50' : 'opacity-100'}`}
+        className={`overflow-hidden rounded-lg border border-gray-200 transition-opacity duration-150 ${isPending ? 'opacity-50' : 'opacity-100'}`}
       >
         <TooltipProvider>
           <Table>
@@ -171,7 +157,7 @@ export function MandateDataTable({
                 {columns.map((col) => (
                   <TableHead
                     key={col.id}
-                    className={`${col.widthClass} ${col.minWidthClass || ''} ${col.align === 'right' ? 'text-right' : ''} ${col.id === 'detail' ? 'sticky right-0 z-10 bg-gray-50' : ''} h-10 px-3 text-xs font-medium tracking-wider uppercase text-muted-foreground`}
+                    className={`${col.widthClass} ${col.minWidthClass || ''} ${col.align === 'right' ? 'text-right' : ''} ${col.id === 'detail' ? 'sticky right-0 z-10 bg-gray-50' : ''} h-10 px-3 text-xs font-medium tracking-wider text-muted-foreground uppercase`}
                   >
                     {col.id === 'detail' ? (
                       <ColumnPicker
@@ -227,14 +213,12 @@ export function MandateDataTable({
                             mandate={mandate}
                             entitiesData={entitiesData}
                             findOrganLong={findOrganLong}
-                            budgetDocuments={filterOptions.budgetDocuments}
                             onEntityClick={(entity) =>
                               setFilter('entity', entity)
                             }
                           />
                           {col.id === 'symbol' &&
-                            (!grouped ||
-                              (mandate.group?.size ?? 1) <= 1) && (
+                            (!grouped || (mandate.group?.size ?? 1) <= 1) && (
                               <span className="ml-1.5">
                                 <SeriesMarkers mandate={mandate} />
                               </span>
@@ -299,16 +283,12 @@ function PillList({ items }: { items: string[] }) {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <div className="max-w-[200px] overflow-hidden cursor-default">
-          <div className="flex items-center gap-1">
-            {items.map(pill)}
-          </div>
+        <div className="max-w-[200px] cursor-default overflow-hidden">
+          <div className="flex items-center gap-1">{items.map(pill)}</div>
         </div>
       </TooltipTrigger>
-      <TooltipContent className="max-w-sm bg-white border shadow-lg p-2">
-        <div className="flex flex-wrap gap-1">
-          {items.map(pill)}
-        </div>
+      <TooltipContent className="max-w-sm border bg-white p-2 shadow-lg">
+        <div className="flex flex-wrap gap-1">{items.map(pill)}</div>
       </TooltipContent>
     </Tooltip>
   )
@@ -319,21 +299,18 @@ function CellContent({
   mandate,
   entitiesData,
   findOrganLong,
-  budgetDocuments,
   onEntityClick,
 }: {
   columnId: string
   mandate: Mandate
   entitiesData: Entity[]
   findOrganLong: (short: string) => string
-  budgetDocuments: BudgetDocumentOption[]
   onEntityClick: (entity: string) => void
 }) {
   switch (columnId) {
     case 'symbol': {
       const symbol = mandate.full_document_symbol
-      const highlighted =
-        mandate.highlightedFields?.full_document_symbol
+      const highlighted = mandate.highlightedFields?.full_document_symbol
       return (
         <Tooltip>
           <TooltipTrigger asChild>
@@ -372,7 +349,7 @@ function CellContent({
           <TooltipTrigger asChild>
             <Badge
               variant="secondary"
-              className="border-0 bg-gray-200! text-xs font-medium text-gray-700! whitespace-nowrap"
+              className="border-0 bg-gray-200! text-xs font-medium whitespace-nowrap text-gray-700!"
             >
               {mandate.body}
             </Badge>
@@ -410,7 +387,9 @@ function CellContent({
       const remaining = entities.length - maxShow
 
       const pill = (entity: string, inPopup: boolean) => {
-        const longName = entitiesData.find((e) => e.entity === entity)?.entity_long
+        const longName = entitiesData.find(
+          (e) => e.entity === entity
+        )?.entity_long
         return inPopup ? (
           <span key={entity} className="flex items-center gap-1.5">
             <EntityBadge
@@ -449,14 +428,14 @@ function CellContent({
       return (
         <HoverCard openDelay={100} closeDelay={100}>
           <HoverCardTrigger asChild>
-            <div className="flex items-center gap-1 overflow-hidden cursor-default">
+            <div className="flex cursor-default items-center gap-1 overflow-hidden">
               {visible.map((e) => pill(e, false))}
-              <span className="text-xs text-muted-foreground shrink-0">
+              <span className="shrink-0 text-xs text-muted-foreground">
                 +{remaining}
               </span>
             </div>
           </HoverCardTrigger>
-          <HoverCardContent className="w-auto max-w-sm bg-white border shadow-lg p-2">
+          <HoverCardContent className="w-auto max-w-sm border bg-white p-2 shadow-lg">
             <div className="flex flex-wrap gap-1">
               {entities.map((e) => pill(e, true))}
             </div>
@@ -466,32 +445,17 @@ function CellContent({
     }
 
     case 'detail':
-      return (
-        <ChevronRight className="h-4 w-4 text-muted-foreground" />
-      )
+      return <ChevronRight className="h-4 w-4 text-muted-foreground" />
 
     case 'subjects':
-      return <PillList items={(mandate.subject_headings || []).map(s => titleCase(s))} />
+      return (
+        <PillList
+          items={(mandate.subject_headings || []).map((s) => titleCase(s))}
+        />
+      )
 
     case 'budget_location':
       return <BudgetLocationCell locations={mandate.budget_locations ?? []} />
-
-    case 'budget_document': {
-      if (!mandate.citation_info || mandate.citation_info.length === 0)
-        return null
-      const docs = [
-        ...new Set(mandate.citation_info.map((c) => c.origin_document)),
-      ]
-      const matched = docs
-        .map((doc) => {
-          const bd = budgetDocuments.find((b) =>
-            new RegExp(b.match_pattern).test(doc)
-          )
-          return bd?.display_name || doc
-        })
-        .filter((v, i, a) => a.indexOf(v) === i)
-      return <PillList items={matched} />
-    }
 
     case 'document_type':
       return mandate.type ? (

@@ -14,7 +14,7 @@ import { getAllEntities } from './entities'
 import { getAllOrgans, getOrganMap } from './organs'
 import { getBudgetVersions } from './budget-documents'
 import { FOUNDATIONAL_PART_IN_DOCUMENT } from '@/lib/foundational'
-import type { Mandate, FilterOptions, EntityWithCount, OrganWithCount, CrossCitation, CitationBin, ApiResponse, BudgetLocation, BudgetPartNode, BudgetSectionNode, BudgetEntityNode } from '@/types'
+import type { Mandate, FilterOptions, EntityWithCount, OrganWithCount, CrossCitation, CitationBin, ApiResponse, BudgetLocation, BudgetPartNode, BudgetSectionNode, BudgetEntityNode, BudgetStream, BudgetPkoGroupNode } from '@/types'
 
 // ============================================================================
 // Helper Functions
@@ -383,15 +383,16 @@ function buildFilterClauses(
     paramIndex++
   }
 
-  // Budget document filter — match against the regex stored in ppb2026.budget_documents
+  // Budget stream filter — the top level of the budget hierarchy. The value is
+  // a doc_type (ppb | pko | plan_outline); a document matches if it has a
+  // citation from any budget document of that stream in the active version.
   if (filters.budget_document) {
     clauses.push(`
       EXISTS (
         SELECT 1 FROM ppb2026.source_document_citations c5
+        JOIN ppb2026.budget_documents bd5 ON c5.origin_document ~ bd5.match_pattern
         WHERE c5.ppb_full_document_symbol = d.ppb_full_document_symbol
-        AND c5.origin_document ~ (
-          SELECT match_pattern FROM ppb2026.budget_documents WHERE slug = $${paramIndex}
-        )
+        AND bd5.doc_type = $${paramIndex}
         AND ${versionClause('c5')}
       )
     `)
@@ -1337,8 +1338,18 @@ function sortBudgetLocations(
 }
 
 /**
- * The budget hierarchy as a tree, with the number of distinct documents cited
- * at each node. Backs the Budget location column's filter.
+ * The budget hierarchy as a tree of streams, with the number of distinct
+ * documents cited at each node. Backs the budget location filter and the
+ * /entities overview.
+ *
+ * The top level is the budget-document stream (ppb2026.budget_documents.doc_type):
+ *   ppb          — Part → Section → Entity → Subprogramme (the regular budget).
+ *   pko          — Peacekeeping Operations: Missions vs. Support account → entity.
+ *                  A mission's several financing fascicles ("Add.N") collapse to
+ *                  one entity, since they are instances of the same mission.
+ *   plan_outline — a leaf (the Plan Outline has no entity/part structure).
+ * Which concrete document backs each stream depends on the active version; a
+ * mission's per-fascicle counts are unioned by grouping on entity, not section.
  *
  * Counts are computed independently at every level via GROUPING SETS, so a
  * document cited by two sections of the same part counts once for that part
@@ -1348,64 +1359,206 @@ function sortBudgetLocations(
  */
 export async function getBudgetHierarchy(
   filters: FilterOptions = {}
-): Promise<BudgetPartNode[]> {
-  // Scope by every active filter except the hierarchy's own levels, so the tree
-  // keeps showing where a user can still navigate after clicking a node. Same
-  // convention as the other facet lists (see omitOwnDimension).
+): Promise<BudgetStream[]> {
+  // Scope by every active filter except the hierarchy's own levels (including
+  // the top-level budget_document stream), so the tree keeps showing where a
+  // user can still navigate after clicking a node. Same convention as the other
+  // facet lists (see omitOwnDimension).
   const scoped: FilterOptions = { ...filters }
   delete scoped.budget_part
   delete scoped.section
   delete scoped.subprogramme
-
-  const partCols = 'c.budget_part_number, bp.part_title, bp.sort_order'
-  const sectionCols =
-    'c.section, c.section_title, bs.sort_order, c.programme, c.programme_title'
-  const entityCols = 'c.entity, e.entity_long'
-  const subprogrammeCols = 'c.sub_programme, c.sub_programme_number'
+  delete scoped.budget_document
 
   const { cte, params, versionClause } = buildFilteredDocsCTE(scoped, {
     selectCols: 'd.ppb_full_document_symbol',
     groupCols: 'd.ppb_full_document_symbol',
   })
 
-  const query = `
-    WITH ${cte}
+  // Shared: every filtered doc's version-scoped citations, tagged with the
+  // budget-document stream. Each citation matches exactly one budget document
+  // (the match_patterns are mutually exclusive).
+  const citesCte = `
+    cites AS (
+      SELECT
+        c.ppb_full_document_symbol AS sym,
+        c.budget_part_number, c.section, c.section_title,
+        c.programme, c.programme_title, c.entity,
+        c.sub_programme, c.sub_programme_number,
+        bd.doc_type, bd.display_name AS stream_label, bd.sort_order AS stream_sort,
+        (c.section_title LIKE 'Administrative and budgetary aspects%') AS is_support
+      FROM filtered_docs fd
+      JOIN ppb2026.source_document_citations c
+        ON fd.ppb_full_document_symbol = c.ppb_full_document_symbol
+        AND ${versionClause('c')}
+      JOIN ppb2026.budget_documents bd
+        ON c.origin_document ~ bd.match_pattern
+    )`
+
+  // Stream totals + the active version's display name for each stream.
+  const totalsQuery = `
+    WITH ${cte}, ${citesCte}
+    SELECT doc_type,
+           MIN(stream_label) AS label,
+           MIN(stream_sort)  AS sort_order,
+           COUNT(DISTINCT sym) AS count
+    FROM cites
+    GROUP BY doc_type`
+
+  const partCols = 'p.budget_part_number, bp.part_title, bp.sort_order'
+  const sectionCols =
+    'p.section, p.section_title, bs.sort_order, p.programme, p.programme_title'
+  const entityCols = 'p.entity, e.entity_long'
+  const subprogrammeCols = 'p.sub_programme, p.sub_programme_number'
+
+  const ppbQuery = `
+    WITH ${cte}, ${citesCte},
+    p AS (SELECT * FROM cites WHERE doc_type = 'ppb')
     SELECT
       3 - (
-        GROUPING(c.section) + GROUPING(c.entity) + GROUPING(c.sub_programme)
+        GROUPING(p.section) + GROUPING(p.entity) + GROUPING(p.sub_programme)
       ) AS depth,
-      c.budget_part_number AS part,
+      p.budget_part_number AS part,
       bp.part_title,
       bp.sort_order AS part_sort,
-      c.section,
-      c.section_title,
+      p.section,
+      p.section_title,
       bs.sort_order AS section_sort,
-      c.programme,
-      c.programme_title,
-      c.entity,
+      p.programme,
+      p.programme_title,
+      p.entity,
       e.entity_long,
-      c.sub_programme,
-      c.sub_programme_number,
-      COUNT(DISTINCT c.ppb_full_document_symbol) AS count
-    FROM filtered_docs fd
-    JOIN ppb2026.source_document_citations c
-      ON fd.ppb_full_document_symbol = c.ppb_full_document_symbol
-      AND ${versionClause('c')}
+      p.sub_programme,
+      p.sub_programme_number,
+      COUNT(DISTINCT p.sym) AS count
+    FROM p
     JOIN ppb2026.budget_parts bp
-      ON bp.part_number = c.budget_part_number
+      ON bp.part_number = p.budget_part_number
     LEFT JOIN ppb2026.budget_sections bs
-      ON bs.section = regexp_replace(c.section, '\\s*\\(Add\\..*\\)$', '')
+      ON bs.section = regexp_replace(p.section, '\\s*\\(Add\\..*\\)$', '')
     LEFT JOIN systemchart.entities e
-      ON e.entity = c.entity
+      ON e.entity = p.entity
     GROUP BY GROUPING SETS (
       (${partCols}),
       (${partCols}, ${sectionCols}),
       (${partCols}, ${sectionCols}, ${entityCols}),
       (${partCols}, ${sectionCols}, ${entityCols}, ${subprogrammeCols})
-    )
-  `
+    )`
 
-  return buildBudgetTree(await queryMany<HierarchyRow>(query, params))
+  // PKO: split by support-account flag, then entity. Grouping on entity (not
+  // section) collapses each mission's Add.N financing fascicles into one row.
+  const pkoQuery = `
+    WITH ${cte}, ${citesCte},
+    pk AS (
+      SELECT * FROM cites
+      WHERE doc_type = 'pko' AND entity IS NOT NULL AND entity <> ''
+    )
+    SELECT
+      pk.is_support,
+      GROUPING(pk.entity) AS grp,
+      pk.entity,
+      e.entity_long,
+      COUNT(DISTINCT pk.sym) AS count
+    FROM pk
+    LEFT JOIN systemchart.entities e ON e.entity = pk.entity
+    GROUP BY GROUPING SETS ((pk.is_support), (pk.is_support, pk.entity, e.entity_long))`
+
+  const [totals, ppbRows, pkoRows] = await Promise.all([
+    queryMany<StreamTotalRow>(totalsQuery, params),
+    queryMany<HierarchyRow>(ppbQuery, params),
+    queryMany<PkoRow>(pkoQuery, params),
+  ])
+
+  const byType = new Map(
+    totals.map((t) => [
+      t.doc_type,
+      { label: t.label, sort: t.sort_order, count: parseInt(t.count, 10) || 0 },
+    ])
+  )
+
+  const streams: BudgetStream[] = []
+  const ppb = byType.get('ppb')
+  if (ppb)
+    streams.push({
+      type: 'ppb',
+      label: ppb.label,
+      count: ppb.count,
+      parts: buildBudgetTree(ppbRows),
+    })
+  const pko = byType.get('pko')
+  if (pko)
+    streams.push({
+      type: 'pko',
+      label: pko.label,
+      count: pko.count,
+      groups: buildPkoGroups(pkoRows),
+    })
+  const plan = byType.get('plan_outline')
+  if (plan)
+    streams.push({ type: 'plan_outline', label: plan.label, count: plan.count })
+
+  return streams.sort(
+    (a, b) => (byType.get(a.type)?.sort ?? 0) - (byType.get(b.type)?.sort ?? 0)
+  )
+}
+
+interface StreamTotalRow {
+  doc_type: string
+  label: string
+  sort_order: number
+  count: string
+}
+
+interface PkoRow {
+  is_support: boolean
+  grp: number | string
+  entity: string | null
+  entity_long: string | null
+  count: string
+}
+
+/**
+ * Assemble the PKO stream's two groups from the GROUPING SETS rows. `grp === 1`
+ * (entity grouped out) is the group total; the rest are per-mission entity rows.
+ */
+function buildPkoGroups(rows: PkoRow[]): BudgetPkoGroupNode[] {
+  const groups = new Map<'missions' | 'support', BudgetPkoGroupNode>()
+  const ensure = (isSupport: boolean) => {
+    const key = isSupport ? 'support' : 'missions'
+    if (!groups.has(key))
+      groups.set(key, {
+        group: key,
+        label: isSupport ? 'Support account' : 'Missions',
+        count: 0,
+        entities: [],
+      })
+    return groups.get(key)!
+  }
+
+  for (const row of rows) {
+    const group = ensure(row.is_support)
+    const count = parseInt(row.count, 10) || 0
+    if (Number(row.grp) === 1) {
+      group.count = count
+    } else if (row.entity) {
+      group.entities.push({
+        entity: row.entity,
+        entity_long: row.entity_long,
+        count,
+        subprogrammes: [],
+      })
+    }
+  }
+
+  for (const group of groups.values())
+    group.entities.sort(
+      (a, b) => b.count - a.count || a.entity.localeCompare(b.entity)
+    )
+
+  // Missions first, then the support account.
+  return (['missions', 'support'] as const)
+    .map((key) => groups.get(key))
+    .filter((g): g is BudgetPkoGroupNode => g !== undefined)
 }
 
 interface HierarchyRow {
@@ -1632,90 +1785,6 @@ export async function getAgendaItemOptions(filters: FilterOptions = {}): Promise
 }
 
 /**
- * Get budget document options applicable to the selected budget version, with
- * citation counts under the current filters. "Applicable" = present in
- * ppb2026.budget_document_versions for COALESCE(filters.ppb_version, default
- * version). This mirrors versionPredicateSql, so the filter dropdown stays in
- * lockstep with the version toggle (no hardcoded 2026 → which-docs mapping).
- *
- * Returned shape extends the reference BudgetDocument with `count`. Ordered by
- * count DESC (sort_order as tiebreaker so curated order shows when counts tie).
- */
-export async function getBudgetDocumentOptions(
-  filters: FilterOptions = {}
-): Promise<{
-  slug: string
-  display_name: string
-  match_pattern: string
-  sort_order: number
-  count: number
-}[]> {
-  const scoped = omitOwnDimension(filters, 'budget_document')
-  const { cte, params } = buildFilteredDocsCTE(scoped, {
-    selectCols: 'd.ppb_full_document_symbol',
-    groupCols: 'd.ppb_full_document_symbol',
-  })
-
-  // Bind ppb_version separately for the applicable-docs filter and the citation
-  // version scope below. In active_mandates mode buildFilteredDocsCTE already
-  // bound the same value, but rebinding is harmless and lets all_resolutions
-  // mode (where the inner CTE skips version scoping) still narrow the budget
-  // doc universe + citation count to the selected version.
-  params.push(filters.ppb_version ?? null)
-  const vIdx = params.length
-
-  const query = `
-    WITH ${cte},
-    applicable_docs AS (
-      SELECT bd.slug, bd.display_name, bd.match_pattern, bd.sort_order
-      FROM ppb2026.budget_documents bd
-      JOIN ppb2026.budget_document_versions bdv ON bdv.doc_slug = bd.slug
-      WHERE bdv.version_slug = COALESCE(
-        $${vIdx},
-        (SELECT slug FROM ppb2026.budget_versions WHERE is_default LIMIT 1)
-      )
-    ),
-    doc_counts AS (
-      SELECT
-        ad.slug,
-        COUNT(DISTINCT fd.ppb_full_document_symbol) as count
-      FROM filtered_docs fd
-      JOIN ppb2026.source_document_citations c
-        ON c.ppb_full_document_symbol = fd.ppb_full_document_symbol
-        AND ${versionPredicateSql('c', `$${vIdx}`)}
-      JOIN applicable_docs ad
-        ON c.origin_document ~ ad.match_pattern
-      GROUP BY ad.slug
-    )
-    SELECT
-      ad.slug,
-      ad.display_name,
-      ad.match_pattern,
-      ad.sort_order,
-      COALESCE(dc.count, 0) as count
-    FROM applicable_docs ad
-    LEFT JOIN doc_counts dc ON dc.slug = ad.slug
-    ORDER BY COALESCE(dc.count, 0) DESC, ad.sort_order
-  `
-
-  const rows = await queryMany<{
-    slug: string
-    display_name: string
-    match_pattern: string
-    sort_order: number
-    count: string
-  }>(query, params)
-
-  return rows.map((r) => ({
-    slug: r.slug,
-    display_name: r.display_name,
-    match_pattern: r.match_pattern,
-    sort_order: r.sort_order,
-    count: parseInt(r.count) || 0,
-  }))
-}
-
-/**
  * Get year range and distribution
  */
 export async function getYearStats(filters: FilterOptions = {}): Promise<{
@@ -1850,7 +1919,6 @@ async function _getMandatePageDataInner(filters: FilterOptions): Promise<ApiResp
     entities,
     organs,
     organMap,
-    budgetDocuments,
     budgetVersions,
   ] = await Promise.all([
     getMandates(filters, { page, limit }),
@@ -1868,7 +1936,6 @@ async function _getMandatePageDataInner(filters: FilterOptions): Promise<ApiResp
     getAllEntities(),
     getAllOrgans(),
     getOrganMap(),
-    getBudgetDocumentOptions(filters),
     getBudgetVersions(),
   ])
 
@@ -1953,7 +2020,6 @@ async function _getMandatePageDataInner(filters: FilterOptions): Promise<ApiResp
       yearRange: yearStats.yearRange,
       yearDistribution: yearStats.yearDistribution,
       yearDistributionUnfiltered: yearStatsForChart.yearDistribution,
-      budgetDocuments,
       budgetVersions,
     },
     reference: {

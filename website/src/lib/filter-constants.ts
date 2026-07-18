@@ -3,6 +3,15 @@
  * This ensures consistency between URL parameters, API calls, and type definitions.
  */
 
+// Friendly labels for the top-level budget streams (the values the
+// `budget_document` filter now carries: a doc_type). Version-agnostic, so used
+// for filter chips where the version-specific document name would be noise.
+export const BUDGET_STREAM_LABELS = {
+  ppb: 'Programme Budget',
+  pko: 'Peacekeeping Operations',
+  plan_outline: 'Plan Outline',
+} as const
+
 // All filter parameters that can be passed to the API
 export const FILTER_PARAMS = [
   'entity',
@@ -54,7 +63,14 @@ export const FILTER_ONLY_PARAMS = [
 ] as const
 
 // Parameters that are handled separately (pagination and sorting)
-export const CONTROL_PARAMS = ['mode', 'ppb_version', 'group', 'sort_by', 'page', 'limit'] as const
+export const CONTROL_PARAMS = [
+  'mode',
+  'ppb_version',
+  'group',
+  'sort_by',
+  'page',
+  'limit',
+] as const
 
 // Type utilities
 export type FilterParamKey = (typeof FILTER_PARAMS)[number]
@@ -74,7 +90,9 @@ export function parseSearchParams(
   }
 
   return {
-    mode: (getString('mode') as 'active_mandates' | 'all_resolutions') || 'active_mandates',
+    mode:
+      (getString('mode') as 'active_mandates' | 'all_resolutions') ||
+      'active_mandates',
     // No hardcoded default: when absent, the data layer's versionClause
     // COALESCEs to ppb2026.budget_versions.is_default (single source of truth).
     ppb_version: getString('ppb_version'),

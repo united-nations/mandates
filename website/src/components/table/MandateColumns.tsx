@@ -105,15 +105,6 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
     align: 'left',
   },
   {
-    id: 'budget_document',
-    label: 'Budget Doc',
-    defaultVisible: false,
-    filterParam: 'budget_document',
-    filterType: 'simpleSelect',
-    widthClass: 'w-[120px]',
-    align: 'left',
-  },
-  {
     id: 'document_type',
     label: 'Type',
     defaultVisible: false,
