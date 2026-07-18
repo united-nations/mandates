@@ -28,13 +28,13 @@ const DOMAIN_COLORS: Record<string, DomainColor> = {
   '14': { bg: 'bg-au-chico', text: 'text-white', hex: '#a0665c' }, // Social Conditions
   '18': { bg: 'bg-smoky', text: 'text-white', hex: '#6c5b7b' }, // Organizational
   '02': { bg: 'bg-faded-jade', text: 'text-white', hex: '#4a7c7e' }, // Economic
-  '15': { bg: 'bg-goldenrod-muted', text: 'text-black', hex: '#bf9b30' }, // Culture
+  '15': { bg: 'bg-marigold', text: 'text-black', hex: '#eab543' }, // Culture
   '17': NEUTRAL, // Geographical Descriptors
   '03': { bg: 'bg-pale-oyster', text: 'text-black', hex: '#9bbb7a' }, // Natural Resources
   '05': { bg: 'bg-shuttle-gray', text: 'text-white', hex: '#5a6c7d' }, // Industry
   '16': { bg: 'bg-un-blue-muted', text: 'text-white', hex: '#4a90a4' }, // Science & Technology
   '08': { bg: 'bg-dusty-rose', text: 'text-white', hex: '#9c5a6e' }, // Population
-  '13': { bg: 'bg-clay', text: 'text-white', hex: '#b0703a' }, // Humanitarian
+  '13': { bg: 'bg-coral', text: 'text-black', hex: '#ec7f4c' }, // Humanitarian
   '11': { bg: 'bg-indigo-muted', text: 'text-white', hex: '#55578f' }, // Education
   '10': { bg: 'bg-forest-muted', text: 'text-white', hex: '#4b7048' }, // Health
   '12': { bg: 'bg-camouflage-green', text: 'text-white', hex: '#7d8471' }, // Employment
