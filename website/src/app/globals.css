@@ -18,18 +18,18 @@
   --color-au-chico: #a0665c;
   --color-faded-jade: #4a7c7e;
 
-  /* Extended UN categorical palette — completes an 18-hue set for the subject
-     domains on the /subjects treemap and pill-map (one stable colour per
-     domain; the treemap doubles as the pill-map's legend). Muted UN aesthetic,
-     harmonised with the brand tokens above. Colour here carries category, never
-     magnitude, and is always paired with a label/tooltip. */
+  /* Categorical palette for the subject domains on the /subjects treemap and
+     pill-map. One stable colour per visually-significant domain; the small,
+     rarely-seen domains (Industry, Intl Trade, Transport, Agriculture) share a
+     single muted slate (bg-shuttle-gray) rather than each carrying a near-
+     identical cool hue. Everything sits in one low-chroma muted band — un-blue
+     is the sole bright anchor — so no accent shouts over the body. Colour here
+     carries category, never magnitude, and is always paired with a label. */
   --color-un-blue-muted: #4a90a4;
-  --color-un-blue-slate: #3d5a6c;
-  --color-un-blue-dark: #2d6a7e;
   --color-dusty-gray: #969696;
-  --color-marigold: #eab543;
+  --color-muted-ochre: #c2a15a;
   --color-forest-muted: #4b7048;
-  --color-coral: #ec7f4c;
+  --color-muted-clay: #c48a63;
   --color-dusty-rose: #9c5a6e;
   --color-indigo-muted: #55578f;
   --color-plum: #7d5a8c;
