@@ -29,7 +29,7 @@ import { useMemo, useState } from 'react'
  * explorer filtered to that subject.
  */
 
-const GLOBAL_TOP = 150 // pills shown by default, across all domains
+const GLOBAL_TOP = 100 // pills shown by default, across all domains
 const DOMAIN_TOP = 60 // pills shown when a single domain is selected
 const SEARCH_CAP = 300 // pills shown while searching
 
@@ -110,7 +110,7 @@ export function SubjectsCompact({ domains }: SubjectsCompactProps) {
           domains={domains}
           selectedDomain={selectedDomain}
           onSelectDomain={setSelectedDomain}
-          height={300}
+          height={390}
         />
 
         <div className="flex flex-wrap items-center gap-3">
