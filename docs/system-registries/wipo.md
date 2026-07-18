@@ -13,22 +13,23 @@ scheme in [`../un-system-registries.md`](../un-system-registries.md).
 | Point | Assessment |
 | --- | --- |
 | 1 documents | yes |
-| 2 mandates (active) | no evidence in round 1 |
-| 3 budget-linked | PENDING round 2 |
+| 2 mandates (active) | no — annual decision lists per body; no in-force/superseded distinction |
+| 3 budget-linked | no — Program of Work and Budget is structured by RBM expected results/sectors, not by Assemblies decisions |
 | 4 implementation-linked | no evidence in round 1 |
-| 5 results-linked | PENDING round 2 |
+| 5 results-linked | no — WIPO Performance Report reports annually against expected results, not against specific Assemblies decisions |
 | 6 interoperability | deferred (later round) |
 
 ## Related portals (not linked to mandates)
 
-_PENDING round 2 — org-specific budget/results portals to mention without scoring._
+- **Results, Budget and Performance** — <https://www.wipo.int/about-wipo/en/budget/> — hub for the biennial Program of Work and Budget and the annual WIPO Performance Report (RBM-based; verified).
 
 ## Notes
 
 - Annual per-series decision lists (PDF) + per-body meeting-documents browser (19 bodies).
+- Mature results-based budgeting/reporting apparatus exists but is anchored entirely in the expected-results framework, not decisions.
 
 ## Open questions
 
-- Round 2: budget linkage? results linkage? active/in-force confirmation?
+- Round 3+: interoperability (point 6).
 
-_Last verified: 2026-07-17 (round 1). Round 2 pending._
+_Last verified: 2026-07-18 (round 2)._

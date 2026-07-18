@@ -1,135 +1,106 @@
 # Mandate registries across the UN system
 
-A taxonomy and survey of systems that compile governing-body mandates,
+Scoring scheme and survey of systems that compile governing-body mandates,
 resolutions and decisions across the UN system, used to populate the
 "Mandate Registry" column on the `/system` page
-(`website/src/data/un-system.json`).
+(`website/src/data/un-system.json`). Per-organization detail lives in the
+dossiers under [`system-registries/`](system-registries/README.md); this
+file holds the scheme and the rollup.
 
-Method: four parallel research agents surveyed all 29 organizations in the
-dataset (July 2026). Every URL below was fetched and verified at the time of
-the survey; several sites (imf.org, unicef.org, undp.org, e-unwto.org,
-unido.org, iaea.org, ifad.org) block non-browser clients and were verified
-via a headless browser.
+Method: two verified research rounds (July 2026). Round 1: four parallel
+agents surveyed all 29 organizations for registry-like systems (every URL
+fetched; bot-blocking sites verified via headless browser). Round 2:
+targeted follow-up on budget linkage, results linkage, active-mandate
+status, and related-but-unlinked portals, written directly into the
+dossiers.
 
-## Feature taxonomy
+## The point scheme
 
-Six binary features describe what such a system does. They are largely
-independent; the tiers below are the combinations that actually occur.
+Five content points plus one reserved interoperability point. A point is
+earned only where the information is tied to **specific governing-body
+decisions/mandates** — budget transparency organized by strategic plan,
+programme, or org-wide totals does not count (nearly every organization has
+that via open.un.org, IATI, or its own transparency portal; those appear as
+unscored "related" links instead).
 
-| Feature | Question it answers |
+| # | Point | Earned when… |
+| --- | --- | --- |
+| 1 | documents | decision/resolution texts are compiled and publicly findable |
+| 2 | mandates | the system knows which decisions are active vs superseded/lapsed |
+| 3 | budget | specific mandates are linked to budget/financial information |
+| 4 | implementation | implementation status is reported per decision/request |
+| 5 | results | results/outcomes are reported against specific decisions |
+| 6 | interoperability | *(reserved)* aggregate of per-point form ratings (pdf 0 · searchable web ⅓ · download ⅔ · API 1), averaged over earned points |
+
+Values are `true`, `'partial'` (half a point — linked but in weak form,
+e.g. a document series rather than a system), or `false`. Intended
+dependency: 2 ⇒ 1 and 3/4/5 ⇒ 2 — but this is enforced only as a
+*warning*, because reality violates it: the funds and programmes (and WHO)
+track implementation of recent decisions without maintaining any
+active-mandate registry. That violation is itself a finding — they track
+the new without knowing the stock.
+
+## Scores (round 2, July 2026)
+
+| Score | Organizations |
 | --- | --- |
-| `sources` | Are the resolution/decision texts compiled and publicly findable? |
-| `searchable` | Structured cross-session search (not per-session PDF lists)? |
-| `inForce` | Does it track which decisions are current vs superseded/repealed? |
-| `requests` | Are decisions decomposed into individual operative requests? |
-| `implementation` | Is there public per-request/resolution implementation status? |
-| `resources` | Are mandates linked to budgets/resources? |
+| 3.5 | **UN-Habitat** (documents, budget, implementation, partial results) |
+| 3 | **WMO** (documents, mandates, implementation) |
+| 2 | **UN Secretariat / mandates.un.org** (documents, mandates), UNDP, UNEP, UNFPA, UNICEF (documents, implementation), FAO, ICAO, IMF, ITU (documents, mandates), WHO (documents, partial budget, partial results) |
+| 1.5 | ILO (documents, partial implementation) |
+| 1 | WFP, IFAD, IMO, UN Tourism, UNIDO, UPU, WIPO, World Bank, IAEA, ICC, IOM, ISA, OPCW, WTO (documents only) |
+| 0 | UNCDF (see UNDP), UNESCO (gap acknowledged, system proposed¹), CTBTO (members-only) |
 
-## Tiers
-
-An ordinal ladder of "registry-ness", derived from the features:
-
-| Tier | Name | Criteria (roughly) | Who |
-| --- | --- | --- | --- |
-| 0 | None | nothing public | CTBTO, UNCDF (via UNDP), UNESCO¹ |
-| 1 | Document archive | `sources` only: per-session lists or PDF compilations | IFAD, IMO, UNIDO, UPU, UN Tourism, WIPO, ICC, ISA, OPCW |
-| 2 | In-force compilation | `sources` + `inForce`: curated consolidation of currently-valid decisions, periodically republished | ICAO, ITU |
-| 3 | Resolutions database | + `searchable`: structured cross-session query interface; may add `inForce` lineage | WHO, FAO, IAEA, IOM, IMF, WTO, ILO, WFP, World Bank, **mandates.un.org** |
-| 4 | Implementation tracker | + `requests` and/or `implementation`: per-decision status | WMO, UN-Habitat, UNEP, UNDP, UNFPA, UNICEF |
-
-¹ UNESCO has publicly acknowledged the gap: document 43 C/OEWG/2/INF.3.REV.2
-(18 May 2026) recommends to "establish a centralized decision-tracking
-system, to improve accountability, transparency and effective monitoring by
-governing bodies, aligned with the United Nations Mandate Register".
+¹ 43 C/OEWG/2/INF.3.REV.2 (18 May 2026) recommends establishing "a
+centralized decision-tracking system … aligned with the United Nations
+Mandate Register".
 
 ### Notable findings
 
-- **WMO is the closest peer to a full mandate registry** anywhere in the
-  system: a resolutions/decisions database (filterable by body, session,
-  in-force status, strategic objective) plus a public requests tracker —
-  545 individual requests from Congress/EC, each with addressee, deadline
-  and status (including "Delayed").
-- **UN-Habitat is the only organization linking mandates to resources**: its
-  Assembly resolution tracker shows per-resolution implementation status,
-  financial requirements and funding gaps.
-- **mandates.un.org itself is tier 3 by these criteria**: `sources`,
-  `searchable`, `inForce` (version/supersession tracking) and — uniquely at
-  system scale — `resources`, but no `implementation` status. On the
-  implementation axis, WMO, UN-Habitat and UNEP are ahead of it.
-- The tier-4 funds/programmes (UNDP, UNFPA, UNICEF) qualify only in weak
-  form: annual PDF tracking tables covering time-bound Executive Board
-  requests, not a queryable system.
-- No organization combines sources, requests, implementation status and
-  resources. That combination is the open ambition.
+- **UN-Habitat leads the system**: its Assembly Resolution Tracker shows
+  per-resolution implementation status *and money* (resolution 2/1:
+  $1,085K required, $384K mobilized, $701K gap) — the only budget-linked
+  mandate system found anywhere.
+- **WMO** is the only organization combining an in-force resolutions
+  database with per-request implementation tracking (545 requests with
+  addressee, deadline, status).
+- **WHO** is the only near-miss on budget linkage: its Programme Budget
+  costs specific resolutions/decisions in aggregate (2024–25: 29
+  resolutions + 23 decisions ≈ US$1.75bn) — as budget-document tables, not
+  a queryable system (`'partial'`).
+- **mandates.un.org scores 2 of 5**: documents and active mandates. Its
+  budget linkage is structural (programme/section) with no monetary
+  amounts, which does not clear the bar this scheme sets. Roadmap in one
+  line: show the money (→3), track implementation (→4), report results
+  (→5).
+- **Results linkage barely exists anywhere**: only partial credits (UN-Habitat
+  narrative outcomes; WHO's consolidated WHA progress-report series).
+- **IMF's Selected Decisions is in-force by design** — lapsed and
+  superseded decisions are deleted from the compilation.
+- **ICC's omnibus resolution annex** is a yearly refreshed list of active
+  intersessional mandates with per-mandate report-backs — a mandate
+  registry on paper, not scored because it is not a system.
 
-## Survey results by organization
+## Display scheme
 
-Tier in parentheses; all URLs verified July 2026.
+The `/system` page's Mandate Registry column shows, per organization:
 
-### UN Secretariat
+- **Five positional dots**, one per content point in fixed order
+  (documents · mandates · budget · implementation · results): filled =
+  earned, ring = partial, gray = not. All colored dots of a row take one
+  color from the traffic-light ramp by total score (≥3.5 green `#276b35`,
+  ≥2.5 teal `#2aa392`, ≥1.5 amber `#c9820f`, else red `#ab3a2c`; tokens
+  `--color-tier-1…4` in `globals.css`, CVD-validated as a set — teal
+  replaces lime because amber↔lime collapses under protanopia). The fill
+  pattern, not the color, is the primary signal. Tooltip: the five point
+  names with this organization's state and the total.
+- **A link named after the actual system** ("Resolution Tracker",
+  "Resolutions Portal", "Acts of the Union"…), category in the tooltip.
+- **Related portals** (org-specific budget/results portals not linked to
+  mandates) as muted dotted-underline links marked "not mandate-linked".
+- No system at all: an em dash with an explanatory tooltip.
 
-- **UN Secretariat & PKO** (3): [UN Mandate Source Registry](https://mandates.un.org/) — mandate sources cited in the programme budget, searchable, version-aware, linked to budget structure. No implementation status.
-
-### Funds and Programmes
-
-- **UNDP** (4, weak): [Decisions of the Executive Board](https://www.undp.org/executive-board/decisions-of-the-board) — decision compilations 1994–2026 + annual decision-tracking tables (implementation status) 2016–2025, PDFs. Covers the joint UNDP/UNFPA/UNOPS Board.
-- **UNFPA** (4, weak): [Decisions of the Board](https://www.unfpa.org/executive-board/decisions-board-listing) — decision texts in 6 languages + annual decision-tracking tables 2018–2026 monitoring time-bound requests.
-- **UNICEF** (4, weak): [Decision monitoring tables](https://www.unicef.org/executiveboard/documents/decision-monitoring-tables) — annual matrices 2017–2026, status per time-bound request; decisions compendium at [/executiveboard/decisions](https://www.unicef.org/executiveboard/decisions).
-- **WFP** (3): [Executive Board documents database](https://executiveboard.wfp.org/documents) — ~10,000 documents, filters by type/topic/session/year. Oversight-recommendation dashboards exist but are members-only.
-- **UNEP** (4): [UNEA Monitoring & Reporting Portal](https://unea.unep.org/monitoring/) — inventory of UNEA resolutions/declarations/decisions with implementation-status and secretariat-reporting dashboards (created per UNEA res 4/22).
-- **UN-Habitat** (4): [UN-Habitat Assembly Resolution Tracker](https://unhabitat.org/unhabitat-resolutions) — all Assembly resolutions with programmatic status, financial requirements and funding gaps; updated semi-annually (mandated by Assembly res 2/10).
-- **UNCDF** (0): no system of its own; governed by the UNDP/UNFPA/UNOPS Board — see UNDP.
-
-### Specialized Agencies
-
-- **FAO** (3): [FAO Conference Resolutions Portal](https://resolutionsportal.fao.org/) — 1,287 resolutions since 1945, full-text search, tracks repeal/substitution lineage (`inForce`).
-- **ICAO** (2): [Assembly Resolutions in Force](https://www.icao.int/events/a41/resolutions) (Doc 10184) — consolidated texts of all Assembly resolutions in force, periodic 6-language editions.
-- **IFAD** (1): [Members Platform](https://webapps.ifad.org/members/gc) — per-session document sets incl. compiled Governing Council resolutions; no cross-session search.
-- **ILO** (3): [Governing Body documents](https://www.ilo.org/governing-body/all-gb-documents) — filterable by session/type incl. "Record of decisions"; individual decision pages in EN/FR/ES. (NORMLEX covers standards, not GB decisions.)
-- **IMF** (3): [Selected Decisions and Selected Documents](https://www.imf.org/en/publications/selected-decisions/selected-decisions-list) — Executive Board decisions and Board of Governors resolutions, per-decision pages, searchable.
-- **IMO** (1): [Index of IMO Resolutions](https://www.imo.org/en/knowledgecentre/indexofimoresolutions/pages/default.aspx) + [IMODOCS](https://docs.imo.org/) (free registration) — indexes and meeting documents, no structured resolutions database.
-- **ITU** (2): [Resolutions and Decisions of the Council](https://www.itu.int/pub/S-CONF-CL) — annual consolidated in-force compilation; PP Final Acts published per conference.
-- **UN Tourism** (1): [E-Library General Assembly documents series](https://www.e-unwto.org/loi/unwtogad) — session documents incl. adopted-resolutions compilations 1975–2025 on a keyword-searchable publications platform.
-- **UNESCO** (0/1): per-session [Executive Board decisions finding aid](https://www.unesco.org/en/legal-affairs/decisions-exb) via UNESDOC; centralized decision-tracking system explicitly absent and proposed (see footnote 1).
-- **UNIDO** (1): per-session decisions-and-resolutions PDFs on [policymaking-organs pages](https://www.unido.org/resources/policymaking-organs/general-conference/sessions/14th-session/decisions-and-resolutions-general-conference).
-- **UPU** (1): [Acts of the Union + Compendium of Congress decisions](https://www.upu.int/en/Universal-Postal-Union/About-UPU/Acts) — chronological PDF compilations since 1947, no search.
-- **WHO** (3): [Portal of Resolutions and Decisions](https://resolutionsportal.who.int/) — WHA, Executive Board and all six regional committees, 1998–2025, 6 languages, filters incl. SDG/topic. The "mandate-tracking tool" from the AKN4UN project (EB154/33) is internal agenda management; public tracking exists only for governance-reform actions ([SIP tracking](https://www.who.int/about/governance/member-states-portal/tracking-secretariat-implementation-plan-(sip)-actions)).
-- **WIPO** (1): annual [Assemblies decision lists](https://www.wipo.int/export/sites/www/about-wipo/en/assemblies/docs/a-65-list-decisions.pdf) + [meeting-documents browser](https://www.wipo.int/meetings/en/topic_bodies.jsp) per body.
-- **WMO** (4): [Resolutions and Decisions database](https://tools.wmo.int/wmo-resolutions/index.php) — in-force resolutions/decisions filterable by body/session/type/strategic objective — plus [requests tracker](https://tools.wmo.int/wmo-resolutions/requests.php): 545 Congress/EC requests with addressee, deadline and implementation status.
-- **World Bank** (3): [Boards of Governors resolutions](https://www.worldbank.org/en/about/leadership/governors) via the searchable Documents & Reports database (IBRD/IFC/IDA/MIGA collections).
-
-### Related Organizations
-
-- **CTBTO** (0): PrepCom documents distributed via a members-only system; nothing public.
-- **IAEA** (3): [GC resolutions archive](https://www.iaea.org/gc-archives/type/resolutions) — 4,087 General Conference resolutions, filterable by session/type. General Conference only; no Board of Governors documents.
-- **ICC** (1): [ASP resolutions by session](https://asp.icc-cpi.int/resolutions) 2002–2025 + [topical index](https://asp.icc-cpi.int/resolutions/ResolutionsTopical).
-- **IOM** (3): [Council Resolutions database](https://governingbodies.iom.int/council-resolutions) — searchable table with category filters, PDF per resolution.
-- **ISA** (1): per-session document pages (e.g. [30th session](https://isa.org.jm/sessions/30th-session-2025/)) with adopted decisions by symbol; no cross-session search.
-- **OPCW** (1): [documents catalogue](https://www.opcw.org/resources/documents) — CSP/EC decisions as per-session PDF lists.
-- **WTO** (3): [WTO Documents Online](https://docs.wto.org/dol2fe/Pages/FE_Search/FE_S_S001.aspx) — 310k documents, full-text search — plus a structured [Ministerial declarations list](https://www.wto.org/english/thewto_e/minist_e/min_declaration_e.htm).
-
-## Display scheme (planned)
-
-The `/system` page's Mandate Registry column shows one flagship system per
-organization as two elements:
-
-- a **four-dot tier meter** (filled count = tier) colored by a
-  traffic-light ramp, worst→best: tier 1 `#ab3a2c` (red), tier 2 `#c9820f`
-  (amber), tier 3 `#2aa392` (teal), tier 4 `#276b35` (green). The ramp is
-  CVD-validated as a set (protan/deutan/tritan adjacent ΔE ≥ 10, all steps
-  ≥ 3:1 on white; teal replaces lime at tier 3 because amber↔lime collapses
-  under protanopia) — tokens `--color-tier-1…4` in `globals.css`, change
-  only as a set. The dot count, not the color, is the primary signal. Its
-  tooltip shows the full four-rung ladder with the current tier highlighted.
-- a **link named after the actual system** (e.g. "Resolutions Portal",
-  "Acts of the Union"), whose tooltip gives the taxonomy category (Mandate
-  Registry / Implementation Tracker / Decision Tracking / Resolutions
-  Database / Decisions Database / Documents Database / Resolutions in Force /
-  Session Documents) plus the six-feature checklist, absent features struck
-  through.
-
-Tier 0 renders as an em dash with an explanatory tooltip (UNESCO: proposal
-pending; CTBTO: restricted; UNCDF: see UNDP). Data lives in the
-`mandateRegistry` / `registryNote` fields of
+Data: `mandateRegistry` / `registryNote` / `related` fields in
 `website/src/data/un-system.json`; rendering in
-`website/src/components/UnSystemRegistryCell.tsx`.
+`website/src/components/UnSystemRegistryCell.tsx`. The JSON follows the
+dossiers, never the other way around.

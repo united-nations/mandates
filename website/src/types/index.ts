@@ -345,18 +345,22 @@ export interface UnSystemBody {
 /** A governing-body entry: either a reference into the shared bodies registry or an inline body. */
 export type UnSystemBodyEntry = { ref: string } | UnSystemBody
 
-export type UnSystemRegistryFeature =
-  | 'sources'
-  | 'searchable'
-  | 'in-force'
-  | 'requests'
+export type UnSystemRegistryPoint =
+  | 'documents'
+  | 'mandates'
+  | 'budget'
   | 'implementation'
-  | 'resources'
+  | 'results'
+
+/** true = point earned; 'partial' = half a point (linked but weak form). */
+export type UnSystemPointValue = boolean | 'partial'
 
 /**
- * An organization's mandate-registry-like system, per the taxonomy in
- * docs/un-system-registries.md. `tier` is the 1–4 ladder position
- * (archive → in-force compilation → database → tracker).
+ * An organization's mandate-registry-like system, scored on the 5-point
+ * scheme in docs/un-system-registries.md (documents · active mandates ·
+ * budget-linked · implementation-linked · results-linked). Points 3–5 count
+ * only when tied to specific governing-body decisions, not to strategic
+ * plans or org-wide totals. `interoperability` (point 6) is reserved.
  */
 export interface UnSystemRegistry {
   /** Short proper name of the system, used as the link text, e.g. "Resolutions Portal". */
@@ -364,8 +368,14 @@ export interface UnSystemRegistry {
   /** Taxonomy category, shown in the link tooltip, e.g. "Resolutions Database". */
   category: string
   url: string
-  tier: 1 | 2 | 3 | 4
-  features: UnSystemRegistryFeature[]
+  points: Record<UnSystemRegistryPoint, UnSystemPointValue>
+  interoperability: null
+}
+
+/** Org-specific budget/results portal that is NOT linked to mandates — mentioned, not scored. */
+export interface UnSystemRelatedPortal {
+  name: string
+  url: string
 }
 
 export interface UnSystemEntity {
@@ -380,6 +390,7 @@ export interface UnSystemEntity {
   mandateRegistry: UnSystemRegistry | null
   /** Shown when mandateRegistry is null: why there is none (or where it lives instead). */
   registryNote: string | null
+  related: UnSystemRelatedPortal[]
 }
 
 export interface UnSystemData {

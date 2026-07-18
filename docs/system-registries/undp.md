@@ -13,23 +13,24 @@ scheme in [`../un-system-registries.md`](../un-system-registries.md).
 | Point | Assessment |
 | --- | --- |
 | 1 documents | yes |
-| 2 mandates (active) | no evidence in round 1 |
-| 3 budget-linked | PENDING round 2 |
+| 2 mandates (active) | partial — tracking tables mark each request Completed / Ongoing / In Progress / Partially Completed; per-request status only, no active-vs-superseded registry of decisions |
+| 3 budget-linked | no — tables (Decision / Category / Responsible unit / Request / Deadline / Progress / Status) carry no financial amounts |
 | 4 implementation-linked | yes |
-| 5 results-linked | PENDING round 2 |
+| 5 results-linked | no — the Progress column records follow-up actions taken, not outcomes; results reporting is strategic-plan-based |
 | 6 interoperability | deferred (later round) |
 
 ## Related portals (not linked to mandates)
 
-_PENDING round 2 — org-specific budget/results portals to mention without scoring._
+- **UNDP Transparency Portal** — <https://open.undp.org> — IATI-based budget/expense data on 10,000+ projects by country, donor and SDG; organized by project/strategic plan, not by Board decisions.
 
 ## Notes
 
-- Tracking tables are annual PDFs covering time-bound Executive Board requests; no queryable system, no active/superseded distinction identified in round 1.
+- Tracking tables are annual PDFs covering time-bound Executive Board requests; no queryable system.
+- Round 2: undp.org returns 403 to non-browser clients; table format and status values verified via search-indexed tracking-table PDFs (2018–2025) and by reading the identically-formatted joint-board UNFPA 2026 table (same Decision/Request/Deadline/Progress/Status matrix, no financial fields).
 - Covers the joint UNDP/UNFPA/UNOPS Executive Board (also relevant for UNCDF).
 
 ## Open questions
 
-- Round 2: budget linkage? results linkage? active/in-force confirmation?
+- Point 6 interoperability (deferred to a later round).
 
-_Last verified: 2026-07-17 (round 1). Round 2 pending._
+_Last verified: 2026-07-18 (round 2)._

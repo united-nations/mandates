@@ -104,6 +104,22 @@ function EntityRow({ entity }: { entity: UnSystemEntity }) {
       </div>
       <div>
         <UnSystemRegistryLink registry={entity.mandateRegistry} />
+        {entity.related.map((portal) => (
+          <div
+            key={portal.url}
+            className="mt-1 text-xs leading-snug text-muted-foreground"
+          >
+            <a
+              href={portal.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline decoration-dotted underline-offset-2 transition-colors hover:text-un-blue"
+            >
+              {portal.name}
+            </a>{' '}
+            — not mandate-linked
+          </div>
+        ))}
       </div>
     </li>
   )

@@ -14,21 +14,22 @@ scheme in [`../un-system-registries.md`](../un-system-registries.md).
 | --- | --- |
 | 1 documents | no evidence in round 1 |
 | 2 mandates (active) | no evidence in round 1 |
-| 3 budget-linked | PENDING round 2 |
+| 3 budget-linked | no — no system of its own; the joint-board decision tracking tables (see UNDP) carry no financial amounts |
 | 4 implementation-linked | no evidence in round 1 |
-| 5 results-linked | PENDING round 2 |
+| 5 results-linked | no — results reported only via annual/strategic reporting and the transparency portal, not against decisions |
 | 6 interoperability | deferred (later round) |
 
 ## Related portals (not linked to mandates)
 
-_PENDING round 2 — org-specific budget/results portals to mention without scoring._
+- **UNCDF Transparency Window and Data Portal** — <https://transparency.uncdf.org/index.html> — contributions and expenses by year, donor type and country (2016–2024, dashboards 2020–2024); organized by donor/geography, not by Executive Board decisions.
 
 ## Notes
 
-- Governed by the UNDP/UNFPA/UNOPS Executive Board; see the UNDP dossier for the shared machinery.
+- Governed by the UNDP/UNFPA/UNOPS Executive Board; see the UNDP dossier for the shared machinery. Board tracking tables cover UNCDF-directed requests (e.g. decision 2026/1 para 7 on UNCDF financial instruments).
+- A 2026 Publish What You Fund review notes UNCDF publishes to IATI but with no transaction data.
 
 ## Open questions
 
-- Round 2: budget linkage? results linkage? active/in-force confirmation?
+- Point 6 interoperability (deferred to a later round).
 
-_Last verified: 2026-07-17 (round 1). Round 2 pending._
+_Last verified: 2026-07-18 (round 2)._

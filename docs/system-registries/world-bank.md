@@ -13,15 +13,16 @@ scheme in [`../un-system-registries.md`](../un-system-registries.md).
 | Point | Assessment |
 | --- | --- |
 | 1 documents | yes |
-| 2 mandates (active) | no evidence in round 1 |
-| 3 budget-linked | PENDING round 2 |
+| 2 mandates (active) | no — Documents & Reports repositories carry no active/superseded status on resolutions |
+| 3 budget-linked | no — financial transparency (Finances One) is organized by institution/dataset (lending, guarantees, statements, admin budgets), not by Board/Governors resolutions; resolution texts (e.g. IDA replenishments) contain amounts but no system links them |
 | 4 implementation-linked | no evidence in round 1 |
-| 5 results-linked | PENDING round 2 |
+| 5 results-linked | no — the WBG Scorecard tracks corporate-strategy indicators, not results against specific resolutions |
 | 6 interoperability | deferred (later round) |
 
 ## Related portals (not linked to mandates)
 
-_PENDING round 2 — org-specific budget/results portals to mention without scoring._
+- **Finances One** — <https://financesone.worldbank.org/> — WBG public financial data platform (IBRD/IDA lending, IFC investments, MIGA guarantees, financial statements, trust funds, admin budgets) (verified).
+- **WBG Scorecard** — <https://scorecard.worldbank.org/> — corporate results indicators (reachable; JS-rendered, content not fetchable by non-browser clients).
 
 ## Notes
 
@@ -29,6 +30,6 @@ _PENDING round 2 — org-specific budget/results portals to mention without scor
 
 ## Open questions
 
-- Round 2: budget linkage? results linkage? active/in-force confirmation?
+- Round 3+: interoperability (point 6) — Documents & Reports and Finances One both have APIs worth checking.
 
-_Last verified: 2026-07-17 (round 1). Round 2 pending._
+_Last verified: 2026-07-18 (round 2)._

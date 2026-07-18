@@ -16,12 +16,12 @@ scheme in [`../un-system-registries.md`](../un-system-registries.md).
 | 2 mandates (active) | yes |
 | 3 budget-linked | no — budget structure linked, but no monetary amounts shown (project decision) |
 | 4 implementation-linked | no evidence in round 1 |
-| 5 results-linked | PENDING round 2 |
+| 5 results-linked | no — no results reporting linked to mandates on this site; Secretariat performance reporting (programme performance reports, results.un.org) is not mandate-linked |
 | 6 interoperability | deferred (later round) |
 
 ## Related portals (not linked to mandates)
 
-_PENDING round 2 — org-specific budget/results portals to mention without scoring._
+None found beyond the universal UN portals.
 
 ## Notes
 
@@ -30,6 +30,7 @@ _PENDING round 2 — org-specific budget/results portals to mention without scor
 
 ## Open questions
 
-- Round 2: budget linkage? results linkage? active/in-force confirmation?
+- Point 6 interoperability (deferred to a later round).
+- Whether budget amounts and results linkage get added to this site is a project roadmap question, not a survey question.
 
-_Last verified: 2026-07-17 (round 1). Round 2 pending._
+_Last verified: 2026-07-18 (round 2)._

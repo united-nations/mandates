@@ -6,76 +6,129 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
-import type { UnSystemRegistry, UnSystemRegistryFeature } from '@/types'
+import type {
+  UnSystemPointValue,
+  UnSystemRegistry,
+  UnSystemRegistryPoint,
+} from '@/types'
 import { ExternalLink, Info } from 'lucide-react'
 import Link from 'next/link'
 
-const ALL_FEATURES: { key: UnSystemRegistryFeature; label: string }[] = [
-  { key: 'sources', label: 'sources' },
-  { key: 'searchable', label: 'searchable' },
-  { key: 'in-force', label: 'in force' },
-  { key: 'requests', label: 'requests' },
-  { key: 'implementation', label: 'implementation' },
-  { key: 'resources', label: 'resources' },
+const POINT_ORDER: UnSystemRegistryPoint[] = [
+  'documents',
+  'mandates',
+  'budget',
+  'implementation',
+  'results',
 ]
 
-const TIER_LABELS: Record<number, string> = {
-  1: 'Document archive',
-  2: 'In-force compilation',
-  3: 'Resolutions database',
-  4: 'Implementation tracker',
+const POINT_LABELS: Record<UnSystemRegistryPoint, string> = {
+  documents: 'Documents',
+  mandates: 'Active mandates',
+  budget: 'Budget-linked',
+  implementation: 'Implementation-linked',
+  results: 'Results-linked',
 }
 
-// Traffic-light ramp, worst→best; CVD-validated as a set in globals.css.
-const TIER_COLORS: Record<number, string> = {
+// Traffic-light ramp by total score; CVD-validated as a set in globals.css.
+const FILLED: Record<number, string> = {
   1: 'bg-tier-1',
   2: 'bg-tier-2',
   3: 'bg-tier-3',
   4: 'bg-tier-4',
 }
+const RING: Record<number, string> = {
+  1: 'border-tier-1',
+  2: 'border-tier-2',
+  3: 'border-tier-3',
+  4: 'border-tier-4',
+}
 
-/** Four-step ordinal meter; the filled count (not color alone) carries the tier. */
-function TierDots({ tier }: { tier: number }) {
+function score(registry: UnSystemRegistry): number {
+  return POINT_ORDER.reduce(
+    (sum, key) =>
+      sum +
+      (registry.points[key] === true
+        ? 1
+        : registry.points[key] === 'partial'
+          ? 0.5
+          : 0),
+    0,
+  )
+}
+
+function colorStep(total: number): number {
+  if (total >= 3.5) return 4
+  if (total >= 2.5) return 3
+  if (total >= 1.5) return 2
+  return 1
+}
+
+function Dot({ value, step }: { value: UnSystemPointValue; step: number }) {
+  return (
+    <span
+      className={cn(
+        'h-1.5 w-1.5 rounded-full',
+        value === true && FILLED[step],
+        value === 'partial' && `border bg-transparent ${RING[step]}`,
+        value === false && 'bg-gray-300',
+      )}
+    />
+  )
+}
+
+/**
+ * Five positional dots, one per point (documents · mandates · budget ·
+ * implementation · results): filled = earned, ring = partial, gray = not.
+ * Color encodes the total score; the fill pattern, not the color, is the
+ * primary signal.
+ */
+function PointDots({ registry }: { registry: UnSystemRegistry }) {
+  const total = score(registry)
+  const step = colorStep(total)
   return (
     <span
       className="inline-flex items-center gap-0.5"
       role="img"
-      aria-label={`tier ${tier} of 4: ${TIER_LABELS[tier]}`}
+      aria-label={`${total} of 5 points`}
     >
-      {[1, 2, 3, 4].map((step) => (
-        <span
-          key={step}
-          className={`h-1.5 w-1.5 rounded-full ${
-            step <= tier ? TIER_COLORS[tier] : 'bg-gray-300'
-          }`}
-        />
+      {POINT_ORDER.map((key) => (
+        <Dot key={key} value={registry.points[key]} step={step} />
       ))}
     </span>
   )
 }
 
-/** Tooltip body for the dots: the full tier ladder with this row highlighted. */
-function TierLegend({ tier }: { tier: number }) {
+/** Tooltip body: the five points by name with this organization's state. */
+function PointLegend({ registry }: { registry: UnSystemRegistry }) {
+  const step = colorStep(score(registry))
   return (
-    <ul className="space-y-1">
-      {[1, 2, 3, 4].map((step) => (
-        <li
-          key={step}
-          className={cn(
-            'flex items-center gap-2 text-xs',
-            step === tier ? 'font-semibold' : 'text-muted-foreground',
-          )}
-        >
-          <TierDots tier={step} />
-          {TIER_LABELS[step]}
-        </li>
-      ))}
-    </ul>
+    <div>
+      <p className="text-sm font-medium">{score(registry)} of 5 points</p>
+      <ul className="mt-1 space-y-1">
+        {POINT_ORDER.map((key) => {
+          const value = registry.points[key]
+          return (
+            <li
+              key={key}
+              className={cn(
+                'flex items-center gap-2 text-xs',
+                value === false && 'text-muted-foreground',
+              )}
+            >
+              <Dot value={value} step={step} />
+              {POINT_LABELS[key]}
+              {value === 'partial' && ' (partial)'}
+            </li>
+          )
+        })}
+      </ul>
+    </div>
   )
 }
 
 /**
- * Tier-meter column cell: the traffic-light dots with a ladder-legend
+ * Point-meter column cell: the traffic-light dots with a point-breakdown
  * tooltip — or an em dash with an explanatory tooltip when the organization
  * has no registry-like system.
  */
@@ -106,10 +159,10 @@ export function UnSystemRegistryDots({
   return (
     <Tooltip>
       <TooltipTrigger className="cursor-help">
-        <TierDots tier={registry.tier} />
+        <PointDots registry={registry} />
       </TooltipTrigger>
       <TooltipContent side="top">
-        <TierLegend tier={registry.tier} />
+        <PointLegend registry={registry} />
       </TooltipContent>
     </Tooltip>
   )
@@ -117,7 +170,7 @@ export function UnSystemRegistryDots({
 
 /**
  * Registry-link column cell: the system's proper name, with the taxonomy
- * category and feature checklist in the tooltip.
+ * category in the tooltip.
  */
 export function UnSystemRegistryLink({
   registry,
@@ -149,26 +202,7 @@ export function UnSystemRegistryLink({
           </a>
         )}
       </TooltipTrigger>
-      <TooltipContent side="top" className="max-w-80">
-        <p className="text-sm font-medium">{registry.category}</p>
-        <p className="mt-1 text-xs">
-          {ALL_FEATURES.map(({ key, label }, i) => (
-            <span key={key}>
-              {i > 0 && ' · '}
-              <span
-                className={
-                  registry.features.includes(key)
-                    ? ''
-                    : 'text-muted-foreground line-through decoration-muted-foreground/50'
-                }
-              >
-                {registry.features.includes(key) ? '✓ ' : ''}
-                {label}
-              </span>
-            </span>
-          ))}
-        </p>
-      </TooltipContent>
+      <TooltipContent side="top">{registry.category}</TooltipContent>
     </Tooltip>
   )
 }

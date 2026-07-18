@@ -13,22 +13,23 @@ scheme in [`../un-system-registries.md`](../un-system-registries.md).
 | Point | Assessment |
 | --- | --- |
 | 1 documents | yes |
-| 2 mandates (active) | no evidence in round 1 |
-| 3 budget-linked | PENDING round 2 |
+| 2 mandates (active) | no — round 2 confirmed: resolutions do get revoked/replaced (e.g. A.658(16), A.739(18), A.789(19)) but no public status index records this; the Index lists resolutions by session/decade without in-force status |
+| 3 budget-linked | no — the results-based budget is itself adopted by Assembly resolution (2024–25: £83.65m) and structured by strategic directions; no system links individual resolutions to financial data |
 | 4 implementation-linked | no evidence in round 1 |
-| 5 results-linked | PENDING round 2 |
+| 5 results-linked | no — no public results reporting against specific resolutions; financial statements and budget documents only |
 | 6 interoperability | deferred (later round) |
 
 ## Related portals (not linked to mandates)
 
-_PENDING round 2 — org-specific budget/results portals to mention without scoring._
+None found beyond the universal UN portals. (IMODOCS is document access, not a budget/results portal; GISIS covers regulatory/shipping data, not mandates or budget.)
 
 ## Notes
 
 - Index only; texts sit in meeting reports on IMODOCS (free public registration).
+- Third parties (USCG, classification societies) maintain their own lists of IMO resolutions incl. supersession notes — a signal that IMO itself does not publish a status-bearing registry.
 
 ## Open questions
 
-- Round 2: budget linkage? results linkage? active/in-force confirmation?
+- Whether IMODOCS metadata (behind registration) records supersession; points 4 and 6 unassessed.
 
-_Last verified: 2026-07-17 (round 1). Round 2 pending._
+_Last verified: 2026-07-18 (round 2)._
