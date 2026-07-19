@@ -29,8 +29,7 @@ import { useMemo, useState } from 'react'
  * explorer filtered to that subject.
  */
 
-const GLOBAL_TOP = 100 // pills shown by default, across all domains
-const DOMAIN_TOP = 60 // pills shown when a single domain is selected
+const DEFAULT_TOP = 60 // pills shown by default and when a single domain is selected
 const SEARCH_CAP = 300 // pills shown while searching
 
 interface FlatLeaf {
@@ -73,13 +72,12 @@ export function SubjectsCompact({ domains }: SubjectsCompactProps) {
   // The visible pill set, given search / domain-selection / default.
   const pills = useMemo<FlatLeaf[]>(() => {
     let pool = allLeaves
-    let cap = GLOBAL_TOP
+    let cap = DEFAULT_TOP
     if (term) {
       pool = allLeaves.filter((l) => l.subject.toLowerCase().includes(term))
       cap = SEARCH_CAP
     } else if (selectedDomain) {
       pool = allLeaves.filter((l) => l.code === selectedDomain)
-      cap = DOMAIN_TOP
     }
     // Highest-count first, then cluster by domain for display.
     const top = [...pool].sort((a, b) => b.count - a.count).slice(0, cap)
