@@ -8,7 +8,7 @@ import { Toaster } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { FilterProvider } from '@/contexts/FilterContext'
 import dynamic from 'next/dynamic'
-import { usePathname } from 'next/navigation'
+import { usePathname, useSelectedLayoutSegment } from 'next/navigation'
 
 // Dynamic import to prevent SSR and eliminate hydration errors
 const AnimatedLogo = dynamic(
@@ -20,14 +20,24 @@ const AnimatedLogo = dynamic(
 
 export function RootLayoutClient({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
+  // A mandate opened from the list renders as an intercepting modal (the
+  // @modal parallel slot) *over* the underlying full-bleed page. During that
+  // interception usePathname() reports the modal's /mandate/... URL even though
+  // the page behind it is still /secretariat. Keying the layout off pathname
+  // alone would therefore swap the underlying <main> to the centred column and
+  // insert the back-button bar the moment the sheet opens — shifting and
+  // narrowing the list behind it. Detect the active modal slot and treat the
+  // interception as if we were still on the underlying (full-bleed) list.
+  const isModalOpen = useSelectedLayoutSegment('modal') !== null
   // Top-level nav destinations don't get a back button — it's reserved for
   // detail pages reached from within the app.
-  const isMainPage = ['/secretariat', '/system'].includes(pathname)
+  const isMainPage = isModalOpen || ['/secretariat', '/system'].includes(pathname)
   const isDiffPage = pathname === '/diff'
   // The redesigned /secretariat and /system pages are full-bleed (hero
   // banners, colour bands) and manage their own per-section widths, so they
   // opt out of the shared centred/padded main column.
-  const isFullBleed = ['/secretariat', '/system'].includes(pathname)
+  const isFullBleed =
+    isModalOpen || ['/secretariat', '/system'].includes(pathname)
 
   return (
     <TooltipProvider>
