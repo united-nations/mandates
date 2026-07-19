@@ -8,9 +8,10 @@
 // The palette is deliberately small: the heaviest, most-often-visible domains
 // each get a distinct muted hue (with un-blue the sole bright anchor on
 // Political & Legal), Geographical Descriptors gets neutral grey (fitting for
-// places), and the four smallest cool-tone domains (Industry, International
-// Trade, Transport, Agriculture) share one muted slate rather than each
-// carrying a near-identical blue that no one can tell apart at tile size.
+// places), and the five smallest domains (Employment, International Trade,
+// Transport, Human Settlements, Agriculture) share one muted purple (plum)
+// rather than each carrying a unique hue no one can tell apart at tile size.
+// Collapsing them frees the olive (camouflage-green) for Culture.
 
 export interface DomainColor {
   bg: string
@@ -31,7 +32,7 @@ const DOMAIN_COLORS: Record<string, DomainColor> = {
   '14': { bg: 'bg-au-chico', text: 'text-white', hex: '#a0665c' }, // Social Conditions
   '18': { bg: 'bg-smoky', text: 'text-white', hex: '#6c5b7b' }, // Organizational
   '02': { bg: 'bg-faded-jade', text: 'text-white', hex: '#4a7c7e' }, // Economic
-  '15': { bg: 'bg-muted-ochre', text: 'text-black', hex: '#c2a15a' }, // Culture
+  '15': { bg: 'bg-camouflage-green', text: 'text-white', hex: '#7d8471' }, // Culture (freed olive, was ugly yellow)
   '17': NEUTRAL, // Geographical Descriptors
   '03': { bg: 'bg-pale-oyster', text: 'text-black', hex: '#9bbb7a' }, // Natural Resources
   '05': { bg: 'bg-shuttle-gray', text: 'text-white', hex: '#5a6c7d' }, // Industry
@@ -40,11 +41,12 @@ const DOMAIN_COLORS: Record<string, DomainColor> = {
   '13': { bg: 'bg-muted-clay', text: 'text-black', hex: '#c48a63' }, // Humanitarian
   '11': { bg: 'bg-indigo-muted', text: 'text-white', hex: '#55578f' }, // Education
   '10': { bg: 'bg-forest-muted', text: 'text-white', hex: '#4b7048' }, // Health
-  '12': { bg: 'bg-camouflage-green', text: 'text-white', hex: '#7d8471' }, // Employment
-  '07': { bg: 'bg-shuttle-gray', text: 'text-white', hex: '#5a6c7d' }, // International Trade (shared slate)
-  '06': { bg: 'bg-shuttle-gray', text: 'text-white', hex: '#5a6c7d' }, // Transport (shared slate)
+  // Five smallest domains — one shared muted purple.
+  '12': { bg: 'bg-plum', text: 'text-white', hex: '#7d5a8c' }, // Employment
+  '07': { bg: 'bg-plum', text: 'text-white', hex: '#7d5a8c' }, // International Trade
+  '06': { bg: 'bg-plum', text: 'text-white', hex: '#7d5a8c' }, // Transport
   '09': { bg: 'bg-plum', text: 'text-white', hex: '#7d5a8c' }, // Human Settlements
-  '04': { bg: 'bg-shuttle-gray', text: 'text-white', hex: '#5a6c7d' }, // Agriculture (shared slate)
+  '04': { bg: 'bg-plum', text: 'text-white', hex: '#7d5a8c' }, // Agriculture
 }
 
 export function domainColor(code: string): DomainColor {

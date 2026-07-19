@@ -19,15 +19,15 @@
   --color-faded-jade: #4a7c7e;
 
   /* Categorical palette for the subject domains on the /subjects treemap and
-     pill-map. One stable colour per visually-significant domain; the small,
-     rarely-seen domains (Industry, Intl Trade, Transport, Agriculture) share a
-     single muted slate (bg-shuttle-gray) rather than each carrying a near-
-     identical cool hue. Everything sits in one low-chroma muted band — un-blue
-     is the sole bright anchor — so no accent shouts over the body. Colour here
-     carries category, never magnitude, and is always paired with a label. */
+     pill-map. One stable colour per visually-significant domain; the five
+     smallest domains (Employment, Intl Trade, Transport, Human Settlements,
+     Agriculture) share a single muted purple (bg-plum) rather than each
+     carrying a unique hue no one can tell apart at tile size. Everything sits
+     in one low-chroma muted band — un-blue is the sole bright anchor — so no
+     accent shouts over the body. Colour carries category, never magnitude,
+     and is always paired with a label. */
   --color-un-blue-muted: #4a90a4;
   --color-dusty-gray: #969696;
-  --color-muted-ochre: #c2a15a;
   --color-forest-muted: #4b7048;
   --color-muted-clay: #c48a63;
   --color-dusty-rose: #9c5a6e;
