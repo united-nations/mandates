@@ -32,6 +32,13 @@ interface EntitiesDirectoryProps {
   streams: BudgetStream[]
 }
 
+/**
+ * Shared container for a compact grouping (a Programme Budget part, the
+ * Peacekeeping stream, the Plan Outline): a faint UN-blue wash with a left
+ * accent border, so each group reads as one bounded unit.
+ */
+const SECTION_BOX = 'border-l-4 border-un-blue bg-un-blue/10 px-4 py-3'
+
 export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
   const [search, setSearch] = useState('')
   const [compact, setCompact] = useState(true)
@@ -91,7 +98,7 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
       ppbPartNodes.push({
         key: `part-${part.part}`,
         node: (
-          <div className="space-y-1.5">
+          <div className={cn(compact && SECTION_BOX, 'space-y-1.5')}>
             <h3 className={showSections ? 'text-base' : 'text-sm'}>
               <span className="font-medium text-gray-500">
                 Part {part.part}.
@@ -131,15 +138,34 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
         .map((g) => ({ ...g, entities: g.entities.filter(match) }))
         .filter((g) => g.entities.length > 0)
     : []
+  // Missions and the Support account are the Peacekeeping stream's top-level
+  // split — its analogue to the Programme Budget's parts (there is no section
+  // level below). So they always show as their own boxes, quieter than a PPB
+  // part (no "Part N." number) and not gated behind the section toggle.
   const pkoNode =
     pkoGroups.length > 0 ? (
       <div>
         <div className="mb-3">
           <StreamHeading type="pko" />
         </div>
-        {showSections ? (
-          <div className="space-y-3">
-            {pkoGroups.map((group) => (
+        <div className="space-y-5">
+          {pkoGroups.map((group) =>
+            compact ? (
+              <div
+                key={group.group}
+                className={cn(SECTION_BOX, 'space-y-1.5')}
+              >
+                <h3 className="text-sm font-semibold text-gray-900">
+                  {group.label}
+                </h3>
+                <EntityGroup
+                  entities={group.entities}
+                  compact={compact}
+                  active={active}
+                  onSelect={select}
+                />
+              </div>
+            ) : (
               <div key={group.group} className="space-y-1.5">
                 <SubHeading>{group.label}</SubHeading>
                 <EntityGroup
@@ -149,16 +175,9 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
                   onSelect={select}
                 />
               </div>
-            ))}
-          </div>
-        ) : (
-          <EntityGroup
-            entities={pkoGroups.flatMap((g) => g.entities)}
-            compact={compact}
-            active={active}
-            onSelect={select}
-          />
-        )}
+            )
+          )}
+        </div>
       </div>
     ) : null
 
@@ -179,10 +198,10 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
                 selectDoc('plan_outline')
               }}
               className={cn(
-                'inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-colors',
+                'flex items-center gap-2 border-l-4 border-un-blue px-4 py-3 text-sm transition-colors',
                 planActive
-                  ? 'border-un-blue bg-un-blue/5'
-                  : 'border-gray-200 bg-white hover:border-un-blue hover:shadow-sm'
+                  ? 'bg-un-blue/20'
+                  : 'bg-un-blue/10 hover:bg-un-blue/20'
               )}
             >
               <span className="font-semibold">{planStream.label}</span>
@@ -417,10 +436,10 @@ function EntityPill({
       entity={entity}
       onSelect={onSelect}
       className={cn(
-        'inline-flex items-baseline gap-1 rounded-full px-2.5 py-0.5 text-xs transition-colors',
+        'inline-flex items-baseline gap-1 rounded-full border px-2.5 py-0.5 text-xs transition-colors',
         active
-          ? 'bg-un-blue text-white'
-          : 'bg-gray-100 hover:bg-un-blue/10 hover:text-un-blue'
+          ? 'border-un-blue bg-un-blue text-white'
+          : 'border-gray-200 bg-white hover:border-un-blue hover:text-un-blue'
       )}
     >
       <span className="font-medium">{entity.entity}</span>
