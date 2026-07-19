@@ -101,7 +101,7 @@ export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
   )
 
   const modeToggle = (
-    <div className="inline-flex flex-wrap items-center rounded-md bg-muted p-0.5 whitespace-nowrap">
+    <div className="inline-flex flex-wrap items-center rounded-md bg-gray-100 p-0.5 whitespace-nowrap">
       <Tooltip
         open={ppbDropdownOpen ? false : undefined}
         key={ppbDropdownOpen ? 'dropdown-open' : 'dropdown-closed'}
@@ -117,7 +117,7 @@ export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
               if (e.key === 'Enter' || e.key === ' ')
                 handleModeChange('active_mandates')
             }}
-            className={`inline-flex h-7 grow cursor-pointer items-center gap-1 rounded-sm px-2.5 text-xs font-medium transition-all ${
+            className={`inline-flex h-7 grow cursor-pointer items-center gap-1 rounded-sm px-2.5 text-sm font-medium transition-all ${
               currentMode === 'active_mandates'
                 ? 'bg-background text-gray-900 shadow'
                 : 'text-gray-500 hover:text-gray-900'
@@ -138,7 +138,7 @@ export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
         <TooltipTrigger asChild>
           <button
             onClick={() => handleModeChange('all_resolutions')}
-            className={`inline-flex h-7 grow items-center rounded-sm px-2.5 text-xs font-medium transition-all ${
+            className={`inline-flex h-7 grow items-center rounded-sm px-2.5 text-sm font-medium transition-all ${
               currentMode === 'all_resolutions'
                 ? 'bg-background text-gray-900 shadow'
                 : 'text-gray-500 hover:text-gray-900'
@@ -162,7 +162,7 @@ export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
     <Tooltip>
       <TooltipTrigger asChild>
         <label
-          className={`inline-flex h-8 cursor-pointer items-center gap-1.5 text-xs whitespace-nowrap transition-colors ${
+          className={`inline-flex h-8 cursor-pointer items-center gap-1.5 text-sm whitespace-nowrap transition-colors ${
             filters.group === '1'
               ? 'font-medium text-gray-900'
               : 'text-gray-500'
