@@ -86,6 +86,9 @@ export default async function Page({ searchParams }: PageProps) {
     <div>
       {/* Intro */}
       <section className="mx-auto max-w-6xl px-6 pt-10 pb-12 md:px-12 lg:px-16">
+        <h1 className="mb-6 text-4xl font-bold tracking-tight text-foreground">
+          {explainerTexts.mainHeader.headline}
+        </h1>
         <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
           <ExplainerText />
           <div className="w-full shrink-0 sm:w-64">

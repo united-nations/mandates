@@ -7,6 +7,7 @@ export const explainerTexts = {
   // Main page and overview
   mainHeader: {
     title: 'UN Mandate Source Registry',
+    headline: 'See what the UN is asked to do.',
     versionTag: 'Beta Version',
     shortDescription:
       'Developed as part of the UN80 Initiative, this registry serves as a transparency tool for understanding UN mandates and programmes. It compiles the source documents that UN entities cite when explaining why their programmes exist and why they require resources, enabling better dialogue on mandate implementation.',
