@@ -127,7 +127,7 @@ export function SubjectTreemap({
                       }}
                     >
                       {showSub && s.label && (
-                        <span className="absolute bottom-0 left-0 px-1 py-0.5 text-[9px] leading-tight opacity-90">
+                        <span className="absolute bottom-0 left-0 px-1 py-0.5 text-[11px] leading-tight opacity-90">
                           {s.label}
                         </span>
                       )}
