@@ -36,6 +36,14 @@ export interface Paragraph {
   textWithHighlights?: string
   /** Uncertainty annotations from the extraction pipeline */
   uncertainties?: string
+  /**
+   * Structural metadata from the Digital Library semantic fulltext layer
+   * (digitallibrary.document_paragraphs). Undefined for mandates.paragraphs rows.
+   * Not consumed by the UI yet — reserved for future annex/omnibus rendering.
+   */
+  section?: string
+  annex_index?: number
+  text_index?: number
 }
 
 export interface Mandate {

@@ -126,3 +126,84 @@ CREATE TABLE mandates.mandate_entities (
 CREATE INDEX idx_mandate_entities_mandate_id ON mandates.mandate_entities (mandate_id);
 CREATE INDEX idx_mandate_entities_normalized ON mandates.mandate_entities (mentioned_entity_normalized);
 CREATE INDEX idx_mandate_entities_type ON mandates.mandate_entities (mentioned_entity_type);
+-- ===========================================================================
+-- unified_paragraphs (public view) — see sql/migrations/029_unified_paragraphs.sql
+-- Combines the two paragraph corpora with the same precedence model as
+-- public.unified_documents: mandates.paragraphs (richer, mandate-NER-tagged)
+-- wins for any symbol it covers; digitallibrary.document_paragraphs (semantic
+-- fulltext, lang='en') fills in every other resolution/PRST, mapped into the
+-- legacy column contract that ParagraphsSection renders. Per-symbol lookups are
+-- index-driven on both arms (idx_paragraphs_symbol / idx_document_paragraphs_symbol).
+-- Kept here as the re-runnable from-scratch definition; migration 029 is the
+-- applied delta (identical body). masthead frontmatter is excluded; the DL 'type'
+-- vocabulary is carried verbatim (render-safe — the UI hides every non-heading,
+-- non-operative/preambular element under its permanent 'operative' filter).
+-- ===========================================================================
+CREATE OR REPLACE VIEW public.unified_paragraphs AS
+-- Arm 1: mandates.paragraphs (verbatim; wins for any symbol present here)
+SELECT
+    p.id,
+    p.document_symbol,
+    p.position,
+    p.text,
+    p.type,
+    p.heading_level,
+    p.paragraph_type,
+    p.paragraph_level,
+    p.prefix,
+    p.text_with_highlights,
+    p.uncertainties,
+    p.mandates,
+    COALESCE(
+        (
+            SELECT json_agg(
+                       json_build_array(pl.linked_symbol, pl.linked_url)
+                       ORDER BY pl.id
+                   )
+            FROM mandates.paragraph_links pl
+            WHERE pl.paragraph_id = p.id
+        ),
+        '[]'::json
+    ) AS links,
+    NULL::text AS section,
+    NULL::smallint AS annex_index,
+    NULL::smallint AS text_index,
+    true AS is_mandates
+FROM mandates.paragraphs p
+UNION ALL
+-- Arm 2: digitallibrary.document_paragraphs (mapped; only symbols absent from Arm 1)
+SELECT
+    dp.id,
+    dp.symbol_normalized AS document_symbol,
+    dp.position,
+    dp.text,
+    dp.type,
+    dp.heading_level,
+    dp.paragraph_type,
+    dp.level AS paragraph_level,
+    dp.prefix,
+    NULL::text AS text_with_highlights,
+    NULL::text AS uncertainties,
+    NULL::jsonb AS mandates,
+    COALESCE(
+        (
+            SELECT json_agg(json_build_array(h->>'text', h->>'url'))
+            FROM jsonb_array_elements(dp.hyperlinks) h
+        ),
+        '[]'::json
+    ) AS links,
+    dp.section,
+    dp.annex_index,
+    dp.text_index,
+    false AS is_mandates
+FROM digitallibrary.document_paragraphs dp
+WHERE dp.lang = 'en'
+    AND NOT (dp.type = 'frontmatter' AND dp.subtype = 'masthead')
+    AND NOT EXISTS (
+        SELECT 1
+        FROM mandates.paragraphs mp
+        WHERE upper(regexp_replace(mp.document_symbol, '[[:space:]]', '', 'g'))
+              = dp.symbol_normalized
+    );
+
+grant select on public.unified_paragraphs to mandates_readonly;
