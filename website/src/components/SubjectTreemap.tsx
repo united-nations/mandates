@@ -140,7 +140,7 @@ export function SubjectTreemap({
                 {showDomainLabel && (
                   <span
                     className={cn(
-                      'pointer-events-none absolute top-0 left-0 z-10 block max-w-full px-1.5 py-1 text-[11px] font-semibold leading-tight',
+                      'pointer-events-none absolute top-0 left-0 z-10 block max-w-full px-1.5 py-1 text-[14px] font-semibold leading-tight',
                       color.bg,
                       color.text
                     )}
