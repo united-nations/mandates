@@ -1943,6 +1943,186 @@ function buildSubjectTree(rows: SubjectHierarchyRow[]): SubjectDomain[] {
   return result
 }
 
+// ============================================================================
+// Topic trends — which subjects broke out in each of the last N years
+// ============================================================================
+//
+// For each recent year, the subjects that grew distinctively more frequent
+// than the pooled previous five years (a continuity-corrected binomial
+// log-odds z on the subject's share of that year's documents, over the whole
+// "All Documents" corpus — independent of the page's mode/filters).
+//
+// Two systematic noise filters remove agenda-cycle / procedural churn, so the
+// lists surface genuine shifts rather than recurring housekeeping:
+//   1. Recurrence — over 2000-2025, a subject whose density-invariant share of
+//      subject *tags* (which corrects for the 11→3.7 tags/doc cataloguing
+//      drift) spikes in ≥3 years with a gap between them is treated as cyclical.
+//   2. Procedural — the subject sits in UNBIS domain 18 "Organizational
+//      Questions" (Conferences, Elections, Programme Planning, Financing…).
+// Both are data/taxonomy-driven, not hand-curated lists.
+
+export interface TopicTrendSubject {
+  subject: string
+  domainCode: string
+  /** Log-odds z of this year vs the pooled prior five. */
+  z: number
+  /** Share of documents in the pooled baseline years (0–1). */
+  shareBefore: number
+  /** Share of documents in this year (0–1). */
+  shareNow: number
+  /** Documents carrying the subject this year. */
+  docCount: number
+  /** True if this is the first year the subject reached a meaningful presence. */
+  isNew: boolean
+}
+
+export interface TopicTrendYear {
+  year: number
+  docCount: number
+  subjects: TopicTrendSubject[]
+}
+
+const TREND_DISPLAY_YEARS = 10 // most recent complete years to show
+const TREND_MIN_YEAR_DOCS = 400 // exclude sparse / partial years
+const TREND_MIN_DOCS = 8 // subject must carry ≥ this many docs in the year
+const TREND_MIN_Z = 1.5 // log-odds z to count as a breakout
+const TREND_MAX_PER_YEAR = 12
+const TREND_BASELINE_YEARS = 5 // pooled prior years as the comparison
+const TREND_MEANINGFUL_DOCS = 5 // first year ≥ this = the subject's "new" year
+const RECUR_SINCE = 2000 // recurrence classifier window start
+const RECUR_MIN_SPIKES = 3
+const RECUR_MIN_GAP = 2
+const ORG_PROCEDURAL_DOMAIN = '18' // UNBIS "Organizational Questions"
+
+async function _getTopicTrendsInner(): Promise<TopicTrendYear[]> {
+  const [syRows, totalRows, domRows] = await Promise.all([
+    queryMany<{ subject: string; year: number; c: number }>(`
+      SELECT upper(trim(s)) AS subject,
+             ppb_year AS year,
+             count(DISTINCT ppb_full_document_symbol)::int AS c
+      FROM public.unified_documents, unnest(subjects) s
+      WHERE ppb_year IS NOT NULL AND trim(s) <> ''
+      GROUP BY 1, 2
+    `),
+    queryMany<{ year: number; n: number }>(`
+      SELECT ppb_year AS year, count(DISTINCT ppb_full_document_symbol)::int AS n
+      FROM public.unified_documents
+      WHERE ppb_year IS NOT NULL
+      GROUP BY 1
+    `),
+    queryMany<{ subject_norm: string; domain_code: string }>(`
+      SELECT subject_norm, domain_code FROM ppb2026.subject_thesaurus
+    `),
+  ])
+
+  const totals = new Map<number, number>(totalRows.map((r) => [r.year, r.n]))
+  const domainOf = new Map(domRows.map((r) => [r.subject_norm, r.domain_code]))
+
+  // subject → (year → doc count); and total subject-tag occurrences per year.
+  const bySubject = new Map<string, Map<number, number>>()
+  const tagTotalByYear = new Map<number, number>()
+  for (const r of syRows) {
+    let ym = bySubject.get(r.subject)
+    if (!ym) bySubject.set(r.subject, (ym = new Map()))
+    ym.set(r.year, r.c)
+    tagTotalByYear.set(r.year, (tagTotalByYear.get(r.year) ?? 0) + r.c)
+  }
+
+  // First year each subject reaches a meaningful presence (for the "new" badge).
+  const firstMeaningfulYear = new Map<string, number>()
+  for (const [subject, ym] of bySubject) {
+    let first = Infinity
+    for (const [year, c] of ym)
+      if (c >= TREND_MEANINGFUL_DOCS && year < first) first = year
+    firstMeaningfulYear.set(subject, first)
+  }
+
+  // Lever 1 — recurrence on density-invariant tag-share over RECUR_SINCE..now.
+  const recurYears = [...totals.keys()]
+    .filter((y) => y >= RECUR_SINCE && (totals.get(y) ?? 0) >= TREND_MIN_YEAR_DOCS)
+    .sort((a, b) => a - b)
+  const cyclical = new Set<string>()
+  for (const [subject, ym] of bySubject) {
+    const tagShare = (y: number) => {
+      const tot = tagTotalByYear.get(y) ?? 0
+      return tot ? (ym.get(y) ?? 0) / tot : 0
+    }
+    const mean =
+      recurYears.reduce((a, y) => a + tagShare(y), 0) / (recurYears.length || 1)
+    if (mean === 0) continue
+    const spikes = recurYears.filter(
+      (y) => tagShare(y) >= 2 * mean && (ym.get(y) ?? 0) >= TREND_MIN_DOCS
+    )
+    if (spikes.length < RECUR_MIN_SPIKES) continue
+    let maxGap = 0
+    for (let i = 1; i < spikes.length; i++)
+      maxGap = Math.max(maxGap, spikes[i] - spikes[i - 1])
+    if (maxGap >= RECUR_MIN_GAP) cyclical.add(subject)
+  }
+
+  const K = 0.5 // continuity correction for the log-odds
+  const displayYears = [...totals.keys()]
+    .filter((y) => (totals.get(y) ?? 0) >= TREND_MIN_YEAR_DOCS)
+    .sort((a, b) => b - a)
+    .slice(0, TREND_DISPLAY_YEARS)
+
+  const out: TopicTrendYear[] = []
+  for (const year of displayYears) {
+    const baseYears: number[] = []
+    for (let k = 1; k <= TREND_BASELINE_YEARS; k++)
+      if (totals.has(year - k)) baseYears.push(year - k)
+    const nY = totals.get(year) ?? 0
+    const nB = baseYears.reduce((a, y) => a + (totals.get(y) ?? 0), 0)
+    if (!nB) continue
+
+    const subjects: TopicTrendSubject[] = []
+    for (const [subject, ym] of bySubject) {
+      const yc = ym.get(year) ?? 0
+      if (yc < TREND_MIN_DOCS) continue
+      if (cyclical.has(subject)) continue
+      const domain = domainOf.get(subject) ?? '17'
+      if (domain === ORG_PROCEDURAL_DOMAIN) continue
+
+      const bc = baseYears.reduce((a, y) => a + (ym.get(y) ?? 0), 0)
+      const delta =
+        Math.log((yc + K) / (nY - yc + K)) -
+        Math.log((bc + K) / (nB - bc + K))
+      const variance =
+        1 / (yc + K) + 1 / (nY - yc + K) + 1 / (bc + K) + 1 / (nB - bc + K)
+      const z = delta / Math.sqrt(variance)
+      if (z < TREND_MIN_Z) continue
+
+      subjects.push({
+        subject: titleCase(subject.toLowerCase()),
+        domainCode: domain,
+        z: Math.round(z * 10) / 10,
+        shareBefore: bc / nB,
+        shareNow: yc / nY,
+        docCount: yc,
+        isNew: firstMeaningfulYear.get(subject) === year,
+      })
+    }
+    subjects.sort((a, b) => b.z - a.z)
+    out.push({
+      year,
+      docCount: nY,
+      subjects: subjects.slice(0, TREND_MAX_PER_YEAR),
+    })
+  }
+  return out
+}
+
+/**
+ * Topic trends for the /secretariat subjects section. Historical and
+ * filter-independent, so it is cached across requests for an hour.
+ */
+export const getTopicTrends = cache(
+  (): Promise<TopicTrendYear[]> =>
+    unstable_cache(_getTopicTrendsInner, ['topic-trends-v1'], {
+      revalidate: 3600,
+    })()
+)
+
 /**
  * Get subject options with counts
  */

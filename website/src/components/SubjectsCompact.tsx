@@ -157,7 +157,7 @@ export function SubjectsCompact({ domains }: SubjectsCompactProps) {
               }`
             : selectedDomain
               ? `Top ${pills.length} of ${totalMatches.toLocaleString()} ${selectedLabel} subjects — search to reach the rest`
-              : `Top ${pills.length} subjects by document count — select a domain above or search to go deeper`}
+              : `Top ${pills.length} of ${totalMatches.toLocaleString()} subjects by document count — select a domain above or search to go deeper`}
         </p>
       </div>
     </TooltipProvider>

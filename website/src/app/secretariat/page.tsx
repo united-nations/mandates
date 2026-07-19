@@ -27,7 +27,9 @@ import {
   getMandatePageData,
   getOrganHierarchy,
   getSubjectHierarchy,
+  getTopicTrends,
 } from '@/lib/data/mandates'
+import { TopicTrends } from '@/components/TopicTrends'
 import { explainerTexts } from '@/lib/en_text_contents'
 import { parseSearchParams } from '@/lib/filter-constants'
 
@@ -72,11 +74,13 @@ export default async function Page({ searchParams }: PageProps) {
 
   // Light directory fetches — awaited together; these sections render above the
   // streamed explorer. All three are cached, so this is cheap on every request.
-  const [organGroups, budgetStreams, subjectDomains] = await Promise.all([
-    getOrganHierarchy(),
-    getBudgetHierarchy(),
-    getSubjectHierarchy(),
-  ])
+  const [organGroups, budgetStreams, subjectDomains, topicTrends] =
+    await Promise.all([
+      getOrganHierarchy(),
+      getBudgetHierarchy(),
+      getSubjectHierarchy(),
+      getTopicTrends(),
+    ])
 
   return (
     <div>
@@ -173,12 +177,7 @@ export default async function Page({ searchParams }: PageProps) {
         </p>
         <div className="mt-10">
           <ExpandableCard title="Topic trends" variant="filled">
-            <ComingSoon
-              items={[
-                'Topics over time',
-                'Emerging topics in the last 5 years',
-              ]}
-            />
+            <TopicTrends years={topicTrends} />
           </ExpandableCard>
         </div>
       </section>
