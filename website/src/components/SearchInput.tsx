@@ -58,14 +58,14 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
 
     return (
       <div className="relative">
-        <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
+        <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
         <Input
           ref={ref}
           value={value}
           className={cn(
             'pl-10',
             showClearButton && hasValue && 'pr-10',
-            'h-9 text-sm',
+            'h-9 text-sm placeholder:text-gray-400',
             getVariantStyles(),
             className
           )}

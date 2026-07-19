@@ -119,8 +119,8 @@ export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
             }}
             className={`inline-flex h-7 grow cursor-pointer items-center gap-1 rounded-sm px-2.5 text-xs font-medium transition-all ${
               currentMode === 'active_mandates'
-                ? 'bg-background text-foreground shadow'
-                : 'text-muted-foreground hover:text-foreground'
+                ? 'bg-background text-gray-900 shadow'
+                : 'text-gray-500 hover:text-gray-900'
             }`}
           >
             <span>Cited Mandate Sources</span>
@@ -140,8 +140,8 @@ export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
             onClick={() => handleModeChange('all_resolutions')}
             className={`inline-flex h-7 grow items-center rounded-sm px-2.5 text-xs font-medium transition-all ${
               currentMode === 'all_resolutions'
-                ? 'bg-background text-foreground shadow'
-                : 'text-muted-foreground hover:text-foreground'
+                ? 'bg-background text-gray-900 shadow'
+                : 'text-gray-500 hover:text-gray-900'
             }`}
           >
             All Documents
@@ -161,13 +161,18 @@ export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
   const groupToggle = (
     <Tooltip>
       <TooltipTrigger asChild>
-        <label className="inline-flex h-8 cursor-pointer items-center gap-1.5 text-xs font-medium whitespace-nowrap text-muted-foreground">
+        <label
+          className={`inline-flex h-8 cursor-pointer items-center gap-1.5 text-xs whitespace-nowrap transition-colors ${
+            filters.group === '1'
+              ? 'font-medium text-gray-900'
+              : 'text-gray-500'
+          }`}
+        >
           <Switch
             checked={filters.group === '1'}
             onCheckedChange={(checked) =>
               setFilter('group', checked ? '1' : undefined)
             }
-            className="data-[state=unchecked]:bg-gray-300"
           />
           Group versions
         </label>
