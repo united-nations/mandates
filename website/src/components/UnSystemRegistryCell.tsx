@@ -155,7 +155,7 @@ export function UnSystemRegistryDots({
       <Tooltip>
         <TooltipTrigger
           aria-label="No mandate registry — details"
-          className="inline-flex cursor-help items-center gap-1 text-sm text-muted-foreground"
+          className="inline-flex cursor-help items-center gap-1 text-sm text-gray-500"
         >
           — <Info className="h-3.5 w-3.5" />
         </TooltipTrigger>

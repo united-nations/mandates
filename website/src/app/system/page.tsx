@@ -1,3 +1,4 @@
+import { SectionBanner } from '@/components/SectionBanner'
 import { UnSystemBodyLine } from '@/components/UnSystemBodyLine'
 import {
   UnSystemRegistryDots,
@@ -48,7 +49,7 @@ function OrgLevelLink({
         href={email ? `mailto:${href}` : href}
         target={email ? undefined : '_blank'}
         rel={email ? undefined : 'noopener noreferrer'}
-        className="inline-flex items-center gap-1 text-muted-foreground transition-colors hover:text-un-blue"
+        className="inline-flex items-center gap-1 text-gray-500 transition-colors hover:text-un-blue"
       >
         {label ?? href}
         {email ? (
@@ -65,12 +66,12 @@ function EntityRow({ entity }: { entity: UnSystemEntity }) {
   return (
     <li className="grid grid-cols-1 items-baseline gap-x-4 gap-y-2 px-4 py-3 sm:grid-cols-[minmax(0,2fr)_minmax(0,2.5fr)_3.5rem_minmax(0,1.5fr)]">
       <div>
-        <div className="font-semibold text-foreground">{entity.code}</div>
+        <div className="font-semibold text-gray-900">{entity.code}</div>
         {entity.name !== entity.code && (
-          <div className="text-sm text-muted-foreground">{entity.name}</div>
+          <div className="text-sm text-gray-500">{entity.name}</div>
         )}
       </div>
-      <ul className="space-y-1 text-sm text-foreground/75">
+      <ul className="space-y-1 text-sm text-gray-600">
         {entity.governingBodies.map(resolveBody).map((body) => (
           <UnSystemBodyLine key={body.name} body={body} />
         ))}
@@ -107,7 +108,7 @@ function EntityRow({ entity }: { entity: UnSystemEntity }) {
         {entity.related.map((portal) => (
           <div
             key={portal.url}
-            className="mt-1 text-xs leading-snug text-muted-foreground"
+            className="mt-1 text-xs leading-snug text-gray-500"
           >
             <a
               href={portal.url}
@@ -127,48 +128,56 @@ function EntityRow({ entity }: { entity: UnSystemEntity }) {
 
 export default function UnSystemPage() {
   return (
-    <div>
-      <h1 className="text-2xl font-bold tracking-tight text-foreground">
-        United Nations System
-      </h1>
-      <p className="mt-1 max-w-195 text-sm text-muted-foreground">
-        Governing bodies across the United Nations system, with links to each
-        body&apos;s official page and secretariat contact.
-      </p>
-      <div className="mt-3 mb-8 flex max-w-195 items-start gap-2 border-l-2 border-un-blue/40 bg-un-blue/5 px-3 py-2 text-sm text-muted-foreground">
-        <Info className="mt-0.5 h-4 w-4 shrink-0 text-un-blue" aria-hidden />
-        <p>
-          This draft overview is for informational purposes only and
-          exhaustiveness is not guaranteed. The relevant rules of the
-          organization concerned should be consulted in order to establish the
-          legal status, functions and reporting lines of each entity listed.
-        </p>
-      </div>
+    <div className="pb-16">
+      <SectionBanner
+        imageSrc="/images/banners/hero-banner-president.png"
+        title="Mandates across the UN system"
+        description="The funds, programmes, specialized agencies and related organizations beyond the Secretariat — their governing bodies and official contacts, and how far each organization's mandates are publicly traceable."
+      />
 
-      {sections.map(({ grouping, title }) => (
-        <section key={grouping} className="mb-10">
-          {title && (
-            <>
-              <h2 className="mb-3 text-lg font-semibold text-foreground">
-                {title}
-              </h2>
-              <div className="hidden grid-cols-[minmax(0,2fr)_minmax(0,2.5fr)_3.5rem_minmax(0,1.5fr)] gap-x-4 px-4 pb-1.5 text-xs font-medium tracking-wide text-muted-foreground uppercase sm:grid">
-                {/* Pulled out of the box inset so it left-aligns with the section title. */}
-                <span className="-ms-4">Organization</span>
-                <span>Governing bodies</span>
-                <span className="col-span-2">Mandate Registry</span>
-              </div>
-            </>
-          )}
-          <ul className="divide-y divide-border rounded-lg border border-border">
-            {organizations
-              .filter((entity) => entity.grouping === grouping)
-              .map((entity) => (
-                <EntityRow key={entity.code} entity={entity} />
-              ))}
-          </ul>
-        </section>
-      ))}
+      <div className="py-12">
+        {/* Disclaimer stays in the narrow column; only the directory tables
+            below break out to the wide column. */}
+        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-16">
+          <div className="mb-10 flex items-start gap-2 border-l-2 border-un-blue/40 bg-un-blue/5 px-3 py-2 text-sm text-gray-600">
+            <Info className="mt-0.5 h-4 w-4 shrink-0 text-un-blue" aria-hidden />
+            <p>
+              This draft overview is for informational purposes only and
+              exhaustiveness is not guaranteed. The relevant rules of the
+              organization concerned should be consulted in order to establish
+              the legal status, functions and reporting lines of each entity
+              listed.
+            </p>
+          </div>
+        </div>
+
+        <div className="mx-auto max-w-7xl px-6 md:px-12 lg:px-16">
+          {sections.map(({ grouping, title }) => (
+            <section key={grouping} className="mb-10">
+              {title && (
+                <>
+                  <h2 className="mb-3 text-lg font-semibold text-gray-900">
+                    {title}
+                  </h2>
+                  <div className="hidden grid-cols-[minmax(0,2fr)_minmax(0,2.5fr)_3.5rem_minmax(0,1.5fr)] gap-x-4 px-4 pb-1.5 text-xs font-medium tracking-wide text-gray-500 uppercase sm:grid">
+                    {/* Pulled out of the box inset so it left-aligns with the section title. */}
+                    <span className="-ms-4">Organization</span>
+                    <span>Governing bodies</span>
+                    <span className="col-span-2">Mandate Registry</span>
+                  </div>
+                </>
+              )}
+              <ul className="divide-y divide-gray-200 rounded-lg border border-gray-200 bg-white">
+                {organizations
+                  .filter((entity) => entity.grouping === grouping)
+                  .map((entity) => (
+                    <EntityRow key={entity.code} entity={entity} />
+                  ))}
+              </ul>
+            </section>
+          ))}
+        </div>
+      </div>
     </div>
   )
 }

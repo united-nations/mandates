@@ -13,10 +13,26 @@
   --color-trout: #495057;
   --color-shuttle-gray: #5a6c7d;
   --color-camouflage-green: #7d8471;
-  --color-pale-oyster: #9bbb7a;
+  --color-moss: #62803f;
   --color-smoky: #6c5b7b;
   --color-au-chico: #a0665c;
   --color-faded-jade: #4a7c7e;
+
+  /* Categorical palette for the subject domains on the /subjects treemap and
+     pill-map. One stable colour per visually-significant domain; the five
+     smallest domains (Employment, Intl Trade, Transport, Human Settlements,
+     Agriculture) share a single muted purple (bg-plum) rather than each
+     carrying a unique hue no one can tell apart at tile size. Everything sits
+     in one low-chroma muted band — un-blue is the sole bright anchor — so no
+     accent shouts over the body. Colour carries category, never magnitude,
+     and is always paired with a label. */
+  --color-un-blue-muted: #4a90a4;
+  --color-dusty-gray: #969696;
+  --color-forest-muted: #4b7048;
+  --color-terracotta: #aa6238;
+  --color-dusty-rose: #9c5a6e;
+  --color-indigo-muted: #55578f;
+  --color-plum: #7d5a8c;
 
   --color-geyser: #dde2e6;
   --color-iron: #d9dcdf;

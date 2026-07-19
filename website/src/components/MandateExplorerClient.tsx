@@ -1,6 +1,8 @@
 'use client'
 
+import { ActiveFilters } from '@/components/ActiveFilters'
 import { FilterControls } from '@/components/FilterControls'
+import { HeaderStats } from '@/components/HeaderStats'
 import { PaginationControls } from '@/components/PaginationControls'
 import { Switch } from '@/components/ui/switch'
 import {
@@ -15,9 +17,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useFilters } from '@/contexts/FilterContext'
-import { explainerTexts } from '@/lib/en_text_contents'
 import type { ApiResponse } from '@/types'
-import { ChevronDown, Info } from 'lucide-react'
+import { ChevronDown } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
 import { useCallback, useState } from 'react'
 import { MandateCompactList } from './table/MandateCompactList'
@@ -37,7 +38,7 @@ export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
   const { visibleColumns, handleToggleColumn, handleResetColumns } =
     useColumnVisibility()
 
-  const pageSize = parseInt(searchParams.get('limit') || '25', 10)
+  const pageSize = parseInt(searchParams.get('limit') || '15', 10)
   const { mandates, pagination, filterOptions, reference, sidebar } = data
   const allOrgans = reference?.organs || []
   const allEntities = reference?.entities || []
@@ -194,72 +195,69 @@ export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
       */}
 
       <div className="pt-4">
-        {/* Section Title and Sort (mobile) + FilterControls */}
-        <div className="mb-4">
-          <div className="mb-2">
-            <h2 className="text-2xl font-bold tracking-tight">
-              {explainerTexts.dataCards.sectionTitle}
-            </h2>
-          </div>
-          <FilterControls
+        {/* Narrow band: active filters + the summary stat cards line up with
+            the rest of the page (max-w-6xl). */}
+        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-16">
+          {/* Active filters sit above the summary stat cards. */}
+          <ActiveFilters
             entitiesData={allEntities}
             allOrgans={allOrgans}
-            toolbarSlot={
-              <div className="flex flex-wrap items-center gap-3">
-                {groupToggle}
-                {modeToggle}
-              </div>
-            }
+            className="mb-4"
           />
-        </div>
-
-        {/* Section 1 of the 2027 budget is sourced from the preliminary
-            A/81/6 (Sect. 1); its citations may change in the final version. */}
-        {activePpb?.short === '2027' && (
-          <div className="mb-4 flex items-start gap-2 border-l-2 border-un-blue/40 bg-un-blue/5 px-3 py-2 text-sm text-muted-foreground">
-            <Info
-              className="mt-0.5 h-4 w-4 shrink-0 text-un-blue"
-              aria-hidden
-            />
-            <p>
-              Section&nbsp;1 (Overall policymaking, direction and coordination)
-              citations are preliminary, drawn from the advance version of
-              A/81/6&nbsp;(Sect.&nbsp;1), and may change in the final budget.
-            </p>
+          {/* Summary stats repeated here (as a row) above the table. */}
+          <div className="mb-6">
+            <HeaderStats data={data} orientation="row" />
           </div>
-        )}
-
-        {/* Data table (desktop) */}
-        <div className="hidden lg:block">
-          <MandateDataTable
-            mandates={mandates}
-            organsData={allOrgans}
-            entitiesData={allEntities}
-            organCounts={organs}
-            entityCounts={entities}
-            filterOptions={filterOptions}
-            visibleColumns={visibleColumns}
-            onToggleColumn={handleToggleColumn}
-            onResetColumns={handleResetColumns}
-          />
         </div>
 
-        {/* Compact list (mobile) */}
-        <div className="block lg:hidden">
-          <MandateCompactList
-            mandates={mandates}
-            organsData={allOrgans}
-            entitiesData={allEntities}
-          />
-        </div>
+        {/* Wide band: the table and everything that operates on it — search,
+            the group/scope toggles, and pagination — get the extra width. */}
+        <div className="mx-auto max-w-7xl px-6 md:px-12 lg:px-16">
+          <div className="mb-4">
+            <FilterControls
+              entitiesData={allEntities}
+              allOrgans={allOrgans}
+              toolbarSlot={
+                <div className="flex flex-wrap items-center gap-3">
+                  {groupToggle}
+                  {modeToggle}
+                </div>
+              }
+            />
+          </div>
 
-        <div className="mt-4">
-          <PaginationControls
-            currentPage={pagination.page}
-            totalPages={pagination.totalPages}
-            pageSize={pageSize}
-            totalItems={pagination.totalItems}
-          />
+          {/* Data table (desktop) */}
+          <div className="hidden lg:block">
+            <MandateDataTable
+              mandates={mandates}
+              organsData={allOrgans}
+              entitiesData={allEntities}
+              organCounts={organs}
+              entityCounts={entities}
+              filterOptions={filterOptions}
+              visibleColumns={visibleColumns}
+              onToggleColumn={handleToggleColumn}
+              onResetColumns={handleResetColumns}
+            />
+          </div>
+
+          {/* Compact list (mobile) */}
+          <div className="block lg:hidden">
+            <MandateCompactList
+              mandates={mandates}
+              organsData={allOrgans}
+              entitiesData={allEntities}
+            />
+          </div>
+
+          <div className="mt-4">
+            <PaginationControls
+              currentPage={pagination.page}
+              totalPages={pagination.totalPages}
+              pageSize={pageSize}
+              totalItems={pagination.totalItems}
+            />
+          </div>
         </div>
       </div>
     </div>

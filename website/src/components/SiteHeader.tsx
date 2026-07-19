@@ -13,23 +13,20 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
-import { Building2, Gavel, Globe, Info, Landmark, Menu, Tags } from 'lucide-react'
+import { Globe, Landmark, Menu } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 // Mirrors the page container used by <main> in RootLayoutClient so the header
-// content lines up with the main column.
-const pageWidth = 'max-w-4xl lg:max-w-6xl xl:max-w-7xl'
+// content lines up with the main column. Capped at 6xl: the wide 7xl format is
+// reserved for the data tables themselves, not the chrome around them.
+const pageWidth = 'max-w-4xl lg:max-w-6xl'
 const pagePadding = 'px-8 sm:px-12 lg:px-16'
 
 const navItems = [
   { href: '/secretariat', label: 'UN Secretariat Mandates', icon: Landmark },
-  { href: '/entities', label: 'Entities', icon: Building2 },
-  { href: '/organs', label: 'Organs', icon: Gavel },
-  { href: '/subjects', label: 'Subjects', icon: Tags },
   { href: '/system', label: 'UN System Mandates', icon: Globe },
-  { href: '/about', label: 'About', icon: Info },
 ]
 
 export function SiteHeader() {
@@ -103,12 +100,12 @@ export function SiteHeader() {
                   The development of the mandate registry is still ongoing. Go
                   to the{' '}
                   <Link
-                    href="/about"
+                    href="/secretariat#methodology"
                     className="font-medium text-un-blue underline hover:text-shuttle-gray"
                   >
-                    About
+                    methodology
                   </Link>{' '}
-                  page for information on the current scope.
+                  section for information on the current scope.
                 </p>
               </TooltipContent>
             </Tooltip>

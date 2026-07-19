@@ -572,7 +572,7 @@ export async function getMandates(
   options: { page?: number; limit?: number } = {}
 ): Promise<{ mandates: Mandate[]; totalCount: number }> {
   const page = options.page ?? 1
-  const limit = options.limit ?? 10
+  const limit = options.limit ?? 15
   const offset = (page - 1) * limit
 
   const { cte, params } = buildFilteredDocsCTE(filters, {
@@ -2151,7 +2151,7 @@ export async function getCitationDistribution(filters: FilterOptions = {}): Prom
  */
 async function _getMandatePageDataInner(filters: FilterOptions): Promise<ApiResponse> {
   const page = parseInt(filters.page || '1', 10)
-  const limit = parseInt(filters.limit || '10', 10)
+  const limit = parseInt(filters.limit || '15', 10)
 
   const [
     mandatesResult,

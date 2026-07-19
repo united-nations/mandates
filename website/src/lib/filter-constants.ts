@@ -145,6 +145,6 @@ export function parseSearchParams(
     max_citations: getString('max_citations'),
     sort_by: getString('sort_by') || undefined,
     page: getString('page') || '1',
-    limit: getString('limit') || '25',
+    limit: getString('limit') || '15',
   }
 }
