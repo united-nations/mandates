@@ -8,7 +8,6 @@ import {
 } from '@/components/ui/tooltip'
 import { useSectionFilter } from '@/hooks/use-section-filter'
 import { SUBJECT_DOMAIN_LABELS } from '@/lib/filter-constants'
-import { domainColor } from '@/lib/subjectDomainColors'
 import { cn } from '@/lib/utils'
 import type { TopicTrendSubject, TopicTrendYear } from '@/lib/data/mandates'
 import { MousePointerClick, Sparkles } from 'lucide-react'
@@ -28,7 +27,8 @@ export function TopicTrends({ years }: { years: TopicTrendYear[] }) {
     <TooltipProvider delayDuration={200}>
       <p className="mb-4 max-w-3xl text-sm text-gray-500">
         Subjects that became distinctively more frequent than the previous five
-        years combined, by their share of that year’s documents.{' '}
+        years combined, by their share of that year’s documents — the deeper the
+        blue, the sharper the rise.{' '}
         <span className="inline-flex items-center gap-0.5 align-baseline">
           <Sparkles className="h-3 w-3 text-un-blue" />
         </span>{' '}
@@ -73,6 +73,25 @@ export function TopicTrends({ years }: { years: TopicTrendYear[] }) {
 
 const formatPct = (fraction: number) => `${(fraction * 100).toFixed(1)}%`
 
+// Single-hue emphasis ramp: the higher the log-odds z (or a first breakout),
+// the deeper the un-blue. Kept distinct from the round, multi-colour domain
+// chips above — these are bordered "badge" rectangles in one hue.
+type PillTier = 'strong' | 'mid' | 'low' | 'faint'
+
+function scoreTier(z: number, isNew: boolean): PillTier {
+  if (isNew || z >= 4.5) return 'strong'
+  if (z >= 3) return 'mid'
+  if (z >= 2.2) return 'low'
+  return 'faint'
+}
+
+const TIER_CLASS: Record<PillTier, string> = {
+  strong: 'border-un-blue bg-un-blue font-medium text-white hover:bg-un-blue-deep',
+  mid: 'border-un-blue/40 bg-un-blue/25 text-gray-900 hover:bg-un-blue/35',
+  low: 'border-un-blue/25 bg-un-blue/10 text-gray-800 hover:bg-un-blue/20',
+  faint: 'border-gray-200 bg-gray-50 text-gray-500 hover:border-un-blue/40',
+}
+
 function TrendPill({
   subject,
   year,
@@ -84,7 +103,7 @@ function TrendPill({
   active: boolean
   onSelect: (value: string) => void
 }) {
-  const color = domainColor(subject.domainCode)
+  const tier = scoreTier(subject.z, subject.isNew)
   return (
     <Tooltip>
       <TooltipTrigger asChild>
@@ -95,17 +114,16 @@ function TrendPill({
             onSelect(subject.subject)
           }}
           className={cn(
-            'inline-flex items-baseline gap-1 rounded-full px-2.5 py-0.5 text-xs transition-[filter] hover:brightness-110',
-            color.bg,
-            color.text,
+            'inline-flex items-baseline gap-1 rounded-md border px-2 py-0.5 text-xs transition-colors',
+            TIER_CLASS[tier],
             active && 'ring-2 ring-un-blue ring-offset-1'
           )}
         >
           {subject.isNew && (
-            <Sparkles className="h-3 w-3 self-center opacity-90" />
+            <Sparkles className="h-3 w-3 self-center" />
           )}
-          <span className="font-medium">{subject.subject}</span>
-          <span className="text-[10px] tabular-nums opacity-80">
+          <span>{subject.subject}</span>
+          <span className="text-[10px] opacity-60 tabular-nums">
             {formatPct(subject.shareNow)}
           </span>
         </a>
