@@ -42,15 +42,12 @@ export function TopicTrends({ years }: { years: TopicTrendYear[] }) {
             key={year.year}
             className="grid grid-cols-[3rem_1fr] gap-4 border-b border-gray-100 py-3 last:border-b-0 sm:grid-cols-[4rem_1fr] sm:gap-6"
           >
-            <div className="pt-0.5 leading-tight">
+            <div className="pt-0.5">
               <div className="text-lg font-semibold text-gray-900 tabular-nums">
                 {year.year}
               </div>
-              <div className="text-[10px] text-gray-400 tabular-nums">
-                {year.docCount.toLocaleString()} docs
-              </div>
             </div>
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap items-start gap-1.5">
               {year.subjects.length === 0 ? (
                 <span className="self-center text-sm text-gray-400">
                   No standout new topics
