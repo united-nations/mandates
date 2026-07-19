@@ -34,11 +34,11 @@ const DOMAIN_COLORS: Record<string, DomainColor> = {
   '02': { bg: 'bg-faded-jade', text: 'text-white', hex: '#4a7c7e' }, // Economic
   '15': { bg: 'bg-camouflage-green', text: 'text-white', hex: '#7d8471' }, // Culture (freed olive, was ugly yellow)
   '17': NEUTRAL, // Geographical Descriptors
-  '03': { bg: 'bg-pale-oyster', text: 'text-black', hex: '#9bbb7a' }, // Natural Resources
+  '03': { bg: 'bg-moss', text: 'text-white', hex: '#62803f' }, // Natural Resources
   '05': { bg: 'bg-shuttle-gray', text: 'text-white', hex: '#5a6c7d' }, // Industry
   '16': { bg: 'bg-un-blue-muted', text: 'text-white', hex: '#4a90a4' }, // Science & Technology
   '08': { bg: 'bg-dusty-rose', text: 'text-white', hex: '#9c5a6e' }, // Population
-  '13': { bg: 'bg-muted-clay', text: 'text-black', hex: '#c48a63' }, // Humanitarian
+  '13': { bg: 'bg-terracotta', text: 'text-white', hex: '#aa6238' }, // Humanitarian
   '11': { bg: 'bg-indigo-muted', text: 'text-white', hex: '#55578f' }, // Education
   '10': { bg: 'bg-forest-muted', text: 'text-white', hex: '#4b7048' }, // Health
   // Five smallest domains — one shared muted purple.
