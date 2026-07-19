@@ -21,7 +21,7 @@ export function ChartSearchInput({
   const hasValue = value.trim() !== ''
 
   return (
-    <div className={`relative w-full sm:w-64 ${className}`}>
+    <div className={`relative w-full sm:w-80 ${className}`}>
       <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2.5">
         <Search className="h-3.5 w-3.5 text-gray-400" />
       </div>
