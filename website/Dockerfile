@@ -14,6 +14,13 @@ RUN pnpm install --frozen-lockfile
 FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY website/ .
+# NEXT_PUBLIC_* vars are inlined into the client bundle at build time, so the
+# Sentry feedback-widget DSN must be present here — a runtime Azure app setting
+# is too late. Passed as a build-arg from the CI workflow. Safe to expose: the
+# DSN is public (it ships in the client bundle regardless). Unset builds still
+# succeed; the widget just stays hidden.
+ARG NEXT_PUBLIC_SENTRY_DSN
+ENV NEXT_PUBLIC_SENTRY_DSN=$NEXT_PUBLIC_SENTRY_DSN
 RUN pnpm build
 
 # 4. Production image
