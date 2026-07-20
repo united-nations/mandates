@@ -1,10 +1,11 @@
-import { SectionBanner } from '@/components/SectionBanner'
 import { UnSystemBodyLine } from '@/components/UnSystemBodyLine'
 import {
   UnSystemRegistryDots,
+  UnSystemRegistryLegend,
   UnSystemRegistryLink,
 } from '@/components/UnSystemRegistryCell'
 import unSystemData from '@/data/un-system.json'
+import { explainerTexts } from '@/lib/en_text_contents'
 import type {
   UnSystemBody,
   UnSystemBodyEntry,
@@ -12,13 +13,14 @@ import type {
   UnSystemEntity,
   UnSystemGrouping,
 } from '@/types'
-import { ExternalLink, Info, Mail } from 'lucide-react'
+import { ExternalLink, Mail } from 'lucide-react'
 import type { Metadata } from 'next'
+import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'UN System Mandates',
   description:
-    'Governing bodies, official pages and secretariat contacts across the United Nations system.',
+    'Trace mandates across the UN System: the governing bodies of every fund, programme, specialized agency and related organization, and how far each one’s mandates can be publicly traced.',
 }
 
 const { bodies, organizations } = unSystemData as UnSystemData
@@ -129,28 +131,32 @@ function EntityRow({ entity }: { entity: UnSystemEntity }) {
 export default function UnSystemPage() {
   return (
     <div className="pb-16">
-      <SectionBanner
-        imageSrc="/images/banners/hero-banner-president.png"
-        title="Mandates across the UN system"
-        description="The funds, programmes, specialized agencies and related organizations beyond the Secretariat — their governing bodies and official contacts, and how far each organization's mandates are publicly traceable."
-      />
-
-      <div className="py-12">
-        {/* Disclaimer stays in the narrow column; only the directory tables
-            below break out to the wide column. */}
-        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-16">
-          <div className="mb-10 flex items-start gap-2 border-l-2 border-un-blue/40 bg-un-blue/5 px-3 py-2 text-sm text-gray-600">
-            <Info className="mt-0.5 h-4 w-4 shrink-0 text-un-blue" aria-hidden />
-            <p>
-              This draft overview is for informational purposes only and
-              exhaustiveness is not guaranteed. The relevant rules of the
-              organization concerned should be consulted in order to establish
-              the legal status, functions and reporting lines of each entity
-              listed.
-            </p>
-          </div>
+      {/* Hero — text-only, mirroring /secretariat. This is a standalone page,
+          not a section of the explorer, so no SectionBanner here. */}
+      <section className="mx-auto max-w-6xl px-6 pt-10 pb-8 md:px-12 lg:px-16">
+        <h1 className="mb-6 text-4xl font-bold tracking-tight text-foreground">
+          {explainerTexts.systemHeader.headline}
+        </h1>
+        <p className="max-w-3xl text-base leading-relaxed text-foreground md:text-lg">
+          Beyond the{' '}
+          <Link
+            href="/secretariat"
+            className="text-un-blue transition-colors hover:text-shuttle-gray"
+          >
+            UN Secretariat
+          </Link>
+          , dozens of funds, programmes, specialized agencies and related
+          organizations carry their own mandates. This page lists the governing
+          bodies that steer each organization, with official pages and contacts
+          — and scores how openly each organization&apos;s mandates can be
+          traced, from decision texts to results.
+        </p>
+        <div className="mt-6 max-w-4xl">
+          <UnSystemRegistryLegend />
         </div>
+      </section>
 
+      <div className="py-4">
         <div className="mx-auto max-w-7xl px-6 md:px-12 lg:px-16">
           {sections.map(({ grouping, title }) => (
             <section key={grouping} className="mb-10">
@@ -176,6 +182,15 @@ export default function UnSystemPage() {
               </ul>
             </section>
           ))}
+
+          {/* Disclaimer, demoted to a footnote — kept honest without being
+              the page's opening statement. */}
+          <p className="max-w-3xl text-xs leading-relaxed text-gray-500 italic">
+            This draft overview is for informational purposes only and
+            exhaustiveness is not guaranteed. The relevant rules of the
+            organization concerned should be consulted in order to establish the
+            legal status, functions and reporting lines of each entity listed.
+          </p>
         </div>
       </div>
     </div>

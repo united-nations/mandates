@@ -74,7 +74,7 @@ function Dot({ value, step }: { value: UnSystemPointValue; step: number }) {
         'h-2 w-2 shrink-0 rounded-full',
         value === true && FILLED[step],
         value === 'partial' && `border-[1.5px] bg-transparent ${RING[step]}`,
-        value === false && 'bg-gray-300',
+        value === false && 'bg-gray-300'
       )}
     />
   )
@@ -132,6 +132,40 @@ function PointLegend({ registry }: { registry: UnSystemRegistry }) {
             </li>
           )
         })}
+      </ul>
+    </div>
+  )
+}
+
+/**
+ * Page-level legend for the point meter: the five criteria with their
+ * generic definitions, rendered once under the /system hero so the dots
+ * are explained before the reader meets them in the tables.
+ */
+export function UnSystemRegistryLegend() {
+  return (
+    <div className="text-xs leading-relaxed text-gray-500">
+      <p className="mb-1.5">
+        The registry score shows how far an organization&apos;s mandates can be
+        traced publicly — one point for each of the following (filled dot = met,
+        ring = partial, gray = not met):
+      </p>
+      <ul className="flex flex-wrap gap-x-5 gap-y-1">
+        {POINT_ORDER.map((key) => (
+          <li key={key} className="flex items-baseline gap-1.5">
+            <span
+              className="h-2 w-2 shrink-0 self-center rounded-full bg-tier-4"
+              aria-hidden
+            />
+            <span>
+              <span className="font-medium text-gray-600">
+                {POINT_LABELS[key]}
+              </span>
+              {' — '}
+              {POINT_DEFINITIONS[key]}
+            </span>
+          </li>
+        ))}
       </ul>
     </div>
   )

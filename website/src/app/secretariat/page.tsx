@@ -209,9 +209,10 @@ export default async function Page({ searchParams }: PageProps) {
                   Section&nbsp;1 (Overall policymaking, direction and
                   coordination) citations in the 2027 proposed programme budget
                   are preliminary, drawn from the advance version of
-                  A/81/6&nbsp;(Sect.&nbsp;1), and may change in the final budget.
+                  A/81/6&nbsp;(Sect.&nbsp;1), and may change in the final
+                  budget.
                 </p>
-                <p className="italic text-gray-500">
+                <p className="text-gray-500 italic">
                   {explainerTexts.mainHeader.disclaimer}
                 </p>
               </div>
@@ -237,7 +238,7 @@ export default async function Page({ searchParams }: PageProps) {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <ResourceLink
               title="UN Transparency Portal"
-              description="Visual exploration of the budget of the UN Secretariat and the wider UN system."
+              description="Visual exploration of the budget of the UN Secretariat and the wider UN System."
               href="https://open.un.org/"
               icon={Globe}
             />

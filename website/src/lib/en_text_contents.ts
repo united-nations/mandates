@@ -23,6 +23,11 @@ export const explainerTexts = {
       'As the list of UN Entities in this registry is derived from the budget submissions to the General Assembly, it includes Entities that are independent of the Secretariat and the Secretary-General. The inclusion of these Entities here is for reference only and is not intended to indicate that they are within the scope of the UN80 Initiative.',
   },
 
+  // /system page hero
+  systemHeader: {
+    headline: 'Trace mandates across the UN System.',
+  },
+
   // Page metadata (reuses mainHeader content)
   get pageMetadata() {
     return {
