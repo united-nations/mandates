@@ -16,7 +16,12 @@ import { getBudgetVersions } from './budget-documents'
 import { FOUNDATIONAL_PART_IN_DOCUMENT } from '@/lib/foundational'
 import { ORGAN_CATEGORIES } from '@/lib/organ-groups'
 import { SUBJECT_DOMAIN_LABELS } from '@/lib/filter-constants'
-import { pairKey, type CoCitationMatrix } from '@/lib/heatmap/matrix'
+import {
+  pairKey,
+  organEntityKey,
+  type CoCitationMatrix,
+  type OrganEntityMatrix,
+} from '@/lib/heatmap/matrix'
 import type { Mandate, FilterOptions, EntityWithCount, OrganWithCount, OrganGroup, CrossCitation, CitationBin, ApiResponse, BudgetLocation, BudgetPartNode, BudgetSectionNode, BudgetEntityNode, BudgetStream, BudgetPkoGroupNode, SubjectDomain, SubjectSubdomain, SubjectLeaf } from '@/types'
 
 // ============================================================================
@@ -1400,6 +1405,70 @@ export const getEntityCoCitationMatrix = cache(
     unstable_cache(
       () => _getEntityCoCitationMatrixInner(version ?? null),
       ['entity-cocitation-matrix-v1', version ?? 'default'],
+      { revalidate: 3600 }
+    )()
+)
+
+/**
+ * Organ × Entity citation-pattern matrix for a budget version.
+ *
+ * cell(organ, entity) = the number of documents adopted by `organ` (the body
+ * that carries `ppb_body = organ`) that entity cites in the version. Organ is
+ * `unified_documents.ppb_body` and entity is `source_document_citations.entity`
+ * — the same columns the organ and entity filters key on — and the same
+ * version scoping (versionPredicateSql), so a cell's count equals what the
+ * combined organ+entity filter shows. Rectangular (not symmetric): rows and
+ * columns are different vocabularies.
+ */
+const _getOrganEntityMatrixInner = async (
+  version: string | null
+): Promise<OrganEntityMatrix> => {
+  const [rows, organMeta] = await Promise.all([
+    queryMany<{ organ: string; entity: string; n: string }>(
+      `SELECT d.ppb_body AS organ,
+              c.entity AS entity,
+              COUNT(DISTINCT c.ppb_full_document_symbol)::int AS n
+       FROM ppb2026.source_document_citations c
+       JOIN public.unified_documents d
+         ON d.ppb_full_document_symbol = c.ppb_full_document_symbol
+       WHERE c.entity IS NOT NULL AND c.entity != '' AND c.entity != 'NA'
+         AND d.ppb_body IS NOT NULL AND d.ppb_body != ''
+         AND ${versionPredicateSql('c', '$1')}
+       GROUP BY d.ppb_body, c.entity`,
+      [version]
+    ),
+    getAllOrgans(),
+  ])
+
+  const cells: Record<string, number> = {}
+  const organs = new Set<string>()
+  const entities = new Set<string>()
+  for (const r of rows) {
+    cells[organEntityKey(r.organ, r.entity)] = Number(r.n)
+    organs.add(r.organ)
+    entities.add(r.entity)
+  }
+
+  const organLabels: Record<string, string> = {}
+  for (const o of organMeta) organLabels[o.short] = o.long
+
+  return {
+    organs: [...organs].sort(),
+    entities: [...entities].sort(),
+    cells,
+    organLabels,
+  }
+}
+
+/**
+ * Cached wrapper for the organ × entity matrix. Keyed by version; persists for
+ * an hour like the other /secretariat directory fetches.
+ */
+export const getOrganEntityMatrix = cache(
+  (version?: string | null): Promise<OrganEntityMatrix> =>
+    unstable_cache(
+      () => _getOrganEntityMatrixInner(version ?? null),
+      ['organ-entity-matrix-v1', version ?? 'default'],
       { revalidate: 3600 }
     )()
 )
