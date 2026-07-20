@@ -18,6 +18,7 @@ import { ExpandableCard } from '@/components/ExpandableCard'
 import { ExplainerText } from '@/components/ExplainerText'
 import { HeaderStatsSkeleton } from '@/components/HeaderStats.skeleton'
 import { LoadingSkeleton } from '@/components/LoadingSkeleton'
+import { OrganEntityHeatmap } from '@/components/OrganEntityHeatmap'
 import { OrgansDirectory } from '@/components/OrgansDirectory'
 import { QuoteBlock } from '@/components/QuoteBlock'
 import { ResourceLink } from '@/components/ResourceLink'
@@ -27,6 +28,7 @@ import {
   getBudgetHierarchy,
   getEntityCoCitationMatrix,
   getMandatePageData,
+  getOrganEntityMatrix,
   getOrganHierarchy,
   getSubjectHierarchy,
   getTopicTrends,
@@ -82,12 +84,14 @@ export default async function Page({ searchParams }: PageProps) {
     subjectDomains,
     topicTrends,
     coCitationMatrix,
+    organEntityMatrix,
   ] = await Promise.all([
     getOrganHierarchy(),
     getBudgetHierarchy(),
     getSubjectHierarchy(),
     getTopicTrends(),
     getEntityCoCitationMatrix(filters.ppb_version),
+    getOrganEntityMatrix(filters.ppb_version),
   ])
 
   return (
@@ -117,8 +121,11 @@ export default async function Page({ searchParams }: PageProps) {
       <section className={CONTENT}>
         <OrgansDirectory groups={organGroups} />
         <div className="mt-10">
-          <ExpandableCard title="Organs × entities matrix" variant="filled">
-            <ComingSoon />
+          <ExpandableCard
+            title="Citation patterns between entities and organs"
+            variant="filled"
+          >
+            <OrganEntityHeatmap matrix={organEntityMatrix} />
           </ExpandableCard>
         </div>
       </section>
