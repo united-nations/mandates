@@ -104,7 +104,7 @@ export default async function Page({ searchParams }: PageProps) {
         id="organs"
         imageSrc="/images/banners/hero-banner-homepage.png"
         title="Which organs are creating mandates?"
-        description="The intergovernmental organs and bodies that adopt Secretariat mandates, grouped by where they sit in the United Nations system. Select one to filter the mandates below."
+        description="The intergovernmental organs and bodies that adopt Secretariat mandates. Select one to filter the mandates below."
       />
       <section className={CONTENT}>
         <OrgansDirectory groups={organGroups} />
