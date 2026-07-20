@@ -22,6 +22,17 @@ import type { Mandate, FilterOptions, EntityWithCount, OrganWithCount, OrganGrou
 // Helper Functions
 // ============================================================================
 
+// PPB 2026 labels a citation that belongs to no specific subprogramme with the
+// literal "All Subprogrammes"; PPB 2027 represents the same generic case as a
+// NULL sub_programme (and renders the entity with no subprogramme pill). Fold
+// the 2026 label to NULL wherever the value surfaces so both versions behave
+// identically — no "All Subprogrammes" node, pill, filter option, or tooltip
+// line. Downstream NULL handling (buildBudgetTree, BudgetLocationCell) already
+// does the right thing, and sub_programme_number is already NULL for these rows.
+const GENERIC_SUBPROGRAMME_LABEL = 'All Subprogrammes'
+const subProgrammeExpr = (col: string) =>
+  `NULLIF(${col}, '${GENERIC_SUBPROGRAMME_LABEL}')`
+
 // ============================================================================
 // Types for DB Rows (internal)
 // ============================================================================
@@ -607,7 +618,7 @@ export async function getMandates(
           'programme', c.programme,
           'programme_title', c.programme_title,
           'entity', c.entity,
-          'subprogramme', c.sub_programme,
+          'subprogramme', ${subProgrammeExpr('c.sub_programme')},
           'subprogramme_number', c.sub_programme_number,
           'is_support', (c.section_title LIKE 'Administrative and budgetary aspects%'),
           'part_sort', bp.sort_order
@@ -1456,7 +1467,7 @@ export async function getBudgetHierarchy(
         c.ppb_full_document_symbol AS sym,
         c.budget_part_number, c.section, c.section_title,
         c.programme, c.programme_title, c.entity,
-        c.sub_programme, c.sub_programme_number,
+        ${subProgrammeExpr('c.sub_programme')} AS sub_programme, c.sub_programme_number,
         bd.doc_type, bd.display_name AS stream_label, bd.sort_order AS stream_sort,
         (c.section_title LIKE 'Administrative and budgetary aspects%') AS is_support
       FROM filtered_docs fd
