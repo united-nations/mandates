@@ -21,6 +21,7 @@ import { LoadingSkeleton } from '@/components/LoadingSkeleton'
 import { OrganEntityHeatmap } from '@/components/OrganEntityHeatmap'
 import { OrgansDirectory } from '@/components/OrgansDirectory'
 import { QuoteBlock } from '@/components/QuoteBlock'
+import { ResolutionCitationTrend } from '@/components/ResolutionCitationTrend'
 import { ResourceLink } from '@/components/ResourceLink'
 import { SectionBanner } from '@/components/SectionBanner'
 import { SubjectsCompact } from '@/components/SubjectsCompact'
@@ -30,6 +31,7 @@ import {
   getMandatePageData,
   getOrganEntityMatrix,
   getOrganHierarchy,
+  getResolutionCitationTrend,
   getSubjectHierarchy,
   getTopicTrends,
 } from '@/lib/data/mandates'
@@ -44,26 +46,6 @@ export const metadata: Metadata = {
 
 interface PageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>
-}
-
-// Placeholder shown inside the per-section "trends" expanders until the real
-// visualisations are built.
-function ComingSoon({ items }: { items?: string[] }) {
-  return (
-    <div className="rounded-lg border border-dashed border-gray-200 bg-gray-50/60 p-6 text-sm text-gray-500">
-      <p>Trends will be added here.</p>
-      {items && items.length > 0 && (
-        <ul className="mt-3 space-y-1.5">
-          {items.map((item) => (
-            <li key={item} className="flex items-center gap-2">
-              <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-gray-300" />
-              {item}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  )
 }
 
 const CONTENT = 'mx-auto max-w-6xl px-6 py-12 md:px-12 lg:px-16'
@@ -85,6 +67,7 @@ export default async function Page({ searchParams }: PageProps) {
     topicTrends,
     coCitationMatrix,
     organEntityMatrix,
+    resolutionTrend,
   ] = await Promise.all([
     getOrganHierarchy(),
     getBudgetHierarchy(),
@@ -92,6 +75,7 @@ export default async function Page({ searchParams }: PageProps) {
     getTopicTrends(),
     getEntityCoCitationMatrix(filters.ppb_version),
     getOrganEntityMatrix(filters.ppb_version),
+    getResolutionCitationTrend(filters.ppb_version),
   ])
 
   return (
@@ -171,13 +155,7 @@ export default async function Page({ searchParams }: PageProps) {
         </Suspense>
         <div className="mx-auto mt-10 max-w-6xl px-6 md:px-12 lg:px-16">
           <ExpandableCard title="Trends over time" variant="filled">
-            <ComingSoon
-              items={[
-                'Number of resolutions and cited mandates',
-                'Length of resolutions',
-                'Recurrence',
-              ]}
-            />
+            <ResolutionCitationTrend data={resolutionTrend} />
           </ExpandableCard>
         </div>
       </section>

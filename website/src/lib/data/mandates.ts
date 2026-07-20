@@ -1473,6 +1473,62 @@ export const getOrganEntityMatrix = cache(
     )()
 )
 
+export interface ResolutionCitationTrendYear {
+  year: number
+  /** All resolutions/decisions/etc. adopted that year (the "all resolutions" catalog). */
+  resolutions: number
+  /** Of those, how many are cited as mandates in the selected budget version. */
+  citedMandates: number
+}
+
+/**
+ * Per-year "resolutions vs. cited mandates" trend for the /secretariat "Trends
+ * over time" expander.
+ *
+ * Both series are per-year counts on `unified_documents.ppb_year` — the same
+ * column the year filter (start_year/end_year) keys on — so each bar's height
+ * equals what clicking that year shows in the explorer. They differ only by
+ * `mode`, reusing getYearStats so the counts can never drift from the explorer:
+ *   - resolutions   = mode 'all_resolutions' (catalog symbol families ∪ cited)
+ *   - citedMandates = mode 'active_mandates'  (cited in the selected version)
+ * citedMandates ⊆ resolutions by construction. This is a global overview — it
+ * ignores any active entity/organ/subject filter.
+ */
+const _getResolutionCitationTrendInner = async (
+  version: string | null
+): Promise<ResolutionCitationTrendYear[]> => {
+  const [all, cited] = await Promise.all([
+    getYearStats({ mode: 'all_resolutions', ppb_version: version ?? undefined }),
+    getYearStats({ mode: 'active_mandates', ppb_version: version ?? undefined }),
+  ])
+
+  const years = new Set<number>()
+  for (const y of Object.keys(all.yearDistribution)) years.add(Number(y))
+  for (const y of Object.keys(cited.yearDistribution)) years.add(Number(y))
+
+  return [...years]
+    .filter((y) => Number.isFinite(y))
+    .sort((a, b) => a - b)
+    .map((year) => ({
+      year,
+      resolutions: all.yearDistribution[String(year)] ?? 0,
+      citedMandates: cited.yearDistribution[String(year)] ?? 0,
+    }))
+}
+
+/**
+ * Cached wrapper for the resolutions-vs-cited-mandates trend. Keyed by version;
+ * persists for an hour like the other /secretariat directory fetches.
+ */
+export const getResolutionCitationTrend = cache(
+  (version?: string | null): Promise<ResolutionCitationTrendYear[]> =>
+    unstable_cache(
+      () => _getResolutionCitationTrendInner(version ?? null),
+      ['resolution-citation-trend-v1', version ?? 'default'],
+      { revalidate: 3600 }
+    )()
+)
+
 // ============================================================================
 // Filter Options Queries
 // ============================================================================
