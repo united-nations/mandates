@@ -16,6 +16,7 @@ import { getBudgetVersions } from './budget-documents'
 import { FOUNDATIONAL_PART_IN_DOCUMENT } from '@/lib/foundational'
 import { ORGAN_CATEGORIES } from '@/lib/organ-groups'
 import { SUBJECT_DOMAIN_LABELS } from '@/lib/filter-constants'
+import { pairKey, type CoCitationMatrix } from '@/lib/heatmap/matrix'
 import type { Mandate, FilterOptions, EntityWithCount, OrganWithCount, OrganGroup, CrossCitation, CitationBin, ApiResponse, BudgetLocation, BudgetPartNode, BudgetSectionNode, BudgetEntityNode, BudgetStream, BudgetPkoGroupNode, SubjectDomain, SubjectSubdomain, SubjectLeaf } from '@/types'
 
 // ============================================================================
@@ -1334,6 +1335,74 @@ export async function getCrossCitations(
     count: parseInt(row.count) || 0,
   }))
 }
+
+/**
+ * Entity × Entity co-citation matrix for a budget version.
+ *
+ * For the given version, counts how many distinct document symbols each pair of
+ * entities BOTH cite — i.e. |symbols(A) ∩ symbols(B)|. The diagonal (an entity
+ * with itself) is that entity's own distinct symbol count, returned separately
+ * in `totals`. This is the N×N generalisation of getCrossCitations and reuses
+ * the same version scoping (versionPredicateSql), so the counts match the
+ * entity filter and the cross-citation sidebar exactly. Symbols are normalised
+ * (collapsing a trailing "<digit> <LETTER>" spacing variant) so the same
+ * mandate cited with different spacing is counted once.
+ */
+const _getEntityCoCitationMatrixInner = async (
+  version: string | null
+): Promise<CoCitationMatrix> => {
+  // (entity, normalised symbol) pairs for the version — one row per distinct
+  // (entity, symbol). Shared by both the pair count and the per-entity totals.
+  const entSymCte = `
+    ent_sym AS (
+      SELECT DISTINCT c.entity,
+             REGEXP_REPLACE(c.ppb_full_document_symbol, '(\\d) ([A-Z])$', '\\1\\2') AS symbol
+      FROM ppb2026.source_document_citations c
+      WHERE c.entity IS NOT NULL AND c.entity != '' AND c.entity != 'NA'
+        AND ${versionPredicateSql('c', '$1')}
+    )
+  `
+
+  const [pairRows, totalRows] = await Promise.all([
+    queryMany<{ e1: string; e2: string; shared: string }>(
+      `WITH ${entSymCte}
+       SELECT a.entity AS e1, b.entity AS e2, COUNT(*)::int AS shared
+       FROM ent_sym a
+       JOIN ent_sym b ON a.symbol = b.symbol AND a.entity < b.entity
+       GROUP BY a.entity, b.entity`,
+      [version]
+    ),
+    queryMany<{ entity: string; total: string }>(
+      `WITH ${entSymCte}
+       SELECT entity, COUNT(*)::int AS total
+       FROM ent_sym
+       GROUP BY entity`,
+      [version]
+    ),
+  ])
+
+  const pairs: Record<string, number> = {}
+  for (const r of pairRows) pairs[pairKey(r.e1, r.e2)] = Number(r.shared)
+
+  const totals: Record<string, number> = {}
+  for (const r of totalRows) totals[r.entity] = Number(r.total)
+
+  return { entities: Object.keys(totals).sort(), pairs, totals }
+}
+
+/**
+ * Cached wrapper for the co-citation matrix. Keyed by version; the data changes
+ * infrequently, so it persists across requests for an hour (matching the other
+ * /secretariat directory fetches).
+ */
+export const getEntityCoCitationMatrix = cache(
+  (version?: string | null): Promise<CoCitationMatrix> =>
+    unstable_cache(
+      () => _getEntityCoCitationMatrixInner(version ?? null),
+      ['entity-cocitation-matrix-v1', version ?? 'default'],
+      { revalidate: 3600 }
+    )()
+)
 
 // ============================================================================
 // Filter Options Queries

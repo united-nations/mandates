@@ -12,6 +12,7 @@ import { Suspense } from 'react'
 
 import { HeaderStatsServer } from '@/app/_headerStatsServer'
 import { MandateExplorerServer } from '@/app/_mandateExplorerServer'
+import { CoCitationHeatmap } from '@/components/CoCitationHeatmap'
 import { EntitiesDirectory } from '@/components/EntitiesDirectory'
 import { ExpandableCard } from '@/components/ExpandableCard'
 import { ExplainerText } from '@/components/ExplainerText'
@@ -24,6 +25,7 @@ import { SectionBanner } from '@/components/SectionBanner'
 import { SubjectsCompact } from '@/components/SubjectsCompact'
 import {
   getBudgetHierarchy,
+  getEntityCoCitationMatrix,
   getMandatePageData,
   getOrganHierarchy,
   getSubjectHierarchy,
@@ -73,14 +75,20 @@ export default async function Page({ searchParams }: PageProps) {
   const dataPromise = getMandatePageData(filters)
 
   // Light directory fetches — awaited together; these sections render above the
-  // streamed explorer. All three are cached, so this is cheap on every request.
-  const [organGroups, budgetStreams, subjectDomains, topicTrends] =
-    await Promise.all([
-      getOrganHierarchy(),
-      getBudgetHierarchy(),
-      getSubjectHierarchy(),
-      getTopicTrends(),
-    ])
+  // streamed explorer. All are cached, so this is cheap on every request.
+  const [
+    organGroups,
+    budgetStreams,
+    subjectDomains,
+    topicTrends,
+    coCitationMatrix,
+  ] = await Promise.all([
+    getOrganHierarchy(),
+    getBudgetHierarchy(),
+    getSubjectHierarchy(),
+    getTopicTrends(),
+    getEntityCoCitationMatrix(filters.ppb_version),
+  ])
 
   return (
     <div>
@@ -125,8 +133,11 @@ export default async function Page({ searchParams }: PageProps) {
       <section className={CONTENT}>
         <EntitiesDirectory streams={budgetStreams} />
         <div className="mt-10">
-          <ExpandableCard title="Overlap between entities" variant="filled">
-            <ComingSoon />
+          <ExpandableCard
+            title="Co-citations between entities"
+            variant="filled"
+          >
+            <CoCitationHeatmap matrix={coCitationMatrix} />
           </ExpandableCard>
         </div>
       </section>
