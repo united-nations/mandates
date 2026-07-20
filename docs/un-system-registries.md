@@ -7,12 +7,17 @@ resolutions and decisions across the UN system, used to populate the
 dossiers under [`system-registries/`](system-registries/README.md); this
 file holds the scheme and the rollup.
 
-Method: two verified research rounds (July 2026). Round 1: four parallel
+Method: three verified research rounds (July 2026). Round 1: four parallel
 agents surveyed all 29 organizations for registry-like systems (every URL
 fetched; bot-blocking sites verified via headless browser). Round 2:
 targeted follow-up on budget linkage, results linkage, active-mandate
 status, and related-but-unlinked portals, written directly into the
-dossiers.
+dossiers. Gap-fill round (19 July 2026): six parallel agents added 13
+entities missing from the original survey — surfaced by comparing the
+`/system` list against CEB financial statistics and the UN system chart
+(`un-system-chart-navigator`). Grouping for the new entities follows the
+chart's `system_grouping`, which added two page sections (Other Entities,
+Research and Training).
 
 ## The point scheme
 
@@ -40,16 +45,18 @@ track implementation of recent decisions without maintaining any
 active-mandate registry. That violation is itself a finding — they track
 the new without knowing the stock.
 
-## Scores (round 2, July 2026)
+## Scores (July 2026; round 2 + gap-fill round)
+
+Entities marked † were added in the 19 July gap-fill round.
 
 | Score | Organizations |
 | --- | --- |
 | 3.5 | **UN-Habitat** (documents, budget, implementation, partial results) |
 | 3 | **WMO** (documents, mandates, implementation) |
-| 2 | **UN Secretariat / mandates.un.org** (documents, mandates), UNDP, UNEP, UNFPA, UNICEF (documents, implementation), FAO, ICAO, IMF, ITU (documents, mandates), WHO (documents, partial budget, partial results) |
-| 1.5 | ILO (documents, partial implementation) |
-| 1 | WFP, IFAD, IMO, UN Tourism, UNIDO, UPU, WIPO, World Bank, IAEA, ICC, IOM, ISA, OPCW, WTO (documents only) |
-| 0 | UNCDF (see UNDP), UNESCO (gap acknowledged, system proposed¹), CTBTO (members-only) |
+| 2 | **UN Secretariat / mandates.un.org** (documents, mandates), UNDP, UNEP, UNFPA, UNICEF (documents, implementation), FAO, ICAO, IMF, ITU (documents, mandates), WHO (documents, partial budget, partial results), UN Women† (documents, implementation) |
+| 1.5 | ILO (documents, partial implementation), UNFCCC† (documents, partial mandates) |
+| 1 | WFP, IFAD, IMO, UN Tourism, UNIDO, UPU, WIPO, World Bank, IAEA, ICC, IOM, ISA, OPCW, WTO (documents only); UNHCR†, UNOPS†, UNODC†, UNAIDS†, UNCTAD†, UNCCD† (documents only) |
+| 0 | UNCDF (see UNDP), UNESCO (gap acknowledged, system proposed¹), CTBTO (members-only); UNRWA†, ITC†, UNU†, UNITAR† (no scorable system), ITLOS† (judicial body — registry inapplicable) |
 
 ¹ 43 C/OEWG/2/INF.3.REV.2 (18 May 2026) recommends establishing "a
 centralized decision-tracking system … aligned with the United Nations
@@ -80,6 +87,41 @@ Mandate Register".
 - **ICC's omnibus resolution annex** is a yearly refreshed list of active
   intersessional mandates with per-mandate report-backs — a mandate
   registry on paper, not scored because it is not a system.
+
+### Gap-fill round (19 July 2026)
+
+- **The convention secretariats come closest among the new entities.**
+  **UNFCCC** (1.5) pairs a searchable 1,034-decision database with an
+  "SB Mandates" compilation flagging live-vs-concluded subsidiary-body
+  mandates — but the latter is a periodically-refreshed PDF (latest public
+  2022), so `'partial'`, not a queryable registry.
+- **UNODC's RDDB** is the strongest documents case in this round: a
+  queryable faceted full-text database (2,306 entries; facets Topic /
+  Mandate Type / Adopted By / Year, 1946–2026). "Mandate Type" means
+  Resolution-vs-Decision, *not* active-vs-superseded, so it stops at
+  documents.
+- **UN Women** (2) is a structural twin of UNDP/UNICEF: an Executive Board
+  Decision Monitoring Matrix tracking implementation of time-bound requests
+  per decision paragraph, no money, no active-mandate registry.
+- **Judicial and advisory bodies don't fit the scheme.** **ITLOS** issues
+  case law, not mandates, and its Meeting of States Parties takes only
+  administrative decisions — registry inapplicable (null). **ITC**'s Joint
+  Advisory Group is advisory only.
+- **Uncertainties flagged for human review:**
+  - The `documents` bar is where most borderline calls sit: UNAIDS,
+    UNITAR, UNCCD and ITC all publish per-session decision PDFs that a
+    stricter or looser reading could push across the `true`/`partial`/`0`
+    line — scored here for consistency with existing precedent (UNESCO 0,
+    UNDP/WTO documents = yes).
+  - **UNCCD** is absent from the `un-system-chart-navigator` dataset, and
+    **ITLOS** carries `on_display: false` there — open question whether
+    either belongs on the `/system` page. Included pending a call.
+  - A login-gated UNCTAD page (`/about/evaluation/mandates-trade-and-development-board`)
+    could be a hidden TDB-mandate compendium; not inspectable without
+    delegate access.
+  - Several org sites (UNRWA, UNAIDS UBRAF portal, UNOPS data portal) are
+    Cloudflare/JS-gated; a few findings rest on corroborated search
+    snippets rather than a live render — noted per dossier.
 
 ## Display scheme
 

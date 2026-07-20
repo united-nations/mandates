@@ -20,7 +20,7 @@ import Link from 'next/link'
 export const metadata: Metadata = {
   title: 'UN System Mandates',
   description:
-    'Trace mandates across the UN System: the governing bodies of every fund, programme, specialized agency and related organization, and how far each one’s mandates can be publicly traced.',
+    'Trace mandates across the UN System: the governing bodies of every fund, programme, specialized agency, related organization and other entity, and how far each one’s mandates can be publicly traced.',
 }
 
 const { bodies, organizations } = unSystemData as UnSystemData
@@ -30,6 +30,8 @@ const sections: { grouping: UnSystemGrouping; title: string | null }[] = [
   { grouping: 'fund-programme', title: 'Funds and Programmes' },
   { grouping: 'specialized-agency', title: 'Specialized Agencies' },
   { grouping: 'related-organization', title: 'Related Organizations' },
+  { grouping: 'other-entity', title: 'Other Entities' },
+  { grouping: 'research-training', title: 'Research and Training' },
 ]
 
 function resolveBody(entry: UnSystemBodyEntry): UnSystemBody {

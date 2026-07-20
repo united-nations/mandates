@@ -401,6 +401,8 @@ export type UnSystemGrouping =
   | 'fund-programme'
   | 'specialized-agency'
   | 'related-organization'
+  | 'other-entity'
+  | 'research-training'
 
 export interface UnSystemPage {
   label: string | null

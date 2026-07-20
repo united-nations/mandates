@@ -1636,6 +1636,801 @@
       },
       "registryNote": null,
       "related": []
+    },
+    {
+      "code": "UNHCR",
+      "name": "Office of the United Nations High Commissioner for Refugees",
+      "grouping": "other-entity",
+      "governingBodies": [
+        {
+          "ref": "un-ga"
+        },
+        {
+          "ref": "un-ecosoc"
+        },
+        {
+          "name": "Executive Committee (ExCom)",
+          "url": "https://www.unhcr.org/about-unhcr/governance-and-oversight/executive-committee",
+          "overview": true
+        }
+      ],
+      "officialPages": [
+        {
+          "label": "About UNHCR",
+          "url": "https://www.unhcr.org/about-unhcr"
+        },
+        {
+          "label": "Governance and oversight",
+          "url": "https://www.unhcr.org/about-unhcr/governance-and-oversight"
+        },
+        {
+          "label": "Executive Committee",
+          "url": "https://www.unhcr.org/about-unhcr/governance-and-oversight/executive-committee"
+        }
+      ],
+      "contacts": [
+        {
+          "label": "ExCom Secretariat (hqexcom@unhcr.org)",
+          "url": "mailto:hqexcom@unhcr.org"
+        },
+        {
+          "label": "Contact UNHCR",
+          "url": "https://www.unhcr.org/contact-us"
+        }
+      ],
+      "note": null,
+      "mandateRegistry": {
+        "name": "ExCom Documentation Collection",
+        "category": "Documents Collection",
+        "url": "https://www.unhcr.org/about-unhcr/governance-and-oversight/executive-committee/excom-plenary-sessions",
+        "points": {
+          "documents": {
+            "value": true,
+            "note": "ExCom session documents (conclusions, decisions, reports) compiled and browsable by session; ExCom Conclusions on International Protection also compiled thematically (7th ed., 2014, PDF) and indexed in Refworld."
+          },
+          "mandates": {
+            "value": false,
+            "note": "ExCom Conclusions are cumulative soft-law guidance; no in-force vs superseded/lapsed tracking of conclusions or decisions."
+          },
+          "budget": {
+            "value": false,
+            "note": "ExCom approves the annual programme budget target, but published budget/funding data is organized by operation/strategic direction, not by decision."
+          },
+          "implementation": {
+            "value": false,
+            "note": "Implementation reported via COMPASS results framework and Global Report at operational level, not per decision."
+          },
+          "results": {
+            "value": false,
+            "note": "Outcomes reported against the five Strategic Directions / COMPASS indicators, not against specific ExCom decisions."
+          }
+        },
+        "interoperability": null
+      },
+      "registryNote": null,
+      "related": [
+        {
+          "name": "UNHCR Planning, funding and results (Global Focus)",
+          "url": "https://www.unhcr.org/about-unhcr/planning-funding-and-results"
+        },
+        {
+          "name": "UNHCR Operational Data Portal",
+          "url": "https://data.unhcr.org/"
+        }
+      ]
+    },
+    {
+      "code": "UNRWA",
+      "name": "United Nations Relief and Works Agency for Palestine Refugees in the Near East",
+      "grouping": "other-entity",
+      "governingBodies": [
+        {
+          "ref": "un-ga"
+        },
+        {
+          "name": "Advisory Commission",
+          "url": "https://www.unrwa.org/who-we-are/advisory-commission",
+          "overview": true
+        }
+      ],
+      "officialPages": [
+        {
+          "label": "Who we are",
+          "url": "https://www.unrwa.org/who-we-are"
+        },
+        {
+          "label": "Advisory Commission",
+          "url": "https://www.unrwa.org/who-we-are/advisory-commission"
+        },
+        {
+          "label": "What is the mandate of UNRWA?",
+          "url": "https://www.unrwa.org/what-mandate-unrwa-0"
+        }
+      ],
+      "contacts": [
+        {
+          "label": "Contact UNRWA",
+          "url": "https://www.unrwa.org/contact-us"
+        }
+      ],
+      "note": null,
+      "mandateRegistry": null,
+      "registryNote": "No decision-tracking system. UNRWA has no executive board; its mandate is renewed en bloc by periodic GA resolution (currently through 30 June 2026) and the Advisory Commission is purely advisory, adopting no binding decisions. The Advisory Commission 'Key Documents' page is a short curated list of foundational texts (GA res 302(IV), Rules of Procedure, membership resolutions, host-country agreements), not a compilation of the decision corpus and with no in-force/superseded status.",
+      "related": [
+        {
+          "name": "UNRWA Transparency Portal",
+          "url": "https://open.unrwa.org/"
+        },
+        {
+          "name": "UNRWA Funding Trends",
+          "url": "https://www.unrwa.org/how-you-can-help/government-partners/funding-trends"
+        }
+      ]
+    },
+    {
+      "code": "UNOPS",
+      "name": "United Nations Office for Project Services",
+      "grouping": "other-entity",
+      "governingBodies": [
+        {
+          "ref": "undp-board"
+        }
+      ],
+      "officialPages": [
+        {
+          "label": "Executive Board (governance)",
+          "url": "https://www.unops.org/about/governance/executive-board"
+        }
+      ],
+      "contacts": [
+        {
+          "label": "New York Board and External Relations Office (NYBER)",
+          "email": "nyberteam@unops.org"
+        }
+      ],
+      "note": null,
+      "mandateRegistry": {
+        "name": "Executive Board Documents",
+        "category": "Document Repository",
+        "url": "https://www.unops.org/about/governance/executive-board/executive-board-documents",
+        "points": {
+          "documents": {
+            "value": true,
+            "note": null
+          },
+          "mandates": {
+            "value": false,
+            "note": "document archive only; no in-force/superseded status for decisions"
+          },
+          "budget": {
+            "value": false,
+            "note": "no financial amounts tied to specific decisions"
+          },
+          "implementation": {
+            "value": false,
+            "note": "no UNOPS decision-tracking table; the joint-board tracking tables track only their own agency's requests (UNDP's, UNFPA's), not the UNOPS segment"
+          },
+          "results": {
+            "value": false,
+            "note": "no outcome reporting against specific decisions"
+          }
+        },
+        "interoperability": null
+      },
+      "registryNote": null,
+      "related": [
+        {
+          "name": "UNOPS Data Portal",
+          "url": "https://data.unops.org/"
+        }
+      ]
+    },
+    {
+      "code": "UN Women",
+      "name": "United Nations Entity for Gender Equality and the Empowerment of Women",
+      "grouping": "other-entity",
+      "governingBodies": [
+        {
+          "ref": "un-ga"
+        },
+        {
+          "ref": "un-ecosoc"
+        },
+        {
+          "name": "Executive Board",
+          "url": "https://www.unwomen.org/en/executive-board",
+          "overview": true
+        }
+      ],
+      "officialPages": [
+        {
+          "label": "Executive Board",
+          "url": "https://www.unwomen.org/en/executive-board"
+        },
+        {
+          "label": "Executive Board documents",
+          "url": "https://www.unwomen.org/en/executive-board/documents"
+        }
+      ],
+      "contacts": [
+        {
+          "label": "Executive Board Secretariat",
+          "url": "https://www.unwomen.org/en/executive-board/overview"
+        }
+      ],
+      "note": null,
+      "mandateRegistry": {
+        "name": "Decision Monitoring Matrix",
+        "category": "Decision Tracking",
+        "url": "https://www.unwomen.org/en/executive-board/decisions",
+        "points": {
+          "documents": {
+            "value": true,
+            "note": null
+          },
+          "mandates": {
+            "value": false,
+            "note": "matrix sorts requests across sheets (Time-Bound / Ongoing / Completed / Non-Requests) by lifecycle, per paragraph; per-request status only, not an active-vs-superseded registry of decisions"
+          },
+          "budget": {
+            "value": false,
+            "note": "no monetary amounts tied to decisions; \"SPRED (Budget)\" appears only as a responsible division"
+          },
+          "implementation": {
+            "value": true,
+            "note": null
+          },
+          "results": {
+            "value": false,
+            "note": "Progress and follow-up action column records actions taken, not outcomes; results reporting is Strategic-Plan-based"
+          }
+        },
+        "interoperability": null
+      },
+      "registryNote": null,
+      "related": [
+        {
+          "name": "UN Women Data Hub",
+          "url": "https://data.unwomen.org/data-portal"
+        }
+      ]
+    },
+    {
+      "code": "UNAIDS",
+      "name": "Joint United Nations Programme on HIV/AIDS",
+      "grouping": "other-entity",
+      "governingBodies": [
+        {
+          "ref": "un-ecosoc"
+        },
+        {
+          "name": "Programme Coordinating Board",
+          "url": "https://www.unaids.org/en/whoweare/pcb",
+          "overview": true
+        }
+      ],
+      "officialPages": [
+        {
+          "label": "UNAIDS",
+          "url": "https://www.unaids.org/en"
+        },
+        {
+          "label": "Governance",
+          "url": "https://www.unaids.org/en/whoweare/governance"
+        },
+        {
+          "label": "Programme Coordinating Board",
+          "url": "https://www.unaids.org/en/whoweare/pcb"
+        }
+      ],
+      "contacts": [
+        {
+          "label": "Contact UNAIDS",
+          "url": "https://www.unaids.org/en/contactunaids"
+        }
+      ],
+      "note": null,
+      "mandateRegistry": {
+        "name": "PCB Meeting Archive",
+        "category": "Meeting archive",
+        "url": "https://www.unaids.org/en/whoweare/pcb",
+        "points": {
+          "documents": {
+            "value": true,
+            "note": "Per-session 'decisions, recommendations and conclusions' documents and all agenda documents posted per meeting back to 1995; a PDF-per-meeting archive, not a queryable database — borderline"
+          },
+          "mandates": {
+            "value": false,
+            "note": "No in-force/superseded registry of decision points; chronological session archive only"
+          },
+          "budget": {
+            "value": false,
+            "note": "Financial data (open.unaids.org) organized by UBRAF results area/cosponsor/country, not by PCB decision"
+          },
+          "implementation": {
+            "value": false,
+            "note": "Follow-up via UBRAF workplan/results reporting and ad-hoc decision-point papers, not a per-decision status system"
+          },
+          "results": {
+            "value": false,
+            "note": "UBRAF indicators report at output level against the strategy, not against specific PCB decisions"
+          }
+        },
+        "interoperability": null
+      },
+      "registryNote": null,
+      "related": [
+        {
+          "name": "UNAIDS Financial Dashboard",
+          "url": "https://open.unaids.org/"
+        }
+      ]
+    },
+    {
+      "code": "UNU",
+      "name": "United Nations University",
+      "grouping": "research-training",
+      "governingBodies": [
+        {
+          "ref": "un-ga"
+        },
+        {
+          "ref": "un-ecosoc"
+        },
+        {
+          "name": "UNU Council",
+          "url": "https://unu.edu/about/unu-council",
+          "overview": true
+        }
+      ],
+      "officialPages": [
+        {
+          "label": "UNU Charter",
+          "url": "https://unu.edu/about/unu-charter"
+        },
+        {
+          "label": "Annual Reports",
+          "url": "https://unu.edu/about/annual-reports"
+        }
+      ],
+      "contacts": [
+        {
+          "label": "Contact UNU",
+          "url": "https://unu.edu/about/contact-us"
+        }
+      ],
+      "note": null,
+      "mandateRegistry": null,
+      "registryNote": "No decision-tracking or mandate-registry system. The UNU Council (two sessions/year; reports annually to the GA, ECOSOC and the UNESCO Executive Board) does not publish its session records or decisions as a public series; the only public governance artifacts are chronological annual reports (2012–2025).",
+      "related": [
+        {
+          "name": "UNU Annual Reports",
+          "url": "https://unu.edu/about/annual-reports"
+        },
+        {
+          "name": "UNU Collections (repository)",
+          "url": "https://collections.unu.edu/"
+        }
+      ]
+    },
+    {
+      "code": "UNITAR",
+      "name": "United Nations Institute for Training and Research",
+      "grouping": "research-training",
+      "governingBodies": [
+        {
+          "ref": "un-ga"
+        },
+        {
+          "ref": "un-ecosoc"
+        },
+        {
+          "name": "Board of Trustees",
+          "url": "https://unitar.org/about/unitar/governance/board-trustees",
+          "overview": true
+        }
+      ],
+      "officialPages": [
+        {
+          "label": "Governance",
+          "url": "https://unitar.org/about/unitar/governance"
+        },
+        {
+          "label": "Board of Trustees session reports",
+          "url": "https://unitar.org/about/unitar/governance/board-trustees/board-reports"
+        }
+      ],
+      "contacts": [
+        {
+          "label": "Board Secretary (Brook Boyer)",
+          "url": "mailto:BOT@unitar.org"
+        }
+      ],
+      "note": null,
+      "mandateRegistry": null,
+      "registryNote": "No decision-tracking or mandate-registry system. The Board of Trustees publishes a complete chronological PDF series of session reports (sessions 40–66, 2002–2025, symboled e.g. UNITAR/BT/66/5) plus Finance Committee reports — the governance record, but a document series rather than a queryable system. Results Reports are organized by strategic-framework programme areas, not by Board decisions.",
+      "related": [
+        {
+          "name": "Board of Trustees session reports",
+          "url": "https://unitar.org/about/unitar/governance/board-trustees/board-reports"
+        },
+        {
+          "name": "UNITAR Results Reports",
+          "url": "https://unitar.org/results-evidence-learning/results-reports-and-other-reports"
+        }
+      ]
+    },
+    {
+      "code": "UNCTAD",
+      "name": "United Nations Conference on Trade and Development",
+      "grouping": "secretariat",
+      "governingBodies": [
+        {
+          "ref": "un-ga"
+        },
+        {
+          "name": "Conference (quadrennial)",
+          "url": "https://unctad.org/meetings-search?f%5B0%5D=product%3A342",
+          "overview": false
+        },
+        {
+          "name": "Trade and Development Board",
+          "url": "https://unctad.org/about/trade-and-development-board",
+          "overview": true
+        }
+      ],
+      "officialPages": [
+        {
+          "label": "Trade and Development Board",
+          "url": "https://unctad.org/about/trade-and-development-board"
+        },
+        {
+          "label": "Meetings",
+          "url": "https://unctad.org/meetings"
+        }
+      ],
+      "contacts": [
+        {
+          "label": "General enquiries",
+          "url": "mailto:unctadinfo@unctad.org"
+        }
+      ],
+      "note": "Permanent GA-established intergovernmental body; reports to the General Assembly through ECOSOC. The quadrennial Conference sets the four-year mandate (UNCTAD16, Oct 2025 → Bridgetown Covenant).",
+      "mandateRegistry": {
+        "name": "Meetings archive",
+        "category": "Meeting documents",
+        "url": "https://unctad.org/meetings",
+        "points": {
+          "documents": {
+            "value": true,
+            "note": "TDB decisions, commission agreed conclusions and Conference outcomes published as UN documents, browsable by session"
+          },
+          "mandates": {
+            "value": false,
+            "note": "no in-force/superseded registry; each quadrennial Conference outcome resets the mandate framework"
+          },
+          "budget": {
+            "value": false,
+            "note": "funded via the UN regular programme budget; no money attached to specific decisions"
+          },
+          "implementation": {
+            "value": false,
+            "note": "Working Party tracks programme performance and evaluation-recommendation follow-up at subprogramme level, not per decision"
+          },
+          "results": {
+            "value": false,
+            "note": "evaluation overviews and performance reporting are subprogramme/project level, not against specific decisions"
+          }
+        },
+        "interoperability": null
+      },
+      "registryNote": null,
+      "related": [
+        {
+          "name": "Reform Tracker (WTO TFA)",
+          "url": "https://unctad.org/topic/transport-and-trade-logistics/trade-facilitation/reform-tracker"
+        },
+        {
+          "name": "Evaluation at UNCTAD",
+          "url": "https://unctad.org/about/evaluation"
+        }
+      ]
+    },
+    {
+      "code": "UNODC",
+      "name": "United Nations Office on Drugs and Crime",
+      "grouping": "secretariat",
+      "governingBodies": [
+        {
+          "ref": "un-ecosoc"
+        },
+        {
+          "name": "Commission on Narcotic Drugs (CND)",
+          "url": "https://www.unodc.org/unodc/en/commissions/CND/index.html",
+          "overview": true
+        },
+        {
+          "name": "Commission on Crime Prevention and Criminal Justice (CCPCJ)",
+          "url": "https://www.unodc.org/unodc/en/commissions/CCPCJ/index.html"
+        }
+      ],
+      "officialPages": [
+        {
+          "label": "UNODC",
+          "url": "https://www.unodc.org/"
+        },
+        {
+          "label": "Commission on Narcotic Drugs",
+          "url": "https://www.unodc.org/unodc/en/commissions/CND/index.html"
+        },
+        {
+          "label": "Commission on Crime Prevention and Criminal Justice",
+          "url": "https://www.unodc.org/unodc/en/commissions/CCPCJ/index.html"
+        }
+      ],
+      "contacts": [
+        {
+          "label": "Secretariat to the Governing Bodies (unodc-sgb@un.org)",
+          "url": "https://www.unodc.org/rddb/en/about-us.html"
+        },
+        {
+          "label": "Contact UNODC",
+          "url": "https://www.unodc.org/unodc/en/about-unodc/contact-us.html"
+        }
+      ],
+      "note": null,
+      "mandateRegistry": {
+        "name": "Resolutions and Decisions Database (RDDB)",
+        "category": "Resolutions Database",
+        "url": "https://www.unodc.org/rddb/en/index.html",
+        "points": {
+          "documents": {
+            "value": true,
+            "note": "Queryable faceted full-text database (2,306 entries); facets Topic, Mandate Type (Resolution/Decision), Adopted By (CCPCJ/CND/ECOSOC/GA), Year 1946–2026"
+          },
+          "mandates": {
+            "value": false,
+            "note": "'Mandate Type' means Resolution vs Decision, not active vs superseded; no in-force/lapsed status recorded"
+          },
+          "budget": {
+            "value": false,
+            "note": "No financial fields; resolutions not linked to UNODC budgets"
+          },
+          "implementation": {
+            "value": false,
+            "note": "Text repository only; no follow-up/status column"
+          },
+          "results": {
+            "value": false,
+            "note": "Evaluations published by year/region/topic/programme, not against specific resolutions"
+          }
+        },
+        "interoperability": null
+      },
+      "registryNote": null,
+      "related": [
+        {
+          "name": "Database of UNODC Evaluation Reports",
+          "url": "https://www.unodc.org/unodc/en/evaluation/reports.html"
+        }
+      ]
+    },
+    {
+      "code": "ITC",
+      "name": "International Trade Centre",
+      "grouping": "secretariat",
+      "governingBodies": [
+        {
+          "name": "Joint Advisory Group (JAG)",
+          "url": "https://www.intracen.org/about-us/governance/the-joint-advisory-group-jag",
+          "overview": true
+        },
+        {
+          "ref": "un-ga"
+        }
+      ],
+      "officialPages": [
+        {
+          "label": "Governance",
+          "url": "https://www.intracen.org/about-us/governance"
+        },
+        {
+          "label": "Proposed Programme Budget",
+          "url": "https://www.intracen.org/about-us/governance/corporate-documents/proposed-programme-budget"
+        }
+      ],
+      "contacts": [
+        {
+          "label": "JAG secretariat",
+          "url": "mailto:jag@intracen.org"
+        }
+      ],
+      "note": "Joint subsidiary organ of the UN (via UNCTAD) and the WTO; Regular Budget funded equally by the UN and WTO, approved by the UN General Assembly and the WTO General Council.",
+      "mandateRegistry": null,
+      "registryNote": "No decision-tracking system. The Joint Advisory Group is advisory: it reviews the annual report and makes recommendations to the UNCTAD Trade and Development Board and the WTO Committee on Trade and Development. Per-session JAG documents are published on the governance pages (2019–2026 archive) but not compiled or statused as a register.",
+      "related": [
+        {
+          "name": "ITC Open Data Portal",
+          "url": "https://open.intracen.org/"
+        },
+        {
+          "name": "ITC on the IATI Registry",
+          "url": "https://www.iatiregistry.org/publisher/itc"
+        }
+      ]
+    },
+    {
+      "code": "UNFCCC",
+      "name": "United Nations Framework Convention on Climate Change Secretariat",
+      "grouping": "related-organization",
+      "governingBodies": [
+        {
+          "name": "Conference of the Parties (COP)",
+          "url": "https://unfccc.int/process/bodies/supreme-bodies/conference-of-the-parties-cop",
+          "overview": true
+        }
+      ],
+      "officialPages": [
+        {
+          "label": "UNFCCC",
+          "url": "https://unfccc.int/"
+        },
+        {
+          "label": "About the secretariat",
+          "url": "https://unfccc.int/about-us/about-the-secretariat"
+        }
+      ],
+      "contacts": [
+        {
+          "label": "Find a contact by issue",
+          "url": "https://unfccc.int/about-us/contact-and-directions/find-contact-by-issue"
+        }
+      ],
+      "note": null,
+      "mandateRegistry": {
+        "name": "Decisions",
+        "category": "Decisions Database",
+        "url": "https://unfccc.int/decisions",
+        "points": {
+          "documents": {
+            "value": true,
+            "note": "1,034 COP/CMP/CMA decisions, searchable by body/session and full-text, six languages"
+          },
+          "mandates": {
+            "value": "partial",
+            "note": "the secretariat's 'SB Mandates' compilation (internally titled 'Mandates Database') tracks which SBI/SBSTA mandates are live vs concluded, each tied to a decision reference — but it is a periodically-refreshed PDF (latest public 2022) covering only the subsidiary-body agenda, not a queryable system; the Decisions database itself carries no in-force/superseded flag"
+          },
+          "budget": {
+            "value": false,
+            "note": "no budget/financial fields; programme budget published as documents, not per decision"
+          },
+          "implementation": {
+            "value": false,
+            "note": "no per-decision implementation-status system; SBI reviews implementation broadly"
+          },
+          "results": {
+            "value": false,
+            "note": "no outcomes reported against specific decisions"
+          }
+        },
+        "interoperability": null
+      },
+      "registryNote": null,
+      "related": [
+        {
+          "name": "MAS Observers mandate search tool",
+          "url": "https://unfccc.int/process-and-meetings/parties-non-party-stakeholders/non-party-stakeholders/mas-observers-mandate-search-tool"
+        },
+        {
+          "name": "Documents portal",
+          "url": "https://unfccc.int/documents"
+        }
+      ]
+    },
+    {
+      "code": "UNCCD",
+      "name": "United Nations Convention to Combat Desertification Secretariat",
+      "grouping": "related-organization",
+      "governingBodies": [
+        {
+          "name": "Conference of the Parties (COP)",
+          "url": "https://www.unccd.int/convention/governance/cop",
+          "overview": true
+        }
+      ],
+      "officialPages": [
+        {
+          "label": "UNCCD",
+          "url": "https://www.unccd.int/"
+        },
+        {
+          "label": "Convention overview",
+          "url": "https://www.unccd.int/convention/overview"
+        }
+      ],
+      "contacts": [
+        {
+          "label": "Governance / process management bodies",
+          "url": "https://www.unccd.int/convention/governance/process-management-bodies"
+        }
+      ],
+      "note": null,
+      "mandateRegistry": {
+        "name": "COP decisions",
+        "category": "Decisions compilation",
+        "url": "https://www.unccd.int/convention/cop-decisions",
+        "points": {
+          "documents": {
+            "value": true,
+            "note": "COP/CRIC/CST decision and document texts compiled per session and publicly findable; per-session PDF listing, not a queryable/full-text system"
+          },
+          "mandates": {
+            "value": false,
+            "note": "no in-force/superseded tracking; only per-session decision listings"
+          },
+          "budget": {
+            "value": false,
+            "note": "budget adopted per COP but published as documents, not linked per decision"
+          },
+          "implementation": {
+            "value": false,
+            "note": "CRIC reviews implementation via PRAIS national reporting by Strategic Objective/LDN indicator per country, not per decision"
+          },
+          "results": {
+            "value": false,
+            "note": "PRAIS reports SO/LDN indicator results by country, not against specific decisions"
+          }
+        },
+        "interoperability": null
+      },
+      "registryNote": null,
+      "related": [
+        {
+          "name": "PRAIS 4 reporting platform",
+          "url": "https://reporting.unccd.int"
+        },
+        {
+          "name": "Official documents",
+          "url": "https://www.unccd.int/convention/official-documents"
+        }
+      ]
+    },
+    {
+      "code": "ITLOS",
+      "name": "International Tribunal for the Law of the Sea",
+      "grouping": "related-organization",
+      "governingBodies": [
+        {
+          "name": "Meeting of States Parties to UNCLOS",
+          "url": "https://www.itlos.org/en/main/the-tribunal/states-parties/",
+          "overview": true
+        }
+      ],
+      "officialPages": [
+        {
+          "label": "ITLOS",
+          "url": "https://www.itlos.org/"
+        }
+      ],
+      "contacts": [
+        {
+          "label": "Contact",
+          "url": "https://www.itlos.org/en/special/contact/"
+        }
+      ],
+      "note": null,
+      "mandateRegistry": null,
+      "registryNote": "ITLOS is a judicial body, not a mandate-issuing governing body: its output is case law (judgments, advisory opinions, orders), and its governing body — the Meeting of States Parties to UNCLOS (SPLOS) — takes only administrative, budgetary and electoral decisions. No mandate/decision registry exists or applies.",
+      "related": [
+        {
+          "name": "List of Cases",
+          "url": "https://www.itlos.org/en/main/cases/list-of-cases/"
+        },
+        {
+          "name": "Meeting of States Parties (SPLOS) documents",
+          "url": "https://www.un.org/Depts/los/meeting_states_parties/meeting_states_parties.htm"
+        }
+      ]
     }
   ]
 }
