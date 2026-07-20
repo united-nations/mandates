@@ -144,23 +144,21 @@ function PointLegend({ registry }: { registry: UnSystemRegistry }) {
  */
 export function UnSystemRegistryLegend() {
   return (
-    <div className="text-xs leading-relaxed text-gray-500">
-      <p className="mb-1.5">
+    <div className="text-sm leading-relaxed text-foreground">
+      <p className="mb-2">
         The registry score shows how far an organization&apos;s mandates can be
         traced publicly — one point for each of the following (filled dot = met,
         ring = partial, gray = not met):
       </p>
-      <ul className="flex flex-wrap gap-x-5 gap-y-1">
+      <ul className="space-y-1.5">
         {POINT_ORDER.map((key) => (
-          <li key={key} className="flex items-baseline gap-1.5">
+          <li key={key} className="flex items-baseline gap-2">
             <span
               className="h-2 w-2 shrink-0 self-center rounded-full bg-tier-4"
               aria-hidden
             />
             <span>
-              <span className="font-medium text-gray-600">
-                {POINT_LABELS[key]}
-              </span>
+              <span className="font-medium">{POINT_LABELS[key]}</span>
               {' — '}
               {POINT_DEFINITIONS[key]}
             </span>

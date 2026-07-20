@@ -182,10 +182,13 @@ export default function UnSystemPage() {
               </ul>
             </section>
           ))}
+        </div>
 
-          {/* Disclaimer, demoted to a footnote — kept honest without being
-              the page's opening statement. */}
-          <p className="max-w-3xl text-xs leading-relaxed text-gray-500 italic">
+        {/* Disclaimer, demoted to a footnote — kept honest without being the
+            page's opening statement. Narrow column: the wide format is only
+            for the tables. */}
+        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-16">
+          <p className="max-w-3xl text-sm leading-relaxed italic">
             This draft overview is for informational purposes only and
             exhaustiveness is not guaranteed. The relevant rules of the
             organization concerned should be consulted in order to establish the
