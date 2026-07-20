@@ -151,7 +151,7 @@ export default function UnSystemPage() {
           — and scores how openly each organization&apos;s mandates can be
           traced, from decision texts to results.
         </p>
-        <div className="mt-6 max-w-4xl">
+        <div className="mt-6 max-w-3xl">
           <UnSystemRegistryLegend />
         </div>
       </section>
