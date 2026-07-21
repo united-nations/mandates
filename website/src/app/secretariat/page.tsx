@@ -22,6 +22,7 @@ import { OrganEntityHeatmap } from '@/components/OrganEntityHeatmap'
 import { OrgansDirectory } from '@/components/OrgansDirectory'
 import { QuoteBlock } from '@/components/QuoteBlock'
 import { ResolutionCitationTrend } from '@/components/ResolutionCitationTrend'
+import { ResolutionRecurrenceTrend } from '@/components/ResolutionRecurrenceTrend'
 import { ResourceLink } from '@/components/ResourceLink'
 import { SectionBanner } from '@/components/SectionBanner'
 import { SubjectsCompact } from '@/components/SubjectsCompact'
@@ -32,6 +33,7 @@ import {
   getOrganEntityMatrix,
   getOrganHierarchy,
   getResolutionCitationTrend,
+  getResolutionRecurrenceTrend,
   getSubjectHierarchy,
   getTopicTrends,
 } from '@/lib/data/mandates'
@@ -68,6 +70,7 @@ export default async function Page({ searchParams }: PageProps) {
     coCitationMatrix,
     organEntityMatrix,
     resolutionTrend,
+    recurrenceTrend,
   ] = await Promise.all([
     getOrganHierarchy(),
     getBudgetHierarchy(),
@@ -76,6 +79,7 @@ export default async function Page({ searchParams }: PageProps) {
     getEntityCoCitationMatrix(filters.ppb_version),
     getOrganEntityMatrix(filters.ppb_version),
     getResolutionCitationTrend(filters.ppb_version),
+    getResolutionRecurrenceTrend(),
   ])
 
   return (
@@ -155,7 +159,20 @@ export default async function Page({ searchParams }: PageProps) {
         </Suspense>
         <div className="mx-auto mt-10 max-w-6xl px-6 md:px-12 lg:px-16">
           <ExpandableCard title="Trends over time" variant="filled">
-            <ResolutionCitationTrend data={resolutionTrend} />
+            <div className="space-y-10">
+              <div>
+                <h3 className="mb-3 text-sm font-semibold text-gray-900">
+                  Resolutions and cited mandates
+                </h3>
+                <ResolutionCitationTrend data={resolutionTrend} />
+              </div>
+              <div>
+                <h3 className="mb-3 text-sm font-semibold text-gray-900">
+                  Genuinely new resolutions
+                </h3>
+                <ResolutionRecurrenceTrend data={recurrenceTrend} />
+              </div>
+            </div>
           </ExpandableCard>
         </div>
       </section>

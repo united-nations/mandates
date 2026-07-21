@@ -1529,6 +1529,92 @@ export const getResolutionCitationTrend = cache(
     )()
 )
 
+export interface ResolutionRecurrenceTrendYear {
+  year: number
+  /** All resolutions/decisions/etc. adopted that year — same universe as the citation trend's grey. */
+  resolutions: number
+  /** Of those, how many are a first appearance rather than a re-adoption. */
+  genuinelyNew: number
+}
+
+/**
+ * Per-year "genuinely new vs. re-adopted" trend for the /secretariat "Trends
+ * over time" expander.
+ *
+ * A resolution counts as a REPETITION when its title-series appeared in an
+ * earlier year (`digitallibrary.resolution_series`: recurring, informatively
+ * titled, and `year > series_first_year`). Everything else is genuinely new:
+ * the first year of a series, a standalone, or a document with no recurrence
+ * data (S/PRST, whose titles are "Statement [made on behalf of the Security
+ * Council, at the Nth meeting…]" and carry no recurrable subject).
+ *
+ * The comparison is deliberately made at YEAR granularity, not per document.
+ * Many recurring instruments are re-adopted annually as one omnibus resolution
+ * split into lettered parts (A/RES/40/64[A]…[K] on apartheid); asking only
+ * "did this title appear in an earlier year?" treats those parts as a single
+ * annual instance, which per-document rules get wrong in both directions. The
+ * residual false positives — series whose within-year members are genuinely
+ * distinct subjects, e.g. "admission of new members" — are ~418 docs (~1% of
+ * the corpus), much of it in single-year groups that can never be repetitions.
+ *
+ * The grey series reuses the app's `all_resolutions` universe verbatim
+ * (`is_catalog_pattern` ∪ cited in the latest version) so it is identical to
+ * the citation trend's grey bars and to what the year filter shows.
+ */
+const _getResolutionRecurrenceTrendInner = async (): Promise<
+  ResolutionRecurrenceTrendYear[]
+> => {
+  const rows = await queryMany<{
+    year: number
+    resolutions: number
+    repetitions: number
+  }>(
+    `SELECT d.ppb_year AS year,
+            COUNT(DISTINCT d.ppb_full_document_symbol)::int AS resolutions,
+            COUNT(DISTINCT d.ppb_full_document_symbol) FILTER (
+              WHERE rs.is_recurring
+                AND rs.is_informative
+                AND rs.year > rs.series_first_year
+            )::int AS repetitions
+     FROM public.unified_documents d
+     LEFT JOIN digitallibrary.resolution_series rs
+       ON rs.document_symbol = d.ppb_full_document_symbol
+     WHERE d.ppb_year IS NOT NULL
+       AND (
+         d.is_catalog_pattern
+         OR EXISTS (
+           SELECT 1 FROM ppb2026.source_document_citations c_latest
+           WHERE c_latest.ppb_full_document_symbol = d.ppb_full_document_symbol
+             AND ${versionPredicateSql('c_latest', 'NULL')}
+         )
+       )
+     GROUP BY d.ppb_year
+     ORDER BY d.ppb_year`,
+    []
+  )
+
+  return rows.map((r) => {
+    const resolutions = Number(r.resolutions)
+    const repetitions = Number(r.repetitions)
+    return {
+      year: Number(r.year),
+      resolutions,
+      genuinelyNew: Math.max(0, resolutions - repetitions),
+    }
+  })
+}
+
+/** Cached wrapper for the recurrence trend. Version-independent (the grey
+ * universe uses the latest budget version by definition). */
+export const getResolutionRecurrenceTrend = cache(
+  (): Promise<ResolutionRecurrenceTrendYear[]> =>
+    unstable_cache(
+      _getResolutionRecurrenceTrendInner,
+      ['resolution-recurrence-trend-v1'],
+      { revalidate: 3600 }
+    )()
+)
+
 // ============================================================================
 // Filter Options Queries
 // ============================================================================
