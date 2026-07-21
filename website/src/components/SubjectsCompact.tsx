@@ -1,6 +1,10 @@
 'use client'
 
-import { SubjectTreemap } from '@/components/SubjectTreemap'
+import {
+  SubjectTreemap,
+  subdomainKey,
+  subdomainLabel,
+} from '@/components/SubjectTreemap'
 import { ChartSearchInput } from '@/components/ui/chart-search-input'
 import {
   Tooltip,
@@ -22,20 +26,23 @@ import { useMemo, useState } from 'react'
  * — the highest-count subjects as filter pills, tinted by domain and sorted so
  * same-domain pills cluster (domain names live only in tooltips).
  *
- * Default: the global top-N subjects across all domains. Select a domain in the
- * treemap → the pill-map swaps to that domain's own top subjects (so even
- * domains absent from the global top still reveal their heavy hitters). Search
- * always resolves the full set, ignoring the cap. Every pill links to the
+ * Default: the global top-N subjects across all domains. Select a sub-domain in
+ * the treemap → the pill-map swaps to that sub-domain's own top subjects (so
+ * even sub-domains absent from the global top still reveal their heavy hitters).
+ * Search always resolves the full set, ignoring the cap. Every pill links to the
  * explorer filtered to that subject.
  */
 
-const DEFAULT_TOP = 60 // pills shown by default and when a single domain is selected
+const DEFAULT_TOP = 60 // pills shown by default and when a sub-domain is selected
 const SEARCH_CAP = 300 // pills shown while searching
 
 interface FlatLeaf {
   subject: string
   count: number
+  /** Domain code — drives the pill colour and the display clustering. */
   code: string
+  /** Sub-domain key — the unit the treemap selects on. */
+  sub: string
 }
 
 interface SubjectsCompactProps {
@@ -43,7 +50,7 @@ interface SubjectsCompactProps {
 }
 
 export function SubjectsCompact({ domains }: SubjectsCompactProps) {
-  const [selectedDomain, setSelectedDomain] = useState<string | null>(null)
+  const [selectedSub, setSelectedSub] = useState<string | null>(null)
   const [search, setSearch] = useState('')
   const term = search.trim().toLowerCase()
   const { active, select } = useSectionFilter('subject')
@@ -56,28 +63,53 @@ export function SubjectsCompact({ domains }: SubjectsCompactProps) {
     return m
   }, [domains])
 
-  // Flatten every leaf once, tagged with its domain (for colour + grouping).
+  // Flatten every leaf once, tagged with its domain (for colour + grouping) and
+  // its sub-domain (the treemap's selection unit).
   const allLeaves = useMemo<FlatLeaf[]>(() => {
     const out: FlatLeaf[] = []
     for (const d of domains) {
       for (const l of d.directSubjects)
-        out.push({ subject: l.subject, count: l.count, code: d.code })
+        out.push({
+          subject: l.subject,
+          count: l.count,
+          code: d.code,
+          sub: subdomainKey(d.code, null),
+        })
       for (const sd of d.subdomains)
         for (const l of sd.subjects)
-          out.push({ subject: l.subject, count: l.count, code: d.code })
+          out.push({
+            subject: l.subject,
+            count: l.count,
+            code: d.code,
+            sub: subdomainKey(d.code, sd.label),
+          })
     }
     return out
   }, [domains])
 
-  // The visible pill set, given search / domain-selection / default.
+  // Display name + domain colour for whichever sub-domain is selected.
+  const subMeta = useMemo(() => {
+    const m = new Map<string, { label: string; code: string }>()
+    for (const d of domains) {
+      m.set(subdomainKey(d.code, null), {
+        label: `${d.label} — ${subdomainLabel(null).toLowerCase()}`,
+        code: d.code,
+      })
+      for (const sd of d.subdomains)
+        m.set(subdomainKey(d.code, sd.label), { label: sd.label, code: d.code })
+    }
+    return m
+  }, [domains])
+
+  // The visible pill set, given search / sub-domain selection / default.
   const pills = useMemo<FlatLeaf[]>(() => {
     let pool = allLeaves
     let cap = DEFAULT_TOP
     if (term) {
       pool = allLeaves.filter((l) => l.subject.toLowerCase().includes(term))
       cap = SEARCH_CAP
-    } else if (selectedDomain) {
-      pool = allLeaves.filter((l) => l.code === selectedDomain)
+    } else if (selectedSub) {
+      pool = allLeaves.filter((l) => l.sub === selectedSub)
     }
     // Highest-count first, then cluster by domain for display.
     const top = [...pool].sort((a, b) => b.count - a.count).slice(0, cap)
@@ -87,28 +119,26 @@ export function SubjectsCompact({ domains }: SubjectsCompactProps) {
         b.count - a.count
     )
     return top
-  }, [allLeaves, term, selectedDomain, domainOrder])
+  }, [allLeaves, term, selectedSub, domainOrder])
 
   const totalMatches = useMemo(() => {
     if (term)
       return allLeaves.filter((l) => l.subject.toLowerCase().includes(term))
         .length
-    if (selectedDomain)
-      return allLeaves.filter((l) => l.code === selectedDomain).length
+    if (selectedSub)
+      return allLeaves.filter((l) => l.sub === selectedSub).length
     return allLeaves.length
-  }, [allLeaves, term, selectedDomain])
+  }, [allLeaves, term, selectedSub])
 
-  const selectedLabel = selectedDomain
-    ? (SUBJECT_DOMAIN_LABELS[selectedDomain] ?? selectedDomain)
-    : null
+  const selectedMeta = selectedSub ? subMeta.get(selectedSub) : undefined
 
   return (
     <TooltipProvider delayDuration={200}>
       <div className="space-y-4">
         <SubjectTreemap
           domains={domains}
-          selectedDomain={selectedDomain}
-          onSelectDomain={setSelectedDomain}
+          selected={selectedSub}
+          onSelect={setSelectedSub}
           height={390}
         />
 
@@ -118,16 +148,16 @@ export function SubjectsCompact({ domains }: SubjectsCompactProps) {
             value={search}
             onChange={setSearch}
           />
-          {selectedLabel && !term && (
+          {selectedMeta && !term && (
             <button
               type="button"
-              onClick={() => setSelectedDomain(null)}
+              onClick={() => setSelectedSub(null)}
               className={cn(
                 'inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium text-white',
-                domainColor(selectedDomain!).bg
+                domainColor(selectedMeta.code).bg
               )}
             >
-              {selectedLabel}
+              {selectedMeta.label}
               <X className="h-3.5 w-3.5" />
             </button>
           )}
@@ -137,7 +167,7 @@ export function SubjectsCompact({ domains }: SubjectsCompactProps) {
           <div className="flex flex-wrap gap-1">
             {pills.map((leaf) => (
               <SubjectPill
-                key={`${leaf.code}-${leaf.subject}`}
+                key={`${leaf.sub}-${leaf.subject}`}
                 leaf={leaf}
                 active={active === leaf.subject}
                 onSelect={select}
@@ -155,9 +185,9 @@ export function SubjectsCompact({ domains }: SubjectsCompactProps) {
             ? `${totalMatches.toLocaleString()} matching subject${totalMatches === 1 ? '' : 's'}${
                 totalMatches > pills.length ? ` (showing ${pills.length})` : ''
               }`
-            : selectedDomain
-              ? `Top ${pills.length} of ${totalMatches.toLocaleString()} ${selectedLabel} subjects — search to reach the rest`
-              : `Top ${pills.length} of ${totalMatches.toLocaleString()} subjects by document count — select a domain above or search to go deeper`}
+            : selectedMeta
+              ? `Top ${pills.length} of ${totalMatches.toLocaleString()} ${selectedMeta.label} subjects — search to reach the rest`
+              : `Top ${pills.length} of ${totalMatches.toLocaleString()} subjects by document count — select a topic group above or search to go deeper`}
         </p>
       </div>
     </TooltipProvider>
