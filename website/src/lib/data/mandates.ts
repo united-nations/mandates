@@ -677,8 +677,8 @@ export async function getMandates(
   // symbols (distinct recids), so dedupe to keep the join 1:1.
   const seriesLookupCte = `series_lookup AS (
       SELECT DISTINCT ON (document_symbol)
-        document_symbol, series_key, un_body AS series_organ, series_count,
-        is_collection, has_newer, is_latest, superseded_by
+        document_symbol, series_key, un_body AS series_organ, doc_type,
+        series_count, is_collection, has_newer, is_latest, superseded_by
       FROM digitallibrary.resolution_series
       ORDER BY document_symbol, recid
     )`
@@ -713,7 +713,7 @@ export async function getMandates(
     ${seriesLookupCte},
     enriched AS (
       SELECT f.*,${seriesCols},
-        COALESCE(rs.series_key || '¦' || rs.series_organ,
+        COALESCE(rs.series_key || '¦' || rs.series_organ || '¦' || rs.doc_type,
                  'sym:' || f.ppb_full_document_symbol) AS grp_key
       FROM filtered_docs f
       LEFT JOIN series_lookup rs
@@ -1077,7 +1077,7 @@ export async function getResolutionSeries(
 ): Promise<ResolutionSeriesInfo | null> {
   const query = `
     WITH me AS (
-      SELECT series_key, un_body, is_collection, has_newer,
+      SELECT series_key, un_body, doc_type, is_collection, has_newer,
              is_latest, superseded_by
       FROM digitallibrary.resolution_series
       WHERE document_symbol = $1
@@ -1085,7 +1085,9 @@ export async function getResolutionSeries(
     )
     SELECT
       rs.document_symbol,
-      d.title,
+      -- SC resolutions have a number-only plain title ("Resolution 2825
+      -- (2026)"); display_title carries the descriptive one.
+      COALESCE(d.display_title, d.title) AS title,
       rs.year,
       rs.is_latest AS member_is_latest,
       rs.series_count,
@@ -1097,7 +1099,9 @@ export async function getResolutionSeries(
       me.superseded_by
     FROM me
     JOIN digitallibrary.resolution_series rs
-      ON rs.series_key = me.series_key AND rs.un_body = me.un_body
+      ON rs.series_key = me.series_key
+     AND rs.un_body = me.un_body
+     AND rs.doc_type = me.doc_type
     LEFT JOIN digitallibrary.documents d ON d.recid = rs.recid
     ORDER BY rs.year DESC, rs.document_symbol DESC
   `
