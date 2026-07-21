@@ -20,16 +20,33 @@ import { useMemo } from 'react'
  * style: one hue per domain, sub-domains as delineated sub-tiles of that hue
  * with a label. Purely proportional — small domains stay small.
  *
- * Clicking a domain selects it (parent filters the pill-map to it); clicking the
- * active domain clears it. The treemap doubles as the pill-map's colour legend.
+ * The sub-domain is the unit of interaction: domains group and colour the tiles
+ * but carry no label of their own (the domain name lives in the tooltip, and the
+ * shared hue does the grouping work). Clicking a sub-tile selects it, filtering
+ * the pill-map below; clicking the active one clears it.
  */
 
 interface SubjectTreemapProps {
   domains: SubjectDomain[]
-  selectedDomain: string | null
-  onSelectDomain: (code: string | null) => void
+  /** Key of the selected sub-domain, see subdomainKey(). */
+  selected: string | null
+  onSelect: (key: string | null) => void
   /** Fixed band height in px (width is fluid). */
   height?: number
+}
+
+/**
+ * Stable identity for one sub-domain. Sub-domain labels are only unique within
+ * a domain, and the leftover leaves that map to no sub-domain (label `null`)
+ * need a slot of their own.
+ */
+export function subdomainKey(code: string, label: string | null): string {
+  return `${code}::${label ?? ''}`
+}
+
+/** Display name for a sub-tile, including the no-sub-domain leftovers. */
+export function subdomainLabel(label: string | null): string {
+  return label ?? 'Other subjects'
 }
 
 interface SubTile {
@@ -43,8 +60,8 @@ interface SubTile {
 
 export function SubjectTreemap({
   domains,
-  selectedDomain,
-  onSelectDomain,
+  selected,
+  onSelect,
   height = 390,
 }: SubjectTreemapProps) {
   // Level 1: squarify the domains into the whole area. Level 2: squarify each
@@ -64,7 +81,9 @@ export function SubjectTreemap({
       kids.sort((a, b) => b.count - a.count)
 
       const subTiles: SubTile[] = squarify(
-        kids.filter((k) => k.count > 0).map((k) => ({ value: k.count, data: k })),
+        kids
+          .filter((k) => k.count > 0)
+          .map((k) => ({ value: k.count, data: k })),
         0,
         0,
         100,
@@ -86,38 +105,36 @@ export function SubjectTreemap({
     <div className="relative w-full bg-muted/20" style={{ height }}>
       {layout.map(({ domain, rect, subTiles }) => {
         const color = domainColor(domain.code)
-        const dimmed = selectedDomain !== null && selectedDomain !== domain.code
-        const active = selectedDomain === domain.code
-        const showDomainLabel = rect.width > 9 && rect.height > 7
         return (
-          <Tooltip key={domain.code} delayDuration={50} disableHoverableContent>
-            <TooltipTrigger asChild>
-              <button
-                type="button"
-                onClick={() => onSelectDomain(active ? null : domain.code)}
-                className={cn(
-                  'absolute cursor-pointer overflow-hidden text-left transition-[left,top,width,height,opacity] duration-300 ease-in-out hover:z-20 hover:brightness-110',
-                  color.bg,
-                  color.text,
-                  active && 'z-10 ring-2 ring-white ring-inset',
-                  dimmed && 'opacity-30'
-                )}
-                style={{
-                  left: `${rect.x}%`,
-                  top: `${rect.y}%`,
-                  width: `${rect.width}%`,
-                  height: `${rect.height}%`,
-                }}
-              >
-                {/* Level-2 sub-tiles: same hue, delineated by a thin inset rule. */}
-                {subTiles.map((s, i) => {
-                  const showSub = s.w > 16 && s.h > 12
-                  return (
-                    <div
-                      key={i}
+          // The domain rectangle itself is only a container: it bounds and
+          // colours its sub-tiles, but is not selectable or labelled.
+          <div
+            key={domain.code}
+            className="absolute overflow-hidden"
+            style={{
+              left: `${rect.x}%`,
+              top: `${rect.y}%`,
+              width: `${rect.width}%`,
+              height: `${rect.height}%`,
+            }}
+          >
+            {subTiles.map((s) => {
+              const key = subdomainKey(domain.code, s.label)
+              const active = selected === key
+              const dimmed = selected !== null && !active
+              const showLabel = s.w > 16 && s.h > 12
+              return (
+                <Tooltip key={key} delayDuration={50} disableHoverableContent>
+                  <TooltipTrigger asChild>
+                    <button
+                      type="button"
+                      onClick={() => onSelect(active ? null : key)}
                       className={cn(
-                        'absolute overflow-hidden ring-1 ring-white/25 ring-inset',
-                        color.bg
+                        'absolute cursor-pointer overflow-hidden text-left ring-1 ring-white/25 transition-opacity duration-300 ease-in-out ring-inset hover:z-20 hover:brightness-110',
+                        color.bg,
+                        color.text,
+                        active && 'z-10 ring-2 ring-white',
+                        dimmed && 'opacity-30'
                       )}
                       style={{
                         left: `${s.x}%`,
@@ -126,39 +143,32 @@ export function SubjectTreemap({
                         height: `${s.h}%`,
                       }}
                     >
-                      {showSub && s.label && (
+                      {showLabel && (
                         <span className="absolute bottom-0 left-0 px-1 py-0.5 text-[11px] leading-tight opacity-90">
-                          {s.label}
+                          {subdomainLabel(s.label)}
                         </span>
                       )}
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top" className="max-w-xs">
+                    <div className="text-[11px] text-muted-foreground">
+                      {domain.label}
                     </div>
-                  )
-                })}
-
-                {/* Domain label overlay: a solid colour box (SDG-treemap style)
-                    so it stays legible even where it sits over sub-tiles. */}
-                {showDomainLabel && (
-                  <span
-                    className={cn(
-                      'pointer-events-none absolute top-0 left-0 z-10 block max-w-full px-1.5 py-1 text-[14px] font-semibold leading-tight',
-                      color.bg,
-                      color.text
-                    )}
-                  >
-                    {domain.label}
-                  </span>
-                )}
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="top" className="max-w-xs">
-              <div className="font-semibold">{domain.label}</div>
-              <div className="mt-0.5">{domain.count.toLocaleString()} documents</div>
-              <div className="mt-1 flex items-center gap-1 text-un-blue">
-                <MousePointerClick className="h-3.5 w-3.5" />
-                {active ? 'Click to clear' : 'Click to filter subjects'}
-              </div>
-            </TooltipContent>
-          </Tooltip>
+                    <div className="font-semibold">
+                      {subdomainLabel(s.label)}
+                    </div>
+                    <div className="mt-0.5">
+                      {s.count.toLocaleString()} documents
+                    </div>
+                    <div className="mt-1 flex items-center gap-1 text-un-blue">
+                      <MousePointerClick className="h-3.5 w-3.5" />
+                      {active ? 'Click to clear' : 'Click to filter subjects'}
+                    </div>
+                  </TooltipContent>
+                </Tooltip>
+              )
+            })}
+          </div>
         )
       })}
     </div>

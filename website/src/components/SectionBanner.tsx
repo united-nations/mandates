@@ -45,15 +45,18 @@ export function SectionBanner({
         </div>
       </div>
 
-      {/* Desktop: overlay layout - dark text over the light left half of the image */}
+      {/* Desktop: overlay layout - dark text over the light left half of the
+          image. The banner is bounded by the same max-w-6xl content column as
+          the sections it introduces, so its edges line up with the page body
+          rather than bleeding to the viewport. */}
       <div className="hidden w-full md:block">
-        <div className="mx-auto max-w-[1440px]">
+        <div className="mx-auto max-w-6xl">
           <div className="relative aspect-[18/5] w-full overflow-hidden bg-gray-100">
             <Image
               src={imageSrc}
               alt=""
               fill
-              sizes="(min-width: 1440px) 1440px, 100vw"
+              sizes="(min-width: 1152px) 1152px, 100vw"
               className="object-cover"
               priority
             />

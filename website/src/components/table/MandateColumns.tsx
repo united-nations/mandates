@@ -73,7 +73,7 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
     id: 'detail',
     label: '',
     defaultVisible: true,
-    widthClass: 'w-[40px]',
+    widthClass: 'w-[92px]',
     align: 'center',
   },
   // Hidden by default
