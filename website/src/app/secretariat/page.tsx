@@ -10,13 +10,11 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import { Suspense } from 'react'
 
-import { HeaderStatsServer } from '@/app/_headerStatsServer'
 import { MandateExplorerServer } from '@/app/_mandateExplorerServer'
 import { CoCitationHeatmap } from '@/components/CoCitationHeatmap'
 import { EntitiesDirectory } from '@/components/EntitiesDirectory'
 import { ExpandableCard } from '@/components/ExpandableCard'
 import { ExplainerText } from '@/components/ExplainerText'
-import { HeaderStatsSkeleton } from '@/components/HeaderStats.skeleton'
 import { LoadingSkeleton } from '@/components/LoadingSkeleton'
 import { OrganEntityHeatmap } from '@/components/OrganEntityHeatmap'
 import { OrgansDirectory } from '@/components/OrgansDirectory'
@@ -54,11 +52,11 @@ export default async function Page({ searchParams }: PageProps) {
   const params = await searchParams
   const filters = parseSearchParams(params)
 
-  // Heavy explorer fetch — do NOT await; the Suspense boundary in section 3
+  // Heavy explorer fetch — do NOT await; the Suspense boundary in section 1
   // streams a skeleton and swaps in the data when it resolves.
   const dataPromise = getMandatePageData(filters)
 
-  // Light directory fetches — awaited together; these sections render above the
+  // Light directory fetches — awaited together; these sections render below the
   // streamed explorer. All are cached, so this is cheap on every request.
   const [
     organGroups,
@@ -85,60 +83,15 @@ export default async function Page({ searchParams }: PageProps) {
         <h1 className="mb-6 text-4xl font-bold tracking-tight text-foreground">
           {explainerTexts.mainHeader.headline}
         </h1>
-        <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
-          <ExplainerText />
-          <div className="w-full shrink-0 sm:w-64">
-            <Suspense fallback={<HeaderStatsSkeleton />}>
-              <HeaderStatsServer dataPromise={dataPromise} />
-            </Suspense>
-          </div>
-        </div>
+        <ExplainerText />
       </section>
 
-      {/* 1 — Organs */}
-      <SectionBanner
-        id="organs"
-        imageSrc="/images/banners/hero-banner-homepage.png"
-        title="Which organs are creating mandates?"
-        description="The intergovernmental organs and bodies that adopt Secretariat mandates. Select one to filter the mandates below."
-      />
-      <section className={CONTENT}>
-        <OrgansDirectory groups={organGroups} />
-        <div className="mt-10">
-          <ExpandableCard
-            title="Citation patterns between entities and organs"
-            variant="filled"
-          >
-            <OrganEntityHeatmap matrix={organEntityMatrix} />
-          </ExpandableCard>
-        </div>
-      </section>
-
-      {/* 2 — Entities */}
-      <SectionBanner
-        id="entities"
-        imageSrc="/images/banners/hero-banner-secretariat-expenses.png"
-        title="Which entities are implementing mandates?"
-        description="Every budget-holding entity, grouped by the United Nations programme budget structure. Select one to filter the mandates below."
-      />
-      <section className={CONTENT}>
-        <EntitiesDirectory streams={budgetStreams} />
-        <div className="mt-10">
-          <ExpandableCard
-            title="Co-citations between entities"
-            variant="filled"
-          >
-            <CoCitationHeatmap matrix={coCitationMatrix} />
-          </ExpandableCard>
-        </div>
-      </section>
-
-      {/* 3 — Mandates (the streamed explorer) */}
+      {/* 1 — Mandates (the streamed explorer) */}
       <SectionBanner
         id="mandates"
         imageSrc="/images/banners/hero-banner-system-revenue.png"
-        title="Which mandates do they implement?"
-        description="The resolutions, decisions, and other documents that UN entities cite in support of their resource requirements. Search and filter the full registry."
+        title="Which mandates is the UN working on?"
+        description="The resolutions, decisions, and other documents that UN entities cite in support of their resource requirements. Search and filter the full registry, or narrow it by entity, organ, or topic using the sections below."
       />
       {/* The explorer manages its own widths internally: the stat cards sit in
           the narrow column, the table and its controls break out to the wide
@@ -156,6 +109,44 @@ export default async function Page({ searchParams }: PageProps) {
         <div className="mx-auto mt-10 max-w-6xl px-6 md:px-12 lg:px-16">
           <ExpandableCard title="Trends over time" variant="filled">
             <ResolutionCitationTrend data={resolutionTrend} />
+          </ExpandableCard>
+        </div>
+      </section>
+
+      {/* 2 — Entities */}
+      <SectionBanner
+        id="entities"
+        imageSrc="/images/banners/hero-banner-secretariat-expenses.png"
+        title="Which entities are implementing the mandates?"
+        description="Every budget-holding entity, grouped by the United Nations programme budget structure. Select one to filter the mandates above."
+      />
+      <section className={CONTENT}>
+        <EntitiesDirectory streams={budgetStreams} />
+        <div className="mt-10">
+          <ExpandableCard
+            title="Co-citations between entities"
+            variant="filled"
+          >
+            <CoCitationHeatmap matrix={coCitationMatrix} />
+          </ExpandableCard>
+        </div>
+      </section>
+
+      {/* 3 — Organs */}
+      <SectionBanner
+        id="organs"
+        imageSrc="/images/banners/hero-banner-homepage.png"
+        title="Which organs are creating the mandates?"
+        description="The intergovernmental organs and bodies that adopt Secretariat mandates. Select one to filter the mandates above."
+      />
+      <section className={CONTENT}>
+        <OrgansDirectory groups={organGroups} />
+        <div className="mt-10">
+          <ExpandableCard
+            title="Citation patterns between entities and organs"
+            variant="filled"
+          >
+            <OrganEntityHeatmap matrix={organEntityMatrix} />
           </ExpandableCard>
         </div>
       </section>
@@ -264,7 +255,7 @@ export default async function Page({ searchParams }: PageProps) {
             />
             <ResourceLink
               title="UN80 Initiative"
-              description="The Secretary-General's initiative to strengthen the UN across mandates, efficiencies, and structure."
+              description="Building a simpler, more effective and more coherent UN System."
               href="https://www.un.org/un80-initiative/en"
               icon={Landmark}
             />

@@ -317,9 +317,11 @@ function streamContainsActive(
 }
 
 /**
- * "Section 9 · Programme 7 — Economic and social affairs" when the two titles
- * agree, which they do for most sections. Where they genuinely differ both are
- * shown, since collapsing them would lose the programme name.
+ * "Programme 7 · Section 9 — Economic and social affairs" when the two titles
+ * agree, which they do for most sections. Both a section title and (wherever a
+ * programme is set) a programme title are always present in the data, so where
+ * the two genuinely differ both are shown — collapsing them would lose the
+ * programme name. Programme leads, as in the budget's own numbering.
  */
 export function sectionLabel(section: {
   section: string
@@ -329,18 +331,18 @@ export function sectionLabel(section: {
 }): string {
   const prefix =
     section.programme !== null
-      ? `Section ${section.section} · Programme ${section.programme}`
+      ? `Programme ${section.programme} · Section ${section.section}`
       : `Section ${section.section}`
 
+  const programmeTitle = section.programme_title?.trim()
   const sameTitle =
-    section.programme_title !== null &&
-    section.programme_title.toLowerCase() ===
-      section.section_title.toLowerCase()
+    programmeTitle !== undefined &&
+    programmeTitle.toLowerCase() === section.section_title.trim().toLowerCase()
 
-  if (section.programme_title === null || sameTitle) {
+  if (!programmeTitle || sameTitle) {
     return `${prefix} — ${section.section_title}`
   }
-  return `${prefix} — ${section.section_title} / ${section.programme_title}`
+  return `${prefix} — ${programmeTitle} / ${section.section_title}`
 }
 
 interface TreeRowProps {

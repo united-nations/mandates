@@ -216,8 +216,10 @@ export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
         </div>
 
         {/* Wide band: the table and everything that operates on it — search,
-            the group/scope toggles, and pagination — get the extra width. */}
-        <div className="mx-auto max-w-7xl px-6 md:px-12 lg:px-16">
+            the group/scope toggles, and pagination — get the extra width. The
+            table is the centrepiece, so it breaks out further than the rest of
+            the page (which sits at max-w-6xl, as do the section banners). */}
+        <div className="mx-auto max-w-[100rem] px-6 md:px-12 lg:px-16">
           <div className="mb-4">
             <FilterControls
               entitiesData={allEntities}
