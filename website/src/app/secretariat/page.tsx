@@ -255,7 +255,7 @@ export default async function Page({ searchParams }: PageProps) {
             />
             <ResourceLink
               title="UN80 Initiative"
-              description="Building a simpler, more effective and more coherent UN System for people and planet."
+              description="Building a simpler, more effective and more coherent UN System."
               href="https://www.un.org/un80-initiative/en"
               icon={Landmark}
             />
