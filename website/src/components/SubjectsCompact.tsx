@@ -33,7 +33,7 @@ import { useMemo, useState } from 'react'
  * explorer filtered to that subject.
  */
 
-const DEFAULT_TOP = 60 // pills shown by default and when a sub-domain is selected
+const DEFAULT_TOP = 30 // pills shown by default and when a sub-domain is selected
 const SEARCH_CAP = 300 // pills shown while searching
 
 interface FlatLeaf {

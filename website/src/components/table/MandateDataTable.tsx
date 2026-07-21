@@ -458,7 +458,18 @@ function CellContent({
     }
 
     case 'detail':
-      return <ChevronRight className="h-4 w-4 text-muted-foreground" />
+      // The whole row navigates (see handleRowClick); this is the visible
+      // affordance for it, so the click is left to bubble.
+      return (
+        <button
+          type="button"
+          tabIndex={-1}
+          className="inline-flex items-center gap-0.5 rounded border border-gray-200 bg-white px-2 py-0.5 text-xs font-medium whitespace-nowrap text-muted-foreground transition-colors group-hover:border-un-blue group-hover:text-un-blue"
+        >
+          Details
+          <ChevronRight className="h-3.5 w-3.5" />
+        </button>
+      )
 
     case 'subjects':
       return (

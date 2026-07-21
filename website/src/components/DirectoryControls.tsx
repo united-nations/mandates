@@ -52,13 +52,20 @@ export function DirectoryToggle({
 /**
  * Tooltip body for a selectable directory node: the full name, an optional set
  * of sub-level pills (an entity's subprogrammes), and the click hint.
+ *
+ * The pills are filters in their own right. Radix keeps the content hoverable,
+ * so the pointer can travel from the trigger into the tooltip and click one.
  */
 export function ClickTooltip({
   name,
   pills,
+  onPillSelect,
+  activePill,
 }: {
   name?: string | null
-  pills?: string[]
+  pills?: { label: string; value: string }[]
+  onPillSelect?: (value: string) => void
+  activePill?: string
 }) {
   const hasPills = pills !== undefined && pills.length > 0
   return (
@@ -67,12 +74,23 @@ export function ClickTooltip({
       {hasPills && (
         <div className="mt-1.5 flex flex-wrap gap-1">
           {pills.map((pill) => (
-            <span
-              key={pill}
-              className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] text-gray-700"
+            <a
+              key={pill.value}
+              href={`/secretariat?subprogramme=${encodeURIComponent(pill.value)}`}
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                onPillSelect?.(pill.value)
+              }}
+              className={cn(
+                'rounded-full px-2 py-0.5 text-xs transition-colors',
+                activePill === pill.value
+                  ? 'bg-un-blue text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-un-blue hover:text-white'
+              )}
             >
-              {pill}
-            </span>
+              {pill.label}
+            </a>
           ))}
         </div>
       )}

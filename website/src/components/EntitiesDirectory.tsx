@@ -172,7 +172,11 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
     pkoGroups.length > 0 ? (
       <div>
         <div className="mb-3">
-          <StreamHeading type="pko" />
+          <StreamHeading
+            type="pko"
+            active={activeDoc === 'pko'}
+            onSelect={() => selectDoc('pko')}
+          />
         </div>
         <div className="space-y-5">
           {pkoGroups.map((group) =>
@@ -213,7 +217,11 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
     !term && planStream ? (
       <div>
         <div className="mb-3">
-          <StreamHeading type="plan_outline" />
+          <StreamHeading
+            type="plan_outline"
+            active={activeDoc === 'plan_outline'}
+            onSelect={() => selectDoc('plan_outline')}
+          />
         </div>
         <Tooltip>
           <TooltipTrigger asChild>
@@ -274,7 +282,11 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
             {ppbPartNodes.length > 0 && (
               <div>
                 <div className="mb-3">
-                  <StreamHeading type="ppb" />
+                  <StreamHeading
+                    type="ppb"
+                    active={activeDoc === 'ppb'}
+                    onSelect={() => selectDoc('ppb')}
+                  />
                 </div>
                 {compact ? (
                   <div className="columns-2 gap-x-8">
@@ -363,10 +375,29 @@ function FilterHeading({
   )
 }
 
-function StreamHeading({ type }: { type: keyof typeof BUDGET_STREAM_LABELS }) {
+/**
+ * A budget stream (Programme Budget / Peacekeeping / Plan Outline). The heading
+ * filters the mandates to everything cited from that stream — the `budget_document`
+ * facet, the top of the budget-location hierarchy.
+ */
+function StreamHeading({
+  type,
+  active,
+  onSelect,
+}: {
+  type: keyof typeof BUDGET_STREAM_LABELS
+  active: boolean
+  onSelect: () => void
+}) {
   return (
     <h2 className="border-b border-gray-200 pb-1.5 text-xs font-semibold tracking-wide text-un-blue uppercase">
-      {BUDGET_STREAM_LABELS[type]}
+      <FilterHeading
+        href={`/secretariat?budget_document=${encodeURIComponent(type)}`}
+        active={active}
+        onSelect={onSelect}
+      >
+        {BUDGET_STREAM_LABELS[type]}
+      </FilterHeading>
     </h2>
   )
 }
@@ -426,7 +457,7 @@ function EntityGroup({
 
 /**
  * Wraps an entity anchor in the shared hover tooltip: full name, the entity's
- * subprogrammes as pills, and the click hint.
+ * subprogrammes as their own filter pills, and the click hint.
  */
 function EntityAnchor({
   entity,
@@ -439,6 +470,11 @@ function EntityAnchor({
   onSelect: (value: string) => void
   children: React.ReactNode
 }) {
+  // Read here rather than threading two more props through EntityGroup: the
+  // hook is just filter context, and only this component needs it.
+  const { active: activeSub, select: selectSub } =
+    useSectionFilter('subprogramme')
+
   return (
     <Tooltip>
       <TooltipTrigger asChild>
@@ -455,7 +491,12 @@ function EntityAnchor({
       </TooltipTrigger>
       <ClickTooltip
         name={entity.entity_long}
-        pills={entity.subprogrammes.map((sp) => sp.subprogramme)}
+        pills={entity.subprogrammes.map((sp) => ({
+          label: sp.subprogramme,
+          value: sp.subprogramme,
+        }))}
+        onPillSelect={selectSub}
+        activePill={activeSub}
       />
     </Tooltip>
   )
