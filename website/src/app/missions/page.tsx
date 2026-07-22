@@ -4,6 +4,15 @@ import {
   MissionDeploymentSpark,
   MissionMandateVsDeployedPanel,
 } from '@/components/MissionDeploymentChart'
+import { MissionMap } from '@/components/MissionMap'
+import {
+  MissionRenewalStrip,
+  RENEWAL_BUCKETS,
+} from '@/components/MissionRenewalStrip'
+import {
+  MissionTargets,
+  type MissionTargetsEntry,
+} from '@/components/MissionTargets'
 import {
   getMissionImplementation,
   latestBudgetExecution,
@@ -16,6 +25,13 @@ import {
   undocsUrl,
   type Mission,
 } from '@/lib/mission-implementation'
+import { getMissionMap } from '@/lib/mission-map'
+import {
+  latestTargetPeriod,
+  targetsStatusTally,
+  type TargetStatus,
+} from '@/lib/mission-targets'
+import { getMissionChain, renewalsGenerated } from '@/lib/sc-renewals'
 
 export const metadata: Metadata = {
   title: 'Peace Operation Mandates — Implementation',
@@ -148,6 +164,49 @@ export default function MissionsPage() {
         (latestPersonnel(a)?.approvedUniformed ?? 0)
     )
 
+  // Renewal "mini heartbeat" join: chain id === mission acronym.
+  const renewNow = renewalsGenerated()
+
+  // Map with timeline.
+  const mapData = getMissionMap()
+
+  // Semantic target classification — latest reported RBB period per mission.
+  const statusKeys: TargetStatus[] = [
+    'met',
+    'partial',
+    'not_met',
+    'not_assessable',
+  ]
+  const targetEntries: MissionTargetsEntry[] = missions
+    .map((m) => {
+      const latest = latestTargetPeriod(m.acronym)
+      return latest
+        ? {
+            acronym: m.acronym,
+            name: m.name,
+            location: m.location,
+            latest,
+          }
+        : null
+    })
+    .filter((e): e is MissionTargetsEntry => e !== null)
+    .sort(
+      (a, b) =>
+        b.latest.counts.not_met - a.latest.counts.not_met ||
+        b.latest.records.length - a.latest.records.length
+    )
+  const targetTotals = statusKeys.reduce(
+    (acc, k) => {
+      acc[k] = targetEntries.reduce((s, e) => s + e.latest.counts[k], 0)
+      return acc
+    },
+    { met: 0, partial: 0, not_met: 0, not_assessable: 0 } as Record<
+      TargetStatus,
+      number
+    >
+  )
+  const fullTally = targetsStatusTally()
+
   return (
     <div className="py-6">
       {/* Header */}
@@ -205,16 +264,64 @@ export default function MissionsPage() {
         ))}
       </section>
 
+      {/* Map with timeline */}
+      <section className="mt-14">
+        <h2 className="text-xl font-semibold text-gray-900">
+          Where the blue helmets go, and when
+        </h2>
+        <p className="mt-2 max-w-3xl text-sm text-gray-500">
+          Every UN field mission in the register, placed at its area of
+          operations. Drag the slider or press play to move through time: a
+          marker appears for each year a mission was mandated, sized by the
+          uniformed personnel deployed that year and coloured by whether the
+          mission is still open today or has since closed. The map runs from{' '}
+          {mapData.minYear} to {mapData.maxYear}; deployment sizing begins in
+          2010, where the monthly uniformed series starts.
+        </p>
+        <div className="mt-5">
+          <MissionMap data={mapData} />
+        </div>
+        <p className="mt-3 max-w-3xl text-[11px] leading-relaxed text-gray-400">
+          Source: mission register and monthly uniformed deployment, UN Peace
+          &amp; Security Data Hub (DPPA-DPO). Mission coordinates are a curated
+          host-country / headquarters table (the deployment data carries no
+          per-location geometry). Land outline: Natural Earth 110m (public
+          domain), equirectangular projection. Special political missions and
+          pre-2010 years show a small marker (no uniformed strength reported).
+        </p>
+      </section>
+
       {/* Active missions table */}
-      <section className="mt-12">
+      <section className="mt-14">
         <h2 className="text-xl font-semibold text-gray-900">Active missions</h2>
         <p className="mt-2 max-w-3xl text-sm text-gray-500">
           Peacekeeping operations first, then special political missions.
           Strength is the actual average uniformed personnel against the
           approved (mandated) uniformed ceiling in the latest reported budget
           year; targets are the mission&rsquo;s own results-based-budgeting
-          indicators (2023/24).
+          indicators (2023/24). The bar under each renewal count is the
+          mission&rsquo;s renewal history — one segment per Security Council
+          extension, coloured by how long a leash the Council set:
         </p>
+        <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-gray-600">
+          {RENEWAL_BUCKETS.map((b) => (
+            <span key={b.label} className="inline-flex items-center gap-1.5">
+              <span
+                aria-hidden
+                className="inline-block h-3 w-3 rounded-sm"
+                style={{ backgroundColor: b.color }}
+              />
+              {b.label}
+            </span>
+          ))}
+          <span className="inline-flex items-center gap-1.5 text-gray-500">
+            <span
+              aria-hidden
+              className="inline-block h-3 border-l border-dashed border-trout"
+            />
+            data cut-off
+          </span>
+        </div>
         <div className="mt-4 overflow-x-auto">
           <table className="w-full min-w-[900px] border-collapse text-sm">
             <thead>
@@ -289,6 +396,12 @@ export default function MissionsPage() {
                             >
                               {m.renewals[m.renewals.length - 1].symbol}
                             </a>
+                            <div className="mt-1">
+                              <MissionRenewalStrip
+                                chain={getMissionChain(m.acronym)}
+                                now={renewNow}
+                              />
+                            </div>
                           </div>
                         ) : (
                           <span
@@ -399,6 +512,43 @@ export default function MissionsPage() {
         </div>
       </section>
 
+      {/* Which targets were met — semantic classification */}
+      <section className="mt-14">
+        <h2 className="text-xl font-semibold text-gray-900">
+          Which targets were met — and which were missed
+        </h2>
+        <p className="mt-2 max-w-3xl text-sm text-gray-500">
+          The missions report against their own results-based-budgeting
+          indicators each year. Rather than a bare met/missed tally, each
+          indicator here is read for what it asks (is a higher number better, a
+          lower one, or a target band?) and graded met, partially met (within
+          10% of target), or not met, with the reason drawn from the
+          planned-vs-actual figures. Across the full history of{' '}
+          {(
+            fullTally.met +
+            fullTally.not_met +
+            (fullTally.partial ?? 0) +
+            (fullTally.not_assessable ?? 0)
+          ).toLocaleString('en-US')}{' '}
+          indicator-periods, {fullTally.met?.toLocaleString('en-US')} were met,{' '}
+          {fullTally.partial?.toLocaleString('en-US')} partially met and{' '}
+          {fullTally.not_met?.toLocaleString('en-US')} missed. Expand a mission
+          for its latest period, target by target.
+        </p>
+        <div className="mt-5">
+          <MissionTargets entries={targetEntries} totals={targetTotals} />
+        </div>
+        <p className="mt-3 max-w-3xl text-[11px] leading-relaxed text-gray-400">
+          Source: results-based-budgeting performance indicators, UN Peace &amp;
+          Security Data Hub (DPPA-DPO), 2014/15–2023/24. These are the
+          missions&rsquo; support and management indicators (recruitment,
+          rations, ICT, property, vacancy rates, gender balance, environment,
+          audit) — the operational half of the mandate, not outcomes such as
+          civilians protected. Classification method and a 20-record hand-check
+          in docs/lens-impact/ANALYSIS.md.
+        </p>
+      </section>
+
       {/* Budget execution */}
       <section className="mt-14">
         <h2 className="text-xl font-semibold text-gray-900">
@@ -485,6 +635,13 @@ export default function MissionsPage() {
                     <td className="py-2 pr-4 text-gray-600">{m.location}</td>
                     <td className="py-2 pr-4 text-gray-600">
                       {m.renewals.length > 0 ? `${m.renewals.length}×` : '—'}
+                      <div className="mt-1">
+                        <MissionRenewalStrip
+                          chain={getMissionChain(m.acronym)}
+                          now={renewNow}
+                          width={120}
+                        />
+                      </div>
                     </td>
                     <td className="py-2 pr-4">
                       {m.latestSymbol

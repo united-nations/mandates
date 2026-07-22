@@ -77,6 +77,120 @@ counts before then undercount.
 - **Pre-2010 deployment.** The monthly series starts 2010-01; earlier mandates
   show renewals and fatalities only.
 
+## Which targets were (not) met — semantic classification
+
+The page originally showed only a count (e.g. 576/1,190 RBB targets met). That
+binary flag throws away two things a reader wants: the *distance* between "missed
+by a hair" and "missed badly", and the *reason*. So every RBB indicator record in
+`dos-indicators.csv` (1,423 rows, 16 missions/support entities, 2014/15–2023/24) is
+re-graded into **met / partially met / not met / not assessable** with a one-line
+reason grounded in the planned-vs-actual numbers. Output:
+`website/src/data/mission-targets.json`, built by
+`data-processing/scripts/classify_mission_targets.py`.
+
+### Method (semantic direction + transparent banding)
+
+The genuinely semantic step is done by *reading the indicators*, not by regexing
+numbers: the dataset has only **15 indicator families**, and each family's wording
+fixes its direction —
+
+- "Minimize timeline …", "Reduce the share …" → **ceiling** (lower is better);
+- "Ensure … compliant", "Achieve …", "Improve …", "Comply …", "Utilize …",
+  "Address …", "Increase …", "Implement all …", "Enhance … (points)" → **floor**
+  (higher is better);
+- "Minimize the share of posts that remain vacant" → **band**: the actual must land
+  inside `[Target, Target_2]`. Both under- and over-shoot miss — an under-vacancy
+  means the mission over-hired against its budgeted attrition, an over-vacancy means
+  posts sat empty. Confirmed against the dataset's own `Target_met` flag (a vacancy
+  of 5% against a 8–12% band is flagged *not met* in the source data).
+
+Each record is then graded on its direction-aware distance from target: **met** if
+it reaches/holds the target, **partially met** if within 10% of it (e.g. 97% against
+a 100% standard, or 122 days against a 120-day ceiling), **not met** otherwise;
+**not assessable** only when no usable target exists. The 10% partial band is a
+stated, reproducible choice — not a per-row guess.
+
+(The original plan was to fan this out to sonnet subagents reading batches; in the
+executing harness no agent-spawn tool was available, so the semantic reading — all
+151 distinct indicator/target descriptions and their directions — was done directly
+and encoded per family. The direction assignment is the judgment; the banding is
+transparent arithmetic on the official Value vs Target columns.)
+
+### Result and accuracy
+
+Status tally over all 1,423 records: **711 met · 179 partially met · 533 not met ·
+0 not assessable**. Our "met" boundary agrees with the dataset's own binary
+`Target_met` flag on **1,401/1,423 = 98.5%** of records. The 22 disagreements are
+all defensible and were inspected individually: they are (a) exactly-at-boundary
+cases we read inclusively as met (e.g. actual 6% at the top of a 4–6% band; actual
+= target to the cent), and (b) a handful of Environment / accommodation / safety
+rows carrying an unusual sub-100% target where the source flag appears to compare
+against a stricter threshold than the printed one. Reading each record against its
+own printed target is the transparent choice.
+
+**Hand-check (20 records, stratified across families and statuses):** 20/20 agreed
+with my own judgment, including the two-sided vacancy band (both over- and
+under-staffed correctly flagged) and every floor/ceiling direction. Sample and
+verdicts are reproducible from `mission-targets.json` (seed 42 in the inspection
+snippet). Representative rows: MINUSMA 2019/20 vacancy 8% below a 12–18% band →
+*not met (over-staffed)*; UNMISS 2023/24 roster recruitment 71 d vs 70 d →
+*partially met*; UNIFIL 2021/22 demand-plan deviation 15% ≤ 20% ceiling → *met*.
+
+### Surfaced in the UI
+
+`/missions` section "Which targets were met — and which were missed": one
+expandable card per mission (13 register missions have RBB data), showing a
+met/partial/not-met status bar and, on expand, the mission's **latest** reported
+period grouped by status with each target's reason. Missions are ordered
+worst-missed first. Component `MissionTargets.tsx`; data helper
+`lib/mission-targets.ts`.
+
+## The renewal "mini heartbeat" join
+
+The heartbeat renewal extraction (`sc-renewals.json`, sibling branch) keys each
+chain by an `id` that **is the mission acronym**, so the join to the mission
+register is direct: 20 of the 29 register missions carry a renewal chain (the 9
+without are the open-ended mandates — UNTSO, UNMOGIP, UNMIK, and the
+letter-renewed regional offices). Each mission row on `/missions` now carries a
+`MissionRenewalStrip` (server-rendered SVG): one segment per Security Council
+extension, from adoption to the expiry it set, coloured by leash bucket
+(≤ 3 months / ≈ 6 months / ≈ 1 year+), with a dashed data-cut-off marker. The
+characteristic six-month rhythm of UNDOF and UNFICYP shows as solid amber; missions
+kept on technical rollovers show red segments. The `/secretariat` heartbeat
+expander is untouched and still works (same `lib/sc-renewals.ts`, new exports
+`getMissionChain` / `renewalsGenerated` added alongside).
+
+## Map with timeline
+
+`/missions` section "Where the blue helmets go, and when": a dependency-free
+equirectangular SVG world map with a year scrubber (1948→2026, play/pause + slider).
+Built by `data-processing/scripts/build_mission_map.py` →
+`website/src/data/mission-map.json`; component `MissionMap.tsx`,
+helper `lib/mission-map.ts`.
+
+- **No map library.** A low-res Natural Earth 110m land outline
+  (`data/references/ne_110m_land.geojson`, public domain) is projected to an SVG
+  path *at build time* with a plain linear lon/lat→x/y equirectangular projection,
+  cropped to the Atlantic-to-South-Asia band where every current mission sits. The
+  runtime plots markers with the identical projection, so coastlines and markers
+  stay in register. No d3-geo, no topojson, no tiles.
+- **Coordinates** are a curated mission→operational-location table (host country /
+  HQ) committed in the build script — the P&S hub deployment data carries no
+  per-location geometry, so a curated table is the honest option; overlapping
+  cities (two Haiti, two Somalia, two Lebanon missions) are nudged apart.
+- **Time.** A marker appears for each year a mission is active
+  (`startYear ≤ year ≤ endYear`; endYear = expiry year, or the data's current year
+  if open). Marker **size** ∝ mean uniformed strength deployed that year (the
+  monthly series starts 2010, so pre-2010 years and the uniformed-less special
+  political missions show a small hollow marker). Marker **colour** = still open
+  today (un-blue) vs since closed (trout).
+- **Scope caveat.** The map covers the *current* DPPA register (29 missions:
+  21 open + 8 recently closed). Missions that closed before the register's scope
+  (UNPROFOR, UNMEE, MINUSTAH-era, …) are **not** on the map, so scrubbing to the
+  1990s shows the long-running survivors (UNFICYP, UNDOF, UNTSO, UNMOGIP, UNIFIL,
+  MINURSO), not the full historical roster. The renewal-chain data does reach those
+  older missions, but they have no register row / coordinate.
+
 ## Alternatives rejected at the join stage
 
 See the scored table in SOURCES.md. The decisive criterion was a *native* shared
