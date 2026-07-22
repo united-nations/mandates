@@ -1,0 +1,295 @@
+(node:19133) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+--- 20 random REQUESTS ---
+[A/RES/70/305 ¶56] (Requests → Secretary-General, session)
+  Requests the Secretary-General to report to the Ad Hoc Working Group at the seventy-first session of the General Assembly on the sources of funding and staffing of the Office of the President of the General Assembly, including on any technical, logistical, protocol-related or financial questions, and for more clarif…
+
+[A/RES/70/106 ¶61] (requests → Secretary-General, unspecified)
+  Welcomes the initiative by the Secretary-General to hold the first World Humanitarian Summit in Istanbul, Turkey, on 23 and 24 May 2016, takes note of the ongoing preparatory process and consultations, including the regional and global consultations, and requests the Office for the Coordination of Humanitarian Affai…
+
+[A/RES/45/112 ¶7] (Also requests → Secretary-General, unspecified)
+  Also requests the Secretary-General to intensify research on particular situations of social risk and on the exploitation of children, including the use of children as instruments of criminality, with a view to developing comprehensive countermeasures and to report thereon to the Ninth United Nations Congress on the…
+
+[A/HRC/RES/33/1 ¶13] (Requests → Special Rapporteur, unspecified)
+  Requests the Special Rapporteur to submit reports on the implementation of the mandate to the Human Rights Council and the General Assembly in accordance with their annual programmes of work.
+
+[A/RES/423(V) ¶2] (Invites → Secretary-General, annual)
+  Invites all States to report annually through the Secretary-General concerning the observance of Human Rights Day.
+
+[A/RES/1395(XIV) ¶6] (Requests → Secretary-General, regular)
+  Requests the Secretary-General to report regularly to the Economic and Social Council and to the Commission on Narcotic Drugs on technical assistance in the field of narcotics control, including action taken under the present and other relevant resolutions of the General Assembly and of the Economic and Social Council.
+
+[A/HRC/RES/55/20 ¶46] (requests → Special Rapporteur, session)
+  Decides to extend the mandate of Special Rapporteur on the situation of human rights in Myanmar for a further period of one year, requests the Special Rapporteur to present an oral update to the Human Rights Council at its fifty-sixth session and to submit a report to the Third Committee of the General Assembly at i…
+
+[A/HRC/RES/51/39 ¶19] (Requests → High Commissioner, session)
+  Requests the High Commissioner to present a report on the implementation of technical assistance, as stipulated in the present resolution, to the Human Rights Council at its fifty-fourth session.
+
+[A/RES/52/220 ¶36] (Requests → Secretary-General, session)
+  Requests the Secretary-General to review the financial arrangements associated with the dining room at the International Court of Justice and to report thereon to the General Assembly at its fifty-third session;
+
+[A/HRC/RES/12/2 ¶8] (Invites → Secretary-General, annual)
+  Invites the Secretary-General to submit a report to the Council at its fourteenth session and annually thereafter, in accordance with its programme of work, containing a compilation and analysis of any available information, from all appropriate sources, on alleged reprisals against the persons referred to in paragr…
+
+[A/HRC/RES/35/31 ¶2] (Invites → High Commissioner, unspecified)
+  Invites the United Nations High Commissioner for Human Rights to continue to present orally to the States members of the Human Rights Council and observers the findings of each of the reports of the Office of the High Commissioner on the situation of human rights in Ukraine as part of the interactive dialogues, and …
+
+[A/HRC/RES/52/42 ¶30] (Also requests → Independent Expert, session)
+  Also requests the Independent Expert to submit a report to the Human Rights Council at its fifty-fifth session;
+
+[A/HRC/RES/32/11 ¶27] (Requests → Special Rapporteur, annual)
+  Requests the Special Rapporteur to continue to submit annual reports on the implementation of the mandate to the Human Rights Council and the General Assembly, making suggestions and recommendations regarding the human rights of internally displaced persons, including on the impact of measures taken at the inter-age…
+
+[A/HRC/RES/35/30 ¶10] (Requests → Working Group, session)
+  Requests the Intergovernmental Working Group, through its Chair-Rapporteur, to report on the above-mentioned discussion, including any recommendations stemming therefrom, to the Human Rights Council at its fortieth session;
+
+[A/HRC/RES/34/3 ¶14] (Invites → Independent Expert, annual)
+  Invites the Independent Expert to submit his findings and the guiding principles to the Human Rights Council in the context of his annual report;
+
+[A/RES/77/219 ¶44] (Requests → Secretary-General, session)
+  Requests the Secretary-General to submit to the General Assembly at its seventy-ninth session a report on the latest developments, challenges and good practices in human rights in the administration of justice, including on the application of digital technologies in the administration of justice, and on the activiti…
+
+[A/RES/76/207 ¶45] (Requests → Secretary-General, session)
+  Requests the Secretary-General to submit to the General Assembly, at its seventy-seventh session, a report on the implementation of the present resolution, including on the potential link between COVID-19 and biodiversity and the implications and recommendations for building back better, progress in the implementati…
+
+[A/RES/41/213 ¶10] (Further requests → Secretary-General, session)
+  Further requests the Secretary-General to report to the General Assembly at its forty-second session on the implementation of the present resolution.
+
+[A/RES/75/217 ¶24] (Invites → Secretariat, session)
+  Invites the secretariat of the United Nations Framework Convention on Climate Change to report, through the Secretary-General, to the General Assembly at its seventy-sixth session, on the work of the Conference of the Parties to the Convention, and decides to include in the provisional agenda of its seventy-sixth se…
+
+[A/RES/79/31 ¶9] (Requests → Secretary-General, session)
+  Requests the Secretary-General to continue to consider the matter and to report to the General Assembly at its eightieth session on the implementation of the present resolution;
+
+--- 20 random DELIVERED links ---
+S/2010/168 → S/RES/1590(2005)
+  note: Submitted pursuant to para. 11 of Security Council resolution 1590 (2005); provides an assessment of the overall situation in the country since the previous report, dated 19 Jan. 2010 (S/2010/31), as well as an update on the activities of the UN Mission in the Sudan through 20 Mar. 2010.
+
+A/74/111 → A/RES/69/236
+  note: Prepared in response to General Assembly resolution 69/236. The present report is the 8th World Survey on the Role of Women in Development.
+
+A/78/505 → A/RES/76/246
+  note: Submitted pursuant to General Assembly resolution 76/246; provides an update since the issuance of the previous report (A/77/495).
+
+A/HRC/27/32 → A/HRC/RES/24/14
+  note: Submitted pursuant to Human Rights Council resolution 24/14.
+
+A/65/314 → A/RES/64/196
+  note: Prepared pursuant to General Assembly resolution 64/196.
+
+A/73/269 → A/RES/71/320
+  note: Submitted pursuant to General Assembly resolution 71/320.
+
+A/69/283 → A/RES/59/287
+  note: Submitted in response to General Assembly resolution 59/287.
+
+A/80/256 → A/RES/79/236
+  note: Prepared pursuant to General Assembly resolution 79/236.
+
+A/HRC/14/35 → A/HRC/RES/10/2
+  note: Submitted in response to Human Rights Council resolution 10/2.
+
+A/73/383 → A/RES/71/244, A/RES/71/318
+  note: Prepared pursuant to General Assembly resolutions 71/244 and 71/318.
+
+A/69/362 → A/RES/68/242
+  note: Submitted pursuant to para. 16 of General Assembly resolution 68/242; covers the period from 11 Aug. 2013 to 6 Aug. 2014.
+
+A/79/258 → A/RES/78/221
+  note: Submitted pursuant to General Assembly resolution 78/221.
+
+A/60/89 → A/RES/59/141
+  note: Submitted in response to General Assembly resolution 59/141 and ECOSOC resolution 2004/50.
+
+A/61/63 → A/RES/60/30
+  note: Prepared in response to para. 110 of General Assembly resolution 60/30 of 29 Nov. 2005.
+
+A/79/326 → A/RES/78/185
+  note: Submitted pursuant to General Assembly resolution 78/185; covers the period from 1 July 2023-30 June 2024.
+
+A/74/157 (Part I) → A/RES/73/28
+  note: Submitted pursuant to General Assembly resolution 73/28; includes replies received from Governments and the European Union.
+
+A/68/127 → A/RES/64/293, A/RES/67/186, A/RES/67/189, A/RES/67/190, A/RES/67/192
+  note: Prepared pursuant to General Assembly resolutions 64/293, 67/186, 67/189, 67/190 and 67/192.
+
+A/64/217 → A/RES/63/282
+  note: Submitted pursuant to General Assembly resolution 63/282; covers the period from 1 July 2008 to 30 June 2009.
+
+A/72/764 → A/RES/71/248
+  note: Submitted pursuant to General Assembly resolution 71/248 and para. 50 of the report of the Secretary-General on the implementation of the resolution establishing the Mechanism (A/71/755).
+
+A/57/359 → A/RES/56/199
+  note: Submitted in response to General Assembly resolution 56/199 of 21 Dec. 2001.
+
+{
+  "generatedAt": "2026-07-22T06:03:37.133Z",
+  "requestParagraphs": 2586,
+  "resolutionsWithRequests": 1513,
+  "parsedResolutionDocs": 2829,
+  "deliveredReports": 7505,
+  "deliveredLinkEdges": 9286,
+  "deliveredLinkEdgesInRegistry": 9066,
+  "requestsMatchedToReports": 904,
+  "requestMatchRate": 0.5974884335756775,
+  "linkEdgeRegistryRate": 0.9763084212793453,
+  "topicOverlap": {
+    "n": 8997,
+    "median": 0.2222222222222222,
+    "p25": 0.125,
+    "p75": 0.4
+  },
+  "frequencies": {
+    "annual": 208,
+    "session": 1433,
+    "regular": 66,
+    "unspecified": 866,
+    "biennial": 9,
+    "quarterly": 3,
+    "semiannual": 1
+  },
+  "addressees": {
+    "Secretary-General": 1850,
+    "High Commissioner": 307,
+    "Special Rapporteur": 151,
+    "Advisory Committee": 13,
+    "Working Group": 34,
+    "Secretariat": 59,
+    "Independent Expert": 45,
+    "Fact-Finding Mission": 8,
+    "Commission on Human Rights in …": 7,
+    "Commission of Inquiry": 8,
+    "Team of International Experts": 3,
+    "Ad Hoc Committee": 10,
+    "Group of Experts": 3,
+    "Director-General": 2,
+    "Special Representative": 24,
+    "Joint Inspection Unit": 5,
+    "Executive Director": 18,
+    "Office of Internal Oversight Services": 1,
+    "Special Committee": 35,
+    "High Representative": 2,
+    "Panel of Experts": 1
+  },
+  "byBody": {
+    "HRC": {
+      "requests": 504,
+      "reports": 1483,
+      "resolutionsWithRequests": 389
+    },
+    "GA": {
+      "requests": 1916,
+      "reports": 5509,
+      "resolutionsWithRequests": 1006
+    },
+    "CND": {
+      "requests": 2,
+      "reports": 1,
+      "resolutionsWithRequests": 1
+    },
+    "ECE": {
+      "requests": 5,
+      "reports": 0,
+      "resolutionsWithRequests": 4
+    },
+    "ECOSOC": {
+      "requests": 90,
+      "reports": 217,
+      "resolutionsWithRequests": 66
+    },
+    "UNHA and Other": {
+      "requests": 9,
+      "reports": 0,
+      "resolutionsWithRequests": 1
+    },
+    "SC": {
+      "requests": 59,
+      "reports": 1856,
+      "resolutionsWithRequests": 45
+    },
+    "UNEA": {
+      "requests": 1,
+      "reports": 0,
+      "resolutionsWithRequests": 1
+    }
+  },
+  "reportsPerYear": {
+    "1948": 3,
+    "1950": 2,
+    "1951": 3,
+    "1952": 1,
+    "1953": 2,
+    "1954": 1,
+    "1955": 1,
+    "1957": 2,
+    "1959": 1,
+    "1960": 1,
+    "1961": 2,
+    "1962": 2,
+    "1963": 4,
+    "1965": 1,
+    "1966": 4,
+    "1967": 2,
+    "1968": 3,
+    "1969": 2,
+    "1971": 9,
+    "1972": 1,
+    "1973": 1,
+    "1974": 5,
+    "1975": 6,
+    "1976": 3,
+    "1977": 1,
+    "1978": 3,
+    "1979": 2,
+    "1983": 1,
+    "1984": 7,
+    "1985": 4,
+    "1986": 1,
+    "1987": 2,
+    "1989": 1,
+    "1990": 2,
+    "1991": 6,
+    "1992": 40,
+    "1993": 22,
+    "1994": 18,
+    "1995": 26,
+    "1996": 27,
+    "1997": 3,
+    "1998": 6,
+    "1999": 14,
+    "2000": 11,
+    "2001": 31,
+    "2002": 75,
+    "2003": 119,
+    "2004": 172,
+    "2005": 173,
+    "2006": 175,
+    "2007": 197,
+    "2008": 208,
+    "2009": 248,
+    "2010": 242,
+    "2011": 249,
+    "2012": 262,
+    "2013": 304,
+    "2014": 324,
+    "2015": 329,
+    "2016": 351,
+    "2017": 521,
+    "2018": 523,
+    "2019": 525,
+    "2020": 486,
+    "2021": 546,
+    "2022": 578,
+    "2023": 630,
+    "2024": 643,
+    "2025": 668,
+    "2026": 228
+  }
+}

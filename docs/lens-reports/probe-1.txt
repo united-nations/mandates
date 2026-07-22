@@ -1,0 +1,295 @@
+(node:18229) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+--- 20 random REQUESTS ---
+[A/RES/69/250 ¶22] (requests → Secretary-General, unspecified)
+  Notes that the percentage of meetings held by the bodies entitled to meet “as required” that were provided with interpretation services in New York in 2013 was 98 per cent, and that in 2012 it was 97 per cent, as compared with 96 per cent in 2011, and requests the Secretary-General to continue to impress upon such b…
+
+[A/RES/77/335 ¶49] (Also requests → Secretariat, session)
+  Also requests the Secretariat to conduct a full assessment of the digital accessibility of United Nations documents and to report back at the seventy-eighth session, including providing an update on the progress with executable options;
+
+[A/RES/52/220 ¶95] (Requests → Secretary-General, unspecified)
+  Requests the Secretary-General to consult with the Member States not acceding to section 18 (b) of the Convention on the Privileges and Immunities of the United Nations on appropriate administrative arrangements for managing the Tax Equalization Fund and to report to the General Assembly on the outcome of such consu…
+
+[A/HRC/RES/56/8 ¶19] (Requests → Secretary-General, session)
+  Requests the Secretary-General, in consultation with and taking into account the views of States, the special procedures of the Human Rights Council, the United Nations Environment Programme, the World Meteorological Organization, the International Labour Organization, the United Nations Entity for Gender Equality a…
+
+[A/HRC/RES/53/11 ¶33] (Requests → High Commissioner, session)
+  Requests the High Commissioner to prepare a new report on the work of the Office of the High Commissioner in the implementation and enhancement of international cooperation in the field of human rights, proposing also possible ways to face the challenges to the promotion and protection of human rights, including the…
+
+[A/HRC/RES/52/41 ¶2] (Also requests → High Commissioner, session)
+  Also requests the Office of the High Commissioner to present to the Human Rights Council at its fifty-sixth session a report on the implementation of the present resolution, to be followed by an interactive dialogue;
+
+[A/HRC/RES/57/25 ¶13] (Requests → Ad Hoc Committee, session)
+  Requests the Chair-Rapporteur of the Ad Hoc Committee to present in person a progress report to the General Assembly at its eightieth session, and to participate in the interactive dialogue and carry out consultations with New York-based delegations and stakeholders in order to continue progress in the elaboration o…
+
+[A/HRC/RES/38/19 ¶6] (Also requests → High Commissioner, session)
+  Also requests the High Commissioner to prepare a summary report on the panel discussion and to submit it to the Human Rights Council at its forty-second session;
+
+[A/HRC/RES/45/12 ¶11] (requests → High Commissioner, unspecified)
+  Decides that the theme of the annual half-day panel discussion on the rights of indigenous peoples, to be held during the forty-eighth session of the Human Rights Council, will be the situation of human rights of indigenous peoples facing the COVID-19 pandemic, and will have a special focus on the right to participa…
+
+[A/HRC/RES/50/16 ¶11] (Requests → High Commissioner, session)
+  Requests the United Nations High Commissioner for Human Rights, in consultation with States, United Nations agencies, regional organizations, national human rights institutions, human rights experts and civil society organizations, including women’s human rights organizations, youth-led organizations and representat…
+
+[A/HRC/RES/56/7 ¶14] (Requests → High Commissioner, session)
+  Requests the Office of the United Nations High Commissioner for Human Rights, in consultation with the Special Rapporteur on the promotion and protection of the right to freedom of opinion and expression and the United Nations Educational, Scientific and Cultural Organization, to conduct a study and to prepare a rep…
+
+[A/HRC/RES/47/10 ¶19] (Requests → Independent Expert, regular)
+  Requests the Independent Expert to report regularly to the Human Rights Council and to the General Assembly in accordance with their respective programmes of work;
+
+[A/HRC/RES/34/3 ¶14] (Invites → Independent Expert, annual)
+  Invites the Independent Expert to submit his findings and the guiding principles to the Human Rights Council in the context of his annual report;
+
+[A/HRC/RES/57/10 ¶12] (requests → High Commissioner, session)
+  Decides to follow up on the implementation of the fifth phase of the World Programme in 2027, and requests the Office of the High Commissioner to prepare, from within existing resources, a midterm progress report, in easy-to-read accessible format, on the implementation of the fifth phase of the World Programme and …
+
+[A/HRC/RES/53/6 ¶16] (Requests → High Commissioner, session)
+  Requests the United Nations High Commissioner for Human Rights to submit a summary report on the panel discussion held at the fifty-sixth session to the Human Rights Council at its fifty-eighth session, and to make the report available in accessible formats, including in easy-to-read versions;
+
+[A/HRC/RES/57/2 ¶17] (Requests → Fact-Finding Mission, session)
+  Requests the fact-finding mission to provide the Human Rights Council with an oral update on its work at its fifty-ninth session and a comprehensive report at its sixtieth session, to be followed by an interactive dialogue, and to present the report to the General Assembly at its eightieth session;
+
+[A/HRC/RES/47/22 ¶2] (Invites → High Commissioner, unspecified)
+  Invites the United Nations High Commissioner for Human Rights to continue to present orally to the States Members of the Human Rights Council and observers the findings of each of the reports of the Office of the High Commissioner on the situation of human rights in Ukraine as part of the interactive dialogues, and …
+
+[A/HRC/RES/53/17 ¶15] (Requests → High Commissioner, session)
+  Requests the Office of the High Commissioner to prepare a summary report on the above-mentioned expert seminar and to present it to the Human Rights Council at its fifty-eighth session and to share it with the secretariat of the United Nations Office on Drugs and Crime;
+
+[A/HRC/RES/53/7 ¶29] (Requests → Special Rapporteur, annual)
+  Requests the Special Rapporteur to continue to submit an annual report to the Human Rights Council and to the General Assembly covering all activities relating to the mandate with a view to maximizing the benefits of the reporting process;
+
+[A/HRC/RES/57/2 ¶18] (Requests → High Commissioner, session)
+  Requests the High Commissioner, with the assistance of the Expert on human rights in the Sudan, to submit to the Human Rights Council at its sixty-first session a comprehensive report on the situation of human rights in the Sudan and on violations and abuses committed by all parties to the conflict, to be followed b…
+
+--- 20 random DELIVERED links ---
+A/HRC/58/43 → A/HRC/RES/54/6
+  note: Prepared pursuant to Human Rights Council resolution 54/6.
+
+A/75/312 → A/RES/74/91
+  note: Prepared pursuant to General Assembly resolution 74/91; covers the period from Aug. 2019-July 2020.
+
+A/77/253 → A/RES/75/225
+  note: Submitted pursuant to General Assembly resolution 75/225 and decision 74/537 B.
+
+A/66/153(PartI) → A/RES/65/426
+  note: Submitted pursuant to General Assembly resolution 65/426.
+
+A/70/179 → A/RES/68/131
+  note: Prepared in response to General Assembly resolution 68/131 of 18 Dec. 2013.
+
+A/69/336 → A/RES/68/169
+  note: Submitted pursuant to General Assembly resolution 68/169; contains summaries of information received from Member States.
+
+A/75/146 → A/RES/74/207
+  note: Prepared pursuant to of General Assembly resolution 74/207; focuses on emerging challenges and key accelerators for achieving the Addis Ababa Action  Agenda within the context of the economic crisis triggered by the coronavirus disease (COVID-19) pandemic.
+
+A/69/180 → A/RES/68/134
+  note: Submitted in response to General Assembly resolution 68/134.
+
+A/67/79 → A/RES/66/231
+  note: Prepared pursuant to para. 249 of General Assembly resolution 66/231.
+
+A/78/291 → A/RES/74/273
+  note: Submitted pursuant to General Assembly resolution 74/273; covers the period from 5 July 2022-4 July 2023.
+
+A/HRC/25/55/Add.3 → A/HRC/RES/16/5
+  note: Submitted pursuant to Human Rights Council resolution 16/5.
+
+A/66/675 → A/RES/60/180, S/RES/1645(2005)
+  note: Prepared pursuant to General Assembly resolution 60/180 and Security Council resolution 1645 (2005).
+
+A/76/330 → A/RES/75/253
+  note: 4th annual progress report; submitted pursuant to section XIV of General Assembly resolution 75/253; provides information on the progress made since the issuance of the previous report (A/75/331).
+
+A/67/216 → A/RES/63/263
+  note: Submitted pursuant to section I of General Assembly resolution 63/263.
+
+A/HRC/28/68/Add.1 → A/HRC/RES/25/13
+  note: Submitted pursuant to Human Rights Council resolution 25/13.
+
+A/80/75 → A/RES/46/182, A/RES/79/140, E/RES/2024/8
+  note: Prepared pursuant to General Assembly resolution 46/182; submitted also in response to General Assembly resolution 79/140 and Economic and Social Council resolution 2024/8; covers the period from Jan.-Dec. 2024.
+
+A/68/988 → A/RES/68/11, S/RES/2145(2014)
+  note: Submitted pursuant to General Assembly resolution 68/11 and Security Council resolution 2145 (2014); provides an update on the activities of the UN in Afghanistan since the previous report dated 18 June 2014 (A/68/910-S/2014/420).
+
+A/73/307 → A/RES/71/226
+  note: Submitted pursuant to para. 17 of General Assembly resolution 71/226; provides an overview of the activities of UN-Habitat since the issuance of the previous report (A/72/311).
+
+A/72/92 → A/RES/56/237
+  note: Submitted pursuant to General Assembly resolution 56/237 of 24 Dec. 2001; provides a status update following the submission of the 9th progress report (A/70/97).
+
+A/65/379 → A/RES/64/20, A/RES/64/21
+  note: Submitted pursuant to General Assembly resolutions 64/20 and 64/21.
+
+{
+  "generatedAt": "2026-07-22T06:02:37.503Z",
+  "requestParagraphs": 2586,
+  "resolutionsWithRequests": 1513,
+  "parsedResolutionDocs": 2829,
+  "deliveredReports": 7505,
+  "deliveredLinkEdges": 9286,
+  "deliveredLinkEdgesInRegistry": 9066,
+  "requestsMatchedToReports": 904,
+  "requestMatchRate": 0.5974884335756775,
+  "linkEdgeRegistryRate": 0.9763084212793453,
+  "topicOverlap": {
+    "n": 8997,
+    "median": 0.2222222222222222,
+    "p25": 0.125,
+    "p75": 0.4
+  },
+  "frequencies": {
+    "annual": 208,
+    "session": 1433,
+    "regular": 66,
+    "unspecified": 866,
+    "biennial": 9,
+    "quarterly": 3,
+    "semiannual": 1
+  },
+  "addressees": {
+    "Secretary-General": 1850,
+    "High Commissioner": 307,
+    "Special Rapporteur": 151,
+    "Advisory Committee": 13,
+    "Working Group": 34,
+    "Secretariat": 59,
+    "Independent Expert": 45,
+    "Fact-Finding Mission": 8,
+    "Commission on Human Rights in …": 7,
+    "Commission of Inquiry": 8,
+    "Team of International Experts": 3,
+    "Ad Hoc Committee": 10,
+    "Group of Experts": 3,
+    "Director-General": 2,
+    "Special Representative": 24,
+    "Joint Inspection Unit": 5,
+    "Executive Director": 18,
+    "Office of Internal Oversight Services": 1,
+    "Special Committee": 35,
+    "High Representative": 2,
+    "Panel of Experts": 1
+  },
+  "byBody": {
+    "HRC": {
+      "requests": 504,
+      "reports": 1483,
+      "resolutionsWithRequests": 389
+    },
+    "GA": {
+      "requests": 1916,
+      "reports": 5509,
+      "resolutionsWithRequests": 1006
+    },
+    "CND": {
+      "requests": 2,
+      "reports": 1,
+      "resolutionsWithRequests": 1
+    },
+    "ECE": {
+      "requests": 5,
+      "reports": 0,
+      "resolutionsWithRequests": 4
+    },
+    "ECOSOC": {
+      "requests": 90,
+      "reports": 217,
+      "resolutionsWithRequests": 66
+    },
+    "UNHA and Other": {
+      "requests": 9,
+      "reports": 0,
+      "resolutionsWithRequests": 1
+    },
+    "SC": {
+      "requests": 59,
+      "reports": 1856,
+      "resolutionsWithRequests": 45
+    },
+    "UNEA": {
+      "requests": 1,
+      "reports": 0,
+      "resolutionsWithRequests": 1
+    }
+  },
+  "reportsPerYear": {
+    "1948": 3,
+    "1950": 2,
+    "1951": 3,
+    "1952": 1,
+    "1953": 2,
+    "1954": 1,
+    "1955": 1,
+    "1957": 2,
+    "1959": 1,
+    "1960": 1,
+    "1961": 2,
+    "1962": 2,
+    "1963": 4,
+    "1965": 1,
+    "1966": 4,
+    "1967": 2,
+    "1968": 3,
+    "1969": 2,
+    "1971": 9,
+    "1972": 1,
+    "1973": 1,
+    "1974": 5,
+    "1975": 6,
+    "1976": 3,
+    "1977": 1,
+    "1978": 3,
+    "1979": 2,
+    "1983": 1,
+    "1984": 7,
+    "1985": 4,
+    "1986": 1,
+    "1987": 2,
+    "1989": 1,
+    "1990": 2,
+    "1991": 6,
+    "1992": 40,
+    "1993": 22,
+    "1994": 18,
+    "1995": 26,
+    "1996": 27,
+    "1997": 3,
+    "1998": 6,
+    "1999": 14,
+    "2000": 11,
+    "2001": 31,
+    "2002": 75,
+    "2003": 119,
+    "2004": 172,
+    "2005": 173,
+    "2006": 175,
+    "2007": 197,
+    "2008": 208,
+    "2009": 248,
+    "2010": 242,
+    "2011": 249,
+    "2012": 262,
+    "2013": 304,
+    "2014": 324,
+    "2015": 329,
+    "2016": 351,
+    "2017": 521,
+    "2018": 523,
+    "2019": 525,
+    "2020": 486,
+    "2021": 546,
+    "2022": 578,
+    "2023": 630,
+    "2024": 643,
+    "2025": 668,
+    "2026": 228
+  }
+}

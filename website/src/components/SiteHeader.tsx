@@ -13,7 +13,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
-import { Gavel, Globe, Landmark, Menu, Shield } from 'lucide-react'
+import { FileOutput, Gavel, Globe, Landmark, Menu, Shield } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -29,6 +29,7 @@ const navItems = [
   { href: '/system', label: 'UN System Mandates', icon: Globe },
   { href: '/missions', label: 'Peace Operation Mandates', icon: Shield },
   { href: '/instruments', label: 'Sanctions & Treaties', icon: Gavel },
+  { href: '/reports', label: 'Reporting Cycle', icon: FileOutput },
 ]
 
 export function SiteHeader() {
