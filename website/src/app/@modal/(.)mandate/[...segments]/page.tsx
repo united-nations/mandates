@@ -12,9 +12,11 @@ import { getAllEntities } from '@/lib/data/entities'
 import { getBudgetDocuments } from '@/lib/data/budget-documents'
 import { getAllOrgans } from '@/lib/data/organs'
 import { getParagraphsBySymbol } from '@/lib/data/paragraphs'
+import { getReportsLensForSymbol } from '@/lib/data/reports-lens'
 import { ParagraphsSection } from '@/components/ParagraphsSection'
 import { CitationCounts } from '@/components/CitationCounts'
 import { MandateMetadata } from '@/components/MandateMetadata'
+import { MandateReportsSection } from '@/components/MandateReportsSection'
 import { MandateVersionHistory } from '@/components/MandateVersionHistory'
 
 interface ModalMandatePageProps {
@@ -54,6 +56,8 @@ export default async function ModalMandatePage({
   ])
 
   if (!mandate) notFound()
+
+  const reportsLens = getReportsLensForSymbol(documentSymbol)
 
   return (
     <div className="pb-12">
@@ -113,6 +117,7 @@ export default async function ModalMandatePage({
           entities={entities}
           budgetStreams={budgetStreams}
         />
+        {reportsLens && <MandateReportsSection lens={reportsLens} />}
         <ParagraphsSection
           paragraphs={paragraphs}
           documentSymbol={documentSymbol}
