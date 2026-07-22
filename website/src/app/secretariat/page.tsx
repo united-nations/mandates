@@ -12,6 +12,7 @@ import { Suspense } from 'react'
 
 import { MandateExplorerServer } from '@/app/_mandateExplorerServer'
 import { CoCitationHeatmap } from '@/components/CoCitationHeatmap'
+import { CountryAttentionMap } from '@/components/CountryAttentionMap'
 import { EntitiesDirectory } from '@/components/EntitiesDirectory'
 import { ExpandableCard } from '@/components/ExpandableCard'
 import { ExplainerText } from '@/components/ExplainerText'
@@ -182,9 +183,15 @@ export default async function Page({ searchParams }: PageProps) {
           System (UNBIS) thesaurus: 18 top-level domains, each broken into
           sub-domains and individual subject headings.
         </p>
-        <div className="mt-10">
+        <div className="mt-10 space-y-6">
           <ExpandableCard title="Topic trends" variant="filled">
             <TopicTrends years={topicTrends} />
+          </ExpandableCard>
+          <ExpandableCard
+            title="Which countries are the resolutions about?"
+            variant="filled"
+          >
+            <CountryAttentionMap />
           </ExpandableCard>
         </div>
       </section>
