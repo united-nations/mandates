@@ -37,8 +37,12 @@ import {
   getSubjectHierarchy,
   getTopicTrends,
 } from '@/lib/data/mandates'
+import { getVotingAnalysis } from '@/lib/data/country-votes'
 import { getGaTopicVoteLeague, getGaVotingBySession } from '@/lib/data/votes'
 import { TopicTrends } from '@/components/TopicTrends'
+import { VotingIdealPointTrends } from '@/components/VotingIdealPointTrends'
+import { VotingLoneliestVoters } from '@/components/VotingLoneliestVoters'
+import { VotingSimilarityMatrix } from '@/components/VotingSimilarityMatrix'
 import { explainerTexts } from '@/lib/en_text_contents'
 import { parseSearchParams } from '@/lib/filter-constants'
 
@@ -86,6 +90,7 @@ export default async function Page({ searchParams }: PageProps) {
     getGaVotingBySession(),
     getGaTopicVoteLeague(),
   ])
+  const votingAnalysis = getVotingAnalysis()
 
   return (
     <div>
@@ -190,6 +195,33 @@ export default async function Page({ searchParams }: PageProps) {
                   Contested-topics league
                 </h3>
                 <GaContestedTopics league={gaTopicVoteLeague} />
+              </div>
+            </div>
+          </ExpandableCard>
+        </div>
+        <div className="mt-4">
+          <ExpandableCard
+            title="Who votes with whom? Country blocs in Assembly voting"
+            variant="filled"
+          >
+            <div className="space-y-10">
+              <div>
+                <h3 className="mb-3 text-sm font-semibold text-gray-900">
+                  Voting agreement between countries
+                </h3>
+                <VotingSimilarityMatrix analysis={votingAnalysis} />
+              </div>
+              <div>
+                <h3 className="mb-3 text-sm font-semibold text-gray-900">
+                  Eighty years of geopolitical alignment
+                </h3>
+                <VotingIdealPointTrends analysis={votingAnalysis} />
+              </div>
+              <div>
+                <h3 className="mb-3 text-sm font-semibold text-gray-900">
+                  Loneliest voters
+                </h3>
+                <VotingLoneliestVoters analysis={votingAnalysis} />
               </div>
             </div>
           </ExpandableCard>
