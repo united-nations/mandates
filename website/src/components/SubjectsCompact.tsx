@@ -131,6 +131,7 @@ export function SubjectsCompact({ domains }: SubjectsCompactProps) {
   }, [allLeaves, term, selectedSub])
 
   const selectedMeta = selectedSub ? subMeta.get(selectedSub) : undefined
+  const overflow = Math.max(0, totalMatches - pills.length)
 
   return (
     <TooltipProvider delayDuration={200}>
@@ -173,6 +174,11 @@ export function SubjectsCompact({ domains }: SubjectsCompactProps) {
                 onSelect={select}
               />
             ))}
+            {overflow > 0 && (
+              <span className="inline-flex items-baseline rounded-full border border-dashed border-gray-300 bg-transparent px-2.5 py-0.5 text-xs text-gray-500">
+                +{overflow.toLocaleString()}
+              </span>
+            )}
           </div>
         ) : (
           <p className="text-sm text-gray-500">
@@ -180,18 +186,25 @@ export function SubjectsCompact({ domains }: SubjectsCompactProps) {
           </p>
         )}
 
-        <p className="text-xs text-gray-500">
-          {term
-            ? `${totalMatches.toLocaleString()} matching subject${totalMatches === 1 ? '' : 's'}${
-                totalMatches > pills.length ? ` (showing ${pills.length})` : ''
-              }`
-            : selectedMeta
-              ? `Top ${pills.length} of ${totalMatches.toLocaleString()} ${selectedMeta.label} subjects — search to reach the rest`
-              : `Top ${pills.length} of ${totalMatches.toLocaleString()} subjects by document count — select a topic group above or search to go deeper`}
-        </p>
+        {pills.length > 0 && (
+          <p className="text-sm text-gray-600">
+            {term
+              ? `${totalMatches.toLocaleString()} matching subject${totalMatches === 1 ? '' : 's'}`
+              : selectedMeta
+                ? 'search to reach the rest'
+                : 'select a topic group above or search to go deeper'}
+          </p>
+        )}
       </div>
     </TooltipProvider>
   )
+}
+
+/** Display fix: subject labels are title-cased, so the abbreviation "UN" comes
+ *  through as "Un" ("Coordination Within Un System"). Uppercase the standalone
+ *  word for display only — the filter/link value stays the raw subject. */
+function formatSubjectLabel(subject: string): string {
+  return subject.replace(/\bUn\b/g, 'UN')
 }
 
 function SubjectPill({
@@ -214,14 +227,17 @@ function SubjectPill({
             onSelect(leaf.subject)
           }}
           className={cn(
-            'inline-flex items-baseline gap-1 rounded-full px-2.5 py-0.5 text-xs transition-[filter] hover:brightness-110',
-            color.bg,
-            color.text,
+            'inline-flex items-baseline gap-1.5 rounded-full border border-gray-200 bg-gray-50 px-2.5 py-0.5 text-xs text-gray-700 transition-colors hover:bg-gray-100',
             active && 'ring-2 ring-un-blue ring-offset-1'
           )}
         >
-          <span className="font-medium">{leaf.subject}</span>
-          <span className="text-[10px] opacity-80">{leaf.count}</span>
+          <span className="font-medium">{formatSubjectLabel(leaf.subject)}</span>
+          <span
+            aria-hidden
+            className="size-1.5 self-center rounded-full"
+            style={{ backgroundColor: color.hex }}
+          />
+          <span className="text-[10px] text-gray-500">{leaf.count}</span>
         </a>
       </TooltipTrigger>
       <TooltipContent side="top" className="max-w-xs">
