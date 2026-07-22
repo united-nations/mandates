@@ -13,6 +13,7 @@ import { getBudgetDocuments } from '@/lib/data/budget-documents'
 import { getAllOrgans } from '@/lib/data/organs'
 import { getParagraphsBySymbol } from '@/lib/data/paragraphs'
 import { getReportsLensForSymbol } from '@/lib/data/reports-lens'
+import { hasImplementationSample } from '@/lib/data/report-implementation'
 import { ParagraphsSection } from '@/components/ParagraphsSection'
 import { CitationCounts } from '@/components/CitationCounts'
 import { MandateMetadata } from '@/components/MandateMetadata'
@@ -117,7 +118,12 @@ export default async function ModalMandatePage({
           entities={entities}
           budgetStreams={budgetStreams}
         />
-        {reportsLens && <MandateReportsSection lens={reportsLens} />}
+        {reportsLens && (
+          <MandateReportsSection
+            lens={reportsLens}
+            hasImplementationSample={hasImplementationSample(documentSymbol)}
+          />
+        )}
         <ParagraphsSection
           paragraphs={paragraphs}
           documentSymbol={documentSymbol}

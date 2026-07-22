@@ -17,8 +17,11 @@ const REPORTS_DEFAULT_SHOWN = 6
  */
 export function MandateReportsSection({
   lens,
+  hasImplementationSample = false,
 }: {
   lens: ResolutionReportsLens
+  /** True when /reports carries a curated request→response mapping for this resolution. */
+  hasImplementationSample?: boolean
 }) {
   const [showAll, setShowAll] = useState(false)
   const { requests, reports } = lens
@@ -122,6 +125,17 @@ export function MandateReportsSection({
             </button>
           )}
         </div>
+      )}
+
+      {hasImplementationSample && (
+        <p className="mt-3 text-xs">
+          <Link
+            href="/reports#implementation-samples"
+            className="inline-flex items-center gap-1 rounded border border-un-blue/30 bg-blue-50/60 px-2 py-1 font-medium text-un-blue hover:underline"
+          >
+            Request-by-request mapping available for this resolution
+          </Link>
+        </p>
       )}
 
       <p className="mt-2 text-xs text-muted-foreground">

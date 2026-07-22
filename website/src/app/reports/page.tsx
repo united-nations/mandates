@@ -3,8 +3,15 @@ import Link from 'next/link'
 
 import { ExpandableCard } from '@/components/ExpandableCard'
 import { ReportsLensBarList } from '@/components/ReportsLensBarList'
+import { ReportsLensImplementationSamples } from '@/components/ReportsLensImplementationSamples'
 import { ReportsLensYearChart } from '@/components/ReportsLensYearChart'
 import { getMandateUrl } from '@/components/table/MandateColumns'
+import {
+  getImplementationSamples,
+  getImplementationStatusCounts,
+  IMPLEMENTATION_STATUS_LABELS,
+  IMPLEMENTATION_STATUS_ORDER,
+} from '@/lib/data/report-implementation'
 import {
   FREQUENCY_LABELS,
   FREQUENCY_ORDER,
@@ -49,6 +56,12 @@ function StatTile({ value, label }: { value: string; label: React.ReactNode }) {
 export default function ReportsPage() {
   const stats = getReportsLensStats()
   const pipelines = getReportingPipelines()
+  const implementationSamples = getImplementationSamples()
+  const implementationCounts = getImplementationStatusCounts()
+  const implementationMappingCount = implementationSamples.reduce(
+    (a, s) => a + s.mappings.length,
+    0
+  )
   const topPipelines = pipelines.slice(0, PIPELINES_SHOWN)
 
   const frequencyRows = FREQUENCY_ORDER.filter(
@@ -282,6 +295,36 @@ export default function ReportsPage() {
           {pipelines.length.toLocaleString()} resolutions with at least one
           linked report.
         </p>
+      </section>
+
+      {/* Request → response implementation samples */}
+      <section className="mt-14" id="implementation-samples">
+        <h2 className="mb-3 text-2xl font-bold text-gray-900">
+          Inside the reports: from request to response
+        </h2>
+        <p className="mb-2 max-w-3xl text-sm text-gray-500">
+          Linking a report to its resolution says nothing about what the report
+          actually delivers. For nine representative pairs across four organs,
+          each requesting paragraph was broken down into its individual
+          deliverables and mapped by hand against the full report text — what
+          the report says about each request, with verbatim quotes as evidence.
+        </p>
+        <p className="mb-4 max-w-3xl text-xs font-medium text-amber-700">
+          These are curated samples ({implementationSamples.length} pairs,{' '}
+          {implementationMappingCount} individual requests), not full coverage
+          of the {stats.requestParagraphs.toLocaleString()} detected requests.
+        </p>
+        <p className="mb-5 flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500">
+          {IMPLEMENTATION_STATUS_ORDER.map((s) => (
+            <span key={s}>
+              <span className="font-semibold text-gray-800 tabular-nums">
+                {implementationCounts[s]}
+              </span>{' '}
+              {IMPLEMENTATION_STATUS_LABELS[s].toLowerCase()}
+            </span>
+          ))}
+        </p>
+        <ReportsLensImplementationSamples samples={implementationSamples} />
       </section>
 
       {/* Methodology */}
