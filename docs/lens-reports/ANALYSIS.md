@@ -115,3 +115,102 @@ The script is strictly `SELECT`-only. The JSON (~5 MB) is bundled server-side;
 - `/mandate/[symbol]` (full page **and** intercepting modal) — a "Reporting
   cycle" section listing the resolution's detected requests and every report
   submitted pursuant to it, linking to the UN Digital Library records.
+
+## Request → response: mapping report contents back to resolution paragraphs (2026-07-22)
+
+The lens above links a report to its requesting resolution; this section goes a
+level deeper for a curated set of pairs: what does the report actually *say*
+about each individual request?
+
+### Sample
+
+Nine resolution→report pairs were selected from the lens for variety of organ,
+topic and report type (data: `website/src/data/report-implementation-samples.json`):
+
+| Resolution | Report | Topic |
+| --- | --- | --- |
+| A/RES/79/138 | A/80/292 | Humanitarian personnel safety |
+| A/RES/77/205 | A/78/197 | Elimination of racism (Durban follow-up) |
+| A/RES/79/40 | A/80/111 | Illicit small arms trade |
+| A/RES/79/116 | A/80/239 | Criminal accountability of UN officials |
+| A/RES/76/203 | A/77/218 | SIDS / Samoa Pathway |
+| A/RES/73/346 | A/75/798 | Multilingualism |
+| A/HRC/RES/42/7 | A/HRC/45/24 | World Programme for Human Rights Education |
+| S/RES/1925(2010) | S/2010/512 | MONUSCO (DRC) |
+| E/RES/2020/8 | E/CN.5/2022/4 | Madrid Plan of Action on Ageing |
+
+### Method
+
+1. English report PDFs were fetched from the UN Digital Library record files
+   (cached on the external SSD at `/Volumes/SSDAStorage/report-mapping-cache/`,
+   never the internal disk) and extracted with `pdftotext -layout`
+   (`website/scripts/fetch-sample-reports.mjs`).
+2. The full text of each requesting paragraph was pulled from
+   `mandates.paragraphs` and decomposed into **individual deliverables** — a
+   paragraph often bundles several (e.g. A/RES/79/138 ¶36 asks both for road-
+   incident data collection *and* for preventive trainings; each is mapped
+   separately). 39 requesting paragraphs → **43 mapped deliverables**.
+3. Each deliverable was mapped against the report text (structure skim +
+   targeted keyword search + close reading of candidate sections) and given:
+   - a status: `addressed` / `partial` / `mention` (covered by reference to a
+     third party's separate deliverable) / `silent`;
+   - the report locations (section/paragraph citations);
+   - a 1–2 sentence quote-grounded summary;
+   - a **verbatim quote** where a response exists.
+
+### Results
+
+Status distribution across the 43 mapped deliverables:
+
+| Status | n | Reading |
+| --- | --- | --- |
+| addressed | 20 | the report substantively answers the request |
+| partial | 9 | answered incompletely, late, or with the requested angle missing |
+| mention | 3 | covered only by reference to a separate deliverable |
+| silent | 11 | nothing in the report responds |
+
+Notable patterns:
+
+- **The umbrella "report on implementation" request is always addressed** — it
+  is the report's own raison d'être and typically restated in its first
+  paragraph.
+- **Silence is usually structural, not negligent**: most `silent` cases are
+  deliverables owed to a *different* venue or date (a study due to the 2026
+  Biennial Meeting, a panel summary due two sessions later, an oral Sixth
+  Committee briefing), or conditional obligations ("report any failure…")
+  where silence is ambiguous between "no incident" and "not reported".
+- **`partial` often encodes honest bad news**: the multilingualism report shows
+  language imbalances *deepening* despite the guidelines (A/75/798 ¶73), and
+  the human-rights-education evaluation is built on only 26 State responses
+  (A/HRC/45/24 ¶6).
+- Secretary-General reports frequently answer several resolutions at once
+  (A/80/111 answers 79/40 + 79/31; A/80/239 covers only one strand of its
+  umbrella paragraph and defers the rest to companion reports).
+
+### Validation and honest limits
+
+- **Quote integrity (all 9 pairs)**: every quote in the dataset was checked
+  programmatically against the extracted report text; all 44 quote segments
+  match verbatim after normalizing PDF artifacts (line-break hyphenation,
+  inline footnote markers). Four quotes were corrected during this check.
+- **End-to-end re-check (2 pairs)**: pairs A/RES/79/40→A/80/111 and
+  S/RES/1925(2010)→S/2010/512 were re-audited deliverable by deliverable with
+  fresh searches. Outcome: 10 of 11 statuses confirmed; one was **downgraded**
+  (79/40 ¶32 from `addressed` to `partial` — the UN-system support stocktake
+  exists, but the requested best-practices/lessons-learned angle is only
+  passing). One borderline stands documented: A/80/111 does mention "the
+  alteration or obliteration of the markings of weapons", but as a CTED gap
+  analysis, not the ¶34 study, so ¶34 remains `silent`.
+- **Limits**: statuses are analyst judgments on a 4-point scale; `partial` vs
+  `addressed` is genuinely fuzzy at the margins. The sample is small and
+  hand-picked for interpretability — the UI labels it as curated samples, not
+  coverage. Reports that answer a request in annexes not included in the main
+  PDF text layer would be misclassified as silent (none observed in this set).
+
+### Where it surfaces
+
+- `/reports#implementation-samples` — "Inside the reports: from request to
+  response": sample selector, two-column request/response alignment,
+  status-coloured with expandable verbatim quotes.
+- Mandate detail pages of the nine sampled resolutions link to the mapping
+  from their "Reporting cycle" section.

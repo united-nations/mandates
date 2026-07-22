@@ -1,0 +1,785 @@
+{
+  "generatedAt": "2026-07-22T11:59:59.791Z",
+  "method": "Curated samples: for each resolution-report pair, the requesting paragraphs were decomposed into individual deliverables and mapped by hand against the full report text; every quote was verified verbatim against the source PDF text. See docs/lens-reports/ANALYSIS.md.",
+  "samples": [
+    {
+      "resolution": "A/RES/79/138",
+      "resolutionTitle": "Safety and security of humanitarian personnel and protection of United Nations personnel",
+      "body": "GA",
+      "year": 2024,
+      "topic": "Humanitarian personnel safety",
+      "report": {
+        "symbol": "A/80/292",
+        "recid": 4087387,
+        "title": "Safety and security of humanitarian personnel and protection of United Nations personnel report of the Secretary-General",
+        "date": "2025-08-01"
+      },
+      "requestParagraphs": [
+        {
+          "prefix": "36.",
+          "text": "Further welcomes the ongoing measures taken by the Secretary-General and the United Nations system to enhance road safety, including through the United Nations system road safety strategy, so as to reduce incidents caused by road hazards and, in particular, to reduce casualties or injuries resulting from such incidents among United Nations and associated personnel and among the civilian population in the host country, encourages humanitarian organizations to promote similar approaches among their personnel, and requests the Secretary-General to continue the collection and analysis of data to report on road incidents, including civilian casualties resulting from road accidents, and to encourage road safety preventive measures such as specialized trainings;"
+        },
+        {
+          "prefix": "48.",
+          "text": "Welcomes the steps taken by the Secretary-General thus far to strengthen partnerships, and encourages further efforts to enhance coordination, cooperation and information- and data-sharing, as appropriate, at both the headquarters and field levels, between the United Nations, regional organizations and other humanitarian and non‑governmental organizations on matters relating to the safety and security of humanitarian personnel and United Nations and associated personnel, with a view to addressing mutual security concerns in the field, based on the Saving Lives Together framework as well as other relevant national and local initiatives in this regard, and requests the Secretary-General in this respect to enhance further collaborative initiatives to address the security needs of implementing partners, including through enhanced information- and data-sharing, as appropriate, assistance in emergency situations, when feasible, and, where appropriate, security training, invites Member States to consider increasing support to those initiatives, and requests the Secretary-General to report on steps taken in this regard;"
+        },
+        {
+          "prefix": "52.",
+          "text": "Requests the Secretary-General to submit to the General Assembly at its eightieth session a comprehensive and updated report on the safety and security of humanitarian personnel and protection of United Nations personnel and on the implementation of the present resolution, including an assessment of the impact of safety and security risks on such personnel, and the development, implementation and outcomes of policies, strategies and initiatives of the United Nations system in the field of safety and security."
+        }
+      ],
+      "mappings": [
+        {
+          "para": "36",
+          "deliverable": "Continue collecting and analysing data to report on road incidents, including civilian casualties from road accidents",
+          "requestClause": "requests the Secretary-General to continue the collection and analysis of data to report on road incidents, including civilian casualties resulting from road accidents",
+          "status": "partial",
+          "reportLocations": [
+            "sect. III, para. 30",
+            "fig. VIII"
+          ],
+          "summary": "The report tracks safety-related fatalities and injuries of UN personnel, including a dedicated road-traffic-crash breakdown and trend figure, but does not report civilian casualties from road accidents as requested.",
+          "quote": "Fatality rates due to road traffic crashes remained at approximately 15 deaths per 100,000 personnel, falling short of the goal of the Decade of Action for Road Safety of halving deaths and injuries by 2030."
+        },
+        {
+          "para": "36",
+          "deliverable": "Encourage road-safety preventive measures such as specialized trainings",
+          "requestClause": "and to encourage road safety preventive measures such as specialized trainings",
+          "status": "silent",
+          "reportLocations": [],
+          "summary": "The report cites the WHO road-safety goal but describes no specific preventive measures or specialized road-safety trainings undertaken in the reporting period.",
+          "quote": null
+        },
+        {
+          "para": "48",
+          "deliverable": "Enhance collaborative initiatives for implementing partners' security needs (information-sharing, emergency assistance, security training)",
+          "requestClause": "requests the Secretary-General in this respect to enhance further collaborative initiatives to address the security needs of implementing partners, including through enhanced information- and data-sharing, as appropriate, assistance in emergency situations, when feasible, and, where appropriate, security training",
+          "status": "addressed",
+          "reportLocations": [
+            "sect. IV, para. 42",
+            "sect. II, paras. 10-11, 16"
+          ],
+          "summary": "The report describes intensified work on the Saving Lives Together framework covering exactly the requested strands - information exchange, training, contingency planning and emergency response - plus concrete field examples in Syria, Sudan and the Occupied Palestinian Territory.",
+          "quote": "The Department of Safety and Security, together with other United Nations security management system organizations, intensified efforts to further strengthen the Saving Lives Together framework ... and facilitates structured information exchange, training, and advisory and operational support, where feasible. Priority areas included enhancing coordination mechanisms, improving joint contingency planning, access to security training, and emergency response."
+        },
+        {
+          "para": "48",
+          "deliverable": "Report on steps taken regarding partner security collaboration",
+          "requestClause": "and requests the Secretary-General to report on steps taken in this regard",
+          "status": "addressed",
+          "reportLocations": [
+            "sect. IV, para. 42",
+            "sect. III, para. 39 and fig. X"
+          ],
+          "summary": "Steps are reported both narratively and with data on security incidents affecting NGO implementing partners, with an explicit caveat that partner reporting is voluntary and undercounts.",
+          "quote": "As in previous years, NGOs and implementing partners shared reports on security incidents with the Department of Safety and Security on a voluntary basis. Therefore, these figures should be seen as minimum numbers rather than a fully accurate reporting of incidents."
+        },
+        {
+          "para": "52",
+          "deliverable": "Submit a comprehensive updated report at the 80th session, including a risk-impact assessment and outcomes of safety and security policies",
+          "requestClause": "Requests the Secretary-General to submit to the General Assembly at its eightieth session a comprehensive and updated report ... including an assessment of the impact of safety and security risks on such personnel, and the development, implementation and outcomes of policies, strategies and initiatives of the United Nations system in the field of safety and security",
+          "status": "addressed",
+          "reportLocations": [
+            "para. 1",
+            "sects. II-VI"
+          ],
+          "summary": "The report is itself the requested deliverable: it opens by restating this mandate and delivers the threat assessment (sect. III), policy and strategy developments (sects. IV-V) and recommendations (sect. VI).",
+          "quote": "In its resolution 79/138, the General Assembly requested the Secretary-General to submit to it, at its eightieth session, a comprehensive and updated report on the safety and security of humanitarian personnel and protection of United Nations personnel and on the implementation of the resolution."
+        }
+      ]
+    },
+    {
+      "resolution": "A/RES/77/205",
+      "resolutionTitle": "A global call for concrete action for the elimination of racism, racial discrimination, xenophobia and related intolerance and the comprehensive implementation of and follow-up to the Durban Declaration and Programme of Action",
+      "body": "GA",
+      "year": 2022,
+      "topic": "Elimination of racism (Durban follow-up)",
+      "report": {
+        "symbol": "A/78/197",
+        "recid": 4023205,
+        "title": "A global call for concrete action for the elimination of racism, racial discrimination, xenophobia and related intolerance and the comprehensive implementation of and follow-up to the Durban Declaration and Programme of Action report",
+        "date": "2023-09-05"
+      },
+      "requestParagraphs": [
+        {
+          "prefix": "8.",
+          "text": "Requests the Chair-Rapporteur of the Ad Hoc Committee on the Elaboration of Complementary Standards to present a progress report to the General Assembly at its seventy-eighth session;"
+        },
+        {
+          "prefix": "17.",
+          "text": "Takes note of the report of the Working Group of Experts on People of African Descent, invites the Human Rights Council, through the Chair of the Working Group, to continue to submit a report on the work of the Working Group to the General Assembly, and in this regard invites the Chair of the Working Group to engage in an interactive dialogue with the Assembly under the item entitled “Elimination of racism, racial discrimination, xenophobia and related intolerance” at its seventy-eighth session;"
+        },
+        {
+          "prefix": "33.",
+          "text": "Takes note of the report of the Special Rapporteur of the Human Rights Council on contemporary forms of racism, racial discrimination, xenophobia and related intolerance, and encourages the Special Rapporteur, within her mandate, to continue to focus on the issues of racism, racial discrimination, xenophobia and related intolerance and incitement to hatred, which impede peaceful coexistence and harmony within societies, and to submit reports in this regard to the Human Rights Council and the General Assembly;"
+        },
+        {
+          "prefix": "34.",
+          "text": "Reiterates its previous requests to the Special Rapporteur to consider examining national models of mechanisms that measure racial equality and their value added in the eradication of racial discrimination and to report on such challenges, successes and best practices in her next report, and expresses concern at the lack of progress in this regard;"
+        },
+        {
+          "prefix": "47.",
+          "text": "Requests the Secretary-General to submit to the General Assembly at its seventy-eighth session a report on the implementation of the present resolution;"
+        }
+      ],
+      "mappings": [
+        {
+          "para": "8",
+          "deliverable": "Chair-Rapporteur of the Ad Hoc Committee on Complementary Standards to present a progress report to the 78th session",
+          "requestClause": "Requests the Chair-Rapporteur of the Ad Hoc Committee on the Elaboration of Complementary Standards to present a progress report to the General Assembly at its seventy-eighth session",
+          "status": "mention",
+          "reportLocations": [
+            "para. 93"
+          ],
+          "summary": "The Secretary-General's report summarizes the Ad Hoc Committee's thirteenth session but the requested progress report itself is a separate deliverable by the Chair-Rapporteur, not contained here.",
+          "quote": "During its thirteenth session, which was held from 22 May to 2 June 2023, the Ad Hoc Committee of the Human Rights Council on the Elaboration of Complementary Standards to the International Convention on the Elimination of All Forms of Racial Discrimination discussed issues pertaining to legal definitions ... as well as the structure and scope of an additional protocol to the Convention."
+        },
+        {
+          "para": "17",
+          "deliverable": "Working Group of Experts on People of African Descent to report to the Assembly and engage in an interactive dialogue",
+          "requestClause": "invites the Human Rights Council, through the Chair of the Working Group, to continue to submit a report on the work of the Working Group to the General Assembly, and ... to engage in an interactive dialogue with the Assembly",
+          "status": "mention",
+          "reportLocations": [
+            "paras. 90-92"
+          ],
+          "summary": "The report gives a substantive account of the Working Group's session on economic empowerment, its country visits to Australia and the United Kingdom and its regional advocacy, but the Working Group's own report to the Assembly is a separate document.",
+          "quote": "In May 2023, the Working Group of Experts on People of African Descent held its thirty-second session, on the economic empowerment of people of African descent. ... In this context, the Working Group addressed the issue of reparations for people of African descent."
+        },
+        {
+          "para": "33",
+          "deliverable": "Special Rapporteur on contemporary racism to continue focusing on racism and incitement and submit reports to the HRC and the Assembly",
+          "requestClause": "encourages the Special Rapporteur ... to continue to focus on the issues of racism, racial discrimination, xenophobia and related intolerance and incitement to hatred ... and to submit reports in this regard to the Human Rights Council and the General Assembly",
+          "status": "mention",
+          "reportLocations": [
+            "paras. 95-96"
+          ],
+          "summary": "The report tracks the mandate's outputs by reference - the outgoing Special Rapporteur's reports on environmental racism and glorification of Nazism (A/77/549, A/77/512) and the new mandate holder's strategic vision (A/HRC/53/60) - rather than reproducing them.",
+          "quote": "In her report to the General Assembly in November 2022 (A/77/549), the then Special Rapporteur on contemporary forms of racism ... highlighted the racially discriminatory and unjust roots and consequences of environmental degradation, including climate change."
+        },
+        {
+          "para": "34",
+          "deliverable": "Special Rapporteur to examine national models of mechanisms measuring racial equality and report on challenges, successes and best practices",
+          "requestClause": "Reiterates its previous requests to the Special Rapporteur to consider examining national models of mechanisms that measure racial equality ... and to report on such challenges, successes and best practices in her next report, and expresses concern at the lack of progress in this regard",
+          "status": "silent",
+          "reportLocations": [],
+          "summary": "Nothing in the report responds to this reiterated request; the only related content is State submissions mentioning national racial-equality institutions, not the requested comparative examination. The Assembly had already noted a lack of progress, and this report shows none either.",
+          "quote": null
+        },
+        {
+          "para": "47",
+          "deliverable": "Secretary-General to report on implementation of the resolution at the 78th session",
+          "requestClause": "Requests the Secretary-General to submit to the General Assembly at its seventy-eighth session a report on the implementation of the present resolution",
+          "status": "addressed",
+          "reportLocations": [
+            "summary",
+            "sects. II-V"
+          ],
+          "summary": "This report is the requested deliverable: it compiles measures by Member States, United Nations entities and the Durban follow-up mechanisms, and closes with the Secretary-General's conclusions and recommendations.",
+          "quote": "The present report is submitted pursuant to General Assembly resolution 77/205. In the report, the Secretary-General provides information on measures taken by Member States and other stakeholders, activities undertaken by United Nations entities ..."
+        }
+      ]
+    },
+    {
+      "resolution": "A/RES/79/40",
+      "resolutionTitle": "The illicit trade in small arms and light weapons in all its aspects",
+      "body": "GA",
+      "year": 2024,
+      "topic": "Illicit small arms trade",
+      "report": {
+        "symbol": "A/80/111",
+        "recid": 4085066,
+        "title": "Assistance to States for curbing the illicit traffic in small arms and light weapons and collecting them and the illicit trade in small arms and light weapons in all its aspects report of the Secretary-General",
+        "date": "2025-06-17"
+      },
+      "requestParagraphs": [
+        {
+          "prefix": "24.",
+          "text": "Recalls its decision, in its resolution 77/71, to establish a dedicated fellowship training programme on small arms and light weapons in order to strengthen technical knowledge and expertise in areas relating to the implementation of the Programme of Action and the International Tracing Instrument, in particular in developing countries, for a duration of four weeks in-person in four regions, respectively, preceded by a preparatory self-paced online course, with the participation of 15 fellows per region, and in order to expedite the implementation of the programme, to provide the yearly financial resources necessary to ensure a sustained operationalization of this programme and urges its implementation in 2025, and requests the Secretary-General to operationalize the decision and to report thereon to the General Assembly at its eightieth session and periodically thereafter for follow-up;"
+        },
+        {
+          "prefix": "25.",
+          "text": "Encourages States to submit, on a voluntary basis, national reports on their implementation of the Programme of Action, notes that States will submit national reports on their implementation of the International Tracing Instrument, encourages those States in a position to do so to use the reporting template made available by the Office for Disarmament Affairs of the Secretariat, and reaffirms the utility of synchronizing such reports with biennial meetings of States and review conferences as a means of increasing the submission rate and improving the utility of reports, as well as contributing substantively to meeting discussions;"
+        },
+        {
+          "prefix": "32.",
+          "text": "Also requests the Secretariat to report on support provided by the United Nations system for the implementation of the Programme of Action and the International Tracing Instrument, including experiences, best practices and lessons learned regarding the efficient use of available resources, for presentation at upcoming meetings on the Programme of Action and the International Tracing Instrument;"
+        },
+        {
+          "prefix": "34.",
+          "text": "Requests the Secretariat, within existing resources, to conduct a study on obliterated markings and methods for marking recovery in the context of the International Tracing Instrument and to report to the Biennial Meeting of States in 2026;"
+        },
+        {
+          "prefix": "35.",
+          "text": "Requests the Secretary-General to report to the General Assembly at its eightieth session on the implementation of the present resolution;"
+        }
+      ],
+      "mappings": [
+        {
+          "para": "24",
+          "deliverable": "Operationalize the small-arms fellowship training programme, with implementation urged in 2025",
+          "requestClause": "requests the Secretary-General to operationalize the decision [establishing the fellowship programme] ... and urges its implementation in 2025",
+          "status": "partial",
+          "reportLocations": [
+            "sect. III.E, paras. 48-49"
+          ],
+          "summary": "The programme has been designed - curriculum built with UNITAR and tailored to four regions - but at reporting time no cohort had yet run; the first iterations were still 'expected' for the 2025 cycle.",
+          "quote": "The first iterations under the 2025 cycle of the programme are expected to be delivered in the Caribbean and Africa."
+        },
+        {
+          "para": "24",
+          "deliverable": "Report on the fellowship programme to the 80th session",
+          "requestClause": "and to report thereon to the General Assembly at its eightieth session",
+          "status": "addressed",
+          "reportLocations": [
+            "sect. III.E, paras. 48-49"
+          ],
+          "summary": "A dedicated section reports on the programme's establishment, curriculum and regional roll-out plan.",
+          "quote": "As mandated by the General Assembly in its resolution 77/71, the Office for Disarmament Affairs established a fellowship training programme on small arms and light weapons aimed at building national authorities' conceptual and practical knowledge on small arms control."
+        },
+        {
+          "para": "25",
+          "deliverable": "States to submit national reports on Programme of Action / International Tracing Instrument implementation",
+          "requestClause": "Encourages States to submit, on a voluntary basis, national reports on their implementation of the Programme of Action ... using the reporting template made available by the Office for Disarmament Affairs",
+          "status": "addressed",
+          "reportLocations": [
+            "sect. IV, paras. 91-93"
+          ],
+          "summary": "The report closes the loop on this encouragement with submission statistics: 100 States filed voluntary national reports ahead of the fourth Review Conference, with rising numbers setting national targets and reporting diversion data.",
+          "quote": "In advance of the fourth United Nations Conference to Review Progress Made in the Implementation of the Programme of Action, 100 States submitted voluntary national reports."
+        },
+        {
+          "para": "32",
+          "deliverable": "Secretariat to report on UN-system support for Programme of Action implementation, including best practices and lessons learned",
+          "requestClause": "Also requests the Secretariat to report on support provided by the United Nations system for the implementation of the Programme of Action and the International Tracing Instrument, including experiences, best practices and lessons learned ... for presentation at upcoming meetings on the Programme of Action",
+          "status": "partial",
+          "reportLocations": [
+            "sect. III (A-L)",
+            "summary"
+          ],
+          "summary": "Section III inventories UN-system support end to end - the CASA mechanism, MOSAIC compendium, SALIENT fund, UNSCAR trust facility and regional programmes - but the specifically requested experiences/best-practices/lessons-learned angle on efficient resource use appears only in passing, and formal presentation at Programme of Action meetings is a separate channel.",
+          "quote": "The report covers policy developments and multilateral efforts undertaken by States and other stakeholders, including United Nations bodies ... It also contains details on activities undertaken by United Nations entities in support of States."
+        },
+        {
+          "para": "34",
+          "deliverable": "Study on obliterated markings and marking-recovery methods, to be reported to the 2026 Biennial Meeting of States",
+          "requestClause": "Requests the Secretariat, within existing resources, to conduct a study on obliterated markings and methods for marking recovery ... and to report to the Biennial Meeting of States in 2026",
+          "status": "silent",
+          "reportLocations": [],
+          "summary": "The report says nothing about the obliterated-markings study; the deliverable is addressed to the 2026 Biennial Meeting of States rather than this report, and no interim progress is mentioned either.",
+          "quote": null
+        },
+        {
+          "para": "35",
+          "deliverable": "Secretary-General to report on implementation of the resolution at the 80th session",
+          "requestClause": "Requests the Secretary-General to report to the General Assembly at its eightieth session on the implementation of the present resolution",
+          "status": "addressed",
+          "reportLocations": [
+            "summary",
+            "sects. II-IV"
+          ],
+          "summary": "This report is the requested deliverable, jointly answering resolutions 79/40 and 79/31 with policy developments, UN-system activities and implementation trends for June 2024 to May 2025.",
+          "quote": "The present report is submitted in response to the requests of the General Assembly contained in its resolution 79/40 on the illicit trade in small arms and light weapons in all its aspects and its resolution 79/31 ..."
+        }
+      ]
+    },
+    {
+      "resolution": "A/RES/79/116",
+      "resolutionTitle": "Criminal accountability of United Nations officials and experts on mission",
+      "body": "GA",
+      "year": 2024,
+      "topic": "Criminal accountability of UN officials",
+      "report": {
+        "symbol": "A/80/239",
+        "recid": 4086817,
+        "title": "Criminal accountability of United Nations officials and experts on mission report of the Secretary-General",
+        "date": "2025-07-23"
+      },
+      "requestParagraphs": [
+        {
+          "prefix": "26.",
+          "text": "Stresses the critical importance of ensuring that victims of criminal conduct perpetrated by United Nations officials and experts on mission are made aware of available victim assistance and support, including from a gender perspective, and requests the Secretary-General to report to the Sixth Committee on available victim assistance and support during the briefing at its eightieth session;"
+        },
+        {
+          "prefix": "29.",
+          "text": "Requests the Secretary-General to keep up to date the online compilation of the full submissions and questionnaire responses as well as the online summary table of national provisions, based on information received from Member States since 2007, regarding the establishment of jurisdiction over their nationals whenever they serve as United Nations officials or experts on mission, in relation to crimes as known in their existing national criminal laws, particularly those of a serious nature, and also requests the Secretary-General to prepare a report containing a general overview of national provisions, based on the information received, for the eightieth session of the General Assembly, provided that sufficient information has been received from Member States;"
+        },
+        {
+          "prefix": "30.",
+          "text": "Takes note of the report of the Secretary-General setting out updates to all relevant existing policies and procedures of the United Nations system regarding the allegations referred to in paragraphs 18 and 19 above, and requests the Secretary-General to continue to report on any updates to those policies and procedures and to develop recommendations to help to ensure that such policies and procedures relating to the reporting, investigation, referral and follow-up of credible allegations revealing that a crime may have been committed by a United Nations official or expert on mission are coherent, systematic and coordinated throughout the United Nations system;"
+        },
+        {
+          "prefix": "31.",
+          "text": "Requests the Secretary-General to report to the General Assembly at its eightieth session on the implementation of the present resolution, in particular with respect to paragraphs 10, 12, 13, 15, 18, 20 and 30 above, as well as any practical problems in its implementation, on the basis of information received from Governments and the Secretariat;"
+        }
+      ],
+      "mappings": [
+        {
+          "para": "26",
+          "deliverable": "Report to the Sixth Committee briefing on available victim assistance and support",
+          "requestClause": "requests the Secretary-General to report to the Sixth Committee on available victim assistance and support during the briefing at its eightieth session",
+          "status": "silent",
+          "reportLocations": [],
+          "summary": "Victim assistance is not covered; the requested deliverable is an oral briefing to the Sixth Committee, a separate channel from this written report.",
+          "quote": null
+        },
+        {
+          "para": "29",
+          "deliverable": "Keep the online compilation of national jurisdiction provisions up to date and prepare a general-overview report",
+          "requestClause": "requests the Secretary-General to keep up to date the online compilation of the full submissions and questionnaire responses ... and also requests the Secretary-General to prepare a report containing a general overview of national provisions ... provided that sufficient information has been received from Member States",
+          "status": "silent",
+          "reportLocations": [],
+          "summary": "This report does not touch the jurisdiction compilation; it notes it 'is also to be read in conjunction with other relevant reports under the agenda item', where that strand is handled.",
+          "quote": null
+        },
+        {
+          "para": "30",
+          "deliverable": "Continue reporting updates to system-wide policies and procedures on criminal allegations, with recommendations for coherence",
+          "requestClause": "requests the Secretary-General to continue to report on any updates to those policies and procedures and to develop recommendations to help to ensure that such policies and procedures ... are coherent, systematic and coordinated throughout the United Nations system",
+          "status": "addressed",
+          "reportLocations": [
+            "sects. II-III",
+            "sect. IV, para. 22"
+          ],
+          "summary": "The report is a fresh 2025 information round across the Secretariat, funds and programmes and specialized agencies (solicited by letter of 8 January 2025), closing with the requested coherence recommendation.",
+          "quote": "It is recommended that Member States continue to encourage the distinct legislative bodies of the United Nations system and related organizations to help to ensure the coherence and coordination of policies and procedures relating to the reporting, investigation, referral and follow-up of credible allegations."
+        },
+        {
+          "para": "31",
+          "deliverable": "Report on implementation of the resolution at the 80th session, including practical problems, based on information from Governments and the Secretariat",
+          "requestClause": "Requests the Secretary-General to report to the General Assembly at its eightieth session on the implementation of the present resolution, in particular with respect to paragraphs 10, 12, 13, 15, 18, 20 and 30 above, as well as any practical problems ...",
+          "status": "partial",
+          "reportLocations": [
+            "summary",
+            "para. 1"
+          ],
+          "summary": "The report answers only the paragraph-30 strand of this umbrella request (policies and procedures); information from Governments on jurisdiction and prosecutions is delivered through companion reports under the same agenda item.",
+          "quote": "The present report has been prepared pursuant to paragraphs 31 and 32 of General Assembly resolution 79/116. ... The report is also to be read in conjunction with other relevant reports under the agenda item on the criminal accountability of United Nations officials and experts on mission."
+        }
+      ]
+    },
+    {
+      "resolution": "A/RES/76/203",
+      "resolutionTitle": "Follow-up to and implementation of the SIDS Accelerated Modalities of Action (SAMOA) Pathway and the Mauritius Strategy for the Further Implementation of the Programme of Action for the Sustainable Development of Small Island Developing States",
+      "body": "GA",
+      "year": 2021,
+      "topic": "Small island developing States (Samoa Pathway)",
+      "report": {
+        "symbol": "A/77/218",
+        "recid": 3985452,
+        "title": "Follow-up to and implementation of the SIDS Accelerated Modalities of Action (SAMOA) Pathway and the Mauritius Strategy for the Further Implementation of the Programme of Action for the Sustainable Development of Small Island Developing States report of the Secretary-General",
+        "date": "2022-07-25"
+      },
+      "requestParagraphs": [
+        {
+          "prefix": "(a)",
+          "text": "Welcomes the Secretary-General’s recommendations on the potential development and coordination of work within the United Nations system on a multidimensional vulnerability index for small island developing States, including on its potential finalization and use, and in this regard decides to establish a representative high-level panel of experts co-chaired by two eminent persons, one of whom shall be from a small island developing State, calls upon the President of the General Assembly to appoint the members of the panel and to task them with carrying forward work to finalize the multidimensional vulnerability index by December 2022, invites inputs from all countries to contribute to the work of the panel, also decides that the Department of Economic and Social Affairs and the Office of the High Representative, within their respective mandates, shall support the work of the panel by acting as secretariat, and requests the Secretary-General to provide an update report on the progress of work to the General Assembly at its seventy-seventh session;"
+        },
+        {
+          "prefix": "21.",
+          "text": "Requests the Secretary-General to submit to the General Assembly, at its seventy-seventh session, a report on the follow-up to and implementation of the Samoa Pathway, including on progress made and continuing challenges faced, on the implementation of the present resolution, building on the discussions and outcomes of the high-level meeting to review progress made in addressing the priorities of small island developing States through the implementation of the Samoa Pathway, convened in September 2019, and on the efforts to assist small island developing States to recover from the COVID-19 pandemic;"
+        },
+        {
+          "prefix": "22.",
+          "text": "Recognizes that improved data collection and statistical analysis are required to enable small island developing States to effectively plan, follow up on, evaluate the implementation of and track success in attaining the Sustainable Development Goals and other internationally agreed development goals, in this regard welcomes the progress on the development of a monitoring framework for the Samoa Pathway, looks forward to its finalization and adoption, and further encourages small island developing States to utilize the framework for reporting ahead of the fourth international conference on small island developing States, reiterates the call for meaningful partnerships with small island developing States to assist with strengthening their statistical offices and to provide enhanced support in developing national capacities for improved data collection and statistical analysis, including high-quality and disaggregated data, and further calls upon the Secretary-General to continue to update the General Assembly on this matter;"
+        }
+      ],
+      "mappings": [
+        {
+          "para": "8 (a)",
+          "deliverable": "Establish and appoint the high-level expert panel on the multidimensional vulnerability index (MVI)",
+          "requestClause": "decides to establish a representative high-level panel of experts co-chaired by two eminent persons ... calls upon the President of the General Assembly to appoint the members of the panel",
+          "status": "addressed",
+          "reportLocations": [
+            "sect. V.C, para. 82"
+          ],
+          "summary": "The panel was constituted as designed: the President of the Assembly appointed the two Co-Chairs (Prime Minister Browne and former Prime Minister Solberg) and ten members in February 2022, explicitly pursuant to this paragraph.",
+          "quote": "In February 2022, the President of the General Assembly, pursuant to paragraph 8 (a) of resolution 76/203, appointed the following persons as Co-Chairs and members of the High-level Panel and tasked them with carrying forward the work to finalize the multidimensional vulnerability index."
+        },
+        {
+          "para": "8 (a)",
+          "deliverable": "Carry forward work to finalize the MVI by December 2022",
+          "requestClause": "to task them with carrying forward work to finalize the multidimensional vulnerability index by December 2022",
+          "status": "partial",
+          "reportLocations": [
+            "sect. V.C, paras. 83-85"
+          ],
+          "summary": "At reporting time the index was not yet final: the panel had agreed definitions and a two-level structure and was expected to present its recommendations by the December 2022 deadline.",
+          "quote": "In accordance with its mandate and terms of reference, the Panel is expected, by December 2022, to present for the consideration of Member States, recommendations on: (a) A clear and coherent multidimensional vulnerability index with validated key components and subcomponents."
+        },
+        {
+          "para": "21",
+          "deliverable": "Report at the 77th session on Samoa Pathway implementation, continuing challenges and COVID-19 recovery",
+          "requestClause": "Requests the Secretary-General to submit to the General Assembly, at its seventy-seventh session, a report on the follow-up to and implementation of the Samoa Pathway ... and on the efforts to assist small island developing States to recover from the COVID-19 pandemic",
+          "status": "addressed",
+          "reportLocations": [
+            "summary",
+            "sects. II-IV"
+          ],
+          "summary": "This report is the requested deliverable, compiling Member State and UN-system activities for August 2021 to July 2022, including numerous COVID-19 recovery measures for small island developing States.",
+          "quote": "This present report has been prepared pursuant to General Assembly resolution 76/203. It covers the period from August 2021 to July 2022 and contains summaries of activities undertaken by reporting Member States and United Nations system organizations to implement the SIDS Accelerated Modalities of Action (SAMOA) Pathway."
+        },
+        {
+          "para": "22",
+          "deliverable": "Finalize and apply the Samoa Pathway monitoring framework for tracking progress",
+          "requestClause": "welcomes the progress on the development of a monitoring framework for the Samoa Pathway, looks forward to its finalization and adoption, and further encourages small island developing States to utilize the framework for reporting",
+          "status": "addressed",
+          "reportLocations": [
+            "sect. III.2, para. 37",
+            "annex reference"
+          ],
+          "summary": "The monitoring framework is not just described but used: the report's progress assessment applies its 109 indicators across all 30 Samoa Pathway priority clusters, with the full data published on the DESA website.",
+          "quote": "The monitoring framework of the SAMOA Pathway consists of 109 indicators (drawn from the Sustainable Development Goal indicators, the Sendai Framework for Disaster Risk Reduction 2015-2030, the Addis Ababa Action Agenda ... adopted under the United Nations Framework Convention on Climate Change) covering progress against all 30 priority action clusters of the SAMOA Pathway."
+        }
+      ]
+    },
+    {
+      "resolution": "A/RES/73/346",
+      "resolutionTitle": "Multilingualism",
+      "body": "GA",
+      "year": 2018,
+      "topic": "Multilingualism in the Secretariat",
+      "report": {
+        "symbol": "A/75/798",
+        "recid": 3906713,
+        "title": "Multilingualism report of the Secretary-General",
+        "date": "2021-03-04"
+      },
+      "requestParagraphs": [
+        {
+          "prefix": "10.",
+          "text": "Recalls with appreciation the appointment by the Secretary-General of the Coordinator for Multilingualism, who is responsible for the overall implementation of multilingualism Secretariat-wide, calls upon all departments and offices within the Secretariat to fully support the work of the Coordinator in the implementation of the relevant mandates on multilingualism, and requests the Secretary-General to report thereon in his next report on multilingualism;"
+        },
+        {
+          "prefix": "14.",
+          "text": "Further welcomes the ongoing development of a Secretariat-wide coherent policy framework on multilingualism to support a comprehensive and coordinated approach on multilingualism within the United Nations, taking into consideration the relevant recommendations contained in the report of the Joint Inspection Unit on multilingualism, and requests the Secretary-General to report on progress made at the seventy-fifth session of the General Assembly;"
+        },
+        {
+          "prefix": "45.",
+          "text": "Encourages the continuation of the live webcasts of public meetings of the General Assembly and the Economic and Social Council and their respective subsidiary bodies, as well as of the public meetings of the Security Council, with interpretation services, and requests the Secretariat to make every effort to provide full access to archived videos in all official languages of all past open formal United Nations meetings with interpretation services, in strict observance of the principle of full parity of the six official languages of the United Nations, in order to promote transparency and accountability within the Organization, and in that regard requests the Department of Global Communications, the Office of Information and Communications Technology and the Department for General Assembly and Conference Management of the Secretariat to collaborate, on a cost-neutral basis, to explore cost-efficient technological options to ensure equal availability, searchability, completeness and user-friendly presentation of webcast archives in all official languages on the United Nations website, and requests the Secretary-General to report on the results of this collaboration in the next report on multilingualism, to be submitted to the General Assembly at its seventy-fifth session;"
+        },
+        {
+          "prefix": "64.",
+          "text": "Notes the significant disparities across official languages observed in language requirements in the job openings published on Inspira in 2017, and welcomes in this regard the guidelines on setting language requirements in job openings in the coming biennium, and requests the Secretary-General to report on the progress achieved through the implementation of the guidelines at the seventy-fifth session of the General Assembly;"
+        },
+        {
+          "prefix": "71.",
+          "text": "Welcomes the inclusion by the Secretary-General of a managerial indicator related to multilingualism in all his compacts with senior managers, including senior managers in the field, requiring that all workplans and, where applicable, mission plans and budgets integrate multilingualism and/or language considerations and that all parliamentary documentation be submitted by authoring entities for multilingual processing on time and within the established word limit, and requests the Secretary-General to report thereon at the seventy-fifth session of the General Assembly;"
+        },
+        {
+          "prefix": "76.",
+          "text": "Welcomes the efforts of the Coordinator for Multilingualism to support the Office of Human Resources of the Department of Management Strategy, Policy and Compliance and the Human Resources Services Division of the Department of Operational Support in reviewing how language skills are assessed in staff selection, and requests the Secretary-General to report on progress made in this regard during the seventy-fifth session of the General Assembly;"
+        },
+        {
+          "prefix": "78.",
+          "text": "Welcomes the ongoing harmonization exercise that aims to produce a United Nations Language Framework ensuring greater consistency in language learning, teaching and assessment (a) across the entire Secretariat and (b) across all six United Nations official languages, and requests the Secretary-General to report on progress made in this regard during the seventy-fifth session of the General Assembly;"
+        },
+        {
+          "prefix": "89.",
+          "text": "Requests the Secretary-General to submit to the General Assembly at its seventy-fifth session a comprehensive report on the full implementation of its resolutions on multilingualism;"
+        }
+      ],
+      "mappings": [
+        {
+          "para": "10",
+          "deliverable": "Report on Secretariat-wide support for the Coordinator for Multilingualism",
+          "requestClause": "calls upon all departments and offices within the Secretariat to fully support the work of the Coordinator ... and requests the Secretary-General to report thereon in his next report on multilingualism",
+          "status": "addressed",
+          "reportLocations": [
+            "sect. II.A, paras. 2-4",
+            "paras. 12-15"
+          ],
+          "summary": "The report opens with the Coordinator's appointment (effective 3 September 2019), terms of reference, the network of focal points liaising across entities, and the Coordinator-initiated staff survey and senior-management briefings.",
+          "quote": "A network of focal points serves as a liaison between the Coordinator for Multilingualism and the focal points’ respective entities."
+        },
+        {
+          "para": "14",
+          "deliverable": "Report progress on the Secretariat-wide policy framework on multilingualism at the 75th session",
+          "requestClause": "welcomes the ongoing development of a Secretariat-wide coherent policy framework on multilingualism ... and requests the Secretary-General to report on progress made at the seventy-fifth session",
+          "status": "partial",
+          "reportLocations": [
+            "para. 13"
+          ],
+          "summary": "Progress is reported, but the substance is a delay: the framework was postponed by the pandemic and only moved into its next phase in early 2021 after extrabudgetary funding from la Francophonie.",
+          "quote": "The development of a strategic policy framework on multilingualism was delayed owing to multiple factors, including the impact of the pandemic. After the receipt in December 2020 of an extrabudgetary contribution from the International Organization of la Francophonie, the project moved into its next phase in early 2021."
+        },
+        {
+          "para": "45",
+          "deliverable": "Continue live webcasts with interpretation and provide full access to archived videos in all six official languages",
+          "requestClause": "requests the Secretariat to make every effort to provide full access to archived videos in all official languages of all past open formal United Nations meetings ... in strict observance of the principle of full parity of the six official languages",
+          "status": "partial",
+          "reportLocations": [
+            "sect. III, paras. 37-38"
+          ],
+          "summary": "Live six-language webcasts of Assembly plenaries and Security Council meetings continued, but full multilingual access to archives remained unresolved - search metadata in all languages awaits connected systems and dedicated language staff, and five of six approved language positions in Geneva stayed vacant under the hiring freeze.",
+          "quote": "The Department continues to explore options to ensure the availability of multilingual metadata to enable search functions in all official languages. ... the Department of Global Communications noted that dedicated language staff would need to be made available to review and approve metadata in the respective languages."
+        },
+        {
+          "para": "64",
+          "deliverable": "Report progress achieved through the guidelines on language requirements in job openings",
+          "requestClause": "Notes the significant disparities across official languages observed in language requirements in the job openings published on Inspira in 2017 ... and requests the Secretary-General to report on the progress achieved through the implementation of the guidelines at the seventy-fifth session",
+          "status": "partial",
+          "reportLocations": [
+            "sect. V, paras. 72-73 and fig. IV"
+          ],
+          "summary": "The analysis is updated as requested, but shows regression rather than progress: language imbalances deepened in 2019, with all languages stagnating or declining except English, and no measured effect of the guidelines is presented.",
+          "quote": "Overall, the imbalances observed across working or official languages in the previous report deepened in 2019, with all languages stagnating or declining except English."
+        },
+        {
+          "para": "71",
+          "deliverable": "Report on the multilingualism indicator in senior managers' compacts and its integration into workplans and budgets",
+          "requestClause": "Welcomes the inclusion by the Secretary-General of a managerial indicator related to multilingualism in all his compacts with senior managers ... and requests the Secretary-General to report thereon at the seventy-fifth session",
+          "status": "addressed",
+          "reportLocations": [
+            "sect. IV.1, paras. 53-56"
+          ],
+          "summary": "Reported with figures: compacts have carried multilingualism requirements since 2018, 20 field missions integrated it into planning and budgets, 35 non-field entities into workplans, and 9 entities added further compact objectives.",
+          "quote": "Of the 64 entities that submitted inputs on this topic, 20 field missions reported that they had integrated multilingualism into their planning and budgets, and 35 non-field entities reported that they had integrated multilingualism into their workplans."
+        },
+        {
+          "para": "76",
+          "deliverable": "Report progress on reviewing how language skills are assessed in staff selection",
+          "requestClause": "Welcomes the efforts of the Coordinator for Multilingualism to support ... reviewing how language skills are assessed in staff selection, and requests the Secretary-General to report on progress made in this regard",
+          "status": "addressed",
+          "reportLocations": [
+            "sect. V, paras. 70-71",
+            "para. 15"
+          ],
+          "summary": "Reports the 2019 staff survey (3,613 responses across 243 duty stations) and a follow-on pilot using the Language Framework's competence levels to define language requirements and map skill gaps for talent management.",
+          "quote": "The project built on the language competence levels defined in the United Nations Language Framework to develop a consistent methodology for defining language requirements and identifying gaps in language skills."
+        },
+        {
+          "para": "78",
+          "deliverable": "Report progress on the United Nations Language Framework harmonization exercise",
+          "requestClause": "Welcomes the ongoing harmonization exercise that aims to produce a United Nations Language Framework ensuring greater consistency in language learning, teaching and assessment ... and requests the Secretary-General to report on progress made",
+          "status": "addressed",
+          "reportLocations": [
+            "para. 14",
+            "sect. V, para. 69"
+          ],
+          "summary": "The Framework's four competence levels were fine-tuned and are feeding common examination criteria and the learning catalogue, with formalization in a Secretary-General's bulletin expected in 2021.",
+          "quote": "The new assessment criteria for the examinations have been established based on the descriptors of level III of language competence, and the language learning catalogue is being gradually aligned with the aforementioned language competence levels. The Framework is expected to be formalized in a Secretary-General's bulletin in 2021."
+        },
+        {
+          "para": "89",
+          "deliverable": "Comprehensive report at the 75th session on implementation of all multilingualism resolutions",
+          "requestClause": "Requests the Secretary-General to submit to the General Assembly at its seventy-fifth session a comprehensive report on the full implementation of its resolutions on multilingualism",
+          "status": "addressed",
+          "reportLocations": [
+            "summary"
+          ],
+          "summary": "This report is the requested comprehensive deliverable, spanning coordination, conference services, communications, human resources and system-wide practices.",
+          "quote": "The present report is submitted pursuant to General Assembly resolution 73/346, in which the Assembly requested the Secretary-General to submit to it, at its seventy-fifth session, a comprehensive report on the full implementation of its resolutions on multilingualism."
+        }
+      ]
+    },
+    {
+      "resolution": "A/HRC/RES/42/7",
+      "resolutionTitle": "World Programme for Human Rights Education adoption of the Plan of Action for the Fourth Phase :",
+      "body": "HRC",
+      "year": 2019,
+      "topic": "World Programme for Human Rights Education",
+      "report": {
+        "symbol": "A/HRC/45/24",
+        "recid": 3880803,
+        "title": "Evaluation of the implementation of the Third Phase of the World Programme for Human Rights Education report of the Office of the United Nations High Commissioner for Human Rights",
+        "date": "2020-08-13"
+      },
+      "requestParagraphs": [
+        {
+          "prefix": "3.",
+          "text": "Calls upon all States and other relevant stakeholders to develop initiatives in accordance with the World Programme and, in particular, to implement, within their capabilities, the plan of action for the fourth phase, and encourages States to submit their midterm progress reports and final national evaluation reports on the implementation of the fourth phase to the Office of the High Commissioner, as specified in the plan of action;"
+        },
+        {
+          "prefix": "10.",
+          "text": "Requests the Office of the High Commissioner to submit a final report on the implementation of the third phase of the World Programme, based on national evaluation reports, to the Human Rights Council at its forty-fifth session;"
+        },
+        {
+          "prefix": "11.",
+          "text": "Decides to follow up on the implementation of the World Programme in 2022, and requests the Office of the High Commissioner to prepare, from within existing resources, a midterm progress report on the implementation of the fourth phase of the World Programme and to submit it to the Council at its fifty-first session;"
+        },
+        {
+          "prefix": "12.",
+          "text": "Also decides to convene at its forty-eighth session a high-level panel discussion to mark the tenth anniversary of the United Nations Declaration on Human Rights Education and Training on the theme “The tenth anniversary of the United Nations Declaration on Human Rights Education and Training: good practices, challenges and the way forward”, decides further that the discussion will be fully accessible to persons with disabilities, and requests the Office of the High Commissioner to prepare a summary report of the discussion and to submit it to the Human Rights Council by its forty-ninth session."
+        }
+      ],
+      "mappings": [
+        {
+          "para": "3",
+          "deliverable": "States to implement the World Programme and submit national evaluation reports to OHCHR",
+          "requestClause": "Calls upon all States ... to implement, within their capabilities, the plan of action for the fourth phase, and encourages States to submit their midterm progress reports and final national evaluation reports ... to the Office of the High Commissioner",
+          "status": "partial",
+          "reportLocations": [
+            "sect. I.B, paras. 5-7",
+            "annex"
+          ],
+          "summary": "The report exposes thin compliance with the reporting leg of this call: after notes verbales and a guidance note, only 26 States had submitted third-phase national evaluation reports by 30 June 2020, and OHCHR proceeded on that limited basis.",
+          "quote": "By 30 June 2020, 26 States (see annex) had responded. The present evaluation report is based on those responses and should be read in conjunction with the midterm progress report. ... Despite the limited number of responses, the present report contains an overview of relevant actions undertaken during the third phase."
+        },
+        {
+          "para": "10",
+          "deliverable": "OHCHR final evaluation report on the third phase, submitted to the Council's 45th session",
+          "requestClause": "Requests the Office of the High Commissioner to submit a final report on the implementation of the third phase of the World Programme, based on national evaluation reports, to the Human Rights Council at its forty-fifth session",
+          "status": "addressed",
+          "reportLocations": [
+            "summary",
+            "whole report"
+          ],
+          "summary": "This report is the requested deliverable: the third-phase evaluation built on the 26 national responses, with examples, conclusions and recommendations.",
+          "quote": "Pursuant to Human Rights Council resolution 42/7, the present report contains an overview of action undertaken during the third phase (2015-2019) of the World Programme for Human Rights Education at the national level, as reported by 26 States."
+        },
+        {
+          "para": "11",
+          "deliverable": "Midterm progress report on the fourth phase, due at the Council's 51st session (2022)",
+          "requestClause": "requests the Office of the High Commissioner to prepare ... a midterm progress report on the implementation of the fourth phase of the World Programme and to submit it to the Council at its fifty-first session",
+          "status": "silent",
+          "reportLocations": [],
+          "summary": "Not covered here: this deliverable was due two years later and was delivered separately (A/HRC/51/8, 2022, also linked to this resolution in the registry).",
+          "quote": null
+        },
+        {
+          "para": "12",
+          "deliverable": "Summary report of the high-level panel on the 10th anniversary of the Declaration on Human Rights Education and Training",
+          "requestClause": "requests the Office of the High Commissioner to prepare a summary report of the discussion and to submit it to the Human Rights Council by its forty-ninth session",
+          "status": "silent",
+          "reportLocations": [],
+          "summary": "Not covered here: the panel was scheduled for the 48th session (2021) and its summary is a separate later deliverable.",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "resolution": "S/RES/1925(2010)",
+      "resolutionTitle": "Security Council resolution 1925 (2010) [on extension of the mandate of the UN Organization Mission in the Democratic Republic of the Congo (MONUC)]",
+      "body": "SC",
+      "year": 2010,
+      "topic": "MONUSCO (Democratic Republic of the Congo)",
+      "report": {
+        "symbol": "S/2010/512",
+        "recid": 691676,
+        "title": "Report of the Secretary-General on the United Nations Organization Stabilization Mission in the Democratic Republic of the Congo",
+        "date": "2010-10-08"
+      },
+      "requestParagraphs": [
+        {
+          "prefix": "7.",
+          "text": "Encourages enhanced dialogue and partnership between the Government of the Democratic Republic of the Congo and the United Nations mission in this country, decides to keep under continuous review the strength of MONUSCO on the basis of assessments from the Secretary-General and the Government of the Democratic Republic of the Congo as provided to the Secretary-General on progress towards the implementation of the objectives presented in paragraph 6 above and to that end requests the Secretary-General to report on these assessments regularly to the Council, through the reports mentioned in paragraph 20 below, to enable the Council to make informed decisions and seize opportunities for reconfiguration;"
+        },
+        {
+          "prefix": "15.",
+          "text": "Requests the Secretary-General to take the necessary measures to ensure full compliance of MONUSCO with the United Nations zero-tolerance policy on sexual exploitation and abuses and to keep the Council informed if cases of such conduct occur;"
+        },
+        {
+          "prefix": "20.",
+          "text": "Requests the Secretary-General to report by 11 October 2010, 21 January 2011 and 13 May 2011 on the progress on the ground, in particular in light of the assessment discussions with the Congolese authorities mentioned in paragraph 7 above, and on the implementation of this resolution with a view to progressively adapting the United Nations presence in the Democratic Republic of the Congo, and recalling the statement of its President of 5 August 2009 (PRST/2009/24), requests the Secretary-General to provide in these reports an indication of progress towards achieving a coordinated United Nations approach in-country, and in particular on critical gaps to achieving peacebuilding objectives alongside the mission;"
+        },
+        {
+          "prefix": "21.",
+          "text": "Demands that all parties cooperate fully with the operations of MONUSCO and that they ensure the security of as well as unhindered and immediate access for the United Nations and associated personnel in carrying out their mandate, throughout the territory of the Democratic Republic of the Congo, and requests the Secretary-General to report without delay any failure to comply with these demands;"
+        },
+        {
+          "prefix": "22.",
+          "text": "Requests the Secretary-General to elaborate the concept of operation and rules of engagement of MONUSCO in line with the provisions of this resolution and to report on this to the Security Council and troop-contributing countries;"
+        }
+      ],
+      "mappings": [
+        {
+          "para": "7",
+          "deliverable": "Report regularly on joint Government-UN assessments of progress against the benchmarks for MONUSCO reconfiguration",
+          "requestClause": "requests the Secretary-General to report on these assessments regularly to the Council, through the reports mentioned in paragraph 20 below, to enable the Council to make informed decisions",
+          "status": "addressed",
+          "reportLocations": [
+            "paras. 69-71",
+            "para. 87"
+          ],
+          "summary": "The joint assessment machinery was stood up and reported in detail: a joint MONUSCO-Government team agreed terms of reference in June, provincial workshops followed, and teams visited 55 locations across the east using questionnaires and indicators.",
+          "quote": "In June, a joint MONUSCO-Government working-level national team was established in Kinshasa and agreed on terms of reference and a methodology for the joint assessment process. ... In July and August, the teams visited 55 locations throughout eastern Democratic Republic of the Congo and Equateur."
+        },
+        {
+          "para": "15",
+          "deliverable": "Ensure MONUSCO compliance with the zero-tolerance policy on sexual exploitation and abuse and keep the Council informed of cases",
+          "requestClause": "Requests the Secretary-General to take the necessary measures to ensure full compliance of MONUSCO with the United Nations zero-tolerance policy on sexual exploitation and abuses and to keep the Council informed if cases of such conduct occur",
+          "status": "silent",
+          "reportLocations": [],
+          "summary": "The report contains no reporting on conduct and discipline or sexual exploitation and abuse; the obligation is standing ('keep informed if cases occur'), so silence is ambiguous between no cases and no reporting.",
+          "quote": null
+        },
+        {
+          "para": "20",
+          "deliverable": "Submit the first progress report by 11 October 2010, covering the joint assessment and the coordinated UN approach",
+          "requestClause": "Requests the Secretary-General to report by 11 October 2010 ... on the progress on the ground, in particular in light of the assessment discussions with the Congolese authorities ... and to provide in these reports an indication of progress towards achieving a coordinated United Nations approach in-country",
+          "status": "addressed",
+          "reportLocations": [
+            "para. 1",
+            "paras. 69-71, 87"
+          ],
+          "summary": "Delivered on schedule (dated 8 October 2010) and framed explicitly as the paragraph-20 deliverable; the coordinated-approach strand appears through the Integrated Strategic Framework and Peacebuilding Fund programming.",
+          "quote": "The present report is submitted pursuant to resolution 1925 (2010) ... the Council also requested, in paragraph 20, that I report, by 11 October, on the progress on the ground, in particular with respect to the assessment conducted jointly with the Congolese authorities."
+        },
+        {
+          "para": "21",
+          "deliverable": "Report without delay any failure by parties to cooperate with MONUSCO or ensure access",
+          "requestClause": "requests the Secretary-General to report without delay any failure to comply with these demands [cooperation with MONUSCO, security of and unhindered access for UN personnel]",
+          "status": "silent",
+          "reportLocations": [],
+          "summary": "No access denials or cooperation failures are flagged in this report. The obligation is conditional, so silence could mean either no qualifying incidents or unexercised reporting; the report itself does not say which.",
+          "quote": null
+        },
+        {
+          "para": "22",
+          "deliverable": "Elaborate MONUSCO's concept of operations and rules of engagement and report on them to the Council and troop contributors",
+          "requestClause": "Requests the Secretary-General to elaborate the concept of operation and rules of engagement of MONUSCO in line with the provisions of this resolution and to report on this to the Security Council and troop-contributing countries",
+          "status": "silent",
+          "reportLocations": [],
+          "summary": "The report does not discuss the concept of operations or rules of engagement; such material is customarily transmitted to the Council and troop contributors through separate channels, but this report does not reference that either.",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "resolution": "E/RES/2020/8",
+      "resolutionTitle": "Modalities for the 4th review and appraisal of the implementation of the Madrid International Plan of Action on Ageing, 2002",
+      "body": "ECOSOC",
+      "year": 2020,
+      "topic": "Madrid Plan of Action on Ageing",
+      "report": {
+        "symbol": "E/CN.5/2022/4",
+        "recid": 3951235,
+        "title": "Preliminary Assessment of the 4th review and appraisal of the Madrid International Plan of Action on Ageing, 2002 report of the Secretary-General",
+        "date": "2021-11-17"
+      },
+      "requestParagraphs": [
+        {
+          "prefix": "11.",
+          "text": "Requests the Secretary-General to submit to the Commission for Social Development at its sixtieth session, in 2022, a report, including an analysis of the preliminary findings of the fourth review and appraisal exercise, together with an identification of prevalent and emerging issues and related policy options;"
+        },
+        {
+          "prefix": "12.",
+          "text": "Also requests the Secretary-General to submit to the Commission at its sixty-first session, in 2023, a report, including the conclusions of the fourth review and appraisal exercise, together with the identification of prevalent and emerging issues and related policy options."
+        }
+      ],
+      "mappings": [
+        {
+          "para": "11",
+          "deliverable": "Report to the Commission for Social Development (60th session, 2022) with preliminary findings of the fourth review and appraisal of the Madrid Plan of Action",
+          "requestClause": "Requests the Secretary-General to submit to the Commission for Social Development at its sixtieth session, in 2022, a report, including an analysis of the preliminary findings of the fourth review and appraisal exercise, together with an identification of prevalent and emerging issues and related policy options",
+          "status": "addressed",
+          "reportLocations": [
+            "summary",
+            "sect. III"
+          ],
+          "summary": "This report is the requested deliverable, delivered on time for the sixtieth session with the requested structure: preliminary findings plus a dedicated section on prevalent and emerging issues and policy options.",
+          "quote": "The present report is submitted pursuant to the Economic and Social Council resolution 2020/8 entitled 'Modalities for the fourth review and appraisal of the Madrid International Plan of Action on Ageing, 2002'. It provides an analysis of the preliminary findings of the fourth review and appraisal ... including the identification of prevalent and emerging issues and related policy options."
+        },
+        {
+          "para": "12",
+          "deliverable": "Report to the Commission's 61st session (2023) with the conclusions of the fourth review and appraisal",
+          "requestClause": "Also requests the Secretary-General to submit to the Commission at its sixty-first session, in 2023, a report, including the conclusions of the fourth review and appraisal exercise",
+          "status": "silent",
+          "reportLocations": [],
+          "summary": "Not covered here: the conclusions report was due a year later and was delivered separately (E/CN.5/2023/6, also linked to this resolution in the registry).",
+          "quote": null
+        }
+      ]
+    }
+  ]
+}
