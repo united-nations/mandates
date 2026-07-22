@@ -15,6 +15,8 @@ import { CoCitationHeatmap } from '@/components/CoCitationHeatmap'
 import { EntitiesDirectory } from '@/components/EntitiesDirectory'
 import { ExpandableCard } from '@/components/ExpandableCard'
 import { ExplainerText } from '@/components/ExplainerText'
+import { GaContestedTopics } from '@/components/GaContestedTopics'
+import { GaVotingBySession } from '@/components/GaVotingBySession'
 import { LoadingSkeleton } from '@/components/LoadingSkeleton'
 import { OrganEntityHeatmap } from '@/components/OrganEntityHeatmap'
 import { OrgansDirectory } from '@/components/OrgansDirectory'
@@ -35,6 +37,7 @@ import {
   getSubjectHierarchy,
   getTopicTrends,
 } from '@/lib/data/mandates'
+import { getGaTopicVoteLeague, getGaVotingBySession } from '@/lib/data/votes'
 import { TopicTrends } from '@/components/TopicTrends'
 import { explainerTexts } from '@/lib/en_text_contents'
 import { parseSearchParams } from '@/lib/filter-constants'
@@ -69,6 +72,8 @@ export default async function Page({ searchParams }: PageProps) {
     organEntityMatrix,
     resolutionTrend,
     recurrenceTrend,
+    gaVotingBySession,
+    gaTopicVoteLeague,
   ] = await Promise.all([
     getOrganHierarchy(),
     getBudgetHierarchy(),
@@ -78,6 +83,8 @@ export default async function Page({ searchParams }: PageProps) {
     getOrganEntityMatrix(filters.ppb_version),
     getResolutionCitationTrend(filters.ppb_version),
     getResolutionRecurrenceTrend(),
+    getGaVotingBySession(),
+    getGaTopicVoteLeague(),
   ])
 
   return (
@@ -164,6 +171,27 @@ export default async function Page({ searchParams }: PageProps) {
             variant="filled"
           >
             <OrganEntityHeatmap matrix={organEntityMatrix} />
+          </ExpandableCard>
+        </div>
+        <div className="mt-4">
+          <ExpandableCard
+            title="Consensus and contestation in the General Assembly"
+            variant="filled"
+          >
+            <div className="space-y-10">
+              <div>
+                <h3 className="mb-3 text-sm font-semibold text-gray-900">
+                  How often does the Assembly vote?
+                </h3>
+                <GaVotingBySession data={gaVotingBySession} />
+              </div>
+              <div>
+                <h3 className="mb-3 text-sm font-semibold text-gray-900">
+                  Contested-topics league
+                </h3>
+                <GaContestedTopics league={gaTopicVoteLeague} />
+              </div>
+            </div>
           </ExpandableCard>
         </div>
       </section>
