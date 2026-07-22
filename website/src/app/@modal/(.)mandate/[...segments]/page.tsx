@@ -14,12 +14,15 @@ import { getAllOrgans } from '@/lib/data/organs'
 import { getParagraphsBySymbol } from '@/lib/data/paragraphs'
 import { getReportsLensForSymbol } from '@/lib/data/reports-lens'
 import { hasImplementationSample } from '@/lib/data/report-implementation'
+import { getCountryVotes } from '@/lib/data/country-votes'
+import { getVoteInfo } from '@/lib/data/votes'
 import { ParagraphsSection } from '@/components/ParagraphsSection'
 import { CitationCounts } from '@/components/CitationCounts'
 import { MandateMetadata } from '@/components/MandateMetadata'
 import { MandateReportsSection } from '@/components/MandateReportsSection'
 import { MandateVersionHistory } from '@/components/MandateVersionHistory'
 import { MandateImplementationChips } from '@/components/MandateImplementationChips'
+import { MandateVoteStrip } from '@/components/MandateVoteStrip'
 
 interface ModalMandatePageProps {
   params: Promise<{ segments: string[] }>
@@ -44,6 +47,7 @@ export default async function ModalMandatePage({
     paragraphs,
     series,
     budgetStreams,
+    voteInfo,
   ] = await Promise.all([
     getMandateBySymbol(documentSymbol, ppbVersion),
     getAllEntities(),
@@ -55,6 +59,7 @@ export default async function ModalMandatePage({
       full_document_symbol: documentSymbol,
       ppb_version: ppbVersion,
     }),
+    getVoteInfo(documentSymbol),
   ])
 
   if (!mandate) notFound()
@@ -104,6 +109,10 @@ export default async function ModalMandatePage({
 
       {/* Content */}
       <div className="space-y-10 sm:pr-2">
+        <MandateVoteStrip
+          vote={voteInfo}
+          countries={getCountryVotes(documentSymbol)}
+        />
         <MandateMetadata
           mandate={mandate}
           budgetDocuments={budgetDocuments}
