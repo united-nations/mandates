@@ -13,7 +13,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
-import { FileOutput, Gavel, Globe, Landmark, Menu, Shield } from 'lucide-react'
+import { ChartColumn, Globe, Landmark, Menu, Shield } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -24,13 +24,29 @@ import { usePathname } from 'next/navigation'
 const pageWidth = 'max-w-4xl lg:max-w-6xl'
 const pagePadding = 'px-8 sm:px-12 lg:px-16'
 
+// The three mandate-family registries stay as core destinations; every
+// analytical lens (command language, consensus, attention map, genealogy,
+// reporting cycle, sanctions & treaties, mission ground-truth) is gathered
+// under a single "Analytics" entry that points at the /analytics hub.
 const navItems = [
   { href: '/secretariat', label: 'UN Secretariat Mandates', icon: Landmark },
   { href: '/system', label: 'UN System Mandates', icon: Globe },
   { href: '/missions', label: 'Peace Operation Mandates', icon: Shield },
-  { href: '/instruments', label: 'Sanctions & Treaties', icon: Gavel },
-  { href: '/reports', label: 'Reporting Cycle', icon: FileOutput },
+  { href: '/analytics', label: 'Analytics', icon: ChartColumn },
 ]
+
+// Lens routes that live under the Analytics hub — visiting any of them keeps
+// the single "Analytics" nav item highlighted.
+const analyticsRoutes = ['/analytics', '/instruments', '/reports', '/genealogy']
+
+function isNavActive(href: string, pathname: string): boolean {
+  if (href === '/analytics') {
+    return analyticsRoutes.some(
+      (r) => pathname === r || pathname.startsWith(`${r}/`)
+    )
+  }
+  return pathname === href
+}
 
 export function SiteHeader() {
   const pathname = usePathname()
@@ -118,7 +134,7 @@ export function SiteHeader() {
           {/* Inline nav on wide viewports */}
           <nav className="hidden items-center gap-1 lg:flex">
             {navItems.map(({ href, label }) => {
-              const active = pathname === href
+              const active = isNavActive(href, pathname)
               return (
                 <Link
                   key={href}
@@ -151,7 +167,7 @@ export function SiteHeader() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               {navItems.map(({ href, label, icon: Icon }) => {
-                const active = pathname === href
+                const active = isNavActive(href, pathname)
                 return (
                   <DropdownMenuItem
                     key={href}

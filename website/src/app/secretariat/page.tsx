@@ -333,6 +333,7 @@ export default async function Page({ searchParams }: PageProps) {
             <TopicTrends years={topicTrends} />
           </ExpandableCard>
           <ExpandableCard
+            id="attention-map"
             title="Which countries are the resolutions about?"
             variant="filled"
           >
