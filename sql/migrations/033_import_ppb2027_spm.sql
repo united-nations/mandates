@@ -38,14 +38,14 @@
 --   source_document_citations.id, and mandates_housekeeping review data keys on
 --   (document_symbol, entity, subprogramme) rather than citation ids.
 --
--- PREREQUISITE: migration 030 (renames OSASG-Cyprus -> GOM-Cyprus and
+-- PREREQUISITE: migration 032 (renames OSASG-Cyprus -> GOM-Cyprus and
 --   OSESG-SCRES1559 -> SC-RES1559 and registers SR-RES2792 / PoE-Iran, so the
 --   2026 and 2027 rows agree on one code per mission).
 --
 -- AFTER RUNNING: refresh the unified_documents materialized view --
 --     psql "$DATABASE_URL" -f sql/refresh_unified_documents.sql
 --
--- Run with: psql "$DATABASE_URL" -f sql/migrations/031_import_ppb2027_spm.sql
+-- Run with: psql "$DATABASE_URL" -f sql/migrations/033_import_ppb2027_spm.sql
 
 BEGIN;
 
@@ -129,7 +129,7 @@ WHERE s.full_document_symbol IS NOT NULL
 ON CONFLICT (ppb_full_document_symbol) DO NOTHING;
 
 -- 7b. Register any entity systemchart.entities does not yet hold --
---     source_document_citations.entity is FK'd to it. After migration 030 every
+--     source_document_citations.entity is FK'd to it. After migration 032 every
 --     one of the 36 missions already exists, so this is a safety net for a
 --     mission added between now and the final addenda.
 --     ON CONFLICT DO NOTHING so curated long names are never overwritten.

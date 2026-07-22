@@ -32,7 +32,7 @@
 -- codes -- several un80actions/sg_reports_survey FKs have no ON UPDATE rule and
 -- would otherwise block the update.
 --
--- Run with: psql "$DATABASE_URL" -f sql/migrations/030_rename_spm_entities.sql
+-- Run with: psql "$DATABASE_URL" -f sql/migrations/032_rename_spm_entities.sql
 
 BEGIN;
 
