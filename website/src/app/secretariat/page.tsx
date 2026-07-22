@@ -10,22 +10,28 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import { Suspense } from 'react'
 
-import { HeaderStatsServer } from '@/app/_headerStatsServer'
 import { MandateExplorerServer } from '@/app/_mandateExplorerServer'
+import { CoCitationHeatmap } from '@/components/CoCitationHeatmap'
 import { EntitiesDirectory } from '@/components/EntitiesDirectory'
 import { ExpandableCard } from '@/components/ExpandableCard'
 import { ExplainerText } from '@/components/ExplainerText'
-import { HeaderStatsSkeleton } from '@/components/HeaderStats.skeleton'
 import { LoadingSkeleton } from '@/components/LoadingSkeleton'
+import { OrganEntityHeatmap } from '@/components/OrganEntityHeatmap'
 import { OrgansDirectory } from '@/components/OrgansDirectory'
 import { QuoteBlock } from '@/components/QuoteBlock'
+import { ResolutionCitationTrend } from '@/components/ResolutionCitationTrend'
+import { ResolutionRecurrenceTrend } from '@/components/ResolutionRecurrenceTrend'
 import { ResourceLink } from '@/components/ResourceLink'
 import { SectionBanner } from '@/components/SectionBanner'
 import { SubjectsCompact } from '@/components/SubjectsCompact'
 import {
   getBudgetHierarchy,
+  getEntityCoCitationMatrix,
   getMandatePageData,
+  getOrganEntityMatrix,
   getOrganHierarchy,
+  getResolutionCitationTrend,
+  getResolutionRecurrenceTrend,
   getSubjectHierarchy,
   getTopicTrends,
 } from '@/lib/data/mandates'
@@ -42,45 +48,37 @@ interface PageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>
 }
 
-// Placeholder shown inside the per-section "trends" expanders until the real
-// visualisations are built.
-function ComingSoon({ items }: { items?: string[] }) {
-  return (
-    <div className="rounded-lg border border-dashed border-gray-200 bg-gray-50/60 p-6 text-sm text-gray-500">
-      <p>Trends will be added here.</p>
-      {items && items.length > 0 && (
-        <ul className="mt-3 space-y-1.5">
-          {items.map((item) => (
-            <li key={item} className="flex items-center gap-2">
-              <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-gray-300" />
-              {item}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  )
-}
-
 const CONTENT = 'mx-auto max-w-6xl px-6 py-12 md:px-12 lg:px-16'
 
 export default async function Page({ searchParams }: PageProps) {
   const params = await searchParams
   const filters = parseSearchParams(params)
 
-  // Heavy explorer fetch — do NOT await; the Suspense boundary in section 3
+  // Heavy explorer fetch — do NOT await; the Suspense boundary in section 1
   // streams a skeleton and swaps in the data when it resolves.
   const dataPromise = getMandatePageData(filters)
 
-  // Light directory fetches — awaited together; these sections render above the
-  // streamed explorer. All three are cached, so this is cheap on every request.
-  const [organGroups, budgetStreams, subjectDomains, topicTrends] =
-    await Promise.all([
-      getOrganHierarchy(),
-      getBudgetHierarchy(),
-      getSubjectHierarchy(),
-      getTopicTrends(),
-    ])
+  // Light directory fetches — awaited together; these sections render below the
+  // streamed explorer. All are cached, so this is cheap on every request.
+  const [
+    organGroups,
+    budgetStreams,
+    subjectDomains,
+    topicTrends,
+    coCitationMatrix,
+    organEntityMatrix,
+    resolutionTrend,
+    recurrenceTrend,
+  ] = await Promise.all([
+    getOrganHierarchy(),
+    getBudgetHierarchy(),
+    getSubjectHierarchy(),
+    getTopicTrends(),
+    getEntityCoCitationMatrix(filters.ppb_version),
+    getOrganEntityMatrix(filters.ppb_version),
+    getResolutionCitationTrend(filters.ppb_version),
+    getResolutionRecurrenceTrend(),
+  ])
 
   return (
     <div>
@@ -89,54 +87,15 @@ export default async function Page({ searchParams }: PageProps) {
         <h1 className="mb-6 text-4xl font-bold tracking-tight text-foreground">
           {explainerTexts.mainHeader.headline}
         </h1>
-        <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
-          <ExplainerText />
-          <div className="w-full shrink-0 sm:w-64">
-            <Suspense fallback={<HeaderStatsSkeleton />}>
-              <HeaderStatsServer dataPromise={dataPromise} />
-            </Suspense>
-          </div>
-        </div>
+        <ExplainerText />
       </section>
 
-      {/* 1 — Organs */}
-      <SectionBanner
-        id="organs"
-        imageSrc="/images/banners/hero-banner-homepage.png"
-        title="Which organs are creating mandates?"
-        description="The intergovernmental organs and bodies that adopt Secretariat mandates. Select one to filter the mandates below."
-      />
-      <section className={CONTENT}>
-        <OrgansDirectory groups={organGroups} />
-        <div className="mt-10">
-          <ExpandableCard title="Organs × entities matrix" variant="filled">
-            <ComingSoon />
-          </ExpandableCard>
-        </div>
-      </section>
-
-      {/* 2 — Entities */}
-      <SectionBanner
-        id="entities"
-        imageSrc="/images/banners/hero-banner-secretariat-expenses.png"
-        title="Which entities are implementing mandates?"
-        description="Every budget-holding entity, grouped by the United Nations programme budget structure. Select one to filter the mandates below."
-      />
-      <section className={CONTENT}>
-        <EntitiesDirectory streams={budgetStreams} />
-        <div className="mt-10">
-          <ExpandableCard title="Overlap between entities" variant="filled">
-            <ComingSoon />
-          </ExpandableCard>
-        </div>
-      </section>
-
-      {/* 3 — Mandates (the streamed explorer) */}
+      {/* 1 — Mandates (the streamed explorer) */}
       <SectionBanner
         id="mandates"
         imageSrc="/images/banners/hero-banner-system-revenue.png"
-        title="Which mandates do they implement?"
-        description="The resolutions, decisions, and other documents that UN entities cite in support of their resource requirements. Search and filter the full registry."
+        title="Which mandates is the UN working on?"
+        description="The resolutions, decisions, and other documents that UN entities cite in support of their resource requirements. Search and filter the full registry, or narrow it by entity, organ, or topic using the sections below."
       />
       {/* The explorer manages its own widths internally: the stat cards sit in
           the narrow column, the table and its controls break out to the wide
@@ -153,13 +112,58 @@ export default async function Page({ searchParams }: PageProps) {
         </Suspense>
         <div className="mx-auto mt-10 max-w-6xl px-6 md:px-12 lg:px-16">
           <ExpandableCard title="Trends over time" variant="filled">
-            <ComingSoon
-              items={[
-                'Number of resolutions and cited mandates',
-                'Length of resolutions',
-                'Recurrence',
-              ]}
-            />
+            <div className="space-y-10">
+              <div>
+                <h3 className="mb-3 text-sm font-semibold text-gray-900">
+                  Resolutions and cited mandates
+                </h3>
+                <ResolutionCitationTrend data={resolutionTrend} />
+              </div>
+              <div>
+                <h3 className="mb-3 text-sm font-semibold text-gray-900">
+                  Genuinely new resolutions
+                </h3>
+                <ResolutionRecurrenceTrend data={recurrenceTrend} />
+              </div>
+            </div>
+          </ExpandableCard>
+        </div>
+      </section>
+
+      {/* 2 — Entities */}
+      <SectionBanner
+        id="entities"
+        imageSrc="/images/banners/hero-banner-secretariat-expenses.png"
+        title="Which entities are implementing the mandates?"
+        description="Every budget-holding entity, grouped by the United Nations programme budget structure. Select one to filter the mandates above."
+      />
+      <section className={CONTENT}>
+        <EntitiesDirectory streams={budgetStreams} />
+        <div className="mt-10">
+          <ExpandableCard
+            title="Co-citations between entities"
+            variant="filled"
+          >
+            <CoCitationHeatmap matrix={coCitationMatrix} />
+          </ExpandableCard>
+        </div>
+      </section>
+
+      {/* 3 — Organs */}
+      <SectionBanner
+        id="organs"
+        imageSrc="/images/banners/hero-banner-homepage.png"
+        title="Which organs are creating the mandates?"
+        description="The intergovernmental organs and bodies that adopt Secretariat mandates. Select one to filter the mandates above."
+      />
+      <section className={CONTENT}>
+        <OrgansDirectory groups={organGroups} />
+        <div className="mt-10">
+          <ExpandableCard
+            title="Citation patterns between entities and organs"
+            variant="filled"
+          >
+            <OrganEntityHeatmap matrix={organEntityMatrix} />
           </ExpandableCard>
         </div>
       </section>
@@ -269,7 +273,7 @@ export default async function Page({ searchParams }: PageProps) {
             />
             <ResourceLink
               title="UN80 Initiative"
-              description="The Secretary-General's initiative to strengthen the UN across mandates, efficiencies, and structure."
+              description="Building a simpler, more effective and more coherent UN System."
               href="https://www.un.org/un80-initiative/en"
               icon={Landmark}
             />

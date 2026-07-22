@@ -552,6 +552,91 @@ function cleanPrefix(prefix: string) {
   return prefix.replace(/[.\(\)\[\]]/g, '').trim()
 }
 
+/**
+ * Element types that are structural boilerplate and stay hidden for now.
+ * Vote records, footnotes, tables and horizontal dividers are deferred future
+ * work (see PROJECT NOTES at the bottom of this file); mastheads/frontmatter,
+ * backmatter, footers and signatures are pure document chrome.
+ */
+const HIDDEN_TYPES = new Set([
+  'frontmatter',
+  'backmatter',
+  'footnote',
+  'footer',
+  'signature',
+  'vote_record',
+  'divider',
+  'table',
+])
+
+function isAnnexSection(section?: string): boolean {
+  return section === 'annex' || section === 'appendix'
+}
+
+/** A heading whose text opens an annex/appendix (used when there is no
+ * Digital Library section metadata, e.g. the mandates corpus). */
+const ANNEX_START_RE = /^(annex|appendix)\b/i
+
+function isAnnexStartHeading(p: Paragraph): boolean {
+  if (p.type !== 'heading') return false
+  if (isAnnexSection(p.section) && p.annex_index != null) return true
+  return ANNEX_START_RE.test(p.text?.trim() || '')
+}
+
+/** Roman numeral for annex labels (annexes never exceed a handful). */
+function romanNumeral(n: number): string {
+  const table: [number, string][] = [
+    [10, 'X'],
+    [9, 'IX'],
+    [5, 'V'],
+    [4, 'IV'],
+    [1, 'I'],
+  ]
+  let out = ''
+  let rem = n
+  for (const [value, symbol] of table) {
+    while (rem >= value) {
+      out += symbol
+      rem -= value
+    }
+  }
+  return out
+}
+
+/**
+ * Whether an element renders as visible content anywhere in the flow. Hides
+ * structural chrome; hides the document-level `title` (it duplicates the page
+ * H1) but keeps annex/appendix titles, which become the annex subtitle.
+ */
+function isContentElement(p: Paragraph): boolean {
+  if (HIDDEN_TYPES.has(p.type)) return false
+  if (p.type === 'title') return isAnnexSection(p.section)
+  return true
+}
+
+/** Indentation for nested list levels. */
+function getIndentClass(level: number): string {
+  if (level <= 1) return ''
+  switch (level) {
+    case 2:
+      return 'ml-6'
+    case 3:
+      return 'ml-12'
+    case 4:
+      return 'ml-18'
+    case 5:
+      return 'ml-24'
+    case 6:
+      return 'ml-30'
+    case 7:
+      return 'ml-36'
+    case 8:
+      return 'ml-42'
+    default:
+      return 'ml-48'
+  }
+}
+
 export function ParagraphsSection({
   paragraphs: allParagraphs,
   documentSymbol,
@@ -1203,24 +1288,32 @@ export function ParagraphsSection({
       assigneeFilter !== 'all' ||
       actionVerbFilter !== 'all'
 
-    // Check if any filters are active
-    const hasActiveFilters = paragraphFilter !== 'all' || hasEnhancedFilters
+    // Only the mandate-attribute filters narrow the list; the base view shows
+    // every content element (operative + neutral body + annex content).
+    const hasActiveFilters = hasEnhancedFilters
 
     // Helper function to determine if a paragraph should be included (with parent-child logic)
     const shouldIncludeParagraph = (index: number): boolean => {
       const paragraph = allParagraphs[index]
 
-      // Always apply basic paragraph type filter
+      // Hide structural chrome and the document title (duplicates the H1).
+      if (!isContentElement(paragraph)) {
+        return false
+      }
+
+      // Main-section preambular clauses render in the collapsible above, not
+      // the list. Preambular inside an annex renders inline within its block.
       if (
-        paragraphFilter === 'operative' &&
-        paragraph.paragraph_type !== 'operative'
+        paragraph.type !== 'heading' &&
+        paragraph.paragraph_type === 'preambular' &&
+        !isAnnexSection(paragraph.section)
       ) {
         return false
       }
 
-      // If no enhanced filters are active, use simple matching
+      // If no enhanced filters are active, show all content elements
       if (!hasEnhancedFilters) {
-        return true // Only paragraph type filter is active, which we already checked
+        return true
       }
 
       // Check if this paragraph directly matches the enhanced filters
@@ -1297,9 +1390,22 @@ export function ParagraphsSection({
     const items: TOCItem[] = []
     const stack: TOCItem[] = []
 
+    let insideAnnex = false
     paragraphs.forEach((paragraph: Paragraph, index: number) => {
       if (paragraph.type === 'heading') {
-        const level = paragraph.heading_level || 3
+        const isAnnexStart = isAnnexStartHeading(paragraph)
+        if (paragraph.section === 'main' && !isAnnexStart) insideAnnex = false
+        // Annexes anchor a top-level TOC node; their inner headings nest one
+        // level below it (the raw heading levels inside annexes are flat).
+        let level: number
+        if (isAnnexStart) {
+          insideAnnex = true
+          level = 1
+        } else if (insideAnnex || isAnnexSection(paragraph.section)) {
+          level = Math.max((paragraph.heading_level || 3) + 1, 2)
+        } else {
+          level = paragraph.heading_level || 3
+        }
         // Include prefix in TOC text if it exists
         const displayText = paragraph.prefix
           ? `${paragraph.prefix} ${paragraph.text}`
@@ -1961,6 +2067,156 @@ export function ParagraphsSection({
     return <>{segments}</>
   }
 
+  // Render a single flow element (heading, annex title, or body card). Shared
+  // by the main list and the annex blocks so both stay identical.
+  const renderParagraphElement = (
+    paragraph: Paragraph,
+    index: number
+  ): React.ReactNode => {
+    const indentLevel = paragraph.paragraph_level || 0
+    const indentClass = getIndentClass(indentLevel)
+
+    if (paragraph.type === 'heading') {
+      const HeadingTag =
+        `h${Math.min(paragraph.heading_level || 3, 6)}` as keyof JSX.IntrinsicElements
+      const headingClasses = {
+        1: 'text-lg font-bold',
+        2: 'text-base font-bold',
+        3: 'text-base font-semibold',
+        4: 'text-sm font-semibold',
+        5: 'text-sm font-medium',
+        6: 'text-sm font-medium',
+      }
+      const headingClass =
+        headingClasses[
+          paragraph.heading_level as keyof typeof headingClasses
+        ] || headingClasses[3]
+
+      return (
+        <div key={`${documentSymbol}-${index}`}>
+          <div className={`${indentClass}`}>
+            <HeadingTag
+              id={`heading-${index}`}
+              className={`${headingClass} mb-3 scroll-mt-4 leading-tight text-foreground`}
+            >
+              {paragraph.prefix && (
+                <span className="mr-2 font-medium text-un-blue">
+                  {paragraph.prefix}
+                </span>
+              )}
+              {renderProcessedText(
+                paragraph.text,
+                paragraph.mandates?.[0]?.action_verb || null,
+                paragraph.links,
+                paragraph.textWithHighlights,
+                paragraph.mandates
+              )}
+            </HeadingTag>
+          </div>
+        </div>
+      )
+    }
+
+    // Annex/appendix descriptive title — the subtitle under an "Annex N" marker.
+    if (paragraph.type === 'title') {
+      return (
+        <p
+          key={`${documentSymbol}-${index}`}
+          className="text-base leading-tight font-semibold text-foreground"
+        >
+          {renderProcessedText(
+            paragraph.text,
+            null,
+            paragraph.links,
+            paragraph.textWithHighlights,
+            paragraph.mandates
+          )}
+        </p>
+      )
+    }
+
+    // Body card — operative (numbered badge) or neutral (no badge when the
+    // element carries no prefix).
+    const label = paragraph.prefix ? cleanPrefix(paragraph.prefix) : null
+
+    return (
+      <div key={`${documentSymbol}-${index}`} className={`${indentClass}`}>
+        <div className="rounded-lg bg-muted/30 p-3">
+          <div className="flex items-start gap-2">
+            {label && (
+              <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-un-blue text-[10px] font-medium text-white">
+                {label}
+              </span>
+            )}
+            <div className="max-w-4xl flex-1">
+              <div className="text-sm leading-relaxed">
+                {renderProcessedText(
+                  paragraph.text,
+                  paragraph.mandates?.[0]?.action_verb || null,
+                  paragraph.links,
+                  paragraph.textWithHighlights,
+                  paragraph.mandates
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Partition the filtered flow into main content and per-annex groups. The
+  // filtered array is already in document order (main first, annexes last), and
+  // each annex begins with a `heading` row carrying an `annex_index`.
+  const mainElements: { paragraph: Paragraph; index: number }[] = []
+  interface AnnexGroup {
+    key: string
+    label: string
+    startIndex: number | null
+    items: { paragraph: Paragraph; index: number }[]
+  }
+  const annexGroups: AnnexGroup[] = []
+  // An annex begins at a `heading` that either carries a Digital Library
+  // annex_index or whose text starts with "Annex"/"Appendix" (the mandates-arm
+  // corpus has no section metadata, so the heading text is the only signal).
+  let currentAnnex: AnnexGroup | null = null
+  ;(paragraphs || []).forEach((paragraph: Paragraph, index: number) => {
+    const text = paragraph.text?.trim() || ''
+    const isAnnexStart = isAnnexStartHeading(paragraph)
+
+    if (isAnnexStart) {
+      currentAnnex = {
+        key: `annex-${index}`,
+        label:
+          text ||
+          `Annex ${romanNumeral((paragraph.annex_index as number) || 1)}`,
+        startIndex: index,
+        items: [],
+      }
+      annexGroups.push(currentAnnex)
+      return
+    }
+
+    // An element explicitly marked as main content closes any open annex.
+    if (paragraph.section === 'main') currentAnnex = null
+
+    if (currentAnnex) {
+      currentAnnex.items.push({ paragraph, index })
+    } else if (isAnnexSection(paragraph.section)) {
+      // Annex/appendix content with no explicit marker heading.
+      currentAnnex = {
+        key: `annex-${index}`,
+        label: paragraph.section === 'appendix' ? 'Appendix' : 'Annex',
+        startIndex: null,
+        items: [],
+      }
+      annexGroups.push(currentAnnex)
+      currentAnnex.items.push({ paragraph, index })
+    } else {
+      mainElements.push({ paragraph, index })
+    }
+  })
+
   return (
     <div className="space-y-4">
       <div ref={paragraphsTitleRef} className="space-y-4">
@@ -2234,6 +2490,7 @@ export function ParagraphsSection({
                     (p: Paragraph) =>
                       p.paragraph_type === 'preambular' &&
                       p.type !== 'heading' &&
+                      !isAnnexSection(p.section) &&
                       p.text?.trim()
                   )
                   if (preambularParagraphs.length === 0) return null
@@ -2297,110 +2554,52 @@ export function ParagraphsSection({
                   )
                 })()}
 
-                {/* Operative paragraphs */}
-                {paragraphs.map((paragraph: Paragraph, index: number) => {
-                  const indentLevel = paragraph.paragraph_level || 0
-                  const getIndentClass = (level: number): string => {
-                    if (level <= 1) return ''
-                    switch (level) {
-                      case 2:
-                        return 'ml-6'
-                      case 3:
-                        return 'ml-12'
-                      case 4:
-                        return 'ml-18'
-                      case 5:
-                        return 'ml-24'
-                      case 6:
-                        return 'ml-30'
-                      case 7:
-                        return 'ml-36'
-                      case 8:
-                        return 'ml-42'
-                      default:
-                        return 'ml-48'
-                    }
-                  }
-                  const indentClass = getIndentClass(indentLevel)
-
-                  const headingId =
-                    paragraph.type === 'heading'
-                      ? `heading-${index}`
-                      : undefined
-
-                  if (paragraph.type === 'heading') {
-                    const HeadingTag =
-                      `h${Math.min(paragraph.heading_level || 3, 6)}` as keyof JSX.IntrinsicElements
-                    const headingClasses = {
-                      1: 'text-lg font-bold',
-                      2: 'text-base font-bold',
-                      3: 'text-base font-semibold',
-                      4: 'text-sm font-semibold',
-                      5: 'text-sm font-medium',
-                      6: 'text-sm font-medium',
-                    }
-                    const headingClass =
-                      headingClasses[
-                        paragraph.heading_level as keyof typeof headingClasses
-                      ] || headingClasses[3]
-
-                    return (
-                      <div key={`${documentSymbol}-${index}`}>
-                        <div className={`${indentClass}`}>
-                          <HeadingTag
-                            id={headingId}
-                            className={`${headingClass} mb-3 scroll-mt-4 leading-tight text-foreground`}
-                          >
-                            {paragraph.prefix && (
-                              <span className="mr-2 font-medium text-un-blue">
-                                {paragraph.prefix}
-                              </span>
-                            )}
-                            {renderProcessedText(
-                              paragraph.text,
-                              paragraph.mandates?.[0]?.action_verb || null,
-                              paragraph.links,
-                              paragraph.textWithHighlights,
-                              paragraph.mandates
-                            )}
-                          </HeadingTag>
-                        </div>
-                      </div>
-                    )
-                  }
-
-                  const label = paragraph.prefix
-                    ? cleanPrefix(paragraph.prefix)
-                    : null
-
+                {/* Main content: operative + neutral body paragraphs */}
+                {mainElements.map(({ paragraph, index }, i) => {
+                  // Thin delimiter between sub-resolution blocks in omnibus
+                  // documents (multiple text_index values).
+                  const prev = i > 0 ? mainElements[i - 1].paragraph : null
+                  const showTextDivider =
+                    prev != null &&
+                    paragraph.text_index != null &&
+                    prev.text_index != null &&
+                    paragraph.text_index !== prev.text_index
                   return (
-                    <div
-                      key={`${documentSymbol}-${index}`}
-                      className={`${indentClass}`}
-                    >
-                      <div className="rounded-lg bg-muted/30 p-3">
-                        <div className="flex items-start gap-2">
-                          {label && (
-                            <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-un-blue text-[10px] font-medium text-white">
-                              {label}
-                            </span>
-                          )}
-                          <div className="max-w-4xl flex-1">
-                            <div className="text-sm leading-relaxed">
-                              {renderProcessedText(
-                                paragraph.text,
-                                paragraph.mandates?.[0]?.action_verb || null,
-                                paragraph.links,
-                                paragraph.textWithHighlights,
-                                paragraph.mandates
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                    <React.Fragment key={`main-${index}`}>
+                      {showTextDivider && (
+                        <div
+                          className="my-6 border-t border-gray-100"
+                          aria-hidden
+                        />
+                      )}
+                      {renderParagraphElement(paragraph, index)}
+                    </React.Fragment>
                   )
                 })}
+
+                {/* Annex / appendix blocks, each set off as its own section */}
+                {annexGroups.map((group) => (
+                  <section
+                    key={group.key}
+                    className="mt-8 space-y-4 border-t border-gray-200 pt-6"
+                  >
+                    <div
+                      id={
+                        group.startIndex != null
+                          ? `heading-${group.startIndex}`
+                          : undefined
+                      }
+                      className="scroll-mt-4 text-xs font-semibold tracking-wide text-un-blue uppercase"
+                    >
+                      {group.label}
+                    </div>
+                    <div className="space-y-4 border-l-2 border-gray-200 pl-4">
+                      {group.items.map(({ paragraph, index }) =>
+                        renderParagraphElement(paragraph, index)
+                      )}
+                    </div>
+                  </section>
+                ))}
               </div>
             ) : (
               <div className="rounded-lg bg-muted/30 p-3">

@@ -5,14 +5,22 @@ import { useFilters } from '@/contexts/FilterContext'
 
 const MANDATES_ANCHOR = 'mandates'
 
-type SectionFilterKey = 'organ' | 'entity' | 'subject' | 'budget_document'
+type SectionFilterKey =
+  | 'organ'
+  | 'entity'
+  | 'subject'
+  | 'budget_document'
+  | 'budget_part'
+  | 'section'
+  | 'subprogramme'
 
 /**
- * Cross-section directory selection. Clicking an organ / entity / subject in
- * sections 1, 2 or 4 sets a clean single-facet view of the mandates (replacing
- * any other active filters) and smooth-scrolls to the mandate explorer in
- * section 3. Clicking the already-active value clears it. Returns the active
- * value for `key` so the directory can highlight its current selection.
+ * Cross-section directory selection. Clicking an organ / entity / subject — or
+ * a budget part / section heading — in the directory sections sets a clean
+ * single-facet view of the mandates (replacing any other active filters) and
+ * smooth-scrolls to the mandate explorer. Clicking the already-active value
+ * clears it. Returns the active value for `key` so the directory can highlight
+ * its current selection.
  */
 export function useSectionFilter(key: SectionFilterKey) {
   const { filters, setOnlyFilter } = useFilters()

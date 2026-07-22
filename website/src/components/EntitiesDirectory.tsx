@@ -1,10 +1,14 @@
 'use client'
 
+import {
+  ClickTooltip,
+  DIRECTORY_GROUP_BOX,
+  DirectoryToggle,
+} from '@/components/DirectoryControls'
 import { ChartSearchInput } from '@/components/ui/chart-search-input'
 import { sectionLabel } from '@/components/table/BudgetStreamTree'
 import {
   Tooltip,
-  TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
@@ -12,7 +16,7 @@ import { useSectionFilter } from '@/hooks/use-section-filter'
 import { BUDGET_STREAM_LABELS } from '@/lib/filter-constants'
 import { cn } from '@/lib/utils'
 import type { BudgetEntityNode, BudgetStream } from '@/types'
-import { ChevronRight, MousePointerClick, Rows3, Tag } from 'lucide-react'
+import { ChevronRight, Rows3, Tag } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 
 /**
@@ -23,21 +27,14 @@ import { useEffect, useMemo, useState } from 'react'
  * compact (acronym pills) vs. full (cards with names), and whether to break
  * each part into its sections.
  *
- * On the single page, selecting an entity sets a single-facet view of the
- * mandates section and scrolls to it (see useSectionFilter); the active entity
- * is highlighted.
+ * On the single page, selecting an entity — or a part / section heading — sets
+ * a single-facet view of the mandates section and scrolls to it (see
+ * useSectionFilter); the active node is highlighted.
  */
 
 interface EntitiesDirectoryProps {
   streams: BudgetStream[]
 }
-
-/**
- * Shared container for a compact grouping (a Programme Budget part, the
- * Peacekeeping stream, the Plan Outline): a faint UN-blue wash with a left
- * accent border, so each group reads as one bounded unit.
- */
-const SECTION_BOX = 'border-l-4 border-un-blue bg-un-blue/10 px-4 py-3'
 
 export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
   const [search, setSearch] = useState('')
@@ -46,6 +43,10 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
   const { active, select } = useSectionFilter('entity')
   const { active: activeDoc, select: selectDoc } =
     useSectionFilter('budget_document')
+  const { active: activePart, select: selectPart } =
+    useSectionFilter('budget_part')
+  const { active: activeSection, select: selectSection } =
+    useSectionFilter('section')
 
   // Restore saved preferences after mount (avoids an SSR hydration mismatch).
   useEffect(() => {
@@ -95,22 +96,47 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
       .filter((p) => p.sections.length > 0)
     for (const part of parts) {
       const flat = part.sections.flatMap((s) => s.entities)
+      const partActive = activePart === part.part
       ppbPartNodes.push({
         key: `part-${part.part}`,
         node: (
-          <div className={cn(compact && SECTION_BOX, 'space-y-1.5')}>
+          <div className={cn(compact && DIRECTORY_GROUP_BOX, 'space-y-1.5')}>
             <h3 className={showSections ? 'text-base' : 'text-sm'}>
-              <span className="font-medium text-gray-500">
-                Part {part.part}.
-              </span>{' '}
-              <span className="font-semibold text-gray-900">
-                {part.part_title}
-              </span>
+              <FilterHeading
+                href={`/secretariat?budget_part=${encodeURIComponent(part.part)}`}
+                active={partActive}
+                onSelect={() => selectPart(part.part)}
+              >
+                <span
+                  className={cn(
+                    'font-medium',
+                    partActive ? 'text-un-blue' : 'text-gray-500'
+                  )}
+                >
+                  Part {part.part}.
+                </span>{' '}
+                <span
+                  className={cn(
+                    'font-semibold',
+                    partActive ? 'text-un-blue' : 'text-gray-900'
+                  )}
+                >
+                  {part.part_title}
+                </span>
+              </FilterHeading>
             </h3>
             {showSections ? (
               part.sections.map((section) => (
                 <div key={section.section} className="space-y-1.5">
-                  <SubHeading>{sectionLabel(section)}</SubHeading>
+                  <SubHeading active={activeSection === section.section}>
+                    <FilterHeading
+                      href={`/secretariat?section=${encodeURIComponent(section.section)}`}
+                      active={activeSection === section.section}
+                      onSelect={() => selectSection(section.section)}
+                    >
+                      {sectionLabel(section)}
+                    </FilterHeading>
+                  </SubHeading>
                   <EntityGroup
                     entities={section.entities}
                     compact={compact}
@@ -146,14 +172,18 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
     pkoGroups.length > 0 ? (
       <div>
         <div className="mb-3">
-          <StreamHeading type="pko" />
+          <StreamHeading
+            type="pko"
+            active={activeDoc === 'pko'}
+            onSelect={() => selectDoc('pko')}
+          />
         </div>
         <div className="space-y-5">
           {pkoGroups.map((group) =>
             compact ? (
               <div
                 key={group.group}
-                className={cn(SECTION_BOX, 'space-y-1.5')}
+                className={cn(DIRECTORY_GROUP_BOX, 'space-y-1.5')}
               >
                 <h3 className="text-sm font-semibold text-gray-900">
                   {group.label}
@@ -187,7 +217,11 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
     !term && planStream ? (
       <div>
         <div className="mb-3">
-          <StreamHeading type="plan_outline" />
+          <StreamHeading
+            type="plan_outline"
+            active={activeDoc === 'plan_outline'}
+            onSelect={() => selectDoc('plan_outline')}
+          />
         </div>
         <Tooltip>
           <TooltipTrigger asChild>
@@ -227,20 +261,20 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
             value={search}
             onChange={setSearch}
           />
-          <Toggle
+          <DirectoryToggle
             active={showSections}
             onClick={() => setShowSections((v) => !v)}
             icon={Rows3}
           >
-            View sections
-          </Toggle>
-          <Toggle
+            View sections and programmes
+          </DirectoryToggle>
+          <DirectoryToggle
             active={compact}
             onClick={() => setCompact((v) => !v)}
             icon={Tag}
           >
             Compact
-          </Toggle>
+          </DirectoryToggle>
         </div>
 
         {hasAnyRegion && (
@@ -248,7 +282,11 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
             {ppbPartNodes.length > 0 && (
               <div>
                 <div className="mb-3">
-                  <StreamHeading type="ppb" />
+                  <StreamHeading
+                    type="ppb"
+                    active={activeDoc === 'ppb'}
+                    onSelect={() => selectDoc('ppb')}
+                  />
                 </div>
                 {compact ? (
                   <div className="columns-2 gap-x-8">
@@ -299,45 +337,83 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
   )
 }
 
-function Toggle({
+/**
+ * A heading that doubles as a filter (budget part, section/programme).
+ * Deliberately not pill-styled — the hierarchy has to keep reading as headings,
+ * so the affordance is an underline and the active one is underlined in UN blue.
+ */
+function FilterHeading({
+  href,
   active,
-  onClick,
-  icon: Icon,
+  onSelect,
   children,
 }: {
+  href: string
   active: boolean
-  onClick: () => void
-  icon: typeof Rows3
+  onSelect: () => void
   children: React.ReactNode
 }) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={active}
-      className={cn(
-        'inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors',
-        active
-          ? 'bg-un-blue text-white hover:bg-un-blue/90'
-          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-      )}
-    >
-      <Icon className="h-3.5 w-3.5" />
-      {children}
-    </button>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <a
+          href={href}
+          onClick={(e) => {
+            e.preventDefault()
+            onSelect()
+          }}
+          className={cn(
+            'underline-offset-4 hover:underline hover:decoration-un-blue',
+            active && 'underline decoration-un-blue decoration-2'
+          )}
+        >
+          {children}
+        </a>
+      </TooltipTrigger>
+      <ClickTooltip />
+    </Tooltip>
   )
 }
 
-function StreamHeading({ type }: { type: keyof typeof BUDGET_STREAM_LABELS }) {
+/**
+ * A budget stream (Programme Budget / Peacekeeping / Plan Outline). The heading
+ * filters the mandates to everything cited from that stream — the `budget_document`
+ * facet, the top of the budget-location hierarchy.
+ */
+function StreamHeading({
+  type,
+  active,
+  onSelect,
+}: {
+  type: keyof typeof BUDGET_STREAM_LABELS
+  active: boolean
+  onSelect: () => void
+}) {
   return (
     <h2 className="border-b border-gray-200 pb-1.5 text-xs font-semibold tracking-wide text-un-blue uppercase">
-      {BUDGET_STREAM_LABELS[type]}
+      <FilterHeading
+        href={`/secretariat?budget_document=${encodeURIComponent(type)}`}
+        active={active}
+        onSelect={onSelect}
+      >
+        {BUDGET_STREAM_LABELS[type]}
+      </FilterHeading>
     </h2>
   )
 }
 
-function SubHeading({ children }: { children: React.ReactNode }) {
-  return <p className="text-sm text-gray-500">{children}</p>
+function SubHeading({
+  active = false,
+  children,
+}: {
+  active?: boolean
+  children: React.ReactNode
+}) {
+  return (
+    <p className={cn('text-sm', active ? 'text-un-blue' : 'text-gray-500')}>
+      {children}
+    </p>
+  )
 }
 
 function EntityGroup({
@@ -379,7 +455,10 @@ function EntityGroup({
   )
 }
 
-/** Wraps an entity anchor in the shared hover tooltip (full name + click hint). */
+/**
+ * Wraps an entity anchor in the shared hover tooltip: full name, the entity's
+ * subprogrammes as their own filter pills, and the click hint.
+ */
 function EntityAnchor({
   entity,
   className,
@@ -391,6 +470,11 @@ function EntityAnchor({
   onSelect: (value: string) => void
   children: React.ReactNode
 }) {
+  // Read here rather than threading two more props through EntityGroup: the
+  // hook is just filter context, and only this component needs it.
+  const { active: activeSub, select: selectSub } =
+    useSectionFilter('subprogramme')
+
   return (
     <Tooltip>
       <TooltipTrigger asChild>
@@ -405,20 +489,16 @@ function EntityAnchor({
           {children}
         </a>
       </TooltipTrigger>
-      <ClickTooltip name={entity.entity_long} />
+      <ClickTooltip
+        name={entity.entity_long}
+        pills={entity.subprogrammes.map((sp) => ({
+          label: sp.subprogramme,
+          value: sp.subprogramme,
+        }))}
+        onPillSelect={selectSub}
+        activePill={activeSub}
+      />
     </Tooltip>
-  )
-}
-
-function ClickTooltip({ name }: { name?: string | null }) {
-  return (
-    <TooltipContent side="top" className="max-w-xs">
-      {name && <div className="font-medium">{name}</div>}
-      <div className="mt-0.5 flex items-center gap-1 text-un-blue">
-        <MousePointerClick className="h-3.5 w-3.5" />
-        Click to show mandates
-      </div>
-    </TooltipContent>
   )
 }
 
@@ -444,7 +524,10 @@ function EntityPill({
     >
       <span className="font-medium">{entity.entity}</span>
       <span
-        className={cn('text-[10px]', active ? 'text-white/80' : 'text-gray-500')}
+        className={cn(
+          'text-[10px]',
+          active ? 'text-white/80' : 'text-gray-500'
+        )}
       >
         {entity.count}
       </span>
