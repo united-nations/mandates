@@ -214,14 +214,17 @@ function SubjectPill({
             onSelect(leaf.subject)
           }}
           className={cn(
-            'inline-flex items-baseline gap-1 rounded-full px-2.5 py-0.5 text-xs transition-[filter] hover:brightness-110',
-            color.bg,
-            color.text,
+            'inline-flex items-baseline gap-1.5 rounded-full border border-gray-200 bg-gray-50 px-2.5 py-0.5 text-xs text-gray-700 transition-colors hover:bg-gray-100',
             active && 'ring-2 ring-un-blue ring-offset-1'
           )}
         >
           <span className="font-medium">{leaf.subject}</span>
-          <span className="text-[10px] opacity-80">{leaf.count}</span>
+          <span
+            aria-hidden
+            className="size-1.5 self-center rounded-full"
+            style={{ backgroundColor: color.hex }}
+          />
+          <span className="text-[10px] text-gray-500">{leaf.count}</span>
         </a>
       </TooltipTrigger>
       <TooltipContent side="top" className="max-w-xs">
