@@ -131,6 +131,7 @@ export function SubjectsCompact({ domains }: SubjectsCompactProps) {
   }, [allLeaves, term, selectedSub])
 
   const selectedMeta = selectedSub ? subMeta.get(selectedSub) : undefined
+  const overflow = Math.max(0, totalMatches - pills.length)
 
   return (
     <TooltipProvider delayDuration={200}>
@@ -173,6 +174,11 @@ export function SubjectsCompact({ domains }: SubjectsCompactProps) {
                 onSelect={select}
               />
             ))}
+            {overflow > 0 && (
+              <span className="inline-flex items-baseline rounded-full border border-dashed border-gray-300 bg-transparent px-2.5 py-0.5 text-xs text-gray-500">
+                +{overflow.toLocaleString()}
+              </span>
+            )}
           </div>
         ) : (
           <p className="text-sm text-gray-500">
@@ -180,15 +186,15 @@ export function SubjectsCompact({ domains }: SubjectsCompactProps) {
           </p>
         )}
 
-        <p className="text-xs text-gray-500">
-          {term
-            ? `${totalMatches.toLocaleString()} matching subject${totalMatches === 1 ? '' : 's'}${
-                totalMatches > pills.length ? ` (showing ${pills.length})` : ''
-              }`
-            : selectedMeta
-              ? `Top ${pills.length} of ${totalMatches.toLocaleString()} ${selectedMeta.label} subjects — search to reach the rest`
-              : `Top ${pills.length} of ${totalMatches.toLocaleString()} subjects by document count — select a topic group above or search to go deeper`}
-        </p>
+        {pills.length > 0 && (
+          <p className="text-sm text-gray-600">
+            {term
+              ? `${totalMatches.toLocaleString()} matching subject${totalMatches === 1 ? '' : 's'}`
+              : selectedMeta
+                ? 'search to reach the rest'
+                : 'select a topic group above or search to go deeper'}
+          </p>
+        )}
       </div>
     </TooltipProvider>
   )
