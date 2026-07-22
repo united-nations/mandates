@@ -16,6 +16,7 @@ import { ParagraphsSection } from '@/components/ParagraphsSection'
 import { CitationCounts } from '@/components/CitationCounts'
 import { MandateMetadata } from '@/components/MandateMetadata'
 import { MandateVersionHistory } from '@/components/MandateVersionHistory'
+import { MandateImplementationChips } from '@/components/MandateImplementationChips'
 import { ScrollToTop } from '@/components/ScrollToTop'
 
 interface MandatePageProps {
@@ -96,6 +97,7 @@ export default async function MandatePage({
             View PDF
           </Button>
         )}
+        <MandateImplementationChips symbol={mandate.full_document_symbol} />
       </div>
 
       {/* Content */}
