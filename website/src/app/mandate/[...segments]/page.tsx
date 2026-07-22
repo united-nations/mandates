@@ -12,6 +12,7 @@ import { getAllEntities } from '@/lib/data/entities'
 import { getBudgetDocuments } from '@/lib/data/budget-documents'
 import { getAllOrgans } from '@/lib/data/organs'
 import { getParagraphsBySymbol } from '@/lib/data/paragraphs'
+import { getCountryVotes } from '@/lib/data/country-votes'
 import { getVoteInfo } from '@/lib/data/votes'
 import { ParagraphsSection } from '@/components/ParagraphsSection'
 import { CitationCounts } from '@/components/CitationCounts'
@@ -104,7 +105,10 @@ export default async function MandatePage({
 
       {/* Content */}
       <div className="space-y-10 sm:pr-2">
-        <MandateVoteStrip vote={voteInfo} />
+        <MandateVoteStrip
+          vote={voteInfo}
+          countries={getCountryVotes(documentSymbol)}
+        />
         <MandateMetadata
           mandate={mandate}
           budgetDocuments={budgetDocuments}

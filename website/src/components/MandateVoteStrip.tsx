@@ -1,4 +1,9 @@
+'use client'
+
+import { useState } from 'react'
+
 import type { VoteInfo } from '@/lib/consensus'
+import type { CountryVoteBreakdown } from '@/lib/data/country-votes'
 
 /**
  * Compact adoption strip for the mandate detail view (rendered identically in
@@ -9,11 +14,21 @@ import type { VoteInfo } from '@/lib/consensus'
  * Digital Library has no adoption record for ~0.5% of resolutions and for
  * most non-resolution documents).
  *
+ * When the Digital Library Voting Data collection covers the document
+ * (recorded votes 2015-present), the strip also names the minority: who voted
+ * against, who abstained. Long lists start collapsed.
+ *
  * Colours: polarity pair blue (in favour) / red (against) with a neutral grey
  * for abstentions — CVD-validated against the light surface; the visible
  * counts and labels carry the values, the colours only orient.
  */
-export function MandateVoteStrip({ vote }: { vote: VoteInfo | null }) {
+export function MandateVoteStrip({
+  vote,
+  countries,
+}: {
+  vote: VoteInfo | null
+  countries?: CountryVoteBreakdown | null
+}) {
   if (!vote) return null
 
   if (vote.kind === 'without-vote') {
@@ -73,6 +88,73 @@ export function MandateVoteStrip({ vote }: { vote: VoteInfo | null }) {
           </span>
         ))}
       </div>
+      {countries && (
+        <div className="mt-2 space-y-1">
+          <CountryList
+            label="Against"
+            dotClass="bg-tier-1"
+            names={countries.against.map((c) => c.name)}
+          />
+          <CountryList
+            label="Abstaining"
+            dotClass="bg-dusty-gray"
+            names={countries.abstaining.map((c) => c.name)}
+          />
+        </div>
+      )}
     </div>
+  )
+}
+
+const LIST_COLLAPSED = 12
+
+/** One minority line: "Against: A, B, C and 24 more". */
+function CountryList({
+  label,
+  dotClass,
+  names,
+}: {
+  label: string
+  dotClass: string
+  names: string[]
+}) {
+  const [expanded, setExpanded] = useState(false)
+  if (names.length === 0) return null
+  const shown = expanded ? names : names.slice(0, LIST_COLLAPSED)
+  const hidden = names.length - shown.length
+  return (
+    <p className="max-w-2xl text-xs leading-relaxed text-muted-foreground">
+      <span className="inline-flex items-baseline gap-1.5">
+        <span
+          className={`inline-block h-2 w-2 self-center rounded-full ${dotClass}`}
+        />
+        <span className="font-medium text-foreground">{label}:</span>
+      </span>{' '}
+      {shown.join(', ')}
+      {hidden > 0 && (
+        <>
+          {' '}
+          <button
+            type="button"
+            onClick={() => setExpanded(true)}
+            className="text-un-blue hover:text-un-blue/80"
+          >
+            and {hidden} more
+          </button>
+        </>
+      )}
+      {expanded && names.length > LIST_COLLAPSED && (
+        <>
+          {' '}
+          <button
+            type="button"
+            onClick={() => setExpanded(false)}
+            className="text-un-blue hover:text-un-blue/80"
+          >
+            show fewer
+          </button>
+        </>
+      )}
+    </p>
   )
 }
