@@ -16,6 +16,7 @@ import { EntitiesDirectory } from '@/components/EntitiesDirectory'
 import { ExpandableCard } from '@/components/ExpandableCard'
 import { ExplainerText } from '@/components/ExplainerText'
 import { LoadingSkeleton } from '@/components/LoadingSkeleton'
+import { MandateHeartbeat } from '@/components/MandateHeartbeat'
 import { OrganEntityHeatmap } from '@/components/OrganEntityHeatmap'
 import { OrgansDirectory } from '@/components/OrgansDirectory'
 import { QuoteBlock } from '@/components/QuoteBlock'
@@ -38,6 +39,7 @@ import {
 import { TopicTrends } from '@/components/TopicTrends'
 import { explainerTexts } from '@/lib/en_text_contents'
 import { parseSearchParams } from '@/lib/filter-constants'
+import { getScRenewalData } from '@/lib/sc-renewals'
 
 export const metadata: Metadata = {
   title: 'UN Secretariat Mandates',
@@ -164,6 +166,15 @@ export default async function Page({ searchParams }: PageProps) {
             variant="filled"
           >
             <OrganEntityHeatmap matrix={organEntityMatrix} />
+          </ExpandableCard>
+        </div>
+        <div className="mt-6">
+          <ExpandableCard
+            id="renewals"
+            title="Mandate renewals: how long a leash the Security Council grants"
+            variant="filled"
+          >
+            <MandateHeartbeat data={getScRenewalData()} />
           </ExpandableCard>
         </div>
       </section>
