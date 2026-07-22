@@ -43,6 +43,22 @@ Datasets used (all CSV, cached on /Volumes/SSDAStorage/un-mandates-impact, fetch
 From our own DB: SC resolutions whose DL title marks them as mandate extension/renewal,
 `(ACRONYM)` extracted by regexp — the mandate-renewal timeline per mission.
 
+## Round 2 additions (2026-07-22)
+
+Two more sources, validated with real fetches + measured joins. See
+[SOURCES-ROUND2.md](SOURCES-ROUND2.md) for the deep dives, findings and integration spec.
+Both cover mandate types the missions work does not (coercive SC; normative GA).
+
+| Source | Access | Joinability | Implementation story | Freshness | Total | Verdict |
+|---|---|---|---|---|---|---|
+| **UN Security Council Consolidated Sanctions List** (`scsanctions.un.org/.../consolidated.xml`) — 1,010 individuals/entities currently designated under 14 active SC sanctions regimes, with listing dates | 3 — one official XML, plain curl, regenerated on every change | 3 — all 14 regimes' **establishing `S/RES` are in our mirror**; 269 `S/RES` sanctions resolutions join by subject | 3 — the mandate authorises sanctions; the list is who was *actually* designated (paper vs enforcement) | 3 — `dateGenerated` stamp, live | **12** | **CHOSEN (round 2)** |
+| **UN Treaty Collection / MTDSG** (`treaties.un.org` ViewDetails) — ratification status of the treaties the GA created: parties, entry-into-force, per-state dates | 3 — per-treaty status pages are curl-scriptable (`_tblgrid`); upgraded from Round 1's "1" | 3 — the **`A/RES` that adopted each treaty** is our native key; 22/23 present, self-validating via title | 3 — the mandate created a treaty; MTDSG shows real ratification uptake and whether it entered into force | 3 — real-time depositary record | **12** | **CHOSEN (round 2)** |
+
+Note: this supersedes the Round-1 "UNTC treaty ratification status" row (scored 7,
+"different object / no API"). The demonstrable join is the **GA adopting resolution**, not
+the treaty text, and the status pages *are* machine-fetchable — so UNTC is re-scored to 12
+and adopted.
+
 ## Join coverage measured
 
 - Mission register: 29 real missions (1 note row dropped); 25 of them appear in the

@@ -16,6 +16,7 @@ import { ParagraphsSection } from '@/components/ParagraphsSection'
 import { CitationCounts } from '@/components/CitationCounts'
 import { MandateMetadata } from '@/components/MandateMetadata'
 import { MandateVersionHistory } from '@/components/MandateVersionHistory'
+import { MandateImplementationChips } from '@/components/MandateImplementationChips'
 
 interface ModalMandatePageProps {
   params: Promise<{ segments: string[] }>
@@ -93,6 +94,7 @@ export default async function ModalMandatePage({
             View PDF
           </Button>
         )}
+        <MandateImplementationChips symbol={mandate.full_document_symbol} />
       </div>
 
       {/* Content */}
