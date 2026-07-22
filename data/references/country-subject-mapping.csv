@@ -1,0 +1,543 @@
+subject,all_docs,mandate_docs,iso3,ccn3,method,note
+ISRAEL,964,63,ISR,376,exact,Israel
+AFRICA,938,82,,,region,Region/continent - not a single country
+TERRITORIES OCCUPIED BY ISRAEL,909,64,PSE,275,exact,State of Palestine
+SOUTH AFRICA,876,2,ZAF,710,exact,South Africa
+MIDDLE EAST SITUATION,681,38,,,excluded,situation of a region/excluded term
+PALESTINE QUESTION,640,46,PSE,275,curated,Palestine question
+PALESTINIANS,634,44,PSE,275,curated,Demonym -> State of Palestine
+MIDDLE EAST,391,10,,,region,Region/continent - not a single country
+LEBANON,374,22,LBN,422,exact,Lebanon
+PALESTINE REFUGEES,362,14,PSE,275,curated,Palestine refugees
+NAMIBIA,356,3,NAM,516,exact,Namibia
+SUDAN,342,27,SDN,729,exact,Sudan
+SOMALIA,331,38,SOM,706,exact,Somalia
+DEMOCRATIC REPUBLIC OF THE CONGO,325,27,COD,180,exact,DR Congo
+IRAQ,325,11,IRQ,368,exact,Iraq
+FORMER YUGOSLAVIA SITUATION,316,5,,,excluded,Multi-successor situation - excluded
+UNITED STATES,298,11,USA,840,exact,United States
+GOLAN HEIGHTS,272,24,SYR,760,curated,Syrian territory occupied by Israel -> attributed to Syria
+AFGHANISTAN,272,23,AFG,004,exact,Afghanistan
+BOSNIA AND HERZEGOVINA,263,3,BIH,070,exact,Bosnia and Herzegovina
+HAITI,258,19,HTI,332,exact,Haiti
+NAMIBIA QUESTION,246,1,NAM,516,suffix,question of Namibia
+JERUSALEM,238,5,,,excluded,"Contested final-status city (Israel/Palestine) - excluded, documented"
+ANGOLA,230,3,AGO,024,exact,Angola
+CYPRUS,214,16,CYP,196,exact,Cyprus
+SYRIAN ARAB REPUBLIC,209,42,SYR,760,exact,Syria
+LATIN AMERICA,205,8,,,region,Region/continent - not a single country
+CYPRUS QUESTION,202,15,CYP,196,suffix,question of Cyprus
+YUGOSLAVIA,199,2,SRB,688,historical,Successor lineage: Serbia (via FR Yugoslavia / Serbia and Montenegro)
+ASIA AND THE PACIFIC,189,12,,,region,Region/continent - not a single country
+SOMALIA SITUATION,187,30,SOM,706,suffix,situation of Somalia
+GAZA STRIP,183,21,PSE,275,alias,Occupied Palestinian territory
+AFGHANISTAN SITUATION,182,11,AFG,004,suffix,situation of Afghanistan
+CROATIA,178,0,HRV,191,exact,Croatia
+WESTERN SAHARA,177,9,ESH,732,exact,Western Sahara
+SOUTH SUDAN,177,28,SSD,728,exact,South Sudan
+LIBERIA,176,0,LBR,430,exact,Liberia
+SOUTHERN AFRICA,176,1,,,region,Region/continent - not a single country
+DEMOCRATIC REPUBLIC OF THE CONGO SITUATION,174,15,COD,180,suffix,situation of DR Congo
+LIBYA,173,31,LBY,434,exact,Libya
+WESTERN SAHARA QUESTION,165,11,ESH,732,suffix,question of Western Sahara
+CENTRAL AFRICAN REPUBLIC,163,20,CAF,140,exact,Central African Republic
+BOSNIA AND HERZEGOVINA SITUATION,160,3,BIH,070,suffix,situation of Bosnia and Herzegovina
+IRAN (ISLAMIC REPUBLIC OF),158,10,IRN,364,exact,Iran
+BURUNDI,157,7,BDI,108,exact,Burundi
+FRANCE,150,2,FRA,250,exact,France
+GEORGIA,149,7,GEO,268,exact,Georgia
+ETHIOPIA,148,6,ETH,231,exact,Ethiopia
+RUSSIAN FEDERATION,145,18,RUS,643,exact,Russia
+CARIBBEAN REGION,145,18,,,region,Region/continent - not a single country
+CÔTE D'IVOIRE,142,1,CIV,384,exact,Ivory Coast
+DEMOCRATIC PEOPLE'S REPUBLIC OF KOREA,137,10,PRK,408,exact,North Korea
+RWANDA,136,4,RWA,646,exact,Rwanda
+RWANDA SITUATION,133,0,RWA,646,suffix,situation of Rwanda
+DARFUR (SUDAN),127,6,SDN,729,parenthetical,Sub-national place in Sudan
+MOZAMBIQUE,127,0,MOZ,508,exact,Mozambique
+SIERRA LEONE,125,4,SLE,694,exact,Sierra Leone
+SOUTHERN RHODESIA,125,0,ZWE,716,historical,Became Zimbabwe (1980)
+EUROPE,122,11,,,region,Region/continent - not a single country
+USSR,121,1,RUS,643,historical,Successor state: Russian Federation (UN seat continuator)
+GUINEA-BISSAU,120,6,GNB,624,exact,Guinea-Bissau
+UKRAINE,118,19,UKR,804,exact,Ukraine
+ERITREA,118,10,ERI,232,exact,Eritrea
+UNITED KINGDOM,117,5,GBR,826,exact,United Kingdom
+COMOROS,117,0,COM,174,exact,Comoros
+ANGOLA SITUATION,114,0,AGO,024,suffix,situation of Angola
+MYANMAR,113,25,MMR,104,exact,Myanmar
+CAMBODIA,112,6,KHM,116,exact,Cambodia
+IRAQ-KUWAIT SITUATION,110,4,IRQ+KWT,368+414,multi,Bilateral situation -> Iraq + Kuwait
+ABKHAZIA (GEORGIA),108,6,GEO,268,parenthetical,Sub-national place in Georgia
+SUDANO-SAHELIAN REGION,108,19,,,region,Region/continent - not a single country
+TIMOR-LESTE,103,0,TLS,626,exact,Timor-Leste
+REPUBLIC OF KOREA,97,0,KOR,410,exact,South Korea
+YEMEN,97,31,YEM,887,exact,Yemen
+GUAM QUESTION,97,2,GUM,316,suffix,question of Guam
+TAJIKISTAN,96,0,TJK,762,exact,Tajikistan
+BERMUDA QUESTION,96,2,BMU,060,suffix,question of Bermuda
+TURKS AND CAICOS ISLANDS QUESTION,96,2,TCA,796,suffix,question of Turks and Caicos Islands
+UNITED STATES VIRGIN ISLANDS QUESTION,96,2,VIR,850,suffix,question of United States Virgin Islands
+KOSOVO (SERBIA),95,2,XKX,-99,curated,Kosovo (own map polygon)
+LIBERIA SITUATION,95,0,LBR,430,suffix,situation of Liberia
+MONTSERRAT QUESTION,95,2,MSR,500,suffix,question of Montserrat
+EAST JERUSALEM (STATE OF PALESTINE),94,20,PSE,275,curated,East Jerusalem (occupied Palestinian territory)
+AMERICAN SAMOA QUESTION,94,2,ASM,016,suffix,question of American Samoa
+BRITISH VIRGIN ISLANDS QUESTION,94,2,VGB,092,suffix,question of British Virgin Islands
+CAYMAN ISLANDS QUESTION,94,2,CYM,136,suffix,question of Cayman Islands
+PITCAIRN QUESTION,94,2,PCN,612,suffix,question of Pitcairn Islands
+SAINT HELENA QUESTION,93,2,SHN,654,suffix,"question of Saint Helena, Ascension and Tristan da Cunha"
+SPAIN,91,1,ESP,724,exact,Spain
+DJIBOUTI,88,2,DJI,262,exact,Djibouti
+GEORGIA SITUATION,87,4,GEO,268,suffix,situation of Georgia
+PORTUGAL,87,0,PRT,620,exact,Portugal
+ANGUILLA QUESTION,86,2,AIA,660,suffix,question of Anguilla
+CENTRAL AFRICA,84,16,,,region,Region/continent - not a single country
+HAITI QUESTION,84,12,HTI,332,suffix,question of Haiti
+EL SALVADOR,84,0,SLV,222,exact,El Salvador
+CROATIA SITUATION,82,0,HRV,191,suffix,situation of Croatia
+GUATEMALA,81,3,GTM,320,exact,Guatemala
+CENTRAL AMERICA,81,5,,,region,Region/continent - not a single country
+CUBA,80,7,CUB,192,exact,Cuba
+CHINA,79,0,CHN,156,exact,China
+BURUNDI SITUATION,76,1,BDI,108,suffix,situation of Burundi
+MALI,74,9,MLI,466,exact,Mali
+KUWAIT,74,3,KWT,414,exact,Kuwait
+INDIA,73,2,IND,356,exact,India
+CHAD,73,1,TCD,148,exact,Chad
+PAKISTAN,69,3,PAK,586,exact,Pakistan
+AFGHAN REFUGEES,69,2,AFG,004,curated,Demonym -> Afghanistan
+UGANDA,66,2,UGA,800,exact,Uganda
+TOKELAU QUESTION,66,2,TKL,772,suffix,question of Tokelau
+WEST BANK,65,2,PSE,275,alias,Occupied Palestinian territory
+SOUTHERN RHODESIA QUESTION,64,0,ZWE,716,suffix,question of Zimbabwe
+NICARAGUA,62,2,NIC,558,exact,Nicaragua
+CENTRAL ASIA,62,10,,,region,Region/continent - not a single country
+SOUTHEAST ASIA,62,3,,,region,Region/continent - not a single country
+ZAMBIA,61,0,ZMB,894,exact,Zambia
+COMORIAN ISLAND OF MAYOTTE,60,0,MYT,175,exact,Mayotte
+ABYEI (SUDAN),60,8,SDN,729,parenthetical,Sub-national place in Sudan
+ZIMBABWE,59,0,ZWE,716,exact,Zimbabwe
+BELARUS,57,12,BLR,112,exact,Belarus
+NORTH MACEDONIA,57,0,MKD,807,exact,North Macedonia
+GREAT LAKES REGION (AFRICA),56,4,,,excluded,Sub-continental region - excluded
+ITALY,56,1,ITA,380,exact,Italy
+GIBRALTAR QUESTION,56,0,GIB,292,suffix,question of Gibraltar
+LESOTHO,55,0,LSO,426,exact,Lesotho
+BOTSWANA,55,0,BWA,072,exact,Botswana
+EQUATORIAL GUINEA,53,1,GNQ,226,exact,Equatorial Guinea
+SAO TOME AND PRINCIPE,53,3,STP,678,exact,São Tomé and Príncipe
+MOROCCO,52,1,MAR,504,exact,Morocco
+SOUTH AFRICAN REFUGEES,52,0,ZAF,710,refugees,Refugees of South Africa
+WEST AFRICA,51,14,,,region,Region/continent - not a single country
+JAPAN,51,1,JPN,392,exact,Japan
+GEORGIAN REFUGEES,49,3,GEO,268,refugees,Refugees of Georgia
+KOREAN QUESTION,49,0,,,excluded,Two-state peninsula question - excluded
+MEDITERRANEAN REGION,49,2,,,region,Region/continent - not a single country
+CENTRAL AMERICA SITUATION,47,1,,,excluded,situation of a region/excluded term
+SWITZERLAND,47,1,CHE,756,exact,Switzerland
+AZERBAIJAN,47,2,AZE,031,exact,Azerbaijan
+INDONESIA,46,1,IDN,360,exact,Indonesia
+CHILE,46,0,CHL,152,exact,Chile
+BANGLADESH,44,9,BGD,050,exact,Bangladesh
+ARAB COUNTRIES,44,6,,,region,Region/continent - not a single country
+TOKELAU,44,1,TKL,772,exact,Tokelau
+OCEANIA,44,1,,,region,Region/continent - not a single country
+IRAQ SITUATION,43,3,IRQ,368,suffix,situation of Iraq
+WESTERN ASIA,43,5,,,region,Region/continent - not a single country
+KENYA,42,2,KEN,404,exact,Kenya
+EAST TIMOR SITUATION,42,0,TLS,626,suffix,situation of Timor-Leste
+SOUTH ASIA,42,1,,,region,Region/continent - not a single country
+INDIAN OCEAN REGION,41,3,,,region,Region/continent - not a single country
+TERRITORIES UNDER PORTUGUESE ADMINISTRATION,41,0,,,historical,Multiple colonies (ambiguous)
+KAZAKHSTAN,41,1,KAZ,398,exact,Kazakhstan
+NEW CALEDONIA QUESTION,41,2,NCL,540,suffix,question of New Caledonia
+COLOMBIA,40,11,COL,170,exact,Colombia
+EGYPT,40,4,EGY,818,exact,Egypt
+CAMBODIA SITUATION,40,0,KHM,116,suffix,situation of Cambodia
+VANUATU,40,1,VUT,548,exact,Vanuatu
+JORDAN,40,3,JOR,400,exact,Jordan
+FALKLAND ISLANDS (MALVINAS) QUESTION,39,0,FLK,238,parenthetical,Sub-national place in Falkland Islands
+CABO VERDE,39,1,CPV,132,exact,Cape Verde
+TAJIKISTAN SITUATION,38,0,TJK,762,suffix,situation of Tajikistan
+NETHERLANDS (KINGDOM OF THE),38,2,NLD,528,exact,Netherlands
+GERMANY,35,3,DEU,276,exact,Germany
+GUINEA,35,1,GIN,324,exact,Guinea
+NEPAL,35,2,NPL,524,exact,Nepal
+BRITISH VIRGIN ISLANDS,35,1,VGB,092,exact,British Virgin Islands
+MONGOLIA,34,2,MNG,496,exact,Mongolia
+AMERICAN SAMOA,34,0,ASM,016,exact,American Samoa
+UNITED STATES VIRGIN ISLANDS,34,1,VIR,850,exact,United States Virgin Islands
+MONTSERRAT,34,1,MSR,500,exact,Montserrat
+TUVALU,33,1,TUV,798,exact,Tuvalu
+EL SALVADOR SITUATION,33,0,SLV,222,suffix,situation of El Salvador
+GUAM,33,1,GUM,316,exact,Guam
+CAYMAN ISLANDS,33,1,CYM,136,exact,Cayman Islands
+ARGENTINA,32,1,ARG,032,exact,Argentina
+TÜRKİYE,32,4,TUR,792,exact,Türkiye
+BERMUDA,32,1,BMU,060,exact,Bermuda
+RWANDAN REFUGEES,31,0,RWA,646,refugees,Refugees of Rwanda
+SOLOMON ISLANDS,31,2,SLB,090,exact,Solomon Islands
+ANTARCTICA,31,0,,,sea,Ocean/sea/polar - not a country
+GREECE,31,1,GRC,300,exact,Greece
+TOGO,31,0,TGO,768,exact,Togo
+LATIN AMERICA AND THE CARIBBEAN,30,5,,,region,Region/continent - not a single country
+SEYCHELLES,30,0,SYC,690,exact,Seychelles
+KIRIBATI,30,1,KIR,296,exact,Kiribati
+LEBANON SITUATION,30,4,LBN,422,suffix,situation of Lebanon
+ADDIS ABABA (ETHIOPIA),30,4,ETH,231,parenthetical,Sub-national place in Ethiopia
+SAINT HELENA,30,1,SHN,654,exact,"Saint Helena, Ascension and Tristan da Cunha"
+TURKS AND CAICOS ISLANDS,30,1,TCA,796,exact,Turks and Caicos Islands
+KYRGYZSTAN,29,0,KGZ,417,exact,Kyrgyzstan
+UNITED REPUBLIC OF TANZANIA,29,2,TZA,834,exact,Tanzania
+EAST TIMOR QUESTION,29,0,TLS,626,suffix,question of Timor-Leste
+NAMIBIAN REFUGEES,29,0,NAM,516,refugees,Refugees of Namibia
+CHORNOBYL (UKRAINE),29,2,UKR,804,parenthetical,Sub-national place in Ukraine
+PAPUA NEW GUINEA,28,0,PNG,598,exact,Papua New Guinea
+FINLAND,28,1,FIN,246,exact,Finland
+SERBIA,27,0,SRB,688,exact,Serbia
+MEXICO,27,1,MEX,484,exact,Mexico
+SOUTH OSSETIA (GEORGIA),26,5,GEO,268,parenthetical,Sub-national place in Georgia
+ALBANIA,26,0,ALB,008,exact,Albania
+NIGERIA,26,3,NGA,566,exact,Nigeria
+SAINT VINCENT AND THE GRENADINES,26,0,VCT,670,exact,Saint Vincent and the Grenadines
+VIET NAM,26,0,VNM,704,exact,Vietnam
+MADAGASCAR,26,0,MDG,450,exact,Madagascar
+TURKMENISTAN,26,0,TKM,795,exact,Turkmenistan
+REPUBLIC OF MOLDOVA,26,1,MDA,498,exact,Moldova
+NEW CALEDONIA,26,1,NCL,540,exact,New Caledonia
+SOUTH ATLANTIC OCEAN REGION,26,1,,,region,Region/continent - not a single country
+ASIA,26,1,,,region,Region/continent - not a single country
+TSKHINVALI (GEORGIA),25,5,GEO,268,parenthetical,Sub-national place in Georgia
+AUSTRIA,25,0,AUT,040,exact,Austria
+TUNISIA,25,1,TUN,788,exact,Tunisia
+ARMENIA,25,1,ARM,051,exact,Armenia
+DOMINICA,25,0,DMA,212,exact,Dominica
+HUNGARY,25,0,HUN,348,exact,Hungary
+SAINT LUCIA,25,0,LCA,662,exact,Saint Lucia
+HOLY SEE,25,0,VAT,336,exact,Vatican City
+SYRIANS,24,3,SYR,760,curated,Demonym -> Syrian Arab Republic
+BALKAN REGION,24,0,,,region,Region/continent - not a single country
+BULGARIA,24,0,BGR,100,exact,Bulgaria
+GHANA,24,0,GHA,288,exact,Ghana
+EASTERN SLAVONIA (CROATIA),23,0,HRV,191,parenthetical,Sub-national place in Croatia
+CONGO,23,0,COG,178,exact,Republic of the Congo
+NEW ZEALAND,23,1,NZL,554,exact,New Zealand
+BEIRUT (LEBANON),23,1,LBN,422,parenthetical,Sub-national place in Lebanon
+ESWATINI,23,0,SWZ,748,exact,Eswatini
+SAN MARINO,23,0,SMR,674,exact,San Marino
+SARAJEVO (BOSNIA AND HERZEGOVINA),22,0,BIH,070,parenthetical,Sub-national place in Bosnia and Herzegovina
+BARANJA (CROATIA),22,0,HRV,191,parenthetical,Sub-national place in Croatia
+WESTERN SREM (CROATIA),22,0,HRV,191,parenthetical,Sub-national place in Croatia
+KOREAN PENINSULA,22,1,,,region,Region/continent - not a single country
+DOMINICAN REPUBLIC,22,2,DOM,214,exact,Dominican Republic
+SENEGAL,22,1,SEN,686,exact,Senegal
+SRI LANKA,22,4,LKA,144,exact,Sri Lanka
+UZBEKISTAN,22,1,UZB,860,exact,Uzbekistan
+VENEZUELA (BOLIVARIAN REPUBLIC OF),21,4,VEN,862,exact,Venezuela
+CANADA,21,1,CAN,124,exact,Canada
+SLOVAKIA,21,0,SVK,703,exact,Slovakia
+GRENADA,21,0,GRD,308,exact,Grenada
+THAILAND,21,1,THA,764,exact,Thailand
+VIENNA (AUSTRIA),21,5,AUT,040,parenthetical,Sub-national place in Austria
+ENTEBBE (UGANDA),20,1,UGA,800,parenthetical,Sub-national place in Uganda
+INDIA-PAKISTAN QUESTION,20,3,IND+PAK,356+586,multi,Bilateral question -> India + Pakistan
+NAIROBI (KENYA),20,2,KEN,404,parenthetical,Sub-national place in Kenya
+MAURITANIA,20,0,MRT,478,exact,Mauritania
+STATE OF PALESTINE,20,1,PSE,275,exact,State of Palestine
+WALVIS BAY (NAMIBIA),20,0,NAM,516,parenthetical,Sub-national place in Namibia
+BENIN,20,0,BEN,204,exact,Benin
+MALDIVES,20,1,MDV,462,exact,Maldives
+SAMOA,20,0,WSM,882,exact,Samoa
+LIECHTENSTEIN,20,0,LIE,438,exact,Liechtenstein
+ESTONIA,20,0,EST,233,exact,Estonia
+BOLIVIA (PLURINATIONAL STATE OF),20,1,BOL,068,exact,Bolivia
+PITCAIRN,20,1,PCN,612,exact,Pitcairn Islands
+BRAZIL,19,0,BRA,076,exact,Brazil
+LATVIA,19,0,LVA,428,exact,Latvia
+ALGERIA,19,0,DZA,012,exact,Algeria
+GAMBIA,19,2,GMB,270,exact,Gambia
+NAGORNY KARABAKH SITUATION,19,1,,,excluded,Contested territory (Armenia/Azerbaijan) - excluded
+BELIZE,19,0,BLZ,084,exact,Belize
+ANTIGUA AND BARBUDA,19,0,ATG,028,exact,Antigua and Barbuda
+ROMANIA,19,0,ROU,642,exact,Romania
+CZECHIA,19,0,CZE,203,exact,Czechia
+AMERICAS,19,0,,,region,Region/continent - not a single country
+REFUGEES FROM BOSNIA AND HERZEGOVINA,18,0,BIH,070,refugees,Refugees/displaced from Bosnia and Herzegovina
+TONGA,18,0,TON,776,exact,Tonga
+MOZAMBIQUE SITUATION,18,0,MOZ,508,suffix,situation of Mozambique
+MONACO,18,0,MCO,492,exact,Monaco
+HONDURAS,18,1,HND,340,exact,Honduras
+ANGUILLA,18,1,AIA,660,exact,Anguilla
+GENEVA (SWITZERLAND),18,1,CHE,756,parenthetical,Sub-national place in Switzerland
+CRIMEA (UKRAINE),17,6,UKR,804,parenthetical,Sub-national place in Ukraine
+BRINDISI (ITALY),17,1,ITA,380,parenthetical,Sub-national place in Italy
+NICARAGUA SITUATION,17,0,NIC,558,suffix,situation of Nicaragua
+NAURU,17,0,NRU,520,exact,Nauru
+SERBIA AND MONTENEGRO,17,0,SRB,688,historical,Successor: Serbia (continuator of the 2003-06 union)
+CAMBODIAN REFUGEES,17,0,KHM,116,refugees,Refugees of Cambodia
+BRUNEI DARUSSALAM,17,0,BRN,096,exact,Brunei
+DEMOCRATIC YEMEN,17,0,YEM,887,historical,Merged into Yemen (1990)
+PANAMA,17,0,PAN,591,exact,Panama
+COCOS (KEELING) ISLANDS QUESTION,17,0,CCK,166,suffix,question of Cocos (Keeling) Islands
+FRENCH POLYNESIA,17,2,PYF,258,exact,French Polynesia
+SOMALILAND UNDER ITALIAN ADMINISTRATION,17,0,SOM,706,historical,Became part of Somalia
+MAURITIUS,16,1,MUS,480,exact,Mauritius
+MARSHALL ISLANDS,16,2,MHL,584,exact,Marshall Islands
+CARIBBEAN SEA,16,4,,,sea,Ocean/sea/polar - not a country
+BELGIUM,16,0,BEL,056,exact,Belgium
+NORD-KIVU (DEMOCRATIC REPUBLIC OF THE CONGO),16,1,COD,180,parenthetical,Sub-national place in DR Congo
+SAINT KITTS AND NEVIS,16,0,KNA,659,exact,Saint Kitts and Nevis
+SWEDEN,16,1,SWE,752,exact,Sweden
+BANGKOK (THAILAND),16,3,THA,764,parenthetical,Sub-national place in Thailand
+SEVASTOPOL (UKRAINE),15,6,UKR,804,parenthetical,Sub-national place in Ukraine
+LIBERIAN REFUGEES,15,0,LBR,430,refugees,Refugees of Liberia
+SUD-KIVU (DEMOCRATIC REPUBLIC OF THE CONGO),15,1,COD,180,parenthetical,Sub-national place in DR Congo
+CAMEROON,15,2,CMR,120,exact,Cameroon
+INDONESIAN QUESTION,15,0,IDN,360,suffix,question of Indonesia
+HUNGARY QUESTION,15,0,HUN,348,suffix,question of Hungary
+MALAWI,15,0,MWI,454,exact,Malawi
+COSTA RICA,15,0,CRI,188,exact,Costa Rica
+NIUE,15,0,NIU,570,exact,Niue
+PERU,15,0,PER,604,exact,Peru
+CAMEROONS UNDER FRENCH ADMINISTRATION,15,0,CMR,120,historical,Became Cameroon
+NORWAY,14,1,NOR,578,exact,Norway
+POLAND,14,0,POL,616,exact,Poland
+OMAN,14,0,OMN,512,exact,Oman
+QATAR,14,0,QAT,634,exact,Qatar
+SURINAME,14,0,SUR,740,exact,Suriname
+PALESTINE,14,2,PSE,275,curated,Palestine
+IRELAND,14,0,IRL,372,exact,Ireland
+SLOVENIA,14,0,SVN,705,exact,Slovenia
+ECUADOR,14,0,ECU,218,exact,Ecuador
+KATHMANDU (NEPAL),14,0,NPL,524,parenthetical,Sub-national place in Nepal
+BAHRAIN,13,0,BHR,048,exact,Bahrain
+FIJI,13,0,FJI,242,exact,Fiji
+SUDANESE REFUGEES,13,1,SDN,729,refugees,Refugees of Sudan
+NIGER,13,0,NER,562,exact,Niger
+UNITED ARAB EMIRATES,13,0,ARE,784,exact,United Arab Emirates
+MICRONESIA (FEDERATED STATES OF),13,0,FSM,583,exact,Micronesia
+LITHUANIA,13,0,LTU,440,exact,Lithuania
+ANDORRA,13,0,AND,020,exact,Andorra
+ANTIGUA QUESTION,13,0,ATG,028,suffix,question of Antigua and Barbuda
+EASTERN EUROPE,13,0,,,region,Region/continent - not a single country
+MYANMAR REFUGEES,13,0,MMR,104,refugees,Refugees of Myanmar
+SREBRENICA (BOSNIA AND HERZEGOVINA),12,1,BIH,070,parenthetical,Sub-national place in Bosnia and Herzegovina
+DENMARK,12,0,DNK,208,exact,Denmark
+BAHAMAS,12,0,BHS,044,exact,Bahamas
+CONGO QUESTION,12,0,COG,178,suffix,question of Republic of the Congo
+TANGANYIKA,12,0,TZA,834,historical,Merged into United Republic of Tanzania
+MALAGASY ISLANDS QUESTION,12,0,,,excluded,Islands sovereignty dispute - excluded
+GIBRALTAR,12,0,GIB,292,exact,Gibraltar
+TOGOLAND UNDER BRITISH ADMINISTRATION,12,0,,,historical,Colonial trust territory (Ghana)
+BRUNEI QUESTION,12,0,BRN,096,suffix,question of Brunei
+PHILIPPINES,12,0,PHL,608,exact,Philippines
+RUANDA-URUNDI,12,0,,,historical,Split into Rwanda + Burundi (ambiguous)
+SEMIPALATINSK (KAZAKHSTAN),12,0,KAZ,398,parenthetical,Sub-national place in Kazakhstan
+SIERRA LEONEAN REFUGEES,11,0,SLE,694,refugees,Refugees of Sierra Leone
+MEDITERRANEAN SEA,11,2,,,sea,Ocean/sea/polar - not a country
+PALAU,11,0,PLW,585,exact,Palau
+INDIAN OCEAN,11,0,,,sea,Ocean/sea/polar - not a country
+SAINT KITTS-NEVIS-ANGUILLA,11,0,KNA,659,alias,Historical federation -> Saint Kitts and Nevis
+NORTH AMERICA,11,2,,,region,Region/continent - not a single country
+SOUTHWEST ASIA,10,3,,,region,Region/continent - not a single country
+AUSTRALIA,10,0,AUS,036,exact,Australia
+REPUBLIKA SRPSKA (BOSNIA AND HERZEGOVINA),10,0,BIH,070,parenthetical,Sub-national place in Bosnia and Herzegovina
+PERSIAN GULF REGION,10,0,,,region,Region/continent - not a single country
+SAUDI ARABIA,10,2,SAU,682,exact,Saudi Arabia
+GREEK QUESTION,10,0,GRC,300,suffix,question of Greece
+GABON,10,0,GAB,266,exact,Gabon
+VOJVODINA (SERBIA),10,0,SRB,688,parenthetical,Sub-national place in Serbia
+COCOS (KEELING) ISLANDS,10,0,CCK,166,exact,Cocos (Keeling) Islands
+AFRICA SOUTH OF SAHARA,10,0,,,region,Region/continent - not a single country
+SANTIAGO (CHILE),10,2,CHL,152,parenthetical,Sub-national place in Chile
+CROATIAN REFUGEES,9,0,HRV,191,refugees,Refugees of Croatia
+REFUGEES FROM THE DEMOCRATIC REPUBLIC OF THE CONGO,9,0,COD,180,refugees,Refugees/displaced from DR Congo
+WESTERN SAHARAN REFUGEES,9,0,ESH,732,curated,Demonym -> Western Sahara
+KISANGANI (DEMOCRATIC REPUBLIC OF THE CONGO),9,0,COD,180,parenthetical,Sub-national place in DR Congo
+"WASHINGTON, D.C. (UNITED STATES)",9,0,USA,840,parenthetical,Sub-national place in United States
+CHAD SITUATION,9,0,TCD,148,suffix,situation of Chad
+MALAYSIA,9,0,MYS,458,exact,Malaysia
+VAROSHA (CYPRUS),9,7,CYP,196,parenthetical,Sub-national place in Cyprus
+BARBADOS,9,0,BRB,052,exact,Barbados
+JAMAICA,9,0,JAM,388,exact,Jamaica
+BURKINA FASO,9,0,BFA,854,exact,Burkina Faso
+CAMEROONS UNDER BRITISH ADMINISTRATION,9,0,,,historical,Colonial trust territory (Nigeria/Cameroon)
+BURUNDIAN REFUGEES,8,0,BDI,108,refugees,Refugees of Burundi
+ZEPA (BOSNIA AND HERZEGOVINA),8,0,BIH,070,parenthetical,Sub-national place in Bosnia and Herzegovina
+ITURI (DEMOCRATIC REPUBLIC OF THE CONGO : DISTRICT),8,0,COD,180,parenthetical,Sub-national place in DR Congo
+MONTENEGRO,8,0,MNE,499,exact,Montenegro
+EAST AFRICA,8,3,,,region,Region/continent - not a single country
+BHUTAN,8,2,BTN,064,exact,Bhutan
+GERMAN DEMOCRATIC REPUBLIC,8,0,DEU,276,historical,Absorbed into Germany (1990)
+LAO PEOPLE'S DEMOCRATIC REPUBLIC,8,1,LAO,418,exact,Laos
+ARUSHA (UNITED REPUBLIC OF TANZANIA),8,1,TZA,834,parenthetical,Sub-national place in Tanzania
+TRINIDAD AND TOBAGO,7,0,TTO,780,exact,Trinidad and Tobago
+BANJA LUKA (BOSNIA AND HERZEGOVINA),7,0,BIH,070,parenthetical,Sub-national place in Bosnia and Herzegovina
+BAGHDAD (IRAQ),7,0,IRQ,368,parenthetical,Sub-national place in Iraq
+NORTHEAST AFRICA,7,0,,,region,Region/continent - not a single country
+GUYANA,7,0,GUY,328,exact,Guyana
+MALTA,7,0,MLT,470,exact,Malta
+BIHAC (BOSNIA AND HERZEGOVINA),7,0,BIH,070,parenthetical,Sub-national place in Bosnia and Herzegovina
+SAINT KITTS-NEVIS QUESTION,7,0,KNA,659,suffix,question of Saint Kitts and Nevis
+NORTH AFRICA,7,1,,,region,Region/continent - not a single country
+URUGUAY,7,0,URY,858,exact,Uruguay
+ALBANIA SITUATION,6,0,ALB,008,suffix,situation of Albania
+REFUGEES FROM KOSOVO,6,1,XKX,-99,refugees,Refugees/displaced from Kosovo
+ZIMBABWEAN REFUGEES,6,0,ZWE,716,refugees,Refugees of Zimbabwe
+NETHERLANDS ANTILLES,6,0,ANT,,exact,ANT
+ANDEAN REGION,6,0,,,region,Region/continent - not a single country
+BONN (GERMANY),6,1,DEU,276,parenthetical,Sub-national place in Germany
+PARAGUAY,6,0,PRY,600,exact,Paraguay
+KABUL (AFGHANISTAN),5,0,AFG,004,parenthetical,Sub-national place in Afghanistan
+DAR ES SALAAM (UNITED REPUBLIC OF TANZANIA),5,0,TZA,834,parenthetical,Sub-national place in Tanzania
+REFUGEES FROM TIMOR-LESTE,5,0,TLS,626,refugees,Refugees/displaced from Timor-Leste
+IRAQI REFUGEES,5,1,IRQ,368,refugees,Refugees of Iraq
+SOUTHERN KORDOFAN (SUDAN : STATE),5,0,SDN,729,parenthetical,Sub-national place in Sudan
+ALEPPO (SYRIAN ARAB REPUBLIC),5,0,SYR,760,parenthetical,Sub-national place in Syria
+RED SEA,5,4,,,sea,Ocean/sea/polar - not a country
+NAGORNY KARABAKH (AZERBAIJAN),5,0,AZE,031,parenthetical,Sub-national place in Azerbaijan
+TRANSKEI (SOUTH AFRICA),5,0,ZAF,710,parenthetical,Sub-national place in South Africa
+TEHRAN (IRAN (ISLAMIC REPUBLIC OF)),5,0,IRN,364,parenthetical,Sub-national place in Iran
+HUNGARIAN REFUGEES,5,0,HUN,348,refugees,Refugees of Hungary
+BOUGAINVILLE (PAPUA NEW GUINEA),4,0,PNG,598,parenthetical,Sub-national place in Papua New Guinea
+SOMALI REFUGEES,4,0,SOM,706,refugees,Refugees of Somalia
+CHECHNYA (RUSSIAN FEDERATION),4,0,RUS,643,parenthetical,Sub-national place in Russia
+MOGADISHU (SOMALIA),4,0,SOM,706,parenthetical,Sub-national place in Somalia
+PACIFIC ISLANDS (TRUST TERRITORY) QUESTION,4,0,,,suffix,question of PACIFIC ISLANDS (TRUST TERRITORY)
+ICELAND,4,0,ISL,352,exact,Iceland
+GORAZDE (BOSNIA AND HERZEGOVINA),4,0,BIH,070,parenthetical,Sub-national place in Bosnia and Herzegovina
+MOZAMBICAN REFUGEES,4,0,MOZ,508,refugees,Refugees of Mozambique
+TAJIK REFUGEES,4,0,TJK,762,refugees,Refugees of Tajikistan
+WINDHOEK (NAMIBIA),4,0,NAM,516,parenthetical,Sub-national place in Namibia
+CZECHOSLOVAKIA,4,1,,,historical,Split into Czechia + Slovakia (no continuator)
+WARSAW (POLAND),4,0,POL,616,parenthetical,Sub-national place in Poland
+DHAKA (BANGLADESH),4,0,BGD,050,parenthetical,Sub-national place in Bangladesh
+BUJUMBURA (BURUNDI),4,0,BDI,108,parenthetical,Sub-national place in Burundi
+AL QUNAYTIRAH (SYRIAN ARAB REPUBLIC),4,0,SYR,760,parenthetical,Sub-national place in Syria
+IFNI (MOROCCO),4,0,MAR,504,parenthetical,Sub-national place in Morocco
+ALGERIAN REFUGEES,4,0,DZA,012,refugees,Refugees of Algeria
+ALGERIA QUESTION,4,0,DZA,012,suffix,question of Algeria
+SANSKI MOST (BOSNIA AND HERZEGOVINA),3,0,BIH,070,parenthetical,Sub-national place in Bosnia and Herzegovina
+TIMOR BARAT (INDONESIA),3,0,IDN,360,parenthetical,Sub-national place in Indonesia
+TRIESTE (FREE TERRITORY),3,0,,,historical,Divided between Italy + Yugoslavia (historical)
+SPANISH QUESTION,3,0,ESP,724,suffix,question of Spain
+ZANZIBAR,3,0,TZA,834,historical,Merged into United Republic of Tanzania
+TUZLA (BOSNIA AND HERZEGOVINA),3,0,BIH,070,parenthetical,Sub-national place in Bosnia and Herzegovina
+ADEN (YEMEN),3,0,YEM,887,parenthetical,Sub-national place in Yemen
+LIMA (PERU),3,0,PER,604,parenthetical,Sub-national place in Peru
+SOUTH AMERICA,3,0,,,region,Region/continent - not a single country
+SALVADORIAN REFUGEES,3,0,SLV,222,refugees,Refugees of El Salvador
+HAITIAN REFUGEES,3,0,HTI,332,refugees,Refugees of Haiti
+SANA'A (YEMEN),3,0,YEM,887,parenthetical,Sub-national place in Yemen
+WESTERN EUROPE,3,0,,,region,Region/continent - not a single country
+HAGUE (NETHERLANDS (KINGDOM OF THE)),3,0,NLD,528,parenthetical,Sub-national place in Netherlands
+COOK ISLANDS,3,0,COK,184,exact,Cook Islands
+HONG KONG,3,0,HKG,344,exact,Hong Kong
+NEW GUINEA,3,0,PNG,598,historical,Became Papua New Guinea
+BETHLEHEM (WEST BANK),3,0,PSE,275,parenthetical,Sub-national place in State of Palestine
+LUXEMBOURG,3,0,LUX,442,exact,Luxembourg
+BLUE NILE (SUDAN : STATE),3,0,SDN,729,parenthetical,Sub-national place in Sudan
+PENNSYLVANIA (UNITED STATES),2,0,USA,840,parenthetical,Sub-national place in United States
+RAMALLAH (WEST BANK),2,0,PSE,275,parenthetical,Sub-national place in State of Palestine
+BALI (INDONESIA),2,0,IDN,360,parenthetical,Sub-national place in Indonesia
+MOSCOW (RUSSIAN FEDERATION),2,0,RUS,643,parenthetical,Sub-national place in Russia
+KOSOVSKA MITROVICA (SERBIA),2,0,SRB,688,parenthetical,Sub-national place in Serbia
+LONDON (ENGLAND),2,0,GBR,826,parenthetical,Sub-national place in United Kingdom
+ALGIERS (ALGERIA),2,0,DZA,012,parenthetical,Sub-national place in Algeria
+ISLAMABAD (PAKISTAN),2,0,PAK,586,parenthetical,Sub-national place in Pakistan
+IVORIAN REFUGEES,2,0,CIV,384,refugees,Refugees of Ivory Coast
+DONETSK OBLAST' (UKRAINE),2,0,UKR,804,parenthetical,Sub-national place in Ukraine
+MAGLAJ (BOSNIA AND HERZEGOVINA),2,0,BIH,070,parenthetical,Sub-national place in Bosnia and Herzegovina
+CISKEI (SOUTH AFRICA),2,0,ZAF,710,parenthetical,Sub-national place in South Africa
+FALKLAND ISLANDS (MALVINAS),2,0,FLK,238,exact,Falkland Islands
+SINGAPORE,2,0,SGP,702,exact,Singapore
+NORTHERN MARIANA ISLANDS,2,0,MNP,580,exact,Northern Mariana Islands
+TAIWAN (CHINA),2,0,CHN,156,parenthetical,Sub-national place in China
+SHARPEVILLE (SOUTH AFRICA),2,0,ZAF,710,parenthetical,Sub-national place in South Africa
+BIJELJINA (BOSNIA AND HERZEGOVINA),2,0,BIH,070,parenthetical,Sub-national place in Bosnia and Herzegovina
+BUENOS AIRES (ARGENTINA),2,0,ARG,032,parenthetical,Sub-national place in Argentina
+HEBRON (WEST BANK),2,0,PSE,275,parenthetical,Sub-national place in State of Palestine
+KIGALI (RWANDA),2,0,RWA,646,parenthetical,Sub-national place in Rwanda
+PUERTO RICO,2,0,PRI,630,exact,Puerto Rico
+ETHIOPIAN REFUGEES,2,0,ETH,231,refugees,Refugees of Ethiopia
+ASCENSION ISLAND (SAINT HELENA),2,0,SHN,654,parenthetical,"Sub-national place in Saint Helena, Ascension and Tristan da Cunha"
+WALLIS AND FUTUNA ISLANDS,2,0,WLF,876,exact,Wallis and Futuna
+NICARAGUAN REFUGEES,2,0,NIC,558,refugees,Refugees of Nicaragua
+PAPUA (INDONESIA),2,0,IDN,360,parenthetical,Sub-national place in Indonesia
+MACAU,2,0,MAC,446,exact,Macau
+VUKOVAR (CROATIA),2,0,HRV,191,parenthetical,Sub-national place in Croatia
+AZERBAIJANI REFUGEES,2,0,AZE,031,refugees,Refugees of Azerbaijan
+INDO-CHINA,2,0,,,region,Region/continent - not a single country
+ROME (ITALY),2,0,ITA,380,parenthetical,Sub-national place in Italy
+PANAMA CANAL ZONE,2,0,PAN,591,historical,Reverted to Panama
+XIZANG (CHINA),2,0,CHN,156,parenthetical,Sub-national place in China
+CHINESE REFUGEES,2,0,CHN,156,refugees,Refugees of China
+ANGOLAN REFUGEES,2,0,AGO,024,refugees,Refugees of Angola
+BOLZANO (ITALY),2,0,ITA,380,parenthetical,Sub-national place in Italy
+MOROCCO QUESTION,2,0,MAR,504,suffix,question of Morocco
+SHANGHAI (CHINA),2,1,CHN,156,parenthetical,Sub-national place in China
+MACAO (CHINA : SPECIAL ADMINISTRATIVE REGION),2,0,CHN,156,parenthetical,Sub-national place in China
+JENIN (WEST BANK),2,0,PSE,275,parenthetical,Sub-national place in State of Palestine
+BEIJING (CHINA),2,1,CHN,156,parenthetical,Sub-national place in China
+TOGOLAND UNDER FRENCH ADMINISTRATION,2,0,TGO,768,historical,Became Togo
+TEL AVIV-JAFFA (ISRAEL),1,0,ISR,376,parenthetical,Sub-national place in Israel
+KRAJINA (CROATIA),1,0,HRV,191,parenthetical,Sub-national place in Croatia
+WESTERN SLAVONIA (CROATIA),1,0,HRV,191,parenthetical,Sub-national place in Croatia
+MOSTAR (BOSNIA AND HERZEGOVINA),1,0,BIH,070,parenthetical,Sub-national place in Bosnia and Herzegovina
+BISSAU (GUINEA-BISSAU),1,0,GNB,624,parenthetical,Sub-national place in Guinea-Bissau
+PRISTINA (SERBIA),1,0,SRB,688,parenthetical,Sub-national place in Serbia
+BOGOTA (COLOMBIA),1,0,COL,170,parenthetical,Sub-national place in Colombia
+BUNIA (DEMOCRATIC REPUBLIC OF THE CONGO),1,0,COD,180,parenthetical,Sub-national place in DR Congo
+ISTANBUL (TÜRKİYE),1,0,TUR,792,parenthetical,Sub-national place in Türkiye
+MADRID (SPAIN),1,0,ESP,724,parenthetical,Sub-national place in Spain
+DELHI (INDIA),1,0,IND,356,parenthetical,Sub-national place in India
+AMMAN (JORDAN),1,0,JOR,400,parenthetical,Sub-national place in Jordan
+MUMBAI (INDIA),1,0,IND,356,parenthetical,Sub-national place in India
+QANA (LEBANON),1,0,LBN,422,parenthetical,Sub-national place in Lebanon
+PORT-AU-PRINCE (HAITI),1,0,HTI,332,parenthetical,Sub-national place in Haiti
+JAKARTA (INDONESIA),1,0,IDN,360,parenthetical,Sub-national place in Indonesia
+CHADIAN REFUGEES,1,0,TCD,148,refugees,Refugees of Chad
+GOMA (DEMOCRATIC REPUBLIC OF THE CONGO),1,0,COD,180,parenthetical,Sub-national place in DR Congo
+BELGRADE (SERBIA),1,0,SRB,688,parenthetical,Sub-national place in Serbia
+ASMERA (ERITREA),1,0,ERI,232,parenthetical,Sub-national place in Eritrea
+BUKAVU (DEMOCRATIC REPUBLIC OF THE CONGO),1,0,COD,180,parenthetical,Sub-national place in DR Congo
+KIVU (DEMOCRATIC REPUBLIC OF THE CONGO),1,0,COD,180,parenthetical,Sub-national place in DR Congo
+GRENADA SITUATION,1,0,GRD,308,suffix,situation of Grenada
+AEGEAN SEA,1,0,,,sea,Ocean/sea/polar - not a country
+SOWETO (SOUTH AFRICA),1,0,ZAF,710,parenthetical,Sub-national place in South Africa
+JAVA (INDONESIA),1,0,IDN,360,parenthetical,Sub-national place in Indonesia
+MADURA (INDONESIA),1,0,IDN,360,parenthetical,Sub-national place in Indonesia
+FEDERATION OF MALI,1,0,,,historical,Split into Senegal + Mali (ambiguous)
+SUKHUMI (GEORGIA),1,0,GEO,268,parenthetical,Sub-national place in Georgia
+NICOSIA (CYPRUS),1,0,CYP,196,parenthetical,Sub-national place in Cyprus
+POSAVINA REGION (BOSNIA AND HERZEGOVINA),1,0,BIH,070,parenthetical,Sub-national place in Bosnia and Herzegovina
+ZAGREB (CROATIA),1,0,HRV,191,parenthetical,Sub-national place in Croatia
+INDO-CHINA SITUATION,1,0,,,excluded,situation of a region/excluded term
+BRITISH COLUMBIA (CANADA),1,0,CAN,124,parenthetical,Sub-national place in Canada
+FOUTA DJALLON (GUINEA),1,0,GIN,324,parenthetical,Sub-national place in Guinea
+TOKYO (JAPAN),1,0,JPN,392,parenthetical,Sub-national place in Japan
+VANCOUVER (CANADA),1,0,CAN,124,parenthetical,Sub-national place in Canada
+CABINDA (ANGOLA : PROVINCE),1,0,AGO,024,parenthetical,Sub-national place in Angola
+HAWAII (UNITED STATES),1,0,USA,840,parenthetical,Sub-national place in United States
+ALASKA (UNITED STATES),1,0,USA,840,parenthetical,Sub-national place in United States
+FEDERATION OF MALAYA,1,0,MYS,458,historical,Became Malaysia
+PARIS (FRANCE),1,0,FRA,250,parenthetical,Sub-national place in France
+NEW DELHI (INDIA),1,0,IND,356,parenthetical,Sub-national place in India
+NIAMEY (NIGER),1,0,NER,562,parenthetical,Sub-national place in Niger
+PACIFIC ISLANDS (TRUST TERRITORY),1,0,,,historical,Split into FSM/MHL/PLW/MNP (ambiguous)
+WATER ISLAND (UNITED STATES VIRGIN ISLANDS),1,0,VIR,850,parenthetical,Sub-national place in United States Virgin Islands
+KUALA LUMPUR (MALAYSIA),1,0,MYS,458,parenthetical,Sub-national place in Malaysia
+NABLUS (WEST BANK),1,0,PSE,275,parenthetical,Sub-national place in State of Palestine
+ATHENS (GREECE),1,1,GRC,300,parenthetical,Sub-national place in Greece
+TURIN (ITALY),1,1,ITA,380,parenthetical,Sub-national place in Italy
+LUANDA (ANGOLA),1,0,AGO,024,parenthetical,Sub-national place in Angola
+PORTUGUESE-SPEAKING AFRICA,1,0,,,region,Region/continent - not a single country
+SOUTH ATLANTIC OCEAN,1,0,,,sea,Ocean/sea/polar - not a country
+SOUTHERN EUROPE,1,0,,,region,Region/continent - not a single country
+BRITISH INDIAN OCEAN TERRITORY,1,0,IOT,086,exact,British Indian Ocean Territory
+TIGRAY (ETHIOPIA),1,1,ETH,231,parenthetical,Sub-national place in Ethiopia
+GUATEMALA (GUATEMALA : CITY),1,0,GTM,320,parenthetical,Sub-national place in Guatemala
+GHOUTA (SYRIAN ARAB REPUBLIC),1,0,SYR,760,parenthetical,Sub-national place in Syria
+FRENCH GUIANA,1,1,GUF,254,exact,French Guiana
+SINT MAARTEN,1,1,SXM,534,exact,Sint Maarten
