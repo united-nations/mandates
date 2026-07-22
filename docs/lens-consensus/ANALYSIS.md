@@ -95,3 +95,87 @@ mandate-detail strip looks up any document by `symbol_normalized` and renders:
   (different cadence, tiny counts); they remain visible on document detail.
 - "Recorded vote" counts any N-N-N summary; it does not distinguish
   paragraph-level votes that preceded a consensus adoption of the whole.
+
+---
+
+# Part 2 — Country-level voting data (added 2026-07-22)
+
+## Sources and ingestion
+
+**UN Digital Library "Voting Data" collection.** Every recorded vote is a
+separate DL record with per-country votes in repeated MARC 967 fields
+($c ISO3, $d Y/N/A, missing $d = absent), the resolution symbol in 791$a,
+body in 981$a, vote date in 992$a, and Y/N counts in 996. The search/export
+endpoint (`/search?cc=Voting+Data&of=xm&rg=50&jrec=…&fct__3=<year>`) sits
+behind an AWS WAF JavaScript challenge (plain HTTP gets 202 challenge pages);
+`data-processing/voting/harvest_dl_voting.mjs` drives a headless system
+Chrome through the challenge once and then fetches the MARCXML search pages
+inside that browser context — 50 records per request, 1.5 s between requests,
+resumable, raw XML cached on the external disk
+(`/Volumes/SSDAStorage/un-voting-data/raw/search-pages/`, 92 pages, 79 MB).
+
+**Harvest result (2026-07-22): 4,365 records, years 2015–2026.** Per year
+~370–420 records. Composition (2015 example): ~342 GA plenary (A/RES) + ~64
+Security Council; the collection also contains records for consensus
+adoptions (no 967 fields) — those are skipped. HRC recorded votes did not
+appear under these year facets. 1,764 records carry per-country votes; 1,132
+of them are GA plenary (A/RES) recorded votes, the analysis universe.
+
+**Voeten ideal points.** For history beyond the scrape, the Bailey/
+Strezhnev/Voeten ideal point estimates (Harvard Dataverse
+doi:10.7910/DVN/LEJUQZ, `Idealpointestimates1946-2025.tab`, cached on the
+external disk) provide one number per country-year, 1946–2025, estimated
+from all GA roll-call votes. The current Dataverse version no longer ships
+the raw per-vote CSV, so raw pre-2015 country votes were **not** ingested;
+the deep history enters only through the ideal points. Serbia is mapped from
+Voeten's `YUG` code.
+
+`data-processing/voting/process_voting.py` (stdlib-only, run with plain
+python3) turns both into the two committed JSON files under
+`website/src/data/voting/`:
+
+- `vote-details.json` (0.35 MB): symbol → {date, body, yes/absent counts,
+  ISO3 lists of No votes and abstentions} for 1,764 recorded votes — feeds
+  the mandate-detail strip's "Against: …" / "Abstaining: …" lines.
+- `voting-analysis.json` (0.13 MB): country names; 193×193 percent-agreement
+  matrix over the 1,132 GA votes (identical Y/N/A among common non-absent
+  votes; pairs under 50 common votes → null), rows/columns ordered by latest
+  ideal point; loneliest-No counts (No with ≤1 co-dissenter); ideal-point
+  yearly percentiles (p10/25/50/75/90) plus 7 labeled country series.
+
+## What shipped
+
+- Mandate detail strip now names the minority (against / abstaining, long
+  lists collapsed at 12) whenever the DL Voting Data collection covers the
+  document — recorded votes 2015 onwards, GA and SC.
+- New /secretariat expander "Who votes with whom? Country blocs in Assembly
+  voting": (1) canvas 193×193 agreement heatmap ordered by ideal point
+  (blocs appear as dark diagonal blocks; sequential white→un-blue ramp, grey
+  = insufficient common votes); (2) 80-year alignment chart — ideal-point
+  percentile bands + 7 validated-palette labeled trajectories; (3) loneliest
+  voters ranking (near-isolated No votes; USA 210, Israel 126, Russia 23 …).
+
+## Coverage caveats (repeated in the UI)
+
+- Raw country votes cover **2015–2026 only**, and the agreement matrix and
+  loneliest list use **GA plenary votes only** (SC votes are in
+  vote-details for the strip; HRC absent from the harvest).
+- The ideal-point chart covers 1946–2025 but is a **model estimate**
+  (Bailey–Strezhnev–Voeten), not raw agreement; the two visualisations are
+  labeled with their respective sources.
+- 2026 is a partial year (66 records at harvest time).
+- Consensus adoptions have no country-level record by definition; the strip
+  falls back to the Part-1 vote_summary rendering.
+
+## Palette validation (dataviz checks)
+
+- Line-series palette (7 series, vertical label order USA/ISR/GBR/UKR/RUS/
+  IND/CHN): `#0090cc,#c9820f,#2aa392,#5052a5,#a84f70,#276b35,#ab3a2c` — all
+  six checks pass on the light surface; single CVD warn (red/green pair at
+  ΔE 6.0 deutan) is covered by the direct label every line carries. The
+  original 13-series muted-band assignment hard-failed (normal-vision floor
+  4.4) and was cut to 7 with two chroma-raised steps, per the skill's
+  "cut series and re-step" rule.
+- Heatmap: sequential single hue (white→un-blue-deep), magnitude only.
+- Vote strip: polarity blue/red + neutral grey midpoint (validated in
+  Part 1).
