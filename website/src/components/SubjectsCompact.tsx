@@ -194,6 +194,13 @@ export function SubjectsCompact({ domains }: SubjectsCompactProps) {
   )
 }
 
+/** Display fix: subject labels are title-cased, so the abbreviation "UN" comes
+ *  through as "Un" ("Coordination Within Un System"). Uppercase the standalone
+ *  word for display only — the filter/link value stays the raw subject. */
+function formatSubjectLabel(subject: string): string {
+  return subject.replace(/\bUn\b/g, 'UN')
+}
+
 function SubjectPill({
   leaf,
   active,
@@ -218,7 +225,7 @@ function SubjectPill({
             active && 'ring-2 ring-un-blue ring-offset-1'
           )}
         >
-          <span className="font-medium">{leaf.subject}</span>
+          <span className="font-medium">{formatSubjectLabel(leaf.subject)}</span>
           <span
             aria-hidden
             className="size-1.5 self-center rounded-full"
