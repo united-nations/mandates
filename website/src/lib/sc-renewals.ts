@@ -139,3 +139,19 @@ export function getScRenewalData(): HeartbeatData {
   }
   return cache
 }
+
+/**
+ * Renewal chain for a single mission, joined on the mission acronym (the chain
+ * `id` in the extraction IS the acronym). Returns null when the mission has no
+ * extracted renewal chain (open-ended mandates, or renewal-by-exchange-of-letters).
+ * Powers the per-mission "mini heartbeat" strip on /missions.
+ */
+export function getMissionChain(acronym: string): HeartbeatChainRow | null {
+  const all = getScRenewalData()
+  return [...all.active, ...all.ended].find((c) => c.id === acronym) ?? null
+}
+
+/** The extraction date, doubling as the "now" marker for renewal strips. */
+export function renewalsGenerated(): string {
+  return getScRenewalData().generated
+}
