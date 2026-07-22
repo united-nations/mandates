@@ -100,6 +100,7 @@ export function LanguageStrengthTrend({
     hoverDecade === null
       ? null
       : BODIES.map(({ body, short }) => ({
+          body,
           short,
           point: series.get(body)?.find((p) => p.decade === hoverDecade),
         })).filter((e) => e.point)
@@ -142,13 +143,24 @@ export function LanguageStrengthTrend({
           {hoverDecade !== null && hoverPoints ? (
             <span>
               <span className="font-medium text-gray-900">{hoverDecade}s</span>
-              {hoverPoints.map(({ short, point }) => (
+              {hoverPoints.map(({ body, short, point }) => (
                 <span key={short}>
                   {' · '}
                   {short}{' '}
-                  <span className="font-medium text-gray-900">
+                  <span
+                    className={`font-medium ${
+                      body === selected ? 'text-un-blue' : 'text-gray-900'
+                    }`}
+                  >
                     {point!.share.toFixed(1)}%
                   </span>
+                  {/* Sample size for the selected organ, so the share is
+                      never read without its denominator. */}
+                  {body === selected && (
+                    <span className="text-gray-400">
+                      {` of ${(point!.directive + point!.hortatory).toLocaleString()}`}
+                    </span>
+                  )}
                 </span>
               ))}
             </span>
