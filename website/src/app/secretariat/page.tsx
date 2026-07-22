@@ -179,8 +179,7 @@ export default async function Page({ searchParams }: PageProps) {
         <SubjectsCompact domains={subjectDomains} />
         <p className="mt-4 max-w-3xl text-xs leading-relaxed text-gray-500">
           Subjects are organised by the United Nations Bibliographic Information
-          System (UNBIS) thesaurus: 18 top-level domains, each broken into
-          sub-domains and individual subject headings.
+          System (UNBIS) thesaurus. These are bibliographic labels that give hints about the topics of documents; they are not a normative taxonomy of the United Nations.
         </p>
         <div className="mt-10">
           <ExpandableCard title="Topic trends" variant="filled">
