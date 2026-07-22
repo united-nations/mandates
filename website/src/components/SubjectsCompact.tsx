@@ -181,10 +181,10 @@ export function SubjectsCompact({ domains }: SubjectsCompactProps) {
             )}
             <span className="ml-1 text-sm text-gray-600">
               {term
-                ? `${totalMatches.toLocaleString()} matching subject${totalMatches === 1 ? '' : 's'}`
+                ? `– ${totalMatches.toLocaleString()} matching subject${totalMatches === 1 ? '' : 's'}`
                 : selectedMeta
-                  ? 'search to reach the rest'
-                  : 'select a topic group above or search to go deeper'}
+                  ? '– Search to reach the rest'
+                  : '– Select a topic group above or search to go deeper'}
             </span>
           </div>
         ) : (
