@@ -148,13 +148,38 @@ and the multi-decade ratification trajectory). Paper vs ground, normative side.
 
 ---
 
-## Website integration spec (for the build agent)
+## Website integration — SHIPPED 2026-07-22
+
+The spec below was **built** on this branch. What shipped and how it maps to the spec:
+
+- **Route `/instruments`** (`website/src/app/instruments/page.tsx`) — one page, two
+  anchored sections `#sanctions` and `#treaties`, added to the top nav as
+  "Sanctions & Treaties" (`components/SiteHeader.tsx`, `Gavel` icon). Server Component,
+  imports the two JSONs via typed accessors in `lib/sanctions-implementation.ts` and
+  `lib/treaty-implementation.ts` (the `/missions` pattern; no DB at request time).
+- **Charts** are server-rendered inline SVG in `components/InstrumentCharts.tsx`
+  (`DesignationCadenceChart`, per-regime `RegimeCadenceSpark`, `ProtocolGapRow`) — same
+  approach as `MissionDeploymentChart`, hover detail via native `<title>`.
+- **Cross-link chips** (`components/MandateImplementationChips.tsx`) are wired into **both**
+  the full mandate page and the intercepting modal (kept in sync); they render only when
+  the document symbol matches a sanctions establishing resolution or a treaty adopting
+  resolution, linking to `/instruments#sanctions` / `#treaties`.
+- **Checks:** `pnpm typecheck` + `pnpm lint` clean on all new/edited files; verified at
+  1440px and 390px (tables scroll within `overflow-x-auto`, no body overflow); chips
+  validated against DRC/Al-Qaida/CRPD/covenants/CTBT via a temporary DB-free preview
+  (removed before commit, since mandate pages need Postgres which is blocked locally).
+- **Deviations from the spec below:** (1) a single `/instruments` route with two sections
+  rather than a separate route each; (2) treaty "parties" bars scale to a 197 universality
+  reference (not 193) because several non-member states are parties, so CRC's 196 would
+  overflow a 193 scale; (3) the designation-cadence chart uses simple (not stacked) yearly
+  bars — the list has no reliable per-regime delisting history to stack honestly.
+
+Original spec (retained for reference):
 
 Both datasets are static JSON in `website/src/data/`, so no DB call is needed at request
 time — import directly in a Server Component, exactly like `/missions` imports
-`mission-implementation.json`. Suggested home: a new **`/instruments`** route (or two
-tabs/sections on an "Impact" page), left-aligned, minimal, UN-blue accents per
-`website/docs/COLORS.md`.
+`mission-implementation.json`. Home: a **`/instruments`** route,
+left-aligned, minimal, UN-blue accents per `website/docs/COLORS.md`.
 
 ### Sanctions section (`sanctions-implementation.json`)
 - **Headline strip:** 14 regimes · 1,010 active designations (736 individuals / 274
