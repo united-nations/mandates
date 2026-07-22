@@ -17,6 +17,12 @@ import { ExpandableCard } from '@/components/ExpandableCard'
 import { ExplainerText } from '@/components/ExplainerText'
 import { GaContestedTopics } from '@/components/GaContestedTopics'
 import { GaVotingBySession } from '@/components/GaVotingBySession'
+import { LanguageStrengthGradient } from '@/components/LanguageStrengthGradient'
+import { LanguageStrengthTrend } from '@/components/LanguageStrengthTrend'
+import {
+  LanguageStrengthDemands,
+  LanguageStrengthVerbs,
+} from '@/components/LanguageStrengthVerbs'
 import { LoadingSkeleton } from '@/components/LoadingSkeleton'
 import { MandateHeartbeat } from '@/components/MandateHeartbeat'
 import { OrganEntityHeatmap } from '@/components/OrganEntityHeatmap'
@@ -40,6 +46,7 @@ import {
 } from '@/lib/data/mandates'
 import { getVotingAnalysis } from '@/lib/data/country-votes'
 import { getGaTopicVoteLeague, getGaVotingBySession } from '@/lib/data/votes'
+import { getLanguageStrength } from '@/lib/data/language-strength'
 import { TopicTrends } from '@/components/TopicTrends'
 import { VotingIdealPointTrends } from '@/components/VotingIdealPointTrends'
 import { VotingLoneliestVoters } from '@/components/VotingLoneliestVoters'
@@ -80,6 +87,7 @@ export default async function Page({ searchParams }: PageProps) {
     recurrenceTrend,
     gaVotingBySession,
     gaTopicVoteLeague,
+    languageStrength,
   ] = await Promise.all([
     getOrganHierarchy(),
     getBudgetHierarchy(),
@@ -91,6 +99,7 @@ export default async function Page({ searchParams }: PageProps) {
     getResolutionRecurrenceTrend(),
     getGaVotingBySession(),
     getGaTopicVoteLeague(),
+    getLanguageStrength(),
   ])
   const votingAnalysis = getVotingAnalysis()
 
@@ -181,6 +190,47 @@ export default async function Page({ searchParams }: PageProps) {
           </ExpandableCard>
         </div>
         <div className="mt-6">
+          <ExpandableCard
+            id="language-of-command"
+            title="The language of command"
+            variant="filled"
+          >
+            <div className="space-y-10">
+              <div>
+                <h3 className="mb-3 text-sm font-semibold text-gray-900">
+                  The Assembly asks more and orders less; the Council went the
+                  other way
+                </h3>
+                <LanguageStrengthTrend data={languageStrength.decades} />
+              </div>
+              <div>
+                <h3 className="mb-3 text-sm font-semibold text-gray-900">
+                  The command gradient: the Secretary-General gets told, Member
+                  States get asked
+                </h3>
+                <LanguageStrengthGradient data={languageStrength.gradient} />
+              </div>
+              <div>
+                <h3 className="mb-3 text-sm font-semibold text-gray-900">
+                  The verbs of the United Nations
+                </h3>
+                <LanguageStrengthVerbs verbs={languageStrength.verbs} />
+              </div>
+              <LanguageStrengthDemands data={languageStrength.scDemands} />
+              <p className="max-w-3xl text-xs leading-relaxed text-gray-500">
+                Source: parsed English texts of ~21,900 General Assembly,
+                Security Council and Economic and Social Council resolutions and
+                decisions in the UN Digital Library. Each operative paragraph is
+                classified by the verb it opens with. &ldquo;Directive&rdquo;
+                and &ldquo;requesting&rdquo; describe the strength of the
+                wording only — they say nothing about legal force. Paragraphs
+                opening with stocktaking verbs (<em>recalls</em>,{' '}
+                <em>welcomes</em>, <em>notes</em>) are excluded.
+              </p>
+            </div>
+          </ExpandableCard>
+        </div>
+        <div className="mt-4">
           <ExpandableCard
             id="renewals"
             title="Mandate renewals: how long a leash the Security Council grants"
