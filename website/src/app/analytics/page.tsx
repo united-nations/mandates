@@ -119,12 +119,13 @@ async function CommandLanguageVisual() {
   if (!data) {
     return (
       <p className="mt-4 max-w-3xl text-base leading-relaxed text-gray-700">
-        The registry classifies every operative paragraph by the verb that
-        opens it, from directive (decides, authorizes) to hortatory (requests,
-        urges). The command gradient is steep: instructions to the
-        Secretary-General are overwhelmingly directive, while paragraphs
-        addressed to Member States mostly ask rather than order. Open the live
-        expander for the current figures.
+        The registry scores every operative paragraph 0–5 by the force of the
+        verb that opens it, from hortatory (requests, urges) to directive
+        (decides, authorizes). The command gradient is clear: paragraphs
+        addressed to the Secretary-General carry the firmest verbs, while those
+        addressed to Member States sit lower — the bodies the UN runs get told,
+        sovereign states get asked. Open the live expander for the current
+        figures.
       </p>
     )
   }
@@ -135,17 +136,19 @@ async function CommandLanguageVisual() {
     <>
       {sg && ms && (
         <p className="mt-4 max-w-3xl text-base leading-relaxed text-gray-700">
-          When an organ addresses the Secretary-General,{' '}
+          Every operative paragraph is scored 0–5 by the force of the verb that
+          opens it (encourages 1, requests 3, urges 4, decides 5). Paragraphs
+          addressed to the Secretary-General carry the firmest verbs — an average
+          force of{' '}
           <strong className="font-semibold text-gray-900">
-            {Math.round(sg.pctDirective)}%
+            {sg.avgForce.toFixed(2)}
           </strong>{' '}
-          of its operative paragraphs use directive verbs (decides, authorizes).
-          When it turns to Member States, only{' '}
+          across {nf.format(sg.paragraphs)} paragraphs, the top of the command
+          gradient — while those addressed to Member States sit lower at{' '}
           <strong className="font-semibold text-gray-900">
-            {Math.round(ms.pctDirective)}%
-          </strong>{' '}
-          do — the rest merely request, urge or invite. The Secretariat is told;
-          sovereign states are asked.
+            {ms.avgForce.toFixed(2)}
+          </strong>
+          . The bodies the UN runs get told; sovereign states get asked.
         </p>
       )}
       <VisualFrame>

@@ -105,29 +105,56 @@ all match their source pages).
   plus pre-existing warnings; no new problems from merged or new code.
 - Dev server on port 3031. Screenshots in `docs/analytics-hub/screenshots/`.
 
-### What rendered locally vs what was DB-blocked
+### Validation against the live Azure database
 
-The local Postgres reachable from this machine **connects but lacks the registry
-schema** (`relation "public.unified_documents" does not exist`,
-`ppb2026.budget_documents` missing). Consequently:
+The full validation was completed against the **Azure dev Postgres** (the real
+DB, 43,782 documents). `next dev` runs from `website/`, so the repo-root `.env`
+was not being loaded and `pg` fell back to a local default connection (hence the
+earlier `public.unified_documents does not exist` errors). Copying the working
+`DATABASE_URL` into **`website/.env.local`** fixed it, and every DB-dependent
+page then rendered with full data. Screenshots in
+`docs/analytics-hub/screenshots-db/`.
 
-- **Fully rendered & screenshotted** (static-JSON-fed): `/analytics` (all seven
-  sections; the command-language section correctly showed its graceful text
-  fallback), `/missions`, `/reports`, `/instruments`, `/genealogy`.
-- **DB-blocked locally** (render in production, validated by typecheck + merge
-  review): `/secretariat` (its expanders and explorer are DB-fed) and the
-  **mandate detail** pages (`getMandateBySymbol` returns null against the empty
-  DB → `notFound()`), which is where the merged vote strip + reporting section +
-  implementation chips live. Those three sections were integrated identically
-  into both mandate routes and verified to occupy distinct, ordered slots (chips
-  in the header button row; vote strip at the top of the content column; reports
-  section after citation counts) so they cannot collide.
+Confirmed with data (1440px, some 390px):
+
+- **`/secretariat` Organs-section expanders** — all four open and render:
+  `#language-of-command` (decade trend GA/SC/ECOSOC + command gradient, SG force
+  2.92), `#renewals` (mission/sanctions heartbeat gantt), `#ga-consensus`
+  (vote-share by session 39–80 + contested-topics league), `#geopolitics`
+  (agreement matrix + ideal-point trends + loneliest voters). Plus the
+  `#attention-map` choropleth in Subjects and the Boilerplate-genealogy link
+  card.
+- **Mandate detail — full route** (`S/RES/2653(2022)`, Haiti sanctions): all
+  three merged sections render together without collision — sanctions chip in
+  the header, "Adopted without a vote" vote strip at the top of the content
+  column, "Reporting cycle · 3 reports" mid-page. `A/RES/70/171` additionally
+  exercises the vote strip's **named minority** (Against: Syrian Arab Republic;
+  Abstaining: Angola) alongside its reporting section.
+- **Mandate detail — modal route** (`A/RES/79/1` opened from the /secretariat
+  list): renders the identical section stack (vote strip → metadata → citations
+  → reporting cycle) as a right-side sheet. Confirms both routes stay in sync.
+- **`/analytics` command-language section** now renders live figures (SG average
+  verb force 2.92 across 30,536 paragraphs vs Member States 2.56) with the
+  gradient visual, not the fallback.
+
+### Fix applied during DB validation
+
+The command-language hub takeaway originally quoted `pctDirective` (share of
+paragraphs opening with an outright directive verb). Against real data that
+field is tiny for every actor (SG 2.7%, Member States 0.5%) because directive
+verbs are rare even for the Secretariat — so "3% … only 1%" read as if almost
+nothing is directive and undercut the claim. Switched the takeaway (and softened
+the DB-outage fallback copy) to use **`avgForce`** — the 0–5 verb-force gradient
+the `/secretariat` expander itself leads with (SG 2.92 → Member States 2.56).
+Numbers now match the expander and support the section's title.
 
 ## Known issues / follow-ups
 
-- Mandate-detail collision check and `/secretariat` expander rendering could not
-  be visually confirmed on this machine (empty local DB); confirm on a DB with
-  the registry schema or in the deployed dev environment.
-- The command-language hub section shows its text fallback until it runs against
-  a populated DB; it will surface the live gradient + SG-vs-Member-States figures
-  automatically there.
+- No single resolution sits in all three of the vote / reports / sanctions-or-treaty
+  datasets at once (SC sanctions resolutions with recorded votes are not in the
+  reports set), so the "all three merged sections on one page" check used
+  `S/RES/2653(2022)` (chip + vote strip + reporting) — comprehensive enough to
+  prove no collision. The named-minority vote strip was verified separately on
+  `A/RES/70/171`.
+- The DB-outage graceful fallback in the command-language hub section remains as
+  defence-in-depth; in normal operation (DB reachable) it never shows.
