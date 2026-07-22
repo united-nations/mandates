@@ -206,11 +206,12 @@ export default async function Page({ searchParams }: PageProps) {
                   className="h-auto w-3/4"
                 />
                 <p>
-                  Section&nbsp;1 (Overall policymaking, direction and
-                  coordination) citations in the 2027 proposed programme budget
-                  are preliminary, drawn from the advance version of
-                  A/81/6&nbsp;(Sect.&nbsp;1), and may change in the final
-                  budget.
+                  Some citations in the 2027 proposed programme budget are
+                  preliminary, drawn from advance versions of the underlying
+                  documents, and may change in the final budget: Section&nbsp;1
+                  (Overall policymaking, direction and coordination), from
+                  A/81/6&nbsp;(Sect.&nbsp;1); and the special political
+                  missions, from A/81/6&nbsp;(Sect.&nbsp;3)/Add.1–4.
                 </p>
                 <p className="text-gray-500 italic">
                   {explainerTexts.mainHeader.disclaimer}
