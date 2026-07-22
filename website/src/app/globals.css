@@ -46,6 +46,18 @@
   --color-tier-2: #c9820f;
   --color-tier-3: #2aa392;
   --color-tier-4: #276b35;
+
+  /* Boilerplate-genealogy status ramp (/genealogy DNA grid + headline chart).
+     A sequential blue "carried over from the previous resolution" family —
+     verbatim (darkest) → mutated (light) — plus a neutral for text that is new
+     this time. Blue vs grey is trivially CVD-safe; the verbatim/mutated blue
+     pair is a sequential sub-step, always legend- and axis-labelled, and in the
+     grid also separated by 2px surface gaps. A resolution's last appearance of
+     a paragraph is drawn as a marker edge (geneal-marker), never a 4th hue. */
+  --color-geneal-verbatim: #0077b0;
+  --color-geneal-mutated: #7ec8ec;
+  --color-geneal-new: #c7d0d6;
+  --color-geneal-marker: #143c52;
 }
 
 html {

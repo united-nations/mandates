@@ -8,6 +8,7 @@ import {
 } from 'lucide-react'
 import type { Metadata } from 'next'
 import Image from 'next/image'
+import Link from 'next/link'
 import { Suspense } from 'react'
 
 import { MandateExplorerServer } from '@/app/_mandateExplorerServer'
@@ -127,6 +128,27 @@ export default async function Page({ searchParams }: PageProps) {
               </div>
             </div>
           </ExpandableCard>
+          <Link
+            href="/genealogy"
+            className="group mt-4 flex items-center justify-between gap-4 rounded-lg border border-gray-200 bg-white px-5 py-4 transition hover:border-un-blue/40 hover:bg-un-blue/5"
+          >
+            <div>
+              <h3 className="text-sm font-semibold text-gray-900">
+                Boilerplate genealogy
+                <span className="ml-2 rounded bg-un-blue/10 px-1.5 py-0.5 text-[10px] font-medium tracking-wide text-un-blue uppercase">
+                  Lens
+                </span>
+              </h3>
+              <p className="mt-0.5 text-xs text-gray-500">
+                How resolution text mutates across renewals — which sentences are
+                copy-pasted for decades, which mutate, which appear and
+                disappear.
+              </p>
+            </div>
+            <span className="shrink-0 text-un-blue transition group-hover:translate-x-0.5">
+              →
+            </span>
+          </Link>
         </div>
       </section>
 
