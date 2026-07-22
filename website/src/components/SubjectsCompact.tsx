@@ -165,7 +165,7 @@ export function SubjectsCompact({ domains }: SubjectsCompactProps) {
         </div>
 
         {pills.length > 0 ? (
-          <div className="flex flex-wrap gap-1">
+          <div className="flex flex-wrap items-center gap-x-1 gap-y-1.5">
             {pills.map((leaf) => (
               <SubjectPill
                 key={`${leaf.sub}-${leaf.subject}`}
@@ -179,20 +179,17 @@ export function SubjectsCompact({ domains }: SubjectsCompactProps) {
                 +{overflow.toLocaleString()}
               </span>
             )}
+            <span className="ml-1 text-sm text-gray-600">
+              {term
+                ? `${totalMatches.toLocaleString()} matching subject${totalMatches === 1 ? '' : 's'}`
+                : selectedMeta
+                  ? 'search to reach the rest'
+                  : 'select a topic group above or search to go deeper'}
+            </span>
           </div>
         ) : (
           <p className="text-sm text-gray-500">
             No subjects match “{search.trim()}”.
-          </p>
-        )}
-
-        {pills.length > 0 && (
-          <p className="text-sm text-gray-600">
-            {term
-              ? `${totalMatches.toLocaleString()} matching subject${totalMatches === 1 ? '' : 's'}`
-              : selectedMeta
-                ? 'search to reach the rest'
-                : 'select a topic group above or search to go deeper'}
           </p>
         )}
       </div>
