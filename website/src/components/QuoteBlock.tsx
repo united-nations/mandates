@@ -1,14 +1,15 @@
 import Image from 'next/image'
 
 interface QuoteBlockProps {
-  quote: string
+  /** The quote, one sentence per array entry — each renders on its own line. */
+  lines: string[]
   attribution: string
   imageSrc?: string
   imageAlt?: string
 }
 
 export function QuoteBlock({
-  quote,
+  lines,
   attribution,
   imageSrc,
   imageAlt = '',
@@ -23,7 +24,11 @@ export function QuoteBlock({
                 &ldquo;
               </span>
               <p className="text-base leading-relaxed text-gray-700 md:text-lg lg:text-xl">
-                {quote}
+                {lines.map((line, i) => (
+                  <span key={i} className="block">
+                    {line}
+                  </span>
+                ))}
               </p>
               <footer className="mt-6">
                 <cite className="not-italic text-gray-600">— {attribution}</cite>

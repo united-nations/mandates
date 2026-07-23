@@ -2,7 +2,6 @@
 
 import { ActiveFilters } from '@/components/ActiveFilters'
 import { FilterControls } from '@/components/FilterControls'
-import { HeaderStats } from '@/components/HeaderStats'
 import { PaginationControls } from '@/components/PaginationControls'
 import { Switch } from '@/components/ui/switch'
 import {
@@ -187,9 +186,9 @@ export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
 
   return (
     <div>
-      {/* Summary stats now live in the page header (HeaderStats), beside the
-          explainer text. The Source Documents / Organs / Entities cards became
-          the minimal stat rows there; the Citations card was dropped.
+      {/* Summary counts and the organ / entity / topic directories now live in
+          the DirectoryExplorer buttons above this explorer (each opens a modal);
+          the charts moved to /secretariat/analytics.
 
           Years card still hidden — keep code for potential re-enable:
           {filterOptions.yearRange && (
@@ -199,20 +198,15 @@ export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
           )}
       */}
 
-      <div className="pt-4">
-        {/* Narrow band: active filters + the summary stat cards line up with
-            the rest of the page (max-w-6xl). */}
+      <div>
+        {/* Narrow band: active filters line up with the rest of the page
+            (max-w-6xl). */}
         <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-16">
-          {/* Active filters sit above the summary stat cards. */}
           <ActiveFilters
             entitiesData={allEntities}
             allOrgans={allOrgans}
             className="mb-4"
           />
-          {/* Summary stats repeated here (as a row) above the table. */}
-          <div className="mb-6">
-            <HeaderStats data={data} orientation="row" />
-          </div>
         </div>
 
         {/* Wide band: the table and everything that operates on it — search,

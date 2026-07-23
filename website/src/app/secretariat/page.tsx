@@ -11,31 +11,17 @@ import Image from 'next/image'
 import { Suspense } from 'react'
 
 import { MandateExplorerServer } from '@/app/_mandateExplorerServer'
-import { CoCitationHeatmap } from '@/components/CoCitationHeatmap'
-import { EntitiesDirectory } from '@/components/EntitiesDirectory'
+import { DirectoryExplorer } from '@/components/DirectoryExplorer'
 import { ExpandableCard } from '@/components/ExpandableCard'
-import { ExplainerText } from '@/components/ExplainerText'
 import { LoadingSkeleton } from '@/components/LoadingSkeleton'
-import { OrganEntityHeatmap } from '@/components/OrganEntityHeatmap'
-import { OrgansDirectory } from '@/components/OrgansDirectory'
 import { QuoteBlock } from '@/components/QuoteBlock'
-import { ResolutionCitationTrend } from '@/components/ResolutionCitationTrend'
-import { ResolutionRecurrenceTrend } from '@/components/ResolutionRecurrenceTrend'
 import { ResourceLink } from '@/components/ResourceLink'
-import { SectionHeader } from '@/components/SectionHeader'
-import { SubjectsCompact } from '@/components/SubjectsCompact'
 import {
   getBudgetHierarchy,
-  getEntityCoCitationMatrix,
   getMandatePageData,
-  getOrganEntityMatrix,
   getOrganHierarchy,
-  getResolutionCitationTrend,
-  getResolutionRecurrenceTrend,
   getSubjectHierarchy,
-  getTopicTrends,
 } from '@/lib/data/mandates'
-import { TopicTrends } from '@/components/TopicTrends'
 import { explainerTexts } from '@/lib/en_text_contents'
 import { parseSearchParams } from '@/lib/filter-constants'
 
@@ -48,58 +34,40 @@ interface PageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>
 }
 
-const CONTENT = 'mx-auto max-w-6xl px-6 pt-6 pb-10 md:px-12 lg:px-16'
-
 export default async function Page({ searchParams }: PageProps) {
   const params = await searchParams
   const filters = parseSearchParams(params)
 
-  // Heavy explorer fetch — do NOT await; the Suspense boundary in section 1
-  // streams a skeleton and swaps in the data when it resolves.
+  // Heavy explorer fetch — do NOT await; the Suspense boundary below streams a
+  // skeleton and swaps in the data when it resolves.
   const dataPromise = getMandatePageData(filters)
 
-  // Light directory fetches — awaited together; these sections render below the
-  // streamed explorer. All are cached, so this is cheap on every request.
-  const [
-    organGroups,
-    budgetStreams,
-    subjectDomains,
-    topicTrends,
-    coCitationMatrix,
-    organEntityMatrix,
-    resolutionTrend,
-    recurrenceTrend,
-  ] = await Promise.all([
+  // Light directory fetches — awaited together and passed to the explore
+  // buttons/modals. All are cached, so this is cheap on every request.
+  const [organGroups, budgetStreams, subjectDomains] = await Promise.all([
     getOrganHierarchy(),
     getBudgetHierarchy(),
     getSubjectHierarchy(),
-    getTopicTrends(),
-    getEntityCoCitationMatrix(filters.ppb_version),
-    getOrganEntityMatrix(filters.ppb_version),
-    getResolutionCitationTrend(filters.ppb_version),
-    getResolutionRecurrenceTrend(),
   ])
 
   return (
     <div>
-      {/* Intro */}
-      <section className="mx-auto max-w-6xl px-6 pt-8 pb-8 md:px-12 lg:px-16">
-        <h1 className="mb-4 text-4xl font-bold tracking-tight text-foreground">
-          {explainerTexts.mainHeader.headline}
-        </h1>
-        <ExplainerText />
+      {/* The three explore buttons (organs / entities / topics) double as the
+          summary stat cards and open the directory modals; a quieter link
+          leads to the analytics page. */}
+      <section className="mx-auto max-w-6xl px-6 pt-8 md:px-12 lg:px-16">
+        <DirectoryExplorer
+          organGroups={organGroups}
+          budgetStreams={budgetStreams}
+          subjectDomains={subjectDomains}
+        />
       </section>
 
-      {/* 1 — Mandates (the streamed explorer) */}
-      <SectionHeader
-        id="mandates"
-        title="Which mandates is the UN working on?"
-        description="The resolutions, decisions, and other documents that UN entities cite in support of their resource requirements. Search and filter the full registry, or narrow it by entity, organ, or topic using the sections below."
-      />
-      {/* The explorer manages its own widths internally: the stat cards sit in
-          the narrow column, the table and its controls break out to the wide
-          column. Only the trends expander is constrained here. */}
-      <section className="pt-6 pb-10">
+      {/* Mandates explorer. The explorer manages its own widths internally: the
+          table and its controls break out to the wide column. The #mandates
+          anchor stays outside the Suspense boundary so directory selections can
+          scroll to it immediately. */}
+      <section id="mandates" className="scroll-mt-20 pt-8 pb-10">
         <Suspense
           fallback={
             <div className="mx-auto max-w-7xl px-6 md:px-12 lg:px-16">
@@ -109,85 +77,11 @@ export default async function Page({ searchParams }: PageProps) {
         >
           <MandateExplorerServer dataPromise={dataPromise} />
         </Suspense>
-        <div className="mx-auto mt-10 max-w-6xl px-6 md:px-12 lg:px-16">
-          <ExpandableCard title="Trends over time" variant="filled">
-            <div className="space-y-10">
-              <div>
-                <h3 className="mb-3 text-sm font-semibold text-gray-900">
-                  Resolutions and cited mandates
-                </h3>
-                <ResolutionCitationTrend data={resolutionTrend} />
-              </div>
-              <div>
-                <h3 className="mb-3 text-sm font-semibold text-gray-900">
-                  Genuinely new resolutions
-                </h3>
-                <ResolutionRecurrenceTrend data={recurrenceTrend} />
-              </div>
-            </div>
-          </ExpandableCard>
-        </div>
-      </section>
-
-      {/* 2 — Entities */}
-      <SectionHeader
-        id="entities"
-        title="Which entities are implementing the mandates?"
-        description="Every budget-holding entity, grouped by the United Nations programme budget structure. Select one to filter the mandates above."
-      />
-      <section className={CONTENT}>
-        <EntitiesDirectory streams={budgetStreams} />
-        <div className="mt-10">
-          <ExpandableCard
-            title="Co-citations between entities"
-            variant="filled"
-          >
-            <CoCitationHeatmap matrix={coCitationMatrix} />
-          </ExpandableCard>
-        </div>
-      </section>
-
-      {/* 3 — Organs */}
-      <SectionHeader
-        id="organs"
-        title="Which organs are creating the mandates?"
-        description="The intergovernmental organs and bodies that adopt Secretariat mandates. Select one to filter the mandates above."
-      />
-      <section className={CONTENT}>
-        <OrgansDirectory groups={organGroups} />
-        <div className="mt-10">
-          <ExpandableCard
-            title="Citation patterns between entities and organs"
-            variant="filled"
-          >
-            <OrganEntityHeatmap matrix={organEntityMatrix} />
-          </ExpandableCard>
-        </div>
-      </section>
-
-      {/* 4 — Subjects */}
-      <SectionHeader
-        id="subjects"
-        title="Which topics are the mandates about?"
-        description="Every subject applied to a mandate document, grouped into broad thematic domains. Select a topic to filter the mandates above."
-      />
-      <section className={CONTENT}>
-        <SubjectsCompact domains={subjectDomains} />
-        <p className="mt-4 max-w-3xl text-xs leading-relaxed text-gray-500">
-          Subjects are organised by the United Nations Bibliographic Information
-          System (UNBIS) thesaurus. These are bibliographic labels that give hints about the topics of documents; they are not a normative taxonomy of the United Nations.
-        </p>
-        <div className="mt-10">
-          <ExpandableCard title="Topic trends" variant="filled">
-            <TopicTrends years={topicTrends} />
-          </ExpandableCard>
-        </div>
       </section>
 
       {/* Methodology */}
       <section className="bg-white py-10 md:py-12">
         <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-16">
-          <h2 className="mb-6 text-2xl font-bold text-gray-900">Background</h2>
           <div className="divide-y divide-gray-200">
             <ExpandableCard id="methodology" title="Methodology and Scope">
               <div className="space-y-4">
@@ -223,7 +117,12 @@ export default async function Page({ searchParams }: PageProps) {
 
       {/* Quote */}
       <QuoteBlock
-        quote="Mandates are critical to everything we do. They define our work. They shape our structures. They are the basis for how we are held accountable."
+        lines={[
+          'Mandates are critical to everything we do.',
+          'They define our work.',
+          'They shape our structures.',
+          'They are the basis for how we are held accountable.',
+        ]}
         attribution="António Guterres, UN Secretary-General"
       />
 

@@ -2,6 +2,7 @@
 
 import { useCallback } from 'react'
 import { useFilters } from '@/contexts/FilterContext'
+import { useDirectorySelect } from '@/contexts/DirectorySelectContext'
 
 const MANDATES_ANCHOR = 'mandates'
 
@@ -24,6 +25,9 @@ type SectionFilterKey =
  */
 export function useSectionFilter(key: SectionFilterKey) {
   const { filters, setOnlyFilter } = useFilters()
+  // Present only when the directory is rendered inside an explore modal; lets
+  // the selection close that modal so the filtered table is visible.
+  const { onSelect: onModalSelect } = useDirectorySelect()
   const active = filters[key]
 
   const select = useCallback(
@@ -31,7 +35,7 @@ export function useSectionFilter(key: SectionFilterKey) {
       const isActive = active === value
       setOnlyFilter(key, isActive ? undefined : value)
       if (!isActive) {
-        // The #mandates banner renders outside the explorer's Suspense
+        // The #mandates anchor renders outside the explorer's Suspense
         // boundary, so it is always in the DOM and we can scroll immediately.
         requestAnimationFrame(() => {
           document
@@ -39,8 +43,9 @@ export function useSectionFilter(key: SectionFilterKey) {
             ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
         })
       }
+      onModalSelect?.()
     },
-    [active, key, setOnlyFilter]
+    [active, key, setOnlyFilter, onModalSelect]
   )
 
   return { active, select }
