@@ -10,7 +10,9 @@ import { Fragment, useState } from 'react'
 import { getMandateUrl } from './MandateColumns'
 import {
   GroupBadge,
+  GroupHiddenVersionsNote,
   GroupMemberLine,
+  groupHasHiddenVersions,
   SeriesMarkers,
 } from './MandateSeriesIndicators'
 
@@ -20,9 +22,7 @@ interface MandateCompactListProps {
   entitiesData: Entity[]
 }
 
-export function MandateCompactList({
-  mandates,
-}: MandateCompactListProps) {
+export function MandateCompactList({ mandates }: MandateCompactListProps) {
   const { filters, isPending } = useFilters()
   const router = useRouter()
 
@@ -50,7 +50,7 @@ export function MandateCompactList({
   return (
     <TooltipProvider>
       <div
-        className={`rounded-lg border border-gray-200 overflow-hidden transition-opacity duration-150 ${isPending ? 'opacity-50' : 'opacity-100'}`}
+        className={`overflow-hidden rounded-lg border border-gray-200 transition-opacity duration-150 ${isPending ? 'opacity-50' : 'opacity-100'}`}
       >
         {mandates.map((mandate) => {
           const isExpanded = expandedGroups.has(mandate.full_document_symbol)
@@ -86,7 +86,7 @@ export function MandateCompactList({
                         <span className="text-gray-300">·</span>
                         <Badge
                           variant="secondary"
-                          className="border-0 bg-gray-200! text-xs font-medium text-gray-700! whitespace-nowrap"
+                          className="border-0 bg-gray-200! text-xs font-medium whitespace-nowrap text-gray-700!"
                         >
                           {mandate.body}
                         </Badge>
@@ -120,6 +120,14 @@ export function MandateCompactList({
                     <GroupMemberLine member={member} />
                   </div>
                 ))}
+              {grouped && isExpanded && groupHasHiddenVersions(mandate) && (
+                <div
+                  onClick={(e) => handleClick(mandate, e)}
+                  className="cursor-pointer border-b border-gray-100 bg-gray-50/60 px-3 py-1.5 pl-8 transition-colors hover:bg-gray-100"
+                >
+                  <GroupHiddenVersionsNote mandate={mandate} />
+                </div>
+              )}
             </Fragment>
           )
         })}
