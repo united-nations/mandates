@@ -22,7 +22,7 @@ import { QuoteBlock } from '@/components/QuoteBlock'
 import { ResolutionCitationTrend } from '@/components/ResolutionCitationTrend'
 import { ResolutionRecurrenceTrend } from '@/components/ResolutionRecurrenceTrend'
 import { ResourceLink } from '@/components/ResourceLink'
-import { SectionBanner } from '@/components/SectionBanner'
+import { SectionHeader } from '@/components/SectionHeader'
 import { SubjectsCompact } from '@/components/SubjectsCompact'
 import {
   getBudgetHierarchy,
@@ -48,7 +48,7 @@ interface PageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>
 }
 
-const CONTENT = 'mx-auto max-w-6xl px-6 py-12 md:px-12 lg:px-16'
+const CONTENT = 'mx-auto max-w-6xl px-6 pt-6 pb-10 md:px-12 lg:px-16'
 
 export default async function Page({ searchParams }: PageProps) {
   const params = await searchParams
@@ -83,24 +83,23 @@ export default async function Page({ searchParams }: PageProps) {
   return (
     <div>
       {/* Intro */}
-      <section className="mx-auto max-w-6xl px-6 pt-10 pb-12 md:px-12 lg:px-16">
-        <h1 className="mb-6 text-4xl font-bold tracking-tight text-foreground">
+      <section className="mx-auto max-w-6xl px-6 pt-8 pb-8 md:px-12 lg:px-16">
+        <h1 className="mb-4 text-4xl font-bold tracking-tight text-foreground">
           {explainerTexts.mainHeader.headline}
         </h1>
         <ExplainerText />
       </section>
 
       {/* 1 — Mandates (the streamed explorer) */}
-      <SectionBanner
+      <SectionHeader
         id="mandates"
-        imageSrc="/images/banners/hero-banner-system-revenue.png"
         title="Which mandates is the UN working on?"
         description="The resolutions, decisions, and other documents that UN entities cite in support of their resource requirements. Search and filter the full registry, or narrow it by entity, organ, or topic using the sections below."
       />
       {/* The explorer manages its own widths internally: the stat cards sit in
           the narrow column, the table and its controls break out to the wide
           column. Only the trends expander is constrained here. */}
-      <section className="py-12">
+      <section className="pt-6 pb-10">
         <Suspense
           fallback={
             <div className="mx-auto max-w-7xl px-6 md:px-12 lg:px-16">
@@ -131,9 +130,8 @@ export default async function Page({ searchParams }: PageProps) {
       </section>
 
       {/* 2 — Entities */}
-      <SectionBanner
+      <SectionHeader
         id="entities"
-        imageSrc="/images/banners/hero-banner-secretariat-expenses.png"
         title="Which entities are implementing the mandates?"
         description="Every budget-holding entity, grouped by the United Nations programme budget structure. Select one to filter the mandates above."
       />
@@ -150,9 +148,8 @@ export default async function Page({ searchParams }: PageProps) {
       </section>
 
       {/* 3 — Organs */}
-      <SectionBanner
+      <SectionHeader
         id="organs"
-        imageSrc="/images/banners/hero-banner-homepage.png"
         title="Which organs are creating the mandates?"
         description="The intergovernmental organs and bodies that adopt Secretariat mandates. Select one to filter the mandates above."
       />
@@ -169,9 +166,8 @@ export default async function Page({ searchParams }: PageProps) {
       </section>
 
       {/* 4 — Subjects */}
-      <SectionBanner
+      <SectionHeader
         id="subjects"
-        imageSrc="/images/banners/hero-banner-system-expenses.png"
         title="Which topics are the mandates about?"
         description="Every subject applied to a mandate document, grouped into broad thematic domains. Select a topic to filter the mandates above."
       />
@@ -189,9 +185,9 @@ export default async function Page({ searchParams }: PageProps) {
       </section>
 
       {/* Methodology */}
-      <section className="bg-white py-12 md:py-16">
+      <section className="bg-white py-10 md:py-12">
         <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-16">
-          <h2 className="mb-8 text-2xl font-bold text-gray-900">Background</h2>
+          <h2 className="mb-6 text-2xl font-bold text-gray-900">Background</h2>
           <div className="divide-y divide-gray-200">
             <ExpandableCard id="methodology" title="Methodology and Scope">
               <div className="space-y-4">
@@ -229,14 +225,12 @@ export default async function Page({ searchParams }: PageProps) {
       <QuoteBlock
         quote="Mandates are critical to everything we do. They define our work. They shape our structures. They are the basis for how we are held accountable."
         attribution="António Guterres, UN Secretary-General"
-        imageSrc="/images/banners/guterres.png"
-        imageAlt="UN Secretary-General António Guterres"
       />
 
       {/* Further resources */}
-      <section id="resources" className="scroll-mt-20 bg-white py-12 md:py-16">
+      <section id="resources" className="scroll-mt-20 bg-white py-10 md:py-12">
         <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-16">
-          <h2 className="mb-8 text-2xl font-bold text-gray-900">
+          <h2 className="mb-6 text-2xl font-bold text-gray-900">
             Further resources
           </h2>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

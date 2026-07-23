@@ -3,7 +3,7 @@ import Image from 'next/image'
 interface QuoteBlockProps {
   quote: string
   attribution: string
-  imageSrc: string
+  imageSrc?: string
   imageAlt?: string
 }
 
@@ -30,17 +30,19 @@ export function QuoteBlock({
               </footer>
             </blockquote>
           </div>
-          <div className="w-full shrink-0 md:w-64 lg:w-80">
-            <div className="relative aspect-[615/395] overflow-hidden rounded-lg">
-              <Image
-                src={imageSrc}
-                alt={imageAlt}
-                fill
-                sizes="(min-width: 1024px) 320px, (min-width: 768px) 256px, 100vw"
-                className="object-contain"
-              />
+          {imageSrc && (
+            <div className="w-full shrink-0 md:w-64 lg:w-80">
+              <div className="relative aspect-[615/395] overflow-hidden rounded-lg">
+                <Image
+                  src={imageSrc}
+                  alt={imageAlt}
+                  fill
+                  sizes="(min-width: 1024px) 320px, (min-width: 768px) 256px, 100vw"
+                  className="object-contain"
+                />
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </section>
