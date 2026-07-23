@@ -7,17 +7,17 @@ import {
   Target,
 } from 'lucide-react'
 import type { Metadata } from 'next'
-import Image from 'next/image'
+import Link from 'next/link'
 import { Suspense } from 'react'
 
 import { MandateExplorerServer } from '@/app/_mandateExplorerServer'
 import { DirectoryExplorer } from '@/components/DirectoryExplorer'
-import { ExpandableCard } from '@/components/ExpandableCard'
+import { ExplainerText } from '@/components/ExplainerText'
 import { LoadingSkeleton } from '@/components/LoadingSkeleton'
-import { QuoteBlock } from '@/components/QuoteBlock'
 import { ResourceLink } from '@/components/ResourceLink'
 import {
   getBudgetHierarchy,
+  getMandateCounts,
   getMandatePageData,
   getOrganHierarchy,
   getSubjectHierarchy,
@@ -42,31 +42,55 @@ export default async function Page({ searchParams }: PageProps) {
   // skeleton and swaps in the data when it resolves.
   const dataPromise = getMandatePageData(filters)
 
-  // Light directory fetches — awaited together and passed to the explore
-  // buttons/modals. All are cached, so this is cheap on every request.
-  const [organGroups, budgetStreams, subjectDomains] = await Promise.all([
-    getOrganHierarchy(),
-    getBudgetHierarchy(),
-    getSubjectHierarchy(),
-  ])
+  // Light, cached fetches: the directory data for the explore modals, plus the
+  // catalogue document count for the third box (mandate sources for the current
+  // budget version, independent of any facet filter).
+  const [organGroups, budgetStreams, subjectDomains, counts] =
+    await Promise.all([
+      getOrganHierarchy(),
+      getBudgetHierarchy(),
+      getSubjectHierarchy(),
+      getMandateCounts({
+        mode: 'active_mandates',
+        ppb_version: filters.ppb_version,
+      }),
+    ])
 
   return (
     <div>
-      {/* The three explore buttons (organs / entities / topics) double as the
-          summary stat cards and open the directory modals; a quieter link
-          leads to the analytics page. */}
+      {/* Intro */}
       <section className="mx-auto max-w-6xl px-6 pt-8 md:px-12 lg:px-16">
+        <h1 className="mb-4 text-4xl font-bold tracking-tight text-foreground">
+          {explainerTexts.mainHeader.headline}
+        </h1>
+        <ExplainerText />
+        <p className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-medium text-un-blue">
+          <Link href="/methodology" className="hover:underline">
+            See the methodology
+          </Link>
+          <span aria-hidden className="text-gray-300">
+            ·
+          </span>
+          <Link href="/secretariat/analytics" className="hover:underline">
+            Explore visualizations
+          </Link>
+        </p>
+      </section>
+
+      {/* Explore boxes (organs / entities / documents-by-topic) → modals. */}
+      <section className="mx-auto max-w-6xl px-6 pt-6 md:px-12 lg:px-16">
         <DirectoryExplorer
           organGroups={organGroups}
           budgetStreams={budgetStreams}
           subjectDomains={subjectDomains}
+          documentCount={counts.totalDocuments}
         />
       </section>
 
-      {/* Mandates explorer. The explorer manages its own widths internally: the
-          table and its controls break out to the wide column. The #mandates
-          anchor stays outside the Suspense boundary so directory selections can
-          scroll to it immediately. */}
+      {/* Mandates explorer. It manages its own widths internally: the table and
+          its controls break out to the wide column. The #mandates anchor stays
+          outside the Suspense boundary so directory selections can scroll to it
+          immediately. */}
       <section id="mandates" className="scroll-mt-20 pt-8 pb-10">
         <Suspense
           fallback={
@@ -78,53 +102,6 @@ export default async function Page({ searchParams }: PageProps) {
           <MandateExplorerServer dataPromise={dataPromise} />
         </Suspense>
       </section>
-
-      {/* Methodology */}
-      <section className="bg-white py-10 md:py-12">
-        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-16">
-          <div className="divide-y divide-gray-200">
-            <ExpandableCard id="methodology" title="Methodology and Scope">
-              <div className="space-y-4">
-                {explainerTexts.mainHeader.fullDescription.map(
-                  (paragraph, index) => (
-                    <p key={index}>{paragraph}</p>
-                  )
-                )}
-                <Image
-                  src="/images/methodology.svg"
-                  alt="How mandate source documents are identified"
-                  width={248}
-                  height={135}
-                  unoptimized
-                  className="h-auto w-3/4"
-                />
-                <p>
-                  Some citations in the 2027 proposed programme budget are
-                  preliminary, drawn from advance versions of the underlying
-                  documents, and may change in the final budget: Section&nbsp;1
-                  (Overall policymaking, direction and coordination), from
-                  A/81/6&nbsp;(Sect.&nbsp;1); and the special political
-                  missions, from A/81/6&nbsp;(Sect.&nbsp;3)/Add.1–4.
-                </p>
-                <p className="text-gray-500 italic">
-                  {explainerTexts.mainHeader.disclaimer}
-                </p>
-              </div>
-            </ExpandableCard>
-          </div>
-        </div>
-      </section>
-
-      {/* Quote */}
-      <QuoteBlock
-        lines={[
-          'Mandates are critical to everything we do.',
-          'They define our work.',
-          'They shape our structures.',
-          'They are the basis for how we are held accountable.',
-        ]}
-        attribution="António Guterres, UN Secretary-General"
-      />
 
       {/* Further resources */}
       <section id="resources" className="scroll-mt-20 bg-white py-10 md:py-12">

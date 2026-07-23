@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 
+import { AnalyticsTabs } from '@/components/AnalyticsTabs'
 import { CoCitationHeatmap } from '@/components/CoCitationHeatmap'
 import { OrganEntityHeatmap } from '@/components/OrganEntityHeatmap'
 import { ResolutionCitationTrend } from '@/components/ResolutionCitationTrend'
@@ -59,64 +60,60 @@ export default async function AnalyticsPage({ searchParams }: PageProps) {
     getOrganEntityMatrix(filters.ppb_version),
   ])
 
+  const overTime = (
+    <>
+      <Chart
+        title="Resolutions and cited mandates"
+        description="Resolutions adopted each year against the subset cited as mandate sources in the proposed programme budget."
+      >
+        <ResolutionCitationTrend data={resolutionTrend} />
+      </Chart>
+      <Chart
+        title="Genuinely new resolutions"
+        description="Resolutions each year that start a new series, rather than recurring versions of an earlier text."
+      >
+        <ResolutionRecurrenceTrend data={recurrenceTrend} />
+      </Chart>
+      <Chart
+        title="Topic trends"
+        description="How the mix of subjects applied to mandate documents has shifted over time. Click a subject to see its mandates in the main table."
+      >
+        <TopicTrends years={topicTrends} />
+      </Chart>
+    </>
+  )
+
+  const relationships = (
+    <>
+      <Chart
+        title="Co-citations between entities"
+        description="Which entities cite the same mandate sources — a proxy for shared mandates and overlapping work. Click a cell to see the shared documents in the main table."
+      >
+        <CoCitationHeatmap matrix={coCitationMatrix} />
+      </Chart>
+      <Chart
+        title="Citation patterns between entities and organs"
+        description="Which intergovernmental organs each entity draws its mandates from. Click a cell to see those documents in the main table."
+      >
+        <OrganEntityHeatmap matrix={organEntityMatrix} />
+      </Chart>
+    </>
+  )
+
   return (
-    <div className="space-y-12 pb-16">
-      <header>
+    <div className="pb-16">
+      <header className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight text-foreground">
           Mandate analytics
         </h1>
         <p className="mt-2 max-w-3xl text-base leading-relaxed text-gray-600">
           Charts drawn from the mandate registry: how citations and resolutions
           move over time, and how organs, entities, and topics relate to one
-          another.
+          another. Click any item to open the main table filtered to it.
         </p>
       </header>
 
-      <section className="space-y-4">
-        <h2 className="text-xl font-bold tracking-tight text-gray-900">
-          Over time
-        </h2>
-        <div className="space-y-4">
-          <Chart
-            title="Resolutions and cited mandates"
-            description="Resolutions adopted each year against the subset cited as mandate sources in the proposed programme budget."
-          >
-            <ResolutionCitationTrend data={resolutionTrend} />
-          </Chart>
-          <Chart
-            title="Genuinely new resolutions"
-            description="Resolutions each year that start a new series, rather than recurring versions of an earlier text."
-          >
-            <ResolutionRecurrenceTrend data={recurrenceTrend} />
-          </Chart>
-          <Chart
-            title="Topic trends"
-            description="How the mix of subjects applied to mandate documents has shifted over time."
-          >
-            <TopicTrends years={topicTrends} />
-          </Chart>
-        </div>
-      </section>
-
-      <section className="space-y-4">
-        <h2 className="text-xl font-bold tracking-tight text-gray-900">
-          Relationships
-        </h2>
-        <div className="space-y-4">
-          <Chart
-            title="Co-citations between entities"
-            description="Which entities cite the same mandate sources — a proxy for shared mandates and overlapping work."
-          >
-            <CoCitationHeatmap matrix={coCitationMatrix} />
-          </Chart>
-          <Chart
-            title="Citation patterns between entities and organs"
-            description="Which intergovernmental organs each entity draws its mandates from."
-          >
-            <OrganEntityHeatmap matrix={organEntityMatrix} />
-          </Chart>
-        </div>
-      </section>
+      <AnalyticsTabs overTime={overTime} relationships={relationships} />
     </div>
   )
 }

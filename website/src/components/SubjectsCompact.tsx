@@ -133,65 +133,71 @@ export function SubjectsCompact({ domains }: SubjectsCompactProps) {
   const selectedMeta = selectedSub ? subMeta.get(selectedSub) : undefined
   const overflow = Math.max(0, totalMatches - pills.length)
 
+  const hint = term
+    ? `${totalMatches.toLocaleString()} matching subject${totalMatches === 1 ? '' : 's'}`
+    : selectedMeta
+      ? 'Search to reach the rest'
+      : 'Select a topic group at the right, or search to go deeper'
+
   return (
     <TooltipProvider delayDuration={200}>
-      <div className="space-y-4">
+      {/* Two columns on desktop: the searchable pill list on the left, the
+          treemap overview stood up vertically on the right. Stacks on mobile
+          (list first, then the treemap). */}
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(300px,360px)]">
+        <div className="space-y-4">
+          <div className="flex flex-wrap items-center gap-3">
+            <ChartSearchInput
+              placeholder="Search all subjects..."
+              value={search}
+              onChange={setSearch}
+            />
+            {selectedMeta && !term && (
+              <button
+                type="button"
+                onClick={() => setSelectedSub(null)}
+                className={cn(
+                  'inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium text-white',
+                  domainColor(selectedMeta.code).bg
+                )}
+              >
+                {selectedMeta.label}
+                <X className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
+
+          {pills.length > 0 ? (
+            <div className="flex flex-wrap items-start gap-x-1 gap-y-1.5">
+              {pills.map((leaf) => (
+                <SubjectPill
+                  key={`${leaf.sub}-${leaf.subject}`}
+                  leaf={leaf}
+                  active={active === leaf.subject}
+                  onSelect={select}
+                />
+              ))}
+              {overflow > 0 && (
+                <span className="inline-flex items-baseline rounded-full border border-dashed border-gray-300 bg-transparent px-2.5 py-0.5 text-xs text-gray-500">
+                  +{overflow.toLocaleString()}
+                </span>
+              )}
+            </div>
+          ) : (
+            <p className="text-sm text-gray-500">
+              No subjects match “{search.trim()}”.
+            </p>
+          )}
+
+          <p className="text-sm text-gray-600">{hint}</p>
+        </div>
+
         <SubjectTreemap
           domains={domains}
           selected={selectedSub}
           onSelect={setSelectedSub}
-          height={390}
+          height={520}
         />
-
-        <div className="flex flex-wrap items-center gap-3">
-          <ChartSearchInput
-            placeholder="Search all subjects..."
-            value={search}
-            onChange={setSearch}
-          />
-          {selectedMeta && !term && (
-            <button
-              type="button"
-              onClick={() => setSelectedSub(null)}
-              className={cn(
-                'inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium text-white',
-                domainColor(selectedMeta.code).bg
-              )}
-            >
-              {selectedMeta.label}
-              <X className="h-3.5 w-3.5" />
-            </button>
-          )}
-        </div>
-
-        {pills.length > 0 ? (
-          <div className="flex flex-wrap items-center gap-x-1 gap-y-1.5">
-            {pills.map((leaf) => (
-              <SubjectPill
-                key={`${leaf.sub}-${leaf.subject}`}
-                leaf={leaf}
-                active={active === leaf.subject}
-                onSelect={select}
-              />
-            ))}
-            {overflow > 0 && (
-              <span className="inline-flex items-baseline rounded-full border border-dashed border-gray-300 bg-transparent px-2.5 py-0.5 text-xs text-gray-500">
-                +{overflow.toLocaleString()}
-              </span>
-            )}
-            <span className="ml-1 text-sm text-gray-600">
-              {term
-                ? `– ${totalMatches.toLocaleString()} matching subject${totalMatches === 1 ? '' : 's'}`
-                : selectedMeta
-                  ? '– Search to reach the rest'
-                  : '– Select a topic group above or search to go deeper'}
-            </span>
-          </div>
-        ) : (
-          <p className="text-sm text-gray-500">
-            No subjects match “{search.trim()}”.
-          </p>
-        )}
       </div>
     </TooltipProvider>
   )

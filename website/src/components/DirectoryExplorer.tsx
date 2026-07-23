@@ -1,15 +1,7 @@
 'use client'
 
-import Link from 'next/link'
 import { useMemo, useState } from 'react'
-import {
-  Building,
-  ChartNoAxesCombined,
-  ChevronRight,
-  Landmark,
-  LucideIcon,
-  Tag,
-} from 'lucide-react'
+import { Building, ChevronRight, Landmark, LucideIcon, Tag } from 'lucide-react'
 
 import { EntitiesDirectory } from '@/components/EntitiesDirectory'
 import { OrgansDirectory } from '@/components/OrgansDirectory'
@@ -31,20 +23,30 @@ interface DirectoryExplorerProps {
   organGroups: OrganGroup[]
   budgetStreams: BudgetStream[]
   subjectDomains: SubjectDomain[]
+  documentCount: number
 }
 
+// Neutralises the shadcn dialog's directional slide-in so the modal grows from
+// the centre (a plain zoom + fade) instead of flying in from the top-left.
+const CENTER_MODAL_STYLE = {
+  '--tw-enter-translate-x': '0px',
+  '--tw-enter-translate-y': '0px',
+  '--tw-exit-translate-x': '0px',
+  '--tw-exit-translate-y': '0px',
+} as React.CSSProperties
+
 /**
- * The three entry points at the top of the mandate explorer. Each button
- * doubles as a stat card (the total count) and a gateway: clicking it opens a
- * modal with the full organ / entity / topic directory. Selecting a facet
- * inside the modal filters the table below and closes the modal (wired through
- * {@link DirectorySelectContext}). A fourth, quieter link leads to the
- * analytics page, where the charts that used to sit inline now live.
+ * The three entry points at the top of the mandate explorer. Each box doubles
+ * as a stat card (a catalogue count) and a gateway: clicking it opens a modal
+ * with the full organ / entity / topic directory. Selecting a facet inside the
+ * modal filters the table below and closes the modal (wired through
+ * {@link DirectorySelectContext}).
  */
 export function DirectoryExplorer({
   organGroups,
   budgetStreams,
   subjectDomains,
+  documentCount,
 }: DirectoryExplorerProps) {
   const [panel, setPanel] = useState<Panel | null>(null)
   const close = () => setPanel(null)
@@ -57,42 +59,30 @@ export function DirectoryExplorer({
     () => countEntities(budgetStreams),
     [budgetStreams]
   )
-  const topicCount = useMemo(
-    () => countTopics(subjectDomains),
-    [subjectDomains]
-  )
 
   return (
-    <div className="space-y-3">
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <ExploreButton
-          icon={Landmark}
-          count={organCount}
-          label="Explore organs creating mandates"
-          onClick={() => setPanel('organs')}
-        />
-        <ExploreButton
-          icon={Building}
-          count={entityCount}
-          label="Explore entities implementing mandates"
-          onClick={() => setPanel('entities')}
-        />
-        <ExploreButton
-          icon={Tag}
-          count={topicCount}
-          label="Explore topics of the documents"
-          onClick={() => setPanel('topics')}
-        />
-      </div>
-
-      <Link
-        href="/secretariat/analytics"
-        className="group flex items-center justify-center gap-2 rounded-lg border border-dashed border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-600 transition-colors hover:border-un-blue/40 hover:bg-un-blue/5 hover:text-un-blue"
-      >
-        <ChartNoAxesCombined className="size-4" />
-        Analytics &amp; charts
-        <ChevronRight className="size-4 transition-transform group-hover:translate-x-0.5" />
-      </Link>
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+      <ExploreButton
+        icon={Landmark}
+        count={organCount}
+        noun="organs"
+        label="Explore the organs that create mandates"
+        onClick={() => setPanel('organs')}
+      />
+      <ExploreButton
+        icon={Building}
+        count={entityCount}
+        noun="entities"
+        label="Explore the entities that implement mandates"
+        onClick={() => setPanel('entities')}
+      />
+      <ExploreButton
+        icon={Tag}
+        count={documentCount}
+        noun="documents"
+        label="Explore the topics that they are about"
+        onClick={() => setPanel('topics')}
+      />
 
       <DirectoryDialog
         open={panel === 'organs'}
@@ -127,11 +117,13 @@ export function DirectoryExplorer({
 function ExploreButton({
   icon: Icon,
   count,
+  noun,
   label,
   onClick,
 }: {
   icon: LucideIcon
   count: number
+  noun: string
   label: string
   onClick: () => void
 }) {
@@ -143,8 +135,11 @@ function ExploreButton({
     >
       <Icon className="size-6 shrink-0 text-un-blue" />
       <div className="min-w-0 flex-1">
-        <div className="text-2xl leading-none font-bold text-foreground tabular-nums">
-          {count.toLocaleString()}
+        <div className="flex items-baseline gap-1.5">
+          <span className="text-2xl leading-none font-bold text-foreground tabular-nums">
+            {count.toLocaleString()}
+          </span>
+          <span className="text-sm font-medium text-un-blue">{noun}</span>
         </div>
         <div className="mt-1 text-sm leading-snug text-un-blue">{label}</div>
       </div>
@@ -169,6 +164,7 @@ function DirectoryDialog({
   return (
     <Dialog open={open} onOpenChange={(next) => !next && onClose()}>
       <DialogContent
+        style={CENTER_MODAL_STYLE}
         className={cn(
           'flex max-h-[88vh] w-[calc(100vw-1.5rem)] max-w-4xl flex-col gap-3 overflow-hidden p-4',
           'sm:w-[calc(100vw-4rem)] sm:p-6'
@@ -199,16 +195,6 @@ function countEntities(streams: BudgetStream[]): number {
       for (const group of stream.groups)
         for (const e of group.entities) seen.add(e.entity)
     }
-  }
-  return seen.size
-}
-
-function countTopics(domains: SubjectDomain[]): number {
-  const seen = new Set<string>()
-  for (const d of domains) {
-    for (const l of d.directSubjects) seen.add(l.subject)
-    for (const sd of d.subdomains)
-      for (const l of sd.subjects) seen.add(l.subject)
   }
   return seen.size
 }
