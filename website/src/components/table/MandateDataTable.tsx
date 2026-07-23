@@ -43,7 +43,9 @@ import { BudgetLocationCell } from './BudgetLocationCell'
 import { COLUMN_DEFINITIONS, getMandateUrl } from './MandateColumns'
 import {
   GroupBadge,
+  GroupHiddenVersionsNote,
   GroupMemberLine,
+  groupHasHiddenVersions,
   SeriesMarkers,
 } from './MandateSeriesIndicators'
 
@@ -262,6 +264,21 @@ export function MandateDataTable({
                           </TableCell>
                         </TableRow>
                       ))}
+                    {grouped &&
+                      isExpanded &&
+                      groupHasHiddenVersions(mandate) && (
+                        <TableRow
+                          className="cursor-pointer border-b border-gray-100 bg-gray-50/60 hover:bg-gray-100"
+                          onClick={(e) => handleRowClick(mandate, e)}
+                        >
+                          <TableCell
+                            colSpan={columns.length + 1}
+                            className="px-3 py-1.5 pl-11"
+                          >
+                            <GroupHiddenVersionsNote mandate={mandate} />
+                          </TableCell>
+                        </TableRow>
+                      )}
                   </Fragment>
                 )
               })}

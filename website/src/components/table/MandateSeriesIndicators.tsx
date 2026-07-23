@@ -6,7 +6,13 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import type { Mandate } from '@/types'
-import { ChevronDown, ChevronUp, History, Layers } from 'lucide-react'
+import {
+  ArrowRight,
+  ChevronDown,
+  ChevronUp,
+  History,
+  Layers,
+} from 'lucide-react'
 import { getMandateUrl } from './MandateColumns'
 
 /**
@@ -111,6 +117,45 @@ export function SeriesMarkers({ mandate }: { mandate: Mandate }) {
   }
 
   return null
+}
+
+/**
+ * True when an expanded group's inline member list is incomplete: the full
+ * series has members outside the current table view (filtered out, or never
+ * cited in the budget corpus), or the inline list hit its query cap. The
+ * inline list shows group.members plus the representative row itself.
+ */
+export function groupHasHiddenVersions(mandate: Mandate): boolean {
+  const group = mandate.group
+  if (!group || group.size <= 1) return false
+  const total = Math.max(mandate.series?.series_count ?? 0, group.size)
+  return group.members.length + 1 < total
+}
+
+/**
+ * Footer line under an expanded group explaining why the inline list may be
+ * shorter than the detail page's full version history. Purely presentational;
+ * the parent row handles navigation to the representative's detail page.
+ */
+export function GroupHiddenVersionsNote({ mandate }: { mandate: Mandate }) {
+  const group = mandate.group
+  if (!group) return null
+  const total = Math.max(mandate.series?.series_count ?? 0, group.size)
+  const shownCount = Math.min(group.members.length + 1, total)
+  const isCollection = mandate.series?.is_collection
+  return (
+    <span className="flex min-w-0 items-center gap-1 text-xs text-muted-foreground">
+      <span className="truncate">
+        Showing {shownCount} of {total}{' '}
+        {isCollection ? 'related resolutions' : 'versions'} — only those in the
+        current table view.
+      </span>
+      <span className="inline-flex shrink-0 items-center gap-1 font-medium text-un-blue">
+        See details for the full {isCollection ? 'list' : 'version history'}
+        <ArrowRight className="h-3 w-3" />
+      </span>
+    </span>
+  )
 }
 
 /** Row content for one expanded group member (shared table/list markup). */
