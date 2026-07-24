@@ -114,6 +114,15 @@ class TestRecogniseCitations(unittest.TestCase):
         self.assertEqual(recognition.citations, ())
         self.assertTrue(recognition.had_mandate_construction)
 
+    def test_in_pursuance_is_a_mandate_construction(self):
+        # S-006 verb widening ([LIVE] fixture): "In pursuance of ..." carries no other
+        # construction verb — before the widening this element was ignored entirely.
+        recognition = recognise_citations(fx.IN_PURSUANCE)
+        self.assertTrue(recognition.had_mandate_construction)
+        self.assertEqual(
+            [citation.organ_prefix for citation in recognition.citations], ["A/RES/"]
+        )
+
     def test_direct_citation_resolves_adjacent_organ(self):
         citation = sole_citation(fx.DIRECT_SC)
         self.assertEqual(citation.organ_prefix, "S/RES/")
@@ -222,6 +231,19 @@ class TestExtract(unittest.TestCase):
                 output = extract_notes(note)
                 self.assertEqual(
                     output.links[-1].resolution_canonical, canonical_symbol
+                )
+                self.assertEqual(output.unparsed, ())
+
+    def test_in_pursuance_notes_reach_link_rows_with_correct_symbols(self):
+        # S-006 verb widening, both [LIVE] fixtures. The second is the no-space letter
+        # part the survey extractor gets wrong (parent A/RES/47/70); _LETTER_PART must
+        # resolve it to the actual cited part.
+        for note, symbol in ((fx.IN_PURSUANCE, "A/RES/51/131"),
+                             (fx.IN_PURSUANCE_LETTER_NOSPACE, "A/RES/47/70F")):
+            with self.subTest(note=note):
+                output = extract_notes(note)
+                self.assertEqual(
+                    [row.resolution_canonical for row in output.links], [symbol]
                 )
                 self.assertEqual(output.unparsed, ())
 

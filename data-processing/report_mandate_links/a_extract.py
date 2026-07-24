@@ -154,9 +154,12 @@ ORGAN_MENTION_RE = re.compile(
 )
 
 # The §3 include-rule construction: pursuant/prepared/submitted/requested/in response
-# to. Verb-agnostic, symbol-gated; also the generic direct_request sense cue below.
+# to/in pursuance of. Verb-agnostic, symbol-gated; also the generic direct_request
+# sense cue below. "in pursuance of" is the first observation-gated widening (S-006):
+# five live instances in the census (§6), independently confirmed by the survey
+# extractor's gateless matches on the same five notes (comparison §3.2).
 MANDATE_CONSTRUCTION_RE = re.compile(
-    r"\b(?:pursuant\s+to|in\s+response\s+to|submitted|prepared|requested)\b",
+    r"\b(?:pursuant\s+to|in\s+pursuance\s+of|in\s+response\s+to|submitted|prepared|requested)\b",
     re.IGNORECASE,
 )
 
@@ -538,7 +541,7 @@ def extract(reports: Iterable[SourceReport], display_index: DisplayIndex) -> Sta
 def recognise_citations(note_element: str) -> NoteRecognition:
     """
     Scan one note element: does it carry a mandate construction (pursuant/prepared/
-    submitted/requested/in response to)? and if so, extract each resolution citation,
+    submitted/requested/in response to/in pursuance of)? and if so, extract each resolution citation,
     resolving a bare number's organ from the governing organ EARLIER IN THE SAME ELEMENT
     (§3 bare-citation row — get this wrong and renewals are mis-prefixed). Returns the
     facts in a NoteRecognition so the caller need not re-test.

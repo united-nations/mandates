@@ -8,7 +8,7 @@ governing references (maintained separately):
   reference_symbol-grammars-and-join-keys.md (§2, §3, §4)
 TO BE AUGMENTED FROM A LIVE SAMPLE QUERY over digitallibrary.documents.notes[].
 
-Two provenance grades, marked per fixture:
+Three provenance grades, marked per fixture:
   [VERBATIM]  the docs quote this text as it stands (ellipses trimmed).
   [COMPOSED]  assembled ONLY from doc-quoted fragments. The docs' prose examples
               are context-free fragments — most omit the construction verb and/or
@@ -17,6 +17,9 @@ Two provenance grades, marked per fixture:
               (from PARSER_ORGANS) is prepended. No invented resolution numbers,
               no invented grammar shapes anywhere (no-fallback discipline:
               never fabricate a fixture for an unobserved shape).
+  [LIVE]      a real note element quoted byte-exact from the S-005 sample,
+              recid given per fixture — the live augmentation the two grades
+              above anticipated.
 Grammar gaps that could NOT be covered without inventing a shape are left
 uncovered and marked, not papered over.
 
@@ -69,6 +72,20 @@ DIRECT_BRACKET_REGISTRY = "Submitted pursuant to General Assembly resolution 31/
 # (A/RES/40/2[A] and A/RES/40/2A — reference_ §4, a real fold-created cluster),
 # so this citation resolves to a two-variant candidate tuple.
 DIRECT_CLUSTER = "Submitted pursuant to General Assembly resolution 40/2 A."
+
+# [LIVE] recid 246228 (A/52/553), S-005 sample. The "in pursuance of" construction —
+# the include rule's first observation-gated verb widening (S-006): the census's B3
+# sweep (§6) found it five times in live prose, the only recurring missed verb with
+# mandate semantics, and the survey extractor independently catches all five
+# (comparison §3.2). No other construction verb in the element: before the widening
+# this note was ignored entirely.
+IN_PURSUANCE = "In pursuance of General Assembly resolution 51/131."
+
+# [LIVE] recid 177057 (A/48/542), S-005 sample. Same construction, plus the NO-SPACE
+# letter part "47/70F" — the case the survey extractor mis-extracts as the parent
+# A/RES/47/70 (its suffix regex demands whitespace before the letter); ours must
+# resolve it to A/RES/47/70F via _LETTER_PART.
+IN_PURSUANCE_LETTER_NOSPACE = "In pursuance of General Assembly resolution 47/70F."
 
 # --- kept elements: multi-citation and classified senses ------------------------------
 
