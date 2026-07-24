@@ -87,6 +87,12 @@ IN_PURSUANCE = "In pursuance of General Assembly resolution 51/131."
 # resolve it to A/RES/47/70F via _LETTER_PART.
 IN_PURSUANCE_LETTER_NOSPACE = "In pursuance of General Assembly resolution 47/70F."
 
+# [LIVE] recid 598209 (A/61/824) note[1], S-005 sample. A single "resolutions" head
+# governing two tokens — the multi-member list the later-member provenance rule needs. The
+# first member is written next to the head (stated); the second (61/642) appeared as a
+# bare token in the list and so is inherited, never stated, regardless of distance.
+LIST_TWO_MEMBERS = "Prepared pursuant to General Assembly resolutions 61/241 and 61/642."
+
 # --- kept elements: multi-citation and classified senses ------------------------------
 
 # [COMPOSED] rules_ §3 taxonomy row 3 with the doc's organ shorthand ("GA", "ECOSOC")
@@ -106,7 +112,8 @@ UNFICYP = (
 
 # [COMPOSED] rules_ §3 taxonomy row 5 ("Committee established pursuant to resolution
 # 748 (1992)") + "Security Council" organ context, without which the doc's own quote
-# is unresolvable (a known doc gap). Sense: committee_established, confidence low.
+# is unresolvable (a known doc gap). Sense: committee_established (held for review at
+# read time from the sense alone — there is no stored confidence field).
 COMMITTEE = "Security Council Committee established pursuant to resolution 748 (1992)."
 
 # [COMPOSED] rules_ §3 taxonomy row 2 pair (350 (1974) / 2811 (2025)) laid into the §3

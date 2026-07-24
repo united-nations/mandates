@@ -142,6 +142,13 @@ CITATION_LIST_RE = re.compile(
     + "(?:" + _LIST_SEP + _CITATION_TOKEN + ")*"
 )
 
+# The "resolution(s)" head word inside a citation list. Organ provenance is scored by the
+# word gap from the governing organ mention's end to this head, so the head's offset must
+# be locatable. A list match may open with a pinpoint prefix ("para. 50 of resolution
+# 2808"), so the head is not at the list's start — it is the first "resolution(s)" token
+# within the list span.
+_RESOLUTION_HEAD_RE = re.compile(r"\bresolutions?\b", re.IGNORECASE)
+
 # PRST — arrives symbol-form in prose: "…statement of the President … (S/PRST/2024/7)"
 # (rules_ §3 scope table). Notes/decisions by the President have no attested symbol
 # grammar and are NOT recognised; widening is observation-gated.
@@ -234,20 +241,30 @@ _UNRESOLVED_ORGAN_REASON = (
 # so it never becomes a stored sense. "prst_note_decision" is a real instrument that is
 # diverted off resolution pages (its typing is deliberately unresolved).
 Sense = Literal[
-    "direct_request",        # "Submitted pursuant to SC resolution 2779 (2025)" — display, high conf
+    "direct_request",        # "Submitted pursuant to SC resolution 2779 (2025)" — display
     "founding_renewal",      # "mandate contained in 350 (1974) … most recently 2811 (2025)" — capture both
     "additional_joint",      # "also in response to GA resolution 79/140 and ECOSOC 2024/8" — capture all
     "activities_carried_out",# UNFICYP "activities carried out … pursuant to resolution 186 (1964)" — display
-    "committee_established",  # "Committee established pursuant to 748 (1992)" — lower conf, hold for review
+    "committee_established",  # "Committee established pursuant to 748 (1992)" — hold for review at read time
     "prst_note_decision",    # S/PRST/…, note/decision — real instrument, diverted (not a resolution)
 ]
 
 # Role of a cited resolution within the report's mandate history (Decision 4 / §4.2).
 Role = Literal["founding", "most_recent", "co_equal", "establishing", "additional"]
 
-# Stored confidence (§7). Auto-display vs hold-for-review is a READ-TIME threshold over
-# (confidence, sense); the threshold itself is derived, not stored (§0.1 store-the-stable).
-Confidence = Literal["high", "low"]
+# How the organ that prefixes a KEPT citation was determined. A provenance LABEL, not a
+# risk score: it is recorded on the link row and read by audits of that table, and it does
+# NOT gate display — display is filtered on `sense` alone. It replaces an earlier
+# `confidence` field that was a pure function of `sense`, and so stored nothing `sense`
+# did not already carry.
+#   stated    — an organ mention immediately precedes the citation head (gap = 0 words)
+#   inherited — resolved from the nearest preceding organ mention in the SAME element,
+#               across a non-zero word gap (no distance cap); AND every later member of a
+#               citation list, which appeared as a bare token and so cannot itself carry a
+#               "stated" claim
+#   intrinsic — the organ is carried by the symbol's own grammar, needing no mention
+#               (PRST: "S/PRST/2024/7" names its organ in the symbol)
+OrganProvenance = Literal["stated", "inherited", "intrinsic"]
 
 
 @dataclass(frozen=True)
@@ -258,8 +275,9 @@ class RawCitation:
     Carries enough to canonicalise and to classify without re-reading the note.
     """
     organ_prefix: str            # resolved from PARSER_ORGANS or same-element context (§3)
+    organ_provenance: "OrganProvenance"  # how organ_prefix was determined — set here at recognition, the only place the mention/head geometry exists
     prose_symbol: str            # the citation as it appeared, organ-resolved (e.g. "resolution 2811 (2025)")
-    note_span: tuple[int, int]   # position within the note element — for deterministic ordering
+    note_span: tuple[int, int]   # position within the note element — deterministic ordering AND part of the stored row's identity key
 
 
 @dataclass(frozen=True)
@@ -286,9 +304,18 @@ class NoteRecognition:
 @dataclass(frozen=True)
 class LinkRow:
     """
-    §8 output contract — one row per (report, cited resolution). Ten columns, exactly.
-    Lossless (§4): never dropped for low confidence. Frozen: a produced row is a value,
-    not mutable state — supports determinism (same input, same rows, same order).
+    The output contract — one row per cited-resolution OCCURRENCE. The
+    one-row-per-(report, resolution) shape is the DISPLAY grain, derived at read time;
+    nothing dedups here, so a resolution cited twice in one note yields two rows.
+    Lossless: no row is ever dropped. Frozen: a produced row is a value, not mutable
+    state — supports determinism (same input, same rows, same order).
+
+    Identity: the row's stored key is uuid5 over
+    (report_recid, note_index, resolution_canonical, note_span[0]), computed at the write
+    edge from the four fields the row carries — so a row's identity is recomputable from
+    the row itself, matching the schema's paragraphs.id = uuid5(URL, "<symbol>:<pos>")
+    precedent (sql/schema/mandates.sql). note_index and note_span exist on the row for
+    exactly this reason; the pure core does not itself mint the uuid.
 
     The three resolution columns are the §5 contract and are NOT interchangeable:
       resolution_canonical         identity = symbol_normalized; the fold is never applied here
@@ -302,14 +329,16 @@ class LinkRow:
     brackets); both are stored anyway so a fold change re-derives one column, not a re-parse.
     """
     report_symbol: str                            # the report's own document_symbol (dual-symbol handling unresolved — see extract)
-    report_recid: int                             # digitallibrary.documents.recid
-    resolution_canonical: str                     # identity (§5) — equals symbol_normalized
+    report_recid: int                             # digitallibrary.documents.recid — part of the row identity key
+    note_index: int                               # 0-based element index within report.notes — part of the row identity key
+    resolution_canonical: str                     # identity (§5) — equals symbol_normalized; part of the row identity key
     resolution_match_key: str                     # join key (§5) — indexed; fold applied
     resolution_display_candidates: tuple[str, ...]# page keys (§5) — lookup result; () when no registry row
     role: Role                                    # §4.2
     pinpoint: str | None                          # e.g. "para. 50" — Stage 2 asset, §5/§9
     sense: Sense                                  # §3 taxonomy
-    confidence: Confidence                        # §7
+    organ_provenance: OrganProvenance             # how the organ was determined; audit label, not a display gate
+    note_span: tuple[int, int]                    # citation token offsets in the note element; note_span[0] is part of the row identity key
     source_note_text: str                         # the verbatim note element it came from (§4.1)
 
 
@@ -413,8 +442,16 @@ def write_link_rows(conn: DbConn, rows: Iterable[LinkRow]) -> None:
     Materialise the lossless link table (§8 — request-time note parsing is too slow for a
     public page). MUST NOT write any coverage-derived field: no pending_coverage, no
     completeness, no displayable count (§0.1 — those are read-time).
-    MUST NOT drop a row for low confidence (§4 lossless). Deterministic order (HARD CONSTRAINT).
-    Governs: §8 / §4 / §0.1. Migration hazard: diff migration dirs across branches first (§8).
+    MUST NOT drop any row (§4 lossless). MUST NOT dedup — the occurrence is the stored
+    grain; the one-per-(report, resolution) grain is derived at read time.
+    Deterministic order (HARD CONSTRAINT).
+    Compute the row's uuid5 identity here from (report_recid, note_index,
+    resolution_canonical, note_span[0]) — matching the paragraphs.id keying precedent — and
+    make the write idempotent on it: the full-schema rebuild (sql/schema/mandates.sql) drops
+    and recreates this table, so a re-run must converge on the same keys rather than
+    duplicate. Do NOT mint the key in the pure core.
+    Migration hazard: diff the migration dirs across branches before adding one — migration
+    numbers repeat across branches, so "next free number" is branch-local.
     """
     raise NotImplementedError
 
@@ -492,16 +529,18 @@ def extract(reports: Iterable[SourceReport], display_index: DisplayIndex) -> Sta
                         # on it until the cardinality question is settled (§4/§8).
                         report_symbol=report.report_symbol,
                         report_recid=report.report_recid,
+                        note_index=note_index,
                         resolution_canonical=resolution_canonical,
                         resolution_match_key=key,
                         resolution_display_candidates=resolve_display(key, display_index),
                         role=tag_role(citation, note),
                         pinpoint=extract_pinpoint(citation),
                         sense=sense,
-                        # §3: committee-established is the one lower-confidence sense.
-                        # §7's other hold-for-review classes never reach a LinkRow —
-                        # organ-ambiguous notes become UnparsedNotes upstream.
-                        confidence="low" if sense == "committee_established" else "high",
+                        # Provenance is computed at recognition (the only place the
+                        # mention/head geometry exists) and passed straight through — it is
+                        # an audit label, never a display gate.
+                        organ_provenance=citation.organ_provenance,
+                        note_span=citation.note_span,
                         source_note_text=note,
                     )
                     keyed_links.append(
@@ -561,23 +600,36 @@ def recognise_citations(note_element: str) -> NoteRecognition:
             citations=(), had_mandate_construction=False, had_unresolvable_citation=False
         )
 
-    # Organ mentions in element order (finditer is left-to-right — deterministic).
+    # Organ mentions in element order (finditer is left-to-right — deterministic). The
+    # mention END is retained too: the "stated" provenance gap is measured from the mention
+    # end to the citation head, so the start offset alone is insufficient.
     organ_mentions = [
-        (mention.start(), PARSER_ORGANS[mention.group().lower()])
+        (mention.start(), mention.end(), PARSER_ORGANS[mention.group().lower()])
         for mention in ORGAN_MENTION_RE.finditer(note_element)
     ]
 
     citations: list[RawCitation] = []
     had_unresolvable = False
     for cited_list in CITATION_LIST_RE.finditer(note_element):
+        # The head is the "resolution(s)" word the list opens on (after any pinpoint
+        # prefix). The list grammar requires it, so absence is an invariant violation.
+        head = _RESOLUTION_HEAD_RE.search(
+            note_element, cited_list.start(), cited_list.end()
+        )
+        if head is None:
+            raise ValueError(
+                f"citation list with no resolution head: {note_element[cited_list.start():cited_list.end()]!r}"
+            )
         first_in_list = True
         for token in CITATION_TOKEN_RE.finditer(
             note_element, cited_list.start(), cited_list.end()
         ):
             organ_prefix = None
-            for mention_start, prefix in organ_mentions:
+            governing_end = None
+            for mention_start, mention_end, prefix in organ_mentions:
                 if mention_start < token.start():
                     organ_prefix = prefix  # nearest mention earlier in the element wins
+                    governing_end = mention_end
                 else:
                     break
             if organ_prefix is None:
@@ -601,9 +653,20 @@ def recognise_citations(note_element: str) -> NoteRecognition:
                 if first_in_list
                 else token.group()
             )
+            # Organ provenance. Only the first list member can be "stated": it is the one
+            # written next to the head. The gap is the count of whitespace-separated words
+            # between the governing mention's end and the head start (str.split() counts
+            # \S+ runs). A later member appeared as a bare token in the list and is never
+            # written next to an organ, so it is always inherited.
+            if first_in_list:
+                gap_words = len(note_element[governing_end:head.start()].split())
+                organ_provenance = "stated" if gap_words == 0 else "inherited"
+            else:
+                organ_provenance = "inherited"
             citations.append(
                 RawCitation(
                     organ_prefix=organ_prefix,
+                    organ_provenance=organ_provenance,
                     prose_symbol=prose_symbol,
                     note_span=(token.start(), token.end()),
                 )
@@ -613,9 +676,11 @@ def recognise_citations(note_element: str) -> NoteRecognition:
     for prst in PRST_SYMBOL_RE.finditer(note_element):
         # PRST arrives symbol-form, so it is its own organ context: prose_symbol is the
         # full symbol and extract's prefix+token reassembly reproduces it byte-for-byte.
+        # Its organ is carried by the grammar itself, needing no mention: intrinsic.
         citations.append(
             RawCitation(
                 organ_prefix="S/PRST/",
+                organ_provenance="intrinsic",
                 prose_symbol=prst.group(),
                 note_span=(prst.start(), prst.end()),
             )

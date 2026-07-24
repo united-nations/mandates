@@ -276,11 +276,36 @@ class TestExtract(unittest.TestCase):
         self.assertEqual(row.resolution_canonical, "S/RES/2808(2025)")
         self.assertEqual(row.pinpoint, "para. 50")
 
-    def test_confidence_low_only_for_committee_established(self):
-        committee_row = extract_notes(fx.COMMITTEE).links[0]
-        self.assertEqual(committee_row.confidence, "low")
-        direct_row = extract_notes(fx.DIRECT_SC).links[0]
-        self.assertEqual(direct_row.confidence, "high")
+    def test_organ_provenance_stated_when_mention_abuts_head(self):
+        # "Security Council resolution 2779 (2025)" — the organ mention immediately
+        # precedes the head (zero-word gap), so provenance is "stated".
+        row = extract_notes(fx.DIRECT_SC).links[0]
+        self.assertEqual(row.organ_provenance, "stated")
+
+    def test_organ_provenance_inherited_across_a_word_gap(self):
+        # The renewal "most recently resolution 2811 (2025)" carries no organ of its own;
+        # it inherits S/RES/ from "Security Council" earlier in the element, across a
+        # non-zero word gap -> "inherited". The first citation abuts its head -> "stated".
+        rows = extract_notes(fx.FOUNDING_RENEWAL).links
+        self.assertEqual(
+            [(row.resolution_canonical, row.organ_provenance) for row in rows],
+            [("S/RES/350(1974)", "stated"), ("S/RES/2811(2025)", "inherited")],
+        )
+
+    def test_organ_provenance_later_list_member_is_inherited(self):
+        # A later member of a "resolutions X and Y" list appeared as a bare token, never
+        # written next to an organ, so it is "inherited" even though the head is near —
+        # first member stated, second inherited.
+        rows = extract_notes(fx.LIST_TWO_MEMBERS).links
+        self.assertEqual(
+            [(row.resolution_canonical, row.organ_provenance) for row in rows],
+            [("A/RES/61/241", "stated"), ("A/RES/61/642", "inherited")],
+        )
+
+    def test_organ_provenance_intrinsic_for_prst(self):
+        # PRST names its organ in the symbol itself, so no mention is needed -> "intrinsic".
+        row = extract_notes(fx.PRST).links[0]
+        self.assertEqual(row.organ_provenance, "intrinsic")
 
     def test_unresolvable_notes_become_unparsed_records_not_rows(self):
         output = extract_notes(fx.MONTREAL, fx.RELEVANT_RESOLUTIONS, fx.DIRECT_ROMAN_BARE)
