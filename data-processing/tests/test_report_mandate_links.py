@@ -1,0 +1,345 @@
+"""
+Stage A tests for report_mandate_links.a_extract — fixture-driven, no database.
+
+Run from data-processing/:
+    uv run python -m unittest discover -s tests -v
+
+The transform is pure by design (I/O at the edges); if a test here ever needs a
+connection, a boundary has been violated somewhere. Fixture provenance is
+documented at the top of fixtures_sg_report_notes.py: doc-quoted seeds, to be
+augmented from a live sample query.
+"""
+
+import unittest
+
+import fixtures_sg_report_notes as fx
+from report_mandate_links.a_extract import (
+    SourceReport,
+    canonical,
+    classify_sense,
+    extract,
+    extract_pinpoint,
+    match_key,
+    recognise_citations,
+    resolve_display,
+    tag_role,
+)
+
+
+def extract_notes(*notes, recid=101, symbol=fx.JOINT_REPORT_A):
+    """One-report extract over the fixture display index."""
+    report = SourceReport(report_recid=recid, report_symbol=symbol, notes=tuple(notes))
+    return extract([report], fx.DISPLAY_INDEX)
+
+
+def sole_citation(note):
+    """The single RawCitation a note is expected to yield."""
+    recognition = recognise_citations(note)
+    assert len(recognition.citations) == 1, recognition
+    return recognition.citations[0]
+
+
+class TestSymbolFunctions(unittest.TestCase):
+    """canonical / match_key / resolve_display — §5's three-function contract."""
+
+    def test_canonical_strips_whitespace_and_uppercases(self):
+        # Grammar 8: the spaced registry form folds to bare under the whitespace strip.
+        self.assertEqual(canonical(fx.REGISTRY_SPACED_LETTER), "A/RES/72/266A")
+        self.assertEqual(canonical("s/res/2779 (2025)"), "S/RES/2779(2025)")
+
+    def test_canonical_never_folds_brackets(self):
+        # The single most reversal-costly behaviour: brackets survive canonical —
+        # folding into identity would break the symbol_normalized equality (§6).
+        self.assertEqual(canonical(fx.REGISTRY_BRACKET_SINGLE), "A/RES/31/106[A]")
+        self.assertEqual(canonical(fx.REGISTRY_BRACKET_ROMAN), "A/RES/40/252[XII]")
+
+    def test_match_key_folds_bracketed_parts(self):
+        # Grammar 9 (single char) and grammar 10 (multi-char) — one rule, same fold.
+        self.assertEqual(match_key("A/RES/31/106[A]"), "A/RES/31/106A")
+        self.assertEqual(match_key("A/RES/40/252[XII]"), "A/RES/40/252XII")
+        self.assertEqual(match_key("A/RES/289(IV)[AA]"), "A/RES/289(IV)AA")
+
+    def test_bracket_fold_in_both_directions(self):
+        # Explicitly paired: the SAME string is preserved by canonical and folded by
+        # match_key. Layer order matters — the fold sits above identity.
+        registry = fx.REGISTRY_BRACKET_SINGLE
+        self.assertEqual(canonical(registry), registry)          # identity: no fold
+        self.assertEqual(match_key(canonical(registry)), "A/RES/31/106A")  # join: folds
+
+    def test_match_key_leaves_letter_ranges_alone(self):
+        # Grammars 11 and 12: a range is not a citation of either part — no fold.
+        self.assertEqual(match_key(canonical(fx.REGISTRY_RANGE_BARE)), "A/RES/31/141A-B")
+        # Grammar 12's en dash survives (only whitespace is stripped) — those two rows
+        # fall to pending_coverage by design.
+        self.assertEqual(
+            match_key(canonical(fx.REGISTRY_RANGE_EN_DASH)), "A/RES/79/93A–B"
+        )
+
+    def test_match_key_is_identity_on_unbracketed_forms(self):
+        for symbol in ("A/RES/79/223", "S/RES/1325(2000)", "A/HRC/RES/10/1",
+                       "E/RES/1978/1", "A/RES/ES-10/1"):
+            self.assertEqual(match_key(symbol), symbol)
+
+    def test_resolve_display_returns_all_variants_or_empty(self):
+        self.assertEqual(
+            resolve_display("A/RES/40/2A", fx.DISPLAY_INDEX),
+            ("A/RES/40/2[A]", "A/RES/40/2A"),
+        )
+        self.assertEqual(resolve_display("A/RES/78/176", fx.DISPLAY_INDEX), ())
+
+
+class TestRecogniseCitations(unittest.TestCase):
+    """The include rule, the grammars in prose, and organ inference (§3)."""
+
+    def test_noise_element_is_not_kept(self):
+        recognition = recognise_citations(fx.NOISE)
+        self.assertEqual(recognition.citations, ())
+        self.assertFalse(recognition.had_mandate_construction)
+
+    def test_non_resolution_reference_is_rejected_but_counted(self):
+        recognition = recognise_citations(fx.MONTREAL)
+        self.assertEqual(recognition.citations, ())
+        self.assertTrue(recognition.had_mandate_construction)
+
+    def test_mandate_construction_with_no_symbol_is_counted(self):
+        recognition = recognise_citations(fx.RELEVANT_RESOLUTIONS)
+        self.assertEqual(recognition.citations, ())
+        self.assertTrue(recognition.had_mandate_construction)
+
+    def test_organ_is_never_guessed(self):
+        # Roman-session shape does not imply GA: with no organ mention earlier in the
+        # element, the citation is withheld and the element is flagged for the
+        # diagnostic record instead.
+        recognition = recognise_citations(fx.DIRECT_ROMAN_BARE)
+        self.assertEqual(recognition.citations, ())
+        self.assertTrue(recognition.had_mandate_construction)
+
+    def test_direct_citation_resolves_adjacent_organ(self):
+        citation = sole_citation(fx.DIRECT_SC)
+        self.assertEqual(citation.organ_prefix, "S/RES/")
+        self.assertIn("resolution 2779 (2025)", citation.prose_symbol)
+
+    def test_bare_citation_inherits_organ_from_earlier_in_element(self):
+        # §3's real subtlety: "… most recently resolution 2811 (2025)" names no organ;
+        # it must inherit S/RES/ from the "Security Council" mention earlier in the
+        # SAME element. Get this wrong and renewals are mis-prefixed.
+        recognition = recognise_citations(fx.FOUNDING_RENEWAL)
+        self.assertEqual(len(recognition.citations), 2)
+        self.assertEqual(
+            [citation.organ_prefix for citation in recognition.citations],
+            ["S/RES/", "S/RES/"],
+        )
+
+    def test_joint_citations_each_take_their_nearest_preceding_organ(self):
+        recognition = recognise_citations(fx.ADDITIONAL_JOINT)
+        self.assertEqual(
+            [citation.organ_prefix for citation in recognition.citations],
+            ["A/RES/", "E/RES/"],
+        )
+
+    def test_mixed_element_flags_and_still_returns_resolved_citations(self):
+        # One withheld token must not annul the element's resolvable citations.
+        recognition = recognise_citations(fx.MIXED_BARE_THEN_RESOLVED)
+        self.assertTrue(recognition.had_unresolvable_citation)
+        self.assertEqual(
+            [citation.organ_prefix for citation in recognition.citations], ["S/RES/"]
+        )
+
+    def test_prst_symbol_is_recognised_in_symbol_form(self):
+        citation = sole_citation(fx.PRST)
+        self.assertEqual(citation.organ_prefix, "S/PRST/")
+        self.assertEqual(citation.prose_symbol, "S/PRST/2024/7")
+
+    def test_citations_are_returned_in_note_order(self):
+        recognition = recognise_citations(fx.FOUNDING_RENEWAL)
+        spans = [citation.note_span for citation in recognition.citations]
+        self.assertEqual(spans, sorted(spans))
+
+
+class TestClassification(unittest.TestCase):
+    """Sense (§3) and role (§4.2) from phrasing."""
+
+    def test_direct_request(self):
+        citation = sole_citation(fx.DIRECT_SC)
+        self.assertEqual(classify_sense(citation, fx.DIRECT_SC), "direct_request")
+        self.assertEqual(tag_role(citation, fx.DIRECT_SC), "co_equal")
+
+    def test_activities_carried_out_outranks_nearer_generic_cue(self):
+        # In the UNFICYP form the generic "pursuant to" sits NEARER the citation than
+        # "activities carried out"; the specific cue must still win.
+        citation = sole_citation(fx.UNFICYP)
+        self.assertEqual(classify_sense(citation, fx.UNFICYP), "activities_carried_out")
+        self.assertEqual(tag_role(citation, fx.UNFICYP), "co_equal")
+
+    def test_committee_established(self):
+        citation = sole_citation(fx.COMMITTEE)
+        self.assertEqual(classify_sense(citation, fx.COMMITTEE), "committee_established")
+        self.assertEqual(tag_role(citation, fx.COMMITTEE), "establishing")
+
+    def test_additional_joint(self):
+        recognition = recognise_citations(fx.ADDITIONAL_JOINT)
+        for citation in recognition.citations:
+            self.assertEqual(
+                classify_sense(citation, fx.ADDITIONAL_JOINT), "additional_joint"
+            )
+            self.assertEqual(tag_role(citation, fx.ADDITIONAL_JOINT), "additional")
+
+    def test_founding_and_most_recent_from_one_note(self):
+        recognition = recognise_citations(fx.FOUNDING_RENEWAL)
+        founding, renewal = recognition.citations
+        self.assertEqual(classify_sense(founding, fx.FOUNDING_RENEWAL), "founding_renewal")
+        self.assertEqual(classify_sense(renewal, fx.FOUNDING_RENEWAL), "founding_renewal")
+        self.assertEqual(tag_role(founding, fx.FOUNDING_RENEWAL), "founding")
+        self.assertEqual(tag_role(renewal, fx.FOUNDING_RENEWAL), "most_recent")
+
+    def test_prst_sense(self):
+        citation = sole_citation(fx.PRST)
+        self.assertEqual(classify_sense(citation, fx.PRST), "prst_note_decision")
+
+    def test_pinpoint_captured_and_absent_is_none(self):
+        with_pinpoint = sole_citation(fx.PINPOINT)
+        self.assertEqual(extract_pinpoint(with_pinpoint), "para. 50")
+        without = sole_citation(fx.DIRECT_SC)
+        self.assertIsNone(extract_pinpoint(without))
+
+
+class TestExtract(unittest.TestCase):
+    """The pure spine end-to-end: canonicalisation, lookup, ordering, determinism."""
+
+    def test_each_prose_grammar_canonicalises_per_the_rules_table(self):
+        expected = {
+            fx.DIRECT_GA: "A/RES/78/176",          # grammar 1
+            fx.DIRECT_SC: "S/RES/2779(2025)",      # grammar 2
+            fx.ADDITIONAL_JOINT: "E/RES/2024/8",   # grammar 3 (second citation below)
+            fx.DIRECT_HRC: "A/HRC/RES/41/19",      # grammar 4
+            fx.DIRECT_ROMAN: "A/RES/3376(XXX)",    # grammar 5
+            fx.DIRECT_ES: "A/RES/ES-10/1",         # grammar 6
+            fx.DIRECT_LETTER: "A/RES/72/266A",     # grammars 7/8
+            fx.DIRECT_RANGE: "A/RES/31/141A-B",    # grammar 11
+        }
+        for note, canonical_symbol in expected.items():
+            with self.subTest(note=note):
+                output = extract_notes(note)
+                self.assertEqual(
+                    output.links[-1].resolution_canonical, canonical_symbol
+                )
+                self.assertEqual(output.unparsed, ())
+
+    def test_citation_side_match_key_usually_equals_canonical(self):
+        output = extract_notes(fx.DIRECT_RANGE)
+        row = output.links[0]
+        self.assertEqual(row.resolution_match_key, row.resolution_canonical)
+
+    def test_display_candidates_come_from_lookup_never_construction(self):
+        # Prose "resolution 31/106 A" must meet its bracket-form registry row through
+        # the fold — under canonical alone they never meet (§5).
+        row = extract_notes(fx.DIRECT_BRACKET_REGISTRY).links[0]
+        self.assertEqual(row.resolution_canonical, "A/RES/31/106A")
+        self.assertEqual(row.resolution_display_candidates, ("A/RES/31/106[A]",))
+
+    def test_display_candidates_carry_every_variant_unpicked(self):
+        # A real fold-created cluster: two registry variants under one match_key.
+        # Both are stored; the pick is read-time (§0.1).
+        row = extract_notes(fx.DIRECT_CLUSTER).links[0]
+        self.assertEqual(
+            row.resolution_display_candidates, ("A/RES/40/2[A]", "A/RES/40/2A")
+        )
+
+    def test_display_candidates_empty_when_no_registry_row(self):
+        row = extract_notes(fx.DIRECT_GA).links[0]
+        self.assertEqual(row.resolution_display_candidates, ())
+
+    def test_pinpoint_reaches_the_row(self):
+        row = extract_notes(fx.PINPOINT).links[0]
+        self.assertEqual(row.resolution_canonical, "S/RES/2808(2025)")
+        self.assertEqual(row.pinpoint, "para. 50")
+
+    def test_confidence_low_only_for_committee_established(self):
+        committee_row = extract_notes(fx.COMMITTEE).links[0]
+        self.assertEqual(committee_row.confidence, "low")
+        direct_row = extract_notes(fx.DIRECT_SC).links[0]
+        self.assertEqual(direct_row.confidence, "high")
+
+    def test_unresolvable_notes_become_unparsed_records_not_rows(self):
+        output = extract_notes(fx.MONTREAL, fx.RELEVANT_RESOLUTIONS, fx.DIRECT_ROMAN_BARE)
+        self.assertEqual(output.links, ())
+        self.assertEqual(len(output.unparsed), 3)
+        # Verbatim note text is the evidence — preserved exactly.
+        self.assertEqual(
+            [record.source_note_text for record in output.unparsed],
+            [fx.MONTREAL, fx.RELEVANT_RESOLUTIONS, fx.DIRECT_ROMAN_BARE],
+        )
+
+    def test_mixed_element_keeps_resolved_links_and_records_the_withheld_token(self):
+        # Capture completely AND record: the element's resolvable citation becomes a
+        # link row, the organ-less one becomes a diagnostic record — both, not either.
+        output = extract_notes(fx.MIXED_BARE_THEN_RESOLVED)
+        self.assertEqual(
+            [row.resolution_canonical for row in output.links], ["S/RES/2779(2025)"]
+        )
+        self.assertEqual(len(output.unparsed), 1)
+        record = output.unparsed[0]
+        self.assertEqual(record.source_note_text, fx.MIXED_BARE_THEN_RESOLVED)
+        self.assertIn("governing organ", record.reason)
+
+    def test_organ_is_never_inherited_across_note_elements(self):
+        # The worst failure class (§7): the first element names Security Council; the
+        # second's bare "resolution 2811 (2025)" must NOT inherit it — it is withheld
+        # and recorded instead.
+        output = extract_notes(fx.DIRECT_SC, fx.BARE_RENEWAL_ELEMENT)
+        self.assertEqual(
+            [row.resolution_canonical for row in output.links], ["S/RES/2779(2025)"]
+        )
+        self.assertEqual(len(output.unparsed), 1)
+        self.assertEqual(output.unparsed[0].source_note_text, fx.BARE_RENEWAL_ELEMENT)
+
+    def test_pure_noise_is_ignored_entirely(self):
+        output = extract_notes(fx.NOISE)
+        self.assertEqual(output.links, ())
+        self.assertEqual(output.unparsed, ())
+
+    def test_dual_symbol_report_lands_verbatim(self):
+        # Unresolved dual-symbol decision, straightforward reading: it is the row's report
+        # identity, unsplit, one row per cited resolution.
+        report = SourceReport(
+            report_recid=301,
+            report_symbol=fx.DUAL_SYMBOL_REPORT,
+            notes=(fx.FOUNDING_RENEWAL,),
+        )
+        output = extract([report], fx.DISPLAY_INDEX)
+        self.assertEqual(len(output.links), 2)
+        for row in output.links:
+            self.assertEqual(row.report_symbol, fx.DUAL_SYMBOL_REPORT)
+
+    def test_output_is_sorted_by_recid_note_index_then_span(self):
+        report_late = SourceReport(202, fx.JOINT_REPORT_B, (fx.DIRECT_GA,))
+        report_early = SourceReport(
+            101, fx.JOINT_REPORT_A, (fx.DIRECT_SC, fx.FOUNDING_RENEWAL)
+        )
+        output = extract([report_late, report_early], fx.DISPLAY_INDEX)
+        self.assertEqual(
+            [(row.report_recid, row.resolution_canonical) for row in output.links],
+            [
+                (101, "S/RES/2779(2025)"),   # recid 101, note 0
+                (101, "S/RES/350(1974)"),    # recid 101, note 1, earlier span
+                (101, "S/RES/2811(2025)"),   # recid 101, note 1, later span
+                (202, "A/RES/78/176"),       # recid 202
+            ],
+        )
+
+    def test_determinism_identical_input_identical_output(self):
+        reports = [
+            SourceReport(101, fx.JOINT_REPORT_A, (fx.FOUNDING_RENEWAL, fx.MONTREAL)),
+            SourceReport(202, fx.JOINT_REPORT_B, (fx.ADDITIONAL_JOINT,)),
+            SourceReport(301, fx.DUAL_SYMBOL_REPORT, (fx.UNFICYP, fx.PRST)),
+        ]
+        first = extract(reports, fx.DISPLAY_INDEX)
+        second = extract(reports, fx.DISPLAY_INDEX)
+        self.assertEqual(first, second)
+        # Input order must not leak into output order either.
+        reversed_run = extract(list(reversed(reports)), fx.DISPLAY_INDEX)
+        self.assertEqual(first, reversed_run)
+
+
+if __name__ == "__main__":
+    unittest.main()
