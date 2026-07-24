@@ -77,8 +77,11 @@ BRACKET_FOLD_PATTERN: str = r"\[([A-Z]+)\]$"
 #   bracket fold      (match_key)            grammars 9, 10       — registry-side encoding
 # LEDGER (grammar # -> pattern):
 #   1, 3, 4 -> _SESSION_NUMBER   2 -> _NUMBER_YEAR    5 -> _ROMAN_SESSION
-#   6 -> _ES_SESSION             7, 8 -> _LETTER_PART (8 folds via canonical)
+#   6 -> _SPECIAL_SESSION        7, 8 -> _LETTER_PART (8 folds via canonical)
 #   9, 10 -> BRACKET_FOLD_RE     11, 12 -> _LETTER_RANGE
+# Prose forms observed beyond the twelve, added from live sampling:
+#   "645 G (XXIII)" (number + letter section + roman session) -> _LETTER_ROMAN_SESSION
+#   "S-26/2" (non-emergency special session) -> _SPECIAL_SESSION (shared with "ES-10/1")
 # =====================================================================================
 
 # --- number-form fragments (prose side) ----------------------------------------------
@@ -100,9 +103,12 @@ _NUMBER_YEAR = r"\d+\s?\(\d{4}\)"
 # GA-exclusive, so the organ is never inferred from the number shape.
 _ROMAN_SESSION = r"\d+\s?\([IVXLCDM]+\)"
 
-# Grammar 6 — emergency special session: A/RES/ES-10/1; prose form "resolution ES-10/1"
-# (prose form inferred from the symbol form; not yet attested in a live note).
-_ES_SESSION = r"ES-\d+/\d+"
+# Special-session forms: emergency "ES-10/1" (A/RES/ES-10/1) and non-emergency "S-26/2"
+# (A/RES/S-26/2). Both are a session tag then session/number; the optional leading E is
+# the only difference between the emergency and ordinary special-session tags. Without the
+# S- form a note citing "resolution S-26/2" loses that citation, since a bare "S-" tag
+# matches no other token shape.
+_SPECIAL_SESSION = r"E?S-\d+/\d+"
 
 # Grammars 7 / 8 — letter part, bare A/RES/39/213A and spaced A/RES/72/266 A; one prose
 # shape "resolution 72/266 A". Grammar 8 exists only registry-side: canonical's
@@ -115,13 +121,22 @@ _LETTER_PART = _SESSION_NUMBER + r"\s?[A-Z](?![A-Za-z\-–])"
 # is not a citation of either part; the en-dash rows fall to pending_coverage by design.
 _LETTER_RANGE = _SESSION_NUMBER + r"\s?[A-Z][\-–][A-Z](?![A-Za-z])"
 
+# Combined letter-part and roman-numeral session, prose "645 G (XXIII)": a resolution
+# number, a single-letter section, then a roman-numeral session in parentheses (an ECOSOC
+# form). The number on its own matches no other token — it has no slash and no immediately
+# following paren — so without this the whole citation is dropped. A canonicalised form
+# with no matching registry page key falls to the coverage backlog like any other symbol.
+_LETTER_ROMAN_SESSION = r"\d+\s?[A-Z]\s?\([IVXLCDM]+\)"
+
 # One token = one cited symbol's number form. Alternation is ordered so composite forms
-# are tried before their prefixes (range before letter part before session/number) —
-# that ordering is a matching-correctness concern only; OUTPUT order never depends on
-# it (extract sorts by span — HARD CONSTRAINT, determinism).
+# are tried before the prefixes they contain: the special-session tag first, then the
+# number+letter+roman form and the ranges/letter-parts (which need a slash and so never
+# collide with it), then roman session, number(year) and the bare session/number last.
+# Ordering is a matching-correctness concern only; OUTPUT order never depends on it
+# (extract sorts by span — HARD CONSTRAINT, determinism).
 _CITATION_TOKEN = (
     "(?:"
-    + "|".join([_ES_SESSION, _LETTER_RANGE, _LETTER_PART,
+    + "|".join([_SPECIAL_SESSION, _LETTER_ROMAN_SESSION, _LETTER_RANGE, _LETTER_PART,
                 _ROMAN_SESSION, _NUMBER_YEAR, _SESSION_NUMBER])
     + ")"
 )
@@ -132,9 +147,20 @@ CITATION_TOKEN_RE = re.compile(_CITATION_TOKEN)
 # observed shape only (no article/section variants — none observed).
 _PINPOINT_PREFIX = r"(?:para(?:graph|\.)\s+\d+\s+of\s+)?"
 
-# A "resolution(s)" head followed by one or more tokens: the symbol gate of the §3
-# include rule. "resolutions X, Y and Z" is one head governing a token list.
-_LIST_SEP = r"(?:\s*,\s*(?:and\s+)?|\s+and\s+)"
+# A dated interpolation UN drafting inserts after a cited resolution — "resolution 1745
+# (LIV) of 16 May 1973, 1989/64 and ...". Without consuming it the list terminates at the
+# dated member and every later member is silently dropped. It is optional and, because it
+# only appears inside _LIST_SEP (which still requires a real separator and another token
+# after it), a trailing "of <date>." at the end of a lone citation is left untouched.
+_DATE_INTERP = r"(?:\s+of\s+\d{1,2}\s+\w+\.?\s+\d{4})?"
+
+# A "resolution(s)" head followed by one or more tokens: the symbol gate of the include
+# rule. "resolutions X, Y and Z" is one head governing a token list. A member may carry a
+# dated interpolation before the separator; the separator itself is a comma or "and".
+# Since the whole "<date?><separator><token>" group must match to extend the list, a dated
+# member with no following resolution token (e.g. "... and Council decision 2005/247")
+# ends the list rather than reaching across into unrelated text.
+_LIST_SEP = _DATE_INTERP + r"(?:\s*,\s*(?:and\s+)?|\s+and\s+)"
 CITATION_LIST_RE = re.compile(
     _PINPOINT_PREFIX
     + r"\b(?i:resolutions?)\s+"

@@ -247,6 +247,34 @@ class TestExtract(unittest.TestCase):
                 )
                 self.assertEqual(output.unparsed, ())
 
+    def test_letter_roman_session_is_recognised(self):
+        # "645 G (XXIII)" — a number, a single-letter section and a roman-numeral session.
+        # It canonicalises with the ECOSOC prefix and sits before two ordinary members.
+        output = extract_notes(fx.LETTER_ROMAN_SESSION_NOTE)
+        self.assertEqual(
+            [row.resolution_canonical for row in output.links],
+            ["E/RES/645G(XXIII)", "E/RES/1999/62", "E/RES/1999/65"],
+        )
+
+    def test_non_emergency_special_session_is_recognised(self):
+        # "S-26/2" — a non-emergency special session, distinct from the emergency "ES-"
+        # tag. Its organ is inherited from the "General Assembly" mention earlier on.
+        output = extract_notes(fx.SPECIAL_SESSION_NOTE)
+        self.assertEqual(
+            [row.resolution_canonical for row in output.links],
+            ["A/RES/S-26/2", "A/RES/75/284"],
+        )
+
+    def test_dated_interpolation_does_not_truncate_the_list(self):
+        # "resolutions 1745 (LIV) of 16 May 1973, 1989/64 and 1995/57" — the date between
+        # the first member and the rest must not end the list. "Council decision 2005/247"
+        # after them is a decision, not a resolution, and is correctly excluded.
+        output = extract_notes(fx.DATED_LIST_NOTE)
+        self.assertEqual(
+            [row.resolution_canonical for row in output.links],
+            ["E/RES/1745(LIV)", "E/RES/1989/64", "E/RES/1995/57"],
+        )
+
     def test_citation_side_match_key_usually_equals_canonical(self):
         output = extract_notes(fx.DIRECT_RANGE)
         row = output.links[0]

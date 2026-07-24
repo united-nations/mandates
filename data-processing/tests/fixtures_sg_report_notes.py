@@ -93,6 +93,37 @@ IN_PURSUANCE_LETTER_NOSPACE = "In pursuance of General Assembly resolution 47/70
 # bare token in the list and so is inherited, never stated, regardless of distance.
 LIST_TWO_MEMBERS = "Prepared pursuant to General Assembly resolutions 61/241 and 61/642."
 
+# [LIVE] recid 441200 (E/2001/44) note[0], S-005 sample. The combined letter-part and
+# roman-session form "645 G (XXIII)" (ECOSOC), which no earlier token shape matched, so the
+# citation was dropped whole until this form was recognised; two ordinary members follow.
+LETTER_ROMAN_SESSION_NOTE = (
+    "Submitted in accordance with Economic and Social Council resolution 645 G (XXIII); "
+    "concerns the work of the Committee of Experts on the  Transport of Dangerous Goods "
+    "during the biennium 1999-2000 and the implementation of Economic and Social Council "
+    "resolutions 1999/62 and 1999/65."
+)
+
+# [LIVE] recid 4012716 (A/77/877) note[0], S-005 sample. The non-emergency special-session
+# form "S-26/2", distinct from the emergency "ES-" tag. Its organ is inherited from the
+# "General Assembly" mention earlier in the element.
+SPECIAL_SESSION_NOTE = (
+    "Submitted pursuant to the Declaration of Commitment on HIV/AIDS, adopted by the "
+    "General Assembly in its resolution S-26/2, and the Political Declarations on HIV and "
+    "AIDS: Ending Inequalities and Getting on Track To End AIDS by 2030, adopted by the "
+    "Assembly in its resolution 75/284."
+)
+
+# [LIVE] recid 3927410 (E/2020/53) note[0], S-005 sample. A dated interpolation ("of 16 May
+# 1973") sits between the first list member and the rest; until it was consumed the list
+# terminated there and 1989/64 / 1995/57 were dropped. "Council decision 2005/247" after
+# them is a decision, not a resolution, and stays excluded.
+DATED_LIST_NOTE = (
+    "10th quinquennial report submitted in accordance with Economic and Social Council "
+    "resolutions 1745 (LIV) of 16 May 1973, 1989/64 and 1995/57 and Council  decision "
+    "2005/247; covers the period 2014-2018 and reviews developments in  the use of "
+    "capital punishment."
+)
+
 # --- kept elements: multi-citation and classified senses ------------------------------
 
 # [COMPOSED] rules_ §3 taxonomy row 3 with the doc's organ shorthand ("GA", "ECOSOC")
