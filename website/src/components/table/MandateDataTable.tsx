@@ -38,7 +38,6 @@ import { EntityBadge, FoundationalTag } from '../EntityBadge'
 import { isFoundational } from '@/lib/foundational'
 import { ORGAN_CATEGORIES } from '@/lib/organ-groups'
 import { ColumnHeaderFilter, type FilterGroup } from './ColumnHeaderFilter'
-import { ColumnPicker } from './ColumnPicker'
 import { BudgetLocationCell } from './BudgetLocationCell'
 import { COLUMN_DEFINITIONS, getMandateUrl } from './MandateColumns'
 import {
@@ -69,9 +68,9 @@ interface MandateDataTableProps {
   organCounts: OrganWithCount[]
   entityCounts: EntityWithCount[]
   filterOptions: FilterFacets
+  /** Which columns to render. The picker that edits this set lives in the
+   *  explorer toolbar (ColumnPicker), not in the table header. */
   visibleColumns: Set<string>
-  onToggleColumn: (columnId: string) => void
-  onResetColumns: () => void
 }
 
 export function MandateDataTable({
@@ -82,8 +81,6 @@ export function MandateDataTable({
   entityCounts,
   filterOptions,
   visibleColumns,
-  onToggleColumn,
-  onResetColumns,
 }: MandateDataTableProps) {
   const { filters, setFilter, isPending } = useFilters()
   const router = useRouter()
@@ -105,8 +102,8 @@ export function MandateDataTable({
   const columns = COLUMN_DEFINITIONS.filter((col) =>
     visibleColumns.has(col.id)
   ).sort((a, b) => {
-    // The detail column (column picker + expand chevron) always stays rightmost,
-    // even when extra columns are toggled on.
+    // The detail column (the row's "Details" affordance) always stays
+    // rightmost, even when extra columns are toggled on.
     if (a.id === 'detail') return 1
     if (b.id === 'detail') return -1
     return 0
@@ -171,13 +168,7 @@ export function MandateDataTable({
                     key={col.id}
                     className={`${col.widthClass} ${col.minWidthClass || ''} ${col.align === 'right' ? 'text-right' : ''} ${col.id === 'detail' ? 'sticky right-0 z-10 bg-gray-50' : ''} h-10 px-3 text-xs font-medium tracking-wider text-muted-foreground uppercase`}
                   >
-                    {col.id === 'detail' ? (
-                      <ColumnPicker
-                        visibleColumns={visibleColumns}
-                        onToggle={onToggleColumn}
-                        onReset={onResetColumns}
-                      />
-                    ) : (
+                    {col.id !== 'detail' && (
                       <ColumnHeaderFilter
                         column={col}
                         currentSort={currentSort}

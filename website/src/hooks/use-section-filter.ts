@@ -16,6 +16,7 @@ type SectionFilterKey =
   | 'budget_part'
   | 'section'
   | 'subprogramme'
+  | 'document_type'
 
 /**
  * Cross-section directory selection. Clicking an organ / entity / subject — or

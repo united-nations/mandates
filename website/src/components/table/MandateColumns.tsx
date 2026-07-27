@@ -1,5 +1,3 @@
-import type { Mandate } from '@/types'
-
 export interface ColumnDef {
   id: string
   label: string
@@ -12,6 +10,10 @@ export interface ColumnDef {
   align?: 'left' | 'right' | 'center'
 }
 
+// Order here is the column order in the table. `defaultVisible` is deliberately
+// minimal — symbol + title only (plus the non-toggleable `detail` column) — so
+// the list reads as a document list first; everything else is opt-in via the
+// "more columns" picker in the toolbar.
 export const COLUMN_DEFINITIONS: ColumnDef[] = [
   {
     id: 'symbol',
@@ -31,7 +33,7 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
   {
     id: 'year',
     label: 'Year',
-    defaultVisible: true,
+    defaultVisible: false,
     sortKeys: { asc: 'year_asc', desc: 'year_desc' },
     filterParam: 'start_year',
     filterType: 'yearRange',
@@ -41,7 +43,7 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
   {
     id: 'organ',
     label: 'Organ',
-    defaultVisible: true,
+    defaultVisible: false,
     filterParam: 'organ',
     filterType: 'pill',
     widthClass: 'w-[80px]',
@@ -58,7 +60,7 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
   {
     id: 'entity_list',
     label: 'Entities',
-    defaultVisible: true,
+    defaultVisible: false,
     sortKeys: {
       asc: 'citing_entities_asc',
       desc: 'citing_entities_desc',
@@ -76,7 +78,6 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
     widthClass: 'w-[92px]',
     align: 'center',
   },
-  // Hidden by default
   {
     id: 'subjects',
     label: 'Subjects',

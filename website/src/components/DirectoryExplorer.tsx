@@ -1,11 +1,11 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { Building, ChevronRight, Landmark, LucideIcon, Tag } from 'lucide-react'
+import { ChevronRight } from 'lucide-react'
 
+import { DocumentsDirectory } from '@/components/DocumentsDirectory'
 import { EntitiesDirectory } from '@/components/EntitiesDirectory'
 import { OrgansDirectory } from '@/components/OrgansDirectory'
-import { SubjectsCompact } from '@/components/SubjectsCompact'
 import {
   Dialog,
   DialogContent,
@@ -15,14 +15,20 @@ import {
 } from '@/components/ui/dialog'
 import { DirectorySelectContext } from '@/contexts/DirectorySelectContext'
 import { cn } from '@/lib/utils'
-import type { BudgetStream, OrganGroup, SubjectDomain } from '@/types'
+import type {
+  BudgetStream,
+  DocumentTypeCatalogue,
+  OrganGroup,
+  SubjectDomain,
+} from '@/types'
 
-type Panel = 'organs' | 'entities' | 'topics'
+type Panel = 'organs' | 'entities' | 'documents'
 
 interface DirectoryExplorerProps {
   organGroups: OrganGroup[]
   budgetStreams: BudgetStream[]
   subjectDomains: SubjectDomain[]
+  documentTypes: DocumentTypeCatalogue
   documentCount: number
 }
 
@@ -36,16 +42,21 @@ const CENTER_MODAL_STYLE = {
 } as React.CSSProperties
 
 /**
- * The three entry points at the top of the mandate explorer. Each box doubles
- * as a stat card (a catalogue count) and a gateway: clicking it opens a modal
- * with the full organ / entity / topic directory. Selecting a facet inside the
- * modal filters the table below and closes the modal (wired through
- * {@link DirectorySelectContext}).
+ * The three entry points at the top of the mandate explorer. Each box states one
+ * fact about the catalogue as a sentence — "23 organs creating mandates" — and
+ * doubles as a gateway: clicking it opens a modal with the full organ / entity /
+ * document directory. Selecting a facet inside the modal filters the table below
+ * and closes the modal (wired through {@link DirectorySelectContext}).
+ *
+ * Styling follows the UN Transparency Portal: a white tile with a grey border,
+ * un-blue used only as an accent on hover, shadow on hover only, everything
+ * left-aligned. No leading icons — the number is the anchor.
  */
 export function DirectoryExplorer({
   organGroups,
   budgetStreams,
   subjectDomains,
+  documentTypes,
   documentCount,
 }: DirectoryExplorerProps) {
   const [panel, setPanel] = useState<Panel | null>(null)
@@ -63,25 +74,22 @@ export function DirectoryExplorer({
   return (
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
       <ExploreButton
-        icon={Landmark}
         count={organCount}
         noun="organs"
-        label="Explore the organs that create mandates"
+        predicate="creating mandates"
         onClick={() => setPanel('organs')}
       />
       <ExploreButton
-        icon={Building}
         count={entityCount}
         noun="entities"
-        label="Explore the entities that implement mandates"
+        predicate="implementing mandates"
         onClick={() => setPanel('entities')}
       />
       <ExploreButton
-        icon={Tag}
         count={documentCount}
         noun="documents"
-        label="Explore the topics that they are about"
-        onClick={() => setPanel('topics')}
+        predicate="containing mandates"
+        onClick={() => setPanel('documents')}
       />
 
       <DirectoryDialog
@@ -103,47 +111,52 @@ export function DirectoryExplorer({
       </DirectoryDialog>
 
       <DirectoryDialog
-        open={panel === 'topics'}
+        open={panel === 'documents'}
         onClose={close}
-        title="Topics of the documents"
-        hint="Click a topic to filter the mandates about it."
+        title="Documents containing mandates"
+        hint="Click a document type or a topic to filter the mandates below."
       >
-        <SubjectsCompact domains={subjectDomains} />
+        <DocumentsDirectory
+          domains={subjectDomains}
+          documentTypes={documentTypes}
+        />
       </DirectoryDialog>
     </div>
   )
 }
 
 function ExploreButton({
-  icon: Icon,
   count,
   noun,
-  label,
+  predicate,
   onClick,
 }: {
-  icon: LucideIcon
   count: number
   noun: string
-  label: string
+  predicate: string
   onClick: () => void
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className="group flex items-center gap-4 rounded-xl border border-un-blue/20 bg-un-blue/5 px-5 py-4 text-left transition-colors hover:border-un-blue/50 hover:bg-un-blue/10 focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:outline-none"
+      className="group flex items-center gap-3 rounded-lg border border-gray-200 bg-white px-5 py-4 text-left transition-all hover:border-un-blue hover:shadow-md focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:outline-none"
     >
-      <Icon className="size-6 shrink-0 text-un-blue" />
-      <div className="min-w-0 flex-1">
-        <div className="flex items-baseline gap-1.5">
-          <span className="text-2xl leading-none font-bold text-foreground tabular-nums">
+      <span className="min-w-0 flex-1">
+        {/* The sentence, broken so the count and its noun carry the weight and
+            the verb phrase sits under them as the quiet half. */}
+        <span className="block leading-none">
+          <span className="text-3xl font-bold text-gray-900 tabular-nums">
             {count.toLocaleString()}
-          </span>
-          <span className="text-sm font-medium text-un-blue">{noun}</span>
-        </div>
-        <div className="mt-1 text-sm leading-snug text-un-blue">{label}</div>
-      </div>
-      <ChevronRight className="size-5 shrink-0 text-un-blue/40 transition-transform group-hover:translate-x-0.5 group-hover:text-un-blue" />
+          </span>{' '}
+          <span className="text-base font-semibold text-gray-900">{noun}</span>
+        </span>
+        <span className="mt-1.5 block text-sm text-gray-600">{predicate}</span>
+      </span>
+      <ChevronRight
+        aria-hidden
+        className="size-5 shrink-0 text-gray-300 transition-transform group-hover:translate-x-0.5 group-hover:text-un-blue"
+      />
     </button>
   )
 }

@@ -20,14 +20,29 @@ import type { ApiResponse } from '@/types'
 import { ChevronDown } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
 import { useCallback, useState } from 'react'
+import { ColumnPicker } from './table/ColumnPicker'
 import { MandateCompactList } from './table/MandateCompactList'
 import { MandateDataTable } from './table/MandateDataTable'
+import { DEFAULT_VISIBLE_COLUMNS } from './table/MandateColumns'
 import { useColumnVisibility } from './table/useColumnVisibility'
 // import { YearBarCard } from './YearBarCard' // Years card hidden — see summary cards section
 
 interface MandateExplorerClientProps {
   data: ApiResponse
 }
+
+/**
+ * The table band grows with the number of columns the user has switched on.
+ * At the default two columns it sits at max-w-6xl, flush with the page heading
+ * and the rest of the page; each extra column buys one step of extra width
+ * rather than jumping straight to the full break-out.
+ */
+const TABLE_WIDTH_STEPS = [
+  'max-w-6xl',
+  'max-w-7xl',
+  'max-w-[88rem]',
+  'max-w-[100rem]',
+] as const
 
 export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
   const { filters, setFilter, setMultipleFilters } = useFilters()
@@ -36,6 +51,15 @@ export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
   const [ppbDropdownOpen, setPpbDropdownOpen] = useState(false)
   const { visibleColumns, handleToggleColumn, handleResetColumns } =
     useColumnVisibility()
+
+  // Hydration-safe: useColumnVisibility serves DEFAULT_VISIBLE_COLUMNS as its
+  // server snapshot, so server and first client render agree on step 0.
+  const extraColumns = Math.max(
+    0,
+    visibleColumns.size - DEFAULT_VISIBLE_COLUMNS.size
+  )
+  const tableWidthClass =
+    TABLE_WIDTH_STEPS[Math.min(extraColumns, TABLE_WIDTH_STEPS.length - 1)]
 
   const pageSize = parseInt(searchParams.get('limit') || '15', 10)
   const { mandates, pagination, filterOptions, reference, sidebar } = data
@@ -209,11 +233,14 @@ export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
           />
         </div>
 
-        {/* Wide band: the table and everything that operates on it — search,
-            the group/scope toggles, and pagination — get the extra width. The
-            table is the centrepiece, so it breaks out further than the rest of
-            the page (which sits at max-w-6xl, as do the section banners). */}
-        <div className="mx-auto max-w-[100rem] px-6 md:px-12 lg:px-16">
+        {/* Table band: the table and everything that operates on it — search,
+            the group/scope/column toggles, and pagination — share one width so
+            the toolbar stays aligned with the table edges. At the default two
+            columns that width is max-w-6xl, flush with the rest of the page;
+            it steps outwards only as columns are added. */}
+        <div
+          className={`mx-auto ${tableWidthClass} px-6 transition-[max-width] duration-300 ease-out md:px-12 lg:px-16`}
+        >
           <div className="mb-4">
             <FilterControls
               entitiesData={allEntities}
@@ -222,6 +249,15 @@ export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
                 <div className="flex flex-wrap items-center gap-3">
                   {groupToggle}
                   {modeToggle}
+                  {/* Only meaningful for the desktop table; the mobile compact
+                      list has no columns to toggle. */}
+                  <div className="hidden lg:block">
+                    <ColumnPicker
+                      visibleColumns={visibleColumns}
+                      onToggle={handleToggleColumn}
+                      onReset={handleResetColumns}
+                    />
+                  </div>
                 </div>
               }
             />
@@ -237,8 +273,6 @@ export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
               entityCounts={entities}
               filterOptions={filterOptions}
               visibleColumns={visibleColumns}
-              onToggleColumn={handleToggleColumn}
-              onResetColumns={handleResetColumns}
             />
           </div>
 

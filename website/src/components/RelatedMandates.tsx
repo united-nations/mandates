@@ -1,0 +1,112 @@
+'use client'
+
+import { useState } from 'react'
+import Link from 'next/link'
+import { ChevronDown, ChevronUp } from 'lucide-react'
+import { DetailFootnote } from '@/components/MandateDetailUi'
+import { getMandateUrl } from '@/components/table/MandateColumns'
+import type { RelatedMandate } from '@/lib/data/related'
+
+/**
+ * Other mandate documents that share topics with this one — experimental.
+ *
+ * Ranking is not "how many subjects do they share": the headings that two
+ * arbitrary UN documents share are almost always the generic ones
+ * ("International Cooperation", "Report Preparation"), so a count puts the same
+ * omnibus resolutions on every page. Each shared subject is weighted by how
+ * rare it is across the corpus (see lib/data/related.ts), and the rarest shared
+ * headings are listed under each row so the reader can judge the match instead
+ * of trusting it.
+ *
+ * Presentation follows the version-history list on purpose — year, symbol,
+ * title — because both answer "which other document should I open next".
+ */
+
+const DEFAULT_SHOWN = 5
+
+export function RelatedMandates({ related }: { related: RelatedMandate[] }) {
+  const [showAll, setShowAll] = useState(false)
+  if (related.length === 0) return null
+
+  const shown = showAll ? related : related.slice(0, DEFAULT_SHOWN)
+  const hidden = related.length - shown.length
+
+  return (
+    <div className="space-y-2 pt-2">
+      <h3 className="text-sm font-normal tracking-wide text-gray-600 uppercase">
+        Related mandate documents
+      </h3>
+
+      <ul className="divide-y divide-gray-100 border-y border-gray-100">
+        {shown.map((item) => (
+          <li key={item.document_symbol} className="py-1.5 text-sm">
+            <div className="flex items-baseline gap-3">
+              <span className="w-10 shrink-0 text-xs text-gray-500">
+                {item.year ?? '—'}
+              </span>
+              <Link
+                href={getMandateUrl(item.document_symbol)}
+                className="w-36 shrink-0 truncate font-mono text-xs font-medium text-un-blue hover:underline"
+              >
+                {item.document_symbol}
+              </Link>
+              <span
+                className="min-w-0 flex-1 truncate text-xs text-gray-600"
+                title={item.title ?? undefined}
+              >
+                {item.title}
+              </span>
+            </div>
+            {item.shared_subjects.length > 0 && (
+              <div className="mt-1 flex flex-wrap items-baseline gap-1 pl-[3.25rem]">
+                {item.shared_subjects.map((subject) => (
+                  <a
+                    key={subject}
+                    href={`/secretariat?subject=${encodeURIComponent(subject)}`}
+                    className="inline-flex rounded-full border border-gray-200 bg-gray-50 px-2 py-0.5 text-[11px] text-gray-600 transition-colors hover:border-un-blue hover:bg-gray-100"
+                  >
+                    {subject}
+                  </a>
+                ))}
+                {item.shared_count > item.shared_subjects.length && (
+                  <span className="text-[11px] text-gray-500">
+                    +{item.shared_count - item.shared_subjects.length} more
+                    shared
+                  </span>
+                )}
+              </div>
+            )}
+          </li>
+        ))}
+      </ul>
+
+      {hidden > 0 && (
+        <button
+          type="button"
+          onClick={() => setShowAll(true)}
+          className="inline-flex items-center gap-1 text-xs font-medium text-un-blue hover:underline"
+        >
+          <ChevronDown className="h-3 w-3" />
+          Show all {related.length}
+        </button>
+      )}
+      {showAll && related.length > DEFAULT_SHOWN && (
+        <button
+          type="button"
+          onClick={() => setShowAll(false)}
+          className="inline-flex items-center gap-1 text-xs font-medium text-un-blue hover:underline"
+        >
+          <ChevronUp className="h-3 w-3" />
+          Show fewer
+        </button>
+      )}
+
+      <DetailFootnote>
+        Experimental. Suggested automatically from shared UN Library subject
+        headings, weighted by how rare each shared heading is; no editorial
+        review. Documents in this document&rsquo;s own version history are
+        excluded.
+      </DetailFootnote>
+    </div>
+  )
+}

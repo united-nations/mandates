@@ -17,6 +17,7 @@ import { LoadingSkeleton } from '@/components/LoadingSkeleton'
 import { ResourceLink } from '@/components/ResourceLink'
 import {
   getBudgetHierarchy,
+  getDocumentTypeCatalogue,
   getMandateCounts,
   getMandatePageData,
   getOrganHierarchy,
@@ -44,12 +45,15 @@ export default async function Page({ searchParams }: PageProps) {
 
   // Light, cached fetches: the directory data for the explore modals, plus the
   // catalogue document count for the third box (mandate sources for the current
-  // budget version, independent of any facet filter).
-  const [organGroups, budgetStreams, subjectDomains, counts] =
+  // budget version, independent of any facet filter). getDocumentTypeCatalogue
+  // is scoped to the same population as that count, so the type counts and the
+  // headline number describe the same set of documents.
+  const [organGroups, budgetStreams, subjectDomains, documentTypes, counts] =
     await Promise.all([
       getOrganHierarchy(),
       getBudgetHierarchy(),
       getSubjectHierarchy(),
+      getDocumentTypeCatalogue(filters.ppb_version),
       getMandateCounts({
         mode: 'active_mandates',
         ppb_version: filters.ppb_version,
@@ -64,25 +68,22 @@ export default async function Page({ searchParams }: PageProps) {
           {explainerTexts.mainHeader.headline}
         </h1>
         <ExplainerText />
-        <p className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-medium text-un-blue">
+        {/* The analytics page still exists at /secretariat/analytics but is
+            deliberately unlinked for now — it should not be discoverable. */}
+        <p className="mt-4 text-sm font-medium text-un-blue">
           <Link href="/methodology" className="hover:underline">
             See the methodology
-          </Link>
-          <span aria-hidden className="text-gray-300">
-            ·
-          </span>
-          <Link href="/secretariat/analytics" className="hover:underline">
-            Explore visualizations
           </Link>
         </p>
       </section>
 
-      {/* Explore boxes (organs / entities / documents-by-topic) → modals. */}
+      {/* Explore boxes (organs / entities / documents) → modals. */}
       <section className="mx-auto max-w-6xl px-6 pt-6 md:px-12 lg:px-16">
         <DirectoryExplorer
           organGroups={organGroups}
           budgetStreams={budgetStreams}
           subjectDomains={subjectDomains}
+          documentTypes={documentTypes}
           documentCount={counts.totalDocuments}
         />
       </section>

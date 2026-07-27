@@ -33,7 +33,7 @@ const POINT_LABELS: Record<UnSystemRegistryPoint, string> = {
 /** Generic point definitions, shown when no org-specific evidence note exists. */
 const POINT_DEFINITIONS: Record<UnSystemRegistryPoint, string> = {
   documents: 'decision texts are compiled and publicly findable',
-  mandates: 'the system knows which decisions are active vs superseded',
+  mandates: 'the system knows which decisions are the latest version',
   budget: 'specific mandates are linked to budget or financial information',
   implementation: 'implementation status is reported per decision',
   results: 'results are reported against specific decisions',

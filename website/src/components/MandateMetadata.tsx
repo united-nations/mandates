@@ -1,228 +1,205 @@
-'use client'
+import type { ReactNode } from 'react'
+import type { Mandate, Organ } from '@/types'
+import { DetailSectionHeading, FilterChip } from '@/components/MandateDetailUi'
 
-import { useMemo, useState } from 'react'
-import { Badge } from '@/components/ui/badge'
-import { MetadataItem } from '@/components/MetadataItem'
-import type { BudgetStreamType, Mandate, Organ } from '@/types'
-import type { BudgetDocument } from '@/lib/data/budget-documents'
-import { BUDGET_STREAM_LABELS } from '@/lib/filter-constants'
+/**
+ * "Who created this mandate?" — the provenance of the document, written as one
+ * sentence whose nouns are chips:
+ *
+ *   (General Assembly) as a (Resolution) under agenda item (10 Global health),
+ *   published in (2024)
+ *
+ * The sentence is assembled from parts rather than concatenated, because every
+ * part is optional in the data: Security Council presidential statements carry
+ * no agenda item, a handful of documents have no type, and DL-only records can
+ * lack a year. A missing part takes its whole clause with it, so the sentence
+ * never degrades into dangling punctuation.
+ *
+ * Every chip is a filter on the explorer. The organ chip shows the organ's long
+ * name (from the organs table) rather than the symbol prefix — "General
+ * Assembly", not "GA" — while still filtering on the short code the table
+ * indexes.
+ *
+ * The old "Budget Document" row is gone: which budget stream cites this
+ * document is a property of the citing entity, and now lives in that entity's
+ * popover under "Who implements this mandate?".
+ */
 
 interface MandateMetadataProps {
   mandate: Mandate
-  budgetDocuments: BudgetDocument[]
   organs: Organ[]
 }
 
-export function MandateMetadata({
-  mandate,
-  budgetDocuments,
-  organs,
-}: MandateMetadataProps) {
-  const [showAllSubjects, setShowAllSubjects] = useState(false)
-  const SUBJECTS_DEFAULT_SHOWN = 20
+const explorerUrl = (key: string, value: string) =>
+  `/secretariat?${key}=${encodeURIComponent(value)}`
 
-  // Which budget streams (ppb / pko / plan_outline) this mandate is cited in.
-  // Match each origin_document to its budget document, collapse to the stream,
-  // and order ppb → pko → plan_outline.
-  const citedStreams = useMemo(() => {
-    if (!mandate?.citation_info) return []
-    const uniqueOrigins = new Set<string>()
-    mandate.citation_info.forEach((citation) => {
-      if (citation.origin_document) uniqueOrigins.add(citation.origin_document)
+export function MandateMetadata({ mandate, organs }: MandateMetadataProps) {
+  const organShort = mandate.body?.trim() ?? ''
+  const organLong =
+    organs.find((o) => o.short === organShort || o.long === organShort)?.long ??
+    organShort
+  const documentType = mandate.type?.trim() ?? ''
+  const year = mandate.year?.trim() ?? ''
+
+  // Numbers and titles arrive as two parallel lists (MARC 991 subfields),
+  // paired by position — see pairAgendaItems for why number-only entries are
+  // dropped rather than shown.
+  const agendaItems = pairAgendaItems(
+    mandate.agenda_item_numbers,
+    mandate.agenda_item_titles
+  )
+
+  // Clauses, in reading order. `clauses.length` at push time tells each clause
+  // whether it is opening the sentence, which is what decides "A Resolution…"
+  // vs "…as a Resolution…" and where the capital letter goes. `separator` is
+  // what precedes the clause when it is not the first.
+  const clauses: { key: string; separator: string; node: ReactNode }[] = []
+
+  if (organShort) {
+    clauses.push({
+      key: 'organ',
+      separator: ' ',
+      node: (
+        <FilterChip
+          href={explorerUrl('organ', organShort)}
+          title={`Show mandates adopted by ${organLong}`}
+        >
+          {organLong}
+        </FilterChip>
+      ),
     })
-    const types = new Set<BudgetStreamType>()
-    for (const origin of uniqueOrigins) {
-      for (const doc of budgetDocuments) {
-        if (new RegExp(doc.match_pattern).test(origin)) {
-          types.add(doc.doc_type)
-          break
-        }
-      }
-    }
-    const order: BudgetStreamType[] = ['ppb', 'pko', 'plan_outline']
-    return order.filter((t) => types.has(t))
-  }, [mandate, budgetDocuments])
+  }
+
+  if (documentType && documentType !== 'Unknown') {
+    // The filter values are plural category names ("Resolutions"); the sentence
+    // needs the singular. The chip's link keeps the plural the table indexes.
+    const singular = singularizeType(documentType)
+    const article = /^[aeiou]/i.test(singular) ? 'an' : 'a'
+    const lead =
+      clauses.length > 0 ? `as ${article} ` : `${article === 'a' ? 'A' : 'An'} `
+    clauses.push({
+      key: 'type',
+      separator: ' ',
+      node: (
+        <>
+          {lead}
+          <FilterChip
+            href={explorerUrl('document_type', documentType)}
+            title={`Show ${documentType}`}
+          >
+            {singular}
+          </FilterChip>
+        </>
+      ),
+    })
+  }
+
+  if (agendaItems.length > 0) {
+    const plural = agendaItems.length > 1 ? 's' : ''
+    const lead =
+      clauses.length > 0
+        ? `under agenda item${plural} `
+        : `Under agenda item${plural} `
+    clauses.push({
+      key: 'agenda',
+      separator: ' ',
+      node: (
+        <>
+          {lead}
+          {agendaItems.map((item, index) => (
+            <span key={`${item.number}-${item.title}-${index}`}>
+              {index > 0 && <span className="text-gray-500"> and </span>}
+              <FilterChip
+                href={explorerUrl('agenda_item', item.title)}
+                title={`Show mandates under “${item.title}”`}
+              >
+                {item.number && (
+                  <span className="font-medium text-gray-900">
+                    {item.number}
+                  </span>
+                )}
+                <span>{item.title}</span>
+              </FilterChip>
+            </span>
+          ))}
+        </>
+      ),
+    })
+  }
+
+  if (year) {
+    const first = clauses.length === 0
+    clauses.push({
+      key: 'year',
+      separator: ', ',
+      node: (
+        <>
+          {first ? 'Published in ' : 'published in '}
+          <FilterChip>{year}</FilterChip>
+        </>
+      ),
+    })
+  }
+
+  if (clauses.length === 0) return null
 
   return (
-    <div className="rounded-lg">
-      <div className="space-y-0">
-        <MetadataItem label="Organ">
-          {mandate.body ? (
-            (() => {
-              const organData = organs.find(
-                (o) => o.short === mandate.body || o.long === mandate.body
-              )
-              const longName = organData?.long
-              return (
-                <div className="flex items-center gap-2">
-                  <Badge
-                    variant="secondary"
-                    className="shrink-0 cursor-pointer text-xs transition-colors hover:bg-secondary/80"
-                    onClick={() => {
-                      window.location.href = `/?organ=${encodeURIComponent(mandate.body)}`
-                    }}
-                  >
-                    {mandate.body}
-                  </Badge>
-                  {longName && longName !== mandate.body && (
-                    <span className="text-xs text-muted-foreground">
-                      {longName}
-                    </span>
-                  )}
-                </div>
-              )
-            })()
-          ) : (
-            <span className="text-muted-foreground">—</span>
-          )}
-        </MetadataItem>
-
-        <MetadataItem label="Document Type">
-          {mandate.type ? (
-            <Badge
-              variant="secondary"
-              className="cursor-pointer text-xs transition-colors hover:bg-secondary/80"
-              onClick={() => {
-                const url = new URL(window.location.origin + '/secretariat')
-                url.searchParams.delete('page')
-                url.searchParams.set('document_type', mandate.type)
-                window.location.href = url.toString()
-              }}
-            >
-              {mandate.type}
-            </Badge>
-          ) : (
-            <span className="text-muted-foreground">—</span>
-          )}
-        </MetadataItem>
-
-        <MetadataItem label="Year">
-          {mandate.year ? (
-            <Badge variant="secondary" className="text-xs">
-              {mandate.year}
-            </Badge>
-          ) : (
-            <span className="text-muted-foreground">—</span>
-          )}
-        </MetadataItem>
-
-        <MetadataItem label="Budget Document">
-          {citedStreams.length > 0 ? (
-            <div className="flex flex-wrap gap-1.5">
-              {citedStreams.map((type) => (
-                <Badge
-                  key={type}
-                  variant="secondary"
-                  className="cursor-pointer text-xs transition-colors hover:bg-secondary/80"
-                  onClick={() => {
-                    const url = new URL(window.location.origin + '/secretariat')
-                    url.searchParams.delete('page')
-                    url.searchParams.set('budget_document', type)
-                    window.location.href = url.toString()
-                  }}
-                >
-                  {BUDGET_STREAM_LABELS[type]}
-                </Badge>
-              ))}
-            </div>
-          ) : (
-            <span className="text-muted-foreground">—</span>
-          )}
-        </MetadataItem>
-
-        {((mandate.agenda_item_numbers?.length ?? 0) > 0 ||
-          (mandate.agenda_item_titles?.length ?? 0) > 0) && (
-          <MetadataItem
-            label={
-              (mandate.agenda_item_numbers?.length ?? 0) > 1
-                ? 'Agenda Items'
-                : 'Agenda Item'
-            }
-          >
-            <div className="flex flex-wrap gap-1.5">
-              {(mandate.agenda_item_numbers ?? []).map((num, i) => {
-                const title = mandate.agenda_item_titles?.[i]
-                return (
-                  <Badge
-                    key={i}
-                    variant="secondary"
-                    className="cursor-pointer text-xs font-normal transition-colors hover:bg-secondary/80"
-                    onClick={() => {
-                      if (!title) return
-                      const url = new URL(window.location.origin + '/secretariat')
-                      url.searchParams.delete('page')
-                      url.searchParams.set('agenda_item', title)
-                      window.location.href = url.toString()
-                    }}
-                  >
-                    <span className="font-medium">{num}</span>
-                    {title && (
-                      <span className="ml-1 text-muted-foreground">
-                        {title}
-                      </span>
-                    )}
-                  </Badge>
-                )
-              })}
-            </div>
-          </MetadataItem>
-        )}
-      </div>
-
-      {mandate.subject_headings && mandate.subject_headings.length > 0 && (
-        <div className="mt-3 border-t pt-3">
-          <MetadataItem
-            label={
-              <a
-                href="https://metadata.un.org/thesaurus/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:underline"
-              >
-                UN Library Subjects
-              </a>
-            }
-          >
-            <div className="flex flex-wrap gap-1.5">
-              {(showAllSubjects ||
-              mandate.subject_headings.length <= SUBJECTS_DEFAULT_SHOWN
-                ? mandate.subject_headings
-                    .slice()
-                    .sort((a, b) => a.localeCompare(b))
-                : mandate.subject_headings
-                    .slice()
-                    .sort((a, b) => a.localeCompare(b))
-                    .slice(0, SUBJECTS_DEFAULT_SHOWN)
-              ).map((heading, index) => (
-                <Badge
-                  key={index}
-                  variant="secondary"
-                  className="cursor-pointer text-xs font-normal transition-colors hover:bg-secondary/80"
-                  onClick={() => {
-                    const url = new URL(window.location.origin + '/secretariat')
-                    url.searchParams.delete('page')
-                    url.searchParams.set('subject', heading.trim())
-                    window.location.href = url.toString()
-                  }}
-                >
-                  {heading}
-                </Badge>
-              ))}
-              {mandate.subject_headings.length > SUBJECTS_DEFAULT_SHOWN && (
-                <button
-                  type="button"
-                  className="ml-1 text-sm text-un-blue hover:text-un-blue/80"
-                  onClick={() => setShowAllSubjects(!showAllSubjects)}
-                >
-                  {showAllSubjects
-                    ? 'Show less'
-                    : `Show ${mandate.subject_headings.length - SUBJECTS_DEFAULT_SHOWN} more`}
-                </button>
-              )}
-            </div>
-          </MetadataItem>
-        </div>
-      )}
-    </div>
+    <section className="space-y-3">
+      <DetailSectionHeading>Who created this mandate?</DetailSectionHeading>
+      <p className="text-sm leading-8 text-gray-700">
+        {clauses.map((clause, index) => (
+          <span key={clause.key}>
+            {index > 0 && clause.separator}
+            {clause.node}
+          </span>
+        ))}
+      </p>
+    </section>
   )
+}
+
+/**
+ * "Resolutions" → "Resolution", "Conventions and Protocols" → "Convention and
+ * Protocol". Every document-type value in the data is a plural category label,
+ * which does not fit the sentence. Words ending in -ss/-us/-is are left alone so
+ * a future "Analysis" does not become "Analysi".
+ */
+function singularizeType(type: string): string {
+  return type
+    .split(' ')
+    .map((word) =>
+      word.length > 3 && /s$/.test(word) && !/(ss|us|is)$/.test(word)
+        ? word.slice(0, -1)
+        : word
+    )
+    .join(' ')
+}
+
+interface AgendaItem {
+  number: string
+  title: string
+}
+
+/**
+ * The two MARC 991 subfields are deduplicated independently upstream, so the
+ * number list is often longer than the title list — S/PRST/2011/15 carries
+ * numbers `[10]`, `[29]`, `X` against a single title. About 5,100 documents are
+ * in that state and a further 1,200 have numbers and no titles at all.
+ *
+ * A bare number is not something a reader can act on (it is not a filter value
+ * either — the agenda filter keys on the title), so only pairs with a title are
+ * shown. When no title exists the whole clause is dropped rather than printing
+ * "under agenda items [29] and X".
+ */
+function pairAgendaItems(
+  numbers: string[] | undefined,
+  titles: string[] | undefined
+): AgendaItem[] {
+  const out: AgendaItem[] = []
+  ;(titles ?? []).forEach((rawTitle, i) => {
+    const title = rawTitle?.trim()
+    if (!title) return
+    out.push({ number: numbers?.[i]?.trim() ?? '', title })
+  })
+  return out
 }

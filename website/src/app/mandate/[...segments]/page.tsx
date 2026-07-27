@@ -3,18 +3,15 @@ import { getMandateDisplayTitle, decodeUrlSegments } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { FileText } from 'lucide-react'
 
-import {
-  getBudgetHierarchy,
-  getMandateBySymbol,
-  getResolutionSeries,
-} from '@/lib/data/mandates'
+import { getMandateBySymbol, getResolutionSeries } from '@/lib/data/mandates'
 import { getAllEntities } from '@/lib/data/entities'
-import { getBudgetDocuments } from '@/lib/data/budget-documents'
+import { getRelatedMandates, getSubjectDomainCodes } from '@/lib/data/related'
 import { getAllOrgans } from '@/lib/data/organs'
 import { getParagraphsBySymbol } from '@/lib/data/paragraphs'
 import { ParagraphsSection } from '@/components/ParagraphsSection'
 import { CitationCounts } from '@/components/CitationCounts'
 import { MandateMetadata } from '@/components/MandateMetadata'
+import { MandateTopics } from '@/components/MandateTopics'
 import { MandateVersionHistory } from '@/components/MandateVersionHistory'
 import { ScrollToTop } from '@/components/ScrollToTop'
 
@@ -33,26 +30,16 @@ export default async function MandatePage({
   const ppbVersion =
     typeof sp.ppb_version === 'string' ? sp.ppb_version : undefined
 
-  const [
-    mandate,
-    entities,
-    budgetDocuments,
-    organs,
-    paragraphs,
-    series,
-    budgetStreams,
-  ] = await Promise.all([
-    getMandateBySymbol(documentSymbol, ppbVersion),
-    getAllEntities(),
-    getBudgetDocuments(),
-    getAllOrgans(),
-    getParagraphsBySymbol(documentSymbol),
-    getResolutionSeries(documentSymbol),
-    getBudgetHierarchy({
-      full_document_symbol: documentSymbol,
-      ppb_version: ppbVersion,
-    }),
-  ])
+  const [mandate, entities, organs, paragraphs, series, related, domainCodes] =
+    await Promise.all([
+      getMandateBySymbol(documentSymbol, ppbVersion),
+      getAllEntities(),
+      getAllOrgans(),
+      getParagraphsBySymbol(documentSymbol),
+      getResolutionSeries(documentSymbol),
+      getRelatedMandates(documentSymbol),
+      getSubjectDomainCodes(documentSymbol),
+    ])
 
   if (!mandate) notFound()
 
@@ -99,22 +86,19 @@ export default async function MandatePage({
       </div>
 
       {/* Content */}
-      <div className="space-y-10 sm:pr-2">
-        <MandateMetadata
-          mandate={mandate}
-          budgetDocuments={budgetDocuments}
-          organs={organs}
-        />
+      <div className="space-y-6 sm:pr-2">
+        <MandateMetadata mandate={mandate} organs={organs} />
         {series && (
           <MandateVersionHistory
             currentSymbol={mandate.full_document_symbol}
             series={series}
           />
         )}
-        <CitationCounts
-          mandate={mandate}
-          entities={entities}
-          budgetStreams={budgetStreams}
+        <CitationCounts mandate={mandate} entities={entities} />
+        <MandateTopics
+          subjects={mandate.subject_headings ?? []}
+          domainCodes={domainCodes}
+          related={related}
         />
         <ParagraphsSection
           paragraphs={paragraphs}

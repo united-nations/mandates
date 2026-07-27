@@ -80,13 +80,13 @@ export function SeriesMarkers({ mandate }: { mandate: Mandate }) {
             href={getMandateUrl(series.superseded_by)}
             onClick={(e) => e.stopPropagation()}
             className="inline-flex align-middle text-gray-400 transition-colors hover:text-un-blue"
-            aria-label={`Superseded by ${series.superseded_by}`}
+            aria-label={`Not the latest version — the latest is ${series.superseded_by}`}
           >
             <History className="h-3.5 w-3.5" />
           </a>
         </TooltipTrigger>
         <TooltipContent>
-          <p>Superseded by {series.superseded_by}</p>
+          <p>Not the latest version — the latest is {series.superseded_by}</p>
         </TooltipContent>
       </Tooltip>
     )

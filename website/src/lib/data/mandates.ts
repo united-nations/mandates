@@ -22,7 +22,7 @@ import {
   type CoCitationMatrix,
   type OrganEntityMatrix,
 } from '@/lib/heatmap/matrix'
-import type { Mandate, FilterOptions, EntityWithCount, OrganWithCount, OrganGroup, CrossCitation, CitationBin, ApiResponse, BudgetLocation, BudgetPartNode, BudgetSectionNode, BudgetEntityNode, BudgetStream, BudgetPkoGroupNode, SubjectDomain, SubjectSubdomain, SubjectLeaf } from '@/types'
+import type { Mandate, FilterOptions, EntityWithCount, OrganWithCount, OrganGroup, CrossCitation, CitationBin, ApiResponse, BudgetLocation, BudgetPartNode, BudgetSectionNode, BudgetEntityNode, BudgetStream, BudgetPkoGroupNode, DocumentTypeCatalogue, SubjectDomain, SubjectSubdomain, SubjectLeaf } from '@/types'
 
 // ============================================================================
 // Helper Functions
@@ -1304,6 +1304,62 @@ export async function getOrganHierarchy(): Promise<OrganGroup[]> {
 
   return groups.filter((g) => g.organs.length > 0)
 }
+
+/**
+ * Catalogue-level document types for the documents explore modal.
+ *
+ * The parallel to getOrganHierarchy: no FilterOptions, so it describes the whole
+ * catalogue rather than the current facet selection (getDocumentTypeOptions is
+ * the filter-scoped variant that backs the table's own filter list).
+ *
+ * Scope: every document cited by the active budget version — the same
+ * population as getMandateCounts({ mode: 'active_mandates' }).totalDocuments,
+ * so the type counts and the "N documents" headline add up.
+ *
+ * HONESTY: `ppb_type` is not populated for documents that only exist in the
+ * PPB-2027 import, so a large share of the catalogue has no recorded type
+ * (1,420 of 2,737 in ppb2027 as of July 2026). Rather than silently dropping
+ * those rows — which would make a type list look like a complete partition of
+ * the catalogue when it covers under half of it — the untyped rows are counted
+ * separately and returned, for the UI to disclose.
+ */
+async function _getDocumentTypeCatalogueInner(
+  version: string | null
+): Promise<DocumentTypeCatalogue> {
+  const rows = await queryMany<{ value: string | null; count: string }>(
+    `SELECT NULLIF(TRIM(d.ppb_type), '') AS value,
+            COUNT(DISTINCT d.ppb_full_document_symbol) AS count
+     FROM public.unified_documents d
+     WHERE EXISTS (
+       SELECT 1 FROM ppb2026.source_document_citations c
+       WHERE c.ppb_full_document_symbol = d.ppb_full_document_symbol
+       AND ${versionPredicateSql('c', '$1')}
+     )
+     GROUP BY 1
+     ORDER BY count DESC, value`,
+    [version]
+  )
+
+  const types: FacetOption[] = []
+  let untypedCount = 0
+  let totalCount = 0
+  for (const row of rows) {
+    const count = parseInt(row.count, 10) || 0
+    totalCount += count
+    if (row.value === null) untypedCount += count
+    else types.push({ value: row.value, count })
+  }
+
+  return { types, untypedCount, totalCount }
+}
+
+export const getDocumentTypeCatalogue = cache((version?: string | null) =>
+  unstable_cache(
+    () => _getDocumentTypeCatalogueInner(version ?? null),
+    ['document-type-catalogue-v1', version ?? 'default'],
+    { revalidate: 3600 }
+  )()
+)
 
 /**
  * Get cross-citations for entity pages
