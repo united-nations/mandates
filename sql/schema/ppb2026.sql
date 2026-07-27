@@ -423,7 +423,23 @@ select
     sd.ppb_link,
     coalesce(sd.ppb_year, extract(year from dl.date_publication)::smallint) as ppb_year,
     sd.ppb_body,
-    sd.ppb_type,
+    -- Document type: prefer the type the Digital Library derives from the
+    -- symbol family (same rule as the DL branch below), fall back to the
+    -- curated Airtable ppb_type where the symbol carries no type signal
+    -- (Letters, Reports, Conventions, Charter, …). This fills the ~630 PPB
+    -- documents (mostly 2027-pipeline resolutions) whose Airtable ppb_type is
+    -- blank, without regressing the curated rich types. See migration 035.
+    -- WTO ministerial docs (e.g. WT/MIN(01)/DEC/1) use "/DEC/" in their own
+    -- numbering and are not UN decisions, so they are excluded and keep Airtable.
+    coalesce(
+        case
+            when sd.ppb_full_document_symbol ~ '^WT/'    then null
+            when sd.ppb_full_document_symbol ~ '/PRST/'  then 'Presidential Statements'
+            when sd.ppb_full_document_symbol ~ '/DEC/'   then 'Decisions'
+            when sd.ppb_full_document_symbol ~ '/RES/'   then 'Resolutions'
+        end,
+        sd.ppb_type
+    ) as ppb_type,
     dl.subjects,
     dl.agenda_items,
     true as is_ppb,
