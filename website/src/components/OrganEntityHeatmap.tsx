@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react'
 
 import { useFilters } from '@/contexts/FilterContext'
+import { useCrossPageFilters } from '@/hooks/use-cross-page-filters'
 import { sequentialColor, tint } from '@/lib/heatmap/color-scale'
 import {
   CURATED_ENTITIES,
@@ -46,7 +47,8 @@ interface OrganRow {
  * Columns reuse the curated entity figure; rows reuse the /organs categories.
  */
 export function OrganEntityHeatmap({ matrix }: { matrix: OrganEntityMatrix }) {
-  const { filters, setMultipleFilters } = useFilters()
+  const { filters } = useFilters()
+  const applyFilters = useCrossPageFilters()
   const [hover, setHover] = useState<{
     organ: OrganRow
     entity: Column
@@ -128,7 +130,7 @@ export function OrganEntityHeatmap({ matrix }: { matrix: OrganEntityMatrix }) {
   const selectedEntity = filters.entity ?? null
 
   function selectCell(organ: string, entity: string) {
-    setMultipleFilters({
+    applyFilters({
       organ,
       entity,
       // Drop the entity co-citation partner so the two facets don't stack.

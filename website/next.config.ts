@@ -46,12 +46,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: '/about',
-        destination: '/secretariat#methodology',
-        permanent: false,
-      },
-      {
-        source: '/methodology',
-        destination: '/secretariat#methodology',
+        destination: '/methodology',
         permanent: false,
       },
       {

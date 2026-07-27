@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react'
 
 import { useFilters } from '@/contexts/FilterContext'
+import { useCrossPageFilters } from '@/hooks/use-cross-page-filters'
 import { sequentialColor, tint } from '@/lib/heatmap/color-scale'
 import {
   CURATED_ENTITIES,
@@ -39,7 +40,8 @@ interface OrderedEntity {
  * controls, or comparison/decision layers — just the figure.
  */
 export function CoCitationHeatmap({ matrix }: { matrix: CoCitationMatrix }) {
-  const { filters, setMultipleFilters } = useFilters()
+  const { filters } = useFilters()
+  const applyFilters = useCrossPageFilters()
   const [hover, setHover] = useState<{
     a: OrderedEntity
     b: OrderedEntity
@@ -112,7 +114,7 @@ export function CoCitationHeatmap({ matrix }: { matrix: CoCitationMatrix }) {
       : null
 
   function selectPair(a: OrderedEntity, b: OrderedEntity) {
-    setMultipleFilters({
+    applyFilters({
       entity: a.code,
       crossCitingEntity: b.code,
       // Reset pagination; setMultipleFilters does not do this on its own.
