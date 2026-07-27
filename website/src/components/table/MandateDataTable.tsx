@@ -31,7 +31,7 @@ import type {
 } from '@/types'
 
 import { ChevronRight } from 'lucide-react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Fragment, useState } from 'react'
 import { titleCase } from 'title-case'
 import { EntityBadge, FoundationalTag } from '../EntityBadge'
@@ -89,6 +89,7 @@ export function MandateDataTable({
 }: MandateDataTableProps) {
   const { filters, setFilter, isPending } = useFilters()
   const router = useRouter()
+  const searchParams = useSearchParams()
 
   const grouped = filters.group === '1'
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set())
@@ -150,10 +151,11 @@ export function MandateDataTable({
   const handleRowClick = (mandate: Mandate, e: React.MouseEvent) => {
     e.preventDefault()
     router.push(
-      getMandateUrl(mandate.full_document_symbol, {
-        ppb_version: filters.ppb_version,
-        mode: filters.mode,
-      })
+      getMandateUrl(
+        mandate.full_document_symbol,
+        { ppb_version: filters.ppb_version, mode: filters.mode },
+        searchParams
+      )
     )
   }
 
@@ -249,10 +251,14 @@ export function MandateDataTable({
                           className="cursor-pointer border-b border-gray-100 bg-gray-50/60 hover:bg-gray-100"
                           onClick={() =>
                             router.push(
-                              getMandateUrl(member.symbol, {
-                                ppb_version: filters.ppb_version,
-                                mode: filters.mode,
-                              })
+                              getMandateUrl(
+                                member.symbol,
+                                {
+                                  ppb_version: filters.ppb_version,
+                                  mode: filters.mode,
+                                },
+                                searchParams
+                              )
                             )
                           }
                         >

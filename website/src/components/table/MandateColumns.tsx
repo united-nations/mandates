@@ -135,16 +135,25 @@ export const TOGGLEABLE_COLUMNS = COLUMN_DEFINITIONS.filter(
 
 export function getMandateUrl(
   symbol: string,
-  query?: { ppb_version?: string; mode?: string }
+  query?: { ppb_version?: string; mode?: string },
+  // Current list search params to carry through. Opening a mandate is an
+  // overlay on the *same* list — the mandate identity lives in the path, so the
+  // query string should pass through untouched. Without this, navigating to the
+  // modal replaces the list's URL and its client controls re-read the new,
+  // stripped params: the "Group versions" toggle (which has no default) visibly
+  // flips off, active filters/sort/page appear reset, etc.
+  preserveParams?: { toString(): string }
 ): string {
   if (!symbol) return '/mandate/unknown'
   const segments = symbol
     .split('/')
     .map((segment) => encodeURIComponent(segment))
   const base = `/mandate/${segments.join('/')}`
-  // Carry the active budget version (and mode) so the detail/modal view
-  // scopes its citation counts to the same version as the list it came from.
-  const params = new URLSearchParams()
+  // Seed from the caller's current params, then let explicit overrides win.
+  // The detail/modal view already reads ppb_version to scope its citation
+  // counts to the same budget version as the list it came from; preserving the
+  // full query string keeps that behaviour and everything else besides.
+  const params = new URLSearchParams(preserveParams?.toString() ?? '')
   if (query?.ppb_version) params.set('ppb_version', query.ppb_version)
   if (query?.mode) params.set('mode', query.mode)
   const qs = params.toString()
