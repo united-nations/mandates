@@ -30,7 +30,6 @@
 -- definition change (no underlying data changes); CREATE ... WITH DATA
 -- repopulates it, so no separate REFRESH is needed.
 
-drop view if exists public.unified_documents;
 drop materialized view if exists public.unified_documents;
 create materialized view public.unified_documents as
 with dl_catalog as (
