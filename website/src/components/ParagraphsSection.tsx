@@ -10,18 +10,19 @@ import React, {
 } from 'react'
 import {
   ChevronDown,
-  FileCheck,
+  ChevronUp,
   FileText,
-  HelpCircle,
   Menu,
   Package,
   Users,
-  MessageCircle,
   X,
 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 
 import { Skeleton } from '@/components/ui/skeleton'
+import {
+  DetailFootnote,
+  DetailSectionHeading,
+} from '@/components/MandateDetailUi'
 
 import { explainerTexts } from '@/lib/en_text_contents'
 import { useIsMobile } from '@/hooks/use-mobile'
@@ -76,10 +77,27 @@ interface TOCItem {
   index: number
 }
 
+/**
+ * Trigger geometry for the three filter controls. Deliberately the chip
+ * language of the rest of the detail view (hairline border, pill radius, quiet
+ * grey label, un-blue only as accent) rather than a toolbar button — see
+ * MandateDetailUi.CHIP_BASE, whose padding this mirrors so the row sits at the
+ * same density as the entity and topic chips above it.
+ */
+const FILTER_PILL_BASE =
+  'inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-gray-200 px-2.5 py-[9px] text-xs transition-colors hover:border-un-blue focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:outline-none sm:py-0.5'
+
+/** Active filters are marked in un-blue *text*; the fill always stays white. */
+const filterPillTone = (currentFilter: string) =>
+  currentFilter !== 'all' ? 'font-medium text-un-blue' : 'text-gray-600'
+
+/** Popover panel, anchored under the pill whatever the pill's height is. */
+const FILTER_PANEL =
+  'absolute top-full left-0 z-50 mt-1 min-w-48 rounded-md border border-gray-200 bg-white py-1 shadow-lg'
+
 // Reusable filter dropdown component
 interface FilterDropdownProps {
   label: string
-  icon: React.ReactNode
   currentFilter: string
   isOpen: boolean
   onToggle: () => void
@@ -87,7 +105,6 @@ interface FilterDropdownProps {
   typeCounts: Record<string, number>
   withItemsCount: number
   withItemsLabel: string
-  totalCount: number
   className?: string
   hierarchicalData?: Record<string, Record<string, number>>
   filteredTotalCount: number // Count of all paragraphs matching other filters
@@ -95,7 +112,6 @@ interface FilterDropdownProps {
 
 function FilterDropdown({
   label,
-  icon,
   currentFilter,
   isOpen,
   onToggle,
@@ -103,7 +119,6 @@ function FilterDropdown({
   typeCounts,
   withItemsCount,
   withItemsLabel,
-  totalCount,
   className = '',
   hierarchicalData,
   filteredTotalCount,
@@ -114,13 +129,8 @@ function FilterDropdown({
     <div className={`relative ${className}`}>
       <button
         onClick={onToggle}
-        className={`flex h-7 cursor-pointer items-center gap-1.5 rounded-md border border-gray-300 bg-gray-100 px-3 text-xs transition-all duration-200 hover:border-gray-400 hover:bg-gray-200 ${
-          currentFilter !== 'all'
-            ? 'border-un-blue! bg-un-blue/15! text-un-blue! hover:bg-un-blue/25!'
-            : 'text-gray-700'
-        }`}
+        className={`${FILTER_PILL_BASE} ${filterPillTone(currentFilter)}`}
       >
-        {icon}
         <span>
           {currentFilter === 'all'
             ? label
@@ -134,20 +144,12 @@ function FilterDropdown({
                   })()
                 : `${titleCase(currentFilter.replace(/_/g, ' '))} (${typeCounts[currentFilter] || 0})`}
         </span>
-        <svg
-          className={`h-3 w-3 transition-transform ${isOpen ? 'rotate-180' : ''}`}
-          fill="currentColor"
-          viewBox="0 0 20 20"
-        >
-          <path
-            fillRule="evenodd"
-            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-            clipRule="evenodd"
-          />
-        </svg>
+        <ChevronDown
+          className={`h-3 w-3 shrink-0 text-un-blue transition-transform ${isOpen ? 'rotate-180' : ''}`}
+        />
       </button>
       {isOpen && (
-        <div className="absolute top-8 left-0 z-50 min-w-48 rounded-md border border-gray-200 bg-white py-1 shadow-lg">
+        <div className={FILTER_PANEL}>
           {/* All paragraphs option */}
           <button
             onClick={() => onFilterChange('all')}
@@ -261,13 +263,11 @@ function FilterDropdown({
 // Searchable filter dropdown component
 interface SearchableFilterDropdownProps {
   label: string
-  icon: React.ReactNode
   currentFilter: string
   isOpen: boolean
   onToggle: () => void
   onFilterChange: (filter: string) => void
   typeCounts: Record<string, number>
-  totalCount: number
   className?: string
   filteredTotalCount: number // Count of all paragraphs matching other filters
   hierarchicalData?: Record<string, Record<string, number>>
@@ -278,13 +278,11 @@ interface SearchableFilterDropdownProps {
 
 function SearchableFilterDropdown({
   label,
-  icon,
   currentFilter,
   isOpen,
   onToggle,
   onFilterChange,
   typeCounts,
-  totalCount,
   className = '',
   filteredTotalCount,
   hierarchicalData,
@@ -344,13 +342,8 @@ function SearchableFilterDropdown({
     <div className={`relative ${className}`}>
       <button
         onClick={onToggle}
-        className={`flex h-7 cursor-pointer items-center gap-1.5 rounded-md border border-gray-300 bg-gray-100 px-3 text-xs transition-all duration-200 hover:border-gray-400 hover:bg-gray-200 ${
-          currentFilter !== 'all'
-            ? 'border-un-blue! bg-un-blue/15! text-un-blue! hover:bg-un-blue/25!'
-            : 'text-gray-700'
-        }`}
+        className={`${FILTER_PILL_BASE} ${filterPillTone(currentFilter)}`}
       >
-        {icon}
         <span>
           {currentFilter === 'all'
             ? label
@@ -364,20 +357,12 @@ function SearchableFilterDropdown({
                   })()
                 : `${titleCase(currentFilter.replace(/_/g, ' '))} (${typeCounts[currentFilter] || 0})`}
         </span>
-        <svg
-          className={`h-3 w-3 transition-transform ${isOpen ? 'rotate-180' : ''}`}
-          fill="currentColor"
-          viewBox="0 0 20 20"
-        >
-          <path
-            fillRule="evenodd"
-            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-            clipRule="evenodd"
-          />
-        </svg>
+        <ChevronDown
+          className={`h-3 w-3 shrink-0 text-un-blue transition-transform ${isOpen ? 'rotate-180' : ''}`}
+        />
       </button>
       {isOpen && (
-        <div className="absolute top-8 left-0 z-50 min-w-48 rounded-md border border-gray-200 bg-white py-1 shadow-lg">
+        <div className={FILTER_PANEL}>
           {/* Search input */}
           <div className="border-b border-gray-100 px-3 py-2">
             <input
@@ -627,6 +612,63 @@ function isContentElement(p: Paragraph): boolean {
   return true
 }
 
+/**
+ * Comparable form of a document-title line. Strips the leading resolution
+ * number the title carries either inline ("79/1.   The Pact for the Future",
+ * mandates arm) or in `prefix` ("80/286.", Digital Library arm), plus trailing
+ * punctuation, so a title and a heading of the same text compare equal.
+ */
+function normalizeTitleText(text: string): string {
+  return text
+    .replace(/^\s*\d+\/\d+[A-Za-z]?\.?\s*/, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase()
+    .replace(/[.:;]+$/, '')
+}
+
+/**
+ * Index of the heading that merely repeats the document title, or null.
+ *
+ * Declaration-style documents ("The Pact for the Future", the Millennium
+ * Declaration) carry the title twice: once as the hidden `title` element and
+ * again as an unnumbered level-1 heading opening the declaration text — which
+ * on the detail page renders as a bold echo of the page H1 one screen above.
+ *
+ * Three guards keep genuine structure: the heading must carry no `prefix` (a
+ * numbered "I. Support account for peacekeeping operations" is a real section
+ * even when it matches the title), must sit before the first operative
+ * paragraph (the same text further down opens an annexed instrument — the
+ * Sendai Framework, the Convention against Cybercrime — and is a real heading),
+ * and only the first such match is dropped. Measured over the corpus: 144
+ * headings match a title text, 33 of those precede the first operative
+ * paragraph, 27 of those are unnumbered — the 27 title echoes.
+ */
+function findTitleEchoIndex(paragraphs: Paragraph[] | null): number | null {
+  if (!paragraphs || paragraphs.length === 0) return null
+  const titleRow = paragraphs.find(
+    (p) => p.type === 'title' && !isAnnexSection(p.section)
+  )
+  if (!titleRow) return null
+  const title = normalizeTitleText(
+    `${titleRow.prefix ?? ''} ${titleRow.text ?? ''}`
+  )
+  if (!title) return null
+
+  const firstOperative = paragraphs.findIndex(
+    (p) => p.paragraph_type === 'operative'
+  )
+  const limit = firstOperative === -1 ? paragraphs.length : firstOperative
+
+  for (let i = 0; i < limit; i++) {
+    const p = paragraphs[i]
+    if (p.type !== 'heading') continue
+    if (p.prefix?.trim()) continue
+    if (normalizeTitleText(p.text ?? '') === title) return i
+  }
+  return null
+}
+
 /** Indentation for nested list levels. */
 function getIndentClass(level: number): string {
   if (level <= 1) return ''
@@ -676,7 +718,6 @@ export function ParagraphsSection({
   const [isActionVerbDropdownOpen, setIsActionVerbDropdownOpen] =
     useState(false)
   const [activeHeadingId, setActiveHeadingId] = useState<string | null>(null)
-  const [openTooltip, setOpenTooltip] = useState<string | null>(null)
   const [isMobileTOCOpen, setIsMobileTOCOpen] = useState(false)
   const [showFloatingTOC, setShowFloatingTOC] = useState(false)
 
@@ -1130,6 +1171,13 @@ export function ParagraphsSection({
     ).length
   }, [allParagraphs, paragraphMatchesOtherFilters])
 
+  // The one heading that only repeats the document title (see
+  // findTitleEchoIndex); dropped from the flow and from the TOC.
+  const titleEchoIndex = useMemo(
+    () => findTitleEchoIndex(allParagraphs),
+    [allParagraphs]
+  )
+
   // Frontend filtering of paragraphs
   const paragraphs = useMemo(() => {
     if (!allParagraphs) return allParagraphs
@@ -1382,6 +1430,11 @@ export function ParagraphsSection({
     // Filter paragraphs
     const filtered = allParagraphs.filter(
       (paragraph: Paragraph, index: number) => {
+        // The heading that only echoes the document title never renders.
+        if (index === titleEchoIndex) {
+          return false
+        }
+
         if (paragraph.type === 'heading') {
           // If no filters are active, always show headings
           if (!hasActiveFilters) {
@@ -1403,6 +1456,7 @@ export function ParagraphsSection({
     deliverableFilter,
     assigneeFilter,
     actionVerbFilter,
+    titleEchoIndex,
   ])
 
   // Build TOC from paragraphs
@@ -1608,7 +1662,9 @@ export function ParagraphsSection({
     }, 50) // Small delay to ensure DOM is ready
 
     return () => clearTimeout(timeoutId)
-  }, [paragraphs]) // Remove tocItems from dependencies as it's derived from paragraphs
+    // tocItems.length only guards the early return; tocItems itself is derived
+    // from `paragraphs`, so depending on the whole array would re-run for free.
+  }, [paragraphs, tocItems.length])
 
   // Set initial active heading when paragraphs first load
   useEffect(() => {
@@ -1658,13 +1714,10 @@ export function ParagraphsSection({
     }
   }
 
-  // Close tooltip, mobile TOC, and dropdown when clicking outside
+  // Close the mobile TOC and the filter dropdowns on outside click, resize or Escape.
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element
-      if (!target.closest('.tooltip-container')) {
-        setOpenTooltip(null)
-      }
       if (!target.closest('.mobile-toc-container')) {
         setIsMobileTOCOpen(false)
       }
@@ -1679,18 +1732,8 @@ export function ParagraphsSection({
       }
     }
 
-    const handleScroll = () => {
-      // Only close tooltip on scroll, not dropdowns
-      if (openTooltip === 'paragraphs-beta') {
-        setOpenTooltip(null)
-      }
-    }
-
     const handleResize = () => {
       // Close everything on resize as layout changes
-      if (openTooltip === 'paragraphs-beta') {
-        setOpenTooltip(null)
-      }
       if (isDeliverableDropdownOpen) {
         setIsDeliverableDropdownOpen(false)
       }
@@ -1704,9 +1747,6 @@ export function ParagraphsSection({
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        if (openTooltip === 'paragraphs-beta') {
-          setOpenTooltip(null)
-        }
         if (isDeliverableDropdownOpen) {
           setIsDeliverableDropdownOpen(false)
         }
@@ -1723,34 +1763,26 @@ export function ParagraphsSection({
     }
 
     if (
-      openTooltip ||
       isMobileTOCOpen ||
       isDeliverableDropdownOpen ||
       isAssigneeDropdownOpen ||
       isActionVerbDropdownOpen
     ) {
       document.addEventListener('mousedown', handleClickOutside)
-      window.addEventListener('scroll', handleScroll, false)
       window.addEventListener('resize', handleResize)
       document.addEventListener('keydown', handleKeyDown)
       return () => {
         document.removeEventListener('mousedown', handleClickOutside)
-        window.removeEventListener('scroll', handleScroll, false)
         window.removeEventListener('resize', handleResize)
         document.removeEventListener('keydown', handleKeyDown)
       }
     }
   }, [
-    openTooltip,
     isMobileTOCOpen,
     isDeliverableDropdownOpen,
     isAssigneeDropdownOpen,
     isActionVerbDropdownOpen,
   ])
-
-  const toggleTooltip = (tooltipId: string) => {
-    setOpenTooltip(openTooltip === tooltipId ? null : tooltipId)
-  }
 
   // Render TOC items recursively
   const renderTOCItem = (
@@ -1868,7 +1900,6 @@ export function ParagraphsSection({
       { pattern: /within existing resources/gi, type: 'highlight' },
     ]
 
-    const currentText = sourceText
     const replacements: {
       start: number
       end: number
@@ -2283,191 +2314,171 @@ export function ParagraphsSection({
     }
   })
 
+  // Quiet count beside the heading, in the register of the sibling sections
+  // ("27 entities"). Documents whose extraction marks operative clauses are
+  // counted as such; the Digital Library arm carries body paragraphs with no
+  // paragraph_type at all, so those are counted plainly rather than reported
+  // as "0 operative paragraphs".
+  const renderedOperativeCount = (paragraphs || []).filter(
+    (p: Paragraph) => p.paragraph_type === 'operative'
+  ).length
+  const renderedBodyCount = (paragraphs || []).filter(
+    (p: Paragraph) => p.type !== 'heading' && p.type !== 'title'
+  ).length
+  const headingCount = renderedOperativeCount || renderedBodyCount
+  const headingHint =
+    headingCount > 0
+      ? `${headingCount} ${renderedOperativeCount ? 'operative ' : ''}paragraph${
+          headingCount === 1 ? '' : 's'
+        }`
+      : undefined
+
   return (
     <div className="space-y-4">
-      <div ref={paragraphsTitleRef} className="space-y-4">
-        {/* Title and Filters Row */}
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          {/* Title Section */}
-          <h3 className="flex items-center gap-2 text-base font-semibold">
-            <FileCheck className="h-4 w-4" />
-            <span>{explainerTexts.mandateDetail.paragraphs.title}</span>
-            <div className="tooltip-container relative">
-              <button
-                type="button"
-                className="flex cursor-help items-center rounded-sm border-0 bg-transparent p-0 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden"
-                aria-label="Information about paragraph extraction"
-                onClick={() => toggleTooltip('paragraphs-beta')}
-              >
-                <HelpCircle className="h-4 w-4 text-muted-foreground" />
-              </button>
-              {openTooltip === 'paragraphs-beta' && (
-                <div className="absolute top-6 left-0 z-50 w-80 rounded-md border bg-white p-3 text-sm font-normal shadow-lg">
-                  <p>
-                    {explainerTexts.mandateDetail.paragraphs.betaDisclaimer}
-                  </p>
-                </div>
-              )}
-            </div>
-          </h3>
+      <div ref={paragraphsTitleRef} className="space-y-3">
+        <DetailSectionHeading hint={headingHint}>
+          What does this mandate say?
+        </DetailSectionHeading>
 
-          {/* Filters Section — omitted entirely when no dropdown has options,
-              so a document with no extracted annotations does not show a bare
-              "Filter:" label. Each dropdown is additionally hidden on its own
-              when its own option list is empty (Digital Library documents, for
-              instance, never carry deliverables or mentioned entities). */}
-          {hasAnyFilterOptions && (
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-              <span className="hidden text-sm font-medium text-gray-600 sm:block">
-                Filter:
-              </span>
+        {/* Filters — their own line under the heading, in the chip language of
+            the sections above. Omitted entirely when no dropdown has options;
+            each dropdown is additionally hidden on its own when its own option
+            list is empty (Digital Library documents, for instance, never carry
+            deliverables or mentioned entities). */}
+        {hasAnyFilterOptions && (
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
+            {/* Assignee type dropdown */}
+            {Object.keys(assigneeTypeCounts).length > 0 && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <SearchableFilterDropdown
+                      label="Entities"
+                      currentFilter={assigneeFilter}
+                      isOpen={isAssigneeDropdownOpen}
+                      onToggle={() =>
+                        setIsAssigneeDropdownOpen(!isAssigneeDropdownOpen)
+                      }
+                      onFilterChange={(filter) => {
+                        setAssigneeFilter(filter)
+                        setIsAssigneeDropdownOpen(false)
+                      }}
+                      typeCounts={assigneeTypeCounts}
+                      className="assignee-dropdown"
+                      filteredTotalCount={assigneeFilteredTotalCount}
+                      hierarchicalData={assigneesByType}
+                      withItemsCount={paragraphsWithAssigneesCount}
+                      withItemsLabel="With entities"
+                      entityLongMap={entityLongMap}
+                    />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-sm" side="top">
+                  <div className="space-y-2">
+                    <div className="font-medium">Filter by Entity</div>
+                    <div className="text-sm">
+                      Entities include both assignees (organizations assigned to
+                      carry out mandates) and mentioned entities (organizations
+                      referenced in the text).
+                    </div>
+                  </div>
+                </TooltipContent>
+              </Tooltip>
+            )}
 
-              {/* Filter buttons - responsive flex */}
-              <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-                {/* Assignee type dropdown */}
-                {Object.keys(assigneeTypeCounts).length > 0 && (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div>
-                        <SearchableFilterDropdown
-                          label="Entities"
-                          icon={<Users className="h-3 w-3" />}
-                          currentFilter={assigneeFilter}
-                          isOpen={isAssigneeDropdownOpen}
-                          onToggle={() =>
-                            setIsAssigneeDropdownOpen(!isAssigneeDropdownOpen)
-                          }
-                          onFilterChange={(filter) => {
-                            setAssigneeFilter(filter)
-                            setIsAssigneeDropdownOpen(false)
-                          }}
-                          typeCounts={assigneeTypeCounts}
-                          totalCount={allParagraphs?.length || 0}
-                          className="assignee-dropdown"
-                          filteredTotalCount={assigneeFilteredTotalCount}
-                          hierarchicalData={assigneesByType}
-                          withItemsCount={paragraphsWithAssigneesCount}
-                          withItemsLabel="With entities"
-                          entityLongMap={entityLongMap}
-                        />
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-sm" side="top">
-                      <div className="space-y-2">
-                        <div className="font-medium">Filter by Entity</div>
-                        <div className="text-sm">
-                          Entities include both assignees (organizations
-                          assigned to carry out mandates) and mentioned entities
-                          (organizations referenced in the text).
-                        </div>
-                      </div>
-                    </TooltipContent>
-                  </Tooltip>
-                )}
+            {/* Deliverable type dropdown */}
+            {Object.keys(deliverableTypeCounts).length > 0 && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <FilterDropdown
+                      label="Deliverables"
+                      currentFilter={deliverableFilter}
+                      isOpen={isDeliverableDropdownOpen}
+                      onToggle={() =>
+                        setIsDeliverableDropdownOpen(!isDeliverableDropdownOpen)
+                      }
+                      onFilterChange={(filter) => {
+                        setDeliverableFilter(filter)
+                        setIsDeliverableDropdownOpen(false)
+                      }}
+                      typeCounts={deliverableTypeCounts}
+                      withItemsCount={paragraphsWithDeliverablesCount}
+                      withItemsLabel="With deliverables"
+                      className="deliverable-dropdown"
+                      filteredTotalCount={deliverableFilteredTotalCount}
+                    />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-sm" side="top">
+                  <div className="space-y-2">
+                    <div className="font-medium">
+                      Filter by Deliverable Type
+                    </div>
+                    <div className="text-sm">
+                      Deliverables are specific outputs or tasks that are
+                      mandated in a paragraph.
+                    </div>
+                  </div>
+                </TooltipContent>
+              </Tooltip>
+            )}
 
-                {/* Deliverable type dropdown */}
-                {Object.keys(deliverableTypeCounts).length > 0 && (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div>
-                        <FilterDropdown
-                          label="Deliverables"
-                          icon={<Package className="h-3 w-3" />}
-                          currentFilter={deliverableFilter}
-                          isOpen={isDeliverableDropdownOpen}
-                          onToggle={() =>
-                            setIsDeliverableDropdownOpen(
-                              !isDeliverableDropdownOpen
-                            )
-                          }
-                          onFilterChange={(filter) => {
-                            setDeliverableFilter(filter)
-                            setIsDeliverableDropdownOpen(false)
-                          }}
-                          typeCounts={deliverableTypeCounts}
-                          withItemsCount={paragraphsWithDeliverablesCount}
-                          withItemsLabel="With deliverables"
-                          totalCount={allParagraphs?.length || 0}
-                          className="deliverable-dropdown"
-                          filteredTotalCount={deliverableFilteredTotalCount}
-                        />
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-sm" side="top">
-                      <div className="space-y-2">
-                        <div className="font-medium">
-                          Filter by Deliverable Type
-                        </div>
-                        <div className="text-sm">
-                          Deliverables are specific outputs or tasks that are
-                          mandated in a paragraph.
-                        </div>
-                      </div>
-                    </TooltipContent>
-                  </Tooltip>
-                )}
+            {/* Action verb searchable dropdown */}
+            {Object.keys(actionVerbCounts).length > 0 && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <SearchableFilterDropdown
+                      label="Actions"
+                      currentFilter={actionVerbFilter}
+                      isOpen={isActionVerbDropdownOpen}
+                      onToggle={() =>
+                        setIsActionVerbDropdownOpen(!isActionVerbDropdownOpen)
+                      }
+                      onFilterChange={(filter) => {
+                        setActionVerbFilter(filter)
+                        setIsActionVerbDropdownOpen(false)
+                      }}
+                      typeCounts={actionVerbCounts}
+                      className="action-verb-dropdown"
+                      filteredTotalCount={actionVerbFilteredTotalCount}
+                    />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-sm" side="top">
+                  <div className="space-y-2">
+                    <div className="font-medium">Filter by Action Verb</div>
+                    <div className="text-sm">
+                      Action verbs determine the type and strength of operative
+                      paragraphs.
+                      {/* They may present and acknowledge information, reinforce prior statements, express a positive or negative stance, constitute an action of the assembly itself, or direct assignees to carry out deliverables. */}
+                    </div>
+                  </div>
+                </TooltipContent>
+              </Tooltip>
+            )}
 
-                {/* Action verb searchable dropdown */}
-                {Object.keys(actionVerbCounts).length > 0 && (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div>
-                        <SearchableFilterDropdown
-                          label="Actions"
-                          icon={<MessageCircle className="h-3 w-3" />}
-                          currentFilter={actionVerbFilter}
-                          isOpen={isActionVerbDropdownOpen}
-                          onToggle={() =>
-                            setIsActionVerbDropdownOpen(
-                              !isActionVerbDropdownOpen
-                            )
-                          }
-                          onFilterChange={(filter) => {
-                            setActionVerbFilter(filter)
-                            setIsActionVerbDropdownOpen(false)
-                          }}
-                          typeCounts={actionVerbCounts}
-                          totalCount={allParagraphs?.length || 0}
-                          className="action-verb-dropdown"
-                          filteredTotalCount={actionVerbFilteredTotalCount}
-                        />
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-sm" side="top">
-                      <div className="space-y-2">
-                        <div className="font-medium">Filter by Action Verb</div>
-                        <div className="text-sm">
-                          Action verbs determine the type and strength of
-                          operative paragraphs.
-                          {/* They may present and acknowledge information, reinforce prior statements, express a positive or negative stance, constitute an action of the assembly itself, or direct assignees to carry out deliverables. */}
-                        </div>
-                      </div>
-                    </TooltipContent>
-                  </Tooltip>
-                )}
-
-                {/* Reset button - only visible when filters are active */}
-                {hasActiveFilters && (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <button
-                        onClick={resetFilters}
-                        className="flex h-7 cursor-pointer items-center gap-1 rounded-md bg-au-chico px-2 text-xs text-white transition-colors hover:bg-shuttle-gray"
-                        aria-label="Reset all filters"
-                      >
-                        <X className="h-3 w-3" />
-                        <span>Reset</span>
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent side="top">
-                      <p>Reset all filters to default</p>
-                    </TooltipContent>
-                  </Tooltip>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
+            {/* Reset — only visible when filters are active */}
+            {hasActiveFilters && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={resetFilters}
+                    className="ml-1 inline-flex cursor-pointer items-center gap-1 self-center text-xs font-medium text-un-blue hover:underline"
+                    aria-label="Reset all filters"
+                  >
+                    <X className="h-3 w-3" />
+                    <span>Reset</span>
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="top">
+                  <p>Reset all filters to default</p>
+                </TooltipContent>
+              </Tooltip>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Mobile TOC - Floating button and expandable panel */}
@@ -2571,15 +2582,23 @@ export function ParagraphsSection({
                   return (
                     <>
                       <button
+                        type="button"
                         onClick={() => setShowPreamble(!showPreamble)}
-                        className="flex items-center gap-2 py-1.5 text-xs text-gray-500 hover:text-gray-700"
+                        className="inline-flex cursor-pointer items-center gap-1 text-xs font-medium text-un-blue hover:underline"
                       >
-                        <ChevronDown
-                          className={`h-3.5 w-3.5 transition-transform ${showPreamble ? '' : '-rotate-90'}`}
-                        />
-                        {showPreamble ? 'Hide' : 'Show'}{' '}
-                        {preambularParagraphs.length} preambular paragraph
-                        {preambularParagraphs.length !== 1 && 's'}
+                        {showPreamble ? (
+                          <>
+                            <ChevronUp className="h-3 w-3" />
+                            Show fewer
+                          </>
+                        ) : (
+                          <>
+                            <ChevronDown className="h-3 w-3" />
+                            Show all {preambularParagraphs.length} preambular
+                            paragraph
+                            {preambularParagraphs.length !== 1 && 's'}
+                          </>
+                        )}
                       </button>
                       {showPreamble && (
                         <div className="space-y-2">
@@ -2679,6 +2698,15 @@ export function ParagraphsSection({
                 </p>
               </div>
             )}
+
+            {/* How to read this — the copy that used to hide behind a "?"
+                badge next to the heading, now stated where the other sections
+                state theirs. */}
+            <div className="mt-6">
+              <DetailFootnote>
+                {explainerTexts.mandateDetail.paragraphs.betaDisclaimer}
+              </DetailFootnote>
+            </div>
           </div>
         </div>
 

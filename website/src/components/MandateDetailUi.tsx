@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { ExternalLink, FileText } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 /**
@@ -121,6 +122,58 @@ export function FilterChip({
 /** Footnote under a section: provenance, caveats, "how to read this". */
 export function DetailFootnote({ children }: { children: ReactNode }) {
   return <p className="text-xs text-gray-500">{children}</p>
+}
+
+/**
+ * The detail view's header, shared by the full page and the intercepting modal
+ * so the two cannot drift.
+ *
+ * Deliberately quiet. It used to lead with a "Mandate Document" eyebrow and a
+ * filled charcoal "View PDF" button — the only filled element in the sheet, and
+ * so the heaviest thing on screen despite being a secondary action. Now the
+ * title carries the weight and everything else is one meta line: the symbol as
+ * a mono chip (matching how the table renders the same value) and the PDF as an
+ * un-blue link, which is how every other action in this view is expressed.
+ */
+export function MandateDetailHeader({
+  title,
+  symbol,
+  link,
+  className,
+}: {
+  title: string
+  symbol: string
+  link: string | null
+  className?: string
+}) {
+  return (
+    <header className={cn('border-b border-gray-200 pb-4', className)}>
+      <h1 className="text-xl leading-tight font-bold text-gray-900 md:text-2xl">
+        {title}
+      </h1>
+      <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2">
+        <span className="inline-flex items-center rounded-full border border-gray-200 bg-gray-50 px-2.5 py-0.5 font-mono text-xs text-gray-700">
+          {symbol}
+        </span>
+        {link ? (
+          <a
+            href={link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-un-blue hover:underline"
+          >
+            <FileText aria-hidden className="h-3.5 w-3.5" />
+            View PDF
+            <ExternalLink aria-hidden className="h-3 w-3" />
+          </a>
+        ) : (
+          // A disabled dark button gave a dead control top billing and no
+          // reason; a plain note says the same thing without the weight.
+          <span className="text-sm text-gray-400">No PDF available</span>
+        )}
+      </div>
+    </header>
+  )
 }
 
 /**

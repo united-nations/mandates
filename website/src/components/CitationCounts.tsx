@@ -139,9 +139,21 @@ export function CitationCounts({ mandate, entities }: CitationCountsProps) {
         )}
       </div>
 
+      {/* The dot on a chip was previously unexplained, so it read as
+          decoration. Only legend it when at least one chip actually carries
+          one — otherwise the footnote describes something not on screen. */}
       <DetailFootnote>
         Click an entity to see its full name and where in the budget it cites
         this document.
+        {citingEntities.some((e) =>
+          isFoundational(e, foundationalEntities)
+        ) && (
+          <>
+            {' '}
+            A dot marks an entity that cites it in its “{FOUNDATIONAL_LABEL}”
+            narrative, not only in its “Legislative mandates” table.
+          </>
+        )}
       </DetailFootnote>
     </section>
   )

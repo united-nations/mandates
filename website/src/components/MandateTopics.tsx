@@ -46,16 +46,15 @@ export function MandateTopics({
 
   return (
     <section className="space-y-3">
+      {/* The heading suffix is always a count, across every section — it used
+          to carry provenance here ("UN Library subjects") while the sibling
+          section carried a count, so the same slot meant two different things.
+          Provenance moved to the footnote, where the other explanations live. */}
       <DetailSectionHeading
         hint={
-          <a
-            href="https://metadata.un.org/thesaurus/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-un-blue hover:underline"
-          >
-            UN Library subjects
-          </a>
+          sorted.length > 0
+            ? `${sorted.length} ${sorted.length === 1 ? 'topic' : 'topics'}`
+            : undefined
         }
       >
         What is this mandate about?
@@ -104,8 +103,20 @@ export function MandateTopics({
             )}
           </div>
 
+          {/* The coloured dot on each chip was previously unexplained, so it
+              read as decoration. Legend and provenance both live here. */}
           <DetailFootnote>
-            Click a topic to see every mandate document that shares it.
+            Click a topic to see every mandate document that shares it. Topics
+            come from the{' '}
+            <a
+              href="https://metadata.un.org/thesaurus/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline decoration-dotted underline-offset-2 hover:text-un-blue"
+            >
+              UN Library thesaurus
+            </a>
+            ; the dot marks which broad subject domain each one belongs to.
           </DetailFootnote>
         </>
       )}
