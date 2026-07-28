@@ -94,14 +94,18 @@ export default async function Page({ searchParams }: PageProps) {
         />
       </section>
 
-      {/* Mandates explorer. It manages its own widths internally: the table and
-          its controls break out to the wide column. The #mandates anchor stays
-          outside the Suspense boundary so directory selections can scroll to it
-          immediately. */}
+      {/* Mandates explorer. It manages its own width internally: it sits at the
+          normal page column by default and steps wider only as the reader adds
+          columns. The #mandates anchor stays outside the Suspense boundary so
+          directory selections can scroll to it immediately. */}
       <section id="mandates" className="scroll-mt-20 pt-8 pb-10">
         <Suspense
           fallback={
-            <div className="mx-auto max-w-7xl px-6 md:px-12 lg:px-16">
+            /* Must match the table's DEFAULT width — TABLE_WIDTH_STEPS[0] in
+               MandateExplorerClient, i.e. max-w-6xl. The skeleton used to sit
+               at max-w-7xl, so the page visibly narrowed the moment the data
+               arrived. */
+            <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-16">
               <LoadingSkeleton variant="list" count={4} />
             </div>
           }

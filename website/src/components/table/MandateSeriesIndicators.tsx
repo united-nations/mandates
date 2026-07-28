@@ -49,7 +49,7 @@ export function GroupBadge({
             e.stopPropagation()
             onToggle()
           }}
-          className="group/expander inline-flex items-center gap-0.5"
+          className="group/expander inline-flex items-center gap-0.5 rounded-full focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none"
           aria-expanded={expanded}
           aria-label={tooltip}
         >
@@ -58,7 +58,10 @@ export function GroupBadge({
           ) : (
             <ChevronDown className="h-4 w-4 text-muted-foreground" />
           )}
-          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-200 text-xs font-medium text-gray-700 transition-colors group-hover/expander:bg-gray-300">
+          {/* Deliberately NOT a Chip: paired with the chevron, the fixed circle
+              is what says "this number is a control" rather than a label. Only
+              the greys and the focus ring are shared. */}
+          <span className="flex h-6 w-6 items-center justify-center rounded-full border border-gray-200 bg-gray-50 text-xs font-medium text-gray-700 transition-colors group-hover/expander:border-un-blue group-hover/expander:bg-gray-100">
             {group.size > 99 ? '99+' : group.size}
           </span>
         </button>

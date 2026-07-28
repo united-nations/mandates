@@ -165,10 +165,10 @@ export default function UnSystemPage() {
             UN Secretariat
           </Link>
           , dozens of funds, programmes, specialized agencies and related
-          organizations carry their own mandates. This page lists the governing
-          bodies that steer each organization, with official pages and contacts
-          — and, where they exist, the organization&apos;s own mandate registry
-          and related portals.
+          organizations are steered by their own governing bodies. This page
+          lists those bodies for each organization, along with official pages
+          and contacts. Where an organization publishes the documents those
+          bodies adopt, we link to them.
         </p>
         {SHOW_MANDATE_REGISTRY_RATING && (
           <div className="mt-6 max-w-3xl">
@@ -178,7 +178,9 @@ export default function UnSystemPage() {
       </section>
 
       <div className="py-4">
-        <div className="mx-auto max-w-7xl px-6 md:px-12 lg:px-16">
+        {/* Normal page width, like every other content column on the site —
+            the wide break-out is no longer used anywhere. */}
+        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-16">
           {sections.map(({ grouping, title }) => (
             <section key={grouping} className="mb-10">
               {title && (
@@ -193,7 +195,9 @@ export default function UnSystemPage() {
                     <span className="-ms-4">Organization</span>
                     <span>Governing bodies</span>
                     <span
-                      className={SHOW_MANDATE_REGISTRY_RATING ? 'col-span-2' : ''}
+                      className={
+                        SHOW_MANDATE_REGISTRY_RATING ? 'col-span-2' : ''
+                      }
                     >
                       {SHOW_MANDATE_REGISTRY_RATING
                         ? 'Mandate Registry'

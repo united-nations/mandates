@@ -8,6 +8,7 @@ import {
   DetailSubsectionHeading,
   formatSubjectLabel,
 } from '@/components/MandateDetailUi'
+import { Chip } from '@/components/ui/chip'
 import { getMandateUrl } from '@/components/table/MandateColumns'
 import type { RelatedMandate } from '@/lib/data/related'
 
@@ -64,13 +65,14 @@ export function RelatedMandates({ related }: { related: RelatedMandate[] }) {
             {item.shared_subjects.length > 0 && (
               <div className="mt-1 flex flex-wrap items-baseline gap-1 pl-[3.25rem]">
                 {item.shared_subjects.map((subject) => (
-                  <a
+                  <Chip
                     key={subject}
+                    kind="topic"
+                    density="dense"
                     href={`/secretariat?subject=${encodeURIComponent(subject)}`}
-                    className="inline-flex rounded-full border border-gray-200 bg-gray-50 px-2 py-1.5 text-[11px] text-gray-600 transition-colors hover:border-un-blue hover:bg-gray-100 focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:outline-none sm:py-0.5"
                   >
                     {formatSubjectLabel(subject)}
-                  </a>
+                  </Chip>
                 ))}
                 {item.shared_count > item.shared_subjects.length && (
                   <span className="text-[11px] text-gray-500">

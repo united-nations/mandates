@@ -5,9 +5,9 @@ import { ChevronDown, ChevronUp } from 'lucide-react'
 import {
   DetailFootnote,
   DetailSectionHeading,
-  FilterChip,
   formatSubjectLabel,
 } from '@/components/MandateDetailUi'
+import { Chip, ChipDot } from '@/components/ui/chip'
 import { RelatedMandates } from '@/components/RelatedMandates'
 import { SHOW_RELATED_MANDATES } from '@/lib/feature-flags'
 import { domainColor } from '@/lib/subjectDomainColors'
@@ -66,20 +66,15 @@ export function MandateTopics({
             {shown.map((subject) => {
               const code = domainCodes[subject.trim().toUpperCase()]
               return (
-                <FilterChip
+                <Chip
                   key={subject}
+                  kind="topic"
                   href={`/secretariat?subject=${encodeURIComponent(subject.trim())}`}
                   title={`Show mandates on ${formatSubjectLabel(subject)}`}
                 >
                   <span>{formatSubjectLabel(subject)}</span>
-                  {code && (
-                    <span
-                      aria-hidden
-                      className="size-1.5 self-center rounded-full"
-                      style={{ backgroundColor: domainColor(code).hex }}
-                    />
-                  )}
-                </FilterChip>
+                  {code && <ChipDot color={domainColor(code).hex} />}
+                </Chip>
               )
             })}
             {sorted.length > DEFAULT_SHOWN && (

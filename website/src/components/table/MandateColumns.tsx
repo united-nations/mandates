@@ -19,7 +19,12 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
     id: 'symbol',
     label: 'Symbol',
     defaultVisible: true,
-    widthClass: 'w-[140px]',
+    // 168, not 140: the symbol now renders in the shared mono chip (see
+    // Chip `kind="symbol"`), and mono is ~16% wider than the proportional face
+    // it replaced. At 140 a 14-character symbol like A/RES/ES-10/19 plus its
+    // series marker overflowed the cell's `overflow-hidden` and the marker
+    // simply vanished. Revert this number if the chip ever stops being mono.
+    widthClass: 'w-[168px]',
     align: 'left',
   },
   {

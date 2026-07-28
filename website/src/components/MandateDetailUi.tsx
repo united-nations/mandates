@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { ExternalLink, FileText } from 'lucide-react'
+import { Chip, type ChipTone } from '@/components/ui/chip'
 import { cn } from '@/lib/utils'
 
 /**
@@ -57,33 +58,27 @@ export function DetailSubsectionHeading({
 }
 
 /**
- * Chip geometry. The vertical padding is viewport-dependent on purpose: at the
- * desktop density a chip is 22px tall, which is far below the 44px touch target
- * a finger needs, so small viewports get a 36px chip (and the entity chips —
- * the one interaction the copy actually asks the reader to perform — opt up to
- * 44px with CHIP_TOUCH_TARGET). Padding rather than min-height, so the label
- * stays vertically centred and the baseline maths in the sentence still works.
+ * The geometry that used to live here (CHIP_BASE / CHIP_TOUCH_TARGET /
+ * CHIP_TONES) is now `components/ui/chip.tsx`, which is the one place any
+ * rounded label in the app gets its radius, padding, tone and focus ring. Read
+ * that file's header before adding a variant here.
  */
-export const CHIP_BASE =
-  'inline-flex items-baseline gap-1.5 rounded-full border px-2.5 py-[9px] text-xs transition-colors focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:outline-none sm:py-0.5'
+export type FilterChipTone = 'default' | 'accent'
 
-/** Opt-in 44px touch target on small viewports. */
-export const CHIP_TOUCH_TARGET = 'py-[13px] sm:py-0.5'
-
-export const CHIP_TONES = {
-  /** Ordinary metadata / topic chip. */
-  default: 'border-gray-200 bg-gray-50 text-gray-700 hover:bg-gray-100',
-  /** A chip that carries extra meaning (a foundational citing entity). */
-  accent:
-    'border-un-blue-deep/30 bg-un-blue-deep/5 font-medium text-un-blue-deep hover:bg-un-blue-deep/10',
-} as const
-
-export type ChipTone = keyof typeof CHIP_TONES
+/** The sidebar's two tones, in the shared vocabulary. */
+const FILTER_CHIP_TONE: Record<FilterChipTone, ChipTone> = {
+  default: 'neutral',
+  accent: 'emphasis',
+}
 
 /**
  * A chip that filters the explorer. Rendered as a plain anchor (not a router
  * link) because the detail view is also served as an intercepting modal over
  * the list, where a full navigation is exactly the intended behaviour.
+ *
+ * A thin wrapper over `Chip` rather than a second implementation: it exists
+ * only to name the sidebar's default density and to keep `tone="accent"`
+ * spelled the way this view's call sites already spell it.
  */
 export function FilterChip({
   href,
@@ -93,29 +88,22 @@ export function FilterChip({
   ...rest
 }: {
   href?: string
-  tone?: ChipTone
+  tone?: FilterChipTone
   className?: string
   children: ReactNode
   title?: string
   'aria-label'?: string
 }) {
-  const classes = cn(
-    CHIP_BASE,
-    CHIP_TONES[tone],
-    href ? 'hover:border-un-blue' : 'cursor-default',
-    className
-  )
-  if (!href) {
-    return (
-      <span className={classes} {...rest}>
-        {children}
-      </span>
-    )
-  }
   return (
-    <a href={href} className={classes} {...rest}>
+    <Chip
+      href={href}
+      tone={FILTER_CHIP_TONE[tone]}
+      density="comfortable"
+      className={className}
+      {...rest}
+    >
       {children}
-    </a>
+    </Chip>
   )
 }
 
@@ -152,9 +140,9 @@ export function MandateDetailHeader({
         {title}
       </h1>
       <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2">
-        <span className="inline-flex items-center rounded-full border border-gray-200 bg-gray-50 px-2.5 py-0.5 font-mono text-xs text-gray-700">
+        <Chip kind="symbol" density="dense">
           {symbol}
-        </span>
+        </Chip>
         {link ? (
           <a
             href={link}

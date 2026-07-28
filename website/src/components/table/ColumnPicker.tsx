@@ -9,6 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { ChipCount } from '@/components/ui/chip'
 import { ChevronDown, SlidersHorizontal } from 'lucide-react'
 import { DEFAULT_VISIBLE_COLUMNS, TOGGLEABLE_COLUMNS } from './MandateColumns'
 
@@ -47,11 +48,10 @@ export function ColumnPicker({
         >
           <SlidersHorizontal className="h-3.5 w-3.5" />
           More columns
-          {extraCount > 0 && (
-            <span className="rounded-full bg-un-blue px-1.5 text-xs font-semibold text-white tabular-nums">
-              {extraCount}
-            </span>
-          )}
+          {/* One count treatment, shared with every chip in the app. The old
+              blue pill had horizontal padding and no vertical padding at all,
+              so it rendered as a squashed ellipse. */}
+          {extraCount > 0 && <ChipCount>{extraCount}</ChipCount>}
           <ChevronDown className="h-3.5 w-3.5 opacity-60" />
         </button>
       </DropdownMenuTrigger>
