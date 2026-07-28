@@ -2,6 +2,7 @@
 
 import { ClickTooltip } from '@/components/DirectoryControls'
 import { ChartSearchInput } from '@/components/ui/chart-search-input'
+import { ChipCount } from '@/components/ui/chip'
 import {
   Tooltip,
   TooltipProvider,
@@ -135,7 +136,11 @@ function OrganCard({
               e.preventDefault()
               onSelect(organ.short)
             }}
-            className="min-w-0 flex-1 focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:outline-none"
+            // The ring lives on the anchor, not on the card that wraps it: the
+            // card is a <div> and cannot take focus, so a ring drawn there
+            // would highlight a region the keyboard never lands on. Offset and
+            // radius match the shared chip focus treatment.
+            className="min-w-0 flex-1 rounded-sm focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none"
           >
             <div className="flex items-baseline gap-1.5">
               <span
@@ -146,9 +151,7 @@ function OrganCard({
               >
                 {organ.short}
               </span>
-              <span className="text-[10px] text-gray-500 tabular-nums">
-                {organ.count.toLocaleString()}
-              </span>
+              <ChipCount>{organ.count.toLocaleString()}</ChipCount>
             </div>
             {longName && (
               // Up to three lines, not one truncated one: the whole point of the
@@ -178,7 +181,7 @@ function OrganCard({
             rel="noopener noreferrer"
             aria-label={`Official website of ${organ.short} (opens in a new tab)`}
             title="Official website"
-            className="text-gray-300 hover:text-un-blue"
+            className="rounded-sm text-gray-300 hover:text-un-blue focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none"
           >
             <ExternalLink aria-hidden className="h-3.5 w-3.5" />
           </a>

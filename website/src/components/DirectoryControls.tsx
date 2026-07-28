@@ -1,5 +1,6 @@
 'use client'
 
+import { Chip } from '@/components/ui/chip'
 import { TooltipContent } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 import { MousePointerClick } from 'lucide-react'
@@ -12,32 +13,58 @@ import type { LucideIcon } from 'lucide-react'
  * one pattern on the page.
  */
 
-export function DirectoryToggle({
-  active,
-  onClick,
-  icon: Icon,
-  children,
+/**
+ * The view-mode switch above a directory list.
+ *
+ * A segmented control, deliberately not a chip: it used to be a rounded-full
+ * pill with an un-blue "on" fill, which is character for character the
+ * treatment an *active filter pill* carries in the list directly beneath it —
+ * so "I am looking at the compact view" and "I am filtering by UNEP" said the
+ * same thing in the same shape. It now borrows the mode switch above the
+ * mandate table (MandateExplorerClient), which is the other control in the app
+ * that chooses a view rather than a value: a recessed grey track, and the
+ * selected segment raised out of it in white.
+ */
+export function DirectoryToggle<T extends string>({
+  label,
+  value,
+  options,
+  onChange,
 }: {
-  active: boolean
-  onClick: () => void
-  icon: LucideIcon
-  children: React.ReactNode
+  /** Names the group for screen readers ("Entity view"). */
+  label: string
+  value: T
+  options: readonly { value: T; label: string; icon: LucideIcon }[]
+  onChange: (value: T) => void
 }) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={active}
-      className={cn(
-        'inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors',
-        active
-          ? 'bg-un-blue text-white hover:bg-un-blue/90'
-          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-      )}
+    <div
+      role="group"
+      aria-label={label}
+      className="inline-flex shrink-0 items-center rounded-md bg-gray-100 p-0.5 whitespace-nowrap"
     >
-      <Icon className="h-3.5 w-3.5" />
-      {children}
-    </button>
+      {options.map((option) => {
+        const Icon = option.icon
+        const selected = option.value === value
+        return (
+          <button
+            key={option.value}
+            type="button"
+            onClick={() => onChange(option.value)}
+            aria-pressed={selected}
+            className={cn(
+              'inline-flex h-7 cursor-pointer items-center gap-1.5 rounded-sm px-2.5 text-xs font-medium transition-all',
+              selected
+                ? 'bg-background text-gray-900 shadow'
+                : 'text-gray-500 hover:text-gray-900'
+            )}
+          >
+            <Icon aria-hidden className="h-3.5 w-3.5" />
+            {option.label}
+          </button>
+        )
+      })}
+    </div>
   )
 }
 
@@ -74,23 +101,20 @@ export function ClickTooltip({
       {hasPills && (
         <div className="mt-1.5 flex flex-wrap gap-1">
           {pills.map((pill) => (
-            <a
+            <Chip
               key={pill.value}
+              kind="budget"
+              density="dense"
+              tone={activePill === pill.value ? 'selected' : 'neutral'}
               href={`/secretariat?subprogramme=${encodeURIComponent(pill.value)}`}
               onClick={(e) => {
                 e.preventDefault()
                 e.stopPropagation()
                 onPillSelect?.(pill.value)
               }}
-              className={cn(
-                'rounded-full px-2 py-0.5 text-xs transition-colors',
-                activePill === pill.value
-                  ? 'bg-un-blue text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-un-blue hover:text-white'
-              )}
             >
               {pill.label}
-            </a>
+            </Chip>
           ))}
         </div>
       )}

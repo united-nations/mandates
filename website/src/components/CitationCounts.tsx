@@ -7,19 +7,16 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import {
-  CHIP_BASE,
-  CHIP_TONES,
-  CHIP_TOUCH_TARGET,
   DetailFootnote,
   DetailSectionHeading,
 } from '@/components/MandateDetailUi'
+import { Chip, ChipDot } from '@/components/ui/chip'
 import { BUDGET_STREAM_LABELS } from '@/lib/filter-constants'
 import {
   FOUNDATIONAL_LABEL,
   FOUNDATIONAL_TOOLTIP,
   isFoundational,
 } from '@/lib/foundational'
-import { cn } from '@/lib/utils'
 import type { BudgetLocation, Entity, Mandate } from '@/types'
 import { ChevronDown, ChevronUp, MousePointerClick } from 'lucide-react'
 
@@ -173,28 +170,20 @@ function EntityChip({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <button
-          type="button"
+        {/* PopoverTrigger supplies the onClick that opens the panel, so the
+            chip resolves to a real <button> — the element, not the styling, is
+            what makes it keyboard-reachable. Entity chips are the interaction
+            the section's copy asks the reader to perform, so they take the full
+            44px touch target on small viewports (density="touch"). */}
+        <Chip
+          kind="entity"
+          density="touch"
+          tone={foundational ? 'emphasis' : 'neutral'}
           aria-label={`Budget details for ${entityLong ?? entity}`}
-          className={cn(
-            CHIP_BASE,
-            CHIP_TONES[foundational ? 'accent' : 'default'],
-            // Entity chips are the interaction the section's copy asks the
-            // reader to perform, so they take the full 44px touch target on
-            // small viewports rather than the shared 36px.
-            CHIP_TOUCH_TARGET,
-            'cursor-pointer',
-            !foundational && 'hover:border-un-blue'
-          )}
         >
           {entity}
-          {foundational && (
-            <span
-              aria-hidden
-              className="size-1.5 self-center rounded-full bg-un-blue-deep"
-            />
-          )}
-        </button>
+          {foundational && <ChipDot />}
+        </Chip>
       </PopoverTrigger>
 
       <PopoverContent
@@ -277,6 +266,11 @@ function EntityChip({
   )
 }
 
+/**
+ * A budget coordinate inside the popover. `dense` because the panel is 320px
+ * wide and a location can be four chips long — this is the one place in the
+ * detail view that must not grow on small viewports.
+ */
 function PopoverChip({
   href,
   children,
@@ -285,12 +279,9 @@ function PopoverChip({
   children: React.ReactNode
 }) {
   return (
-    <a
-      href={href}
-      className="inline-flex items-baseline rounded-full border border-gray-200 bg-gray-50 px-2 py-1.5 text-[11px] text-gray-700 transition-colors hover:border-un-blue hover:bg-gray-100 focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:outline-none sm:py-0.5"
-    >
+    <Chip kind="budget" density="dense" href={href}>
       {children}
-    </a>
+    </Chip>
   )
 }
 

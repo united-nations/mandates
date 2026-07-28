@@ -1,6 +1,7 @@
 'use client'
 
 import { ChartSearchInput } from '@/components/ui/chart-search-input'
+import { Chip, ChipCount, ChipDot } from '@/components/ui/chip'
 import {
   Tooltip,
   TooltipContent,
@@ -10,7 +11,6 @@ import {
 import { useSectionFilter } from '@/hooks/use-section-filter'
 import { SUBJECT_DOMAIN_LABELS } from '@/lib/filter-constants'
 import { domainColor } from '@/lib/subjectDomainColors'
-import { cn } from '@/lib/utils'
 import type { DocumentTypeCatalogue, SubjectDomain } from '@/types'
 import { MousePointerClick } from 'lucide-react'
 import { useMemo, useState } from 'react'
@@ -166,9 +166,7 @@ export function DocumentsDirectory({
                 />
               ))}
               {overflow > 0 && (
-                <span className="inline-flex items-baseline rounded-full border border-dashed border-gray-300 bg-transparent px-2.5 py-0.5 text-xs text-gray-500">
-                  +{overflow.toLocaleString()}
-                </span>
+                <Chip tone="ghost">+{overflow.toLocaleString()}</Chip>
               )}
             </div>
           ) : (
@@ -207,29 +205,20 @@ function TypePill({
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <a
+        <Chip
+          kind="docType"
+          tone={active ? 'selected' : 'neutral'}
           href={`/secretariat?document_type=${encodeURIComponent(label)}`}
           onClick={(e) => {
             e.preventDefault()
             onSelect()
           }}
-          className={cn(
-            'inline-flex items-baseline gap-1.5 rounded-full border px-3 py-1 text-xs transition-colors focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:outline-none',
-            active
-              ? 'border-un-blue bg-un-blue text-white'
-              : 'border-gray-200 bg-white text-gray-700 hover:border-un-blue hover:text-un-blue'
-          )}
         >
           <span className="font-medium">{label}</span>
-          <span
-            className={cn(
-              'text-[10px] tabular-nums',
-              active ? 'text-white/80' : 'text-gray-500'
-            )}
-          >
+          <ChipCount tone={active ? 'selected' : 'neutral'}>
             {count.toLocaleString()}
-          </span>
-        </a>
+          </ChipCount>
+        </Chip>
       </TooltipTrigger>
       <TooltipContent side="top" className="max-w-xs">
         <div className="flex items-center gap-1 text-un-blue">
@@ -261,29 +250,27 @@ function SubjectPill({
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <a
+        {/* Active is a FILL, not a ring: this pill used to mark selection with
+            `ring-2 ring-un-blue ring-offset-1`, which is the identical
+            treatment its own focus-visible state uses — so a keyboard user
+            could not tell "this one is focused" from "this one is filtering". */}
+        <Chip
+          kind="topic"
+          tone={active ? 'selected' : 'neutral'}
           href={`/secretariat?subject=${encodeURIComponent(leaf.subject)}`}
           onClick={(e) => {
             e.preventDefault()
             onSelect(leaf.subject)
           }}
-          className={cn(
-            'inline-flex items-baseline gap-1.5 rounded-full border border-gray-200 bg-gray-50 px-2.5 py-0.5 text-xs text-gray-700 transition-colors hover:bg-gray-100 focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:outline-none',
-            active && 'ring-2 ring-un-blue ring-offset-1'
-          )}
         >
           <span className="font-medium">
             {formatSubjectLabel(leaf.subject)}
           </span>
-          <span
-            aria-hidden
-            className="size-1.5 self-center rounded-full"
-            style={{ backgroundColor: color.hex }}
-          />
-          <span className="text-[10px] text-gray-500 tabular-nums">
+          <ChipDot color={color.hex} />
+          <ChipCount tone={active ? 'selected' : 'neutral'}>
             {leaf.count.toLocaleString()}
-          </span>
-        </a>
+          </ChipCount>
+        </Chip>
       </TooltipTrigger>
       <TooltipContent side="top" className="max-w-xs">
         <div className="font-medium">

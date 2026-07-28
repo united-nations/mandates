@@ -165,10 +165,10 @@ export default function UnSystemPage() {
             UN Secretariat
           </Link>
           , dozens of funds, programmes, specialized agencies and related
-          organizations carry their own mandates. This page lists the governing
-          bodies that steer each organization, with official pages and contacts
-          — and, where they exist, the organization&apos;s own mandate registry
-          and related portals.
+          organizations are steered by their own governing bodies. This page
+          lists those bodies for each organization, along with official pages
+          and contacts. Where an organization publishes the documents those
+          bodies adopt, we link to them.
         </p>
         {SHOW_MANDATE_REGISTRY_RATING && (
           <div className="mt-6 max-w-3xl">

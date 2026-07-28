@@ -1,6 +1,6 @@
 'use client'
 
-import { Badge } from '@/components/ui/badge'
+import { Chip } from '@/components/ui/chip'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { useFilters } from '@/contexts/FilterContext'
 import type { Entity, Mandate, Organ } from '@/types'
@@ -20,9 +20,7 @@ interface MandateCompactListProps {
   entitiesData: Entity[]
 }
 
-export function MandateCompactList({
-  mandates,
-}: MandateCompactListProps) {
+export function MandateCompactList({ mandates }: MandateCompactListProps) {
   const { filters, isPending } = useFilters()
   const router = useRouter()
 
@@ -50,7 +48,7 @@ export function MandateCompactList({
   return (
     <TooltipProvider>
       <div
-        className={`rounded-lg border border-gray-200 overflow-hidden transition-opacity duration-150 ${isPending ? 'opacity-50' : 'opacity-100'}`}
+        className={`overflow-hidden rounded-lg border border-gray-200 transition-opacity duration-150 ${isPending ? 'opacity-50' : 'opacity-100'}`}
       >
         {mandates.map((mandate) => {
           const isExpanded = expandedGroups.has(mandate.full_document_symbol)
@@ -84,12 +82,13 @@ export function MandateCompactList({
                     {mandate.body && (
                       <>
                         <span className="text-gray-300">·</span>
-                        <Badge
-                          variant="secondary"
-                          className="border-0 bg-gray-200! text-xs font-medium text-gray-700! whitespace-nowrap"
+                        <Chip
+                          kind="organ"
+                          density="dense"
+                          className="whitespace-nowrap"
                         >
                           {mandate.body}
-                        </Badge>
+                        </Chip>
                       </>
                     )}
                     {mandate.year && mandate.year !== '-' && (

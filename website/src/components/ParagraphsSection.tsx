@@ -19,11 +19,13 @@ import {
 } from 'lucide-react'
 
 import { Skeleton } from '@/components/ui/skeleton'
+import { Chip } from '@/components/ui/chip'
 import {
   DetailFootnote,
   DetailSectionHeading,
 } from '@/components/MandateDetailUi'
 
+import { cn } from '@/lib/utils'
 import { explainerTexts } from '@/lib/en_text_contents'
 import { useIsMobile } from '@/hooks/use-mobile'
 import type { Entity, Paragraph } from '@/types'
@@ -78,18 +80,22 @@ interface TOCItem {
 }
 
 /**
- * Trigger geometry for the three filter controls. Deliberately the chip
- * language of the rest of the detail view (hairline border, pill radius, quiet
- * grey label, un-blue only as accent) rather than a toolbar button — see
- * MandateDetailUi.CHIP_BASE, whose padding this mirrors so the row sits at the
- * same density as the entity and topic chips above it.
+ * The three filter controls are `Chip`s (components/ui/chip.tsx) at the
+ * sidebar's own density, so the row sits at exactly the same height as the
+ * entity and topic chips above it — this file used to carry its own copy of
+ * that geometry, which is how the two drifted apart.
+ *
+ * `bg-transparent` is the one deviation: a filter *trigger* is not a value, so
+ * it does not take the neutral chip's grey fill. It is passed as a class rather
+ * than added as a fifth tone, because a tone is meaning and this is geometry.
+ * Active filters are marked in un-blue *text*, never a fill — the fill is
+ * reserved for a selected facet, which a trigger never is.
  */
-const FILTER_PILL_BASE =
-  'inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-gray-200 px-2.5 py-[9px] text-xs transition-colors hover:border-un-blue focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:outline-none sm:py-0.5'
-
-/** Active filters are marked in un-blue *text*; the fill always stays white. */
 const filterPillTone = (currentFilter: string) =>
-  currentFilter !== 'all' ? 'font-medium text-un-blue' : 'text-gray-600'
+  cn(
+    'bg-transparent',
+    currentFilter !== 'all' ? 'font-medium text-un-blue' : 'text-gray-600'
+  )
 
 /** Popover panel, anchored under the pill whatever the pill's height is. */
 const FILTER_PANEL =
@@ -127,10 +133,7 @@ function FilterDropdown({
 
   return (
     <div className={`relative ${className}`}>
-      <button
-        onClick={onToggle}
-        className={`${FILTER_PILL_BASE} ${filterPillTone(currentFilter)}`}
-      >
+      <Chip onClick={onToggle} className={filterPillTone(currentFilter)}>
         <span>
           {currentFilter === 'all'
             ? label
@@ -145,9 +148,9 @@ function FilterDropdown({
                 : `${titleCase(currentFilter.replace(/_/g, ' '))} (${typeCounts[currentFilter] || 0})`}
         </span>
         <ChevronDown
-          className={`h-3 w-3 shrink-0 text-un-blue transition-transform ${isOpen ? 'rotate-180' : ''}`}
+          className={`h-3 w-3 shrink-0 self-center text-un-blue transition-transform ${isOpen ? 'rotate-180' : ''}`}
         />
-      </button>
+      </Chip>
       {isOpen && (
         <div className={FILTER_PANEL}>
           {/* All paragraphs option */}
@@ -340,10 +343,7 @@ function SearchableFilterDropdown({
 
   return (
     <div className={`relative ${className}`}>
-      <button
-        onClick={onToggle}
-        className={`${FILTER_PILL_BASE} ${filterPillTone(currentFilter)}`}
-      >
+      <Chip onClick={onToggle} className={filterPillTone(currentFilter)}>
         <span>
           {currentFilter === 'all'
             ? label
@@ -358,9 +358,9 @@ function SearchableFilterDropdown({
                 : `${titleCase(currentFilter.replace(/_/g, ' '))} (${typeCounts[currentFilter] || 0})`}
         </span>
         <ChevronDown
-          className={`h-3 w-3 shrink-0 text-un-blue transition-transform ${isOpen ? 'rotate-180' : ''}`}
+          className={`h-3 w-3 shrink-0 self-center text-un-blue transition-transform ${isOpen ? 'rotate-180' : ''}`}
         />
-      </button>
+      </Chip>
       {isOpen && (
         <div className={FILTER_PANEL}>
           {/* Search input */}
@@ -2048,8 +2048,10 @@ export function ParagraphsSection({
             deliverableData?.deliverable_type === deliverableFilter
           const deliverableClasses =
             hasEnhancedFilters && isFilteredDeliverable
-              ? 'bg-yellow-200 border border-gray-350 px-2 py-0.5 rounded-full text-sm font-semibold cursor-help shadow-xs'
-              : 'bg-gray-200 border border-gray-350 px-2 py-0.5 rounded-full text-sm font-medium cursor-help'
+              ? // gray-350 is not a Tailwind colour and is not defined in
+                // globals.css, so this border has never rendered at all.
+                'bg-yellow-200 border border-gray-300 px-2 py-0.5 rounded-full text-sm font-semibold cursor-help shadow-xs'
+              : 'bg-gray-200 border border-gray-300 px-2 py-0.5 rounded-full text-sm font-medium cursor-help'
 
           component = (
             <Tooltip key={`deliverable-${segmentKey++}`}>

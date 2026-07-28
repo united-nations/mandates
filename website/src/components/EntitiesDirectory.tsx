@@ -2,6 +2,7 @@
 
 import { ClickTooltip, DirectoryToggle } from '@/components/DirectoryControls'
 import { ChartSearchInput } from '@/components/ui/chart-search-input'
+import { Chip, ChipCount } from '@/components/ui/chip'
 import {
   Tooltip,
   TooltipProvider,
@@ -10,7 +11,7 @@ import {
 import { useSectionFilter } from '@/hooks/use-section-filter'
 import { cn } from '@/lib/utils'
 import type { BudgetEntityNode, BudgetStream } from '@/types'
-import { ChevronRight, Layers, Tag } from 'lucide-react'
+import { ChevronRight, Layers, LayoutGrid, Tag } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 
 /**
@@ -105,12 +106,14 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
             onChange={setSearch}
           />
           <DirectoryToggle
-            active={compact}
-            onClick={() => setCompact((v) => !v)}
-            icon={Tag}
-          >
-            Compact
-          </DirectoryToggle>
+            label="Entity view"
+            value={compact ? 'compact' : 'full'}
+            onChange={(value) => setCompact(value === 'compact')}
+            options={[
+              { value: 'compact', label: 'Compact', icon: Tag },
+              { value: 'full', label: 'Full', icon: LayoutGrid },
+            ]}
+          />
         </div>
 
         {visible.length > 0 ? (
@@ -264,19 +267,25 @@ function EntityGroup({
 }
 
 /**
- * Wraps an entity anchor in the shared hover tooltip: full name, the entity's
+ * Wraps an entity node in the shared hover tooltip: full name, the entity's
  * subprogrammes as their own filter pills, and the click hint.
+ *
+ * `render` rather than a fixed anchor, because the two views are different
+ * elements: the compact view is a `Chip` (the shared primitive owns its
+ * geometry and focus ring) and the full view is a card. Both need the same
+ * href + intercepted click, so that pair is built once here.
  */
 function EntityAnchor({
   entity,
-  className,
   onSelect,
-  children,
+  render,
 }: {
   entity: BudgetEntityNode
-  className: string
   onSelect: (value: string) => void
-  children: React.ReactNode
+  render: (props: {
+    href: string
+    onClick: (event: React.MouseEvent<HTMLElement>) => void
+  }) => React.ReactElement
 }) {
   // Read here rather than threading two more props through EntityGroup: the
   // hook is just filter context, and only this component needs it.
@@ -286,16 +295,13 @@ function EntityAnchor({
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <a
-          href={`/secretariat?entity=${encodeURIComponent(entity.entity)}`}
-          onClick={(e) => {
+        {render({
+          href: `/secretariat?entity=${encodeURIComponent(entity.entity)}`,
+          onClick: (e) => {
             e.preventDefault()
             onSelect(entity.entity)
-          }}
-          className={className}
-        >
-          {children}
-        </a>
+          },
+        })}
       </TooltipTrigger>
       <ClickTooltip
         name={entity.entity_long}
@@ -342,15 +348,24 @@ function SubprogrammeBadge({
   if (count <= 0) return null
   const label = `${count} subprogramme${count === 1 ? '' : 's'}`
   return (
+    // No inner pill any more: a count inside a chip is a slot, not a second
+    // chip. The glyph alone carries "this is a different quantity", and the
+    // number is the shared 10px ChipCount rather than the 9px it used to be —
+    // the smallest type anywhere in the app, on a number nobody could read.
     <span
       title={label}
-      className={cn(
-        'ml-0.5 inline-flex shrink-0 items-center gap-0.5 self-center rounded-full px-1 py-px text-[9px] leading-none font-medium tabular-nums',
-        active ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-600'
-      )}
+      className="ml-0.5 inline-flex shrink-0 items-baseline gap-0.5"
     >
-      <Layers aria-hidden className="size-2.5" />
-      {count.toLocaleString()}
+      <Layers
+        aria-hidden
+        className={cn(
+          'size-2.5 self-center',
+          active ? 'text-white/80' : 'text-gray-500'
+        )}
+      />
+      <ChipCount tone={active ? 'selected' : 'neutral'}>
+        {count.toLocaleString()}
+      </ChipCount>
       <span className="sr-only">{label}</span>
     </span>
   )
@@ -365,29 +380,29 @@ function EntityPill({
   active: boolean
   onSelect: (value: string) => void
 }) {
+  const mandates = `${entity.count.toLocaleString()} mandate${entity.count === 1 ? '' : 's'}`
   return (
     <EntityAnchor
       entity={entity}
       onSelect={onSelect}
-      className={cn(
-        'inline-flex items-baseline gap-1.5 rounded-full border py-0.5 pr-1.5 pl-2.5 text-xs transition-colors focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:outline-none',
-        active
-          ? 'border-un-blue bg-un-blue text-white'
-          : 'border-gray-200 bg-white hover:border-un-blue hover:text-un-blue'
+      render={({ href, onClick }) => (
+        <Chip
+          kind="entity"
+          tone={active ? 'selected' : 'neutral'}
+          href={href}
+          onClick={onClick}
+        >
+          <span className="font-medium">{entity.entity}</span>
+          <ChipCount tone={active ? 'selected' : 'neutral'}>
+            <span title={mandates}>{entity.count.toLocaleString()}</span>
+          </ChipCount>
+          <SubprogrammeBadge
+            count={entity.subprogrammes.length}
+            active={active}
+          />
+        </Chip>
       )}
-    >
-      <span className="font-medium">{entity.entity}</span>
-      <span
-        title={`${entity.count.toLocaleString()} mandate${entity.count === 1 ? '' : 's'}`}
-        className={cn(
-          'text-[10px] tabular-nums',
-          active ? 'text-white/80' : 'text-gray-500'
-        )}
-      >
-        {entity.count.toLocaleString()}
-      </span>
-      <SubprogrammeBadge count={entity.subprogrammes.length} active={active} />
-    </EntityAnchor>
+    />
   )
 }
 
@@ -404,51 +419,58 @@ function EntityCard({
     <EntityAnchor
       entity={entity}
       onSelect={onSelect}
-      className={cn(
-        'group flex items-start justify-between gap-2 rounded-lg border bg-white px-3 py-2 transition-all focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:outline-none',
-        active
-          ? 'border-un-blue'
-          : 'border-gray-200 hover:border-un-blue hover:shadow-md'
-      )}
-    >
-      <div className="min-w-0">
-        <div className="flex items-baseline gap-1.5">
-          <span
-            className={cn(
-              'text-sm font-semibold',
-              active ? 'text-un-blue' : 'text-gray-900'
+      render={({ href, onClick }) => (
+        <a
+          href={href}
+          onClick={onClick}
+          className={cn(
+            'group flex items-start justify-between gap-2 rounded-lg border bg-white px-3 py-2 transition-all focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none',
+            active
+              ? 'border-un-blue'
+              : 'border-gray-200 hover:border-un-blue hover:shadow-md'
+          )}
+        >
+          <div className="min-w-0">
+            <div className="flex items-baseline gap-1.5">
+              <span
+                className={cn(
+                  'text-sm font-semibold',
+                  active ? 'text-un-blue' : 'text-gray-900'
+                )}
+              >
+                {entity.entity}
+              </span>
+              <ChipCount>
+                <span
+                  title={`${entity.count.toLocaleString()} mandate${entity.count === 1 ? '' : 's'}`}
+                >
+                  {entity.count.toLocaleString()}
+                </span>
+              </ChipCount>
+              <SubprogrammeBadge
+                count={entity.subprogrammes.length}
+                active={false}
+              />
+            </div>
+            {entity.entity_long && (
+              // Multi-line rather than one truncated line — see OrgansDirectory;
+              // `title` is the recovery path should a name still clamp.
+              <div
+                title={entity.entity_long}
+                className="line-clamp-3 text-xs leading-snug text-gray-500"
+              >
+                {entity.entity_long}
+              </div>
             )}
-          >
-            {entity.entity}
-          </span>
-          <span
-            title={`${entity.count.toLocaleString()} mandate${entity.count === 1 ? '' : 's'}`}
-            className="text-[10px] text-gray-500 tabular-nums"
-          >
-            {entity.count.toLocaleString()}
-          </span>
-          <SubprogrammeBadge
-            count={entity.subprogrammes.length}
-            active={false}
-          />
-        </div>
-        {entity.entity_long && (
-          // Multi-line rather than one truncated line — see OrgansDirectory;
-          // `title` is the recovery path should a name still clamp.
-          <div
-            title={entity.entity_long}
-            className="line-clamp-3 text-xs leading-snug text-gray-500"
-          >
-            {entity.entity_long}
           </div>
-        )}
-      </div>
-      <ChevronRight
-        className={cn(
-          'mt-0.5 h-3.5 w-3.5 shrink-0',
-          active ? 'text-un-blue' : 'text-gray-300 group-hover:text-un-blue'
-        )}
-      />
-    </EntityAnchor>
+          <ChevronRight
+            className={cn(
+              'mt-0.5 h-3.5 w-3.5 shrink-0',
+              active ? 'text-un-blue' : 'text-gray-300 group-hover:text-un-blue'
+            )}
+          />
+        </a>
+      )}
+    />
   )
 }

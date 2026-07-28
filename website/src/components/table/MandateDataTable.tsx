@@ -1,6 +1,6 @@
 'use client'
 
-import { Badge } from '@/components/ui/badge'
+import { Chip } from '@/components/ui/chip'
 import {
   Table,
   TableBody,
@@ -323,10 +323,26 @@ export function MandateDataTable({
  * let the pills overflow a clipped box, which cut labels mid-word ("Internati",
  * "Gender Equi") with nothing to say they had been cut. The tooltip has all of
  * them in full.
+ *
+ * `kind` is not decoration: this one component renders two unrelated taxonomies
+ * (UNBIS subject headings and GA/SC agenda items), which used to be
+ * indistinguishable. Subjects get the topic ornament, agenda items stay plain —
+ * the same split the detail sidebar already makes.
+ *
+ * The label sits in its OWN span inside the chip, and that span is what carries
+ * `truncate`. A Chip is a flex container, and `text-overflow: ellipsis` does
+ * not apply to one — putting truncate only on the chip clips the text with no
+ * "…", which is exactly the mid-word cut this component exists to prevent.
  */
 const PILL_MAX_SHOWN = 2
 
-function PillList({ items }: { items: string[] }) {
+function PillList({
+  items,
+  kind,
+}: {
+  items: string[]
+  kind: 'topic' | 'plain'
+}) {
   if (items.length === 0) return null
   const remaining = items.length - PILL_MAX_SHOWN
   return (
@@ -334,12 +350,9 @@ function PillList({ items }: { items: string[] }) {
       <TooltipTrigger asChild>
         <div className="flex max-w-[200px] cursor-default items-center gap-1">
           {items.slice(0, PILL_MAX_SHOWN).map((text, i) => (
-            <span
-              key={i}
-              className="min-w-0 truncate rounded-full bg-gray-100 px-1.5 py-0.5 text-xs text-gray-700"
-            >
-              {text}
-            </span>
+            <Chip key={i} kind={kind} density="dense" truncate>
+              <span className="min-w-0 truncate">{text}</span>
+            </Chip>
           ))}
           {remaining > 0 && (
             <span className="shrink-0 text-xs text-muted-foreground">
@@ -351,12 +364,14 @@ function PillList({ items }: { items: string[] }) {
       <TooltipContent className="max-w-sm border bg-white p-2 shadow-lg">
         <div className="flex flex-wrap gap-1">
           {items.map((text, i) => (
-            <span
+            <Chip
               key={i}
-              className="rounded-full bg-gray-100 px-1.5 py-0.5 text-xs whitespace-nowrap text-gray-700"
+              kind={kind}
+              density="dense"
+              className="whitespace-nowrap"
             >
               {text}
-            </span>
+            </Chip>
           ))}
         </div>
       </TooltipContent>
@@ -384,13 +399,15 @@ function CellContent({
       return (
         <Tooltip>
           <TooltipTrigger asChild>
-            <span className="inline-block rounded bg-blue-50 px-2 py-0.5 text-xs font-medium text-un-blue transition-colors hover:bg-blue-100">
+            {/* Same chip as the detail header's symbol — that header's comment
+                claims the match, and until this migration it was not true. */}
+            <Chip kind="symbol" density="dense" className="whitespace-nowrap">
               {highlighted ? (
                 <span dangerouslySetInnerHTML={{ __html: highlighted }} />
               ) : (
                 symbol
               )}
-            </span>
+            </Chip>
           </TooltipTrigger>
           <TooltipContent>
             <p>{symbol}</p>
@@ -417,12 +434,9 @@ function CellContent({
       return mandate.body ? (
         <Tooltip>
           <TooltipTrigger asChild>
-            <Badge
-              variant="secondary"
-              className="border-0 bg-gray-200! text-xs font-medium whitespace-nowrap text-gray-700!"
-            >
+            <Chip kind="organ" density="dense" className="whitespace-nowrap">
               {mandate.body}
-            </Badge>
+            </Chip>
           </TooltipTrigger>
           <TooltipContent>
             <p>{findOrganLong(mandate.body)}</p>
@@ -465,8 +479,6 @@ function CellContent({
             <EntityBadge
               entity={entity}
               foundational={isFoundational(entity, foundational)}
-              variant="muted"
-              className="font-bold"
               onClick={() => onEntityClick(entity)}
             />
             {longName && longName !== entity && (
@@ -480,8 +492,6 @@ function CellContent({
             entity={entity}
             entityLong={longName}
             foundational={isFoundational(entity, foundational)}
-            variant="muted"
-            className="font-bold"
             onClick={() => onEntityClick(entity)}
           />
         )
@@ -531,6 +541,7 @@ function CellContent({
     case 'subjects':
       return (
         <PillList
+          kind="topic"
           items={(mandate.subject_headings || []).map((s) => titleCase(s))}
         />
       )
@@ -544,7 +555,7 @@ function CellContent({
       ) : null
 
     case 'agenda_item':
-      return <PillList items={mandate.agenda_item_titles || []} />
+      return <PillList kind="plain" items={mandate.agenda_item_titles || []} />
 
     default:
       return null

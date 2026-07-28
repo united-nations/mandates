@@ -1,15 +1,16 @@
 'use client'
 
-import { Badge } from '@/components/ui/badge'
+import { Chip } from '@/components/ui/chip'
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { FOUNDATIONAL_LABEL, FOUNDATIONAL_TOOLTIP } from '@/lib/foundational'
+import { cn } from '@/lib/utils'
 
 /**
- * An entity badge that says whether this entity's citation is a foundational
+ * An entity chip that says whether this entity's citation is a foundational
  * one. The deeper blue is only a hint — colour alone is invisible to a good
  * share of readers and meaningless to anyone who was not told what it encodes —
  * so it always comes with the tooltip, and with an explicit tag wherever there
@@ -23,8 +24,6 @@ interface EntityBadgeProps {
   entityLong?: string | null
   foundational?: boolean
   onClick?: () => void
-  /** `solid` on detail pages, `muted` in the denser table cells. */
-  variant?: 'solid' | 'muted'
   className?: string
 }
 
@@ -33,41 +32,54 @@ export function EntityBadge({
   entityLong,
   foundational = false,
   onClick,
-  variant = 'solid',
   className = '',
 }: EntityBadgeProps) {
-  const background = foundational
-    ? 'bg-un-blue-deep! hover:bg-un-blue-deep/90!'
-    : variant === 'muted'
-      ? 'bg-un-blue/75! hover:bg-un-blue/60!'
-      : 'bg-un-blue! hover:bg-un-blue/90!'
-
-  const badge = (
-    <Badge
-      variant="secondary"
-      className={`shrink-0 cursor-pointer border-0 text-xs whitespace-nowrap text-white! transition-colors ${background} ${className}`}
-      onClick={(event) => {
-        event.stopPropagation()
-        onClick?.()
-      }}
+  // `onClick` present ⇒ Chip renders a real <button>: focusable, with the
+  // shared focus ring. It used to render through the shadcn Badge, i.e. a
+  // <div>, which made the most-clicked pill in the table keyboard-unreachable.
+  const chip = (
+    <Chip
+      kind="entity"
+      density="dense"
+      tone={foundational ? 'emphasis' : 'neutral'}
+      onClick={onClick}
+      className={cn('shrink-0 whitespace-nowrap', className)}
     >
       {entity}
-    </Badge>
+    </Chip>
   )
 
   const description = entityLong && entityLong !== entity ? entityLong : null
-  if (!description && !foundational) return badge
 
+  const content =
+    !description && !foundational ? (
+      chip
+    ) : (
+      <Tooltip>
+        <TooltipTrigger asChild>{chip}</TooltipTrigger>
+        <TooltipContent className="max-w-xs">
+          {description && <p>{description}</p>}
+          {foundational && (
+            <p className={description ? 'mt-1' : ''}>{FOUNDATIONAL_TOOLTIP}</p>
+          )}
+        </TooltipContent>
+      </Tooltip>
+    )
+
+  if (!onClick) return content
+
+  // These chips sit inside table rows that navigate on click, so the click has
+  // to be stopped or filtering by an entity would also open the mandate. Now
+  // that the chip is a <button>, Enter/Space dispatch a click as well, which
+  // would otherwise both filter AND navigate — the stop covers both paths.
+  // It lives on a `display:contents` wrapper (no box, no layout effect) rather
+  // than on the chip, because Chip's onClick is deliberately event-free and
+  // the chip itself must stay the direct child of TooltipTrigger asChild so
+  // Radix's trigger props land on the focusable element.
   return (
-    <Tooltip>
-      <TooltipTrigger asChild>{badge}</TooltipTrigger>
-      <TooltipContent className="max-w-xs">
-        {description && <p>{description}</p>}
-        {foundational && (
-          <p className={description ? 'mt-1' : ''}>{FOUNDATIONAL_TOOLTIP}</p>
-        )}
-      </TooltipContent>
-    </Tooltip>
+    <span className="contents" onClick={(event) => event.stopPropagation()}>
+      {content}
+    </span>
   )
 }
 
@@ -76,12 +88,14 @@ export function FoundationalTag() {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Badge
-          variant="secondary"
-          className="max-w-[13rem] shrink cursor-help truncate border-0 bg-un-blue-deep/10! px-2 py-0.5 text-[12px] font-medium text-un-blue-deep! whitespace-nowrap"
+        <Chip
+          density="dense"
+          tone="emphasis"
+          truncate
+          className="max-w-[13rem] shrink cursor-help"
         >
           {FOUNDATIONAL_LABEL}
-        </Badge>
+        </Chip>
       </TooltipTrigger>
       <TooltipContent className="max-w-xs">
         {FOUNDATIONAL_TOOLTIP}
