@@ -9,6 +9,7 @@ import {
   formatSubjectLabel,
 } from '@/components/MandateDetailUi'
 import { RelatedMandates } from '@/components/RelatedMandates'
+import { SHOW_RELATED_MANDATES } from '@/lib/feature-flags'
 import { domainColor } from '@/lib/subjectDomainColors'
 import type { RelatedMandate } from '@/lib/data/related'
 
@@ -109,7 +110,7 @@ export function MandateTopics({
         </>
       )}
 
-      <RelatedMandates related={related} />
+      {SHOW_RELATED_MANDATES && <RelatedMandates related={related} />}
     </section>
   )
 }

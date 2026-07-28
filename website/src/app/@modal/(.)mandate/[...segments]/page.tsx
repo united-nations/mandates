@@ -6,6 +6,7 @@ import { FileText } from 'lucide-react'
 import { getMandateBySymbol, getResolutionSeries } from '@/lib/data/mandates'
 import { getAllEntities } from '@/lib/data/entities'
 import { getRelatedMandates, getSubjectDomainCodes } from '@/lib/data/related'
+import { SHOW_RELATED_MANDATES } from '@/lib/feature-flags'
 import { getAllOrgans } from '@/lib/data/organs'
 import { getParagraphsBySymbol } from '@/lib/data/paragraphs'
 import { ParagraphsSection } from '@/components/ParagraphsSection'
@@ -36,7 +37,9 @@ export default async function ModalMandatePage({
       getAllOrgans(),
       getParagraphsBySymbol(documentSymbol),
       getResolutionSeries(documentSymbol),
-      getRelatedMandates(documentSymbol),
+      // Skipped entirely while the section is flagged off, so the detail page
+      // does not pay for the query.
+      SHOW_RELATED_MANDATES ? getRelatedMandates(documentSymbol) : [],
       getSubjectDomainCodes(documentSymbol),
     ])
 
