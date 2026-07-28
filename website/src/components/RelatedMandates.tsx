@@ -3,7 +3,11 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { ChevronDown, ChevronUp } from 'lucide-react'
-import { DetailFootnote } from '@/components/MandateDetailUi'
+import {
+  DetailFootnote,
+  DetailSubsectionHeading,
+  formatSubjectLabel,
+} from '@/components/MandateDetailUi'
 import { getMandateUrl } from '@/components/table/MandateColumns'
 import type { RelatedMandate } from '@/lib/data/related'
 
@@ -33,9 +37,9 @@ export function RelatedMandates({ related }: { related: RelatedMandate[] }) {
 
   return (
     <div className="space-y-2 pt-2">
-      <h3 className="text-sm font-normal tracking-wide text-gray-600 uppercase">
+      <DetailSubsectionHeading>
         Related mandate documents
-      </h3>
+      </DetailSubsectionHeading>
 
       <ul className="divide-y divide-gray-100 border-y border-gray-100">
         {shown.map((item) => (
@@ -63,9 +67,9 @@ export function RelatedMandates({ related }: { related: RelatedMandate[] }) {
                   <a
                     key={subject}
                     href={`/secretariat?subject=${encodeURIComponent(subject)}`}
-                    className="inline-flex rounded-full border border-gray-200 bg-gray-50 px-2 py-0.5 text-[11px] text-gray-600 transition-colors hover:border-un-blue hover:bg-gray-100"
+                    className="inline-flex rounded-full border border-gray-200 bg-gray-50 px-2 py-1.5 text-[11px] text-gray-600 transition-colors hover:border-un-blue hover:bg-gray-100 focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:outline-none sm:py-0.5"
                   >
-                    {subject}
+                    {formatSubjectLabel(subject)}
                   </a>
                 ))}
                 {item.shared_count > item.shared_subjects.length && (

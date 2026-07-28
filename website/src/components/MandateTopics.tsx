@@ -1,9 +1,12 @@
 'use client'
 
 import { useState } from 'react'
+import { ChevronDown, ChevronUp } from 'lucide-react'
 import {
   DetailFootnote,
   DetailSectionHeading,
+  FilterChip,
+  formatSubjectLabel,
 } from '@/components/MandateDetailUi'
 import { RelatedMandates } from '@/components/RelatedMandates'
 import { domainColor } from '@/lib/subjectDomainColors'
@@ -63,10 +66,10 @@ export function MandateTopics({
             {shown.map((subject) => {
               const code = domainCodes[subject.trim().toUpperCase()]
               return (
-                <a
+                <FilterChip
                   key={subject}
                   href={`/secretariat?subject=${encodeURIComponent(subject.trim())}`}
-                  className="inline-flex items-baseline gap-1.5 rounded-full border border-gray-200 bg-gray-50 px-2.5 py-0.5 text-xs text-gray-700 transition-colors hover:bg-gray-100"
+                  title={`Show mandates on ${formatSubjectLabel(subject)}`}
                 >
                   <span>{formatSubjectLabel(subject)}</span>
                   {code && (
@@ -76,24 +79,32 @@ export function MandateTopics({
                       style={{ backgroundColor: domainColor(code).hex }}
                     />
                   )}
-                </a>
+                </FilterChip>
               )
             })}
             {sorted.length > DEFAULT_SHOWN && (
               <button
                 type="button"
                 onClick={() => setShowAll(!showAll)}
-                className="ml-1 text-xs text-un-blue hover:underline"
+                className="ml-1 inline-flex items-center gap-1 self-center text-xs font-medium text-un-blue hover:underline"
               >
-                {showAll
-                  ? 'Show fewer'
-                  : `Show ${sorted.length - DEFAULT_SHOWN} more`}
+                {showAll ? (
+                  <>
+                    <ChevronUp className="h-3 w-3" />
+                    Show fewer
+                  </>
+                ) : (
+                  <>
+                    <ChevronDown className="h-3 w-3" />
+                    Show all {sorted.length}
+                  </>
+                )}
               </button>
             )}
           </div>
 
           <DetailFootnote>
-            Navigate topics to identify related mandate documents.
+            Click a topic to see every mandate document that shares it.
           </DetailFootnote>
         </>
       )}
@@ -101,9 +112,4 @@ export function MandateTopics({
       <RelatedMandates related={related} />
     </section>
   )
-}
-
-/** Subject labels are title-cased upstream, so "UN" arrives as "Un". */
-function formatSubjectLabel(subject: string): string {
-  return subject.replace(/\bUn\b/g, 'UN')
 }

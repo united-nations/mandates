@@ -7,6 +7,9 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import {
+  CHIP_BASE,
+  CHIP_TONES,
+  CHIP_TOUCH_TARGET,
   DetailFootnote,
   DetailSectionHeading,
 } from '@/components/MandateDetailUi'
@@ -18,7 +21,7 @@ import {
 } from '@/lib/foundational'
 import { cn } from '@/lib/utils'
 import type { BudgetLocation, Entity, Mandate } from '@/types'
-import { MousePointerClick } from 'lucide-react'
+import { ChevronDown, ChevronUp, MousePointerClick } from 'lucide-react'
 
 /**
  * "Who implements this mandate?" — the entities that cite the document in the
@@ -119,15 +122,25 @@ export function CitationCounts({ mandate, entities }: CitationCountsProps) {
           <button
             type="button"
             onClick={() => setShowAll(!showAll)}
-            className="text-xs text-un-blue hover:underline"
+            className="inline-flex items-center gap-1 self-center text-xs font-medium text-un-blue hover:underline"
           >
-            {showAll ? 'Show fewer' : `Show all ${citingEntities.length}`}
+            {showAll ? (
+              <>
+                <ChevronUp className="h-3 w-3" />
+                Show fewer
+              </>
+            ) : (
+              <>
+                <ChevronDown className="h-3 w-3" />
+                Show all {citingEntities.length}
+              </>
+            )}
           </button>
         )}
       </div>
 
       <DetailFootnote>
-        Select an entity to see its full name and where in the budget it cites
+        Click an entity to see its full name and where in the budget it cites
         this document.
       </DetailFootnote>
     </section>
@@ -152,10 +165,14 @@ function EntityChip({
           type="button"
           aria-label={`Budget details for ${entityLong ?? entity}`}
           className={cn(
-            'inline-flex cursor-pointer items-baseline gap-1.5 rounded-full border px-2.5 py-0.5 text-xs transition-colors',
-            foundational
-              ? 'border-un-blue-deep/40 bg-un-blue-deep/5 font-medium text-un-blue-deep hover:bg-un-blue-deep/10'
-              : 'border-gray-200 bg-gray-50 text-gray-700 hover:border-un-blue hover:bg-gray-100'
+            CHIP_BASE,
+            CHIP_TONES[foundational ? 'accent' : 'default'],
+            // Entity chips are the interaction the section's copy asks the
+            // reader to perform, so they take the full 44px touch target on
+            // small viewports rather than the shared 36px.
+            CHIP_TOUCH_TARGET,
+            'cursor-pointer',
+            !foundational && 'hover:border-un-blue'
           )}
         >
           {entity}
@@ -189,7 +206,7 @@ function EntityChip({
               {FOUNDATIONAL_LABEL}
             </span>
             <p className="mt-0.5 text-xs text-gray-500">
-              {FOUNDATIONAL_TOOLTIP}
+              {foundationalExplanation()}
             </p>
           </div>
         )}
@@ -199,8 +216,8 @@ function EntityChip({
             <p className="text-xs tracking-wide text-gray-600 uppercase">
               Where in the budget
             </p>
-            {dedupeLocations(locations).map((location, index) => (
-              <div key={index} className="flex flex-wrap gap-1">
+            {dedupeLocations(locations).map(({ key, location }) => (
+              <div key={key} className="flex flex-wrap gap-1">
                 <PopoverChip
                   href={explorerUrl('budget_document', location.stream)}
                 >
@@ -258,15 +275,21 @@ function PopoverChip({
   return (
     <a
       href={href}
-      className="inline-flex items-baseline rounded-full border border-gray-200 bg-gray-50 px-2 py-0.5 text-[11px] text-gray-700 transition-colors hover:border-un-blue hover:bg-gray-100"
+      className="inline-flex items-baseline rounded-full border border-gray-200 bg-gray-50 px-2 py-1.5 text-[11px] text-gray-700 transition-colors hover:border-un-blue hover:bg-gray-100 focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:outline-none sm:py-0.5"
     >
       {children}
     </a>
   )
 }
 
-/** One row per distinct stream/part/section/subprogramme place. */
-function dedupeLocations(locations: BudgetLocation[]): BudgetLocation[] {
+/**
+ * One row per distinct stream/part/section/subprogramme place. The identity of
+ * a row is that composite key, so it is returned rather than discarded — a list
+ * index would re-key every row whenever the set changes.
+ */
+function dedupeLocations(
+  locations: BudgetLocation[]
+): { key: string; location: BudgetLocation }[] {
   const seen = new Map<string, BudgetLocation>()
   for (const location of locations) {
     const key = [
@@ -277,5 +300,20 @@ function dedupeLocations(locations: BudgetLocation[]): BudgetLocation[] {
     ].join(' ')
     if (!seen.has(key)) seen.set(key, location)
   }
-  return [...seen.values()]
+  return [...seen.entries()].map(([key, location]) => ({ key, location }))
+}
+
+/**
+ * The badge above already says "Foundational", and the shared tooltip string
+ * repeats it as a "Foundational: …" prefix — so the popover read "Foundational
+ * / Foundational: this entity cites…". The prefix is stripped here rather than
+ * edited out of lib/foundational.ts, because that string is also used where it
+ * stands alone, and the label is a pending terminology decision that must stay
+ * renameable in exactly one place.
+ */
+function foundationalExplanation(): string {
+  const prefix = `${FOUNDATIONAL_LABEL}:`
+  if (!FOUNDATIONAL_TOOLTIP.startsWith(prefix)) return FOUNDATIONAL_TOOLTIP
+  const rest = FOUNDATIONAL_TOOLTIP.slice(prefix.length).trim()
+  return rest.charAt(0).toUpperCase() + rest.slice(1)
 }

@@ -33,6 +33,12 @@ interface MandateVersionHistoryProps {
  * column is still called `superseded_by`, but the claim we are entitled to make
  * to a reader is only "this is not the latest version" — nothing about legal
  * effect.
+ *
+ * The heading is phrased as a question ("How has this mandate changed?") like
+ * its three siblings, and not as the noun label "Version history": this section
+ * sits *between* two of the questions, and a noun label at question weight read
+ * as a sub-heading of the question above it. The count and the year span move
+ * into the heading hint, so nothing is lost.
  */
 export function MandateVersionHistory({
   currentSymbol,
@@ -59,7 +65,9 @@ export function MandateVersionHistory({
       <DetailSectionHeading
         hint={`${series.series_count} resolutions${span ? ` · ${span}` : ''}`}
       >
-        {series.is_collection ? 'Related resolutions' : 'Version history'}
+        {series.is_collection
+          ? 'What else is in this group?'
+          : 'How has this mandate changed?'}
       </DetailSectionHeading>
 
       {series.superseded_by && (
@@ -114,7 +122,7 @@ export function MandateVersionHistory({
               </span>
               {!series.is_collection && m.is_latest && (
                 <span className="shrink-0 rounded bg-un-blue px-1.5 py-0.5 text-[10px] font-medium text-white">
-                  latest
+                  Latest
                 </span>
               )}
               {!isCurrent && (

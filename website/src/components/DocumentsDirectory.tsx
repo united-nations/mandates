@@ -38,7 +38,7 @@ const SEARCH_CAP = 300 // topic pills shown while searching
 interface FlatLeaf {
   subject: string
   count: number
-  /** Domain code — drives the pill colour and the display clustering. */
+  /** Domain code — drives the pill colour and the domain named in its tooltip. */
   code: string
   /** Sub-domain key — kept to make the React key unique per leaf. */
   sub: string
@@ -59,15 +59,8 @@ export function DocumentsDirectory({
   const { active: activeType, select: selectType } =
     useSectionFilter('document_type')
 
-  // Domain display order (already count-sorted by getSubjectHierarchy); used to
-  // cluster same-domain pills together.
-  const domainOrder = useMemo(() => {
-    const m = new Map<string, number>()
-    domains.forEach((d, i) => m.set(d.code, i))
-    return m
-  }, [domains])
-
-  // Flatten every leaf once, tagged with its domain (for colour + grouping).
+  // Flatten every leaf once, tagged with its domain (drives the pill colour and
+  // the domain named in the pill's tooltip).
   const allLeaves = useMemo<FlatLeaf[]>(() => {
     const out: FlatLeaf[] = []
     for (const d of domains) {
@@ -90,21 +83,23 @@ export function DocumentsDirectory({
     return out
   }, [domains])
 
-  // The visible pill set, given search / default.
+  // The visible pill set, given search / default. Ordered by count, globally,
+  // with no re-sort afterwards: the list is a "most common topics" list, so a
+  // monotonically falling count is the one ordering a reader can verify at a
+  // glance. It used to be re-clustered by domain after the top-N cut, which
+  // buried the two largest topics mid-list and made the counts read as random —
+  // and the only cue for the grouping was a 6px coloured dot with no legend.
+  // The domain is still carried by the dot's colour and named in each pill's
+  // tooltip, which is where it is actually legible.
   const pills = useMemo<FlatLeaf[]>(() => {
     const pool = term
       ? allLeaves.filter((l) => l.subject.toLowerCase().includes(term))
       : allLeaves
     const cap = term ? SEARCH_CAP : DEFAULT_TOP
-    // Highest-count first, then cluster by domain for display.
-    const top = [...pool].sort((a, b) => b.count - a.count).slice(0, cap)
-    top.sort(
-      (a, b) =>
-        (domainOrder.get(a.code) ?? 99) - (domainOrder.get(b.code) ?? 99) ||
-        b.count - a.count
-    )
-    return top
-  }, [allLeaves, term, domainOrder])
+    return [...pool]
+      .sort((a, b) => b.count - a.count || a.subject.localeCompare(b.subject))
+      .slice(0, cap)
+  }, [allLeaves, term])
 
   const totalMatches = term
     ? allLeaves.filter((l) => l.subject.toLowerCase().includes(term)).length
@@ -189,11 +184,12 @@ export function DocumentsDirectory({
   )
 }
 
+/** h3, not h2: the dialog's own DialogTitle is the h2 of this subtree. */
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="border-b border-gray-200 pb-1.5 text-sm font-normal tracking-wide text-gray-600 uppercase">
+    <h3 className="border-b border-gray-200 pb-1.5 text-sm font-normal tracking-wide text-gray-600 uppercase">
       {children}
-    </h2>
+    </h3>
   )
 }
 
@@ -238,7 +234,7 @@ function TypePill({
       <TooltipContent side="top" className="max-w-xs">
         <div className="flex items-center gap-1 text-un-blue">
           <MousePointerClick className="h-3.5 w-3.5" />
-          Click to show these documents
+          Click to show mandates
         </div>
       </TooltipContent>
     </Tooltip>
@@ -284,12 +280,18 @@ function SubjectPill({
             className="size-1.5 self-center rounded-full"
             style={{ backgroundColor: color.hex }}
           />
-          <span className="text-[10px] text-gray-500">{leaf.count}</span>
+          <span className="text-[10px] text-gray-500 tabular-nums">
+            {leaf.count.toLocaleString()}
+          </span>
         </a>
       </TooltipTrigger>
       <TooltipContent side="top" className="max-w-xs">
         <div className="font-medium">
           {SUBJECT_DOMAIN_LABELS[leaf.code] ?? leaf.code}
+        </div>
+        <div className="mt-0.5 text-xs text-gray-500">
+          {leaf.count.toLocaleString()} document
+          {leaf.count === 1 ? '' : 's'}
         </div>
         <div className="mt-0.5 flex items-center gap-1 text-un-blue">
           <MousePointerClick className="h-3.5 w-3.5" />

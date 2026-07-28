@@ -315,16 +315,19 @@ function buildFilterClauses(
 
   // Programme filter. Superseded by the section filter — every section has
   // exactly one programme — but kept so existing ?programme= links keep working.
+  // Exact title match: getProgrammeOptions emits one option per distinct
+  // programme_title with its own count, and a substring match made those counts
+  // wrong for every title that is a prefix of another.
   if (filters.programme) {
     clauses.push(`
       EXISTS (
         SELECT 1 FROM ppb2026.source_document_citations c4
         WHERE c4.ppb_full_document_symbol = d.ppb_full_document_symbol
-        AND LOWER(c4.programme_title) LIKE $${paramIndex}
+        AND LOWER(TRIM(c4.programme_title)) = $${paramIndex}
         AND ${versionClause('c4')}
       )
     `)
-    params.push(`%${filters.programme.toLowerCase()}%`)
+    params.push(filters.programme.trim().toLowerCase())
     paramIndex++
   }
 
@@ -393,14 +396,22 @@ function buildFilterClauses(
   }
 
   // Subject filter — Digital Library subjects (TEXT[]) surfaced on the matview.
+  //
+  // EXACT heading match, not a substring one. The facet counts (getSubjectOptions,
+  // getSubjectHierarchy) are computed per distinct heading, so a LIKE '%x%' filter
+  // returned a strictly larger set than the number the user clicked: `Terrorism`
+  // showed 66 but returned 93, because it also matched `Counter-Terrorism`,
+  // `Terrorism Financing`, etc. Case/whitespace are normalised on both sides
+  // because the pill carries the title-cased display form of the heading while
+  // the array holds the raw one.
   if (filters.subject) {
     clauses.push(`
       EXISTS (
         SELECT 1 FROM UNNEST(d.subjects) s
-        WHERE LOWER(s) LIKE $${paramIndex}
+        WHERE LOWER(TRIM(s)) = $${paramIndex}
       )
     `)
-    params.push(`%${filters.subject.toLowerCase()}%`)
+    params.push(filters.subject.trim().toLowerCase())
     paramIndex++
   }
 
@@ -449,15 +460,18 @@ function buildFilterClauses(
   }
 
   // Agenda item filter — Digital Library agenda_items (JSONB [{doc,item,desc,topic}]);
-  // the agenda title is the natural-language "desc".
+  // the agenda title is the natural-language "desc". Exact match on that title,
+  // for the same reason as the subject filter: getAgendaItemOptions counts one
+  // row per distinct "desc", so a substring match would return more documents
+  // than the count the user clicked.
   if (filters.agenda_item) {
     clauses.push(`
       EXISTS (
         SELECT 1 FROM jsonb_array_elements(COALESCE(d.agenda_items, '[]'::jsonb)) a
-        WHERE LOWER(a->>'desc') LIKE $${paramIndex}
+        WHERE LOWER(TRIM(a->>'desc')) = $${paramIndex}
       )
     `)
-    params.push(`%${filters.agenda_item.toLowerCase()}%`)
+    params.push(filters.agenda_item.trim().toLowerCase())
     paramIndex++
   }
 
@@ -1249,23 +1263,35 @@ export async function getOrganCounts(filters: FilterOptions = {}): Promise<Organ
  * declared order. Any organ present in the DB but absent from every category is
  * appended to the last (catch-all) category so it is never lost.
  *
- * Directory scope: every organ that appears on any document in the mirror
- * (public.unified_documents), counted across the whole mirror — deliberately
- * NOT the explorer's active-mandates/version scoping, which would hide organs
- * whose documents aren't in the explorable catalog (the ECOSOC commissions,
- * UNCLOS, etc.). Consequence: filtering the table to one of those organs can
- * currently return no rows; reconciling the explorable catalog with the full
- * organ set is tracked separately (a ppb2026/2027 catalog-scope question).
+ * Directory scope: documents cited by the active budget version — the same
+ * population as getMandateCounts({ mode: 'active_mandates' }).totalDocuments and
+ * getDocumentTypeCatalogue, so every number in the explore modals describes one
+ * document set, and clicking an organ returns exactly the count it displayed.
+ *
+ * It used to count the whole mirror instead (no version predicate at all), which
+ * made the modal read GA 27,969 / ECOSOC 9,553 / SC 4,055 / HRC 729 while a click
+ * returned 1,180 / 282 / 270 / 257 — 15-34x too high, 200px under a tile reading
+ * "2,737 documents". Organs whose documents are in the mirror but not cited by
+ * the active version (ECOSOC commissions, UNCLOS, …) now drop out of the
+ * directory rather than being listed with a count no filter can reproduce.
  */
-export async function getOrganHierarchy(): Promise<OrganGroup[]> {
+async function _getOrganHierarchyInner(
+  version: string | null
+): Promise<OrganGroup[]> {
   const [organs, countRows] = await Promise.all([
     getAllOrgans(),
     queryMany<{ short: string; count: string }>(
-      `SELECT ppb_body AS short, COUNT(DISTINCT ppb_full_document_symbol) AS count
-       FROM public.unified_documents
-       WHERE ppb_body IS NOT NULL AND ppb_body != ''
-       GROUP BY ppb_body`,
-      []
+      `SELECT d.ppb_body AS short,
+              COUNT(DISTINCT d.ppb_full_document_symbol) AS count
+       FROM public.unified_documents d
+       WHERE d.ppb_body IS NOT NULL AND d.ppb_body != ''
+       AND EXISTS (
+         SELECT 1 FROM ppb2026.source_document_citations c
+         WHERE c.ppb_full_document_symbol = d.ppb_full_document_symbol
+         AND ${versionPredicateSql('c', '$1')}
+       )
+       GROUP BY d.ppb_body`,
+      [version]
     ),
   ])
   const countBy = new Map(
@@ -1304,6 +1330,15 @@ export async function getOrganHierarchy(): Promise<OrganGroup[]> {
 
   return groups.filter((g) => g.organs.length > 0)
 }
+
+/** Version-scoped and cached per version, like getDocumentTypeCatalogue. */
+export const getOrganHierarchy = cache((version?: string | null) =>
+  unstable_cache(
+    () => _getOrganHierarchyInner(version ?? null),
+    ['organ-hierarchy-v2', version ?? 'default'],
+    { revalidate: 3600 }
+  )()
+)
 
 /**
  * Catalogue-level document types for the documents explore modal.

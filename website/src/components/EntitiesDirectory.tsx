@@ -10,7 +10,7 @@ import {
 import { useSectionFilter } from '@/hooks/use-section-filter'
 import { cn } from '@/lib/utils'
 import type { BudgetEntityNode, BudgetStream } from '@/types'
-import { ChevronRight, Tag } from 'lucide-react'
+import { ChevronRight, Layers, Tag } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 
 /**
@@ -139,7 +139,7 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
 
         {!term && (
           <p className="pt-2 text-xs text-gray-500">
-            {totalEntities} entities across the budget.
+            {totalEntities.toLocaleString()} entities across the budget.
           </p>
         )}
       </div>
@@ -203,7 +203,10 @@ function buildBuckets(streams: BudgetStream[]): EntityBucket[] {
   return all.filter((b) => b.entities.length > 0)
 }
 
-/** Plain heading — not a filter; see the component doc comment. */
+/**
+ * Plain heading — not a filter; see the component doc comment. h3, not h2: the
+ * dialog's own DialogTitle is the h2 of this subtree.
+ */
 function GroupHeading({
   count,
   children,
@@ -212,10 +215,12 @@ function GroupHeading({
   children: React.ReactNode
 }) {
   return (
-    <h2 className="flex items-baseline gap-2 border-b border-gray-200 pb-1.5 text-sm font-normal tracking-wide text-gray-600 uppercase">
+    <h3 className="flex items-baseline gap-2 border-b border-gray-200 pb-1.5 text-sm font-normal tracking-wide text-gray-600 uppercase">
       {children}
-      <span className="text-xs text-gray-500 tabular-nums">{count}</span>
-    </h2>
+      <span className="text-xs text-gray-500 tabular-nums">
+        {count.toLocaleString()}
+      </span>
+    </h3>
   )
 }
 
@@ -294,6 +299,7 @@ function EntityAnchor({
       </TooltipTrigger>
       <ClickTooltip
         name={entity.entity_long}
+        meta={entityMeta(entity)}
         pills={entity.subprogrammes.map((sp) => ({
           label: sp.subprogramme,
           value: sp.subprogramme,
@@ -305,10 +311,26 @@ function EntityAnchor({
   )
 }
 
+/** Spells out the card's two bare numbers for the hover tooltip. */
+function entityMeta(entity: BudgetEntityNode): string {
+  const parts = [
+    `${entity.count.toLocaleString()} mandate${entity.count === 1 ? '' : 's'}`,
+  ]
+  const subs = entity.subprogrammes.length
+  if (subs > 0)
+    parts.push(`${subs.toLocaleString()} subprogramme${subs === 1 ? '' : 's'}`)
+  return parts.join(' · ')
+}
+
 /**
  * How many subprogrammes an entity has, shown only when there are any: 70 of the
  * 94 Programme Budget entities have none (the generic "All Subprogrammes" bucket
  * is nulled out upstream), so an always-on badge would read "0" on most of them.
+ *
+ * The layers glyph is load-bearing, not decoration: without it the pill reads
+ * "OHCHR 433 4" — two unlabelled numbers that run together into "4334" at
+ * mobile widths. Icon + number is visibly a different kind of quantity from the
+ * bare mandate count, and the tooltip (see entityMeta) names both.
  */
 function SubprogrammeBadge({
   count,
@@ -318,15 +340,18 @@ function SubprogrammeBadge({
   active: boolean
 }) {
   if (count <= 0) return null
+  const label = `${count} subprogramme${count === 1 ? '' : 's'}`
   return (
     <span
-      title={`${count} subprogramme${count === 1 ? '' : 's'}`}
+      title={label}
       className={cn(
-        'inline-flex size-4 shrink-0 items-center justify-center self-center rounded-full text-[9px] leading-none font-medium tabular-nums',
+        'ml-0.5 inline-flex shrink-0 items-center gap-0.5 self-center rounded-full px-1 py-px text-[9px] leading-none font-medium tabular-nums',
         active ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-600'
       )}
     >
-      {count}
+      <Layers aria-hidden className="size-2.5" />
+      {count.toLocaleString()}
+      <span className="sr-only">{label}</span>
     </span>
   )
 }
@@ -345,7 +370,7 @@ function EntityPill({
       entity={entity}
       onSelect={onSelect}
       className={cn(
-        'inline-flex items-baseline gap-1 rounded-full border py-0.5 pr-1.5 pl-2.5 text-xs transition-colors focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:outline-none',
+        'inline-flex items-baseline gap-1.5 rounded-full border py-0.5 pr-1.5 pl-2.5 text-xs transition-colors focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:outline-none',
         active
           ? 'border-un-blue bg-un-blue text-white'
           : 'border-gray-200 bg-white hover:border-un-blue hover:text-un-blue'
@@ -353,12 +378,13 @@ function EntityPill({
     >
       <span className="font-medium">{entity.entity}</span>
       <span
+        title={`${entity.count.toLocaleString()} mandate${entity.count === 1 ? '' : 's'}`}
         className={cn(
-          'text-[10px]',
+          'text-[10px] tabular-nums',
           active ? 'text-white/80' : 'text-gray-500'
         )}
       >
-        {entity.count}
+        {entity.count.toLocaleString()}
       </span>
       <SubprogrammeBadge count={entity.subprogrammes.length} active={active} />
     </EntityAnchor>
@@ -395,14 +421,24 @@ function EntityCard({
           >
             {entity.entity}
           </span>
-          <span className="text-[10px] text-gray-500">{entity.count}</span>
+          <span
+            title={`${entity.count.toLocaleString()} mandate${entity.count === 1 ? '' : 's'}`}
+            className="text-[10px] text-gray-500 tabular-nums"
+          >
+            {entity.count.toLocaleString()}
+          </span>
           <SubprogrammeBadge
             count={entity.subprogrammes.length}
             active={false}
           />
         </div>
         {entity.entity_long && (
-          <div className="truncate text-xs text-gray-500">
+          // Multi-line rather than one truncated line — see OrgansDirectory;
+          // `title` is the recovery path should a name still clamp.
+          <div
+            title={entity.entity_long}
+            className="line-clamp-3 text-xs leading-snug text-gray-500"
+          >
             {entity.entity_long}
           </div>
         )}

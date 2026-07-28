@@ -90,7 +90,7 @@ export function OrgansDirectory({ groups }: OrgansDirectoryProps) {
 
         {!term && (
           <p className="pt-2 text-xs text-gray-500">
-            {totalOrgans} organs adopting mandates.
+            {totalOrgans.toLocaleString()} organs creating mandates.
           </p>
         )}
       </div>
@@ -98,11 +98,12 @@ export function OrgansDirectory({ groups }: OrgansDirectoryProps) {
   )
 }
 
+/** h3, not h2: the dialog's own DialogTitle is the h2 of this subtree. */
 function GroupHeading({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="border-b border-gray-200 pb-1.5 text-sm font-normal tracking-wide text-gray-600 uppercase">
+    <h3 className="border-b border-gray-200 pb-1.5 text-sm font-normal tracking-wide text-gray-600 uppercase">
       {children}
-    </h2>
+    </h3>
   )
 }
 
@@ -115,7 +116,7 @@ function OrganCard({
   active: boolean
   onSelect: (value: string) => void
 }) {
-  const hasLong = organ.long && organ.long !== organ.short
+  const longName = organ.long && organ.long !== organ.short ? organ.long : null
 
   return (
     <div
@@ -145,14 +146,28 @@ function OrganCard({
               >
                 {organ.short}
               </span>
-              <span className="text-[10px] text-gray-500">{organ.count}</span>
+              <span className="text-[10px] text-gray-500 tabular-nums">
+                {organ.count.toLocaleString()}
+              </span>
             </div>
-            {hasLong && (
-              <div className="truncate text-xs text-gray-500">{organ.long}</div>
+            {longName && (
+              // Up to three lines, not one truncated one: the whole point of the
+              // directory is expanding the acronym, and single-line truncation
+              // made ESCAP and ESCWA render identical text. `title` is the
+              // last-resort recovery path should a name ever still clamp.
+              <div
+                title={longName}
+                className="line-clamp-3 text-xs leading-snug text-gray-500"
+              >
+                {longName}
+              </div>
             )}
           </a>
         </TooltipTrigger>
-        <ClickTooltip name={hasLong ? organ.long : undefined} />
+        <ClickTooltip
+          name={longName ?? undefined}
+          meta={`${organ.count.toLocaleString()} mandate${organ.count === 1 ? '' : 's'}`}
+        />
       </Tooltip>
 
       <div className="mt-0.5 flex shrink-0 items-center gap-1">
@@ -161,13 +176,15 @@ function OrganCard({
             href={organ.website}
             target="_blank"
             rel="noopener noreferrer"
+            aria-label={`Official website of ${organ.short} (opens in a new tab)`}
             title="Official website"
             className="text-gray-300 hover:text-un-blue"
           >
-            <ExternalLink className="h-3.5 w-3.5" />
+            <ExternalLink aria-hidden className="h-3.5 w-3.5" />
           </a>
         )}
         <ChevronRight
+          aria-hidden
           className={cn(
             'h-3.5 w-3.5',
             active ? 'text-un-blue' : 'text-gray-300 group-hover:text-un-blue'

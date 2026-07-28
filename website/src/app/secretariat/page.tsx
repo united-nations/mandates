@@ -45,19 +45,25 @@ export default async function Page({ searchParams }: PageProps) {
 
   // Light, cached fetches: the directory data for the explore modals, plus the
   // catalogue document count for the third box (mandate sources for the current
-  // budget version, independent of any facet filter). getDocumentTypeCatalogue
-  // is scoped to the same population as that count, so the type counts and the
-  // headline number describe the same set of documents.
+  // budget version, independent of any facet filter).
+  //
+  // EVERY one of these is scoped to the same population: the active budget
+  // version, catalogue-wide (no facet filter). That is what makes the tiles and
+  // the three modals describe ONE document set. Passing no version here — as the
+  // hierarchies used to — silently pinned them to budget_versions.is_default, so
+  // ?ppb_version=ppb2026 showed a correct 3,962-document total next to topic and
+  // budget counts computed for ppb2027 (HUMAN RIGHTS 215 instead of 506).
+  const catalogueScope = {
+    mode: 'active_mandates' as const,
+    ppb_version: filters.ppb_version,
+  }
   const [organGroups, budgetStreams, subjectDomains, documentTypes, counts] =
     await Promise.all([
-      getOrganHierarchy(),
-      getBudgetHierarchy(),
-      getSubjectHierarchy(),
+      getOrganHierarchy(filters.ppb_version),
+      getBudgetHierarchy(catalogueScope),
+      getSubjectHierarchy(catalogueScope),
       getDocumentTypeCatalogue(filters.ppb_version),
-      getMandateCounts({
-        mode: 'active_mandates',
-        ppb_version: filters.ppb_version,
-      }),
+      getMandateCounts(catalogueScope),
     ])
 
   return (

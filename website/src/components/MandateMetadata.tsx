@@ -6,19 +6,27 @@ import { DetailSectionHeading, FilterChip } from '@/components/MandateDetailUi'
  * "Who created this mandate?" — the provenance of the document, written as one
  * sentence whose nouns are chips:
  *
- *   (General Assembly) as a (Resolution) under agenda item (10 Global health),
- *   published in (2024)
+ *   A (Resolution) of the (General Assembly), under agenda item (10 Global
+ *   health), published in (2024).
  *
  * The sentence is assembled from parts rather than concatenated, because every
  * part is optional in the data: Security Council presidential statements carry
- * no agenda item, a handful of documents have no type, and DL-only records can
- * lack a year. A missing part takes its whole clause with it, so the sentence
- * never degrades into dangling punctuation.
+ * no agenda item, 1,420 of 2,737 documents have no recorded type, and DL-only
+ * records can lack a year. A missing part takes its whole clause with it, so the
+ * sentence never degrades into dangling punctuation.
+ *
+ * The head noun is the document itself ("A Resolution…", or "A document…" when
+ * the type is unrecorded) rather than the organ. Leading with the organ produced
+ * a subject the sentence never predicates — "General Assembly under agenda item
+ * Foo" has no verb and no copula — and that case is the common one, since most
+ * documents have no type.
  *
  * Every chip is a filter on the explorer. The organ chip shows the organ's long
  * name (from the organs table) rather than the symbol prefix — "General
  * Assembly", not "GA" — while still filtering on the short code the table
- * indexes.
+ * indexes. The year chip filters the explorer to that single year
+ * (start_year=end_year), so the contract "every chip is a real link" holds for
+ * all four.
  *
  * The old "Budget Document" row is gone: which budget stream cites this
  * document is a property of the citing entity, and now lives in that entity's
@@ -49,46 +57,48 @@ export function MandateMetadata({ mandate, organs }: MandateMetadataProps) {
     mandate.agenda_item_titles
   )
 
+  const hasType = Boolean(documentType) && documentType !== 'Unknown'
+  const hasOrgan = Boolean(organShort)
+
   // Clauses, in reading order. `clauses.length` at push time tells each clause
-  // whether it is opening the sentence, which is what decides "A Resolution…"
-  // vs "…as a Resolution…" and where the capital letter goes. `separator` is
-  // what precedes the clause when it is not the first.
+  // whether it is opening the sentence, which is what decides where the capital
+  // letter goes. `separator` is what precedes the clause when it is not first.
   const clauses: { key: string; separator: string; node: ReactNode }[] = []
 
-  if (organShort) {
-    clauses.push({
-      key: 'organ',
-      separator: ' ',
-      node: (
-        <FilterChip
-          href={explorerUrl('organ', organShort)}
-          title={`Show mandates adopted by ${organLong}`}
-        >
-          {organLong}
-        </FilterChip>
-      ),
-    })
-  }
-
-  if (documentType && documentType !== 'Unknown') {
+  // Head noun: the document. Present whenever we can say anything about what
+  // the document *is* or whose it is; the type supplies it when recorded, and
+  // the neutral "document" stands in when it is not, so the organ always has
+  // something to be "of".
+  if (hasType || hasOrgan) {
     // The filter values are plural category names ("Resolutions"); the sentence
     // needs the singular. The chip's link keeps the plural the table indexes.
-    const singular = singularizeType(documentType)
-    const article = /^[aeiou]/i.test(singular) ? 'an' : 'a'
-    const lead =
-      clauses.length > 0 ? `as ${article} ` : `${article === 'a' ? 'A' : 'An'} `
+    const singular = hasType ? singularizeType(documentType) : ''
+    const article = /^[aeiou]/i.test(singular) ? 'An' : 'A'
     clauses.push({
       key: 'type',
       separator: ' ',
       node: (
         <>
-          {lead}
-          <FilterChip
-            href={explorerUrl('document_type', documentType)}
-            title={`Show ${documentType}`}
-          >
-            {singular}
-          </FilterChip>
+          {hasType ? `${article} ` : 'A document'}
+          {hasType && (
+            <FilterChip
+              href={explorerUrl('document_type', documentType)}
+              title={`Show ${documentType}`}
+            >
+              {singular}
+            </FilterChip>
+          )}
+          {hasOrgan && (
+            <>
+              {` of ${definiteArticle(organLong)}`}
+              <FilterChip
+                href={explorerUrl('organ', organShort)}
+                title={`Show mandates adopted by ${organLong}`}
+              >
+                {organLong}
+              </FilterChip>
+            </>
+          )}
         </>
       ),
     })
@@ -102,23 +112,27 @@ export function MandateMetadata({ mandate, organs }: MandateMetadataProps) {
         : `Under agenda item${plural} `
     clauses.push({
       key: 'agenda',
-      separator: ' ',
+      separator: ', ',
       node: (
         <>
           {lead}
           {agendaItems.map((item, index) => (
-            <span key={`${item.number}-${item.title}-${index}`}>
-              {index > 0 && <span className="text-gray-500"> and </span>}
+            <span key={`${item.number}-${item.label}-${index}`}>
+              {index > 0 && (
+                <span className="text-gray-500">
+                  {index === agendaItems.length - 1 ? ' and ' : ', '}
+                </span>
+              )}
               <FilterChip
                 href={explorerUrl('agenda_item', item.title)}
-                title={`Show mandates under “${item.title}”`}
+                title={`Show mandates under “${item.label}”`}
               >
                 {item.number && (
                   <span className="font-medium text-gray-900">
                     {item.number}
                   </span>
                 )}
-                <span>{item.title}</span>
+                <span>{item.label}</span>
               </FilterChip>
             </span>
           ))}
@@ -135,7 +149,12 @@ export function MandateMetadata({ mandate, organs }: MandateMetadataProps) {
       node: (
         <>
           {first ? 'Published in ' : 'published in '}
-          <FilterChip>{year}</FilterChip>
+          <FilterChip
+            href={`/secretariat?start_year=${encodeURIComponent(year)}&end_year=${encodeURIComponent(year)}`}
+            title={`Show mandates from ${year}`}
+          >
+            {year}
+          </FilterChip>
         </>
       ),
     })
@@ -153,6 +172,7 @@ export function MandateMetadata({ mandate, organs }: MandateMetadataProps) {
             {clause.node}
           </span>
         ))}
+        {'.'}
       </p>
     </section>
   )
@@ -175,9 +195,22 @@ function singularizeType(type: string): string {
     .join(' ')
 }
 
+/**
+ * Every UN organ name in the organs table takes the definite article ("of the
+ * General Assembly"), but a name that already carries it must not get a second
+ * one.
+ */
+function definiteArticle(organLong: string): string {
+  return /^the\s/i.test(organLong) ? '' : 'the '
+}
+
 interface AgendaItem {
-  number: string
+  /** Raw heading — the value the agenda_item filter keys on. */
   title: string
+  /** Display form: trailing sentence punctuation removed. */
+  label: string
+  /** Display form of the item number: MARC brackets removed. */
+  number: string
 }
 
 /**
@@ -190,6 +223,12 @@ interface AgendaItem {
  * either — the agenda filter keys on the title), so only pairs with a title are
  * shown. When no title exists the whole clause is dropped rather than printing
  * "under agenda items [29] and X".
+ *
+ * Both fields carry raw MARC punctuation: titles end in a full stop ("…United
+ * Nations System."), which collided with the ", published in" that follows and
+ * printed "…System., published in 2024", and numbers arrive bracketed (`[31]`)
+ * about as often as bare (`118`). Both are cleaned for display only; the filter
+ * still travels on the raw title.
  */
 function pairAgendaItems(
   numbers: string[] | undefined,
@@ -199,7 +238,21 @@ function pairAgendaItems(
   ;(titles ?? []).forEach((rawTitle, i) => {
     const title = rawTitle?.trim()
     if (!title) return
-    out.push({ number: numbers?.[i]?.trim() ?? '', title })
+    out.push({
+      title,
+      label: stripTrailingPunctuation(title),
+      number: cleanAgendaNumber(numbers?.[i]),
+    })
   })
   return out
+}
+
+/** "…United Nations System." → "…United Nations System" */
+function stripTrailingPunctuation(value: string): string {
+  return value.replace(/[.,;:]+$/, '').trim()
+}
+
+/** "[31]" → "31"; "123a" → "123a"; missing → "". */
+function cleanAgendaNumber(raw: string | undefined): string {
+  return (raw ?? '').replace(/[[\]]/g, '').trim()
 }

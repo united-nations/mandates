@@ -1,9 +1,10 @@
 'use client'
 
-import { Checkbox } from '@/components/ui/checkbox'
 import {
   DropdownMenu,
+  DropdownMenuCheckboxItem,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
@@ -54,34 +55,36 @@ export function ColumnPicker({
           <ChevronDown className="h-3.5 w-3.5 opacity-60" />
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="w-52">
+      {/* align="end": the trigger sits at the right end of the toolbar, so an
+          "start"-aligned menu overhangs the content column into the page
+          margin. */}
+      <DropdownMenuContent align="end" className="w-52">
         <DropdownMenuLabel className="text-xs">
           Columns to show
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <div className="p-1">
-          {TOGGLEABLE_COLUMNS.map((col) => (
-            <label
-              key={col.id}
-              className="flex cursor-pointer items-center gap-2 rounded-sm px-2 py-1.5 text-sm hover:bg-accent"
-            >
-              <Checkbox
-                checked={visibleColumns.has(col.id)}
-                onCheckedChange={() => onToggle(col.id)}
-              />
-              {col.label}
-            </label>
-          ))}
-        </div>
+        {TOGGLEABLE_COLUMNS.map((col) => (
+          <DropdownMenuCheckboxItem
+            key={col.id}
+            checked={visibleColumns.has(col.id)}
+            // Keep the menu open: toggling several columns in a row is the
+            // normal case, and Radix closes on select by default.
+            onSelect={(event) => event.preventDefault()}
+            onCheckedChange={() => onToggle(col.id)}
+            className="cursor-pointer"
+          >
+            {col.label}
+          </DropdownMenuCheckboxItem>
+        ))}
         {hasCustomization && (
           <>
             <DropdownMenuSeparator />
-            <button
-              onClick={onReset}
-              className="w-full px-2 py-1.5 text-left text-xs text-muted-foreground hover:text-foreground"
+            <DropdownMenuItem
+              onSelect={onReset}
+              className="cursor-pointer text-xs text-muted-foreground focus:text-foreground"
             >
               Reset to defaults
-            </button>
+            </DropdownMenuItem>
           </>
         )}
       </DropdownMenuContent>
