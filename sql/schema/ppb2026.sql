@@ -372,6 +372,17 @@ create index resolution_series_key_idx
 
 grant select on digitallibrary.resolution_series to mandates_readonly;
 
+-- The website also reads the Digital Library fulltext tables directly:
+-- getResolutionSeries JOINs digitallibrary.documents, and Arm 2 of
+-- getParagraphsBySymbol reads digitallibrary.document_paragraphs (the fallback
+-- for documents with no curated mandates.paragraphs rows). These tables are
+-- created/owned by the external DL-sync repo (digitallibrary_rw), so they are
+-- not defined in this file -- only the read grant the app depends on is tracked
+-- here. document_parses is granted for parity with the document* read set even
+-- though the app does not read it yet. See migration 034 and sql/roles/wannes.sql.
+grant select on digitallibrary.document_paragraphs to mandates_readonly;
+grant select on digitallibrary.document_parses     to mandates_readonly;
+
 -- Unified set: PPB source documents + Digital Library resolutions.
 -- Materialized (not a plain view) — the Digital Library branch full-scans
 -- ~380k rows with a regex + anti-join (~700ms) and is referenced ~16x per
@@ -412,7 +423,23 @@ select
     sd.ppb_link,
     coalesce(sd.ppb_year, extract(year from dl.date_publication)::smallint) as ppb_year,
     sd.ppb_body,
-    sd.ppb_type,
+    -- Document type: prefer the type the Digital Library derives from the
+    -- symbol family (same rule as the DL branch below), fall back to the
+    -- curated Airtable ppb_type where the symbol carries no type signal
+    -- (Letters, Reports, Conventions, Charter, …). This fills the ~630 PPB
+    -- documents (mostly 2027-pipeline resolutions) whose Airtable ppb_type is
+    -- blank, without regressing the curated rich types. See migration 035.
+    -- WTO ministerial docs (e.g. WT/MIN(01)/DEC/1) use "/DEC/" in their own
+    -- numbering and are not UN decisions, so they are excluded and keep Airtable.
+    coalesce(
+        case
+            when sd.ppb_full_document_symbol ~ '^WT/'    then null
+            when sd.ppb_full_document_symbol ~ '/PRST/'  then 'Presidential Statements'
+            when sd.ppb_full_document_symbol ~ '/DEC/'   then 'Decisions'
+            when sd.ppb_full_document_symbol ~ '/RES/'   then 'Resolutions'
+        end,
+        sd.ppb_type
+    ) as ppb_type,
     dl.subjects,
     dl.agenda_items,
     true as is_ppb,

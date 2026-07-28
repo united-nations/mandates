@@ -31,7 +31,7 @@ import type {
 } from '@/types'
 
 import { ChevronRight, MoveHorizontal } from 'lucide-react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { titleCase } from 'title-case'
 import { EntityBadge, FoundationalTag } from '../EntityBadge'
@@ -42,7 +42,9 @@ import { BudgetLocationCell } from './BudgetLocationCell'
 import { COLUMN_DEFINITIONS, getMandateUrl } from './MandateColumns'
 import {
   GroupBadge,
+  GroupHiddenVersionsNote,
   GroupMemberLine,
+  groupHasHiddenVersions,
   SeriesMarkers,
 } from './MandateSeriesIndicators'
 
@@ -92,6 +94,7 @@ export function MandateDataTable({
 }: MandateDataTableProps) {
   const { filters, setFilter, isPending } = useFilters()
   const router = useRouter()
+  const searchParams = useSearchParams()
 
   const grouped = filters.group === '1'
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set())
@@ -174,10 +177,11 @@ export function MandateDataTable({
   const handleRowClick = (mandate: Mandate, e: React.MouseEvent) => {
     e.preventDefault()
     router.push(
-      getMandateUrl(mandate.full_document_symbol, {
-        ppb_version: filters.ppb_version,
-        mode: filters.mode,
-      })
+      getMandateUrl(
+        mandate.full_document_symbol,
+        { ppb_version: filters.ppb_version, mode: filters.mode },
+        searchParams
+      )
     )
   }
 
@@ -275,10 +279,14 @@ export function MandateDataTable({
                           className="cursor-pointer border-b border-gray-100 bg-gray-50/60 hover:bg-gray-100"
                           onClick={() =>
                             router.push(
-                              getMandateUrl(member.symbol, {
-                                ppb_version: filters.ppb_version,
-                                mode: filters.mode,
-                              })
+                              getMandateUrl(
+                                member.symbol,
+                                {
+                                  ppb_version: filters.ppb_version,
+                                  mode: filters.mode,
+                                },
+                                searchParams
+                              )
                             )
                           }
                         >
@@ -290,6 +298,21 @@ export function MandateDataTable({
                           </TableCell>
                         </TableRow>
                       ))}
+                    {grouped &&
+                      isExpanded &&
+                      groupHasHiddenVersions(mandate) && (
+                        <TableRow
+                          className="cursor-pointer border-b border-gray-100 bg-gray-50/60 hover:bg-gray-100"
+                          onClick={(e) => handleRowClick(mandate, e)}
+                        >
+                          <TableCell
+                            colSpan={columns.length + 1}
+                            className="px-3 py-1.5 pl-11"
+                          >
+                            <GroupHiddenVersionsNote mandate={mandate} />
+                          </TableCell>
+                        </TableRow>
+                      )}
                   </Fragment>
                 )
               })}

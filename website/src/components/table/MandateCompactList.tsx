@@ -5,12 +5,14 @@ import { TooltipProvider } from '@/components/ui/tooltip'
 import { useFilters } from '@/contexts/FilterContext'
 import type { Entity, Mandate, Organ } from '@/types'
 import { ChevronRight } from 'lucide-react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Fragment, useState } from 'react'
 import { getMandateUrl } from './MandateColumns'
 import {
   GroupBadge,
+  GroupHiddenVersionsNote,
   GroupMemberLine,
+  groupHasHiddenVersions,
   SeriesMarkers,
 } from './MandateSeriesIndicators'
 
@@ -23,6 +25,7 @@ interface MandateCompactListProps {
 export function MandateCompactList({ mandates }: MandateCompactListProps) {
   const { filters, isPending } = useFilters()
   const router = useRouter()
+  const searchParams = useSearchParams()
 
   const grouped = filters.group === '1'
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set())
@@ -38,10 +41,11 @@ export function MandateCompactList({ mandates }: MandateCompactListProps) {
   const handleClick = (mandate: Mandate, e: React.MouseEvent) => {
     e.preventDefault()
     router.push(
-      getMandateUrl(mandate.full_document_symbol, {
-        ppb_version: filters.ppb_version,
-        mode: filters.mode,
-      })
+      getMandateUrl(
+        mandate.full_document_symbol,
+        { ppb_version: filters.ppb_version, mode: filters.mode },
+        searchParams
+      )
     )
   }
 
@@ -108,10 +112,14 @@ export function MandateCompactList({ mandates }: MandateCompactListProps) {
                     key={member.symbol}
                     onClick={() =>
                       router.push(
-                        getMandateUrl(member.symbol, {
-                          ppb_version: filters.ppb_version,
-                          mode: filters.mode,
-                        })
+                        getMandateUrl(
+                          member.symbol,
+                          {
+                            ppb_version: filters.ppb_version,
+                            mode: filters.mode,
+                          },
+                          searchParams
+                        )
                       )
                     }
                     className="cursor-pointer border-b border-gray-100 bg-gray-50/60 px-3 py-1.5 pl-8 transition-colors hover:bg-gray-100"
@@ -119,6 +127,14 @@ export function MandateCompactList({ mandates }: MandateCompactListProps) {
                     <GroupMemberLine member={member} />
                   </div>
                 ))}
+              {grouped && isExpanded && groupHasHiddenVersions(mandate) && (
+                <div
+                  onClick={(e) => handleClick(mandate, e)}
+                  className="cursor-pointer border-b border-gray-100 bg-gray-50/60 px-3 py-1.5 pl-8 transition-colors hover:bg-gray-100"
+                >
+                  <GroupHiddenVersionsNote mandate={mandate} />
+                </div>
+              )}
             </Fragment>
           )
         })}
