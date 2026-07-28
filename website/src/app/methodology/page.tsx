@@ -26,7 +26,7 @@ export default function MethodologyPage() {
           width={248}
           height={135}
           unoptimized
-          className="h-auto w-3/4 max-w-md"
+          className="h-auto w-full max-w-4xl"
         />
 
         <p>
