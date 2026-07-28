@@ -387,7 +387,6 @@ function EntityPill({
       onSelect={onSelect}
       render={({ href, onClick }) => (
         <Chip
-          kind="entity"
           tone={active ? 'selected' : 'neutral'}
           href={href}
           onClick={onClick}

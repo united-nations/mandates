@@ -7,10 +7,9 @@ import {
   DetailSectionHeading,
   formatSubjectLabel,
 } from '@/components/MandateDetailUi'
-import { Chip, ChipDot } from '@/components/ui/chip'
+import { Chip } from '@/components/ui/chip'
 import { RelatedMandates } from '@/components/RelatedMandates'
 import { SHOW_RELATED_MANDATES } from '@/lib/feature-flags'
-import { domainColor } from '@/lib/subjectDomainColors'
 import type { RelatedMandate } from '@/lib/data/related'
 
 /**
@@ -28,16 +27,10 @@ const DEFAULT_SHOWN = 20
 
 interface MandateTopicsProps {
   subjects: string[]
-  /** Domain code per normalized (upper-case) heading; missing = no dot. */
-  domainCodes: Record<string, string>
   related: RelatedMandate[]
 }
 
-export function MandateTopics({
-  subjects,
-  domainCodes,
-  related,
-}: MandateTopicsProps) {
+export function MandateTopics({ subjects, related }: MandateTopicsProps) {
   const [showAll, setShowAll] = useState(false)
   if (subjects.length === 0 && related.length === 0) return null
 
@@ -64,16 +57,13 @@ export function MandateTopics({
         <>
           <div className="flex flex-wrap items-start gap-x-1 gap-y-1.5">
             {shown.map((subject) => {
-              const code = domainCodes[subject.trim().toUpperCase()]
               return (
                 <Chip
                   key={subject}
-                  kind="topic"
                   href={`/secretariat?subject=${encodeURIComponent(subject.trim())}`}
                   title={`Show mandates on ${formatSubjectLabel(subject)}`}
                 >
                   <span>{formatSubjectLabel(subject)}</span>
-                  {code && <ChipDot color={domainColor(code).hex} />}
                 </Chip>
               )
             })}
@@ -111,7 +101,7 @@ export function MandateTopics({
             >
               UN Library thesaurus
             </a>
-            ; the dot marks which broad subject domain each one belongs to.
+            .
           </DetailFootnote>
         </>
       )}

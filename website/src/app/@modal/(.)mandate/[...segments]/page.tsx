@@ -3,7 +3,7 @@ import { getMandateDisplayTitle, decodeUrlSegments } from '@/lib/utils'
 
 import { getMandateBySymbol, getResolutionSeries } from '@/lib/data/mandates'
 import { getAllEntities } from '@/lib/data/entities'
-import { getRelatedMandates, getSubjectDomainCodes } from '@/lib/data/related'
+import { getRelatedMandates } from '@/lib/data/related'
 import { SHOW_RELATED_MANDATES } from '@/lib/feature-flags'
 import { getAllOrgans } from '@/lib/data/organs'
 import { getParagraphsBySymbol } from '@/lib/data/paragraphs'
@@ -29,7 +29,7 @@ export default async function ModalMandatePage({
   const ppbVersion =
     typeof sp.ppb_version === 'string' ? sp.ppb_version : undefined
 
-  const [mandate, entities, organs, paragraphs, series, related, domainCodes] =
+  const [mandate, entities, organs, paragraphs, series, related] =
     await Promise.all([
       getMandateBySymbol(documentSymbol, ppbVersion),
       getAllEntities(),
@@ -39,7 +39,6 @@ export default async function ModalMandatePage({
       // Skipped entirely while the section is flagged off, so the detail page
       // does not pay for the query.
       SHOW_RELATED_MANDATES ? getRelatedMandates(documentSymbol) : [],
-      getSubjectDomainCodes(documentSymbol),
     ])
 
   if (!mandate) notFound()
@@ -65,7 +64,6 @@ export default async function ModalMandatePage({
         <CitationCounts mandate={mandate} entities={entities} />
         <MandateTopics
           subjects={mandate.subject_headings ?? []}
-          domainCodes={domainCodes}
           related={related}
         />
         <ParagraphsSection

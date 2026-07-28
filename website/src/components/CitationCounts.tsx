@@ -176,7 +176,6 @@ function EntityChip({
             the section's copy asks the reader to perform, so they take the full
             44px touch target on small viewports (density="touch"). */}
         <Chip
-          kind="entity"
           density="touch"
           tone={foundational ? 'emphasis' : 'neutral'}
           aria-label={`Budget details for ${entityLong ?? entity}`}
@@ -279,7 +278,7 @@ function PopoverChip({
   children: React.ReactNode
 }) {
   return (
-    <Chip kind="budget" density="dense" href={href}>
+    <Chip density="dense" href={href}>
       {children}
     </Chip>
   )
