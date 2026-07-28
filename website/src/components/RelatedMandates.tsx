@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import {
   DetailFootnote,
@@ -9,6 +8,7 @@ import {
   formatSubjectLabel,
 } from '@/components/MandateDetailUi'
 import { Chip } from '@/components/ui/chip'
+import { DocumentSymbol } from '@/components/DocumentSymbol'
 import { getMandateUrl } from '@/components/table/MandateColumns'
 import type { RelatedMandate } from '@/lib/data/related'
 
@@ -49,12 +49,12 @@ export function RelatedMandates({ related }: { related: RelatedMandate[] }) {
               <span className="w-10 shrink-0 text-xs text-gray-500">
                 {item.year ?? '—'}
               </span>
-              <Link
+              <DocumentSymbol
                 href={getMandateUrl(item.document_symbol)}
-                className="w-36 shrink-0 truncate font-mono text-xs font-medium text-un-blue hover:underline"
+                className="w-36 shrink-0 truncate"
               >
                 {item.document_symbol}
-              </Link>
+              </DocumentSymbol>
               <span
                 className="min-w-0 flex-1 truncate text-xs text-gray-600"
                 title={item.title ?? undefined}
@@ -67,7 +67,6 @@ export function RelatedMandates({ related }: { related: RelatedMandate[] }) {
                 {item.shared_subjects.map((subject) => (
                   <Chip
                     key={subject}
-                    kind="topic"
                     density="dense"
                     href={`/secretariat?subject=${encodeURIComponent(subject)}`}
                   >

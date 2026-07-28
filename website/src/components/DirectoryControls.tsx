@@ -103,7 +103,6 @@ export function ClickTooltip({
           {pills.map((pill) => (
             <Chip
               key={pill.value}
-              kind="budget"
               density="dense"
               tone={activePill === pill.value ? 'selected' : 'neutral'}
               href={`/secretariat?subprogramme=${encodeURIComponent(pill.value)}`}

@@ -86,11 +86,7 @@ export function MandateCompactList({ mandates }: MandateCompactListProps) {
                     {mandate.body && (
                       <>
                         <span className="text-gray-300">·</span>
-                        <Chip
-                          kind="organ"
-                          density="dense"
-                          className="whitespace-nowrap"
-                        >
+                        <Chip density="dense" className="whitespace-nowrap">
                           {mandate.body}
                         </Chip>
                       </>

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { ArrowRight, ChevronDown, ChevronUp, GitCompare } from 'lucide-react'
 import type { ResolutionSeriesInfo } from '@/lib/data/mandates'
+import { DocumentSymbol } from '@/components/DocumentSymbol'
 import { getMandateUrl } from '@/components/table/MandateColumns'
 import {
   DetailFootnote,
@@ -103,16 +104,16 @@ export function MandateVersionHistory({
                 {m.year ?? '—'}
               </span>
               {isCurrent ? (
-                <span className="w-36 shrink-0 truncate font-mono text-xs font-medium text-gray-900">
+                <DocumentSymbol subdued className="w-36 shrink-0 truncate">
                   {m.document_symbol}
-                </span>
+                </DocumentSymbol>
               ) : (
-                <Link
+                <DocumentSymbol
                   href={getMandateUrl(m.document_symbol)}
-                  className="w-36 shrink-0 truncate font-mono text-xs font-medium text-un-blue hover:underline"
+                  className="w-36 shrink-0 truncate"
                 >
                   {m.document_symbol}
-                </Link>
+                </DocumentSymbol>
               )}
               <span
                 className="min-w-0 flex-1 truncate text-xs text-gray-600"

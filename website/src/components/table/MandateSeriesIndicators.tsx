@@ -13,6 +13,7 @@ import {
   History,
   Layers,
 } from 'lucide-react'
+import { DocumentSymbol } from '@/components/DocumentSymbol'
 import { getMandateUrl } from './MandateColumns'
 
 /**
@@ -172,9 +173,9 @@ export function GroupMemberLine({
       <span className="w-10 shrink-0 text-xs text-muted-foreground">
         {member.year ?? '—'}
       </span>
-      <span className="w-36 shrink-0 truncate font-mono text-xs font-medium text-un-blue">
+      <DocumentSymbol className="w-36 shrink-0 truncate">
         {member.symbol}
-      </span>
+      </DocumentSymbol>
       <span className="min-w-0 truncate text-xs text-muted-foreground">
         {member.title}
       </span>

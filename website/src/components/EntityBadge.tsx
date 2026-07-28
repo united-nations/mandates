@@ -39,7 +39,6 @@ export function EntityBadge({
   // <div>, which made the most-clicked pill in the table keyboard-unreachable.
   const chip = (
     <Chip
-      kind="entity"
       density="dense"
       tone={foundational ? 'emphasis' : 'neutral'}
       onClick={onClick}

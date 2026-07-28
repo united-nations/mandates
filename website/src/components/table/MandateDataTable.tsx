@@ -35,6 +35,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { titleCase } from 'title-case'
 import { EntityBadge, FoundationalTag } from '../EntityBadge'
+import { DocumentSymbol } from '@/components/DocumentSymbol'
 import { isFoundational } from '@/lib/foundational'
 import { ORGAN_CATEGORIES } from '@/lib/organ-groups'
 import { ColumnHeaderFilter, type FilterGroup } from './ColumnHeaderFilter'
@@ -347,10 +348,11 @@ export function MandateDataTable({
  * "Gender Equi") with nothing to say they had been cut. The tooltip has all of
  * them in full.
  *
- * `kind` is not decoration: this one component renders two unrelated taxonomies
- * (UNBIS subject headings and GA/SC agenda items), which used to be
- * indistinguishable. Subjects get the topic ornament, agenda items stay plain —
- * the same split the detail sidebar already makes.
+ * NOTE: this one component renders two unrelated taxonomies — UNBIS subject
+ * headings and GA/SC agenda items — with the same visual. It carried a `kind`
+ * prop meant to split them, but the ornament it selected never shipped, so the
+ * prop was inert; it is gone rather than left as a false promise. If the two
+ * should be distinguishable, that needs a real ornament, not a flag.
  *
  * The label sits in its OWN span inside the chip, and that span is what carries
  * `truncate`. A Chip is a flex container, and `text-overflow: ellipsis` does
@@ -359,13 +361,7 @@ export function MandateDataTable({
  */
 const PILL_MAX_SHOWN = 2
 
-function PillList({
-  items,
-  kind,
-}: {
-  items: string[]
-  kind: 'topic' | 'plain'
-}) {
+function PillList({ items }: { items: string[] }) {
   if (items.length === 0) return null
   const remaining = items.length - PILL_MAX_SHOWN
   return (
@@ -373,7 +369,7 @@ function PillList({
       <TooltipTrigger asChild>
         <div className="flex max-w-[200px] cursor-default items-center gap-1">
           {items.slice(0, PILL_MAX_SHOWN).map((text, i) => (
-            <Chip key={i} kind={kind} density="dense" truncate>
+            <Chip key={i} density="dense" truncate>
               <span className="min-w-0 truncate">{text}</span>
             </Chip>
           ))}
@@ -387,12 +383,7 @@ function PillList({
       <TooltipContent className="max-w-sm border bg-white p-2 shadow-lg">
         <div className="flex flex-wrap gap-1">
           {items.map((text, i) => (
-            <Chip
-              key={i}
-              kind={kind}
-              density="dense"
-              className="whitespace-nowrap"
-            >
+            <Chip key={i} density="dense" className="whitespace-nowrap">
               {text}
             </Chip>
           ))}
@@ -422,15 +413,13 @@ function CellContent({
       return (
         <Tooltip>
           <TooltipTrigger asChild>
-            {/* Same chip as the detail header's symbol — that header's comment
-                claims the match, and until this migration it was not true. */}
-            <Chip kind="symbol" density="dense" className="whitespace-nowrap">
+            <DocumentSymbol className="whitespace-nowrap">
               {highlighted ? (
                 <span dangerouslySetInnerHTML={{ __html: highlighted }} />
               ) : (
                 symbol
               )}
-            </Chip>
+            </DocumentSymbol>
           </TooltipTrigger>
           <TooltipContent>
             <p>{symbol}</p>
@@ -457,7 +446,7 @@ function CellContent({
       return mandate.body ? (
         <Tooltip>
           <TooltipTrigger asChild>
-            <Chip kind="organ" density="dense" className="whitespace-nowrap">
+            <Chip density="dense" className="whitespace-nowrap">
               {mandate.body}
             </Chip>
           </TooltipTrigger>
@@ -564,7 +553,6 @@ function CellContent({
     case 'subjects':
       return (
         <PillList
-          kind="topic"
           items={(mandate.subject_headings || []).map((s) => titleCase(s))}
         />
       )
@@ -578,7 +566,7 @@ function CellContent({
       ) : null
 
     case 'agenda_item':
-      return <PillList kind="plain" items={mandate.agenda_item_titles || []} />
+      return <PillList items={mandate.agenda_item_titles || []} />
 
     default:
       return null
