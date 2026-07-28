@@ -6,6 +6,7 @@ import {
 } from '@/components/UnSystemRegistryCell'
 import unSystemData from '@/data/un-system.json'
 import { explainerTexts } from '@/lib/en_text_contents'
+import { SHOW_MANDATE_REGISTRY_RATING } from '@/lib/feature-flags'
 import type {
   UnSystemBody,
   UnSystemBodyEntry,
@@ -31,6 +32,18 @@ const sections: { grouping: UnSystemGrouping; title: string | null }[] = [
   { grouping: 'specialized-agency', title: 'Specialized Agencies' },
   { grouping: 'related-organization', title: 'Related Organizations' },
 ]
+
+// Row and header share one column template. Both variants are written out in
+// full rather than composed at runtime: Tailwind only emits classes it can see
+// literally in the source, so a computed class name would never be generated.
+// With the rating hidden its 3.5rem column goes with it.
+const ROW_GRID_COLS = SHOW_MANDATE_REGISTRY_RATING
+  ? 'sm:grid-cols-[minmax(0,2fr)_minmax(0,2.5fr)_3.5rem_minmax(0,1.5fr)]'
+  : 'sm:grid-cols-[minmax(0,2fr)_minmax(0,2.5fr)_minmax(0,1.5fr)]'
+
+const HEADER_GRID_COLS = SHOW_MANDATE_REGISTRY_RATING
+  ? 'grid-cols-[minmax(0,2fr)_minmax(0,2.5fr)_3.5rem_minmax(0,1.5fr)]'
+  : 'grid-cols-[minmax(0,2fr)_minmax(0,2.5fr)_minmax(0,1.5fr)]'
 
 function resolveBody(entry: UnSystemBodyEntry): UnSystemBody {
   return 'ref' in entry ? bodies[entry.ref] : entry
@@ -66,7 +79,9 @@ function OrgLevelLink({
 
 function EntityRow({ entity }: { entity: UnSystemEntity }) {
   return (
-    <li className="grid grid-cols-1 items-baseline gap-x-4 gap-y-2 px-4 py-3 sm:grid-cols-[minmax(0,2fr)_minmax(0,2.5fr)_3.5rem_minmax(0,1.5fr)]">
+    <li
+      className={`grid grid-cols-1 items-baseline gap-x-4 gap-y-2 px-4 py-3 ${ROW_GRID_COLS}`}
+    >
       <div>
         <div className="font-semibold text-gray-900">{entity.code}</div>
         {entity.name !== entity.code && (
@@ -99,12 +114,14 @@ function EntityRow({ entity }: { entity: UnSystemEntity }) {
           </li>
         )}
       </ul>
-      <div>
-        <UnSystemRegistryDots
-          registry={entity.mandateRegistry}
-          note={entity.registryNote}
-        />
-      </div>
+      {SHOW_MANDATE_REGISTRY_RATING && (
+        <div>
+          <UnSystemRegistryDots
+            registry={entity.mandateRegistry}
+            note={entity.registryNote}
+          />
+        </div>
+      )}
       <div>
         <UnSystemRegistryLink registry={entity.mandateRegistry} />
         {entity.related.map((portal) => (
@@ -119,8 +136,10 @@ function EntityRow({ entity }: { entity: UnSystemEntity }) {
               className="underline decoration-dotted underline-offset-2 transition-colors hover:text-un-blue"
             >
               {portal.name}
-            </a>{' '}
-            — not mandate-linked
+            </a>
+            {/* "not mandate-linked" is rating vocabulary, so it goes with the
+                rating rather than lingering as an orphan qualifier. */}
+            {SHOW_MANDATE_REGISTRY_RATING && ' — not mandate-linked'}
           </div>
         ))}
       </div>
@@ -148,12 +167,14 @@ export default function UnSystemPage() {
           , dozens of funds, programmes, specialized agencies and related
           organizations carry their own mandates. This page lists the governing
           bodies that steer each organization, with official pages and contacts
-          — and scores how openly each organization&apos;s mandates can be
-          traced, from decision texts to results.
+          — and, where they exist, the organization&apos;s own mandate registry
+          and related portals.
         </p>
-        <div className="mt-6 max-w-3xl">
-          <UnSystemRegistryLegend />
-        </div>
+        {SHOW_MANDATE_REGISTRY_RATING && (
+          <div className="mt-6 max-w-3xl">
+            <UnSystemRegistryLegend />
+          </div>
+        )}
       </section>
 
       <div className="py-4">
@@ -165,11 +186,19 @@ export default function UnSystemPage() {
                   <h2 className="mb-3 text-lg font-semibold text-gray-900">
                     {title}
                   </h2>
-                  <div className="hidden grid-cols-[minmax(0,2fr)_minmax(0,2.5fr)_3.5rem_minmax(0,1.5fr)] gap-x-4 px-4 pb-1.5 text-xs font-medium tracking-wide text-gray-500 uppercase sm:grid">
+                  <div
+                    className={`hidden gap-x-4 px-4 pb-1.5 text-xs font-medium tracking-wide text-gray-500 uppercase sm:grid ${HEADER_GRID_COLS}`}
+                  >
                     {/* Pulled out of the box inset so it left-aligns with the section title. */}
                     <span className="-ms-4">Organization</span>
                     <span>Governing bodies</span>
-                    <span className="col-span-2">Mandate Registry</span>
+                    <span
+                      className={SHOW_MANDATE_REGISTRY_RATING ? 'col-span-2' : ''}
+                    >
+                      {SHOW_MANDATE_REGISTRY_RATING
+                        ? 'Mandate Registry'
+                        : 'Related resources'}
+                    </span>
                   </div>
                 </>
               )}

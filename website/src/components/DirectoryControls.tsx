@@ -6,19 +6,11 @@ import { MousePointerClick } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
 /**
- * Chrome shared by the directory sections (entities, organs): the view toggles
- * above the list, the box that bounds one compact group, and the hover tooltip
- * that every selectable node uses. Kept in one place so the two directories stay
- * visually identical — they are read as one pattern on the page.
+ * Chrome shared by the directory sections (entities, organs): the view toggle
+ * above the list and the hover tooltip that every selectable node uses. Kept in
+ * one place so the two directories stay visually identical — they are read as
+ * one pattern on the page.
  */
-
-/**
- * Container for a compact grouping (a Programme Budget part, a Peacekeeping
- * group, an organ category): a faint UN-blue wash with a left accent border, so
- * each group reads as one bounded unit.
- */
-export const DIRECTORY_GROUP_BOX =
-  'border-l-4 border-un-blue bg-un-blue/10 px-4 py-3'
 
 export function DirectoryToggle({
   active,
@@ -50,19 +42,26 @@ export function DirectoryToggle({
 }
 
 /**
- * Tooltip body for a selectable directory node: the full name, an optional set
- * of sub-level pills (an entity's subprogrammes), and the click hint.
+ * Tooltip body for a selectable directory node: the full name, a legend for the
+ * bare numbers on the card/pill, an optional set of sub-level pills (an entity's
+ * subprogrammes), and the click hint.
+ *
+ * `meta` exists because the cards show one or two unlabelled numbers ("OHCHR
+ * 433 4"); spelling them out here is the only place there is room for the
+ * words.
  *
  * The pills are filters in their own right. Radix keeps the content hoverable,
  * so the pointer can travel from the trigger into the tooltip and click one.
  */
 export function ClickTooltip({
   name,
+  meta,
   pills,
   onPillSelect,
   activePill,
 }: {
   name?: string | null
+  meta?: string
   pills?: { label: string; value: string }[]
   onPillSelect?: (value: string) => void
   activePill?: string
@@ -71,6 +70,7 @@ export function ClickTooltip({
   return (
     <TooltipContent side="top" className={hasPills ? 'max-w-sm' : 'max-w-xs'}>
       {name && <div className="font-medium">{name}</div>}
+      {meta && <div className="mt-0.5 text-xs text-gray-500">{meta}</div>}
       {hasPills && (
         <div className="mt-1.5 flex flex-wrap gap-1">
           {pills.map((pill) => (

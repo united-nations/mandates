@@ -17,6 +17,7 @@ import { LoadingSkeleton } from '@/components/LoadingSkeleton'
 import { ResourceLink } from '@/components/ResourceLink'
 import {
   getBudgetHierarchy,
+  getDocumentTypeCatalogue,
   getMandateCounts,
   getMandatePageData,
   getOrganHierarchy,
@@ -45,15 +46,24 @@ export default async function Page({ searchParams }: PageProps) {
   // Light, cached fetches: the directory data for the explore modals, plus the
   // catalogue document count for the third box (mandate sources for the current
   // budget version, independent of any facet filter).
-  const [organGroups, budgetStreams, subjectDomains, counts] =
+  //
+  // EVERY one of these is scoped to the same population: the active budget
+  // version, catalogue-wide (no facet filter). That is what makes the tiles and
+  // the three modals describe ONE document set. Passing no version here — as the
+  // hierarchies used to — silently pinned them to budget_versions.is_default, so
+  // ?ppb_version=ppb2026 showed a correct 3,962-document total next to topic and
+  // budget counts computed for ppb2027 (HUMAN RIGHTS 215 instead of 506).
+  const catalogueScope = {
+    mode: 'active_mandates' as const,
+    ppb_version: filters.ppb_version,
+  }
+  const [organGroups, budgetStreams, subjectDomains, documentTypes, counts] =
     await Promise.all([
-      getOrganHierarchy(),
-      getBudgetHierarchy(),
-      getSubjectHierarchy(),
-      getMandateCounts({
-        mode: 'active_mandates',
-        ppb_version: filters.ppb_version,
-      }),
+      getOrganHierarchy(filters.ppb_version),
+      getBudgetHierarchy(catalogueScope),
+      getSubjectHierarchy(catalogueScope),
+      getDocumentTypeCatalogue(filters.ppb_version),
+      getMandateCounts(catalogueScope),
     ])
 
   return (
@@ -64,25 +74,22 @@ export default async function Page({ searchParams }: PageProps) {
           {explainerTexts.mainHeader.headline}
         </h1>
         <ExplainerText />
-        <p className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-medium text-un-blue">
+        {/* The analytics page still exists at /secretariat/analytics but is
+            deliberately unlinked for now — it should not be discoverable. */}
+        <p className="mt-4 text-sm font-medium text-un-blue">
           <Link href="/methodology" className="hover:underline">
             See the methodology
-          </Link>
-          <span aria-hidden className="text-gray-300">
-            ·
-          </span>
-          <Link href="/secretariat/analytics" className="hover:underline">
-            Explore visualizations
           </Link>
         </p>
       </section>
 
-      {/* Explore boxes (organs / entities / documents-by-topic) → modals. */}
+      {/* Explore boxes (organs / entities / documents) → modals. */}
       <section className="mx-auto max-w-6xl px-6 pt-6 md:px-12 lg:px-16">
         <DirectoryExplorer
           organGroups={organGroups}
           budgetStreams={budgetStreams}
           subjectDomains={subjectDomains}
+          documentTypes={documentTypes}
           documentCount={counts.totalDocuments}
         />
       </section>

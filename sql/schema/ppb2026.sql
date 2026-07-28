@@ -481,6 +481,11 @@ create index unified_documents_symbol_idx
 create index unified_documents_body_idx on public.unified_documents (ppb_body);
 create index unified_documents_type_idx on public.unified_documents (ppb_type);
 create index unified_documents_year_idx on public.unified_documents (ppb_year);
+-- Serves the array-overlap (&&) candidate lookup behind the detail page's
+-- related-documents feature, and the subject document-frequency aggregate that
+-- supplies its IDF weights. See migrations/034.
+create index unified_documents_subjects_gin
+    on public.unified_documents using gin (subjects);
 
 grant select on public.unified_documents to mandates_readonly;
 grant select on ppb2026.subject_thesaurus to mandates_readonly;

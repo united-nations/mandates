@@ -205,6 +205,22 @@ export type BudgetStream =
   | { type: 'pko'; label: string; count: number; groups: BudgetPkoGroupNode[] }
   | { type: 'plan_outline'; label: string; count: number }
 
+/**
+ * Catalogue-wide document types (see getDocumentTypeCatalogue).
+ *
+ * `untypedCount` is deliberately part of the payload: `ppb_type` is unpopulated
+ * for a large share of the catalogue, so `types` is NOT a complete partition and
+ * the UI has to be able to say so.
+ */
+export interface DocumentTypeCatalogue {
+  /** Recorded types, highest count first. */
+  types: { value: string; count: number }[]
+  /** Documents whose type is not recorded (NULL/empty ppb_type). */
+  untypedCount: number
+  /** Every document in scope — `types` counts + `untypedCount`. */
+  totalCount: number
+}
+
 // Subject hierarchy (top level of the /subjects page) — the UNBIS thesaurus
 // imposed on the flat subject headings carried on unified_documents.subjects.
 // Three levels: domain (01-18) -> sub-domain -> leaf subject. `count` is

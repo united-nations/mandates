@@ -5,7 +5,10 @@ import { useFilters } from '@/contexts/FilterContext'
 import type { FilterParamKey } from '@/lib/filter-constants'
 import { COLUMN_DEFINITIONS, DEFAULT_VISIBLE_COLUMNS } from './MandateColumns'
 
-const STORAGE_KEY = 'mandate-table-columns-v2'
+// Bumped to v3 when the default set shrank to symbol + title: a returning user
+// with a stored v2 selection would otherwise keep the old six-column layout
+// forever and never see the new minimal default.
+const STORAGE_KEY = 'mandate-table-columns-v3'
 
 function parseStored(): Set<string> {
   try {
