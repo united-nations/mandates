@@ -3,7 +3,7 @@ import { getMandateDisplayTitle, decodeUrlSegments } from '@/lib/utils'
 
 import { getMandateBySymbol, getResolutionSeries } from '@/lib/data/mandates'
 import { getAllEntities } from '@/lib/data/entities'
-import { getRelatedMandates, getSubjectDomainCodes } from '@/lib/data/related'
+import { getRelatedMandates } from '@/lib/data/related'
 import { getSgReportsMandatedByResolution } from '@/lib/data/sg-report-links'
 import {
   SHOW_MANDATED_SG_REPORTS,
@@ -35,29 +35,20 @@ export default async function MandatePage({
   const ppbVersion =
     typeof sp.ppb_version === 'string' ? sp.ppb_version : undefined
 
-  const [
-    mandate,
-    entities,
-    organs,
-    paragraphs,
-    series,
-    related,
-    domainCodes,
-    sgReports,
-  ] = await Promise.all([
-    getMandateBySymbol(documentSymbol, ppbVersion),
-    getAllEntities(),
-    getAllOrgans(),
-    getParagraphsBySymbol(documentSymbol),
-    getResolutionSeries(documentSymbol),
-    // Flagged-off sections are skipped entirely, so the detail page does not
-    // pay for their queries.
-    SHOW_RELATED_MANDATES ? getRelatedMandates(documentSymbol) : [],
-    getSubjectDomainCodes(documentSymbol),
-    SHOW_MANDATED_SG_REPORTS
-      ? getSgReportsMandatedByResolution(documentSymbol)
-      : [],
-  ])
+  const [mandate, entities, organs, paragraphs, series, related, sgReports] =
+    await Promise.all([
+      getMandateBySymbol(documentSymbol, ppbVersion),
+      getAllEntities(),
+      getAllOrgans(),
+      getParagraphsBySymbol(documentSymbol),
+      getResolutionSeries(documentSymbol),
+      // Flagged-off sections are skipped entirely, so the detail page does not
+      // pay for their queries.
+      SHOW_RELATED_MANDATES ? getRelatedMandates(documentSymbol) : [],
+      SHOW_MANDATED_SG_REPORTS
+        ? getSgReportsMandatedByResolution(documentSymbol)
+        : [],
+    ])
 
   if (!mandate) notFound()
 
@@ -83,7 +74,6 @@ export default async function MandatePage({
         <CitationCounts mandate={mandate} entities={entities} />
         <MandateTopics
           subjects={mandate.subject_headings ?? []}
-          domainCodes={domainCodes}
           related={related}
         />
         <ParagraphsSection

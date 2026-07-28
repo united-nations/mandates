@@ -1,7 +1,7 @@
 'use client'
 
 import { ChartSearchInput } from '@/components/ui/chart-search-input'
-import { Chip, ChipCount, ChipDot } from '@/components/ui/chip'
+import { Chip, ChipCount } from '@/components/ui/chip'
 import {
   Tooltip,
   TooltipContent,
@@ -10,7 +10,6 @@ import {
 } from '@/components/ui/tooltip'
 import { useSectionFilter } from '@/hooks/use-section-filter'
 import { SUBJECT_DOMAIN_LABELS } from '@/lib/filter-constants'
-import { domainColor } from '@/lib/subjectDomainColors'
 import type { DocumentTypeCatalogue, SubjectDomain } from '@/types'
 import { MousePointerClick } from 'lucide-react'
 import { useMemo, useState } from 'react'
@@ -206,7 +205,6 @@ function TypePill({
     <Tooltip>
       <TooltipTrigger asChild>
         <Chip
-          kind="docType"
           tone={active ? 'selected' : 'neutral'}
           href={`/secretariat?document_type=${encodeURIComponent(label)}`}
           onClick={(e) => {
@@ -246,7 +244,6 @@ function SubjectPill({
   active: boolean
   onSelect: (value: string) => void
 }) {
-  const color = domainColor(leaf.code)
   return (
     <Tooltip>
       <TooltipTrigger asChild>
@@ -255,7 +252,6 @@ function SubjectPill({
             treatment its own focus-visible state uses — so a keyboard user
             could not tell "this one is focused" from "this one is filtering". */}
         <Chip
-          kind="topic"
           tone={active ? 'selected' : 'neutral'}
           href={`/secretariat?subject=${encodeURIComponent(leaf.subject)}`}
           onClick={(e) => {
@@ -266,7 +262,6 @@ function SubjectPill({
           <span className="font-medium">
             {formatSubjectLabel(leaf.subject)}
           </span>
-          <ChipDot color={color.hex} />
           <ChipCount tone={active ? 'selected' : 'neutral'}>
             {leaf.count.toLocaleString()}
           </ChipCount>

@@ -11,12 +11,18 @@ import { cn } from '@/lib/utils'
  * sidebar, a white pill in the entities modal, a solid blue badge in the table
  * and bare text on /system.
  *
- * Three orthogonal axes. Pick one value from each; never hand-write classes.
+ * Two orthogonal axes. Pick one value from each; never hand-write classes.
  *
- * 1. KIND — what the chip *is*. Drives ORNAMENT, not hue.
- * 2. DENSITY — where it lives. Chosen by the container, not the author.
- * 3. STATE — idle / selected. Focus is always a ring and never means anything
- *    else.
+ * 1. DENSITY — where it lives. Chosen by the container, not the author.
+ * 2. TONE — idle / emphasis / selected / ghost. Focus is always a ring and
+ *    never means anything else.
+ *
+ * Ornament is passed in by the caller (ChipDot) rather than derived from a
+ * `kind`: only one ornament survives — the dot marking an entity that cites a
+ * document in its "Mandates and background" narrative. Document symbols left
+ * the system entirely (components/DocumentSymbol.tsx): a symbol is an
+ * identifier, not a facet, and it reads as a code, so it keeps square corners
+ * and a blue ground rather than becoming another pill.
  *
  * THE COLOUR BUDGET
  * -----------------
@@ -54,7 +60,6 @@ import { cn } from '@/lib/utils'
 export type ChipKind =
   | 'entity'
   | 'topic'
-  | 'symbol'
   | 'organ'
   | 'docType'
   | 'budget'
@@ -100,7 +105,6 @@ const BASE =
   'inline-flex items-baseline gap-1.5 rounded-full border transition-colors focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none'
 
 export interface ChipProps {
-  kind?: ChipKind
   density?: ChipDensity
   tone?: ChipTone
   /** Renders an <a>. */
@@ -120,16 +124,7 @@ export interface ChipProps {
   'aria-label'?: string
 }
 
-/**
- * `symbol` is the one kind that legitimately needs a different font: a document
- * symbol is a code, and mono is what makes it scannable as one.
- */
-const KIND_CLASS: Partial<Record<ChipKind, string>> = {
-  symbol: 'font-mono',
-}
-
 export function Chip({
-  kind = 'plain',
   density = 'comfortable',
   tone = 'neutral',
   href,
@@ -144,7 +139,6 @@ export function Chip({
     BASE,
     DENSITY[density],
     TONE[tone],
-    KIND_CLASS[kind],
     // Tailwind v4's preflight leaves <button> on the UA's arrow cursor, so an
     // interactive chip has to ask for the pointer explicitly or half the chips
     // in the app read as static text.

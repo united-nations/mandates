@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { ExternalLink, FileText } from 'lucide-react'
+import { DocumentSymbol } from '@/components/DocumentSymbol'
 import { Chip, type ChipTone } from '@/components/ui/chip'
 import { cn } from '@/lib/utils'
 
@@ -140,9 +141,7 @@ export function MandateDetailHeader({
         {title}
       </h1>
       <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2">
-        <Chip kind="symbol" density="dense">
-          {symbol}
-        </Chip>
+        <DocumentSymbol>{symbol}</DocumentSymbol>
         {link ? (
           <a
             href={link}
