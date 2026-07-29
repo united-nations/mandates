@@ -11,18 +11,18 @@ import Link from 'next/link'
 import { Suspense } from 'react'
 
 import { MandateExplorerServer } from '@/app/_mandateExplorerServer'
+import { ActiveFilters } from '@/components/ActiveFilters'
 import { DirectoryExplorer } from '@/components/DirectoryExplorer'
 import { ExplainerText } from '@/components/ExplainerText'
 import { LoadingSkeleton } from '@/components/LoadingSkeleton'
 import { ResourceLink } from '@/components/ResourceLink'
 import {
-  getBudgetHierarchy,
-  getDocumentTypeCatalogue,
-  getMandateCounts,
-  getMandatePageData,
-  getOrganHierarchy,
-  getSubjectHierarchy,
-} from '@/lib/data/mandates'
+  getBudgetVersions,
+  getDefaultVersionSlug,
+} from '@/lib/data/budget-documents'
+import { getAllEntities } from '@/lib/data/entities'
+import { getAllOrgans } from '@/lib/data/organs'
+import { getExploreCardData, getMandatePageData } from '@/lib/data/mandates'
 import { explainerTexts } from '@/lib/en_text_contents'
 import { parseSearchParams } from '@/lib/filter-constants'
 
@@ -43,28 +43,24 @@ export default async function Page({ searchParams }: PageProps) {
   // skeleton and swaps in the data when it resolves.
   const dataPromise = getMandatePageData(filters)
 
-  // Light, cached fetches: the directory data for the explore modals, plus the
-  // catalogue document count for the third box (mandate sources for the current
-  // budget version, independent of any facet filter).
-  //
-  // EVERY one of these is scoped to the same population: the active budget
-  // version, catalogue-wide (no facet filter). That is what makes the tiles and
-  // the three modals describe ONE document set. Passing no version here — as the
-  // hierarchies used to — silently pinned them to budget_versions.is_default, so
-  // ?ppb_version=ppb2026 showed a correct 3,962-document total next to topic and
-  // budget counts computed for ppb2027 (HUMAN RIGHTS 215 instead of 506).
-  const catalogueScope = {
-    mode: 'active_mandates' as const,
-    ppb_version: filters.ppb_version,
-  }
-  const [organGroups, budgetStreams, subjectDomains, documentTypes, counts] =
-    await Promise.all([
-      getOrganHierarchy(filters.ppb_version),
-      getBudgetHierarchy(catalogueScope),
-      getSubjectHierarchy(catalogueScope),
-      getDocumentTypeCatalogue(filters.ppb_version),
-      getMandateCounts(catalogueScope),
-    ])
+  // The four explore cards. Every number here honours the ACTIVE facet filters,
+  // so filtering to one entity moves all four — with one deliberate exception
+  // per card, its own dimension, dropped inside the query it comes from
+  // (getOrganHierarchy drops `organ`, getBudgetHierarchy drops `entity` and the
+  // budget levels, getSubjectHierarchy drops `subject`/`subject_domain`,
+  // getDocumentTypeCatalogue drops `document_type`). Without that, picking an
+  // organ would make the organs card read "1". The scopes and the fetch itself
+  // live in the data layer (exploreCardScopes / getExploreCardData) so the cards,
+  // the panels and scripts/check-card-counts.ts cannot drift apart.
+  const [versions, entities, organs, cards] = await Promise.all([
+    getBudgetVersions(),
+    getAllEntities(),
+    getAllOrgans(),
+    getExploreCardData(filters),
+  ])
+  const activeVersionSlug =
+    versions.find((v) => v.slug === filters.ppb_version)?.slug ??
+    getDefaultVersionSlug(versions)
 
   return (
     <div>
@@ -83,14 +79,24 @@ export default async function Page({ searchParams }: PageProps) {
         </p>
       </section>
 
-      {/* Explore boxes (organs / entities / documents) → modals. */}
+      {/* Active filters, then the four explore cards. The bar sits ABOVE the
+          cards because it is what the cards' numbers are computed against —
+          reading downwards, you see the filters and then their effect. */}
       <section className="mx-auto max-w-6xl px-6 pt-6 md:px-12 lg:px-16">
+        <ActiveFilters
+          entitiesData={entities}
+          allOrgans={organs}
+          className="mb-4"
+        />
         <DirectoryExplorer
-          organGroups={organGroups}
-          budgetStreams={budgetStreams}
-          subjectDomains={subjectDomains}
-          documentTypes={documentTypes}
-          documentCount={counts.totalDocuments}
+          organGroups={cards.organGroups}
+          budgetStreams={cards.budgetStreams}
+          subjectDomains={cards.subjectDomains}
+          documentTypes={cards.documentTypes}
+          catalogueDocumentCount={cards.catalogueDocumentCount}
+          citedDocumentCount={cards.citedDocumentCount}
+          versions={versions}
+          activeVersionSlug={activeVersionSlug}
         />
       </section>
 

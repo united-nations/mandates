@@ -279,6 +279,32 @@ export interface OrganWithCount {
   website?: string
 }
 
+/**
+ * The filter keys a /secretariat explore directory can set.
+ */
+export type DirectoryFilterKey =
+  | 'organ'
+  | 'entity'
+  | 'subprogramme'
+  | 'subject'
+  | 'document_type'
+
+/**
+ * How a directory (organs / entities / documents) talks to the filter state.
+ *
+ * Injected by DirectoryExplorer rather than read from useSectionFilter inside
+ * each directory, because the correct write depends on WHICH card the directory
+ * sits under: the card's counts are computed against a particular scope and with
+ * a particular dimension dropped, and the write has to match that exactly or the
+ * number on a node stops predicting the number of rows clicking it returns.
+ */
+export interface DirectorySelection {
+  /** The active value for `key`, so a node can render itself as selected. */
+  active: (key: DirectoryFilterKey) => string | undefined
+  /** Apply (or, if already active, clear) `key = value`. */
+  select: (key: DirectoryFilterKey, value: string) => void
+}
+
 // Organs grouped by editorial category (see lib/organ-groups.ts), for the
 // /organs directory and the grouped Organ column filter.
 export interface OrganGroup {

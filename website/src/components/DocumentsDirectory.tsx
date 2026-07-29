@@ -8,21 +8,26 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { useSectionFilter } from '@/hooks/use-section-filter'
 import { SUBJECT_DOMAIN_LABELS } from '@/lib/filter-constants'
-import type { DocumentTypeCatalogue, SubjectDomain } from '@/types'
+import type {
+  DirectorySelection,
+  DocumentTypeCatalogue,
+  SubjectDomain,
+} from '@/types'
 import { MousePointerClick } from 'lucide-react'
 import { useMemo, useState } from 'react'
 
 /**
- * The documents modal: the two ways into the document catalogue, stacked in one
+ * The documents panel: the two ways into the document catalogue, stacked in one
  * column — what kind of document it is (ppb_type) first, then what it is about
- * (UNBIS subject headings). Both are filters: a click sets a single-facet view
- * of the mandate table and closes the modal.
+ * (UNBIS subject headings). Both are filters: a click adds that facet to the
+ * active filters and closes the modal.
  *
- * Types come from getDocumentTypeCatalogue (catalogue-wide, version-scoped);
- * topics are the flattened leaves of getSubjectHierarchy, shown as the global
- * top-N by document count and searchable beyond that.
+ * Every count here describes the WHOLE catalogue under the other active filters
+ * (getDocumentTypeCatalogue / getSubjectHierarchy at mode=all_resolutions), which
+ * is the number on the tile above. Selecting a pill therefore also puts the table
+ * in that scope — the write is injected by DirectoryExplorer (DirectorySelection)
+ * rather than taken from the URL, precisely so the two cannot drift.
  *
  * The type list is NOT a complete partition of the catalogue: ppb_type was never
  * populated for documents that only exist in the PPB-2027 import, so more than
@@ -46,17 +51,20 @@ interface FlatLeaf {
 interface DocumentsDirectoryProps {
   domains: SubjectDomain[]
   documentTypes: DocumentTypeCatalogue
+  selection: DirectorySelection
 }
 
 export function DocumentsDirectory({
   domains,
   documentTypes,
+  selection,
 }: DocumentsDirectoryProps) {
   const [search, setSearch] = useState('')
   const term = search.trim().toLowerCase()
-  const { active, select } = useSectionFilter('subject')
-  const { active: activeType, select: selectType } =
-    useSectionFilter('document_type')
+  const active = selection.active('subject')
+  const select = (value: string) => selection.select('subject', value)
+  const activeType = selection.active('document_type')
+  const selectType = (value: string) => selection.select('document_type', value)
 
   // Flatten every leaf once, tagged with its domain (drives the pill colour and
   // the domain named in the pill's tooltip).

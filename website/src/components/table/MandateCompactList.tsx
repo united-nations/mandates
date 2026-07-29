@@ -13,6 +13,7 @@ import {
   GroupHiddenVersionsNote,
   GroupMemberLine,
   groupHasHiddenVersions,
+  groupMemberEntries,
   SeriesMarkers,
 } from './MandateSeriesIndicators'
 
@@ -23,7 +24,7 @@ interface MandateCompactListProps {
 }
 
 export function MandateCompactList({ mandates }: MandateCompactListProps) {
-  const { filters, isPending } = useFilters()
+  const { filters, setFilter, isPending } = useFilters()
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -63,15 +64,6 @@ export function MandateCompactList({ mandates }: MandateCompactListProps) {
                 onClick={(e) => handleClick(mandate, e)}
                 className={`flex cursor-pointer items-center gap-3 border-b border-gray-100 px-3 py-2.5 transition-colors hover:bg-gray-50 ${dimmed ? 'opacity-60' : ''}`}
               >
-                {grouped && (
-                  <span className="w-11 shrink-0">
-                    <GroupBadge
-                      mandate={mandate}
-                      expanded={isExpanded}
-                      onToggle={() => toggleGroup(mandate.full_document_symbol)}
-                    />
-                  </span>
-                )}
                 <div className="min-w-0 flex-1">
                   <div className="truncate text-sm font-medium">
                     {mandate.displayTitle || 'Untitled'}
@@ -80,13 +72,32 @@ export function MandateCompactList({ mandates }: MandateCompactListProps) {
                     <span className="font-medium text-un-blue">
                       {mandate.full_document_symbol}
                     </span>
+                    {/* Right of the symbol, same as the table: the count is a
+                        property of the symbol it follows. */}
+                    {grouped && (
+                      <GroupBadge
+                        mandate={mandate}
+                        expanded={isExpanded}
+                        onToggle={() =>
+                          toggleGroup(mandate.full_document_symbol)
+                        }
+                      />
+                    )}
                     {(!grouped || (mandate.group?.size ?? 1) <= 1) && (
                       <SeriesMarkers mandate={mandate} />
                     )}
                     {mandate.body && (
                       <>
                         <span className="text-gray-300">·</span>
-                        <Chip density="dense" className="whitespace-nowrap">
+                        <Chip
+                          density="dense"
+                          className="whitespace-nowrap"
+                          onClick={(event) => {
+                            event.stopPropagation()
+                            setFilter('organ', mandate.body)
+                          }}
+                          aria-label={`Filter by ${mandate.body}`}
+                        >
                           {mandate.body}
                         </Chip>
                       </>
@@ -103,7 +114,7 @@ export function MandateCompactList({ mandates }: MandateCompactListProps) {
               </div>
               {grouped &&
                 isExpanded &&
-                (mandate.group?.members ?? []).map((member) => (
+                groupMemberEntries(mandate).map((member) => (
                   <div
                     key={member.symbol}
                     onClick={() =>

@@ -17,9 +17,12 @@ import { DocumentSymbol } from '@/components/DocumentSymbol'
 import { getMandateUrl } from './MandateColumns'
 
 /**
- * Grouped-mode expander at the left edge of a series representative row:
- * a chevron with the circled member count beside it, no text. The tooltip carries the
- * two-tier vocabulary — collections say "related", never "versions".
+ * Grouped-mode expander, sitting immediately to the RIGHT of the symbol badge on
+ * a series representative row: the circled member count with a chevron beside
+ * it, no text. It reads as a property of the symbol it annotates ("this symbol
+ * stands for N documents"), which is why it is no longer a column of its own at
+ * the left edge. The tooltip carries the two-tier vocabulary — collections say
+ * "related", never "versions".
  */
 export function GroupBadge({
   mandate,
@@ -54,17 +57,19 @@ export function GroupBadge({
           aria-expanded={expanded}
           aria-label={tooltip}
         >
+          {/* Deliberately NOT a Chip: paired with the chevron, the fixed circle
+              is what says "this number is a control" rather than a label. Only
+              the greys and the focus ring are shared. Count first, then the
+              chevron: the count annotates the symbol it now follows, and the
+              chevron stays the outermost thing — the edge you aim at to open. */}
+          <span className="flex h-5 w-5 items-center justify-center rounded-full border border-gray-200 bg-gray-50 text-[11px] font-medium text-gray-700 transition-colors group-hover/expander:border-un-blue group-hover/expander:bg-gray-100">
+            {group.size > 99 ? '99+' : group.size}
+          </span>
           {expanded ? (
             <ChevronUp className="h-4 w-4 text-muted-foreground" />
           ) : (
             <ChevronDown className="h-4 w-4 text-muted-foreground" />
           )}
-          {/* Deliberately NOT a Chip: paired with the chevron, the fixed circle
-              is what says "this number is a control" rather than a label. Only
-              the greys and the focus ring are shared. */}
-          <span className="flex h-6 w-6 items-center justify-center rounded-full border border-gray-200 bg-gray-50 text-xs font-medium text-gray-700 transition-colors group-hover/expander:border-un-blue group-hover/expander:bg-gray-100">
-            {group.size > 99 ? '99+' : group.size}
-          </span>
         </button>
       </TooltipTrigger>
       <TooltipContent>
@@ -162,23 +167,77 @@ export function GroupHiddenVersionsNote({ mandate }: { mandate: Mandate }) {
   )
 }
 
+/** One line of an expanded group. `current` marks the representative row. */
+export interface GroupMemberEntry {
+  symbol: string
+  year: number | null
+  title: string | null
+  /** The document the collapsed row stands for — it is in the list, not absent. */
+  current?: boolean
+}
+
+/**
+ * Order used by the SQL that builds `group.members`: newest first, ties broken
+ * by symbol descending, undated last. Re-stated here because the representative
+ * is merged in client-side and has to land in the same sequence.
+ */
+function byYearThenSymbolDesc(
+  a: GroupMemberEntry,
+  b: GroupMemberEntry
+): number {
+  if (a.year !== b.year) {
+    if (a.year === null) return 1
+    if (b.year === null) return -1
+    return b.year - a.year
+  }
+  return b.symbol.localeCompare(a.symbol)
+}
+
+/**
+ * The full inline list for an expanded group: `group.members` (which the query
+ * builds with the representative EXCLUDED — it is already the row above) plus
+ * the representative itself, in one date-ordered sequence.
+ *
+ * Showing the representative matters because the group's own year is otherwise
+ * the only one missing from the list: a "5 versions since 2019" group expanded
+ * to four dated lines, and the fifth — the one you clicked — was nowhere in it.
+ */
+export function groupMemberEntries(mandate: Mandate): GroupMemberEntry[] {
+  const parsedYear = Number.parseInt(mandate.year, 10)
+  const representative: GroupMemberEntry = {
+    symbol: mandate.full_document_symbol,
+    year: Number.isFinite(parsedYear) ? parsedYear : null,
+    title: mandate.displayTitle || mandate.description || null,
+    current: true,
+  }
+  return [...(mandate.group?.members ?? []), representative].sort(
+    byYearThenSymbolDesc
+  )
+}
+
 /** Row content for one expanded group member (shared table/list markup). */
-export function GroupMemberLine({
-  member,
-}: {
-  member: NonNullable<Mandate['group']>['members'][number]
-}) {
+export function GroupMemberLine({ member }: { member: GroupMemberEntry }) {
   return (
     <span className="flex min-w-0 items-center gap-3">
       <span className="w-10 shrink-0 text-xs text-muted-foreground">
         {member.year ?? '—'}
       </span>
-      <DocumentSymbol className="w-36 shrink-0 truncate">
+      {/* `subdued` = the document you are already looking at: present in the
+          list, but not somewhere to go. */}
+      <DocumentSymbol
+        subdued={member.current}
+        className="w-36 shrink-0 truncate"
+      >
         {member.symbol}
       </DocumentSymbol>
       <span className="min-w-0 truncate text-xs text-muted-foreground">
         {member.title}
       </span>
+      {member.current && (
+        <span className="shrink-0 text-xs text-muted-foreground">
+          this document
+        </span>
+      )}
     </span>
   )
 }

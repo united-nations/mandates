@@ -72,8 +72,28 @@ export const FOUNDATIONAL_LABEL = 'Mandates and background'
  */
 export const FOUNDATIONAL_FILTER_LABEL = 'Cited in Mandates and background'
 
+/**
+ * The other `part_in_document` value, and how it is spelled on screen.
+ *
+ * The fascicle heading is "Legislative mandates"; every user-facing string says
+ * "Legislative mandates list", never "table" — the reader sees a list, and
+ * "table" collided with the data table the site itself renders.
+ */
+export const LEGISLATIVE_PART_IN_DOCUMENT = 'Legislative mandates'
+export const LEGISLATIVE_LABEL = 'Legislative mandates list'
+
+/**
+ * Display name for a raw `part_in_document` value. Unknown values (the PKM
+ * streams carry their own section headings, e.g. "Mandate and planning
+ * assumptions") are passed through verbatim rather than guessed at.
+ */
+export function partInDocumentLabel(value: string): string {
+  if (value === LEGISLATIVE_PART_IN_DOCUMENT) return LEGISLATIVE_LABEL
+  return value
+}
+
 export const FOUNDATIONAL_TOOLTIP =
-  'Cited in this entity’s “Mandates and background” narrative in the programme budget fascicle — the prose stating where its mandate derives from — and not only in its “Legislative mandates” table. Many documents appear in both.'
+  'Cited in this entity’s “Mandates and background” narrative in the programme budget fascicle, not only in its Legislative mandates list. Many documents appear in both.'
 
 /** True if `entity` cites this document in its Mandates and background narrative. */
 export function isFoundational(

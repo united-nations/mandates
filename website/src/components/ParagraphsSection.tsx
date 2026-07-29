@@ -2596,7 +2596,7 @@ export function ParagraphsSection({
                         ) : (
                           <>
                             <ChevronDown className="h-3 w-3" />
-                            Show all {preambularParagraphs.length} preambular
+                            Show {preambularParagraphs.length} preambular
                             paragraph
                             {preambularParagraphs.length !== 1 && 's'}
                           </>
