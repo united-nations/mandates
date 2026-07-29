@@ -8,20 +8,7 @@ import {
   SUBJECT_DOMAIN_LABELS,
 } from '@/lib/filter-constants'
 import { FOUNDATIONAL_LABEL } from '@/lib/foundational'
-import {
-  BookOpen,
-  Building,
-  Calendar,
-  FileType,
-  Landmark,
-  List,
-  Network,
-  Receipt,
-  Search,
-  Tags,
-  Target,
-  X,
-} from 'lucide-react'
+import { X } from 'lucide-react'
 import { titleCase } from 'title-case'
 import { EntityName } from './EntityName'
 import { OrganName } from './OrganName'
@@ -43,9 +30,12 @@ interface ActiveFiltersProps {
 }
 
 /**
- * The "Active filters" chip bar for the mandate explorer. Extracted from
- * FilterControls so it can render above the summary stat cards while the search
- * bar and toolbar stay below them. Renders nothing when no filters are active.
+ * The "Active filters" chip bar for the mandate explorer. Renders above the four
+ * explore cards (app/secretariat/page.tsx), because those cards' numbers are
+ * computed against exactly these filters. Renders nothing when none are active.
+ *
+ * No leading icons on the chips: eleven filter kinds needed eleven glyphs, none
+ * of which said anything the label next to it did not already say in words.
  */
 export function ActiveFilters({
   entitiesData,
@@ -84,7 +74,6 @@ export function ActiveFilters({
           </span>
           {hasSearch && (
             <FilterBadge
-              icon={Search}
               label={`"${filters.keyword}"`}
               onClear={() => clearFilter('keyword')}
             />
@@ -92,7 +81,6 @@ export function ActiveFilters({
 
           {displayFilters.entity && displayFilters.entity !== 'all' && (
             <FilterBadge
-              icon={Building}
               label={
                 <>
                   Entity:&nbsp;
@@ -113,7 +101,6 @@ export function ActiveFilters({
           {displayFilters.crossCitingEntity &&
             displayFilters.crossCitingEntity !== 'all' && (
               <FilterBadge
-                icon={Building}
                 label={
                   <>
                     Cross-citing Entity:&nbsp;
@@ -133,7 +120,6 @@ export function ActiveFilters({
 
           {displayFilters.organ && displayFilters.organ !== 'all' && (
             <FilterBadge
-              icon={Landmark}
               label={
                 <>
                   Organ:&nbsp;
@@ -149,7 +135,6 @@ export function ActiveFilters({
 
           {displayFilters.budget_part && (
             <FilterBadge
-              icon={Network}
               label={`Part: ${displayFilters.budget_part}`}
               onClear={() => clearFilter('budget_part')}
             />
@@ -157,7 +142,6 @@ export function ActiveFilters({
 
           {displayFilters.section && (
             <FilterBadge
-              icon={Network}
               label={`Section: ${displayFilters.section}`}
               onClear={() => clearFilter('section')}
             />
@@ -165,7 +149,6 @@ export function ActiveFilters({
 
           {displayFilters.subprogramme && (
             <FilterBadge
-              icon={Network}
               label={displayFilters.subprogramme}
               onClear={() => clearFilter('subprogramme')}
             />
@@ -173,7 +156,6 @@ export function ActiveFilters({
 
           {displayFilters.foundational === 'true' && (
             <FilterBadge
-              icon={Network}
               label={FOUNDATIONAL_LABEL}
               onClear={() => clearFilter('foundational')}
             />
@@ -183,7 +165,6 @@ export function ActiveFilters({
               ?programme= links, so it still needs a chip to be clearable. */}
           {displayFilters.programme && (
             <FilterBadge
-              icon={Target}
               label={`Programme: ${displayFilters.programme}`}
               onClear={() => clearFilter('programme')}
             />
@@ -191,7 +172,6 @@ export function ActiveFilters({
 
           {displayFilters.subject && (
             <FilterBadge
-              icon={BookOpen}
               label={`Subject: ${titleCase(displayFilters.subject)}`}
               onClear={() => clearFilter('subject')}
             />
@@ -199,7 +179,6 @@ export function ActiveFilters({
 
           {displayFilters.subject_domain && (
             <FilterBadge
-              icon={Tags}
               label={`Subject domain: ${
                 SUBJECT_DOMAIN_LABELS[displayFilters.subject_domain] ??
                 displayFilters.subject_domain
@@ -210,7 +189,6 @@ export function ActiveFilters({
 
           {displayFilters.document_type && (
             <FilterBadge
-              icon={FileType}
               label={`Type: ${displayFilters.document_type}`}
               onClear={() => clearFilter('document_type')}
             />
@@ -218,7 +196,6 @@ export function ActiveFilters({
 
           {displayFilters.agenda_item && (
             <FilterBadge
-              icon={List}
               label={`Agenda: ${displayFilters.agenda_item}`}
               onClear={() => clearFilter('agenda_item')}
             />
@@ -226,7 +203,6 @@ export function ActiveFilters({
 
           {yearRangeDisplay && (
             <FilterBadge
-              icon={Calendar}
               label={`Year: ${yearRangeDisplay}`}
               onClear={() => {
                 clearFilter('start_year')
@@ -238,7 +214,6 @@ export function ActiveFilters({
           {displayFilters.budget_document &&
             displayFilters.budget_document !== 'all' && (
               <FilterBadge
-                icon={Receipt}
                 label={`Budget: ${BUDGET_STREAM_LABELS[displayFilters.budget_document as keyof typeof BUDGET_STREAM_LABELS] ?? displayFilters.budget_document}`}
                 onClear={() => clearFilter('budget_document')}
               />

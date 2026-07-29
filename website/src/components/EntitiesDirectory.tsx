@@ -8,9 +8,12 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { useSectionFilter } from '@/hooks/use-section-filter'
 import { cn } from '@/lib/utils'
-import type { BudgetEntityNode, BudgetStream } from '@/types'
+import type {
+  BudgetEntityNode,
+  BudgetStream,
+  DirectorySelection,
+} from '@/types'
 import { ChevronRight, Layers, LayoutGrid, Tag } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 
@@ -43,14 +46,17 @@ import { useEffect, useMemo, useState } from 'react'
  * "Secretariat" or "Special Political Missions", so making them look clickable
  * would promise a filter that does not exist.
  *
- * On the single page, selecting an entity sets a single-facet view of the
- * mandates section and scrolls to it (see useSectionFilter); the active node is
- * highlighted. One view toggle, persisted in localStorage: compact (acronym
- * pills, the default) vs. full cards with names.
+ * On the single page, selecting an entity ADDS it to the active filters (while
+ * clearing any other budget location, which is the same dimension) and scrolls
+ * to the mandates section; the active node is highlighted. The write is injected
+ * by DirectoryExplorer (see DirectorySelection) so it matches the scope these
+ * counts were computed under. One view toggle, persisted in localStorage:
+ * compact (acronym pills, the default) vs. full cards with names.
  */
 
 interface EntitiesDirectoryProps {
   streams: BudgetStream[]
+  selection: DirectorySelection
 }
 
 interface EntityBucket {
@@ -65,10 +71,14 @@ const isSpmSection = (section: string) => section.startsWith('3 (Add.')
 const byCountThenName = (a: BudgetEntityNode, b: BudgetEntityNode) =>
   b.count - a.count || a.entity.localeCompare(b.entity)
 
-export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
+export function EntitiesDirectory({
+  streams,
+  selection,
+}: EntitiesDirectoryProps) {
   const [search, setSearch] = useState('')
   const [compact, setCompact] = useState(true)
-  const { active, select } = useSectionFilter('entity')
+  const active = selection.active('entity')
+  const select = (value: string) => selection.select('entity', value)
 
   // Restore the saved preference after mount (avoids an SSR hydration mismatch).
   useEffect(() => {
@@ -129,6 +139,7 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
                     compact={compact}
                     active={active}
                     onSelect={select}
+                    selection={selection}
                   />
                 </div>
               </div>
@@ -232,11 +243,13 @@ function EntityGroup({
   compact,
   active,
   onSelect,
+  selection,
 }: {
   entities: BudgetEntityNode[]
   compact: boolean
   active?: string
   onSelect: (value: string) => void
+  selection: DirectorySelection
 }) {
   if (compact) {
     return (
@@ -247,6 +260,7 @@ function EntityGroup({
             entity={entity}
             active={active === entity.entity}
             onSelect={onSelect}
+            selection={selection}
           />
         ))}
       </div>
@@ -260,6 +274,7 @@ function EntityGroup({
           entity={entity}
           active={active === entity.entity}
           onSelect={onSelect}
+          selection={selection}
         />
       ))}
     </div>
@@ -279,6 +294,7 @@ function EntityAnchor({
   entity,
   onSelect,
   render,
+  selection,
 }: {
   entity: BudgetEntityNode
   onSelect: (value: string) => void
@@ -286,11 +302,10 @@ function EntityAnchor({
     href: string
     onClick: (event: React.MouseEvent<HTMLElement>) => void
   }) => React.ReactElement
+  selection: DirectorySelection
 }) {
-  // Read here rather than threading two more props through EntityGroup: the
-  // hook is just filter context, and only this component needs it.
-  const { active: activeSub, select: selectSub } =
-    useSectionFilter('subprogramme')
+  const activeSub = selection.active('subprogramme')
+  const selectSub = (value: string) => selection.select('subprogramme', value)
 
   return (
     <Tooltip>
@@ -375,16 +390,19 @@ function EntityPill({
   entity,
   active,
   onSelect,
+  selection,
 }: {
   entity: BudgetEntityNode
   active: boolean
   onSelect: (value: string) => void
+  selection: DirectorySelection
 }) {
   const mandates = `${entity.count.toLocaleString()} mandate${entity.count === 1 ? '' : 's'}`
   return (
     <EntityAnchor
       entity={entity}
       onSelect={onSelect}
+      selection={selection}
       render={({ href, onClick }) => (
         <Chip
           tone={active ? 'selected' : 'neutral'}
@@ -409,15 +427,18 @@ function EntityCard({
   entity,
   active,
   onSelect,
+  selection,
 }: {
   entity: BudgetEntityNode
   active: boolean
   onSelect: (value: string) => void
+  selection: DirectorySelection
 }) {
   return (
     <EntityAnchor
       entity={entity}
       onSelect={onSelect}
+      selection={selection}
       render={({ href, onClick }) => (
         <a
           href={href}

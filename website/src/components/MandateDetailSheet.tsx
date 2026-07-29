@@ -1,12 +1,14 @@
 'use client'
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { Maximize2 } from 'lucide-react'
+import { Maximize2, X } from 'lucide-react'
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetDescription,
   SheetTitle,
+  sheetControlClass,
 } from '@/components/ui/sheet'
 import type { ReactNode } from 'react'
 
@@ -23,6 +25,22 @@ interface MandateDetailSheetProps {
  * entry that created the interception. (router.push does NOT tear down a
  * parallel-route slot, which is why anything other than back() left the modal
  * stuck open.) The standalone /mandate page has its own back affordance.
+ *
+ * THE CORNER CONTROLS
+ * -------------------
+ * "Open full page" and "Close" are one cluster in NORMAL FLOW, in a bar above
+ * the scroll area — not two independently positioned floating buttons.
+ *
+ * Floating them was the bug: each was absolutely positioned against a different
+ * origin (the sheet's own `right-2` close, and this component's `right-14`
+ * link), so their 44px hit areas met at the seam and, more importantly, they
+ * hovered over the H1, which starts at the top of the scrolled content and has
+ * no idea they are there. A flow bar cannot overlap the heading at any width,
+ * and it cannot overlap scrolled content either, because the content scrolls
+ * *below* it rather than under it.
+ *
+ * Both controls share `sheetControlClass`, so they are the same 44px square
+ * with the same focus ring; `gap-1` is the only spacing between them.
  */
 export function MandateDetailSheet({
   title,
@@ -46,6 +64,7 @@ export function MandateDetailSheet({
           unset (overlay scrollbars / not locked) so it never over-corrects. */}
       <SheetContent
         side="right"
+        hideClose
         className="mr-[calc(var(--removed-body-scroll-bar-size,0px)*-1)] flex w-full flex-col gap-0 p-0 sm:max-w-2xl lg:max-w-3xl"
       >
         <SheetTitle className="sr-only">{title}</SheetTitle>
@@ -56,20 +75,23 @@ export function MandateDetailSheet({
           changed, who implements it and what it is about.
         </SheetDescription>
 
-        {/* Plain anchor = real hard navigation to the standalone page (which
-            keeps the same ?ppb_version scoping). Simpler and more reliable
-            than window.location in a click handler.
-
-            size-11 = 44px touch target, sitting immediately left of the
-            equally sized close button (right-2 .. right-13). */}
-        <a
-          href={fullPageHref}
-          aria-label="Open full page"
-          title="Open full page"
-          className="absolute top-2 right-14 z-50 flex size-11 items-center justify-center rounded-sm opacity-70 ring-offset-background transition-opacity hover:bg-secondary hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none"
-        >
-          <Maximize2 className="h-4 w-4" />
-        </a>
+        <div className="flex shrink-0 items-center justify-end gap-1 border-b border-gray-200 px-2 py-1">
+          {/* Plain anchor = real hard navigation to the standalone page (which
+              keeps the same ?ppb_version scoping). Simpler and more reliable
+              than window.location in a click handler. */}
+          <a
+            href={fullPageHref}
+            title="Open full page"
+            className={sheetControlClass}
+          >
+            <Maximize2 aria-hidden className="h-4 w-4" />
+            <span className="sr-only">Open full page</span>
+          </a>
+          <SheetClose title="Close" className={sheetControlClass}>
+            <X aria-hidden className="h-4 w-4" />
+            <span className="sr-only">Close</span>
+          </SheetClose>
+        </div>
 
         <div className="min-h-0 flex-1 overflow-y-auto">
           <div className="p-6">{children}</div>
