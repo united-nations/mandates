@@ -2,7 +2,12 @@
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { Maximize2 } from 'lucide-react'
-import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet'
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetTitle,
+} from '@/components/ui/sheet'
 import type { ReactNode } from 'react'
 
 interface MandateDetailSheetProps {
@@ -41,18 +46,27 @@ export function MandateDetailSheet({
           unset (overlay scrollbars / not locked) so it never over-corrects. */}
       <SheetContent
         side="right"
-        className="flex w-full flex-col gap-0 p-0 mr-[calc(var(--removed-body-scroll-bar-size,0px)*-1)] sm:max-w-2xl lg:max-w-3xl"
+        className="mr-[calc(var(--removed-body-scroll-bar-size,0px)*-1)] flex w-full flex-col gap-0 p-0 sm:max-w-2xl lg:max-w-3xl"
       >
         <SheetTitle className="sr-only">{title}</SheetTitle>
+        {/* Radix warns (and screen readers lose the announcement) when a
+            DialogContent has no description. */}
+        <SheetDescription className="sr-only">
+          Details for mandate document {title}: who created it, how it has
+          changed, who implements it and what it is about.
+        </SheetDescription>
 
         {/* Plain anchor = real hard navigation to the standalone page (which
             keeps the same ?ppb_version scoping). Simpler and more reliable
-            than window.location in a click handler. */}
+            than window.location in a click handler.
+
+            size-11 = 44px touch target, sitting immediately left of the
+            equally sized close button (right-2 .. right-13). */}
         <a
           href={fullPageHref}
           aria-label="Open full page"
           title="Open full page"
-          className="absolute right-11 top-3 z-50 rounded-sm p-1 opacity-70 ring-offset-background transition-opacity hover:bg-secondary hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none"
+          className="absolute top-2 right-14 z-50 flex size-11 items-center justify-center rounded-sm opacity-70 ring-offset-background transition-opacity hover:bg-secondary hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none"
         >
           <Maximize2 className="h-4 w-4" />
         </a>

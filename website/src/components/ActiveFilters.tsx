@@ -87,7 +87,6 @@ export function ActiveFilters({
               icon={Search}
               label={`"${filters.keyword}"`}
               onClear={() => clearFilter('keyword')}
-              variant="secondary"
             />
           )}
 
@@ -108,7 +107,6 @@ export function ActiveFilters({
                 </>
               }
               onClear={() => clearFilter('entity')}
-              variant="secondary"
             />
           )}
 
@@ -130,7 +128,6 @@ export function ActiveFilters({
                   </>
                 }
                 onClear={() => clearFilter('crossCitingEntity')}
-                variant="secondary"
               />
             )}
 
@@ -147,7 +144,6 @@ export function ActiveFilters({
                 </>
               }
               onClear={() => clearFilter('organ')}
-              variant="secondary"
             />
           )}
 
@@ -156,7 +152,6 @@ export function ActiveFilters({
               icon={Network}
               label={`Part: ${displayFilters.budget_part}`}
               onClear={() => clearFilter('budget_part')}
-              variant="secondary"
             />
           )}
 
@@ -165,7 +160,6 @@ export function ActiveFilters({
               icon={Network}
               label={`Section: ${displayFilters.section}`}
               onClear={() => clearFilter('section')}
-              variant="secondary"
             />
           )}
 
@@ -174,7 +168,6 @@ export function ActiveFilters({
               icon={Network}
               label={displayFilters.subprogramme}
               onClear={() => clearFilter('subprogramme')}
-              variant="secondary"
             />
           )}
 
@@ -183,7 +176,6 @@ export function ActiveFilters({
               icon={Network}
               label={FOUNDATIONAL_LABEL}
               onClear={() => clearFilter('foundational')}
-              variant="secondary"
             />
           )}
 
@@ -194,7 +186,6 @@ export function ActiveFilters({
               icon={Target}
               label={`Programme: ${displayFilters.programme}`}
               onClear={() => clearFilter('programme')}
-              variant="secondary"
             />
           )}
 
@@ -203,7 +194,6 @@ export function ActiveFilters({
               icon={BookOpen}
               label={`Subject: ${titleCase(displayFilters.subject)}`}
               onClear={() => clearFilter('subject')}
-              variant="secondary"
             />
           )}
 
@@ -215,7 +205,6 @@ export function ActiveFilters({
                 displayFilters.subject_domain
               }`}
               onClear={() => clearFilter('subject_domain')}
-              variant="secondary"
             />
           )}
 
@@ -224,7 +213,6 @@ export function ActiveFilters({
               icon={FileType}
               label={`Type: ${displayFilters.document_type}`}
               onClear={() => clearFilter('document_type')}
-              variant="secondary"
             />
           )}
 
@@ -233,7 +221,6 @@ export function ActiveFilters({
               icon={List}
               label={`Agenda: ${displayFilters.agenda_item}`}
               onClear={() => clearFilter('agenda_item')}
-              variant="secondary"
             />
           )}
 
@@ -245,7 +232,6 @@ export function ActiveFilters({
                 clearFilter('start_year')
                 clearFilter('end_year')
               }}
-              variant="secondary"
             />
           )}
 
@@ -255,7 +241,6 @@ export function ActiveFilters({
                 icon={Receipt}
                 label={`Budget: ${BUDGET_STREAM_LABELS[displayFilters.budget_document as keyof typeof BUDGET_STREAM_LABELS] ?? displayFilters.budget_document}`}
                 onClear={() => clearFilter('budget_document')}
-                variant="secondary"
               />
             )}
 

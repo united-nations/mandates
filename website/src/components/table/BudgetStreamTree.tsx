@@ -1,6 +1,7 @@
 'use client'
 
 import { FoundationalTag } from '@/components/EntityBadge'
+import { ChipCount } from '@/components/ui/chip'
 import { isFoundational } from '@/lib/foundational'
 import type { BudgetStream, BudgetPartNode, BudgetPkoGroupNode } from '@/types'
 import { ChevronRight } from 'lucide-react'
@@ -385,8 +386,8 @@ function TreeRow({
       </span>
       {foundational && <FoundationalTag />}
       {count !== undefined && (
-        <span className="shrink-0 font-mono text-[10px] text-muted-foreground">
-          {count}
+        <span className="shrink-0">
+          <ChipCount>{count}</ChipCount>
         </span>
       )}
     </>

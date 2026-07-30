@@ -1,6 +1,6 @@
 'use client'
 
-import { Badge } from '@/components/ui/badge'
+import { Chip } from '@/components/ui/chip'
 import {
   Table,
   TableBody,
@@ -30,22 +30,31 @@ import type {
   OrganWithCount,
 } from '@/types'
 
-import { ChevronRight } from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import { Fragment, useState } from 'react'
+import { ChevronRight, MoveHorizontal } from 'lucide-react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { titleCase } from 'title-case'
 import { EntityBadge, FoundationalTag } from '../EntityBadge'
 import { isFoundational } from '@/lib/foundational'
 import { ORGAN_CATEGORIES } from '@/lib/organ-groups'
 import { ColumnHeaderFilter, type FilterGroup } from './ColumnHeaderFilter'
-import { ColumnPicker } from './ColumnPicker'
 import { BudgetLocationCell } from './BudgetLocationCell'
 import { COLUMN_DEFINITIONS, getMandateUrl } from './MandateColumns'
 import {
   GroupBadge,
+  GroupHiddenVersionsNote,
   GroupMemberLine,
+  groupHasHiddenVersions,
   SeriesMarkers,
 } from './MandateSeriesIndicators'
+
+/**
+ * The pinned "Details" rail on the right edge. The border + left shadow are the
+ * point: without them the rail reads as clipping the column underneath it
+ * ("Budget Location" showing as "BU") instead of floating over it.
+ */
+const STICKY_DETAIL_CELL =
+  'sticky right-0 z-10 border-l border-gray-200 shadow-[-8px_0_8px_-8px_rgba(0,0,0,0.18)]'
 
 // Facet option lists for the column filter popovers. Named FilterFacets to
 // avoid colliding with the data-layer FilterOptions (active filter *values*).
@@ -69,9 +78,9 @@ interface MandateDataTableProps {
   organCounts: OrganWithCount[]
   entityCounts: EntityWithCount[]
   filterOptions: FilterFacets
+  /** Which columns to render. The picker that edits this set lives in the
+   *  explorer toolbar (ColumnPicker), not in the table header. */
   visibleColumns: Set<string>
-  onToggleColumn: (columnId: string) => void
-  onResetColumns: () => void
 }
 
 export function MandateDataTable({
@@ -82,11 +91,10 @@ export function MandateDataTable({
   entityCounts,
   filterOptions,
   visibleColumns,
-  onToggleColumn,
-  onResetColumns,
 }: MandateDataTableProps) {
   const { filters, setFilter, isPending } = useFilters()
   const router = useRouter()
+  const searchParams = useSearchParams()
 
   const grouped = filters.group === '1'
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set())
@@ -105,8 +113,8 @@ export function MandateDataTable({
   const columns = COLUMN_DEFINITIONS.filter((col) =>
     visibleColumns.has(col.id)
   ).sort((a, b) => {
-    // The detail column (column picker + expand chevron) always stays rightmost,
-    // even when extra columns are toggled on.
+    // The detail column (the row's "Details" affordance) always stays
+    // rightmost, even when extra columns are toggled on.
     if (a.id === 'detail') return 1
     if (b.id === 'detail') return -1
     return 0
@@ -145,21 +153,47 @@ export function MandateDataTable({
   const findOrganLong = (short: string) =>
     organsData.find((o) => o.short === short)?.long || short
 
+  // Whether the table is wider than its container. Turning every extra column
+  // on takes the table well past the content width, and macOS overlay
+  // scrollbars are invisible at rest — without a stated affordance the columns
+  // past the right edge simply look truncated.
+  const scrollBoxRef = useRef<HTMLDivElement>(null)
+  const [overflows, setOverflows] = useState(false)
+  useEffect(() => {
+    // The shadcn <Table> supplies its own `overflow-auto` wrapper and forwards
+    // its ref to the <table>, so the scrolling element is reached through the
+    // DOM rather than a ref of ours. <TooltipProvider> renders no element.
+    const area = scrollBoxRef.current?.firstElementChild
+    if (!(area instanceof HTMLElement)) return
+    const measure = () => setOverflows(area.scrollWidth - area.clientWidth > 1)
+    measure()
+    const observer = new ResizeObserver(measure)
+    observer.observe(area)
+    const table = area.firstElementChild
+    if (table instanceof HTMLElement) observer.observe(table)
+    return () => observer.disconnect()
+  }, [columns.length, mandates.length])
+
   const handleRowClick = (mandate: Mandate, e: React.MouseEvent) => {
     e.preventDefault()
     router.push(
-      getMandateUrl(mandate.full_document_symbol, {
-        ppb_version: filters.ppb_version,
-        mode: filters.mode,
-      })
+      getMandateUrl(
+        mandate.full_document_symbol,
+        { ppb_version: filters.ppb_version, mode: filters.mode },
+        searchParams
+      )
     )
   }
 
   return (
     <div>
-      {/* Table */}
+      {/* Table. The `[&>div…]` selectors reach the shadcn <Table>'s own scroll
+          wrapper to keep a horizontal scrollbar permanently visible — macOS
+          hides overlay scrollbars at rest, which is what made a 1601px table in
+          a 1135px box read as broken rather than scrollable. */}
       <div
-        className={`overflow-hidden rounded-lg border border-gray-200 transition-opacity duration-150 ${isPending ? 'opacity-50' : 'opacity-100'}`}
+        ref={scrollBoxRef}
+        className={`overflow-hidden rounded-lg border border-gray-200 transition-opacity duration-150 [&>div]:[scrollbar-color:#d1d5db_#f3f4f6] [&>div::-webkit-scrollbar]:h-2.5 [&>div::-webkit-scrollbar-thumb]:rounded-full [&>div::-webkit-scrollbar-thumb]:bg-gray-300 [&>div::-webkit-scrollbar-track]:bg-gray-100 ${isPending ? 'opacity-50' : 'opacity-100'}`}
       >
         <TooltipProvider>
           <Table>
@@ -169,14 +203,12 @@ export function MandateDataTable({
                 {columns.map((col) => (
                   <TableHead
                     key={col.id}
-                    className={`${col.widthClass} ${col.minWidthClass || ''} ${col.align === 'right' ? 'text-right' : ''} ${col.id === 'detail' ? 'sticky right-0 z-10 bg-gray-50' : ''} h-10 px-3 text-xs font-medium tracking-wider text-muted-foreground uppercase`}
+                    className={`${col.widthClass} ${col.minWidthClass || ''} ${col.align === 'right' ? 'text-right' : ''} ${col.id === 'detail' ? STICKY_DETAIL_CELL + ' bg-gray-50' : ''} h-10 px-3 text-xs font-medium tracking-wider text-muted-foreground uppercase`}
                   >
                     {col.id === 'detail' ? (
-                      <ColumnPicker
-                        visibleColumns={visibleColumns}
-                        onToggle={onToggleColumn}
-                        onReset={onResetColumns}
-                      />
+                      // The rail carries no filter or sort, but the header cell
+                      // still has to name its column for assistive tech.
+                      <span className="sr-only">Details</span>
                     ) : (
                       <ColumnHeaderFilter
                         column={col}
@@ -219,7 +251,7 @@ export function MandateDataTable({
                       {columns.map((col) => (
                         <TableCell
                           key={col.id}
-                          className={`${col.align === 'right' ? 'text-right' : ''} ${col.id === 'detail' ? 'sticky right-0 z-10 bg-white group-hover:bg-gray-50' : ''} overflow-hidden px-3 py-2 align-top text-sm`}
+                          className={`${col.align === 'right' ? 'text-right' : ''} ${col.id === 'detail' ? STICKY_DETAIL_CELL + ' bg-white group-hover:bg-gray-50' : ''} overflow-hidden px-3 py-2 align-top text-sm`}
                         >
                           <CellContent
                             columnId={col.id}
@@ -247,10 +279,14 @@ export function MandateDataTable({
                           className="cursor-pointer border-b border-gray-100 bg-gray-50/60 hover:bg-gray-100"
                           onClick={() =>
                             router.push(
-                              getMandateUrl(member.symbol, {
-                                ppb_version: filters.ppb_version,
-                                mode: filters.mode,
-                              })
+                              getMandateUrl(
+                                member.symbol,
+                                {
+                                  ppb_version: filters.ppb_version,
+                                  mode: filters.mode,
+                                },
+                                searchParams
+                              )
                             )
                           }
                         >
@@ -262,6 +298,21 @@ export function MandateDataTable({
                           </TableCell>
                         </TableRow>
                       ))}
+                    {grouped &&
+                      isExpanded &&
+                      groupHasHiddenVersions(mandate) && (
+                        <TableRow
+                          className="cursor-pointer border-b border-gray-100 bg-gray-50/60 hover:bg-gray-100"
+                          onClick={(e) => handleRowClick(mandate, e)}
+                        >
+                          <TableCell
+                            colSpan={columns.length + 1}
+                            className="px-3 py-1.5 pl-11"
+                          >
+                            <GroupHiddenVersionsNote mandate={mandate} />
+                          </TableCell>
+                        </TableRow>
+                      )}
                   </Fragment>
                 )
               })}
@@ -279,29 +330,73 @@ export function MandateDataTable({
           </Table>
         </TooltipProvider>
       </div>
+      {overflows && (
+        <p className="mt-1.5 flex items-center gap-1.5 text-xs text-muted-foreground">
+          <MoveHorizontal aria-hidden className="h-3.5 w-3.5" />
+          More columns to the right — scroll the table sideways.
+        </p>
+      )}
     </div>
   )
 }
 
-function PillList({ items }: { items: string[] }) {
+/**
+ * A short list of labels in a narrow cell. Only the first two are rendered, each
+ * with its own ellipsis, and the rest collapse into "+N" — the previous version
+ * let the pills overflow a clipped box, which cut labels mid-word ("Internati",
+ * "Gender Equi") with nothing to say they had been cut. The tooltip has all of
+ * them in full.
+ *
+ * `kind` is not decoration: this one component renders two unrelated taxonomies
+ * (UNBIS subject headings and GA/SC agenda items), which used to be
+ * indistinguishable. Subjects get the topic ornament, agenda items stay plain —
+ * the same split the detail sidebar already makes.
+ *
+ * The label sits in its OWN span inside the chip, and that span is what carries
+ * `truncate`. A Chip is a flex container, and `text-overflow: ellipsis` does
+ * not apply to one — putting truncate only on the chip clips the text with no
+ * "…", which is exactly the mid-word cut this component exists to prevent.
+ */
+const PILL_MAX_SHOWN = 2
+
+function PillList({
+  items,
+  kind,
+}: {
+  items: string[]
+  kind: 'topic' | 'plain'
+}) {
   if (items.length === 0) return null
-  const pill = (text: string, i: number) => (
-    <span
-      key={i}
-      className="shrink-0 rounded-full bg-gray-100 px-1.5 py-0.5 text-xs text-gray-700"
-    >
-      {text}
-    </span>
-  )
+  const remaining = items.length - PILL_MAX_SHOWN
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <div className="max-w-[200px] cursor-default overflow-hidden">
-          <div className="flex items-center gap-1">{items.map(pill)}</div>
+        <div className="flex max-w-[200px] cursor-default items-center gap-1">
+          {items.slice(0, PILL_MAX_SHOWN).map((text, i) => (
+            <Chip key={i} kind={kind} density="dense" truncate>
+              <span className="min-w-0 truncate">{text}</span>
+            </Chip>
+          ))}
+          {remaining > 0 && (
+            <span className="shrink-0 text-xs text-muted-foreground">
+              +{remaining}
+            </span>
+          )}
         </div>
       </TooltipTrigger>
       <TooltipContent className="max-w-sm border bg-white p-2 shadow-lg">
-        <div className="flex flex-wrap gap-1">{items.map(pill)}</div>
+        <div className="flex flex-wrap gap-1">
+          {items.map((text, i) => (
+            <Chip
+              key={i}
+              kind={kind}
+              density="dense"
+              className="whitespace-nowrap"
+            >
+              {text}
+            </Chip>
+          ))}
+        </div>
       </TooltipContent>
     </Tooltip>
   )
@@ -327,13 +422,15 @@ function CellContent({
       return (
         <Tooltip>
           <TooltipTrigger asChild>
-            <span className="inline-block rounded bg-blue-50 px-2 py-0.5 text-xs font-medium text-un-blue transition-colors hover:bg-blue-100">
+            {/* Same chip as the detail header's symbol — that header's comment
+                claims the match, and until this migration it was not true. */}
+            <Chip kind="symbol" density="dense" className="whitespace-nowrap">
               {highlighted ? (
                 <span dangerouslySetInnerHTML={{ __html: highlighted }} />
               ) : (
                 symbol
               )}
-            </span>
+            </Chip>
           </TooltipTrigger>
           <TooltipContent>
             <p>{symbol}</p>
@@ -360,12 +457,9 @@ function CellContent({
       return mandate.body ? (
         <Tooltip>
           <TooltipTrigger asChild>
-            <Badge
-              variant="secondary"
-              className="border-0 bg-gray-200! text-xs font-medium whitespace-nowrap text-gray-700!"
-            >
+            <Chip kind="organ" density="dense" className="whitespace-nowrap">
               {mandate.body}
-            </Badge>
+            </Chip>
           </TooltipTrigger>
           <TooltipContent>
             <p>{findOrganLong(mandate.body)}</p>
@@ -408,8 +502,6 @@ function CellContent({
             <EntityBadge
               entity={entity}
               foundational={isFoundational(entity, foundational)}
-              variant="muted"
-              className="font-bold"
               onClick={() => onEntityClick(entity)}
             />
             {longName && longName !== entity && (
@@ -423,8 +515,6 @@ function CellContent({
             entity={entity}
             entityLong={longName}
             foundational={isFoundational(entity, foundational)}
-            variant="muted"
-            className="font-bold"
             onClick={() => onEntityClick(entity)}
           />
         )
@@ -474,6 +564,7 @@ function CellContent({
     case 'subjects':
       return (
         <PillList
+          kind="topic"
           items={(mandate.subject_headings || []).map((s) => titleCase(s))}
         />
       )
@@ -487,7 +578,7 @@ function CellContent({
       ) : null
 
     case 'agenda_item':
-      return <PillList items={mandate.agenda_item_titles || []} />
+      return <PillList kind="plain" items={mandate.agenda_item_titles || []} />
 
     default:
       return null

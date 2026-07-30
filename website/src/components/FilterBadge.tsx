@@ -1,17 +1,20 @@
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { Chip } from '@/components/ui/chip'
 import { X, LucideIcon } from 'lucide-react'
-import { cn } from '@/lib/utils'
 
+/**
+ * One chip in the "Active filters" bar.
+ *
+ * `touch` density, unlike every chip in a table cell: this bar is a primary
+ * interaction, and each chip carries a nested dismiss button that needs room
+ * not to be a 16px target. The chip itself is deliberately NOT clickable — the
+ * dismiss button is the only thing that does anything, so it is the only thing
+ * that is focusable.
+ */
 interface FilterBadgeProps {
-  /**
-   * The icon to display (from lucide-react)
-   */
+  /** The icon to display (from lucide-react) */
   icon?: LucideIcon
 
-  /**
-   * The label text to display
-   */
+  /** The label text to display */
   label: React.ReactNode
 
   /**
@@ -20,22 +23,10 @@ interface FilterBadgeProps {
    */
   showClearButton?: boolean
 
-  /**
-   * Callback when clear button is clicked
-   */
+  /** Callback when clear button is clicked */
   onClear?: () => void
 
-  /**
-   * The variant type determines the styling
-   * - 'default': Default badge styling
-   * - 'secondary': Secondary badge styling (used in FilterControls)
-   * - 'outline': Outline badge styling
-   */
-  variant?: 'default' | 'secondary' | 'outline'
-
-  /**
-   * Additional CSS classes
-   */
+  /** Additional CSS classes */
   className?: string
 }
 
@@ -44,32 +35,26 @@ export function FilterBadge({
   label,
   showClearButton = true,
   onClear,
-  variant = 'secondary',
   className,
 }: FilterBadgeProps) {
-  const badgeClasses = cn(
-    'flex items-center gap-2 px-3 py-1.5',
-    variant === 'secondary' &&
-      'bg-slate-100 text-slate-800 border border-slate-200 hover:bg-slate-200',
-    className
-  )
-
   return (
-    <Badge variant={variant} className={badgeClasses}>
-      {Icon && <Icon className="h-3 w-3" />}
-      <span className="text-xs font-medium">{label}</span>
+    <Chip density="touch" tone="neutral" className={className}>
+      {Icon && <Icon aria-hidden className="size-3 shrink-0 self-center" />}
+      <span className="font-medium">{label}</span>
       {showClearButton && onClear && (
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-4 w-4 rounded-full p-0 hover:bg-slate-300"
+        // 24px, not the old 16px: the smallest thing anyone is asked to hit in
+        // this bar. `-mr-1` claws back part of the chip's own padding so the
+        // extra width does not crowd the label.
+        <button
+          type="button"
           onClick={onClear}
           title="Clear filter"
-          type="button"
+          aria-label="Clear filter"
+          className="-mr-1 inline-flex size-6 shrink-0 cursor-pointer items-center justify-center self-center rounded-full text-gray-500 transition-colors hover:bg-gray-200 hover:text-gray-900 focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none"
         >
-          <X className="h-3 w-3" />
-        </Button>
+          <X className="size-3" />
+        </button>
       )}
-    </Badge>
+    </Chip>
   )
 }

@@ -100,7 +100,7 @@ export function SiteHeader() {
                   The development of the mandate registry is still ongoing. Go
                   to the{' '}
                   <Link
-                    href="/secretariat#methodology"
+                    href="/methodology"
                     className="font-medium text-un-blue underline hover:text-shuttle-gray"
                   >
                     methodology

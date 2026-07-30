@@ -1,6 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { Chip, ChipCount } from '@/components/ui/chip'
 import { Input } from '@/components/ui/input'
 import {
   Popover,
@@ -267,25 +268,20 @@ function PillFilter({
 
   const renderPill = (option: FilterOption) => {
     const isSelected = currentValue === option.value
+    const tone = isSelected ? 'selected' : 'neutral'
     return (
-      <button
+      <Chip
         key={option.value}
+        density="dense"
+        tone={tone}
         onClick={() => (isSelected ? onClear() : onSelect(option.value))}
-        className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-colors ${
-          isSelected
-            ? 'bg-un-blue text-white'
-            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-        }`}
+        className="whitespace-nowrap"
       >
         <span>{option.label ?? titleCase(option.value)}</span>
         {option.count !== undefined && (
-          <span
-            className={`text-xs ${isSelected ? 'text-blue-200' : 'text-muted-foreground'}`}
-          >
-            {option.count}
-          </span>
+          <ChipCount tone={tone}>{option.count}</ChipCount>
         )}
-      </button>
+      </Chip>
     )
   }
 
@@ -483,12 +479,10 @@ function SimpleSelectFilter({
               }`}
             >
               <span>{option.label ?? option.value}</span>
+              {/* Full-width menu row, not a chip — but the count is the same
+                  count, so it takes the one shared treatment. */}
               {option.count !== undefined && (
-                <span
-                  className={`text-[10px] ${isSelected ? 'text-un-blue/60' : 'text-gray-400'}`}
-                >
-                  {option.count}
-                </span>
+                <ChipCount>{option.count}</ChipCount>
               )}
             </button>
           )

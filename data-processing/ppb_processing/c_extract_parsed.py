@@ -352,6 +352,65 @@ def get_policymaking_organ_mandates(data: list, file_name: str):
     return mandates
 
 
+# Advance ("preliminary") fascicles are issued before final production, and in
+# them a mission's "Mandates and background" prose often spells out its mandating
+# resolutions without hyperlinking any of them. get_mandates only reads
+# hyperlinks, so those missions would import with no legislative mandates at all
+# -- in the preliminary 2027 special political mission addenda that is 10 of 36
+# missions. Recover the symbols from the prose instead, the same way
+# get_policymaking_organ_mandates already reads them out of table cells.
+#
+# Measured against the 2027 addendum sections that ARE hyperlinked (78 shared
+# citations), reading the prose reproduces the hyperlinks at precision 0.88 /
+# recall 0.93. It is therefore only used as a fallback, for sections where no
+# hyperlinked mandate was found at all: fully hyperlinked fascicles (every final
+# one published so far) keep their curated citations untouched.
+def normalize_text_symbol(token: str):
+    """"2216 (2015)" -> S/RES/2216(2015); "66/253" -> A/RES/66/253."""
+    token = token.strip()
+    match = re.fullmatch(r"(\d{1,4})\s*\((\d{4})\)", token)
+    if match:
+        return (
+            normalize_symbol(f"S/RES/{match.group(1)}({match.group(2)})"),
+            "Security Council resolutions",
+        )
+    match = re.fullmatch(r"(\d{1,3})/(\d{1,4})", token)
+    if match:
+        return (
+            normalize_symbol(f"A/RES/{match.group(1)}/{match.group(2)}"),
+            "General Assembly resolutions",
+        )
+    return None, None
+
+
+# Not every mandate is a resolution: several missions derive theirs from an
+# exchange of letters between the Secretary-General and the President of the
+# Security Council ("S/2018/955 and S/2018/979" for the Horn of Africa envoy).
+# Those are hyperlinked in final fascicles, so they must be read out of the prose
+# too -- including them lifts recall against the hyperlinks from 0.64 to 0.91 at
+# unchanged precision.
+DOC_SYMBOL_RE = re.compile(r"(?<![\w/])[AS]/(?:19|20)\d{2}/\d{1,4}(?![\w/])")
+
+
+def get_text_mandates(section: dict):
+    """Read mandate symbols out of a section's prose, for unhyperlinked fascicles."""
+    text, entity, _ = get_section_text(section)
+    mandates = []
+    seen = set()
+
+    def add(symbol, source):
+        if not symbol or symbol in seen:
+            return
+        seen.add(symbol)
+        mandates.append((symbol, None, None, source, None, entity))
+
+    for token in ORGAN_SYMBOL_RE.findall(text):
+        add(*normalize_text_symbol(token))
+    for token in DOC_SYMBOL_RE.findall(text):
+        add(normalize_symbol(token), None)
+    return mandates
+
+
 def extract_mandates_for_file(data: dict, file_name: str):
     # extract mandates
     mandates = []
@@ -365,6 +424,8 @@ def extract_mandates_for_file(data: dict, file_name: str):
     background_sections = find_section_with_heading(data, "Mandates and background")
     for section in background_sections:
         _mandates = get_mandates(section, file_name=file_name)
+        if not _mandates:
+            _mandates = get_text_mandates(section)
         _mandates = [(*d, "Mandates and background") for d in _mandates]
         mandates.extend(_mandates)
         section_text, entity, hyperlinks = get_section_text(section)
@@ -444,7 +505,12 @@ def extract_mandates(year: int):
             df = extract_mandates_for_file(data, file.name)
             if df is not None:
                 df["file"] = file.name
-                addendum = re.search(r"ADD\.(\d+)(\.|_)", file.name.upper())
+                # Match the addendum number wherever the filename puts it. The
+                # old pattern required a "." or "_" right after the digits,
+                # which holds for "A_81_6 (SECT. 3)_ADD.2.JSON" but not for the
+                # advance copies ("A_81_6 (SECT. 3) ADD.2 PRELIMINARY.JSON"),
+                # whose addendum was silently read as None.
+                addendum = re.search(r"ADD\.(\d+)(?!\d)", file.name.upper())
                 df["addendum"] = addendum.group(1) if addendum else None
                 dfs.append(df)
         except Exception as e:

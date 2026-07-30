@@ -69,7 +69,7 @@
   "organizations": [
     {
       "code": "UN Secretariat",
-      "name": "United Nations Secretariat and Peacekeeping Operations",
+      "name": "United Nations Secretariat, Special Political Missions, and Peacekeeping Operations",
       "grouping": "secretariat",
       "governingBodies": [
         {
@@ -157,7 +157,7 @@
           },
           "mandates": {
             "value": false,
-            "note": "tracker status labels (\"Implemented\" / \"Under implementation\" / \"Cost-neutral\") distinguish completed from ongoing resolutions; no in-force/superseded registry"
+            "note": "tracker status labels (\"Implemented\" / \"Under implementation\" / \"Cost-neutral\") distinguish completed from ongoing resolutions; no in-force/replaced registry"
           },
           "budget": {
             "value": true,
@@ -227,7 +227,7 @@
           },
           "mandates": {
             "value": false,
-            "note": "tracking tables mark each request Completed / Ongoing / In Progress / Partially Completed; per-request status only, no active-vs-superseded registry of decisions"
+            "note": "tracking tables mark each request Completed / Ongoing / In Progress / Partially Completed; per-request status only, no current-vs-replaced registry of decisions"
           },
           "budget": {
             "value": false,
@@ -289,7 +289,7 @@
           },
           "mandates": {
             "value": false,
-            "note": "no active/superseded or completed labels found on the monitoring portal or the resolutions repositories"
+            "note": "no current/replaced or completed labels found on the monitoring portal or the resolutions repositories"
           },
           "budget": {
             "value": false,
@@ -393,7 +393,7 @@
           },
           "mandates": {
             "value": false,
-            "note": "monitoring tables mark each request green \"completed\" / yellow \"in progress or partially completed\", with non-action paragraphs greyed \"no action required\"; per-request status only, no active-vs-superseded registry"
+            "note": "monitoring tables mark each request green \"completed\" / yellow \"in progress or partially completed\", with non-action paragraphs greyed \"no action required\"; per-request status only, no current-vs-replaced registry"
           },
           "budget": {
             "value": false,
@@ -629,7 +629,7 @@
           },
           "mandates": {
             "value": false,
-            "note": "round 2 confirmed: no consolidated in-force/superseded list or status index found; resolutions exist only as per-session PDF compilations"
+            "note": "round 2 confirmed: no consolidated in-force/replaced list or status index found; resolutions exist only as per-session PDF compilations"
           },
           "budget": {
             "value": false,
@@ -691,7 +691,7 @@
           },
           "mandates": {
             "value": false,
-            "note": "round 2 confirmed: decision pages/GB database carry no in-force/superseded status"
+            "note": "round 2 confirmed: decision pages/GB database carry no in-force/replaced status"
           },
           "budget": {
             "value": false,
@@ -741,7 +741,7 @@
           },
           "mandates": {
             "value": true,
-            "note": "Selected Decisions compiles decisions currently applicable; lapsed/superseded decisions are deleted from each issue"
+            "note": "Selected Decisions compiles decisions currently applicable; lapsed and replaced decisions are deleted from each issue"
           },
           "budget": {
             "value": false,
@@ -917,7 +917,7 @@
           },
           "mandates": {
             "value": false,
-            "note": "chronological per-session resolution compilations; no in-force/superseded distinction"
+            "note": "chronological per-session resolution compilations; no in-force/replaced distinction"
           },
           "budget": {
             "value": false,
@@ -1001,7 +1001,7 @@
           },
           "mandates": {
             "value": false,
-            "note": "per-session compilation PDFs only; no in-force/superseded distinction"
+            "note": "per-session compilation PDFs only; no in-force/replaced distinction"
           },
           "budget": {
             "value": false,
@@ -1123,7 +1123,7 @@
           },
           "mandates": {
             "value": false,
-            "note": "round 2 confirmed: Resolutions Portal has no active/superseded/in-force status field (chronological archive with topical metadata only)"
+            "note": "round 2 confirmed: Resolutions Portal has no current/replaced/in-force status field (chronological archive with topical metadata only)"
           },
           "budget": {
             "value": "partial",
@@ -1183,7 +1183,7 @@
           },
           "mandates": {
             "value": false,
-            "note": "annual decision lists per body; no in-force/superseded distinction"
+            "note": "annual decision lists per body; no in-force/replaced distinction"
           },
           "budget": {
             "value": false,
@@ -1282,7 +1282,7 @@
           },
           "mandates": {
             "value": false,
-            "note": "Documents & Reports repositories carry no active/superseded status on resolutions"
+            "note": "Documents & Reports repositories carry no current/replaced status on resolutions"
           },
           "budget": {
             "value": false,
@@ -1368,7 +1368,7 @@
           },
           "mandates": {
             "value": false,
-            "note": "confirmed round 2; GC archive is a plain document list with no status (active/superseded) metadata"
+            "note": "confirmed round 2; GC archive is a plain document list with no status (current/replaced) metadata"
           },
           "budget": {
             "value": false,
@@ -1467,7 +1467,7 @@
           },
           "mandates": {
             "value": false,
-            "note": "confirmed round 2; resolutions database has category filters only, no active/superseded status metadata"
+            "note": "confirmed round 2; resolutions database has category filters only, no current/replaced status metadata"
           },
           "budget": {
             "value": false,
@@ -1520,7 +1520,7 @@
           },
           "mandates": {
             "value": false,
-            "note": "confirmed round 2; session pages are plain document lists, no status distinction between current and superseded decisions"
+            "note": "confirmed round 2; session pages are plain document lists, no status distinction between current and replaced decisions"
           },
           "budget": {
             "value": false,
@@ -1564,7 +1564,7 @@
           },
           "mandates": {
             "value": false,
-            "note": "confirmed round 2; documents catalogue is a per-session PDF list with no active/superseded status metadata"
+            "note": "confirmed round 2; documents catalogue is a per-session PDF list with no current/replaced status metadata"
           },
           "budget": {
             "value": false,
@@ -1617,7 +1617,7 @@
           },
           "mandates": {
             "value": false,
-            "note": "confirmed round 2; Documents Online is a document archive with no in-force/superseded status for decisions"
+            "note": "confirmed round 2; Documents Online is a document archive with no in-force/replaced status for decisions"
           },
           "budget": {
             "value": false,

@@ -1,68 +1,89 @@
 'use client'
 
-import {
-  ClickTooltip,
-  DIRECTORY_GROUP_BOX,
-  DirectoryToggle,
-} from '@/components/DirectoryControls'
+import { ClickTooltip, DirectoryToggle } from '@/components/DirectoryControls'
 import { ChartSearchInput } from '@/components/ui/chart-search-input'
-import { sectionLabel } from '@/components/table/BudgetStreamTree'
+import { Chip, ChipCount } from '@/components/ui/chip'
 import {
   Tooltip,
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { useSectionFilter } from '@/hooks/use-section-filter'
-import { BUDGET_STREAM_LABELS } from '@/lib/filter-constants'
 import { cn } from '@/lib/utils'
 import type { BudgetEntityNode, BudgetStream } from '@/types'
-import { ChevronRight, Rows3, Tag } from 'lucide-react'
+import { ChevronRight, Layers, LayoutGrid, Tag } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 
 /**
- * The entity directory: every budget-holding entity, grouped by the budget
- * hierarchy (Programme Budget → Part → Section, Peacekeeping → Missions /
- * Support account). Reads the same `BudgetStream[]` as the table's budget
- * filter (getBudgetHierarchy). Two view toggles, persisted in localStorage:
- * compact (acronym pills) vs. full (cards with names), and whether to break
- * each part into its sections.
+ * The entity directory: every budget-holding entity that implements mandates,
+ * in three flat groups — Secretariat, Special Political Missions, Peacekeeping
+ * Operations. Reads the same `BudgetStream[]` as the table's budget filter
+ * (getBudgetHierarchy).
  *
- * On the single page, selecting an entity — or a part / section heading — sets
- * a single-facet view of the mandates section and scrolls to it (see
- * useSectionFilter); the active node is highlighted.
+ * The three groups are derived from the data on every render, never hardcoded:
+ * the split is version-dependent (PPB 2026 has 38 special political missions,
+ * PPB 2027 has 36), so a fixed entity list would silently rot.
+ *   Peacekeeping Operations — the `pko` stream (peacekeeping financing reports).
+ *   Special Political Missions — `ppb` entities budgeted in a section-3 addendum
+ *     ("3 (Add.2)" … "3 (Add.6)"); see sql/migrations/033_import_ppb2027_spm.sql.
+ *     The bare "Add.N" sections are peacekeeping fascicles, never section 3, so
+ *     the prefix test cannot collide.
+ *   Secretariat — every remaining `ppb` entity.
+ * Known edge: UNSCO, UNOAU and UNRoD are mission-like but are budgeted in the
+ * section-3 fascicle proper rather than an addendum, so they read as
+ * Secretariat. That is what the budget documents actually say.
+ *
+ * The Programme Budget's part/section hierarchy and the Plan Outline are
+ * deliberately absent — this modal answers "who implements mandates", not
+ * "where in the budget document does it sit" (the table's budget filter still
+ * does the latter). The Plan Outline contributes no entities at all: its
+ * citations carry entity IS NULL.
+ *
+ * The group headings are plain text on purpose: no filter parameter expresses
+ * "Secretariat" or "Special Political Missions", so making them look clickable
+ * would promise a filter that does not exist.
+ *
+ * On the single page, selecting an entity sets a single-facet view of the
+ * mandates section and scrolls to it (see useSectionFilter); the active node is
+ * highlighted. One view toggle, persisted in localStorage: compact (acronym
+ * pills, the default) vs. full cards with names.
  */
 
 interface EntitiesDirectoryProps {
   streams: BudgetStream[]
 }
 
+interface EntityBucket {
+  id: 'secretariat' | 'spm' | 'pko'
+  label: string
+  entities: BudgetEntityNode[]
+}
+
+/** A Programme Budget section that is a special-political-mission addendum. */
+const isSpmSection = (section: string) => section.startsWith('3 (Add.')
+
+const byCountThenName = (a: BudgetEntityNode, b: BudgetEntityNode) =>
+  b.count - a.count || a.entity.localeCompare(b.entity)
+
 export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
   const [search, setSearch] = useState('')
   const [compact, setCompact] = useState(true)
-  const [showSections, setShowSections] = useState(false)
   const { active, select } = useSectionFilter('entity')
-  const { active: activeDoc, select: selectDoc } =
-    useSectionFilter('budget_document')
-  const { active: activePart, select: selectPart } =
-    useSectionFilter('budget_part')
-  const { active: activeSection, select: selectSection } =
-    useSectionFilter('section')
 
-  // Restore saved preferences after mount (avoids an SSR hydration mismatch).
+  // Restore the saved preference after mount (avoids an SSR hydration mismatch).
   useEffect(() => {
     const c = localStorage.getItem('entities.compact')
-    const s = localStorage.getItem('entities.showSections')
-    /* eslint-disable react-hooks/set-state-in-effect -- one-time restore of persisted UI prefs */
+    /* eslint-disable-next-line react-hooks/set-state-in-effect -- one-time restore of a persisted UI pref */
     if (c !== null) setCompact(c === '1')
-    if (s !== null) setShowSections(s === '1')
-    /* eslint-enable react-hooks/set-state-in-effect */
   }, [])
   useEffect(() => {
     localStorage.setItem('entities.compact', compact ? '1' : '0')
   }, [compact])
-  useEffect(() => {
-    localStorage.setItem('entities.showSections', showSections ? '1' : '0')
-  }, [showSections])
+
+  const buckets = useMemo<EntityBucket[]>(
+    () => buildBuckets(streams),
+    [streams]
+  )
 
   const term = search.trim().toLowerCase()
   const match = (entity: BudgetEntityNode) =>
@@ -70,187 +91,10 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
     entity.entity.toLowerCase().includes(term) ||
     (entity.entity_long?.toLowerCase().includes(term) ?? false)
 
-  const totalEntities = useMemo(() => countEntities(streams), [streams])
-
-  const ppbStream = streams.find(
-    (s): s is Extract<BudgetStream, { type: 'ppb' }> => s.type === 'ppb'
-  )
-  const pkoStream = streams.find(
-    (s): s is Extract<BudgetStream, { type: 'pko' }> => s.type === 'pko'
-  )
-  const planStream = streams.find(
-    (s): s is Extract<BudgetStream, { type: 'plan_outline' }> =>
-      s.type === 'plan_outline'
-  )
-
-  // Programme Budget: one node per part (its heading + entities), filtered.
-  const ppbPartNodes: { key: string; node: React.ReactNode }[] = []
-  if (ppbStream) {
-    const parts = ppbStream.parts
-      .map((part) => ({
-        ...part,
-        sections: part.sections
-          .map((s) => ({ ...s, entities: s.entities.filter(match) }))
-          .filter((s) => s.entities.length > 0),
-      }))
-      .filter((p) => p.sections.length > 0)
-    for (const part of parts) {
-      const flat = part.sections.flatMap((s) => s.entities)
-      const partActive = activePart === part.part
-      ppbPartNodes.push({
-        key: `part-${part.part}`,
-        node: (
-          <div className={cn(compact && DIRECTORY_GROUP_BOX, 'space-y-1.5')}>
-            <h3 className={showSections ? 'text-base' : 'text-sm'}>
-              <FilterHeading
-                href={`/secretariat?budget_part=${encodeURIComponent(part.part)}`}
-                active={partActive}
-                onSelect={() => selectPart(part.part)}
-              >
-                <span
-                  className={cn(
-                    'font-medium',
-                    partActive ? 'text-un-blue' : 'text-gray-500'
-                  )}
-                >
-                  Part {part.part}.
-                </span>{' '}
-                <span
-                  className={cn(
-                    'font-semibold',
-                    partActive ? 'text-un-blue' : 'text-gray-900'
-                  )}
-                >
-                  {part.part_title}
-                </span>
-              </FilterHeading>
-            </h3>
-            {showSections ? (
-              part.sections.map((section) => (
-                <div key={section.section} className="space-y-1.5">
-                  <SubHeading active={activeSection === section.section}>
-                    <FilterHeading
-                      href={`/secretariat?section=${encodeURIComponent(section.section)}`}
-                      active={activeSection === section.section}
-                      onSelect={() => selectSection(section.section)}
-                    >
-                      {sectionLabel(section)}
-                    </FilterHeading>
-                  </SubHeading>
-                  <EntityGroup
-                    entities={section.entities}
-                    compact={compact}
-                    active={active}
-                    onSelect={select}
-                  />
-                </div>
-              ))
-            ) : (
-              <EntityGroup
-                entities={flat}
-                compact={compact}
-                active={active}
-                onSelect={select}
-              />
-            )}
-          </div>
-        ),
-      })
-    }
-  }
-
-  const pkoGroups = pkoStream
-    ? pkoStream.groups
-        .map((g) => ({ ...g, entities: g.entities.filter(match) }))
-        .filter((g) => g.entities.length > 0)
-    : []
-  // Missions and the Support account are the Peacekeeping stream's top-level
-  // split — its analogue to the Programme Budget's parts (there is no section
-  // level below). So they always show as their own boxes, quieter than a PPB
-  // part (no "Part N." number) and not gated behind the section toggle.
-  const pkoNode =
-    pkoGroups.length > 0 ? (
-      <div>
-        <div className="mb-3">
-          <StreamHeading
-            type="pko"
-            active={activeDoc === 'pko'}
-            onSelect={() => selectDoc('pko')}
-          />
-        </div>
-        <div className="space-y-5">
-          {pkoGroups.map((group) =>
-            compact ? (
-              <div
-                key={group.group}
-                className={cn(DIRECTORY_GROUP_BOX, 'space-y-1.5')}
-              >
-                <h3 className="text-sm font-semibold text-gray-900">
-                  {group.label}
-                </h3>
-                <EntityGroup
-                  entities={group.entities}
-                  compact={compact}
-                  active={active}
-                  onSelect={select}
-                />
-              </div>
-            ) : (
-              <div key={group.group} className="space-y-1.5">
-                <SubHeading>{group.label}</SubHeading>
-                <EntityGroup
-                  entities={group.entities}
-                  compact={compact}
-                  active={active}
-                  onSelect={select}
-                />
-              </div>
-            )
-          )}
-        </div>
-      </div>
-    ) : null
-
-  // Plan Outline: a single facet card on the budget_document key.
-  const planActive = activeDoc === 'plan_outline'
-  const planNode =
-    !term && planStream ? (
-      <div>
-        <div className="mb-3">
-          <StreamHeading
-            type="plan_outline"
-            active={activeDoc === 'plan_outline'}
-            onSelect={() => selectDoc('plan_outline')}
-          />
-        </div>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <a
-              href="/secretariat?budget_document=plan_outline"
-              onClick={(e) => {
-                e.preventDefault()
-                selectDoc('plan_outline')
-              }}
-              className={cn(
-                'flex items-center gap-2 border-l-4 border-un-blue px-4 py-3 text-sm transition-colors',
-                planActive
-                  ? 'bg-un-blue/20'
-                  : 'bg-un-blue/10 hover:bg-un-blue/20'
-              )}
-            >
-              <span className="font-semibold">{planStream.label}</span>
-              <span className="text-xs text-gray-500">
-                {planStream.count} documents
-              </span>
-            </a>
-          </TooltipTrigger>
-          <ClickTooltip />
-        </Tooltip>
-      </div>
-    ) : null
-
-  const hasAnyRegion =
-    ppbPartNodes.length > 0 || pkoNode !== null || planNode !== null
+  const totalEntities = buckets.reduce((n, b) => n + b.entities.length, 0)
+  const visible = buckets
+    .map((b) => ({ ...b, entities: b.entities.filter(match) }))
+    .filter((b) => b.entities.length > 0)
 
   return (
     <TooltipProvider delayDuration={200}>
@@ -262,66 +106,35 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
             onChange={setSearch}
           />
           <DirectoryToggle
-            active={showSections}
-            onClick={() => setShowSections((v) => !v)}
-            icon={Rows3}
-          >
-            View sections and programmes
-          </DirectoryToggle>
-          <DirectoryToggle
-            active={compact}
-            onClick={() => setCompact((v) => !v)}
-            icon={Tag}
-          >
-            Compact
-          </DirectoryToggle>
+            label="Entity view"
+            value={compact ? 'compact' : 'full'}
+            onChange={(value) => setCompact(value === 'compact')}
+            options={[
+              { value: 'compact', label: 'Compact', icon: Tag },
+              { value: 'full', label: 'Full', icon: LayoutGrid },
+            ]}
+          />
         </div>
 
-        {hasAnyRegion && (
-          <div className="space-y-8">
-            {ppbPartNodes.length > 0 && (
-              <div>
-                <div className="mb-3">
-                  <StreamHeading
-                    type="ppb"
-                    active={activeDoc === 'ppb'}
-                    onSelect={() => selectDoc('ppb')}
+        {visible.length > 0 ? (
+          <div className="space-y-6">
+            {visible.map((bucket) => (
+              <div key={bucket.id}>
+                <GroupHeading count={bucket.entities.length}>
+                  {bucket.label}
+                </GroupHeading>
+                <div className="mt-3">
+                  <EntityGroup
+                    entities={bucket.entities}
+                    compact={compact}
+                    active={active}
+                    onSelect={select}
                   />
                 </div>
-                {compact ? (
-                  <div className="columns-2 gap-x-8">
-                    {ppbPartNodes.map((part) => (
-                      <div key={part.key} className="mb-5 break-inside-avoid">
-                        {part.node}
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="space-y-5">
-                    {ppbPartNodes.map((part) => (
-                      <div key={part.key}>{part.node}</div>
-                    ))}
-                  </div>
-                )}
               </div>
-            )}
-
-            {(pkoNode || planNode) &&
-              (compact ? (
-                <div className="grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2">
-                  {pkoNode}
-                  {planNode}
-                </div>
-              ) : (
-                <div className="space-y-8">
-                  {pkoNode}
-                  {planNode}
-                </div>
-              ))}
+            ))}
           </div>
-        )}
-
-        {term && countMatches(streams, match) === 0 && (
+        ) : (
           <p className="text-sm text-gray-500">
             No entities match “{search.trim()}”.
           </p>
@@ -329,7 +142,7 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
 
         {!term && (
           <p className="pt-2 text-xs text-gray-500">
-            {totalEntities} entities across the budget.
+            {totalEntities.toLocaleString()} entities across the budget.
           </p>
         )}
       </div>
@@ -338,81 +151,79 @@ export function EntitiesDirectory({ streams }: EntitiesDirectoryProps) {
 }
 
 /**
- * A heading that doubles as a filter (budget part, section/programme).
- * Deliberately not pill-styled — the hierarchy has to keep reading as headings,
- * so the affordance is an underline and the active one is underlined in UN blue.
+ * Fold the budget streams into the three flat groups. Deliberately defensive:
+ * an entity is only ever placed once (the special-political-mission reading wins
+ * over the plain Secretariat one), even though the three buckets are disjoint in
+ * the data today.
  */
-function FilterHeading({
-  href,
-  active,
-  onSelect,
-  children,
-}: {
-  href: string
-  active: boolean
-  onSelect: () => void
-  children: React.ReactNode
-}) {
-  return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <a
-          href={href}
-          onClick={(e) => {
-            e.preventDefault()
-            onSelect()
-          }}
-          className={cn(
-            'underline-offset-4 hover:underline hover:decoration-un-blue',
-            active && 'underline decoration-un-blue decoration-2'
-          )}
-        >
-          {children}
-        </a>
-      </TooltipTrigger>
-      <ClickTooltip />
-    </Tooltip>
+function buildBuckets(streams: BudgetStream[]): EntityBucket[] {
+  const pko: BudgetEntityNode[] = []
+  const spm: BudgetEntityNode[] = []
+  const secretariat: BudgetEntityNode[] = []
+  const seen = new Set<string>()
+  const push = (into: BudgetEntityNode[], entity: BudgetEntityNode) => {
+    if (seen.has(entity.entity)) return
+    seen.add(entity.entity)
+    into.push(entity)
+  }
+
+  for (const stream of streams) {
+    if (stream.type !== 'pko') continue
+    for (const group of stream.groups)
+      for (const entity of group.entities) push(pko, entity)
+  }
+
+  const ppb = streams.find(
+    (s): s is Extract<BudgetStream, { type: 'ppb' }> => s.type === 'ppb'
   )
+  if (ppb) {
+    const sections = ppb.parts.flatMap((part) => part.sections)
+    for (const section of sections)
+      if (isSpmSection(section.section))
+        for (const entity of section.entities) push(spm, entity)
+    for (const section of sections)
+      if (!isSpmSection(section.section))
+        for (const entity of section.entities) push(secretariat, entity)
+  }
+
+  const all: EntityBucket[] = [
+    {
+      id: 'secretariat',
+      label: 'Secretariat',
+      entities: secretariat.sort(byCountThenName),
+    },
+    {
+      id: 'spm',
+      label: 'Special Political Missions',
+      entities: spm.sort(byCountThenName),
+    },
+    {
+      id: 'pko',
+      label: 'Peacekeeping Operations',
+      entities: pko.sort(byCountThenName),
+    },
+  ]
+  return all.filter((b) => b.entities.length > 0)
 }
 
 /**
- * A budget stream (Programme Budget / Peacekeeping / Plan Outline). The heading
- * filters the mandates to everything cited from that stream — the `budget_document`
- * facet, the top of the budget-location hierarchy.
+ * Plain heading — not a filter; see the component doc comment. h3, not h2: the
+ * dialog's own DialogTitle is the h2 of this subtree.
  */
-function StreamHeading({
-  type,
-  active,
-  onSelect,
-}: {
-  type: keyof typeof BUDGET_STREAM_LABELS
-  active: boolean
-  onSelect: () => void
-}) {
-  return (
-    <h2 className="border-b border-gray-200 pb-1.5 text-xs font-semibold tracking-wide text-un-blue uppercase">
-      <FilterHeading
-        href={`/secretariat?budget_document=${encodeURIComponent(type)}`}
-        active={active}
-        onSelect={onSelect}
-      >
-        {BUDGET_STREAM_LABELS[type]}
-      </FilterHeading>
-    </h2>
-  )
-}
-
-function SubHeading({
-  active = false,
+function GroupHeading({
+  count,
   children,
 }: {
-  active?: boolean
+  count: number
   children: React.ReactNode
 }) {
   return (
-    <p className={cn('text-sm', active ? 'text-un-blue' : 'text-gray-500')}>
+    <h3 className="flex items-baseline gap-2 border-b border-gray-200 pb-1.5 text-sm font-normal tracking-wide text-gray-600 uppercase">
       {children}
-    </p>
+      <span className="text-xs text-gray-500 tabular-nums">
+        {count.toLocaleString()}
+      </span>
+    </h3>
   )
 }
 
@@ -442,7 +253,7 @@ function EntityGroup({
     )
   }
   return (
-    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
       {entities.map((entity) => (
         <EntityCard
           key={entity.entity}
@@ -456,19 +267,25 @@ function EntityGroup({
 }
 
 /**
- * Wraps an entity anchor in the shared hover tooltip: full name, the entity's
+ * Wraps an entity node in the shared hover tooltip: full name, the entity's
  * subprogrammes as their own filter pills, and the click hint.
+ *
+ * `render` rather than a fixed anchor, because the two views are different
+ * elements: the compact view is a `Chip` (the shared primitive owns its
+ * geometry and focus ring) and the full view is a card. Both need the same
+ * href + intercepted click, so that pair is built once here.
  */
 function EntityAnchor({
   entity,
-  className,
   onSelect,
-  children,
+  render,
 }: {
   entity: BudgetEntityNode
-  className: string
   onSelect: (value: string) => void
-  children: React.ReactNode
+  render: (props: {
+    href: string
+    onClick: (event: React.MouseEvent<HTMLElement>) => void
+  }) => React.ReactElement
 }) {
   // Read here rather than threading two more props through EntityGroup: the
   // hook is just filter context, and only this component needs it.
@@ -478,19 +295,17 @@ function EntityAnchor({
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <a
-          href={`/secretariat?entity=${encodeURIComponent(entity.entity)}`}
-          onClick={(e) => {
+        {render({
+          href: `/secretariat?entity=${encodeURIComponent(entity.entity)}`,
+          onClick: (e) => {
             e.preventDefault()
             onSelect(entity.entity)
-          }}
-          className={className}
-        >
-          {children}
-        </a>
+          },
+        })}
       </TooltipTrigger>
       <ClickTooltip
         name={entity.entity_long}
+        meta={entityMeta(entity)}
         pills={entity.subprogrammes.map((sp) => ({
           label: sp.subprogramme,
           value: sp.subprogramme,
@@ -499,6 +314,60 @@ function EntityAnchor({
         activePill={activeSub}
       />
     </Tooltip>
+  )
+}
+
+/** Spells out the card's two bare numbers for the hover tooltip. */
+function entityMeta(entity: BudgetEntityNode): string {
+  const parts = [
+    `${entity.count.toLocaleString()} mandate${entity.count === 1 ? '' : 's'}`,
+  ]
+  const subs = entity.subprogrammes.length
+  if (subs > 0)
+    parts.push(`${subs.toLocaleString()} subprogramme${subs === 1 ? '' : 's'}`)
+  return parts.join(' · ')
+}
+
+/**
+ * How many subprogrammes an entity has, shown only when there are any: 70 of the
+ * 94 Programme Budget entities have none (the generic "All Subprogrammes" bucket
+ * is nulled out upstream), so an always-on badge would read "0" on most of them.
+ *
+ * The layers glyph is load-bearing, not decoration: without it the pill reads
+ * "OHCHR 433 4" — two unlabelled numbers that run together into "4334" at
+ * mobile widths. Icon + number is visibly a different kind of quantity from the
+ * bare mandate count, and the tooltip (see entityMeta) names both.
+ */
+function SubprogrammeBadge({
+  count,
+  active,
+}: {
+  count: number
+  active: boolean
+}) {
+  if (count <= 0) return null
+  const label = `${count} subprogramme${count === 1 ? '' : 's'}`
+  return (
+    // No inner pill any more: a count inside a chip is a slot, not a second
+    // chip. The glyph alone carries "this is a different quantity", and the
+    // number is the shared 10px ChipCount rather than the 9px it used to be —
+    // the smallest type anywhere in the app, on a number nobody could read.
+    <span
+      title={label}
+      className="ml-0.5 inline-flex shrink-0 items-baseline gap-0.5"
+    >
+      <Layers
+        aria-hidden
+        className={cn(
+          'size-2.5 self-center',
+          active ? 'text-white/80' : 'text-gray-500'
+        )}
+      />
+      <ChipCount tone={active ? 'selected' : 'neutral'}>
+        {count.toLocaleString()}
+      </ChipCount>
+      <span className="sr-only">{label}</span>
+    </span>
   )
 }
 
@@ -511,27 +380,29 @@ function EntityPill({
   active: boolean
   onSelect: (value: string) => void
 }) {
+  const mandates = `${entity.count.toLocaleString()} mandate${entity.count === 1 ? '' : 's'}`
   return (
     <EntityAnchor
       entity={entity}
       onSelect={onSelect}
-      className={cn(
-        'inline-flex items-baseline gap-1 rounded-full border px-2.5 py-0.5 text-xs transition-colors',
-        active
-          ? 'border-un-blue bg-un-blue text-white'
-          : 'border-gray-200 bg-white hover:border-un-blue hover:text-un-blue'
+      render={({ href, onClick }) => (
+        <Chip
+          kind="entity"
+          tone={active ? 'selected' : 'neutral'}
+          href={href}
+          onClick={onClick}
+        >
+          <span className="font-medium">{entity.entity}</span>
+          <ChipCount tone={active ? 'selected' : 'neutral'}>
+            <span title={mandates}>{entity.count.toLocaleString()}</span>
+          </ChipCount>
+          <SubprogrammeBadge
+            count={entity.subprogrammes.length}
+            active={active}
+          />
+        </Chip>
       )}
-    >
-      <span className="font-medium">{entity.entity}</span>
-      <span
-        className={cn(
-          'text-[10px]',
-          active ? 'text-white/80' : 'text-gray-500'
-        )}
-      >
-        {entity.count}
-      </span>
-    </EntityAnchor>
+    />
   )
 }
 
@@ -548,63 +419,58 @@ function EntityCard({
     <EntityAnchor
       entity={entity}
       onSelect={onSelect}
-      className={cn(
-        'group flex items-start justify-between gap-2 rounded-lg border px-3 py-2 transition-colors',
-        active
-          ? 'border-un-blue bg-un-blue/5'
-          : 'border-gray-200 bg-white hover:border-un-blue hover:shadow-sm'
-      )}
-    >
-      <div className="min-w-0">
-        <div className="flex items-baseline gap-1.5">
-          <span className="text-sm font-semibold">{entity.entity}</span>
-          <span className="text-[10px] text-gray-500">{entity.count}</span>
-        </div>
-        {entity.entity_long && (
-          <div className="truncate text-xs text-gray-500">
-            {entity.entity_long}
+      render={({ href, onClick }) => (
+        <a
+          href={href}
+          onClick={onClick}
+          className={cn(
+            'group flex items-start justify-between gap-2 rounded-lg border bg-white px-3 py-2 transition-all focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none',
+            active
+              ? 'border-un-blue'
+              : 'border-gray-200 hover:border-un-blue hover:shadow-md'
+          )}
+        >
+          <div className="min-w-0">
+            <div className="flex items-baseline gap-1.5">
+              <span
+                className={cn(
+                  'text-sm font-semibold',
+                  active ? 'text-un-blue' : 'text-gray-900'
+                )}
+              >
+                {entity.entity}
+              </span>
+              <ChipCount>
+                <span
+                  title={`${entity.count.toLocaleString()} mandate${entity.count === 1 ? '' : 's'}`}
+                >
+                  {entity.count.toLocaleString()}
+                </span>
+              </ChipCount>
+              <SubprogrammeBadge
+                count={entity.subprogrammes.length}
+                active={false}
+              />
+            </div>
+            {entity.entity_long && (
+              // Multi-line rather than one truncated line — see OrgansDirectory;
+              // `title` is the recovery path should a name still clamp.
+              <div
+                title={entity.entity_long}
+                className="line-clamp-3 text-xs leading-snug text-gray-500"
+              >
+                {entity.entity_long}
+              </div>
+            )}
           </div>
-        )}
-      </div>
-      <ChevronRight
-        className={cn(
-          'mt-0.5 h-3.5 w-3.5 shrink-0',
-          active ? 'text-un-blue' : 'text-gray-300 group-hover:text-un-blue'
-        )}
-      />
-    </EntityAnchor>
+          <ChevronRight
+            className={cn(
+              'mt-0.5 h-3.5 w-3.5 shrink-0',
+              active ? 'text-un-blue' : 'text-gray-300 group-hover:text-un-blue'
+            )}
+          />
+        </a>
+      )}
+    />
   )
-}
-
-function countEntities(streams: BudgetStream[]): number {
-  const seen = new Set<string>()
-  for (const stream of streams) {
-    if (stream.type === 'ppb') {
-      for (const part of stream.parts)
-        for (const section of part.sections)
-          for (const e of section.entities) seen.add(e.entity)
-    } else if (stream.type === 'pko') {
-      for (const group of stream.groups)
-        for (const e of group.entities) seen.add(e.entity)
-    }
-  }
-  return seen.size
-}
-
-function countMatches(
-  streams: BudgetStream[],
-  match: (e: BudgetEntityNode) => boolean
-): number {
-  let n = 0
-  for (const stream of streams) {
-    if (stream.type === 'ppb') {
-      for (const part of stream.parts)
-        for (const section of part.sections)
-          n += section.entities.filter(match).length
-    } else if (stream.type === 'pko') {
-      for (const group of stream.groups)
-        n += group.entities.filter(match).length
-    }
-  }
-  return n
 }
