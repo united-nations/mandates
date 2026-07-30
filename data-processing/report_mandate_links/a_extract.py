@@ -8,11 +8,13 @@ PURPOSE
     pinpoint capture, the three symbol functions, and the pure spine `extract`.
     No I/O anywhere in it; everything is testable from fixtures alone.
 
-    STAGE B (deliberately not built): the I/O edges — `read_sg_report_rows`,
+    STAGE B (implemented here): the I/O edges — `read_sg_report_rows`,
     `load_display_index`, `write_link_rows`, `write_unparsed_notes`,
-    `run_stage1` — remain `raise NotImplementedError` with their contracts in
-    the docstrings. They depend on where the link table physically lives, which
-    is an open decision (rules_ §8).
+    `run_stage1` — reading `digitallibrary.documents` and
+    `public.unified_documents`, writing `mandates.sg_report_to_mandate_links`
+    plus one run-record row (`mandates.sg_report_to_mandate_link_runs`) in a
+    single transaction, and appending diagnostics to a JSONL sidecar.
+    Connection acquisition lives one level further out, in `__main__.py`.
 
 DETAIL
     The shape is a reviewed structural design and is settled: functions are not
@@ -27,14 +29,19 @@ DETAIL
     path; MARC 993$a is closed; single-armed extractor.
 
 STATUS
-    Pure core implemented. I/O edges are the next stage.
+    Pure core and I/O edges implemented.
 """
 
 from __future__ import annotations
 
+import json
 import re
-from dataclasses import dataclass
+import uuid
+from dataclasses import asdict, dataclass
+from datetime import datetime, timezone
 from typing import Any, Iterable, Literal
+
+from psycopg2.extras import execute_values
 
 
 # =====================================================================================
@@ -424,29 +431,169 @@ DbConn = Any
 
 # =====================================================================================
 # I/O BOUNDARY — the ONLY place database reads and writes live (§8; HARD CONSTRAINT
-# "I/O at the edges"). Everything below this banner is a pure function over values.
-# STAGE B: these bodies are deliberately unimplemented — they depend on where the link
-# table physically lives (rules_ §8 leaves it open). Do not fill them in Stage A.
+# "I/O at the edges"). SQL text lives here as named constants, like the regexes above:
+# compiled once, named, never inline.
 # =====================================================================================
+
+# Selection clause (1) — the sole report-identity test: MARC 989$c, recovered from
+# marcxml by XPath (the field has no mirror column; doc_class_code is a cross-check
+# only, never the selector). No other predicate belongs in this SQL: clauses (2)-(4)
+# run in Python (see _partition_selection) so each one's removals are counted exactly
+# in a single corpus scan, and so the corrigendum/revision test uses the SAME
+# canonical() that mints stored resolution identities — one fold, one identity, no
+# SQL twin to drift from it. ORDER BY recid: deterministic read order.
+_SELECT_SG_REPORTS_SQL = """
+SELECT recid, document_symbol, notes, deleted_at
+FROM digitallibrary.documents
+WHERE %s = ANY (
+    (xpath(
+        '//*[local-name()="datafield" and @tag="989"]/*[local-name()="subfield" and @code="c"]/text()',
+        marcxml::xml
+    ))::text[]
+)
+ORDER BY recid
+"""
+
+# The registry side of §5's display lookup. Every page-key variant, byte-exact; the
+# fold down to match_key happens in Python via the same match_key()/canonical() pair
+# used on the citation side.
+_SELECT_PAGE_SYMBOLS_SQL = """
+SELECT ppb_full_document_symbol
+FROM public.unified_documents
+"""
+
+# Selection clause (3) — corrigendum/revision markers, tested against the canonical
+# fold of document_symbol. The fold matters: spaced markers ("A/... / Corr.1") exist
+# live (2 corpus-wide, measured 30 Jul 2026) and a raw-byte test misses them.
+_CORR_REV_MARKERS: tuple[str, str] = ("/CORR.", "/REV.")
+
+# Run-record residual counter, NOT an exclusion: parsed-set documents whose folded
+# symbol carries a corrigendum/revision marker in a form clause (3) deliberately does
+# not catch — spelled-out CORRIGENDUM, or bare no-period /CORR / /REV. Counted so the
+# residual is a known number rather than an unknown gap. Addenda are NOT counted:
+# clause (3) keeps addenda in scope by design, so a spelled-out addendum is ordinary
+# retention, not a missed marker.
+# (?![A-Z.]) keeps bare /REV out of /REV. (clause-3 territory) and /REVIEW-like runs.
+_WIDER_MARKER_RE = re.compile(r"CORRIGENDUM|/(?:CORR|REV)(?![A-Z.])")
+
+_DELETE_REPORT_SCOPE_SQL = """
+DELETE FROM mandates.sg_report_to_mandate_links
+WHERE report_recid = ANY(%s)
+"""
+
+_INSERT_LINK_ROWS_SQL = """
+INSERT INTO mandates.sg_report_to_mandate_links
+    (id, report_recid, report_symbol, note_index, note_span_start, note_span_end,
+     resolution_canonical, resolution_match_key, resolution_display_candidates,
+     role, sense, organ_provenance, pinpoint, source_note_text)
+VALUES %s
+"""
+
+_INSERT_RUN_RECORD_SQL = """
+INSERT INTO mandates.sg_report_to_mandate_link_runs
+    (started_at, finished_at, selected_by_marc, removed_null_symbol,
+     removed_corr_rev, removed_deleted, reports_parsed, wider_marker_retained,
+     link_rows_written, notes_unparsed)
+VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+"""
+
+
+@dataclass(frozen=True)
+class SelectionCounts:
+    """
+    Per-clause selection accounting (§2). The run record stores each clause's
+    removals separately because a clause that silently excludes zero — or everything —
+    is exactly the state that must stay visible: once link rows exist, nobody
+    re-derives the selection. selected_by_marc is also the drift tripwire on 989$c
+    (expected magnitude ~28,201, measured 30 Jul 2026).
+    Invariant, enforced by a CHECK on the run table: selected_by_marc =
+    removed_null_symbol + removed_corr_rev + removed_deleted + len(reports).
+    """
+    selected_by_marc: int        # clause (1): documents carrying 989$c = SG_REPORT_MARC_989C
+    removed_null_symbol: int     # clause (2): document_symbol IS NULL (17,383 corpus rows)
+    removed_corr_rev: int        # clause (3): CORR./REV. marker in the folded symbol
+    removed_deleted: int         # clause (4): deleted_at set (measured zero; recorded so non-zero shows)
+    wider_marker_retained: int   # residual counter over the parsed set — see _WIDER_MARKER_RE
+
+
+def _partition_selection(
+    fetched: Iterable[tuple[int, str | None, list[str], Any]],
+) -> tuple[tuple[SourceReport, ...], SelectionCounts]:
+    """
+    Pure partition of clause-(1) rows into the parsed set plus per-clause removal
+    counts. Clauses apply in the settled order (2) null symbol, (3) corr/rev on the
+    canonical fold, (4) deleted_at — each document is removed by exactly the first
+    clause it fails, so the counts are disjoint and reconcile to selected_by_marc.
+    notes arrives as a real text[] (measured: NULL on zero SG reports); a NULL here
+    is an unmodelled source state and crashes on tuple(None) by design.
+    """
+    reports: list[SourceReport] = []
+    removed_null_symbol = 0
+    removed_corr_rev = 0
+    removed_deleted = 0
+    wider_marker_retained = 0
+    selected_by_marc = 0
+    for recid, document_symbol, notes, deleted_at in fetched:
+        selected_by_marc += 1
+        if document_symbol is None:
+            removed_null_symbol += 1
+            continue
+        folded = canonical(document_symbol)
+        if any(marker in folded for marker in _CORR_REV_MARKERS):
+            removed_corr_rev += 1
+            continue
+        if deleted_at is not None:
+            removed_deleted += 1
+            continue
+        if _WIDER_MARKER_RE.search(folded):
+            wider_marker_retained += 1
+        reports.append(
+            SourceReport(
+                report_recid=recid,
+                report_symbol=document_symbol,
+                notes=tuple(notes),
+            )
+        )
+    return tuple(reports), SelectionCounts(
+        selected_by_marc=selected_by_marc,
+        removed_null_symbol=removed_null_symbol,
+        removed_corr_rev=removed_corr_rev,
+        removed_deleted=removed_deleted,
+        wider_marker_retained=wider_marker_retained,
+    )
+
+
+def _read_selection(conn: DbConn) -> tuple[tuple[SourceReport, ...], SelectionCounts]:
+    """Fetch clause (1) from the database and partition. The counts exist only here —
+    read_sg_report_rows discards them for callers that need the reports alone."""
+    with conn.cursor() as cur:
+        cur.execute(_SELECT_SG_REPORTS_SQL, (SG_REPORT_MARC_989C,))
+        fetched = cur.fetchall()
+    return _partition_selection(fetched)
+
 
 def read_sg_report_rows(conn: DbConn) -> tuple[SourceReport, ...]:
     """
-    Read the in-scope SG reports: MARC 989$c = SG_REPORT_MARC_989C, resource_subtype
-    = 'Reports', document_symbol prefix in display scope (Decision 1 a/b/c). Selects
-    on 989$c recovered from marcxml by XPath, NOT on doc_class_code.
-    MUST apply the CORR/REV exclusions against document_symbol, PRE-canonicalisation:
-      symbol NOT LIKE '%/CORR.%' AND symbol NOT LIKE '%/REV.%'
-      (the same rule the upstream survey's sg_reports view applies, tested against
-      the cleaned symbol, before any fold).
-    MUST NOT apply condition (d) here — "has a resolution-citing note" is only knowable
-    after parsing; it emerges as "produced zero link rows".
-    MUST NOT filter organ scope on un_body — filter on document_symbol prefix (§2/§3:
-    A/HRC sits inside un_body = 'General Assembly').
-    MUST NOT port the rest of that view's predicate — it restricts to 2023-to-present
-    (survey scope), which would silently truncate Stage 1's corpus.
+    Read the in-scope SG reports. The settled selection (§2), in full:
+      (1) MARC 989$c = SG_REPORT_MARC_989C, via XPath over marcxml — the SOLE
+          report-identity test. resource_subtype is not consulted: measured 30 Jul
+          2026 it disagrees with 989$c on 19 of 28,201 documents, and all 19 read
+          individually are real SG reports (the weaker field is wrong).
+      (2) document_symbol IS NOT NULL — stated explicitly rather than left to
+          three-valued logic.
+      (3) not a corrigendum/revision: CORR./REV. tested against the canonical fold
+          of document_symbol, not the raw bytes.
+      (4) deleted_at IS NULL — soft deletion is a stated contract of the source
+          table; currently removes zero, recorded each run so a non-zero shows.
+    There is NO resource_subtype filter, NO report-side symbol-prefix filter (organ
+    scope is enforced entirely on the resolution side), NO has-a-citing-note
+    predicate (a report with no citing note emits no rows by construction — never
+    approximate it in SQL), NO date bound (the survey view's 2023-to-present
+    restriction is that view's own scope), and NO un_body filter (A/HRC sits inside
+    un_body = 'General Assembly').
     Governs: §2.
     """
-    raise NotImplementedError
+    return _read_selection(conn)[0]
 
 
 def load_display_index(conn: DbConn) -> DisplayIndex:
@@ -460,7 +607,35 @@ def load_display_index(conn: DbConn) -> DisplayIndex:
     No branch or special case: cardinality is 1 for almost every key.
     Governs: §5 / §6 / §0.1 / reference_ §1, §4.
     """
-    raise NotImplementedError
+    with conn.cursor() as cur:
+        cur.execute(_SELECT_PAGE_SYMBOLS_SQL)
+        fetched = cur.fetchall()
+    return _build_display_index(symbol for (symbol,) in fetched)
+
+
+def _build_display_index(page_symbols: Iterable[str]) -> DisplayIndex:
+    """Pure grouping: byte-exact page keys under match_key(canonical(...)) — the same
+    two functions the citation side folds through, so the two sides cannot drift.
+    Variants are sorted within each key: SQL fetch order is not deterministic, and
+    determinism of every produced row is a HARD CONSTRAINT. A NULL page symbol is an
+    unmodelled registry state (measured: zero of 43,872) and crashes in canonical()."""
+    variants: dict[str, list[str]] = {}
+    for symbol in page_symbols:
+        variants.setdefault(match_key(canonical(symbol)), []).append(symbol)
+    return {key: tuple(sorted(group)) for key, group in variants.items()}
+
+
+def _link_row_id(row: LinkRow) -> str:
+    """The row's stored uuid5 identity, recomputable from the row itself — same
+    namespace and colon-join as paragraphs.id (uuid5(NAMESPACE_URL, "<symbol>:<pos>"),
+    sql/schema/mandates.sql). Components are colon-safe: three integers, and
+    resolution_canonical's alphabet (organ prefixes + number-form grammars, folded by
+    canonical()) admits no colon."""
+    name = (
+        f"{row.report_recid}:{row.note_index}:"
+        f"{row.resolution_canonical}:{row.note_span[0]}"
+    )
+    return str(uuid.uuid5(uuid.NAMESPACE_URL, name))
 
 
 def write_link_rows(conn: DbConn, rows: Iterable[LinkRow]) -> None:
@@ -470,16 +645,37 @@ def write_link_rows(conn: DbConn, rows: Iterable[LinkRow]) -> None:
     completeness, no displayable count (§0.1 — those are read-time).
     MUST NOT drop any row (§4 lossless). MUST NOT dedup — the occurrence is the stored
     grain; the one-per-(report, resolution) grain is derived at read time.
-    Deterministic order (HARD CONSTRAINT).
-    Compute the row's uuid5 identity here from (report_recid, note_index,
-    resolution_canonical, note_span[0]) — matching the paragraphs.id keying precedent — and
-    make the write idempotent on it: the full-schema rebuild (sql/schema/mandates.sql) drops
-    and recreates this table, so a re-run must converge on the same keys rather than
-    duplicate. Do NOT mint the key in the pure core.
-    Migration hazard: diff the migration dirs across branches before adding one — migration
-    numbers repeat across branches, so "next free number" is branch-local.
+    Inserts in the order given — extract's output is span-sorted (HARD CONSTRAINT),
+    and this function preserves it. Mints the uuid5 identity here at the write edge
+    (_link_row_id); the pure core never touches it. Plain INSERT, no ON CONFLICT:
+    run_stage1's scope-delete has already cleared every recid this run re-emits, so a
+    key collision is an invariant violation and must crash, not be absorbed.
+    display_candidates are sorted at write — byte-stable re-runs — and an empty tuple
+    inserts as an explicit empty array (a modelled state, never NULL; the column is
+    NOT NULL by schema).
+    Transaction is owned by the caller: no commit here.
     """
-    raise NotImplementedError
+    values = [
+        (
+            _link_row_id(row),
+            row.report_recid,
+            row.report_symbol,
+            row.note_index,
+            row.note_span[0],
+            row.note_span[1],
+            row.resolution_canonical,
+            row.resolution_match_key,
+            sorted(row.resolution_display_candidates),
+            row.role,
+            row.sense,
+            row.organ_provenance,
+            row.pinpoint,
+            row.source_note_text,
+        )
+        for row in rows
+    ]
+    with conn.cursor() as cur:
+        execute_values(cur, _INSERT_LINK_ROWS_SQL, values, page_size=1000)
 
 
 def write_unparsed_notes(records: Iterable[UnparsedNote], path: str) -> None:
@@ -489,8 +685,14 @@ def write_unparsed_notes(records: Iterable[UnparsedNote], path: str) -> None:
     §7 audit can count and inspect rejected/unresolved notes.
     MUST NOT invent a symbol or a nearest match for any of these.
     Governs: §7 (quality bar); no fallback.
+    One JSON object per line, keys exactly the UnparsedNote fields, sorted; LF line
+    endings; UTF-8 unescaped. The parent directory must already exist — a bad path
+    is a caller error and crashes here.
     """
-    raise NotImplementedError
+    with open(path, "a", encoding="utf-8", newline="\n") as sink:
+        for record in records:
+            sink.write(json.dumps(asdict(record), ensure_ascii=False, sort_keys=True))
+            sink.write("\n")
 
 
 # =====================================================================================
@@ -499,20 +701,81 @@ def write_unparsed_notes(records: Iterable[UnparsedNote], path: str) -> None:
 # is the pipeline order. Determinism is imposed by sorting the output (HARD CONSTRAINT).
 # =====================================================================================
 
+def _delete_report_scope(conn: DbConn, report_recids: Iterable[int]) -> None:
+    """
+    Scope-delete: remove every stored row for the reports selected THIS run, before
+    their current rows are inserted. This is correct single-owner write semantics,
+    not a fallback — the extractor is the table's only writer, and a source-text
+    offset change moves a row's key, so delete-then-insert is what converges the
+    table to the current source. The scope is the full parsed set, including reports
+    that now emit zero rows: a citation removed from a note must converge to absence.
+    Deliberately NOT swept: rows for reports the predicate no longer selects — they
+    strand until re-selected, the settled trade-off of scoping the delete to the
+    selection.
+    """
+    with conn.cursor() as cur:
+        cur.execute(_DELETE_REPORT_SCOPE_SQL, (list(report_recids),))
+
+
+def _write_run_record(
+    conn: DbConn,
+    started_at: datetime,
+    finished_at: datetime,
+    counts: SelectionCounts,
+    reports_parsed: int,
+    link_rows_written: int,
+    notes_unparsed: int,
+) -> None:
+    """One row per run, inserted in the SAME transaction as the run's delete+insert
+    so the recorded counts can never disagree with the table state they describe.
+    The table's CHECK re-asserts the partition invariant at write time."""
+    with conn.cursor() as cur:
+        cur.execute(
+            _INSERT_RUN_RECORD_SQL,
+            (
+                started_at,
+                finished_at,
+                counts.selected_by_marc,
+                counts.removed_null_symbol,
+                counts.removed_corr_rev,
+                counts.removed_deleted,
+                reports_parsed,
+                counts.wider_marker_retained,
+                link_rows_written,
+                notes_unparsed,
+            ),
+        )
+
+
 def run_stage1(conn: DbConn, unparsed_path: str) -> None:
     """
     Top-level entry. Thin I/O wrapper: read at the edge, transform in the pure core,
     write at the edge. This is a plain batch pass over the ~28,000-report corpus.
     MUST NOT add chunking / resumption / checkpointing / streaming / parallelism /
     progress machinery — argue the case in review if one seems required.
-    Governs: §8.
+    All database writes — scope-delete, link rows, run record — happen in ONE
+    transaction, committed here: a crash anywhere leaves the table exactly as the
+    previous run left it, never part-swept or part-written. The JSONL sidecar is
+    written after the commit, so its records always describe a run that landed.
+    Governs: §2 (selection) / §8.
     """
-    # reports       = read_sg_report_rows(conn)          # boundary  (Decision 1 a/b/c)
-    # display_index = load_display_index(conn)           # boundary  (§5 display)
-    # output        = extract(reports, display_index)    # PURE spine (below)
-    # write_link_rows(conn, output.links)                # boundary  (the consumed table)
-    # write_unparsed_notes(output.unparsed, unparsed_path)# boundary  (diagnostic JSONL, no DB)
-    raise NotImplementedError
+    started_at = datetime.now(timezone.utc)
+    reports, counts = _read_selection(conn)                # boundary  (§2 selection + accounting)
+    display_index = load_display_index(conn)               # boundary  (§5 display)
+    output = extract(reports, display_index)               # PURE spine (below)
+    _delete_report_scope(conn, (r.report_recid for r in reports))
+    write_link_rows(conn, output.links)                    # boundary  (the consumed table)
+    _write_run_record(
+        conn,
+        started_at=started_at,
+        finished_at=datetime.now(timezone.utc),
+        counts=counts,
+        reports_parsed=len(reports),
+        link_rows_written=len(output.links),
+        notes_unparsed=len(output.unparsed),
+    )
+    conn.commit()
+    write_unparsed_notes(output.unparsed, unparsed_path)   # boundary  (diagnostic JSONL, no DB)
 
 
 def extract(reports: Iterable[SourceReport], display_index: DisplayIndex) -> Stage1Output:
