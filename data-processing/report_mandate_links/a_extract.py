@@ -154,20 +154,40 @@ CITATION_TOKEN_RE = re.compile(_CITATION_TOKEN)
 # observed shape only (no article/section variants — none observed).
 _PINPOINT_PREFIX = r"(?:para(?:graph|\.)\s+\d+\s+of\s+)?"
 
-# A dated interpolation UN drafting inserts after a cited resolution — "resolution 1745
-# (LIV) of 16 May 1973, 1989/64 and ...". Without consuming it the list terminates at the
-# dated member and every later member is silently dropped. It is optional and, because it
-# only appears inside _LIST_SEP (which still requires a real separator and another token
-# after it), a trailing "of <date>." at the end of a lone citation is left untouched.
+# Interpolations UN drafting inserts between list members. Each is an observed live
+# shape (S-010 re-cut of the S-009 census records); before it was consumed the list
+# terminated at the interpolated member and every later member was silently dropped —
+# no citation AND no flag, the only silent loss observed anywhere in the pipeline.
+# Each is optional and, because it only appears inside _LIST_SEP (which still requires
+# a real separator and a following token), a trailing interpolation at the end of a
+# lone citation is left untouched. Narrowest observed shapes only — arbitrary text
+# between members is never admitted (it would over-recognise).
+#   dated, postfix        "resolution 1745 (LIV) of 16 May 1973, 1989/64 and ..."
 _DATE_INTERP = r"(?:\s+of\s+\d{1,2}\s+\w+\.?\s+\d{4})?"
+#   pinpoint, postfix     "resolutions 69/205, paragraph 4, and 68/199" (A/70/277)
+_PINPOINT_POSTFIX = r"(?:\s*,\s*para(?:graph|\.)\s+\d+)?"
+#   session appositive, postfix — the children-follow-up annual series:
+#                         "resolutions S-27/2 of the 27th special session in 2002, 58/282 and 61/272"
+_SESSION_APPOSITIVE = r"(?:\s+of\s+the\s+\d+(?:st|nd|rd|th)\s+special\s+session\s+in\s+\d{4})?"
 
 # A "resolution(s)" head followed by one or more tokens: the symbol gate of the include
-# rule. "resolutions X, Y and Z" is one head governing a token list. A member may carry a
-# dated interpolation before the separator; the separator itself is a comma or "and".
-# Since the whole "<date?><separator><token>" group must match to extend the list, a dated
-# member with no following resolution token (e.g. "... and Council decision 2005/247")
-# ends the list rather than reaching across into unrelated text.
-_LIST_SEP = _DATE_INTERP + r"(?:\s*,\s*(?:and\s+)?|\s+and\s+)"
+# rule. "resolutions X, Y and Z" is one head governing a token list. A member may carry
+# a postfix interpolation (date, pinpoint, session appositive) before the separator; the
+# separator itself is a comma or "and"; the next member may carry a prefix pinpoint —
+# "resolutions 2139 (2014), para. 10 of 2165 (2014)" (the Syria monthly series). Since
+# the whole "<interpolation?><separator><pinpoint?><token>" group must match to extend
+# the list, an interpolated member with no following resolution token (e.g. "... and
+# Council decision 2005/247") ends the list rather than reaching across into unrelated
+# text. A later member's prefix pinpoint is consumed but not captured — later members'
+# prose_symbol is the bare token, so the pinpoint asset is lost there (a known,
+# pre-existing degradation, not introduced by the separator).
+_LIST_SEP = (
+    _DATE_INTERP
+    + _PINPOINT_POSTFIX
+    + _SESSION_APPOSITIVE
+    + r"(?:\s*,\s*(?:and\s+)?|\s+and\s+)"
+    + _PINPOINT_PREFIX
+)
 CITATION_LIST_RE = re.compile(
     _PINPOINT_PREFIX
     + r"\b(?i:resolutions?)\s+"
@@ -204,19 +224,31 @@ MANDATE_CONSTRUCTION_RE = re.compile(
 )
 
 # --- classification cues (each compiled once; shared between tables by name) ---------
-_COMMITTEE_ESTABLISHED_RE = re.compile(r"\bcommittee\s+established\s+pursuant\s+to\b", re.IGNORECASE)
+# The establishment cue — "established {pursuant to | in pursuance of | under}",
+# body-agnostic, shared by the sense table (committee_established) and the role table
+# (establishing). Observation-gated widening (S-009 census): the earlier form required
+# the literal word "committee", so a Group, Panel or Commission established pursuant to
+# a resolution fell through to the generic cue, and two of the three observed
+# connectives were missing from both tables. Across 7,172 occurrences the construction
+# never once occurred in a non-establishment meaning and every observed instance is a
+# subsidiary body, so the body noun did no work — and an enumerated body-noun list
+# (Committee|Group|Panel|Commission) would size against bodies nobody has seen.
+# "under" is admitted only anchored on "established", never bare; the neighbouring
+# "authorized under" form (one observed occurrence) is deliberately not decided here.
+_ESTABLISHED_RE = re.compile(
+    r"\bestablished\s+(?:pursuant\s+to|in\s+pursuance\s+of|under)\b", re.IGNORECASE
+)
 _ACTIVITIES_CARRIED_OUT_RE = re.compile(r"\bactivities\s+carried\s+out\b", re.IGNORECASE)
 _ALSO_IN_RESPONSE_RE = re.compile(r"\balso\s+in\s+response\s+to\b", re.IGNORECASE)
 _MANDATE_CONTAINED_RE = re.compile(r"\bmandate\s+contained\s+in\b", re.IGNORECASE)
 _MOST_RECENTLY_RE = re.compile(r"\bmost\s+recently\b", re.IGNORECASE)
-_ESTABLISHED_PURSUANT_RE = re.compile(r"\bestablished\s+pursuant\s+to\b", re.IGNORECASE)
 
 # Sense cues (§3 taxonomy), highest priority first. Priority — not nearest-cue —
 # decides among cues preceding a citation, because specific phrasings embed generic
 # ones: in "activities carried out … pursuant to resolution 186 (1964)" the generic
 # "pursuant to" sits NEARER the citation than the cue that actually names its sense.
 _SENSE_CUES: tuple[tuple[re.Pattern[str], "Sense", int], ...] = (
-    (_COMMITTEE_ESTABLISHED_RE, "committee_established", 5),  # "Committee established pursuant to resolution 748 (1992)"
+    (_ESTABLISHED_RE, "committee_established", 5),  # "Committee established pursuant to resolution 748 (1992)"; cue is body-agnostic, the stored sense value keeps its historical name
     (_ACTIVITIES_CARRIED_OUT_RE, "activities_carried_out", 4),  # UNFICYP form, §3
     (_ALSO_IN_RESPONSE_RE, "additional_joint", 3),  # "submitted also in response to …"
     (_MANDATE_CONTAINED_RE, "founding_renewal", 2),  # "mandate contained in resolution 350 (1974)"
@@ -230,7 +262,7 @@ _SENSE_CUES: tuple[tuple[re.Pattern[str], "Sense", int], ...] = (
 _ROLE_CUES: tuple[tuple[re.Pattern[str], "Role"], ...] = (
     (_MANDATE_CONTAINED_RE, "founding"),
     (_MOST_RECENTLY_RE, "most_recent"),
-    (_ESTABLISHED_PURSUANT_RE, "establishing"),
+    (_ESTABLISHED_RE, "establishing"),
     (_ALSO_IN_RESPONSE_RE, "additional"),
 )
 

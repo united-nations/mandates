@@ -201,6 +201,54 @@ class TestClassification(unittest.TestCase):
         self.assertEqual(tag_role(founding, fx.FOUNDING_RENEWAL), "founding")
         self.assertEqual(tag_role(renewal, fx.FOUNDING_RENEWAL), "most_recent")
 
+    def test_established_cue_is_body_agnostic_group_in_pursuance_of(self):
+        # The establishment cue must not require the word "committee": a Group
+        # established with the "in pursuance of" connective carries the sense and the
+        # role, both of which the committee-anchored vocabulary missed.
+        citation = sole_citation(fx.GROUP_ESTABLISHED_IN_PURSUANCE)
+        self.assertEqual(
+            classify_sense(citation, fx.GROUP_ESTABLISHED_IN_PURSUANCE),
+            "committee_established",
+        )
+        self.assertEqual(
+            tag_role(citation, fx.GROUP_ESTABLISHED_IN_PURSUANCE), "establishing"
+        )
+
+    def test_established_cue_is_body_agnostic_panel_pursuant_to(self):
+        # "established pursuant to" verbatim present, body a Panel: the sense cue
+        # missed it while the role cue caught it — after the widening both agree.
+        citation = sole_citation(fx.PANEL_ESTABLISHED_PURSUANT)
+        self.assertEqual(
+            classify_sense(citation, fx.PANEL_ESTABLISHED_PURSUANT),
+            "committee_established",
+        )
+        self.assertEqual(tag_role(citation, fx.PANEL_ESTABLISHED_PURSUANT), "establishing")
+
+    def test_established_under_carries_sense_and_role(self):
+        # The third observed connective, previously in no vocabulary at all. Both
+        # occurrences of 687 (1991) sit after the cue and both take sense and role.
+        recognition = recognise_citations(fx.COMMISSION_ESTABLISHED_UNDER)
+        self.assertEqual(len(recognition.citations), 2)
+        for citation in recognition.citations:
+            self.assertEqual(
+                classify_sense(citation, fx.COMMISSION_ESTABLISHED_UNDER),
+                "committee_established",
+            )
+            self.assertEqual(
+                tag_role(citation, fx.COMMISSION_ESTABLISHED_UNDER), "establishing"
+            )
+
+    def test_authorized_under_is_not_an_establishment_cue(self):
+        # "under" is admitted only anchored on "established": the observed
+        # "authorized under" construction must keep classifying via the generic cue.
+        recognition = recognise_citations(fx.UNSOM_AUTHORIZED_UNDER)
+        self.assertEqual(len(recognition.citations), 2)
+        for citation in recognition.citations:
+            self.assertEqual(
+                classify_sense(citation, fx.UNSOM_AUTHORIZED_UNDER), "direct_request"
+            )
+            self.assertEqual(tag_role(citation, fx.UNSOM_AUTHORIZED_UNDER), "co_equal")
+
     def test_prst_sense(self):
         citation = sole_citation(fx.PRST)
         self.assertEqual(classify_sense(citation, fx.PRST), "prst_note_decision")
@@ -273,6 +321,66 @@ class TestExtract(unittest.TestCase):
         self.assertEqual(
             [row.resolution_canonical for row in output.links],
             ["E/RES/1745(LIV)", "E/RES/1989/64", "E/RES/1995/57"],
+        )
+
+    def test_pinpoint_prefix_interpolation_does_not_truncate_the_list(self):
+        # "resolutions 2139 (2014), para. 10 of 2165 (2014) and para. 5 of 2191 (2014)"
+        # — an interpolated pinpoint before a member must not end the list. Before the
+        # separator admitted it, 2165 and 2191 were silently dropped: no citation and
+        # no flag, since a token outside any list span is never scanned.
+        output = extract_notes(fx.SYRIA_PINPOINT_LIST)
+        self.assertEqual(
+            [row.resolution_canonical for row in output.links],
+            ["S/RES/2139(2014)", "S/RES/2165(2014)", "S/RES/2191(2014)"],
+        )
+        self.assertEqual(output.unparsed, ())
+        for row in output.links:
+            self.assertEqual(row.sense, "direct_request")
+            self.assertEqual(row.role, "co_equal")
+
+    def test_pinpoint_interpolation_recovers_member_without_reaching_across_and_and(self):
+        # The doubled "and and" (source typo): 2165 is recovered through the pinpoint
+        # interpolation, but the list must NOT reach across "and and para. 5 of
+        # Security Council" — 2191 resolves via its own later "resolution" head.
+        output = extract_notes(fx.SYRIA_PINPOINT_DOUBLED_AND)
+        self.assertEqual(
+            [row.resolution_canonical for row in output.links],
+            ["S/RES/2139(2014)", "S/RES/2165(2014)", "S/RES/2191(2014)"],
+        )
+        self.assertEqual(output.unparsed, ())
+
+    def test_pinpoint_postfix_interpolation_does_not_truncate_the_list(self):
+        # "resolutions 69/205, paragraph 4, and 68/199" — the postfix pinpoint after a
+        # member must not end the list; the trailing ", paragraph 24." after the last
+        # member is left unconsumed (the list simply ends).
+        output = extract_notes(fx.POSTFIX_PINPOINT_LIST)
+        self.assertEqual(
+            [row.resolution_canonical for row in output.links],
+            ["A/RES/69/205", "A/RES/68/199"],
+        )
+        self.assertEqual(output.unparsed, ())
+
+    def test_session_appositive_interpolation_does_not_truncate_the_list(self):
+        # "S-27/2 of the 27th special session in 2002, 58/282 and 61/272" — the
+        # appositive after a special-session member must not end the list.
+        output = extract_notes(fx.SESSION_APPOSITIVE_LIST)
+        self.assertEqual(
+            [row.resolution_canonical for row in output.links],
+            ["A/RES/S-27/2", "A/RES/58/282", "A/RES/61/272"],
+        )
+        self.assertEqual(output.unparsed, ())
+
+    def test_arbitrary_interpolation_is_still_not_admitted(self):
+        # Only the observed interpolation shapes extend a list. Arbitrary text — a
+        # parenthetical aside, a "decision" citation, prose with intervening words, a
+        # missing comma — still ends the list where it begins: this note's five
+        # recognised citations stay exactly five, and its known head/member-defect
+        # losses (61/244, 61/276, the "including" list) stay dropped.
+        output = extract_notes(fx.ARBITRARY_INTERPOLATION_NOTE)
+        self.assertEqual(
+            [row.resolution_canonical for row in output.links],
+            ["A/RES/51/243", "A/RES/57/281B", "A/RES/57/305",
+             "A/RES/59/266", "A/RES/60/266"],
         )
 
     def test_citation_side_match_key_usually_equals_canonical(self):

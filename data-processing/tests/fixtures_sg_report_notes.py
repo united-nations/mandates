@@ -17,9 +17,9 @@ Three provenance grades, marked per fixture:
               (from PARSER_ORGANS) is prepended. No invented resolution numbers,
               no invented grammar shapes anywhere (no-fallback discipline:
               never fabricate a fixture for an unobserved shape).
-  [LIVE]      a real note element quoted byte-exact from the S-005 sample,
-              recid given per fixture — the live augmentation the two grades
-              above anticipated.
+  [LIVE]      a real note element quoted byte-exact from a live sample (the S-005
+              sample or the S-009 full-corpus census records), recid given per
+              fixture — the live augmentation the two grades above anticipated.
 Grammar gaps that could NOT be covered without inventing a shape are left
 uncovered and marked, not papered over.
 
@@ -124,6 +124,63 @@ DATED_LIST_NOTE = (
     "capital punishment."
 )
 
+# [LIVE] recid 788385 (S/2015/124) note[0], S-009 census records. A pinpoint
+# interpolation before a list member, in both its observed positions: ", para. 10 of"
+# before 2165 (2014) and " and para. 5 of" before 2191 (2014). Until the separator
+# admitted an interpolated pinpoint, the list terminated at 2139 (2014) and both later
+# members were silently dropped — no citation, no flag (the Syria monthly series loss).
+SYRIA_PINPOINT_LIST = (
+    "12th report submitted pursuant to para. 17 of Security Council resolutions "
+    "2139 (2014), para. 10 of 2165 (2014) and para. 5 of 2191 (2014); covers the "
+    "period from 1-31 Jan. 2015."
+)
+
+# [LIVE] recid 795322 (S/2015/468) note[0], S-009 census records. The same series with a
+# doubled "and and" (source typo): the list must recover 2165 (2014) through the
+# pinpoint interpolation but must NOT reach across "and and para. 5 of Security
+# Council" — 2191 (2014) resolves via its own later "resolution" head instead.
+SYRIA_PINPOINT_DOUBLED_AND = (
+    "16th report submitted pursuant to para. 17 of Security Council resolutions "
+    "2139 (2014), para. 10 of 2165 (2014) and and para. 5 of Security Council "
+    "resolution 2191 (2014)."
+)
+
+# [LIVE] recid 801961 (A/70/277) note[0], S-009 census records. A pinpoint
+# interpolation AFTER a member (", paragraph 4,") — the postfix form. 68/199 was
+# dropped until the separator admitted it; the trailing ", paragraph 24." after the
+# last member needs no consuming (the list simply ends there).
+POSTFIX_PINPOINT_LIST = (
+    "Submitted pursuant to General Assembly resolutions 69/205, paragraph 4, "
+    "and 68/199, paragraph 24."
+)
+
+# [LIVE] recid 756066 (A/68/269) note[0], S-009 census records. A session appositive
+# after a special-session member ("of the 27th special session in 2002") — the
+# children-follow-up annual series. 58/282 and 61/272 were dropped until the separator
+# admitted the appositive.
+SESSION_APPOSITIVE_LIST = (
+    "Prepared in response to General Assembly resolutions S-27/2 of the 27th special "
+    "session in 2002, 58/282 and 61/272."
+)
+
+# [LIVE] recid 692241 (A/65/350/Add.1) note[0], S-009 census records. Arbitrary text
+# between members — a parenthetical aside, a "decision" citation, prose with
+# intervening words, a missing comma ("60/266 61/244") — none of it is an admitted
+# interpolation, so each list still ends where the arbitrary text begins. The known
+# losses in this note (61/244, 61/276, the "including" list) are head/member defects
+# outside the interpolation fix's scope and stay dropped.
+ARBITRARY_INTERPOLATION_NOTE = (
+    "Submitted in compliance with General Assembly resolutions 51/243 and 57/281 B "
+    "(concerning the employment of gratis personnel), General Assembly decision 51/408 "
+    "and subsequent resolutions of the Assembly, including 57/305, 59/266 and 61/244 "
+    "(concerning the employment of retirees) and General Assembly resolutions 57/305, "
+    "59/266, 60/266 61/244, and 61/276 (concerning the employment of consultants and "
+    "individual contractors); presents demographic analysis on the engagements of "
+    "gratis personnel (4,979), retirees (3,784) and consultants and individual "
+    "contractors (35,231) who were engaged during the biennium from 1 Jan. 2008 to "
+    "31 Dec. 2009."
+)
+
 # --- kept elements: multi-citation and classified senses ------------------------------
 
 # [COMPOSED] rules_ §3 taxonomy row 3 with the doc's organ shorthand ("GA", "ECOSOC")
@@ -146,6 +203,49 @@ UNFICYP = (
 # is unresolvable (a known doc gap). Sense: committee_established (held for review at
 # read time from the sense alone — there is no stored confidence field).
 COMMITTEE = "Security Council Committee established pursuant to resolution 748 (1992)."
+
+# [LIVE] recid 71239 (A/39/488) note[0], S-009 census records. A body other than a
+# committee ("Group of Consultant Experts") with the "in pursuance of" connective —
+# both gaps the body-agnostic establishment cue closes. Before the widening this
+# classified direct_request via the generic cue, role co_equal.
+GROUP_ESTABLISHED_IN_PURSUANCE = (
+    "Annex 1. Replies received from Member States - Annex 2. Report of the Group of "
+    "Consultant Experts established in pursuance of General Assembly resolution "
+    "37/98 D on provisional procedures to uphold the authority of the 1925 Geneva "
+    "Protocol."
+)
+
+# [LIVE] recid 634651 (A/63/176) note[0], S-009 census records. "established pursuant
+# to" verbatim present but the body is a Panel, so the committee-anchored sense cue
+# missed it (the role cue already caught it — role was establishing all along).
+PANEL_ESTABLISHED_PURSUANT = (
+    "Prepared by the Panel of Governmental Experts, established pursuant to General "
+    "Assembly resolution 59/67."
+)
+
+# [LIVE] recid 188884 (S/1995/864) note[0], S-009 census records. "Established under" —
+# the third observed connective, previously in no vocabulary at all (missed sense AND
+# role). The same resolution is cited twice; both occurrences sit after the cue.
+COMMISSION_ESTABLISHED_UNDER = (
+    "Transmits report submitted by the Executive Chairman of the Special Commission "
+    "Established under Security Council Resolution 687 (1991), concerning the status "
+    "of the implementation of the plan for the ongoing monitoring and verification of "
+    "Iraq's compliance with relevant parts of section C of Security Council resolution "
+    "687 (1991)."
+)
+
+# [LIVE] recid 750005 (S/2013/326) note[0], S-009 census records. "authorized under" —
+# the same family as "established under" but a distinct construction with one observed
+# occurrence; deliberately NOT admitted to the establishment cue ("under" is anchored
+# on "established", never bare). Both citations classify via the opening generic cue.
+UNSOM_AUTHORIZED_UNDER = (
+    "Submitted pursuant to para. 29 of Security Council resolution 2010 (2011); covers "
+    "major developments that occurred in Somalia during the period from 16 Jan. to 15 "
+    "May 2013 and provides a final update on the implementation of the mandate of the "
+    "UN Political Office  for Somalia (UNPOS), ahead of its closure on 3 June 2013, "
+    "and on planning for the deployment of the UN Assistance Mission in Somalia "
+    "(UNSOM) authorized under Security Council resolution 2102 (2013) of 2 May 2013."
+)
 
 # [COMPOSED] rules_ §3 taxonomy row 2 pair (350 (1974) / 2811 (2025)) laid into the §3
 # bare-citation sentence structure ("…and subsequent Council resolutions, most recently
