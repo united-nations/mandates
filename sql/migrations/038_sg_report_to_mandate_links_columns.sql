@@ -57,3 +57,21 @@ COMMENT ON COLUMN mandates.sg_report_to_mandate_links.resolution_canonical IS
   'notes cite. Strictly a presidential statement is not a resolution, so these rows are stored '
   'but never shown as resolution links (the display filters them out by their citation_sense value). '
   'The resolution_* naming reflects the common, displayed case, not every stored row.';
+
+-- citation_position: where in the source note element the citation sits — the
+-- report body, or an annex-description title. Note-level by observation (S-009
+-- census: every observed annex-title note is annex content throughout), stored
+-- per occurrence because the row is the occurrence grain. Two values only — a
+-- third is added when observed, not before. No default: the table is empty and
+-- a row the writer fails to position must fail loudly at insert.
+--
+-- ADD COLUMN can only append physically, so a migrated database carries
+-- citation_position last while a fresh sql/schema/mandates.sql rebuild places
+-- it after citation_sense. Deliberate and consumer-invisible: every consumer
+-- names its columns (the only SELECT * in the codebase targets the runs table).
+-- The inline CHECK auto-names sg_report_to_mandate_links_citation_position_check
+-- here exactly as the rebuild's inline CHECK does — the same constraint-name
+-- convergence as above, needing no explicit name.
+ALTER TABLE mandates.sg_report_to_mandate_links
+    ADD COLUMN citation_position TEXT NOT NULL
+        CHECK (citation_position IN ('body', 'annex_title'));

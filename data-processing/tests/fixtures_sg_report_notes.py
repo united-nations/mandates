@@ -280,6 +280,64 @@ MIXED_BARE_THEN_RESOLVED = (
     "Security Council resolution 2779 (2025)."
 )
 
+# [LIVE] recid 663928 (A/64/324) note[0], S-009 census records. A transmittal element
+# with two occurrences of 63/94: the first follows "responding to the request contained
+# in" — no cue vocabulary — so it is un-cued and refused; the second follows "submitted
+# pursuant to" and classifies. The mixed un-cued element: one row, one refusal record.
+UNCUED_TRANSMITTAL = (
+    "Transmits reply dated 5 Aug. 2009 from Israel responding to the request contained "
+    "in para. 4 of General Assembly resolution 63/94; submitted pursuant to para. 6 of "
+    "General Assembly resolution 63/94."
+)
+
+# [LIVE] recid 844765 (S/2016/843) note[1], S-009 census records. Quoted annex-title
+# element whose only citation precedes the construction verb ("as submitted by") — no
+# cue precedes it, so the sole occurrence is refused: zero rows, one refusal record.
+UNCUED_ANNEX = (
+    '"Annex: Bilateral contributions for the implementation of Security Council '
+    'resolution 2246 (2015) made during the reporting period, as submitted by '
+    'contributing countries": p. 16-17.'
+)
+
+# [LIVE] recid 817011 (A/70/681) note[1], S-009 census records. Quoted annex-title
+# heading with a cued citation inside ("issued pursuant to resolution 69/321") — the
+# whole element is annex content, so its row carries annex_title.
+ANNEX_QUOTED = (
+    '"Annex: Updated inventory chart of General Assembly resolutions on the '
+    'revitalization of the work of the General Assembly, issued pursuant to '
+    'resolution 69/321": p. 2-3.'
+)
+
+# [LIVE] recid 3884046 (S/2020/912) note[1], S-009 census records. Unquoted note-initial
+# "Annexes (p. ...)" content list — the shape a quoted-title heuristic is blind to; its
+# cued citation's row carries annex_title.
+ANNEX_UNQUOTED = (
+    "Annexes (p. 10-16): 1. Report on African Union-United Nations Hybrid Operation "
+    "in Darfur pursuant to Security Council resolution 2525 (2020) -- 2. Proposed "
+    "organization chart of the United Nations Integrated Transition Assistance "
+    "Mission in the Sudan for 2021."
+)
+
+# [LIVE] recid 581579 (A/61/204) note[0], S-009 census records. The word "annex"
+# MID-element (annex-as-pinpoint: "para. 37 of the annex to ... 57/337" — the
+# resolution is the mandate, the annex is where the paragraph lives). The detector is
+# note-initial only, so this element is body content: the live negative case.
+ANNEX_WORD_MID_ELEMENT = (
+    "Submitted pursuant to Security Council resolution 1631 (2005) and para. 37 of "
+    "the annex to General Assembly resolution 57/337."
+)
+
+# [COMPOSED] The note-grain both-case has NO corpus instance — measured absent (S-009
+# census evidence) — so this fixture constructs the state directly rather than
+# pretending to have found one. "Resolution 748 (1992)" has no governing organ mention
+# before it (withheld); "Security Council resolution 2246 (2015)" resolves but no cue
+# precedes it (un-cued); "submitted" after both satisfies the element gate. Both
+# numbers doc-quoted elsewhere in this file.
+BOTH_REFUSALS = (
+    "Resolution 748 (1992) noted; Security Council resolution 2246 (2015) as "
+    "submitted by contributing countries."
+)
+
 # --- retained-but-unresolvable and rejected elements -----------------------------------
 
 # [COMPOSED] a bare citation as its OWN element (doc-quoted number). Paired in tests

@@ -266,6 +266,14 @@ _ROLE_CUES: tuple[tuple[re.Pattern[str], "Role"], ...] = (
     (_ALSO_IN_RESPONSE_RE, "additional"),
 )
 
+# Annex-title detector (observation-gated): a note element opening with "Annex(es)" or
+# "Appendix", quoted or unquoted. Every observed such element is annex-description
+# content throughout, so a match classifies the WHOLE element (see CitationPosition).
+# Deliberately narrow: these are the observed note-initial forms and nothing else —
+# page-range trailers added zero notes and are excluded; unobserved forms are added
+# when observed, not before.
+_ANNEX_TITLE_RE = re.compile(r'^["“]?\s*(?:Annex(?:es)?|Appendix)\b')
+
 # Pinpoint readback (extract_pinpoint) — the same observed shape the prefix captures.
 PINPOINT_RE = re.compile(r"para(?:graph|\.)\s+\d+")
 
@@ -279,9 +287,9 @@ _WHITESPACE_RE = re.compile(r"\s+")
 # Contents are stripped, never parsed (§2.1).
 BRACKET_FOLD_RE = re.compile(BRACKET_FOLD_PATTERN)
 
-# UnparsedNote.reason distinguishes the two unresolvable causes the recognition type
-# can express (no symbol at all / organ-less citation token); the verbatim note text is
-# the primary evidence either way.
+# UnparsedNote.reason distinguishes the three refusal causes (no symbol at all /
+# organ-less citation token / un-cued citation occurrence); the verbatim note text is
+# the primary evidence in every case.
 _UNRESOLVED_NOTE_REASON = (
     "mandate construction with no deterministically resolvable in-scope resolution "
     "symbol (rules_ §3; organ never guessed, symbol never invented)"
@@ -293,6 +301,15 @@ _UNRESOLVED_ORGAN_REASON = (
     "citation token with no governing organ earlier in the same note element "
     "(rules_ §3; organ never guessed); any resolvable citations in this element "
     "were extracted as link rows"
+)
+# Used when >=1 kept citation occurrence had no sense cue preceding it in the element:
+# the occurrence is refused a sense and skipped — never defaulted, never given a
+# placeholder. Any cued citations in the same element were still extracted as link
+# rows alongside this record — it flags the element, it does not annul it.
+_UNCUED_CITATION_REASON = (
+    "citation occurrence with no sense cue preceding it in the note element "
+    "(sense never defaulted); any cued citations in this element were extracted "
+    "as link rows"
 )
 
 
@@ -316,6 +333,13 @@ Sense = Literal[
 
 # Role of a cited resolution within the report's mandate history (Decision 4 / §4.2).
 Role = Literal["founding", "most_recent", "co_equal", "establishing", "additional"]
+
+# Where in the note element the citation sits: report body, or annex-description
+# content. Note-level by observation — every observed annex-title note is annex content
+# throughout (S-009 census: 40 notes / 120 occurrences) — so extract computes it once
+# per element and stamps every row with it. Two values only: a third position is added
+# when observed, not before.
+CitationPosition = Literal["body", "annex_title"]
 
 # How the organ that prefixes a KEPT citation was determined. A provenance LABEL, not a
 # risk score: it is recorded on the link row and read by audits of that table, and it does
@@ -402,6 +426,7 @@ class LinkRow:
     resolution_role: Role                         # §4.2
     resolution_pinpoint: str | None               # e.g. "para. 50" — Stage 2 asset, §5/§9
     citation_sense: Sense                         # §3 taxonomy
+    citation_position: CitationPosition           # body vs annex-title content; note-level fact, stored per occurrence
     organ_provenance: OrganProvenance             # how the organ was determined; audit label, not a display gate
     note_span: tuple[int, int]                    # citation token offsets in the note element; note_span[0] is part of the row identity key
     source_note_text: str                         # the verbatim note element it came from (§4.1)
@@ -411,11 +436,12 @@ class LinkRow:
 class UnparsedNote:
     """
     A DIAGNOSTIC record, not part of any consumed interface. It is a note element in
-    which at least one citation could not be resolved DETERMINISTICALLY — either the
+    which at least one citation could not be resolved DETERMINISTICALLY — the
     element carried a mandate construction but no resolvable symbol at all (worked
     example: "pursuant to the relevant resolutions of the General Assembly" — zero link
-    rows), or a citation token had no governing organ and was withheld. In the second
-    case any citations that DID resolve have ordinary link rows alongside this record:
+    rows), or a citation token had no governing organ and was withheld, or a resolved
+    citation occurrence had no sense cue preceding it and was refused a sense. In the
+    latter two cases any citations that DID classify have ordinary link rows alongside this record:
     it flags the element, it does not annul it (so the two streams are NOT disjoint —
     a §7 audit must not assume an UnparsedNote implies zero links; `reason` tells the
     cases apart). Exists ONLY so a rejected/unresolved note is auditable and COUNTABLE
@@ -517,8 +543,8 @@ _INSERT_LINK_ROWS_SQL = """
 INSERT INTO mandates.sg_report_to_mandate_links
     (id, report_recid, report_symbol, note_index, note_span_start, note_span_end,
      resolution_canonical, resolution_match_key, resolution_display_candidates,
-     resolution_role, citation_sense, organ_provenance, resolution_pinpoint,
-     source_note_text)
+     resolution_role, citation_sense, citation_position, organ_provenance,
+     resolution_pinpoint, source_note_text)
 VALUES %s
 """
 
@@ -701,6 +727,7 @@ def write_link_rows(conn: DbConn, rows: Iterable[LinkRow]) -> None:
             sorted(row.resolution_display_candidates),
             row.resolution_role,
             row.citation_sense,
+            row.citation_position,
             row.organ_provenance,
             row.resolution_pinpoint,
             row.source_note_text,
@@ -814,11 +841,16 @@ def run_stage1(conn: DbConn, unparsed_path: str) -> None:
 def extract(reports: Iterable[SourceReport], display_index: DisplayIndex) -> Stage1Output:
     """
     The pure spine. For each report, for each note element, in order:
-      recognise -> if citations: (per citation) classify sense, tag role, extract pinpoint,
-      canonicalise, fold to match_key, resolve display candidates -> assemble LinkRow.
+      recognise -> classify position (once per element) -> if citations: (per citation)
+      classify sense — an un-cued occurrence is refused and skipped, never defaulted —
+      tag role, extract pinpoint, canonicalise, fold to match_key, resolve display
+      candidates -> assemble LinkRow.
       If the element had a mandate construction but yielded no citation, OR withheld a
-      citation token for want of a governing organ (had_unresolvable_citation) -> one
-      UnparsedNote, alongside any link rows the same element did yield. Otherwise ignore.
+      citation token for want of a governing organ (had_unresolvable_citation), OR
+      refused an un-cued occurrence -> one UnparsedNote, alongside any link rows the
+      same element did yield. An element carrying BOTH an organ-withheld token and an
+      un-cued occurrence raises: measured absent in the corpus, not designed for.
+      Otherwise ignore.
     MUST NOT read or write a database, and MUST NOT compute anything coverage-derived.
     MUST NOT re-test a note for a mandate construction — NoteRecognition already carries it.
     MUST produce a deterministic order (sort by report_recid, note index, citation span).
@@ -830,6 +862,10 @@ def extract(reports: Iterable[SourceReport], display_index: DisplayIndex) -> Sta
     for report in reports:
         for note_index, note in enumerate(report.notes):
             recognition = recognise_citations(note)
+            # Note-level by observation (see classify_position): computed once per
+            # element, stamped on every row it yields.
+            citation_position = classify_position(note)
+            uncued_refused = False
             if recognition.citations:
                 for citation in recognition.citations:
                     # Re-derive the number form from the citation's own prose (never
@@ -843,7 +879,13 @@ def extract(reports: Iterable[SourceReport], display_index: DisplayIndex) -> Sta
                         )
                     resolution_canonical = canonical(citation.organ_prefix + token.group())
                     key = match_key(resolution_canonical)
-                    sense = classify_sense(citation, note)
+                    try:
+                        sense = classify_sense(citation, note)
+                    except UncuedCitationError:
+                        # Refused: skipped with the diagnostic record below — no row,
+                        # no default, no placeholder sense.
+                        uncued_refused = True
+                        continue
                     row = LinkRow(
                         # Unresolved decision bites here: a dual symbol ("A/80/723 -
                         # S/2026/357") lands verbatim, one row per cited resolution —
@@ -858,6 +900,7 @@ def extract(reports: Iterable[SourceReport], display_index: DisplayIndex) -> Sta
                         resolution_role=tag_role(citation, note),
                         resolution_pinpoint=extract_pinpoint(citation),
                         citation_sense=sense,
+                        citation_position=citation_position,
                         # Provenance is computed at recognition (the only place the
                         # mention/head geometry exists) and passed straight through — it is
                         # an audit label, never a display gate.
@@ -868,6 +911,34 @@ def extract(reports: Iterable[SourceReport], display_index: DisplayIndex) -> Sta
                     keyed_links.append(
                         ((report.report_recid, note_index, citation.note_span), row)
                     )
+            # Refusal-kind coexistence, settled by measurement. At OCCURRENCE grain the
+            # two refusals are mutually exclusive by construction: recognise_citations
+            # withholds an organ-less token BEFORE any RawCitation exists, and this loop
+            # iterates resolved citations only, so classify_sense never sees a withheld
+            # occurrence — no check needed. At NOTE grain nothing prevents one element
+            # carrying both a withheld token and an un-cued occurrence; measured absent
+            # across the corpus (S-009 census evidence), so the unobserved state raises
+            # rather than being designed for. The check sits here, after the citation
+            # loop, because only here are both refusal kinds known for the element.
+            if uncued_refused and recognition.had_unresolvable_citation:
+                raise ValueError(
+                    f"note element carries both an organ-withheld citation token and "
+                    f"an un-cued citation occurrence — an unobserved state the refusal "
+                    f"record does not model (recid {report.report_recid}, "
+                    f"note {note_index}): {note!r}"
+                )
+            if uncued_refused:
+                keyed_unparsed.append(
+                    (
+                        (report.report_recid, note_index),
+                        UnparsedNote(
+                            report_symbol=report.report_symbol,
+                            report_recid=report.report_recid,
+                            source_note_text=note,
+                            reason=_UNCUED_CITATION_REASON,
+                        ),
+                    )
+                )
             if recognition.had_unresolvable_citation or (
                 recognition.had_mandate_construction and not recognition.citations
             ):
@@ -1016,10 +1087,22 @@ def recognise_citations(note_element: str) -> NoteRecognition:
     )
 
 
+class UncuedCitationError(ValueError):
+    """
+    Raised by classify_sense for a kept citation with no sense cue preceding it in its
+    note element. Part of the function's contract: a sense is never defaulted, and the
+    refusal is typed so extract can record it without message inspection. The message
+    prefix ("no sense cue precedes citation") is itself part of the contract, pinned by
+    test — do not reword it.
+    """
+
+
 def classify_sense(citation: RawCitation, note_element: str) -> Sense:
     """
     Assign the §3 mandate-instrument sense from the citation's phrasing/context. This is
     the display-eligibility decision (direct_request … body_established; prst_note_decision).
+    Raises UncuedCitationError for a citation no sense cue precedes — refused, never
+    defaulted; extract records the refusal on the UnparsedNote stream.
     MUST NOT decide whether the row is *shown* — that WHERE clause is read-time (§0.1).
     MUST NOT return a sense for a non-resolution reference — those never reach here.
     Governs: Decision 2 / §3. Split from tag_role deliberately (RATIONALE): §3 and §4 change apart.
@@ -1041,8 +1124,8 @@ def classify_sense(citation: RawCitation, note_element: str) -> Sense:
     if governing is None:
         # A kept citation with no sense cue before it is a state the §3 taxonomy does
         # not model (every taxonomy example leads with its phrasing). Never default a
-        # sense — fail loudly with the evidence.
-        raise ValueError(
+        # sense — refuse, typed, with the evidence.
+        raise UncuedCitationError(
             f"no sense cue precedes citation {citation.prose_symbol!r} "
             f"in note element: {note_element!r}"
         )
@@ -1070,6 +1153,18 @@ def tag_role(citation: RawCitation, note_element: str) -> Role:
         # citation — is co_equal.
         return "co_equal"
     return nearest[1]
+
+
+def classify_position(note_element: str) -> CitationPosition:
+    """
+    Classify WHERE the element's citations sit: annex-description content or report
+    body. Note-level by observation — every observed annex-title note is annex content
+    throughout (S-009 census) — so extract calls this once per element and stamps every
+    row the element yields with the result.
+    MUST NOT widen beyond the observed note-initial forms (_ANNEX_TITLE_RE); a new form
+    is added when observed, not before.
+    """
+    return "annex_title" if _ANNEX_TITLE_RE.match(note_element) else "body"
 
 
 def extract_pinpoint(citation: RawCitation) -> str | None:

@@ -132,6 +132,7 @@ class LinkRowIdTests(unittest.TestCase):
         resolution_role="co_equal",
         resolution_pinpoint=None,
         citation_sense="direct_request",
+        citation_position="body",
         organ_provenance="stated",
         note_span=(12, 22),
         source_note_text="Submitted pursuant to General Assembly resolution 79/1.",

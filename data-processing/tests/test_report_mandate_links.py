@@ -15,7 +15,10 @@ import unittest
 import fixtures_sg_report_notes as fx
 from report_mandate_links.a_extract import (
     SourceReport,
+    UncuedCitationError,
+    _UNCUED_CITATION_REASON,
     canonical,
+    classify_position,
     classify_sense,
     extract,
     extract_pinpoint,
@@ -253,6 +256,32 @@ class TestClassification(unittest.TestCase):
         citation = sole_citation(fx.PRST)
         self.assertEqual(classify_sense(citation, fx.PRST), "prst_note_decision")
 
+    def test_uncued_citation_raises_typed_refusal(self):
+        # The type lets extract catch the refusal without message inspection; the
+        # message prefix is a textual contract in its own right — pinned here.
+        citation = sole_citation(fx.UNCUED_ANNEX)
+        with self.assertRaises(UncuedCitationError) as ctx:
+            classify_sense(citation, fx.UNCUED_ANNEX)
+        self.assertIsInstance(ctx.exception, ValueError)
+        self.assertTrue(
+            str(ctx.exception).startswith("no sense cue precedes citation")
+        )
+
+    def test_position_annex_title_quoted(self):
+        self.assertEqual(classify_position(fx.ANNEX_QUOTED), "annex_title")
+
+    def test_position_annex_title_unquoted(self):
+        self.assertEqual(classify_position(fx.ANNEX_UNQUOTED), "annex_title")
+
+    def test_position_body(self):
+        self.assertEqual(classify_position(fx.DIRECT_SC), "body")
+        self.assertEqual(classify_position(fx.COMMITTEE), "body")
+
+    def test_position_body_despite_mid_element_annex_word(self):
+        # An annex WORD elsewhere in the element does not make it annex content —
+        # the detector is note-initial only (annex-as-pinpoint stays body).
+        self.assertEqual(classify_position(fx.ANNEX_WORD_MID_ELEMENT), "body")
+
     def test_pinpoint_captured_and_absent_is_none(self):
         with_pinpoint = sole_citation(fx.PINPOINT)
         self.assertEqual(extract_pinpoint(with_pinpoint), "para. 50")
@@ -411,6 +440,41 @@ class TestExtract(unittest.TestCase):
         row = extract_notes(fx.PINPOINT).links[0]
         self.assertEqual(row.resolution_canonical, "S/RES/2808(2025)")
         self.assertEqual(row.resolution_pinpoint, "para. 50")
+
+    def test_uncued_occurrence_skipped_with_refusal_record(self):
+        # Sole occurrence un-cued: no row, no default — one refusal record.
+        output = extract_notes(fx.UNCUED_ANNEX)
+        self.assertEqual(output.links, ())
+        self.assertEqual(len(output.unparsed), 1)
+        self.assertEqual(output.unparsed[0].reason, _UNCUED_CITATION_REASON)
+        self.assertEqual(output.unparsed[0].source_note_text, fx.UNCUED_ANNEX)
+
+    def test_uncued_mixed_element_keeps_cued_row(self):
+        # Two occurrences of 63/94; the un-cued first is refused, the cued second
+        # still lands — flagged, not annulled.
+        output = extract_notes(fx.UNCUED_TRANSMITTAL)
+        self.assertEqual(len(output.links), 1)
+        row = output.links[0]
+        self.assertEqual(row.resolution_canonical, "A/RES/63/94")
+        self.assertEqual(row.citation_sense, "direct_request")
+        self.assertEqual(len(output.unparsed), 1)
+        self.assertEqual(output.unparsed[0].reason, _UNCUED_CITATION_REASON)
+
+    def test_both_refusal_kinds_in_one_element_raises(self):
+        # Constructed state (no corpus instance): an element carrying both an
+        # organ-withheld token and an un-cued occurrence is unobserved and must
+        # raise, not get a precedence rule.
+        with self.assertRaises(ValueError) as ctx:
+            extract_notes(fx.BOTH_REFUSALS)
+        self.assertIn("both an organ-withheld", str(ctx.exception))
+
+    def test_position_reaches_the_row(self):
+        for note in (fx.ANNEX_QUOTED, fx.ANNEX_UNQUOTED):
+            links = extract_notes(note).links
+            self.assertGreater(len(links), 0, note)
+            for row in links:
+                self.assertEqual(row.citation_position, "annex_title")
+        self.assertEqual(extract_notes(fx.PINPOINT).links[0].citation_position, "body")
 
     def test_organ_provenance_stated_when_mention_abuts_head(self):
         # "Security Council resolution 2779 (2025)" — the organ mention immediately

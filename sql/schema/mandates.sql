@@ -165,6 +165,11 @@ CREATE TABLE mandates.sg_report_to_mandate_links (
     citation_sense TEXT NOT NULL
         CHECK (citation_sense IN ('direct_request', 'founding_renewal', 'additional_joint',
                                   'activities_carried_out', 'body_established', 'prst_note_decision')),
+    -- Where in the source note element the citation sits: report body, or an
+    -- annex-description title. Note-level fact, stored per occurrence (the row
+    -- grain). No default: a row the writer fails to position fails at insert.
+    citation_position TEXT NOT NULL
+        CHECK (citation_position IN ('body', 'annex_title')),
     organ_provenance TEXT NOT NULL
         CHECK (organ_provenance IN ('stated', 'inherited', 'intrinsic')),
     resolution_pinpoint TEXT,
