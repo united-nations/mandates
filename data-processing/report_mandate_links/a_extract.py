@@ -225,7 +225,7 @@ MANDATE_CONSTRUCTION_RE = re.compile(
 
 # --- classification cues (each compiled once; shared between tables by name) ---------
 # The establishment cue — "established {pursuant to | in pursuance of | under}",
-# body-agnostic, shared by the sense table (committee_established) and the role table
+# body-agnostic, shared by the sense table (body_established) and the role table
 # (establishing). Observation-gated widening (S-009 census): the earlier form required
 # the literal word "committee", so a Group, Panel or Commission established pursuant to
 # a resolution fell through to the generic cue, and two of the three observed
@@ -248,7 +248,7 @@ _MOST_RECENTLY_RE = re.compile(r"\bmost\s+recently\b", re.IGNORECASE)
 # ones: in "activities carried out … pursuant to resolution 186 (1964)" the generic
 # "pursuant to" sits NEARER the citation than the cue that actually names its sense.
 _SENSE_CUES: tuple[tuple[re.Pattern[str], "Sense", int], ...] = (
-    (_ESTABLISHED_RE, "committee_established", 5),  # "Committee established pursuant to resolution 748 (1992)"; cue is body-agnostic, the stored sense value keeps its historical name
+    (_ESTABLISHED_RE, "body_established", 5),  # "Committee established pursuant to resolution 748 (1992)"; cue and stored value are both body-agnostic
     (_ACTIVITIES_CARRIED_OUT_RE, "activities_carried_out", 4),  # UNFICYP form, §3
     (_ALSO_IN_RESPONSE_RE, "additional_joint", 3),  # "submitted also in response to …"
     (_MANDATE_CONTAINED_RE, "founding_renewal", 2),  # "mandate contained in resolution 350 (1974)"
@@ -310,7 +310,7 @@ Sense = Literal[
     "founding_renewal",      # "mandate contained in 350 (1974) … most recently 2811 (2025)" — capture both
     "additional_joint",      # "also in response to GA resolution 79/140 and ECOSOC 2024/8" — capture all
     "activities_carried_out",# UNFICYP "activities carried out … pursuant to resolution 186 (1964)" — display
-    "committee_established",  # "Committee established pursuant to 748 (1992)" — hold for review at read time
+    "body_established",      # "Committee established pursuant to 748 (1992)" — hold for review at read time
     "prst_note_decision",    # S/PRST/…, note/decision — real instrument, diverted (not a resolution)
 ]
 
@@ -319,9 +319,9 @@ Role = Literal["founding", "most_recent", "co_equal", "establishing", "additiona
 
 # How the organ that prefixes a KEPT citation was determined. A provenance LABEL, not a
 # risk score: it is recorded on the link row and read by audits of that table, and it does
-# NOT gate display — display is filtered on `sense` alone. It replaces an earlier
-# `confidence` field that was a pure function of `sense`, and so stored nothing `sense`
-# did not already carry.
+# NOT gate display — display is filtered on `citation_sense` alone. It replaces an earlier
+# `confidence` field that was a pure function of `citation_sense`, and so stored nothing
+# `citation_sense` did not already carry.
 #   stated    — an organ mention immediately precedes the citation head (gap = 0 words)
 #   inherited — resolved from the nearest preceding organ mention in the SAME element,
 #               across a non-zero word gap (no distance cap); AND every later member of a
@@ -399,9 +399,9 @@ class LinkRow:
     resolution_canonical: str                     # identity (§5) — equals symbol_normalized; part of the row identity key
     resolution_match_key: str                     # join key (§5) — indexed; fold applied
     resolution_display_candidates: tuple[str, ...]# page keys (§5) — lookup result; () when no registry row
-    role: Role                                    # §4.2
-    pinpoint: str | None                          # e.g. "para. 50" — Stage 2 asset, §5/§9
-    sense: Sense                                  # §3 taxonomy
+    resolution_role: Role                         # §4.2
+    resolution_pinpoint: str | None               # e.g. "para. 50" — Stage 2 asset, §5/§9
+    citation_sense: Sense                         # §3 taxonomy
     organ_provenance: OrganProvenance             # how the organ was determined; audit label, not a display gate
     note_span: tuple[int, int]                    # citation token offsets in the note element; note_span[0] is part of the row identity key
     source_note_text: str                         # the verbatim note element it came from (§4.1)
@@ -517,7 +517,8 @@ _INSERT_LINK_ROWS_SQL = """
 INSERT INTO mandates.sg_report_to_mandate_links
     (id, report_recid, report_symbol, note_index, note_span_start, note_span_end,
      resolution_canonical, resolution_match_key, resolution_display_candidates,
-     role, sense, organ_provenance, pinpoint, source_note_text)
+     resolution_role, citation_sense, organ_provenance, resolution_pinpoint,
+     source_note_text)
 VALUES %s
 """
 
@@ -698,10 +699,10 @@ def write_link_rows(conn: DbConn, rows: Iterable[LinkRow]) -> None:
             row.resolution_canonical,
             row.resolution_match_key,
             sorted(row.resolution_display_candidates),
-            row.role,
-            row.sense,
+            row.resolution_role,
+            row.citation_sense,
             row.organ_provenance,
-            row.pinpoint,
+            row.resolution_pinpoint,
             row.source_note_text,
         )
         for row in rows
@@ -854,9 +855,9 @@ def extract(reports: Iterable[SourceReport], display_index: DisplayIndex) -> Sta
                         resolution_canonical=resolution_canonical,
                         resolution_match_key=key,
                         resolution_display_candidates=resolve_display(key, display_index),
-                        role=tag_role(citation, note),
-                        pinpoint=extract_pinpoint(citation),
-                        sense=sense,
+                        resolution_role=tag_role(citation, note),
+                        resolution_pinpoint=extract_pinpoint(citation),
+                        citation_sense=sense,
                         # Provenance is computed at recognition (the only place the
                         # mention/head geometry exists) and passed straight through — it is
                         # an audit label, never a display gate.
@@ -1018,7 +1019,7 @@ def recognise_citations(note_element: str) -> NoteRecognition:
 def classify_sense(citation: RawCitation, note_element: str) -> Sense:
     """
     Assign the §3 mandate-instrument sense from the citation's phrasing/context. This is
-    the display-eligibility decision (direct_request … committee_established; prst_note_decision).
+    the display-eligibility decision (direct_request … body_established; prst_note_decision).
     MUST NOT decide whether the row is *shown* — that WHERE clause is read-time (§0.1).
     MUST NOT return a sense for a non-resolution reference — those never reach here.
     Governs: Decision 2 / §3. Split from tag_role deliberately (RATIONALE): §3 and §4 change apart.

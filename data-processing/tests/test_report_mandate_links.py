@@ -180,9 +180,9 @@ class TestClassification(unittest.TestCase):
         self.assertEqual(classify_sense(citation, fx.UNFICYP), "activities_carried_out")
         self.assertEqual(tag_role(citation, fx.UNFICYP), "co_equal")
 
-    def test_committee_established(self):
+    def test_body_established(self):
         citation = sole_citation(fx.COMMITTEE)
-        self.assertEqual(classify_sense(citation, fx.COMMITTEE), "committee_established")
+        self.assertEqual(classify_sense(citation, fx.COMMITTEE), "body_established")
         self.assertEqual(tag_role(citation, fx.COMMITTEE), "establishing")
 
     def test_additional_joint(self):
@@ -208,7 +208,7 @@ class TestClassification(unittest.TestCase):
         citation = sole_citation(fx.GROUP_ESTABLISHED_IN_PURSUANCE)
         self.assertEqual(
             classify_sense(citation, fx.GROUP_ESTABLISHED_IN_PURSUANCE),
-            "committee_established",
+            "body_established",
         )
         self.assertEqual(
             tag_role(citation, fx.GROUP_ESTABLISHED_IN_PURSUANCE), "establishing"
@@ -220,7 +220,7 @@ class TestClassification(unittest.TestCase):
         citation = sole_citation(fx.PANEL_ESTABLISHED_PURSUANT)
         self.assertEqual(
             classify_sense(citation, fx.PANEL_ESTABLISHED_PURSUANT),
-            "committee_established",
+            "body_established",
         )
         self.assertEqual(tag_role(citation, fx.PANEL_ESTABLISHED_PURSUANT), "establishing")
 
@@ -232,7 +232,7 @@ class TestClassification(unittest.TestCase):
         for citation in recognition.citations:
             self.assertEqual(
                 classify_sense(citation, fx.COMMISSION_ESTABLISHED_UNDER),
-                "committee_established",
+                "body_established",
             )
             self.assertEqual(
                 tag_role(citation, fx.COMMISSION_ESTABLISHED_UNDER), "establishing"
@@ -335,8 +335,8 @@ class TestExtract(unittest.TestCase):
         )
         self.assertEqual(output.unparsed, ())
         for row in output.links:
-            self.assertEqual(row.sense, "direct_request")
-            self.assertEqual(row.role, "co_equal")
+            self.assertEqual(row.citation_sense, "direct_request")
+            self.assertEqual(row.resolution_role, "co_equal")
 
     def test_pinpoint_interpolation_recovers_member_without_reaching_across_and_and(self):
         # The doubled "and and" (source typo): 2165 is recovered through the pinpoint
@@ -410,7 +410,7 @@ class TestExtract(unittest.TestCase):
     def test_pinpoint_reaches_the_row(self):
         row = extract_notes(fx.PINPOINT).links[0]
         self.assertEqual(row.resolution_canonical, "S/RES/2808(2025)")
-        self.assertEqual(row.pinpoint, "para. 50")
+        self.assertEqual(row.resolution_pinpoint, "para. 50")
 
     def test_organ_provenance_stated_when_mention_abuts_head(self):
         # "Security Council resolution 2779 (2025)" — the organ mention immediately

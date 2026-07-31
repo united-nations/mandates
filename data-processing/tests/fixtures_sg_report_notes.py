@@ -200,8 +200,8 @@ UNFICYP = (
 
 # [COMPOSED] rules_ §3 taxonomy row 5 ("Committee established pursuant to resolution
 # 748 (1992)") + "Security Council" organ context, without which the doc's own quote
-# is unresolvable (a known doc gap). Sense: committee_established (held for review at
-# read time from the sense alone — there is no stored confidence field).
+# is unresolvable (a known doc gap). Sense: body_established (held for review at
+# read time from the citation_sense alone — there is no stored confidence field).
 COMMITTEE = "Security Council Committee established pursuant to resolution 748 (1992)."
 
 # [LIVE] recid 71239 (A/39/488) note[0], S-009 census records. A body other than a

@@ -160,14 +160,14 @@ CREATE TABLE mandates.sg_report_to_mandate_links (
     resolution_canonical TEXT NOT NULL,
     resolution_match_key TEXT NOT NULL,
     resolution_display_candidates TEXT[] NOT NULL,
-    role TEXT NOT NULL
-        CHECK (role IN ('founding', 'most_recent', 'co_equal', 'establishing', 'additional')),
-    sense TEXT NOT NULL
-        CHECK (sense IN ('direct_request', 'founding_renewal', 'additional_joint',
-                         'activities_carried_out', 'committee_established', 'prst_note_decision')),
+    resolution_role TEXT NOT NULL
+        CHECK (resolution_role IN ('founding', 'most_recent', 'co_equal', 'establishing', 'additional')),
+    citation_sense TEXT NOT NULL
+        CHECK (citation_sense IN ('direct_request', 'founding_renewal', 'additional_joint',
+                                  'activities_carried_out', 'body_established', 'prst_note_decision')),
     organ_provenance TEXT NOT NULL
         CHECK (organ_provenance IN ('stated', 'inherited', 'intrinsic')),
-    pinpoint TEXT,
+    resolution_pinpoint TEXT,
     source_note_text TEXT NOT NULL,
     UNIQUE (report_recid, note_index, resolution_canonical, note_span_start)
 );
@@ -193,7 +193,7 @@ COMMENT ON COLUMN mandates.sg_report_to_mandate_links.resolution_canonical IS
   'presidential statement (S/PRST/..) instead of a resolution. These are kept here too, in '
   'the same column, rather than thrown away — a deliberate choice to capture everything the '
   'notes cite. Strictly a presidential statement is not a resolution, so these rows are stored '
-  'but never shown as resolution links (the display filters them out by their sense value). '
+  'but never shown as resolution links (the display filters them out by their citation_sense value). '
   'The resolution_* naming reflects the common, displayed case, not every stored row.';
 
 COMMENT ON COLUMN mandates.sg_report_to_mandate_links.resolution_match_key IS
