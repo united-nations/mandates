@@ -3,6 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "packageManager": "pnpm@10.28.1",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "imports": {
+    "#lib/*": "./src/lib/*.ts"
+  },
   "pnpm": {
     "onlyBuiltDependencies": [
       "sharp",
@@ -16,7 +22,8 @@
     "lint": "eslint",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,css,scss,json,md}\"",
     "format:check": "prettier --check \"src/**/*.{js,jsx,ts,tsx,css,scss,json,md}\"",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "node --test \"src/**/*.test.ts\""
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
