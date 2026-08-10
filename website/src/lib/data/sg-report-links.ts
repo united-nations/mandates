@@ -21,12 +21,31 @@
  *
  * DISPLAY SCOPE
  * -------------
- * One read-time predicate over stored bytes: the citation_sense allowlist —
- * the display-eligible senses. body_established is held from display (the
- * resolution established the reporting body; the report is not the SG
- * answering the resolution), and prst_note_decision rows are diverted (the
- * cited instrument is a presidential statement, not a resolution). An
- * allowlist so that any future sense value defaults to captured-not-displayed.
+ * Two read-time predicates over stored bytes; the table itself keeps every
+ * extracted occurrence, so a rule here narrows what is shown, never what is
+ * stored.
+ *
+ * First, the citation_sense allowlist — the display-eligible senses.
+ * body_established is held from display (the resolution established the
+ * reporting body; the report is not the SG answering the resolution), and
+ * prst_note_decision rows are diverted (the cited instrument is a
+ * presidential statement, not a resolution). An allowlist so that any future
+ * sense value defaults to captured-not-displayed.
+ *
+ * Second, a four-entry report_recid exclusion — duplicate Digital Library
+ * catalogue records. Each excluded recid is a second catalogue record of a
+ * report that already renders on the same page under its clean symbol;
+ * showing both would list one document twice. The rule is keyed on recid,
+ * the stable identity, not on the malformed report_symbol strings the
+ * duplicates happen to carry — the symbol is how they were noticed, not what
+ * is wrong with them, and a symbol shape test would also swallow a future
+ * non-conforming symbol that is NOT a duplicate, which must render visibly
+ * so it gets investigated rather than absorbed. Four literal identities,
+ * never a pattern; a fifth duplicate is added here by hand, with its
+ * evidence, or not at all. Each entry names its symbol, page(s), and
+ * surviving sibling, so deleting an entry shows exactly which row reappears
+ * where. The extractor knows nothing of this rule and records nothing about
+ * these rows: this file is the only place the exclusion exists.
  */
 
 import { cache } from 'react'
@@ -38,6 +57,18 @@ const DISPLAY_ELIGIBLE_SENSES = [
   'founding_renewal',
   'additional_joint',
   'activities_carried_out',
+]
+
+/**
+ * Duplicate catalogue records excluded from display (DISPLAY SCOPE, second
+ * rule). Per entry: recid — its stored report_symbol / the page(s) it would
+ * render on / the clean sibling record that keeps rendering there.
+ */
+const DISPLAY_EXCLUDED_REPORT_RECIDS = [
+  494738, // "***" / A/RES/55/33[E] / sibling 474908 (A/57/124)
+  3945711, // "(A/75/918) COLOR PUBLICATION" / A/RES/74/301 / sibling 3931731 (A/75/918)
+  3968269, // "(S/2022/272) COLOR" / S/RES/2467 (2019) + S/RES/2467(2019) / sibling 3967573 (S/2022/272)
+  4096508, // "(S/2025/389)" / S/RES/2467 (2019) + S/RES/2467(2019) / sibling 4086814 (S/2025/389)
 ]
 
 export interface MandatedSgReport {
@@ -76,9 +107,10 @@ export const getSgReportsMandatedByResolution = cache(
        JOIN digitallibrary.documents d ON d.recid = l.report_recid
        WHERE $1 = ANY (l.resolution_display_candidates)
          AND l.citation_sense = ANY ($2)
+         AND l.report_recid <> ALL ($3)
        GROUP BY l.report_recid, l.report_symbol, d.title, d.date_publication
        ORDER BY d.date_publication DESC NULLS LAST, l.report_symbol`,
-      [pageSymbol, DISPLAY_ELIGIBLE_SENSES]
+      [pageSymbol, DISPLAY_ELIGIBLE_SENSES, DISPLAY_EXCLUDED_REPORT_RECIDS]
     )
   }
 )
