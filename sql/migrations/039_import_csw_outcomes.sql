@@ -39,10 +39,18 @@
 -- PREREQUISITE: migration 007 (PPB 2027 imported; entity 'UN Women' registered
 --   in systemchart.entities and grouping columns established).
 --
+-- INTERACTION WITH MIGRATION 035
+--   035 makes unified_documents derive ppb_type from the document symbol family
+--   ('/RES/', '/DEC/', '/PRST/'), falling back to the curated source_documents
+--   ppb_type where the symbol carries no type signal. The synthetic 'CSW/{year}/…'
+--   symbols match none of those patterns (they are lower-case slugs), so the
+--   curated types set below -- Conclusions / Declaration / Report / Resolution --
+--   are what surface. Nothing to reconcile.
+--
 -- AFTER RUNNING: refresh the unified_documents materialized view --
 --     psql "$DATABASE_URL" -f sql/refresh_unified_documents.sql
 --
--- Run with: psql "$DATABASE_URL" -f sql/migrations/034_import_csw_outcomes.sql
+-- Run with: psql "$DATABASE_URL" -f sql/migrations/039_import_csw_outcomes.sql
 
 BEGIN;
 

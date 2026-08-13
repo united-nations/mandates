@@ -10,7 +10,7 @@ This module reproduces exactly that list, sourced solely from a scrape of that
 page (no merge with the historical 2026 enumeration). It emits one row per
 downloadable outcome item (each agreed conclusion, each standalone declaration),
 which is then imported as UN-Women legislative-mandate citations for the PPB 2027
-vintage via ``sql/migrations/034_import_csw_outcomes.sql``.
+vintage via ``sql/migrations/039_import_csw_outcomes.sql``.
 
 Run from anywhere; paths resolve relative to the repo root:
 
