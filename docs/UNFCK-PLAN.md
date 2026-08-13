@@ -1,0 +1,250 @@
+# The `unfck` branch — plan
+
+A long-lived parallel branch of the mandate registry, to be published at
+**mandates.unfck.org** as an unofficial alternative to https://mandates.un.org/.
+
+The branch keeps every good change made on `dev`, but it does not keep the
+changes that made the site more minimal. It also brings in all seven analytical
+lenses, and puts them into the sections of `/secretariat` instead of a separate
+analytics page.
+
+Branch: `unfck`, cut from `dev` at `46eea37`.
+
+---
+
+## 1. Decisions
+
+| Question | Decision |
+| --- | --- |
+| Section layout | Hybrid. Keep the explore cards **and** give entities, organs and subjects their own banner sections. |
+| Section order | The mandates table is the top section. |
+| Card strip | Stays above the table, as on `dev`. Each card also links down to its section. |
+| Document types | Card and modal only. No dedicated section. |
+| Lens pages | Keep `/missions`, `/reports`, `/instruments` and `/genealogy`. Delete the `/analytics` hub. |
+| Implementation lenses | Go into a new fifth section, "What happens after the mandate is adopted?" |
+| Wayfinding | Take `secretariat-wayfinding` only. Do **not** take `secretariat-calm-hierarchy` — it deletes the banners we are restoring. |
+| Branding | Change the header wordmark from "United Nations" to "UNFCK". Nothing else. |
+
+---
+
+## 2. What the history shows
+
+### The rich page
+
+The last rich version of `/secretariat` is `0220dce~1` (22 July 2026). It had
+four image-banner sections. Each one held a directory and one chart expander,
+then a Background block, the Guterres quote with photo, and Further resources.
+
+### The minimalisation
+
+Seven commits, not one. The good and the bad changes are mixed together in the
+same commits, so we cannot simply revert them:
+
+| Commit | What it removed | What it added that we keep |
+| --- | --- | --- |
+| `0220dce` | Banner images, SG photo | `SectionHeader` |
+| `78246ca` | All four sections; charts pushed to `/analytics` | — |
+| `7391dfd` | — | `/methodology` page, tabbed analytics |
+| `383b524` | — | Reworked mandate detail, explore modals |
+| `fdb2a87` | — | Correct facet counts, exact subject matching |
+| `373d51b` | — | Loading skeleton width fix |
+| `5218d4f` | — | Four explore cards with filter-aware counts |
+
+`feature-unified-view` (merged at `46eea37`) then added `MandateDetailUi`,
+`RelatedMandates`, `MandateTopics`, `DocumentSymbol`, `DocumentsDirectory` and
+the mandated-SG-reports block. All of these are kept.
+
+### The lenses
+
+`worktree-agent-a3d1aabe2f1eaf6e4` is a capstone branch. It merges all seven
+lens branches plus the `/analytics` hub. **Nothing important is unmerged** — the
+only branches outside it are two screenshot-only commits
+(`worktree-agent-a48fe80cbbb00bde0`, `worktree-agent-aca22f0fc72b51321`).
+
+### Merge cost — measured, not estimated
+
+Since the fork point `0dd2d3c`, `dev` changed 100 files and the capstone changed
+153. Only **five files overlap**. A dry-run merge gives:
+
+```
+website/src/app/@modal/(.)mandate/[...segments]/page.tsx   CONFLICT (3 hunks)
+website/src/app/mandate/[...segments]/page.tsx             CONFLICT (3 hunks)
+website/src/app/secretariat/page.tsx                       CONFLICT (6 hunks)
+website/src/components/SiteHeader.tsx                      auto-merged, correct
+website/package.json                                       auto-merged
+```
+
+Twelve conflict hunks in total. This is a small merge.
+
+---
+
+## 3. Target structure of `/secretariat`
+
+```
+Headline + intro text
+Active-filter bar
+Four explore cards      entities · organs · subjects · document types
+                        (counts honour the active filters; each links to its section)
+Sticky section nav      from secretariat-wayfinding
+
+01  Which mandates is the UN working on?
+    [ mandate explorer table ]
+    ▸ Trends over time            resolutions vs cited · genuinely new
+    ▸ Boilerplate genealogy       → /genealogy
+    ▸ The reporting cycle         → /reports
+
+02  Which entities are implementing the mandates?
+    [ EntitiesDirectory ]
+    ▸ Co-citations between entities
+
+03  Which organs are creating the mandates?
+    [ OrgansDirectory ]
+    ▸ Citation patterns between entities and organs
+    ▸ The language of command
+    ▸ Consensus and contestation in the General Assembly
+    ▸ Who votes with whom? Country blocs
+    ▸ Mandate renewals: the Security Council leash
+
+04  Which topics are the mandates about?
+    [ SubjectsCompact / treemap ]
+    ▸ Topic trends
+    ▸ Which countries are the resolutions about?
+
+05  What happens after the mandate is adopted?
+    ▸ Peace operations: paper against ground   → /missions
+    ▸ Sanctions and treaties                   → /instruments
+
+Background · Quote · Further resources
+```
+
+Section 05 needs a banner image. `hero-banner-president.png` is the only one of
+the six not already in use.
+
+---
+
+## 4. Work phases
+
+### Phase 1 — Merge the capstone
+
+```bash
+git merge worktree-agent-a3d1aabe2f1eaf6e4
+```
+
+Resolve the three conflicts:
+
+- **Both mandate detail pages.** Take the `dev` side as the base — it is newer
+  and carries the unified view. Then graft one thing from the lens side: the
+  vote strip (`MandateVoteStrip`, the `voteInfo` fetch). Note that the two sides
+  each added a reports block: `dev` has `MandateSgReports` (the mandating
+  resolution link) and the lens side has `MandateReportsSection` (the reports
+  lens). Keep `MandateSgReports` — it is the newer and better-sourced one — and
+  drop `MandateReportsSection` from the detail page.
+- **`secretariat/page.tsx`.** Do not hand-resolve. Take either side to clear the
+  conflict, then rewrite the file in Phase 2.
+- Check that the auto-merged `SiteHeader` kept the `/methodology` link. In the
+  dry run it did.
+
+### Phase 2 — Rebuild `/secretariat`
+
+Write the page to the structure in section 3, built from the components `dev`
+has now, not the old ones. Keep `page.tsx` thin: it fetches the data and
+composes section components. See section 5 for why this matters.
+
+New files, all owned by `unfck` alone:
+
+```
+website/src/components/sections/SecretariatSection.tsx   banner + heading + slot
+website/src/components/sections/MandatesSection.tsx
+website/src/components/sections/EntitiesSection.tsx
+website/src/components/sections/OrgansSection.tsx
+website/src/components/sections/SubjectsSection.tsx
+website/src/components/sections/ImplementationSection.tsx
+```
+
+Give each explore card an anchor link down to its matching section.
+
+### Phase 3 — Redistribute the lenses
+
+Move each lens into its section as an expander, per the table in section 3. Each
+expander shows the headline figure and the lead chart, then links on to its full
+page where one exists. The prose in the deleted `/analytics` hub is good — reuse
+it as the expander summaries rather than writing new copy.
+
+### Phase 4 — Delete the hub, fix the navigation
+
+- Delete `website/src/app/analytics/page.tsx` and `AnalyticsTabs`.
+- Delete `website/src/app/secretariat/analytics/page.tsx` (the unlinked tabbed
+  page `dev` left behind).
+- Nav becomes: Secretariat · System · Missions. Drop the Analytics item and the
+  `analyticsRoutes` helper that goes with it.
+- Redirect `/analytics` to `/secretariat` in `next.config.ts`.
+
+### Phase 5 — Wayfinding
+
+Merge `secretariat-wayfinding`. It was cut from `main`, so re-point the
+`SectionNav` offsets and `scroll-mt` values at the five sections above. Its
+active-filter pill overlaps the `ActiveFilters` bar `dev` already has — keep
+`dev`'s bar and take only the sticky nav.
+
+### Phase 6 — Branding
+
+`SiteHeader.tsx` line 88: change `United Nations ` to `UNFCK `. Nothing else.
+
+### Phase 7 — Verify
+
+```bash
+cd website && pnpm typecheck && pnpm lint && pnpm build
+```
+
+`/missions`, `/reports`, `/instruments` and `/genealogy` must still render, and
+`/secretariat` must render with a filter applied.
+
+---
+
+## 5. How to keep the branch mergeable
+
+`unfck` must pull updates from `dev` for a long time. The risk is
+`secretariat/page.tsx`: `dev` changes it often, and our version is very
+different. Every sync would conflict there.
+
+The rule: **`unfck`'s extra content lives in files that `dev` does not have.**
+
+- All section scaffolding goes in `components/sections/`, which exists only
+  here. `dev` will never touch it, so it can never conflict.
+- `page.tsx` stays a thin composition file. When `dev` changes it, the conflict
+  is a few lines, not the whole page.
+- Do not reformat or re-order shared files. A whitespace change in a shared file
+  buys a conflict for no gain.
+- Keep the branding change to the one line in `SiteHeader.tsx`.
+
+## 6. Sync procedure
+
+Always merge in one direction only — `dev` into `unfck`, never the reverse:
+
+```bash
+git checkout unfck
+git merge dev
+```
+
+If `dev` ever minimises the page further, the conflict appears in `page.tsx`
+alone. Resolve by keeping our section calls and taking `dev`'s changes to the
+shared parts.
+
+Do not push and do not open a pull request without being asked.
+
+---
+
+## 7. Open items
+
+- **Deployment.** `.github/workflows/` builds `dev` and `main` to Azure. The
+  `unfck` branch needs its own workflow and its own Azure target for
+  mandates.unfck.org. To be written, not applied.
+- **Database.** The language-of-command lens reads
+  `digitallibrary.document_paragraphs`. Confirm the deploy target can reach it.
+  The other lenses read static JSON checked into the repo.
+- **Repository size.** The lens JSON adds about 7.7 MB, mostly
+  `reports-lens.json` at 5.0 MB.
+- **Not taken.** The four whole-site redesigns (Rams, editorial, terminal,
+  brutalist), `secretariat-progressive-disclosure`, `secretariat-calm-hierarchy`,
+  `worktree-citation-matrix` and `worktree-mandate-sidebar` stay unmerged. Any
+  of them can be revisited later.
