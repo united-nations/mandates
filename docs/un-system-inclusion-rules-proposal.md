@@ -324,9 +324,9 @@ Thirteen entities carry a this-site *Mandate Source Registry* row, so `/system`
 renders dots for entities whose own dossier says 0. Defensible as display, but
 undocumented.
 
-> **Recommended wording:** the score shown is the score of the registries **the
-> entity or its governing body maintains**; the mandates.un.org row is displayed
-> as a covering registry and does not raise the entity's own score.
+> **Resolved:** the score shown merges every registry that covers the entity,
+> including this site's. The column asks how far an organization's mandates can
+> be traced, so who publishes the registry does not change the answer.
 
 ---
 
