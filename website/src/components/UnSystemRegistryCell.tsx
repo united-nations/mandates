@@ -7,6 +7,7 @@ import {
 } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 import type {
+  UnSystemPointEntry,
   UnSystemPointValue,
   UnSystemRegistry,
   UnSystemRegistryPoint,
@@ -33,7 +34,8 @@ const POINT_LABELS: Record<UnSystemRegistryPoint, string> = {
 /** Generic point definitions, shown when no org-specific evidence note exists. */
 const POINT_DEFINITIONS: Record<UnSystemRegistryPoint, string> = {
   documents: 'decision texts are compiled and publicly findable',
-  mandates: 'among decision texts, mandates for the current work are identified',
+  mandates:
+    'among decision texts, mandates for the current work are identified',
   budget: 'specific mandates are linked to budget or financial information',
   implementation: 'implementation status is reported per decision',
   results: 'results are reported against specific decisions',
@@ -53,11 +55,46 @@ const RING: Record<number, string> = {
   4: 'border-tier-4',
 }
 
-function score(registry: UnSystemRegistry): number {
-  return POINT_ORDER.reduce((sum, key) => {
-    const value = registry.points[key].value
-    return sum + (value === true ? 1 : value === 'partial' ? 0.5 : 0)
-  }, 0)
+function weigh(value: UnSystemPointValue): number {
+  return value === true ? 1 : value === 'partial' ? 0.5 : 0
+}
+
+/**
+ * One score per organization, taken across every registry that covers it —
+ * its own and this site's alike. What the column answers is "how far can this
+ * organization's mandates be traced", so it does not matter who publishes the
+ * registry that gets you there; the best available evidence for each point
+ * wins, and the note records where it came from.
+ */
+function mergePoints(
+  registries: UnSystemRegistry[]
+): Record<UnSystemRegistryPoint, UnSystemPointEntry & { from: string }> {
+  const merged = {} as Record<
+    UnSystemRegistryPoint,
+    UnSystemPointEntry & { from: string }
+  >
+  for (const key of POINT_ORDER) {
+    let best: UnSystemPointEntry & { from: string } = {
+      value: false,
+      note: null,
+      from: '',
+    }
+    for (const registry of registries) {
+      const entry = registry.points[key]
+      // Seed from the first registry, then only ever upgrade, so the note
+      // shown is the one belonging to the evidence that won the point.
+      if (best.from === '' || weigh(entry.value) > weigh(best.value)) {
+        best = { ...entry, from: registry.name }
+      }
+    }
+    merged[key] = best
+  }
+  return merged
+}
+
+function score(registries: UnSystemRegistry[]): number {
+  const merged = mergePoints(registries)
+  return POINT_ORDER.reduce((sum, key) => sum + weigh(merged[key].value), 0)
 }
 
 function colorStep(total: number): number {
@@ -86,9 +123,10 @@ function Dot({ value, step }: { value: UnSystemPointValue; step: number }) {
  * Color encodes the total score; the fill pattern, not the color, is the
  * primary signal.
  */
-function PointDots({ registry }: { registry: UnSystemRegistry }) {
-  const total = score(registry)
+function PointDots({ registries }: { registries: UnSystemRegistry[] }) {
+  const total = score(registries)
   const step = colorStep(total)
+  const merged = mergePoints(registries)
   return (
     <span
       className="inline-flex items-center gap-1"
@@ -96,7 +134,7 @@ function PointDots({ registry }: { registry: UnSystemRegistry }) {
       aria-label={`${total} of 5 points`}
     >
       {POINT_ORDER.map((key) => (
-        <Dot key={key} value={registry.points[key].value} step={step} />
+        <Dot key={key} value={merged[key].value} step={step} />
       ))}
     </span>
   )
@@ -106,14 +144,21 @@ function PointDots({ registry }: { registry: UnSystemRegistry }) {
  * Tooltip body: each point with its state and the org-specific evidence
  * from the research dossier (falling back to the generic definition).
  */
-function PointLegend({ registry }: { registry: UnSystemRegistry }) {
-  const step = colorStep(score(registry))
+function PointLegend({ registries }: { registries: UnSystemRegistry[] }) {
+  const total = score(registries)
+  const step = colorStep(total)
+  const merged = mergePoints(registries)
   return (
     <div className="max-w-80">
-      <p className="text-sm font-medium">{score(registry)} of 5 points</p>
+      <p className="text-sm font-medium">{total} of 5 points</p>
+      {registries.length > 1 && (
+        <p className="mt-0.5 text-xs text-muted-foreground">
+          Best evidence across {registries.map((r) => r.name).join(' · ')}
+        </p>
+      )}
       <ul className="mt-1.5 space-y-1.5">
         {POINT_ORDER.map((key) => {
-          const { value, note } = registry.points[key]
+          const { value, note } = merged[key]
           return (
             <li key={key} className="flex gap-2 text-xs">
               <span className="flex h-4 items-center">
@@ -175,13 +220,13 @@ export function UnSystemRegistryLegend() {
  * the organization has no registry-like system.
  */
 export function UnSystemRegistryDots({
-  registry,
+  registries,
   note,
 }: {
-  registry: UnSystemRegistry | null
+  registries: UnSystemRegistry[]
   note: string | null
 }) {
-  if (!registry) {
+  if (registries.length === 0) {
     if (!note) return null
     return (
       <Tooltip>
@@ -201,10 +246,10 @@ export function UnSystemRegistryDots({
   return (
     <Tooltip>
       <TooltipTrigger className="cursor-help">
-        <PointDots registry={registry} />
+        <PointDots registries={registries} />
       </TooltipTrigger>
       <TooltipContent side="top" className="max-w-none">
-        <PointLegend registry={registry} />
+        <PointLegend registries={registries} />
       </TooltipContent>
     </Tooltip>
   )

@@ -1581,8 +1581,8 @@
               "note": "the tracking tables carry no financial fields; verified directly on the 2025 and 2024 PDFs"
             },
             "implementation": {
-              "value": false,
-              "note": "the Executive Board's tracking tables do name this entity as a responsible party against specific decision paragraphs, with its own deadline, progress entry and status — but the tables are maintained and published by UNDP, and the survey does not otherwise credit an entity for a register another organization runs (UNCTAD, UNODC and UNHCR are all scored 'no' although their mandates sit in mandates.un.org). Held pending an explicit rule."
+              "value": true,
+              "note": "the Executive Board tracking tables name this entity as a responsible party against specific decision paragraphs, each with its own deadline, progress entry and status; the tables are maintained and published by UNDP as the Board secretariat"
             },
             "results": {
               "value": false,
@@ -2643,8 +2643,8 @@
               "note": "tables (Decision / Category / Responsible divisions / Request / Deadline / Progress / Status) carry no financial amounts; UNV's financial overview is an annex organized by fund, not by decision"
             },
             "implementation": {
-              "value": false,
-              "note": "the Executive Board's tracking tables do name this entity as a responsible party against specific decision paragraphs, with its own deadline, progress entry and status — but the tables are maintained and published by UNDP, and the survey does not otherwise credit an entity for a register another organization runs (UNCTAD, UNODC and UNHCR are all scored 'no' although their mandates sit in mandates.un.org). Held pending an explicit rule."
+              "value": true,
+              "note": "the Executive Board tracking tables name this entity as a responsible party against specific decision paragraphs, each with its own deadline, progress entry and status; the tables are maintained and published by UNDP as the Board secretariat"
             },
             "results": {
               "value": false,
