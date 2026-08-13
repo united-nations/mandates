@@ -303,6 +303,30 @@ commit that made it.
    wordmark), `SectionBanner` (`scroll-mt-20` → `scroll-mt-28`),
    `RootLayoutClient` (the back-button route list).
 
+### Audit: was every explored feature merged?
+
+No. The capstone held all seven analytical lenses, but not everything that was
+built. Full sweep of the branches that carry data exploration:
+
+| Branch | Date | In the capstone? | Verdict |
+| --- | --- | --- | --- |
+| `worktree-citation-matrix` | Jun 2026 | **No** | **Integrated** as an entities-section expander |
+| the seven lens branches | Jul 2026 | Yes | Already here |
+| `worktree-agent-a48fe80…`, `…aca22f0…` | Jul 2026 | Screenshots only | Nothing to take |
+| `worktree-implementation-data-report` | Jul 2026 | No | Documentation only — 35 sources scored, no UI |
+| `worktree-verb-importance-study` | Jul 2026 | No | Documentation only |
+| `origin/feature/all-docs` | Feb 2026 | No | Pre-monorepo. Its recurrence and similarity stats are superseded by the recurrence trend and the genealogy lens. **"Length of resolutions" is the one idea in it with no successor.** |
+| `origin/feature/insights` | Feb 2026 | No | Pre-monorepo, built on `all-docs` |
+| `origin/feature/visualize-resolutions-table` | Oct 2025 | No | Pre-monorepo by two restructures; superseded |
+
+The three `origin/feature/*` branches all predate the move of the app into
+`website/`, so nothing can be cherry-picked from them cleanly. They are worth
+reading for ideas, not for code.
+
+Not data exploration, and still unmerged, so listed only so they are not lost:
+`worktree-mandate-sidebar` (a detail-sidebar redesign) and the four whole-site
+redesigns.
+
 ### Known state of `pnpm lint`
 
 Six errors, all `@typescript-eslint/no-explicit-any` in
