@@ -226,7 +226,7 @@
       "note": null,
       "mandateRegistry": [
         {
-          "name": "Assembly Resolutions in Force",
+          "name": "Assembly Resolutions in Force (as of 7 October 2022)",
           "category": "Resolutions in Force",
           "url": "https://www.icao.int/events/a41/resolutions",
           "points": {
@@ -283,7 +283,7 @@
         {
           "name": "Members Platform",
           "category": "Session Documents",
-          "url": "https://webapps.ifad.org/members/gc",
+          "url": "https://webapps.ifad.org/members/",
           "points": {
             "documents": {
               "value": true,
@@ -318,10 +318,6 @@
         {
           "name": "PRISMA Dashboard",
           "url": "https://www.ifad.org/en/prisma-dashboard"
-        },
-        {
-          "name": "Governing bodies",
-          "url": "https://www.ifad.org/en/governing-bodies"
         }
       ]
     },
@@ -345,7 +341,7 @@
       "mandateRegistry": [
         {
           "name": "Governing Body Documents",
-          "category": "Decisions Database",
+          "category": "Document Repository",
           "url": "https://www.ilo.org/governing-body/all-gb-documents",
           "points": {
             "documents": {
@@ -590,9 +586,9 @@
           "interoperability": null
         },
         {
-          "name": "Council Resolutions & Decisions",
+          "name": "Council Resolutions and Decisions 2025",
           "category": "Resolutions in Force",
-          "url": "https://www.itu.int/pub/S-CONF-CL",
+          "url": "https://www.itu.int/pub/S-CONF-CL-2025",
           "points": {
             "documents": {
               "value": true,
@@ -621,11 +617,11 @@
       "registryNote": null,
       "resources": [
         {
-          "name": "Council reports",
+          "name": "ITU Council 2026 snapshot report",
           "url": "https://www.itu.int/reports/council/"
         },
         {
-          "name": "ITU-D / WTDC resolutions",
+          "name": "WTDC-22 resolutions and recommendations",
           "url": "https://www.itu.int/en/ITU-D/Pages/Resolutions.aspx"
         },
         {
@@ -692,7 +688,7 @@
       "registryNote": null,
       "resources": [
         {
-          "name": "General Assembly session documents",
+          "name": "General Assembly, twenty-sixth session (Riyadh, 2025)",
           "url": "https://ga.untourism.int/"
         }
       ]
@@ -782,12 +778,12 @@
       "governingBodies": [
         {
           "name": "General Conference",
-          "url": "https://www.unido.org/who-we-are/structure",
+          "url": "https://www.unido.org/resources/policymaking-organs/general-conference",
           "overview": true
         },
         {
           "name": "Industrial Development Board",
-          "url": "https://www.unido.org/who-we-are/structure",
+          "url": "https://www.unido.org/resources/policymaking-organs/industrial-development-board",
           "overview": true
         }
       ],
@@ -795,7 +791,7 @@
       "note": null,
       "mandateRegistry": [
         {
-          "name": "Decisions and resolutions of the General Conference",
+          "name": "General Conference — sessions and documents",
           "category": "Session Documents",
           "url": "https://www.unido.org/resources/policymaking-organs/general-conference",
           "points": {
@@ -966,7 +962,7 @@
       "registryNote": null,
       "resources": [
         {
-          "name": "WHO Budget Portal",
+          "name": "WHO Programme Budget Web Portal",
           "url": "https://open.who.int/"
         },
         {
@@ -988,13 +984,7 @@
         {
           "name": "General Assembly",
           "url": "https://www.wipo.int/en/web/assemblies",
-          "overview": true,
-          "contacts": [
-            {
-              "label": "Diplomatic Engagement and Assemblies Affairs",
-              "url": "https://www.wipo.int/en/web/about-wipo/activities-by-unit/details?id=1018"
-            }
-          ]
+          "overview": true
         },
         {
           "name": "Coordination Committee",
@@ -1006,7 +996,7 @@
       "note": null,
       "mandateRegistry": [
         {
-          "name": "Meeting Documents",
+          "name": "Browse by decision-making and negotiating bodies",
           "category": "Session Documents",
           "url": "https://www.wipo.int/meetings/en/topic_bodies.jsp",
           "points": {
@@ -1111,7 +1101,7 @@
           ]
         },
         {
-          "name": "Boards of Executive Directors",
+          "name": "Boards of Directors",
           "url": "https://www.worldbank.org/en/about/leadership/directors"
         }
       ],
