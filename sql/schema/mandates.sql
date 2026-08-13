@@ -14,6 +14,11 @@
 --   paragraph_mandates.id  uuid4() generated app-side
 --                          — random; UNIQUE (paragraph_id, mandate_index) is the
 --                            stable natural key
+--   sg_report_to_mandate_links.id
+--                          uuid5(NAMESPACE_URL, "<recid>:<note_index>:<canonical>:<span_start>")
+--                          — deterministic, same strategy as paragraphs.id
+--   sg_report_to_mandate_link_runs.id
+--                          bigint identity — ordinal; a run has no natural key
 --   all child table ids    gen_random_uuid() via DEFAULT
 -- =============================================================================
 DROP SCHEMA IF EXISTS mandates CASCADE;
@@ -126,6 +131,143 @@ CREATE TABLE mandates.mandate_entities (
 CREATE INDEX idx_mandate_entities_mandate_id ON mandates.mandate_entities (mandate_id);
 CREATE INDEX idx_mandate_entities_normalized ON mandates.mandate_entities (mentioned_entity_normalized);
 CREATE INDEX idx_mandate_entities_type ON mandates.mandate_entities (mentioned_entity_type);
+-- ===========================================================================
+-- mandates.sg_report_to_mandate_links
+-- SG-report -> mandating-resolution citation links, extracted from
+-- digitallibrary.documents.notes by data-processing/report_mandate_links/.
+--
+-- Grain: one row per citation OCCURRENCE within a note element. The
+-- one-row-per-(report, resolution) shape is the DISPLAY grain, derived at read
+-- time. Nothing coverage-derived is stored (pending_coverage, completeness, and
+-- displayable counts are all computed at read time).
+--
+-- Single-owner table: written only by the Stage 1 extractor, whose write path
+-- deletes all rows for a report_recid then inserts (source-change convergence).
+-- Dropped with the schema on rebuild (this file's DROP SCHEMA ... CASCADE);
+-- restored by re-running the extractor.
+-- ===========================================================================
+CREATE TABLE mandates.sg_report_to_mandate_links (
+    -- Deterministic uuid5(NAMESPACE_URL,
+    --   "<report_recid>:<note_index>:<resolution_canonical>:<note_span_start>"),
+    -- minted at the write edge, same strategy as paragraphs.id.
+    -- Do NOT use gen_random_uuid() here.
+    id UUID PRIMARY KEY,
+    report_recid INTEGER NOT NULL,
+    report_symbol TEXT NOT NULL,
+    note_index INTEGER NOT NULL,
+    note_span_start INTEGER NOT NULL,
+    note_span_end INTEGER NOT NULL,
+    resolution_canonical TEXT NOT NULL,
+    resolution_match_key TEXT NOT NULL,
+    resolution_display_candidates TEXT[] NOT NULL,
+    resolution_role TEXT NOT NULL
+        CHECK (resolution_role IN ('founding', 'most_recent', 'co_equal', 'establishing', 'additional')),
+    citation_sense TEXT NOT NULL
+        CHECK (citation_sense IN ('direct_request', 'founding_renewal', 'additional_joint',
+                                  'activities_carried_out', 'body_established', 'prst_note_decision')),
+    -- Where in the source note element the citation sits: report body, or an
+    -- annex-description title. Note-level fact, stored per occurrence (the row
+    -- grain). No default: a row the writer fails to position fails at insert.
+    citation_position TEXT NOT NULL
+        CHECK (citation_position IN ('body', 'annex_title')),
+    organ_provenance TEXT NOT NULL
+        CHECK (organ_provenance IN ('stated', 'inherited', 'intrinsic')),
+    resolution_pinpoint TEXT,
+    source_note_text TEXT NOT NULL,
+    UNIQUE (report_recid, note_index, resolution_canonical, note_span_start)
+);
+
+CREATE INDEX idx_sg_report_to_mandate_links_match_key
+    ON mandates.sg_report_to_mandate_links (resolution_match_key);
+CREATE INDEX idx_sg_report_to_mandate_links_recid
+    ON mandates.sg_report_to_mandate_links (report_recid);
+
+COMMENT ON TABLE mandates.sg_report_to_mandate_links IS
+  'Links Secretary-General reports to the resolutions that mandated them. Each row records '
+  'that one SG report cited one resolution in its Digital Library notes ("submitted pursuant '
+  'to resolution X"), so the resolution''s page can list the reports produced under it. '
+  'Technical: one row per citation occurrence within a note element (the '
+  'one-row-per-report-resolution view is derived at read time). Written only by the Stage 1 '
+  'extractor (data-processing/report_mandate_links/), which deletes and reinserts all rows '
+  'for a report on each run. Nothing coverage-derived is stored.';
+
+COMMENT ON COLUMN mandates.sg_report_to_mandate_links.resolution_canonical IS
+  'The resolution cited in a report''s Digital Library notes as the one that mandated it — '
+  'this is the whole point of the table. Almost always a General Assembly or Security Council '
+  'resolution (e.g. A/RES/74/247, S/RES/2664). Occasionally a report cites a Security Council '
+  'presidential statement (S/PRST/..) instead of a resolution. These are kept here too, in '
+  'the same column, rather than thrown away — a deliberate choice to capture everything the '
+  'notes cite. Strictly a presidential statement is not a resolution, so these rows are stored '
+  'but never shown as resolution links (the display filters them out by their citation_sense value). '
+  'The resolution_* naming reflects the common, displayed case, not every stored row.';
+
+COMMENT ON COLUMN mandates.sg_report_to_mandate_links.resolution_match_key IS
+  'The same cited resolution, reduced to the form used for matching it to a page in the '
+  'mandate registry. Differs from resolution_canonical only in edge cases where the cited '
+  'form and the registry''s form need normalising to line up; usually identical.';
+
+COMMENT ON COLUMN mandates.sg_report_to_mandate_links.resolution_display_candidates IS
+  'Every registry page-symbol this resolution could be shown under, as an array. An empty '
+  'array ({}) means no page exists for it yet — this is a real, expected state, NOT missing '
+  'data and never NULL. Which candidate actually renders is chosen at read time.';
+-- ===========================================================================
+-- mandates.sg_report_to_mandate_link_runs
+-- One row per run of the Stage 1 extractor that populates
+-- sg_report_to_mandate_links (data-processing/report_mandate_links/).
+--
+-- The run record is the selection predicate's visibility mechanism: each
+-- exclusion clause's removals are stored separately, because a clause that
+-- silently excludes zero — or everything — is exactly the state that must
+-- stay visible once link rows exist and nobody re-derives the selection.
+-- Written in the same transaction as the run's scope-delete and inserts, so
+-- the counts can never disagree with the table state they describe.
+--
+-- Dropped with the schema on rebuild. Unlike the link table it is NOT
+-- restored by re-running the extractor: a rebuild starts run history afresh.
+-- ===========================================================================
+CREATE TABLE mandates.sg_report_to_mandate_link_runs (
+    -- Ordinal identity, not uuid5: a run has no natural key (two byte-identical
+    -- runs are still two runs), so there is nothing deterministic to mint from.
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    started_at TIMESTAMPTZ NOT NULL,
+    finished_at TIMESTAMPTZ NOT NULL,
+    selected_by_marc INTEGER NOT NULL,
+    removed_null_symbol INTEGER NOT NULL,
+    removed_corr_rev INTEGER NOT NULL,
+    removed_deleted INTEGER NOT NULL,
+    reports_parsed INTEGER NOT NULL,
+    wider_marker_retained INTEGER NOT NULL,
+    link_rows_written INTEGER NOT NULL,
+    notes_unparsed INTEGER NOT NULL,
+    -- Selection must reconcile exactly: every selected document is either
+    -- removed by exactly one exclusion clause or parsed.
+    CHECK (selected_by_marc
+           = removed_null_symbol + removed_corr_rev + removed_deleted + reports_parsed)
+);
+
+COMMENT ON TABLE mandates.sg_report_to_mandate_link_runs IS
+  'One row per run of the extractor that fills sg_report_to_mandate_links. Records how '
+  'many documents the selection saw and what each exclusion removed, so the selection '
+  'stays auditable as a set of numbers after the fact. Technical: written in the same '
+  'transaction as the run''s delete+insert; the CHECK enforces that removals plus parsed '
+  'reports reconcile exactly to the selected total.';
+
+COMMENT ON COLUMN mandates.sg_report_to_mandate_link_runs.selected_by_marc IS
+  'Documents matching the sole report-identity test (MARC 989$c = "Secretary-General''s '
+  'Reports"). Doubles as the drift tripwire on that field: expected magnitude ~28,201 '
+  '(measured 30 Jul 2026); a run where this moves sharply warrants a look before the '
+  'links are trusted.';
+
+COMMENT ON COLUMN mandates.sg_report_to_mandate_link_runs.removed_deleted IS
+  'Soft-deleted documents (deleted_at set) removed from the selection. Measured zero on '
+  '30 Jul 2026; recorded anyway so a future non-zero is a visible number rather than a '
+  'silent shrink of the corpus.';
+
+COMMENT ON COLUMN mandates.sg_report_to_mandate_link_runs.wider_marker_retained IS
+  'Parsed-set documents whose folded symbol carries a corrigendum or revision marker in '
+  'a form the exclusion deliberately does not catch: spelled-out CORRIGENDUM, or bare '
+  'no-period CORR/REV. Addenda are not counted; they are in scope by design. Not an '
+  'exclusion — a counted residual, so the gap is a known number.';
 -- ===========================================================================
 -- unified_paragraphs (public view) — see sql/migrations/029_unified_paragraphs.sql
 -- Combines the two paragraph corpora with the same precedence model as

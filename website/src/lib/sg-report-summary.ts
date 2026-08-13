@@ -1,0 +1,174 @@
+/**
+ * Display logic for the mandated-SG-reports block: the observed year span,
+ * the summary-tile visibility thresholds, the cadence classifier, and the
+ * annex clause of the summary sentence.
+ *
+ * Pure functions over the row values (`MandatedSgReport.date_published` /
+ * `annex_position_only`), kept out of the component so the rules are testable
+ * without rendering. Nothing here reaches the data layer.
+ *
+ * `date_published` is nullable and the read sorts it NULLS LAST. A missing
+ * date produces a missing claim, never a substituted one: undated rows are
+ * excluded from the span and the cadence computation, and when no row carries
+ * a date the span is null and the classifier returns null — the sentence
+ * drops its year clause and the tiles that would state a date-derived fact do
+ * not render.
+ */
+
+/**
+ * The Reports tile renders only at this count or above. Measured over the
+ * live corpus, 95.6% of visible pages carry four reports or fewer, and the
+ * summary sentence already states the count in prose — so a count below this
+ * is not a finding worth a tile.
+ */
+export const REPORTS_TILE_MIN_COUNT = 5
+
+/**
+ * The Span tile renders only at this many observed years or above. Measured
+ * over the live corpus, 85.8% of visible pages span a single year; below this
+ * the span is already fully carried by the sentence's year clause.
+ */
+export const SPAN_TILE_MIN_YEARS = 5
+
+/**
+ * Below this many observations a rhythm label would be fit to noise: 95.6% of
+ * visible pages carry four reports or fewer, and none of those support a
+ * cadence claim.
+ */
+const CADENCE_MIN_REPORTS = 5
+
+/**
+ * A rhythm claim needs at least this many periods — annual: five populated
+ * years; biennial: five active years (four two-year intervals).
+ */
+const CADENCE_MIN_PERIODS = 5
+
+/**
+ * Publication years of the dated rows, one entry per dated row. Undated rows
+ * contribute nothing — the shared first step of every date-derived claim
+ * here.
+ */
+function datedYears(dates: (string | null)[]): number[] {
+  return dates
+    .filter((d): d is string => d !== null)
+    .map((d) => Number(d.slice(0, 4)))
+}
+
+/** The years the dated rows cover, as the summary sentence states them. */
+export interface ObservedYearSpan {
+  /** "2015" for a single year, "2006–2026" otherwise. */
+  label: string
+  /** Inclusive calendar-year count: 2006–2026 is 21 years. */
+  years: number
+}
+
+/**
+ * The span of publication years across the dated rows. Undated rows carry no
+ * year and contribute nothing; null when no row is dated, so the caller drops
+ * the year claim rather than rendering a defaulted one.
+ */
+export function observedYearSpan(
+  dates: (string | null)[]
+): ObservedYearSpan | null {
+  const years = datedYears(dates)
+  if (years.length === 0) return null
+  const first = Math.min(...years)
+  const last = Math.max(...years)
+  return {
+    label: first === last ? String(first) : `${first}–${last}`,
+    years: last - first + 1,
+  }
+}
+
+/** A cadence finding, as the Cadence tile displays it. */
+export interface ReportCadence {
+  /** The tile's value line: "Annual", "Biennial", "≈2 / year". */
+  value: string
+  /** The tile's sub-line: "one report each year", "across 6 years". */
+  sub: string
+}
+
+/**
+ * Classifies the publication rhythm of a report series from its
+ * `date_published` values, or returns null — the explicit no-claim outcome,
+ * and by far the most common one (the tile fires on ~1.3% of visible pages).
+ *
+ * The regularity tests are exact, so a series with a silently dropped
+ * interior year FAILS rather than passes: "Annual" and "≈k / year" require
+ * every year in the observed span populated, and "Biennial" requires every
+ * consecutive-year gap to be exactly 2. The failure mode is an absent tile,
+ * never a hedged label.
+ *
+ * Blind spots, both directions: a series whose early years are uncatalogued
+ * reads as a shorter clean run (the span in the summary sentence bounds the
+ * claim to the observed window), and a year that genuinely had two reports
+ * with one missing from the catalogue can CREATE an "Annual" reading rather
+ * than break one — the rule detects dropped years, not dropped reports
+ * within a year.
+ */
+export function classifyReportCadence(
+  dates: (string | null)[]
+): ReportCadence | null {
+  const years = datedYears(dates)
+  if (years.length === 0) return null
+
+  const distinct = [...new Set(years)].sort((a, b) => a - b)
+  const reportCount = years.length
+  const distinctYears = distinct.length
+  const spanYears = distinct[distinctYears - 1] - distinct[0] + 1
+
+  if (reportCount < CADENCE_MIN_REPORTS) return null
+
+  // Every year in the span is populated: annual or a steady multiple.
+  if (distinctYears === spanYears) {
+    if (reportCount === spanYears && spanYears >= CADENCE_MIN_PERIODS) {
+      return { value: 'Annual', sub: 'one report each year' }
+    }
+    const perYear = reportCount / spanYears
+    if (perYear >= 2 && spanYears >= CADENCE_MIN_PERIODS) {
+      return {
+        value: `≈${Math.round(perYear)} / year`,
+        sub: `across ${spanYears} years`,
+      }
+    }
+    return null
+  }
+
+  // One report in every second year, exactly.
+  const gaps = distinct.slice(1).map((year, i) => year - distinct[i])
+  if (
+    distinctYears >= CADENCE_MIN_PERIODS &&
+    reportCount === distinctYears &&
+    gaps.every((gap) => gap === 2)
+  ) {
+    return { value: 'Biennial', sub: 'one report every second year' }
+  }
+  return null
+}
+
+/**
+ * Closes the summary sentence: the text that follows the count-and-span
+ * claim, starting at its terminal punctuation. Four cases:
+ *
+ * - no annex-mediated rows — the sentence just ends.
+ * - one report which is annex-mediated — the fact folds into the sentence
+ *   itself (", 2015 — as an annex rather than the report itself."): at one
+ *   row of one there is nothing to locate, so a separate clause would assert
+ *   the same fact about the same visible row twice.
+ * - all of several — "All of them …", locating the fact on every row.
+ * - some of several — "{count} of them …", locating the fact on a subset.
+ *
+ * `annexCount` is the number of rows with `annex_position_only`; it can
+ * never exceed `reportCount`.
+ */
+export function annexPositionClause(
+  annexCount: number,
+  reportCount: number
+): string {
+  if (annexCount === 0) return '.'
+  if (reportCount === 1) return ' — as an annex rather than the report itself.'
+  if (annexCount === reportCount) {
+    return '. All of them via an annex rather than the report itself.'
+  }
+  return `. ${annexCount} of them via an annex rather than the report itself.`
+}

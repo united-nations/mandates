@@ -30,3 +30,13 @@ export const SHOW_RELATED_MANDATES: boolean = false
  * Registry", and the rating vocabulary is suppressed with it.
  */
 export const SHOW_MANDATE_REGISTRY_RATING: boolean = false
+
+/**
+ * The "reports submitted under this mandate" list on the mandate detail view:
+ * Secretary-General reports whose Digital Library catalogue notes cite the
+ * page's resolution as mandating them (lib/data/sg-report-links.ts).
+ *
+ * On by default; the flag exists so the block can be withdrawn without a
+ * revert. When off, the query is skipped entirely, not run and discarded.
+ */
+export const SHOW_MANDATED_SG_REPORTS: boolean = true
