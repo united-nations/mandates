@@ -85,7 +85,15 @@ function EntityRow({ entity }: { entity: UnSystemEntity }) {
       className={`grid grid-cols-1 items-baseline gap-x-4 gap-y-2 px-4 py-3 ${ROW_GRID_COLS}`}
     >
       <div>
-        <div className="font-semibold text-gray-900">{entity.code}</div>
+        {/* The abbreviation is the organization's own link — no separate icon. */}
+        <a
+          href={entity.homepage}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-semibold text-gray-900 transition-colors hover:text-un-blue"
+        >
+          {entity.code}
+        </a>
         {entity.name !== entity.code && (
           <div className="text-sm text-gray-500">{entity.name}</div>
         )}
@@ -94,16 +102,9 @@ function EntityRow({ entity }: { entity: UnSystemEntity }) {
         {entity.governingBodies.map(resolveBody).map((body) => (
           <UnSystemBodyLine key={body.name} body={body} />
         ))}
-        {(entity.officialPages.length > 0 || entity.contacts.length > 0) && (
+        {entity.contacts.length > 0 && (
           <li className="mt-1.5">
             <ul className="space-y-1 text-xs">
-              {entity.officialPages.map((page) => (
-                <OrgLevelLink
-                  key={page.url}
-                  label={page.label}
-                  href={page.url}
-                />
-              ))}
               {entity.contacts.map((contact) => (
                 <OrgLevelLink
                   key={contact.url ?? contact.email}
@@ -134,18 +135,28 @@ function EntityRow({ entity }: { entity: UnSystemEntity }) {
             <UnSystemRegistryLink registry={registry} />
           </div>
         ))}
-        {entity.related.map((portal) => (
+        {/* Everything else the organization publishes, at a lighter weight.
+            `prominent` lifts an item to registry weight without scoring it. */}
+        {entity.resources.map((resource) => (
           <div
-            key={portal.url}
-            className="mt-1 text-xs leading-snug text-gray-500"
+            key={resource.url}
+            className={
+              resource.prominent
+                ? 'leading-snug'
+                : 'mt-1 text-xs leading-snug text-gray-500'
+            }
           >
             <a
-              href={portal.url}
+              href={resource.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="underline decoration-dotted underline-offset-2 transition-colors hover:text-un-blue"
+              className={
+                resource.prominent
+                  ? 'text-sm text-un-blue hover:underline'
+                  : 'underline decoration-dotted underline-offset-2 transition-colors hover:text-un-blue'
+              }
             >
-              {portal.name}
+              {resource.name}
             </a>
           </div>
         ))}

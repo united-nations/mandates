@@ -512,21 +512,28 @@ export interface UnSystemRegistry {
   interoperability: null
 }
 
-/** Org-specific budget/results portal that is NOT linked to mandates — mentioned, not scored. */
-export interface UnSystemRelatedPortal {
+/**
+ * Anything else the organization publishes that helps trace its work: document
+ * and session indexes, governance and statute pages, budget/results/transparency
+ * portals. Rendered smaller than the scored registries, in the same column.
+ */
+export interface UnSystemResource {
   name: string
   url: string
+  /** Render at registry weight without being scored — presentation, not evidence. */
+  prominent?: true
 }
 
 export interface UnSystemEntity {
   code: string
   name: string
+  /** The organization's own front page; the code in the first column links here. */
+  homepage: string
   grouping: UnSystemGrouping
   /** Secretariat is part of the UN Secretariat, though the entity is governed separately (the UN80 chart's asterisk). */
   secretariatAdministered?: true
   governingBodies: UnSystemBodyEntry[]
-  /** Org-level pages/contacts not attributable to a specific governing body (secretariat pages, general contacts). */
-  officialPages: UnSystemPage[]
+  /** Organization-level contacts only. A contact belonging to a governing body lives on that body. */
   contacts: UnSystemContact[]
   note: string | null
   /**
@@ -537,7 +544,7 @@ export interface UnSystemEntity {
   mandateRegistry: UnSystemRegistry[]
   /** Shown when the organization runs no registry itself: why there is none (or where it lives instead). */
   registryNote: string | null
-  related: UnSystemRelatedPortal[]
+  resources: UnSystemResource[]
 }
 
 export interface UnSystemData {
