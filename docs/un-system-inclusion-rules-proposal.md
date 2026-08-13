@@ -1,0 +1,326 @@
+# Proposed inclusion rules for `/system`
+
+Round 3 asked thirteen agents to flag every case where they were unsure **what
+kind of body, contact or link belongs in the list at all**. This is the resulting
+catalogue and a proposed rule for each. Nothing here is applied yet — the data
+currently reflects the judgement calls described under "Applied", and the open
+questions under "Needs your decision" are marked in the text.
+
+Once agreed, sections A and B belong in
+[`un-system-scope.md`](un-system-scope.md) and section C in
+[`un-system-registries.md`](un-system-registries.md).
+
+---
+
+## A. Which governing bodies to list
+
+The page's premise is *who tells this entity what to do*. Round 3 confirmed the
+core rule works — 13 of 15 principal-organ removals were upheld — but it does not
+decide the cases below.
+
+### A1. The core test (already in use, keep)
+
+> List a body if it **adopts the entity's own mandates**: it approves the
+> entity's programme or budget, or adopts decisions and resolutions addressed to
+> the entity. Do not list a body merely because it created the entity
+> (constitutive), because it appropriates money without directing the work
+> (appropriating), or because the entity reports to it (accountability).
+
+**Exception, confirmed twice in round 3:** where an entity has *no* body that
+approves its programme, the principal organ that renews its mandate and approves
+its budget IS its governing body — UNRWA (no executive board; GA renews the
+mandate, most recently to 30 June 2029) and UNHCR (ExCom approves only a budget
+*target*; the Statute binds the High Commissioner to GA and ECOSOC directives).
+
+### A2. Advisory bodies — **list, but label**
+
+Cases: ITC's Joint Advisory Group, UNRWA's Advisory Commission, IARC's Scientific
+Council, ECA's Committee of Experts, ESCAP's Advisory Committee of Permanent
+Representatives, UNEP's and UN-Habitat's Committees of Permanent Representatives.
+
+A reader looking for "who oversees this entity" expects to find them, and
+omitting them makes ITC and UNRWA look ungoverned. But presenting them as
+governing bodies is false.
+
+> **Proposed:** list a body that formally advises or reviews but adopts nothing,
+> and mark it advisory. Do not list bodies that merely prepare or service.
+
+**Implementation note:** the label currently lives inside the free-text `name`
+("Joint Advisory Group (JAG, advisory only)"), which is fragile. Add a
+`role?: 'advisory'` field instead.
+
+### A3. Committees that recommend vs committees that adopt — **adopt wins**
+
+> **Proposed:** a committee is a governing body when it **adopts instruments in
+> its own numbered series**; it is not when it only recommends to a parent.
+
+Consequences: IMO's five Main Committees (MSC, MEPC, LEG, TC, FAL) stay — they
+adopt their own resolutions. PAHO's Executive Committee stays. FAO's Programme,
+Finance and CCLM committees, UNIDO's and WIPO's Programme and Budget Committees,
+and PAHO's Subcommittee on Program, Budget and Administration are out.
+
+**Needs your decision — IOM's Standing Committee on Programmes and Finance**
+adopts numbered resolutions *including revisions to the Programme and Budget*
+(S/36/RES/40), but IOM's Constitution vests approval in the Council. The "adopts
+its own series" test says list it; a "supreme organ only" test says do not.
+
+### A4. Intersessional executive organs — **list**
+
+UNECE's EXCOM, ESCWA's Executive Committee and ECLAC's Committee of the Whole all
+approve programmes of work between sessions. A1 already covers them; stating it
+avoids three separate judgement calls.
+
+### A5. Regional and sectoral tiers — **needs your decision**
+
+This is the largest unresolved question, and it affects the two strongest
+registries in the survey.
+
+- **WHO** lists six Regional Committees as governing bodies on its own governance
+  page, and its Resolutions Portal gives them a top-level tab beside the Assembly
+  and the Board.
+- **WMO's** six regional associations have issued more resolutions since 2019 than
+  Congress itself, and sit in the same in-force database.
+- **ITU** splits "governing bodies of the Union" from "governing bodies of the
+  three Sectors"; WRC, RA, WTSA and WTDC adopt resolutions that mandate ITU's own
+  work programme. Listing them takes ITU from 2 rows to 6.
+- **FAO's** Regional Conferences are formally designated governing bodies in the
+  Basic Texts, yet only recommend. **UN Tourism's** Regional Commissions are the
+  same shape. Both were removed in round 3.
+- **ECLAC's** eight subsidiary conferences adopt their own agreements and work
+  programmes; listing them gives ECLAC eight rows and the other commissions none.
+
+The A3 test ("adopts its own numbered series") admits WHO's and WMO's regional
+bodies and ITU's sector conferences, and excludes FAO's and UN Tourism's. That is
+defensible and mechanical — but it roughly doubles the row count for three
+entities. **Options:** (a) apply A3 uniformly and accept the asymmetry; (b) list
+only bodies with system-wide competence and note regional tiers in prose;
+(c) add a `tier` field and let the page collapse regional bodies behind a
+disclosure.
+
+### A6. Subsidiary bodies of treaty COPs — **do not list**
+
+UNFCCC's SBI and SBSTA and UNCCD's CRIC and CST adopt *conclusions*, not
+decisions, and are subordinate to the COP. Co-equal supreme bodies **are** listed:
+UNFCCC's CMA and CMP were added in round 3.
+
+Note the irony worth recording: the only in-force tracking UNFCCC has covers
+exactly the bodies this rule excludes.
+
+### A7. Shared boards — **list, they are the entity's own**
+
+The Executive Board of UNDP, UNFPA and UNOPS is the governing body of each of
+those three *and* of UNCDF and UNV. It is not "someone else's board".
+
+> **Proposed:** a shared board is listed for every entity named in its mandate or
+> taking decisions addressed to that entity.
+
+### A8. A governing body belonging to another organization — **list it, with its
+own URL**
+
+UNIDIR has no board: its statute (art. III.1) makes the Secretary-General's
+**Advisory Board on Disarmament Matters** function as its board, and that body's
+home is UNODA's site. Similarly ITC's governance runs through the **WTO General
+Council**.
+
+> **Proposed:** governing bodies outside the entity — and outside the UN — are
+> admissible, and are linked at their own canonical URL.
+
+**Consequence:** the shared `bodies` dictionary needs its first non-UN entries.
+Suggested: `wto-general-council`, optionally `wto-ctd`; and promote
+`unctad-tdb` to a reusable ref, since ITC and UNCTAD both use it.
+
+### A9. Boards of individuals — **list**
+
+UNU's Council, UNITAR's Board of Trustees and the Technology Bank's Council are
+appointed in a personal capacity, not as State representatives. They govern, so
+they are listed — but note the scope document's phrase "an intergovernmental body
+that approves its own budget and programme" does not fit them and should be
+softened to "a body".
+
+### A10. Bodies that guide or elect without governing — **do not list**
+
+UNICRI's Board sits "under the overall guidance of" the Commission on Crime
+Prevention and Criminal Justice, which also elects its members; UNRISD's
+equivalent is the Commission for Social Development; UNSSC's Board members are
+recommended by the CEB, which receives its annual report. None approves a
+programme or budget. This is the accountability limb of A1.
+
+### A11. Dual-hatted sessions — **list once, under the entity's own name**
+
+PAHO's Directing Council session *is* the WHO Regional Committee session: one
+meeting, two identities, one document series. List it once as PAHO's Directing
+Council and record the dual role in `note`.
+
+### A12. The UN Secretariat's own bodies — **the four, with HRC annotated**
+
+GA, Security Council, ECOSOC and the Human Rights Council. Verified empirically
+from PPB 2027: GA 2,154 mandate citations, SC 471, ECOSOC 428, HRC 279 — and the
+next bodies down are an order of magnitude smaller and belong to entities we list
+separately (CND and CCPCJ → UNODC, UNEA → UNEP).
+
+HRC is **not** a principal organ — it is a GA subsidiary organ created by
+resolution 60/251 — so it carries a `note` saying so. The residual tail (CPD 12
+citations, SPLOS 7, INCB 4, CSD 2 — 0.7% of all Secretariat mandates) is
+deliberately not listed.
+
+---
+
+## B. What counts as a contact, and as a link
+
+### B1. Contacts — role over person
+
+> **Proposed, in priority order:** (1) a governing-body secretariat role mailbox;
+> (2) a governing-body secretariat contact page; (3) the organization's general
+> contact page. Record at most one of each kind.
+
+**Never record a named individual's address.** A role mailbox
+(`CSG-Director@fao.org`) survives a personnel change; a person mailbox
+(`c.tenhave@ifad.org`, the Secretary of IFAD) does not, and publishing it is a
+privacy decision that is not ours to make. This was applied in round 3 — IFAD
+falls back to its contact page as a result.
+
+Sub-cases, with proposed answers:
+
+| Case | Proposal |
+|---|---|
+| Email obfuscated (Cloudflare `data-cfemail`, `name [at] org`) | Record it — a human reading the page sees the address |
+| Email only in a `mailto:` href, not visible text | Record it — it is published, and machine-readable |
+| Email published only inside an official PDF | Record it, and note the source document in the dossier. Four of the best contacts found (FAO, WHO, IFAD, UN Tourism) exist nowhere else |
+| Web form with no address | Record as a contact page. Contactable but not addressable — see B2 |
+| Generic organization mailbox | Only as a fallback where nothing body-specific exists |
+| Registration / logistics inbox | Do not record. `pmo-registration@unido.org`, `registration@wmo.int` are serviced by the governing-body secretariat but useless for a mandate enquiry |
+| Press office | Do not record unless the organization itself labels it general enquiries |
+| Functionally-scoped secretariat mailbox | Record, with the scope in the label — e.g. the HRC Secretariat's NGO-liaison team |
+| Social media account | Never a contact |
+
+**Needs your decision — B2: should contacts carry a `kind`?** A form, an email
+and a staff directory are not equivalent, and the page presents them identically.
+A `kind?: 'email' | 'form' | 'directory'` field would let the UI distinguish
+"you can write to this" from "you can submit a form here".
+
+**Needs your decision — B3: duplication.** For UPU, UNESCO and ITU the best
+organization-level contact is exactly the one already attached to a governing
+body. Round 3 duplicated it into the top-level array. The alternative rule is
+that the top level holds only contacts *not* attached to a body.
+
+### B4. `officialPages` — governance-bearing pages, HTML preferred
+
+> **Proposed:** the entity's home page, its governance or "how we are governed"
+> page, and any standing session or document index. A statute or constitution PDF
+> is acceptable **where no HTML governance page exists** (UNSSC, UNRISD).
+
+Two sub-cases:
+- **A team page used as a governance page.** UNRISD's Board is a JavaScript tab on
+  `/about/our-team` with no distinct URL, so the link lands on a staff list. Used
+  because nothing better exists; flagged in the dossier. *Proposed: acceptable
+  as a last resort, and the dossier must say so.*
+- **Per-session microsites** (`ga.untourism.int`) publish working documents but
+  no adopted resolutions and are replaced each session. *Proposed:
+  `officialPages`, never a scored registry.*
+
+### B5. `related` — and a naming problem
+
+`related` currently means "an organization portal that is **not** mandate-linked",
+and the UI appends exactly that qualifier. Two things break it:
+
+1. **Governing-body report series** — UNIDIR's `/report-of-the-director`,
+   UNICRI's ECOSOC report page — are the governance record, not transparency
+   portals. Labelling them "not mandate-linked" misdescribes them.
+2. **This site's own registry** is mandate-linked by construction; that is why it
+   moved to `mandateRegistry` with `scope: 'this-site'`.
+
+> **Proposed:** rename the concept to **"related resources"** in the data model as
+> it already is in the UI, and drop the "not mandate-linked" qualifier from
+> anything carrying an explicit marker. Keep the distinction in the dossier prose,
+> where it is a finding, rather than in a rendered suffix.
+
+### B6. Login-gated and volatile systems
+
+- **Members-only systems are recorded but not scored** — the UPU Documentation
+  Centre, the World Bank Governors' Portal, IMO's IMODOCS (free registration),
+  PRAIS 4, UNRWA's Advisory Commission Members Area. Precedent: CTBTO scores 0
+  as members-only. *Caveat worth stating in the doc: this treats an invisible
+  system as no system, which is a transparency judgement, not a capability one.*
+- **Volatile URLs.** ISA has no stable sessions index — its registry URL is a
+  session page that must be rolled forward annually. *Proposed: allow it, and
+  flag such entries in the dossier so a yearly check is scheduled.*
+- **Universal portals** (open.un.org, results.un.org) are page-level, never
+  repeated per entity. Already in force.
+
+---
+
+## C. Scoring: form is scored once
+
+The adversarial review found the root cause of most disputed scores: **the scheme
+let form (PDF vs database) decide points 1–5, while reserving point 6 for exactly
+that.** Every borderline call became a private judgement about whether something
+is "a system".
+
+> **Proposed:** form is never scored at points 1–5. Whether a thing is a PDF, a
+> web page, a faceted database or an API is scored once, at point 6. At points
+> 1–5, `'partial'` means **incomplete coverage or an ambiguous statement**, and
+> nothing else.
+
+Per-point tests follow from that:
+
+- **Point 1 (documents)** — earned when a standing, session-spanning index leads
+  to artefacts *whose subject is the adopted decisions themselves*, each
+  identifiable by symbol or number with its text one click away. Not earned when
+  decisions can only be reconstructed from artefacts about something else
+  (session reports, annual reports). A general institutional repository qualifies
+  if it holds the decisions collection and that collection is reachable from the
+  governance pages.
+- **Point 2 (mandates)** — earned only by a statement of **legal standing** (in
+  force / superseded / lapsed / replaced-by) covering substantially a whole
+  corpus and re-issued within its own cycle, with a 12-month grace period.
+  Progress vocabularies — in progress, completed, closed, held in abeyance — are
+  implementation status, scored at point 4; crediting them here counts one
+  artefact twice.
+- **Point 4 (implementation)** — earned by a **cumulative register that is
+  maintained**: per-item status, open stock carried forward, earlier rows updated.
+  `'partial'` for a narrative snapshot of one session that the next cycle replaces
+  rather than updates.
+- **Adjudicative output is never scored.** Judgments, advisory opinions and orders
+  are case law, not mandates. But administrative, budgetary and electoral
+  decisions *addressed to the entity* do count — which is why ITLOS now scores on
+  its SPLOS series and not on its docket.
+
+### Needs your decision — C1: may an entity be scored on another organization's register?
+
+The Executive Board's tracking tables name **UNCDF** and **UNV** as responsible
+parties against specific decision paragraphs, with their own deadlines, progress
+entries and statuses — but the tables are published by UNDP. Meanwhile **UNCTAD,
+UNODC and UNHCR** all have their mandates registered in mandates.un.org and score
+`mandates: false`.
+
+Round 3 held UNCDF and UNV at 1 rather than apply a rule to two entities and not
+to three others. **Either** write the rule and re-run it across the survey, **or**
+drop it. The scheme's own framing ("the Mandate Registry column … per
+organization") reads as *does this entity maintain a registry*, which argues for
+dropping it.
+
+### Needs your decision — C2: whose score does the page show?
+
+Thirteen entities carry a this-site *Mandate Source Registry* row, so `/system`
+renders dots for entities whose own dossier says 0. Defensible as display, but
+undocumented.
+
+> **Recommended wording:** the score shown is the score of the registries **the
+> entity or its governing body maintains**; the mandates.un.org row is displayed
+> as a covering registry and does not raise the entity's own score.
+
+---
+
+## Applied in round 3
+
+A1 and its UNRWA/UNHCR exception; A2 (labels in `name`, pending the `role`
+field); A3 (IMO and PAHO committees kept, FAO/UNIDO/WIPO/PAHO advisory
+committees dropped); A4; A6; A7; A8 (UNIDIR, ITC); A9; A10; A11; A12; B1 with
+the no-personal-addresses rule; B4; B6; and all of section C except C1 and C2.
+
+## Still open
+
+A3's IOM SCPF case · A5 in full (regional and sectoral tiers) · B2 (`kind` on
+contacts) · B3 (contact duplication) · B5 (the `related` rename and the
+"not mandate-linked" suffix) · C1 (cross-organization scoring) · C2 (whose score
+the page shows).
