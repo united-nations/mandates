@@ -46,8 +46,10 @@ import {
   GroupHiddenVersionsNote,
   GroupMemberLine,
   groupHasHiddenVersions,
+  groupMemberEntries,
   SeriesMarkers,
 } from './MandateSeriesIndicators'
+import type { FilterParamKey } from '@/lib/filter-constants'
 
 /**
  * The pinned "Details" rail on the right edge. The border + left shadow are the
@@ -115,11 +117,21 @@ export function MandateDataTable({
     visibleColumns.has(col.id)
   ).sort((a, b) => {
     // The detail column (the row's "Details" affordance) always stays
-    // rightmost, even when extra columns are toggled on.
+    // rightmost, even when extra columns are toggled on. Every other pair
+    // compares equal, and Array#sort is stable, so COLUMN_DEFINITIONS order is
+    // preserved — the header and the body both map this same array, so they
+    // cannot drift apart.
     if (a.id === 'detail') return 1
     if (b.id === 'detail') return -1
     return 0
   })
+
+  // The grouped-mode expander lives inside the symbol cell, right of the badge.
+  // Symbol is toggleable, so fall back to the leftmost visible column rather
+  // than letting the only way to expand a group disappear with it.
+  const badgeColumnId = columns.some((col) => col.id === 'symbol')
+    ? 'symbol'
+    : columns[0]?.id
 
   const getFilterOptions = (columnId: string) => {
     switch (columnId) {
@@ -175,15 +187,16 @@ export function MandateDataTable({
     return () => observer.disconnect()
   }, [columns.length, mandates.length])
 
+  const mandateHref = (symbol: string) =>
+    getMandateUrl(
+      symbol,
+      { ppb_version: filters.ppb_version, mode: filters.mode },
+      searchParams
+    )
+
   const handleRowClick = (mandate: Mandate, e: React.MouseEvent) => {
     e.preventDefault()
-    router.push(
-      getMandateUrl(
-        mandate.full_document_symbol,
-        { ppb_version: filters.ppb_version, mode: filters.mode },
-        searchParams
-      )
-    )
+    router.push(mandateHref(mandate.full_document_symbol))
   }
 
   return (
@@ -200,7 +213,6 @@ export function MandateDataTable({
           <Table>
             <TableHeader>
               <TableRow className="border-b bg-gray-50 hover:bg-gray-50">
-                {grouped && <TableHead className="w-12 px-2" />}
                 {columns.map((col) => (
                   <TableHead
                     key={col.id}
@@ -236,63 +248,75 @@ export function MandateDataTable({
                       className={`group cursor-pointer border-b border-gray-100 hover:bg-gray-50 ${dimmed ? 'opacity-60' : ''}`}
                       onClick={(e) => handleRowClick(mandate, e)}
                     >
-                      {grouped && (
-                        <TableCell className="w-12 px-2 py-2 align-top">
-                          <span className="flex h-5 items-center">
-                            <GroupBadge
-                              mandate={mandate}
-                              expanded={isExpanded}
-                              onToggle={() =>
-                                toggleGroup(mandate.full_document_symbol)
-                              }
-                            />
-                          </span>
-                        </TableCell>
-                      )}
-                      {columns.map((col) => (
-                        <TableCell
-                          key={col.id}
-                          className={`${col.align === 'right' ? 'text-right' : ''} ${col.id === 'detail' ? STICKY_DETAIL_CELL + ' bg-white group-hover:bg-gray-50' : ''} overflow-hidden px-3 py-2 align-top text-sm`}
-                        >
+                      {columns.map((col) => {
+                        // Markers and the group expander are mutually exclusive:
+                        // a row either stands for a group (expander) or is a
+                        // single document (series markers).
+                        const showExpander = grouped && col.id === badgeColumnId
+                        const showMarkers =
+                          col.id === 'symbol' &&
+                          (!grouped || (mandate.group?.size ?? 1) <= 1)
+                        const cell = (
                           <CellContent
                             columnId={col.id}
                             mandate={mandate}
                             entitiesData={entitiesData}
                             findOrganLong={findOrganLong}
-                            onEntityClick={(entity) =>
-                              setFilter('entity', entity)
-                            }
+                            onFacetClick={setFilter}
+                            href={mandateHref(mandate.full_document_symbol)}
                           />
-                          {col.id === 'symbol' &&
-                            (!grouped || (mandate.group?.size ?? 1) <= 1) && (
-                              <span className="ml-1.5">
-                                <SeriesMarkers mandate={mandate} />
+                        )
+                        return (
+                          <TableCell
+                            key={col.id}
+                            className={`${col.align === 'right' ? 'text-right' : ''} ${col.id === 'detail' ? STICKY_DETAIL_CELL + ' bg-white group-hover:bg-gray-50' : ''} overflow-hidden px-3 py-2 align-top text-sm`}
+                          >
+                            {showExpander || showMarkers ? (
+                              // In the symbol cell, h-5 keeps the row exactly as
+                              // tall as it was when the expander had a column of
+                              // its own. In the fallback column (symbol hidden)
+                              // the content can be multi-line, so it only aligns
+                              // to the top.
+                              <span
+                                className={
+                                  col.id === 'symbol'
+                                    ? 'flex h-5 items-center gap-1.5'
+                                    : 'flex items-start gap-1.5'
+                                }
+                              >
+                                {cell}
+                                {showMarkers && (
+                                  <SeriesMarkers mandate={mandate} />
+                                )}
+                                {showExpander && (
+                                  <GroupBadge
+                                    mandate={mandate}
+                                    expanded={isExpanded}
+                                    onToggle={() =>
+                                      toggleGroup(mandate.full_document_symbol)
+                                    }
+                                  />
+                                )}
                               </span>
+                            ) : (
+                              cell
                             )}
-                        </TableCell>
-                      ))}
+                          </TableCell>
+                        )
+                      })}
                     </TableRow>
                     {grouped &&
                       isExpanded &&
-                      (mandate.group?.members ?? []).map((member) => (
+                      groupMemberEntries(mandate).map((member) => (
                         <TableRow
                           key={member.symbol}
                           className="cursor-pointer border-b border-gray-100 bg-gray-50/60 hover:bg-gray-100"
                           onClick={() =>
-                            router.push(
-                              getMandateUrl(
-                                member.symbol,
-                                {
-                                  ppb_version: filters.ppb_version,
-                                  mode: filters.mode,
-                                },
-                                searchParams
-                              )
-                            )
+                            router.push(mandateHref(member.symbol))
                           }
                         >
                           <TableCell
-                            colSpan={columns.length + 1}
+                            colSpan={columns.length}
                             className="px-3 py-1.5 pl-11"
                           >
                             <GroupMemberLine member={member} />
@@ -307,7 +331,7 @@ export function MandateDataTable({
                           onClick={(e) => handleRowClick(mandate, e)}
                         >
                           <TableCell
-                            colSpan={columns.length + 1}
+                            colSpan={columns.length}
                             className="px-3 py-1.5 pl-11"
                           >
                             <GroupHiddenVersionsNote mandate={mandate} />
@@ -320,7 +344,7 @@ export function MandateDataTable({
               {mandates.length === 0 && (
                 <TableRow>
                   <TableCell
-                    colSpan={grouped ? columns.length + 1 : columns.length}
+                    colSpan={columns.length}
                     className="py-8 text-center text-sm text-muted-foreground"
                   >
                     No mandates found matching the current filters.
@@ -354,23 +378,54 @@ export function MandateDataTable({
  * prop was inert; it is gone rather than left as a false promise. If the two
  * should be distinguishable, that needs a real ornament, not a flag.
  *
- * The label sits in its OWN span inside the chip, and that span is what carries
- * `truncate`. A Chip is a flex container, and `text-overflow: ellipsis` does
- * not apply to one — putting truncate only on the chip clips the text with no
- * "…", which is exactly the mid-word cut this component exists to prevent.
+ * Truncation goes through Chip's `truncate` prop, which puts the ellipsis on a
+ * block span around the label. A Chip is a flex container, and
+ * `text-overflow: ellipsis` does not apply to one — clipping the chip itself
+ * cuts the text with no "…", the mid-word cut this component exists to prevent.
+ *
+ * Every pill filters by its facet; see `onSelect`.
  */
 const PILL_MAX_SHOWN = 2
 
-function PillList({ items }: { items: string[] }) {
+/** A pill's display label and the facet value it filters by (they differ:
+ *  subjects are title-cased for display, the filter matches case-insensitively). */
+interface PillItem {
+  value: string
+  label: string
+}
+
+function PillList({
+  items,
+  onSelect,
+}: {
+  items: PillItem[]
+  onSelect: (value: string) => void
+}) {
   if (items.length === 0) return null
   const remaining = items.length - PILL_MAX_SHOWN
+  // Every pill filters. stopPropagation is not optional here: these sit inside
+  // a row that navigates on click, so without it a click would both filter and
+  // open the mandate, and the navigation would win.
+  const select = (event: React.MouseEvent, value: string) => {
+    event.stopPropagation()
+    onSelect(value)
+  }
+  // A HoverCard, not a Tooltip, now that the overflow pills are real controls:
+  // the same mechanism the entity column already uses for the same job (a
+  // tooltip is for describing, and its content is not a place to put buttons).
   return (
-    <Tooltip>
-      <TooltipTrigger asChild>
+    <HoverCard openDelay={100} closeDelay={100}>
+      <HoverCardTrigger asChild>
         <div className="flex max-w-[200px] cursor-default items-center gap-1">
-          {items.slice(0, PILL_MAX_SHOWN).map((text, i) => (
-            <Chip key={i} density="dense" truncate>
-              <span className="min-w-0 truncate">{text}</span>
+          {items.slice(0, PILL_MAX_SHOWN).map((item, i) => (
+            <Chip
+              key={i}
+              density="dense"
+              truncate
+              onClick={(event) => select(event, item.value)}
+              aria-label={`Filter by ${item.label}`}
+            >
+              {item.label}
             </Chip>
           ))}
           {remaining > 0 && (
@@ -379,17 +434,23 @@ function PillList({ items }: { items: string[] }) {
             </span>
           )}
         </div>
-      </TooltipTrigger>
-      <TooltipContent className="max-w-sm border bg-white p-2 shadow-lg">
+      </HoverCardTrigger>
+      <HoverCardContent className="w-auto max-w-sm border bg-white p-2 shadow-lg">
         <div className="flex flex-wrap gap-1">
-          {items.map((text, i) => (
-            <Chip key={i} density="dense" className="whitespace-nowrap">
-              {text}
+          {items.map((item, i) => (
+            <Chip
+              key={i}
+              density="dense"
+              className="whitespace-nowrap"
+              onClick={(event) => select(event, item.value)}
+              aria-label={`Filter by ${item.label}`}
+            >
+              {item.label}
             </Chip>
           ))}
         </div>
-      </TooltipContent>
-    </Tooltip>
+      </HoverCardContent>
+    </HoverCard>
   )
 }
 
@@ -398,13 +459,22 @@ function CellContent({
   mandate,
   entitiesData,
   findOrganLong,
-  onEntityClick,
+  onFacetClick,
+  href,
 }: {
   columnId: string
   mandate: Mandate
   entitiesData: Entity[]
   findOrganLong: (short: string) => string
-  onEntityClick: (entity: string) => void
+  /**
+   * Every facet chip in a row narrows the list by that facet. Additive
+   * (`setFilter`), not single-facet: the row is already the result of a search
+   * and whatever filters are active, so clicking a chip in it should refine
+   * that, never silently discard it the way a directory jump does.
+   */
+  onFacetClick: (key: FilterParamKey, value: string) => void
+  /** This row's mandate URL — the symbol badge links to it. */
+  href: string
 }) {
   switch (columnId) {
     case 'symbol': {
@@ -413,7 +483,13 @@ function CellContent({
       return (
         <Tooltip>
           <TooltipTrigger asChild>
-            <DocumentSymbol className="whitespace-nowrap">
+            {/* The symbol NAVIGATES, it does not filter. A symbol is the
+                document's identifier, not a facet (see DocumentSymbol) —
+                filtering by it would just return the row you clicked. It is a
+                real <a> so it can be opened in a new tab or copied; a plain
+                click bubbles to the row, which preventDefaults and pushes the
+                same URL. */}
+            <DocumentSymbol href={href} className="whitespace-nowrap">
               {highlighted ? (
                 <span dangerouslySetInnerHTML={{ __html: highlighted }} />
               ) : (
@@ -446,7 +522,15 @@ function CellContent({
       return mandate.body ? (
         <Tooltip>
           <TooltipTrigger asChild>
-            <Chip density="dense" className="whitespace-nowrap">
+            <Chip
+              density="dense"
+              className="whitespace-nowrap"
+              onClick={(event) => {
+                event.stopPropagation()
+                onFacetClick('organ', mandate.body)
+              }}
+              aria-label={`Filter by ${findOrganLong(mandate.body)}`}
+            >
               {mandate.body}
             </Chip>
           </TooltipTrigger>
@@ -460,9 +544,6 @@ function CellContent({
       return mandate.year && mandate.year !== '-' ? (
         <span>{mandate.year}</span>
       ) : null
-
-    case 'citations':
-      return <span className="tabular-nums">{mandate.num_citations}</span>
 
     case 'entity_list': {
       const foundational = mandate.foundational_entities ?? []
@@ -491,7 +572,7 @@ function CellContent({
             <EntityBadge
               entity={entity}
               foundational={isFoundational(entity, foundational)}
-              onClick={() => onEntityClick(entity)}
+              onClick={() => onFacetClick('entity', entity)}
             />
             {longName && longName !== entity && (
               <span className="text-xs text-muted-foreground">{longName}</span>
@@ -504,7 +585,7 @@ function CellContent({
             entity={entity}
             entityLong={longName}
             foundational={isFoundational(entity, foundational)}
-            onClick={() => onEntityClick(entity)}
+            onClick={() => onFacetClick('entity', entity)}
           />
         )
       }
@@ -553,7 +634,14 @@ function CellContent({
     case 'subjects':
       return (
         <PillList
-          items={(mandate.subject_headings || []).map((s) => titleCase(s))}
+          // The filter matches on LOWER(TRIM(...)) at both ends, so the
+          // display form is a valid facet value — see the subject clause in
+          // lib/data/mandates.ts.
+          items={(mandate.subject_headings || []).map((s) => ({
+            value: s,
+            label: titleCase(s),
+          }))}
+          onSelect={(value) => onFacetClick('subject', value)}
         />
       )
 
@@ -566,7 +654,15 @@ function CellContent({
       ) : null
 
     case 'agenda_item':
-      return <PillList items={mandate.agenda_item_titles || []} />
+      return (
+        <PillList
+          items={(mandate.agenda_item_titles || []).map((t) => ({
+            value: t,
+            label: t,
+          }))}
+          onSelect={(value) => onFacetClick('agenda_item', value)}
+        />
+      )
 
     default:
       return null

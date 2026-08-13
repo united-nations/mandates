@@ -10,11 +10,17 @@ import { FOUNDATIONAL_LABEL, FOUNDATIONAL_TOOLTIP } from '@/lib/foundational'
 import { cn } from '@/lib/utils'
 
 /**
- * An entity chip that says whether this entity's citation is a foundational
- * one. The deeper blue is only a hint — colour alone is invisible to a good
- * share of readers and meaningless to anyone who was not told what it encodes —
- * so it always comes with the tooltip, and with an explicit tag wherever there
- * is room for one (see FoundationalTag).
+ * An entity chip: the acronym, with the long name in a tooltip.
+ *
+ * It used to render "Mandates and background" citations in the emphasis tone
+ * (deeper blue) wherever it appeared. That styling is now confined to the
+ * mandate detail sidebar, which is the one place with room to legend it. The
+ * split is a 2020 formatting decision inside the fascicle (see
+ * lib/foundational.ts), not a hierarchy of importance, and a colour the reader
+ * meets in a dense table with no legend asserts exactly that hierarchy.
+ *
+ * The `foundational` prop is kept — call sites still pass it and the data is
+ * still true — but it no longer changes how the chip looks or reads.
  *
  * Must be rendered inside a TooltipProvider.
  */
@@ -22,6 +28,10 @@ import { cn } from '@/lib/utils'
 interface EntityBadgeProps {
   entity: string
   entityLong?: string | null
+  /**
+   * Retained for call-site compatibility and deliberately unused: emphasis on
+   * this distinction lives only in the detail sidebar now.
+   */
   foundational?: boolean
   onClick?: () => void
   className?: string
@@ -30,7 +40,6 @@ interface EntityBadgeProps {
 export function EntityBadge({
   entity,
   entityLong,
-  foundational = false,
   onClick,
   className = '',
 }: EntityBadgeProps) {
@@ -40,7 +49,6 @@ export function EntityBadge({
   const chip = (
     <Chip
       density="dense"
-      tone={foundational ? 'emphasis' : 'neutral'}
       onClick={onClick}
       className={cn('shrink-0 whitespace-nowrap', className)}
     >
@@ -50,20 +58,16 @@ export function EntityBadge({
 
   const description = entityLong && entityLong !== entity ? entityLong : null
 
-  const content =
-    !description && !foundational ? (
-      chip
-    ) : (
-      <Tooltip>
-        <TooltipTrigger asChild>{chip}</TooltipTrigger>
-        <TooltipContent className="max-w-xs">
-          {description && <p>{description}</p>}
-          {foundational && (
-            <p className={description ? 'mt-1' : ''}>{FOUNDATIONAL_TOOLTIP}</p>
-          )}
-        </TooltipContent>
-      </Tooltip>
-    )
+  const content = !description ? (
+    chip
+  ) : (
+    <Tooltip>
+      <TooltipTrigger asChild>{chip}</TooltipTrigger>
+      <TooltipContent className="max-w-xs">
+        <p>{description}</p>
+      </TooltipContent>
+    </Tooltip>
+  )
 
   if (!onClick) return content
 
@@ -82,14 +86,20 @@ export function EntityBadge({
   )
 }
 
-/** The explicit tag, for places with room to spell it out. */
+/**
+ * The explicit tag, for the two places outside the sidebar that spell the
+ * distinction out (the table's entity popup and the budget tree).
+ *
+ * Neutral tone, not emphasis: it states *where* in the fascicle the citation
+ * sits and claims nothing about its weight. The un-blue-deep tint and the dot
+ * are reserved for the detail sidebar, which legends them.
+ */
 export function FoundationalTag() {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
         <Chip
           density="dense"
-          tone="emphasis"
           truncate
           className="max-w-[13rem] shrink cursor-help"
         >

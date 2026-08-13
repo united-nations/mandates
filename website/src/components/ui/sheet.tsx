@@ -49,14 +49,33 @@ const sheetVariants = cva(
   }
 )
 
+/**
+ * The geometry every corner control of a sheet shares: a 44px square (the
+ * minimum touch target) around a 16px icon, with a visible focus ring.
+ *
+ * Exported so a sheet that adds its own controls beside the close button gets
+ * identical hit areas rather than a second, slightly different button — which
+ * is how the mandate sheet ended up with two overlapping corner controls of
+ * different sizes.
+ */
+const sheetControlClass =
+  "flex size-11 shrink-0 items-center justify-center rounded-sm text-foreground opacity-70 transition-opacity hover:bg-secondary hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none data-[state=open]:bg-secondary"
+
 interface SheetContentProps
   extends React.ComponentPropsWithoutRef<typeof SheetPrimitive.Content>,
-    VariantProps<typeof sheetVariants> {}
+    VariantProps<typeof sheetVariants> {
+  /**
+   * Suppresses the floating close button so the sheet can lay its controls out
+   * in normal flow (see MandateDetailSheet). A sheet that sets this MUST render
+   * its own `SheetClose` — the dialog is otherwise unclosable by pointer.
+   */
+  hideClose?: boolean
+}
 
 const SheetContent = React.forwardRef<
   React.ElementRef<typeof SheetPrimitive.Content>,
   SheetContentProps
->(({ side = "right", className, children, ...props }, ref) => (
+>(({ side = "right", className, children, hideClose, ...props }, ref) => (
   <SheetPortal>
     <SheetOverlay />
     <SheetPrimitive.Content
@@ -65,12 +84,12 @@ const SheetContent = React.forwardRef<
       {...props}
     >
       {children}
-      {/* size-11 = 44px: the minimum touch target. The icon stays 16px; the
-          padding is the hit area. */}
-      <SheetPrimitive.Close className="absolute right-2 top-2 flex size-11 items-center justify-center rounded-sm opacity-70 ring-offset-background transition-opacity hover:bg-secondary hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
-        <X className="h-4 w-4" />
-        <span className="sr-only">Close</span>
-      </SheetPrimitive.Close>
+      {!hideClose && (
+        <SheetPrimitive.Close className={cn(sheetControlClass, "absolute right-2 top-2")}>
+          <X aria-hidden className="h-4 w-4" />
+          <span className="sr-only">Close</span>
+        </SheetPrimitive.Close>
+      )}
     </SheetPrimitive.Content>
   </SheetPortal>
 ))
@@ -135,6 +154,7 @@ export {
   SheetTrigger,
   SheetClose,
   SheetContent,
+  sheetControlClass,
   SheetHeader,
   SheetFooter,
   SheetTitle,

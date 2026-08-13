@@ -13,8 +13,8 @@ import { SHOW_RELATED_MANDATES } from '@/lib/feature-flags'
 import type { RelatedMandate } from '@/lib/data/related'
 
 /**
- * "What is this mandate about?" — the UNBIS subject headings the UN Library
- * assigned to the document, as the same pills the /subjects pill-map uses
+ * "What subjects does this mandate have?" — the UNBIS subject headings the UN
+ * Library assigned to the document, as the same pills the /subjects map uses
  * (colour dot = thesaurus domain), and below them the documents that share
  * those topics.
  *
@@ -50,7 +50,7 @@ export function MandateTopics({ subjects, related }: MandateTopicsProps) {
             : undefined
         }
       >
-        What is this mandate about?
+        What subjects does this mandate have?
       </DetailSectionHeading>
 
       {sorted.length > 0 && (

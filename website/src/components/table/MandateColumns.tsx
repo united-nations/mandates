@@ -23,6 +23,18 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
     align: 'left',
   },
   {
+    // Between Symbol and Title: the organ is part of how a document identifies
+    // itself ("this is a GA resolution"), so it belongs beside the symbol rather
+    // than after the title where it read as just another attribute.
+    id: 'organ',
+    label: 'Organ',
+    defaultVisible: false,
+    filterParam: 'organ',
+    filterType: 'pill',
+    widthClass: 'w-[80px]',
+    align: 'left',
+  },
+  {
     id: 'title',
     label: 'Title',
     defaultVisible: true,
@@ -39,23 +51,6 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
     filterType: 'yearRange',
     widthClass: 'w-[70px]',
     align: 'left',
-  },
-  {
-    id: 'organ',
-    label: 'Organ',
-    defaultVisible: false,
-    filterParam: 'organ',
-    filterType: 'pill',
-    widthClass: 'w-[80px]',
-    align: 'left',
-  },
-  {
-    id: 'citations',
-    label: 'Citations',
-    defaultVisible: false,
-    sortKeys: { asc: 'citations_asc', desc: 'citations_desc' },
-    widthClass: 'w-[50px]',
-    align: 'right',
   },
   {
     id: 'entity_list',
@@ -107,7 +102,10 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
   },
   {
     id: 'document_type',
-    label: 'Type',
+    // Sentence case, like every other label on the site. The id and the
+    // `document_type` filter param are unchanged — this is the visible label
+    // only, so stored column selections and shared URLs keep working.
+    label: 'Document type',
     defaultVisible: false,
     filterParam: 'document_type',
     filterType: 'pill',

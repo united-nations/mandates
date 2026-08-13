@@ -8,9 +8,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { useSectionFilter } from '@/hooks/use-section-filter'
 import { cn } from '@/lib/utils'
-import type { OrganGroup, OrganWithCount } from '@/types'
+import type { DirectorySelection, OrganGroup, OrganWithCount } from '@/types'
 import { ChevronRight, ExternalLink } from 'lucide-react'
 import { useMemo, useState } from 'react'
 
@@ -19,9 +18,10 @@ import { useMemo, useState } from 'react'
  * grouped by its place in the UN system (see lib/organ-groups.ts). Reads the
  * same category structure the table's Organ filter groups by (getOrganHierarchy).
  *
- * On the single page, selecting an organ sets a single-facet view of the
- * mandates section and scrolls to it (see useSectionFilter); the active organ
- * is highlighted.
+ * On the single page, selecting an organ ADDS it to the active filters and
+ * scrolls to the mandates section; the active organ is highlighted. The write
+ * itself is injected by DirectoryExplorer (see DirectorySelection) because it
+ * has to match the scope these counts were computed under.
  *
  * One view only: cards with names. There are ~23 organs in all, so the compact
  * acronym-pill view the entity directory still needs bought nothing here except
@@ -30,12 +30,14 @@ import { useMemo, useState } from 'react'
 
 interface OrgansDirectoryProps {
   groups: OrganGroup[]
+  selection: DirectorySelection
 }
 
-export function OrgansDirectory({ groups }: OrgansDirectoryProps) {
+export function OrgansDirectory({ groups, selection }: OrgansDirectoryProps) {
   const [search, setSearch] = useState('')
   const term = search.trim().toLowerCase()
-  const { active, select } = useSectionFilter('organ')
+  const active = selection.active('organ')
+  const select = (value: string) => selection.select('organ', value)
 
   const totalOrgans = useMemo(
     () => groups.reduce((n, g) => n + g.organs.length, 0),
