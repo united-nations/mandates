@@ -149,7 +149,12 @@ export function SectionNav() {
     // top offset tracks the SiteHeader height: ~65px with the inline emblem,
     // ~57px once the emblem moves outboard at min-[1408px] (1px overlap is
     // intentional so no content line shows through between the two bars).
-    <div className="sticky top-16 z-30 border-b border-border bg-background/95 backdrop-blur-sm supports-backdrop-filter:bg-background/75 min-[1408px]:top-14">
+    //
+    // mt-6 separates the bar from the "Browse all …" links under the cards,
+    // which otherwise sit right on top of it. The margin only applies in normal
+    // flow: once the bar sticks, `top` alone decides where it sits, so this
+    // cannot open a gap under the site header.
+    <div className="sticky top-16 z-30 mt-6 border-b border-border bg-background/95 backdrop-blur-sm supports-backdrop-filter:bg-background/75 min-[1408px]:top-14">
       <div className="mx-auto flex max-w-6xl items-center gap-2 px-6 md:px-12 lg:px-16">
         <nav
           aria-label="Page sections"
