@@ -38,7 +38,7 @@ export const DIFF_ZERO_COLOR = '#ffffff'
 // so the entity can be filtered out client-side.
 export function deriveGroup(
   pillar: string | null,
-  budgetPart: string | null,
+  budgetPart: string | null
 ): GroupLabel | null {
   if (!pillar) return null
   switch (pillar) {

@@ -29,7 +29,8 @@ function statusColor(code: string): string {
 
 function statusName(code: string): string {
   const base = code[0]
-  if (base === 'v') return 'Verbatim — copied word-for-word from the previous resolution'
+  if (base === 'v')
+    return 'Verbatim — copied word-for-word from the previous resolution'
   if (base === 'm') return 'Mutated — the same clause, reworded or re-dated'
   return 'New — first appears in this resolution'
 }
@@ -97,8 +98,8 @@ export function ChainDNA({
           {detail.title.charAt(0).toUpperCase() + detail.title.slice(1)}
         </h4>
         <p className="text-xs text-gray-500">
-          {detail.body} · {detail.docType} · {docs.length} resolutions ·{' '}
-          {nCols} recurring paragraph lineages
+          {detail.body} · {detail.docType} · {docs.length} resolutions · {nCols}{' '}
+          recurring paragraph lineages
           {totalSingles > 0 &&
             ` · ${totalSingles} one-off paragraphs folded out`}
         </p>
@@ -106,11 +107,7 @@ export function ChainDNA({
 
       {/* grid: fixed label column + horizontally scrollable cells */}
       <div className="flex">
-        <div
-          className="shrink-0"
-          style={{ width: LABEL_W }}
-          aria-hidden
-        >
+        <div className="shrink-0" style={{ width: LABEL_W }} aria-hidden>
           <div style={{ height: 0 }} />
           {docs.map((d, i) => {
             const pct = detail.perDoc[i]
@@ -151,8 +148,7 @@ export function ChainDNA({
               columns.map((_, ci) => {
                 const code = d.row[String(ci)]
                 if (!code) return null
-                const isHover =
-                  hover?.docIdx === di && hover?.colIdx === ci
+                const isHover = hover?.docIdx === di && hover?.colIdx === ci
                 return (
                   <g key={`${di}-${ci}`}>
                     <rect
@@ -191,9 +187,7 @@ export function ChainDNA({
                     width={ROW_H}
                     height={ROW_H}
                     fill="transparent"
-                    onMouseEnter={() =>
-                      setHover({ docIdx: di, colIdx: ci })
-                    }
+                    onMouseEnter={() => setHover({ docIdx: di, colIdx: ci })}
                   />
                 ) : null
               )
@@ -241,9 +235,9 @@ export function ChainDNA({
           </div>
         ) : (
           <span className="text-gray-400">
-            Hover a cell to read the paragraph and its lineage. Left column shows
-            each resolution&apos;s year and the share carried over from the one
-            before it.
+            Hover a cell to read the paragraph and its lineage. Left column
+            shows each resolution&apos;s year and the share carried over from
+            the one before it.
           </span>
         )}
       </div>

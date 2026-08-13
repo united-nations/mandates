@@ -34,7 +34,7 @@ export function CitationMatrixHeatmap({ data, mode }: Props) {
   const values: number[][] =
     mode === 'diff'
       ? matrices.ppb2027.map((row, i) =>
-          row.map((v, j) => v - matrices.ppb2026[i][j]),
+          row.map((v, j) => v - matrices.ppb2026[i][j])
         )
       : matrices[mode]
 
@@ -141,7 +141,7 @@ export function CitationMatrixHeatmap({ data, mode }: Props) {
                     <title>{title}</title>
                   </rect>
                 )
-              }),
+              })
             )}
           </g>
 
@@ -201,13 +201,7 @@ function GroupLegend() {
   )
 }
 
-function ValueLegend({
-  mode,
-  maxMag,
-}: {
-  mode: HeatmapMode
-  maxMag: number
-}) {
+function ValueLegend({ mode, maxMag }: { mode: HeatmapMode; maxMag: number }) {
   const stops = 7
   const items = Array.from({ length: stops }, (_, k) => k / (stops - 1))
 
@@ -223,9 +217,11 @@ function ValueLegend({
                 ? DIFF_ZERO_COLOR
                 : mixWithWhite(
                     left > 0 ? DIFF_POSITIVE_COLOR : DIFF_NEGATIVE_COLOR,
-                    Math.abs(left),
+                    Math.abs(left)
                   )
-            return <span key={t} className="flex-1" style={{ background: color }} />
+            return (
+              <span key={t} className="flex-1" style={{ background: color }} />
+            )
           })}
         </div>
         <span>+{maxMag}</span>

@@ -107,11 +107,14 @@ export default async function GenealogyPage({ searchParams }: PageProps) {
         <p className="mb-6 max-w-3xl text-sm text-gray-500">
           Each resolution split into the share of paragraphs carried over
           verbatim, reworded (mutated), or new — averaged across all{' '}
-          {genealogyMeta.nChainsAnalyzed} chains, by how many times the chain has
-          been renewed, or by the decade the resolution was adopted.
+          {genealogyMeta.nChainsAnalyzed} chains, by how many times the chain
+          has been renewed, or by the decade the resolution was adopted.
         </p>
         <div className="rounded-lg border border-gray-200 bg-white p-4 md:p-6">
-          <GenealogyHeadline byAge={headlineByAge} byDecade={headlineByDecade} />
+          <GenealogyHeadline
+            byAge={headlineByAge}
+            byDecade={headlineByDecade}
+          />
         </div>
       </section>
 
@@ -123,8 +126,8 @@ export default async function GenealogyPage({ searchParams }: PageProps) {
         <p className="mb-6 max-w-3xl text-sm text-gray-500">
           Every row is one resolution in the chain, oldest at the top; every
           column is a paragraph tracked through time, ordered by the year it was
-          born. Solid dark bands are sentences copy-pasted for decades; pale rows
-          are years that rewrote themselves.
+          born. Solid dark bands are sentences copy-pasted for decades; pale
+          rows are years that rewrote themselves.
         </p>
         <div className="rounded-lg border border-gray-200 bg-white p-4 md:p-6">
           {detail ? (
@@ -154,9 +157,7 @@ export default async function GenealogyPage({ searchParams }: PageProps) {
                 {o.spanYears}y
               </span>
               <div className="min-w-0">
-                <p className="text-sm text-gray-800">
-                  “{cleanText(o.text)}”
-                </p>
+                <p className="text-sm text-gray-800">“{cleanText(o.text)}”</p>
                 <p className="mt-0.5 text-xs text-gray-500">
                   born {o.bornYear}, still in {o.lastYear} · {o.nDocs}{' '}
                   resolutions ·{' '}
@@ -198,13 +199,12 @@ export default async function GenealogyPage({ searchParams }: PageProps) {
             (by number of parsed resolutions) across the General Assembly,
             Security Council and ECOSOC; the DNA view offers a curated subset of{' '}
             {`${genealogyMeta.nChainsFeatured} chains`}. Text is from parsed
-            English
-            documents in the Digital Library. Older resolutions were digitized
-            from scans, so occasional split paragraphs or footnote fragments show
-            up as spurious &ldquo;new&rdquo; text — the boilerplate share is, if
-            anything, an underestimate for early decades. Alignment was
-            hand-checked on the UNIFIL, Oceans and the law of the sea, and
-            Belarus chains; see{' '}
+            English documents in the Digital Library. Older resolutions were
+            digitized from scans, so occasional split paragraphs or footnote
+            fragments show up as spurious &ldquo;new&rdquo; text — the
+            boilerplate share is, if anything, an underestimate for early
+            decades. Alignment was hand-checked on the UNIFIL, Oceans and the
+            law of the sea, and Belarus chains; see{' '}
             <span className="font-mono">docs/lens-genealogy/ANALYSIS.md</span>.
           </p>
           <p>

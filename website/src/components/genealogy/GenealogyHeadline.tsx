@@ -97,9 +97,7 @@ export function GenealogyHeadline({
 
   function areaPath(lower: number[], upper: number[]): string {
     const up = upper.map((val, i) => `${x(i)},${y(val)}`)
-    const lo = lower
-      .map((val, i) => `${x(i)},${y(val)}`)
-      .reverse()
+    const lo = lower.map((val, i) => `${x(i)},${y(val)}`).reverse()
     return `M${up.join(' L')} L${lo.join(' L')} Z`
   }
 
@@ -236,12 +234,7 @@ export function GenealogyHeadline({
               </text>
             )
           })}
-          <text
-            x={padL}
-            y={H - 6}
-            className="fill-gray-400"
-            fontSize={10}
-          >
+          <text x={padL} y={H - 6} className="fill-gray-400" fontSize={10}>
             {mode === 'age'
               ? 'Renewal number (1 = first re-adoption) →'
               : 'Decade the resolution was adopted →'}
