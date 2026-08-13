@@ -171,17 +171,34 @@ deliberately not listed.
 
 ## B. What counts as a contact, and as a link
 
-### B1. Contacts — role over person
+### B1. Contacts — a contact belongs to a governing body, or it does not belong
 
-> **Proposed, in priority order:** (1) a governing-body secretariat role mailbox;
-> (2) a governing-body secretariat contact page; (3) the organization's general
-> contact page. Record at most one of each kind.
+**Resolved.** The page is about governing bodies, so a contact earns a place
+only if it serves one. An organization's switchboard tells the reader nothing
+they could not get from its homepage, which is already linked from the
+abbreviation.
+
+> **Proposed:** record the secretariat that services a governing body, attached
+> to that body. Do not record the organization's general contact page, its press
+> office, its registration or logistics inboxes, or a partnership desk.
+
+Applied in August 2026: 30 contacts moved onto the body they service, 51
+deleted, 1 kept at organization level. That last one is the only case the rule
+does not cover — UNOPS's Board and External Relations Office services the
+Executive Board of UNDP, UNFPA and UNOPS, which is a *shared* body, so writing
+the contact onto it would show a UNOPS office under UNDP, UNFPA, UNCDF and UNV
+as well.
+
+**26 entities now have no contact at all**, against none before. That is the
+honest result: they publish a switchboard and no governing-body contact. The
+previous state showed a general enquiries link for each of them, in the
+governing-bodies column, which implied a governance contact that does not exist.
 
 **Never record a named individual's address.** A role mailbox
-(`CSG-Director@fao.org`) survives a personnel change; a person mailbox
-(`c.tenhave@ifad.org`, the Secretary of IFAD) does not, and publishing it is a
-privacy decision that is not ours to make. This was applied in round 3 — IFAD
-falls back to its contact page as a result.
+(`CSG-Director@fao.org`) survives a personnel change; a person mailbox does not,
+and publishing it is a privacy decision that is not ours to make. The same
+applies to names in labels: "Board Secretary (Brook Boyer)" is now "Board of
+Trustees Secretariat".
 
 Sub-cases, with proposed answers:
 
@@ -190,23 +207,18 @@ Sub-cases, with proposed answers:
 | Email obfuscated (Cloudflare `data-cfemail`, `name [at] org`) | Record it — a human reading the page sees the address |
 | Email only in a `mailto:` href, not visible text | Record it — it is published, and machine-readable |
 | Email published only inside an official PDF | Record it, and note the source document in the dossier. Four of the best contacts found (FAO, WHO, IFAD, UN Tourism) exist nowhere else |
-| Web form with no address | Record as a contact page. Contactable but not addressable — see B2 |
-| Generic organization mailbox | Only as a fallback where nothing body-specific exists |
-| Registration / logistics inbox | Do not record. `pmo-registration@unido.org`, `registration@wmo.int` are serviced by the governing-body secretariat but useless for a mandate enquiry |
-| Press office | Do not record unless the organization itself labels it general enquiries |
+| Web form with no address | Only if it is scoped to a governing body (WIPO's Assemblies form). A general form is the switchboard |
+| Generic organization mailbox | No — see above |
+| Registration / logistics inbox | No. `pmo-registration@unido.org`, `registration@wmo.int` are serviced by the governing-body secretariat but useless for a mandate enquiry |
+| Press or public-information office | No |
 | Functionally-scoped secretariat mailbox | Record, with the scope in the label — e.g. the HRC Secretariat's NGO-liaison team |
+| A page describing an office, not a way to reach it | No — CTBTO's Provisional Technical Secretariat page and ISA's Secretariat page were dropped on this ground |
 | Social media account | Never a contact |
 
-**Resolved — no `kind` field.** Too much detail for now.
-The original argument: A form, an email
-and a staff directory are not equivalent, and the page presents them identically.
-A `kind?: 'email' | 'form' | 'directory'` field would let the UI distinguish
-"you can write to this" from "you can submit a form here".
-
-**Resolved — de-duplicated.** For UPU, UNESCO and ITU the best
-organization-level contact is exactly the one already attached to a governing
-body. Round 3 duplicated it into the top-level array. The alternative rule is
-that the top level holds only contacts *not* attached to a body.
+**Store an address in `email`, never as a `url` beginning `mailto:`.** The
+renderer keys the envelope icon and the link target off which field is set, so a
+`mailto:` URL rendered as an external page link with no icon. Four entries had
+this and are fixed.
 
 ### B4. `officialPages` — **resolved: the field is gone**
 
@@ -325,10 +337,7 @@ field); A3 (IMO and PAHO committees kept, FAO/UNIDO/WIPO/PAHO advisory
 committees dropped); A4; A6; A7; A8 (UNIDIR, ITC); A9; A10; A11; A12; B1 with
 the no-personal-addresses rule; B4; B6; and all of section C except C1 and C2.
 
-## Still open
-
-A3's IOM SCPF case · A5 in full (regional and sectoral tiers) · B2 (`kind` on
-contacts).
+Nothing in this catalogue is now open.
 
 ## Resolved since this was written
 
@@ -340,4 +349,7 @@ contact were removed, and body contacts now live on the body. · B5 — `related
 is renamed `resources` and the "not mandate-linked" suffix is gone. · C1 — an
 entity **is** scored on whichever registry covers its mandates, whoever
 publishes it, so UNCDF and UNV keep the implementation point. · C2 — one merged
-score per entity, so entities covered only by this site carry its score.
+score per entity, so entities covered only by this site carry its score. ·
+B2 — contacts carry no `kind` field; too much detail for now. · B1 — a contact
+is recorded only where it services a governing body, and is attached to that
+body; switchboards, press offices and registration inboxes are not recorded.
