@@ -2894,7 +2894,11 @@
       "governingBodies": [
         {
           "name": "Council",
-          "url": "https://governingbodies.iom.int/iom-governing-bodies"
+          "url": "https://governingbodies.iom.int/council"
+        },
+        {
+          "name": "Standing Committee on Programmes and Finance",
+          "url": "https://governingbodies.iom.int/standing-committee-programmes-and-finance"
         }
       ],
       "officialPages": [],
@@ -2904,7 +2908,7 @@
           "url": "https://www.iom.int/contact-us"
         }
       ],
-      "note": null,
+      "note": "IOM presents the Council and the Standing Committee on Programmes and Finance together as its governing bodies. The Constitution establishes only two organs, the Council and the Administration; the Standing Committee is a subcommittee of the Council under article 10, but adopts resolutions in its own series, including revisions to the Programme and Budget.",
       "mandateRegistry": [
         {
           "name": "Council Resolutions Database",
