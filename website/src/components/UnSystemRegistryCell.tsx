@@ -12,7 +12,7 @@ import type {
   UnSystemRegistry,
   UnSystemRegistryPoint,
 } from '@/types'
-import { ExternalLink, Info } from 'lucide-react'
+import { Info } from 'lucide-react'
 import Link from 'next/link'
 
 const POINT_ORDER: UnSystemRegistryPoint[] = [
@@ -232,7 +232,7 @@ export function UnSystemRegistryDots({
       <Tooltip>
         <TooltipTrigger
           aria-label="No mandate registry — details"
-          className="inline-flex cursor-help items-center gap-1 text-sm text-gray-500"
+          className="inline-flex cursor-help items-center gap-1 text-sm text-gray-900"
         >
           — <Info className="h-3.5 w-3.5" />
         </TooltipTrigger>
@@ -268,10 +268,10 @@ export function UnSystemRegistryLink({
   if (!registry) return null
 
   const internal = registry.url.startsWith('/')
+  // No external-link icon: nearly every link on this page leaves the site, so
+  // the icon marked nothing and only added a third signal to an already
+  // over-specified set. Rank is carried by size alone.
   const linkClass = 'text-sm text-un-blue hover:underline'
-  // Bind the icon to the last word so it can never wrap onto a line alone.
-  const words = registry.name.split(' ')
-  const lastWord = words.pop()
 
   return (
     <Tooltip>
@@ -287,14 +287,7 @@ export function UnSystemRegistryLink({
             rel="noopener noreferrer"
             className={linkClass}
           >
-            {words.length > 0 && `${words.join(' ')} `}
-            <span className="whitespace-nowrap">
-              {lastWord}
-              <ExternalLink
-                aria-hidden
-                className="mb-0.5 ml-1 inline h-3.5 w-3.5"
-              />
-            </span>
+            {registry.name}
           </a>
         )}
       </TooltipTrigger>

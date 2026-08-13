@@ -14,7 +14,7 @@ import type {
   UnSystemEntity,
   UnSystemGrouping,
 } from '@/types'
-import { ExternalLink, Mail } from 'lucide-react'
+import { Mail } from 'lucide-react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
@@ -66,14 +66,12 @@ function OrgLevelLink({
         href={email ? `mailto:${href}` : href}
         target={email ? undefined : '_blank'}
         rel={email ? undefined : 'noopener noreferrer'}
-        className="inline-flex items-center gap-1 text-gray-500 transition-colors hover:text-un-blue"
+        className="inline-flex items-center gap-1 text-gray-900 transition-colors hover:text-un-blue hover:underline"
       >
         {label ?? href}
-        {email ? (
-          <Mail className="h-3 w-3 shrink-0" />
-        ) : (
-          <ExternalLink className="h-3 w-3 shrink-0" />
-        )}
+        {/* Only mailto keeps an icon: clicking it opens a mail client rather
+            than a page, which is a real difference, not decoration. */}
+        {email && <Mail className="h-3 w-3 shrink-0" />}
       </a>
     </li>
   )
@@ -95,10 +93,10 @@ function EntityRow({ entity }: { entity: UnSystemEntity }) {
           {entity.code}
         </a>
         {entity.name !== entity.code && (
-          <div className="text-sm text-gray-500">{entity.name}</div>
+          <div className="text-sm text-gray-900">{entity.name}</div>
         )}
       </div>
-      <ul className="space-y-1 text-sm text-gray-600">
+      <ul className="space-y-1 text-sm text-gray-900">
         {entity.governingBodies.map(resolveBody).map((body) => (
           <UnSystemBodyLine key={body.name} body={body} />
         ))}
@@ -135,17 +133,11 @@ function EntityRow({ entity }: { entity: UnSystemEntity }) {
             <UnSystemRegistryLink registry={registry} />
           </div>
         ))}
-        {/* Everything else the organization publishes, at a lighter weight.
-            `prominent` lifts an item to registry weight without scoring it. */}
+        {/* Everything else the organization publishes. Rank is carried by size
+            and colour only — no dotted underline, no icon. `prominent` lifts an
+            item to registry weight without scoring it. */}
         {entity.resources.map((resource) => (
-          <div
-            key={resource.url}
-            className={
-              resource.prominent
-                ? 'leading-snug'
-                : 'mt-1 text-xs leading-snug text-gray-500'
-            }
-          >
+          <div key={resource.url} className="mt-1 leading-snug">
             <a
               href={resource.url}
               target="_blank"
@@ -153,7 +145,7 @@ function EntityRow({ entity }: { entity: UnSystemEntity }) {
               className={
                 resource.prominent
                   ? 'text-sm text-un-blue hover:underline'
-                  : 'underline decoration-dotted underline-offset-2 transition-colors hover:text-un-blue'
+                  : 'text-xs text-gray-900 transition-colors hover:text-un-blue hover:underline'
               }
             >
               {resource.name}
@@ -207,7 +199,7 @@ export default function UnSystemPage() {
                     {title}
                   </h2>
                   <div
-                    className={`hidden gap-x-4 px-4 pb-1.5 text-xs font-medium tracking-wide text-gray-500 uppercase sm:grid ${HEADER_GRID_COLS}`}
+                    className={`hidden gap-x-4 px-4 pb-1.5 text-xs font-medium tracking-wide text-gray-900 uppercase sm:grid ${HEADER_GRID_COLS}`}
                   >
                     {/* Pulled out of the box inset so it left-aligns with the section title. */}
                     <span className="-ms-4">Organization</span>
