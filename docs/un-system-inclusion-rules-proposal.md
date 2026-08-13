@@ -2,9 +2,9 @@
 
 Round 3 asked thirteen agents to flag every case where they were unsure **what
 kind of body, contact or link belongs in the list at all**. This is the resulting
-catalogue and a proposed rule for each. Nothing here is applied yet — the data
-currently reflects the judgement calls described under "Applied", and the open
-questions under "Needs your decision" are marked in the text.
+catalogue and the rule adopted for each. All of them have now been decided; the
+"Resolved since this was written" section at the end records the ones that were
+still open when the catalogue was first drafted.
 
 Once agreed, sections A and B belong in
 [`un-system-scope.md`](un-system-scope.md) and section C in
@@ -59,10 +59,12 @@ adopt their own resolutions. PAHO's Executive Committee stays. FAO's Programme,
 Finance and CCLM committees, UNIDO's and WIPO's Programme and Budget Committees,
 and PAHO's Subcommittee on Program, Budget and Administration are out.
 
-**Needs your decision — IOM's Standing Committee on Programmes and Finance**
-adopts numbered resolutions *including revisions to the Programme and Budget*
-(S/36/RES/40), but IOM's Constitution vests approval in the Council. The "adopts
-its own series" test says list it; a "supreme organ only" test says do not.
+**Resolved — IOM's Standing Committee on Programmes and Finance is listed.**
+IOM's own governance page presents the Council and the SCPF together under the
+heading "IOM GOVERNING BODIES", and the SCPF adopts numbered resolutions
+including revisions to the Programme and Budget (S/36/RES/40). The Constitution
+establishes only two organs and calls the SCPF a subcommittee that may "examine
+and review", never "approve", so the entity's `note` records the tension.
 
 ### A4. Intersessional executive organs — **list**
 
@@ -70,10 +72,11 @@ UNECE's EXCOM, ESCWA's Executive Committee and ECLAC's Committee of the Whole al
 approve programmes of work between sessions. A1 already covers them; stating it
 avoids three separate judgement calls.
 
-### A5. Regional and sectoral tiers — **needs your decision**
+### A5. Regional and sectoral tiers — **resolved: do not list**
 
-This is the largest unresolved question, and it affects the two strongest
-registries in the survey.
+Option (b) below was adopted: only bodies with organization-wide competence are
+listed, and regional tiers are left to prose. This was the largest open
+question, and it affects the two strongest registries in the survey.
 
 - **WHO** lists six Regional Committees as governing bodies on its own governance
   page, and its Resolutions Portal gives them a top-level tab beside the Assembly
@@ -92,10 +95,11 @@ registries in the survey.
 The A3 test ("adopts its own numbered series") admits WHO's and WMO's regional
 bodies and ITU's sector conferences, and excludes FAO's and UN Tourism's. That is
 defensible and mechanical — but it roughly doubles the row count for three
-entities. **Options:** (a) apply A3 uniformly and accept the asymmetry; (b) list
-only bodies with system-wide competence and note regional tiers in prose;
-(c) add a `tier` field and let the page collapse regional bodies behind a
-disclosure.
+entities, which is why it was not adopted. The options weighed were: (a) apply
+A3 uniformly and accept the asymmetry; (b) list only bodies with system-wide
+competence and note regional tiers in prose — **adopted**; (c) add a `tier`
+field and let the page collapse regional bodies behind a disclosure, which
+remains the honest answer if completeness is ever wanted.
 
 ### A6. Subsidiary bodies of treaty COPs — **do not list**
 
@@ -193,21 +197,24 @@ Sub-cases, with proposed answers:
 | Functionally-scoped secretariat mailbox | Record, with the scope in the label — e.g. the HRC Secretariat's NGO-liaison team |
 | Social media account | Never a contact |
 
-**Needs your decision — B2: should contacts carry a `kind`?** A form, an email
+**Resolved — no `kind` field.** Too much detail for now.
+The original argument: A form, an email
 and a staff directory are not equivalent, and the page presents them identically.
 A `kind?: 'email' | 'form' | 'directory'` field would let the UI distinguish
 "you can write to this" from "you can submit a form here".
 
-**Needs your decision — B3: duplication.** For UPU, UNESCO and ITU the best
+**Resolved — de-duplicated.** For UPU, UNESCO and ITU the best
 organization-level contact is exactly the one already attached to a governing
 body. Round 3 duplicated it into the top-level array. The alternative rule is
 that the top level holds only contacts *not* attached to a body.
 
-### B4. `officialPages` — governance-bearing pages, HTML preferred
+### B4. `officialPages` — **resolved: the field is gone**
 
-> **Proposed:** the entity's home page, its governance or "how we are governed"
-> page, and any standing session or document index. A statute or constitution PDF
-> is acceptable **where no HTML governance page exists** (UNSSC, UNRISD).
+It had become a catch-all for three unrelated things — governance landing pages,
+document indexes and statutes. It is now split: a single **`homepage`** per
+entity (the abbreviation in the first column links there), with everything else
+moved to `resources`, and entries duplicating a homepage or a governing-body URL
+dropped.
 
 Two sub-cases:
 - **A team page used as a governance page.** UNRISD's Board is a JavaScript tab on
@@ -216,11 +223,11 @@ Two sub-cases:
   as a last resort, and the dossier must say so.*
 - **Per-session microsites** (`ga.untourism.int`) publish working documents but
   no adopted resolutions and are replaced each session. *Proposed:
-  `officialPages`, never a scored registry.*
+  a resource, never a scored registry.*
 
-### B5. `related` — and a naming problem
+### B5. `related` — **resolved: renamed `resources`**
 
-`related` currently means "an organization portal that is **not** mandate-linked",
+`related` used to mean "an organization portal that is **not** mandate-linked",
 and the UI appends exactly that qualifier. Two things break it:
 
 1. **Governing-body report series** — UNIDIR's `/report-of-the-director`,
@@ -285,7 +292,7 @@ Per-point tests follow from that:
   decisions *addressed to the entity* do count — which is why ITLOS now scores on
   its SPLOS series and not on its docket.
 
-### Needs your decision — C1: may an entity be scored on another organization's register?
+### C1. May an entity be scored on another organization's register? — **resolved: yes**
 
 The Executive Board's tracking tables name **UNCDF** and **UNV** as responsible
 parties against specific decision paragraphs, with their own deadlines, progress
@@ -299,7 +306,7 @@ drop it. The scheme's own framing ("the Mandate Registry column … per
 organization") reads as *does this entity maintain a registry*, which argues for
 dropping it.
 
-### Needs your decision — C2: whose score does the page show?
+### C2. Whose score does the page show? — **resolved: one merged score**
 
 Thirteen entities carry a this-site *Mandate Source Registry* row, so `/system`
 renders dots for entities whose own dossier says 0. Defensible as display, but
@@ -321,6 +328,16 @@ the no-personal-addresses rule; B4; B6; and all of section C except C1 and C2.
 ## Still open
 
 A3's IOM SCPF case · A5 in full (regional and sectoral tiers) · B2 (`kind` on
-contacts) · B3 (contact duplication) · B5 (the `related` rename and the
-"not mandate-linked" suffix) · C1 (cross-organization scoring) · C2 (whose score
-the page shows).
+contacts).
+
+## Resolved since this was written
+
+A3's IOM case — IOM's own governance page presents the Council and the Standing
+Committee on Programmes and Finance together under the heading "IOM GOVERNING
+BODIES", so both are listed. · A5 — regional and sectoral tiers are **not**
+listed. · B3 — organization-level contacts that duplicated a governing body's
+contact were removed, and body contacts now live on the body. · B5 — `related`
+is renamed `resources` and the "not mandate-linked" suffix is gone. · C1 — an
+entity **is** scored on whichever registry covers its mandates, whoever
+publishes it, so UNCDF and UNV keep the implementation point. · C2 — one merged
+score per entity, so entities covered only by this site carry its score.

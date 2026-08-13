@@ -1302,14 +1302,6 @@
         {
           "name": "Proposed Programme Budget",
           "url": "https://www.intracen.org/about-us/governance/corporate-documents/proposed-programme-budget"
-        },
-        {
-          "name": "Transparency Gateway",
-          "url": "https://open.un.org/"
-        },
-        {
-          "name": "Programme Budget Results Dashboard",
-          "url": "https://results.un.org/"
         }
       ]
     },
@@ -1435,14 +1427,6 @@
         {
           "name": "Executive Board documents",
           "url": "https://www.unwomen.org/en/executive-board/documents"
-        },
-        {
-          "name": "Transparency Gateway",
-          "url": "https://open.un.org/"
-        },
-        {
-          "name": "Programme Budget Results Dashboard",
-          "url": "https://results.un.org/"
         }
       ]
     },
@@ -1535,16 +1519,7 @@
         }
       ],
       "registryNote": null,
-      "resources": [
-        {
-          "name": "Transparency Gateway",
-          "url": "https://open.un.org/"
-        },
-        {
-          "name": "Programme Budget Results Dashboard",
-          "url": "https://results.un.org/"
-        }
-      ]
+      "resources": []
     },
     {
       "code": "UNCDF",
@@ -1698,14 +1673,6 @@
         {
           "name": "Meetings",
           "url": "https://unctad.org/meetings"
-        },
-        {
-          "name": "Transparency Gateway",
-          "url": "https://open.un.org/"
-        },
-        {
-          "name": "Programme Budget Results Dashboard",
-          "url": "https://results.un.org/"
         }
       ]
     },
@@ -1848,14 +1815,6 @@
         {
           "name": "UNEA documents and resolutions repository",
           "url": "https://www.unep.org/environmentassembly/documents-and-resolutions"
-        },
-        {
-          "name": "Transparency Gateway",
-          "url": "https://open.un.org/"
-        },
-        {
-          "name": "Programme Budget Results Dashboard",
-          "url": "https://results.un.org/"
         }
       ]
     },
@@ -2019,14 +1978,6 @@
         {
           "name": "Governance and oversight",
           "url": "https://www.unhcr.org/about-unhcr/governance-and-oversight"
-        },
-        {
-          "name": "Transparency Gateway",
-          "url": "https://open.un.org/"
-        },
-        {
-          "name": "Programme Budget Results Dashboard",
-          "url": "https://results.un.org/"
         }
       ]
     },
@@ -2303,14 +2254,6 @@
         {
           "name": "Database of UNODC Evaluation Reports",
           "url": "https://www.unodc.org/unodc/en/evaluation/reports.html"
-        },
-        {
-          "name": "Transparency Gateway",
-          "url": "https://open.un.org/"
-        },
-        {
-          "name": "Programme Budget Results Dashboard",
-          "url": "https://results.un.org/"
         }
       ]
     },
@@ -2487,14 +2430,6 @@
         {
           "name": "What is the mandate of UNRWA?",
           "url": "https://www.unrwa.org/what-mandate-unrwa-0"
-        },
-        {
-          "name": "Transparency Gateway",
-          "url": "https://open.un.org/"
-        },
-        {
-          "name": "Programme Budget Results Dashboard",
-          "url": "https://results.un.org/"
         }
       ]
     },
@@ -3373,14 +3308,6 @@
         {
           "name": "Session documents (58th session, 2026)",
           "url": "https://www.uneca.org/eca-events/cfm2026/documents"
-        },
-        {
-          "name": "Transparency Gateway",
-          "url": "https://open.un.org/"
-        },
-        {
-          "name": "Programme Budget Results Dashboard",
-          "url": "https://results.un.org/"
         }
       ]
     },
@@ -3466,14 +3393,6 @@
         {
           "name": "Seventy-first session of the Commission (2025)",
           "url": "https://unece.org/info/Sessions-of-the-Commission/events/393881"
-        },
-        {
-          "name": "Transparency Gateway",
-          "url": "https://open.un.org/"
-        },
-        {
-          "name": "Programme Budget Results Dashboard",
-          "url": "https://results.un.org/"
         }
       ]
     },
@@ -3574,14 +3493,6 @@
         {
           "name": "Programme and budgeting",
           "url": "https://www.cepal.org/en/about/programme-and-budgeting"
-        },
-        {
-          "name": "Transparency Gateway",
-          "url": "https://open.un.org/"
-        },
-        {
-          "name": "Programme Budget Results Dashboard",
-          "url": "https://results.un.org/"
         }
       ]
     },
@@ -3673,14 +3584,6 @@
         {
           "name": "Eighty-second session (2026)",
           "url": "https://www.unescap.org/events/commission82"
-        },
-        {
-          "name": "Transparency Gateway",
-          "url": "https://open.un.org/"
-        },
-        {
-          "name": "Programme Budget Results Dashboard",
-          "url": "https://results.un.org/"
         }
       ]
     },
@@ -3789,14 +3692,6 @@
         {
           "name": "Ministerial session materials",
           "url": "https://www.unescwa.org/about/ms/materials"
-        },
-        {
-          "name": "Transparency Gateway",
-          "url": "https://open.un.org/"
-        },
-        {
-          "name": "Programme Budget Results Dashboard",
-          "url": "https://results.un.org/"
         }
       ]
     },

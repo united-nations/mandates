@@ -102,7 +102,7 @@ function EntityRow({ entity }: { entity: UnSystemEntity }) {
         ))}
         {entity.contacts.length > 0 && (
           <li className="mt-1.5">
-            <ul className="space-y-1 text-xs">
+            <ul className="space-y-1 text-sm">
               {entity.contacts.map((contact) => (
                 <OrgLevelLink
                   key={contact.url ?? contact.email}
@@ -145,7 +145,7 @@ function EntityRow({ entity }: { entity: UnSystemEntity }) {
               className={
                 resource.prominent
                   ? 'text-sm text-un-blue hover:underline'
-                  : 'text-xs text-gray-900 transition-colors hover:text-un-blue hover:underline'
+                  : 'text-sm text-gray-900 transition-colors hover:text-un-blue hover:underline'
               }
             >
               {resource.name}
@@ -176,7 +176,7 @@ export default function UnSystemPage() {
           </Link>
           , the UN system comprises dozens of funds, programmes, specialized
           agencies, related organizations, and other entities. This page gives
-          an overview over the governing bodies of UN System entities. It also
+          an overview of the governing bodies of UN system entities. It also
           lists related resources that provide transparency over mandates,
           documents, finances, or results.
         </p>

@@ -164,11 +164,19 @@ The `/system` page's Mandate Registry column shows, per organization:
   names with this organization's state and the total.
 - **A link named after the actual system** ("Resolution Tracker",
   "Resolutions Portal", "Acts of the Union"…), category in the tooltip.
-- **Related portals** (org-specific budget/results portals not linked to
-  mandates) as muted dotted-underline links marked "not mandate-linked".
+- **Other resources** the organization publishes — document and session
+  indexes, governance pages, budget, results and transparency portals — below
+  the registries, in the same column. The page makes no claim about which of
+  them is or is not a mandate registry: rank is carried by colour and size, not
+  by a label.
 - No system at all: an em dash with an explanatory tooltip.
 
-Data: `mandateRegistry` / `registryNote` / `related` fields in
+One score per organization, merged across every registry that covers it —
+its own and this site's alike, taking the best evidence for each point. The
+column asks how far an organization's mandates can be traced, so who publishes
+the registry does not change the answer.
+
+Data: `mandateRegistry` / `registryNote` / `resources` fields in
 `website/src/data/un-system.json`; rendering in
 `website/src/components/UnSystemRegistryCell.tsx`. The JSON follows the
 dossiers, never the other way around.
