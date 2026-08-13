@@ -235,19 +235,21 @@ in files that exist on both branches. Everything this branch adds lives in files
 `dev` does not have, so the whole surface is eight files:
 
 ```
+website/src/components/DirectoryExplorer.tsx      86 lines   card section links
 website/src/app/secretariat/page.tsx              76 lines   composition only
+website/src/app/@modal/(.)mandate/…/page.tsx      55 lines   vote strip + chips
+website/src/app/mandate/[...segments]/page.tsx    53 lines   same, keep in step
 website/src/components/SiteHeader.tsx             36 lines   nav + wordmark
 website/src/app/globals.css                       12 lines   from the capstone
 website/src/components/MandateExplorerClient.tsx   7 lines   a comment
 website/src/components/SectionBanner.tsx           4 lines   scroll-mt
 website/src/components/RootLayoutClient.tsx        3 lines   route list
-website/src/app/mandate/[...segments]/page.tsx               vote strip + chips
-website/src/app/@modal/(.)mandate/…/page.tsx                 same, keep in step
 ```
 
-About 138 changed lines in total, against 153 files brought in by the capstone.
-Keep it that way: if a sync starts conflicting badly, the cause will be new
-markup that crept into `page.tsx` instead of into `components/sections/`.
+Nine files, about 330 changed lines, against 153 files and ~28,000 lines
+brought in by the capstone. Keep it that way: if a sync starts conflicting
+badly, the cause will be new markup that crept into `page.tsx` instead of into
+`components/sections/`.
 
 Do not push and do not open a pull request without being asked.
 
@@ -349,10 +351,13 @@ commit that made it.
    `/analytics` hub. `dev` also carries an unlinked tabbed analytics page,
    which the sections now replace. Both routes redirect to `/secretariat`.
 
-5. **`DirectoryExplorer` is untouched.** The cards keep opening their modals.
-   The sections give the same directories inline, with a different selection
-   behaviour, which is the hybrid that was asked for: the cards are the fast
-   filter path, the sections are the browsable one.
+5. **The cards keep their modals, and gain a link down.** The cards are the
+   fast filter path, the sections are the browsable one — that is the hybrid.
+   `DirectoryExplorer` was going to be left untouched, but the card face is a
+   `<button>` and an anchor cannot be nested inside one, so each card became a
+   wrapper div holding the button plus a quiet "Browse all … ↓" link. Three of
+   the four have one; the scope card has no section to point at. This is the
+   only place where the brief required editing a shared file.
 
 6. **Three shared files carry a small change each**, and these are the only
    places a future sync can conflict beyond `page.tsx`: `SiteHeader` (nav and
