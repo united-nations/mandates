@@ -1,14 +1,15 @@
 import Image from 'next/image'
 
 interface QuoteBlockProps {
-  quote: string
+  /** The quote, one sentence per array entry — each renders on its own line. */
+  lines: string[]
   attribution: string
-  imageSrc: string
+  imageSrc?: string
   imageAlt?: string
 }
 
 export function QuoteBlock({
-  quote,
+  lines,
   attribution,
   imageSrc,
   imageAlt = '',
@@ -23,24 +24,30 @@ export function QuoteBlock({
                 &ldquo;
               </span>
               <p className="text-base leading-relaxed text-gray-700 md:text-lg lg:text-xl">
-                {quote}
+                {lines.map((line, i) => (
+                  <span key={i} className="block">
+                    {line}
+                  </span>
+                ))}
               </p>
               <footer className="mt-6">
                 <cite className="not-italic text-gray-600">— {attribution}</cite>
               </footer>
             </blockquote>
           </div>
-          <div className="w-full shrink-0 md:w-64 lg:w-80">
-            <div className="relative aspect-[615/395] overflow-hidden rounded-lg">
-              <Image
-                src={imageSrc}
-                alt={imageAlt}
-                fill
-                sizes="(min-width: 1024px) 320px, (min-width: 768px) 256px, 100vw"
-                className="object-contain"
-              />
+          {imageSrc && (
+            <div className="w-full shrink-0 md:w-64 lg:w-80">
+              <div className="relative aspect-[615/395] overflow-hidden rounded-lg">
+                <Image
+                  src={imageSrc}
+                  alt={imageAlt}
+                  fill
+                  sizes="(min-width: 1024px) 320px, (min-width: 768px) 256px, 100vw"
+                  className="object-contain"
+                />
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </section>

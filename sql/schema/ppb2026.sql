@@ -157,18 +157,23 @@ create table ppb2026.source_documents_metadata_clean (
 );
 
 
--- Resolution series: recurring-resolution groups over Digital Library
--- resolutions, with conservative supersession claims (named superseded_by
--- only when every safety gate passes; collections and same-year ties only
--- get the weaker has_newer). NO fuzzy matching — exact normalized-title
--- keys within one organ. Refreshed daily at 06:30 UTC via pg_cron.
--- See sql/migrations/021_resolution_series.sql for full rationale.
-create or replace function digitallibrary.normalize_res_title(title text)
+-- Resolution series: recurring-instrument groups over Digital Library
+-- resolutions, decisions and Human Rights Council presidential statements,
+-- with conservative supersession claims (named superseded_by only when every
+-- safety gate passes; collections and same-year ties only get the weaker
+-- has_newer). NO fuzzy matching — exact normalized-title keys within one
+-- organ and instrument type. Security Council presidential statements are
+-- excluded (no topical title). Refreshed daily at 06:30 UTC via pg_cron.
+-- See sql/migrations/030_resolution_series_all_types.sql for full rationale.
+-- Shared normalizer. doc_kind is 'PRST' or anything else (RES/DEC).
+create or replace function digitallibrary.normalize_series_title(
+    title text, doc_kind text default 'RES')
 returns text
 language plpgsql immutable parallel safe
 as $fn$
 declare
     t text;
+    br text;
     guards text[] := '{}';
     m text[];
     pat text;
@@ -183,7 +188,34 @@ begin
         'aaaaaaaeeeeeiiiiiooooooouuuuucnyyAAAAAAAEEEEEIIIIIOOOOOOOUUUUUCNY');
     t := regexp_replace(lower(trim(t)), '\s+', ' ', 'g');
 
-    -- SC-style number-only titles carry no series information
+    if doc_kind = 'PRST' then
+        -- presentation noise that varies between sessions (PRST ONLY)
+        t := regexp_replace(t, '\s*\[[^\]]*\]\s*$', '');
+        t := regexp_replace(t, '[,\s]*human rights council,?\s*\d+\w*\s*session\s*$', '');
+        t := regexp_replace(t, '[,\s]*(the )?president''?s? statement\s*$', '');
+        t := regexp_replace(t, '[,\s]*statement\s*$', '');
+        t := regexp_replace(t, '^reports? of\y', 'report of');
+        t := trim(t);
+        -- titles with no topic of their own carry no series information
+        if t ~ '^(the )?(president''?s? statement|statement by the president|statement)$' then
+            return null;
+        end if;
+    else
+        -- topic extraction for RES/DEC: SC "[on <topic>]" wins, else strip a
+        -- leading "<Body> resolution/decision N (Y)" self-reference.
+        br := substring(t from '\[on (.+)\]\s*$');
+        if br is not null then
+            t := br;
+        else
+            t := regexp_replace(t,
+                '^(security council|general assembly|economic and social council|'
+                || 'trusteeship council|human rights council|commission on human rights)'
+                || '\s+(resolution|decision)s?\s+[^ ]+\s*(\(\d{4}\))?\s*', '');
+        end if;
+    end if;
+
+    -- number-only titles carry no series information (safety net for rows the
+    -- extraction above could not improve)
     if t ~ '^resolutions? \d' then
         return null;
     end if;
@@ -223,38 +255,63 @@ begin
 end;
 $fn$;
 
+-- Backwards-compatible wrapper (021 signature).
+create or replace function digitallibrary.normalize_res_title(title text)
+returns text
+language sql immutable parallel safe
+as $fn$
+    select digitallibrary.normalize_series_title(title, 'RES');
+$fn$;
+
 drop materialized view if exists digitallibrary.resolution_series;
 
 create materialized view digitallibrary.resolution_series as
-with keyed as (
+with base as (
     select
         recid,
         document_symbol,
         coalesce(un_body, '') as un_body,
         coalesce(extract(year from date_publication)::int, 0) as year,
-        digitallibrary.normalize_res_title(title) as series_key
+        case
+            when document_symbol ~ '/PRST/' then 'PRST'
+            when document_symbol ~ '/DEC/'  then 'DEC'
+            else 'RES'
+        end as doc_type,
+        digitallibrary.normalize_series_title(
+            coalesce(display_title, title),
+            case when document_symbol ~ '/PRST/' then 'PRST' else 'RES' end
+        ) as series_key
     from digitallibrary.documents
-    where document_symbol ~ '/RES/'
-      and deleted_at is null
-      and title is not null
-      and digitallibrary.normalize_res_title(title) is not null
+    where deleted_at is null
+      and coalesce(display_title, title) is not null
+      and (
+            document_symbol ~ '/RES/'
+         or document_symbol ~ '/DEC/'
+         -- Security Council presidential statements have no topical title;
+         -- see the header note. A/HRC presidential statements do.
+         or (document_symbol ~ '/PRST/' and document_symbol !~ '^S/PRST/')
+      )
+),
+keyed as (
+    select * from base where series_key is not null
 ),
 year_counts as (
-    select series_key, un_body, year, count(*) as n_in_year
+    select series_key, un_body, doc_type, year, count(*) as n_in_year
     from keyed
-    group by 1, 2, 3
+    group by 1, 2, 3, 4
 ),
 group_stats as (
     select
         series_key,
         un_body,
+        doc_type,
         sum(n_in_year)::int as series_count,
         min(year) as series_first_year,
         max(year) as series_last_year,
         count(*)::int as n_years,
         max(n_in_year)::int as max_per_year
     from year_counts
-    group by 1, 2
+    group by 1, 2, 3
 ),
 informative as (
     select series_key,
@@ -267,18 +324,19 @@ informative as (
     from (select distinct series_key from keyed) k
 ),
 latest_docs as (
-    select k.series_key, k.un_body,
+    select k.series_key, k.un_body, k.doc_type,
            count(*)::int as n_latest,
            min(k.document_symbol) as latest_symbol
     from keyed k
-    join group_stats g using (series_key, un_body)
+    join group_stats g using (series_key, un_body, doc_type)
     where k.year = g.series_last_year
-    group by 1, 2
+    group by 1, 2, 3
 )
 select
     k.recid,
     k.document_symbol,
     k.un_body,
+    k.doc_type,
     k.year,
     k.series_key,
     g.series_count,
@@ -299,20 +357,31 @@ select
         then ld.latest_symbol
     end as superseded_by
 from keyed k
-join group_stats g using (series_key, un_body)
+join group_stats g using (series_key, un_body, doc_type)
 join informative i using (series_key)
-join latest_docs ld using (series_key, un_body);
+join latest_docs ld using (series_key, un_body, doc_type);
 
 -- unique index required for REFRESH ... CONCURRENTLY
 create unique index resolution_series_recid_idx
     on digitallibrary.resolution_series (recid);
--- website lookups are by symbol (14 known duplicate symbols -> non-unique)
+-- website lookups are by symbol (known duplicate symbols -> non-unique)
 create index resolution_series_symbol_idx
     on digitallibrary.resolution_series (document_symbol);
 create index resolution_series_key_idx
-    on digitallibrary.resolution_series (series_key, un_body);
+    on digitallibrary.resolution_series (series_key, un_body, doc_type);
 
 grant select on digitallibrary.resolution_series to mandates_readonly;
+
+-- The website also reads the Digital Library fulltext tables directly:
+-- getResolutionSeries JOINs digitallibrary.documents, and Arm 2 of
+-- getParagraphsBySymbol reads digitallibrary.document_paragraphs (the fallback
+-- for documents with no curated mandates.paragraphs rows). These tables are
+-- created/owned by the external DL-sync repo (digitallibrary_rw), so they are
+-- not defined in this file -- only the read grant the app depends on is tracked
+-- here. document_parses is granted for parity with the document* read set even
+-- though the app does not read it yet. See migration 034 and sql/roles/wannes.sql.
+grant select on digitallibrary.document_paragraphs to mandates_readonly;
+grant select on digitallibrary.document_parses     to mandates_readonly;
 
 -- Unified set: PPB source documents + Digital Library resolutions.
 -- Materialized (not a plain view) — the Digital Library branch full-scans
@@ -354,7 +423,23 @@ select
     sd.ppb_link,
     coalesce(sd.ppb_year, extract(year from dl.date_publication)::smallint) as ppb_year,
     sd.ppb_body,
-    sd.ppb_type,
+    -- Document type: prefer the type the Digital Library derives from the
+    -- symbol family (same rule as the DL branch below), fall back to the
+    -- curated Airtable ppb_type where the symbol carries no type signal
+    -- (Letters, Reports, Conventions, Charter, …). This fills the ~630 PPB
+    -- documents (mostly 2027-pipeline resolutions) whose Airtable ppb_type is
+    -- blank, without regressing the curated rich types. See migration 035.
+    -- WTO ministerial docs (e.g. WT/MIN(01)/DEC/1) use "/DEC/" in their own
+    -- numbering and are not UN decisions, so they are excluded and keep Airtable.
+    coalesce(
+        case
+            when sd.ppb_full_document_symbol ~ '^WT/'    then null
+            when sd.ppb_full_document_symbol ~ '/PRST/'  then 'Presidential Statements'
+            when sd.ppb_full_document_symbol ~ '/DEC/'   then 'Decisions'
+            when sd.ppb_full_document_symbol ~ '/RES/'   then 'Resolutions'
+        end,
+        sd.ppb_type
+    ) as ppb_type,
     dl.subjects,
     dl.agenda_items,
     true as is_ppb,
@@ -396,6 +481,11 @@ create index unified_documents_symbol_idx
 create index unified_documents_body_idx on public.unified_documents (ppb_body);
 create index unified_documents_type_idx on public.unified_documents (ppb_type);
 create index unified_documents_year_idx on public.unified_documents (ppb_year);
+-- Serves the array-overlap (&&) candidate lookup behind the detail page's
+-- related-documents feature, and the subject document-frequency aggregate that
+-- supplies its IDF weights. See migrations/034.
+create index unified_documents_subjects_gin
+    on public.unified_documents using gin (subjects);
 
 grant select on public.unified_documents to mandates_readonly;
 grant select on ppb2026.subject_thesaurus to mandates_readonly;

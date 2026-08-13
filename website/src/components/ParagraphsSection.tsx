@@ -10,19 +10,22 @@ import React, {
 } from 'react'
 import {
   ChevronDown,
-  FileCheck,
+  ChevronUp,
   FileText,
-  HelpCircle,
   Menu,
   Package,
   Users,
-  MessageCircle,
   X,
 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 
 import { Skeleton } from '@/components/ui/skeleton'
+import { Chip } from '@/components/ui/chip'
+import {
+  DetailFootnote,
+  DetailSectionHeading,
+} from '@/components/MandateDetailUi'
 
+import { cn } from '@/lib/utils'
 import { explainerTexts } from '@/lib/en_text_contents'
 import { useIsMobile } from '@/hooks/use-mobile'
 import type { Entity, Paragraph } from '@/types'
@@ -54,6 +57,19 @@ type EntityTooltipData = {
 
 type DeliverableTooltipData = ParagraphMandate['deliverables'][number]
 
+/**
+ * The key the "Actions" filter groups by: the normalized lemma when the
+ * extraction supplied one, else the literal verb. Grouping on the raw verb would
+ * list every surface variant separately ("requests" / "Further requests" /
+ * "also requests"); the Digital Library corpus alone has 388 of them against 81
+ * lemmas, and the mandates corpus 485 against 80. Returns null when the mandate
+ * carries no verb at all.
+ */
+const actionVerbKey = (mandate: ParagraphMandate): string | null => {
+  const verb = mandate.action_verb_normalized || mandate.action_verb
+  return verb ? verb.toLowerCase() : null
+}
+
 // TOC data structure
 interface TOCItem {
   id: string
@@ -63,10 +79,31 @@ interface TOCItem {
   index: number
 }
 
+/**
+ * The three filter controls are `Chip`s (components/ui/chip.tsx) at the
+ * sidebar's own density, so the row sits at exactly the same height as the
+ * entity and topic chips above it — this file used to carry its own copy of
+ * that geometry, which is how the two drifted apart.
+ *
+ * `bg-transparent` is the one deviation: a filter *trigger* is not a value, so
+ * it does not take the neutral chip's grey fill. It is passed as a class rather
+ * than added as a fifth tone, because a tone is meaning and this is geometry.
+ * Active filters are marked in un-blue *text*, never a fill — the fill is
+ * reserved for a selected facet, which a trigger never is.
+ */
+const filterPillTone = (currentFilter: string) =>
+  cn(
+    'bg-transparent',
+    currentFilter !== 'all' ? 'font-medium text-un-blue' : 'text-gray-600'
+  )
+
+/** Popover panel, anchored under the pill whatever the pill's height is. */
+const FILTER_PANEL =
+  'absolute top-full left-0 z-50 mt-1 min-w-48 rounded-md border border-gray-200 bg-white py-1 shadow-lg'
+
 // Reusable filter dropdown component
 interface FilterDropdownProps {
   label: string
-  icon: React.ReactNode
   currentFilter: string
   isOpen: boolean
   onToggle: () => void
@@ -74,7 +111,6 @@ interface FilterDropdownProps {
   typeCounts: Record<string, number>
   withItemsCount: number
   withItemsLabel: string
-  totalCount: number
   className?: string
   hierarchicalData?: Record<string, Record<string, number>>
   filteredTotalCount: number // Count of all paragraphs matching other filters
@@ -82,7 +118,6 @@ interface FilterDropdownProps {
 
 function FilterDropdown({
   label,
-  icon,
   currentFilter,
   isOpen,
   onToggle,
@@ -90,7 +125,6 @@ function FilterDropdown({
   typeCounts,
   withItemsCount,
   withItemsLabel,
-  totalCount,
   className = '',
   hierarchicalData,
   filteredTotalCount,
@@ -99,15 +133,7 @@ function FilterDropdown({
 
   return (
     <div className={`relative ${className}`}>
-      <button
-        onClick={onToggle}
-        className={`flex h-7 cursor-pointer items-center gap-1.5 rounded-md border border-gray-300 bg-gray-100 px-3 text-xs transition-all duration-200 hover:border-gray-400 hover:bg-gray-200 ${
-          currentFilter !== 'all'
-            ? 'border-un-blue! bg-un-blue/15! text-un-blue! hover:bg-un-blue/25!'
-            : 'text-gray-700'
-        }`}
-      >
-        {icon}
+      <Chip onClick={onToggle} className={filterPillTone(currentFilter)}>
         <span>
           {currentFilter === 'all'
             ? label
@@ -121,20 +147,12 @@ function FilterDropdown({
                   })()
                 : `${titleCase(currentFilter.replace(/_/g, ' '))} (${typeCounts[currentFilter] || 0})`}
         </span>
-        <svg
-          className={`h-3 w-3 transition-transform ${isOpen ? 'rotate-180' : ''}`}
-          fill="currentColor"
-          viewBox="0 0 20 20"
-        >
-          <path
-            fillRule="evenodd"
-            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-            clipRule="evenodd"
-          />
-        </svg>
-      </button>
+        <ChevronDown
+          className={`h-3 w-3 shrink-0 self-center text-un-blue transition-transform ${isOpen ? 'rotate-180' : ''}`}
+        />
+      </Chip>
       {isOpen && (
-        <div className="absolute top-8 left-0 z-50 min-w-48 rounded-md border border-gray-200 bg-white py-1 shadow-lg">
+        <div className={FILTER_PANEL}>
           {/* All paragraphs option */}
           <button
             onClick={() => onFilterChange('all')}
@@ -248,13 +266,11 @@ function FilterDropdown({
 // Searchable filter dropdown component
 interface SearchableFilterDropdownProps {
   label: string
-  icon: React.ReactNode
   currentFilter: string
   isOpen: boolean
   onToggle: () => void
   onFilterChange: (filter: string) => void
   typeCounts: Record<string, number>
-  totalCount: number
   className?: string
   filteredTotalCount: number // Count of all paragraphs matching other filters
   hierarchicalData?: Record<string, Record<string, number>>
@@ -265,13 +281,11 @@ interface SearchableFilterDropdownProps {
 
 function SearchableFilterDropdown({
   label,
-  icon,
   currentFilter,
   isOpen,
   onToggle,
   onFilterChange,
   typeCounts,
-  totalCount,
   className = '',
   filteredTotalCount,
   hierarchicalData,
@@ -329,15 +343,7 @@ function SearchableFilterDropdown({
 
   return (
     <div className={`relative ${className}`}>
-      <button
-        onClick={onToggle}
-        className={`flex h-7 cursor-pointer items-center gap-1.5 rounded-md border border-gray-300 bg-gray-100 px-3 text-xs transition-all duration-200 hover:border-gray-400 hover:bg-gray-200 ${
-          currentFilter !== 'all'
-            ? 'border-un-blue! bg-un-blue/15! text-un-blue! hover:bg-un-blue/25!'
-            : 'text-gray-700'
-        }`}
-      >
-        {icon}
+      <Chip onClick={onToggle} className={filterPillTone(currentFilter)}>
         <span>
           {currentFilter === 'all'
             ? label
@@ -351,20 +357,12 @@ function SearchableFilterDropdown({
                   })()
                 : `${titleCase(currentFilter.replace(/_/g, ' '))} (${typeCounts[currentFilter] || 0})`}
         </span>
-        <svg
-          className={`h-3 w-3 transition-transform ${isOpen ? 'rotate-180' : ''}`}
-          fill="currentColor"
-          viewBox="0 0 20 20"
-        >
-          <path
-            fillRule="evenodd"
-            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-            clipRule="evenodd"
-          />
-        </svg>
-      </button>
+        <ChevronDown
+          className={`h-3 w-3 shrink-0 self-center text-un-blue transition-transform ${isOpen ? 'rotate-180' : ''}`}
+        />
+      </Chip>
       {isOpen && (
-        <div className="absolute top-8 left-0 z-50 min-w-48 rounded-md border border-gray-200 bg-white py-1 shadow-lg">
+        <div className={FILTER_PANEL}>
           {/* Search input */}
           <div className="border-b border-gray-100 px-3 py-2">
             <input
@@ -552,6 +550,148 @@ function cleanPrefix(prefix: string) {
   return prefix.replace(/[.\(\)\[\]]/g, '').trim()
 }
 
+/**
+ * Element types that are structural boilerplate and stay hidden for now.
+ * Vote records, footnotes, tables and horizontal dividers are deferred future
+ * work (see PROJECT NOTES at the bottom of this file); mastheads/frontmatter,
+ * backmatter, footers and signatures are pure document chrome.
+ */
+const HIDDEN_TYPES = new Set([
+  'frontmatter',
+  'backmatter',
+  'footnote',
+  'footer',
+  'signature',
+  'vote_record',
+  'divider',
+  'table',
+])
+
+function isAnnexSection(section?: string): boolean {
+  return section === 'annex' || section === 'appendix'
+}
+
+/** A heading whose text opens an annex/appendix (used when there is no
+ * Digital Library section metadata, e.g. the mandates corpus). */
+const ANNEX_START_RE = /^(annex|appendix)\b/i
+
+function isAnnexStartHeading(p: Paragraph): boolean {
+  if (p.type !== 'heading') return false
+  if (isAnnexSection(p.section) && p.annex_index != null) return true
+  return ANNEX_START_RE.test(p.text?.trim() || '')
+}
+
+/** Roman numeral for annex labels (annexes never exceed a handful). */
+function romanNumeral(n: number): string {
+  const table: [number, string][] = [
+    [10, 'X'],
+    [9, 'IX'],
+    [5, 'V'],
+    [4, 'IV'],
+    [1, 'I'],
+  ]
+  let out = ''
+  let rem = n
+  for (const [value, symbol] of table) {
+    while (rem >= value) {
+      out += symbol
+      rem -= value
+    }
+  }
+  return out
+}
+
+/**
+ * Whether an element renders as visible content anywhere in the flow. Hides
+ * structural chrome; hides the document-level `title` (it duplicates the page
+ * H1) but keeps annex/appendix titles, which become the annex subtitle.
+ */
+function isContentElement(p: Paragraph): boolean {
+  if (HIDDEN_TYPES.has(p.type)) return false
+  if (p.type === 'title') return isAnnexSection(p.section)
+  return true
+}
+
+/**
+ * Comparable form of a document-title line. Strips the leading resolution
+ * number the title carries either inline ("79/1.   The Pact for the Future",
+ * mandates arm) or in `prefix` ("80/286.", Digital Library arm), plus trailing
+ * punctuation, so a title and a heading of the same text compare equal.
+ */
+function normalizeTitleText(text: string): string {
+  return text
+    .replace(/^\s*\d+\/\d+[A-Za-z]?\.?\s*/, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase()
+    .replace(/[.:;]+$/, '')
+}
+
+/**
+ * Index of the heading that merely repeats the document title, or null.
+ *
+ * Declaration-style documents ("The Pact for the Future", the Millennium
+ * Declaration) carry the title twice: once as the hidden `title` element and
+ * again as an unnumbered level-1 heading opening the declaration text — which
+ * on the detail page renders as a bold echo of the page H1 one screen above.
+ *
+ * Three guards keep genuine structure: the heading must carry no `prefix` (a
+ * numbered "I. Support account for peacekeeping operations" is a real section
+ * even when it matches the title), must sit before the first operative
+ * paragraph (the same text further down opens an annexed instrument — the
+ * Sendai Framework, the Convention against Cybercrime — and is a real heading),
+ * and only the first such match is dropped. Measured over the corpus: 144
+ * headings match a title text, 33 of those precede the first operative
+ * paragraph, 27 of those are unnumbered — the 27 title echoes.
+ */
+function findTitleEchoIndex(paragraphs: Paragraph[] | null): number | null {
+  if (!paragraphs || paragraphs.length === 0) return null
+  const titleRow = paragraphs.find(
+    (p) => p.type === 'title' && !isAnnexSection(p.section)
+  )
+  if (!titleRow) return null
+  const title = normalizeTitleText(
+    `${titleRow.prefix ?? ''} ${titleRow.text ?? ''}`
+  )
+  if (!title) return null
+
+  const firstOperative = paragraphs.findIndex(
+    (p) => p.paragraph_type === 'operative'
+  )
+  const limit = firstOperative === -1 ? paragraphs.length : firstOperative
+
+  for (let i = 0; i < limit; i++) {
+    const p = paragraphs[i]
+    if (p.type !== 'heading') continue
+    if (p.prefix?.trim()) continue
+    if (normalizeTitleText(p.text ?? '') === title) return i
+  }
+  return null
+}
+
+/** Indentation for nested list levels. */
+function getIndentClass(level: number): string {
+  if (level <= 1) return ''
+  switch (level) {
+    case 2:
+      return 'ml-6'
+    case 3:
+      return 'ml-12'
+    case 4:
+      return 'ml-18'
+    case 5:
+      return 'ml-24'
+    case 6:
+      return 'ml-30'
+    case 7:
+      return 'ml-36'
+    case 8:
+      return 'ml-42'
+    default:
+      return 'ml-48'
+  }
+}
+
 export function ParagraphsSection({
   paragraphs: allParagraphs,
   documentSymbol,
@@ -578,7 +718,6 @@ export function ParagraphsSection({
   const [isActionVerbDropdownOpen, setIsActionVerbDropdownOpen] =
     useState(false)
   const [activeHeadingId, setActiveHeadingId] = useState<string | null>(null)
-  const [openTooltip, setOpenTooltip] = useState<string | null>(null)
   const [isMobileTOCOpen, setIsMobileTOCOpen] = useState(false)
   const [showFloatingTOC, setShowFloatingTOC] = useState(false)
 
@@ -697,9 +836,7 @@ export function ParagraphsSection({
         if (actionVerbFilter !== 'all') {
           if (
             !paragraph.mandates?.some(
-              (mandate) =>
-                mandate.action_verb &&
-                mandate.action_verb.toLowerCase() === actionVerbFilter
+              (mandate) => actionVerbKey(mandate) === actionVerbFilter
             )
           ) {
             return false
@@ -945,8 +1082,9 @@ export function ParagraphsSection({
     allParagraphs.forEach((paragraph: Paragraph) => {
       if (paragraph.mandates) {
         paragraph.mandates.forEach((mandate) => {
-          if (mandate.action_verb) {
-            verbs.add(mandate.action_verb.toLowerCase())
+          const key = actionVerbKey(mandate)
+          if (key) {
+            verbs.add(key)
           }
         })
       }
@@ -972,8 +1110,9 @@ export function ParagraphsSection({
           const actionVerbsInParagraph = new Set<string>()
 
           paragraph.mandates.forEach((mandate) => {
-            if (mandate.action_verb) {
-              actionVerbsInParagraph.add(mandate.action_verb.toLowerCase())
+            const key = actionVerbKey(mandate)
+            if (key) {
+              actionVerbsInParagraph.add(key)
             }
           })
 
@@ -987,6 +1126,17 @@ export function ParagraphsSection({
 
     return counts
   }, [allParagraphs, paragraphMatchesOtherFilters, allActionVerbs])
+
+  // Whether any filter dropdown has options at all. Each dropdown already hides
+  // itself when empty; this keeps the surrounding "Filter:" row from rendering
+  // as a dead label when all three are.
+  const hasAnyFilterOptions = useMemo(
+    () =>
+      Object.keys(assigneeTypeCounts).length > 0 ||
+      Object.keys(deliverableTypeCounts).length > 0 ||
+      Object.keys(actionVerbCounts).length > 0,
+    [assigneeTypeCounts, deliverableTypeCounts, actionVerbCounts]
+  )
 
   // Calculate count of paragraphs with any deliverables based on current filters
   const paragraphsWithDeliverablesCount = useMemo(() => {
@@ -1020,6 +1170,13 @@ export function ParagraphsSection({
       paragraphMatchesOtherFilters(paragraph, 'actionVerb')
     ).length
   }, [allParagraphs, paragraphMatchesOtherFilters])
+
+  // The one heading that only repeats the document title (see
+  // findTitleEchoIndex); dropped from the flow and from the TOC.
+  const titleEchoIndex = useMemo(
+    () => findTitleEchoIndex(allParagraphs),
+    [allParagraphs]
+  )
 
   // Frontend filtering of paragraphs
   const paragraphs = useMemo(() => {
@@ -1113,9 +1270,7 @@ export function ParagraphsSection({
       if (actionVerbFilter !== 'all') {
         if (
           !paragraph.mandates?.some(
-            (mandate) =>
-              mandate.action_verb &&
-              mandate.action_verb.toLowerCase() === actionVerbFilter
+            (mandate) => actionVerbKey(mandate) === actionVerbFilter
           )
         ) {
           return false
@@ -1203,24 +1358,32 @@ export function ParagraphsSection({
       assigneeFilter !== 'all' ||
       actionVerbFilter !== 'all'
 
-    // Check if any filters are active
-    const hasActiveFilters = paragraphFilter !== 'all' || hasEnhancedFilters
+    // Only the mandate-attribute filters narrow the list; the base view shows
+    // every content element (operative + neutral body + annex content).
+    const hasActiveFilters = hasEnhancedFilters
 
     // Helper function to determine if a paragraph should be included (with parent-child logic)
     const shouldIncludeParagraph = (index: number): boolean => {
       const paragraph = allParagraphs[index]
 
-      // Always apply basic paragraph type filter
+      // Hide structural chrome and the document title (duplicates the H1).
+      if (!isContentElement(paragraph)) {
+        return false
+      }
+
+      // Main-section preambular clauses render in the collapsible above, not
+      // the list. Preambular inside an annex renders inline within its block.
       if (
-        paragraphFilter === 'operative' &&
-        paragraph.paragraph_type !== 'operative'
+        paragraph.type !== 'heading' &&
+        paragraph.paragraph_type === 'preambular' &&
+        !isAnnexSection(paragraph.section)
       ) {
         return false
       }
 
-      // If no enhanced filters are active, use simple matching
+      // If no enhanced filters are active, show all content elements
       if (!hasEnhancedFilters) {
-        return true // Only paragraph type filter is active, which we already checked
+        return true
       }
 
       // Check if this paragraph directly matches the enhanced filters
@@ -1267,6 +1430,11 @@ export function ParagraphsSection({
     // Filter paragraphs
     const filtered = allParagraphs.filter(
       (paragraph: Paragraph, index: number) => {
+        // The heading that only echoes the document title never renders.
+        if (index === titleEchoIndex) {
+          return false
+        }
+
         if (paragraph.type === 'heading') {
           // If no filters are active, always show headings
           if (!hasActiveFilters) {
@@ -1288,6 +1456,7 @@ export function ParagraphsSection({
     deliverableFilter,
     assigneeFilter,
     actionVerbFilter,
+    titleEchoIndex,
   ])
 
   // Build TOC from paragraphs
@@ -1297,9 +1466,22 @@ export function ParagraphsSection({
     const items: TOCItem[] = []
     const stack: TOCItem[] = []
 
+    let insideAnnex = false
     paragraphs.forEach((paragraph: Paragraph, index: number) => {
       if (paragraph.type === 'heading') {
-        const level = paragraph.heading_level || 3
+        const isAnnexStart = isAnnexStartHeading(paragraph)
+        if (paragraph.section === 'main' && !isAnnexStart) insideAnnex = false
+        // Annexes anchor a top-level TOC node; their inner headings nest one
+        // level below it (the raw heading levels inside annexes are flat).
+        let level: number
+        if (isAnnexStart) {
+          insideAnnex = true
+          level = 1
+        } else if (insideAnnex || isAnnexSection(paragraph.section)) {
+          level = Math.max((paragraph.heading_level || 3) + 1, 2)
+        } else {
+          level = paragraph.heading_level || 3
+        }
         // Include prefix in TOC text if it exists
         const displayText = paragraph.prefix
           ? `${paragraph.prefix} ${paragraph.text}`
@@ -1480,7 +1662,9 @@ export function ParagraphsSection({
     }, 50) // Small delay to ensure DOM is ready
 
     return () => clearTimeout(timeoutId)
-  }, [paragraphs]) // Remove tocItems from dependencies as it's derived from paragraphs
+    // tocItems.length only guards the early return; tocItems itself is derived
+    // from `paragraphs`, so depending on the whole array would re-run for free.
+  }, [paragraphs, tocItems.length])
 
   // Set initial active heading when paragraphs first load
   useEffect(() => {
@@ -1530,13 +1714,10 @@ export function ParagraphsSection({
     }
   }
 
-  // Close tooltip, mobile TOC, and dropdown when clicking outside
+  // Close the mobile TOC and the filter dropdowns on outside click, resize or Escape.
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element
-      if (!target.closest('.tooltip-container')) {
-        setOpenTooltip(null)
-      }
       if (!target.closest('.mobile-toc-container')) {
         setIsMobileTOCOpen(false)
       }
@@ -1551,18 +1732,8 @@ export function ParagraphsSection({
       }
     }
 
-    const handleScroll = () => {
-      // Only close tooltip on scroll, not dropdowns
-      if (openTooltip === 'paragraphs-beta') {
-        setOpenTooltip(null)
-      }
-    }
-
     const handleResize = () => {
       // Close everything on resize as layout changes
-      if (openTooltip === 'paragraphs-beta') {
-        setOpenTooltip(null)
-      }
       if (isDeliverableDropdownOpen) {
         setIsDeliverableDropdownOpen(false)
       }
@@ -1576,9 +1747,6 @@ export function ParagraphsSection({
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        if (openTooltip === 'paragraphs-beta') {
-          setOpenTooltip(null)
-        }
         if (isDeliverableDropdownOpen) {
           setIsDeliverableDropdownOpen(false)
         }
@@ -1595,34 +1763,26 @@ export function ParagraphsSection({
     }
 
     if (
-      openTooltip ||
       isMobileTOCOpen ||
       isDeliverableDropdownOpen ||
       isAssigneeDropdownOpen ||
       isActionVerbDropdownOpen
     ) {
       document.addEventListener('mousedown', handleClickOutside)
-      window.addEventListener('scroll', handleScroll, false)
       window.addEventListener('resize', handleResize)
       document.addEventListener('keydown', handleKeyDown)
       return () => {
         document.removeEventListener('mousedown', handleClickOutside)
-        window.removeEventListener('scroll', handleScroll, false)
         window.removeEventListener('resize', handleResize)
         document.removeEventListener('keydown', handleKeyDown)
       }
     }
   }, [
-    openTooltip,
     isMobileTOCOpen,
     isDeliverableDropdownOpen,
     isAssigneeDropdownOpen,
     isActionVerbDropdownOpen,
   ])
-
-  const toggleTooltip = (tooltipId: string) => {
-    setOpenTooltip(openTooltip === tooltipId ? null : tooltipId)
-  }
 
   // Render TOC items recursively
   const renderTOCItem = (
@@ -1740,7 +1900,6 @@ export function ParagraphsSection({
       { pattern: /within existing resources/gi, type: 'highlight' },
     ]
 
-    const currentText = sourceText
     const replacements: {
       start: number
       end: number
@@ -1774,8 +1933,8 @@ export function ParagraphsSection({
           // Enhanced highlighting for action verb when filter is active
           const isFilteredVerb =
             actionVerbFilter !== 'all' &&
-            correspondingMandate?.action_verb?.toLowerCase() ===
-              actionVerbFilter
+            correspondingMandate !== undefined &&
+            actionVerbKey(correspondingMandate) === actionVerbFilter
           const verbClasses =
             hasEnhancedFilters && isFilteredVerb
               ? 'text-un-blue cursor-help bg-yellow-200 px-1 py-0.5 rounded font-semibold shadow-xs'
@@ -1805,27 +1964,28 @@ export function ParagraphsSection({
           // the prior forEach-assignment order: per mandate, assignees then
           // mentioned_entities).
           const needle = matchText.toLowerCase()
-          const entityCandidates: EntityTooltipData[] = (mandates ?? [])
-            .flatMap((mandate) => [
-              ...(mandate.assignees ?? [])
-                .filter((a) => a.assignee.toLowerCase() === needle)
-                .map(
-                  (a): EntityTooltipData => ({
-                    ...a,
-                    entityType: 'assignee',
-                  })
-                ),
-              ...(mandate.mentioned_entities ?? [])
-                .filter((e) => e.mentioned_entity.toLowerCase() === needle)
-                .map(
-                  (e): EntityTooltipData => ({
-                    assignee: e.mentioned_entity,
-                    assignee_normalized: e.mentioned_entity_normalized,
-                    assignee_type: e.mentioned_entity_type,
-                    entityType: 'mentioned_entity',
-                  })
-                ),
-            ])
+          const entityCandidates: EntityTooltipData[] = (
+            mandates ?? []
+          ).flatMap((mandate) => [
+            ...(mandate.assignees ?? [])
+              .filter((a) => a.assignee.toLowerCase() === needle)
+              .map(
+                (a): EntityTooltipData => ({
+                  ...a,
+                  entityType: 'assignee',
+                })
+              ),
+            ...(mandate.mentioned_entities ?? [])
+              .filter((e) => e.mentioned_entity.toLowerCase() === needle)
+              .map(
+                (e): EntityTooltipData => ({
+                  assignee: e.mentioned_entity,
+                  assignee_normalized: e.mentioned_entity_normalized,
+                  assignee_type: e.mentioned_entity_type,
+                  entityType: 'mentioned_entity',
+                })
+              ),
+          ])
           const entityData: EntityTooltipData | null =
             entityCandidates[entityCandidates.length - 1] ?? null
 
@@ -1888,8 +2048,10 @@ export function ParagraphsSection({
             deliverableData?.deliverable_type === deliverableFilter
           const deliverableClasses =
             hasEnhancedFilters && isFilteredDeliverable
-              ? 'bg-yellow-200 border border-gray-350 px-2 py-0.5 rounded-full text-sm font-semibold cursor-help shadow-xs'
-              : 'bg-gray-200 border border-gray-350 px-2 py-0.5 rounded-full text-sm font-medium cursor-help'
+              ? // gray-350 is not a Tailwind colour and is not defined in
+                // globals.css, so this border has never rendered at all.
+                'bg-yellow-200 border border-gray-300 px-2 py-0.5 rounded-full text-sm font-semibold cursor-help shadow-xs'
+              : 'bg-gray-200 border border-gray-300 px-2 py-0.5 rounded-full text-sm font-medium cursor-help'
 
           component = (
             <Tooltip key={`deliverable-${segmentKey++}`}>
@@ -1932,11 +2094,54 @@ export function ParagraphsSection({
       pattern.lastIndex = 0 // Reset regex
     })
 
-    // Sort replacements by position and build segments
-    replacements.sort((a, b) => a.start - b.start)
+    // Linked symbols. The plain-text path above renders these; this path used to
+    // drop them silently, which was invisible while only 96 documents carried
+    // highlight markup and none of them many links. The Digital Library arm
+    // supplies both, so they are rendered here too.
+    if (links && links.length > 0) {
+      links.forEach(([linkText, url]) => {
+        if (!linkText || !url) return
+        let from = 0
+        for (;;) {
+          const idx = sourceText.indexOf(linkText, from)
+          if (idx === -1) break
+          replacements.push({
+            start: idx,
+            end: idx + linkText.length,
+            component: (
+              <a
+                key={`link-${segmentKey++}`}
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-un-blue hover:underline"
+              >
+                {linkText}
+              </a>
+            ),
+            text: linkText,
+          })
+          from = idx + linkText.length
+        }
+      })
+    }
+
+    // Sort replacements by position, longest first on ties, then drop anything
+    // that overlaps an already-claimed span. Annotation spans never overlap each
+    // other (verified across all 9,006 pre-rendered rows), but a link's text can
+    // straddle one, and the segment builder below assumes disjoint spans — an
+    // overlap would emit the same words twice.
+    replacements.sort((a, b) => a.start - b.start || b.end - a.end)
+    const disjointReplacements: typeof replacements = []
+    let claimedTo = 0
+    for (const replacement of replacements) {
+      if (replacement.start < claimedTo) continue
+      disjointReplacements.push(replacement)
+      claimedTo = replacement.end
+    }
 
     let lastIndex = 0
-    replacements.forEach((replacement, index) => {
+    disjointReplacements.forEach((replacement) => {
       // Add text before this replacement
       if (replacement.start > lastIndex) {
         const textBefore = sourceText.slice(lastIndex, replacement.start)
@@ -1961,183 +2166,321 @@ export function ParagraphsSection({
     return <>{segments}</>
   }
 
-  return (
-    <div className="space-y-4">
-      <div ref={paragraphsTitleRef} className="space-y-4">
-        {/* Title and Filters Row */}
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          {/* Title Section */}
-          <h3 className="flex items-center gap-2 text-base font-semibold">
-            <FileCheck className="h-4 w-4" />
-            <span>{explainerTexts.mandateDetail.paragraphs.title}</span>
-            <div className="tooltip-container relative">
-              <button
-                type="button"
-                className="flex cursor-help items-center rounded-sm border-0 bg-transparent p-0 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden"
-                aria-label="Information about paragraph extraction"
-                onClick={() => toggleTooltip('paragraphs-beta')}
-              >
-                <HelpCircle className="h-4 w-4 text-muted-foreground" />
-              </button>
-              {openTooltip === 'paragraphs-beta' && (
-                <div className="absolute top-6 left-0 z-50 w-80 rounded-md border bg-white p-3 text-sm font-normal shadow-lg">
-                  <p>
-                    {explainerTexts.mandateDetail.paragraphs.betaDisclaimer}
-                  </p>
-                </div>
-              )}
-            </div>
-          </h3>
+  // Render a single flow element (heading, annex title, or body card). Shared
+  // by the main list and the annex blocks so both stay identical.
+  const renderParagraphElement = (
+    paragraph: Paragraph,
+    index: number
+  ): React.ReactNode => {
+    const indentLevel = paragraph.paragraph_level || 0
+    const indentClass = getIndentClass(indentLevel)
 
-          {/* Filters Section */}
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <span className="hidden text-sm font-medium text-gray-600 sm:block">
-              Filter:
-            </span>
+    if (paragraph.type === 'heading') {
+      const HeadingTag =
+        `h${Math.min(paragraph.heading_level || 3, 6)}` as keyof JSX.IntrinsicElements
+      const headingClasses = {
+        1: 'text-lg font-bold',
+        2: 'text-base font-bold',
+        3: 'text-base font-semibold',
+        4: 'text-sm font-semibold',
+        5: 'text-sm font-medium',
+        6: 'text-sm font-medium',
+      }
+      const headingClass =
+        headingClasses[
+          paragraph.heading_level as keyof typeof headingClasses
+        ] || headingClasses[3]
 
-            {/* Filter buttons - responsive flex */}
-            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-              {/* Assignee type dropdown */}
-              {Object.keys(assigneeTypeCounts).length > 0 && (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div>
-                      <SearchableFilterDropdown
-                        label="Entities"
-                        icon={<Users className="h-3 w-3" />}
-                        currentFilter={assigneeFilter}
-                        isOpen={isAssigneeDropdownOpen}
-                        onToggle={() =>
-                          setIsAssigneeDropdownOpen(!isAssigneeDropdownOpen)
-                        }
-                        onFilterChange={(filter) => {
-                          setAssigneeFilter(filter)
-                          setIsAssigneeDropdownOpen(false)
-                        }}
-                        typeCounts={assigneeTypeCounts}
-                        totalCount={allParagraphs?.length || 0}
-                        className="assignee-dropdown"
-                        filteredTotalCount={assigneeFilteredTotalCount}
-                        hierarchicalData={assigneesByType}
-                        withItemsCount={paragraphsWithAssigneesCount}
-                        withItemsLabel="With entities"
-                        entityLongMap={entityLongMap}
-                      />
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-sm" side="top">
-                    <div className="space-y-2">
-                      <div className="font-medium">Filter by Entity</div>
-                      <div className="text-sm">
-                        Entities include both assignees (organizations assigned
-                        to carry out mandates) and mentioned entities
-                        (organizations referenced in the text).
-                      </div>
-                    </div>
-                  </TooltipContent>
-                </Tooltip>
+      return (
+        <div key={`${documentSymbol}-${index}`}>
+          <div className={`${indentClass}`}>
+            <HeadingTag
+              id={`heading-${index}`}
+              className={`${headingClass} mb-3 scroll-mt-4 leading-tight text-foreground`}
+            >
+              {paragraph.prefix && (
+                <span className="mr-2 font-medium text-un-blue">
+                  {paragraph.prefix}
+                </span>
               )}
+              {renderProcessedText(
+                paragraph.text,
+                paragraph.mandates?.[0]?.action_verb || null,
+                paragraph.links,
+                paragraph.textWithHighlights,
+                paragraph.mandates
+              )}
+            </HeadingTag>
+          </div>
+        </div>
+      )
+    }
 
-              {/* Deliverable type dropdown */}
-              {Object.keys(deliverableTypeCounts).length > 0 && (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div>
-                      <FilterDropdown
-                        label="Deliverables"
-                        icon={<Package className="h-3 w-3" />}
-                        currentFilter={deliverableFilter}
-                        isOpen={isDeliverableDropdownOpen}
-                        onToggle={() =>
-                          setIsDeliverableDropdownOpen(
-                            !isDeliverableDropdownOpen
-                          )
-                        }
-                        onFilterChange={(filter) => {
-                          setDeliverableFilter(filter)
-                          setIsDeliverableDropdownOpen(false)
-                        }}
-                        typeCounts={deliverableTypeCounts}
-                        withItemsCount={paragraphsWithDeliverablesCount}
-                        withItemsLabel="With deliverables"
-                        totalCount={allParagraphs?.length || 0}
-                        className="deliverable-dropdown"
-                        filteredTotalCount={deliverableFilteredTotalCount}
-                      />
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-sm" side="top">
-                    <div className="space-y-2">
-                      <div className="font-medium">
-                        Filter by Deliverable Type
-                      </div>
-                      <div className="text-sm">
-                        Deliverables are specific outputs or tasks that are
-                        mandated in a paragraph.
-                      </div>
-                    </div>
-                  </TooltipContent>
-                </Tooltip>
-              )}
+    // Annex/appendix descriptive title — the subtitle under an "Annex N" marker.
+    if (paragraph.type === 'title') {
+      return (
+        <p
+          key={`${documentSymbol}-${index}`}
+          className="text-base leading-tight font-semibold text-foreground"
+        >
+          {renderProcessedText(
+            paragraph.text,
+            null,
+            paragraph.links,
+            paragraph.textWithHighlights,
+            paragraph.mandates
+          )}
+        </p>
+      )
+    }
 
-              {/* Action verb searchable dropdown */}
-              {Object.keys(actionVerbCounts).length > 0 && (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div>
-                      <SearchableFilterDropdown
-                        label="Actions"
-                        icon={<MessageCircle className="h-3 w-3" />}
-                        currentFilter={actionVerbFilter}
-                        isOpen={isActionVerbDropdownOpen}
-                        onToggle={() =>
-                          setIsActionVerbDropdownOpen(!isActionVerbDropdownOpen)
-                        }
-                        onFilterChange={(filter) => {
-                          setActionVerbFilter(filter)
-                          setIsActionVerbDropdownOpen(false)
-                        }}
-                        typeCounts={actionVerbCounts}
-                        totalCount={allParagraphs?.length || 0}
-                        className="action-verb-dropdown"
-                        filteredTotalCount={actionVerbFilteredTotalCount}
-                      />
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-sm" side="top">
-                    <div className="space-y-2">
-                      <div className="font-medium">Filter by Action Verb</div>
-                      <div className="text-sm">
-                        Action verbs determine the type and strength of
-                        operative paragraphs.
-                        {/* They may present and acknowledge information, reinforce prior statements, express a positive or negative stance, constitute an action of the assembly itself, or direct assignees to carry out deliverables. */}
-                      </div>
-                    </div>
-                  </TooltipContent>
-                </Tooltip>
-              )}
+    // Body card — operative (numbered badge) or neutral (no badge when the
+    // element carries no prefix).
+    const label = paragraph.prefix ? cleanPrefix(paragraph.prefix) : null
 
-              {/* Reset button - only visible when filters are active */}
-              {hasActiveFilters && (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button
-                      onClick={resetFilters}
-                      className="flex h-7 cursor-pointer items-center gap-1 rounded-md bg-au-chico px-2 text-xs text-white transition-colors hover:bg-shuttle-gray"
-                      aria-label="Reset all filters"
-                    >
-                      <X className="h-3 w-3" />
-                      <span>Reset</span>
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent side="top">
-                    <p>Reset all filters to default</p>
-                  </TooltipContent>
-                </Tooltip>
-              )}
+    return (
+      <div key={`${documentSymbol}-${index}`} className={`${indentClass}`}>
+        <div className="rounded-lg bg-muted/30 p-3">
+          <div className="flex items-start gap-2">
+            {label && (
+              <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-un-blue text-[10px] font-medium text-white">
+                {label}
+              </span>
+            )}
+            <div className="max-w-4xl flex-1">
+              <div className="text-sm leading-relaxed">
+                {renderProcessedText(
+                  paragraph.text,
+                  paragraph.mandates?.[0]?.action_verb || null,
+                  paragraph.links,
+                  paragraph.textWithHighlights,
+                  paragraph.mandates
+                )}
+              </div>
             </div>
           </div>
         </div>
+      </div>
+    )
+  }
+
+  // Partition the filtered flow into main content and per-annex groups. The
+  // filtered array is already in document order (main first, annexes last), and
+  // each annex begins with a `heading` row carrying an `annex_index`.
+  const mainElements: { paragraph: Paragraph; index: number }[] = []
+  interface AnnexGroup {
+    key: string
+    label: string
+    startIndex: number | null
+    items: { paragraph: Paragraph; index: number }[]
+  }
+  const annexGroups: AnnexGroup[] = []
+  // An annex begins at a `heading` that either carries a Digital Library
+  // annex_index or whose text starts with "Annex"/"Appendix" (the mandates-arm
+  // corpus has no section metadata, so the heading text is the only signal).
+  let currentAnnex: AnnexGroup | null = null
+  ;(paragraphs || []).forEach((paragraph: Paragraph, index: number) => {
+    const text = paragraph.text?.trim() || ''
+    const isAnnexStart = isAnnexStartHeading(paragraph)
+
+    if (isAnnexStart) {
+      currentAnnex = {
+        key: `annex-${index}`,
+        label:
+          text ||
+          `Annex ${romanNumeral((paragraph.annex_index as number) || 1)}`,
+        startIndex: index,
+        items: [],
+      }
+      annexGroups.push(currentAnnex)
+      return
+    }
+
+    // An element explicitly marked as main content closes any open annex.
+    if (paragraph.section === 'main') currentAnnex = null
+
+    if (currentAnnex) {
+      currentAnnex.items.push({ paragraph, index })
+    } else if (isAnnexSection(paragraph.section)) {
+      // Annex/appendix content with no explicit marker heading.
+      currentAnnex = {
+        key: `annex-${index}`,
+        label: paragraph.section === 'appendix' ? 'Appendix' : 'Annex',
+        startIndex: null,
+        items: [],
+      }
+      annexGroups.push(currentAnnex)
+      currentAnnex.items.push({ paragraph, index })
+    } else {
+      mainElements.push({ paragraph, index })
+    }
+  })
+
+  // Quiet count beside the heading, in the register of the sibling sections
+  // ("27 entities"). Documents whose extraction marks operative clauses are
+  // counted as such; the Digital Library arm carries body paragraphs with no
+  // paragraph_type at all, so those are counted plainly rather than reported
+  // as "0 operative paragraphs".
+  const renderedOperativeCount = (paragraphs || []).filter(
+    (p: Paragraph) => p.paragraph_type === 'operative'
+  ).length
+  const renderedBodyCount = (paragraphs || []).filter(
+    (p: Paragraph) => p.type !== 'heading' && p.type !== 'title'
+  ).length
+  const headingCount = renderedOperativeCount || renderedBodyCount
+  const headingHint =
+    headingCount > 0
+      ? `${headingCount} ${renderedOperativeCount ? 'operative ' : ''}paragraph${
+          headingCount === 1 ? '' : 's'
+        }`
+      : undefined
+
+  return (
+    <div className="space-y-4">
+      <div ref={paragraphsTitleRef} className="space-y-3">
+        <DetailSectionHeading hint={headingHint}>
+          What does this mandate say?
+        </DetailSectionHeading>
+
+        {/* Filters — their own line under the heading, in the chip language of
+            the sections above. Omitted entirely when no dropdown has options;
+            each dropdown is additionally hidden on its own when its own option
+            list is empty (Digital Library documents, for instance, never carry
+            deliverables or mentioned entities). */}
+        {hasAnyFilterOptions && (
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
+            {/* Assignee type dropdown */}
+            {Object.keys(assigneeTypeCounts).length > 0 && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <SearchableFilterDropdown
+                      label="Entities"
+                      currentFilter={assigneeFilter}
+                      isOpen={isAssigneeDropdownOpen}
+                      onToggle={() =>
+                        setIsAssigneeDropdownOpen(!isAssigneeDropdownOpen)
+                      }
+                      onFilterChange={(filter) => {
+                        setAssigneeFilter(filter)
+                        setIsAssigneeDropdownOpen(false)
+                      }}
+                      typeCounts={assigneeTypeCounts}
+                      className="assignee-dropdown"
+                      filteredTotalCount={assigneeFilteredTotalCount}
+                      hierarchicalData={assigneesByType}
+                      withItemsCount={paragraphsWithAssigneesCount}
+                      withItemsLabel="With entities"
+                      entityLongMap={entityLongMap}
+                    />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-sm" side="top">
+                  <div className="space-y-2">
+                    <div className="font-medium">Filter by Entity</div>
+                    <div className="text-sm">
+                      Entities include both assignees (organizations assigned to
+                      carry out mandates) and mentioned entities (organizations
+                      referenced in the text).
+                    </div>
+                  </div>
+                </TooltipContent>
+              </Tooltip>
+            )}
+
+            {/* Deliverable type dropdown */}
+            {Object.keys(deliverableTypeCounts).length > 0 && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <FilterDropdown
+                      label="Deliverables"
+                      currentFilter={deliverableFilter}
+                      isOpen={isDeliverableDropdownOpen}
+                      onToggle={() =>
+                        setIsDeliverableDropdownOpen(!isDeliverableDropdownOpen)
+                      }
+                      onFilterChange={(filter) => {
+                        setDeliverableFilter(filter)
+                        setIsDeliverableDropdownOpen(false)
+                      }}
+                      typeCounts={deliverableTypeCounts}
+                      withItemsCount={paragraphsWithDeliverablesCount}
+                      withItemsLabel="With deliverables"
+                      className="deliverable-dropdown"
+                      filteredTotalCount={deliverableFilteredTotalCount}
+                    />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-sm" side="top">
+                  <div className="space-y-2">
+                    <div className="font-medium">
+                      Filter by Deliverable Type
+                    </div>
+                    <div className="text-sm">
+                      Deliverables are specific outputs or tasks that are
+                      mandated in a paragraph.
+                    </div>
+                  </div>
+                </TooltipContent>
+              </Tooltip>
+            )}
+
+            {/* Action verb searchable dropdown */}
+            {Object.keys(actionVerbCounts).length > 0 && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <SearchableFilterDropdown
+                      label="Actions"
+                      currentFilter={actionVerbFilter}
+                      isOpen={isActionVerbDropdownOpen}
+                      onToggle={() =>
+                        setIsActionVerbDropdownOpen(!isActionVerbDropdownOpen)
+                      }
+                      onFilterChange={(filter) => {
+                        setActionVerbFilter(filter)
+                        setIsActionVerbDropdownOpen(false)
+                      }}
+                      typeCounts={actionVerbCounts}
+                      className="action-verb-dropdown"
+                      filteredTotalCount={actionVerbFilteredTotalCount}
+                    />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-sm" side="top">
+                  <div className="space-y-2">
+                    <div className="font-medium">Filter by Action Verb</div>
+                    <div className="text-sm">
+                      Action verbs determine the type and strength of operative
+                      paragraphs.
+                      {/* They may present and acknowledge information, reinforce prior statements, express a positive or negative stance, constitute an action of the assembly itself, or direct assignees to carry out deliverables. */}
+                    </div>
+                  </div>
+                </TooltipContent>
+              </Tooltip>
+            )}
+
+            {/* Reset — only visible when filters are active */}
+            {hasActiveFilters && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={resetFilters}
+                    className="ml-1 inline-flex cursor-pointer items-center gap-1 self-center text-xs font-medium text-un-blue hover:underline"
+                    aria-label="Reset all filters"
+                  >
+                    <X className="h-3 w-3" />
+                    <span>Reset</span>
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="top">
+                  <p>Reset all filters to default</p>
+                </TooltipContent>
+              </Tooltip>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Mobile TOC - Floating button and expandable panel */}
@@ -2234,21 +2577,30 @@ export function ParagraphsSection({
                     (p: Paragraph) =>
                       p.paragraph_type === 'preambular' &&
                       p.type !== 'heading' &&
+                      !isAnnexSection(p.section) &&
                       p.text?.trim()
                   )
                   if (preambularParagraphs.length === 0) return null
                   return (
                     <>
                       <button
+                        type="button"
                         onClick={() => setShowPreamble(!showPreamble)}
-                        className="flex items-center gap-2 py-1.5 text-xs text-gray-500 hover:text-gray-700"
+                        className="inline-flex cursor-pointer items-center gap-1 text-xs font-medium text-un-blue hover:underline"
                       >
-                        <ChevronDown
-                          className={`h-3.5 w-3.5 transition-transform ${showPreamble ? '' : '-rotate-90'}`}
-                        />
-                        {showPreamble ? 'Hide' : 'Show'}{' '}
-                        {preambularParagraphs.length} preambular paragraph
-                        {preambularParagraphs.length !== 1 && 's'}
+                        {showPreamble ? (
+                          <>
+                            <ChevronUp className="h-3 w-3" />
+                            Show fewer
+                          </>
+                        ) : (
+                          <>
+                            <ChevronDown className="h-3 w-3" />
+                            Show {preambularParagraphs.length} preambular
+                            paragraph
+                            {preambularParagraphs.length !== 1 && 's'}
+                          </>
+                        )}
                       </button>
                       {showPreamble && (
                         <div className="space-y-2">
@@ -2257,12 +2609,9 @@ export function ParagraphsSection({
                               const label = paragraph.prefix
                                 ? cleanPrefix(paragraph.prefix)
                                 : null
-                              const indentLevel =
-                                paragraph.paragraph_level || 0
+                              const indentLevel = paragraph.paragraph_level || 0
                               const indent =
-                                indentLevel > 1
-                                  ? (indentLevel - 1) * 24
-                                  : 0
+                                indentLevel > 1 ? (indentLevel - 1) * 24 : 0
                               return (
                                 <div
                                   key={`preamble-${i}`}
@@ -2297,110 +2646,52 @@ export function ParagraphsSection({
                   )
                 })()}
 
-                {/* Operative paragraphs */}
-                {paragraphs.map((paragraph: Paragraph, index: number) => {
-                  const indentLevel = paragraph.paragraph_level || 0
-                  const getIndentClass = (level: number): string => {
-                    if (level <= 1) return ''
-                    switch (level) {
-                      case 2:
-                        return 'ml-6'
-                      case 3:
-                        return 'ml-12'
-                      case 4:
-                        return 'ml-18'
-                      case 5:
-                        return 'ml-24'
-                      case 6:
-                        return 'ml-30'
-                      case 7:
-                        return 'ml-36'
-                      case 8:
-                        return 'ml-42'
-                      default:
-                        return 'ml-48'
-                    }
-                  }
-                  const indentClass = getIndentClass(indentLevel)
-
-                  const headingId =
-                    paragraph.type === 'heading'
-                      ? `heading-${index}`
-                      : undefined
-
-                  if (paragraph.type === 'heading') {
-                    const HeadingTag =
-                      `h${Math.min(paragraph.heading_level || 3, 6)}` as keyof JSX.IntrinsicElements
-                    const headingClasses = {
-                      1: 'text-lg font-bold',
-                      2: 'text-base font-bold',
-                      3: 'text-base font-semibold',
-                      4: 'text-sm font-semibold',
-                      5: 'text-sm font-medium',
-                      6: 'text-sm font-medium',
-                    }
-                    const headingClass =
-                      headingClasses[
-                        paragraph.heading_level as keyof typeof headingClasses
-                      ] || headingClasses[3]
-
-                    return (
-                      <div key={`${documentSymbol}-${index}`}>
-                        <div className={`${indentClass}`}>
-                          <HeadingTag
-                            id={headingId}
-                            className={`${headingClass} mb-3 scroll-mt-4 leading-tight text-foreground`}
-                          >
-                            {paragraph.prefix && (
-                              <span className="mr-2 font-medium text-un-blue">
-                                {paragraph.prefix}
-                              </span>
-                            )}
-                            {renderProcessedText(
-                              paragraph.text,
-                              paragraph.mandates?.[0]?.action_verb || null,
-                              paragraph.links,
-                              paragraph.textWithHighlights,
-                              paragraph.mandates
-                            )}
-                          </HeadingTag>
-                        </div>
-                      </div>
-                    )
-                  }
-
-                  const label = paragraph.prefix
-                    ? cleanPrefix(paragraph.prefix)
-                    : null
-
+                {/* Main content: operative + neutral body paragraphs */}
+                {mainElements.map(({ paragraph, index }, i) => {
+                  // Thin delimiter between sub-resolution blocks in omnibus
+                  // documents (multiple text_index values).
+                  const prev = i > 0 ? mainElements[i - 1].paragraph : null
+                  const showTextDivider =
+                    prev != null &&
+                    paragraph.text_index != null &&
+                    prev.text_index != null &&
+                    paragraph.text_index !== prev.text_index
                   return (
-                    <div
-                      key={`${documentSymbol}-${index}`}
-                      className={`${indentClass}`}
-                    >
-                      <div className="rounded-lg bg-muted/30 p-3">
-                        <div className="flex items-start gap-2">
-                          {label && (
-                            <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-un-blue text-[10px] font-medium text-white">
-                              {label}
-                            </span>
-                          )}
-                          <div className="max-w-4xl flex-1">
-                            <div className="text-sm leading-relaxed">
-                              {renderProcessedText(
-                                paragraph.text,
-                                paragraph.mandates?.[0]?.action_verb || null,
-                                paragraph.links,
-                                paragraph.textWithHighlights,
-                                paragraph.mandates
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                    <React.Fragment key={`main-${index}`}>
+                      {showTextDivider && (
+                        <div
+                          className="my-6 border-t border-gray-100"
+                          aria-hidden
+                        />
+                      )}
+                      {renderParagraphElement(paragraph, index)}
+                    </React.Fragment>
                   )
                 })}
+
+                {/* Annex / appendix blocks, each set off as its own section */}
+                {annexGroups.map((group) => (
+                  <section
+                    key={group.key}
+                    className="mt-8 space-y-4 border-t border-gray-200 pt-6"
+                  >
+                    <div
+                      id={
+                        group.startIndex != null
+                          ? `heading-${group.startIndex}`
+                          : undefined
+                      }
+                      className="scroll-mt-4 text-xs font-semibold tracking-wide text-un-blue uppercase"
+                    >
+                      {group.label}
+                    </div>
+                    <div className="space-y-4 border-l-2 border-gray-200 pl-4">
+                      {group.items.map(({ paragraph, index }) =>
+                        renderParagraphElement(paragraph, index)
+                      )}
+                    </div>
+                  </section>
+                ))}
               </div>
             ) : (
               <div className="rounded-lg bg-muted/30 p-3">
@@ -2409,6 +2700,15 @@ export function ParagraphsSection({
                 </p>
               </div>
             )}
+
+            {/* How to read this — the copy that used to hide behind a "?"
+                badge next to the heading, now stated where the other sections
+                state theirs. */}
+            <div className="mt-6">
+              <DetailFootnote>
+                {explainerTexts.mandateDetail.paragraphs.betaDisclaimer}
+              </DetailFootnote>
+            </div>
           </div>
         </div>
 

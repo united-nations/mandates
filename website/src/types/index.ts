@@ -205,6 +205,22 @@ export type BudgetStream =
   | { type: 'pko'; label: string; count: number; groups: BudgetPkoGroupNode[] }
   | { type: 'plan_outline'; label: string; count: number }
 
+/**
+ * Catalogue-wide document types (see getDocumentTypeCatalogue).
+ *
+ * `untypedCount` is deliberately part of the payload: `ppb_type` is unpopulated
+ * for a large share of the catalogue, so `types` is NOT a complete partition and
+ * the UI has to be able to say so.
+ */
+export interface DocumentTypeCatalogue {
+  /** Recorded types, highest count first. */
+  types: { value: string; count: number }[]
+  /** Documents whose type is not recorded (NULL/empty ppb_type). */
+  untypedCount: number
+  /** Every document in scope — `types` counts + `untypedCount`. */
+  totalCount: number
+}
+
 // Subject hierarchy (top level of the /subjects page) — the UNBIS thesaurus
 // imposed on the flat subject headings carried on unified_documents.subjects.
 // Three levels: domain (01-18) -> sub-domain -> leaf subject. `count` is
@@ -261,6 +277,32 @@ export interface OrganWithCount {
   long: string
   count: number
   website?: string
+}
+
+/**
+ * The filter keys a /secretariat explore directory can set.
+ */
+export type DirectoryFilterKey =
+  | 'organ'
+  | 'entity'
+  | 'subprogramme'
+  | 'subject'
+  | 'document_type'
+
+/**
+ * How a directory (organs / entities / documents) talks to the filter state.
+ *
+ * Injected by DirectoryExplorer rather than read from useSectionFilter inside
+ * each directory, because the correct write depends on WHICH card the directory
+ * sits under: the card's counts are computed against a particular scope and with
+ * a particular dimension dropped, and the write has to match that exactly or the
+ * number on a node stops predicting the number of rows clicking it returns.
+ */
+export interface DirectorySelection {
+  /** The active value for `key`, so a node can render itself as selected. */
+  active: (key: DirectoryFilterKey) => string | undefined
+  /** Apply (or, if already active, clear) `key = value`. */
+  select: (key: DirectoryFilterKey, value: string) => void
 }
 
 // Organs grouped by editorial category (see lib/organ-groups.ts), for the

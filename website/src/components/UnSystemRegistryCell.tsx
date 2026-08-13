@@ -33,7 +33,7 @@ const POINT_LABELS: Record<UnSystemRegistryPoint, string> = {
 /** Generic point definitions, shown when no org-specific evidence note exists. */
 const POINT_DEFINITIONS: Record<UnSystemRegistryPoint, string> = {
   documents: 'decision texts are compiled and publicly findable',
-  mandates: 'the system knows which decisions are active vs superseded',
+  mandates: 'among decision texts, mandates for the current work are identified',
   budget: 'specific mandates are linked to budget or financial information',
   implementation: 'implementation status is reported per decision',
   results: 'results are reported against specific decisions',
@@ -144,23 +144,21 @@ function PointLegend({ registry }: { registry: UnSystemRegistry }) {
  */
 export function UnSystemRegistryLegend() {
   return (
-    <div className="text-xs leading-relaxed text-gray-500">
-      <p className="mb-1.5">
+    <div className="rounded-r-lg border-l-[3px] border-un-blue bg-un-blue/5 px-5 py-4 text-sm leading-relaxed text-foreground">
+      <p className="mb-2">
         The registry score shows how far an organization&apos;s mandates can be
         traced publicly — one point for each of the following (filled dot = met,
         ring = partial, gray = not met):
       </p>
-      <ul className="flex flex-wrap gap-x-5 gap-y-1">
+      <ul className="space-y-1.5">
         {POINT_ORDER.map((key) => (
-          <li key={key} className="flex items-baseline gap-1.5">
+          <li key={key} className="flex items-baseline gap-2">
             <span
               className="h-2 w-2 shrink-0 self-center rounded-full bg-tier-4"
               aria-hidden
             />
             <span>
-              <span className="font-medium text-gray-600">
-                {POINT_LABELS[key]}
-              </span>
+              <span className="font-medium">{POINT_LABELS[key]}</span>
               {' — '}
               {POINT_DEFINITIONS[key]}
             </span>
