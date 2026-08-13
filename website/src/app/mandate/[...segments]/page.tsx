@@ -11,6 +11,8 @@ import {
 } from '@/lib/feature-flags'
 import { getAllOrgans } from '@/lib/data/organs'
 import { getParagraphsBySymbol } from '@/lib/data/paragraphs'
+import { getCountryVotes } from '@/lib/data/country-votes'
+import { getVoteInfo } from '@/lib/data/votes'
 import { ParagraphsSection } from '@/components/ParagraphsSection'
 import { CitationCounts } from '@/components/CitationCounts'
 import { MandateDetailHeader } from '@/components/MandateDetailUi'
@@ -18,6 +20,8 @@ import { MandateMetadata } from '@/components/MandateMetadata'
 import { MandateSgReports } from '@/components/MandateSgReports'
 import { MandateTopics } from '@/components/MandateTopics'
 import { MandateVersionHistory } from '@/components/MandateVersionHistory'
+import { MandateImplementationChips } from '@/components/MandateImplementationChips'
+import { MandateVoteStrip } from '@/components/MandateVoteStrip'
 import { ScrollToTop } from '@/components/ScrollToTop'
 
 interface MandatePageProps {
@@ -35,20 +39,29 @@ export default async function MandatePage({
   const ppbVersion =
     typeof sp.ppb_version === 'string' ? sp.ppb_version : undefined
 
-  const [mandate, entities, organs, paragraphs, series, related, sgReports] =
-    await Promise.all([
-      getMandateBySymbol(documentSymbol, ppbVersion),
-      getAllEntities(),
-      getAllOrgans(),
-      getParagraphsBySymbol(documentSymbol),
-      getResolutionSeries(documentSymbol),
-      // Flagged-off sections are skipped entirely, so the detail page does not
-      // pay for their queries.
-      SHOW_RELATED_MANDATES ? getRelatedMandates(documentSymbol) : [],
-      SHOW_MANDATED_SG_REPORTS
-        ? getSgReportsMandatedByResolution(documentSymbol)
-        : [],
-    ])
+  const [
+    mandate,
+    entities,
+    organs,
+    paragraphs,
+    series,
+    related,
+    sgReports,
+    voteInfo,
+  ] = await Promise.all([
+    getMandateBySymbol(documentSymbol, ppbVersion),
+    getAllEntities(),
+    getAllOrgans(),
+    getParagraphsBySymbol(documentSymbol),
+    getResolutionSeries(documentSymbol),
+    // Flagged-off sections are skipped entirely, so the detail page does not
+    // pay for their queries.
+    SHOW_RELATED_MANDATES ? getRelatedMandates(documentSymbol) : [],
+    SHOW_MANDATED_SG_REPORTS
+      ? getSgReportsMandatedByResolution(documentSymbol)
+      : [],
+    getVoteInfo(documentSymbol),
+  ])
 
   if (!mandate) notFound()
 
@@ -63,6 +76,14 @@ export default async function MandatePage({
 
       {/* Content */}
       <div className="space-y-6 sm:pr-2">
+        {/* Implementation chips and the vote strip come from the analytics
+            lenses: what this mandate turned into on the ground, and how the
+            organ split when it adopted the text. */}
+        <MandateImplementationChips symbol={mandate.full_document_symbol} />
+        <MandateVoteStrip
+          vote={voteInfo}
+          countries={getCountryVotes(documentSymbol)}
+        />
         <MandateMetadata mandate={mandate} organs={organs} />
         {series && (
           <MandateVersionHistory
@@ -70,6 +91,10 @@ export default async function MandatePage({
             series={series}
           />
         )}
+        {/* The reports lens carried its own MandateReportsSection here. It is
+            dropped in favour of MandateSgReports, which answers the same
+            question ("which reports came back under this mandate?") from the
+            Digital Library catalogue rather than a static JSON snapshot. */}
         {SHOW_MANDATED_SG_REPORTS && <MandateSgReports reports={sgReports} />}
         <CitationCounts mandate={mandate} entities={entities} />
         <MandateTopics
