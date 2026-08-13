@@ -1,9 +1,9 @@
 import { ExpandableCard } from '@/components/ExpandableCard'
 import { DesignationCadenceChart } from '@/components/InstrumentCharts'
 import { MissionMap } from '@/components/MissionMap'
-import { LensLink } from '@/components/sections/MandatesSection'
 import {
   ChartNote,
+  LensLink,
   SecretariatSection,
   SectionExpanders,
 } from '@/components/sections/SecretariatSection'

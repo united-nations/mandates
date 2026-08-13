@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import { Suspense } from 'react'
 
 import { MandateExplorerServer } from '@/app/_mandateExplorerServer'
@@ -13,6 +12,7 @@ import { SectionBanner } from '@/components/SectionBanner'
 import {
   ChartHeading,
   ChartNote,
+  LensLink,
   SECTION_CONTENT,
   SectionExpanders,
 } from '@/components/sections/SecretariatSection'
@@ -183,23 +183,5 @@ export async function MandatesSection({
         </SectionExpanders>
       </div>
     </>
-  )
-}
-
-/** Link out of an expander to the lens's own page. */
-export function LensLink({
-  href,
-  children,
-}: {
-  href: string
-  children: React.ReactNode
-}) {
-  return (
-    <Link
-      href={href}
-      className="inline-flex items-center gap-1.5 text-sm font-medium text-un-blue hover:underline"
-    >
-      {children} <span aria-hidden>→</span>
-    </Link>
   )
 }

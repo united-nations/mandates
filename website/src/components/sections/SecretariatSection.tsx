@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 import { SectionBanner } from '@/components/SectionBanner'
 
 /**
@@ -67,5 +69,28 @@ export function ChartNote({ children }: { children: React.ReactNode }) {
     <p className="max-w-3xl text-xs leading-relaxed text-gray-500">
       {children}
     </p>
+  )
+}
+
+/**
+ * Link out of an expander to the lens's own page. Lives here, with the other
+ * section primitives, rather than in whichever section happened to need it
+ * first — several sections use it and a section should never import a
+ * component from a sibling section.
+ */
+export function LensLink({
+  href,
+  children,
+}: {
+  href: string
+  children: React.ReactNode
+}) {
+  return (
+    <Link
+      href={href}
+      className="inline-flex items-center gap-1.5 text-sm font-medium text-un-blue hover:underline"
+    >
+      {children} <span aria-hidden>→</span>
+    </Link>
   )
 }
