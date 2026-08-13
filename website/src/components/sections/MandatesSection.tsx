@@ -7,10 +7,12 @@ import { GenealogyHeadline } from '@/components/genealogy/GenealogyHeadline'
 import { LoadingSkeleton } from '@/components/LoadingSkeleton'
 import { ReportsLensYearChart } from '@/components/ReportsLensYearChart'
 import { ResolutionCitationTrend } from '@/components/ResolutionCitationTrend'
+import { ResolutionLengthTrend } from '@/components/ResolutionLengthTrend'
 import { ResolutionRecurrenceTrend } from '@/components/ResolutionRecurrenceTrend'
 import { SectionBanner } from '@/components/SectionBanner'
 import {
   ChartHeading,
+  ChartNote,
   SECTION_CONTENT,
   SectionExpanders,
 } from '@/components/sections/SecretariatSection'
@@ -18,6 +20,7 @@ import {
   getResolutionCitationTrend,
   getResolutionRecurrenceTrend,
 } from '@/lib/data/mandates'
+import { getResolutionLength } from '@/lib/data/resolution-length'
 import { getReportsLensStats } from '@/lib/data/reports-lens'
 import { genealogyMeta, headlineByAge, headlineByDecade } from '@/lib/genealogy'
 import type { ApiResponse } from '@/types'
@@ -42,9 +45,13 @@ export async function MandatesSection({
   dataPromise,
   ppbVersion,
 }: MandatesSectionProps) {
-  const [resolutionTrend, recurrenceTrend] = await Promise.all([
+  // The length trend reads digitallibrary.document_paragraphs, the same table
+  // the language-of-command lens uses. Degrade to an empty series rather than
+  // taking the whole section down if that read fails.
+  const [resolutionTrend, recurrenceTrend, lengthTrend] = await Promise.all([
     getResolutionCitationTrend(ppbVersion),
     getResolutionRecurrenceTrend(),
+    getResolutionLength().catch(() => []),
   ])
   const reports = getReportsLensStats()
 
@@ -91,6 +98,20 @@ export async function MandatesSection({
                 <ChartHeading>Genuinely new resolutions</ChartHeading>
                 <ResolutionRecurrenceTrend data={recurrenceTrend} />
               </div>
+              {lengthTrend.length > 0 && (
+                <div>
+                  <ChartHeading>How long is a resolution?</ChartHeading>
+                  <ResolutionLengthTrend data={lengthTrend} />
+                  <ChartNote>
+                    Measured on the parsed English corpus in the UN Digital
+                    Library, not on every resolution ever adopted. Coverage is
+                    better in recent decades, so a change in the early years can
+                    be a change in what was parsed rather than in what was
+                    written. Years with fewer than ten parsed documents are left
+                    out entirely.
+                  </ChartNote>
+                </div>
+              )}
             </div>
           </ExpandableCard>
 

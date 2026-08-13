@@ -270,11 +270,12 @@ Do not push and do not open a pull request without being asked.
   and `worktree-mandate-sidebar` stay unmerged. Any of them can be revisited
   later. (`worktree-citation-matrix` was taken — see the audit in §8.)
 
-- **"Length of resolutions" — the one explored idea with no successor.** Specced
-  here rather than half-built, because it needs a new chart component and that
-  deserves proper design time. The data is available and the query is cheap;
-  `digitallibrary.document_paragraphs` gives one row per operative paragraph,
-  joined to `digitallibrary.documents` on `symbol_normalized`:
+- ~~**"Length of resolutions"**~~ — **BUILT.** See
+  `lib/data/resolution-length.ts` and `components/ResolutionLengthTrend.tsx`,
+  wired in as the third chart of the "Trends over time" expander. It says
+  something real: the median Security Council resolution grew from 13 operative
+  paragraphs in 1964 to 30 in 2019, with the upper quartile going 25 → 48.5.
+  The query, kept here because the reasoning behind it still applies:
 
   ```sql
   WITH per_doc AS (
@@ -299,11 +300,12 @@ Do not push and do not open a pull request without being asked.
   ORDER BY 1, 2;
   ```
 
-  Use the **median**, not the mean: a handful of very long omnibus resolutions
-  otherwise dominate. Home for it is the Mandates section, inside the existing
-  "Trends over time" expander, as a third chart beside the citation and
-  recurrence trends — it is the same kind of claim about the same corpus.
-  Follow the `dataviz` skill before writing the chart.
+  The **median**, not the mean: a handful of very long omnibus resolutions
+  otherwise dominate. The 75th percentile is returned with it, because the gap
+  between the two is the story the median hides. Years under ten parsed
+  documents are dropped in SQL, so a thin year is absent rather than
+  misleading, and the UI states that this measures the parsed corpus rather
+  than every resolution ever adopted.
 
 ---
 
