@@ -438,11 +438,17 @@ export interface ApiResponse {
 }
 
 // UN system directory (src/data/un-system.json)
+/**
+ * The six CEB-derived categories. See `docs/un-system-scope.md` for the
+ * inclusion rule and how each entity is assigned.
+ */
 export type UnSystemGrouping =
   | 'secretariat'
   | 'fund-programme'
   | 'specialized-agency'
   | 'related-organization'
+  | 'regional-commission'
+  | 'joint-hosted'
 
 export interface UnSystemPage {
   label: string | null
@@ -491,6 +497,12 @@ export interface UnSystemPointEntry {
  * plans or org-wide totals. `interoperability` (point 6) is reserved.
  */
 export interface UnSystemRegistry {
+  /**
+   * Set on this site's own registry, to distinguish it from the registry the
+   * organization itself runs. An entity can have both: its own system, plus
+   * our coverage of the mandates it is cited for in the UN programme budget.
+   */
+  scope?: 'this-site'
   /** Short proper name of the system, used as the link text, e.g. "Resolutions Portal". */
   name: string
   /** Taxonomy category, shown in the link tooltip, e.g. "Resolutions Database". */
@@ -500,25 +512,39 @@ export interface UnSystemRegistry {
   interoperability: null
 }
 
-/** Org-specific budget/results portal that is NOT linked to mandates — mentioned, not scored. */
-export interface UnSystemRelatedPortal {
+/**
+ * Anything else the organization publishes that helps trace its work: document
+ * and session indexes, governance and statute pages, budget/results/transparency
+ * portals. Rendered smaller than the scored registries, in the same column.
+ */
+export interface UnSystemResource {
   name: string
   url: string
+  /** Render at registry weight without being scored — presentation, not evidence. */
+  prominent?: true
 }
 
 export interface UnSystemEntity {
   code: string
   name: string
+  /** The organization's own front page; the code in the first column links here. */
+  homepage: string
   grouping: UnSystemGrouping
+  /** Secretariat is part of the UN Secretariat, though the entity is governed separately (the UN80 chart's asterisk). */
+  secretariatAdministered?: true
   governingBodies: UnSystemBodyEntry[]
-  /** Org-level pages/contacts not attributable to a specific governing body (secretariat pages, general contacts). */
-  officialPages: UnSystemPage[]
+  /** Organization-level contacts only. A contact belonging to a governing body lives on that body. */
   contacts: UnSystemContact[]
   note: string | null
-  mandateRegistry: UnSystemRegistry | null
-  /** Shown when mandateRegistry is null: why there is none (or where it lives instead). */
+  /**
+   * Every registry covering this organization's mandates, the organization's
+   * own first and this site's (`scope: 'this-site'`) last. Empty when none
+   * exists — see registryNote.
+   */
+  mandateRegistry: UnSystemRegistry[]
+  /** Shown when the organization runs no registry itself: why there is none (or where it lives instead). */
   registryNote: string | null
-  related: UnSystemRelatedPortal[]
+  resources: UnSystemResource[]
 }
 
 export interface UnSystemData {

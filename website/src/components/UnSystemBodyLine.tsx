@@ -11,7 +11,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import type { UnSystemBody, UnSystemContact } from '@/types'
-import { ExternalLink, Globe, Info, Mail } from 'lucide-react'
+import { ExternalLink, Info, Mail } from 'lucide-react'
 
 const iconButton =
   'inline-flex h-5 w-5 items-center justify-center rounded text-un-blue transition-colors hover:bg-un-blue/10'
@@ -29,18 +29,17 @@ export function UnSystemBodyLine({ body }: { body: UnSystemBody }) {
   const contacts = body.contacts ?? []
   return (
     <li className="flex items-center gap-1 leading-snug">
-      <span>{body.name}</span>
-      {body.url && (
+      {/* The body's name is its own link; only extra affordances get an icon. */}
+      {body.url ? (
         <Tooltip>
           <TooltipTrigger asChild>
             <a
               href={body.url}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label={`${body.name} — official page`}
-              className={iconButton}
+              className="text-un-blue transition-colors hover:underline"
             >
-              <Globe className="h-3.5 w-3.5" />
+              {body.name}
             </a>
           </TooltipTrigger>
           <TooltipContent side="top">
@@ -49,6 +48,8 @@ export function UnSystemBodyLine({ body }: { body: UnSystemBody }) {
               : 'Official page'}
           </TooltipContent>
         </Tooltip>
+      ) : (
+        <span>{body.name}</span>
       )}
       {contacts.length === 1 && (
         <Tooltip>
