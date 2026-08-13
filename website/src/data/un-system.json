@@ -136,7 +136,16 @@
         }
       ],
       "registryNote": null,
-      "related": []
+      "related": [
+        {
+          "name": "UN System Budget Portal (open.un.org)",
+          "url": "https://open.un.org/"
+        },
+        {
+          "name": "UN System Results Portal (results.un.org)",
+          "url": "https://results.un.org/"
+        }
+      ]
     },
     {
       "code": "FAO",
