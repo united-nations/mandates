@@ -245,13 +245,18 @@ export function DirectoryExplorer({
         noun="organs"
         predicate="creating mandates"
         onClick={() => setPanel('organs')}
+        sectionId="organs"
       />
+      {/* The catalogue card's panel holds the subject tree, so its section is
+          Topics. The scope card below has no section of its own. */}
       <ExploreButton
         count={catalogueDocumentCount}
         noun="documents"
         predicate="adopted"
         active={currentMode === 'all_resolutions'}
         onClick={() => setPanel('catalogue')}
+        sectionId="subjects"
+        sectionLabel="topics"
       />
       <ExploreButton
         count={citedDocumentCount}
@@ -265,6 +270,7 @@ export function DirectoryExplorer({
         noun="entities"
         predicate="implementing mandates"
         onClick={() => setPanel('entities')}
+        sectionId="entities"
       />
 
       <DirectoryDialog
@@ -383,6 +389,8 @@ function ExploreButton({
   predicate,
   active = false,
   onClick,
+  sectionId,
+  sectionLabel,
 }: {
   count: number
   noun: string
@@ -390,33 +398,63 @@ function ExploreButton({
   /** The card describes the scope the table is currently in. */
   active?: boolean
   onClick: () => void
+  /**
+   * Anchor of the page section holding the same dimension as a full, browsable
+   * directory. Given, the card grows a second, quieter route: the card face
+   * still opens the modal for a quick pick, the link below walks down to the
+   * section. Cards with no matching section (the scope card) simply omit it.
+   */
+  sectionId?: string
+  /**
+   * What the link says it browses. Defaults to the card's noun, but the
+   * catalogue card is an exception: its count is documents while its section is
+   * Topics, so a "browse all documents" label there would lie about where the
+   * link goes.
+   */
+  sectionLabel?: string
 }) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-current={active ? 'true' : undefined}
-      className={cn(
-        'group flex items-center gap-3 rounded-lg border bg-white px-5 py-4 text-left transition-all hover:border-un-blue hover:shadow-md focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:outline-none',
-        active ? 'border-un-blue' : 'border-gray-200'
-      )}
-    >
-      <span className="min-w-0 flex-1">
-        {/* The sentence, broken so the count and its noun carry the weight and
-            the verb phrase sits under them as the quiet half. */}
-        <span className="block leading-none">
-          <span className="text-3xl font-bold text-gray-900 tabular-nums">
-            {count.toLocaleString()}
-          </span>{' '}
-          <span className="text-base font-semibold text-gray-900">{noun}</span>
+    <div className="flex flex-col">
+      <button
+        type="button"
+        onClick={onClick}
+        aria-current={active ? 'true' : undefined}
+        className={cn(
+          'group flex flex-1 items-center gap-3 rounded-lg border bg-white px-5 py-4 text-left transition-all hover:border-un-blue hover:shadow-md focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:outline-none',
+          active ? 'border-un-blue' : 'border-gray-200'
+        )}
+      >
+        <span className="min-w-0 flex-1">
+          {/* The sentence, broken so the count and its noun carry the weight and
+              the verb phrase sits under them as the quiet half. */}
+          <span className="block leading-none">
+            <span className="text-3xl font-bold text-gray-900 tabular-nums">
+              {count.toLocaleString()}
+            </span>{' '}
+            <span className="text-base font-semibold text-gray-900">
+              {noun}
+            </span>
+          </span>
+          <span className="mt-1.5 block text-sm text-gray-600">
+            {predicate}
+          </span>
         </span>
-        <span className="mt-1.5 block text-sm text-gray-600">{predicate}</span>
-      </span>
-      <ChevronRight
-        aria-hidden
-        className="size-5 shrink-0 text-gray-300 transition-transform group-hover:translate-x-0.5 group-hover:text-un-blue"
-      />
-    </button>
+        <ChevronRight
+          aria-hidden
+          className="size-5 shrink-0 text-gray-300 transition-transform group-hover:translate-x-0.5 group-hover:text-un-blue"
+        />
+      </button>
+      {sectionId && (
+        // A plain anchor, deliberately: the section banners carry scroll-mt-28,
+        // so the native jump already clears both sticky bars without script.
+        <a
+          href={`#${sectionId}`}
+          className="mt-1 self-start rounded px-1 text-xs text-gray-500 transition-colors hover:text-un-blue focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:outline-none"
+        >
+          Browse all {sectionLabel ?? noun} ↓
+        </a>
+      )}
+    </div>
   )
 }
 
