@@ -86,7 +86,24 @@
         }
       ],
       "officialPages": [],
-      "contacts": [],
+      "contacts": [
+        {
+          "label": "ECOSOC Secretariat",
+          "email": "ecosocinfo@un.org"
+        },
+        {
+          "label": "Security Council Secretariat Branch (DPPA)",
+          "email": "dppa-scsb3@un.org"
+        },
+        {
+          "label": "General Assembly Secretariat (GA and ECOSOC Affairs Division, DGACM)",
+          "url": "https://www.un.org/en/ga/about/secretariat.shtml"
+        },
+        {
+          "label": "Human Rights Council Secretariat — NGO Liaison team (OHCHR)",
+          "email": "ohchr-hrcngo@un.org"
+        }
+      ],
       "note": null,
       "mandateRegistry": [
         {
@@ -128,38 +145,29 @@
       "governingBodies": [
         {
           "name": "Conference",
-          "url": "https://www.fao.org/governing-bodies/en",
-          "overview": true,
-          "contacts": [
-            {
-              "label": "Conference contact",
-              "email": "fao-conference@fao.org"
-            }
-          ]
+          "url": "https://www.fao.org/governing-bodies/conference"
         },
         {
           "name": "Council",
-          "url": "https://www.fao.org/governing-bodies/en",
-          "overview": true
-        },
-        {
-          "name": "Council Committees",
-          "url": "https://www.fao.org/governing-bodies/en",
-          "overview": true
-        },
-        {
-          "name": "Technical Committees",
-          "url": "https://www.fao.org/governing-bodies/en",
-          "overview": true
-        },
-        {
-          "name": "Regional Conferences",
-          "url": "https://www.fao.org/governing-bodies/en",
-          "overview": true
+          "url": "https://www.fao.org/governing-bodies/council"
         }
       ],
-      "officialPages": [],
-      "contacts": [],
+      "officialPages": [
+        {
+          "label": "Conference resolutions, all sessions 1945-2025",
+          "url": "https://www.fao.org/unfao/govbodies/gsbhome/conference/resolutions/en/"
+        }
+      ],
+      "contacts": [
+        {
+          "label": "Governing Bodies Servicing Division (CSG)",
+          "url": "https://www.fao.org/about/who-we-are/departments/csg/en"
+        },
+        {
+          "label": "Secretary-General of the Conference and the Council",
+          "email": "CSG-Director@fao.org"
+        }
+      ],
       "note": null,
       "mandateRegistry": [
         {
@@ -169,30 +177,35 @@
           "points": {
             "documents": {
               "value": true,
-              "note": null
+              "note": "1,287 resolutions, Akoma Ntoso, six languages — but frozen at the 42nd Session (2021); the 43rd (2023) and 44th (2025) sessions are only in the older GSB index"
             },
             "mandates": {
-              "value": true,
-              "note": null
+              "value": "partial",
+              "note": "the \"type of modification\" facet (insertion/substitution/repeal) tags the resolution that performs a change to the Basic Texts, not the one superseded — ?modtype=repeal returns 19 of 1,287, all amending acts. It drives a versioned Constitution view, but the remaining ~1,268 resolutions carry no current/replaced status"
             },
             "budget": {
               "value": false,
-              "note": "portal has a \"Budget\" subcategory (285 resolutions) but no financial data per resolution; Transparency Portal budget data is organized by PWB/Strategic Framework, not resolutions"
+              "note": "the portal has a \"Budget\" subcategory but no financial data per resolution; budget resolutions carry their own appropriation as text. Transparency Portal data is organized by PWB/Strategic Framework, not resolutions"
             },
             "implementation": {
               "value": false,
-              "note": "no evidence in round 1"
+              "note": "no per-resolution implementation status in any FAO system, found across three rounds"
             },
             "results": {
               "value": false,
-              "note": "Programme Implementation Report (PIR, incl. a PIR Results View on the Transparency Portal) reports against Strategic Framework results; the PIR regime was itself created by Conference Res 10/2009 but reporting is not per-resolution"
+              "note": "the Programme Implementation Report (incl. the PIR Results View) reports against Strategic Framework results; the PIR regime was created by Conference Res 10/2009 but reporting is not per-resolution"
             }
           },
           "interoperability": null
         }
       ],
       "registryNote": null,
-      "related": []
+      "related": [
+        {
+          "name": "FAO Transparency Portal",
+          "url": "https://www.fao.org/transparency/en"
+        }
+      ]
     },
     {
       "code": "ICAO",
@@ -206,14 +219,24 @@
         {
           "name": "Council",
           "url": "https://www.icao.int/icao-council"
-        },
-        {
-          "name": "Committees of the Conference",
-          "url": "https://www.icao.int/committees-conference"
         }
       ],
-      "officialPages": [],
-      "contacts": [],
+      "officialPages": [
+        {
+          "label": "Assembly and Council Secretariat",
+          "url": "https://www.icao.int/assembly-and-council-secretariat"
+        }
+      ],
+      "contacts": [
+        {
+          "label": "Assembly and Council Secretariat",
+          "email": "acsinbox@icao.int"
+        },
+        {
+          "label": "Contact ICAO",
+          "url": "https://www.icao.int/Contact_us"
+        }
+      ],
       "note": null,
       "mandateRegistry": [
         {
@@ -227,19 +250,19 @@
             },
             "mandates": {
               "value": true,
-              "note": null
+              "note": "Doc 10184 is a whole-corpus in-force consolidation of Assembly resolutions, re-issued each triennium; the 42nd Assembly closed 3 October 2025, so the current edition is within its refresh cycle. Downgrade to 'partial' if no post-A42 edition appears by October 2026."
             },
             "budget": {
               "value": false,
-              "note": "Budget Doc 10229 (2026–2028) opens with the budget Assembly resolution (A42-27) and its prioritization \"focused on projects and activities mandated by the Assembly and/or Council\", but amounts are organized by Strategic Goals/programmes with no per-resolution figures (verified in the PDF text)"
+              "note": "Budget Doc 10229 (2026-2028) opens with the budget resolution A42-27 and prioritizes activities \"mandated by the Assembly and/or Council\", but amounts are organized by Strategic Goals with no per-resolution figures"
             },
             "implementation": {
               "value": false,
-              "note": "no evidence in round 1"
+              "note": "no per-resolution implementation reporting found across three rounds"
             },
             "results": {
               "value": false,
-              "note": "performance reporting is against the Business Plan / Strategic Objectives monitoring framework, not specific resolutions; the triennial consolidation of resolutions in force is an editorial review, not results reporting"
+              "note": "performance reporting runs against the Business Plan / Strategic Objectives framework; the triennial consolidation is an editorial review, not results reporting"
             }
           },
           "interoperability": null
@@ -255,17 +278,25 @@
       "governingBodies": [
         {
           "name": "Governing Council",
-          "url": "https://www.ifad.org/en/governing-bodies",
-          "overview": true
+          "url": "https://webapps.ifad.org/members/gc"
         },
         {
           "name": "Executive Board",
-          "url": "https://www.ifad.org/en/governing-bodies",
-          "overview": true
+          "url": "https://webapps.ifad.org/members/eb"
         }
       ],
-      "officialPages": [],
-      "contacts": [],
+      "officialPages": [
+        {
+          "label": "Governing bodies",
+          "url": "https://www.ifad.org/en/governing-bodies"
+        }
+      ],
+      "contacts": [
+        {
+          "label": "Contact us",
+          "url": "https://www.ifad.org/en/contact-us"
+        }
+      ],
       "note": null,
       "mandateRegistry": [
         {
@@ -275,30 +306,39 @@
           "points": {
             "documents": {
               "value": true,
-              "note": null
+              "note": "publicly readable, but coarse: each session publishes one compiled PDF (GC-49-Resolutions.pdf), not per-resolution records, and some session documents are members-only"
             },
             "mandates": {
               "value": false,
-              "note": "round 2 confirmed: no consolidated in-force/replaced list or status index found; resolutions exist only as per-session PDF compilations"
+              "note": "re-confirmed in round 3: no consolidated in-force/replaced list, no status index, no cross-session search"
             },
             "budget": {
               "value": false,
-              "note": "no system links resolutions to budget data. (Inherent overlap only: the annual administrative budget and each replenishment are themselves adopted by GC resolutions carrying amounts, but nothing connects resolutions to financial data as a system)"
+              "note": "no system links resolutions to budget data. Inherent overlap only: the annual budget and each replenishment are themselves adopted by GC resolutions carrying amounts"
             },
             "implementation": {
               "value": false,
-              "note": "no evidence in round 1"
+              "note": "no per-decision implementation tracking found across three rounds"
             },
             "results": {
               "value": false,
-              "note": "results reported against the per-replenishment Results Management Framework (RIDE report), not against specific GC resolutions"
+              "note": "results are reported against the per-replenishment Results Management Framework (RIDE report), not against specific GC resolutions"
             }
           },
           "interoperability": null
         }
       ],
       "registryNote": null,
-      "related": []
+      "related": [
+        {
+          "name": "Operations Dashboard",
+          "url": "https://www.ifad.org/en/operations-dashboard"
+        },
+        {
+          "name": "PRISMA Dashboard",
+          "url": "https://www.ifad.org/en/prisma-dashboard"
+        }
+      ]
     },
     {
       "code": "ILO",
@@ -306,30 +346,21 @@
       "grouping": "specialized-agency",
       "governingBodies": [
         {
+          "name": "International Labour Conference",
+          "url": "https://www.ilo.org/international-labour-conference"
+        },
+        {
           "name": "Governing Body of the International Labour Office",
-          "url": "https://www.ilo.org/ilo-governing-body",
-          "contacts": [
-            {
-              "label": "Participation, credentials and registration of speakers",
-              "email": "governingbody@ilo.org"
-            },
-            {
-              "label": "Amendments, comments and general inquiries",
-              "email": "reloff@ilo.org"
-            },
-            {
-              "label": "Prepared statements for interpreters",
-              "email": "interpreterspeeches@ilo.org"
-            },
-            {
-              "label": "Meeting reservation",
-              "email": "cmu@ilo.org"
-            }
-          ]
+          "url": "https://www.ilo.org/ilo-governing-body"
         }
       ],
       "officialPages": [],
-      "contacts": [],
+      "contacts": [
+        {
+          "label": "Contact us (ILO headquarters)",
+          "url": "https://www.ilo.org/contact-us"
+        }
+      ],
       "note": null,
       "mandateRegistry": [
         {
@@ -339,30 +370,35 @@
           "points": {
             "documents": {
               "value": true,
-              "note": null
+              "note": "faceted search over GB sessions 284-358 (2002-2026) by section, document type incl. \"Record of decisions\", and date; individual decisions have their own stable pages"
             },
             "mandates": {
               "value": false,
-              "note": "round 2 confirmed: decision pages/GB database carry no in-force/replaced status"
+              "note": "re-confirmed in round 3: no in-force/replaced/lapsed facet or field, on either the GB search or the ILC resolutions table"
             },
             "budget": {
               "value": false,
-              "note": "no system links decisions to amounts; decision pages show no financial fields (verified on a GB.352 decision page). Individual GB papers contain ad-hoc financing clauses (\"financed from savings in Part I\"), but only as document text"
+              "note": "no system links decisions to amounts; decision pages carry no financial fields. GB papers contain ad-hoc financing clauses as document text only"
             },
             "implementation": {
               "value": "partial",
-              "note": "no evidence in round 1"
+              "note": "the standing \"Follow-up to Governing Body decisions\" report series gives the GB an overview of action taken on decisions from earlier sessions — a document series, not a database, and no instance after 2024 was located in round 3"
             },
             "results": {
               "value": false,
-              "note": "standing \"Follow-up to Governing Body decisions\" report series gives the GB an overview of action taken per decision adopted at previous sessions (e.g. GB.343 first supplementary report; GB.352 decision noting follow-up to decisions Nov 2022–Jun 2024, next report Nov 2025); a document series, not a database"
+              "note": "nothing reports outcomes achieved against a specific decision; the follow-up reports describe Office action taken, which is why they score under implementation"
             }
           },
           "interoperability": null
         }
       ],
       "registryNote": null,
-      "related": []
+      "related": [
+        {
+          "name": "Development Cooperation Dashboard",
+          "url": "https://webapps.ilo.org/DevelopmentCooperationDashboard/"
+        }
+      ]
     },
     {
       "code": "IMF",
@@ -381,7 +417,16 @@
         }
       ],
       "officialPages": [],
-      "contacts": [],
+      "contacts": [
+        {
+          "label": "How to Contact the IMF",
+          "url": "https://www.imf.org/en/contacts"
+        },
+        {
+          "label": "Annual Meetings inquiries (Secretary's Department)",
+          "email": "secministerialmeetings@imf.org"
+        }
+      ],
       "note": null,
       "mandateRegistry": [
         {
@@ -391,29 +436,29 @@
           "points": {
             "documents": {
               "value": true,
-              "note": null
+              "note": "per-decision web pages for Executive Board and Board of Governors decisions, browsable by subject and by number"
             },
             "mandates": {
               "value": true,
-              "note": "Selected Decisions compiles decisions currently applicable; lapsed and replaced decisions are deleted from each issue"
+              "note": "compiles decisions currently applicable; lapsed and replaced decisions are deleted from each issue. \"Selected\" means curated, not exhaustive"
             },
             "budget": {
               "value": false,
-              "note": "no system connects decisions to budget/financial information; decision pages are text-only"
+              "note": "no system connects decisions to budget or financial information; decision pages are text-only"
             },
             "implementation": {
               "value": false,
-              "note": "no evidence in round 1"
+              "note": "no per-decision implementation reporting found across three rounds"
             },
             "results": {
               "value": false,
-              "note": "no results/outcome reporting against specific Board decisions found"
+              "note": "no results or outcome reporting against specific Board decisions"
             }
           },
           "interoperability": null
         }
       ],
-      "registryNote": null,
+      "registryNote": "imf.org blocks non-interactive clients (Akamai \"Access Denied\" to fetchers, browser-user-agent curl and headless Chromium alike); round 3 verified this entry through search indexing only.",
       "related": []
     },
     {
@@ -432,13 +477,22 @@
           "overview": true
         },
         {
-          "name": "Five Main Committees",
+          "name": "Main Committees (MSC, MEPC, LEG, TC, FAL)",
           "url": "https://www.imo.org/en/about/pages/structure.aspx",
           "overview": true
         }
       ],
       "officialPages": [],
-      "contacts": [],
+      "contacts": [
+        {
+          "label": "Conference Division",
+          "email": "cd@imo.org"
+        },
+        {
+          "label": "Contact Us",
+          "url": "https://www.imo.org/en/about/pages/contactus.aspx"
+        }
+      ],
       "note": null,
       "mandateRegistry": [
         {
@@ -448,19 +502,19 @@
           "points": {
             "documents": {
               "value": true,
-              "note": null
+              "note": "static per-organ pages (Assembly, Council, FAL, LEG, LC/LP, MEPC, MSC, TC), current through the 34th Assembly; full texts sit in meeting reports on IMODOCS behind free registration"
             },
             "mandates": {
               "value": false,
-              "note": "round 2 confirmed: resolutions do get revoked/replaced (e.g. A.658(16), A.739(18), A.789(19)) but no public status index records this; the Index lists resolutions by session/decade without in-force status"
+              "note": "re-confirmed in round 3: resolutions are listed by session and decade with no in-force, revoked or replaced field, though revocation is routine (A.658(16), A.739(18), A.789(19))"
             },
             "budget": {
               "value": false,
-              "note": "the results-based budget is itself adopted by Assembly resolution (2024–25: £83.65m) and structured by strategic directions; no system links individual resolutions to financial data"
+              "note": "the results-based budget is itself adopted by Assembly resolution and structured by strategic directions; no system links individual resolutions to financial data"
             },
             "implementation": {
               "value": false,
-              "note": "no evidence in round 1"
+              "note": "no per-resolution implementation status published"
             },
             "results": {
               "value": false,
@@ -486,19 +540,99 @@
         {
           "name": "Council",
           "url": "https://www.itu.int/hub/membership/how-we-are-governed/",
-          "overview": true,
-          "contacts": [
-            {
-              "label": "Council contact",
-              "email": "gbs@itu.int"
-            }
-          ]
+          "overview": true
+        },
+        {
+          "name": "World Radiocommunication Conference",
+          "url": "https://www.itu.int/hub/membership/how-we-are-governed/",
+          "overview": true
+        },
+        {
+          "name": "Radiocommunication Assembly",
+          "url": "https://www.itu.int/hub/membership/how-we-are-governed/",
+          "overview": true
+        },
+        {
+          "name": "World Telecommunication Standardization Assembly",
+          "url": "https://www.itu.int/hub/membership/how-we-are-governed/",
+          "overview": true
+        },
+        {
+          "name": "World Telecommunication Development Conference",
+          "url": "https://www.itu.int/hub/membership/how-we-are-governed/",
+          "overview": true
         }
       ],
-      "officialPages": [],
-      "contacts": [],
+      "officialPages": [
+        {
+          "label": "ITU Council",
+          "url": "https://council.itu.int/"
+        }
+      ],
+      "contacts": [
+        {
+          "label": "Governing bodies secretariat (Council)",
+          "email": "gbs@itu.int"
+        }
+      ],
       "note": null,
       "mandateRegistry": [
+        {
+          "name": "ITU-R Resolutions",
+          "category": "Resolutions in Force",
+          "url": "https://www.itu.int/pub/R-RES",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": "web list of all Radiocommunication Assembly resolutions with titles and links"
+            },
+            "mandates": {
+              "value": true,
+              "note": "per-resolution status notes on the page itself — \"Note - Suppressed (RA-1993)\", \"Note - Suppressed (RA-23)\" — a web-native current/replaced flag. Found in round 3; missed by rounds 1-2"
+            },
+            "budget": {
+              "value": false,
+              "note": "no financial data of any kind on the compilation"
+            },
+            "implementation": {
+              "value": false,
+              "note": "no implementation status per resolution"
+            },
+            "results": {
+              "value": false,
+              "note": "no results reporting per resolution"
+            }
+          },
+          "interoperability": null
+        },
+        {
+          "name": "WTSA Resolutions, Opinions and Actions",
+          "category": "Resolutions in Force",
+          "url": "https://www.itu.int/pub/T-RES",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": "per-resolution consolidated texts of the World Telecommunication Standardization Assembly"
+            },
+            "mandates": {
+              "value": true,
+              "note": "each entry is stamped with the assembly that last revised it (\"Rev. New Delhi, 2024\", \"Rev. Dubai, 2012\"), so the live version of each resolution is identifiable. Found in round 3"
+            },
+            "budget": {
+              "value": false,
+              "note": "no financial data on the compilation"
+            },
+            "implementation": {
+              "value": false,
+              "note": "no implementation status per resolution"
+            },
+            "results": {
+              "value": false,
+              "note": "no results reporting per resolution"
+            }
+          },
+          "interoperability": null
+        },
         {
           "name": "Council Resolutions & Decisions",
           "category": "Resolutions in Force",
@@ -506,23 +640,23 @@
           "points": {
             "documents": {
               "value": true,
-              "note": null
+              "note": "annual free compilation, 2025 edition current, editions back to 2002"
             },
             "mandates": {
-              "value": true,
-              "note": null
+              "value": "partial",
+              "note": "an in-force compilation, but a PDF publication rather than a queryable system; ITU's overall mandates credit rests on the ITU-R and ITU-T web lists instead"
             },
             "budget": {
               "value": false,
-              "note": "in-force compilation includes budget resolutions as documents but carries no financial data; Council reporting mentions budget only at aggregate level"
+              "note": "includes budget resolutions as documents but carries no financial data; Council reporting mentions budget only at aggregate level"
             },
             "implementation": {
               "value": false,
-              "note": "no evidence in round 1"
+              "note": "the \"web-based platform reporting on implementation of PP Decisions and Resolutions\" (itu.int/net4/Search/CL24/Main/Reader) is dead — it and the CL25/CL26 variants all redirect to an ASP.NET 500 error page"
             },
             "results": {
               "value": false,
-              "note": "annual report to Council (per PP Res 71) includes a \"Status of Implementation of PP Resolutions\" section, but that is implementation status inside a document, not results reporting against resolutions"
+              "note": "the annual report to Council per PP Res 71 has a \"Status of Implementation of PP Resolutions\" section, but that is narrative status inside a document"
             }
           },
           "interoperability": null
@@ -533,6 +667,10 @@
         {
           "name": "Council reports",
           "url": "https://www.itu.int/reports/council/"
+        },
+        {
+          "name": "ITU-D / WTDC resolutions",
+          "url": "https://www.itu.int/en/ITU-D/Pages/Resolutions.aspx"
         }
       ]
     },
@@ -547,23 +685,23 @@
           "overview": true
         },
         {
-          "name": "Regional Commissions",
-          "url": "https://www.untourism.int/structure",
-          "overview": true
-        },
-        {
           "name": "Executive Council",
-          "url": "https://www.untourism.int/structure",
-          "overview": true
-        },
-        {
-          "name": "Committees",
           "url": "https://www.untourism.int/structure",
           "overview": true
         }
       ],
-      "officialPages": [],
-      "contacts": [],
+      "officialPages": [
+        {
+          "label": "General Assembly session documents",
+          "url": "https://ga.untourism.int/"
+        }
+      ],
+      "contacts": [
+        {
+          "label": "Conference Services — General Assembly",
+          "email": "assembly@untourism.int"
+        }
+      ],
       "note": null,
       "mandateRegistry": [
         {
@@ -573,23 +711,23 @@
           "points": {
             "documents": {
               "value": true,
-              "note": null
+              "note": "GA series 1975-2025 with DOIs, plus a parallel Executive Council series; supplemented by per-session microsites at ga.untourism.int"
             },
             "mandates": {
               "value": false,
-              "note": "chronological per-session resolution compilations; no in-force/replaced distinction"
+              "note": "purely chronological per-session compilations, no in-force/replaced distinction; the session microsites post working documents but not the adopted resolutions"
             },
             "budget": {
               "value": false,
-              "note": "GA approves programme of work and budget as documents; no system connects specific resolutions to financial data"
+              "note": "the GA approves the programme of work and budget as documents (A/26/4(e) I and II); no system connects specific resolutions to financial data"
             },
             "implementation": {
               "value": false,
-              "note": "no evidence in round 1"
+              "note": "nothing tracks implementation per resolution"
             },
             "results": {
               "value": false,
-              "note": "Secretariat reports on implementation of the (general) Programme of Work, not against individual resolutions"
+              "note": "the Secretariat reports on implementation of the general Programme of Work (A/26/4(b)), not against individual resolutions; same pattern at Executive Council level (CE126/04)"
             }
           },
           "interoperability": null
@@ -620,11 +758,54 @@
           "overview": true
         }
       ],
-      "officialPages": [],
-      "contacts": [],
+      "officialPages": [
+        {
+          "label": "Executive Board Secretariat",
+          "url": "https://www.unesco.org/en/executive-board/secretariat"
+        }
+      ],
+      "contacts": [
+        {
+          "label": "Secretariat of the General Conference",
+          "email": "GC-Secretariat@unesco.org"
+        },
+        {
+          "label": "Executive Board Secretariat",
+          "email": "EXB-Secretariat@unesco.org"
+        }
+      ],
       "note": null,
-      "mandateRegistry": [],
-      "registryNote": "No centralized system. UNESCO has proposed establishing a decision-tracking system aligned with the UN Mandate Register (43 C/OEWG/2/INF.3.REV.2, 2026).",
+      "mandateRegistry": [
+        {
+          "name": "Executive Board Decisions",
+          "category": "Session Documents",
+          "url": "https://www.unesco.org/en/legal-affairs/decisions-exb",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": "standing session index, 158th session (1999) to 228th (2027), with a dedicated \"NNN EX/Decisions\" document per session in UNESDOC and an \"All the decisions\" collection link"
+            },
+            "mandates": {
+              "value": false,
+              "note": "no in-force/replaced tracking anywhere; only per-session decision listings"
+            },
+            "budget": {
+              "value": false,
+              "note": "the Core Data Portal organizes budget/expenditure by project, output, country and IATI field; nothing links to GC resolutions or EB decisions"
+            },
+            "implementation": {
+              "value": false,
+              "note": "no per-decision implementation status published"
+            },
+            "results": {
+              "value": false,
+              "note": "C/5 implementation is reported at programme/output level, not against specific decisions"
+            }
+          },
+          "interoperability": null
+        }
+      ],
+      "registryNote": null,
       "related": [
         {
           "name": "UNESCO Core Data Portal",
@@ -648,22 +829,36 @@
           "overview": true
         }
       ],
-      "officialPages": [],
-      "contacts": [],
+      "officialPages": [
+        {
+          "label": "Policymaking Organs",
+          "url": "https://www.unido.org/resources/policymaking-organs-and-other-related-bodies"
+        }
+      ],
+      "contacts": [
+        {
+          "label": "Policymaking Organs Secretariat (registration)",
+          "email": "pmo-registration@unido.org"
+        },
+        {
+          "label": "Contact Us",
+          "url": "https://www.unido.org/contact-us"
+        }
+      ],
       "note": null,
       "mandateRegistry": [
         {
-          "name": "Session Documents",
+          "name": "Decisions and resolutions of the General Conference",
           "category": "Session Documents",
-          "url": "https://www.unido.org/resources/policymaking-organs/general-conference/sessions/14th-session/decisions-and-resolutions-general-conference",
+          "url": "https://www.unido.org/resources/policymaking-organs/general-conference",
           "points": {
             "documents": {
               "value": true,
-              "note": null
+              "note": "one compilation document per session in six languages (current: GC.21/INF/4, 21st session, Riyadh 2025)"
             },
             "mandates": {
               "value": false,
-              "note": "per-session compilation PDFs only; no in-force/replaced distinction"
+              "note": "per-session compilation PDFs only; no in-force/replaced distinction and no cross-session search"
             },
             "budget": {
               "value": false,
@@ -671,11 +866,11 @@
             },
             "implementation": {
               "value": false,
-              "note": "no evidence in round 1"
+              "note": "no per-decision status reporting; follow-up is by narrative Director General reports per agenda item"
             },
             "results": {
               "value": false,
-              "note": "results (outcomes/outputs) are reported per project in COMPASS/IATI, not against governing-body decisions"
+              "note": "results are reported per project and per MTPF 2026-2029 results indicator in COMPASS/IATI, not against governing-body decisions"
             }
           },
           "interoperability": null
@@ -723,7 +918,16 @@
         }
       ],
       "officialPages": [],
-      "contacts": [],
+      "contacts": [
+        {
+          "label": "Council of Administration Secretariat",
+          "email": "CA.Secretariat@upu.int"
+        },
+        {
+          "label": "Postal Operations Council Secretariat",
+          "email": "poc.secretariat@upu.int"
+        }
+      ],
       "note": null,
       "mandateRegistry": [
         {
@@ -745,7 +949,7 @@
             },
             "implementation": {
               "value": false,
-              "note": "no evidence in round 1"
+              "note": "no per-decision status reporting found; CA and POC decisions are circulated to member countries, and session documents sit behind the credential-gated UPU Documentation Centre"
             },
             "results": {
               "value": false,
@@ -765,7 +969,7 @@
       "governingBodies": [
         {
           "name": "World Health Assembly",
-          "url": "https://www.who.int/about/governance/executive-board",
+          "url": "https://www.who.int/about/governance/world-health-assembly",
           "overview": true
         },
         {
@@ -774,8 +978,22 @@
           "overview": true
         }
       ],
-      "officialPages": [],
-      "contacts": [],
+      "officialPages": [
+        {
+          "label": "Governing body documentation",
+          "url": "https://apps.who.int/gb/"
+        }
+      ],
+      "contacts": [
+        {
+          "label": "Department of Governing Bodies",
+          "email": "hqgoverningbodies@who.int"
+        },
+        {
+          "label": "Contact us",
+          "url": "https://www.who.int/about/contact-us"
+        }
+      ],
       "note": null,
       "mandateRegistry": [
         {
@@ -785,19 +1003,19 @@
           "points": {
             "documents": {
               "value": true,
-              "note": null
+              "note": "EB101-EB159 and WHA51-WHA79 (1998-2026) plus regional committees; sessions from 2026 are listed but still empty, so content lags the governing bodies by about a year"
             },
             "mandates": {
               "value": false,
-              "note": "round 2 confirmed: Resolutions Portal has no current/replaced/in-force status field (chronological archive with topical metadata only)"
+              "note": "no in-force/current status field; a chronological archive with rich topical metadata (categories, entity, action terms, SDG alignment)"
             },
             "budget": {
               "value": "partial",
-              "note": "WHO costs specific resolutions/decisions in its programme budget: PB Digital Platform \"List of resolutions and decisions\" page (2024–25: 29 resolutions + 23 decisions ≈ US$1.75bn base; 2026–27 mandates ≥ US$2.3bn) with PDF explainer; costings underlie Table 1/Fig. 9 of the PB document, not a per-resolution database, and not linked from the Resolutions Portal"
+              "note": "WHO costs specific resolutions/decisions in its programme budget: the 2024-25 \"List of resolutions and decisions\" page (29 resolutions + 23 decisions approved 2017-2022, US$ 1.75bn base) and its PDF explainer, which lists the items but gives no amount per item; 2026-27 mandates are put at \"at least US$ 2.3 billion\" in the budget document only, and no 2026-27 costing explainer has been published; not a queryable system and not linked from the Resolutions Portal"
             },
             "implementation": {
               "value": false,
-              "note": "no evidence in round 1"
+              "note": "no per-decision implementation status is published; the AKN4UN mandate-tracking tool (EB154/33 para 26) is internal agenda management"
             },
             "results": {
               "value": "partial",
@@ -812,6 +1030,10 @@
         {
           "name": "WHO Budget Portal",
           "url": "https://open.who.int/"
+        },
+        {
+          "name": "Programme Budget Digital Platform",
+          "url": "https://www.who.int/about/accountability/budget/programme-budget-digital-platform-2026-2027"
         }
       ]
     },
@@ -855,11 +1077,11 @@
             },
             "budget": {
               "value": false,
-              "note": "Program of Work and Budget is structured by RBM expected results/sectors, not by Assemblies decisions"
+              "note": "the Program of Work and Budget is structured by expected results and, from 2026/27, by 8 sectors replacing 31 programs; never by Assemblies decisions"
             },
             "implementation": {
               "value": false,
-              "note": "no evidence in round 1"
+              "note": "no per-decision status reporting found"
             },
             "results": {
               "value": false,
@@ -873,7 +1095,7 @@
       "related": [
         {
           "name": "Results, Budget and Performance",
-          "url": "https://www.wipo.int/about-wipo/en/budget/"
+          "url": "https://www.wipo.int/en/web/about-wipo/budget/index"
         }
       ]
     },
@@ -884,17 +1106,22 @@
       "governingBodies": [
         {
           "name": "World Meteorological Congress",
-          "url": "https://wmo.int/about-wmo/governance",
+          "url": "https://wmo.int/about/governance",
           "overview": true
         },
         {
           "name": "Executive Council",
-          "url": "https://wmo.int/about-wmo/governance",
+          "url": "https://wmo.int/about/governance",
           "overview": true
         }
       ],
       "officialPages": [],
-      "contacts": [],
+      "contacts": [
+        {
+          "label": "Contact WMO",
+          "url": "https://wmo.int/contact-us"
+        }
+      ],
       "note": null,
       "mandateRegistry": [
         {
@@ -904,23 +1131,23 @@
           "points": {
             "documents": {
               "value": true,
-              "note": null
+              "note": "696 entries, 1953-2025, last updated 8 December 2025"
             },
             "mandates": {
               "value": true,
-              "note": null
+              "note": "the list of resolutions in force is published through the database and as an annex to an official publication, reviewed at each session; JIU/REP/2026/2 notes the Executive Council stopped reviewing the status of its decisions after EC-78 (2024), so the in-force list is reliable for resolutions but not for decisions"
             },
             "budget": {
               "value": false,
-              "note": "DB filters by Long-Term Goals/Strategic Objectives (plan linkage only); neither resolution entries nor the requests tracker carry any budget/financial fields"
+              "note": "the database filters by Long-Term Goals/Strategic Objectives (plan linkage only); neither resolution entries nor the requests tracker carry any budget or financial field"
             },
             "implementation": {
               "value": true,
-              "note": null
+              "note": "545 requests with addressee, deadline and status (including \"Delayed\"), covering Cg-Ext(2021) to EC-79 (2025) and Cg-Ext(2025)"
             },
             "results": {
               "value": false,
-              "note": "per-resolution \"Progress\"/\"Recommendation\" narratives (\"keep in force\", \"action requested\") and tracker statuses are implementation status, not outcome/results reporting; already scored under point 4"
+              "note": "per-resolution \"Progress\"/\"Recommendation\" narratives and tracker statuses are implementation status, not outcome reporting; already scored under point 4"
             }
           },
           "interoperability": null
@@ -935,12 +1162,25 @@
       "grouping": "specialized-agency",
       "governingBodies": [
         {
-          "name": "Board of Governors",
+          "name": "Boards of Governors",
           "url": "https://www.worldbank.org/en/about/leadership/governors"
+        },
+        {
+          "name": "Boards of Executive Directors",
+          "url": "https://www.worldbank.org/en/about/leadership/directors"
         }
       ],
       "officialPages": [],
-      "contacts": [],
+      "contacts": [
+        {
+          "label": "Bank Corporate Secretariat Conference Office",
+          "email": "Seccoffice@worldbank.org"
+        },
+        {
+          "label": "Contact the World Bank Group",
+          "url": "https://www.worldbank.org/ext/en/contacts"
+        }
+      ],
       "note": null,
       "mandateRegistry": [
         {
@@ -950,19 +1190,19 @@
           "points": {
             "documents": {
               "value": true,
-              "note": null
+              "note": "1,396 Governors resolutions in Documents & Reports across four collections (IBRD 732, IFC 286, IDA 256, MIGA 122), current to Resolution No. 720 of 14 July 2026"
             },
             "mandates": {
               "value": false,
-              "note": "Documents & Reports repositories carry no current/replaced status on resolutions"
+              "note": "records carry disclosure class and dates, never an in-force/replaced status"
             },
             "budget": {
               "value": false,
-              "note": "financial transparency (Finances One) is organized by institution/dataset (lending, guarantees, statements, admin budgets), not by Board/Governors resolutions; resolution texts (e.g. IDA replenishments) contain amounts but no system links them"
+              "note": "financial transparency (Finances One) is organized by institution and dataset, not by Governors or Board resolutions; resolution texts (IDA replenishments, the FY26 administrative budget) contain amounts but no system links them"
             },
             "implementation": {
               "value": false,
-              "note": "no evidence in round 1"
+              "note": "no per-resolution implementation status published; Board and Committee minutes are referenced but not issued as a decision series"
             },
             "results": {
               "value": false,
@@ -991,7 +1231,22 @@
       "secretariatAdministered": true,
       "governingBodies": [
         {
-          "name": "Joint Advisory Group (JAG)",
+          "ref": "un-ga"
+        },
+        {
+          "name": "WTO General Council",
+          "url": "https://www.wto.org/english/thewto_e/gcounc_e/gcounc_e.htm"
+        },
+        {
+          "name": "Trade and Development Board (UNCTAD)",
+          "url": "https://unctad.org/about/trade-and-development-board"
+        },
+        {
+          "name": "WTO Committee on Trade and Development",
+          "url": "https://www.wto.org/english/tratop_e/devel_e/d3ctte_e.htm"
+        },
+        {
+          "name": "Joint Advisory Group (JAG, advisory only)",
           "url": "https://www.intracen.org/about-us/governance/the-joint-advisory-group-jag",
           "overview": true
         }
@@ -1012,7 +1267,7 @@
           "url": "mailto:jag@intracen.org"
         }
       ],
-      "note": "Joint subsidiary organ of the UN (via UNCTAD) and the WTO; Regular Budget funded equally by the UN and WTO, approved by the UN General Assembly and the WTO General Council.",
+      "note": "Joint subsidiary organ of the UN (via UNCTAD) and the WTO. Its Regular Budget is funded in equal parts by the UN and the WTO and approved by the UN General Assembly (programme budget section 13) and the WTO General Council. The Joint Advisory Group is advisory: it makes recommendations to the UNCTAD Trade and Development Board and the WTO Committee on Trade and Development.",
       "mandateRegistry": [
         {
           "scope": "this-site",
@@ -1044,15 +1299,15 @@
           "interoperability": null
         }
       ],
-      "registryNote": "No decision-tracking system. The Joint Advisory Group is advisory: it reviews the annual report and makes recommendations to the UNCTAD Trade and Development Board and the WTO Committee on Trade and Development. Per-session JAG documents are published on the governance pages (2019–2026 archive) but not compiled or statused as a register.",
+      "registryNote": "No decision-tracking system. The Joint Advisory Group is advisory: it reviews the annual report and makes recommendations to the UNCTAD Trade and Development Board and the WTO Committee on Trade and Development. Per-session JAG documents are published on the governance pages (2019-2026 archive) but not compiled or statused as a register.",
       "related": [
         {
           "name": "ITC Open Data Portal",
           "url": "https://open.intracen.org/"
         },
         {
-          "name": "ITC on the IATI Registry",
-          "url": "https://www.iatiregistry.org/publisher/itc"
+          "name": "ITC on the IATI Dashboard",
+          "url": "https://dashboard.iatistandard.org/publishers/itc/"
         }
       ]
     },
@@ -1060,18 +1315,45 @@
       "code": "Tech Bank",
       "name": "Technology Bank for the Least Developed Countries",
       "grouping": "fund-programme",
-      "governingBodies": [],
-      "officialPages": [
+      "governingBodies": [
         {
-          "label": null,
-          "url": "https://www.un.org/technologybank/"
+          "name": "Council of the Technology Bank",
+          "url": "https://www.un.org/technologybank/en/governance"
         }
       ],
-      "contacts": [],
-      "note": null,
+      "officialPages": [
+        {
+          "label": "Technology Bank for the Least Developed Countries",
+          "url": "https://www.un.org/technologybank/"
+        },
+        {
+          "label": "Our governance",
+          "url": "https://www.un.org/technologybank/en/governance"
+        },
+        {
+          "label": "Official documents",
+          "url": "https://www.un.org/technologybank/en/official-documents"
+        }
+      ],
+      "contacts": [
+        {
+          "label": "Technology Bank (general enquiries)",
+          "email": "UNTB@un.org"
+        },
+        {
+          "label": "Media",
+          "email": "tbldc-media@un.org"
+        }
+      ],
+      "note": "A subsidiary organ of the General Assembly (resolution 71/251, Charter A/71/363), governed by a 13-member Council of experts appointed by the Secretary-General in their individual capacity for three-year terms. The Council approves the strategic plan, work programme and budget; the General Assembly created the Technology Bank and receives its report and approved budget, but does not approve them.",
       "mandateRegistry": [],
-      "registryNote": "Not yet surveyed — added by the CEB scope rule (July 2026); governing bodies and mandate registry still to be researched.",
-      "related": []
+      "registryNote": "No decisions artefact. The Council publishes four document types per session (provisional agenda, report on the work, budget and programme of work, report of the Council), but no decisions document: decisions appear only as section I of the session report, so no decision is individually identifiable by symbol.",
+      "related": [
+        {
+          "name": "Key documents (Charter, strategic plans, Secretary-General reports)",
+          "url": "https://www.un.org/technologybank/en/documents"
+        }
+      ]
     },
     {
       "code": "UN Women",
@@ -1176,22 +1458,26 @@
       "governingBodies": [
         {
           "name": "UN-Habitat Assembly",
-          "url": "https://unhabitat.org/governance",
+          "url": "https://unhabitat.org/governance/un-habitat-assembly",
           "overview": true
         },
         {
           "name": "Executive Board",
-          "url": "https://unhabitat.org/governance",
-          "overview": true
-        },
-        {
-          "name": "Committee of Permanent Representatives",
-          "url": "https://unhabitat.org/governance",
+          "url": "https://unhabitat.org/governance/executive-board",
           "overview": true
         }
       ],
       "officialPages": [],
-      "contacts": [],
+      "contacts": [
+        {
+          "label": "Secretariat of the Governing Bodies",
+          "email": "unhabitat-sgb@un.org"
+        },
+        {
+          "label": "General enquiries",
+          "url": "https://unhabitat.org/contact"
+        }
+      ],
       "note": null,
       "mandateRegistry": [
         {
@@ -1205,11 +1491,11 @@
             },
             "mandates": {
               "value": false,
-              "note": "tracker status labels (\"Implemented\" / \"Under implementation\" / \"Cost-neutral\") distinguish completed from ongoing resolutions; no in-force/replaced registry"
+              "note": "the only status labels are \"Under implementation\" (13 resolutions) and \"Implemented\" (2); nothing marks a resolution as replaced or lapsed"
             },
             "budget": {
               "value": true,
-              "note": "per-resolution resource requirements, resources mobilized and funding gap (e.g. res 2/1: $1,085K required, $384K mobilized, $701K gap)"
+              "note": "per-resolution resource requirements, resources mobilized and funding gap (res 2/1: $1,085K required, $384K mobilized, $701K gap)"
             },
             "implementation": {
               "value": true,
@@ -1217,7 +1503,7 @@
             },
             "results": {
               "value": "partial",
-              "note": "implementation summaries report narrative outcomes per resolution (e.g. res 2/6: USD 24M channeled to local financing in 8 countries), not a structured results framework"
+              "note": "each resolution carries an \"Implementation Summary\" reporting narrative outcomes, not a structured results framework"
             }
           },
           "interoperability": null
@@ -1265,10 +1551,48 @@
         }
       ],
       "officialPages": [],
-      "contacts": [],
+      "contacts": [
+        {
+          "label": "Secretariat of the Executive Board of UNDP, UNFPA and UNOPS",
+          "url": "https://www.undp.org/executive-board/secretariat-board"
+        },
+        {
+          "label": "Contact us",
+          "url": "https://www.uncdf.org/contact-us"
+        }
+      ],
       "note": "The General Assembly created this entity and sets system-wide policy for it through the Quadrennial Comprehensive Policy Review (QCPR), but does not govern its programme or appropriate its budget.",
-      "mandateRegistry": [],
-      "registryNote": "No system of its own: UNCDF is governed by the Executive Board of UNDP, UNFPA and UNOPS — see UNDP.",
+      "mandateRegistry": [
+        {
+          "name": "Executive Board Decision Tracking Tables",
+          "category": "Decision Tracking",
+          "url": "https://www.undp.org/executive-board/decisions-of-the-board",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": "decisions of the joint Executive Board, including those addressed to UNCDF, are compiled and publicly findable"
+            },
+            "mandates": {
+              "value": false,
+              "note": "per-request status only (Completed / Ongoing / In Progress); no current-vs-replaced registry of decisions"
+            },
+            "budget": {
+              "value": false,
+              "note": "the tracking tables carry no financial fields; verified directly on the 2025 and 2024 PDFs"
+            },
+            "implementation": {
+              "value": false,
+              "note": "the Executive Board's tracking tables do name this entity as a responsible party against specific decision paragraphs, with its own deadline, progress entry and status — but the tables are maintained and published by UNDP, and the survey does not otherwise credit an entity for a register another organization runs (UNCTAD, UNODC and UNHCR are all scored 'no' although their mandates sit in mandates.un.org). Held pending an explicit rule."
+            },
+            "results": {
+              "value": false,
+              "note": "the progress column records follow-up actions, not outcomes; results reporting is Strategic-Framework-based"
+            }
+          },
+          "interoperability": null
+        }
+      ],
+      "registryNote": "No system of its own: UNCDF is governed by the Executive Board of UNDP, UNFPA and UNOPS, and is tracked inside UNDP's decision tracking tables.",
       "related": [
         {
           "name": "UNCDF Transparency Portal",
@@ -1391,7 +1715,12 @@
         }
       ],
       "officialPages": [],
-      "contacts": [],
+      "contacts": [
+        {
+          "label": "Secretariat of the Executive Board of UNDP, UNFPA and UNOPS",
+          "url": "https://www.undp.org/executive-board/secretariat-board"
+        }
+      ],
       "note": "The General Assembly created this entity and sets system-wide policy for it through the Quadrennial Comprehensive Policy Review (QCPR), but does not govern its programme or appropriate its budget.",
       "mandateRegistry": [
         {
@@ -1405,11 +1734,11 @@
             },
             "mandates": {
               "value": false,
-              "note": "tracking tables mark each request Completed / Ongoing / In Progress / Partially Completed; per-request status only, no current-vs-replaced registry of decisions"
+              "note": "tracking tables mark each request N/A / In Progress / Ongoing / Completed; per-request status only, no current-vs-replaced registry of decisions"
             },
             "budget": {
               "value": false,
-              "note": "tables (Decision / Category / Responsible unit / Request / Deadline / Progress / Status) carry no financial amounts"
+              "note": "columns are Decision / Category / Responsible divisions / Request / Deadline / Progress and follow up actions / Status; the 2025 and 2024 PDFs contain no monetary values at all"
             },
             "implementation": {
               "value": true,
@@ -1417,7 +1746,7 @@
             },
             "results": {
               "value": false,
-              "note": "the Progress column records follow-up actions taken, not outcomes; results reporting is strategic-plan-based"
+              "note": "the progress column records follow-up actions taken, not outcomes; results reporting is strategic-plan-based"
             }
           },
           "interoperability": null
@@ -1443,43 +1772,48 @@
           "contacts": [
             {
               "label": "UNEA Secretariat",
-              "url": "https://www.unep.org/environmentassembly/unea7/contacts"
+              "url": "https://www.unep.org/cpr/meet-secretariat-governing-bodies"
             }
           ]
-        },
-        {
-          "name": "Committee of Permanent Representatives",
-          "url": "https://www.unep.org/cpr"
         }
       ],
       "officialPages": [],
-      "contacts": [],
+      "contacts": [
+        {
+          "label": "Secretariat of Governing Bodies and Stakeholders",
+          "email": "unep-sgb@un.org"
+        },
+        {
+          "label": "Secretariat of Governing Bodies and Stakeholders",
+          "url": "https://www.unep.org/cpr/meet-secretariat-governing-bodies"
+        }
+      ],
       "note": null,
       "mandateRegistry": [
         {
-          "name": "Monitoring & Reporting Portal",
+          "name": "UNEA Monitoring and Reporting Portal",
           "category": "Implementation Tracker",
           "url": "https://unea.unep.org/monitoring/",
           "points": {
             "documents": {
               "value": true,
-              "note": null
+              "note": "all 150 outcomes carry a page-anchored deep link to their official text on docs.un.org"
             },
             "mandates": {
               "value": false,
-              "note": "no current/replaced or completed labels found on the monitoring portal or the resolutions repositories"
+              "note": "Closed / Completed / In progress is reporting status, not legal standing: the portal's own closure form defines 'Closed for Secretariat Reporting' as the Secretariat being done 'but there may be pending actions requested for other actors', and 'Integrated with POW reporting' as the mandate continuing under the Programme of Work. The reason for closure is not exposed publicly, so a reader cannot tell an achieved mandate from a superseded or still-live one."
             },
             "budget": {
               "value": false,
-              "note": "the monitoring framework maps each resolution to the Programme of Work and Budget (structural linkage only, no monetary amounts per resolution)"
+              "note": "each outcome maps to the Programme of Work, and reports carry a free-text resources field, but the field is narrative resource-adequacy prose and never a per-resolution monetary amount"
             },
             "implementation": {
               "value": true,
-              "note": null
+              "note": "550 reports across 13 reporting periods, Dec-2019 to Dec-2025"
             },
             "results": {
-              "value": false,
-              "note": "per-resolution reporting is implementation-status (secretariat updates, voluntary national reports), not results/outcomes; the results framework lives in the PoW/Medium-Term Strategy"
+              "value": "partial",
+              "note": "a per-outcome results field populated in 264 of 550 reports, holding narrative achievements with source links; narrative, not a structured indicator framework"
             }
           },
           "interoperability": null
@@ -1515,7 +1849,12 @@
         }
       ],
       "registryNote": null,
-      "related": []
+      "related": [
+        {
+          "name": "UNEA documents and resolutions repository",
+          "url": "https://www.unep.org/environmentassembly/documents-and-resolutions"
+        }
+      ]
     },
     {
       "code": "UNFPA",
@@ -1527,7 +1866,16 @@
         }
       ],
       "officialPages": [],
-      "contacts": [],
+      "contacts": [
+        {
+          "label": "Secretariat of the Executive Board of UNDP, UNFPA and UNOPS",
+          "url": "https://www.undp.org/executive-board/secretariat-board"
+        },
+        {
+          "label": "Contact UNFPA",
+          "url": "https://www.unfpa.org/contact"
+        }
+      ],
       "note": "The General Assembly created this entity and sets system-wide policy for it through the Quadrennial Comprehensive Policy Review (QCPR), but does not govern its programme or appropriate its budget.",
       "mandateRegistry": [
         {
@@ -1541,11 +1889,11 @@
             },
             "mandates": {
               "value": false,
-              "note": "per-request status legend: green = \"completed\" (action done **or decision no longer relevant**) or \"ongoing\"; yellow = \"partially completed\"; explicit obsolescence marker but no corpus-level in-force registry"
+              "note": "per-request status legend: green = \"completed\" (action done or decision no longer relevant) or \"ongoing\"; yellow = \"partially completed\"; an explicit obsolescence marker, but at request level with no corpus-level in-force registry"
             },
             "budget": {
               "value": false,
-              "note": "2026 tracking table verified: columns Decision / Category / Responsible division / Request / Deadline / Progress / Status, no financial amounts"
+              "note": "2026 table verified directly: columns Decision / Category / Responsible division(s) / Request / Deadline / Progress and follow-up action / Status, no financial amounts"
             },
             "implementation": {
               "value": true,
@@ -1553,7 +1901,7 @@
             },
             "results": {
               "value": false,
-              "note": "\"Progress and follow-up action\" column records actions taken, not outcomes"
+              "note": "\"Progress and follow-up action\" records actions taken, not outcomes"
             }
           },
           "interoperability": null
@@ -1563,7 +1911,7 @@
       "related": [
         {
           "name": "UNFPA Transparency Portal",
-          "url": "https://www.unfpa.org/transparency-portal"
+          "url": "https://www.unfpa.org/data/transparency-portal"
         }
       ]
     },
@@ -1572,6 +1920,12 @@
       "name": "Office of the United Nations High Commissioner for Refugees",
       "grouping": "fund-programme",
       "governingBodies": [
+        {
+          "ref": "un-ga"
+        },
+        {
+          "ref": "un-ecosoc"
+        },
         {
           "name": "Executive Committee (ExCom)",
           "url": "https://www.unhcr.org/about-unhcr/governance-and-oversight/executive-committee",
@@ -1602,7 +1956,7 @@
           "url": "https://www.unhcr.org/contact-us"
         }
       ],
-      "note": "The General Assembly created this entity and sets system-wide policy for it through the Quadrennial Comprehensive Policy Review (QCPR), but does not govern its programme or appropriate its budget.",
+      "note": "UNHCR's Statute directs the High Commissioner to follow policy directives given by the General Assembly or ECOSOC, and the Assembly adopts an annual resolution on the Office and appropriates its regular-budget section. Its Executive Committee — a subsidiary organ of the Assembly, reporting to the Third Committee — approves the annual programme budget target and adopts Conclusions on International Protection.",
       "mandateRegistry": [
         {
           "name": "ExCom Documentation Collection",
@@ -1611,7 +1965,7 @@
           "points": {
             "documents": {
               "value": true,
-              "note": "ExCom session documents (conclusions, decisions, reports) compiled and browsable by session; ExCom Conclusions on International Protection also compiled thematically (7th ed., 2014, PDF) and indexed in Refworld."
+              "note": "ExCom session documents (conclusions, decisions, reports) compiled and browsable by session; ExCom Conclusions on International Protection also compiled thematically (7th ed., 2014, PDF) and indexed in Refworld. Access is a session dropdown only — no structured search or export."
             },
             "mandates": {
               "value": false,
@@ -1619,11 +1973,11 @@
             },
             "budget": {
               "value": false,
-              "note": "ExCom approves the annual programme budget target, but published budget/funding data is organized by operation/strategic direction, not by decision."
+              "note": "ExCom approves an annual programme budget target, but published budget/funding data is organized by operation, category and funding source, not by decision."
             },
             "implementation": {
               "value": false,
-              "note": "Implementation reported via COMPASS results framework and Global Report at operational level, not per decision."
+              "note": "Implementation reported via the COMPASS results framework and Global Report at operational level, not per decision."
             },
             "results": {
               "value": false,
@@ -1665,7 +2019,7 @@
       "registryNote": null,
       "related": [
         {
-          "name": "UNHCR Planning, funding and results (Global Focus)",
+          "name": "UNHCR Planning, funding and results",
           "url": "https://www.unhcr.org/about-unhcr/planning-funding-and-results"
         },
         {
@@ -1691,7 +2045,12 @@
         }
       ],
       "officialPages": [],
-      "contacts": [],
+      "contacts": [
+        {
+          "label": "Office of the Secretary of the Executive Board",
+          "url": "https://www.unicef.org/executiveboard/board-secretariat"
+        }
+      ],
       "note": "The General Assembly created this entity and sets system-wide policy for it through the Quadrennial Comprehensive Policy Review (QCPR), but does not govern its programme or appropriate its budget.",
       "mandateRegistry": [
         {
@@ -1735,35 +2094,91 @@
       "code": "UNICRI",
       "name": "United Nations Interregional Crime and Justice Research Institute",
       "grouping": "fund-programme",
-      "governingBodies": [],
-      "officialPages": [
+      "governingBodies": [
         {
-          "label": null,
-          "url": "https://unicri.org/"
+          "name": "Board of Trustees",
+          "url": "https://unicri.org/governing-body",
+          "overview": false
         }
       ],
-      "contacts": [],
+      "officialPages": [
+        {
+          "label": "About UNICRI",
+          "url": "https://unicri.org/about-unicri"
+        },
+        {
+          "label": "Mission and statute",
+          "url": "https://unicri.org/institute/about_unicri/mission_statute"
+        }
+      ],
+      "contacts": [
+        {
+          "label": "Public information",
+          "email": "unicri.publicinfo@un.org"
+        },
+        {
+          "label": "Contact UNICRI",
+          "url": "https://unicri.org/contactus"
+        }
+      ],
       "note": null,
       "mandateRegistry": [],
-      "registryNote": "Not yet surveyed — added by the CEB scope rule (July 2026); governing bodies and mandate registry still to be researched.",
-      "related": []
+      "registryNote": "No mandate registry. The Board of Trustees approves the work programme and budget but publishes no decisions or session records. It does publish a complete symboled six-language PDF series of its annual reports to ECOSOC (E/CN.15/YYYY/9, 2012-2024) - a results narrative structured against the Strategic Programme Framework, not a compilation of Board decisions.",
+      "related": [
+        {
+          "name": "Board of Trustees reports to ECOSOC",
+          "url": "https://unicri.org/institute/about_unicri/ecosoc_report"
+        },
+        {
+          "name": "Publications",
+          "url": "https://unicri.org/publications"
+        }
+      ]
     },
     {
       "code": "UNIDIR",
       "name": "United Nations Institute for Disarmament Research",
       "grouping": "fund-programme",
-      "governingBodies": [],
-      "officialPages": [
+      "governingBodies": [
         {
-          "label": null,
-          "url": "https://www.unidir.org/"
+          "name": "Advisory Board on Disarmament Matters (functions as UNIDIR's Board of Trustees)",
+          "url": "https://disarmament.unoda.org/en/our-work/disarmament-bodies/advisory-board-disarmament-matters",
+          "overview": false
         }
       ],
-      "contacts": [],
+      "officialPages": [
+        {
+          "label": "About UNIDIR",
+          "url": "https://unidir.org/who-we-are/about-unidir/"
+        },
+        {
+          "label": "UNIDIR statute",
+          "url": "https://unidir.org/unidir-statute/"
+        }
+      ],
+      "contacts": [
+        {
+          "label": "General enquiries",
+          "email": "unidir@un.org"
+        },
+        {
+          "label": "Contact us",
+          "url": "https://unidir.org/who-we-are/contact-us/"
+        }
+      ],
       "note": null,
       "mandateRegistry": [],
-      "registryNote": "Not yet surveyed — added by the CEB scope rule (July 2026); governing bodies and mandate registry still to be researched.",
-      "related": []
+      "registryNote": "No mandate registry. The Advisory Board on Disarmament Matters, which serves as UNIDIR's Board of Trustees, adopts the annual work programme and budget estimates, but publishes no decisions, agendas or session records. Public governance reporting is limited to a PDF series of annual reports to the General Assembly (Board report and Director's report, 2019-2025).",
+      "related": [
+        {
+          "name": "Report of the Director / Board reports to the General Assembly",
+          "url": "https://unidir.org/report-of-the-director"
+        },
+        {
+          "name": "Funding and support",
+          "url": "https://unidir.org/who-we-are/funding-and-support/"
+        }
+      ]
     },
     {
       "code": "UNITAR",
@@ -1978,18 +2393,46 @@
       "code": "UNRISD",
       "name": "United Nations Research Institute for Social Development",
       "grouping": "fund-programme",
-      "governingBodies": [],
-      "officialPages": [
+      "governingBodies": [
         {
-          "label": null,
-          "url": "https://www.unrisd.org/"
+          "name": "Board",
+          "url": "https://www.unrisd.org/en/about/our-team",
+          "overview": false
         }
       ],
-      "contacts": [],
+      "officialPages": [
+        {
+          "label": "Mission and mandate",
+          "url": "https://www.unrisd.org/en/about"
+        },
+        {
+          "label": "UNRISD statutes (ST/SGB/126, 1963)",
+          "url": "https://cdn.unrisd.org/assets/about/mission-and-mandate/unrisd-statutes.pdf"
+        }
+      ],
+      "contacts": [
+        {
+          "label": "General enquiries",
+          "email": "info.unrisd@un.org"
+        },
+        {
+          "label": "Get in touch",
+          "url": "https://www.unrisd.org/en/about/get-in-touch"
+        }
+      ],
       "note": null,
       "mandateRegistry": [],
-      "registryNote": "Not yet surveyed — added by the CEB scope rule (July 2026); governing bodies and mandate registry still to be researched.",
-      "related": []
+      "registryNote": "No mandate registry. The Board reviews and approves the work programmes and budgets, and a numbered Board document series exists (Board/17/3, BOARD/2025/4-a), but it is not published as a browsable series: the site has no governance page and only stray legacy PDFs survive on the CDN.",
+      "related": [
+        {
+          "name": "Annual reports and evaluations",
+          "url": "https://www.unrisd.org/en/about/annual-reports-and-evaluations"
+        },
+        {
+          "name": "Funding and support",
+          "url": "https://www.unrisd.org/en/about/funding-support"
+        }
+      ]
     },
     {
       "code": "UNRWA",
@@ -2025,7 +2468,7 @@
           "url": "https://www.unrwa.org/contact-us"
         }
       ],
-      "note": "UNRWA has no executive board. The General Assembly is its governing body, renewing the mandate by resolution; the Advisory Commission advises the Commissioner-General and adopts no binding decisions.",
+      "note": "UNRWA has no executive board. The General Assembly is its governing body: it renews the mandate by resolution (most recently A/RES/80/78 of 5 December 2025, extending it to 30 June 2029) and approves the Programme Budget, which the Commissioner-General submits after consulting the Advisory Commission. The Advisory Commission advises the Commissioner-General and adopts no binding decisions.",
       "mandateRegistry": [
         {
           "scope": "this-site",
@@ -2057,7 +2500,7 @@
           "interoperability": null
         }
       ],
-      "registryNote": "No decision-tracking system. UNRWA has no executive board; its mandate is renewed en bloc by periodic GA resolution (currently through 30 June 2026) and the Advisory Commission is purely advisory, adopting no binding decisions. The Advisory Commission 'Key Documents' page is a short curated list of foundational texts (GA res 302(IV), Rules of Procedure, membership resolutions, host-country agreements), not a compilation of the decision corpus and with no in-force/replaced status.",
+      "registryNote": "No decision-tracking system. UNRWA has no executive board; its mandate is renewed en bloc by periodic GA resolution (currently through 30 June 2029) and the Advisory Commission is purely advisory, adopting no binding decisions. The Advisory Commission 'Key Documents' page collects foundational texts (GA res 302(IV), Rules of Procedure, membership resolutions) and a chronological run of Commissioner-General statements to the Commission - not a compilation of adopted decisions, and with no in-force/replaced status.",
       "related": [
         {
           "name": "UNRWA Transparency Portal",
@@ -2073,18 +2516,42 @@
       "code": "UNSSC",
       "name": "United Nations System Staff College",
       "grouping": "fund-programme",
-      "governingBodies": [],
-      "officialPages": [
+      "governingBodies": [
         {
-          "label": null,
-          "url": "https://www.unssc.org/"
+          "name": "Board of Governors",
+          "url": "https://www.unssc.org/about/board-governors",
+          "overview": false
         }
       ],
-      "contacts": [],
+      "officialPages": [
+        {
+          "label": "About UNSSC",
+          "url": "https://www.unssc.org/about-unssc"
+        },
+        {
+          "label": "Statute of the Staff College",
+          "url": "https://www.unssc.org/sites/default/files/u3/unssc_statute.pdf"
+        }
+      ],
+      "contacts": [
+        {
+          "label": "Contact UNSSC",
+          "url": "https://www.unssc.org/contact-us"
+        }
+      ],
       "note": null,
       "mandateRegistry": [],
-      "registryNote": "Not yet surveyed — added by the CEB scope rule (July 2026); governing bodies and mandate registry still to be researched.",
-      "related": []
+      "registryNote": "No mandate registry. The Board of Governors approves the work programme and budget and reports annually to the CEB, but the Staff College publishes no session records, decisions or board-document series - only occasional news items announcing that a session has concluded.",
+      "related": [
+        {
+          "name": "Annual reports",
+          "url": "https://www.unssc.org/annual-reports"
+        },
+        {
+          "name": "Donors",
+          "url": "https://www.unssc.org/about/donors"
+        }
+      ]
     },
     {
       "code": "UNU",
@@ -2131,18 +2598,77 @@
       "code": "UNV",
       "name": "United Nations Volunteers programme",
       "grouping": "fund-programme",
-      "governingBodies": [],
-      "officialPages": [
+      "governingBodies": [
         {
-          "label": null,
-          "url": "https://www.unv.org/"
+          "ref": "undp-board"
         }
       ],
-      "contacts": [],
-      "note": null,
-      "mandateRegistry": [],
-      "registryNote": "Not yet surveyed — added by the CEB scope rule (July 2026); governing bodies and mandate registry still to be researched.",
-      "related": []
+      "officialPages": [
+        {
+          "label": "About UNV",
+          "url": "https://www.unv.org/about-unv/who-we-are"
+        },
+        {
+          "label": "Reports to the UNDP/UNFPA/UNOPS Executive Board",
+          "url": "https://www.unv.org/tags/undpunfpaunops-executive-board"
+        }
+      ],
+      "contacts": [
+        {
+          "label": "Contact UNV",
+          "url": "https://www.unv.org/about-us/contact-unv"
+        },
+        {
+          "label": "Partnership enquiries",
+          "email": "partnershipsupport@unv.org"
+        }
+      ],
+      "note": "Administered by UNDP and governed by the Executive Board of UNDP, UNFPA and UNOPS, which takes a UNV decision each year at its annual session. The General Assembly created UNV and addresses it in its volunteerism resolutions, but does not govern its programme or appropriate its budget.",
+      "mandateRegistry": [
+        {
+          "name": "Decision Tracking Tables",
+          "category": "Decision Tracking",
+          "url": "https://www.undp.org/executive-board/decisions-of-the-board",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": "Board decisions compiled per session and per year; UNV-specific decisions individually findable (2019/9, 2022/9, 2024/17, 2025/16)"
+            },
+            "mandates": {
+              "value": false,
+              "note": "tracking tables mark each request Completed / Ongoing / In Progress / Partially Completed; per-request status only, no current-vs-replaced registry of decisions"
+            },
+            "budget": {
+              "value": false,
+              "note": "tables (Decision / Category / Responsible divisions / Request / Deadline / Progress / Status) carry no financial amounts; UNV's financial overview is an annex organized by fund, not by decision"
+            },
+            "implementation": {
+              "value": false,
+              "note": "the Executive Board's tracking tables do name this entity as a responsible party against specific decision paragraphs, with its own deadline, progress entry and status — but the tables are maintained and published by UNDP, and the survey does not otherwise credit an entity for a register another organization runs (UNCTAD, UNODC and UNHCR are all scored 'no' although their mandates sit in mandates.un.org). Held pending an explicit rule."
+            },
+            "results": {
+              "value": false,
+              "note": "the Progress column records follow-up actions taken, not outcomes; results reporting is Strategic-Framework-based"
+            }
+          },
+          "interoperability": null
+        }
+      ],
+      "registryNote": null,
+      "related": [
+        {
+          "name": "UNV annual reports",
+          "url": "https://www.unv.org/annual-reports"
+        },
+        {
+          "name": "Knowledge Portal on Volunteerism",
+          "url": "https://knowledge.unv.org/"
+        },
+        {
+          "name": "UNDP Transparency Portal",
+          "url": "https://open.undp.org/"
+        }
+      ]
     },
     {
       "code": "WFP",
@@ -2161,8 +2687,17 @@
         }
       ],
       "officialPages": [],
-      "contacts": [],
-      "note": "The General Assembly created this entity and sets system-wide policy for it through the Quadrennial Comprehensive Policy Review (QCPR), but does not govern its programme or appropriate its budget.",
+      "contacts": [
+        {
+          "label": "Executive Board Secretariat",
+          "email": "wfpsecretarytotheeb@wfp.org"
+        },
+        {
+          "label": "Executive Board Secretariat",
+          "url": "https://executiveboard.wfp.org/executive-board-secretariat"
+        }
+      ],
+      "note": "WFP is jointly governed by the United Nations and FAO. Its Executive Board of 36 members — 18 elected by ECOSOC and 18 by the FAO Council — approves WFP's programmes and management plan budgets and reports annually to both bodies. The General Assembly neither governs its programme nor appropriates its budget.",
       "mandateRegistry": [
         {
           "name": "Executive Board Documents",
@@ -2175,7 +2710,7 @@
             },
             "mandates": {
               "value": false,
-              "note": "no evidence in round 1"
+              "note": "no evidence of any current-vs-replaced tracking of Board decisions"
             },
             "budget": {
               "value": false,
@@ -2183,11 +2718,11 @@
             },
             "implementation": {
               "value": false,
-              "note": "no evidence in round 1"
+              "note": "no evidence of per-decision implementation tracking in public reach"
             },
             "results": {
               "value": false,
-              "note": "the Annual Performance Report reports against the strategic plan / corporate results framework (strategic results, outcomes, indicators), not against Board decisions"
+              "note": "the Annual Performance Report reports against the strategic plan / corporate results framework, not against Board decisions"
             }
           },
           "interoperability": null
@@ -2214,6 +2749,10 @@
       "officialPages": [],
       "contacts": [
         {
+          "label": "Contact CTBTO",
+          "url": "https://www.ctbto.org/contact-us"
+        },
+        {
           "label": "The Provisional Technical Secretariat",
           "url": "https://www.ctbto.org/our-mission/the-organization/the-provisional-technical-secretariat"
         }
@@ -2229,21 +2768,23 @@
       "grouping": "related-organization",
       "governingBodies": [
         {
-          "name": "General Conferences",
-          "url": "https://www.iaea.org/about/governance",
-          "overview": true
+          "name": "General Conference",
+          "url": "https://www.iaea.org/about/governance/general-conference"
         },
         {
           "name": "Board of Governors",
-          "url": "https://www.iaea.org/about/governance",
-          "overview": true
+          "url": "https://www.iaea.org/about/governance/board-of-governors"
         }
       ],
       "officialPages": [],
       "contacts": [
         {
-          "label": "IAEA Conference Services Section",
-          "email": "MTCD-CSS-Exhibitions.Contact-Point@iaea.org"
+          "label": "Secretariat of Policy-Making Organs",
+          "url": "https://www.iaea.org/about/organizational-structure/offices-reporting-to-the-director-general/secretariat-of-policy-making-organs"
+        },
+        {
+          "label": "Contact the IAEA",
+          "url": "https://www.iaea.org/contact"
         }
       ],
       "note": null,
@@ -2255,23 +2796,23 @@
           "points": {
             "documents": {
               "value": true,
-              "note": null
+              "note": "GC archive to GC70 (2026) plus three special sessions; 4,086 resolutions; search by title and by symbol"
             },
             "mandates": {
               "value": false,
-              "note": "confirmed round 2; GC archive is a plain document list with no status (current/replaced) metadata"
+              "note": "re-confirmed round 3; the archive is a session/type document list with no status (current/replaced) metadata"
             },
             "budget": {
               "value": false,
-              "note": "budget lives in the programme-level \"Agency's Programme and Budget\" document (e.g. GC(69)/6, <https://www.iaea.org/sites/default/files/gc/gc69-6_0.pdf>), adopted by a GC resolution but with no system linking resolutions to resourcing"
+              "note": "budget lives in the programme-level \"Agency's Programme and Budget\" document (e.g. GC(69)/6), adopted by a GC resolution but with no system linking resolutions to resourcing"
             },
             "implementation": {
               "value": false,
-              "note": "no evidence in round 1"
+              "note": "no evidence of per-decision implementation tracking"
             },
             "results": {
               "value": false,
-              "note": "DG issues individual reports pursuant to specific GC resolutions as GC documents, but there is no system connecting resolutions to outcome reporting"
+              "note": "the DG issues individual reports pursuant to specific GC resolutions as GC documents, but no system connects resolutions to outcome reporting"
             }
           },
           "interoperability": null
@@ -2297,7 +2838,16 @@
         }
       ],
       "officialPages": [],
-      "contacts": [],
+      "contacts": [
+        {
+          "label": "Secretariat of the Assembly of States Parties",
+          "email": "asp@icc-cpi.int"
+        },
+        {
+          "label": "Secretariat of the Assembly of States Parties",
+          "url": "https://asp.icc-cpi.int/secretariat-contact"
+        }
+      ],
       "note": null,
       "mandateRegistry": [
         {
@@ -2307,11 +2857,11 @@
           "points": {
             "documents": {
               "value": true,
-              "note": null
+              "note": "per-session resolution listings, 1st session (2002-03) to 24th session (2025-26) plus a 2025 special session"
             },
             "mandates": {
               "value": false,
-              "note": "system — but nuance: the annual omnibus resolution carries an annex \"Mandates of the Assembly of States Parties for the intersessional period\", a refreshed list of currently-active ASP mandates (document practice, not a registry)"
+              "note": "no system — but nuance: the annual omnibus resolution (currently ICC-ASP/24/Res.6, 5 Dec 2025) carries Annex I \"Mandates of the Assembly of States Parties for the intersessional period\", a refreshed list of currently-active ASP mandates (document practice, not a registry)"
             },
             "budget": {
               "value": false,
@@ -2319,11 +2869,11 @@
             },
             "implementation": {
               "value": false,
-              "note": "no evidence in round 1"
+              "note": "no evidence of per-decision implementation tracking"
             },
             "results": {
               "value": false,
-              "note": "system — but a paper-based mandate cycle exists: Bureau/facilitator reports (e.g. ICC-ASP/24/28) report back on specific mandates from the omnibus-resolution annex; published as session documents only"
+              "note": "no system — but a paper-based mandate cycle exists: most annex items carry \"to report thereon to the Assembly at its twenty-fifth session\", answered by Bureau/facilitator reports published as session documents only"
             }
           },
           "interoperability": null
@@ -2348,7 +2898,12 @@
         }
       ],
       "officialPages": [],
-      "contacts": [],
+      "contacts": [
+        {
+          "label": "Contact us",
+          "url": "https://www.iom.int/contact-us"
+        }
+      ],
       "note": null,
       "mandateRegistry": [
         {
@@ -2358,19 +2913,19 @@
           "points": {
             "documents": {
               "value": true,
-              "note": null
+              "note": "queryable table: search by resolution number, title and category, sortable, one PDF per resolution; runs to res. 1423, 116th session (2025)"
             },
             "mandates": {
               "value": false,
-              "note": "confirmed round 2; resolutions database has category filters only, no current/replaced status metadata"
+              "note": "re-confirmed round 3; the category facet (Admin/Financial/Membership/Observership/Other) is a subject classification, not a current/replaced status"
             },
             "budget": {
               "value": false,
-              "note": "Programme and Budget (C/xxx/6) is adopted/revised by Council and SCPF resolutions (e.g. S/36/RES/40 revising the 2025 P&B), but budget figures are programme/project-level; no system links resolutions to resourcing"
+              "note": "the Programme and Budget is adopted by Council resolution (e.g. C-116/RES/1419 for 2026) and revised by SCPF resolutions, but the database links only to the resolution PDF; no system connects resolutions to amounts"
             },
             "implementation": {
               "value": false,
-              "note": "no evidence in round 1"
+              "note": "no evidence of per-decision implementation tracking"
             },
             "results": {
               "value": false,
@@ -2400,6 +2955,10 @@
       "officialPages": [],
       "contacts": [
         {
+          "label": "Contact us",
+          "url": "https://isa.org.jm/contact-us/"
+        },
+        {
           "label": "Secretariat",
           "url": "https://isa.org.jm/organs/the-secretariat/"
         }
@@ -2409,23 +2968,23 @@
         {
           "name": "Session Documents",
           "category": "Session Documents",
-          "url": "https://isa.org.jm/sessions/30th-session-2025/",
+          "url": "https://isa.org.jm/sessions/31st-session-2026/",
           "points": {
             "documents": {
               "value": true,
-              "note": null
+              "note": "per-session pages listing Assembly/Council/Finance Committee documents by agenda item in six languages; individual documents also have permalinks under isa.org.jm/documents/<symbol>/"
             },
             "mandates": {
               "value": false,
-              "note": "confirmed round 2; session pages are plain document lists, no status distinction between current and replaced decisions"
+              "note": "re-confirmed round 3; session pages are plain document lists per agenda item, no distinction between current and replaced decisions"
             },
             "budget": {
               "value": false,
-              "note": "budget decisions exist as session documents (e.g. ISBA/31/A/4–ISBA/31/C/22, proposed budget 2027–2028) but financial statements are standalone; no system links decisions to amounts (<https://isa.org.jm/organs/the-finance-committee/>)"
+              "note": "budget decisions exist as session documents (paired Assembly/Council decisions for 2027-2028) but financial statements are standalone; no system links decisions to amounts"
             },
             "implementation": {
               "value": false,
-              "note": "no evidence in round 1"
+              "note": "no evidence of per-decision implementation tracking"
             },
             "results": {
               "value": false,
@@ -2461,17 +3020,46 @@
           "url": "https://www.itlos.org/en/special/contact/"
         }
       ],
-      "note": null,
-      "mandateRegistry": [],
-      "registryNote": "ITLOS is a judicial body, not a mandate-issuing governing body: its output is case law (judgments, advisory opinions, orders), and its governing body — the Meeting of States Parties to UNCLOS (SPLOS) — takes only administrative, budgetary and electoral decisions. No mandate/decision registry exists or applies.",
+      "note": "The Tribunal's own output is case law — judgments, advisory opinions and orders — which is not a mandate corpus and is not scored. Its governing body, the Meeting of States Parties, adopts budgetary, administrative and electoral decisions, which are published as a document series.",
+      "mandateRegistry": [
+        {
+          "name": "Meetings of States Parties documents (SPLOS)",
+          "category": "Session Documents",
+          "url": "https://www.un.org/Depts/los/meeting_states_parties/SPLOS_documents.htm",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": "standing cross-meeting index, 1st (1994) to 36th (2026); decisions are issued under their own symbols (e.g. SPLOS/36/12, \"Decision on budgetary matters ... 2027-2028\"), each linked to undocs.org"
+            },
+            "mandates": {
+              "value": false,
+              "note": "chronological per-meeting listings with no in-force/replaced status"
+            },
+            "budget": {
+              "value": false,
+              "note": "budgetary decisions are themselves session documents; nothing links a decision to financial reporting"
+            },
+            "implementation": {
+              "value": false,
+              "note": "no per-decision implementation status published"
+            },
+            "results": {
+              "value": false,
+              "note": "no outcome reporting against specific SPLOS decisions"
+            }
+          },
+          "interoperability": null
+        }
+      ],
+      "registryNote": null,
       "related": [
         {
           "name": "List of Cases",
           "url": "https://www.itlos.org/en/main/cases/list-of-cases/"
         },
         {
-          "name": "Meeting of States Parties (SPLOS) documents",
-          "url": "https://www.un.org/Depts/los/meeting_states_parties/meeting_states_parties.htm"
+          "name": "Documents of the Meetings of States Parties (SPLOS)",
+          "url": "https://www.un.org/Depts/los/meeting_states_parties/SPLOS_documents.htm"
         }
       ]
     },
@@ -2481,12 +3069,21 @@
       "grouping": "related-organization",
       "governingBodies": [
         {
+          "name": "Conference of the States Parties",
+          "url": "https://www.opcw.org/about/conference-states-parties"
+        },
+        {
           "name": "Executive Council",
           "url": "https://www.opcw.org/about-us/executive-council"
         }
       ],
       "officialPages": [],
-      "contacts": [],
+      "contacts": [
+        {
+          "label": "Contacting the OPCW",
+          "url": "https://www.opcw.org/contacting-opcw"
+        }
+      ],
       "note": null,
       "mandateRegistry": [
         {
@@ -2544,8 +3141,8 @@
       ],
       "contacts": [
         {
-          "label": "Governance / process management bodies",
-          "url": "https://www.unccd.int/convention/governance/process-management-bodies"
+          "label": "Contacts",
+          "url": "https://www.unccd.int/about-us/contacts"
         }
       ],
       "note": null,
@@ -2582,7 +3179,7 @@
       "registryNote": null,
       "related": [
         {
-          "name": "PRAIS 4 reporting platform",
+          "name": "PRAIS 4 reporting platform (login required)",
           "url": "https://reporting.unccd.int"
         },
         {
@@ -2600,6 +3197,14 @@
           "name": "Conference of the Parties (COP)",
           "url": "https://unfccc.int/process/bodies/supreme-bodies/conference-of-the-parties-cop",
           "overview": true
+        },
+        {
+          "name": "CMA (Paris Agreement)",
+          "url": "https://unfccc.int/process/bodies/supreme-bodies/conference-of-the-parties-serving-as-the-meeting-of-the-parties-to-the-paris-agreement-cma"
+        },
+        {
+          "name": "CMP (Kyoto Protocol)",
+          "url": "https://unfccc.int/process/bodies/supreme-bodies/conference-of-the-parties-serving-as-the-meeting-of-the-parties-to-the-kyoto-protocol-cmp"
         }
       ],
       "officialPages": [
@@ -2627,15 +3232,15 @@
           "points": {
             "documents": {
               "value": true,
-              "note": "1,034 COP/CMP/CMA decisions, searchable by body/session and full-text, six languages"
+              "note": "1,034 COP/CMP/CMA decisions (body facet now also includes SBI), searchable by body/session and full text, six languages; sessions to COP 30 / CMA 7 / CMP 20"
             },
             "mandates": {
-              "value": "partial",
-              "note": "the secretariat's 'SB Mandates' compilation (internally titled 'Mandates Database') tracks which SBI/SBSTA mandates are live vs concluded, each tied to a decision reference — but it is a periodically-refreshed PDF (latest public 2022) covering only the subsidiary-body agenda, not a queryable system; the Decisions database itself carries no in-force/replaced flag"
+              "value": false,
+              "note": "the secretariat's 'SB Mandates' compilation is stale — the latest public edition is the 2022 PDF and the 2023, 2024 and 2025 successors all 404 — and its vocabulary ('held in abeyance', 'deferred to SBI 56', 'ongoing') records the state of consideration of an agenda item, not whether a mandate is in force. The Decisions database itself carries no in-force flag."
             },
             "budget": {
               "value": false,
-              "note": "no budget/financial fields; programme budget published as documents, not per decision"
+              "note": "no budget/financial fields; the secretariat work programme and core budget are published as documents, not per decision"
             },
             "implementation": {
               "value": false,
@@ -2721,16 +3326,63 @@
       "name": "Economic Commission for Africa",
       "grouping": "regional-commission",
       "secretariatAdministered": true,
-      "governingBodies": [],
-      "officialPages": [
+      "governingBodies": [
         {
-          "label": null,
-          "url": "https://www.uneca.org/"
+          "name": "Conference of African Ministers of Finance, Planning and Economic Development",
+          "url": "https://www.uneca.org/eca-events/cfm2026",
+          "overview": false
         }
       ],
-      "contacts": [],
-      "note": null,
+      "officialPages": [
+        {
+          "label": "Terms of Reference and Rules of Procedure",
+          "url": "https://www.uneca.org/about/terms-of-reference-and-rules-of-procedure-of-the-economic-commission-for-africa"
+        },
+        {
+          "label": "Previous sessions of the Commission",
+          "url": "https://www.uneca.org/eca-events/cfm2026/previous-sessions"
+        },
+        {
+          "label": "Session documents (58th session, 2026)",
+          "url": "https://www.uneca.org/eca-events/cfm2026/documents"
+        }
+      ],
+      "contacts": [
+        {
+          "label": "Contact ECA",
+          "url": "https://www.uneca.org/contact-eca"
+        }
+      ],
+      "note": "The session of the Commission is the annual meeting of the Conference of African Ministers of Finance, Planning and Economic Development; resolutions are transmitted to ECOSOC for endorsement.",
       "mandateRegistry": [
+        {
+          "name": "ECA Institutional Repository",
+          "category": "Document Repository",
+          "url": "https://repository.uneca.org/",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": "DSpace with search UI and REST API; holds the per-session resolution compilations (e.g. 54th session, handle 10855/49087); current-session resolutions also on the session site"
+            },
+            "mandates": {
+              "value": false,
+              "note": "document archive only — no in-force/replaced/lapsed status"
+            },
+            "budget": {
+              "value": false,
+              "note": "the programme plan and proposed programme budget put to the Conference are organized by subprogramme; no amounts attach to individual resolutions"
+            },
+            "implementation": {
+              "value": "partial",
+              "note": "annual 'Report on the follow-up to the resolutions of the Conference of African Ministers' (E/ECA/COE/44/8, 10 Dec 2025) walks each resolution and operative paragraph, but is a PDF covering only the preceding session's five resolutions"
+            },
+            "results": {
+              "value": false,
+              "note": "the follow-up report narrates secretariat action, not outcomes measured against the decision"
+            }
+          },
+          "interoperability": null
+        },
         {
           "scope": "this-site",
           "name": "Mandate Source Registry",
@@ -2761,7 +3413,7 @@
           "interoperability": null
         }
       ],
-      "registryNote": "Not yet surveyed — added by the CEB scope rule (July 2026); governing bodies and mandate registry still to be researched.",
+      "registryNote": null,
       "related": []
     },
     {
@@ -2769,15 +3421,48 @@
       "name": "Economic Commission for Europe",
       "grouping": "regional-commission",
       "secretariatAdministered": true,
-      "governingBodies": [],
-      "officialPages": [
+      "governingBodies": [
         {
-          "label": null,
-          "url": "https://unece.org/"
+          "name": "Commission (biennial session)",
+          "url": "https://unece.org/commission-sessions-1",
+          "overview": false
+        },
+        {
+          "name": "Executive Committee (EXCOM)",
+          "url": "https://unece.org/executive-committee-excom-0",
+          "overview": false
+        },
+        {
+          "name": "Sectoral Committees",
+          "url": "https://unece.org/governing-bodies",
+          "overview": true
         }
       ],
-      "contacts": [],
-      "note": null,
+      "officialPages": [
+        {
+          "label": "Mission and terms of reference",
+          "url": "https://unece.org/mission"
+        },
+        {
+          "label": "Governing Bodies",
+          "url": "https://unece.org/governing-bodies"
+        },
+        {
+          "label": "Seventy-first session of the Commission (2025)",
+          "url": "https://unece.org/info/Sessions-of-the-Commission/events/393881"
+        }
+      ],
+      "contacts": [
+        {
+          "label": "UNECE Information Service",
+          "url": "https://unece.org/unece-information-service"
+        },
+        {
+          "label": "UNECE Information Service",
+          "email": "unece_info@un.org"
+        }
+      ],
+      "note": "EXCOM acts on behalf of the Commission between biennial sessions and approves the sectoral committees' programmes of work; each sectoral committee approves its own subprogramme work programme before EXCOM endorses it.",
       "mandateRegistry": [
         {
           "scope": "this-site",
@@ -2809,24 +3494,85 @@
           "interoperability": null
         }
       ],
-      "registryNote": "Not yet surveyed — added by the CEB scope rule (July 2026); governing bodies and mandate registry still to be researched.",
-      "related": []
+      "registryNote": "UNECE publishes no compilation of Commission or EXCOM decisions. It is the only regional commission that does not adopt a continuing series of numbered resolutions: the Commission adopts lettered per-session decisions — A (71), B (71), … — whose texts appear only inside Chapter IV of the biennial report (E/ECE/1512), reached through the session documentation tab. No decisions list, no in-force status, no decision-linked budget, implementation or results reporting.",
+      "related": [
+        {
+          "name": "Open UNECE",
+          "url": "https://unece.org/open-unece-1"
+        },
+        {
+          "name": "RSRS repository (right-sizing the subsidiary architecture)",
+          "url": "https://unece.org/excom/RSRS"
+        }
+      ]
     },
     {
       "code": "ECLAC",
       "name": "Economic Commission for Latin America and the Caribbean",
       "grouping": "regional-commission",
       "secretariatAdministered": true,
-      "governingBodies": [],
-      "officialPages": [
+      "governingBodies": [
         {
-          "label": null,
-          "url": "https://www.cepal.org/"
+          "name": "Session of the Commission",
+          "url": "https://periododesesiones.cepal.org",
+          "overview": false
+        },
+        {
+          "name": "Committee of the Whole",
+          "url": "https://www.cepal.org/en/about/strategy-and-legal-framework",
+          "overview": false
         }
       ],
-      "contacts": [],
-      "note": null,
+      "officialPages": [
+        {
+          "label": "Strategy and legal framework",
+          "url": "https://www.cepal.org/en/about/strategy-and-legal-framework"
+        },
+        {
+          "label": "Subsidiary Bodies and Intergovernmental Meetings",
+          "url": "https://www.cepal.org/en/about/subsidiary-bodies"
+        },
+        {
+          "label": "Programme and budgeting",
+          "url": "https://www.cepal.org/en/about/programme-and-budgeting"
+        }
+      ],
+      "contacts": [
+        {
+          "label": "Office of the Executive Secretary (incl. the Secretary of the Commission)",
+          "url": "https://www.cepal.org/en/about/office-of-the-executive-secretary"
+        }
+      ],
+      "note": "The programme of work is approved 'during the Session of the Commission or the Committee of the Whole'; the Committee of the Whole meets in alternate years and adopts resolutions in its own (PLEN.nn) series.",
       "mandateRegistry": [
+        {
+          "name": "ECLAC Digital Repository",
+          "category": "Document Repository",
+          "url": "https://repositorio.cepal.org/",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": "faceted DSpace, 1948-2026; facets for UN subject ('Resolutions and Decisions', 461) and event type ('NU. CEPAL. Periodo de Sesiones', 530); collection 'Resoluciones y acuerdos de los principales organos de la Comision' (handle 11362/15902) covers both the Commission and the Committee of the Whole"
+            },
+            "mandates": {
+              "value": false,
+              "note": "one continuing resolution series (769(XL)-782(XL) at the 40th session) with no in-force/replaced status"
+            },
+            "budget": {
+              "value": false,
+              "note": "the proposed programme budget follows the approved programme of work and is structured by subprogramme; mandates appear as recitals only"
+            },
+            "implementation": {
+              "value": false,
+              "note": "no per-resolution follow-up report found; statutory reporting is the activities report and LC/SES.40/DDR/1, both programme-level"
+            },
+            "results": {
+              "value": false,
+              "note": "accountability and evaluation materials are listed by year and project, never by resolution"
+            }
+          },
+          "interoperability": null
+        },
         {
           "scope": "this-site",
           "name": "Mandate Source Registry",
@@ -2857,24 +3603,76 @@
           "interoperability": null
         }
       ],
-      "registryNote": "Not yet surveyed — added by the CEB scope rule (July 2026); governing bodies and mandate registry still to be researched.",
-      "related": []
+      "registryNote": null,
+      "related": [
+        {
+          "name": "Accountability and evaluation",
+          "url": "https://www.cepal.org/en/about/accountability-and-evaluation"
+        }
+      ]
     },
     {
       "code": "ESCAP",
       "name": "Economic and Social Commission for Asia and the Pacific",
       "grouping": "regional-commission",
       "secretariatAdministered": true,
-      "governingBodies": [],
-      "officialPages": [
+      "governingBodies": [
         {
-          "label": null,
-          "url": "https://www.unescap.org/"
+          "name": "Commission (annual ministerial session)",
+          "url": "https://www.unescap.org/commission/about-the-commission",
+          "overview": false
         }
       ],
-      "contacts": [],
-      "note": null,
+      "officialPages": [
+        {
+          "label": "About the Commission",
+          "url": "https://www.unescap.org/commission/about-the-commission"
+        },
+        {
+          "label": "Official Documents",
+          "url": "https://www.unescap.org/official-documents"
+        },
+        {
+          "label": "Eighty-second session (2026)",
+          "url": "https://www.unescap.org/events/commission82"
+        }
+      ],
+      "contacts": [
+        {
+          "label": "Office of the Executive Secretary",
+          "email": "oes.unescap@un.org"
+        }
+      ],
+      "note": "The Commission meets annually at ministerial level, decides on the recommendations of its subsidiary bodies, and reviews and endorses the proposed strategic framework and programme of work.",
       "mandateRegistry": [
+        {
+          "name": "ESCAP Resolutions",
+          "category": "Resolutions Database",
+          "url": "https://www.unescap.org/resolutions",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": "complete series in one web table — 717 resolutions, columns Date / Session / Title / Symbol plus a hidden subject-keyword column; every symbol links to full text on undocs.org; current to E/ESCAP/RES/82/6 (24 April 2026)"
+            },
+            "mandates": {
+              "value": false,
+              "note": "no in-force/replaced status; the keyword column is subject indexing"
+            },
+            "budget": {
+              "value": false,
+              "note": "no financial field; the strategic framework and programme of work are structured by subprogramme"
+            },
+            "implementation": {
+              "value": "partial",
+              "note": "annual 'Summary of progress made in the implementation of the resolutions of ESCAP' (ESCAP/82/19, 17 Dec 2025) is organized per resolution and per operative paragraph, but is a session PDF outside the database and covers only resolutions with a standing reporting request"
+            },
+            "results": {
+              "value": false,
+              "note": "progress against operative paragraphs is implementation status, already credited under point 4"
+            }
+          },
+          "interoperability": null
+        },
         {
           "scope": "this-site",
           "name": "Mandate Source Registry",
@@ -2905,7 +3703,7 @@
           "interoperability": null
         }
       ],
-      "registryNote": "Not yet surveyed — added by the CEB scope rule (July 2026); governing bodies and mandate registry still to be researched.",
+      "registryNote": null,
       "related": []
     },
     {
@@ -2913,16 +3711,72 @@
       "name": "Economic and Social Commission for Western Asia",
       "grouping": "regional-commission",
       "secretariatAdministered": true,
-      "governingBodies": [],
-      "officialPages": [
+      "governingBodies": [
         {
-          "label": null,
-          "url": "https://www.unescwa.org/"
+          "name": "Ministerial session of the Commission",
+          "url": "https://www.unescwa.org/about/ms",
+          "overview": false
+        },
+        {
+          "name": "Executive Committee",
+          "url": "https://www.unescwa.org/about/committees/executive",
+          "overview": false
         }
       ],
-      "contacts": [],
-      "note": null,
+      "officialPages": [
+        {
+          "label": "ESCWA Committees",
+          "url": "https://www.unescwa.org/about/committees"
+        },
+        {
+          "label": "Governing and Advisory Bodies",
+          "url": "https://archive.unescwa.org/about-escwa/governing-and-advisory-bodies"
+        },
+        {
+          "label": "Ministerial session materials",
+          "url": "https://www.unescwa.org/about/ms/materials"
+        }
+      ],
+      "contacts": [
+        {
+          "label": "Contact us",
+          "url": "https://www.unescwa.org/contact"
+        },
+        {
+          "label": "Communication and Information Unit",
+          "email": "escwa-ciu@un.org"
+        }
+      ],
+      "note": "The Commission sits once every two years in two segments (senior officials and ministerial); the Executive Committee steers activities between sessions and adopts the subsidiary committees' programme of work.",
       "mandateRegistry": [
+        {
+          "name": "Ministerial Session Materials",
+          "category": "Resolutions Database",
+          "url": "https://www.unescwa.org/about/ms/materials",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": "faceted browser filtering by material type (incl. 'Resolution'), session and year with free-text search, current to 342(XXXI)-347(XXXI) of December 2023; the legacy archive database adds an ~85-term subject facet plus title/number search for the series up to 336 (S-VI), 2019"
+            },
+            "mandates": {
+              "value": false,
+              "note": "no in-force/replaced status in either system; the subject facet is topical indexing"
+            },
+            "budget": {
+              "value": false,
+              "note": "the programme plan is adopted as a single resolution (343(XXXI)) and structured by subprogramme; no per-resolution amounts"
+            },
+            "implementation": {
+              "value": "partial",
+              "note": "'Implementation of the resolutions of the Commission at its thirty-first session' (E/ESCWA/EC.9/2024/3, 17 Nov 2024) is a standing Executive Committee item structured resolution by resolution with an 'Actions taken' section for each; a biennial PDF, not a system"
+            },
+            "results": {
+              "value": false,
+              "note": "the 'Actions taken' sections narrate secretariat activity, already credited under point 4"
+            }
+          },
+          "interoperability": null
+        },
         {
           "scope": "this-site",
           "name": "Mandate Source Registry",
@@ -2953,42 +3807,162 @@
           "interoperability": null
         }
       ],
-      "registryNote": "Not yet surveyed — added by the CEB scope rule (July 2026); governing bodies and mandate registry still to be researched.",
-      "related": []
+      "registryNote": null,
+      "related": [
+        {
+          "name": "ESCWA Data Portal",
+          "url": "https://data.unescwa.org/"
+        }
+      ]
     },
     {
       "code": "IARC",
       "name": "International Agency for Research on Cancer",
       "grouping": "joint-hosted",
-      "governingBodies": [],
-      "officialPages": [
+      "governingBodies": [
         {
-          "label": null,
-          "url": "https://www.iarc.who.int/"
+          "name": "Governing Council",
+          "url": "https://governance.iarc.who.int/governing-councils/",
+          "overview": false
         }
       ],
-      "contacts": [],
-      "note": null,
-      "mandateRegistry": [],
-      "registryNote": "Not yet surveyed — added by the CEB scope rule (July 2026); governing bodies and mandate registry still to be researched.",
+      "officialPages": [
+        {
+          "label": "IARC",
+          "url": "https://www.iarc.who.int/"
+        },
+        {
+          "label": "Governance",
+          "url": "https://www.iarc.who.int/about-iarc-governance"
+        },
+        {
+          "label": "Statute, Rules and Regulations",
+          "url": "https://governance.iarc.who.int/documentation/statute-iarc.pdf"
+        }
+      ],
+      "contacts": [
+        {
+          "label": "Contact IARC",
+          "url": "https://www.iarc.who.int/cards_page/about-iarc-contact-us/"
+        }
+      ],
+      "note": "WHO's cancer agency in Lyon, established by World Health Assembly resolution WHA18.44 (1965) but governed by its own Statute and its own 30 Participating States; the Governing Council, not the Health Assembly, adopts its budget and programme.",
+      "mandateRegistry": [
+        {
+          "name": "IARC Governance",
+          "category": "Meeting archive",
+          "url": "https://governance.iarc.who.int/",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": "Every Governing and Scientific Council session links to an Indico event holding the full document set, including adopted resolutions (a consolidated resolutions PDF for 2025; 22 individually numbered resolution PDFs for 2026), in English and French. Free from March 2009 onward; earlier sessions need registration. A per-session archive, not a resolutions database — borderline"
+            },
+            "mandates": {
+              "value": false,
+              "note": "Nothing distinguishes in-force from superseded or completed resolutions; the archive is chronological"
+            },
+            "budget": {
+              "value": false,
+              "note": "The Governing Council adopts the biennial Programme and Budget as one document by resolution, but no budget information is attached to individual mandates"
+            },
+            "implementation": {
+              "value": false,
+              "note": "The standing 'Director's response' series answers Scientific Council recommendations, not Governing Council resolutions; no per-resolution follow-up found"
+            },
+            "results": {
+              "value": false,
+              "note": "Scientific output is reported through the Biennial Report and Medium-Term Strategy evaluation, by branch and strategic objective, not against named resolutions"
+            }
+          },
+          "interoperability": null
+        }
+      ],
+      "registryNote": null,
       "related": []
     },
     {
       "code": "PAHO",
       "name": "Pan American Health Organization",
       "grouping": "joint-hosted",
-      "governingBodies": [],
-      "officialPages": [
+      "governingBodies": [
         {
-          "label": null,
-          "url": "https://www.paho.org/"
+          "name": "Pan American Sanitary Conference",
+          "url": "https://www.paho.org/en/governance/pan-american-sanitary-conference",
+          "overview": false
+        },
+        {
+          "name": "Directing Council",
+          "url": "https://www.paho.org/en/governance/directing-council",
+          "overview": false
+        },
+        {
+          "name": "Executive Committee",
+          "url": "https://www.paho.org/en/governance/executive-committee",
+          "overview": false
         }
       ],
-      "contacts": [],
-      "note": null,
-      "mandateRegistry": [],
-      "registryNote": "Not yet surveyed — added by the CEB scope rule (July 2026); governing bodies and mandate registry still to be researched.",
-      "related": []
+      "officialPages": [
+        {
+          "label": "PAHO",
+          "url": "https://www.paho.org/en"
+        },
+        {
+          "label": "Governance",
+          "url": "https://www.paho.org/en/governance"
+        },
+        {
+          "label": "Basic Documents (19th ed.)",
+          "url": "https://www.paho.org/en/documents/basic-documents-pan-american-health-organization-nineteenth-edition"
+        }
+      ],
+      "contacts": [
+        {
+          "label": "Inquiries",
+          "url": "https://www.paho.org/en/inquiries"
+        }
+      ],
+      "note": "A separate inter-American treaty organization founded in 1902, with its own constitution, 35 Member States and three-tier governance, that simultaneously serves as WHO's Regional Office for the Americas — each Directing Council session is also a session of the WHO Regional Committee.",
+      "mandateRegistry": [
+        {
+          "name": "Mandates and Strategies",
+          "category": "Mandate document listing",
+          "url": "https://www.paho.org/en/mandates-and-strategies",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": "Faceted listing (200+ topic terms, date range) of PAHO resolutions, plans of action and strategies; per-session document pages for every body; full texts in IRIS, a DSpace 7 repository with a public REST API"
+            },
+            "mandates": {
+              "value": "partial",
+              "note": "CD62/INF/3 (5 Aug 2025) classifies resolutions as Active / Conditional Active / Sunset against criteria printed in the document, on a cycle mandated by resolution CD55.R11 (2016), editions 2016/2019/2022/2025. Coverage is partial: the report carries the 131 resolutions still carried forward out of 403 adopted 1999-2024, and the 272 already sunset are excluded. Supersession is named per resolution in the internal annex, but the publicly linked 'Active PAHO Resolutions' extract omits the Sunset rows and the supersession statements."
+            },
+            "budget": {
+              "value": false,
+              "note": "Program Budget and pbdigital.paho.org are organized by Strategic Plan outcome/output, country and biennium; no monetary amounts attached to individual resolutions"
+            },
+            "implementation": {
+              "value": "partial",
+              "note": "The monitoring report assesses per resolution whether the commitments in the operative paragraphs have been met or remain in force, and whether the stipulated progress reports were presented, publishing Reporting Requirement / Report(s) / Status / Justification per resolution — a triennial PDF table, not a tracker"
+            },
+            "results": {
+              "value": "partial",
+              "note": "Per-resolution final and progress report series to the Governing Bodies on resolution-endorsed plans of action (e.g. CD62/INF/5, CD62/INF/6, CD62/INF/8), indexed by the monitoring annex; same weak form as WHO's consolidated WHA progress reports"
+            }
+          },
+          "interoperability": null
+        }
+      ],
+      "registryNote": null,
+      "related": [
+        {
+          "name": "PAHO Program Budget Web Portal",
+          "url": "https://pbdigital.paho.org/en/implementation/2026-2027/home"
+        },
+        {
+          "name": "PAHO/EIH Open Data (PLISA)",
+          "url": "https://opendata.paho.org/en"
+        }
+      ]
     },
     {
       "code": "UNAIDS",
@@ -3018,7 +3992,7 @@
       "contacts": [
         {
           "label": "Contact UNAIDS",
-          "url": "https://www.unaids.org/en/contactunaids"
+          "url": "https://www.unaids.org/en/contact"
         }
       ],
       "note": null,
@@ -3026,11 +4000,11 @@
         {
           "name": "PCB Meeting Archive",
           "category": "Meeting archive",
-          "url": "https://www.unaids.org/en/whoweare/pcb",
+          "url": "https://www.unaids.org/en/aboutunaids/unaidsprogrammecoordinatingboard/pcbmeetingarchive",
           "points": {
             "documents": {
               "value": true,
-              "note": "Per-session 'decisions, recommendations and conclusions' documents and all agenda documents posted per meeting back to 1995; a PDF-per-meeting archive, not a queryable database — borderline"
+              "note": "Per-session 'decisions, recommendations and conclusions' documents and all agenda documents posted per meeting back to 1995; a PDF-per-meeting archive with no cross-meeting index — borderline"
             },
             "mandates": {
               "value": false,
@@ -3064,18 +4038,75 @@
       "code": "UNITAID",
       "name": "Unitaid",
       "grouping": "joint-hosted",
-      "governingBodies": [],
-      "officialPages": [
+      "governingBodies": [
         {
-          "label": null,
-          "url": "https://unitaid.org/"
+          "name": "Executive Board",
+          "url": "https://unitaid.org/executive-board/",
+          "overview": false
         }
       ],
-      "contacts": [],
-      "note": null,
-      "mandateRegistry": [],
-      "registryNote": "Not yet surveyed — added by the CEB scope rule (July 2026); governing bodies and mandate registry still to be researched.",
-      "related": []
+      "officialPages": [
+        {
+          "label": "Unitaid",
+          "url": "https://unitaid.org/"
+        },
+        {
+          "label": "Executive Board",
+          "url": "https://unitaid.org/executive-board/"
+        },
+        {
+          "label": "Board documents",
+          "url": "https://unitaid.org/board-documents/"
+        }
+      ],
+      "contacts": [
+        {
+          "label": "Contact Unitaid",
+          "url": "https://unitaid.org/contact-us/"
+        }
+      ],
+      "note": "A hosted partnership of WHO: WHO provides the administrative host and holds one of the thirteen Board seats, but Unitaid has its own Constitution, Executive Board and budget, and WHO's governing bodies have no role in its governance.",
+      "mandateRegistry": [
+        {
+          "name": "Board documents",
+          "category": "Board decisions archive",
+          "url": "https://unitaid.org/board-documents/",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": "Per-meeting listing filterable by meeting number and date, with each meeting's resolutions R1…Rn as individual PDFs plus minutes and agenda; a separate e-Resolutions tab (32 pages) with year filter and free-text keyword search; plus Constitution, Board Operating Procedures and Code of Ethical Conduct"
+            },
+            "mandates": {
+              "value": false,
+              "note": "No in-force, superseded or lapsed status; both tabs are chronological, and resolutions that plainly replace earlier ones are not marked"
+            },
+            "budget": {
+              "value": false,
+              "note": "each investment resolution authorizes an amount (e.g. R4-2026-e, up to US$18,500,000), but the decision is itself the spending authorization rather than a mandate linked to financial information: nothing aggregates the authorizations or reports disbursement against them. Same treatment as IFAD and IAEA, whose budgets are likewise adopted by their own resolutions."
+            },
+            "implementation": {
+              "value": false,
+              "note": "Follow-up runs through Key Performance Indicator reports and the Executive Director's report, organized by strategic objective, not by resolution"
+            },
+            "results": {
+              "value": false,
+              "note": "Results are reported at strategy and portfolio level (KPI framework, 2025 Mid-Term Review, independent evaluations), never against a named resolution"
+            }
+          },
+          "interoperability": null
+        }
+      ],
+      "registryNote": null,
+      "related": [
+        {
+          "name": "Unitaid Projects",
+          "url": "https://unitaid.org/projects/"
+        },
+        {
+          "name": "Unitaid Evaluations",
+          "url": "https://unitaid.org/evaluations/"
+        }
+      ]
     }
   ]
 }
