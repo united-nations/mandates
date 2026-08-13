@@ -364,6 +364,36 @@ commit that made it.
    wordmark), `SectionBanner` (`scroll-mt-20` → `scroll-mt-28`),
    `RootLayoutClient` (the back-button route list).
 
+### Verification actually performed
+
+Not just "it builds". Every route was served from a production build against
+the live database and the HTML inspected:
+
+- **All seven pages return 200** — `/secretariat`, `/system`, `/missions`,
+  `/reports`, `/genealogy`, `/instruments`, `/methodology`. `/analytics`,
+  `/secretariat/analytics` and `/` all 307 to `/secretariat`.
+- **All five section anchors render**, plus `#background` and `#resources`, and
+  the sticky nav renders all six stops.
+- **Twelve expanders render**, including the two that need the database — the
+  language of command, and the citation matrix (50 entities across 5 pillar
+  groups).
+- **Section 05 carries live figures**: 21 active peace operations, 86% of
+  mandated strength deployed, 573 renewal resolutions.
+- **The length trend returns 164 points** across the three organs.
+- **The merge resolution on the detail pages works**: `A/RES/76/10` shows
+  "Adopted by recorded vote" with per-country data (the grafted vote strip),
+  and `S/RES/1718(2006)` shows its "sanctions regime" chip (the grafted
+  implementation chips).
+- **Filtered pages render**: `?organ=General%20Assembly` and `?entity=DPPA`.
+- **The card section links render** on three of four cards, with "topics" on
+  the catalogue card.
+
+One correction to the Phase 5 commit message, which claimed the
+`scroll-mt-20` → `scroll-mt-28` change "also applies on /system, where it is
+harmless". It does not apply there at all: `/system` was rebuilt as a text hero
+and no longer uses `SectionBanner`. That component is now used only by the
+section components on this branch, so the change affects `/secretariat` alone.
+
 ### Audit: was every explored feature merged?
 
 No. The capstone held all seven analytical lenses, but not everything that was
