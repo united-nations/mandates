@@ -102,27 +102,27 @@ export function SiteHeader() {
             className={cn('h-10 w-[47.9px] shrink-0 select-none', inlineOnly)}
             draggable={false}
           />
-          {/* Mobile: wordmark + beta badge stack vertically so the title can
+          {/* Mobile: wordmark + version badge stack vertically so the title can
               shrink and the badge stays visible. md+: original inline layout. */}
           <span className="flex flex-col items-start gap-1 md:flex-row md:items-center md:gap-2.5">
             {/* unfck branding. This branch is published at mandates.unfck.org
-                as an unofficial alternative, so the wordmark must not read
-                "United Nations". Keep the change to this one span — it is the
-                whole of the branding divergence from dev. */}
+                as an unofficial alternative, so the wordmark drops the "United
+                Nations" prefix entirely rather than replacing it — the badge
+                beside it carries the identity. Keep the divergence from dev to
+                this span and the badge. */}
             <span className="text-lg leading-none tracking-tight text-foreground md:text-[23.83px]">
-              <span className="hidden font-bold md:inline">UNFCK </span>
               <span className="font-light">Mandate Source Registry</span>
             </span>
             <Tooltip>
               <TooltipTrigger asChild>
                 <span className="cursor-help rounded-md bg-un-blue/10 px-1.5 py-0.5 text-[10px] leading-none font-semibold whitespace-nowrap text-un-blue md:px-2 md:py-1 md:text-xs">
-                  Beta Version
+                  UNFCK VERSION
                 </span>
               </TooltipTrigger>
               <TooltipContent side="bottom" className="max-w-56">
                 <p className="text-sm">
-                  The development of the mandate registry is still ongoing. Go
-                  to the{' '}
+                  An unofficial build of the mandate registry, with the full set
+                  of analytical lenses. Development is still ongoing. Go to the{' '}
                   <Link
                     href="/methodology"
                     className="font-medium text-un-blue underline hover:text-shuttle-gray"
