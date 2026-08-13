@@ -28,10 +28,12 @@ const pagePadding = 'px-8 sm:px-12 lg:px-16'
 // deliberately no "Analytics" entry: every lens now lives in the section of
 // /secretariat whose question it answers, and the deep lens pages are reached
 // from those expanders rather than from a hub of their own.
+// Order is narrowest scope to widest: the Secretariat, then the peace
+// operations it runs, then the wider UN system.
 const navItems = [
   { href: '/secretariat', label: 'UN Secretariat Mandates', icon: Landmark },
-  { href: '/system', label: 'UN System Mandates', icon: Globe },
   { href: '/missions', label: 'Peace Operation Mandates', icon: Shield },
+  { href: '/system', label: 'UN System Mandates', icon: Globe },
 ]
 
 // Lens pages opened from a /secretariat expander. Visiting one keeps the
