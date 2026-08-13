@@ -18,6 +18,7 @@ import { ImplementationSection } from '@/components/sections/ImplementationSecti
 import { MandatesSection } from '@/components/sections/MandatesSection'
 import { OrgansSection } from '@/components/sections/OrgansSection'
 import { SecretariatBackground } from '@/components/sections/SecretariatBackground'
+import { SectionNav } from '@/components/sections/SectionNav'
 import { SubjectsSection } from '@/components/sections/SubjectsSection'
 import {
   getBudgetVersions,
@@ -103,6 +104,12 @@ export default async function Page({ searchParams }: PageProps) {
           activeVersionSlug={activeVersionSlug}
         />
       </section>
+
+      {/* Sticky wayfinding. It sits below the intro and the cards, so it
+          appears exactly where the long part of the page starts. Everything
+          from here down must stay a contiguous run of sibling blocks — the
+          scrollspy observes them to find the section under the top band. */}
+      <SectionNav />
 
       {/* The five sections. Each one answers a question the page poses, and
           carries the analytical lenses that belong to that question. */}

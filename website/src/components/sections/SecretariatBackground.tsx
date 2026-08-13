@@ -16,7 +16,8 @@ import { explainerTexts } from '@/lib/en_text_contents'
 export function SecretariatBackground() {
   return (
     <>
-      <section className="bg-white py-12 md:py-16">
+      {/* id="background" is the last stop on the sticky SectionNav. */}
+      <section id="background" className="scroll-mt-28 bg-white py-12 md:py-16">
         <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-16">
           <h2 className="mb-8 text-2xl font-bold text-gray-900">Background</h2>
           <div className="divide-y divide-gray-200">

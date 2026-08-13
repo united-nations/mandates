@@ -16,8 +16,10 @@ export function SectionBanner({
   description,
   id,
 }: SectionBannerProps) {
+  // scroll-mt-28 (112px), not 20: /secretariat stacks a sticky SectionNav under
+  // the sticky site header, so an anchor has to clear both.
   return (
-    <section id={id} className="relative w-full scroll-mt-20">
+    <section id={id} className="relative w-full scroll-mt-28">
       {/* Mobile: stacked layout */}
       <div className="md:hidden">
         <div className="relative aspect-[3/1] w-full overflow-hidden bg-gray-100">
