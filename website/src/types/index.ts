@@ -396,13 +396,17 @@ export interface ApiResponse {
 }
 
 // UN system directory (src/data/un-system.json)
+/**
+ * The six CEB-derived categories. See `docs/un-system-scope.md` for the
+ * inclusion rule and how each entity is assigned.
+ */
 export type UnSystemGrouping =
   | 'secretariat'
   | 'fund-programme'
   | 'specialized-agency'
   | 'related-organization'
-  | 'other-entity'
-  | 'research-training'
+  | 'regional-commission'
+  | 'joint-hosted'
 
 export interface UnSystemPage {
   label: string | null
@@ -470,6 +474,8 @@ export interface UnSystemEntity {
   code: string
   name: string
   grouping: UnSystemGrouping
+  /** Secretariat is part of the UN Secretariat, though the entity is governed separately (the UN80 chart's asterisk). */
+  secretariatAdministered?: true
   governingBodies: UnSystemBodyEntry[]
   /** Org-level pages/contacts not attributable to a specific governing body (secretariat pages, general contacts). */
   officialPages: UnSystemPage[]

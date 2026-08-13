@@ -30,8 +30,8 @@ const sections: { grouping: UnSystemGrouping; title: string | null }[] = [
   { grouping: 'fund-programme', title: 'Funds and Programmes' },
   { grouping: 'specialized-agency', title: 'Specialized Agencies' },
   { grouping: 'related-organization', title: 'Related Organizations' },
-  { grouping: 'other-entity', title: 'Other Entities' },
-  { grouping: 'research-training', title: 'Research and Training' },
+  { grouping: 'regional-commission', title: 'Regional Commissions' },
+  { grouping: 'joint-hosted', title: 'Joint and Hosted Bodies' },
 ]
 
 function resolveBody(entry: UnSystemBodyEntry): UnSystemBody {
