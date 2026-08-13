@@ -108,7 +108,7 @@
             },
             "implementation": {
               "value": false,
-              "note": "evidence in round 1"
+              "note": "no evidence in round 1"
             },
             "results": {
               "value": false,
@@ -181,7 +181,7 @@
             },
             "implementation": {
               "value": false,
-              "note": "evidence in round 1"
+              "note": "no evidence in round 1"
             },
             "results": {
               "value": false,
@@ -235,7 +235,7 @@
             },
             "implementation": {
               "value": false,
-              "note": "evidence in round 1"
+              "note": "no evidence in round 1"
             },
             "results": {
               "value": false,
@@ -287,7 +287,7 @@
             },
             "implementation": {
               "value": false,
-              "note": "evidence in round 1"
+              "note": "no evidence in round 1"
             },
             "results": {
               "value": false,
@@ -351,7 +351,7 @@
             },
             "implementation": {
               "value": "partial",
-              "note": "evidence in round 1"
+              "note": "no evidence in round 1"
             },
             "results": {
               "value": false,
@@ -403,7 +403,7 @@
             },
             "implementation": {
               "value": false,
-              "note": "evidence in round 1"
+              "note": "no evidence in round 1"
             },
             "results": {
               "value": false,
@@ -460,7 +460,7 @@
             },
             "implementation": {
               "value": false,
-              "note": "evidence in round 1"
+              "note": "no evidence in round 1"
             },
             "results": {
               "value": false,
@@ -518,7 +518,7 @@
             },
             "implementation": {
               "value": false,
-              "note": "evidence in round 1"
+              "note": "no evidence in round 1"
             },
             "results": {
               "value": false,
@@ -585,7 +585,7 @@
             },
             "implementation": {
               "value": false,
-              "note": "evidence in round 1"
+              "note": "no evidence in round 1"
             },
             "results": {
               "value": false,
@@ -671,7 +671,7 @@
             },
             "implementation": {
               "value": false,
-              "note": "evidence in round 1"
+              "note": "no evidence in round 1"
             },
             "results": {
               "value": false,
@@ -745,7 +745,7 @@
             },
             "implementation": {
               "value": false,
-              "note": "evidence in round 1"
+              "note": "no evidence in round 1"
             },
             "results": {
               "value": false,
@@ -797,7 +797,7 @@
             },
             "implementation": {
               "value": false,
-              "note": "evidence in round 1"
+              "note": "no evidence in round 1"
             },
             "results": {
               "value": "partial",
@@ -859,7 +859,7 @@
             },
             "implementation": {
               "value": false,
-              "note": "evidence in round 1"
+              "note": "no evidence in round 1"
             },
             "results": {
               "value": false,
@@ -962,7 +962,7 @@
             },
             "implementation": {
               "value": false,
-              "note": "evidence in round 1"
+              "note": "no evidence in round 1"
             },
             "results": {
               "value": false,
@@ -2175,7 +2175,7 @@
             },
             "mandates": {
               "value": false,
-              "note": "evidence in round 1"
+              "note": "no evidence in round 1"
             },
             "budget": {
               "value": false,
@@ -2183,7 +2183,7 @@
             },
             "implementation": {
               "value": false,
-              "note": "evidence in round 1"
+              "note": "no evidence in round 1"
             },
             "results": {
               "value": false,
@@ -2267,7 +2267,7 @@
             },
             "implementation": {
               "value": false,
-              "note": "evidence in round 1"
+              "note": "no evidence in round 1"
             },
             "results": {
               "value": false,
@@ -2319,7 +2319,7 @@
             },
             "implementation": {
               "value": false,
-              "note": "evidence in round 1"
+              "note": "no evidence in round 1"
             },
             "results": {
               "value": false,
@@ -2370,7 +2370,7 @@
             },
             "implementation": {
               "value": false,
-              "note": "evidence in round 1"
+              "note": "no evidence in round 1"
             },
             "results": {
               "value": false,
@@ -2425,7 +2425,7 @@
             },
             "implementation": {
               "value": false,
-              "note": "evidence in round 1"
+              "note": "no evidence in round 1"
             },
             "results": {
               "value": false,
@@ -2508,7 +2508,7 @@
             },
             "implementation": {
               "value": false,
-              "note": "evidence in round 1"
+              "note": "no evidence in round 1"
             },
             "results": {
               "value": false,
@@ -2703,7 +2703,7 @@
             },
             "implementation": {
               "value": false,
-              "note": "evidence in round 1"
+              "note": "no evidence in round 1"
             },
             "results": {
               "value": false,
