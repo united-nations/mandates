@@ -14,6 +14,18 @@ const nextConfig: NextConfig = {
         destination: '/secretariat',
         permanent: false,
       },
+      // The analytics hub and the tabbed analytics page are gone: every lens is
+      // now an expander inside the /secretariat section that it belongs to.
+      {
+        source: '/analytics',
+        destination: '/secretariat',
+        permanent: false,
+      },
+      {
+        source: '/secretariat/analytics',
+        destination: '/secretariat',
+        permanent: false,
+      },
       // Old routes folded into the new navigation structure.
       {
         source: '/contact',

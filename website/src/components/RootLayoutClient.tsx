@@ -32,8 +32,7 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
   // Top-level nav destinations don't get a back button — it's reserved for
   // detail pages reached from within the app.
   const isMainPage =
-    isModalOpen ||
-    ['/secretariat', '/system', '/reports', '/analytics'].includes(pathname)
+    isModalOpen || ['/secretariat', '/system', '/missions'].includes(pathname)
   const isDiffPage = pathname === '/diff'
   // The redesigned /secretariat and /system pages are full-bleed (hero
   // banners, colour bands) and manage their own per-section widths, so they

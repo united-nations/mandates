@@ -94,9 +94,10 @@ export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
 
   return (
     <div>
-      {/* Summary counts and the organ / entity / topic directories now live in
-          the DirectoryExplorer buttons above this explorer (each opens a modal);
-          the charts moved to /secretariat/analytics.
+      {/* Summary counts and the organ / entity / topic directories live in the
+          DirectoryExplorer buttons above this explorer (each opens a modal) and
+          again as full directories in the sections below it; the charts are
+          expanders inside those sections.
 
           Years card still hidden — keep code for potential re-enable:
           {filterOptions.yearRange && (

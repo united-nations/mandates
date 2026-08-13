@@ -13,7 +13,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
-import { ChartColumn, Globe, Landmark, Menu, Shield } from 'lucide-react'
+import { Globe, Landmark, Menu, Shield } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -24,25 +24,28 @@ import { usePathname } from 'next/navigation'
 const pageWidth = 'max-w-4xl lg:max-w-6xl'
 const pagePadding = 'px-8 sm:px-12 lg:px-16'
 
-// The three mandate-family registries stay as core destinations; every
-// analytical lens (command language, consensus, attention map, genealogy,
-// reporting cycle, sanctions & treaties, mission ground-truth) is gathered
-// under a single "Analytics" entry that points at the /analytics hub.
+// The three mandate registries are the only nav destinations. There is
+// deliberately no "Analytics" entry: every lens now lives in the section of
+// /secretariat whose question it answers, and the deep lens pages are reached
+// from those expanders rather than from a hub of their own.
 const navItems = [
   { href: '/secretariat', label: 'UN Secretariat Mandates', icon: Landmark },
   { href: '/system', label: 'UN System Mandates', icon: Globe },
   { href: '/missions', label: 'Peace Operation Mandates', icon: Shield },
-  { href: '/analytics', label: 'Analytics', icon: ChartColumn },
 ]
 
-// Lens routes that live under the Analytics hub — visiting any of them keeps
-// the single "Analytics" nav item highlighted.
-const analyticsRoutes = ['/analytics', '/instruments', '/reports', '/genealogy']
+// Lens pages opened from a /secretariat expander. Visiting one keeps the
+// Secretariat nav item highlighted, because that is where the reader came from
+// and where the "back" of the journey belongs.
+const secretariatLensRoutes = ['/instruments', '/reports', '/genealogy']
 
 function isNavActive(href: string, pathname: string): boolean {
-  if (href === '/analytics') {
-    return analyticsRoutes.some(
-      (r) => pathname === r || pathname.startsWith(`${r}/`)
+  if (href === '/secretariat') {
+    return (
+      pathname === '/secretariat' ||
+      secretariatLensRoutes.some(
+        (r) => pathname === r || pathname.startsWith(`${r}/`)
+      )
     )
   }
   return pathname === href
@@ -102,10 +105,12 @@ export function SiteHeader() {
           {/* Mobile: wordmark + beta badge stack vertically so the title can
               shrink and the badge stays visible. md+: original inline layout. */}
           <span className="flex flex-col items-start gap-1 md:flex-row md:items-center md:gap-2.5">
+            {/* unfck branding. This branch is published at mandates.unfck.org
+                as an unofficial alternative, so the wordmark must not read
+                "United Nations". Keep the change to this one span — it is the
+                whole of the branding divergence from dev. */}
             <span className="text-lg leading-none tracking-tight text-foreground md:text-[23.83px]">
-              <span className="hidden font-bold md:inline">
-                United Nations{' '}
-              </span>
+              <span className="hidden font-bold md:inline">UNFCK </span>
               <span className="font-light">Mandate Source Registry</span>
             </span>
             <Tooltip>
