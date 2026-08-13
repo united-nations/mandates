@@ -7,10 +7,27 @@ CSW political declarations and agreed conclusions individually. Instead it says:
      following link: www.unwomen.org/en/csw/outcomes."
 
 This module reproduces exactly that list, sourced solely from a scrape of that
-page (no merge with the historical 2026 enumeration). It emits one row per
-downloadable outcome item (each agreed conclusion, each standalone declaration),
-which is then imported as UN-Women legislative-mandate citations for the PPB 2027
-vintage via ``sql/migrations/039_import_csw_outcomes.sql``.
+page (no merge with the historical 2026 enumeration, and no attempt to match
+items against the Digital Library). It emits one row per downloadable outcome
+item (each agreed conclusion, each standalone declaration), which is then
+imported as UN-Women legislative-mandate citations for the PPB 2027 vintage via
+``sql/migrations/039_import_csw_outcomes.sql``.
+
+Two identifier columns, and no invented document symbols:
+
+``ods_symbol``
+    The real UN document symbol, but *only* where the page links straight into
+    ODS -- 4 of 40 items (E/CN.6/2020/L.1, E/CN.6/2021/L.3, E/CN.6/2022/L.7,
+    E/2025/27). Empty for the rest: those link to UN Women's own branded PDF
+    booklets, which carry no document symbol at all.
+
+``document_key``
+    The primary key to store. It is the ``ods_symbol`` when there is one, and
+    otherwise a readable label in the house convention already used for
+    commission outcomes published only inside a session report -- 'CSW Agreed
+    conclusions 1998/I', 'CSW Declaration, 49th session (2005)' -- matching
+    existing rows such as 'E/CN.15 Resolution 17/2' and 'E/CN.7 Decision 60/1'.
+    It reads as a description and cannot be mistaken for a document symbol.
 
 Run from anywhere; paths resolve relative to the repo root:
 
@@ -48,6 +65,8 @@ _TAG = re.compile(r"<[^>]+>")
 _ENGLISH_HREF = re.compile(r'<a[^>]+href="([^"]+)"[^>]*>\s*English\s*</a>', re.I)
 _ANY_HREF = re.compile(r'<a[^>]+href="([^"]+)"', re.I)
 _PAREN_SYMBOL = re.compile(r"\(([EAS]/[^)]+)\)")
+# A link straight into ODS carries the item's real document symbol in its path.
+_ODS_LINK = re.compile(r"(?:undocs\.org|docs\.un\.org)/(?:en/)?(\S+)", re.I)
 # A line that begins a new outcome item: "Resolution 40/9:", "2004/11:",
 # "2001/5 A.", "1999/II:", or a bare "A." / "B -" continuation label.
 _ITEM_LABEL = re.compile(
@@ -120,11 +139,44 @@ def _classify(title: str) -> str:
     return "agreed conclusions"
 
 
-def _make_symbol(year: int, slug_source: str, seq: int) -> str:
-    """Stable, unique, scrape-derived key (individual conclusions lack ODS symbols)."""
-    norm = re.sub(r"[^a-z0-9]+", "-", slug_source.lower()).strip("-")
-    norm = "-".join(norm.split("-")[:6]) or str(seq)
-    return f"CSW/{year}/{norm}"
+def _ordinal(n: int) -> str:
+    if 10 <= n % 100 <= 20:
+        suffix = "th"
+    else:
+        suffix = {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th")
+    return f"{n}{suffix}"
+
+
+_TYPE_NOUN = {
+    "agreed conclusions": "Agreed conclusions",
+    "declaration": "Declaration",
+    "political declaration": "Political declaration",
+    "resolution": "Resolution",
+    "report": "Report",
+}
+
+
+def _document_key(session: int, year: int, item_type: str, label: str) -> str:
+    """A readable key for an outcome with no official document symbol.
+
+    CSW agreed conclusions are adopted as chapters of the session report, so most
+    have no standalone ODS symbol. Rather than invent one, follow the convention
+    ppb2026.source_documents already uses for exactly this case -- body + type +
+    number, e.g. 'E/CN.15 Resolution 17/2', 'E/CN.7 Decision 60/1' -- so the key
+    reads as a description and can never be mistaken for a document symbol.
+    """
+    noun = _TYPE_NOUN.get(item_type, "Agreed conclusions")
+    # 'Resolution 40/9' is numbered session/number; conclusions use year/number.
+    numbered = re.match(
+        r"^(?:Resolution\s+)?(\d{2,4}/\d+(?:\s*[A-Z])?|\d{4}/[IVX]+)$", label
+    )
+    if numbered:
+        return f"CSW {noun} {numbered.group(1)}"
+    session_part = f"{_ordinal(session)} session ({year})"
+    # A bare sub-item letter ('A'/'B') only disambiguates within its session.
+    if re.fullmatch(r"[A-Z]", label):
+        return f"CSW {noun} {label}, {session_part}"
+    return f"CSW {noun}, {session_part}"
 
 
 def _is_noise(text: str) -> bool:
@@ -139,10 +191,6 @@ def _is_noise(text: str) -> bool:
         "the commission acted as"
     ):
         return True
-    # A bare ECOSOC reference number ("1998/12", "2001/5") that heads a set of
-    # sub-lettered/roman conclusions — the sub-items carry the real content.
-    if re.fullmatch(r"\d{4}/\d+", text):
-        return True
     # Bare language pipes / brackets left over from a Download line.
     return bool(re.fullmatch(r"[\[\]|\s]*", text))
 
@@ -154,6 +202,7 @@ def parse(page_html: str) -> pd.DataFrame:
         lines = _BR.split(block)
 
         session_symbol: str | None = None
+        number_stem: str | None = None
         items: list[dict] = []
         current: dict | None = None
 
@@ -182,17 +231,24 @@ def parse(page_html: str) -> pd.DataFrame:
                 continue
             if _is_noise(text):
                 continue
+            # A bare ECOSOC reference number ("1998/12", "2001/5") heads a set of
+            # sub-lettered conclusions. It is not an item itself; remember it so
+            # the sub-items can carry their full number ("2001/5 A").
+            if re.fullmatch(r"\d{4}/\d+", text):
+                flush()
+                number_stem = text
+                continue
 
             if _ITEM_LABEL.match(text):
                 flush()
-                current = {"title": text, "link": None}
+                current = {"title": text, "link": None, "stem": number_stem}
             elif current is not None and current["link"] is None:
                 # Continuation of the current item's title/description.
                 current["title"] = f"{current['title']} {text}".strip()
             else:
                 # A new title-only item (standalone declaration, session report).
                 flush()
-                current = {"title": text, "link": None}
+                current = {"title": text, "link": None, "stem": number_stem}
 
             # Capture an inline link (e.g. the <li> session-report anchor).
             if current is not None and current["link"] is None:
@@ -201,7 +257,7 @@ def parse(page_html: str) -> pd.DataFrame:
                     current["link"] = _absolute(href.group(1))
         flush()
 
-        for seq, item in enumerate(items, start=1):
+        for item in items:
             title = item["title"]
             m = _ITEM_LABEL.match(title)
             label, description = "", title
@@ -212,27 +268,34 @@ def parse(page_html: str) -> pd.DataFrame:
             item_type = _classify(title)
             paren = _PAREN_SYMBOL.search(title)
             report_symbol = paren.group(1) if paren else session_symbol
-            if label:
-                slug = label
-            elif item_type in {"declaration", "political declaration", "report"}:
-                slug = item_type.replace(" ", "-")
-            else:
-                slug = description
+
+            # Qualify a bare sub-item letter with its ECOSOC number ("2001/5 A").
+            full_label = label
+            if item["stem"] and re.fullmatch(r"[A-Z]", label):
+                full_label = f"{item['stem']} {label}"
+
+            # Only the symbol the page itself links is a real document symbol.
+            link = item["link"] or URL
+            ods = _ODS_LINK.search(link)
+            ods_symbol = ods.group(1).rstrip("/.") if ods else ""
+
             rows.append(
                 {
                     "session": session,
                     "year": year,
                     "type": item_type,
-                    "item_label": label,
+                    "item_label": full_label,
                     "description": description,
                     "report_symbol": report_symbol,
-                    "link_en": item["link"] or URL,
-                    "full_document_symbol": _make_symbol(year, slug, seq),
+                    "link_en": link,
+                    "ods_symbol": ods_symbol,
+                    "document_key": ods_symbol
+                    or _document_key(session, year, item_type, full_label),
                 }
             )
 
     df = pd.DataFrame(rows)
-    df = df.sort_values(["session", "full_document_symbol"]).reset_index(drop=True)
+    df = df.sort_values(["session", "document_key"]).reset_index(drop=True)
     return df
 
 
