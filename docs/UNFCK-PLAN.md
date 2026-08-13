@@ -266,9 +266,44 @@ Do not push and do not open a pull request without being asked.
 - **Repository size.** The lens JSON adds about 7.7 MB, mostly
   `reports-lens.json` at 5.0 MB.
 - **Not taken.** The four whole-site redesigns (Rams, editorial, terminal,
-  brutalist), `secretariat-progressive-disclosure`, `secretariat-calm-hierarchy`,
-  `worktree-citation-matrix` and `worktree-mandate-sidebar` stay unmerged. Any
-  of them can be revisited later.
+  brutalist), `secretariat-progressive-disclosure`, `secretariat-calm-hierarchy`
+  and `worktree-mandate-sidebar` stay unmerged. Any of them can be revisited
+  later. (`worktree-citation-matrix` was taken — see the audit in §8.)
+
+- **"Length of resolutions" — the one explored idea with no successor.** Specced
+  here rather than half-built, because it needs a new chart component and that
+  deserves proper design time. The data is available and the query is cheap;
+  `digitallibrary.document_paragraphs` gives one row per operative paragraph,
+  joined to `digitallibrary.documents` on `symbol_normalized`:
+
+  ```sql
+  WITH per_doc AS (
+    SELECT d.symbol_normalized,
+           d.un_body                                  AS body,
+           extract(year FROM d.date_publication)::int AS year,
+           count(*)::int                              AS paragraphs
+    FROM digitallibrary.document_paragraphs p
+    JOIN digitallibrary.documents d USING (symbol_normalized)
+    WHERE d.un_body IN ('General Assembly', 'Security Council',
+                        'Economic and Social Council')
+      AND d.date_publication IS NOT NULL
+    GROUP BY 1, 2, 3
+  )
+  SELECT body,
+         year,
+         count(*)::int                                          AS documents,
+         percentile_cont(0.5) WITHIN GROUP (ORDER BY paragraphs) AS median_paragraphs
+  FROM per_doc
+  GROUP BY 1, 2
+  HAVING count(*) >= 10   -- thin early years would swing the median wildly
+  ORDER BY 1, 2;
+  ```
+
+  Use the **median**, not the mean: a handful of very long omnibus resolutions
+  otherwise dominate. Home for it is the Mandates section, inside the existing
+  "Trends over time" expander, as a third chart beside the citation and
+  recurrence trends — it is the same kind of claim about the same corpus.
+  Follow the `dataviz` skill before writing the chart.
 
 ---
 
