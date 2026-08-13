@@ -21,7 +21,7 @@ import Link from 'next/link'
 export const metadata: Metadata = {
   title: 'UN System Mandates',
   description:
-    'Trace mandates across the UN System: the governing bodies of every fund, programme, specialized agency, related organization and other entity, and how far each one’s mandates can be publicly traced.',
+    'An overview of the governing bodies of UN system entities — funds, programmes, specialized agencies, related organizations and others — with the resources each publishes on its mandates, documents, finances and results.',
 }
 
 const { bodies, organizations } = unSystemData as UnSystemData
@@ -174,11 +174,11 @@ export default function UnSystemPage() {
           >
             UN Secretariat
           </Link>
-          , dozens of funds, programmes, specialized agencies and related
-          organizations are steered by their own governing bodies. This page
-          lists those bodies for each organization, along with official pages
-          and contacts. Where an organization publishes the documents those
-          bodies adopt, we link to them.
+          , the UN system comprises dozens of funds, programmes, specialized
+          agencies, related organizations, and other entities. This page gives
+          an overview over the governing bodies of UN System entities. It also
+          lists related resources that provide transparency over mandates,
+          documents, finances, or results.
         </p>
         {SHOW_MANDATE_REGISTRY_RATING && (
           <div className="mt-6 max-w-3xl">
@@ -231,6 +231,15 @@ export default function UnSystemPage() {
             page's opening statement. Narrow column: the wide format is only
             for the tables. */}
         <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-16">
+          <p className="mb-3 max-w-3xl text-sm leading-relaxed italic">
+            This page covers the organizations of the UN system that are members
+            of the UN System Chief Executives Board for Coordination, are
+            invited to its meetings, or report financial data to it. Governing
+            bodies, contacts and links are taken from each organization&apos;s
+            own website and official documents, and may not be exhaustive. For
+            updates and corrections, please reach out using the feedback button
+            on this page.
+          </p>
           <p className="max-w-3xl text-sm leading-relaxed italic">
             This draft overview is for informational purposes only and
             exhaustiveness is not guaranteed. The relevant rules of the
