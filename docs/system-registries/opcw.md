@@ -12,25 +12,27 @@ scheme in [`../un-system-registries.md`](../un-system-registries.md).
 
 | Point | Assessment |
 | --- | --- |
-| 1 documents | yes |
-| 2 mandates (active) | no — confirmed round 2; documents catalogue is a per-session PDF list with no active/superseded status metadata |
-| 3 budget-linked | no — the Programme and Budget is itself a CSP decision (e.g. C-26/DEC.11, <https://www.opcw.org/sites/default/files/documents/2021/12/c26dec11(e).pdf>) with results-based programme figures, but no system links other decisions/mandates to resourcing |
-| 4 implementation-linked | no evidence in round 1 |
-| 5 results-linked | no — annual "Report on the Implementation of the Convention" and programme performance monitoring are programme-level, not reported against specific CSP/EC decisions |
+| 1 documents | yes — re-verified round 3. The catalogue is a hub by body: **Conference of States Parties** ("including Review Conferences and the Special Sessions"), **Executive Council** ("including Special Sessions"), Technical Secretariat, the four subsidiary bodies (ABEO, ABAF, Confidentiality Commission, SAB) and the Preparatory Commission; each opens a per-session PDF list (site menu shows CSP-31 / CSP-30 / CSP-29 …, EC-112 / EC-111 / EC-110 …) |
+| 2 mandates (active) | no — re-confirmed round 3; per-session PDF lists with no active/replaced status metadata and no cross-session search |
+| 3 budget-linked | no — the Programme and Budget is itself a CSP decision (e.g. C-26/DEC.11) with results-based programme figures, but no system links other decisions/mandates to resourcing |
+| 4 implementation-linked | no |
+| 5 results-linked | no — the annual "Report on the Implementation of the Convention" and programme performance monitoring are programme-level, not reported against specific CSP/EC decisions |
 | 6 interoperability | deferred (later round) |
 
 ## Related portals (not linked to mandates)
 
-- Annual Reports page — opcw.org/resources/documents/annual-reports (page returned HTTP 403 to non-browser fetch in round 2; PDFs search-indexed).
+- Annual Reports page — opcw.org/resources/documents/annual-reports.
 - Results-based Programme and Budget documents (biennial since 2022–2023), adopted as CSP decisions with objectives/KPIs per programme.
 
 ## Notes
 
-- Documents catalogue by body; CSP/EC decisions as per-session PDF lists.
-- Round 2: opcw.org HTML pages intermittently 403 to non-browser fetches; document PDFs under /sites/default/files remain reachable via search indexing.
+- Round 3 link check: `https://www.opcw.org/resources/documents` and `https://www.opcw.org/about-us/executive-council` are HTTP 200 (WebFetch is refused with 403; a browser-style client succeeds).
+- **Governing-body gap found in round 3.** Only the Executive Council was recorded. The **Conference of the States Parties** is the Convention's principal organ — it adopts the Programme and Budget (e.g. C-26/DEC.11) and the CSP decision series generally — and has its own live page at <https://www.opcw.org/about/conference-states-parties>. Note the site's inconsistent paths: the CSP page sits under `/about/…` while the Executive Council page sits under `/about-us/…` (`/about/executive-council` 301-redirects back to `/about-us/executive-council`).
+- The Technical Secretariat's "Secretariat for the Policy-Making Organs" division services both organs.
+- Contacts were **not** researched in round 3 (assigned to a separate agent); for reference, `https://www.opcw.org/contact` 301-redirects to `https://www.opcw.org/contacting-opcw` (HTTP 200) and `/contact-us` is a 404.
 
 ## Open questions
 
-- Round 6 interoperability. Whether the catalogue offers structured metadata/export (needs browser access).
+- Round 6 interoperability. Whether the catalogue offers structured metadata/export.
 
-_Last verified: 2026-07-18 (round 2)._
+_Last verified: 2026-08-13 (research round 3, re-verification)._

@@ -1,5 +1,3 @@
-import type { Mandate } from '@/types'
-
 export interface ColumnDef {
   id: string
   label: string
@@ -12,12 +10,28 @@ export interface ColumnDef {
   align?: 'left' | 'right' | 'center'
 }
 
+// Order here is the column order in the table. `defaultVisible` is deliberately
+// minimal — symbol + title only (plus the non-toggleable `detail` column) — so
+// the list reads as a document list first; everything else is opt-in via the
+// "more columns" picker in the toolbar.
 export const COLUMN_DEFINITIONS: ColumnDef[] = [
   {
     id: 'symbol',
     label: 'Symbol',
     defaultVisible: true,
     widthClass: 'w-[140px]',
+    align: 'left',
+  },
+  {
+    // Between Symbol and Title: the organ is part of how a document identifies
+    // itself ("this is a GA resolution"), so it belongs beside the symbol rather
+    // than after the title where it read as just another attribute.
+    id: 'organ',
+    label: 'Organ',
+    defaultVisible: false,
+    filterParam: 'organ',
+    filterType: 'pill',
+    widthClass: 'w-[80px]',
     align: 'left',
   },
   {
@@ -31,7 +45,7 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
   {
     id: 'year',
     label: 'Year',
-    defaultVisible: true,
+    defaultVisible: false,
     sortKeys: { asc: 'year_asc', desc: 'year_desc' },
     filterParam: 'start_year',
     filterType: 'yearRange',
@@ -39,26 +53,9 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
     align: 'left',
   },
   {
-    id: 'organ',
-    label: 'Organ',
-    defaultVisible: true,
-    filterParam: 'organ',
-    filterType: 'pill',
-    widthClass: 'w-[80px]',
-    align: 'left',
-  },
-  {
-    id: 'citations',
-    label: 'Citations',
-    defaultVisible: false,
-    sortKeys: { asc: 'citations_asc', desc: 'citations_desc' },
-    widthClass: 'w-[50px]',
-    align: 'right',
-  },
-  {
     id: 'entity_list',
     label: 'Entities',
-    defaultVisible: true,
+    defaultVisible: false,
     sortKeys: {
       asc: 'citing_entities_asc',
       desc: 'citing_entities_desc',
@@ -76,7 +73,6 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
     widthClass: 'w-[92px]',
     align: 'center',
   },
-  // Hidden by default
   {
     id: 'subjects',
     label: 'Subjects',
@@ -106,7 +102,10 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
   },
   {
     id: 'document_type',
-    label: 'Type',
+    // Sentence case, like every other label on the site. The id and the
+    // `document_type` filter param are unchanged — this is the visible label
+    // only, so stored column selections and shared URLs keep working.
+    label: 'Document type',
     defaultVisible: false,
     filterParam: 'document_type',
     filterType: 'pill',
@@ -135,16 +134,25 @@ export const TOGGLEABLE_COLUMNS = COLUMN_DEFINITIONS.filter(
 
 export function getMandateUrl(
   symbol: string,
-  query?: { ppb_version?: string; mode?: string }
+  query?: { ppb_version?: string; mode?: string },
+  // Current list search params to carry through. Opening a mandate is an
+  // overlay on the *same* list — the mandate identity lives in the path, so the
+  // query string should pass through untouched. Without this, navigating to the
+  // modal replaces the list's URL and its client controls re-read the new,
+  // stripped params: the "Group versions" toggle (which has no default) visibly
+  // flips off, active filters/sort/page appear reset, etc.
+  preserveParams?: { toString(): string }
 ): string {
   if (!symbol) return '/mandate/unknown'
   const segments = symbol
     .split('/')
     .map((segment) => encodeURIComponent(segment))
   const base = `/mandate/${segments.join('/')}`
-  // Carry the active budget version (and mode) so the detail/modal view
-  // scopes its citation counts to the same version as the list it came from.
-  const params = new URLSearchParams()
+  // Seed from the caller's current params, then let explicit overrides win.
+  // The detail/modal view already reads ppb_version to scope its citation
+  // counts to the same budget version as the list it came from; preserving the
+  // full query string keeps that behaviour and everything else besides.
+  const params = new URLSearchParams(preserveParams?.toString() ?? '')
   if (query?.ppb_version) params.set('ppb_version', query.ppb_version)
   if (query?.mode) params.set('mode', query.mode)
   const qs = params.toString()

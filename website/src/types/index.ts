@@ -205,6 +205,22 @@ export type BudgetStream =
   | { type: 'pko'; label: string; count: number; groups: BudgetPkoGroupNode[] }
   | { type: 'plan_outline'; label: string; count: number }
 
+/**
+ * Catalogue-wide document types (see getDocumentTypeCatalogue).
+ *
+ * `untypedCount` is deliberately part of the payload: `ppb_type` is unpopulated
+ * for a large share of the catalogue, so `types` is NOT a complete partition and
+ * the UI has to be able to say so.
+ */
+export interface DocumentTypeCatalogue {
+  /** Recorded types, highest count first. */
+  types: { value: string; count: number }[]
+  /** Documents whose type is not recorded (NULL/empty ppb_type). */
+  untypedCount: number
+  /** Every document in scope — `types` counts + `untypedCount`. */
+  totalCount: number
+}
+
 // Subject hierarchy (top level of the /subjects page) — the UNBIS thesaurus
 // imposed on the flat subject headings carried on unified_documents.subjects.
 // Three levels: domain (01-18) -> sub-domain -> leaf subject. `count` is
@@ -261,6 +277,32 @@ export interface OrganWithCount {
   long: string
   count: number
   website?: string
+}
+
+/**
+ * The filter keys a /secretariat explore directory can set.
+ */
+export type DirectoryFilterKey =
+  | 'organ'
+  | 'entity'
+  | 'subprogramme'
+  | 'subject'
+  | 'document_type'
+
+/**
+ * How a directory (organs / entities / documents) talks to the filter state.
+ *
+ * Injected by DirectoryExplorer rather than read from useSectionFilter inside
+ * each directory, because the correct write depends on WHICH card the directory
+ * sits under: the card's counts are computed against a particular scope and with
+ * a particular dimension dropped, and the write has to match that exactly or the
+ * number on a node stops predicting the number of rows clicking it returns.
+ */
+export interface DirectorySelection {
+  /** The active value for `key`, so a node can render itself as selected. */
+  active: (key: DirectoryFilterKey) => string | undefined
+  /** Apply (or, if already active, clear) `key = value`. */
+  select: (key: DirectoryFilterKey, value: string) => void
 }
 
 // Organs grouped by editorial category (see lib/organ-groups.ts), for the
@@ -396,11 +438,17 @@ export interface ApiResponse {
 }
 
 // UN system directory (src/data/un-system.json)
+/**
+ * The six CEB-derived categories. See `docs/un-system-scope.md` for the
+ * inclusion rule and how each entity is assigned.
+ */
 export type UnSystemGrouping =
   | 'secretariat'
   | 'fund-programme'
   | 'specialized-agency'
   | 'related-organization'
+  | 'regional-commission'
+  | 'joint-hosted'
 
 export interface UnSystemPage {
   label: string | null
@@ -449,6 +497,12 @@ export interface UnSystemPointEntry {
  * plans or org-wide totals. `interoperability` (point 6) is reserved.
  */
 export interface UnSystemRegistry {
+  /**
+   * Set on this site's own registry, to distinguish it from the registry the
+   * organization itself runs. An entity can have both: its own system, plus
+   * our coverage of the mandates it is cited for in the UN programme budget.
+   */
+  scope?: 'this-site'
   /** Short proper name of the system, used as the link text, e.g. "Resolutions Portal". */
   name: string
   /** Taxonomy category, shown in the link tooltip, e.g. "Resolutions Database". */
@@ -458,25 +512,39 @@ export interface UnSystemRegistry {
   interoperability: null
 }
 
-/** Org-specific budget/results portal that is NOT linked to mandates — mentioned, not scored. */
-export interface UnSystemRelatedPortal {
+/**
+ * Anything else the organization publishes that helps trace its work: document
+ * and session indexes, governance and statute pages, budget/results/transparency
+ * portals. Rendered smaller than the scored registries, in the same column.
+ */
+export interface UnSystemResource {
   name: string
   url: string
+  /** Render at registry weight without being scored — presentation, not evidence. */
+  prominent?: true
 }
 
 export interface UnSystemEntity {
   code: string
   name: string
+  /** The organization's own front page; the code in the first column links here. */
+  homepage: string
   grouping: UnSystemGrouping
+  /** Secretariat is part of the UN Secretariat, though the entity is governed separately (the UN80 chart's asterisk). */
+  secretariatAdministered?: true
   governingBodies: UnSystemBodyEntry[]
-  /** Org-level pages/contacts not attributable to a specific governing body (secretariat pages, general contacts). */
-  officialPages: UnSystemPage[]
+  /** Organization-level contacts only. A contact belonging to a governing body lives on that body. */
   contacts: UnSystemContact[]
   note: string | null
-  mandateRegistry: UnSystemRegistry | null
-  /** Shown when mandateRegistry is null: why there is none (or where it lives instead). */
+  /**
+   * Every registry covering this organization's mandates, the organization's
+   * own first and this site's (`scope: 'this-site'`) last. Empty when none
+   * exists — see registryNote.
+   */
+  mandateRegistry: UnSystemRegistry[]
+  /** Shown when the organization runs no registry itself: why there is none (or where it lives instead). */
   registryNote: string | null
-  related: UnSystemRelatedPortal[]
+  resources: UnSystemResource[]
 }
 
 export interface UnSystemData {

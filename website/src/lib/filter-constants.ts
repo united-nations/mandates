@@ -117,9 +117,17 @@ export function parseSearchParams(
   }
 
   return {
+    // DEFAULT SCOPE: the whole document catalogue (~43,000 documents), not the
+    // budget-cited subset. Both the server (page.tsx, the data layer) and the
+    // client (FilterContext) parse the URL through here, so this single line is
+    // the only place the default lives — they cannot disagree.
+    //
+    // The catalogue is only navigable because the list still defaults to
+    // citing_entities_desc (see getMandates), which floats the budget-cited
+    // documents to the top of the otherwise year-ordered mass.
     mode:
       (getString('mode') as 'active_mandates' | 'all_resolutions') ||
-      'active_mandates',
+      'all_resolutions',
     // No hardcoded default: when absent, the data layer's versionClause
     // COALESCEs to ppb2026.budget_versions.is_default (single source of truth).
     ppb_version: getString('ppb_version'),

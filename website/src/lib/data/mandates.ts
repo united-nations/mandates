@@ -22,7 +22,7 @@ import {
   type CoCitationMatrix,
   type OrganEntityMatrix,
 } from '@/lib/heatmap/matrix'
-import type { Mandate, FilterOptions, EntityWithCount, OrganWithCount, OrganGroup, CrossCitation, CitationBin, ApiResponse, BudgetLocation, BudgetPartNode, BudgetSectionNode, BudgetEntityNode, BudgetStream, BudgetPkoGroupNode, SubjectDomain, SubjectSubdomain, SubjectLeaf } from '@/types'
+import type { Mandate, FilterOptions, EntityWithCount, OrganWithCount, OrganGroup, CrossCitation, CitationBin, ApiResponse, BudgetLocation, BudgetPartNode, BudgetSectionNode, BudgetEntityNode, BudgetStream, BudgetPkoGroupNode, DocumentTypeCatalogue, SubjectDomain, SubjectSubdomain, SubjectLeaf } from '@/types'
 
 // ============================================================================
 // Helper Functions
@@ -315,23 +315,34 @@ function buildFilterClauses(
 
   // Programme filter. Superseded by the section filter — every section has
   // exactly one programme — but kept so existing ?programme= links keep working.
+  // Exact title match: getProgrammeOptions emits one option per distinct
+  // programme_title with its own count, and a substring match made those counts
+  // wrong for every title that is a prefix of another.
   if (filters.programme) {
     clauses.push(`
       EXISTS (
         SELECT 1 FROM ppb2026.source_document_citations c4
         WHERE c4.ppb_full_document_symbol = d.ppb_full_document_symbol
-        AND LOWER(c4.programme_title) LIKE $${paramIndex}
+        AND LOWER(TRIM(c4.programme_title)) = $${paramIndex}
         AND ${versionClause('c4')}
       )
     `)
-    params.push(`%${filters.programme.toLowerCase()}%`)
+    params.push(filters.programme.trim().toLowerCase())
     paramIndex++
   }
 
   // Budget hierarchy filters. Each level is an independent exact-match
   // predicate on the citations, so they compose: part IV + subprogramme 2
-  // narrows to documents cited at both. Addendum suffixes ("3 (Add.2)") are
-  // stripped so that filtering on section 3 also catches its addenda.
+  // narrows to documents cited at both.
+  //
+  // `section` matches the stored value EXACTLY, addendum suffix included. It
+  // used to strip "(Add.N)" from the column before comparing, so that section 3
+  // also caught its addenda — but the budget tree lists "3" and "3 (Add.2)" as
+  // separate siblings with separate counts, so that predicate could never
+  // reproduce either of them: clicking "3" returned section 3 plus five addenda,
+  // and clicking "3 (Add.2)" returned NOTHING at all (the left-hand side is
+  // stripped, so it can never equal a value that still carries the suffix). The
+  // only writers of this param are those tree nodes; no link in the app sets it.
   const hierarchyLevels: {
     value: string | undefined
     column: (placeholder: string) => string
@@ -342,8 +353,7 @@ function buildFilterClauses(
     },
     {
       value: filters.section,
-      column: (p) =>
-        `regexp_replace(ch.section, '\\s*\\(Add\\..*\\)$', '') = ${p}`,
+      column: (p) => `ch.section = ${p}`,
     },
     {
       value: filters.subprogramme,
@@ -352,9 +362,17 @@ function buildFilterClauses(
   ]
   for (const level of hierarchyLevels) {
     if (!level.value) continue
+    // Restricted to the `ppb` stream, because part/section/subprogramme numbers
+    // are only unique WITHIN a stream and only the Programme Budget branch of
+    // the tree exposes them (peacekeeping is Missions -> entity, the Plan
+    // Outline is a leaf). Without this, ?section=1 also matched the peacekeeping
+    // fascicles' own "section 1": the budget tree counted 26 documents under
+    // Part I › Section 1 for organ=SC, and clicking it returned 32.
     clauses.push(`
       EXISTS (
         SELECT 1 FROM ppb2026.source_document_citations ch
+        JOIN ppb2026.budget_documents bdh
+          ON ch.origin_document ~ bdh.match_pattern AND bdh.doc_type = 'ppb'
         WHERE ch.ppb_full_document_symbol = d.ppb_full_document_symbol
         AND ${level.column(`$${paramIndex}`)}
         AND ${versionClause('ch')}
@@ -393,14 +411,22 @@ function buildFilterClauses(
   }
 
   // Subject filter — Digital Library subjects (TEXT[]) surfaced on the matview.
+  //
+  // EXACT heading match, not a substring one. The facet counts (getSubjectOptions,
+  // getSubjectHierarchy) are computed per distinct heading, so a LIKE '%x%' filter
+  // returned a strictly larger set than the number the user clicked: `Terrorism`
+  // showed 66 but returned 93, because it also matched `Counter-Terrorism`,
+  // `Terrorism Financing`, etc. Case/whitespace are normalised on both sides
+  // because the pill carries the title-cased display form of the heading while
+  // the array holds the raw one.
   if (filters.subject) {
     clauses.push(`
       EXISTS (
         SELECT 1 FROM UNNEST(d.subjects) s
-        WHERE LOWER(s) LIKE $${paramIndex}
+        WHERE LOWER(TRIM(s)) = $${paramIndex}
       )
     `)
-    params.push(`%${filters.subject.toLowerCase()}%`)
+    params.push(filters.subject.trim().toLowerCase())
     paramIndex++
   }
 
@@ -449,15 +475,18 @@ function buildFilterClauses(
   }
 
   // Agenda item filter — Digital Library agenda_items (JSONB [{doc,item,desc,topic}]);
-  // the agenda title is the natural-language "desc".
+  // the agenda title is the natural-language "desc". Exact match on that title,
+  // for the same reason as the subject filter: getAgendaItemOptions counts one
+  // row per distinct "desc", so a substring match would return more documents
+  // than the count the user clicked.
   if (filters.agenda_item) {
     clauses.push(`
       EXISTS (
         SELECT 1 FROM jsonb_array_elements(COALESCE(d.agenda_items, '[]'::jsonb)) a
-        WHERE LOWER(a->>'desc') LIKE $${paramIndex}
+        WHERE LOWER(TRIM(a->>'desc')) = $${paramIndex}
       )
     `)
-    params.push(`%${filters.agenda_item.toLowerCase()}%`)
+    params.push(filters.agenda_item.trim().toLowerCase())
     paramIndex++
   }
 
@@ -660,10 +689,15 @@ export async function getMandates(
       END AS keyword_rank`
   }
 
-  // Default sort: year_desc for all_resolutions (most docs have 0 citations),
-  // citing_entities_desc for active_mandates
-  const effectiveSortBy = filters.sort_by
-    || (filters.mode === 'all_resolutions' ? 'year_desc' : 'citing_entities_desc')
+  // Default sort: most citing entities first, in BOTH modes.
+  //
+  // all_resolutions used to default to year_desc, which was defensible while it
+  // was an opt-in tab. It is now the DEFAULT mode, so that would open the page
+  // on the newest 15 of ~43,000 documents — the 2,737 budget-cited ones (the
+  // subject of this site) would be nowhere near the first page. It also
+  // disagreed with the table header, which has always drawn its sort indicator
+  // at citing_entities_desc when sort_by is absent (MandateDataTable).
+  const effectiveSortBy = filters.sort_by || 'citing_entities_desc'
 
   // When keyword is active with no explicit sort, rank by relevance only.
   // When an explicit sort_by is chosen, use relevance as primary then the chosen sort.
@@ -1171,6 +1205,129 @@ export async function getMandateCounts(filters: FilterOptions = {}): Promise<{
 }
 
 /**
+ * How many documents match `filters` — the single number behind the two
+ * document tiles on /secretariat.
+ *
+ * Deliberately the SAME CTE the list query counts over (buildFilteredDocsCTE ->
+ * COUNT(*) OVER() in getMandates), so the tile can only ever show the number of
+ * rows the table would return for the same filters. It is a separate, narrower
+ * query than getMandateCounts purely because that one also runs two
+ * catalogue-wide citation/entity subqueries this does not need.
+ *
+ * Not honoured: `group` (the "group versions" toggle), which collapses the list
+ * to one row per resolution series *after* filtering. The tiles therefore always
+ * state the ungrouped document count; the table's own pagination line states the
+ * grouped one.
+ */
+export const getFilteredDocumentCount = cache((filters: FilterOptions = {}) =>
+  unstable_cache(
+    async () => {
+      const { cte, params } = buildFilteredDocsCTE(filters, {
+        selectCols: 'd.ppb_full_document_symbol',
+        groupCols: 'd.ppb_full_document_symbol',
+      })
+      const row = await queryOne<{ count: string }>(
+        `WITH ${cte} SELECT COUNT(*) AS count FROM filtered_docs`,
+        params
+      )
+      return parseInt(row?.count ?? '0', 10)
+    },
+    ['filtered-document-count-v1', JSON.stringify(filters)],
+    { revalidate: 3600 }
+  )()
+)
+
+/**
+ * The scopes the four /secretariat explore cards are computed in. Exported so
+ * the page, the cards and scripts/check-card-counts.ts all derive them from ONE
+ * definition instead of three copies that can drift apart.
+ *
+ * - `facets`    — the active filters minus everything that cannot change a count
+ *                 (pagination, grouping, sort). Doubles as the cache key.
+ * - `catalogue` — the whole document catalogue (card 2 and its type/topic lists).
+ * - `cited`     — the subset cited in the selected budget version (cards 3 & 4).
+ *
+ * Cards 2 and 3 are the two arms of the scope dimension, so each pins that
+ * dimension to its own value and honours every OTHER active filter — the same
+ * own-dimension exclusion the organ and entity cards apply to `organ`/`entity`.
+ */
+export function exploreCardScopes(filters: FilterOptions): {
+  facets: FilterOptions
+  catalogue: FilterOptions
+  cited: FilterOptions
+} {
+  const facets: FilterOptions = {
+    ...filters,
+    page: undefined,
+    limit: undefined,
+    group: undefined,
+    sort_by: undefined,
+  }
+  return {
+    facets,
+    catalogue: { ...facets, mode: 'all_resolutions' },
+    cited: { ...facets, mode: 'active_mandates' },
+  }
+}
+
+export interface ExploreCardData {
+  organGroups: OrganGroup[]
+  budgetStreams: BudgetStream[]
+  subjectDomains: SubjectDomain[]
+  documentTypes: DocumentTypeCatalogue
+  catalogueDocumentCount: number
+  citedDocumentCount: number
+}
+
+/**
+ * Everything the four explore cards and their panels need, as one cached unit.
+ *
+ * Cached together because they are one screenful that is always fetched
+ * together, and because two of them (the subject hierarchy over ~43,000
+ * documents, the budget hierarchy's three GROUPING SETS queries) are slow enough
+ * — ~3s uncached, all six in parallel — to be worth not repeating per request.
+ * They render outside the explorer's Suspense boundary, so they are on the
+ * critical path for first paint.
+ */
+export const getExploreCardData = cache((filters: FilterOptions = {}) => {
+  const { facets, catalogue, cited } = exploreCardScopes(filters)
+  return unstable_cache(
+    async (): Promise<ExploreCardData> => {
+      const [
+        organGroups,
+        budgetStreams,
+        subjectDomains,
+        documentTypes,
+        catalogueDocumentCount,
+        citedDocumentCount,
+      ] = await Promise.all([
+        // Follows whatever scope is active: an organ exists in both, so its
+        // count must be the one a click reproduces.
+        getOrganHierarchy(facets),
+        // Backs BOTH the entity directory (card 4) and the budget-location tree
+        // inside card 3, so those two can never state different numbers for the
+        // same entity.
+        getBudgetHierarchy(cited),
+        getSubjectHierarchy(catalogue),
+        getDocumentTypeCatalogue(catalogue),
+        getFilteredDocumentCount(catalogue),
+        getFilteredDocumentCount(cited),
+      ])
+      return {
+        organGroups,
+        budgetStreams,
+        subjectDomains,
+        documentTypes,
+        catalogueDocumentCount,
+        citedDocumentCount,
+      }
+    },
+    ['explore-card-data-v1', JSON.stringify(facets)],
+    { revalidate: 3600 }
+  )()
+})
+
+/**
  * Get entity counts for the sidebar
  */
 export async function getEntityCounts(filters: FilterOptions = {}): Promise<EntityWithCount[]> {
@@ -1249,23 +1406,39 @@ export async function getOrganCounts(filters: FilterOptions = {}): Promise<Organ
  * declared order. Any organ present in the DB but absent from every category is
  * appended to the last (catch-all) category so it is never lost.
  *
- * Directory scope: every organ that appears on any document in the mirror
- * (public.unified_documents), counted across the whole mirror — deliberately
- * NOT the explorer's active-mandates/version scoping, which would hide organs
- * whose documents aren't in the explorable catalog (the ECOSOC commissions,
- * UNCLOS, etc.). Consequence: filtering the table to one of those organs can
- * currently return no rows; reconciling the explorable catalog with the full
- * organ set is tracked separately (a ppb2026/2027 catalog-scope question).
+ * Directory scope: the documents matching the CURRENTLY ACTIVE filters (mode and
+ * budget version included), minus the organ filter itself — the faceted-search
+ * rule, see omitOwnDimension. Dropping only `organ` is what lets the tile keep
+ * reading "22 organs" after one organ is picked, while every other active facet
+ * (entity, topic, year, …) still narrows the per-organ counts. Because the CTE
+ * is the same one the list query counts over, clicking an organ returns exactly
+ * the number the card displayed — provided the caller ADDS organ to the active
+ * filters rather than replacing them (see DirectoryExplorer).
+ *
+ * It used to count the whole mirror instead (no version predicate at all), which
+ * made the modal read GA 27,969 / ECOSOC 9,553 / SC 4,055 / HRC 729 while a click
+ * returned 1,180 / 282 / 270 / 257 — 15-34x too high, 200px under a tile reading
+ * "2,737 documents".
  */
-export async function getOrganHierarchy(): Promise<OrganGroup[]> {
+async function _getOrganHierarchyInner(
+  filters: FilterOptions
+): Promise<OrganGroup[]> {
+  const { cte, params } = buildFilteredDocsCTE(
+    omitOwnDimension(filters, 'organ'),
+    {
+      selectCols: 'd.ppb_full_document_symbol, d.ppb_body',
+      groupCols: 'd.ppb_full_document_symbol, d.ppb_body',
+    }
+  )
   const [organs, countRows] = await Promise.all([
     getAllOrgans(),
     queryMany<{ short: string; count: string }>(
-      `SELECT ppb_body AS short, COUNT(DISTINCT ppb_full_document_symbol) AS count
-       FROM public.unified_documents
+      `WITH ${cte}
+       SELECT ppb_body AS short, COUNT(*) AS count
+       FROM filtered_docs
        WHERE ppb_body IS NOT NULL AND ppb_body != ''
        GROUP BY ppb_body`,
-      []
+      params
     ),
   ])
   const countBy = new Map(
@@ -1304,6 +1477,75 @@ export async function getOrganHierarchy(): Promise<OrganGroup[]> {
 
   return groups.filter((g) => g.organs.length > 0)
 }
+
+/** Filter-scoped and cached per filter set, like getDocumentTypeCatalogue. */
+export const getOrganHierarchy = cache((filters: FilterOptions = {}) =>
+  unstable_cache(
+    () => _getOrganHierarchyInner(filters),
+    ['organ-hierarchy-v3', JSON.stringify(filters)],
+    { revalidate: 3600 }
+  )()
+)
+
+/**
+ * Document types for the documents explore modal, with `untypedCount`.
+ *
+ * The parallel to getOrganHierarchy: scoped by the active filters minus its own
+ * dimension (`document_type`), so picking a type does not collapse the list to
+ * that one type. getDocumentTypeOptions is the near-identical facet list that
+ * backs the table's own column filter; this one exists only because the modal
+ * additionally needs the untyped remainder.
+ *
+ * `totalCount` is therefore the population of the TYPE LIST (every active filter
+ * except document_type), not necessarily the number on the tile above it — when
+ * a type is selected the tile is narrower by exactly that filter.
+ *
+ * HONESTY: `ppb_type` is not populated for documents that only exist in the
+ * PPB-2027 import, so a large share of the catalogue has no recorded type
+ * (1,420 of 2,737 in ppb2027 as of July 2026). Rather than silently dropping
+ * those rows — which would make a type list look like a complete partition of
+ * the catalogue when it covers under half of it — the untyped rows are counted
+ * separately and returned, for the UI to disclose.
+ */
+async function _getDocumentTypeCatalogueInner(
+  filters: FilterOptions
+): Promise<DocumentTypeCatalogue> {
+  const { cte, params } = buildFilteredDocsCTE(
+    omitOwnDimension(filters, 'document_type'),
+    {
+      selectCols: 'd.ppb_full_document_symbol, d.ppb_type',
+      groupCols: 'd.ppb_full_document_symbol, d.ppb_type',
+    }
+  )
+  const rows = await queryMany<{ value: string | null; count: string }>(
+    `WITH ${cte}
+     SELECT NULLIF(TRIM(ppb_type), '') AS value, COUNT(*) AS count
+     FROM filtered_docs
+     GROUP BY 1
+     ORDER BY count DESC, value`,
+    params
+  )
+
+  const types: FacetOption[] = []
+  let untypedCount = 0
+  let totalCount = 0
+  for (const row of rows) {
+    const count = parseInt(row.count, 10) || 0
+    totalCount += count
+    if (row.value === null) untypedCount += count
+    else types.push({ value: row.value, count })
+  }
+
+  return { types, untypedCount, totalCount }
+}
+
+export const getDocumentTypeCatalogue = cache((filters: FilterOptions = {}) =>
+  unstable_cache(
+    () => _getDocumentTypeCatalogueInner(filters),
+    ['document-type-catalogue-v2', JSON.stringify(filters)],
+    { revalidate: 3600 }
+  )()
+)
 
 /**
  * Get cross-citations for entity pages
@@ -1728,14 +1970,21 @@ export async function getBudgetHierarchy(
   filters: FilterOptions = {}
 ): Promise<BudgetStream[]> {
   // Scope by every active filter except the hierarchy's own levels (including
-  // the top-level budget_document stream), so the tree keeps showing where a
+  // the top-level budget_document stream AND `entity`, which is a level of this
+  // tree — BudgetStreamTree makes it selectable and the /secretariat entity
+  // directory is built from these very nodes), so the tree keeps showing where a
   // user can still navigate after clicking a node. Same convention as the other
   // facet lists (see omitOwnDimension).
+  //
+  // `entity` was previously left in, which is what made the entity list collapse
+  // to the single selected entity — and would have made the "entities
+  // implementing mandates" tile read 1.
   const scoped: FilterOptions = { ...filters }
   delete scoped.budget_part
   delete scoped.section
   delete scoped.subprogramme
   delete scoped.budget_document
+  delete scoped.entity
 
   const { cte, params, versionClause } = buildFilteredDocsCTE(scoped, {
     selectCols: 'd.ppb_full_document_symbol',
@@ -2622,14 +2871,22 @@ export async function getCitationDistribution(filters: FilterOptions = {}): Prom
 // ============================================================================
 
 /**
- * Inner implementation — runs DB queries and assembles the full ApiResponse.
+ * Group- and pagination-invariant slice of the page data.
+ *
+ * Everything here — counts, facet option lists, sidebar aggregates, reference
+ * data (~15 queries) — is identical regardless of the "group versions" toggle
+ * and the current page/limit. It is cached WITHOUT those keys (see
+ * getSharedPageData), so toggling grouping or paginating reuses the already-warm
+ * result instead of re-running these queries. Only getMandates depends on
+ * group/page/limit, and it is cached separately (getMandateList).
+ *
+ * The returned object must stay JSON-serialisable (it passes through
+ * unstable_cache): no Map/Set/class instances. organMap is deliberately NOT
+ * returned — the composition layer re-derives it from the cached getAllOrgans()
+ * for mandate enrichment.
  */
-async function _getMandatePageDataInner(filters: FilterOptions): Promise<ApiResponse> {
-  const page = parseInt(filters.page || '1', 10)
-  const limit = parseInt(filters.limit || '15', 10)
-
+async function _getSharedPageDataInner(filters: FilterOptions) {
   const [
-    mandatesResult,
     counts,
     entityCounts,
     organCounts,
@@ -2646,7 +2903,6 @@ async function _getMandatePageDataInner(filters: FilterOptions): Promise<ApiResp
     organMap,
     budgetVersions,
   ] = await Promise.all([
-    getMandates(filters, { page, limit }),
     getMandateCounts(filters),
     getEntityCounts(filters),
     getOrganCounts(filters),
@@ -2664,118 +2920,185 @@ async function _getMandatePageDataInner(filters: FilterOptions): Promise<ApiResp
     getBudgetVersions(),
   ])
 
-  const { mandates, totalCount } = mandatesResult
-
   let crossCitations: ApiResponse['sidebar']['crossCitations'] = []
   if (filters.entity) {
     crossCitations = await getCrossCitations(filters.entity, filters.ppb_version)
   }
-
-  const enrichedMandates = mandates.map((mandate) => {
-    const base = {
-      ...mandate,
-      displayTitle: getMandateDisplayTitle(mandate),
-      body_long: organMap.get(mandate.body)?.long || mandate.body,
-    }
-
-    if (!filters.keyword) return base
-
-    const kw = filters.keyword
-    const highlightedFields: Record<string, string> = {}
-    const matchedFields: Array<{ field: string; value: string }> = []
-
-    const ht = safeHighlightSearchTerms(base.displayTitle, kw)
-    if (ht && ht !== base.displayTitle) {
-      highlightedFields.title = ht
-      matchedFields.push({ field: 'title', value: base.displayTitle ?? '' })
-    }
-
-    const hs = safeHighlightSearchTerms(base.full_document_symbol, kw)
-    if (hs && hs !== base.full_document_symbol) {
-      highlightedFields.full_document_symbol = hs
-      matchedFields.push({ field: 'symbol', value: base.full_document_symbol })
-    }
-
-    const matchedSubjects = base.subject_headings
-      .map((s) => safeHighlightSearchTerms(s, kw) ?? s)
-      .filter((s, i) => s !== base.subject_headings[i])
-    if (matchedSubjects.length > 0) {
-      highlightedFields.subject_headings = matchedSubjects.join(', ')
-      matchedFields.push({ field: 'subject', value: matchedSubjects.join(', ') })
-    }
-
-    if (Object.keys(highlightedFields).length === 0) return base
-
-    return { ...base, highlightedFields, match_details: matchedFields }
-  })
 
   const enrichedOrganCounts = organCounts.map((organ) => ({
     ...organ,
     long: organMap.get(organ.short)?.long || organ.short,
   }))
 
-  const totalPages = Math.ceil(totalCount / limit)
-
   return {
-    mandates: enrichedMandates,
-    pagination: {
-      page,
-      limit,
-      totalPages,
-      totalItems: totalCount,
-    },
-    counts: {
-      totalDocuments: counts.totalDocuments,
-      totalEntities: counts.totalEntities,
-      totalOrgans: counts.totalOrgans,
-      totalCitations: counts.totalCitations,
-    },
-    sidebar: {
-      entities: entityCounts,
-      organs: enrichedOrganCounts,
-      crossCitations,
-      citationDistribution,
-    },
-    filterOptions: {
-      budgetHierarchy,
-      programmes: programmeOptions,
-      subjects: subjectOptions,
-      documentTypes: documentTypeOptions,
-      agendaItems: agendaItemOptions,
-      yearRange: yearStats.yearRange,
-      yearDistribution: yearStats.yearDistribution,
-      yearDistributionUnfiltered: yearStatsForChart.yearDistribution,
-      budgetVersions,
-    },
-    reference: {
-      entities,
-      organs,
-    },
+    counts,
+    entityCounts,
+    enrichedOrganCounts,
+    crossCitations,
+    citationDistribution,
+    programmeOptions,
+    budgetHierarchy,
+    subjectOptions,
+    documentTypeOptions,
+    agendaItemOptions,
+    yearStats,
+    yearStatsForChart,
+    entities,
+    organs,
+    budgetVersions,
   }
 }
 
 /**
- * Public API: fetch and assemble all data needed for mandate list pages.
- *
- * Two-layer caching:
- * 1. unstable_cache  — persists the result across requests for 5 min,
- *                      keyed by the serialised filters object.
- *                      Default params (homepage) always hits this cache
- *                      after the first request, avoiding redundant DB work.
- * 2. react.cache     — deduplicates within a single render tree in case
- *                      multiple Server Components call this with the same filters.
+ * The mandate list — the only slice that depends on the group toggle and the
+ * current page. Cached separately (getMandateList) keyed by the FULL filters
+ * (incl. group/page/limit). Returns raw rows; keyword highlighting and body_long
+ * enrichment happen in the composition layer, which has organMap to hand.
  */
+async function _getMandateListInner(
+  filters: FilterOptions,
+  page: number,
+  limit: number
+): Promise<{ mandates: Mandate[]; totalCount: number }> {
+  return getMandates(filters, { page, limit })
+}
+
 // Bump when the ApiResponse SHAPE changes, so cached entries produced by an
 // older deploy are never served to newer client code (the cache key is only
 // the filters, and entries persist for `revalidate`). This is the
 // data-version guard the refactor plan called for.
 const PAGE_DATA_CACHE_VERSION = 'v5-budget-hierarchy'
 
-export const getMandatePageData = cache(
-  (filters: FilterOptions): Promise<ApiResponse> =>
+/**
+ * The shared slice is invariant to grouping and pagination, so its cache key
+ * drops group/page/limit — a group toggle or page change reuses the same entry.
+ */
+const stripListKeys = (filters: FilterOptions): FilterOptions => ({
+  ...filters,
+  group: undefined,
+  page: undefined,
+  limit: undefined,
+})
+
+const getSharedPageData = cache((filters: FilterOptions) =>
+  unstable_cache(
+    () => _getSharedPageDataInner(filters),
+    [PAGE_DATA_CACHE_VERSION, 'shared', JSON.stringify(filters)],
+    { revalidate: 3600 } // 1 hour — data changes infrequently
+  )()
+)
+
+const getMandateList = cache(
+  (filters: FilterOptions, page: number, limit: number) =>
     unstable_cache(
-      () => _getMandatePageDataInner(filters),
-      [PAGE_DATA_CACHE_VERSION, JSON.stringify(filters)],
-      { revalidate: 3600 } // 1 hour — data changes infrequently
+      () => _getMandateListInner(filters, page, limit),
+      [PAGE_DATA_CACHE_VERSION, 'list', JSON.stringify(filters), String(page), String(limit)],
+      { revalidate: 3600 }
     )()
+)
+
+/**
+ * Public API: fetch and assemble all data needed for mandate list pages.
+ *
+ * Split caching (both layers persist across requests for an hour):
+ * 1. getSharedPageData — the ~15 group/pagination-invariant queries (counts,
+ *    facets, sidebar, reference), keyed by the filters MINUS group/page/limit.
+ * 2. getMandateList    — getMandates alone, keyed by the FULL filters.
+ * Toggling "group versions" (or paginating) re-runs only the list query instead
+ * of all ~16 queries, which is what made the first toggle take seconds.
+ *
+ * Keyword highlighting and body_long enrichment are cheap CPU work done here on
+ * every call, using organMap re-derived from the cached getAllOrgans().
+ * react.cache deduplicates each layer within a single render tree.
+ */
+export const getMandatePageData = cache(
+  async (filters: FilterOptions): Promise<ApiResponse> => {
+    const page = parseInt(filters.page || '1', 10)
+    const limit = parseInt(filters.limit || '15', 10)
+
+    const [shared, list, organMap] = await Promise.all([
+      getSharedPageData(stripListKeys(filters)),
+      getMandateList(filters, page, limit),
+      getOrganMap(),
+    ])
+
+    const { mandates, totalCount } = list
+
+    const enrichedMandates = mandates.map((mandate) => {
+      const base = {
+        ...mandate,
+        displayTitle: getMandateDisplayTitle(mandate),
+        body_long: organMap.get(mandate.body)?.long || mandate.body,
+      }
+
+      if (!filters.keyword) return base
+
+      const kw = filters.keyword
+      const highlightedFields: Record<string, string> = {}
+      const matchedFields: Array<{ field: string; value: string }> = []
+
+      const ht = safeHighlightSearchTerms(base.displayTitle, kw)
+      if (ht && ht !== base.displayTitle) {
+        highlightedFields.title = ht
+        matchedFields.push({ field: 'title', value: base.displayTitle ?? '' })
+      }
+
+      const hs = safeHighlightSearchTerms(base.full_document_symbol, kw)
+      if (hs && hs !== base.full_document_symbol) {
+        highlightedFields.full_document_symbol = hs
+        matchedFields.push({ field: 'symbol', value: base.full_document_symbol })
+      }
+
+      const matchedSubjects = base.subject_headings
+        .map((s) => safeHighlightSearchTerms(s, kw) ?? s)
+        .filter((s, i) => s !== base.subject_headings[i])
+      if (matchedSubjects.length > 0) {
+        highlightedFields.subject_headings = matchedSubjects.join(', ')
+        matchedFields.push({ field: 'subject', value: matchedSubjects.join(', ') })
+      }
+
+      if (Object.keys(highlightedFields).length === 0) return base
+
+      return { ...base, highlightedFields, match_details: matchedFields }
+    })
+
+    const totalPages = Math.ceil(totalCount / limit)
+
+    return {
+      mandates: enrichedMandates,
+      pagination: {
+        page,
+        limit,
+        totalPages,
+        totalItems: totalCount,
+      },
+      counts: {
+        totalDocuments: shared.counts.totalDocuments,
+        totalEntities: shared.counts.totalEntities,
+        totalOrgans: shared.counts.totalOrgans,
+        totalCitations: shared.counts.totalCitations,
+      },
+      sidebar: {
+        entities: shared.entityCounts,
+        organs: shared.enrichedOrganCounts,
+        crossCitations: shared.crossCitations,
+        citationDistribution: shared.citationDistribution,
+      },
+      filterOptions: {
+        budgetHierarchy: shared.budgetHierarchy,
+        programmes: shared.programmeOptions,
+        subjects: shared.subjectOptions,
+        documentTypes: shared.documentTypeOptions,
+        agendaItems: shared.agendaItemOptions,
+        yearRange: shared.yearStats.yearRange,
+        yearDistribution: shared.yearStats.yearDistribution,
+        yearDistributionUnfiltered: shared.yearStatsForChart.yearDistribution,
+        budgetVersions: shared.budgetVersions,
+      },
+      reference: {
+        entities: shared.entities,
+        organs: shared.organs,
+      },
+    }
+  }
 )

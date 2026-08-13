@@ -7,7 +7,10 @@ import {
 } from '@/components/table/BudgetStreamTree'
 import { useFilters } from '@/contexts/FilterContext'
 import type { FilterParamKey } from '@/lib/filter-constants'
-import { FOUNDATIONAL_LABEL, FOUNDATIONAL_TOOLTIP } from '@/lib/foundational'
+import {
+  FOUNDATIONAL_FILTER_LABEL,
+  FOUNDATIONAL_TOOLTIP,
+} from '@/lib/foundational'
 import type {
   BudgetStream,
   BudgetPartNode,
@@ -121,7 +124,7 @@ export function BudgetHierarchyTree({ hierarchy }: BudgetHierarchyTreeProps) {
           }
           className="h-3.5 w-3.5 accent-un-blue-deep"
         />
-        <span>{FOUNDATIONAL_LABEL} mandates only</span>
+        <span>{FOUNDATIONAL_FILTER_LABEL}</span>
       </label>
 
       <div className="max-h-[420px] overflow-y-auto">

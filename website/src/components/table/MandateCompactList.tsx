@@ -1,16 +1,19 @@
 'use client'
 
-import { Badge } from '@/components/ui/badge'
+import { Chip } from '@/components/ui/chip'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { useFilters } from '@/contexts/FilterContext'
 import type { Entity, Mandate, Organ } from '@/types'
 import { ChevronRight } from 'lucide-react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Fragment, useState } from 'react'
 import { getMandateUrl } from './MandateColumns'
 import {
   GroupBadge,
+  GroupHiddenVersionsNote,
   GroupMemberLine,
+  groupHasHiddenVersions,
+  groupMemberEntries,
   SeriesMarkers,
 } from './MandateSeriesIndicators'
 
@@ -20,11 +23,10 @@ interface MandateCompactListProps {
   entitiesData: Entity[]
 }
 
-export function MandateCompactList({
-  mandates,
-}: MandateCompactListProps) {
-  const { filters, isPending } = useFilters()
+export function MandateCompactList({ mandates }: MandateCompactListProps) {
+  const { filters, setFilter, isPending } = useFilters()
   const router = useRouter()
+  const searchParams = useSearchParams()
 
   const grouped = filters.group === '1'
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set())
@@ -40,17 +42,18 @@ export function MandateCompactList({
   const handleClick = (mandate: Mandate, e: React.MouseEvent) => {
     e.preventDefault()
     router.push(
-      getMandateUrl(mandate.full_document_symbol, {
-        ppb_version: filters.ppb_version,
-        mode: filters.mode,
-      })
+      getMandateUrl(
+        mandate.full_document_symbol,
+        { ppb_version: filters.ppb_version, mode: filters.mode },
+        searchParams
+      )
     )
   }
 
   return (
     <TooltipProvider>
       <div
-        className={`rounded-lg border border-gray-200 overflow-hidden transition-opacity duration-150 ${isPending ? 'opacity-50' : 'opacity-100'}`}
+        className={`overflow-hidden rounded-lg border border-gray-200 transition-opacity duration-150 ${isPending ? 'opacity-50' : 'opacity-100'}`}
       >
         {mandates.map((mandate) => {
           const isExpanded = expandedGroups.has(mandate.full_document_symbol)
@@ -61,15 +64,6 @@ export function MandateCompactList({
                 onClick={(e) => handleClick(mandate, e)}
                 className={`flex cursor-pointer items-center gap-3 border-b border-gray-100 px-3 py-2.5 transition-colors hover:bg-gray-50 ${dimmed ? 'opacity-60' : ''}`}
               >
-                {grouped && (
-                  <span className="w-11 shrink-0">
-                    <GroupBadge
-                      mandate={mandate}
-                      expanded={isExpanded}
-                      onToggle={() => toggleGroup(mandate.full_document_symbol)}
-                    />
-                  </span>
-                )}
                 <div className="min-w-0 flex-1">
                   <div className="truncate text-sm font-medium">
                     {mandate.displayTitle || 'Untitled'}
@@ -78,18 +72,34 @@ export function MandateCompactList({
                     <span className="font-medium text-un-blue">
                       {mandate.full_document_symbol}
                     </span>
+                    {/* Right of the symbol, same as the table: the count is a
+                        property of the symbol it follows. */}
+                    {grouped && (
+                      <GroupBadge
+                        mandate={mandate}
+                        expanded={isExpanded}
+                        onToggle={() =>
+                          toggleGroup(mandate.full_document_symbol)
+                        }
+                      />
+                    )}
                     {(!grouped || (mandate.group?.size ?? 1) <= 1) && (
                       <SeriesMarkers mandate={mandate} />
                     )}
                     {mandate.body && (
                       <>
                         <span className="text-gray-300">·</span>
-                        <Badge
-                          variant="secondary"
-                          className="border-0 bg-gray-200! text-xs font-medium text-gray-700! whitespace-nowrap"
+                        <Chip
+                          density="dense"
+                          className="whitespace-nowrap"
+                          onClick={(event) => {
+                            event.stopPropagation()
+                            setFilter('organ', mandate.body)
+                          }}
+                          aria-label={`Filter by ${mandate.body}`}
                         >
                           {mandate.body}
-                        </Badge>
+                        </Chip>
                       </>
                     )}
                     {mandate.year && mandate.year !== '-' && (
@@ -104,15 +114,19 @@ export function MandateCompactList({
               </div>
               {grouped &&
                 isExpanded &&
-                (mandate.group?.members ?? []).map((member) => (
+                groupMemberEntries(mandate).map((member) => (
                   <div
                     key={member.symbol}
                     onClick={() =>
                       router.push(
-                        getMandateUrl(member.symbol, {
-                          ppb_version: filters.ppb_version,
-                          mode: filters.mode,
-                        })
+                        getMandateUrl(
+                          member.symbol,
+                          {
+                            ppb_version: filters.ppb_version,
+                            mode: filters.mode,
+                          },
+                          searchParams
+                        )
                       )
                     }
                     className="cursor-pointer border-b border-gray-100 bg-gray-50/60 px-3 py-1.5 pl-8 transition-colors hover:bg-gray-100"
@@ -120,6 +134,14 @@ export function MandateCompactList({
                     <GroupMemberLine member={member} />
                   </div>
                 ))}
+              {grouped && isExpanded && groupHasHiddenVersions(mandate) && (
+                <div
+                  onClick={(e) => handleClick(mandate, e)}
+                  className="cursor-pointer border-b border-gray-100 bg-gray-50/60 px-3 py-1.5 pl-8 transition-colors hover:bg-gray-100"
+                >
+                  <GroupHiddenVersionsNote mandate={mandate} />
+                </div>
+              )}
             </Fragment>
           )
         })}

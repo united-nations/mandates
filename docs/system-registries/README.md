@@ -46,3 +46,25 @@ never the other way around.
 - [ISA](isa.md) — International Seabed Authority
 - [OPCW](opcw.md) — Organisation for the Prohibition of Chemical Weapons
 - [WTO](wto.md) — World Trade Organization
+- [UNFCCC](unfccc.md) — United Nations Framework Convention on Climate Change Secretariat
+- [UNCCD](unccd.md) — United Nations Convention to Combat Desertification Secretariat
+- [ITLOS](itlos.md) — International Tribunal for the Law of the Sea
+
+### Other Entities
+
+- [UNHCR](unhcr.md) — Office of the United Nations High Commissioner for Refugees
+- [UNRWA](unrwa.md) — United Nations Relief and Works Agency for Palestine Refugees in the Near East
+- [UNOPS](unops.md) — United Nations Office for Project Services
+- [UN Women](un-women.md) — United Nations Entity for Gender Equality and the Empowerment of Women
+- [UNAIDS](unaids.md) — Joint United Nations Programme on HIV/AIDS
+
+### Research and Training
+
+- [UNU](unu.md) — United Nations University
+- [UNITAR](unitar.md) — United Nations Institute for Training and Research
+
+### UN Secretariat entities
+
+- [UNCTAD](unctad.md) — United Nations Conference on Trade and Development
+- [UNODC](unodc.md) — United Nations Office on Drugs and Crime
+- [ITC](itc.md) — International Trade Centre

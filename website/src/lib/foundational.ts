@@ -1,17 +1,20 @@
 /**
- * "Foundational" mandates — the constitutive instruments an entity's mandate
- * derives from, as opposed to the legislative mandates for the budget period.
+ * Documents an entity cites in the "Mandates and background" narrative of its
+ * budget fascicle, as opposed to only in its "Legislative mandates" table.
  *
  * WHAT IT IS
  * ----------
  * Each budget fascicle states, in prose, where an entity's authority comes
  * from ("The mandate derives from…") and then, separately, tabulates every
- * resolution entrusting it with activities. A citation is foundational here iff
- * it was extracted from the former — `part_in_document = 'Mandates and
+ * resolution entrusting it with activities. A citation qualifies here iff it
+ * was extracted from the former — `part_in_document = 'Mandates and
  * background'` — rather than the Legislative mandates table.
  *
- * The distinction is the budget rules' own. ST/SGB/2018/3 (PPBME Rules),
- * rule 104.3(a):
+ * So UNEP's narrative cites resolution 2997 (XXVII), which created it, while
+ * its table lists the 148 resolutions that task it. Same for ECLAC (106 (VI)),
+ * ECA (671 A (XXV)) and OLA (Charter Article 102).
+ *
+ * ST/SGB/2018/3 (PPBME Rules), rule 104.3(a), points the same way:
  *
  *   "Requests and directives to the Secretary-General … constitute legislative
  *    mandates for proposed activities. Legislation establishing an
@@ -19,32 +22,80 @@
  *    should not be cited unless it is the only mandate for the activities
  *    proposed."
  *
- * So UNEP's narrative cites resolution 2997 (XXVII), which created it, while
- * its table lists the 148 resolutions that task it. Same for ECLAC (106 (VI)),
- * ECA (671 A (XXV)) and OLA (Charter Article 102).
+ * Treat that as intent rather than a live rule: the fascicles do not actually
+ * follow it (founding resolutions do appear in the tables), and the rule
+ * governs a strategic framework that A/RES/72/266 effectively superseded by
+ * merging plan and budget.
  *
- * THE NAME IS PROVISIONAL — AND CONTESTED
- * ---------------------------------------
- * "Foundational mandate" is NOT attested UN terminology, and its one official
- * use means something else: in the UN80 Co-Chairs' script (12 March 2026)
- * "foundational" denotes norm-setting mandates of universal character, while
- * the entity-establishing sense is a separate category, "institution-creating"
- * (the vocabulary adopted in A/RES/80/251, para 25). The PPBME's own phrase for
- * what we mean is "general mandate" (rule 104.3(a) above).
+ * THE LABEL — settled July 2026
+ * -----------------------------
+ * We previously called this "Foundational". That was our own coinage, it
+ * asserted a hierarchy of importance we cannot defend, and it collided with
+ * actual UN usage: in A/RES/80/251, para 25, "foundational" denotes
+ * norm-setting mandates of universal character, while the entity-establishing
+ * sense is a separate category, "institution-creating".
  *
- * The label is being taken to the team. It lives here, alone, so that renaming
- * it is a one-line change — do not inline the string anywhere else.
+ * The label is now the General Assembly's own name for the section, so it
+ * asserts only WHERE the citation appears and claims nothing about its weight.
+ * A/RES/74/251, para 16, names the string verbatim (checked against our
+ * digitallibrary mirror):
+ *
+ *   "Approves, on an exceptional basis and without creating a precedent, …
+ *    the programme narrative that is composed solely of the 'Mandates and
+ *    background', 'Recent developments', 'Strategy and external factors for
+ *    2020' and 'Evaluation activities' sections…"
+ *
+ * Note also that the split we are labelling is younger than it looks. The
+ * Legislative mandates table is absent from A/74/6 and present from A/75/6
+ * onward, created by GA instruction — A/RES/74/251, sub-para (i):
+ * "Incorporating the list of legislative mandates into the published official
+ * document and not into the supplementary document provided informally". It is
+ * a 2020 formatting decision, not a legal hierarchy, which is the second reason
+ * not to imply one.
+ *
+ * The identifiers below keep their FOUNDATIONAL_* names deliberately: only the
+ * user-facing wording was in question, and renaming them would churn call sites
+ * for no benefit. The strings live here alone so the label stays a one-line
+ * change — do not inline them anywhere else.
  */
 
-/** The `part_in_document` value that marks a citation as foundational. */
+/** The `part_in_document` value that marks a citation as one of these. */
 export const FOUNDATIONAL_PART_IN_DOCUMENT = 'Mandates and background'
 
-export const FOUNDATIONAL_LABEL = 'Foundational'
+/** Badge text. Long by design: it quotes the fascicle section name. */
+export const FOUNDATIONAL_LABEL = 'Mandates and background'
+
+/**
+ * Checkbox label for the filter. Separate from FOUNDATIONAL_LABEL because the
+ * filter composed it as "{label} mandates only", which would now read
+ * "Mandates and background mandates only".
+ */
+export const FOUNDATIONAL_FILTER_LABEL = 'Cited in Mandates and background'
+
+/**
+ * The other `part_in_document` value, and how it is spelled on screen.
+ *
+ * The fascicle heading is "Legislative mandates"; every user-facing string says
+ * "Legislative mandates list", never "table" — the reader sees a list, and
+ * "table" collided with the data table the site itself renders.
+ */
+export const LEGISLATIVE_PART_IN_DOCUMENT = 'Legislative mandates'
+export const LEGISLATIVE_LABEL = 'Legislative mandates list'
+
+/**
+ * Display name for a raw `part_in_document` value. Unknown values (the PKM
+ * streams carry their own section headings, e.g. "Mandate and planning
+ * assumptions") are passed through verbatim rather than guessed at.
+ */
+export function partInDocumentLabel(value: string): string {
+  if (value === LEGISLATIVE_PART_IN_DOCUMENT) return LEGISLATIVE_LABEL
+  return value
+}
 
 export const FOUNDATIONAL_TOOLTIP =
-  'Foundational: this entity cites the document in its “Mandates and background” narrative — the instruments its mandate derives from — rather than only in its Legislative mandates table.'
+  'Cited in this entity’s “Mandates and background” narrative in the programme budget fascicle, not only in its Legislative mandates list. Many documents appear in both.'
 
-/** True if `entity` cites this document as a foundational mandate. */
+/** True if `entity` cites this document in its Mandates and background narrative. */
 export function isFoundational(
   entity: string | null | undefined,
   foundationalEntities: string[] | undefined

@@ -2,11 +2,19 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { ArrowRight, ChevronDown, ChevronUp, History, Layers } from 'lucide-react'
+import { ArrowRight, ChevronDown, ChevronUp, GitCompare } from 'lucide-react'
 import type { ResolutionSeriesInfo } from '@/lib/data/mandates'
+import { DocumentSymbol } from '@/components/DocumentSymbol'
 import { getMandateUrl } from '@/components/table/MandateColumns'
+import {
+  DetailFootnote,
+  DetailSectionHeading,
+} from '@/components/MandateDetailUi'
 
-const MEMBERS_DEFAULT_SHOWN = 8
+const MEMBERS_DEFAULT_SHOWN = 5
+
+/** The standalone diff viewer; no /diff route exists in this app. */
+const DIFF_VIEWER = 'https://diff.un-two-zero.dev/'
 
 interface MandateVersionHistoryProps {
   currentSymbol: string
@@ -14,13 +22,33 @@ interface MandateVersionHistoryProps {
 }
 
 /**
- * Version history / related-resolutions section for a mandate detail view.
+ * Version history / related-documents section for a mandate detail view.
  *
  * Vocabulary is driven by the group type (two-tier claim model):
- *  - series (not a collection): "Version history", latest member is labeled,
- *    and a named "superseded by X" banner appears when the gates passed.
- *  - collection: "Related resolutions", members are an unordered group and
- *    are never presented as versions of each other.
+ *  - series (not a collection): "What other versions does this mandate have?",
+ *    the latest member is labelled, and a named banner appears when the gates
+ *    passed.
+ *  - collection: "What else is in this group?", members are an unordered group
+ *    and are never presented as versions of each other.
+ *
+ * NOTHING HERE MAY SAY "RESOLUTION" OR "SESSION". Recurrence is computed over
+ * ~38,000 resolution rows *and* ~18,400 decision rows (ECOSOC, GA, Programmes
+ * and Funds) plus HRC presidential statements, so "N resolutions" was wrong for
+ * roughly a third of the groups it labelled; and Security Council resolutions
+ * are not organised by session, so "across sessions" is wrong for a whole
+ * organ. The neutral word for every member is "document" — and where the group
+ * is an ordered series, "version".
+ *
+ * The heading also stopped claiming more than the section delivers. "How has
+ * this mandate changed?" promises a diff; what is on screen is the list of
+ * sibling documents, with the change one click away. "What other versions does
+ * this mandate have?" is what the list actually answers, and it stays in the
+ * question form its three siblings use.
+ *
+ * The word "superseded" is deliberately absent from every string here. The DB
+ * column is still called `superseded_by`, but the claim we are entitled to make
+ * to a reader is only "this is not the latest version" — nothing about legal
+ * effect.
  */
 export function MandateVersionHistory({
   currentSymbol,
@@ -30,30 +58,39 @@ export function MandateVersionHistory({
   if (series.members.length <= 1) return null
 
   const span =
-    series.first_year && series.last_year && series.first_year !== series.last_year
+    series.first_year &&
+    series.last_year &&
+    series.first_year !== series.last_year
       ? `${series.first_year}–${series.last_year}`
       : (series.last_year?.toString() ?? '')
+
+  const unit = series.is_collection ? 'documents' : 'versions'
+
+  // Members arrive newest first (ORDER BY year DESC, symbol DESC) and include
+  // the latest one — the current document is simply one row among them. So the
+  // default slice is the 5 most recent, and the *previous* version of any row
+  // is the next one down the full list, never the slice.
   const shown = showAll
     ? series.members
     : series.members.slice(0, MEMBERS_DEFAULT_SHOWN)
   const hiddenCount = series.members.length - shown.length
 
+  const compareLabel = series.is_collection
+    ? 'Compare with earlier document'
+    : 'Compare with previous version'
+
   return (
-    <div>
-      <h3 className="flex items-center gap-2 text-base font-semibold">
-        {series.is_collection ? (
-          <Layers className="h-4 w-4 text-un-blue" />
-        ) : (
-          <History className="h-4 w-4 text-un-blue" />
-        )}
-        {series.is_collection ? 'Related resolutions' : 'Version history'}
-        <span className="text-sm font-normal text-muted-foreground">
-          {series.series_count} resolutions{span ? ` · ${span}` : ''}
-        </span>
-      </h3>
+    <section className="space-y-3">
+      <DetailSectionHeading
+        hint={`${series.series_count} ${unit}${span ? ` · ${span}` : ''}`}
+      >
+        {series.is_collection
+          ? 'What else is in this group?'
+          : 'What other versions does this mandate have?'}
+      </DetailSectionHeading>
 
       {series.superseded_by && (
-        <div className="mt-3 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+        <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
           This is an older version — the most recent is{' '}
           <Link
             href={getMandateUrl(series.superseded_by)}
@@ -65,44 +102,69 @@ export function MandateVersionHistory({
         </div>
       )}
       {!series.superseded_by && series.has_newer && (
-        <div className="mt-3 rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700">
-          Newer resolutions in this group exist
+        <div className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700">
+          Newer documents in this group exist
           {series.last_year ? ` (latest: ${series.last_year})` : ''}.
         </div>
       )}
 
-      <ul className="mt-3 divide-y divide-gray-100 border-y border-gray-100">
-        {shown.map((m) => {
+      <ul className="divide-y divide-gray-100 border-y border-gray-100">
+        {shown.map((m, index) => {
           const isCurrent = m.document_symbol === currentSymbol
+          // Index into the full ordered list, so "previous" stays correct when
+          // only the first five rows are shown.
+          const previous = series.members[index + 1]
           return (
             <li
               key={m.document_symbol}
-              className={`flex items-center gap-3 py-1.5 text-sm ${
+              className={`flex flex-wrap items-center gap-x-3 gap-y-1.5 py-1.5 text-sm ${
                 isCurrent ? 'bg-blue-50/60' : ''
               }`}
             >
-              <span className="w-10 shrink-0 text-xs text-muted-foreground">
+              <span className="w-10 shrink-0 text-xs text-gray-500">
                 {m.year ?? '—'}
               </span>
-              {isCurrent ? (
-                <span className="w-36 shrink-0 truncate font-mono text-xs font-medium">
-                  {m.document_symbol}
-                </span>
-              ) : (
-                <Link
-                  href={getMandateUrl(m.document_symbol)}
-                  className="w-36 shrink-0 truncate font-mono text-xs font-medium text-un-blue hover:underline"
-                >
-                  {m.document_symbol}
-                </Link>
-              )}
-              <span className="min-w-0 flex-1 truncate text-xs text-muted-foreground">
+              {/* The badge sizes to its content; the fixed width lives on the
+                  wrapper. `w-36` on the badge itself stretched every symbol
+                  into a bar the width of the longest one. */}
+              <span className="w-36 shrink-0">
+                {isCurrent ? (
+                  <DocumentSymbol subdued>{m.document_symbol}</DocumentSymbol>
+                ) : (
+                  <DocumentSymbol href={getMandateUrl(m.document_symbol)}>
+                    {m.document_symbol}
+                  </DocumentSymbol>
+                )}
+              </span>
+              <span
+                // min-w-32, not min-w-0: the title may shrink and ellipsize,
+                // but not to nothing — below 8rem the row wraps and the
+                // compare button drops to its own line instead.
+                className="min-w-32 flex-1 truncate text-xs text-gray-600"
+                title={m.title ?? undefined}
+              >
                 {m.title}
               </span>
               {!series.is_collection && m.is_latest && (
-                <span className="ml-auto shrink-0 rounded bg-un-blue px-1.5 py-0.5 text-[10px] font-medium text-white">
-                  latest
+                <span className="shrink-0 rounded bg-un-blue px-1.5 py-0.5 text-[10px] font-medium text-white">
+                  Latest
                 </span>
+              )}
+              {/* The oldest member has nothing before it, so it gets no
+                  button — the affordance is never a dead control. */}
+              {previous && (
+                <a
+                  href={`${DIFF_VIEWER}?symbol1=${encodeURIComponent(
+                    previous.document_symbol
+                  )}&symbol2=${encodeURIComponent(m.document_symbol)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title={`Compare ${previous.document_symbol} with ${m.document_symbol}`}
+                  className="ml-auto inline-flex shrink-0 items-center gap-1.5 rounded-md border border-gray-200 px-2 py-1 text-xs font-medium text-gray-600 transition-colors hover:border-un-blue hover:text-un-blue focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none"
+                >
+                  <GitCompare aria-hidden className="h-3.5 w-3.5" />
+                  {compareLabel}
+                </a>
               )}
             </li>
           )
@@ -111,8 +173,9 @@ export function MandateVersionHistory({
 
       {hiddenCount > 0 && (
         <button
+          type="button"
           onClick={() => setShowAll(true)}
-          className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-un-blue hover:underline"
+          className="inline-flex items-center gap-1 text-xs font-medium text-un-blue hover:underline"
         >
           <ChevronDown className="h-3 w-3" />
           Show all {series.members.length}
@@ -120,19 +183,22 @@ export function MandateVersionHistory({
       )}
       {showAll && series.members.length > MEMBERS_DEFAULT_SHOWN && (
         <button
+          type="button"
           onClick={() => setShowAll(false)}
-          className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-un-blue hover:underline"
+          className="inline-flex items-center gap-1 text-xs font-medium text-un-blue hover:underline"
         >
           <ChevronUp className="h-3 w-3" />
           Show fewer
         </button>
       )}
 
-      <p className="mt-2 text-xs text-muted-foreground">
+      <DetailFootnote>
         {series.is_collection
-          ? 'Grouped automatically by matching titles within the same organ. This group bundles related resolutions that are not individually ordered.'
-          : 'Versions are identified automatically by matching titles within the same organ (~97% accuracy on a manual audit).'}
-      </p>
-    </div>
+          ? 'Grouped automatically by matching titles within the same organ. This group bundles related documents that are not individually ordered.'
+          : 'Versions are identified automatically by matching titles within the same organ (~97% accuracy on a manual audit).'}{' '}
+        Each compare button opens that document and the one directly before it
+        side by side in the diff viewer.
+      </DetailFootnote>
+    </section>
   )
 }
