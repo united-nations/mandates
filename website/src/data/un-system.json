@@ -987,6 +987,11 @@
       "registryNote": "No decision-tracking system. The Joint Advisory Group is advisory: it reviews the annual report and makes recommendations to the UNCTAD Trade and Development Board and the WTO Committee on Trade and Development. Per-session JAG documents are published on the governance pages (2019–2026 archive) but not compiled or statused as a register.",
       "related": [
         {
+          "name": "Mandates cited in the UN programme budget (this site)",
+          "url": "/secretariat?entity=ITC",
+          "mandateLinked": true
+        },
+        {
           "name": "ITC Open Data Portal",
           "url": "https://open.intracen.org/"
         },
@@ -1072,6 +1077,11 @@
       "registryNote": null,
       "related": [
         {
+          "name": "Mandates cited in the UN programme budget (this site)",
+          "url": "/secretariat?entity=UN-Women",
+          "mandateLinked": true
+        },
+        {
           "name": "UN Women Data Hub",
           "url": "https://data.unwomen.org/data-portal"
         }
@@ -1131,7 +1141,13 @@
         "interoperability": null
       },
       "registryNote": null,
-      "related": []
+      "related": [
+        {
+          "name": "Mandates cited in the UN programme budget (this site)",
+          "url": "/secretariat?entity=UN-Habitat",
+          "mandateLinked": true
+        }
+      ]
     },
     {
       "code": "UNCDF",
@@ -1218,6 +1234,11 @@
       },
       "registryNote": null,
       "related": [
+        {
+          "name": "Mandates cited in the UN programme budget (this site)",
+          "url": "/secretariat?entity=UNCTAD",
+          "mandateLinked": true
+        },
         {
           "name": "Reform Tracker (WTO TFA)",
           "url": "https://unctad.org/topic/transport-and-trade-logistics/trade-facilitation/reform-tracker"
@@ -1329,7 +1350,13 @@
         "interoperability": null
       },
       "registryNote": null,
-      "related": []
+      "related": [
+        {
+          "name": "Mandates cited in the UN programme budget (this site)",
+          "url": "/secretariat?entity=UNEP",
+          "mandateLinked": true
+        }
+      ]
     },
     {
       "code": "UNFPA",
@@ -1445,6 +1472,11 @@
       },
       "registryNote": null,
       "related": [
+        {
+          "name": "Mandates cited in the UN programme budget (this site)",
+          "url": "/secretariat?entity=UNHCR",
+          "mandateLinked": true
+        },
         {
           "name": "UNHCR Planning, funding and results (Global Focus)",
           "url": "https://www.unhcr.org/about-unhcr/planning-funding-and-results"
@@ -1657,6 +1689,11 @@
       "registryNote": null,
       "related": [
         {
+          "name": "Mandates cited in the UN programme budget (this site)",
+          "url": "/secretariat?entity=UNODC",
+          "mandateLinked": true
+        },
+        {
           "name": "Database of UNODC Evaluation Reports",
           "url": "https://www.unodc.org/unodc/en/evaluation/reports.html"
         }
@@ -1775,6 +1812,11 @@
       "mandateRegistry": null,
       "registryNote": "No decision-tracking system. UNRWA has no executive board; its mandate is renewed en bloc by periodic GA resolution (currently through 30 June 2026) and the Advisory Commission is purely advisory, adopting no binding decisions. The Advisory Commission 'Key Documents' page is a short curated list of foundational texts (GA res 302(IV), Rules of Procedure, membership resolutions, host-country agreements), not a compilation of the decision corpus and with no in-force/replaced status.",
       "related": [
+        {
+          "name": "Mandates cited in the UN programme budget (this site)",
+          "url": "/secretariat?entity=UNRWA",
+          "mandateLinked": true
+        },
         {
           "name": "UNRWA Transparency Portal",
           "url": "https://open.unrwa.org/"
@@ -2430,7 +2472,13 @@
       "note": null,
       "mandateRegistry": null,
       "registryNote": "Not yet surveyed — added by the CEB scope rule (July 2026); governing bodies and mandate registry still to be researched.",
-      "related": []
+      "related": [
+        {
+          "name": "Mandates cited in the UN programme budget (this site)",
+          "url": "/secretariat?entity=ECA",
+          "mandateLinked": true
+        }
+      ]
     },
     {
       "code": "ECE",
@@ -2448,7 +2496,13 @@
       "note": null,
       "mandateRegistry": null,
       "registryNote": "Not yet surveyed — added by the CEB scope rule (July 2026); governing bodies and mandate registry still to be researched.",
-      "related": []
+      "related": [
+        {
+          "name": "Mandates cited in the UN programme budget (this site)",
+          "url": "/secretariat?entity=ECE",
+          "mandateLinked": true
+        }
+      ]
     },
     {
       "code": "ECLAC",
@@ -2466,7 +2520,13 @@
       "note": null,
       "mandateRegistry": null,
       "registryNote": "Not yet surveyed — added by the CEB scope rule (July 2026); governing bodies and mandate registry still to be researched.",
-      "related": []
+      "related": [
+        {
+          "name": "Mandates cited in the UN programme budget (this site)",
+          "url": "/secretariat?entity=ECLAC",
+          "mandateLinked": true
+        }
+      ]
     },
     {
       "code": "ESCAP",
@@ -2484,7 +2544,13 @@
       "note": null,
       "mandateRegistry": null,
       "registryNote": "Not yet surveyed — added by the CEB scope rule (July 2026); governing bodies and mandate registry still to be researched.",
-      "related": []
+      "related": [
+        {
+          "name": "Mandates cited in the UN programme budget (this site)",
+          "url": "/secretariat?entity=ESCAP",
+          "mandateLinked": true
+        }
+      ]
     },
     {
       "code": "ESCWA",
@@ -2502,7 +2568,13 @@
       "note": null,
       "mandateRegistry": null,
       "registryNote": "Not yet surveyed — added by the CEB scope rule (July 2026); governing bodies and mandate registry still to be researched.",
-      "related": []
+      "related": [
+        {
+          "name": "Mandates cited in the UN programme budget (this site)",
+          "url": "/secretariat?entity=ESCWA",
+          "mandateLinked": true
+        }
+      ]
     },
     {
       "code": "IARC",

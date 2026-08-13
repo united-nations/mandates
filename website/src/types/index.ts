@@ -510,6 +510,12 @@ export interface UnSystemRegistry {
 export interface UnSystemRelatedPortal {
   name: string
   url: string
+  /**
+   * Set when the link IS mandate-linked, which suppresses the
+   * "not mandate-linked" qualifier. Used for this site's own registry, which
+   * covers the entities that are cited in the UN programme budget.
+   */
+  mandateLinked?: true
 }
 
 export interface UnSystemEntity {

@@ -131,17 +131,30 @@ function EntityRow({ entity }: { entity: UnSystemEntity }) {
             key={portal.url}
             className="mt-1 text-xs leading-snug text-gray-500"
           >
-            <a
-              href={portal.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline decoration-dotted underline-offset-2 transition-colors hover:text-un-blue"
-            >
-              {portal.name}
-            </a>
+            {/* Links into this site stay in the tab; external portals open out. */}
+            {portal.url.startsWith('/') ? (
+              <Link
+                href={portal.url}
+                className="underline decoration-dotted underline-offset-2 transition-colors hover:text-un-blue"
+              >
+                {portal.name}
+              </Link>
+            ) : (
+              <a
+                href={portal.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline decoration-dotted underline-offset-2 transition-colors hover:text-un-blue"
+              >
+                {portal.name}
+              </a>
+            )}
             {/* "not mandate-linked" is rating vocabulary, so it goes with the
-                rating rather than lingering as an orphan qualifier. */}
-            {SHOW_MANDATE_REGISTRY_RATING && ' — not mandate-linked'}
+                rating rather than lingering as an orphan qualifier — and never
+                applies to a link that is itself mandate-linked. */}
+            {SHOW_MANDATE_REGISTRY_RATING &&
+              !portal.mandateLinked &&
+              ' — not mandate-linked'}
           </div>
         ))}
       </div>
