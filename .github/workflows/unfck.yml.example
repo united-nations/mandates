@@ -1,0 +1,69 @@
+# Deployment for the `unfck` branch → mandates.unfck.org
+#
+# NOT ACTIVE. This file ends in .example on purpose, so GitHub does not pick it
+# up. It cannot work until the Azure side exists and the secrets below are
+# added to the repository. To turn it on:
+#
+#   1. Create the Azure Web App and its container registry for unfck.
+#   2. Add the four secrets named below (the dev workflow's own secrets are
+#      per-resource, so they cannot be reused).
+#   3. Point mandates.unfck.org at the new Web App.
+#   4. git mv .github/workflows/unfck.yml.example .github/workflows/unfck.yml
+#
+# Copied from dev_un80analytics.yml and changed in three places only: the
+# trigger branch, the resource names, and the secret names. Keep it that way,
+# so a change to the deployment recipe on dev is easy to carry across.
+
+name: Build and deploy container app to Azure Web App - UNFCK
+
+on:
+  push:
+    branches:
+      - unfck
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to registry
+        uses: docker/login-action@v2
+        with:
+          registry: https://unfckregistry.azurecr.io/
+          username: ${{ secrets.UNFCK_ContainerUsername }}
+          password: ${{ secrets.UNFCK_ContainerPassword }}
+
+      - name: Build and push container image to registry
+        uses: docker/build-push-action@v3
+        with:
+          # Context must be the repo ROOT, not website/: the Dockerfile reaches
+          # into data/ for the pipeline output.
+          context: .
+          push: true
+          tags: unfckregistry.azurecr.io/${{ secrets.UNFCK_ContainerUsername }}/lowercaseimage:${{ github.sha }}
+          file: ./website/Dockerfile
+          build-args: |
+            NEXT_PUBLIC_SENTRY_DSN=${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: "production"
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: "UNFCK-Mandates"
+          slot-name: "production"
+          publish-profile: ${{ secrets.UNFCK_PublishProfile }}
+          images: "unfckregistry.azurecr.io/${{ secrets.UNFCK_ContainerUsername }}/lowercaseimage:${{ github.sha }}"

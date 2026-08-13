@@ -236,9 +236,11 @@ Do not push and do not open a pull request without being asked.
 
 ## 7. Open items
 
-- **Deployment.** `.github/workflows/` builds `dev` and `main` to Azure. The
-  `unfck` branch needs its own workflow and its own Azure target for
-  mandates.unfck.org. To be written, not applied.
+- **Deployment.** Written but deliberately inactive:
+  `.github/workflows/unfck.yml.example`. It cannot run until the Azure Web App,
+  the container registry and four repository secrets exist. The file's header
+  lists the four steps to turn it on, the last being a rename that drops
+  `.example`.
 - **Database.** The language-of-command lens reads
   `digitallibrary.document_paragraphs`. Confirm the deploy target can reach it.
   The other lenses read static JSON checked into the repo.
@@ -248,3 +250,63 @@ Do not push and do not open a pull request without being asked.
   brutalist), `secretariat-progressive-disclosure`, `secretariat-calm-hierarchy`,
   `worktree-citation-matrix` and `worktree-mandate-sidebar` stay unmerged. Any
   of them can be revisited later.
+
+---
+
+## 8. Build log
+
+All seven phases are done. The branch builds (`pnpm build`, exit 0) and
+typechecks clean.
+
+| Commit | Phase |
+| --- | --- |
+| `09df5d5` | This plan |
+| `2fb0ea9` | 1 — merge the capstone |
+| `cf35ee8` | 2 and 3 — rebuild the page, redistribute the lenses |
+| `bc7a33f` | 4 and 6 — drop the hub, fix the nav, brand as UNFCK |
+| `24412aa` | 5 — sticky section nav |
+
+### Decisions taken while building
+
+These differ from, or add to, the plan above. Each one is recorded in the
+commit that made it.
+
+1. **The travelling filter pill is kept.** The plan said to take only the
+   sticky nav from `secretariat-wayfinding` and to drop its filter pill as a
+   duplicate of dev's `ActiveFilters` bar. It is not a duplicate: the bar holds
+   the detail but does not stick, and by the organs section it is thousands of
+   pixels out of view. Both are kept, doing different jobs.
+
+2. **Two deleted components are restored.** `SubjectsCompact` and
+   `SubjectTreemap` were deleted on `dev` when the subjects section became a
+   modal panel. The subjects section needs them, so they come back from the
+   capstone. Neither exists on `dev`, so neither can conflict.
+
+3. **`MandateReportsSection` is dropped, not merged.** It and dev's
+   `MandateSgReports` answer the same question — which reports came back under
+   this mandate. `MandateSgReports` answers it from the Digital Library
+   catalogue rather than a static JSON snapshot, so it wins.
+   `MandateVoteStrip` and `MandateImplementationChips` are grafted from the
+   lens side, because they add something the dev page had no answer for.
+
+4. **`/secretariat/analytics` is deleted too.** The plan only named the
+   `/analytics` hub. `dev` also carries an unlinked tabbed analytics page,
+   which the sections now replace. Both routes redirect to `/secretariat`.
+
+5. **`DirectoryExplorer` is untouched.** The cards keep opening their modals.
+   The sections give the same directories inline, with a different selection
+   behaviour, which is the hybrid that was asked for: the cards are the fast
+   filter path, the sections are the browsable one.
+
+6. **Three shared files carry a small change each**, and these are the only
+   places a future sync can conflict beyond `page.tsx`: `SiteHeader` (nav and
+   wordmark), `SectionBanner` (`scroll-mt-20` → `scroll-mt-28`),
+   `RootLayoutClient` (the back-button route list).
+
+### Known state of `pnpm lint`
+
+Six errors, all `@typescript-eslint/no-explicit-any` in
+`website/src/lib/db/query.ts`. They are **pre-existing on `dev`** — that file is
+byte-identical on `dev`, on the capstone and here. CLAUDE.md explicitly allows
+`any` in the DB helpers' generic defaults; the eslint config has no exemption
+for it. Not fixed here, because it is not this branch's business.
