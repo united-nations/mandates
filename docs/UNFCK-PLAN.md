@@ -230,6 +230,25 @@ If `dev` ever minimises the page further, the conflict appears in `page.tsx`
 alone. Resolve by keeping our section calls and taking `dev`'s changes to the
 shared parts.
 
+**The conflict surface, measured.** A future `git merge dev` can only conflict
+in files that exist on both branches. Everything this branch adds lives in files
+`dev` does not have, so the whole surface is eight files:
+
+```
+website/src/app/secretariat/page.tsx              76 lines   composition only
+website/src/components/SiteHeader.tsx             36 lines   nav + wordmark
+website/src/app/globals.css                       12 lines   from the capstone
+website/src/components/MandateExplorerClient.tsx   7 lines   a comment
+website/src/components/SectionBanner.tsx           4 lines   scroll-mt
+website/src/components/RootLayoutClient.tsx        3 lines   route list
+website/src/app/mandate/[...segments]/page.tsx               vote strip + chips
+website/src/app/@modal/(.)mandate/…/page.tsx                 same, keep in step
+```
+
+About 138 changed lines in total, against 153 files brought in by the capstone.
+Keep it that way: if a sync starts conflicting badly, the cause will be new
+markup that crept into `page.tsx` instead of into `components/sections/`.
+
 Do not push and do not open a pull request without being asked.
 
 ---
