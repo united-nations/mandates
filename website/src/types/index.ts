@@ -497,6 +497,12 @@ export interface UnSystemPointEntry {
  * plans or org-wide totals. `interoperability` (point 6) is reserved.
  */
 export interface UnSystemRegistry {
+  /**
+   * Set on this site's own registry, to distinguish it from the registry the
+   * organization itself runs. An entity can have both: its own system, plus
+   * our coverage of the mandates it is cited for in the UN programme budget.
+   */
+  scope?: 'this-site'
   /** Short proper name of the system, used as the link text, e.g. "Resolutions Portal". */
   name: string
   /** Taxonomy category, shown in the link tooltip, e.g. "Resolutions Database". */
@@ -510,12 +516,6 @@ export interface UnSystemRegistry {
 export interface UnSystemRelatedPortal {
   name: string
   url: string
-  /**
-   * Set when the link IS mandate-linked, which suppresses the
-   * "not mandate-linked" qualifier. Used for this site's own registry, which
-   * covers the entities that are cited in the UN programme budget.
-   */
-  mandateLinked?: true
 }
 
 export interface UnSystemEntity {
@@ -529,8 +529,13 @@ export interface UnSystemEntity {
   officialPages: UnSystemPage[]
   contacts: UnSystemContact[]
   note: string | null
-  mandateRegistry: UnSystemRegistry | null
-  /** Shown when mandateRegistry is null: why there is none (or where it lives instead). */
+  /**
+   * Every registry covering this organization's mandates, the organization's
+   * own first and this site's (`scope: 'this-site'`) last. Empty when none
+   * exists — see registryNote.
+   */
+  mandateRegistry: UnSystemRegistry[]
+  /** Shown when the organization runs no registry itself: why there is none (or where it lives instead). */
   registryNote: string | null
   related: UnSystemRelatedPortal[]
 }

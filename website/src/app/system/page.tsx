@@ -80,6 +80,11 @@ function OrgLevelLink({
 }
 
 function EntityRow({ entity }: { entity: UnSystemEntity }) {
+  // registryNote explains why the ORGANIZATION runs no registry, so it still
+  // applies when the only entry is this site's coverage of its budget mandates.
+  const hasOwnRegistry = entity.mandateRegistry.some(
+    (registry) => registry.scope !== 'this-site'
+  )
   return (
     <li
       className={`grid grid-cols-1 items-baseline gap-x-4 gap-y-2 px-4 py-3 ${ROW_GRID_COLS}`}
@@ -117,44 +122,45 @@ function EntityRow({ entity }: { entity: UnSystemEntity }) {
         )}
       </ul>
       {SHOW_MANDATE_REGISTRY_RATING && (
-        <div>
-          <UnSystemRegistryDots
-            registry={entity.mandateRegistry}
-            note={entity.registryNote}
-          />
+        <div className="space-y-1">
+          {/* One rating per registry: the organization's own and this site's
+              are scored separately, because their coverage differs. The note
+              stands in only when there is nothing to rate at all. */}
+          {!hasOwnRegistry && (
+            <UnSystemRegistryDots registry={null} note={entity.registryNote} />
+          )}
+          {entity.mandateRegistry.map((registry) => (
+            <UnSystemRegistryDots
+              key={registry.url}
+              registry={registry}
+              note={null}
+            />
+          ))}
         </div>
       )}
       <div>
-        <UnSystemRegistryLink registry={entity.mandateRegistry} />
+        {/* Each registry on its own line — the link itself renders inline. */}
+        {entity.mandateRegistry.map((registry) => (
+          <div key={registry.url}>
+            <UnSystemRegistryLink registry={registry} />
+          </div>
+        ))}
         {entity.related.map((portal) => (
           <div
             key={portal.url}
             className="mt-1 text-xs leading-snug text-gray-500"
           >
-            {/* Links into this site stay in the tab; external portals open out. */}
-            {portal.url.startsWith('/') ? (
-              <Link
-                href={portal.url}
-                className="underline decoration-dotted underline-offset-2 transition-colors hover:text-un-blue"
-              >
-                {portal.name}
-              </Link>
-            ) : (
-              <a
-                href={portal.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline decoration-dotted underline-offset-2 transition-colors hover:text-un-blue"
-              >
-                {portal.name}
-              </a>
-            )}
+            <a
+              href={portal.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline decoration-dotted underline-offset-2 transition-colors hover:text-un-blue"
+            >
+              {portal.name}
+            </a>
             {/* "not mandate-linked" is rating vocabulary, so it goes with the
-                rating rather than lingering as an orphan qualifier — and never
-                applies to a link that is itself mandate-linked. */}
-            {SHOW_MANDATE_REGISTRY_RATING &&
-              !portal.mandateLinked &&
-              ' — not mandate-linked'}
+                rating rather than lingering as an orphan qualifier. */}
+            {SHOW_MANDATE_REGISTRY_RATING && ' — not mandate-linked'}
           </div>
         ))}
       </div>

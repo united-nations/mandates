@@ -88,34 +88,36 @@
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": {
-        "name": "Mandate Source Registry",
-        "category": "Mandate Registry",
-        "url": "/secretariat",
-        "points": {
-          "documents": {
-            "value": true,
-            "note": null
+      "mandateRegistry": [
+        {
+          "name": "Mandate Source Registry",
+          "category": "Mandate Registry",
+          "url": "/secretariat",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": null
+            },
+            "mandates": {
+              "value": true,
+              "note": null
+            },
+            "budget": {
+              "value": false,
+              "note": "budget structure linked, but no monetary amounts shown (project decision)"
+            },
+            "implementation": {
+              "value": false,
+              "note": "evidence in round 1"
+            },
+            "results": {
+              "value": false,
+              "note": "no results reporting linked to mandates on this site; Secretariat performance reporting (programme performance reports, results.un.org) is not mandate-linked"
+            }
           },
-          "mandates": {
-            "value": true,
-            "note": null
-          },
-          "budget": {
-            "value": false,
-            "note": "budget structure linked, but no monetary amounts shown (project decision)"
-          },
-          "implementation": {
-            "value": false,
-            "note": "evidence in round 1"
-          },
-          "results": {
-            "value": false,
-            "note": "no results reporting linked to mandates on this site; Secretariat performance reporting (programme performance reports, results.un.org) is not mandate-linked"
-          }
-        },
-        "interoperability": null
-      },
+          "interoperability": null
+        }
+      ],
       "registryNote": null,
       "related": []
     },
@@ -159,34 +161,36 @@
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": {
-        "name": "Conference Resolutions Portal",
-        "category": "Resolutions Database",
-        "url": "https://resolutionsportal.fao.org/",
-        "points": {
-          "documents": {
-            "value": true,
-            "note": null
+      "mandateRegistry": [
+        {
+          "name": "Conference Resolutions Portal",
+          "category": "Resolutions Database",
+          "url": "https://resolutionsportal.fao.org/",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": null
+            },
+            "mandates": {
+              "value": true,
+              "note": null
+            },
+            "budget": {
+              "value": false,
+              "note": "portal has a \"Budget\" subcategory (285 resolutions) but no financial data per resolution; Transparency Portal budget data is organized by PWB/Strategic Framework, not resolutions"
+            },
+            "implementation": {
+              "value": false,
+              "note": "evidence in round 1"
+            },
+            "results": {
+              "value": false,
+              "note": "Programme Implementation Report (PIR, incl. a PIR Results View on the Transparency Portal) reports against Strategic Framework results; the PIR regime was itself created by Conference Res 10/2009 but reporting is not per-resolution"
+            }
           },
-          "mandates": {
-            "value": true,
-            "note": null
-          },
-          "budget": {
-            "value": false,
-            "note": "portal has a \"Budget\" subcategory (285 resolutions) but no financial data per resolution; Transparency Portal budget data is organized by PWB/Strategic Framework, not resolutions"
-          },
-          "implementation": {
-            "value": false,
-            "note": "evidence in round 1"
-          },
-          "results": {
-            "value": false,
-            "note": "Programme Implementation Report (PIR, incl. a PIR Results View on the Transparency Portal) reports against Strategic Framework results; the PIR regime was itself created by Conference Res 10/2009 but reporting is not per-resolution"
-          }
-        },
-        "interoperability": null
-      },
+          "interoperability": null
+        }
+      ],
       "registryNote": null,
       "related": []
     },
@@ -211,34 +215,36 @@
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": {
-        "name": "Assembly Resolutions in Force",
-        "category": "Resolutions in Force",
-        "url": "https://www.icao.int/events/a41/resolutions",
-        "points": {
-          "documents": {
-            "value": true,
-            "note": null
+      "mandateRegistry": [
+        {
+          "name": "Assembly Resolutions in Force",
+          "category": "Resolutions in Force",
+          "url": "https://www.icao.int/events/a41/resolutions",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": null
+            },
+            "mandates": {
+              "value": true,
+              "note": null
+            },
+            "budget": {
+              "value": false,
+              "note": "Budget Doc 10229 (2026–2028) opens with the budget Assembly resolution (A42-27) and its prioritization \"focused on projects and activities mandated by the Assembly and/or Council\", but amounts are organized by Strategic Goals/programmes with no per-resolution figures (verified in the PDF text)"
+            },
+            "implementation": {
+              "value": false,
+              "note": "evidence in round 1"
+            },
+            "results": {
+              "value": false,
+              "note": "performance reporting is against the Business Plan / Strategic Objectives monitoring framework, not specific resolutions; the triennial consolidation of resolutions in force is an editorial review, not results reporting"
+            }
           },
-          "mandates": {
-            "value": true,
-            "note": null
-          },
-          "budget": {
-            "value": false,
-            "note": "Budget Doc 10229 (2026–2028) opens with the budget Assembly resolution (A42-27) and its prioritization \"focused on projects and activities mandated by the Assembly and/or Council\", but amounts are organized by Strategic Goals/programmes with no per-resolution figures (verified in the PDF text)"
-          },
-          "implementation": {
-            "value": false,
-            "note": "evidence in round 1"
-          },
-          "results": {
-            "value": false,
-            "note": "performance reporting is against the Business Plan / Strategic Objectives monitoring framework, not specific resolutions; the triennial consolidation of resolutions in force is an editorial review, not results reporting"
-          }
-        },
-        "interoperability": null
-      },
+          "interoperability": null
+        }
+      ],
       "registryNote": null,
       "related": []
     },
@@ -261,34 +267,36 @@
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": {
-        "name": "Members Platform",
-        "category": "Session Documents",
-        "url": "https://webapps.ifad.org/members/gc",
-        "points": {
-          "documents": {
-            "value": true,
-            "note": null
+      "mandateRegistry": [
+        {
+          "name": "Members Platform",
+          "category": "Session Documents",
+          "url": "https://webapps.ifad.org/members/gc",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": null
+            },
+            "mandates": {
+              "value": false,
+              "note": "round 2 confirmed: no consolidated in-force/replaced list or status index found; resolutions exist only as per-session PDF compilations"
+            },
+            "budget": {
+              "value": false,
+              "note": "no system links resolutions to budget data. (Inherent overlap only: the annual administrative budget and each replenishment are themselves adopted by GC resolutions carrying amounts, but nothing connects resolutions to financial data as a system)"
+            },
+            "implementation": {
+              "value": false,
+              "note": "evidence in round 1"
+            },
+            "results": {
+              "value": false,
+              "note": "results reported against the per-replenishment Results Management Framework (RIDE report), not against specific GC resolutions"
+            }
           },
-          "mandates": {
-            "value": false,
-            "note": "round 2 confirmed: no consolidated in-force/replaced list or status index found; resolutions exist only as per-session PDF compilations"
-          },
-          "budget": {
-            "value": false,
-            "note": "no system links resolutions to budget data. (Inherent overlap only: the annual administrative budget and each replenishment are themselves adopted by GC resolutions carrying amounts, but nothing connects resolutions to financial data as a system)"
-          },
-          "implementation": {
-            "value": false,
-            "note": "evidence in round 1"
-          },
-          "results": {
-            "value": false,
-            "note": "results reported against the per-replenishment Results Management Framework (RIDE report), not against specific GC resolutions"
-          }
-        },
-        "interoperability": null
-      },
+          "interoperability": null
+        }
+      ],
       "registryNote": null,
       "related": []
     },
@@ -323,34 +331,36 @@
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": {
-        "name": "Governing Body Documents",
-        "category": "Decisions Database",
-        "url": "https://www.ilo.org/governing-body/all-gb-documents",
-        "points": {
-          "documents": {
-            "value": true,
-            "note": null
+      "mandateRegistry": [
+        {
+          "name": "Governing Body Documents",
+          "category": "Decisions Database",
+          "url": "https://www.ilo.org/governing-body/all-gb-documents",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": null
+            },
+            "mandates": {
+              "value": false,
+              "note": "round 2 confirmed: decision pages/GB database carry no in-force/replaced status"
+            },
+            "budget": {
+              "value": false,
+              "note": "no system links decisions to amounts; decision pages show no financial fields (verified on a GB.352 decision page). Individual GB papers contain ad-hoc financing clauses (\"financed from savings in Part I\"), but only as document text"
+            },
+            "implementation": {
+              "value": "partial",
+              "note": "evidence in round 1"
+            },
+            "results": {
+              "value": false,
+              "note": "standing \"Follow-up to Governing Body decisions\" report series gives the GB an overview of action taken per decision adopted at previous sessions (e.g. GB.343 first supplementary report; GB.352 decision noting follow-up to decisions Nov 2022–Jun 2024, next report Nov 2025); a document series, not a database"
+            }
           },
-          "mandates": {
-            "value": false,
-            "note": "round 2 confirmed: decision pages/GB database carry no in-force/replaced status"
-          },
-          "budget": {
-            "value": false,
-            "note": "no system links decisions to amounts; decision pages show no financial fields (verified on a GB.352 decision page). Individual GB papers contain ad-hoc financing clauses (\"financed from savings in Part I\"), but only as document text"
-          },
-          "implementation": {
-            "value": "partial",
-            "note": "evidence in round 1"
-          },
-          "results": {
-            "value": false,
-            "note": "standing \"Follow-up to Governing Body decisions\" report series gives the GB an overview of action taken per decision adopted at previous sessions (e.g. GB.343 first supplementary report; GB.352 decision noting follow-up to decisions Nov 2022–Jun 2024, next report Nov 2025); a document series, not a database"
-          }
-        },
-        "interoperability": null
-      },
+          "interoperability": null
+        }
+      ],
       "registryNote": null,
       "related": []
     },
@@ -373,34 +383,36 @@
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": {
-        "name": "Selected Decisions",
-        "category": "Decisions Database",
-        "url": "https://www.imf.org/en/publications/selected-decisions/selected-decisions-list",
-        "points": {
-          "documents": {
-            "value": true,
-            "note": null
+      "mandateRegistry": [
+        {
+          "name": "Selected Decisions",
+          "category": "Decisions Database",
+          "url": "https://www.imf.org/en/publications/selected-decisions/selected-decisions-list",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": null
+            },
+            "mandates": {
+              "value": true,
+              "note": "Selected Decisions compiles decisions currently applicable; lapsed and replaced decisions are deleted from each issue"
+            },
+            "budget": {
+              "value": false,
+              "note": "no system connects decisions to budget/financial information; decision pages are text-only"
+            },
+            "implementation": {
+              "value": false,
+              "note": "evidence in round 1"
+            },
+            "results": {
+              "value": false,
+              "note": "no results/outcome reporting against specific Board decisions found"
+            }
           },
-          "mandates": {
-            "value": true,
-            "note": "Selected Decisions compiles decisions currently applicable; lapsed and replaced decisions are deleted from each issue"
-          },
-          "budget": {
-            "value": false,
-            "note": "no system connects decisions to budget/financial information; decision pages are text-only"
-          },
-          "implementation": {
-            "value": false,
-            "note": "evidence in round 1"
-          },
-          "results": {
-            "value": false,
-            "note": "no results/outcome reporting against specific Board decisions found"
-          }
-        },
-        "interoperability": null
-      },
+          "interoperability": null
+        }
+      ],
       "registryNote": null,
       "related": []
     },
@@ -428,34 +440,36 @@
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": {
-        "name": "Index of IMO Resolutions",
-        "category": "Session Documents",
-        "url": "https://www.imo.org/en/knowledgecentre/indexofimoresolutions/pages/default.aspx",
-        "points": {
-          "documents": {
-            "value": true,
-            "note": null
+      "mandateRegistry": [
+        {
+          "name": "Index of IMO Resolutions",
+          "category": "Session Documents",
+          "url": "https://www.imo.org/en/knowledgecentre/indexofimoresolutions/pages/default.aspx",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": null
+            },
+            "mandates": {
+              "value": false,
+              "note": "round 2 confirmed: resolutions do get revoked/replaced (e.g. A.658(16), A.739(18), A.789(19)) but no public status index records this; the Index lists resolutions by session/decade without in-force status"
+            },
+            "budget": {
+              "value": false,
+              "note": "the results-based budget is itself adopted by Assembly resolution (2024–25: £83.65m) and structured by strategic directions; no system links individual resolutions to financial data"
+            },
+            "implementation": {
+              "value": false,
+              "note": "evidence in round 1"
+            },
+            "results": {
+              "value": false,
+              "note": "no public results reporting against specific resolutions; financial statements and budget documents only"
+            }
           },
-          "mandates": {
-            "value": false,
-            "note": "round 2 confirmed: resolutions do get revoked/replaced (e.g. A.658(16), A.739(18), A.789(19)) but no public status index records this; the Index lists resolutions by session/decade without in-force status"
-          },
-          "budget": {
-            "value": false,
-            "note": "the results-based budget is itself adopted by Assembly resolution (2024–25: £83.65m) and structured by strategic directions; no system links individual resolutions to financial data"
-          },
-          "implementation": {
-            "value": false,
-            "note": "evidence in round 1"
-          },
-          "results": {
-            "value": false,
-            "note": "no public results reporting against specific resolutions; financial statements and budget documents only"
-          }
-        },
-        "interoperability": null
-      },
+          "interoperability": null
+        }
+      ],
       "registryNote": null,
       "related": []
     },
@@ -484,34 +498,36 @@
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": {
-        "name": "Council Resolutions & Decisions",
-        "category": "Resolutions in Force",
-        "url": "https://www.itu.int/pub/S-CONF-CL",
-        "points": {
-          "documents": {
-            "value": true,
-            "note": null
+      "mandateRegistry": [
+        {
+          "name": "Council Resolutions & Decisions",
+          "category": "Resolutions in Force",
+          "url": "https://www.itu.int/pub/S-CONF-CL",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": null
+            },
+            "mandates": {
+              "value": true,
+              "note": null
+            },
+            "budget": {
+              "value": false,
+              "note": "in-force compilation includes budget resolutions as documents but carries no financial data; Council reporting mentions budget only at aggregate level"
+            },
+            "implementation": {
+              "value": false,
+              "note": "evidence in round 1"
+            },
+            "results": {
+              "value": false,
+              "note": "annual report to Council (per PP Res 71) includes a \"Status of Implementation of PP Resolutions\" section, but that is implementation status inside a document, not results reporting against resolutions"
+            }
           },
-          "mandates": {
-            "value": true,
-            "note": null
-          },
-          "budget": {
-            "value": false,
-            "note": "in-force compilation includes budget resolutions as documents but carries no financial data; Council reporting mentions budget only at aggregate level"
-          },
-          "implementation": {
-            "value": false,
-            "note": "evidence in round 1"
-          },
-          "results": {
-            "value": false,
-            "note": "annual report to Council (per PP Res 71) includes a \"Status of Implementation of PP Resolutions\" section, but that is implementation status inside a document, not results reporting against resolutions"
-          }
-        },
-        "interoperability": null
-      },
+          "interoperability": null
+        }
+      ],
       "registryNote": null,
       "related": [
         {
@@ -549,34 +565,36 @@
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": {
-        "name": "E-Library GA Documents",
-        "category": "Session Documents",
-        "url": "https://www.e-unwto.org/loi/unwtogad",
-        "points": {
-          "documents": {
-            "value": true,
-            "note": null
+      "mandateRegistry": [
+        {
+          "name": "E-Library GA Documents",
+          "category": "Session Documents",
+          "url": "https://www.e-unwto.org/loi/unwtogad",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": null
+            },
+            "mandates": {
+              "value": false,
+              "note": "chronological per-session resolution compilations; no in-force/replaced distinction"
+            },
+            "budget": {
+              "value": false,
+              "note": "GA approves programme of work and budget as documents; no system connects specific resolutions to financial data"
+            },
+            "implementation": {
+              "value": false,
+              "note": "evidence in round 1"
+            },
+            "results": {
+              "value": false,
+              "note": "Secretariat reports on implementation of the (general) Programme of Work, not against individual resolutions"
+            }
           },
-          "mandates": {
-            "value": false,
-            "note": "chronological per-session resolution compilations; no in-force/replaced distinction"
-          },
-          "budget": {
-            "value": false,
-            "note": "GA approves programme of work and budget as documents; no system connects specific resolutions to financial data"
-          },
-          "implementation": {
-            "value": false,
-            "note": "evidence in round 1"
-          },
-          "results": {
-            "value": false,
-            "note": "Secretariat reports on implementation of the (general) Programme of Work, not against individual resolutions"
-          }
-        },
-        "interoperability": null
-      },
+          "interoperability": null
+        }
+      ],
       "registryNote": null,
       "related": []
     },
@@ -605,7 +623,7 @@
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": null,
+      "mandateRegistry": [],
       "registryNote": "No centralized system. UNESCO has proposed establishing a decision-tracking system aligned with the UN Mandate Register (43 C/OEWG/2/INF.3.REV.2, 2026).",
       "related": [
         {
@@ -633,34 +651,36 @@
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": {
-        "name": "Session Documents",
-        "category": "Session Documents",
-        "url": "https://www.unido.org/resources/policymaking-organs/general-conference/sessions/14th-session/decisions-and-resolutions-general-conference",
-        "points": {
-          "documents": {
-            "value": true,
-            "note": null
+      "mandateRegistry": [
+        {
+          "name": "Session Documents",
+          "category": "Session Documents",
+          "url": "https://www.unido.org/resources/policymaking-organs/general-conference/sessions/14th-session/decisions-and-resolutions-general-conference",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": null
+            },
+            "mandates": {
+              "value": false,
+              "note": "per-session compilation PDFs only; no in-force/replaced distinction"
+            },
+            "budget": {
+              "value": false,
+              "note": "budget/funding transparency lives in COMPASS at project level, not linked to GC/IDB decisions"
+            },
+            "implementation": {
+              "value": false,
+              "note": "evidence in round 1"
+            },
+            "results": {
+              "value": false,
+              "note": "results (outcomes/outputs) are reported per project in COMPASS/IATI, not against governing-body decisions"
+            }
           },
-          "mandates": {
-            "value": false,
-            "note": "per-session compilation PDFs only; no in-force/replaced distinction"
-          },
-          "budget": {
-            "value": false,
-            "note": "budget/funding transparency lives in COMPASS at project level, not linked to GC/IDB decisions"
-          },
-          "implementation": {
-            "value": false,
-            "note": "evidence in round 1"
-          },
-          "results": {
-            "value": false,
-            "note": "results (outcomes/outputs) are reported per project in COMPASS/IATI, not against governing-body decisions"
-          }
-        },
-        "interoperability": null
-      },
+          "interoperability": null
+        }
+      ],
       "registryNote": null,
       "related": [
         {
@@ -705,34 +725,36 @@
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": {
-        "name": "Acts of the Union",
-        "category": "Session Documents",
-        "url": "https://www.upu.int/en/Universal-Postal-Union/About-UPU/Acts",
-        "points": {
-          "documents": {
-            "value": true,
-            "note": null
+      "mandateRegistry": [
+        {
+          "name": "Acts of the Union",
+          "category": "Session Documents",
+          "url": "https://www.upu.int/en/Universal-Postal-Union/About-UPU/Acts",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": null
+            },
+            "mandates": {
+              "value": false,
+              "note": "Congress decisions published as chronological compilations (Abidjan 2021, Riyadh 2023, Dubai 2025 PDFs) with no in-force marking"
+            },
+            "budget": {
+              "value": false,
+              "note": "no system connects Congress/Council decisions to budget or financial information"
+            },
+            "implementation": {
+              "value": false,
+              "note": "evidence in round 1"
+            },
+            "results": {
+              "value": false,
+              "note": "no public results reporting against specific Congress decisions found"
+            }
           },
-          "mandates": {
-            "value": false,
-            "note": "Congress decisions published as chronological compilations (Abidjan 2021, Riyadh 2023, Dubai 2025 PDFs) with no in-force marking"
-          },
-          "budget": {
-            "value": false,
-            "note": "no system connects Congress/Council decisions to budget or financial information"
-          },
-          "implementation": {
-            "value": false,
-            "note": "evidence in round 1"
-          },
-          "results": {
-            "value": false,
-            "note": "no public results reporting against specific Congress decisions found"
-          }
-        },
-        "interoperability": null
-      },
+          "interoperability": null
+        }
+      ],
       "registryNote": null,
       "related": []
     },
@@ -755,34 +777,36 @@
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": {
-        "name": "Resolutions Portal",
-        "category": "Resolutions Database",
-        "url": "https://resolutionsportal.who.int/",
-        "points": {
-          "documents": {
-            "value": true,
-            "note": null
+      "mandateRegistry": [
+        {
+          "name": "Resolutions Portal",
+          "category": "Resolutions Database",
+          "url": "https://resolutionsportal.who.int/",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": null
+            },
+            "mandates": {
+              "value": false,
+              "note": "round 2 confirmed: Resolutions Portal has no current/replaced/in-force status field (chronological archive with topical metadata only)"
+            },
+            "budget": {
+              "value": "partial",
+              "note": "WHO costs specific resolutions/decisions in its programme budget: PB Digital Platform \"List of resolutions and decisions\" page (2024–25: 29 resolutions + 23 decisions ≈ US$1.75bn base; 2026–27 mandates ≥ US$2.3bn) with PDF explainer; costings underlie Table 1/Fig. 9 of the PB document, not a per-resolution database, and not linked from the Resolutions Portal"
+            },
+            "implementation": {
+              "value": false,
+              "note": "evidence in round 1"
+            },
+            "results": {
+              "value": "partial",
+              "note": "consolidated WHA \"Progress reports\" documents (e.g. A78/34) report progress against specific named resolutions each Assembly; a document series covering only resolutions that requested periodic reporting, not a tracking system"
+            }
           },
-          "mandates": {
-            "value": false,
-            "note": "round 2 confirmed: Resolutions Portal has no current/replaced/in-force status field (chronological archive with topical metadata only)"
-          },
-          "budget": {
-            "value": "partial",
-            "note": "WHO costs specific resolutions/decisions in its programme budget: PB Digital Platform \"List of resolutions and decisions\" page (2024–25: 29 resolutions + 23 decisions ≈ US$1.75bn base; 2026–27 mandates ≥ US$2.3bn) with PDF explainer; costings underlie Table 1/Fig. 9 of the PB document, not a per-resolution database, and not linked from the Resolutions Portal"
-          },
-          "implementation": {
-            "value": false,
-            "note": "evidence in round 1"
-          },
-          "results": {
-            "value": "partial",
-            "note": "consolidated WHA \"Progress reports\" documents (e.g. A78/34) report progress against specific named resolutions each Assembly; a document series covering only resolutions that requested periodic reporting, not a tracking system"
-          }
-        },
-        "interoperability": null
-      },
+          "interoperability": null
+        }
+      ],
       "registryNote": null,
       "related": [
         {
@@ -815,34 +839,36 @@
         }
       ],
       "note": null,
-      "mandateRegistry": {
-        "name": "Meeting Documents",
-        "category": "Session Documents",
-        "url": "https://www.wipo.int/meetings/en/topic_bodies.jsp",
-        "points": {
-          "documents": {
-            "value": true,
-            "note": null
+      "mandateRegistry": [
+        {
+          "name": "Meeting Documents",
+          "category": "Session Documents",
+          "url": "https://www.wipo.int/meetings/en/topic_bodies.jsp",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": null
+            },
+            "mandates": {
+              "value": false,
+              "note": "annual decision lists per body; no in-force/replaced distinction"
+            },
+            "budget": {
+              "value": false,
+              "note": "Program of Work and Budget is structured by RBM expected results/sectors, not by Assemblies decisions"
+            },
+            "implementation": {
+              "value": false,
+              "note": "evidence in round 1"
+            },
+            "results": {
+              "value": false,
+              "note": "WIPO Performance Report reports annually against expected results, not against specific Assemblies decisions"
+            }
           },
-          "mandates": {
-            "value": false,
-            "note": "annual decision lists per body; no in-force/replaced distinction"
-          },
-          "budget": {
-            "value": false,
-            "note": "Program of Work and Budget is structured by RBM expected results/sectors, not by Assemblies decisions"
-          },
-          "implementation": {
-            "value": false,
-            "note": "evidence in round 1"
-          },
-          "results": {
-            "value": false,
-            "note": "WIPO Performance Report reports annually against expected results, not against specific Assemblies decisions"
-          }
-        },
-        "interoperability": null
-      },
+          "interoperability": null
+        }
+      ],
       "registryNote": null,
       "related": [
         {
@@ -870,34 +896,36 @@
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": {
-        "name": "Resolutions & Decisions Database",
-        "category": "Implementation Tracker",
-        "url": "https://tools.wmo.int/wmo-resolutions/index.php",
-        "points": {
-          "documents": {
-            "value": true,
-            "note": null
+      "mandateRegistry": [
+        {
+          "name": "Resolutions & Decisions Database",
+          "category": "Implementation Tracker",
+          "url": "https://tools.wmo.int/wmo-resolutions/index.php",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": null
+            },
+            "mandates": {
+              "value": true,
+              "note": null
+            },
+            "budget": {
+              "value": false,
+              "note": "DB filters by Long-Term Goals/Strategic Objectives (plan linkage only); neither resolution entries nor the requests tracker carry any budget/financial fields"
+            },
+            "implementation": {
+              "value": true,
+              "note": null
+            },
+            "results": {
+              "value": false,
+              "note": "per-resolution \"Progress\"/\"Recommendation\" narratives (\"keep in force\", \"action requested\") and tracker statuses are implementation status, not outcome/results reporting; already scored under point 4"
+            }
           },
-          "mandates": {
-            "value": true,
-            "note": null
-          },
-          "budget": {
-            "value": false,
-            "note": "DB filters by Long-Term Goals/Strategic Objectives (plan linkage only); neither resolution entries nor the requests tracker carry any budget/financial fields"
-          },
-          "implementation": {
-            "value": true,
-            "note": null
-          },
-          "results": {
-            "value": false,
-            "note": "per-resolution \"Progress\"/\"Recommendation\" narratives (\"keep in force\", \"action requested\") and tracker statuses are implementation status, not outcome/results reporting; already scored under point 4"
-          }
-        },
-        "interoperability": null
-      },
+          "interoperability": null
+        }
+      ],
       "registryNote": null,
       "related": []
     },
@@ -914,34 +942,36 @@
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": {
-        "name": "Governors' Resolutions",
-        "category": "Resolutions Database",
-        "url": "https://www.worldbank.org/en/about/leadership/governors",
-        "points": {
-          "documents": {
-            "value": true,
-            "note": null
+      "mandateRegistry": [
+        {
+          "name": "Governors' Resolutions",
+          "category": "Resolutions Database",
+          "url": "https://www.worldbank.org/en/about/leadership/governors",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": null
+            },
+            "mandates": {
+              "value": false,
+              "note": "Documents & Reports repositories carry no current/replaced status on resolutions"
+            },
+            "budget": {
+              "value": false,
+              "note": "financial transparency (Finances One) is organized by institution/dataset (lending, guarantees, statements, admin budgets), not by Board/Governors resolutions; resolution texts (e.g. IDA replenishments) contain amounts but no system links them"
+            },
+            "implementation": {
+              "value": false,
+              "note": "evidence in round 1"
+            },
+            "results": {
+              "value": false,
+              "note": "the WBG Scorecard tracks corporate-strategy indicators, not results against specific resolutions"
+            }
           },
-          "mandates": {
-            "value": false,
-            "note": "Documents & Reports repositories carry no current/replaced status on resolutions"
-          },
-          "budget": {
-            "value": false,
-            "note": "financial transparency (Finances One) is organized by institution/dataset (lending, guarantees, statements, admin budgets), not by Board/Governors resolutions; resolution texts (e.g. IDA replenishments) contain amounts but no system links them"
-          },
-          "implementation": {
-            "value": false,
-            "note": "evidence in round 1"
-          },
-          "results": {
-            "value": false,
-            "note": "the WBG Scorecard tracks corporate-strategy indicators, not results against specific resolutions"
-          }
-        },
-        "interoperability": null
-      },
+          "interoperability": null
+        }
+      ],
       "registryNote": null,
       "related": [
         {
@@ -983,14 +1013,39 @@
         }
       ],
       "note": "Joint subsidiary organ of the UN (via UNCTAD) and the WTO; Regular Budget funded equally by the UN and WTO, approved by the UN General Assembly and the WTO General Council.",
-      "mandateRegistry": null,
+      "mandateRegistry": [
+        {
+          "scope": "this-site",
+          "name": "Mandate Source Registry",
+          "category": "Mandate Registry",
+          "url": "/secretariat?entity=ITC",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": "covers only the mandates this organization is cited for in the UN programme budget, not its full decision corpus"
+            },
+            "mandates": {
+              "value": true,
+              "note": null
+            },
+            "budget": {
+              "value": false,
+              "note": "budget structure linked, but no monetary amounts shown (project decision)"
+            },
+            "implementation": {
+              "value": false,
+              "note": null
+            },
+            "results": {
+              "value": false,
+              "note": null
+            }
+          },
+          "interoperability": null
+        }
+      ],
       "registryNote": "No decision-tracking system. The Joint Advisory Group is advisory: it reviews the annual report and makes recommendations to the UNCTAD Trade and Development Board and the WTO Committee on Trade and Development. Per-session JAG documents are published on the governance pages (2019–2026 archive) but not compiled or statused as a register.",
       "related": [
-        {
-          "name": "Mandates cited in the UN programme budget (this site)",
-          "url": "/secretariat?entity=ITC",
-          "mandateLinked": true
-        },
         {
           "name": "ITC Open Data Portal",
           "url": "https://open.intracen.org/"
@@ -1014,7 +1069,7 @@
       ],
       "contacts": [],
       "note": null,
-      "mandateRegistry": null,
+      "mandateRegistry": [],
       "registryNote": "Not yet surveyed — added by the CEB scope rule (July 2026); governing bodies and mandate registry still to be researched.",
       "related": []
     },
@@ -1046,41 +1101,67 @@
         }
       ],
       "note": "The General Assembly created this entity and sets system-wide policy for it through the Quadrennial Comprehensive Policy Review (QCPR), but does not govern its programme or appropriate its budget.",
-      "mandateRegistry": {
-        "name": "Decision Monitoring Matrix",
-        "category": "Decision Tracking",
-        "url": "https://www.unwomen.org/en/executive-board/decisions",
-        "points": {
-          "documents": {
-            "value": true,
-            "note": null
+      "mandateRegistry": [
+        {
+          "name": "Decision Monitoring Matrix",
+          "category": "Decision Tracking",
+          "url": "https://www.unwomen.org/en/executive-board/decisions",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": null
+            },
+            "mandates": {
+              "value": false,
+              "note": "matrix sorts requests across sheets (Time-Bound / Ongoing / Completed / Non-Requests) by lifecycle, per paragraph; per-request status only, not an current-vs-replaced registry of decisions"
+            },
+            "budget": {
+              "value": false,
+              "note": "no monetary amounts tied to decisions; \"SPRED (Budget)\" appears only as a responsible division"
+            },
+            "implementation": {
+              "value": true,
+              "note": null
+            },
+            "results": {
+              "value": false,
+              "note": "Progress and follow-up action column records actions taken, not outcomes; results reporting is Strategic-Plan-based"
+            }
           },
-          "mandates": {
-            "value": false,
-            "note": "matrix sorts requests across sheets (Time-Bound / Ongoing / Completed / Non-Requests) by lifecycle, per paragraph; per-request status only, not an current-vs-replaced registry of decisions"
-          },
-          "budget": {
-            "value": false,
-            "note": "no monetary amounts tied to decisions; \"SPRED (Budget)\" appears only as a responsible division"
-          },
-          "implementation": {
-            "value": true,
-            "note": null
-          },
-          "results": {
-            "value": false,
-            "note": "Progress and follow-up action column records actions taken, not outcomes; results reporting is Strategic-Plan-based"
-          }
+          "interoperability": null
         },
-        "interoperability": null
-      },
+        {
+          "scope": "this-site",
+          "name": "Mandate Source Registry",
+          "category": "Mandate Registry",
+          "url": "/secretariat?entity=UN-Women",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": "covers only the mandates this organization is cited for in the UN programme budget, not its full decision corpus"
+            },
+            "mandates": {
+              "value": true,
+              "note": null
+            },
+            "budget": {
+              "value": false,
+              "note": "budget structure linked, but no monetary amounts shown (project decision)"
+            },
+            "implementation": {
+              "value": false,
+              "note": null
+            },
+            "results": {
+              "value": false,
+              "note": null
+            }
+          },
+          "interoperability": null
+        }
+      ],
       "registryNote": null,
       "related": [
-        {
-          "name": "Mandates cited in the UN programme budget (this site)",
-          "url": "/secretariat?entity=UN-Women",
-          "mandateLinked": true
-        },
         {
           "name": "UN Women Data Hub",
           "url": "https://data.unwomen.org/data-portal"
@@ -1112,42 +1193,67 @@
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": {
-        "name": "Resolution Tracker",
-        "category": "Implementation Tracker",
-        "url": "https://unhabitat.org/unhabitat-resolutions",
-        "points": {
-          "documents": {
-            "value": true,
-            "note": null
-          },
-          "mandates": {
-            "value": false,
-            "note": "tracker status labels (\"Implemented\" / \"Under implementation\" / \"Cost-neutral\") distinguish completed from ongoing resolutions; no in-force/replaced registry"
-          },
-          "budget": {
-            "value": true,
-            "note": "per-resolution resource requirements, resources mobilized and funding gap (e.g. res 2/1: $1,085K required, $384K mobilized, $701K gap)"
-          },
-          "implementation": {
-            "value": true,
-            "note": null
-          },
-          "results": {
-            "value": "partial",
-            "note": "implementation summaries report narrative outcomes per resolution (e.g. res 2/6: USD 24M channeled to local financing in 8 countries), not a structured results framework"
-          }
-        },
-        "interoperability": null
-      },
-      "registryNote": null,
-      "related": [
+      "mandateRegistry": [
         {
-          "name": "Mandates cited in the UN programme budget (this site)",
+          "name": "Resolution Tracker",
+          "category": "Implementation Tracker",
+          "url": "https://unhabitat.org/unhabitat-resolutions",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": null
+            },
+            "mandates": {
+              "value": false,
+              "note": "tracker status labels (\"Implemented\" / \"Under implementation\" / \"Cost-neutral\") distinguish completed from ongoing resolutions; no in-force/replaced registry"
+            },
+            "budget": {
+              "value": true,
+              "note": "per-resolution resource requirements, resources mobilized and funding gap (e.g. res 2/1: $1,085K required, $384K mobilized, $701K gap)"
+            },
+            "implementation": {
+              "value": true,
+              "note": null
+            },
+            "results": {
+              "value": "partial",
+              "note": "implementation summaries report narrative outcomes per resolution (e.g. res 2/6: USD 24M channeled to local financing in 8 countries), not a structured results framework"
+            }
+          },
+          "interoperability": null
+        },
+        {
+          "scope": "this-site",
+          "name": "Mandate Source Registry",
+          "category": "Mandate Registry",
           "url": "/secretariat?entity=UN-Habitat",
-          "mandateLinked": true
+          "points": {
+            "documents": {
+              "value": true,
+              "note": "covers only the mandates this organization is cited for in the UN programme budget, not its full decision corpus"
+            },
+            "mandates": {
+              "value": true,
+              "note": null
+            },
+            "budget": {
+              "value": false,
+              "note": "budget structure linked, but no monetary amounts shown (project decision)"
+            },
+            "implementation": {
+              "value": false,
+              "note": null
+            },
+            "results": {
+              "value": false,
+              "note": null
+            }
+          },
+          "interoperability": null
         }
-      ]
+      ],
+      "registryNote": null,
+      "related": []
     },
     {
       "code": "UNCDF",
@@ -1161,7 +1267,7 @@
       "officialPages": [],
       "contacts": [],
       "note": "The General Assembly created this entity and sets system-wide policy for it through the Quadrennial Comprehensive Policy Review (QCPR), but does not govern its programme or appropriate its budget.",
-      "mandateRegistry": null,
+      "mandateRegistry": [],
       "registryNote": "No system of its own: UNCDF is governed by the Executive Board of UNDP, UNFPA and UNOPS — see UNDP.",
       "related": [
         {
@@ -1204,41 +1310,67 @@
         }
       ],
       "note": "Permanent GA-established intergovernmental body; reports to the General Assembly through ECOSOC. The quadrennial Conference sets the four-year mandate (UNCTAD16, Oct 2025 → Bridgetown Covenant).",
-      "mandateRegistry": {
-        "name": "Meetings archive",
-        "category": "Meeting documents",
-        "url": "https://unctad.org/meetings",
-        "points": {
-          "documents": {
-            "value": true,
-            "note": "TDB decisions, commission agreed conclusions and Conference outcomes published as UN documents, browsable by session"
+      "mandateRegistry": [
+        {
+          "name": "Meetings archive",
+          "category": "Meeting documents",
+          "url": "https://unctad.org/meetings",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": "TDB decisions, commission agreed conclusions and Conference outcomes published as UN documents, browsable by session"
+            },
+            "mandates": {
+              "value": false,
+              "note": "no in-force/replaced registry; each quadrennial Conference outcome resets the mandate framework"
+            },
+            "budget": {
+              "value": false,
+              "note": "funded via the UN regular programme budget; no money attached to specific decisions"
+            },
+            "implementation": {
+              "value": false,
+              "note": "Working Party tracks programme performance and evaluation-recommendation follow-up at subprogramme level, not per decision"
+            },
+            "results": {
+              "value": false,
+              "note": "evaluation overviews and performance reporting are subprogramme/project level, not against specific decisions"
+            }
           },
-          "mandates": {
-            "value": false,
-            "note": "no in-force/replaced registry; each quadrennial Conference outcome resets the mandate framework"
-          },
-          "budget": {
-            "value": false,
-            "note": "funded via the UN regular programme budget; no money attached to specific decisions"
-          },
-          "implementation": {
-            "value": false,
-            "note": "Working Party tracks programme performance and evaluation-recommendation follow-up at subprogramme level, not per decision"
-          },
-          "results": {
-            "value": false,
-            "note": "evaluation overviews and performance reporting are subprogramme/project level, not against specific decisions"
-          }
+          "interoperability": null
         },
-        "interoperability": null
-      },
+        {
+          "scope": "this-site",
+          "name": "Mandate Source Registry",
+          "category": "Mandate Registry",
+          "url": "/secretariat?entity=UNCTAD",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": "covers only the mandates this organization is cited for in the UN programme budget, not its full decision corpus"
+            },
+            "mandates": {
+              "value": true,
+              "note": null
+            },
+            "budget": {
+              "value": false,
+              "note": "budget structure linked, but no monetary amounts shown (project decision)"
+            },
+            "implementation": {
+              "value": false,
+              "note": null
+            },
+            "results": {
+              "value": false,
+              "note": null
+            }
+          },
+          "interoperability": null
+        }
+      ],
       "registryNote": null,
       "related": [
-        {
-          "name": "Mandates cited in the UN programme budget (this site)",
-          "url": "/secretariat?entity=UNCTAD",
-          "mandateLinked": true
-        },
         {
           "name": "Reform Tracker (WTO TFA)",
           "url": "https://unctad.org/topic/transport-and-trade-logistics/trade-facilitation/reform-tracker"
@@ -1261,34 +1393,36 @@
       "officialPages": [],
       "contacts": [],
       "note": "The General Assembly created this entity and sets system-wide policy for it through the Quadrennial Comprehensive Policy Review (QCPR), but does not govern its programme or appropriate its budget.",
-      "mandateRegistry": {
-        "name": "Decision Tracking Tables",
-        "category": "Decision Tracking",
-        "url": "https://www.undp.org/executive-board/decisions-of-the-board",
-        "points": {
-          "documents": {
-            "value": true,
-            "note": null
+      "mandateRegistry": [
+        {
+          "name": "Decision Tracking Tables",
+          "category": "Decision Tracking",
+          "url": "https://www.undp.org/executive-board/decisions-of-the-board",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": null
+            },
+            "mandates": {
+              "value": false,
+              "note": "tracking tables mark each request Completed / Ongoing / In Progress / Partially Completed; per-request status only, no current-vs-replaced registry of decisions"
+            },
+            "budget": {
+              "value": false,
+              "note": "tables (Decision / Category / Responsible unit / Request / Deadline / Progress / Status) carry no financial amounts"
+            },
+            "implementation": {
+              "value": true,
+              "note": null
+            },
+            "results": {
+              "value": false,
+              "note": "the Progress column records follow-up actions taken, not outcomes; results reporting is strategic-plan-based"
+            }
           },
-          "mandates": {
-            "value": false,
-            "note": "tracking tables mark each request Completed / Ongoing / In Progress / Partially Completed; per-request status only, no current-vs-replaced registry of decisions"
-          },
-          "budget": {
-            "value": false,
-            "note": "tables (Decision / Category / Responsible unit / Request / Deadline / Progress / Status) carry no financial amounts"
-          },
-          "implementation": {
-            "value": true,
-            "note": null
-          },
-          "results": {
-            "value": false,
-            "note": "the Progress column records follow-up actions taken, not outcomes; results reporting is strategic-plan-based"
-          }
-        },
-        "interoperability": null
-      },
+          "interoperability": null
+        }
+      ],
       "registryNote": null,
       "related": [
         {
@@ -1321,42 +1455,67 @@
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": {
-        "name": "Monitoring & Reporting Portal",
-        "category": "Implementation Tracker",
-        "url": "https://unea.unep.org/monitoring/",
-        "points": {
-          "documents": {
-            "value": true,
-            "note": null
-          },
-          "mandates": {
-            "value": false,
-            "note": "no current/replaced or completed labels found on the monitoring portal or the resolutions repositories"
-          },
-          "budget": {
-            "value": false,
-            "note": "the monitoring framework maps each resolution to the Programme of Work and Budget (structural linkage only, no monetary amounts per resolution)"
-          },
-          "implementation": {
-            "value": true,
-            "note": null
-          },
-          "results": {
-            "value": false,
-            "note": "per-resolution reporting is implementation-status (secretariat updates, voluntary national reports), not results/outcomes; the results framework lives in the PoW/Medium-Term Strategy"
-          }
-        },
-        "interoperability": null
-      },
-      "registryNote": null,
-      "related": [
+      "mandateRegistry": [
         {
-          "name": "Mandates cited in the UN programme budget (this site)",
+          "name": "Monitoring & Reporting Portal",
+          "category": "Implementation Tracker",
+          "url": "https://unea.unep.org/monitoring/",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": null
+            },
+            "mandates": {
+              "value": false,
+              "note": "no current/replaced or completed labels found on the monitoring portal or the resolutions repositories"
+            },
+            "budget": {
+              "value": false,
+              "note": "the monitoring framework maps each resolution to the Programme of Work and Budget (structural linkage only, no monetary amounts per resolution)"
+            },
+            "implementation": {
+              "value": true,
+              "note": null
+            },
+            "results": {
+              "value": false,
+              "note": "per-resolution reporting is implementation-status (secretariat updates, voluntary national reports), not results/outcomes; the results framework lives in the PoW/Medium-Term Strategy"
+            }
+          },
+          "interoperability": null
+        },
+        {
+          "scope": "this-site",
+          "name": "Mandate Source Registry",
+          "category": "Mandate Registry",
           "url": "/secretariat?entity=UNEP",
-          "mandateLinked": true
+          "points": {
+            "documents": {
+              "value": true,
+              "note": "covers only the mandates this organization is cited for in the UN programme budget, not its full decision corpus"
+            },
+            "mandates": {
+              "value": true,
+              "note": null
+            },
+            "budget": {
+              "value": false,
+              "note": "budget structure linked, but no monetary amounts shown (project decision)"
+            },
+            "implementation": {
+              "value": false,
+              "note": null
+            },
+            "results": {
+              "value": false,
+              "note": null
+            }
+          },
+          "interoperability": null
         }
-      ]
+      ],
+      "registryNote": null,
+      "related": []
     },
     {
       "code": "UNFPA",
@@ -1370,34 +1529,36 @@
       "officialPages": [],
       "contacts": [],
       "note": "The General Assembly created this entity and sets system-wide policy for it through the Quadrennial Comprehensive Policy Review (QCPR), but does not govern its programme or appropriate its budget.",
-      "mandateRegistry": {
-        "name": "Decision Tracking Tables",
-        "category": "Decision Tracking",
-        "url": "https://www.unfpa.org/executive-board/decisions-board-listing",
-        "points": {
-          "documents": {
-            "value": true,
-            "note": null
+      "mandateRegistry": [
+        {
+          "name": "Decision Tracking Tables",
+          "category": "Decision Tracking",
+          "url": "https://www.unfpa.org/executive-board/decisions-board-listing",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": null
+            },
+            "mandates": {
+              "value": false,
+              "note": "per-request status legend: green = \"completed\" (action done **or decision no longer relevant**) or \"ongoing\"; yellow = \"partially completed\"; explicit obsolescence marker but no corpus-level in-force registry"
+            },
+            "budget": {
+              "value": false,
+              "note": "2026 tracking table verified: columns Decision / Category / Responsible division / Request / Deadline / Progress / Status, no financial amounts"
+            },
+            "implementation": {
+              "value": true,
+              "note": null
+            },
+            "results": {
+              "value": false,
+              "note": "\"Progress and follow-up action\" column records actions taken, not outcomes"
+            }
           },
-          "mandates": {
-            "value": false,
-            "note": "per-request status legend: green = \"completed\" (action done **or decision no longer relevant**) or \"ongoing\"; yellow = \"partially completed\"; explicit obsolescence marker but no corpus-level in-force registry"
-          },
-          "budget": {
-            "value": false,
-            "note": "2026 tracking table verified: columns Decision / Category / Responsible division / Request / Deadline / Progress / Status, no financial amounts"
-          },
-          "implementation": {
-            "value": true,
-            "note": null
-          },
-          "results": {
-            "value": false,
-            "note": "\"Progress and follow-up action\" column records actions taken, not outcomes"
-          }
-        },
-        "interoperability": null
-      },
+          "interoperability": null
+        }
+      ],
       "registryNote": null,
       "related": [
         {
@@ -1442,41 +1603,67 @@
         }
       ],
       "note": "The General Assembly created this entity and sets system-wide policy for it through the Quadrennial Comprehensive Policy Review (QCPR), but does not govern its programme or appropriate its budget.",
-      "mandateRegistry": {
-        "name": "ExCom Documentation Collection",
-        "category": "Documents Collection",
-        "url": "https://www.unhcr.org/about-unhcr/governance-and-oversight/executive-committee/excom-plenary-sessions",
-        "points": {
-          "documents": {
-            "value": true,
-            "note": "ExCom session documents (conclusions, decisions, reports) compiled and browsable by session; ExCom Conclusions on International Protection also compiled thematically (7th ed., 2014, PDF) and indexed in Refworld."
+      "mandateRegistry": [
+        {
+          "name": "ExCom Documentation Collection",
+          "category": "Documents Collection",
+          "url": "https://www.unhcr.org/about-unhcr/governance-and-oversight/executive-committee/excom-plenary-sessions",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": "ExCom session documents (conclusions, decisions, reports) compiled and browsable by session; ExCom Conclusions on International Protection also compiled thematically (7th ed., 2014, PDF) and indexed in Refworld."
+            },
+            "mandates": {
+              "value": false,
+              "note": "ExCom Conclusions are cumulative soft-law guidance; no in-force vs replaced/lapsed tracking of conclusions or decisions."
+            },
+            "budget": {
+              "value": false,
+              "note": "ExCom approves the annual programme budget target, but published budget/funding data is organized by operation/strategic direction, not by decision."
+            },
+            "implementation": {
+              "value": false,
+              "note": "Implementation reported via COMPASS results framework and Global Report at operational level, not per decision."
+            },
+            "results": {
+              "value": false,
+              "note": "Outcomes reported against the five Strategic Directions / COMPASS indicators, not against specific ExCom decisions."
+            }
           },
-          "mandates": {
-            "value": false,
-            "note": "ExCom Conclusions are cumulative soft-law guidance; no in-force vs replaced/lapsed tracking of conclusions or decisions."
-          },
-          "budget": {
-            "value": false,
-            "note": "ExCom approves the annual programme budget target, but published budget/funding data is organized by operation/strategic direction, not by decision."
-          },
-          "implementation": {
-            "value": false,
-            "note": "Implementation reported via COMPASS results framework and Global Report at operational level, not per decision."
-          },
-          "results": {
-            "value": false,
-            "note": "Outcomes reported against the five Strategic Directions / COMPASS indicators, not against specific ExCom decisions."
-          }
+          "interoperability": null
         },
-        "interoperability": null
-      },
+        {
+          "scope": "this-site",
+          "name": "Mandate Source Registry",
+          "category": "Mandate Registry",
+          "url": "/secretariat?entity=UNHCR",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": "covers only the mandates this organization is cited for in the UN programme budget, not its full decision corpus"
+            },
+            "mandates": {
+              "value": true,
+              "note": null
+            },
+            "budget": {
+              "value": false,
+              "note": "budget structure linked, but no monetary amounts shown (project decision)"
+            },
+            "implementation": {
+              "value": false,
+              "note": null
+            },
+            "results": {
+              "value": false,
+              "note": null
+            }
+          },
+          "interoperability": null
+        }
+      ],
       "registryNote": null,
       "related": [
-        {
-          "name": "Mandates cited in the UN programme budget (this site)",
-          "url": "/secretariat?entity=UNHCR",
-          "mandateLinked": true
-        },
         {
           "name": "UNHCR Planning, funding and results (Global Focus)",
           "url": "https://www.unhcr.org/about-unhcr/planning-funding-and-results"
@@ -1506,34 +1693,36 @@
       "officialPages": [],
       "contacts": [],
       "note": "The General Assembly created this entity and sets system-wide policy for it through the Quadrennial Comprehensive Policy Review (QCPR), but does not govern its programme or appropriate its budget.",
-      "mandateRegistry": {
-        "name": "Decision Monitoring Tables",
-        "category": "Decision Tracking",
-        "url": "https://www.unicef.org/executiveboard/documents/decision-monitoring-tables",
-        "points": {
-          "documents": {
-            "value": true,
-            "note": null
+      "mandateRegistry": [
+        {
+          "name": "Decision Monitoring Tables",
+          "category": "Decision Tracking",
+          "url": "https://www.unicef.org/executiveboard/documents/decision-monitoring-tables",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": null
+            },
+            "mandates": {
+              "value": false,
+              "note": "monitoring tables mark each request green \"completed\" / yellow \"in progress or partially completed\", with non-action paragraphs greyed \"no action required\"; per-request status only, no current-vs-replaced registry"
+            },
+            "budget": {
+              "value": false,
+              "note": "matrices track time-bound requests with status; no financial fields identified"
+            },
+            "implementation": {
+              "value": true,
+              "note": null
+            },
+            "results": {
+              "value": false,
+              "note": "tables record implementation actions/status, not outcomes"
+            }
           },
-          "mandates": {
-            "value": false,
-            "note": "monitoring tables mark each request green \"completed\" / yellow \"in progress or partially completed\", with non-action paragraphs greyed \"no action required\"; per-request status only, no current-vs-replaced registry"
-          },
-          "budget": {
-            "value": false,
-            "note": "matrices track time-bound requests with status; no financial fields identified"
-          },
-          "implementation": {
-            "value": true,
-            "note": null
-          },
-          "results": {
-            "value": false,
-            "note": "tables record implementation actions/status, not outcomes"
-          }
-        },
-        "interoperability": null
-      },
+          "interoperability": null
+        }
+      ],
       "registryNote": null,
       "related": [
         {
@@ -1555,7 +1744,7 @@
       ],
       "contacts": [],
       "note": null,
-      "mandateRegistry": null,
+      "mandateRegistry": [],
       "registryNote": "Not yet surveyed — added by the CEB scope rule (July 2026); governing bodies and mandate registry still to be researched.",
       "related": []
     },
@@ -1572,7 +1761,7 @@
       ],
       "contacts": [],
       "note": null,
-      "mandateRegistry": null,
+      "mandateRegistry": [],
       "registryNote": "Not yet surveyed — added by the CEB scope rule (July 2026); governing bodies and mandate registry still to be researched.",
       "related": []
     },
@@ -1604,7 +1793,7 @@
         }
       ],
       "note": null,
-      "mandateRegistry": null,
+      "mandateRegistry": [],
       "registryNote": "No decision-tracking or mandate-registry system. The Board of Trustees publishes a complete chronological PDF series of session reports (sessions 40–66, 2002–2025, symboled e.g. UNITAR/BT/66/5) plus Finance Committee reports — the governance record, but a document series rather than a queryable system. Results Reports are organized by strategic-framework programme areas, not by Board decisions.",
       "related": [
         {
@@ -1658,41 +1847,67 @@
         }
       ],
       "note": null,
-      "mandateRegistry": {
-        "name": "Resolutions and Decisions Database (RDDB)",
-        "category": "Resolutions Database",
-        "url": "https://www.unodc.org/rddb/en/index.html",
-        "points": {
-          "documents": {
-            "value": true,
-            "note": "Queryable faceted full-text database (2,306 entries); facets Topic, Mandate Type (Resolution/Decision), Adopted By (CCPCJ/CND/ECOSOC/GA), Year 1946–2026"
+      "mandateRegistry": [
+        {
+          "name": "Resolutions and Decisions Database (RDDB)",
+          "category": "Resolutions Database",
+          "url": "https://www.unodc.org/rddb/en/index.html",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": "Queryable faceted full-text database (2,306 entries); facets Topic, Mandate Type (Resolution/Decision), Adopted By (CCPCJ/CND/ECOSOC/GA), Year 1946–2026"
+            },
+            "mandates": {
+              "value": false,
+              "note": "'Mandate Type' means Resolution vs Decision, not current vs replaced; no in-force/lapsed status recorded"
+            },
+            "budget": {
+              "value": false,
+              "note": "No financial fields; resolutions not linked to UNODC budgets"
+            },
+            "implementation": {
+              "value": false,
+              "note": "Text repository only; no follow-up/status column"
+            },
+            "results": {
+              "value": false,
+              "note": "Evaluations published by year/region/topic/programme, not against specific resolutions"
+            }
           },
-          "mandates": {
-            "value": false,
-            "note": "'Mandate Type' means Resolution vs Decision, not current vs replaced; no in-force/lapsed status recorded"
-          },
-          "budget": {
-            "value": false,
-            "note": "No financial fields; resolutions not linked to UNODC budgets"
-          },
-          "implementation": {
-            "value": false,
-            "note": "Text repository only; no follow-up/status column"
-          },
-          "results": {
-            "value": false,
-            "note": "Evaluations published by year/region/topic/programme, not against specific resolutions"
-          }
+          "interoperability": null
         },
-        "interoperability": null
-      },
+        {
+          "scope": "this-site",
+          "name": "Mandate Source Registry",
+          "category": "Mandate Registry",
+          "url": "/secretariat?entity=UNODC",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": "covers only the mandates this organization is cited for in the UN programme budget, not its full decision corpus"
+            },
+            "mandates": {
+              "value": true,
+              "note": null
+            },
+            "budget": {
+              "value": false,
+              "note": "budget structure linked, but no monetary amounts shown (project decision)"
+            },
+            "implementation": {
+              "value": false,
+              "note": null
+            },
+            "results": {
+              "value": false,
+              "note": null
+            }
+          },
+          "interoperability": null
+        }
+      ],
       "registryNote": null,
       "related": [
-        {
-          "name": "Mandates cited in the UN programme budget (this site)",
-          "url": "/secretariat?entity=UNODC",
-          "mandateLinked": true
-        },
         {
           "name": "Database of UNODC Evaluation Reports",
           "url": "https://www.unodc.org/unodc/en/evaluation/reports.html"
@@ -1721,34 +1936,36 @@
         }
       ],
       "note": null,
-      "mandateRegistry": {
-        "name": "Executive Board Documents",
-        "category": "Document Repository",
-        "url": "https://www.unops.org/about/governance/executive-board/executive-board-documents",
-        "points": {
-          "documents": {
-            "value": true,
-            "note": null
+      "mandateRegistry": [
+        {
+          "name": "Executive Board Documents",
+          "category": "Document Repository",
+          "url": "https://www.unops.org/about/governance/executive-board/executive-board-documents",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": null
+            },
+            "mandates": {
+              "value": false,
+              "note": "document archive only; no in-force/replaced status for decisions"
+            },
+            "budget": {
+              "value": false,
+              "note": "no financial amounts tied to specific decisions"
+            },
+            "implementation": {
+              "value": false,
+              "note": "no UNOPS decision-tracking table; the joint-board tracking tables track only their own agency's requests (UNDP's, UNFPA's), not the UNOPS segment"
+            },
+            "results": {
+              "value": false,
+              "note": "no outcome reporting against specific decisions"
+            }
           },
-          "mandates": {
-            "value": false,
-            "note": "document archive only; no in-force/replaced status for decisions"
-          },
-          "budget": {
-            "value": false,
-            "note": "no financial amounts tied to specific decisions"
-          },
-          "implementation": {
-            "value": false,
-            "note": "no UNOPS decision-tracking table; the joint-board tracking tables track only their own agency's requests (UNDP's, UNFPA's), not the UNOPS segment"
-          },
-          "results": {
-            "value": false,
-            "note": "no outcome reporting against specific decisions"
-          }
-        },
-        "interoperability": null
-      },
+          "interoperability": null
+        }
+      ],
       "registryNote": null,
       "related": [
         {
@@ -1770,7 +1987,7 @@
       ],
       "contacts": [],
       "note": null,
-      "mandateRegistry": null,
+      "mandateRegistry": [],
       "registryNote": "Not yet surveyed — added by the CEB scope rule (July 2026); governing bodies and mandate registry still to be researched.",
       "related": []
     },
@@ -1809,14 +2026,39 @@
         }
       ],
       "note": "UNRWA has no executive board. The General Assembly is its governing body, renewing the mandate by resolution; the Advisory Commission advises the Commissioner-General and adopts no binding decisions.",
-      "mandateRegistry": null,
+      "mandateRegistry": [
+        {
+          "scope": "this-site",
+          "name": "Mandate Source Registry",
+          "category": "Mandate Registry",
+          "url": "/secretariat?entity=UNRWA",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": "covers only the mandates this organization is cited for in the UN programme budget, not its full decision corpus"
+            },
+            "mandates": {
+              "value": true,
+              "note": null
+            },
+            "budget": {
+              "value": false,
+              "note": "budget structure linked, but no monetary amounts shown (project decision)"
+            },
+            "implementation": {
+              "value": false,
+              "note": null
+            },
+            "results": {
+              "value": false,
+              "note": null
+            }
+          },
+          "interoperability": null
+        }
+      ],
       "registryNote": "No decision-tracking system. UNRWA has no executive board; its mandate is renewed en bloc by periodic GA resolution (currently through 30 June 2026) and the Advisory Commission is purely advisory, adopting no binding decisions. The Advisory Commission 'Key Documents' page is a short curated list of foundational texts (GA res 302(IV), Rules of Procedure, membership resolutions, host-country agreements), not a compilation of the decision corpus and with no in-force/replaced status.",
       "related": [
-        {
-          "name": "Mandates cited in the UN programme budget (this site)",
-          "url": "/secretariat?entity=UNRWA",
-          "mandateLinked": true
-        },
         {
           "name": "UNRWA Transparency Portal",
           "url": "https://open.unrwa.org/"
@@ -1840,7 +2082,7 @@
       ],
       "contacts": [],
       "note": null,
-      "mandateRegistry": null,
+      "mandateRegistry": [],
       "registryNote": "Not yet surveyed — added by the CEB scope rule (July 2026); governing bodies and mandate registry still to be researched.",
       "related": []
     },
@@ -1872,7 +2114,7 @@
         }
       ],
       "note": null,
-      "mandateRegistry": null,
+      "mandateRegistry": [],
       "registryNote": "No decision-tracking or mandate-registry system. The UNU Council (two sessions/year; reports annually to the GA, ECOSOC and the UNESCO Executive Board) does not publish its session records or decisions as a public series; the only public governance artifacts are chronological annual reports (2012–2025).",
       "related": [
         {
@@ -1898,7 +2140,7 @@
       ],
       "contacts": [],
       "note": null,
-      "mandateRegistry": null,
+      "mandateRegistry": [],
       "registryNote": "Not yet surveyed — added by the CEB scope rule (July 2026); governing bodies and mandate registry still to be researched.",
       "related": []
     },
@@ -1921,34 +2163,36 @@
       "officialPages": [],
       "contacts": [],
       "note": "The General Assembly created this entity and sets system-wide policy for it through the Quadrennial Comprehensive Policy Review (QCPR), but does not govern its programme or appropriate its budget.",
-      "mandateRegistry": {
-        "name": "Executive Board Documents",
-        "category": "Documents Database",
-        "url": "https://executiveboard.wfp.org/documents",
-        "points": {
-          "documents": {
-            "value": true,
-            "note": null
+      "mandateRegistry": [
+        {
+          "name": "Executive Board Documents",
+          "category": "Documents Database",
+          "url": "https://executiveboard.wfp.org/documents",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": null
+            },
+            "mandates": {
+              "value": false,
+              "note": "evidence in round 1"
+            },
+            "budget": {
+              "value": false,
+              "note": "no public linkage of Board decisions to budget amounts; oversight-recommendation dashboards and the Board's financial/performance portal are members-only"
+            },
+            "implementation": {
+              "value": false,
+              "note": "evidence in round 1"
+            },
+            "results": {
+              "value": false,
+              "note": "the Annual Performance Report reports against the strategic plan / corporate results framework (strategic results, outcomes, indicators), not against Board decisions"
+            }
           },
-          "mandates": {
-            "value": false,
-            "note": "evidence in round 1"
-          },
-          "budget": {
-            "value": false,
-            "note": "no public linkage of Board decisions to budget amounts; oversight-recommendation dashboards and the Board's financial/performance portal are members-only"
-          },
-          "implementation": {
-            "value": false,
-            "note": "evidence in round 1"
-          },
-          "results": {
-            "value": false,
-            "note": "the Annual Performance Report reports against the strategic plan / corporate results framework (strategic results, outcomes, indicators), not against Board decisions"
-          }
-        },
-        "interoperability": null
-      },
+          "interoperability": null
+        }
+      ],
       "registryNote": null,
       "related": [
         {
@@ -1975,7 +2219,7 @@
         }
       ],
       "note": null,
-      "mandateRegistry": null,
+      "mandateRegistry": [],
       "registryNote": "Preparatory Commission documents are distributed through a members-only system; no public compilation.",
       "related": []
     },
@@ -2003,34 +2247,36 @@
         }
       ],
       "note": null,
-      "mandateRegistry": {
-        "name": "GC Resolutions Archive",
-        "category": "Resolutions Database",
-        "url": "https://www.iaea.org/gc-archives/type/resolutions",
-        "points": {
-          "documents": {
-            "value": true,
-            "note": null
+      "mandateRegistry": [
+        {
+          "name": "GC Resolutions Archive",
+          "category": "Resolutions Database",
+          "url": "https://www.iaea.org/gc-archives/type/resolutions",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": null
+            },
+            "mandates": {
+              "value": false,
+              "note": "confirmed round 2; GC archive is a plain document list with no status (current/replaced) metadata"
+            },
+            "budget": {
+              "value": false,
+              "note": "budget lives in the programme-level \"Agency's Programme and Budget\" document (e.g. GC(69)/6, <https://www.iaea.org/sites/default/files/gc/gc69-6_0.pdf>), adopted by a GC resolution but with no system linking resolutions to resourcing"
+            },
+            "implementation": {
+              "value": false,
+              "note": "evidence in round 1"
+            },
+            "results": {
+              "value": false,
+              "note": "DG issues individual reports pursuant to specific GC resolutions as GC documents, but there is no system connecting resolutions to outcome reporting"
+            }
           },
-          "mandates": {
-            "value": false,
-            "note": "confirmed round 2; GC archive is a plain document list with no status (current/replaced) metadata"
-          },
-          "budget": {
-            "value": false,
-            "note": "budget lives in the programme-level \"Agency's Programme and Budget\" document (e.g. GC(69)/6, <https://www.iaea.org/sites/default/files/gc/gc69-6_0.pdf>), adopted by a GC resolution but with no system linking resolutions to resourcing"
-          },
-          "implementation": {
-            "value": false,
-            "note": "evidence in round 1"
-          },
-          "results": {
-            "value": false,
-            "note": "DG issues individual reports pursuant to specific GC resolutions as GC documents, but there is no system connecting resolutions to outcome reporting"
-          }
-        },
-        "interoperability": null
-      },
+          "interoperability": null
+        }
+      ],
       "registryNote": null,
       "related": []
     },
@@ -2053,34 +2299,36 @@
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": {
-        "name": "ASP Resolutions",
-        "category": "Session Documents",
-        "url": "https://asp.icc-cpi.int/resolutions",
-        "points": {
-          "documents": {
-            "value": true,
-            "note": null
+      "mandateRegistry": [
+        {
+          "name": "ASP Resolutions",
+          "category": "Session Documents",
+          "url": "https://asp.icc-cpi.int/resolutions",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": null
+            },
+            "mandates": {
+              "value": false,
+              "note": "system — but nuance: the annual omnibus resolution carries an annex \"Mandates of the Assembly of States Parties for the intersessional period\", a refreshed list of currently-active ASP mandates (document practice, not a registry)"
+            },
+            "budget": {
+              "value": false,
+              "note": "the ASP adopts an annual budget resolution with programme-level appropriations (Proposed Programme Budget 2026 = ICC-ASP/24/10, EUR 197.5M), but no system links mandates to their resourcing"
+            },
+            "implementation": {
+              "value": false,
+              "note": "evidence in round 1"
+            },
+            "results": {
+              "value": false,
+              "note": "system — but a paper-based mandate cycle exists: Bureau/facilitator reports (e.g. ICC-ASP/24/28) report back on specific mandates from the omnibus-resolution annex; published as session documents only"
+            }
           },
-          "mandates": {
-            "value": false,
-            "note": "system — but nuance: the annual omnibus resolution carries an annex \"Mandates of the Assembly of States Parties for the intersessional period\", a refreshed list of currently-active ASP mandates (document practice, not a registry)"
-          },
-          "budget": {
-            "value": false,
-            "note": "the ASP adopts an annual budget resolution with programme-level appropriations (Proposed Programme Budget 2026 = ICC-ASP/24/10, EUR 197.5M), but no system links mandates to their resourcing"
-          },
-          "implementation": {
-            "value": false,
-            "note": "evidence in round 1"
-          },
-          "results": {
-            "value": false,
-            "note": "system — but a paper-based mandate cycle exists: Bureau/facilitator reports (e.g. ICC-ASP/24/28) report back on specific mandates from the omnibus-resolution annex; published as session documents only"
-          }
-        },
-        "interoperability": null
-      },
+          "interoperability": null
+        }
+      ],
       "registryNote": null,
       "related": [
         {
@@ -2102,34 +2350,36 @@
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": {
-        "name": "Council Resolutions Database",
-        "category": "Resolutions Database",
-        "url": "https://governingbodies.iom.int/council-resolutions",
-        "points": {
-          "documents": {
-            "value": true,
-            "note": null
+      "mandateRegistry": [
+        {
+          "name": "Council Resolutions Database",
+          "category": "Resolutions Database",
+          "url": "https://governingbodies.iom.int/council-resolutions",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": null
+            },
+            "mandates": {
+              "value": false,
+              "note": "confirmed round 2; resolutions database has category filters only, no current/replaced status metadata"
+            },
+            "budget": {
+              "value": false,
+              "note": "Programme and Budget (C/xxx/6) is adopted/revised by Council and SCPF resolutions (e.g. S/36/RES/40 revising the 2025 P&B), but budget figures are programme/project-level; no system links resolutions to resourcing"
+            },
+            "implementation": {
+              "value": false,
+              "note": "evidence in round 1"
+            },
+            "results": {
+              "value": false,
+              "note": "financial reports and Director General reporting go to SCPF/Council as session documents; no reporting against specific resolutions"
+            }
           },
-          "mandates": {
-            "value": false,
-            "note": "confirmed round 2; resolutions database has category filters only, no current/replaced status metadata"
-          },
-          "budget": {
-            "value": false,
-            "note": "Programme and Budget (C/xxx/6) is adopted/revised by Council and SCPF resolutions (e.g. S/36/RES/40 revising the 2025 P&B), but budget figures are programme/project-level; no system links resolutions to resourcing"
-          },
-          "implementation": {
-            "value": false,
-            "note": "evidence in round 1"
-          },
-          "results": {
-            "value": false,
-            "note": "financial reports and Director General reporting go to SCPF/Council as session documents; no reporting against specific resolutions"
-          }
-        },
-        "interoperability": null
-      },
+          "interoperability": null
+        }
+      ],
       "registryNote": null,
       "related": []
     },
@@ -2155,34 +2405,36 @@
         }
       ],
       "note": null,
-      "mandateRegistry": {
-        "name": "Session Documents",
-        "category": "Session Documents",
-        "url": "https://isa.org.jm/sessions/30th-session-2025/",
-        "points": {
-          "documents": {
-            "value": true,
-            "note": null
+      "mandateRegistry": [
+        {
+          "name": "Session Documents",
+          "category": "Session Documents",
+          "url": "https://isa.org.jm/sessions/30th-session-2025/",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": null
+            },
+            "mandates": {
+              "value": false,
+              "note": "confirmed round 2; session pages are plain document lists, no status distinction between current and replaced decisions"
+            },
+            "budget": {
+              "value": false,
+              "note": "budget decisions exist as session documents (e.g. ISBA/31/A/4–ISBA/31/C/22, proposed budget 2027–2028) but financial statements are standalone; no system links decisions to amounts (<https://isa.org.jm/organs/the-finance-committee/>)"
+            },
+            "implementation": {
+              "value": false,
+              "note": "evidence in round 1"
+            },
+            "results": {
+              "value": false,
+              "note": "Secretary-General annual reporting is generic; the site's dashboards track contributions and capacity development, not outcomes per decision"
+            }
           },
-          "mandates": {
-            "value": false,
-            "note": "confirmed round 2; session pages are plain document lists, no status distinction between current and replaced decisions"
-          },
-          "budget": {
-            "value": false,
-            "note": "budget decisions exist as session documents (e.g. ISBA/31/A/4–ISBA/31/C/22, proposed budget 2027–2028) but financial statements are standalone; no system links decisions to amounts (<https://isa.org.jm/organs/the-finance-committee/>)"
-          },
-          "implementation": {
-            "value": false,
-            "note": "evidence in round 1"
-          },
-          "results": {
-            "value": false,
-            "note": "Secretary-General annual reporting is generic; the site's dashboards track contributions and capacity development, not outcomes per decision"
-          }
-        },
-        "interoperability": null
-      },
+          "interoperability": null
+        }
+      ],
       "registryNote": null,
       "related": []
     },
@@ -2210,7 +2462,7 @@
         }
       ],
       "note": null,
-      "mandateRegistry": null,
+      "mandateRegistry": [],
       "registryNote": "ITLOS is a judicial body, not a mandate-issuing governing body: its output is case law (judgments, advisory opinions, orders), and its governing body — the Meeting of States Parties to UNCLOS (SPLOS) — takes only administrative, budgetary and electoral decisions. No mandate/decision registry exists or applies.",
       "related": [
         {
@@ -2236,34 +2488,36 @@
       "officialPages": [],
       "contacts": [],
       "note": null,
-      "mandateRegistry": {
-        "name": "Documents Catalogue",
-        "category": "Session Documents",
-        "url": "https://www.opcw.org/resources/documents",
-        "points": {
-          "documents": {
-            "value": true,
-            "note": null
+      "mandateRegistry": [
+        {
+          "name": "Documents Catalogue",
+          "category": "Session Documents",
+          "url": "https://www.opcw.org/resources/documents",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": null
+            },
+            "mandates": {
+              "value": false,
+              "note": "confirmed round 2; documents catalogue is a per-session PDF list with no current/replaced status metadata"
+            },
+            "budget": {
+              "value": false,
+              "note": "the Programme and Budget is itself a CSP decision (e.g. C-26/DEC.11, <https://www.opcw.org/sites/default/files/documents/2021/12/c26dec11(e).pdf>) with results-based programme figures, but no system links other decisions/mandates to resourcing"
+            },
+            "implementation": {
+              "value": false,
+              "note": "evidence in round 1"
+            },
+            "results": {
+              "value": false,
+              "note": "annual \"Report on the Implementation of the Convention\" and programme performance monitoring are programme-level, not reported against specific CSP/EC decisions"
+            }
           },
-          "mandates": {
-            "value": false,
-            "note": "confirmed round 2; documents catalogue is a per-session PDF list with no current/replaced status metadata"
-          },
-          "budget": {
-            "value": false,
-            "note": "the Programme and Budget is itself a CSP decision (e.g. C-26/DEC.11, <https://www.opcw.org/sites/default/files/documents/2021/12/c26dec11(e).pdf>) with results-based programme figures, but no system links other decisions/mandates to resourcing"
-          },
-          "implementation": {
-            "value": false,
-            "note": "evidence in round 1"
-          },
-          "results": {
-            "value": false,
-            "note": "annual \"Report on the Implementation of the Convention\" and programme performance monitoring are programme-level, not reported against specific CSP/EC decisions"
-          }
-        },
-        "interoperability": null
-      },
+          "interoperability": null
+        }
+      ],
       "registryNote": null,
       "related": []
     },
@@ -2295,34 +2549,36 @@
         }
       ],
       "note": null,
-      "mandateRegistry": {
-        "name": "COP decisions",
-        "category": "Decisions compilation",
-        "url": "https://www.unccd.int/convention/cop-decisions",
-        "points": {
-          "documents": {
-            "value": true,
-            "note": "COP/CRIC/CST decision and document texts compiled per session and publicly findable; per-session PDF listing, not a queryable/full-text system"
+      "mandateRegistry": [
+        {
+          "name": "COP decisions",
+          "category": "Decisions compilation",
+          "url": "https://www.unccd.int/convention/cop-decisions",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": "COP/CRIC/CST decision and document texts compiled per session and publicly findable; per-session PDF listing, not a queryable/full-text system"
+            },
+            "mandates": {
+              "value": false,
+              "note": "no in-force/replaced tracking; only per-session decision listings"
+            },
+            "budget": {
+              "value": false,
+              "note": "budget adopted per COP but published as documents, not linked per decision"
+            },
+            "implementation": {
+              "value": false,
+              "note": "CRIC reviews implementation via PRAIS national reporting by Strategic Objective/LDN indicator per country, not per decision"
+            },
+            "results": {
+              "value": false,
+              "note": "PRAIS reports SO/LDN indicator results by country, not against specific decisions"
+            }
           },
-          "mandates": {
-            "value": false,
-            "note": "no in-force/replaced tracking; only per-session decision listings"
-          },
-          "budget": {
-            "value": false,
-            "note": "budget adopted per COP but published as documents, not linked per decision"
-          },
-          "implementation": {
-            "value": false,
-            "note": "CRIC reviews implementation via PRAIS national reporting by Strategic Objective/LDN indicator per country, not per decision"
-          },
-          "results": {
-            "value": false,
-            "note": "PRAIS reports SO/LDN indicator results by country, not against specific decisions"
-          }
-        },
-        "interoperability": null
-      },
+          "interoperability": null
+        }
+      ],
       "registryNote": null,
       "related": [
         {
@@ -2363,34 +2619,36 @@
         }
       ],
       "note": null,
-      "mandateRegistry": {
-        "name": "Decisions",
-        "category": "Decisions Database",
-        "url": "https://unfccc.int/decisions",
-        "points": {
-          "documents": {
-            "value": true,
-            "note": "1,034 COP/CMP/CMA decisions, searchable by body/session and full-text, six languages"
+      "mandateRegistry": [
+        {
+          "name": "Decisions",
+          "category": "Decisions Database",
+          "url": "https://unfccc.int/decisions",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": "1,034 COP/CMP/CMA decisions, searchable by body/session and full-text, six languages"
+            },
+            "mandates": {
+              "value": "partial",
+              "note": "the secretariat's 'SB Mandates' compilation (internally titled 'Mandates Database') tracks which SBI/SBSTA mandates are live vs concluded, each tied to a decision reference — but it is a periodically-refreshed PDF (latest public 2022) covering only the subsidiary-body agenda, not a queryable system; the Decisions database itself carries no in-force/replaced flag"
+            },
+            "budget": {
+              "value": false,
+              "note": "no budget/financial fields; programme budget published as documents, not per decision"
+            },
+            "implementation": {
+              "value": false,
+              "note": "no per-decision implementation-status system; SBI reviews implementation broadly"
+            },
+            "results": {
+              "value": false,
+              "note": "no outcomes reported against specific decisions"
+            }
           },
-          "mandates": {
-            "value": "partial",
-            "note": "the secretariat's 'SB Mandates' compilation (internally titled 'Mandates Database') tracks which SBI/SBSTA mandates are live vs concluded, each tied to a decision reference — but it is a periodically-refreshed PDF (latest public 2022) covering only the subsidiary-body agenda, not a queryable system; the Decisions database itself carries no in-force/replaced flag"
-          },
-          "budget": {
-            "value": false,
-            "note": "no budget/financial fields; programme budget published as documents, not per decision"
-          },
-          "implementation": {
-            "value": false,
-            "note": "no per-decision implementation-status system; SBI reviews implementation broadly"
-          },
-          "results": {
-            "value": false,
-            "note": "no outcomes reported against specific decisions"
-          }
-        },
-        "interoperability": null
-      },
+          "interoperability": null
+        }
+      ],
       "registryNote": null,
       "related": [
         {
@@ -2425,34 +2683,36 @@
         }
       ],
       "note": null,
-      "mandateRegistry": {
-        "name": "Documents Online",
-        "category": "Documents Database",
-        "url": "https://docs.wto.org/dol2fe/Pages/FE_Search/FE_S_S001.aspx",
-        "points": {
-          "documents": {
-            "value": true,
-            "note": null
+      "mandateRegistry": [
+        {
+          "name": "Documents Online",
+          "category": "Documents Database",
+          "url": "https://docs.wto.org/dol2fe/Pages/FE_Search/FE_S_S001.aspx",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": null
+            },
+            "mandates": {
+              "value": false,
+              "note": "confirmed round 2; Documents Online is a document archive with no in-force/replaced status for decisions"
+            },
+            "budget": {
+              "value": false,
+              "note": "budget page publishes org-wide consolidated budgets and member contributions 2001–2025 with no link to the approving decisions (<https://www.wto.org/english/thewto_e/secre_e/budget_e.htm>, verified)"
+            },
+            "implementation": {
+              "value": false,
+              "note": "evidence in round 1"
+            },
+            "results": {
+              "value": false,
+              "note": "Budget/Finance gateway catalogues oversight and performance reports but nothing reports outcomes against specific General Council/Ministerial decisions (<https://docs.wto.org/gtd/Default.aspx?langue=e&pagename=Budget_4>, verified)"
+            }
           },
-          "mandates": {
-            "value": false,
-            "note": "confirmed round 2; Documents Online is a document archive with no in-force/replaced status for decisions"
-          },
-          "budget": {
-            "value": false,
-            "note": "budget page publishes org-wide consolidated budgets and member contributions 2001–2025 with no link to the approving decisions (<https://www.wto.org/english/thewto_e/secre_e/budget_e.htm>, verified)"
-          },
-          "implementation": {
-            "value": false,
-            "note": "evidence in round 1"
-          },
-          "results": {
-            "value": false,
-            "note": "Budget/Finance gateway catalogues oversight and performance reports but nothing reports outcomes against specific General Council/Ministerial decisions (<https://docs.wto.org/gtd/Default.aspx?langue=e&pagename=Budget_4>, verified)"
-          }
-        },
-        "interoperability": null
-      },
+          "interoperability": null
+        }
+      ],
       "registryNote": null,
       "related": []
     },
@@ -2470,15 +2730,39 @@
       ],
       "contacts": [],
       "note": null,
-      "mandateRegistry": null,
-      "registryNote": "Not yet surveyed — added by the CEB scope rule (July 2026); governing bodies and mandate registry still to be researched.",
-      "related": [
+      "mandateRegistry": [
         {
-          "name": "Mandates cited in the UN programme budget (this site)",
+          "scope": "this-site",
+          "name": "Mandate Source Registry",
+          "category": "Mandate Registry",
           "url": "/secretariat?entity=ECA",
-          "mandateLinked": true
+          "points": {
+            "documents": {
+              "value": true,
+              "note": "covers only the mandates this organization is cited for in the UN programme budget, not its full decision corpus"
+            },
+            "mandates": {
+              "value": true,
+              "note": null
+            },
+            "budget": {
+              "value": false,
+              "note": "budget structure linked, but no monetary amounts shown (project decision)"
+            },
+            "implementation": {
+              "value": false,
+              "note": null
+            },
+            "results": {
+              "value": false,
+              "note": null
+            }
+          },
+          "interoperability": null
         }
-      ]
+      ],
+      "registryNote": "Not yet surveyed — added by the CEB scope rule (July 2026); governing bodies and mandate registry still to be researched.",
+      "related": []
     },
     {
       "code": "ECE",
@@ -2494,15 +2778,39 @@
       ],
       "contacts": [],
       "note": null,
-      "mandateRegistry": null,
-      "registryNote": "Not yet surveyed — added by the CEB scope rule (July 2026); governing bodies and mandate registry still to be researched.",
-      "related": [
+      "mandateRegistry": [
         {
-          "name": "Mandates cited in the UN programme budget (this site)",
+          "scope": "this-site",
+          "name": "Mandate Source Registry",
+          "category": "Mandate Registry",
           "url": "/secretariat?entity=ECE",
-          "mandateLinked": true
+          "points": {
+            "documents": {
+              "value": true,
+              "note": "covers only the mandates this organization is cited for in the UN programme budget, not its full decision corpus"
+            },
+            "mandates": {
+              "value": true,
+              "note": null
+            },
+            "budget": {
+              "value": false,
+              "note": "budget structure linked, but no monetary amounts shown (project decision)"
+            },
+            "implementation": {
+              "value": false,
+              "note": null
+            },
+            "results": {
+              "value": false,
+              "note": null
+            }
+          },
+          "interoperability": null
         }
-      ]
+      ],
+      "registryNote": "Not yet surveyed — added by the CEB scope rule (July 2026); governing bodies and mandate registry still to be researched.",
+      "related": []
     },
     {
       "code": "ECLAC",
@@ -2518,15 +2826,39 @@
       ],
       "contacts": [],
       "note": null,
-      "mandateRegistry": null,
-      "registryNote": "Not yet surveyed — added by the CEB scope rule (July 2026); governing bodies and mandate registry still to be researched.",
-      "related": [
+      "mandateRegistry": [
         {
-          "name": "Mandates cited in the UN programme budget (this site)",
+          "scope": "this-site",
+          "name": "Mandate Source Registry",
+          "category": "Mandate Registry",
           "url": "/secretariat?entity=ECLAC",
-          "mandateLinked": true
+          "points": {
+            "documents": {
+              "value": true,
+              "note": "covers only the mandates this organization is cited for in the UN programme budget, not its full decision corpus"
+            },
+            "mandates": {
+              "value": true,
+              "note": null
+            },
+            "budget": {
+              "value": false,
+              "note": "budget structure linked, but no monetary amounts shown (project decision)"
+            },
+            "implementation": {
+              "value": false,
+              "note": null
+            },
+            "results": {
+              "value": false,
+              "note": null
+            }
+          },
+          "interoperability": null
         }
-      ]
+      ],
+      "registryNote": "Not yet surveyed — added by the CEB scope rule (July 2026); governing bodies and mandate registry still to be researched.",
+      "related": []
     },
     {
       "code": "ESCAP",
@@ -2542,15 +2874,39 @@
       ],
       "contacts": [],
       "note": null,
-      "mandateRegistry": null,
-      "registryNote": "Not yet surveyed — added by the CEB scope rule (July 2026); governing bodies and mandate registry still to be researched.",
-      "related": [
+      "mandateRegistry": [
         {
-          "name": "Mandates cited in the UN programme budget (this site)",
+          "scope": "this-site",
+          "name": "Mandate Source Registry",
+          "category": "Mandate Registry",
           "url": "/secretariat?entity=ESCAP",
-          "mandateLinked": true
+          "points": {
+            "documents": {
+              "value": true,
+              "note": "covers only the mandates this organization is cited for in the UN programme budget, not its full decision corpus"
+            },
+            "mandates": {
+              "value": true,
+              "note": null
+            },
+            "budget": {
+              "value": false,
+              "note": "budget structure linked, but no monetary amounts shown (project decision)"
+            },
+            "implementation": {
+              "value": false,
+              "note": null
+            },
+            "results": {
+              "value": false,
+              "note": null
+            }
+          },
+          "interoperability": null
         }
-      ]
+      ],
+      "registryNote": "Not yet surveyed — added by the CEB scope rule (July 2026); governing bodies and mandate registry still to be researched.",
+      "related": []
     },
     {
       "code": "ESCWA",
@@ -2566,15 +2922,39 @@
       ],
       "contacts": [],
       "note": null,
-      "mandateRegistry": null,
-      "registryNote": "Not yet surveyed — added by the CEB scope rule (July 2026); governing bodies and mandate registry still to be researched.",
-      "related": [
+      "mandateRegistry": [
         {
-          "name": "Mandates cited in the UN programme budget (this site)",
+          "scope": "this-site",
+          "name": "Mandate Source Registry",
+          "category": "Mandate Registry",
           "url": "/secretariat?entity=ESCWA",
-          "mandateLinked": true
+          "points": {
+            "documents": {
+              "value": true,
+              "note": "covers only the mandates this organization is cited for in the UN programme budget, not its full decision corpus"
+            },
+            "mandates": {
+              "value": true,
+              "note": null
+            },
+            "budget": {
+              "value": false,
+              "note": "budget structure linked, but no monetary amounts shown (project decision)"
+            },
+            "implementation": {
+              "value": false,
+              "note": null
+            },
+            "results": {
+              "value": false,
+              "note": null
+            }
+          },
+          "interoperability": null
         }
-      ]
+      ],
+      "registryNote": "Not yet surveyed — added by the CEB scope rule (July 2026); governing bodies and mandate registry still to be researched.",
+      "related": []
     },
     {
       "code": "IARC",
@@ -2589,7 +2969,7 @@
       ],
       "contacts": [],
       "note": null,
-      "mandateRegistry": null,
+      "mandateRegistry": [],
       "registryNote": "Not yet surveyed — added by the CEB scope rule (July 2026); governing bodies and mandate registry still to be researched.",
       "related": []
     },
@@ -2606,7 +2986,7 @@
       ],
       "contacts": [],
       "note": null,
-      "mandateRegistry": null,
+      "mandateRegistry": [],
       "registryNote": "Not yet surveyed — added by the CEB scope rule (July 2026); governing bodies and mandate registry still to be researched.",
       "related": []
     },
@@ -2642,34 +3022,36 @@
         }
       ],
       "note": null,
-      "mandateRegistry": {
-        "name": "PCB Meeting Archive",
-        "category": "Meeting archive",
-        "url": "https://www.unaids.org/en/whoweare/pcb",
-        "points": {
-          "documents": {
-            "value": true,
-            "note": "Per-session 'decisions, recommendations and conclusions' documents and all agenda documents posted per meeting back to 1995; a PDF-per-meeting archive, not a queryable database — borderline"
+      "mandateRegistry": [
+        {
+          "name": "PCB Meeting Archive",
+          "category": "Meeting archive",
+          "url": "https://www.unaids.org/en/whoweare/pcb",
+          "points": {
+            "documents": {
+              "value": true,
+              "note": "Per-session 'decisions, recommendations and conclusions' documents and all agenda documents posted per meeting back to 1995; a PDF-per-meeting archive, not a queryable database — borderline"
+            },
+            "mandates": {
+              "value": false,
+              "note": "No in-force/replaced registry of decision points; chronological session archive only"
+            },
+            "budget": {
+              "value": false,
+              "note": "Financial data (open.unaids.org) organized by UBRAF results area/cosponsor/country, not by PCB decision"
+            },
+            "implementation": {
+              "value": false,
+              "note": "Follow-up via UBRAF workplan/results reporting and ad-hoc decision-point papers, not a per-decision status system"
+            },
+            "results": {
+              "value": false,
+              "note": "UBRAF indicators report at output level against the strategy, not against specific PCB decisions"
+            }
           },
-          "mandates": {
-            "value": false,
-            "note": "No in-force/replaced registry of decision points; chronological session archive only"
-          },
-          "budget": {
-            "value": false,
-            "note": "Financial data (open.unaids.org) organized by UBRAF results area/cosponsor/country, not by PCB decision"
-          },
-          "implementation": {
-            "value": false,
-            "note": "Follow-up via UBRAF workplan/results reporting and ad-hoc decision-point papers, not a per-decision status system"
-          },
-          "results": {
-            "value": false,
-            "note": "UBRAF indicators report at output level against the strategy, not against specific PCB decisions"
-          }
-        },
-        "interoperability": null
-      },
+          "interoperability": null
+        }
+      ],
       "registryNote": null,
       "related": [
         {
@@ -2691,7 +3073,7 @@
       ],
       "contacts": [],
       "note": null,
-      "mandateRegistry": null,
+      "mandateRegistry": [],
       "registryNote": "Not yet surveyed — added by the CEB scope rule (July 2026); governing bodies and mandate registry still to be researched.",
       "related": []
     }
