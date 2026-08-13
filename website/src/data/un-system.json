@@ -964,9 +964,6 @@
           "name": "Joint Advisory Group (JAG)",
           "url": "https://www.intracen.org/about-us/governance/the-joint-advisory-group-jag",
           "overview": true
-        },
-        {
-          "ref": "un-ga"
         }
       ],
       "officialPages": [
@@ -1022,12 +1019,6 @@
       "grouping": "fund-programme",
       "governingBodies": [
         {
-          "ref": "un-ga"
-        },
-        {
-          "ref": "un-ecosoc"
-        },
-        {
           "name": "Executive Board",
           "url": "https://www.unwomen.org/en/executive-board",
           "overview": true
@@ -1049,7 +1040,7 @@
           "url": "https://www.unwomen.org/en/executive-board/overview"
         }
       ],
-      "note": null,
+      "note": "The General Assembly created this entity and sets system-wide policy for it through the Quadrennial Comprehensive Policy Review (QCPR), but does not govern its programme or appropriate its budget.",
       "mandateRegistry": {
         "name": "Decision Monitoring Matrix",
         "category": "Decision Tracking",
@@ -1092,9 +1083,6 @@
       "grouping": "fund-programme",
       "secretariatAdministered": true,
       "governingBodies": [
-        {
-          "ref": "un-ga"
-        },
         {
           "name": "UN-Habitat Assembly",
           "url": "https://unhabitat.org/governance",
@@ -1151,15 +1139,12 @@
       "grouping": "fund-programme",
       "governingBodies": [
         {
-          "ref": "un-ga"
-        },
-        {
           "ref": "undp-board"
         }
       ],
       "officialPages": [],
       "contacts": [],
-      "note": null,
+      "note": "The General Assembly created this entity and sets system-wide policy for it through the Quadrennial Comprehensive Policy Review (QCPR), but does not govern its programme or appropriate its budget.",
       "mandateRegistry": null,
       "registryNote": "No system of its own: UNCDF is governed by the Executive Board of UNDP, UNFPA and UNOPS — see UNDP.",
       "related": [
@@ -1175,9 +1160,6 @@
       "grouping": "fund-programme",
       "secretariatAdministered": true,
       "governingBodies": [
-        {
-          "ref": "un-ga"
-        },
         {
           "name": "Conference (quadrennial)",
           "url": "https://unctad.org/meetings-search?f%5B0%5D=product%3A342",
@@ -1252,15 +1234,12 @@
       "grouping": "fund-programme",
       "governingBodies": [
         {
-          "ref": "un-ga"
-        },
-        {
           "ref": "undp-board"
         }
       ],
       "officialPages": [],
       "contacts": [],
-      "note": null,
+      "note": "The General Assembly created this entity and sets system-wide policy for it through the Quadrennial Comprehensive Policy Review (QCPR), but does not govern its programme or appropriate its budget.",
       "mandateRegistry": {
         "name": "Decision Tracking Tables",
         "category": "Decision Tracking",
@@ -1303,9 +1282,6 @@
       "grouping": "fund-programme",
       "secretariatAdministered": true,
       "governingBodies": [
-        {
-          "ref": "un-ga"
-        },
         {
           "name": "United Nations Environment Assembly",
           "url": "https://www.unep.org/environmentassembly/",
@@ -1361,15 +1337,12 @@
       "grouping": "fund-programme",
       "governingBodies": [
         {
-          "ref": "un-ga"
-        },
-        {
           "ref": "undp-board"
         }
       ],
       "officialPages": [],
       "contacts": [],
-      "note": null,
+      "note": "The General Assembly created this entity and sets system-wide policy for it through the Quadrennial Comprehensive Policy Review (QCPR), but does not govern its programme or appropriate its budget.",
       "mandateRegistry": {
         "name": "Decision Tracking Tables",
         "category": "Decision Tracking",
@@ -1412,12 +1385,6 @@
       "grouping": "fund-programme",
       "governingBodies": [
         {
-          "ref": "un-ga"
-        },
-        {
-          "ref": "un-ecosoc"
-        },
-        {
           "name": "Executive Committee (ExCom)",
           "url": "https://www.unhcr.org/about-unhcr/governance-and-oversight/executive-committee",
           "overview": true
@@ -1447,7 +1414,7 @@
           "url": "https://www.unhcr.org/contact-us"
         }
       ],
-      "note": null,
+      "note": "The General Assembly created this entity and sets system-wide policy for it through the Quadrennial Comprehensive Policy Review (QCPR), but does not govern its programme or appropriate its budget.",
       "mandateRegistry": {
         "name": "ExCom Documentation Collection",
         "category": "Documents Collection",
@@ -1494,9 +1461,6 @@
       "grouping": "fund-programme",
       "governingBodies": [
         {
-          "ref": "un-ga"
-        },
-        {
           "name": "Executive Board",
           "url": "https://www.unicef.org/executiveboard/",
           "contacts": [
@@ -1509,7 +1473,7 @@
       ],
       "officialPages": [],
       "contacts": [],
-      "note": null,
+      "note": "The General Assembly created this entity and sets system-wide policy for it through the Quadrennial Comprehensive Policy Review (QCPR), but does not govern its programme or appropriate its budget.",
       "mandateRegistry": {
         "name": "Decision Monitoring Tables",
         "category": "Decision Tracking",
@@ -1586,12 +1550,6 @@
       "grouping": "fund-programme",
       "governingBodies": [
         {
-          "ref": "un-ga"
-        },
-        {
-          "ref": "un-ecosoc"
-        },
-        {
           "name": "Board of Trustees",
           "url": "https://unitar.org/about/unitar/governance/board-trustees",
           "overview": true
@@ -1633,9 +1591,6 @@
       "grouping": "fund-programme",
       "secretariatAdministered": true,
       "governingBodies": [
-        {
-          "ref": "un-ecosoc"
-        },
         {
           "name": "Commission on Narcotic Drugs (CND)",
           "url": "https://www.unodc.org/unodc/en/commissions/CND/index.html",
@@ -1791,7 +1746,7 @@
           "ref": "un-ga"
         },
         {
-          "name": "Advisory Commission",
+          "name": "Advisory Commission (advisory only)",
           "url": "https://www.unrwa.org/who-we-are/advisory-commission",
           "overview": true
         }
@@ -1816,7 +1771,7 @@
           "url": "https://www.unrwa.org/contact-us"
         }
       ],
-      "note": null,
+      "note": "UNRWA has no executive board. The General Assembly is its governing body, renewing the mandate by resolution; the Advisory Commission advises the Commissioner-General and adopts no binding decisions.",
       "mandateRegistry": null,
       "registryNote": "No decision-tracking system. UNRWA has no executive board; its mandate is renewed en bloc by periodic GA resolution (currently through 30 June 2026) and the Advisory Commission is purely advisory, adopting no binding decisions. The Advisory Commission 'Key Documents' page is a short curated list of foundational texts (GA res 302(IV), Rules of Procedure, membership resolutions, host-country agreements), not a compilation of the decision corpus and with no in-force/replaced status.",
       "related": [
@@ -1852,12 +1807,6 @@
       "name": "United Nations University",
       "grouping": "fund-programme",
       "governingBodies": [
-        {
-          "ref": "un-ga"
-        },
-        {
-          "ref": "un-ecosoc"
-        },
         {
           "name": "UNU Council",
           "url": "https://unu.edu/about/unu-council",
@@ -1917,9 +1866,6 @@
       "grouping": "fund-programme",
       "governingBodies": [
         {
-          "ref": "un-ga"
-        },
-        {
           "name": "Executive Board",
           "url": "https://executiveboard.wfp.org/",
           "contacts": [
@@ -1932,7 +1878,7 @@
       ],
       "officialPages": [],
       "contacts": [],
-      "note": null,
+      "note": "The General Assembly created this entity and sets system-wide policy for it through the Quadrennial Comprehensive Policy Review (QCPR), but does not govern its programme or appropriate its budget.",
       "mandateRegistry": {
         "name": "Executive Board Documents",
         "category": "Documents Database",
@@ -2597,9 +2543,6 @@
       "name": "Joint United Nations Programme on HIV/AIDS",
       "grouping": "joint-hosted",
       "governingBodies": [
-        {
-          "ref": "un-ecosoc"
-        },
         {
           "name": "Programme Coordinating Board",
           "url": "https://www.unaids.org/en/whoweare/pcb",
