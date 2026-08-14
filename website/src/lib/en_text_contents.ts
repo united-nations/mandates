@@ -10,9 +10,9 @@ export const explainerTexts = {
     headline: 'See what the UN is asked to do.',
     versionTag: 'Beta Version',
     shortDescription:
-      'Developed as part of the UN80 Initiative, this registry serves as a transparency tool for understanding UN mandates and programmes. It compiles the source documents that UN entities cite when explaining why their programmes exist and why they require resources, enabling better dialogue on mandate implementation.',
+      'Developed as part of the UN80 Initiative, this registry serves as a transparency tool for understanding UN mandates and programmes.',
     shortDescriptionPlain:
-      'Developed as part of the UN80 Initiative, this registry serves as a transparency tool for understanding UN mandates and programmes. It compiles the source documents that UN entities cite when explaining why their programmes exist and why they require resources, enabling better dialogue on mandate implementation.',
+      'Developed as part of the UN80 Initiative, this registry serves as a transparency tool for understanding UN mandates and programmes.',
     un80Link: 'https://www.un.org/un80-initiative/en',
     mandateImplementationLink:
       'https://www.un.org/un80-initiative/en/report-mandate-implementation-review',

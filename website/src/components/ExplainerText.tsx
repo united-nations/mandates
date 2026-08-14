@@ -16,19 +16,6 @@ export function ExplainerText() {
         </Link>
         , this registry serves as a transparency tool for understanding UN
         mandates and programmes.
-        <br />
-        It compiles the source documents that UN entities cite when explaining
-        why their programmes exist and why they require resources, enabling
-        better dialogue on{' '}
-        <Link
-          href={explainerTexts.mainHeader.mandateImplementationLink}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-un-blue transition-colors hover:text-shuttle-gray"
-        >
-          mandate implementation
-        </Link>
-        .
       </p>
     </div>
   )
