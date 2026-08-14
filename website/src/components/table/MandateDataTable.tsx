@@ -159,11 +159,7 @@ export function MandateDataTable({
   }, [columns.length, mandates.length])
 
   const mandateHref = (symbol: string) =>
-    getMandateUrl(
-      symbol,
-      { ppb_version: filters.ppb_version, mode: filters.mode },
-      searchParams
-    )
+    getMandateUrl(symbol, { ppb_version: filters.ppb_version }, searchParams)
 
   const handleRowClick = (mandate: Mandate, e: React.MouseEvent) => {
     e.preventDefault()

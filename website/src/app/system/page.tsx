@@ -14,7 +14,6 @@ import type {
   UnSystemEntity,
   UnSystemGrouping,
 } from '@/types'
-import { Mail } from 'lucide-react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
@@ -51,32 +50,6 @@ function resolveBody(entry: UnSystemBodyEntry): UnSystemBody {
   return 'ref' in entry ? bodies[entry.ref] : entry
 }
 
-function OrgLevelLink({
-  label,
-  href,
-  email,
-}: {
-  label: string | null
-  href: string
-  email?: boolean
-}) {
-  return (
-    <li className="leading-snug">
-      <a
-        href={email ? `mailto:${href}` : href}
-        target={email ? undefined : '_blank'}
-        rel={email ? undefined : 'noopener noreferrer'}
-        className="inline-flex items-center gap-1 text-gray-900 transition-colors hover:text-un-blue hover:underline"
-      >
-        {label ?? href}
-        {/* Only mailto keeps an icon: clicking it opens a mail client rather
-            than a page, which is a real difference, not decoration. */}
-        {email && <Mail className="h-3 w-3 shrink-0" />}
-      </a>
-    </li>
-  )
-}
-
 function EntityRow({ entity }: { entity: UnSystemEntity }) {
   return (
     <li
@@ -100,20 +73,6 @@ function EntityRow({ entity }: { entity: UnSystemEntity }) {
         {entity.governingBodies.map(resolveBody).map((body) => (
           <UnSystemBodyLine key={body.name} body={body} />
         ))}
-        {entity.contacts.length > 0 && (
-          <li className="mt-1.5">
-            <ul className="space-y-1 text-sm">
-              {entity.contacts.map((contact) => (
-                <OrgLevelLink
-                  key={contact.url ?? contact.email}
-                  label={contact.label}
-                  href={contact.url ?? contact.email!}
-                  email={!!contact.email}
-                />
-              ))}
-            </ul>
-          </li>
-        )}
       </ul>
       {SHOW_MANDATE_REGISTRY_RATING && (
         <div>

@@ -43,15 +43,22 @@ export default async function Page({ searchParams }: PageProps) {
   // skeleton and swaps in the data when it resolves.
   const dataPromise = getMandatePageData(filters)
 
-  // The four explore cards. Every number here honours the ACTIVE facet filters,
-  // so filtering to one entity moves all four — with one deliberate exception
-  // per card, its own dimension, dropped inside the query it comes from
-  // (getOrganHierarchy drops `organ`, getBudgetHierarchy drops `entity` and the
-  // budget levels, getSubjectHierarchy drops `subject`/`subject_domain`,
-  // getDocumentTypeCatalogue drops `document_type`). Without that, picking an
-  // organ would make the organs card read "1". The scopes and the fetch itself
-  // live in the data layer (exploreCardScopes / getExploreCardData) so the cards,
-  // the panels and scripts/check-card-counts.ts cannot drift apart.
+  // The four explore cards. Every number honours EVERY active filter, its own
+  // dimension included: each card states what the table below is showing, so
+  // filtering to one organ makes the organs card read "1".
+  //
+  // The own-dimension exclusion applies only to the option LISTS inside the
+  // panels (getOrganHierarchy drops `organ`, getBudgetHierarchy drops `entity`
+  // and the budget levels, getSubjectHierarchy drops `subject`/`subject_domain`,
+  // getDocumentTypeCatalogue drops `document_type`) — a list that collapsed to
+  // the chosen value could not be used to choose anything else. The scopes and
+  // the fetch live in the data layer (exploreCardScopes / getExploreCardData) so
+  // the cards and the panels cannot drift apart.
+  //
+  // All four are read through ONE budget version (filters.ppb_version, else the
+  // DB default) — the lens chosen in card 3's panel. It decides which citations
+  // exist as far as this page is concerned, so it moves every number here and
+  // every citation column in the table below.
   const [versions, entities, organs, cards] = await Promise.all([
     getBudgetVersions(),
     getAllEntities(),
@@ -61,6 +68,7 @@ export default async function Page({ searchParams }: PageProps) {
   const activeVersionSlug =
     versions.find((v) => v.slug === filters.ppb_version)?.slug ??
     getDefaultVersionSlug(versions)
+  const activeVersion = versions.find((v) => v.slug === activeVersionSlug)
 
   return (
     <div>
@@ -86,6 +94,9 @@ export default async function Page({ searchParams }: PageProps) {
         <ActiveFilters
           entitiesData={entities}
           allOrgans={organs}
+          citedVersionLabel={
+            activeVersion ? `PPB ${activeVersion.ppb_year}` : undefined
+          }
           className="mb-4"
         />
         <DirectoryExplorer
@@ -93,7 +104,9 @@ export default async function Page({ searchParams }: PageProps) {
           budgetStreams={cards.budgetStreams}
           subjectDomains={cards.subjectDomains}
           documentTypes={cards.documentTypes}
-          catalogueDocumentCount={cards.catalogueDocumentCount}
+          organCount={cards.organCount}
+          entityCount={cards.entityCount}
+          allDocumentsCount={cards.allDocumentsCount}
           citedDocumentCount={cards.citedDocumentCount}
           versions={versions}
           activeVersionSlug={activeVersionSlug}

@@ -58,7 +58,7 @@ export const FILTER_PARAMS = [
   'full_document_symbol',
   'min_citations',
   'max_citations',
-  'mode',
+  'cited',
   'ppb_version',
   'group',
   'sort_by',
@@ -87,11 +87,16 @@ export const FILTER_ONLY_PARAMS = [
   'full_document_symbol',
   'min_citations',
   'max_citations',
+  // A real filter, not a control: it narrows the catalogue to what the selected
+  // budget cites, and it clears like any other chip.
+  'cited',
 ] as const
 
-// Parameters that are handled separately (pagination and sorting)
+// Parameters that are handled separately (pagination and sorting).
+// `ppb_version` is a control, not a filter: it is the LENS the page is read
+// through (which budget supplies the citation data), so "clear all filters"
+// preserves it.
 export const CONTROL_PARAMS = [
-  'mode',
   'ppb_version',
   'group',
   'sort_by',
@@ -116,18 +121,23 @@ export function parseSearchParams(
     return value || undefined
   }
 
+  // The page ALWAYS shows the whole document catalogue (~43,000 documents)
+  // unified with what the selected budget version cites; `cited` narrows it to
+  // that cited subset. `?mode=active_mandates` was the old way to ask for the
+  // same thing, back when it was a scope switch, so old links and bookmarks
+  // keep working by mapping onto the filter. Both the server (page.tsx, the
+  // data layer) and the client (FilterContext) parse the URL through here, so
+  // this is the only place the mapping lives — they cannot disagree.
+  //
+  // The catalogue is only navigable because the list defaults to
+  // citing_entities_desc (see getMandates), which floats the budget-cited
+  // documents to the top of the otherwise year-ordered mass.
+  const legacyMode = getString('mode')
+  const cited =
+    getString('cited') ?? (legacyMode === 'active_mandates' ? '1' : undefined)
+
   return {
-    // DEFAULT SCOPE: the whole document catalogue (~43,000 documents), not the
-    // budget-cited subset. Both the server (page.tsx, the data layer) and the
-    // client (FilterContext) parse the URL through here, so this single line is
-    // the only place the default lives — they cannot disagree.
-    //
-    // The catalogue is only navigable because the list still defaults to
-    // citing_entities_desc (see getMandates), which floats the budget-cited
-    // documents to the top of the otherwise year-ordered mass.
-    mode:
-      (getString('mode') as 'active_mandates' | 'all_resolutions') ||
-      'all_resolutions',
+    cited,
     // No hardcoded default: when absent, the data layer's versionClause
     // COALESCEs to ppb2026.budget_versions.is_default (single source of truth).
     ppb_version: getString('ppb_version'),

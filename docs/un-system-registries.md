@@ -51,7 +51,14 @@ track implementation of recent decisions without maintaining any
 active-mandate registry. That violation is itself a finding — they track
 the new without knowing the stock.
 
-## Scores (July 2026; round 2 + gap-fill round)
+## Scores
+
+> **Superseded.** This table predates the August 2026 re-research and the
+> move to one merged score per entity, and is wrong for at least nine
+> entities. Generate it from `website/src/data/un-system.json` rather than
+> reading it here.
+
+### Scores (July 2026; round 2 + gap-fill round)
 
 Entities marked † were added in the 19 July gap-fill round.
 
@@ -130,24 +137,6 @@ Mandate Register".
     Cloudflare/JS-gated; a few findings rest on corroborated search
     snippets rather than a live render — noted per dossier.
 
-### Still to research (14)
-
-Entities brought in by the CEB scope rule that have no dossier yet:
-
-| Entity | Why in scope |
-| --- | --- |
-| ECA, ECE, ECLAC, ESCAP, ESCWA | invited; own ministerial sessions adopt resolutions |
-| PAHO | reports ($17.5bn) — inter-American treaty organization that also serves as WHO's regional office |
-| UNITAID | reports ($1.6bn) — own Executive Board, WHO-hosted |
-| IARC | reports ($0.36bn) — own Governing Council |
-| UNV | reports ($0.15bn) — UNDP/UNFPA/UNOPS Executive Board |
-| UNSSC | reports ($0.11bn) — own Board of Governors |
-| UNIDIR | reports ($0.04bn) — own Board of Trustees |
-| UNICRI | reports ($0.04bn) — own Board of Trustees |
-| UNRISD | reports ($0.02bn) — own Board |
-| Tech Bank | reports ($0.01bn) — own Governing Council |
-
-Amounts are 2011–2024 totals from `expenses_sub_agency.csv`.
 
 ## Display scheme
 

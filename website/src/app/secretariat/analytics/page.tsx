@@ -54,7 +54,7 @@ export default async function AnalyticsPage({ searchParams }: PageProps) {
     organEntityMatrix,
   ] = await Promise.all([
     getResolutionCitationTrend(filters.ppb_version),
-    getResolutionRecurrenceTrend(),
+    getResolutionRecurrenceTrend(filters.ppb_version),
     getTopicTrends(),
     getEntityCoCitationMatrix(filters.ppb_version),
     getOrganEntityMatrix(filters.ppb_version),

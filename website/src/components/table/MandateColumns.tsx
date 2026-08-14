@@ -182,7 +182,7 @@ export function isColumnFilterActive(
 
 export function getMandateUrl(
   symbol: string,
-  query?: { ppb_version?: string; mode?: string },
+  query?: { ppb_version?: string },
   // Current list search params to carry through. Opening a mandate is an
   // overlay on the *same* list — the mandate identity lives in the path, so the
   // query string should pass through untouched. Without this, navigating to the
@@ -202,7 +202,6 @@ export function getMandateUrl(
   // full query string keeps that behaviour and everything else besides.
   const params = new URLSearchParams(preserveParams?.toString() ?? '')
   if (query?.ppb_version) params.set('ppb_version', query.ppb_version)
-  if (query?.mode) params.set('mode', query.mode)
   const qs = params.toString()
   return qs ? `${base}?${qs}` : base
 }
