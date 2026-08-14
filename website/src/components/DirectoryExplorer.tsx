@@ -224,24 +224,28 @@ export function DirectoryExplorer({
       <ExploreButton
         count={organCount}
         noun="organs"
+        singular="organ"
         predicate="creating mandates"
         onClick={() => setPanel('organs')}
       />
       <ExploreButton
         count={tableDocumentCount}
         noun="documents"
+        singular="document"
         predicate="adopted"
         onClick={() => setPanel('catalogue')}
       />
       <ExploreButton
         count={citedDocumentCount}
         noun="documents"
+        singular="document"
         predicate={citedPredicate}
         onClick={() => setPanel('cited')}
       />
       <ExploreButton
         count={entityCount}
         noun="entities"
+        singular="entity"
         predicate="implementing mandates"
         onClick={() => setPanel('entities')}
       />
@@ -365,11 +369,14 @@ function scrollToMandates() {
 function ExploreButton({
   count,
   noun,
+  singular,
   predicate,
   onClick,
 }: {
   count: number
   noun: string
+  /** Used at count 1, which filtering to a single organ now reaches. */
+  singular: string
   predicate: string
   onClick: () => void
 }) {
@@ -386,7 +393,9 @@ function ExploreButton({
           <span className="text-3xl font-bold text-gray-900 tabular-nums">
             {count.toLocaleString()}
           </span>{' '}
-          <span className="text-base font-semibold text-gray-900">{noun}</span>
+          <span className="text-base font-semibold text-gray-900">
+            {count === 1 ? singular : noun}
+          </span>
         </span>
         <span className="mt-1.5 block text-sm text-gray-600">{predicate}</span>
       </span>
