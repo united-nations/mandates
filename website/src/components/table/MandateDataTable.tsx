@@ -22,7 +22,6 @@ import {
 } from '@/components/ui/hover-card'
 import { useFilters } from '@/contexts/FilterContext'
 import type {
-  BudgetStream,
   Entity,
   EntityWithCount,
   Mandate,
@@ -37,9 +36,13 @@ import { titleCase } from 'title-case'
 import { EntityBadge, FoundationalTag } from '../EntityBadge'
 import { DocumentSymbol } from '@/components/DocumentSymbol'
 import { isFoundational } from '@/lib/foundational'
-import { ORGAN_CATEGORIES } from '@/lib/organ-groups'
-import { ColumnHeaderFilter, type FilterGroup } from './ColumnHeaderFilter'
+import { ColumnHeaderFilter } from './ColumnHeaderFilter'
 import { BudgetLocationCell } from './BudgetLocationCell'
+import {
+  getColumnFilterGroups,
+  getColumnFilterOptions,
+  type FilterFacets,
+} from './columnFacets'
 import { COLUMN_DEFINITIONS, getMandateUrl } from './MandateColumns'
 import {
   GroupBadge,
@@ -59,16 +62,10 @@ import type { FilterParamKey } from '@/lib/filter-constants'
 const STICKY_DETAIL_CELL =
   'sticky right-0 z-10 border-l border-gray-200 shadow-[-8px_0_8px_-8px_rgba(0,0,0,0.18)]'
 
-// Facet option lists for the column filter popovers. Named FilterFacets to
-// avoid colliding with the data-layer FilterOptions (active filter *values*).
-interface FilterFacets {
-  budgetHierarchy: BudgetStream[]
-  programmes: { value: string; count: number }[]
-  subjects: { value: string; count: number }[]
-  documentTypes: { value: string; count: number }[]
-  agendaItems: { value: string; count: number }[]
-  yearRange: { min: number; max: number }
-  yearDistribution: Record<string, number>
+/** Cell text alignment, from the column's `align`. */
+const ALIGN_CLASS: Record<string, string> = {
+  right: 'text-right',
+  center: 'text-center',
 }
 
 interface MandateDataTableProps {
@@ -133,35 +130,9 @@ export function MandateDataTable({
     ? 'symbol'
     : columns[0]?.id
 
-  const getFilterOptions = (columnId: string) => {
-    switch (columnId) {
-      case 'organ':
-        // organCounts is already ordered by count DESC from the DB (faceted on
-        // all other active filters, see getOrganCounts). label = short so the
-        // acronym renders verbatim (titleCase would mangle e.g. ECOSOC).
-        return organCounts.map((o) => ({
-          value: o.short,
-          label: o.short,
-          count: o.count,
-        }))
-      case 'entity_list':
-        return entityCounts.map((e) => ({ value: e.entity, count: e.count }))
-      case 'subjects':
-        return filterOptions.subjects
-      case 'document_type':
-        return filterOptions.documentTypes
-      case 'agenda_item':
-        return filterOptions.agendaItems
-      default:
-        return undefined
-    }
-  }
-
-  // Organs group by their place in the UN system (shared with the /organs page).
-  const getFilterGroups = (columnId: string): FilterGroup[] | undefined =>
-    columnId === 'organ'
-      ? ORGAN_CATEGORIES.map((c) => ({ label: c.label, values: c.organs }))
-      : undefined
+  // The facet lists behind the header filters, shared with the columns/filters
+  // menu in the toolbar (see columnFacets.ts) so the two cannot disagree.
+  const facetSources = { organCounts, entityCounts, filterOptions }
 
   const findOrganLong = (short: string) =>
     organsData.find((o) => o.short === short)?.long || short
@@ -216,7 +187,7 @@ export function MandateDataTable({
                 {columns.map((col) => (
                   <TableHead
                     key={col.id}
-                    className={`${col.widthClass} ${col.minWidthClass || ''} ${col.align === 'right' ? 'text-right' : ''} ${col.id === 'detail' ? STICKY_DETAIL_CELL + ' bg-gray-50' : ''} h-10 px-3 text-xs font-medium tracking-wider text-muted-foreground uppercase`}
+                    className={`${col.widthClass} ${col.minWidthClass || ''} ${ALIGN_CLASS[col.align ?? ''] ?? ''} ${col.id === 'detail' ? STICKY_DETAIL_CELL + ' bg-gray-50' : ''} h-10 px-3 text-xs font-medium tracking-wider text-muted-foreground uppercase`}
                   >
                     {col.id === 'detail' ? (
                       // The rail carries no filter or sort, but the header cell
@@ -226,8 +197,11 @@ export function MandateDataTable({
                       <ColumnHeaderFilter
                         column={col}
                         currentSort={currentSort}
-                        filterOptions={getFilterOptions(col.id)}
-                        filterGroups={getFilterGroups(col.id)}
+                        filterOptions={getColumnFilterOptions(
+                          col.id,
+                          facetSources
+                        )}
+                        filterGroups={getColumnFilterGroups(col.id)}
                         yearRange={filterOptions.yearRange}
                         budgetHierarchy={filterOptions.budgetHierarchy}
                       />
@@ -269,7 +243,7 @@ export function MandateDataTable({
                         return (
                           <TableCell
                             key={col.id}
-                            className={`${col.align === 'right' ? 'text-right' : ''} ${col.id === 'detail' ? STICKY_DETAIL_CELL + ' bg-white group-hover:bg-gray-50' : ''} overflow-hidden px-3 py-2 align-top text-sm`}
+                            className={`${ALIGN_CLASS[col.align ?? ''] ?? ''} ${col.id === 'detail' ? STICKY_DETAIL_CELL + ' bg-white group-hover:bg-gray-50' : ''} overflow-hidden px-3 py-2 align-top text-sm`}
                           >
                             {showExpander || showMarkers ? (
                               // In the symbol cell, h-5 keeps the row exactly as
@@ -454,6 +428,25 @@ function PillList({
   )
 }
 
+/**
+ * The entities citing a document, foundational citers first: an entity that
+ * cites the document as the instrument its mandate derives from is the most
+ * interesting one in the row, and only the first two are visible in the
+ * Entities column before the "+N". The # Entities column counts this same list,
+ * so the number and the chips behind it can never disagree.
+ */
+function citingEntities(mandate: Mandate): string[] {
+  const foundational = mandate.foundational_entities ?? []
+  return (mandate.entities || [])
+    .filter((e) => e !== null)
+    .sort((a, b) => {
+      const aFound = foundational.includes(a)
+      const bFound = foundational.includes(b)
+      if (aFound !== bFound) return aFound ? -1 : 1
+      return a.localeCompare(b)
+    })
+}
+
 function CellContent({
   columnId,
   mandate,
@@ -545,19 +538,43 @@ function CellContent({
         <span>{mandate.year}</span>
       ) : null
 
+    case 'entity_count': {
+      // The same entities as the Entities column, as one number. Nothing at all
+      // when there are none: in the all-documents scope most rows are uncited,
+      // and a column of grey zeroes would drown the rows that are.
+      const foundational = mandate.foundational_entities ?? []
+      const entities = citingEntities(mandate)
+      if (entities.length === 0) return null
+      return (
+        <HoverCard openDelay={100} closeDelay={100}>
+          <HoverCardTrigger asChild>
+            {/* min-w-6 with padding, not a fixed size: a three-digit count
+                grows the circle into a pill rather than spilling out of it. */}
+            <span className="inline-flex min-w-6 cursor-default items-center justify-center rounded-full bg-un-blue px-1.5 py-0.5 text-xs font-medium text-white tabular-nums">
+              {entities.length}
+            </span>
+          </HoverCardTrigger>
+          <HoverCardContent className="w-auto max-w-sm border bg-white p-2 shadow-lg">
+            {/* Acronyms only — the long name is one hover further in, on each
+                chip, and this popup exists to be scanned. */}
+            <div className="flex flex-wrap gap-1">
+              {entities.map((entity) => (
+                <EntityBadge
+                  key={entity}
+                  entity={entity}
+                  foundational={isFoundational(entity, foundational)}
+                  onClick={() => onFacetClick('entity', entity)}
+                />
+              ))}
+            </div>
+          </HoverCardContent>
+        </HoverCard>
+      )
+    }
+
     case 'entity_list': {
       const foundational = mandate.foundational_entities ?? []
-      // Foundational citers first: an entity that cites the document as the
-      // instrument its mandate derives from is the most interesting one in the
-      // row, and only the first two entities are visible before the "+N".
-      const entities = (mandate.entities || [])
-        .filter((e) => e !== null)
-        .sort((a, b) => {
-          const aFound = foundational.includes(a)
-          const bFound = foundational.includes(b)
-          if (aFound !== bFound) return aFound ? -1 : 1
-          return a.localeCompare(b)
-        })
+      const entities = citingEntities(mandate)
       if (entities.length === 0) return null
       const maxShow = 2
       const visible = entities.slice(0, maxShow)

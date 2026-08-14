@@ -40,7 +40,12 @@ export function FilterBadge({
   return (
     <Chip density="touch" tone="neutral" className={className}>
       {Icon && <Icon aria-hidden className="size-3 shrink-0 self-center" />}
-      <span className="font-medium">{label}</span>
+      {/* `self-center`, like the icon and the dismiss button. The Chip base is
+          `items-baseline`, and with the 24px dismiss button next to it the label
+          was the only baseline-aligned item in the line: it got flushed to the
+          top of the chip, so the text sat visibly above the chip's middle and
+          out of line with the "Active filters" label beside it. */}
+      <span className="self-center font-medium">{label}</span>
       {showClearButton && onClear && (
         // 24px, not the old 16px: the smallest thing anyone is asked to hit in
         // this bar. `-mr-1` claws back part of the chip's own padding so the

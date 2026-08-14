@@ -15,9 +15,9 @@ import { titleCase } from 'title-case'
 import type { FilterParamKey } from '@/lib/filter-constants'
 import type { BudgetStream } from '@/types'
 import { BudgetHierarchyTree } from './BudgetHierarchyTree'
-import type { ColumnDef } from './MandateColumns'
+import { isColumnFilterActive, type ColumnDef } from './MandateColumns'
 
-interface FilterOption {
+export interface FilterOption {
   value: string
   label?: string
   count?: number
@@ -47,21 +47,9 @@ export function ColumnHeaderFilter({
   yearRange,
   budgetHierarchy,
 }: ColumnHeaderFilterProps) {
-  const { filters, setFilter, clearFilter, setMultipleFilters } = useFilters()
+  const { filters, setFilter } = useFilters()
 
-  const getFilterValue = (param: string): string | undefined =>
-    (filters as Record<string, string | undefined>)[param]
-
-  // The hierarchy filter writes to whichever level was clicked, so the column
-  // reads as filtered if any of them is set. `entity` is intentionally shared
-  // with the Entities column — it is the same filter, reached two ways.
-  const isFilterActive = column.filterParam
-    ? column.filterType === 'yearRange'
-      ? !!(filters.start_year || filters.end_year)
-      : column.filterType === 'hierarchy'
-        ? !!(filters.budget_part || filters.section || filters.subprogramme)
-        : !!getFilterValue(column.filterParam)
-    : false
+  const isFilterActive = isColumnFilterActive(column, filters)
 
   const sortDirection = column.sortKeys
     ? currentSort === column.sortKeys.asc
@@ -81,12 +69,26 @@ export function ColumnHeaderFilter({
   }
 
   return (
-    <div className="flex items-center gap-0.5">
+    <div
+      className={`flex items-center gap-0.5 ${
+        column.align === 'center' ? 'justify-center' : ''
+      }`}
+    >
       <span
         className={column.sortKeys ? 'cursor-pointer select-none' : ''}
         onClick={column.sortKeys ? handleSort : undefined}
       >
-        {column.label}
+        {/* `headerLabel` for the columns too narrow to spell themselves out —
+            the full label still names them in the columns/filters menu, and
+            the header cell carries it for assistive tech. */}
+        {column.headerLabel ? (
+          <>
+            <span aria-hidden>{column.headerLabel}</span>
+            <span className="sr-only">{column.label}</span>
+          </>
+        ) : (
+          column.label
+        )}
       </span>
 
       {column.sortKeys && (
@@ -112,19 +114,104 @@ export function ColumnHeaderFilter({
           groups={filterGroups}
           yearRange={yearRange}
           budgetHierarchy={budgetHierarchy}
-          currentValue={
-            column.filterType === 'yearRange'
-              ? undefined
-              : getFilterValue(column.filterParam)
-          }
-          startYear={filters.start_year}
-          endYear={filters.end_year}
-          setFilter={(key, value) => setFilter(key as FilterParamKey, value)}
-          clearFilter={(key) => clearFilter(key as FilterParamKey)}
-          setMultipleFilters={setMultipleFilters}
         />
       )}
     </div>
+  )
+}
+
+interface ColumnFilterBodyProps {
+  column: ColumnDef
+  options?: FilterOption[]
+  groups?: FilterGroup[]
+  yearRange?: { min: number; max: number }
+  budgetHierarchy?: BudgetStream[]
+  /** Called once the filter has been written, so the surface can close. */
+  onDone?: () => void
+}
+
+/**
+ * The controls for one column's filter, without any container of its own.
+ *
+ * Two surfaces render it: the funnel popover in the table header, and the
+ * "More columns and filters" menu, which reaches every column's filter without
+ * the reader having to switch the column on first. It reads and writes the
+ * filter state itself so neither surface has to thread the callbacks through.
+ */
+export function ColumnFilterBody({
+  column,
+  options,
+  groups,
+  yearRange,
+  budgetHierarchy,
+  onDone,
+}: ColumnFilterBodyProps) {
+  const { filters, setFilter, clearFilter, setMultipleFilters } = useFilters()
+
+  const currentValue =
+    column.filterParam && column.filterType !== 'yearRange'
+      ? (filters as Record<string, string | undefined>)[column.filterParam]
+      : undefined
+
+  const done = () => onDone?.()
+
+  return (
+    <>
+      {column.filterType === 'hierarchy' && (
+        <BudgetHierarchyTree hierarchy={budgetHierarchy ?? []} />
+      )}
+      {column.filterType === 'pill' && (
+        <PillFilter
+          filterParam={column.filterParam!}
+          options={options || []}
+          groups={groups}
+          currentValue={currentValue}
+          onSelect={(value) => {
+            setFilter(column.filterParam! as FilterParamKey, value)
+            done()
+          }}
+          onClear={() => {
+            clearFilter(column.filterParam! as FilterParamKey)
+            done()
+          }}
+        />
+      )}
+      {column.filterType === 'yearRange' && (
+        <YearRangeFilter
+          yearRange={yearRange}
+          startYear={filters.start_year}
+          endYear={filters.end_year}
+          onApply={(start, end) => {
+            setMultipleFilters({
+              start_year: start?.toString(),
+              end_year: end?.toString(),
+            })
+            done()
+          }}
+          onClear={() => {
+            setMultipleFilters({
+              start_year: undefined,
+              end_year: undefined,
+            })
+            done()
+          }}
+        />
+      )}
+      {column.filterType === 'simpleSelect' && (
+        <SimpleSelectFilter
+          options={options || []}
+          currentValue={currentValue}
+          onSelect={(value) => {
+            setFilter(column.filterParam! as FilterParamKey, value)
+            done()
+          }}
+          onClear={() => {
+            clearFilter(column.filterParam! as FilterParamKey)
+            done()
+          }}
+        />
+      )}
+    </>
   )
 }
 
@@ -135,12 +222,6 @@ interface FilterPopoverProps {
   groups?: FilterGroup[]
   yearRange?: { min: number; max: number }
   budgetHierarchy?: BudgetStream[]
-  currentValue?: string
-  startYear?: string
-  endYear?: string
-  setFilter: (key: string, value: string | undefined) => void
-  clearFilter: (key: string) => void
-  setMultipleFilters: (updates: Record<string, string | undefined>) => void
 }
 
 function FilterPopover({
@@ -150,12 +231,6 @@ function FilterPopover({
   groups,
   yearRange,
   budgetHierarchy,
-  currentValue,
-  startYear,
-  endYear,
-  setFilter,
-  clearFilter,
-  setMultipleFilters,
 }: FilterPopoverProps) {
   const [open, setOpen] = useState(false)
 
@@ -163,6 +238,7 @@ function FilterPopover({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <button
+          aria-label={`Filter by ${column.label}`}
           className={`flex h-5 w-5 items-center justify-center rounded transition-colors ${
             isActive
               ? 'bg-un-blue text-white'
@@ -179,61 +255,14 @@ function FilterPopover({
         }
         sideOffset={4}
       >
-        {column.filterType === 'hierarchy' && (
-          <BudgetHierarchyTree hierarchy={budgetHierarchy ?? []} />
-        )}
-        {column.filterType === 'pill' && (
-          <PillFilter
-            filterParam={column.filterParam!}
-            options={options || []}
-            groups={groups}
-            currentValue={currentValue}
-            onSelect={(value) => {
-              setFilter(column.filterParam!, value)
-              setOpen(false)
-            }}
-            onClear={() => {
-              clearFilter(column.filterParam!)
-              setOpen(false)
-            }}
-          />
-        )}
-        {column.filterType === 'yearRange' && (
-          <YearRangeFilter
-            yearRange={yearRange}
-            startYear={startYear}
-            endYear={endYear}
-            onApply={(start, end) => {
-              setMultipleFilters({
-                start_year: start?.toString(),
-                end_year: end?.toString(),
-              })
-              setOpen(false)
-            }}
-            onClear={() => {
-              setMultipleFilters({
-                start_year: undefined,
-                end_year: undefined,
-              })
-              setOpen(false)
-            }}
-          />
-        )}
-        {column.filterType === 'simpleSelect' && (
-          <SimpleSelectFilter
-            filterParam={column.filterParam!}
-            options={options || []}
-            currentValue={currentValue}
-            onSelect={(value) => {
-              setFilter(column.filterParam!, value)
-              setOpen(false)
-            }}
-            onClear={() => {
-              clearFilter(column.filterParam!)
-              setOpen(false)
-            }}
-          />
-        )}
+        <ColumnFilterBody
+          column={column}
+          options={options}
+          groups={groups}
+          yearRange={yearRange}
+          budgetHierarchy={budgetHierarchy}
+          onDone={() => setOpen(false)}
+        />
       </PopoverContent>
     </Popover>
   )
@@ -442,13 +471,11 @@ function YearRangeFilter({
 }
 
 function SimpleSelectFilter({
-  filterParam,
   options,
   currentValue,
   onSelect,
   onClear,
 }: {
-  filterParam: string
   options: FilterOption[]
   currentValue?: string
   onSelect: (value: string) => void

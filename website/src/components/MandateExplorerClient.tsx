@@ -133,6 +133,11 @@ export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
                       visibleColumns={visibleColumns}
                       onToggle={handleToggleColumn}
                       onReset={handleResetColumns}
+                      facets={{
+                        organCounts: organs,
+                        entityCounts: entities,
+                        filterOptions,
+                      }}
                     />
                   </div>
                 </div>

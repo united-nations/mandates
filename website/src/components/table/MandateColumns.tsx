@@ -1,6 +1,11 @@
+import type { FilterOptions } from '@/types'
+
 export interface ColumnDef {
   id: string
   label: string
+  /** Header text, when the column is too narrow for the full `label`. The
+   *  `label` still names it everywhere else (the columns/filters menu). */
+  headerLabel?: string
   defaultVisible: boolean
   sortKeys?: { asc: string; desc: string }
   filterParam?: string
@@ -122,6 +127,28 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
     minWidthClass: 'min-w-[150px]',
     align: 'left',
   },
+  {
+    // How many entities cite the document as a mandate, as one number — the
+    // figure the list is sorted by out of the box, so it is on by default and
+    // pinned to the right, immediately left of the Details rail (last in this
+    // array, and only `detail` is moved after it). The Entities column above is
+    // the same data spelled out; this is the glanceable form, with the full set
+    // of chips one hover away.
+    id: 'entity_count',
+    label: '# Entities',
+    headerLabel: '#',
+    defaultVisible: true,
+    sortKeys: {
+      asc: 'citing_entities_asc',
+      desc: 'citing_entities_desc',
+    },
+    // Same `entity` filter as the Entities column — one filter, reached two
+    // ways, exactly as the organ/budget columns already share theirs.
+    filterParam: 'entity',
+    filterType: 'pill',
+    widthClass: 'w-[84px]',
+    align: 'center',
+  },
 ]
 
 export const DEFAULT_VISIBLE_COLUMNS = new Set(
@@ -131,6 +158,29 @@ export const DEFAULT_VISIBLE_COLUMNS = new Set(
 export const TOGGLEABLE_COLUMNS = COLUMN_DEFINITIONS.filter(
   (c) => c.id !== 'detail'
 )
+
+/**
+ * Whether this column's filter currently holds a value.
+ *
+ * The hierarchy filter writes to whichever level was clicked, so the column
+ * reads as filtered if any of them is set. `entity` is intentionally shared
+ * between the Entities and # Entities columns — it is the same filter, reached
+ * several ways.
+ *
+ * Three places need the same answer: the header (does the funnel light up), the
+ * columns/filters menu, and the rule that a filtered column is always shown.
+ */
+export function isColumnFilterActive(
+  column: ColumnDef,
+  filters: FilterOptions
+): boolean {
+  if (!column.filterParam) return false
+  if (column.filterType === 'yearRange')
+    return !!(filters.start_year || filters.end_year)
+  if (column.filterType === 'hierarchy')
+    return !!(filters.budget_part || filters.section || filters.subprogramme)
+  return !!(filters as Record<string, string | undefined>)[column.filterParam]
+}
 
 export function getMandateUrl(
   symbol: string,

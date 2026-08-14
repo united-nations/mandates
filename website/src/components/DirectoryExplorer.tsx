@@ -158,9 +158,18 @@ export function DirectoryExplorer({
 
   const currentMode = filters.mode ?? 'all_resolutions'
   const activeVersion = versions.find((v) => v.slug === activeVersionSlug)
-  const citedPredicate = activeVersion
-    ? `cited as mandates in PPB ${activeVersion.ppb_year}`
-    : 'cited as mandates in the budget'
+  // The budget version is only named when it is NOT the current one. Naming it
+  // always ("…in PPB 2027") spent the card's second line on the default, which
+  // is what every reader already assumes; an older version is the exception and
+  // is the only case worth saying out loud.
+  const latestVersionYear = versions.reduce(
+    (year, v) => Math.max(year, v.ppb_year),
+    0
+  )
+  const citedPredicate =
+    activeVersion && activeVersion.ppb_year !== latestVersionYear
+      ? `cited as mandates in PPB ${activeVersion.ppb_year}`
+      : 'cited as mandates'
 
   // The scope each panel's numbers were computed under (see the doc comment):
   // the organ directory follows whatever scope is active; the catalogue panel is
@@ -402,15 +411,18 @@ function ExploreButton({
       )}
     >
       <span className="min-w-0 flex-1">
-        {/* The sentence, broken so the count and its noun carry the weight and
-            the verb phrase sits under them as the quiet half. */}
-        <span className="block leading-none">
-          <span className="text-3xl font-bold text-gray-900 tabular-nums">
-            {count.toLocaleString()}
-          </span>{' '}
-          <span className="text-base font-semibold text-gray-900">{noun}</span>
+        {/* The sentence, broken after the number. The noun used to sit inline
+            with it, which only fitted for short counts: at four cards across a
+            1024px viewport "27,942 documents" wrapped while "22 organs" did
+            not, so the four tiles disagreed about their own shape. The number
+            gets the first line on every card, the words the second. */}
+        <span className="block text-3xl leading-none font-bold text-gray-900 tabular-nums">
+          {count.toLocaleString()}
         </span>
-        <span className="mt-1.5 block text-sm text-gray-600">{predicate}</span>
+        <span className="mt-1.5 block text-sm leading-snug text-gray-600">
+          <span className="font-semibold text-gray-900">{noun}</span>{' '}
+          {predicate}
+        </span>
       </span>
       <ChevronRight
         aria-hidden
