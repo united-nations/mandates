@@ -62,6 +62,12 @@
 --   so the curated types set below -- Conclusions / Declaration / Report /
 --   Resolution -- are what surface. Nothing to reconcile.
 --
+-- ORGAN ATTRIBUTION
+--   Step 2b sets ppb_body ('CSW'), which the organ sidebar groups on. Without it
+--   the 40 documents are invisible to the organ filter and CSW drops out of the
+--   organ list on the PPB 2027 tab entirely -- CSW has no other 2027 documents.
+--   See sql/backfill_ppb_body.sql, which does the same thing repo-wide.
+--
 -- AFTER RUNNING: refresh the unified_documents materialized view --
 --     psql "$DATABASE_URL" -f sql/refresh_unified_documents.sql
 --
@@ -130,6 +136,31 @@ ON CONFLICT (ppb_full_document_symbol) DO UPDATE SET
     ppb_not_ods                   = EXCLUDED.ppb_not_ods,
     ppb_full_doc_symbol_available = EXCLUDED.ppb_full_doc_symbol_available,
     last_updated                  = now();
+
+-- 2b. Attribute the new documents to their organ.
+--     Importers set ppb_document_source (the fascicle's mandate body-header) but
+--     not ppb_body, and ppb_body is what the organ sidebar groups on -- it filters
+--     `ppb_body IS NOT NULL`, so documents without it are invisible there and the
+--     organ itself disappears from the 2027 list when it has no other documents.
+--     sql/backfill_ppb_body.sql exists for this and is meant to run after ANY PPB
+--     import; doing it here as well keeps this migration correct on its own.
+--     Derived through ppb2026.body_source_organ_map rather than hard-coding 'CSW',
+--     so it stays consistent with every other import (pattern 'Status of Women',
+--     priority 130 -> CSW, and CSW is already seeded in ppb2026.organs).
+UPDATE ppb2026.source_documents sd
+SET ppb_body = m.organ_short
+FROM (
+    SELECT DISTINCT ON (s.ppb_full_document_symbol)
+        s.ppb_full_document_symbol,
+        map.organ_short
+    FROM ppb2026.source_documents s
+    JOIN ppb2026.body_source_organ_map map
+        ON s.ppb_document_source ILIKE '%' || map.pattern || '%'
+    WHERE s.ppb_full_document_symbol IN (SELECT document_key FROM _csw_staging)
+    ORDER BY s.ppb_full_document_symbol, map.priority
+) m
+WHERE sd.ppb_full_document_symbol = m.ppb_full_document_symbol
+  AND sd.ppb_body IS DISTINCT FROM m.organ_short;
 
 -- 3. SCOPE: remove any existing PPB 2027 CSW citations before re-inserting --
 --    both the keys this CSV carries and any left by an earlier run (including
