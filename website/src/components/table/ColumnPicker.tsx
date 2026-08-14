@@ -2,13 +2,23 @@
 
 import { ChipCount } from '@/components/ui/chip'
 import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from '@/components/ui/hover-card'
+import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { useFilters } from '@/contexts/FilterContext'
 import { cn } from '@/lib/utils'
-import { Check, ChevronDown, Filter, SlidersHorizontal } from 'lucide-react'
+import {
+  Check,
+  ChevronDown,
+  ChevronRight,
+  SlidersHorizontal,
+} from 'lucide-react'
 import { useState } from 'react'
 import { ColumnFilterBody } from './ColumnHeaderFilter'
 import {
@@ -32,6 +42,12 @@ interface ColumnPickerProps {
 }
 
 /**
+ * Marks the fly-out panels, so the menu can tell a click inside one from a
+ * click that should close it (see onInteractOutside below).
+ */
+const FILTER_PANEL_SELECTOR = '[data-column-filter-panel]'
+
+/**
  * Lives in the explorer toolbar (next to "Group versions" and the scope
  * toggle), not in the table header: the table defaults to a handful of columns,
  * so the way to get the others back has to be visible without hunting for an
@@ -40,9 +56,10 @@ interface ColumnPickerProps {
  * It carries the filters too, not just the visibility switches. A column's
  * filter used to be reachable only from its own header, which meant filtering
  * by, say, document type began with knowing that a Document type column exists
- * and switching it on. Here every column names itself and opens its filter in
- * place; setting one switches its column on (see useColumnVisibility), so the
- * table always shows what it has been narrowed by.
+ * and switching it on. Here every column names itself and its filter folds out
+ * sideways on hover, one level further, the way a submenu does; setting one
+ * switches its column on (see useColumnVisibility), so the table always shows
+ * what it has been narrowed by.
  *
  * A Popover, not a DropdownMenu: the pill filters contain a search box, and a
  * Radix menu answers keystrokes with typeahead instead of letting them reach
@@ -55,7 +72,6 @@ export function ColumnPicker({
   facets,
 }: ColumnPickerProps) {
   const { filters } = useFilters()
-  const [openFilter, setOpenFilter] = useState<string | null>(null)
 
   const hasCustomization = TOGGLEABLE_COLUMNS.some(
     (col) => visibleColumns.has(col.id) !== DEFAULT_VISIBLE_COLUMNS.has(col.id)
@@ -84,7 +100,21 @@ export function ColumnPicker({
       {/* align="end": the trigger sits at the right end of the toolbar, so an
           "start"-aligned menu overhangs the content column into the page
           margin. */}
-      <PopoverContent align="end" className="w-80 p-1">
+      <PopoverContent
+        align="end"
+        className="w-64 p-1"
+        // A fly-out panel is portalled, so every click in it reads as "outside"
+        // and would close the menu under it. This is the one exception.
+        onInteractOutside={(event) => {
+          const target = event.detail.originalEvent.target
+          if (
+            target instanceof Element &&
+            target.closest(FILTER_PANEL_SELECTOR)
+          ) {
+            event.preventDefault()
+          }
+        }}
+      >
         <p className="px-2 py-1.5 text-xs text-muted-foreground">
           Columns to show, and their filters
         </p>
@@ -95,11 +125,7 @@ export function ColumnPicker({
               column={col}
               visible={visibleColumns.has(col.id)}
               filtered={isColumnFilterActive(col, filters)}
-              filterOpen={openFilter === col.id}
               onToggleVisible={() => onToggle(col.id)}
-              onToggleFilter={() =>
-                setOpenFilter((current) => (current === col.id ? null : col.id))
-              }
               facets={facets}
             />
           ))}
@@ -109,10 +135,7 @@ export function ColumnPicker({
             <div className="my-1 h-px bg-border" />
             <button
               type="button"
-              onClick={() => {
-                setOpenFilter(null)
-                onReset()
-              }}
+              onClick={onReset}
               className="w-full cursor-pointer rounded-sm px-2 py-1.5 text-left text-xs text-muted-foreground hover:bg-accent hover:text-foreground"
             >
               Reset to defaults
@@ -124,71 +147,108 @@ export function ColumnPicker({
   )
 }
 
+/**
+ * One column: a checkbox for the column itself, and — for the columns that have
+ * a filter — a fly-out holding it.
+ *
+ * The fly-out opens on hover, like a submenu, and also on click so it is not
+ * hover-only. It never closes on click: the pill filters are made of chips you
+ * click, and a panel that vanished under the pointer would take the second one
+ * with it.
+ */
 function ColumnRow({
   column,
   visible,
   filtered,
-  filterOpen,
   onToggleVisible,
-  onToggleFilter,
   facets,
 }: {
   column: ColumnDef
   visible: boolean
   filtered: boolean
-  filterOpen: boolean
   onToggleVisible: () => void
-  onToggleFilter: () => void
   facets: ColumnFacetSources
 }) {
+  const [open, setOpen] = useState(false)
   const hasFilter = Boolean(column.filterParam && column.filterType)
 
-  return (
-    <div>
-      <div className="flex items-center gap-1">
+  const row = (
+    <div
+      className={cn('flex items-center gap-1 rounded-sm', open && 'bg-accent')}
+    >
+      <button
+        type="button"
+        role="menuitemcheckbox"
+        aria-checked={visible}
+        // Stopped, or switching a column on would also fling its filter panel
+        // open: the whole row is the fly-out's hover/click trigger.
+        onClick={(event) => {
+          event.stopPropagation()
+          onToggleVisible()
+        }}
+        className="flex flex-1 cursor-pointer items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm hover:bg-accent"
+      >
+        <span className="flex size-4 shrink-0 items-center justify-center">
+          {visible && <Check className="size-4" />}
+        </span>
+        {column.label}
+      </button>
+      {hasFilter && (
         <button
           type="button"
-          role="menuitemcheckbox"
-          aria-checked={visible}
-          onClick={onToggleVisible}
-          className="flex flex-1 cursor-pointer items-center gap-2 rounded-sm py-1.5 pr-2 pl-2 text-left text-sm hover:bg-accent"
+          aria-expanded={open}
+          aria-label={`Filter by ${column.label}`}
+          onClick={() => setOpen(true)}
+          className={cn(
+            'flex h-6 shrink-0 cursor-pointer items-center gap-0.5 rounded px-1 text-xs transition-colors',
+            filtered ? 'text-un-blue' : 'text-gray-400'
+          )}
         >
-          <span className="flex size-4 shrink-0 items-center justify-center">
-            {visible && <Check className="size-4" />}
-          </span>
-          {column.label}
+          {/* The dot is the state: a column whose filter holds a value reads as
+              filtered from the closed menu, without opening anything. */}
+          {filtered && <span className="size-1.5 rounded-full bg-un-blue" />}
+          <ChevronRight className="size-3.5" />
         </button>
-        {hasFilter && (
-          <button
-            type="button"
-            onClick={onToggleFilter}
-            aria-expanded={filterOpen}
-            aria-label={`Filter by ${column.label}`}
-            className={cn(
-              'flex size-6 shrink-0 cursor-pointer items-center justify-center rounded transition-colors',
-              filtered
-                ? 'bg-un-blue text-white'
-                : 'text-gray-400 hover:bg-gray-200 hover:text-gray-600',
-              filterOpen && !filtered && 'bg-gray-200 text-gray-600'
-            )}
-          >
-            <Filter className="size-3" />
-          </button>
-        )}
-      </div>
-      {filterOpen && hasFilter && (
-        // Inline, not a nested popover: a popover inside a popover closes the
-        // outer one on the first outside-click Radix sees.
-        <div className="mt-1 mb-2 ml-6 overflow-x-auto border-l border-gray-200 pl-2">
-          <ColumnFilterBody
-            column={column}
-            options={getColumnFilterOptions(column.id, facets)}
-            groups={getColumnFilterGroups(column.id)}
-            yearRange={facets.filterOptions.yearRange}
-            budgetHierarchy={facets.filterOptions.budgetHierarchy}
-          />
-        </div>
       )}
     </div>
+  )
+
+  if (!hasFilter) return row
+
+  return (
+    <HoverCard
+      open={open}
+      onOpenChange={setOpen}
+      openDelay={150}
+      closeDelay={200}
+    >
+      <HoverCardTrigger asChild>
+        {/* The whole row is the hover target, submenu-style: the chevron says
+            where the filter is, but nobody should have to hit a 14px target to
+            get at it. */}
+        <div onClick={() => setOpen(true)}>{row}</div>
+      </HoverCardTrigger>
+      <HoverCardContent
+        data-column-filter-panel=""
+        side="left"
+        align="start"
+        sideOffset={8}
+        className={cn(
+          'w-auto border bg-white p-3 shadow-lg',
+          column.filterType === 'hierarchy' && 'w-[420px]'
+        )}
+      >
+        <p className="mb-2 text-xs font-medium text-muted-foreground">
+          Filter by {column.label}
+        </p>
+        <ColumnFilterBody
+          column={column}
+          options={getColumnFilterOptions(column.id, facets)}
+          groups={getColumnFilterGroups(column.id)}
+          yearRange={facets.filterOptions.yearRange}
+          budgetHierarchy={facets.filterOptions.budgetHierarchy}
+        />
+      </HoverCardContent>
+    </HoverCard>
   )
 }

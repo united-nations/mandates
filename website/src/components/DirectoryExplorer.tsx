@@ -406,21 +406,30 @@ function ExploreButton({
       onClick={onClick}
       aria-current={active ? 'true' : undefined}
       className={cn(
-        'group flex items-center gap-3 rounded-lg border bg-white px-5 py-4 text-left transition-all hover:border-un-blue hover:shadow-md focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:outline-none',
+        'group @container flex items-center gap-3 rounded-lg border bg-white px-5 py-4 text-left transition-all hover:border-un-blue hover:shadow-md focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:outline-none',
         active ? 'border-un-blue' : 'border-gray-200'
       )}
     >
       <span className="min-w-0 flex-1">
-        {/* The sentence, broken after the number. The noun used to sit inline
-            with it, which only fitted for short counts: at four cards across a
-            1024px viewport "27,942 documents" wrapped while "22 organs" did
-            not, so the four tiles disagreed about their own shape. The number
-            gets the first line on every card, the words the second. */}
-        <span className="block text-3xl leading-none font-bold text-gray-900 tabular-nums">
-          {count.toLocaleString()}
+        {/* The sentence, broken so the count and its noun carry the weight and
+            the verb phrase sits under them as the quiet half.
+
+            Count and noun share the first line on every card, and the type
+            scales with the card (hence @container, and cqw rather than a
+            breakpoint) so they always fit on it: at fixed sizes "27,942
+            documents" wrapped at four cards across a 1024px viewport while "22
+            organs" did not, and the four tiles disagreed about their own shape.
+            The clamp maxima are the old fixed sizes, so a roomy card — one or
+            two columns — looks exactly as it did. */}
+        <span className="block whitespace-nowrap">
+          <span className="text-[clamp(1.125rem,11.5cqw,1.875rem)] leading-none font-bold text-gray-900 tabular-nums">
+            {count.toLocaleString()}
+          </span>{' '}
+          <span className="text-[clamp(0.6875rem,6.3cqw,1rem)] font-semibold text-gray-900">
+            {noun}
+          </span>
         </span>
         <span className="mt-1.5 block text-sm leading-snug text-gray-600">
-          <span className="font-semibold text-gray-900">{noun}</span>{' '}
           {predicate}
         </span>
       </span>

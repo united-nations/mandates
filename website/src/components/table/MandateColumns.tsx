@@ -3,9 +3,6 @@ import type { FilterOptions } from '@/types'
 export interface ColumnDef {
   id: string
   label: string
-  /** Header text, when the column is too narrow for the full `label`. The
-   *  `label` still names it everywhere else (the columns/filters menu). */
-  headerLabel?: string
   defaultVisible: boolean
   sortKeys?: { asc: string; desc: string }
   filterParam?: string
@@ -136,7 +133,6 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
     // of chips one hover away.
     id: 'entity_count',
     label: '# Entities',
-    headerLabel: '#',
     defaultVisible: true,
     sortKeys: {
       asc: 'citing_entities_asc',
@@ -146,8 +142,10 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
     // ways, exactly as the organ/budget columns already share theirs.
     filterParam: 'entity',
     filterType: 'pill',
-    widthClass: 'w-[84px]',
-    align: 'center',
+    // Wide enough for "# ENTITIES" plus the sort chevron and the filter funnel;
+    // the circles themselves sit at the right edge, against the Details rail.
+    widthClass: 'w-[142px]',
+    align: 'right',
   },
 ]
 

@@ -39,6 +39,12 @@ interface ColumnHeaderFilterProps {
   budgetHierarchy?: BudgetStream[]
 }
 
+/** The header is a flex row, so `text-align` alone cannot place it. */
+const HEADER_JUSTIFY: Record<string, string> = {
+  right: 'justify-end',
+  center: 'justify-center',
+}
+
 export function ColumnHeaderFilter({
   column,
   currentSort,
@@ -71,24 +77,14 @@ export function ColumnHeaderFilter({
   return (
     <div
       className={`flex items-center gap-0.5 ${
-        column.align === 'center' ? 'justify-center' : ''
+        HEADER_JUSTIFY[column.align ?? ''] ?? ''
       }`}
     >
       <span
-        className={column.sortKeys ? 'cursor-pointer select-none' : ''}
+        className={`whitespace-nowrap ${column.sortKeys ? 'cursor-pointer select-none' : ''}`}
         onClick={column.sortKeys ? handleSort : undefined}
       >
-        {/* `headerLabel` for the columns too narrow to spell themselves out —
-            the full label still names them in the columns/filters menu, and
-            the header cell carries it for assistive tech. */}
-        {column.headerLabel ? (
-          <>
-            <span aria-hidden>{column.headerLabel}</span>
-            <span className="sr-only">{column.label}</span>
-          </>
-        ) : (
-          column.label
-        )}
+        {column.label}
       </span>
 
       {column.sortKeys && (

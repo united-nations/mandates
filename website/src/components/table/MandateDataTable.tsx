@@ -548,10 +548,14 @@ function CellContent({
       return (
         <HoverCard openDelay={100} closeDelay={100}>
           <HoverCardTrigger asChild>
-            {/* min-w-6 with padding, not a fixed size: a three-digit count
-                grows the circle into a pill rather than spilling out of it. */}
-            <span className="inline-flex min-w-6 cursor-default items-center justify-center rounded-full bg-un-blue px-1.5 py-0.5 text-xs font-medium text-white tabular-nums">
-              {entities.length}
+            {/* A fixed square box, so it is a circle and not an oval whatever
+                the number in it — the same treatment as the "N versions" badge
+                in the symbol cell (MandateSeriesIndicators), filled rather than
+                outlined because this one is a fact about the row, not a
+                control. Three digits would stretch it, so it clamps at 99+;
+                no document is cited by 100 entities anyway. */}
+            <span className="inline-flex size-5 cursor-default items-center justify-center rounded-full bg-un-blue text-[11px] font-medium text-white tabular-nums">
+              {entities.length > 99 ? '99+' : entities.length}
             </span>
           </HoverCardTrigger>
           <HoverCardContent className="w-auto max-w-sm border bg-white p-2 shadow-lg">
