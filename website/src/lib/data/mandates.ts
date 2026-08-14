@@ -1277,21 +1277,28 @@ export const getFilteredDocumentCount = cache((filters: FilterOptions = {}) =>
  * the page, the cards and scripts/check-card-counts.ts all derive them from ONE
  * definition instead of three copies that can drift apart.
  *
- * - `facets`    — the active filters minus everything that cannot change a count
- *                 (pagination, grouping, sort). Doubles as the cache key.
- * - `catalogue` — the whole catalogue under the selected version (card 2 and
- *                 its type/topic lists).
- * - `cited`     — the subset that version cites (cards 3 & 4).
+ * ONE rule governs all of them: a number honours every active filter, except
+ * the single dimension the panel it belongs to is offering choices in (that
+ * exclusion lives inside each query — getOrganHierarchy drops `organ`, and so
+ * on — because a facet whose own value constrains its own option list collapses
+ * to that value and can never be changed). Nothing else is pinned or forced,
+ * which is why panel selections can be purely additive.
  *
- * Cards 2 and 3 are the two arms of the `cited` dimension, so each pins that
- * dimension to its own value and honours every OTHER active filter — the same
- * own-dimension exclusion the organ and entity cards apply to `organ`/`entity`.
- * Both keep `ppb_version` untouched: it is the lens both cards are read
- * through, not a dimension either of them owns.
+ * - `facets`    — the active filters minus what cannot change a count
+ *                 (pagination, grouping, sort). What every card is counted
+ *                 under, and the cache key.
+ * - `allDocuments` — `facets` with `cited` ignored. The ONLY scope that departs
+ *                 from the active filters, and only because it backs the "All
+ *                 documents" option of the cited/all chooser itself: an option
+ *                 must state the count it would produce, not the current one.
+ * - `cited`     — `facets` with `cited` on. Backs the other option, and card 3.
+ *
+ * `ppb_version` is never touched by any of them: it is the lens all of this is
+ * read through, not a dimension any card owns.
  */
 export function exploreCardScopes(filters: FilterOptions): {
   facets: FilterOptions
-  catalogue: FilterOptions
+  allDocuments: FilterOptions
   cited: FilterOptions
 } {
   const facets: FilterOptions = {
@@ -1303,7 +1310,7 @@ export function exploreCardScopes(filters: FilterOptions): {
   }
   return {
     facets,
-    catalogue: { ...facets, cited: undefined },
+    allDocuments: { ...facets, cited: undefined },
     cited: { ...facets, cited: '1' },
   }
 }
@@ -1313,7 +1320,12 @@ export interface ExploreCardData {
   budgetStreams: BudgetStream[]
   subjectDomains: SubjectDomain[]
   documentTypes: DocumentTypeCatalogue
-  catalogueDocumentCount: number
+  /** Documents under the active filters with `cited` ignored — the "All
+   * documents" option of the cited/all chooser, and card 2 whenever that filter
+   * is off (when it is off, the two are the same number). */
+  allDocumentsCount: number
+  /** Documents under the active filters with `cited` on — the "Cited only"
+   * option, and card 3. */
   citedDocumentCount: number
 }
 
@@ -1328,7 +1340,7 @@ export interface ExploreCardData {
  * critical path for first paint.
  */
 export const getExploreCardData = cache((filters: FilterOptions = {}) => {
-  const { facets, catalogue, cited } = exploreCardScopes(filters)
+  const { facets, allDocuments, cited } = exploreCardScopes(filters)
   return unstable_cache(
     async (): Promise<ExploreCardData> => {
       const [
@@ -1336,20 +1348,23 @@ export const getExploreCardData = cache((filters: FilterOptions = {}) => {
         budgetStreams,
         subjectDomains,
         documentTypes,
-        catalogueDocumentCount,
+        allDocumentsCount,
         citedDocumentCount,
       ] = await Promise.all([
-        // Follows the active filters as they are, `cited` included: an organ
-        // exists on both sides of that dimension, so its count must be the one
-        // a click reproduces.
+        // The four directories all run on the active filters, unpinned. Each
+        // drops its own dimension internally so its option list stays
+        // navigable; nothing else is excluded, so every count a panel shows is
+        // the count the table returns when you click it.
         getOrganHierarchy(facets),
         // Backs BOTH the entity directory (card 4) and the budget-location tree
         // inside card 3, so those two can never state different numbers for the
         // same entity.
-        getBudgetHierarchy(cited),
-        getSubjectHierarchy(catalogue),
-        getDocumentTypeCatalogue(catalogue),
-        getFilteredDocumentCount(catalogue),
+        getBudgetHierarchy(facets),
+        getSubjectHierarchy(facets),
+        getDocumentTypeCatalogue(facets),
+        // The two options of the cited/all chooser. Card 2 is whichever one the
+        // active filters select (see DirectoryExplorer).
+        getFilteredDocumentCount(allDocuments),
         getFilteredDocumentCount(cited),
       ])
       return {
@@ -1357,7 +1372,7 @@ export const getExploreCardData = cache((filters: FilterOptions = {}) => {
         budgetStreams,
         subjectDomains,
         documentTypes,
-        catalogueDocumentCount,
+        allDocumentsCount,
         citedDocumentCount,
       }
     },

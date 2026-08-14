@@ -43,15 +43,15 @@ export default async function Page({ searchParams }: PageProps) {
   // skeleton and swaps in the data when it resolves.
   const dataPromise = getMandatePageData(filters)
 
-  // The four explore cards. Every number here honours the ACTIVE facet filters,
-  // so filtering to one entity moves all four — with one deliberate exception
-  // per card, its own dimension, dropped inside the query it comes from
+  // The four explore cards. Every number here honours the ACTIVE filters, so
+  // filtering to one entity moves all four — with one deliberate exception per
+  // card, its own dimension, dropped inside the query it comes from
   // (getOrganHierarchy drops `organ`, getBudgetHierarchy drops `entity` and the
   // budget levels, getSubjectHierarchy drops `subject`/`subject_domain`,
   // getDocumentTypeCatalogue drops `document_type`). Without that, picking an
-  // organ would make the organs card read "1". The scopes and the fetch itself
-  // live in the data layer (exploreCardScopes / getExploreCardData) so the cards
-  // and the panels cannot drift apart.
+  // organ would make the organs card read "1" and its list offer nothing else.
+  // The scopes and the fetch itself live in the data layer (exploreCardScopes /
+  // getExploreCardData) so the cards and the panels cannot drift apart.
   //
   // All four are read through ONE budget version (filters.ppb_version, else the
   // DB default) — the lens chosen in card 3's panel. It decides which citations
@@ -102,7 +102,7 @@ export default async function Page({ searchParams }: PageProps) {
           budgetStreams={cards.budgetStreams}
           subjectDomains={cards.subjectDomains}
           documentTypes={cards.documentTypes}
-          catalogueDocumentCount={cards.catalogueDocumentCount}
+          allDocumentsCount={cards.allDocumentsCount}
           citedDocumentCount={cards.citedDocumentCount}
           versions={versions}
           activeVersionSlug={activeVersionSlug}

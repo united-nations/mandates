@@ -33,24 +33,14 @@ import type {
 
 type Panel = 'organs' | 'catalogue' | 'cited' | 'entities'
 
-/**
- * How a panel's counts were computed, so a click can reproduce them.
- *
- * There is only one axis left: whether the count is over the whole catalogue or
- * over the cited subset. The budget version is NOT part of it — it is the lens
- * the entire page is read through, chosen once in card 3 and never changed as a
- * side effect of picking an organ or a section.
- */
-type Scope = { cited?: '1' }
-
 interface DirectoryExplorerProps {
   organGroups: OrganGroup[]
   budgetStreams: BudgetStream[]
   subjectDomains: SubjectDomain[]
   documentTypes: DocumentTypeCatalogue
-  /** Documents in the whole catalogue under the active facet filters. */
-  catalogueDocumentCount: number
-  /** Documents cited in the selected budget version, same facet filters. */
+  /** Documents under the active filters with `cited` ignored. */
+  allDocumentsCount: number
+  /** Documents under the active filters with `cited` on. */
   citedDocumentCount: number
   versions: { slug: string; ppb_year: number; display_name: string }[]
   /** The version card 3 describes: ?ppb_version, else the DB default. */
@@ -67,11 +57,11 @@ const CENTER_MODAL_STYLE = {
 } as React.CSSProperties
 
 /**
- * Dimension groups. Selecting a value inside a card clears its whole group
+ * Dimension groups. Selecting a value inside a panel clears its whole group
  * before setting the new value.
  *
  * INVARIANT, and the only thing keeping these tiles honest: each group here must
- * be exactly the set of params the query behind that card drops before counting
+ * be exactly the set of params the query behind that panel drops before counting
  * (see omitOwnDimension / the `delete scoped.*` blocks in lib/data/mandates.ts).
  * A count computed with X ignored, applied on top of an X that is still active,
  * returns fewer rows than the number the user clicked.
@@ -85,8 +75,6 @@ const DIMENSION_GROUPS: FilterParamKey[][] = [
   ['organ'],
   ['subject', 'subject_domain'],
   ['document_type'],
-  // Cards 2 and 3 are the two arms of this one; each drops it before counting.
-  ['cited'],
   // `programme` is legacy (superseded by section, reachable only from old
   // ?programme= links) but belongs to this group so it cannot linger.
   [
@@ -98,12 +86,6 @@ const DIMENSION_GROUPS: FilterParamKey[][] = [
     'programme',
   ],
 ]
-
-/** The whole catalogue; card 2's panel pins its selections to this scope. */
-const CATALOGUE_SCOPE: Scope = { cited: undefined }
-
-/** The cited subset; cards 3 and 4 pin their selections to this scope. */
-const CITED_SCOPE: Scope = { cited: '1' }
 
 /** Which filter param each level of the budget tree writes to. */
 const BUDGET_LEVEL_PARAM: Record<BudgetTreeLevel, FilterParamKey> = {
@@ -120,26 +102,31 @@ const BUDGET_LEVEL_PARAM: Record<BudgetTreeLevel, FilterParamKey> = {
  * mandates" — and doubles as a gateway: clicking it opens the matching directory
  * or filter panel.
  *
- * The four numbers, and what each panel does:
+ * ONE rule: every number honours every active filter. The single exception is
+ * the dimension a panel is itself offering choices in, which that panel's query
+ * drops so its option list cannot collapse to the value already chosen (see
+ * DIMENSION_GROUPS). Nothing is pinned to a scope, so every selection is purely
+ * ADDITIVE — it keeps the other filters and changes exactly the one dimension
+ * it names. A count therefore always predicts the number of rows the table then
+ * shows.
  *
- *   1. organs creating mandates       — getOrganHierarchy, active filters, drops `organ`
- *   2. documents adopted              — getFilteredDocumentCount(catalogue)
- *   3. documents cited as mandates    — getFilteredDocumentCount(cited)
- *   4. entities implementing mandates — getBudgetHierarchy, cited scope, drops `entity`
+ * The four numbers:
  *
- * Cards 2 and 3 are the two arms of one dimension (`cited`), so each pins that
- * dimension to its own value and honours every other active filter — the same
- * own-dimension exclusion cards 1 and 4 apply to `organ` and `entity`.
+ *   1. organs creating mandates       — getOrganHierarchy, drops `organ`
+ *   2. documents adopted              — the table total
+ *   3. documents cited as mandates    — the cited subset of it
+ *   4. entities implementing mandates — getBudgetHierarchy, drops `entity`
  *
- * Every number here is read through ONE budget version, chosen in card 3's
- * panel. That choice is a lens, not a filter: the list always covers the whole
+ * Card 2 IS the table total: when the `cited` filter is on it reads the cited
+ * count, so the two document tiles agree instead of one of them still claiming
+ * 43,000. Only card 3's chooser departs from that, because the "All documents"
+ * option must state the count it would produce rather than the current one.
+ *
+ * Every number is read through ONE budget version, chosen in card 3's panel.
+ * That choice is a lens, not a filter: the list always covers the whole
  * catalogue unified with what the selected version cites, and the version
  * decides which citations — counts, entities, budget locations — are attached
  * to those documents. Switching it therefore moves every number on the page.
- *
- * Every selection made inside a panel is ADDITIVE (it keeps the other active
- * filters) and forces the scope its panel's numbers were computed under, so a
- * node's count always predicts the number of rows the table then shows.
  *
  * Styling follows the UN Transparency Portal: a white tile with a grey border,
  * un-blue used only as an accent on hover, shadow on hover only, everything
@@ -150,7 +137,7 @@ export function DirectoryExplorer({
   budgetStreams,
   subjectDomains,
   documentTypes,
-  catalogueDocumentCount,
+  allDocumentsCount,
   citedDocumentCount,
   versions,
   activeVersionSlug,
@@ -169,14 +156,17 @@ export function DirectoryExplorer({
   )
 
   const isCitedOnly = filters.cited === '1'
+  // Card 2 is the table total, so it reads whichever of the two document counts
+  // the active filters select.
+  const tableDocumentCount = isCitedOnly ? citedDocumentCount : allDocumentsCount
   const activeVersion = versions.find((v) => v.slug === activeVersionSlug)
   const citedPredicate = activeVersion
     ? `cited as mandates in PPB ${activeVersion.ppb_year}`
     : 'cited as mandates in the budget'
 
-  /** Write filters the way the panel's counts assume: additively, in scope. */
+  /** Write one dimension, keeping every other active filter. */
   const applySelection = useCallback(
-    (param: FilterParamKey, value: string | undefined, scope?: Scope) => {
+    (param: FilterParamKey, value: string | undefined) => {
       const updates: Record<string, string | undefined> = {}
       // Clear the param's own dimension group — every count in the panel was
       // computed with that whole group ignored.
@@ -186,39 +176,24 @@ export function DirectoryExplorer({
       }
       updates[param] = value
       updates.page = undefined
-      // The version lens is never touched here — only the cited/all axis the
-      // panel's counts were computed on.
-      if (scope) updates.cited = scope.cited
       setMultipleFilters(updates as Partial<FilterOptions>)
       if (value !== undefined) scrollToMandates()
     },
     [setMultipleFilters]
   )
 
-  /** Build the adapter a directory uses to read and write one dimension. */
-  const selectionFor = useCallback(
-    (scope?: Scope): DirectorySelection => ({
+  /** The adapter every directory uses to read and write its one dimension. */
+  const selection = useMemo<DirectorySelection>(
+    () => ({
       active: (key: DirectoryFilterKey) => filters[key],
       select: (key: DirectoryFilterKey, value: string) => {
         const isActive = filters[key] === value
-        applySelection(key, isActive ? undefined : value, scope)
+        applySelection(key, isActive ? undefined : value)
         close()
       },
     }),
     [filters, applySelection, close]
   )
-
-  const organSelection = useMemo(
-    // No scope forced: organs exist on both sides of the cited/all axis and
-    // getOrganHierarchy counts them under whichever side is active.
-    () => selectionFor(undefined),
-    [selectionFor]
-  )
-  const catalogueSelection = useMemo(
-    () => selectionFor(CATALOGUE_SCOPE),
-    [selectionFor]
-  )
-  const budgetSelection = useMemo(() => selectionFor(CITED_SCOPE), [selectionFor])
 
   /** Narrow to the cited subset, or widen back to the whole catalogue. */
   const setCited = (cited: boolean) => {
@@ -243,7 +218,7 @@ export function DirectoryExplorer({
   const selectBudgetLocation = (level: BudgetTreeLevel, value: string) => {
     const param = BUDGET_LEVEL_PARAM[level]
     const isActive = filters[param] === value
-    applySelection(param, isActive ? undefined : value, CITED_SCOPE)
+    applySelection(param, isActive ? undefined : value)
     close()
   }
 
@@ -256,17 +231,15 @@ export function DirectoryExplorer({
         onClick={() => setPanel('organs')}
       />
       <ExploreButton
-        count={catalogueDocumentCount}
+        count={tableDocumentCount}
         noun="documents"
         predicate="adopted"
-        active={!isCitedOnly}
         onClick={() => setPanel('catalogue')}
       />
       <ExploreButton
         count={citedDocumentCount}
         noun="documents"
         predicate={citedPredicate}
-        active={isCitedOnly}
         onClick={() => setPanel('cited')}
       />
       <ExploreButton
@@ -282,19 +255,19 @@ export function DirectoryExplorer({
         title="Organs creating mandates"
         hint="Click an organ to add it to the filters below."
       >
-        <OrgansDirectory groups={organGroups} selection={organSelection} />
+        <OrgansDirectory groups={organGroups} selection={selection} />
       </DirectoryDialog>
 
       <DirectoryDialog
         open={panel === 'catalogue'}
         onClose={close}
         title="Documents adopted"
-        hint={`The ${catalogueDocumentCount.toLocaleString()} documents matching the current filters, across the whole catalogue — resolutions, decisions and presidential statements of the General Assembly, Security Council, ECOSOC and Human Rights Council, plus anything else the budget cites. Counts below are for that whole catalogue, so picking a type or topic also switches the table to it.`}
+        hint={`The ${tableDocumentCount.toLocaleString()} documents matching the current filters — resolutions, decisions and presidential statements of the General Assembly, Security Council, ECOSOC and Human Rights Council, plus anything else the budget cites. Every count below is under those same filters, so picking a type or topic narrows the table to exactly that number.`}
       >
         <DocumentsDirectory
           domains={subjectDomains}
           documentTypes={documentTypes}
-          selection={catalogueSelection}
+          selection={selection}
         />
       </DirectoryDialog>
 
@@ -330,7 +303,7 @@ export function DirectoryExplorer({
             <div className="flex flex-wrap gap-2">
               <ScopeButton
                 label="All documents"
-                detail={`${catalogueDocumentCount.toLocaleString()} documents`}
+                detail={`${allDocumentsCount.toLocaleString()} documents`}
                 selected={!isCitedOnly}
                 onClick={() => setCited(false)}
               />
@@ -377,10 +350,7 @@ export function DirectoryExplorer({
         title="Entities implementing mandates"
         hint="Click an entity to show the mandates it cites in the budget."
       >
-        <EntitiesDirectory
-          streams={budgetStreams}
-          selection={budgetSelection}
-        />
+        <EntitiesDirectory streams={budgetStreams} selection={selection} />
       </DirectoryDialog>
     </div>
   )
@@ -399,25 +369,18 @@ function ExploreButton({
   count,
   noun,
   predicate,
-  active = false,
   onClick,
 }: {
   count: number
   noun: string
   predicate: string
-  /** The card describes the scope the table is currently in. */
-  active?: boolean
   onClick: () => void
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      aria-current={active ? 'true' : undefined}
-      className={cn(
-        'group flex items-center gap-3 rounded-lg border bg-white px-5 py-4 text-left transition-all hover:border-un-blue hover:shadow-md focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:outline-none',
-        active ? 'border-un-blue' : 'border-gray-200'
-      )}
+      className="group flex items-center gap-3 rounded-lg border border-gray-200 bg-white px-5 py-4 text-left transition-all hover:border-un-blue hover:shadow-md focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:outline-none"
     >
       <span className="min-w-0 flex-1">
         {/* The sentence, broken so the count and its noun carry the weight and
