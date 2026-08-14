@@ -2151,7 +2151,12 @@ function sortBudgetLocations(
  * current grouping set, which is what tells "this level was not grouped" apart
  * from "the value here is genuinely NULL" (citations with no subprogramme).
  */
-export async function getBudgetHierarchy(
+export const getBudgetHierarchy = cache(_getBudgetHierarchyInner)
+
+/** Request-cached above: the page asks for this tree twice per render (the
+ *  shared page data and the explore cards), and it is the most expensive panel
+ *  on the page. */
+async function _getBudgetHierarchyInner(
   filters: FilterOptions = {}
 ): Promise<BudgetStream[]> {
   // Conjunctive, like every other count on the page: the tree's own levels
@@ -2184,79 +2189,93 @@ export async function getBudgetHierarchy(
         ON c.origin_document ~ bd.match_pattern
     )`
 
-  // Stream totals + the active version's display name for each stream.
-  const totalsQuery = `
-    WITH ${cte}, ${citesCte}
-    SELECT doc_type,
-           MIN(stream_label) AS label,
-           MIN(stream_sort)  AS sort_order,
-           COUNT(DISTINCT sym) AS count
-    FROM cites
-    GROUP BY doc_type`
-
   const partCols = 'p.budget_part_number, bp.part_title, bp.sort_order'
   const sectionCols =
     'p.section, p.section_title, bs.sort_order, p.programme, p.programme_title'
   const entityCols = 'p.entity, e.entity_long'
   const subprogrammeCols = 'p.sub_programme, p.sub_programme_number'
 
-  const ppbQuery = `
+  // All three result sets in ONE query. They were three, and each rebuilt
+  // filtered_docs and cites from scratch — the same scan three times for one
+  // panel. As sibling CTEs they share a single materialised `cites`.
+  //
+  // Counts are cast to text so each row arrives in exactly the shape its
+  // interface already declares (pg returns bigint as text; to_jsonb of a
+  // bigint would give a JSON number instead).
+  const query = `
     WITH ${cte}, ${citesCte},
-    p AS (SELECT * FROM cites WHERE doc_type = 'ppb')
-    SELECT
-      3 - (
-        GROUPING(p.section) + GROUPING(p.entity) + GROUPING(p.sub_programme)
-      ) AS depth,
-      p.budget_part_number AS part,
-      bp.part_title,
-      bp.sort_order AS part_sort,
-      p.section,
-      p.section_title,
-      bs.sort_order AS section_sort,
-      p.programme,
-      p.programme_title,
-      p.entity,
-      e.entity_long,
-      p.sub_programme,
-      p.sub_programme_number,
-      COUNT(DISTINCT p.sym) AS count
-    FROM p
-    JOIN ppb2026.budget_parts bp
-      ON bp.part_number = p.budget_part_number
-    LEFT JOIN ppb2026.budget_sections bs
-      ON bs.section = regexp_replace(p.section, '\\s*\\(Add\\..*\\)$', '')
-    LEFT JOIN systemchart.entities e
-      ON e.entity = p.entity
-    GROUP BY GROUPING SETS (
-      (${partCols}),
-      (${partCols}, ${sectionCols}),
-      (${partCols}, ${sectionCols}, ${entityCols}),
-      (${partCols}, ${sectionCols}, ${entityCols}, ${subprogrammeCols})
-    )`
-
-  // PKO: split by support-account flag, then entity. Grouping on entity (not
-  // section) collapses each mission's Add.N financing fascicles into one row.
-  const pkoQuery = `
-    WITH ${cte}, ${citesCte},
+    p AS (SELECT * FROM cites WHERE doc_type = 'ppb'),
     pk AS (
       SELECT * FROM cites
       WHERE doc_type = 'pko' AND entity IS NOT NULL AND entity <> ''
+    ),
+    totals AS (
+      SELECT doc_type,
+             MIN(stream_label) AS label,
+             MIN(stream_sort)  AS sort_order,
+             COUNT(DISTINCT sym)::text AS count
+      FROM cites
+      GROUP BY doc_type
+    ),
+    ppb_rows AS (
+      SELECT
+        3 - (
+          GROUPING(p.section) + GROUPING(p.entity) + GROUPING(p.sub_programme)
+        ) AS depth,
+        p.budget_part_number AS part,
+        bp.part_title,
+        bp.sort_order AS part_sort,
+        p.section,
+        p.section_title,
+        bs.sort_order AS section_sort,
+        p.programme,
+        p.programme_title,
+        p.entity,
+        e.entity_long,
+        p.sub_programme,
+        p.sub_programme_number,
+        COUNT(DISTINCT p.sym)::text AS count
+      FROM p
+      JOIN ppb2026.budget_parts bp
+        ON bp.part_number = p.budget_part_number
+      LEFT JOIN ppb2026.budget_sections bs
+        ON bs.section = regexp_replace(p.section, '\\s*\\(Add\\..*\\)$', '')
+      LEFT JOIN systemchart.entities e
+        ON e.entity = p.entity
+      GROUP BY GROUPING SETS (
+        (${partCols}),
+        (${partCols}, ${sectionCols}),
+        (${partCols}, ${sectionCols}, ${entityCols}),
+        (${partCols}, ${sectionCols}, ${entityCols}, ${subprogrammeCols})
+      )
+    ),
+    -- PKO: split by support-account flag, then entity. Grouping on entity (not
+    -- section) collapses each mission's Add.N financing fascicles into one row.
+    pko_rows AS (
+      SELECT
+        pk.is_support,
+        GROUPING(pk.entity) AS grp,
+        pk.entity,
+        e.entity_long,
+        COUNT(DISTINCT pk.sym)::text AS count
+      FROM pk
+      LEFT JOIN systemchart.entities e ON e.entity = pk.entity
+      GROUP BY GROUPING SETS ((pk.is_support), (pk.is_support, pk.entity, e.entity_long))
     )
     SELECT
-      pk.is_support,
-      GROUPING(pk.entity) AS grp,
-      pk.entity,
-      e.entity_long,
-      COUNT(DISTINCT pk.sym) AS count
-    FROM pk
-    LEFT JOIN systemchart.entities e ON e.entity = pk.entity
-    GROUP BY GROUPING SETS ((pk.is_support), (pk.is_support, pk.entity, e.entity_long))`
+      (SELECT jsonb_agg(to_jsonb(t)) FROM totals t)    AS totals,
+      (SELECT jsonb_agg(to_jsonb(r)) FROM ppb_rows r)  AS ppb_rows,
+      (SELECT jsonb_agg(to_jsonb(r)) FROM pko_rows r)  AS pko_rows`
 
-  const [totals, ppbRows, pkoRows] = await Promise.all([
-    queryMany<StreamTotalRow>(totalsQuery, params),
-    queryMany<HierarchyRow>(ppbQuery, params),
-    queryMany<PkoRow>(pkoQuery, params),
-  ])
+  const bundle = await queryOne<{
+    totals: StreamTotalRow[] | null
+    ppb_rows: HierarchyRow[] | null
+    pko_rows: PkoRow[] | null
+  }>(query, params)
+
+  const totals = bundle?.totals ?? []
+  const ppbRows = bundle?.ppb_rows ?? []
+  const pkoRows = bundle?.pko_rows ?? []
 
   const byType = new Map(
     totals.map((t) => [
