@@ -5,14 +5,18 @@
  */
 
 import { unstable_cache } from 'next/cache'
+import { cache } from 'react'
 import { queryMany } from '../db/query'
 import type { Entity } from '@/types'
 
 /**
  * Get all entities from the database.
  * Cached across requests; revalidates every hour.
+ *
+ * Also React-`cache()`d below, so concurrent callers within one render share a
+ * single promise instead of each missing a cold unstable_cache entry.
  */
-export const getAllEntities = unstable_cache(
+const loadAllEntities = unstable_cache(
   async (): Promise<Entity[]> => {
     const query = `
       SELECT
@@ -33,4 +37,6 @@ export const getAllEntities = unstable_cache(
   ['entities'],
   { revalidate: 3600 }
 )
+
+export const getAllEntities = cache(loadAllEntities)
 
