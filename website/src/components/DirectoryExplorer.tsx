@@ -406,36 +406,40 @@ function ExploreButton({
       onClick={onClick}
       aria-current={active ? 'true' : undefined}
       className={cn(
-        'group @container flex items-center gap-3 rounded-lg border bg-white px-5 py-4 text-left transition-all hover:border-un-blue hover:shadow-md focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:outline-none',
+        'group @container relative block rounded-lg border bg-white px-5 py-4 text-left transition-all hover:border-un-blue hover:shadow-md focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:outline-none',
         active ? 'border-un-blue' : 'border-gray-200'
       )}
     >
-      <span className="min-w-0 flex-1">
-        {/* The sentence, broken so the count and its noun carry the weight and
-            the verb phrase sits under them as the quiet half.
+      {/* The sentence, broken so the count and its noun carry the weight and
+          the verb phrase sits under them as the quiet half.
 
-            Count and noun share the first line on every card, and the type
-            scales with the card (hence @container, and cqw rather than a
-            breakpoint) so they always fit on it: at fixed sizes "27,942
-            documents" wrapped at four cards across a 1024px viewport while "22
-            organs" did not, and the four tiles disagreed about their own shape.
-            The clamp maxima are the old fixed sizes, so a roomy card — one or
-            two columns — looks exactly as it did. */}
-        <span className="block whitespace-nowrap">
-          <span className="text-[clamp(1.125rem,11.5cqw,1.875rem)] leading-none font-bold text-gray-900 tabular-nums">
-            {count.toLocaleString()}
-          </span>{' '}
-          <span className="text-[clamp(0.6875rem,6.3cqw,1rem)] font-semibold text-gray-900">
-            {noun}
-          </span>
+          Count and noun share the first line on every card, and the type scales
+          with the card (hence @container, and cqw rather than a breakpoint) so
+          they always fit on it: at fixed sizes "42,904 documents" wrapped at
+          four cards across a 1024px viewport while "22 organs" did not, and the
+          four tiles disagreed about their own shape. The coefficient is set by
+          the longest line any card can hold — a six-figure count plus
+          "documents" — so the type is as large as that line allows and every
+          card is sized alike.
+
+          The chevron is out of the flow (bottom right, beside the quiet line)
+          rather than a flex sibling: in the flow it took 32px off the top line
+          of every card, and the top line is the one that needed the room. */}
+      <span className="block leading-tight whitespace-nowrap">
+        <span className="text-[clamp(1.25rem,14.5cqw,2.25rem)] leading-none font-bold text-gray-900 tabular-nums">
+          {count.toLocaleString()}
+        </span>{' '}
+        <span className="text-[clamp(0.75rem,7.9cqw,1.25rem)] font-semibold text-gray-900">
+          {noun}
         </span>
-        <span className="mt-1.5 block text-sm leading-snug text-gray-600">
-          {predicate}
-        </span>
+      </span>
+      {/* pr-7 keeps the quiet line clear of the chevron. */}
+      <span className="mt-1.5 block pr-7 text-sm leading-snug text-gray-600">
+        {predicate}
       </span>
       <ChevronRight
         aria-hidden
-        className="size-5 shrink-0 text-gray-300 transition-transform group-hover:translate-x-0.5 group-hover:text-un-blue"
+        className="absolute right-4 bottom-4 size-5 text-gray-300 transition-transform group-hover:translate-x-0.5 group-hover:text-un-blue"
       />
     </button>
   )
