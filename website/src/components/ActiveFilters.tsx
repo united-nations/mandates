@@ -26,6 +26,8 @@ interface Organ {
 interface ActiveFiltersProps {
   entitiesData: Entity[]
   allOrgans: Organ[]
+  /** How the `cited` chip names the budget on display, e.g. "PPB 2027". */
+  citedVersionLabel?: string
   className?: string
 }
 
@@ -40,6 +42,7 @@ interface ActiveFiltersProps {
 export function ActiveFilters({
   entitiesData,
   allOrgans,
+  citedVersionLabel,
   className,
 }: ActiveFiltersProps) {
   const { filters, clearFilter, clearAllFilters } = useFilters()
@@ -49,7 +52,8 @@ export function ActiveFilters({
   delete displayFilters.limit
   delete displayFilters.sort_by
   delete displayFilters.keyword
-  delete displayFilters.mode
+  // The version lens is a control, not a filter: it has its own switch in the
+  // "documents cited as mandates" card and there is no "off" state to clear to.
   delete displayFilters.ppb_version
   delete displayFilters.group
 
@@ -76,6 +80,13 @@ export function ActiveFilters({
             <FilterBadge
               label={`"${filters.keyword}"`}
               onClear={() => clearFilter('keyword')}
+            />
+          )}
+
+          {displayFilters.cited === '1' && (
+            <FilterBadge
+              label={`Cited in ${citedVersionLabel ?? 'the budget'}`}
+              onClear={() => clearFilter('cited')}
             />
           )}
 

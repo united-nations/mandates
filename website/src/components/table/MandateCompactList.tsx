@@ -44,7 +44,7 @@ export function MandateCompactList({ mandates }: MandateCompactListProps) {
     router.push(
       getMandateUrl(
         mandate.full_document_symbol,
-        { ppb_version: filters.ppb_version, mode: filters.mode },
+        { ppb_version: filters.ppb_version },
         searchParams
       )
     )
@@ -121,10 +121,7 @@ export function MandateCompactList({ mandates }: MandateCompactListProps) {
                       router.push(
                         getMandateUrl(
                           member.symbol,
-                          {
-                            ppb_version: filters.ppb_version,
-                            mode: filters.mode,
-                          },
+                          { ppb_version: filters.ppb_version },
                           searchParams
                         )
                       )

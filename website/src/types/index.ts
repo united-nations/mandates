@@ -360,7 +360,17 @@ export interface FilterOptions {
   full_document_symbol?: string
   min_citations?: string
   max_citations?: string
-  mode?: 'active_mandates' | 'all_resolutions'
+  /**
+   * '1' narrows the catalogue to the documents the selected budget version
+   * cites as mandates. Replaces the former `mode` scope switch, which also
+   * decided (invisibly) whether citation data was version-scoped at all.
+   */
+  cited?: string
+  /**
+   * The budget version the page is read through: which PPB supplies the
+   * citation counts, entities and budget locations shown against every
+   * document. Absent = the DB default (ppb2026.budget_versions.is_default).
+   */
   ppb_version?: string
   /** '1' collapses the list to one row per resolution series (group versions) */
   group?: string

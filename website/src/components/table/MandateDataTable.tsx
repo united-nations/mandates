@@ -190,7 +190,7 @@ export function MandateDataTable({
   const mandateHref = (symbol: string) =>
     getMandateUrl(
       symbol,
-      { ppb_version: filters.ppb_version, mode: filters.mode },
+      { ppb_version: filters.ppb_version },
       searchParams
     )
 

@@ -189,6 +189,13 @@ interface FilterClauses {
    * Reuses the single bound ppb_version param (no extra params).
    */
   versionClause: (alias: string) => string
+  /**
+   * The `$n` placeholder the selected ppb_version is bound at. Exposed so
+   * queries that reach past the shared CTE (getMandateCounts' catalogue-wide
+   * totals) can scope to the SAME version instead of re-binding it or, worse,
+   * assuming a positional `$1`.
+   */
+  versionParam: string
 }
 
 /**
@@ -218,50 +225,62 @@ function buildFilterClauses(
   const params: SqlParam[] = []
   let paramIndex = paramOffset + 1
 
-  // Version scoping: every citation-based filter must match citations that
-  // originate from the selected budget version, otherwise filters like
-  // `entity` leak citations from other versions (e.g. PPB 2026 DCO rows
-  // showing up under ppb_version=ppb2027).
+  // Version scoping. The selected budget version is a LENS, not a scope tab:
+  // the page always shows the whole document catalogue, and the version decides
+  // which citations are attached to it. Every citation-based filter and every
+  // displayed aggregate must therefore match citations originating from the
+  // selected version only — otherwise `entity` leaks citations from other
+  // versions (PPB 2026 DCO rows showing up under ppb_version=ppb2027) and the
+  // citation counts on the list are the SUM of two budget cycles for the 1,314
+  // documents both cycles cite.
   //
   // A version is a data-driven grouping of budget documents
-  // (ppb2026.budget_versions <- ppb2026.budget_documents.version_slug):
+  // (ppb2026.budget_versions <- ppb2026.budget_document_versions):
   //   ppb2026 = PPB 2026 + Peacekeeping 2025/26
   //   ppb2027 = PPB 2027 + Peacekeeping 2026/27
   // so a citation belongs to version V iff its origin_document matches the
-  // match_pattern of any budget_document whose version_slug = V. The
-  // selected slug is bound once and reused across every call site; an
-  // unknown/absent slug falls back to the table's default version (no
-  // regex is ever built from user input -> no ReDoS surface).
-  let versionClause: (alias: string) => string = () => 'TRUE'
-  if (filters.mode !== 'all_resolutions') {
-    params.push(filters.ppb_version ?? null)
-    const vIdx = paramIndex
-    paramIndex++
-    versionClause = (a) => versionPredicateSql(a, `$${vIdx}`)
+  // match_pattern of any budget_document mapped to V. The selected slug is
+  // bound ONCE here and reused across every call site; an unknown/absent slug
+  // falls back to the table's default version (no regex is ever built from user
+  // input -> no ReDoS surface).
+  params.push(filters.ppb_version ?? null)
+  const versionParam = `$${paramIndex}`
+  paramIndex++
+  const versionClause = (a: string) => versionPredicateSql(a, versionParam)
 
-    // Mode membership: the document must be cited in the selected version.
+  // Membership: the catalogue, unified with what the SELECTED version cites.
+  // "Catalogue" is anything matching one of the 8 symbol families (A/RES,
+  // A/DEC, S/RES, S/PRST, E/RES, E/DEC, A/HRC/RES, A/HRC/PRST); the definition
+  // lives in the matview (column is_catalog_pattern, set in migration 020) so
+  // the regex stays in exactly one place.
+  //
+  // The union arm follows the selected version rather than the default one, so
+  // switching the lens moves the row set with it: 42,904 documents under PPB
+  // 2027, 43,020 under PPB 2026. That keeps the set self-consistent — every row
+  // outside the 8 families is there BECAUSE the version on display cites it, so
+  // no row can appear with nothing to show for itself.
+  clauses.push(`
+    (
+      d.is_catalog_pattern
+      OR EXISTS (
+        SELECT 1 FROM ppb2026.source_document_citations c_cat
+        WHERE c_cat.ppb_full_document_symbol = d.ppb_full_document_symbol
+        AND ${versionClause('c_cat')}
+      )
+    )
+  `)
+
+  // "Cited as mandates" — the subset of the catalogue the selected version
+  // cites (the 2,737 / 3,962 documents behind explore card 3). This used to be
+  // `mode=active_mandates`, a hidden scope switch that also silently turned
+  // version scoping OFF for the other arm. It is now an ordinary, removable
+  // filter that composes with every other one.
+  if (filters.cited === '1') {
     clauses.push(`
       EXISTS (
         SELECT 1 FROM ppb2026.source_document_citations c_ppb
         WHERE c_ppb.ppb_full_document_symbol = d.ppb_full_document_symbol
         AND ${versionClause('c_ppb')}
-      )
-    `)
-  } else {
-    // All-resolutions mode: catalog scope is "anything matching one of the 8
-    // symbol families (A/RES, A/DEC, S/RES, S/PRST, E/RES, E/DEC, A/HRC/RES,
-    // A/HRC/PRST) ∪ anything cited in the latest budget version". The
-    // 8-pattern definition lives in the matview (column is_catalog_pattern,
-    // set in migration 020) so the regex stays in exactly one place; the
-    // "latest version" predicate reuses versionPredicateSql.
-    clauses.push(`
-      (
-        d.is_catalog_pattern
-        OR EXISTS (
-          SELECT 1 FROM ppb2026.source_document_citations c_latest
-          WHERE c_latest.ppb_full_document_symbol = d.ppb_full_document_symbol
-          AND ${versionPredicateSql('c_latest', 'NULL')}
-        )
       )
     `)
   }
@@ -531,7 +550,13 @@ function buildFilterClauses(
     paramIndex++
   }
 
-  return { clauses, params: [...params, ...havingParams], havingClauses, versionClause }
+  return {
+    clauses,
+    params: [...params, ...havingParams],
+    havingClauses,
+    versionClause,
+    versionParam,
+  }
 }
 
 /**
@@ -548,8 +573,14 @@ function buildFilterClauses(
 function buildFilteredDocsCTE(
   filters: FilterOptions,
   opts: { selectCols: string; groupCols: string; name?: string }
-): { cte: string; params: SqlParam[]; versionClause: (alias: string) => string } {
-  const { clauses, params, havingClauses, versionClause } = buildFilterClauses(filters)
+): {
+  cte: string
+  params: SqlParam[]
+  versionClause: (alias: string) => string
+  versionParam: string
+} {
+  const { clauses, params, havingClauses, versionClause, versionParam } =
+    buildFilterClauses(filters)
   const whereClause = clauses.length > 0 ? `WHERE ${clauses.join(' AND ')}` : ''
   const havingClause =
     havingClauses.length > 0 ? `HAVING ${havingClauses.join(' AND ')}` : ''
@@ -569,7 +600,7 @@ function buildFilteredDocsCTE(
       ${havingClause}
     )`
 
-  return { cte, params, versionClause }
+  return { cte, params, versionClause, versionParam }
 }
 
 /**
@@ -1173,24 +1204,26 @@ export async function getMandateCounts(filters: FilterOptions = {}): Promise<{
   totalOrgans: number
   totalCitations: number
 }> {
-  const { cte, params } = buildFilteredDocsCTE(filters, {
+  const { cte, params, versionParam } = buildFilteredDocsCTE(filters, {
     selectCols: 'd.ppb_full_document_symbol, d.ppb_body',
     groupCols: 'd.ppb_full_document_symbol, d.ppb_body',
   })
 
-  // Citations and UN Entities cards always reflect the latest budget version
-  // (budget_versions.is_default) so the header reads as "what the current
-  // proposed budget cites", independent of the page's mode tab. Source
-  // Documents and UN Organs remain mode-driven catalog totals.
+  // Citations and UN Entities are catalogue-wide totals for the budget version
+  // ON DISPLAY — they read as "what this budget cites", so they follow the
+  // version lens rather than the active facet filters. They used to be pinned
+  // to budget_versions.is_default, which made them contradict every other
+  // number on the page as soon as the reader switched to the other version.
+  // Source Documents and UN Organs stay filter-driven catalogue totals.
   const query = `
     WITH ${cte}
     SELECT
       COUNT(*) as total_documents,
       COUNT(DISTINCT ppb_body) FILTER (WHERE ppb_body IS NOT NULL) as total_organs,
       (SELECT COUNT(*) FROM ppb2026.source_document_citations c
-       WHERE ${versionPredicateSql('c', 'NULL')}) as total_citations,
+       WHERE ${versionPredicateSql('c', versionParam)}) as total_citations,
       (SELECT COUNT(DISTINCT c.entity) FROM ppb2026.source_document_citations c
-       WHERE ${versionPredicateSql('c', 'NULL')} AND c.entity IS NOT NULL) as total_entities
+       WHERE ${versionPredicateSql('c', versionParam)} AND c.entity IS NOT NULL) as total_entities
     FROM filtered_docs
   `
 
@@ -1232,28 +1265,87 @@ export const getFilteredDocumentCount = cache((filters: FilterOptions = {}) =>
       )
       return parseInt(row?.count ?? '0', 10)
     },
-    ['filtered-document-count-v1', JSON.stringify(filters)],
+    // -v2: the filter shape changed (`mode` -> `cited` + an always-applied
+    // version lens), so v1 entries would answer a question no longer asked.
+    ['filtered-document-count-v2', JSON.stringify(filters)],
+    { revalidate: 3600 }
+  )()
+)
+
+/**
+ * How many distinct organs and citing entities are present in the current
+ * result set — the numbers on explore cards 1 and 4.
+ *
+ * These honour EVERY active filter, their own dimension included: filtering to
+ * one organ makes the organs card read 1, because that is how many organs the
+ * table below it is showing. The own-dimension exclusion belongs to the option
+ * LISTS inside the panels (getOrganHierarchy, getBudgetHierarchy), which must
+ * keep offering the values you could switch to; it has no business in a number
+ * that claims to describe what you are looking at.
+ *
+ * Both are "distinct values of this dimension in the result set", which is not
+ * always the same as "the value you filtered by". `organ` is a property of the
+ * document, so organ=GA gives exactly 1. `entity` is a property of a citation,
+ * so entity=DESA gives every entity that cites the documents DESA cites —
+ * matching the entities the table's own column shows on those rows.
+ */
+export const getFilteredDimensionCounts = cache((filters: FilterOptions = {}) =>
+  unstable_cache(
+    async (): Promise<{ organs: number; entities: number }> => {
+      const { cte, params, versionClause } = buildFilteredDocsCTE(filters, {
+        selectCols: 'd.ppb_full_document_symbol, d.ppb_body',
+        groupCols: 'd.ppb_full_document_symbol, d.ppb_body',
+      })
+      const row = await queryOne<{ organs: string; entities: string }>(
+        `WITH ${cte}
+         SELECT
+           (SELECT COUNT(DISTINCT ppb_body) FROM filtered_docs
+             WHERE ppb_body IS NOT NULL) AS organs,
+           (SELECT COUNT(DISTINCT c.entity)
+             FROM filtered_docs f
+             JOIN ppb2026.source_document_citations c
+               ON c.ppb_full_document_symbol = f.ppb_full_document_symbol
+             WHERE c.entity IS NOT NULL AND ${versionClause('c')}) AS entities`,
+        params
+      )
+      return {
+        organs: parseInt(row?.organs ?? '0', 10),
+        entities: parseInt(row?.entities ?? '0', 10),
+      }
+    },
+    ['filtered-dimension-counts-v1', JSON.stringify(filters)],
     { revalidate: 3600 }
   )()
 )
 
 /**
  * The scopes the four /secretariat explore cards are computed in. Exported so
- * the page, the cards and scripts/check-card-counts.ts all derive them from ONE
- * definition instead of three copies that can drift apart.
+ * the page and the cards derive them from ONE definition instead of copies that
+ * can drift apart.
  *
- * - `facets`    — the active filters minus everything that cannot change a count
- *                 (pagination, grouping, sort). Doubles as the cache key.
- * - `catalogue` — the whole document catalogue (card 2 and its type/topic lists).
- * - `cited`     — the subset cited in the selected budget version (cards 3 & 4).
+ * ONE rule: every card number honours every active filter. No exceptions — a
+ * card describes the result set, so filtering to one organ makes the organs
+ * card read 1. Option LISTS inside the panels are the separate case: each drops
+ * its own dimension (getOrganHierarchy drops `organ`, and so on) because a
+ * facet whose own value constrains its own list collapses to that value and can
+ * never be changed. Nothing is pinned or forced, which is why panel selections
+ * can be purely additive.
  *
- * Cards 2 and 3 are the two arms of the scope dimension, so each pins that
- * dimension to its own value and honours every OTHER active filter — the same
- * own-dimension exclusion the organ and entity cards apply to `organ`/`entity`.
+ * - `facets`    — the active filters minus what cannot change a count
+ *                 (pagination, grouping, sort). What every card is counted
+ *                 under, and the cache key.
+ * - `allDocuments` — `facets` with `cited` ignored. The ONLY scope that departs
+ *                 from the active filters, and only because it backs the "All
+ *                 documents" option of the cited/all chooser itself: an option
+ *                 must state the count it would produce, not the current one.
+ * - `cited`     — `facets` with `cited` on. Backs the other option, and card 3.
+ *
+ * `ppb_version` is never touched by any of them: it is the lens all of this is
+ * read through, not a dimension any card owns.
  */
 export function exploreCardScopes(filters: FilterOptions): {
   facets: FilterOptions
-  catalogue: FilterOptions
+  allDocuments: FilterOptions
   cited: FilterOptions
 } {
   const facets: FilterOptions = {
@@ -1265,8 +1357,8 @@ export function exploreCardScopes(filters: FilterOptions): {
   }
   return {
     facets,
-    catalogue: { ...facets, mode: 'all_resolutions' },
-    cited: { ...facets, mode: 'active_mandates' },
+    allDocuments: { ...facets, cited: undefined },
+    cited: { ...facets, cited: '1' },
   }
 }
 
@@ -1275,7 +1367,16 @@ export interface ExploreCardData {
   budgetStreams: BudgetStream[]
   subjectDomains: SubjectDomain[]
   documentTypes: DocumentTypeCatalogue
-  catalogueDocumentCount: number
+  /** Distinct organs in the result set — card 1. */
+  organCount: number
+  /** Distinct citing entities in the result set — card 4. */
+  entityCount: number
+  /** Documents under the active filters with `cited` ignored — the "All
+   * documents" option of the cited/all chooser, and card 2 whenever that filter
+   * is off (when it is off, the two are the same number). */
+  allDocumentsCount: number
+  /** Documents under the active filters with `cited` on — the "Cited only"
+   * option, and card 3. */
   citedDocumentCount: number
 }
 
@@ -1290,7 +1391,7 @@ export interface ExploreCardData {
  * critical path for first paint.
  */
 export const getExploreCardData = cache((filters: FilterOptions = {}) => {
-  const { facets, catalogue, cited } = exploreCardScopes(filters)
+  const { facets, allDocuments, cited } = exploreCardScopes(filters)
   return unstable_cache(
     async (): Promise<ExploreCardData> => {
       const [
@@ -1298,19 +1399,25 @@ export const getExploreCardData = cache((filters: FilterOptions = {}) => {
         budgetStreams,
         subjectDomains,
         documentTypes,
-        catalogueDocumentCount,
+        dimensionCounts,
+        allDocumentsCount,
         citedDocumentCount,
       ] = await Promise.all([
-        // Follows whatever scope is active: an organ exists in both, so its
-        // count must be the one a click reproduces.
+        // The four directories back the panels' option LISTS, so each drops its
+        // own dimension internally to stay navigable. Every other filter
+        // applies, so a node's count is what the table returns when clicked.
         getOrganHierarchy(facets),
         // Backs BOTH the entity directory (card 4) and the budget-location tree
         // inside card 3, so those two can never state different numbers for the
         // same entity.
-        getBudgetHierarchy(cited),
-        getSubjectHierarchy(catalogue),
-        getDocumentTypeCatalogue(catalogue),
-        getFilteredDocumentCount(catalogue),
+        getBudgetHierarchy(facets),
+        getSubjectHierarchy(facets),
+        getDocumentTypeCatalogue(facets),
+        // Cards 1 and 4 — the result set as it is, own dimension included.
+        getFilteredDimensionCounts(facets),
+        // The two options of the cited/all chooser. Card 2 is whichever one the
+        // active filters select (see DirectoryExplorer).
+        getFilteredDocumentCount(allDocuments),
         getFilteredDocumentCount(cited),
       ])
       return {
@@ -1318,11 +1425,14 @@ export const getExploreCardData = cache((filters: FilterOptions = {}) => {
         budgetStreams,
         subjectDomains,
         documentTypes,
-        catalogueDocumentCount,
+        organCount: dimensionCounts.organs,
+        entityCount: dimensionCounts.entities,
+        allDocumentsCount,
         citedDocumentCount,
       }
     },
-    ['explore-card-data-v1', JSON.stringify(facets)],
+    // -v3: cards 1 and 4 now carry their own counts (see above).
+    ['explore-card-data-v3', JSON.stringify(facets)],
     { revalidate: 3600 }
   )()
 })
@@ -1733,19 +1843,21 @@ export interface ResolutionCitationTrendYear {
  *
  * Both series are per-year counts on `unified_documents.ppb_year` — the same
  * column the year filter (start_year/end_year) keys on — so each bar's height
- * equals what clicking that year shows in the explorer. They differ only by
- * `mode`, reusing getYearStats so the counts can never drift from the explorer:
- *   - resolutions   = mode 'all_resolutions' (catalog symbol families ∪ cited)
- *   - citedMandates = mode 'active_mandates'  (cited in the selected version)
+ * equals what clicking that year shows in the explorer. They differ only by the
+ * `cited` filter, reusing getYearStats so the counts can never drift from the
+ * explorer:
+ *   - resolutions   = the catalogue ∪ what this version cites
+ *   - citedMandates = the subset this version cites
  * citedMandates ⊆ resolutions by construction. This is a global overview — it
- * ignores any active entity/organ/subject filter.
+ * ignores any active entity/organ/subject filter, but NOT the version lens:
+ * both series are read through the version passed in.
  */
 const _getResolutionCitationTrendInner = async (
   version: string | null
 ): Promise<ResolutionCitationTrendYear[]> => {
   const [all, cited] = await Promise.all([
-    getYearStats({ mode: 'all_resolutions', ppb_version: version ?? undefined }),
-    getYearStats({ mode: 'active_mandates', ppb_version: version ?? undefined }),
+    getYearStats({ ppb_version: version ?? undefined }),
+    getYearStats({ ppb_version: version ?? undefined, cited: '1' }),
   ])
 
   const years = new Set<number>()
@@ -1803,13 +1915,14 @@ export interface ResolutionRecurrenceTrendYear {
  * distinct subjects, e.g. "admission of new members" — are ~418 docs (~1% of
  * the corpus), much of it in single-year groups that can never be repetitions.
  *
- * The grey series reuses the app's `all_resolutions` universe verbatim
- * (`is_catalog_pattern` ∪ cited in the latest version) so it is identical to
- * the citation trend's grey bars and to what the year filter shows.
+ * The grey series reuses the explorer's universe verbatim (`is_catalog_pattern`
+ * ∪ cited in the SELECTED version) so it is identical to the citation trend's
+ * grey bars and to what the year filter shows. It therefore takes the version
+ * lens, like every other number on the page.
  */
-const _getResolutionRecurrenceTrendInner = async (): Promise<
-  ResolutionRecurrenceTrendYear[]
-> => {
+const _getResolutionRecurrenceTrendInner = async (
+  version: string | null
+): Promise<ResolutionRecurrenceTrendYear[]> => {
   const rows = await queryMany<{
     year: number
     resolutions: number
@@ -1829,14 +1942,14 @@ const _getResolutionRecurrenceTrendInner = async (): Promise<
        AND (
          d.is_catalog_pattern
          OR EXISTS (
-           SELECT 1 FROM ppb2026.source_document_citations c_latest
-           WHERE c_latest.ppb_full_document_symbol = d.ppb_full_document_symbol
-             AND ${versionPredicateSql('c_latest', 'NULL')}
+           SELECT 1 FROM ppb2026.source_document_citations c_cat
+           WHERE c_cat.ppb_full_document_symbol = d.ppb_full_document_symbol
+             AND ${versionPredicateSql('c_cat', '$1')}
          )
        )
      GROUP BY d.ppb_year
      ORDER BY d.ppb_year`,
-    []
+    [version]
   )
 
   return rows.map((r) => {
@@ -1850,13 +1963,13 @@ const _getResolutionRecurrenceTrendInner = async (): Promise<
   })
 }
 
-/** Cached wrapper for the recurrence trend. Version-independent (the grey
- * universe uses the latest budget version by definition). */
+/** Cached wrapper for the recurrence trend. Keyed by version, like the citation
+ * trend, because the grey universe now follows the version lens. */
 export const getResolutionRecurrenceTrend = cache(
-  (): Promise<ResolutionRecurrenceTrendYear[]> =>
+  (version?: string | null): Promise<ResolutionRecurrenceTrendYear[]> =>
     unstable_cache(
-      _getResolutionRecurrenceTrendInner,
-      ['resolution-recurrence-trend-v1'],
+      () => _getResolutionRecurrenceTrendInner(version ?? null),
+      ['resolution-recurrence-trend-v2', version ?? 'default'],
       { revalidate: 3600 }
     )()
 )
