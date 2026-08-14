@@ -532,9 +532,8 @@ export interface UnSystemEntity {
   grouping: UnSystemGrouping
   /** Secretariat is part of the UN Secretariat, though the entity is governed separately (the UN80 chart's asterisk). */
   secretariatAdministered?: true
+  /** Contacts live on the body they service — see `UnSystemBody.contacts`. */
   governingBodies: UnSystemBodyEntry[]
-  /** Organization-level contacts only. A contact belonging to a governing body lives on that body. */
-  contacts: UnSystemContact[]
   note: string | null
   /**
    * Every registry covering this organization's mandates, the organization's
