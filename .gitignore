@@ -395,3 +395,6 @@ vite.config.ts.timestamp-*
 
 # Claude worktrees
 .claude/worktrees/
+
+# Extractor sidecar output (unparsed-notes diagnostic ledgers; local run output)
+data/processed/report_mandate_links/
