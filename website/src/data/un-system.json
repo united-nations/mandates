@@ -2,22 +2,12 @@
   "bodies": {
     "un-ga": {
       "name": "General Assembly",
-      "url": "https://www.un.org/en/ga/",
-      "contacts": [
-        {
-          "label": "General Assembly Secretariat",
-          "url": "https://www.un.org/en/ga/about/secretariat.shtml"
-        }
-      ]
+      "url": "https://www.un.org/en/ga/"
     },
     "un-sc": {
       "name": "Security Council",
       "url": "https://main.un.org/securitycouncil/en",
       "contacts": [
-        {
-          "label": "Security Council Secretariat Branch",
-          "url": "https://main.un.org/securitycouncil/en/content/secretariat-branch"
-        },
         {
           "label": "Security Council Secretariat Branch (DPPA)",
           "email": "dppa-scsb3@un.org"
@@ -51,13 +41,7 @@
     },
     "undp-board": {
       "name": "Executive Board (UNDP, UNFPA and UNOPS)",
-      "url": "https://www.undp.org/executive-board",
-      "contacts": [
-        {
-          "label": "Executive Board Secretariat",
-          "url": "https://www.undp.org/executive-board/secretariat-board"
-        }
-      ]
+      "url": "https://www.undp.org/executive-board"
     }
   },
   "organizations": [
@@ -638,8 +622,7 @@
       "governingBodies": [
         {
           "name": "General Assembly",
-          "url": "https://www.untourism.int/structure",
-          "overview": true,
+          "url": "https://www.untourism.int/unwto-general-assembly",
           "contacts": [
             {
               "label": "Conference Services",
@@ -649,8 +632,7 @@
         },
         {
           "name": "Executive Council",
-          "url": "https://www.untourism.int/structure",
-          "overview": true
+          "url": "https://www.untourism.int/executive-council"
         }
       ],
       "contacts": [],
@@ -704,10 +686,6 @@
           "url": "https://www.unesco.org/en/legal-affairs/governing-bodies",
           "overview": true,
           "contacts": [
-            {
-              "label": "Secretariat of the General Conference",
-              "url": "https://www.unesco.org/en/general-conference/secretariat"
-            },
             {
               "label": "Secretariat of the General Conference",
               "email": "GC-Secretariat@unesco.org"
@@ -778,13 +756,11 @@
       "governingBodies": [
         {
           "name": "General Conference",
-          "url": "https://www.unido.org/resources/policymaking-organs/general-conference",
-          "overview": true
+          "url": "https://www.unido.org/resources/policymaking-organs/general-conference"
         },
         {
           "name": "Industrial Development Board",
-          "url": "https://www.unido.org/resources/policymaking-organs/industrial-development-board",
-          "overview": true
+          "url": "https://www.unido.org/resources/policymaking-organs/industrial-development-board"
         }
       ],
       "contacts": [],
@@ -1170,16 +1146,6 @@
         {
           "name": "WTO Committee on Trade and Development",
           "url": "https://www.wto.org/english/tratop_e/devel_e/d3ctte_e.htm"
-        },
-        {
-          "name": "Joint Advisory Group (JAG, advisory only)",
-          "url": "https://www.intracen.org/about-us/governance/the-joint-advisory-group-jag",
-          "contacts": [
-            {
-              "label": "Joint Advisory Group Secretariat",
-              "email": "jag@intracen.org"
-            }
-          ]
         }
       ],
       "contacts": [],
@@ -1269,13 +1235,7 @@
       "governingBodies": [
         {
           "name": "Executive Board",
-          "url": "https://www.unwomen.org/en/executive-board",
-          "contacts": [
-            {
-              "label": "Executive Board Secretariat",
-              "url": "https://www.unwomen.org/en/executive-board/overview"
-            }
-          ]
+          "url": "https://www.unwomen.org/en/executive-board"
         }
       ],
       "contacts": [],
@@ -1644,10 +1604,6 @@
           "url": "https://www.unep.org/environmentassembly/",
           "contacts": [
             {
-              "label": "UNEA Secretariat",
-              "url": "https://www.unep.org/cpr/meet-secretariat-governing-bodies"
-            },
-            {
               "label": "Secretariat of Governing Bodies and Stakeholders",
               "email": "unep-sgb@un.org"
             }
@@ -1881,13 +1837,7 @@
       "governingBodies": [
         {
           "name": "Executive Board",
-          "url": "https://www.unicef.org/executiveboard/",
-          "contacts": [
-            {
-              "label": "Executive Board Secretariat",
-              "url": "https://www.unicef.org/executiveboard/board-secretariat"
-            }
-          ]
+          "url": "https://www.unicef.org/executiveboard/"
         }
       ],
       "contacts": [],
@@ -1963,12 +1913,12 @@
       "grouping": "fund-programme",
       "governingBodies": [
         {
-          "name": "Advisory Board on Disarmament Matters (functions as UNIDIR's Board of Trustees)",
+          "name": "Advisory Board on Disarmament Matters",
           "url": "https://disarmament.unoda.org/en/our-work/disarmament-bodies/advisory-board-disarmament-matters"
         }
       ],
       "contacts": [],
-      "note": null,
+      "note": "UNIDIR has no board of its own: its statute (article III.1) makes the Secretary-General's Advisory Board on Disarmament Matters function as the Institute's Board of Trustees, adopting its work programme and budget estimates.",
       "mandateRegistry": [],
       "registryNote": "No mandate registry. The Advisory Board on Disarmament Matters, which serves as UNIDIR's Board of Trustees, adopts the annual work programme and budget estimates, but publishes no decisions, agendas or session records. Public governance reporting is limited to a PDF series of annual reports to the General Assembly (Board report and Director's report, 2019-2025).",
       "resources": [
@@ -2129,12 +2079,7 @@
           "ref": "undp-board"
         }
       ],
-      "contacts": [
-        {
-          "label": "Board and External Relations Office (NYBER)",
-          "email": "nyberteam@unops.org"
-        }
-      ],
+      "contacts": [],
       "note": "The General Assembly created this entity and sets system-wide policy for it through the Quadrennial Comprehensive Policy Review (QCPR), but does not govern its programme or appropriate its budget.",
       "mandateRegistry": [
         {
@@ -2216,10 +2161,6 @@
       "governingBodies": [
         {
           "ref": "un-ga"
-        },
-        {
-          "name": "Advisory Commission (advisory only)",
-          "url": "https://www.unrwa.org/who-we-are/advisory-commission"
         }
       ],
       "contacts": [],
@@ -2405,10 +2346,6 @@
           "contacts": [
             {
               "label": "Executive Board Secretariat",
-              "url": "https://executiveboard.wfp.org/executive-board-secretariat"
-            },
-            {
-              "label": "Executive Board Secretariat",
               "email": "wfpsecretarytotheeb@wfp.org"
             }
           ]
@@ -2479,23 +2416,11 @@
       "governingBodies": [
         {
           "name": "General Conference",
-          "url": "https://www.iaea.org/about/governance/general-conference",
-          "contacts": [
-            {
-              "label": "Secretariat of Policy-Making Organs",
-              "url": "https://www.iaea.org/about/organizational-structure/offices-reporting-to-the-director-general/secretariat-of-policy-making-organs"
-            }
-          ]
+          "url": "https://www.iaea.org/about/governance/general-conference"
         },
         {
           "name": "Board of Governors",
-          "url": "https://www.iaea.org/about/governance/board-of-governors",
-          "contacts": [
-            {
-              "label": "Secretariat of Policy-Making Organs",
-              "url": "https://www.iaea.org/about/organizational-structure/offices-reporting-to-the-director-general/secretariat-of-policy-making-organs"
-            }
-          ]
+          "url": "https://www.iaea.org/about/governance/board-of-governors"
         }
       ],
       "contacts": [],
@@ -3130,13 +3055,7 @@
       "governingBodies": [
         {
           "name": "Session of the Commission",
-          "url": "https://periododesesiones.cepal.org",
-          "contacts": [
-            {
-              "label": "Office of the Executive Secretary",
-              "url": "https://www.cepal.org/en/about/office-of-the-executive-secretary"
-            }
-          ]
+          "url": "https://periododesesiones.cepal.org"
         },
         {
           "name": "Committee of the Whole",

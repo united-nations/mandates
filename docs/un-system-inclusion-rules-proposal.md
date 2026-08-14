@@ -32,7 +32,7 @@ its budget IS its governing body — UNRWA (no executive board; GA renews the
 mandate, most recently to 30 June 2029) and UNHCR (ExCom approves only a budget
 *target*; the Statute binds the High Commissioner to GA and ECOSOC directives).
 
-### A2. Advisory bodies — **list, but label**
+### A2. Advisory bodies — **resolved: do not list**
 
 Cases: ITC's Joint Advisory Group, UNRWA's Advisory Commission, IARC's Scientific
 Council, ECA's Committee of Experts, ESCAP's Advisory Committee of Permanent
@@ -42,12 +42,19 @@ A reader looking for "who oversees this entity" expects to find them, and
 omitting them makes ITC and UNRWA look ungoverned. But presenting them as
 governing bodies is false.
 
-> **Proposed:** list a body that formally advises or reviews but adopts nothing,
-> and mark it advisory. Do not list bodies that merely prepare or service.
+> **Adopted:** list only bodies that govern. A body that formally advises or
+> reviews but adopts nothing is not listed, and neither is one that merely
+> prepares or services. This keeps the page's scope narrow and its promise
+> exact: every row is a body that tells the entity what to do.
 
-**Implementation note:** the label currently lives inside the free-text `name`
-("Joint Advisory Group (JAG, advisory only)"), which is fragile. Add a
-`role?: 'advisory'` field instead.
+Consequence: ITC's Joint Advisory Group and UNRWA's Advisory Commission were
+removed, and the five further advisory bodies this section once proposed adding
+are not added. Where an entity's only oversight is advisory, the `note` records
+it rather than the body list implying governance that does not exist.
+
+Watch out for false positives on the name: UNIDIR's governing body is the
+Secretary-General's **Advisory** Board on Disarmament Matters, which its statute
+makes function as the Institute's Board of Trustees. It governs, and stays.
 
 ### A3. Committees that recommend vs committees that adopt — **adopt wins**
 
@@ -212,7 +219,7 @@ Sub-cases, with proposed answers:
 | Registration / logistics inbox | No. `pmo-registration@unido.org`, `registration@wmo.int` are serviced by the governing-body secretariat but useless for a mandate enquiry |
 | Press or public-information office | No |
 | Functionally-scoped secretariat mailbox | Record, with the scope in the label — e.g. the HRC Secretariat's NGO-liaison team |
-| A page describing an office, not a way to reach it | No — CTBTO's Provisional Technical Secretariat page and ISA's Secretariat page were dropped on this ground |
+| A page describing an office, not a way to reach it | No. Applied in full in August 2026: 11 further such contacts were dropped, including secretariat landing pages on un-ga, un-sc, undp-board, UNESCO, UN Women, UNEP, UNICEF, WFP, IAEA and ECLAC. A contact must be an address or a contact form |
 | Social media account | Never a contact |
 
 **Store an address in `email`, never as a `url` beginning `mailto:`.** The
