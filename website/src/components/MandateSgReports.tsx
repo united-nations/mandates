@@ -70,7 +70,7 @@ export function MandateSgReports({ reports }: { reports: MandatedSgReport[] }) {
   return (
     <section className="space-y-3">
       <DetailSectionHeading>
-        What has this mandate produced?
+        Which reports were submitted under this mandate?
       </DetailSectionHeading>
 
       <p className="max-w-[44rem] text-sm text-gray-700">
@@ -177,8 +177,8 @@ export function MandateSgReports({ reports }: { reports: MandatedSgReport[] }) {
       )}
 
       <DetailFootnote>
-        Identified automatically from each report&rsquo;s UN Digital Library
-        catalogue record.
+        Identified automatically from the metadata in each report&rsquo;s UN
+        Digital Library catalogue record.
       </DetailFootnote>
     </section>
   )
