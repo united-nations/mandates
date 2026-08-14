@@ -38,6 +38,10 @@ interface DirectoryExplorerProps {
   budgetStreams: BudgetStream[]
   subjectDomains: SubjectDomain[]
   documentTypes: DocumentTypeCatalogue
+  /** Distinct organs in the result set. */
+  organCount: number
+  /** Distinct citing entities in the result set. */
+  entityCount: number
   /** Documents under the active filters with `cited` ignored. */
   allDocumentsCount: number
   /** Documents under the active filters with `cited` on. */
@@ -102,25 +106,25 @@ const BUDGET_LEVEL_PARAM: Record<BudgetTreeLevel, FilterParamKey> = {
  * mandates" — and doubles as a gateway: clicking it opens the matching directory
  * or filter panel.
  *
- * ONE rule: every number honours every active filter. The single exception is
- * the dimension a panel is itself offering choices in, which that panel's query
- * drops so its option list cannot collapse to the value already chosen (see
- * DIMENSION_GROUPS). Nothing is pinned to a scope, so every selection is purely
- * ADDITIVE — it keeps the other filters and changes exactly the one dimension
- * it names. A count therefore always predicts the number of rows the table then
- * shows.
+ * ONE rule: every card number honours every active filter, its own dimension
+ * included. Each states what the table below is showing — filter to one organ
+ * and card 1 reads 1. Nothing is pinned to a scope, so every selection is
+ * purely ADDITIVE: it keeps the other filters and changes exactly the one
+ * dimension it names.
  *
- * The four numbers:
+ * The four numbers, all over the current result set:
  *
- *   1. organs creating mandates       — getOrganHierarchy, drops `organ`
+ *   1. organs creating mandates       — distinct organs in it
  *   2. documents adopted              — the table total
  *   3. documents cited as mandates    — the cited subset of it
- *   4. entities implementing mandates — getBudgetHierarchy, drops `entity`
+ *   4. entities implementing mandates — distinct citing entities in it
  *
- * Card 2 IS the table total: when the `cited` filter is on it reads the cited
- * count, so the two document tiles agree instead of one of them still claiming
- * 43,000. Only card 3's chooser departs from that, because the "All documents"
- * option must state the count it would produce rather than the current one.
+ * The panels' option LISTS are the one place the own dimension is dropped, and
+ * only there: a list that collapsed to the value already chosen could never be
+ * used to choose anything else (see DIMENSION_GROUPS). Card 1 can therefore
+ * read 1 while its panel still lists all 22 organs — the card reports, the
+ * panel offers. For the same reason the "All documents" option in card 3's
+ * chooser states the count it would produce rather than the current one.
  *
  * Every number is read through ONE budget version, chosen in card 3's panel.
  * That choice is a lens, not a filter: the list always covers the whole
@@ -137,6 +141,8 @@ export function DirectoryExplorer({
   budgetStreams,
   subjectDomains,
   documentTypes,
+  organCount,
+  entityCount,
   allDocumentsCount,
   citedDocumentCount,
   versions,
@@ -145,15 +151,6 @@ export function DirectoryExplorer({
   const { filters, setMultipleFilters } = useFilters()
   const [panel, setPanel] = useState<Panel | null>(null)
   const close = useCallback(() => setPanel(null), [])
-
-  const organCount = useMemo(
-    () => organGroups.reduce((n, g) => n + g.organs.length, 0),
-    [organGroups]
-  )
-  const entityCount = useMemo(
-    () => countEntities(budgetStreams),
-    [budgetStreams]
-  )
 
   const isCitedOnly = filters.cited === '1'
   // Card 2 is the table total, so it reads whichever of the two document counts
@@ -487,19 +484,4 @@ function DirectoryDialog({
       </DialogContent>
     </Dialog>
   )
-}
-
-function countEntities(streams: BudgetStream[]): number {
-  const seen = new Set<string>()
-  for (const stream of streams) {
-    if (stream.type === 'ppb') {
-      for (const part of stream.parts)
-        for (const section of part.sections)
-          for (const e of section.entities) seen.add(e.entity)
-    } else if (stream.type === 'pko') {
-      for (const group of stream.groups)
-        for (const e of group.entities) seen.add(e.entity)
-    }
-  }
-  return seen.size
 }

@@ -1273,16 +1273,63 @@ export const getFilteredDocumentCount = cache((filters: FilterOptions = {}) =>
 )
 
 /**
- * The scopes the four /secretariat explore cards are computed in. Exported so
- * the page, the cards and scripts/check-card-counts.ts all derive them from ONE
- * definition instead of three copies that can drift apart.
+ * How many distinct organs and citing entities are present in the current
+ * result set — the numbers on explore cards 1 and 4.
  *
- * ONE rule governs all of them: a number honours every active filter, except
- * the single dimension the panel it belongs to is offering choices in (that
- * exclusion lives inside each query — getOrganHierarchy drops `organ`, and so
- * on — because a facet whose own value constrains its own option list collapses
- * to that value and can never be changed). Nothing else is pinned or forced,
- * which is why panel selections can be purely additive.
+ * These honour EVERY active filter, their own dimension included: filtering to
+ * one organ makes the organs card read 1, because that is how many organs the
+ * table below it is showing. The own-dimension exclusion belongs to the option
+ * LISTS inside the panels (getOrganHierarchy, getBudgetHierarchy), which must
+ * keep offering the values you could switch to; it has no business in a number
+ * that claims to describe what you are looking at.
+ *
+ * Both are "distinct values of this dimension in the result set", which is not
+ * always the same as "the value you filtered by". `organ` is a property of the
+ * document, so organ=GA gives exactly 1. `entity` is a property of a citation,
+ * so entity=DESA gives every entity that cites the documents DESA cites —
+ * matching the entities the table's own column shows on those rows.
+ */
+export const getFilteredDimensionCounts = cache((filters: FilterOptions = {}) =>
+  unstable_cache(
+    async (): Promise<{ organs: number; entities: number }> => {
+      const { cte, params, versionClause } = buildFilteredDocsCTE(filters, {
+        selectCols: 'd.ppb_full_document_symbol, d.ppb_body',
+        groupCols: 'd.ppb_full_document_symbol, d.ppb_body',
+      })
+      const row = await queryOne<{ organs: string; entities: string }>(
+        `WITH ${cte}
+         SELECT
+           (SELECT COUNT(DISTINCT ppb_body) FROM filtered_docs
+             WHERE ppb_body IS NOT NULL) AS organs,
+           (SELECT COUNT(DISTINCT c.entity)
+             FROM filtered_docs f
+             JOIN ppb2026.source_document_citations c
+               ON c.ppb_full_document_symbol = f.ppb_full_document_symbol
+             WHERE c.entity IS NOT NULL AND ${versionClause('c')}) AS entities`,
+        params
+      )
+      return {
+        organs: parseInt(row?.organs ?? '0', 10),
+        entities: parseInt(row?.entities ?? '0', 10),
+      }
+    },
+    ['filtered-dimension-counts-v1', JSON.stringify(filters)],
+    { revalidate: 3600 }
+  )()
+)
+
+/**
+ * The scopes the four /secretariat explore cards are computed in. Exported so
+ * the page and the cards derive them from ONE definition instead of copies that
+ * can drift apart.
+ *
+ * ONE rule: every card number honours every active filter. No exceptions — a
+ * card describes the result set, so filtering to one organ makes the organs
+ * card read 1. Option LISTS inside the panels are the separate case: each drops
+ * its own dimension (getOrganHierarchy drops `organ`, and so on) because a
+ * facet whose own value constrains its own list collapses to that value and can
+ * never be changed. Nothing is pinned or forced, which is why panel selections
+ * can be purely additive.
  *
  * - `facets`    — the active filters minus what cannot change a count
  *                 (pagination, grouping, sort). What every card is counted
@@ -1320,6 +1367,10 @@ export interface ExploreCardData {
   budgetStreams: BudgetStream[]
   subjectDomains: SubjectDomain[]
   documentTypes: DocumentTypeCatalogue
+  /** Distinct organs in the result set — card 1. */
+  organCount: number
+  /** Distinct citing entities in the result set — card 4. */
+  entityCount: number
   /** Documents under the active filters with `cited` ignored — the "All
    * documents" option of the cited/all chooser, and card 2 whenever that filter
    * is off (when it is off, the two are the same number). */
@@ -1348,13 +1399,13 @@ export const getExploreCardData = cache((filters: FilterOptions = {}) => {
         budgetStreams,
         subjectDomains,
         documentTypes,
+        dimensionCounts,
         allDocumentsCount,
         citedDocumentCount,
       ] = await Promise.all([
-        // The four directories all run on the active filters, unpinned. Each
-        // drops its own dimension internally so its option list stays
-        // navigable; nothing else is excluded, so every count a panel shows is
-        // the count the table returns when you click it.
+        // The four directories back the panels' option LISTS, so each drops its
+        // own dimension internally to stay navigable. Every other filter
+        // applies, so a node's count is what the table returns when clicked.
         getOrganHierarchy(facets),
         // Backs BOTH the entity directory (card 4) and the budget-location tree
         // inside card 3, so those two can never state different numbers for the
@@ -1362,6 +1413,8 @@ export const getExploreCardData = cache((filters: FilterOptions = {}) => {
         getBudgetHierarchy(facets),
         getSubjectHierarchy(facets),
         getDocumentTypeCatalogue(facets),
+        // Cards 1 and 4 — the result set as it is, own dimension included.
+        getFilteredDimensionCounts(facets),
         // The two options of the cited/all chooser. Card 2 is whichever one the
         // active filters select (see DirectoryExplorer).
         getFilteredDocumentCount(allDocuments),
@@ -1372,12 +1425,14 @@ export const getExploreCardData = cache((filters: FilterOptions = {}) => {
         budgetStreams,
         subjectDomains,
         documentTypes,
+        organCount: dimensionCounts.organs,
+        entityCount: dimensionCounts.entities,
         allDocumentsCount,
         citedDocumentCount,
       }
     },
-    // -v2: see getFilteredDocumentCount — same filter-shape change.
-    ['explore-card-data-v2', JSON.stringify(facets)],
+    // -v3: cards 1 and 4 now carry their own counts (see above).
+    ['explore-card-data-v3', JSON.stringify(facets)],
     { revalidate: 3600 }
   )()
 })
