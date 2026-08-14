@@ -139,14 +139,6 @@ interface CitationQueryRow {
 /** SQL parameter value types */
 type SqlParam = string | number | boolean | null
 
-/** Row type for counts query */
-interface CountsRow {
-  total_documents: string
-  total_entities: string
-  total_organs: string
-  total_citations: string
-}
-
 /** Row type for entity/organ counts */
 interface EntityCountRow {
   entity: string
@@ -156,18 +148,6 @@ interface EntityCountRow {
 
 interface OrganCountRow {
   short: string
-  count: string
-}
-
-/** Row type for value/count pairs */
-interface ValueCountRow {
-  value: string
-  count: string
-}
-
-/** Row type for year stats */
-interface YearRow {
-  year: number
   count: string
 }
 
@@ -1217,6 +1197,166 @@ export async function getResolutionSeries(
 // Aggregation Queries (for sidebar and counts)
 // ============================================================================
 
+/** Raw shape of the one consolidated aggregate query. Counts arrive as strings
+ *  (pg returns bigint as text) and lists as jsonb arrays. */
+interface AggregateBundleRow {
+  total_documents: string
+  total_organs: string
+  result_entities: string
+  catalogue_citations: string
+  catalogue_entities: string
+  entity_counts: Array<[string, string | null, number]> | null
+  year_counts: Array<[number, number]> | null
+  subject_counts: Array<[string, number]> | null
+  type_counts: Array<[string, number]> | null
+  agenda_counts: Array<[string, number]> | null
+  programme_counts: Array<[string, number]> | null
+  citation_bins: Array<[string, number, number, number]> | null
+}
+
+/**
+ * EVERY document-grained aggregate the explorer needs, in ONE query.
+ *
+ * This is the fix for the fan-out. Each of these numbers used to be its own
+ * query, and each of those queries re-ran the same `filtered_docs` CTE over the
+ * 43,912-row unified_documents matview: ~10 rebuilds of identical work per
+ * uncached render, which is what saturated the 15-slot pool and hung the site.
+ *
+ * Postgres materialises a CTE that is referenced more than once, so gathering
+ * the aggregates as sibling CTEs over one `filtered_docs` builds it exactly
+ * once and every branch reads the materialised result. Measured on the same
+ * database: 31,228 ms of work across the separate queries against 836 ms here.
+ *
+ * Each branch returns jsonb so a single row carries every list; the accessors
+ * below unpack it and keep their original public shapes, so nothing upstream
+ * of them changes.
+ *
+ * Only aggregates over the DOCUMENT grain (plus the two citation-grain lists
+ * that need no hierarchy) live here. The nested directories — budget, subject,
+ * organ, document-type catalogue — still run their own queries.
+ */
+const getFilteredAggregates = cache((filters: FilterOptions = {}) =>
+  unstable_cache(
+    async () => {
+      const { cte, params, versionClause, versionParam } =
+        buildFilteredDocsCTE(filters, {
+          selectCols: `d.ppb_full_document_symbol, d.ppb_body, d.ppb_type,
+            d.ppb_year, d.subjects, d.agenda_items,
+            COUNT(c.id) AS citation_count`,
+          groupCols: `d.ppb_full_document_symbol, d.ppb_body, d.ppb_type,
+            d.ppb_year, d.subjects, d.agenda_items`,
+        })
+
+      const query = `
+        WITH ${cte},
+        cites AS (
+          SELECT c.ppb_full_document_symbol AS sym, c.entity, c.programme_title
+          FROM filtered_docs fd
+          JOIN ppb2026.source_document_citations c
+            ON fd.ppb_full_document_symbol = c.ppb_full_document_symbol
+            AND ${versionClause('c')}
+        ),
+        subj AS (
+          SELECT fd.ppb_full_document_symbol AS sym,
+                 LOWER(UNNEST(fd.subjects)) AS subject
+          FROM filtered_docs fd
+          WHERE fd.subjects IS NOT NULL
+        ),
+        agenda AS (
+          SELECT fd.ppb_full_document_symbol AS sym, (elem->>'desc') AS item
+          FROM filtered_docs fd
+          CROSS JOIN LATERAL
+            jsonb_array_elements(COALESCE(fd.agenda_items, '[]'::jsonb)) elem
+        ),
+        binned AS (
+          SELECT
+            CASE WHEN citation_count = 1 THEN '1'
+                 WHEN citation_count BETWEEN 2 AND 5 THEN '2–5'
+                 WHEN citation_count BETWEEN 6 AND 10 THEN '6–10'
+                 ELSE '11+' END AS bin,
+            CASE WHEN citation_count = 1 THEN 1
+                 WHEN citation_count BETWEEN 2 AND 5 THEN 2
+                 WHEN citation_count BETWEEN 6 AND 10 THEN 3
+                 ELSE 4 END AS sort_order,
+            CASE WHEN citation_count = 1 THEN 1
+                 WHEN citation_count BETWEEN 2 AND 5 THEN 2
+                 WHEN citation_count BETWEEN 6 AND 10 THEN 6
+                 ELSE 11 END AS min_citations,
+            CASE WHEN citation_count = 1 THEN 1
+                 WHEN citation_count BETWEEN 2 AND 5 THEN 5
+                 WHEN citation_count BETWEEN 6 AND 10 THEN 10
+                 ELSE 999999 END AS max_citations
+          FROM filtered_docs
+        )
+        SELECT
+          (SELECT COUNT(*) FROM filtered_docs) AS total_documents,
+          (SELECT COUNT(DISTINCT ppb_body) FROM filtered_docs
+            WHERE ppb_body IS NOT NULL) AS total_organs,
+          (SELECT COUNT(DISTINCT entity) FROM cites
+            WHERE entity IS NOT NULL) AS result_entities,
+          -- Catalogue-wide totals for the version on display: deliberately NOT
+          -- filter-scoped (see getMandateCounts).
+          (SELECT COUNT(*) FROM ppb2026.source_document_citations c
+            WHERE ${versionPredicateSql('c', versionParam)}) AS catalogue_citations,
+          (SELECT COUNT(DISTINCT c.entity) FROM ppb2026.source_document_citations c
+            WHERE ${versionPredicateSql('c', versionParam)}
+              AND c.entity IS NOT NULL) AS catalogue_entities,
+          (SELECT jsonb_agg(jsonb_build_array(entity, entity_long, n)
+                            ORDER BY n DESC)
+             FROM (
+               SELECT ct.entity, e.entity_long, COUNT(DISTINCT ct.sym)::int AS n
+               FROM cites ct
+               LEFT JOIN systemchart.entities e ON ct.entity = e.entity
+               WHERE ct.entity IS NOT NULL AND ct.entity != ''
+               GROUP BY ct.entity, e.entity_long
+             ) x) AS entity_counts,
+          (SELECT jsonb_agg(jsonb_build_array(y, n) ORDER BY y)
+             FROM (
+               SELECT ppb_year AS y, COUNT(DISTINCT ppb_full_document_symbol)::int AS n
+               FROM filtered_docs WHERE ppb_year IS NOT NULL GROUP BY ppb_year
+             ) x) AS year_counts,
+          (SELECT jsonb_agg(jsonb_build_array(subject, n) ORDER BY n DESC, subject)
+             FROM (
+               SELECT subject, COUNT(DISTINCT sym)::int AS n
+               FROM subj WHERE subject IS NOT NULL AND subject != ''
+               GROUP BY subject
+             ) x) AS subject_counts,
+          (SELECT jsonb_agg(jsonb_build_array(ppb_type, n) ORDER BY n DESC, ppb_type)
+             FROM (
+               SELECT ppb_type, COUNT(DISTINCT ppb_full_document_symbol)::int AS n
+               FROM filtered_docs
+               WHERE ppb_type IS NOT NULL AND ppb_type != ''
+               GROUP BY ppb_type
+             ) x) AS type_counts,
+          (SELECT jsonb_agg(jsonb_build_array(item, n) ORDER BY n DESC, item)
+             FROM (
+               SELECT item, COUNT(DISTINCT sym)::int AS n
+               FROM agenda WHERE item IS NOT NULL AND item != '' GROUP BY item
+             ) x) AS agenda_counts,
+          (SELECT jsonb_agg(jsonb_build_array(programme_title, n)
+                            ORDER BY n DESC, programme_title)
+             FROM (
+               SELECT programme_title, COUNT(DISTINCT sym)::int AS n
+               FROM cites
+               WHERE programme_title IS NOT NULL AND programme_title != ''
+               GROUP BY programme_title
+             ) x) AS programme_counts,
+          (SELECT jsonb_agg(jsonb_build_array(bin, n, mn, mx) ORDER BY so)
+             FROM (
+               SELECT bin, sort_order AS so, COUNT(*)::int AS n,
+                      MIN(min_citations) AS mn, MIN(max_citations) AS mx
+               FROM binned GROUP BY bin, sort_order
+             ) x) AS citation_bins
+      `
+
+      const row = await queryOne<AggregateBundleRow>(query, params)
+      return row
+    },
+    ['filtered-aggregates-v1', JSON.stringify(filters)],
+    { revalidate: 3600 }
+  )()
+)
+
 /**
  * Get total counts for the data cards
  */
@@ -1226,36 +1366,19 @@ export async function getMandateCounts(filters: FilterOptions = {}): Promise<{
   totalOrgans: number
   totalCitations: number
 }> {
-  const { cte, params, versionParam } = buildFilteredDocsCTE(filters, {
-    selectCols: 'd.ppb_full_document_symbol, d.ppb_body',
-    groupCols: 'd.ppb_full_document_symbol, d.ppb_body',
-  })
-
   // Citations and UN Entities are catalogue-wide totals for the budget version
   // ON DISPLAY — they read as "what this budget cites", so they follow the
   // version lens rather than the active facet filters. They used to be pinned
   // to budget_versions.is_default, which made them contradict every other
   // number on the page as soon as the reader switched to the other version.
   // Source Documents and UN Organs stay filter-driven catalogue totals.
-  const query = `
-    WITH ${cte}
-    SELECT
-      COUNT(*) as total_documents,
-      COUNT(DISTINCT ppb_body) FILTER (WHERE ppb_body IS NOT NULL) as total_organs,
-      (SELECT COUNT(*) FROM ppb2026.source_document_citations c
-       WHERE ${versionPredicateSql('c', versionParam)}) as total_citations,
-      (SELECT COUNT(DISTINCT c.entity) FROM ppb2026.source_document_citations c
-       WHERE ${versionPredicateSql('c', versionParam)} AND c.entity IS NOT NULL) as total_entities
-    FROM filtered_docs
-  `
-
-  const row = await queryOne<CountsRow>(query, params)
+  const row = await getFilteredAggregates(filters)
 
   return {
     totalDocuments: parseInt(row?.total_documents ?? '0'),
-    totalEntities: parseInt(row?.total_entities ?? '0'),
+    totalEntities: parseInt(row?.catalogue_entities ?? '0'),
     totalOrgans: parseInt(row?.total_organs ?? '0'),
-    totalCitations: parseInt(row?.total_citations ?? '0'),
+    totalCitations: parseInt(row?.catalogue_citations ?? '0'),
   }
 }
 
@@ -1277,6 +1400,11 @@ export async function getMandateCounts(filters: FilterOptions = {}): Promise<{
 export const getFilteredDocumentCount = cache((filters: FilterOptions = {}) =>
   unstable_cache(
     async () => {
+      // Deliberately its own narrow query rather than a read off
+      // getFilteredAggregates. The explore cards ask for this count under two
+      // EXTRA scopes (cited on, cited ignored) that need nothing else from the
+      // bundle, and making each of those compute every facet would cost far
+      // more than the two small counts it saves.
       const { cte, params } = buildFilteredDocsCTE(filters, {
         selectCols: 'd.ppb_full_document_symbol',
         groupCols: 'd.ppb_full_document_symbol',
@@ -1311,34 +1439,15 @@ export const getFilteredDocumentCount = cache((filters: FilterOptions = {}) =>
  * so entity=DESA gives every entity that cites the documents DESA cites —
  * matching the entities the table's own column shows on those rows.
  */
-export const getFilteredDimensionCounts = cache((filters: FilterOptions = {}) =>
-  unstable_cache(
-    async (): Promise<{ organs: number; entities: number }> => {
-      const { cte, params, versionClause } = buildFilteredDocsCTE(filters, {
-        selectCols: 'd.ppb_full_document_symbol, d.ppb_body',
-        groupCols: 'd.ppb_full_document_symbol, d.ppb_body',
-      })
-      const row = await queryOne<{ organs: string; entities: string }>(
-        `WITH ${cte}
-         SELECT
-           (SELECT COUNT(DISTINCT ppb_body) FROM filtered_docs
-             WHERE ppb_body IS NOT NULL) AS organs,
-           (SELECT COUNT(DISTINCT c.entity)
-             FROM filtered_docs f
-             JOIN ppb2026.source_document_citations c
-               ON c.ppb_full_document_symbol = f.ppb_full_document_symbol
-             WHERE c.entity IS NOT NULL AND ${versionClause('c')}) AS entities`,
-        params
-      )
-      return {
-        organs: parseInt(row?.organs ?? '0', 10),
-        entities: parseInt(row?.entities ?? '0', 10),
-      }
-    },
-    ['filtered-dimension-counts-v1', JSON.stringify(filters)],
-    { revalidate: 3600 }
-  )()
-)
+export const getFilteredDimensionCounts = async (
+  filters: FilterOptions = {}
+): Promise<{ organs: number; entities: number }> => {
+  const row = await getFilteredAggregates(filters)
+  return {
+    organs: parseInt(row?.total_organs ?? '0', 10),
+    entities: parseInt(row?.result_entities ?? '0', 10),
+  }
+}
 
 /**
  * The scopes the four /secretariat explore cards are computed in. Exported so
@@ -1463,33 +1572,11 @@ export const getExploreCardData = cache((filters: FilterOptions = {}) => {
  * Get entity counts for the sidebar
  */
 export async function getEntityCounts(filters: FilterOptions = {}): Promise<EntityWithCount[]> {
-  const { cte, params, versionClause } = buildFilteredDocsCTE(filters, {
-    selectCols: 'd.ppb_full_document_symbol',
-    groupCols: 'd.ppb_full_document_symbol',
-  })
-
-  const query = `
-    WITH ${cte}
-    SELECT
-      c.entity,
-      e.entity_long,
-      COUNT(DISTINCT c.ppb_full_document_symbol) as count
-    FROM filtered_docs fd
-    JOIN ppb2026.source_document_citations c
-      ON fd.ppb_full_document_symbol = c.ppb_full_document_symbol
-      AND ${versionClause('c')}
-    LEFT JOIN systemchart.entities e ON c.entity = e.entity
-    WHERE c.entity IS NOT NULL AND c.entity != ''
-    GROUP BY c.entity, e.entity_long
-    ORDER BY count DESC
-  `
-
-  const rows = await queryMany<EntityCountRow>(query, params)
-
-  return rows.map((row) => ({
-    entity: row.entity,
-    entity_long: row.entity_long || row.entity,
-    count: parseInt(row.count) || 0,
+  const row = await getFilteredAggregates(filters)
+  return (row?.entity_counts ?? []).map(([entity, entityLong, count]) => ({
+    entity,
+    entity_long: entityLong || entity,
+    count: count || 0,
   }))
 }
 
@@ -1995,39 +2082,10 @@ export const getResolutionRecurrenceTrend = cache(
 type FacetOption = { value: string; count: number }
 
 /**
- * Shared facet-option builder. Every facet does the same dance: build the
- * shared filtered_docs CTE, run a per-facet SELECT, and coerce the count to a
- * number. Only the inner SELECT and (rarely) the post-processing differ, so
- * those are the two injection points; everything else lives here once.
- *
- * Counting is conjunctive — the facet's own active value constrains its own
- * option list like every other filter. See the note above buildOrderByClause.
+ * The per-facet option builder that used to live here is gone: every facet it
+ * served (programme, subject, document type, agenda item) now reads its counts
+ * out of the one consolidated aggregate query, getFilteredAggregates.
  */
-async function getFacetOptions(
-  filters: FilterOptions,
-  opts: {
-    cteOpts?: { selectCols: string; groupCols: string }
-    buildQuery: (ctx: {
-      cte: string
-      versionClause: (alias: string) => string
-    }) => string
-    postProcess?: (rows: ValueCountRow[]) => FacetOption[]
-  }
-): Promise<FacetOption[]> {
-  const { cte, params, versionClause } = buildFilteredDocsCTE(filters, {
-    selectCols: opts.cteOpts?.selectCols ?? 'd.ppb_full_document_symbol',
-    groupCols: opts.cteOpts?.groupCols ?? 'd.ppb_full_document_symbol',
-  })
-
-  const query = opts.buildQuery({ cte, versionClause })
-  const rows = await queryMany<ValueCountRow>(query, params)
-
-  const postProcess =
-    opts.postProcess ??
-    ((r: ValueCountRow[]) =>
-      r.map((row) => ({ value: row.value, count: parseInt(row.count) || 0 })))
-  return postProcess(rows)
-}
 
 /** A budget location as it comes back from JSONB_BUILD_OBJECT, before sorting. */
 type RawBudgetLocation = BudgetLocation & { part_sort?: number }
@@ -2411,21 +2469,11 @@ function buildBudgetTree(rows: HierarchyRow[]): BudgetPartNode[] {
  * Get programme options with counts
  */
 export async function getProgrammeOptions(filters: FilterOptions = {}): Promise<FacetOption[]> {
-  return getFacetOptions(filters, {
-    buildQuery: ({ cte, versionClause }) => `
-    WITH ${cte}
-    SELECT
-      c.programme_title as value,
-      COUNT(DISTINCT c.ppb_full_document_symbol) as count
-    FROM filtered_docs fd
-    JOIN ppb2026.source_document_citations c
-      ON fd.ppb_full_document_symbol = c.ppb_full_document_symbol
-      AND ${versionClause('c')}
-    WHERE c.programme_title IS NOT NULL AND c.programme_title != ''
-    GROUP BY c.programme_title
-    ORDER BY count DESC, c.programme_title
-  `,
-  })
+  const row = await getFilteredAggregates(filters)
+  return (row?.programme_counts ?? []).map(([value, count]) => ({
+    value,
+    count: count || 0,
+  }))
 }
 
 /**
@@ -2781,91 +2829,39 @@ export const getTopicTrends = cache(
  * Get subject options with counts
  */
 export async function getSubjectOptions(filters: FilterOptions = {}): Promise<FacetOption[]> {
-  return getFacetOptions(filters, {
-    cteOpts: {
-      selectCols: 'd.ppb_full_document_symbol, d.subjects',
-      groupCols: 'd.ppb_full_document_symbol, d.subjects',
-    },
-    buildQuery: ({ cte }) => `
-    WITH ${cte},
-    subjects AS (
-      SELECT
-        fd.ppb_full_document_symbol,
-        LOWER(UNNEST(fd.subjects)) as subject
-      FROM filtered_docs fd
-      WHERE fd.subjects IS NOT NULL
-    )
-    SELECT
-      subject as value,
-      COUNT(DISTINCT ppb_full_document_symbol) as count
-    FROM subjects
-    WHERE subject IS NOT NULL AND subject != ''
-    GROUP BY subject
-    ORDER BY count DESC, subject
-  `,
-    // Normalize to title case then deduplicate (different raw strings can produce the same display value)
-    postProcess: (rows) => {
-      const merged = new Map<string, number>()
-      for (const row of rows) {
-        const key = titleCase(row.value.trim())
-        merged.set(key, (merged.get(key) ?? 0) + (parseInt(row.count) || 0))
-      }
-      return Array.from(merged.entries())
-        .map(([value, count]) => ({ value, count }))
-        .sort((a, b) => b.count - a.count || a.value.localeCompare(b.value))
-    },
-  })
+  const row = await getFilteredAggregates(filters)
+  // Normalize to title case then deduplicate (different raw strings can
+  // produce the same display value).
+  const merged = new Map<string, number>()
+  for (const [value, count] of row?.subject_counts ?? []) {
+    const key = titleCase(value.trim())
+    merged.set(key, (merged.get(key) ?? 0) + (count || 0))
+  }
+  return Array.from(merged.entries())
+    .map(([value, count]) => ({ value, count }))
+    .sort((a, b) => b.count - a.count || a.value.localeCompare(b.value))
 }
 
 /**
  * Get document type options from ppb_type (well-populated field on source_documents)
  */
 export async function getDocumentTypeOptions(filters: FilterOptions = {}): Promise<FacetOption[]> {
-  return getFacetOptions(filters, {
-    cteOpts: {
-      selectCols: 'd.ppb_full_document_symbol, d.ppb_type',
-      groupCols: 'd.ppb_full_document_symbol, d.ppb_type',
-    },
-    buildQuery: ({ cte }) => `
-    WITH ${cte}
-    SELECT
-      ppb_type as value,
-      COUNT(DISTINCT ppb_full_document_symbol) as count
-    FROM filtered_docs
-    WHERE ppb_type IS NOT NULL AND ppb_type != ''
-    GROUP BY ppb_type
-    ORDER BY count DESC, ppb_type
-  `,
-  })
+  const row = await getFilteredAggregates(filters)
+  return (row?.type_counts ?? []).map(([value, count]) => ({
+    value,
+    count: count || 0,
+  }))
 }
 
 /**
  * Get agenda item options — parallel UNNEST of number + title arrays
  */
 export async function getAgendaItemOptions(filters: FilterOptions = {}): Promise<FacetOption[]> {
-  return getFacetOptions(filters, {
-    cteOpts: {
-      selectCols: 'd.ppb_full_document_symbol, d.agenda_items',
-      groupCols: 'd.ppb_full_document_symbol, d.agenda_items',
-    },
-    buildQuery: ({ cte }) => `
-    WITH ${cte},
-    agenda_items AS (
-      SELECT
-        fd.ppb_full_document_symbol,
-        (elem->>'desc') as item
-      FROM filtered_docs fd
-      CROSS JOIN LATERAL jsonb_array_elements(COALESCE(fd.agenda_items, '[]'::jsonb)) elem
-    )
-    SELECT
-      item as value,
-      COUNT(DISTINCT ppb_full_document_symbol) as count
-    FROM agenda_items
-    WHERE item IS NOT NULL AND item != ''
-    GROUP BY item
-    ORDER BY count DESC, item
-  `,
-  })
+  const row = await getFilteredAggregates(filters)
+  return (row?.agenda_counts ?? []).map(([value, count]) => ({
+    value,
+    count: count || 0,
+  }))
 }
 
 /**
@@ -2875,23 +2871,8 @@ export async function getYearStats(filters: FilterOptions = {}): Promise<{
   yearRange: { min: number; max: number }
   yearDistribution: Record<string, number>
 }> {
-  const { cte, params } = buildFilteredDocsCTE(filters, {
-    selectCols: 'd.ppb_full_document_symbol, d.ppb_year',
-    groupCols: 'd.ppb_full_document_symbol, d.ppb_year',
-  })
-
-  const query = `
-    WITH ${cte}
-    SELECT
-      ppb_year as year,
-      COUNT(DISTINCT ppb_full_document_symbol) as count
-    FROM filtered_docs
-    WHERE ppb_year IS NOT NULL
-    GROUP BY ppb_year
-    ORDER BY ppb_year
-  `
-
-  const rows = await queryMany<YearRow>(query, params)
+  const bundle = await getFilteredAggregates(filters)
+  const rows = bundle?.year_counts ?? []
 
   if (rows.length === 0) {
     return {
@@ -2900,11 +2881,11 @@ export async function getYearStats(filters: FilterOptions = {}): Promise<{
     }
   }
 
-  const years = rows.map((r) => r.year)
+  const years = rows.map(([year]) => year)
   const distribution: Record<string, number> = {}
 
-  rows.forEach((row) => {
-    distribution[row.year.toString()] = parseInt(row.count) || 0
+  rows.forEach(([year, count]) => {
+    distribution[year.toString()] = count || 0
   })
 
   return {
@@ -2920,59 +2901,12 @@ export async function getYearStats(filters: FilterOptions = {}): Promise<{
  * Get citation count distribution for histogram
  */
 export async function getCitationDistribution(filters: FilterOptions = {}): Promise<CitationBin[]> {
-  const { cte, params } = buildFilteredDocsCTE(filters, {
-    name: 'doc_citations',
-    selectCols: 'd.ppb_full_document_symbol, COUNT(c.id) as citation_count',
-    groupCols: 'd.ppb_full_document_symbol',
-  })
-
-  const query = `
-    WITH ${cte},
-    binned AS (
-      SELECT
-        CASE
-          WHEN citation_count = 1 THEN '1'
-          WHEN citation_count BETWEEN 2 AND 5 THEN '2–5'
-          WHEN citation_count BETWEEN 6 AND 10 THEN '6–10'
-          ELSE '11+'
-        END as bin,
-        CASE
-          WHEN citation_count = 1 THEN 1
-          WHEN citation_count BETWEEN 2 AND 5 THEN 2
-          WHEN citation_count BETWEEN 6 AND 10 THEN 3
-          ELSE 4
-        END as sort_order,
-        CASE
-          WHEN citation_count = 1 THEN 1
-          WHEN citation_count BETWEEN 2 AND 5 THEN 2
-          WHEN citation_count BETWEEN 6 AND 10 THEN 6
-          ELSE 11
-        END as min_citations,
-        CASE
-          WHEN citation_count = 1 THEN 1
-          WHEN citation_count BETWEEN 2 AND 5 THEN 5
-          WHEN citation_count BETWEEN 6 AND 10 THEN 10
-          ELSE 999999
-        END as max_citations
-      FROM doc_citations
-    )
-    SELECT
-      bin,
-      COUNT(*) as count,
-      MIN(min_citations) as min_citations,
-      MIN(max_citations) as max_citations
-    FROM binned
-    GROUP BY bin, sort_order
-    ORDER BY sort_order
-  `
-
-  const rows = await queryMany<{ bin: string; count: string; min_citations: string; max_citations: string }>(query, params)
-
-  return rows.map((row) => ({
-    bin: row.bin,
-    count: parseInt(row.count) || 0,
-    minCitations: parseInt(row.min_citations),
-    maxCitations: parseInt(row.max_citations),
+  const row = await getFilteredAggregates(filters)
+  return (row?.citation_bins ?? []).map(([bin, count, min, max]) => ({
+    bin,
+    count: count || 0,
+    minCitations: min,
+    maxCitations: max,
   }))
 }
 
@@ -3088,6 +3022,11 @@ const stripListKeys = (filters: FilterOptions): FilterOptions => ({
   group: undefined,
   page: undefined,
   limit: undefined,
+  // sort_by only orders the list; it cannot change a count or a facet option.
+  // Dropping it means re-sorting no longer invalidates any of this, and — since
+  // exploreCardScopes drops it too — both callers land on the SAME aggregate
+  // cache key instead of computing the identical bundle twice per render.
+  sort_by: undefined,
 })
 
 const getSharedPageData = cache((filters: FilterOptions) =>
