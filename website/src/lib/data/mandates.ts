@@ -621,19 +621,24 @@ function buildFilteredDocsCTE(
 }
 
 /**
- * Faceted-search rule: a facet's own active value must NOT constrain its own
- * option list, otherwise picking value X collapses the facet to just X and the
- * user can never switch to a sibling. Returns filters with `key` cleared so
- * each facet builder computes its options against every *other* active filter.
- * (Generalises the prior ad-hoc year-range workaround in getMandatePageData.)
+ * Faceting is CONJUNCTIVE: every count on the page honours every active
+ * filter, its own dimension included.
+ *
+ * This used to be disjunctive — each facet dropped its own value before
+ * counting (the `omitOwnDimension` helper), which is the standard rule for
+ * MULTI-select facets: without it, ticking one value zeroes its siblings and
+ * you can never add a second. Our filters are single-select (`organ?: string`,
+ * not `string[]`), so that rule only bought the ability to switch sibling
+ * values without clearing first — which the active-filter chip already gives.
+ *
+ * What it cost was steep: each facet needed its own row set, so no two facet
+ * queries could share one. Conjunctive means every aggregate on the page reads
+ * the SAME filtered set, which is what lets them collapse into a single query
+ * instead of ~21 that each rebuild the same CTE.
+ *
+ * Consequence to keep in mind in the UI: selecting a value collapses that
+ * panel to the value, so the chip that clears it must stay visible.
  */
-function omitOwnDimension(
-  filters: FilterOptions,
-  key: keyof FilterOptions
-): FilterOptions {
-  if (filters[key] === undefined) return filters
-  return { ...filters, [key]: undefined }
-}
 
 /**
  * Build ORDER BY clause from sort option
@@ -1458,7 +1463,6 @@ export const getExploreCardData = cache((filters: FilterOptions = {}) => {
  * Get entity counts for the sidebar
  */
 export async function getEntityCounts(filters: FilterOptions = {}): Promise<EntityWithCount[]> {
-  filters = omitOwnDimension(filters, 'entity')
   const { cte, params, versionClause } = buildFilteredDocsCTE(filters, {
     selectCols: 'd.ppb_full_document_symbol',
     groupCols: 'd.ppb_full_document_symbol',
@@ -1493,7 +1497,6 @@ export async function getEntityCounts(filters: FilterOptions = {}): Promise<Enti
  * Get organ counts for the sidebar
  */
 export async function getOrganCounts(filters: FilterOptions = {}): Promise<OrganWithCount[]> {
-  filters = omitOwnDimension(filters, 'organ')
   const { clauses, params, havingClauses, versionClause } = buildFilterClauses(filters)
   const whereClause = clauses.length > 0 ? `WHERE ${clauses.join(' AND ')}` : ''
   const allHaving = ['d.ppb_body IS NOT NULL', "d.ppb_body != ''", ...havingClauses]
@@ -1534,13 +1537,13 @@ export async function getOrganCounts(filters: FilterOptions = {}): Promise<Organ
  * appended to the last (catch-all) category so it is never lost.
  *
  * Directory scope: the documents matching the CURRENTLY ACTIVE filters (mode and
- * budget version included), minus the organ filter itself — the faceted-search
- * rule, see omitOwnDimension. Dropping only `organ` is what lets the tile keep
- * reading "22 organs" after one organ is picked, while every other active facet
- * (entity, topic, year, …) still narrows the per-organ counts. Because the CTE
- * is the same one the list query counts over, clicking an organ returns exactly
- * the number the card displayed — provided the caller ADDS organ to the active
- * filters rather than replacing them (see DirectoryExplorer).
+ * budget version included), the organ filter itself included — counting is
+ * conjunctive. Picking an organ therefore narrows this directory to that organ,
+ * so the tile reads "1 organ" rather than staying at "22"; the active-filter
+ * chip is how the user gets back. Because the CTE is the same one the list
+ * query counts over, clicking an organ returns exactly the number the card
+ * displayed — provided the caller ADDS organ to the active filters rather than
+ * replacing them (see DirectoryExplorer).
  *
  * It used to count the whole mirror instead (no version predicate at all), which
  * made the modal read GA 27,969 / ECOSOC 9,553 / SC 4,055 / HRC 729 while a click
@@ -1550,13 +1553,10 @@ export async function getOrganCounts(filters: FilterOptions = {}): Promise<Organ
 async function _getOrganHierarchyInner(
   filters: FilterOptions
 ): Promise<OrganGroup[]> {
-  const { cte, params } = buildFilteredDocsCTE(
-    omitOwnDimension(filters, 'organ'),
-    {
-      selectCols: 'd.ppb_full_document_symbol, d.ppb_body',
-      groupCols: 'd.ppb_full_document_symbol, d.ppb_body',
-    }
-  )
+  const { cte, params } = buildFilteredDocsCTE(filters, {
+    selectCols: 'd.ppb_full_document_symbol, d.ppb_body',
+    groupCols: 'd.ppb_full_document_symbol, d.ppb_body',
+  })
   const [organs, countRows] = await Promise.all([
     getAllOrgans(),
     queryMany<{ short: string; count: string }>(
@@ -1637,13 +1637,10 @@ export const getOrganHierarchy = cache((filters: FilterOptions = {}) =>
 async function _getDocumentTypeCatalogueInner(
   filters: FilterOptions
 ): Promise<DocumentTypeCatalogue> {
-  const { cte, params } = buildFilteredDocsCTE(
-    omitOwnDimension(filters, 'document_type'),
-    {
-      selectCols: 'd.ppb_full_document_symbol, d.ppb_type',
-      groupCols: 'd.ppb_full_document_symbol, d.ppb_type',
-    }
-  )
+  const { cte, params } = buildFilteredDocsCTE(filters, {
+    selectCols: 'd.ppb_full_document_symbol, d.ppb_type',
+    groupCols: 'd.ppb_full_document_symbol, d.ppb_type',
+  })
   const rows = await queryMany<{ value: string | null; count: string }>(
     `WITH ${cte}
      SELECT NULLIF(TRIM(ppb_type), '') AS value, COUNT(*) AS count
@@ -1998,15 +1995,16 @@ export const getResolutionRecurrenceTrend = cache(
 type FacetOption = { value: string; count: number }
 
 /**
- * Shared facet-option builder. Every facet does the same dance: drop its own
- * active value (faceted-search rule, see omitOwnDimension), build the shared
- * filtered_docs CTE, run a per-facet SELECT, and coerce the count to a number.
- * Only the inner SELECT and (rarely) the post-processing differ, so those are
- * the two injection points; everything else lives here once.
+ * Shared facet-option builder. Every facet does the same dance: build the
+ * shared filtered_docs CTE, run a per-facet SELECT, and coerce the count to a
+ * number. Only the inner SELECT and (rarely) the post-processing differ, so
+ * those are the two injection points; everything else lives here once.
+ *
+ * Counting is conjunctive — the facet's own active value constrains its own
+ * option list like every other filter. See the note above buildOrderByClause.
  */
 async function getFacetOptions(
   filters: FilterOptions,
-  dimension: keyof FilterOptions,
   opts: {
     cteOpts?: { selectCols: string; groupCols: string }
     buildQuery: (ctx: {
@@ -2016,8 +2014,7 @@ async function getFacetOptions(
     postProcess?: (rows: ValueCountRow[]) => FacetOption[]
   }
 ): Promise<FacetOption[]> {
-  const scoped = omitOwnDimension(filters, dimension)
-  const { cte, params, versionClause } = buildFilteredDocsCTE(scoped, {
+  const { cte, params, versionClause } = buildFilteredDocsCTE(filters, {
     selectCols: opts.cteOpts?.selectCols ?? 'd.ppb_full_document_symbol',
     groupCols: opts.cteOpts?.groupCols ?? 'd.ppb_full_document_symbol',
   })
@@ -2099,24 +2096,12 @@ function sortBudgetLocations(
 export async function getBudgetHierarchy(
   filters: FilterOptions = {}
 ): Promise<BudgetStream[]> {
-  // Scope by every active filter except the hierarchy's own levels (including
-  // the top-level budget_document stream AND `entity`, which is a level of this
-  // tree — BudgetStreamTree makes it selectable and the /secretariat entity
-  // directory is built from these very nodes), so the tree keeps showing where a
-  // user can still navigate after clicking a node. Same convention as the other
-  // facet lists (see omitOwnDimension).
-  //
-  // `entity` was previously left in, which is what made the entity list collapse
-  // to the single selected entity — and would have made the "entities
-  // implementing mandates" tile read 1.
-  const scoped: FilterOptions = { ...filters }
-  delete scoped.budget_part
-  delete scoped.section
-  delete scoped.subprogramme
-  delete scoped.budget_document
-  delete scoped.entity
-
-  const { cte, params, versionClause } = buildFilteredDocsCTE(scoped, {
+  // Conjunctive, like every other count on the page: the tree's own levels
+  // (budget_part, section, subprogramme, budget_document, entity) constrain it
+  // as well. Selecting a node therefore narrows the tree to that node's branch
+  // rather than keeping its siblings on display, so the active-filter chip is
+  // the way back out.
+  const { cte, params, versionClause } = buildFilteredDocsCTE(filters, {
     selectCols: 'd.ppb_full_document_symbol',
     groupCols: 'd.ppb_full_document_symbol',
   })
@@ -2426,7 +2411,7 @@ function buildBudgetTree(rows: HierarchyRow[]): BudgetPartNode[] {
  * Get programme options with counts
  */
 export async function getProgrammeOptions(filters: FilterOptions = {}): Promise<FacetOption[]> {
-  return getFacetOptions(filters, 'programme', {
+  return getFacetOptions(filters, {
     buildQuery: ({ cte, versionClause }) => `
     WITH ${cte}
     SELECT
@@ -2463,14 +2448,9 @@ export async function getProgrammeOptions(filters: FilterOptions = {}): Promise<
 export async function getSubjectHierarchy(
   filters: FilterOptions = {}
 ): Promise<SubjectDomain[]> {
-  // Scope by every active filter except the hierarchy's own levels, so the tree
-  // keeps showing where a user can still navigate after clicking a node (same
-  // convention as getBudgetHierarchy and the facet lists).
-  const scoped: FilterOptions = { ...filters }
-  delete scoped.subject
-  delete scoped.subject_domain
-
-  const { cte, params } = buildFilteredDocsCTE(scoped, {
+  // Conjunctive: the tree's own levels (subject, subject_domain) constrain it
+  // too, like every other count on the page.
+  const { cte, params } = buildFilteredDocsCTE(filters, {
     selectCols: 'd.ppb_full_document_symbol, d.subjects',
     groupCols: 'd.ppb_full_document_symbol, d.subjects',
   })
@@ -2801,7 +2781,7 @@ export const getTopicTrends = cache(
  * Get subject options with counts
  */
 export async function getSubjectOptions(filters: FilterOptions = {}): Promise<FacetOption[]> {
-  return getFacetOptions(filters, 'subject', {
+  return getFacetOptions(filters, {
     cteOpts: {
       selectCols: 'd.ppb_full_document_symbol, d.subjects',
       groupCols: 'd.ppb_full_document_symbol, d.subjects',
@@ -2841,7 +2821,7 @@ export async function getSubjectOptions(filters: FilterOptions = {}): Promise<Fa
  * Get document type options from ppb_type (well-populated field on source_documents)
  */
 export async function getDocumentTypeOptions(filters: FilterOptions = {}): Promise<FacetOption[]> {
-  return getFacetOptions(filters, 'document_type', {
+  return getFacetOptions(filters, {
     cteOpts: {
       selectCols: 'd.ppb_full_document_symbol, d.ppb_type',
       groupCols: 'd.ppb_full_document_symbol, d.ppb_type',
@@ -2863,7 +2843,7 @@ export async function getDocumentTypeOptions(filters: FilterOptions = {}): Promi
  * Get agenda item options — parallel UNNEST of number + title arrays
  */
 export async function getAgendaItemOptions(filters: FilterOptions = {}): Promise<FacetOption[]> {
-  return getFacetOptions(filters, 'agenda_item', {
+  return getFacetOptions(filters, {
     cteOpts: {
       selectCols: 'd.ppb_full_document_symbol, d.agenda_items',
       groupCols: 'd.ppb_full_document_symbol, d.agenda_items',

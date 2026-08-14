@@ -8,6 +8,7 @@
  */
 
 import { unstable_cache } from 'next/cache'
+import { cache } from 'react'
 import { queryMany } from '../db/query'
 import type { BudgetStreamType } from '@/types'
 
@@ -51,8 +52,11 @@ export interface BudgetVersion {
  * Load all budget versions (the data-driven grouping of budget documents that
  * powers the version selector and the default-version fallback). Mirrors
  * getBudgetDocuments; cached across requests, revalidates hourly.
+ *
+ * Also React-`cache()`d below, so the several callers in one render share a
+ * single promise rather than each missing a cold unstable_cache entry.
  */
-export const getBudgetVersions = unstable_cache(
+const loadBudgetVersions = unstable_cache(
   async (): Promise<BudgetVersion[]> => {
     const rows = await queryMany<BudgetVersion>(
       `SELECT slug, display_name, ppb_year, is_default, sort_order
@@ -65,6 +69,8 @@ export const getBudgetVersions = unstable_cache(
   ['budget-versions'],
   { revalidate: 3600 }
 )
+
+export const getBudgetVersions = cache(loadBudgetVersions)
 
 /**
  * The slug of the default budget version (is_default), or the first by
