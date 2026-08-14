@@ -50,8 +50,13 @@ export default async function Page({ searchParams }: PageProps) {
   // budget levels, getSubjectHierarchy drops `subject`/`subject_domain`,
   // getDocumentTypeCatalogue drops `document_type`). Without that, picking an
   // organ would make the organs card read "1". The scopes and the fetch itself
-  // live in the data layer (exploreCardScopes / getExploreCardData) so the cards,
-  // the panels and scripts/check-card-counts.ts cannot drift apart.
+  // live in the data layer (exploreCardScopes / getExploreCardData) so the cards
+  // and the panels cannot drift apart.
+  //
+  // All four are read through ONE budget version (filters.ppb_version, else the
+  // DB default) — the lens chosen in card 3's panel. It decides which citations
+  // exist as far as this page is concerned, so it moves every number here and
+  // every citation column in the table below.
   const [versions, entities, organs, cards] = await Promise.all([
     getBudgetVersions(),
     getAllEntities(),
@@ -61,6 +66,7 @@ export default async function Page({ searchParams }: PageProps) {
   const activeVersionSlug =
     versions.find((v) => v.slug === filters.ppb_version)?.slug ??
     getDefaultVersionSlug(versions)
+  const activeVersion = versions.find((v) => v.slug === activeVersionSlug)
 
   return (
     <div>
@@ -86,6 +92,9 @@ export default async function Page({ searchParams }: PageProps) {
         <ActiveFilters
           entitiesData={entities}
           allOrgans={organs}
+          citedVersionLabel={
+            activeVersion ? `PPB ${activeVersion.ppb_year}` : undefined
+          }
           className="mb-4"
         />
         <DirectoryExplorer

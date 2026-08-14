@@ -33,12 +33,15 @@ import type {
 
 type Panel = 'organs' | 'catalogue' | 'cited' | 'entities'
 
-/** The two scopes the page can be in; card 3's popover switches between them. */
-type Scope = {
-  mode: 'active_mandates' | 'all_resolutions'
-  /** Only meaningful for `active_mandates`; undefined keeps the current one. */
-  ppb_version?: string
-}
+/**
+ * How a panel's counts were computed, so a click can reproduce them.
+ *
+ * There is only one axis left: whether the count is over the whole catalogue or
+ * over the cited subset. The budget version is NOT part of it — it is the lens
+ * the entire page is read through, chosen once in card 3 and never changed as a
+ * side effect of picking an organ or a section.
+ */
+type Scope = { cited?: '1' }
 
 interface DirectoryExplorerProps {
   organGroups: OrganGroup[]
@@ -82,6 +85,8 @@ const DIMENSION_GROUPS: FilterParamKey[][] = [
   ['organ'],
   ['subject', 'subject_domain'],
   ['document_type'],
+  // Cards 2 and 3 are the two arms of this one; each drops it before counting.
+  ['cited'],
   // `programme` is legacy (superseded by section, reachable only from old
   // ?programme= links) but belongs to this group so it cannot linger.
   [
@@ -95,7 +100,10 @@ const DIMENSION_GROUPS: FilterParamKey[][] = [
 ]
 
 /** The whole catalogue; card 2's panel pins its selections to this scope. */
-const CATALOGUE_SCOPE: Scope = { mode: 'all_resolutions' }
+const CATALOGUE_SCOPE: Scope = { cited: undefined }
+
+/** The cited subset; cards 3 and 4 pin their selections to this scope. */
+const CITED_SCOPE: Scope = { cited: '1' }
 
 /** Which filter param each level of the budget tree writes to. */
 const BUDGET_LEVEL_PARAM: Record<BudgetTreeLevel, FilterParamKey> = {
@@ -114,16 +122,20 @@ const BUDGET_LEVEL_PARAM: Record<BudgetTreeLevel, FilterParamKey> = {
  *
  * The four numbers, and what each panel does:
  *
- *   1. organs creating mandates       — getOrganHierarchy, active scope, drops `organ`
- *   2. documents adopted              — getFilteredDocumentCount(all_resolutions)
- *   3. documents cited as mandates    — getFilteredDocumentCount(active_mandates@version)
+ *   1. organs creating mandates       — getOrganHierarchy, active filters, drops `organ`
+ *   2. documents adopted              — getFilteredDocumentCount(catalogue)
+ *   3. documents cited as mandates    — getFilteredDocumentCount(cited)
  *   4. entities implementing mandates — getBudgetHierarchy, cited scope, drops `entity`
  *
- * Cards 2 and 3 are the two arms of one dimension (the scope), so each pins that
+ * Cards 2 and 3 are the two arms of one dimension (`cited`), so each pins that
  * dimension to its own value and honours every other active filter — the same
- * own-dimension exclusion cards 1 and 4 apply to `organ` and `entity`. Which is
- * why card 3's panel is where the scope is chosen: clicking one of its three
- * scope buttons makes the table return exactly the number on the tile.
+ * own-dimension exclusion cards 1 and 4 apply to `organ` and `entity`.
+ *
+ * Every number here is read through ONE budget version, chosen in card 3's
+ * panel. That choice is a lens, not a filter: the list always covers the whole
+ * catalogue unified with what the selected version cites, and the version
+ * decides which citations — counts, entities, budget locations — are attached
+ * to those documents. Switching it therefore moves every number on the page.
  *
  * Every selection made inside a panel is ADDITIVE (it keeps the other active
  * filters) and forces the scope its panel's numbers were computed under, so a
@@ -156,19 +168,11 @@ export function DirectoryExplorer({
     [budgetStreams]
   )
 
-  const currentMode = filters.mode ?? 'all_resolutions'
+  const isCitedOnly = filters.cited === '1'
   const activeVersion = versions.find((v) => v.slug === activeVersionSlug)
   const citedPredicate = activeVersion
     ? `cited as mandates in PPB ${activeVersion.ppb_year}`
     : 'cited as mandates in the budget'
-
-  // The scope each panel's numbers were computed under (see the doc comment):
-  // the organ directory follows whatever scope is active; the catalogue panel is
-  // pinned to all documents; the cited and entity panels to the budget version.
-  const citedScope = useMemo<Scope>(
-    () => ({ mode: 'active_mandates', ppb_version: activeVersionSlug }),
-    [activeVersionSlug]
-  )
 
   /** Write filters the way the panel's counts assume: additively, in scope. */
   const applySelection = useCallback(
@@ -182,12 +186,9 @@ export function DirectoryExplorer({
       }
       updates[param] = value
       updates.page = undefined
-      if (scope) {
-        updates.mode = scope.mode
-        // Deliberately not cleared for all_resolutions: the version choice is
-        // remembered so switching back to a budget scope returns to it.
-        if (scope.ppb_version) updates.ppb_version = scope.ppb_version
-      }
+      // The version lens is never touched here — only the cited/all axis the
+      // panel's counts were computed on.
+      if (scope) updates.cited = scope.cited
       setMultipleFilters(updates as Partial<FilterOptions>)
       if (value !== undefined) scrollToMandates()
     },
@@ -208,8 +209,8 @@ export function DirectoryExplorer({
   )
 
   const organSelection = useMemo(
-    // No scope forced: organs exist in both scopes and getOrganHierarchy counts
-    // them under whichever one is active.
+    // No scope forced: organs exist on both sides of the cited/all axis and
+    // getOrganHierarchy counts them under whichever side is active.
     () => selectionFor(undefined),
     [selectionFor]
   )
@@ -217,24 +218,32 @@ export function DirectoryExplorer({
     () => selectionFor(CATALOGUE_SCOPE),
     [selectionFor]
   )
-  const budgetSelection = useMemo(
-    () => selectionFor(citedScope),
-    [selectionFor, citedScope]
-  )
+  const budgetSelection = useMemo(() => selectionFor(CITED_SCOPE), [selectionFor])
 
-  const setScope = (scope: Scope) => {
-    const updates: Record<string, string | undefined> = {
-      mode: scope.mode,
+  /** Narrow to the cited subset, or widen back to the whole catalogue. */
+  const setCited = (cited: boolean) => {
+    setMultipleFilters({
+      cited: cited ? '1' : undefined,
       page: undefined,
-    }
-    if (scope.ppb_version) updates.ppb_version = scope.ppb_version
-    setMultipleFilters(updates as Partial<FilterOptions>)
+    } as Partial<FilterOptions>)
+  }
+
+  /**
+   * Switch the version lens. Only `ppb_version` moves: every filter, including
+   * `cited`, survives, so "documents DESA cites" stays that question and simply
+   * gets answered from the other budget.
+   */
+  const setVersion = (slug: string) => {
+    setMultipleFilters({
+      ppb_version: slug,
+      page: undefined,
+    } as Partial<FilterOptions>)
   }
 
   const selectBudgetLocation = (level: BudgetTreeLevel, value: string) => {
     const param = BUDGET_LEVEL_PARAM[level]
     const isActive = filters[param] === value
-    applySelection(param, isActive ? undefined : value, citedScope)
+    applySelection(param, isActive ? undefined : value, CITED_SCOPE)
     close()
   }
 
@@ -250,14 +259,14 @@ export function DirectoryExplorer({
         count={catalogueDocumentCount}
         noun="documents"
         predicate="adopted"
-        active={currentMode === 'all_resolutions'}
+        active={!isCitedOnly}
         onClick={() => setPanel('catalogue')}
       />
       <ExploreButton
         count={citedDocumentCount}
         noun="documents"
         predicate={citedPredicate}
-        active={currentMode === 'active_mandates'}
+        active={isCitedOnly}
         onClick={() => setPanel('cited')}
       />
       <ExploreButton
@@ -293,35 +302,44 @@ export function DirectoryExplorer({
         open={panel === 'cited'}
         onClose={close}
         title={`Documents ${citedPredicate}`}
-        hint="Choose which documents the table covers, and narrow to one place in the budget."
+        hint="Choose which budget the citation data comes from, narrow the table to the documents it cites, or go to one place in it."
       >
         <div className="space-y-6">
+          <section className="space-y-3">
+            <PanelHeading>Budget version</PanelHeading>
+            <div className="flex flex-wrap gap-2">
+              {versions.map((version) => (
+                <ScopeButton
+                  key={version.slug}
+                  label={`PPB ${version.ppb_year}`}
+                  detail={version.display_name}
+                  selected={activeVersionSlug === version.slug}
+                  onClick={() => setVersion(version.slug)}
+                />
+              ))}
+            </div>
+            <p className="text-xs text-gray-500">
+              The whole document catalogue stays in the table either way. The
+              budget you pick here supplies the citation counts, the citing
+              entities and the budget locations shown against each document.
+            </p>
+          </section>
+
           <section className="space-y-3">
             <PanelHeading>Scope</PanelHeading>
             <div className="flex flex-wrap gap-2">
               <ScopeButton
                 label="All documents"
                 detail={`${catalogueDocumentCount.toLocaleString()} documents`}
-                selected={currentMode === 'all_resolutions'}
-                onClick={() => setScope(CATALOGUE_SCOPE)}
+                selected={!isCitedOnly}
+                onClick={() => setCited(false)}
               />
-              {versions.map((version) => (
-                <ScopeButton
-                  key={version.slug}
-                  label={`PPB ${version.ppb_year}`}
-                  detail={version.display_name}
-                  selected={
-                    currentMode === 'active_mandates' &&
-                    activeVersionSlug === version.slug
-                  }
-                  onClick={() =>
-                    setScope({
-                      mode: 'active_mandates',
-                      ppb_version: version.slug,
-                    })
-                  }
-                />
-              ))}
+              <ScopeButton
+                label="Cited only"
+                detail={`${citedDocumentCount.toLocaleString()} documents ${citedPredicate}`}
+                selected={isCitedOnly}
+                onClick={() => setCited(true)}
+              />
             </div>
           </section>
 
@@ -346,8 +364,8 @@ export function DirectoryExplorer({
             )}
             <p className="text-xs text-gray-500">
               Counts are documents cited at that point of{' '}
-              {activeVersion?.display_name ?? 'the budget'}. Picking one
-              switches the table to that budget.
+              {activeVersion?.display_name ?? 'the budget'}. Picking one narrows
+              the table to those documents.
             </p>
           </section>
         </div>
@@ -430,9 +448,9 @@ function PanelHeading({ children }: { children: React.ReactNode }) {
 }
 
 /**
- * One of the three scope choices. A card, not a segmented control: the options
- * carry a second line (which budget), and this replaced a toggle whose PPB
- * dropdown was hidden inside one of its two segments.
+ * One choice in card 3's panel — a budget version, or one side of the
+ * cited/all axis. A card, not a segmented control: every option carries a
+ * second line (the budget's full name, or the count it produces).
  */
 function ScopeButton({
   label,
