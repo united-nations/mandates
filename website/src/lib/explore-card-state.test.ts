@@ -68,6 +68,7 @@ describe('resolveExploreCardStates', () => {
       citedOnly: false,
     })
     assert.equal(states.organs.condition, 'selected')
+    // The selected card's own label keeps the long name where it fits...
     assert.equal(states.organs.selection?.name, 'General Assembly')
     assert.equal(states.documents.condition, 'scoped')
     assert.equal(states.documents.value, 27_942)
@@ -76,7 +77,10 @@ describe('resolveExploreCardStates', () => {
     assert.equal(states.cited.shownDocumentsValue, 27_942)
     assert.equal(states.cited.citedMatchesShown, false)
     assert.equal(states.entities.condition, 'scoped')
-    assert.equal(states.scopeCause, 'General Assembly')
+    // ...while the visible cause abbreviates to the code, and the spoken
+    // cause keeps the full name.
+    assert.equal(states.scopeCause, 'GA')
+    assert.equal(states.spokenScopeCause, 'General Assembly')
   })
 
   it('collapses cards 2 and 3 to one number under an entity selection', () => {
@@ -102,6 +106,10 @@ describe('resolveExploreCardStates', () => {
     assert.equal(states.entities.selection?.name, 'OHCHR')
     assert.equal(states.entities.value, 14)
     assert.equal(states.scopeCause, 'OHCHR')
+    assert.equal(
+      states.spokenScopeCause,
+      'Office of the High Commissioner for Human Rights'
+    )
   })
 
   it('scopes exactly one card under cited only', () => {
@@ -121,7 +129,10 @@ describe('resolveExploreCardStates', () => {
     assert.equal(states.cited.condition, 'selected')
     assert.equal(states.cited.selection?.name, 'Cited only')
     assert.equal(states.entities.condition, 'full')
+    // The cited selection has no code to abbreviate to; both causes carry its
+    // frame.
     assert.equal(states.scopeCause, 'the cited set')
+    assert.equal(states.spokenScopeCause, 'the cited set')
     // Under the cited filter, shown and cited are the same number by
     // construction.
     assert.equal(states.cited.citedMatchesShown, true)
@@ -140,7 +151,10 @@ describe('resolveExploreCardStates', () => {
       organ: { code: 'GA', longName: 'General Assembly' },
       citedOnly: false,
     })
-    assert.equal(states.scopeCause, 'General Assembly and OHCHR')
+    assert.equal(states.scopeCause, 'GA and OHCHR')
+    // The entity has no long name in this fixture, so its spoken frame falls
+    // back to what it has: the code.
+    assert.equal(states.spokenScopeCause, 'General Assembly and OHCHR')
     assert.equal(states.organs.condition, 'selected')
     assert.equal(states.entities.condition, 'selected')
     assert.equal(states.documents.condition, 'scoped')

@@ -35,15 +35,27 @@ export type ExploreCardCondition = 'full' | 'selected' | 'scoped'
  * The two display forms of a selection, plus the unabbreviated original.
  *
  * `name` is how the selection labels itself on its own card ("Cited only");
- * `frame` is how it reads as the object of "Scoped to …" ("the cited set").
- * Proper nouns set both to the same string. Both fields are required rather
- * than `frame` defaulting to `name`: the default is right for proper nouns and
- * silently wrong for everything else, so a future non-proper-noun selection
- * must decide its frame explicitly.
+ * `frame` is how it reads as the object of the visible "Scoped to …" tag; and
+ * `spokenFrame` is the same slot for the screen-reader copy of that tag.
+ *
+ * The visible frame carries the SHORT code ("Scoped to ECOSOC"), not the long
+ * name: the tag repeats identically across every scoped card, and a label
+ * read three times is read like a column header — brevity wins there. The
+ * full name is always present on the selected card itself, so the code is
+ * recoverable without leaving the row. The spoken frame keeps the full name:
+ * a screen reader hears the cards one at a time, so the repetition argument
+ * does not apply, and the abbreviation would cost meaning. The divergence is
+ * deliberate; do not collapse the two.
+ *
+ * All fields are required rather than defaulting through `name`: the default
+ * is right for proper nouns and silently wrong for everything else ("Scoped
+ * to Cited only" is not English), so a future selection kind must decide its
+ * frames explicitly.
  */
 export interface ExploreCardSelection {
   name: string
   frame: string
+  spokenFrame: string
   /** The unabbreviated form, for title attributes and other full-name surfaces. */
   fullName: string
 }
@@ -86,6 +98,11 @@ export interface ExploreCardStates {
    * scoped.
    */
   scopeCause: string | null
+  /**
+   * The same cause built from `spokenFrame`s — full names — for the
+   * visually-hidden copy of the scoped tag. Null exactly when scopeCause is.
+   */
+  spokenScopeCause: string | null
 }
 
 /** The four figures the cards are built from, in either scope. */
@@ -191,23 +208,38 @@ export function resolveExploreCardStates(
 
   const organSelection: ExploreCardSelection | undefined = organ && {
     name: organSelectionLabel(organ.code, organ.longName),
-    frame: organSelectionLabel(organ.code, organ.longName),
+    // The selection value IS the vocabulary's short code; rows with no long
+    // name simply have nothing longer to say.
+    frame: organ.code,
+    spokenFrame: organ.longName ?? organ.code,
     fullName: organ.longName ?? organ.code,
   }
   const entitySelection: ExploreCardSelection | undefined = entity && {
     name: entity.code,
     frame: entity.code,
+    spokenFrame: entity.longName ?? entity.code,
     fullName: entity.longName ?? entity.code,
   }
   const citedSelection: ExploreCardSelection | undefined = citedOnly
-    ? { name: 'Cited only', frame: 'the cited set', fullName: 'Cited only' }
+    ? {
+        name: 'Cited only',
+        frame: 'the cited set',
+        spokenFrame: 'the cited set',
+        fullName: 'Cited only',
+      }
     : undefined
 
   // Card order, not selection order.
-  const selectedFrames = [organSelection, entitySelection, citedSelection]
+  const activeSelections = [organSelection, entitySelection, citedSelection]
     .filter((s) => s !== undefined)
-    .map((s) => s.frame)
-  const scopeCause = selectedFrames.length > 0 ? selectedFrames.join(' and ') : null
+  const scopeCause =
+    activeSelections.length > 0
+      ? activeSelections.map((s) => s.frame).join(' and ')
+      : null
+  const spokenScopeCause =
+    activeSelections.length > 0
+      ? activeSelections.map((s) => s.spokenFrame).join(' and ')
+      : null
 
   // Card 2 shows whichever document count the active filters select.
   const shownDocumentsValue = citedOnly
@@ -261,5 +293,6 @@ export function resolveExploreCardStates(
       selection: entitySelection,
     },
     scopeCause,
+    spokenScopeCause,
   }
 }

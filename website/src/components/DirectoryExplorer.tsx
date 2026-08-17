@@ -261,7 +261,7 @@ export function DirectoryExplorer({
           verb would quantify over every row. The unattributed set does not
           falsify the count and gets no caveat on the card. */}
       <ExploreButton
-        stateLine={cardStateLine(cardStates.organs, cardStates.scopeCause)}
+        stateLine={cardStateLine(cardStates.organs, cardStates)}
         count={cardStates.organs.value}
         countUnit={
           cardStates.organs.condition === 'full'
@@ -280,7 +280,7 @@ export function DirectoryExplorer({
       {/* Card 2. When narrowed, the denominator line replaces the predicate:
           the two never render together. */}
       <ExploreButton
-        stateLine={cardStateLine(cardStates.documents, cardStates.scopeCause)}
+        stateLine={cardStateLine(cardStates.documents, cardStates)}
         count={cardStates.documents.value}
         countUnit={cardStates.documents.value === 1 ? 'document' : 'documents'}
         quietLine={
@@ -299,7 +299,7 @@ export function DirectoryExplorer({
           edge case) the fraction says nothing and the all-form renders
           instead. */}
       <ExploreButton
-        stateLine={cardStateLine(cardStates.cited, cardStates.scopeCause)}
+        stateLine={cardStateLine(cardStates.cited, cardStates)}
         count={cardStates.cited.value}
         countPrefix={cardStates.cited.citedMatchesShown ? 'all' : undefined}
         countUnit={
@@ -324,7 +324,7 @@ export function DirectoryExplorer({
           cites the same documents is in it, which is why the card does not
           read "1". */}
       <ExploreButton
-        stateLine={cardStateLine(cardStates.entities, cardStates.scopeCause)}
+        stateLine={cardStateLine(cardStates.entities, cardStates)}
         count={
           cardStates.entities.condition === 'selected'
             ? undefined
@@ -481,7 +481,13 @@ function scrollToMandates() {
  *   cannot be the carrier of the selected/scoped distinction (WCAG 1.4.1).
  */
 type ExploreCardStateLine =
-  | { kind: 'scoped'; cause: string }
+  | {
+      kind: 'scoped'
+      /** Visible cause — short codes ("ECOSOC and UNCTAD"). */
+      cause: string
+      /** Screen-reader cause — full names. Deliberately not the same string. */
+      spokenCause: string
+    }
   | {
       kind: 'selected'
       name: string
@@ -492,7 +498,7 @@ type ExploreCardStateLine =
 /** The state line a resolved card condition renders, if any. */
 function cardStateLine(
   state: ExploreCardState,
-  scopeCause: string | null
+  states: ExploreCardStates
 ): ExploreCardStateLine | undefined {
   if (state.condition === 'selected' && state.selection) {
     return {
@@ -508,8 +514,16 @@ function cardStateLine(
           : undefined,
     }
   }
-  if (state.condition === 'scoped' && scopeCause !== null) {
-    return { kind: 'scoped', cause: scopeCause }
+  if (
+    state.condition === 'scoped' &&
+    states.scopeCause !== null &&
+    states.spokenScopeCause !== null
+  ) {
+    return {
+      kind: 'scoped',
+      cause: states.scopeCause,
+      spokenCause: states.spokenScopeCause,
+    }
   }
   return undefined
 }
@@ -559,7 +573,13 @@ function ExploreButton({
               <span aria-hidden className="text-gray-600">
                 Scoped to {stateLine.cause}
               </span>
-              <span className="sr-only">Scoped to {stateLine.cause}:</span>
+              {/* Full names here where the visible tag carries short codes:
+                  the visible tag repeats across cards and is read once, like
+                  a column header; a screen reader hears each card alone, so
+                  the abbreviation would only cost meaning. */}
+              <span className="sr-only">
+                Scoped to {stateLine.spokenCause}:
+              </span>
             </>
           ) : (
             <>
