@@ -9,6 +9,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { useFilters } from '@/contexts/FilterContext'
+import { explainerTexts } from '@/lib/en_text_contents'
 import type { ApiResponse } from '@/types'
 import { useSearchParams } from 'next/navigation'
 import { ColumnPicker } from './table/ColumnPicker'
@@ -86,8 +87,8 @@ export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
       </TooltipTrigger>
       <TooltipContent side="bottom" className="max-w-xs">
         Collapse recurring resolutions to one row per series — the most recent
-        matching version, expandable to its earlier versions. Versions are
-        identified automatically by matching titles within the same organ.
+        matching version, expandable to its earlier versions.{' '}
+        {explainerTexts.versionMatching.disclaimer}
       </TooltipContent>
     </Tooltip>
   )

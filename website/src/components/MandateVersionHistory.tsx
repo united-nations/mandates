@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { ArrowRight, ChevronDown, ChevronUp, GitCompare } from 'lucide-react'
 import type { ResolutionSeriesInfo } from '@/lib/data/mandates'
+import { explainerTexts } from '@/lib/en_text_contents'
 import { DocumentSymbol } from '@/components/DocumentSymbol'
 import { getMandateUrl } from '@/components/table/MandateColumns'
 import {
@@ -215,8 +216,7 @@ export function MandateVersionHistory({
         </div>
       ) : (
         <DetailDisclaimer>
-          Versions are identified automatically by matching titles within the
-          same organ (~97% accuracy on a manual audit).
+          {explainerTexts.versionMatching.disclaimer}
         </DetailDisclaimer>
       )}
     </section>
