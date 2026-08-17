@@ -19,6 +19,10 @@ import {
 } from '@/components/ui/dialog'
 import { DirectorySelectContext } from '@/contexts/DirectorySelectContext'
 import { useFilters } from '@/contexts/FilterContext'
+import type {
+  ExploreCardState,
+  ExploreCardStates,
+} from '@/lib/explore-card-state'
 import type { FilterParamKey } from '@/lib/filter-constants'
 import { cn } from '@/lib/utils'
 import type {
@@ -34,14 +38,16 @@ import type {
 type Panel = 'organs' | 'catalogue' | 'cited' | 'entities'
 
 interface DirectoryExplorerProps {
+  /**
+   * The resolved condition of each card (full / selected / scoped), with the
+   * live and full-state figures the copy is built from. Resolved on the
+   * server, where the baseline figures and the organ/entity name lists live.
+   */
+  cardStates: ExploreCardStates
   organGroups: OrganGroup[]
   budgetStreams: BudgetStream[]
   subjectDomains: SubjectDomain[]
   documentTypes: DocumentTypeCatalogue
-  /** Distinct organs in the result set. */
-  organCount: number
-  /** Distinct citing entities in the result set. */
-  entityCount: number
   /** Documents under the active filters with `cited` ignored. */
   allDocumentsCount: number
   /** Documents under the active filters with `cited` on. */
@@ -101,10 +107,10 @@ const BUDGET_LEVEL_PARAM: Record<BudgetTreeLevel, FilterParamKey> = {
 }
 
 /**
- * The four entry points at the top of the mandate explorer. Each states one fact
- * about the CURRENT filter selection as a sentence — "22 organs creating
- * mandates" — and doubles as a gateway: clicking it opens the matching directory
- * or filter panel.
+ * The four entry points at the top of the mandate explorer. Each states one
+ * fact about the CURRENT result set — "42,944 documents listed in the
+ * registry" — and doubles as a gateway: clicking it opens the matching
+ * directory or filter panel.
  *
  * ONE rule: every card number honours every active filter, its own dimension
  * included. Each states what the table below is showing — filter to one organ
@@ -114,15 +120,21 @@ const BUDGET_LEVEL_PARAM: Record<BudgetTreeLevel, FilterParamKey> = {
  *
  * The four numbers, all over the current result set:
  *
- *   1. organs creating mandates       — distinct organs in it
- *   2. documents adopted              — the table total
- *   3. documents cited as mandates    — the cited subset of it
- *   4. entities implementing mandates — distinct citing entities in it
+ *   1. organs & bodies — distinct issuing bodies in it
+ *   2. documents       — the table total
+ *   3. cited documents — the cited subset of it, measured against card 2
+ *   4. entities        — distinct citing entities in it
+ *
+ * On top of that, each card wears its resolved condition (cardStates): a card
+ * holding the active filter names its selection; a card whose figure is
+ * smaller than its full-state figure says what narrowed it ("Scoped to …")
+ * and swaps its predicate for a denominator. See lib/explore-card-state.ts
+ * for how the conditions are resolved.
  *
  * The panels' option LISTS are the one place the own dimension is dropped, and
  * only there: a list that collapsed to the value already chosen could never be
  * used to choose anything else (see DIMENSION_GROUPS). Card 1 can therefore
- * read 1 while its panel still lists all 22 organs — the card reports, the
+ * read 1 while its panel still lists all the organs — the card reports, the
  * panel offers. For the same reason the "All documents" option in card 3's
  * chooser states the count it would produce rather than the current one.
  *
@@ -130,19 +142,20 @@ const BUDGET_LEVEL_PARAM: Record<BudgetTreeLevel, FilterParamKey> = {
  * That choice is a lens, not a filter: the list always covers the whole
  * catalogue unified with what the selected version cites, and the version
  * decides which citations — counts, entities, budget locations — are attached
- * to those documents. Switching it therefore moves every number on the page.
+ * to those documents. Switching it therefore moves every number on the page,
+ * and — because the full-state figures are read through the same lens — marks
+ * no card as scoped.
  *
  * Styling follows the UN Transparency Portal: a white tile with a grey border,
  * un-blue used only as an accent on hover, shadow on hover only, everything
  * left-aligned. No leading icons — the number is the anchor.
  */
 export function DirectoryExplorer({
+  cardStates,
   organGroups,
   budgetStreams,
   subjectDomains,
   documentTypes,
-  organCount,
-  entityCount,
   allDocumentsCount,
   citedDocumentCount,
   versions,
@@ -159,10 +172,12 @@ export function DirectoryExplorer({
     ? citedDocumentCount
     : allDocumentsCount
   const activeVersion = versions.find((v) => v.slug === activeVersionSlug)
-  // The budget version is only named when it is NOT the current one. Naming it
-  // always ("…in PPB 2027") spent the card's second line on the default, which
-  // is what every reader already assumes; an older version is the exception and
-  // is the only case worth saying out loud.
+  // Panel copy only. On the panel surfaces the budget version is named when it
+  // is NOT the current one: naming it always spent the line on the default,
+  // which is what every reader already assumes. The CARDS name the cycle year
+  // unconditionally — card 3's and card 4's figures are version-scoped, and a
+  // card with no qualifier standing beside them would imply the figure is
+  // version-invariant.
   const latestVersionYear = versions.reduce(
     (year, v) => Math.max(year, v.ppb_year),
     0
@@ -171,6 +186,10 @@ export function DirectoryExplorer({
     activeVersion && activeVersion.ppb_year !== latestVersionYear
       ? `cited as mandates in PPB ${activeVersion.ppb_year}`
       : 'cited as mandates'
+  // The cards degrade to versionless copy in the (unobserved) case of an
+  // active version that matches no known slug; nothing false is stated, the
+  // year is just not named.
+  const cycleYear = activeVersion?.ppb_year
 
   /** Write one dimension, keeping every other active filter. */
   const applySelection = useCallback(
@@ -232,32 +251,103 @@ export function DirectoryExplorer({
 
   return (
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      {/* Card 1. Its figure is a facet cardinality over PRESENT issuing
+          bodies: it asserts that N distinct bodies appear among the documents
+          shown, not that every document has one. A small set of documents
+          (114 at the time of writing, 0.26% of the corpus) carries no
+          recorded issuing body, so the bodies here did not issue every
+          document in view — which is why the quiet line reads "recorded as
+          issuing the documents shown" and not "issuing": a bare transitive
+          verb would quantify over every row. The unattributed set does not
+          falsify the count and gets no caveat on the card. */}
       <ExploreButton
-        count={organCount}
-        noun="organs"
-        singular="organ"
-        predicate="creating mandates"
+        stateLine={cardStateLine(cardStates.organs, cardStates)}
+        count={cardStates.organs.value}
+        countUnit={
+          cardStates.organs.condition === 'full'
+            ? cardStates.organs.value === 1
+              ? 'organ or body'
+              : 'organs & bodies'
+            : `of ${cardStates.organs.baselineValue.toLocaleString()} organs & bodies`
+        }
+        quietLine={
+          cardStates.organs.condition === 'full'
+            ? 'recorded as issuing the documents shown'
+            : undefined
+        }
         onClick={() => setPanel('organs')}
       />
+      {/* Card 2. When narrowed, the denominator line replaces the predicate:
+          the two never render together. */}
       <ExploreButton
-        count={tableDocumentCount}
-        noun="documents"
-        singular="document"
-        predicate="adopted"
+        stateLine={cardStateLine(cardStates.documents, cardStates)}
+        count={cardStates.documents.value}
+        countUnit={cardStates.documents.value === 1 ? 'document' : 'documents'}
+        quietLine={
+          cardStates.documents.condition === 'scoped'
+            ? `of the ${cardStates.documents.baselineValue.toLocaleString()} in the registry`
+            : 'listed in the registry'
+        }
         onClick={() => setPanel('catalogue')}
       />
+      {/* Card 3. Its identity is "subset of card 2", so its denominator is
+          card 2's LIVE figure — the one deliberate exception to denominators
+          being in the card's own unit, and the only expression of the subset
+          relation that survives the grid reflowing the two cards onto
+          different rows. When the two figures collapse to one (every document
+          in view is cited — the COMMON path under an organ selection, not an
+          edge case) the fraction says nothing and the all-form renders
+          instead. */}
       <ExploreButton
-        count={citedDocumentCount}
-        noun="documents"
-        singular="document"
-        predicate={citedPredicate}
+        stateLine={cardStateLine(cardStates.cited, cardStates)}
+        count={cardStates.cited.value}
+        countPrefix={cardStates.cited.citedMatchesShown ? 'all' : undefined}
+        countUnit={
+          cardStates.cited.citedMatchesShown
+            ? 'of them'
+            : cardStates.cited.condition === 'scoped'
+              ? `of the ${cardStates.cited.shownDocumentsValue.toLocaleString()} shown`
+              : 'of them'
+        }
+        quietLine={
+          cycleYear !== undefined
+            ? `cited in the ${cycleYear} budget cycle`
+            : 'cited in the budget cycle'
+        }
         onClick={() => setPanel('cited')}
       />
+      {/* Card 4. The schema records that an entity CITED a document in its
+          budget submission; there is no implementation signal anywhere in the
+          system, so the card says what the artefact is. The figure is
+          version-scoped, so the cycle year is always named. When an entity is
+          selected the figure sits inside the sentence — every entity that
+          cites the same documents is in it, which is why the card does not
+          read "1". */}
       <ExploreButton
-        count={entityCount}
-        noun="entities"
-        singular="entity"
-        predicate="implementing mandates"
+        stateLine={cardStateLine(cardStates.entities, cardStates)}
+        count={
+          cardStates.entities.condition === 'selected'
+            ? undefined
+            : cardStates.entities.value
+        }
+        countUnit={
+          cardStates.entities.condition === 'selected'
+            ? undefined
+            : cardStates.entities.value === 1
+              ? 'entity'
+              : 'entities'
+        }
+        quietLine={
+          cardStates.entities.condition === 'selected'
+            ? `among ${cardStates.entities.value.toLocaleString()} ${
+                cardStates.entities.value === 1 ? 'entity' : 'entities'
+              } citing these documents`
+            : cardStates.entities.condition === 'scoped'
+              ? `of ${cardStates.entities.baselineValue.toLocaleString()}`
+              : cycleYear !== undefined
+                ? `citing them in their ${cycleYear} budget submissions`
+                : 'citing them in their budget submissions'
+        }
         onClick={() => setPanel('entities')}
       />
 
@@ -356,10 +446,13 @@ export function DirectoryExplorer({
         </div>
       </DirectoryDialog>
 
+      {/* "Citing", not "implementing": the data records citation in budget
+          submissions and nothing about implementation, so the heading says
+          what the data can support. */}
       <DirectoryDialog
         open={panel === 'entities'}
         onClose={close}
-        title="Entities implementing mandates"
+        title="Entities citing mandates"
         hint="Click an entity to show the mandates it cites in the budget."
       >
         <EntitiesDirectory streams={budgetStreams} selection={selection} />
@@ -377,53 +470,198 @@ function scrollToMandates() {
   })
 }
 
+/**
+ * The line above the count that names the card's state.
+ *
+ * - `scoped`: "Scoped to <cause>" — the card shows part of something larger,
+ *   and the cause is what narrowed it.
+ * - `selected`: "<name> selected" — the card holds the active filter. The name
+ *   carries the accent and the word "selected" stays in body colour, so the
+ *   two are not read as one phrase; the word is there because colour alone
+ *   cannot be the carrier of the selected/scoped distinction (WCAG 1.4.1).
+ */
+type ExploreCardStateLine =
+  | {
+      kind: 'scoped'
+      /** Visible cause — short codes ("ECOSOC and UNCTAD"). */
+      cause: string
+      /** Screen-reader cause — full names. Deliberately not the same string. */
+      spokenCause: string
+    }
+  | {
+      kind: 'selected'
+      name: string
+      /** The unabbreviated name, where the visible label is a short code. */
+      title?: string
+    }
+
+/** The state line a resolved card condition renders, if any. */
+function cardStateLine(
+  state: ExploreCardState,
+  states: ExploreCardStates
+): ExploreCardStateLine | undefined {
+  if (state.condition === 'selected' && state.selection) {
+    return {
+      kind: 'selected',
+      name: state.selection.name,
+      // The title only earns its place when it says more than the label —
+      // organ selections abbreviated to their short code carry the long name
+      // here; every other surface (the panel, the sentence) keeps the long
+      // name visible.
+      title:
+        state.selection.fullName !== state.selection.name
+          ? state.selection.fullName
+          : undefined,
+    }
+  }
+  if (
+    state.condition === 'scoped' &&
+    states.scopeCause !== null &&
+    states.spokenScopeCause !== null
+  ) {
+    return {
+      kind: 'scoped',
+      cause: states.scopeCause,
+      spokenCause: states.spokenScopeCause,
+    }
+  }
+  return undefined
+}
+
 function ExploreButton({
+  stateLine,
   count,
-  noun,
-  singular,
-  predicate,
+  countPrefix,
+  countUnit,
+  quietLine,
   onClick,
 }: {
-  count: number
-  noun: string
-  /** Used at count 1, which filtering to a single organ now reaches. */
-  singular: string
-  predicate: string
+  stateLine?: ExploreCardStateLine
+  /** Omitted on a card whose figure sits inside the quiet line instead. */
+  count?: number
+  /** Body-size word(s) rendered before the large figure ("all"). */
+  countPrefix?: string
+  /** Body-size remainder of the count line: a unit or a denominator clause. */
+  countUnit?: string
+  /**
+   * The line under the count: a predicate ("listed in the registry") or a
+   * denominator ("of the 42,944 in the registry") — one slot, so a card can
+   * never carry both.
+   */
+  quietLine?: string
   onClick: () => void
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className="group @container relative block rounded-lg border border-gray-200 bg-white px-5 py-4 text-left transition-all hover:border-un-blue hover:shadow-md focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:outline-none"
+      className={cn(
+        'group @container relative block rounded-lg border border-gray-200 bg-white px-4 py-4 text-left transition-all hover:border-un-blue hover:shadow-md focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:outline-none',
+        // The corner mark renders exactly when the "Scoped to …" line does:
+        // the mark alone would say a number is partial without saying partial
+        // of what.
+        stateLine?.kind === 'scoped' && 'explore-scope-mark'
+      )}
     >
-      {/* The sentence, broken so the count and its noun carry the weight and
-          the verb phrase sits under them as the quiet half.
+      {/* One step below the body scale: the state line repeats across every
+          scoped card in the row, names a cause the selected card already
+          carries in full, and must not compete with the figure. At body size
+          the conjunction form wrapped at the narrowest four-across column. */}
+      {stateLine && (
+        <span className="mb-1 block text-xs leading-snug">
+          {stateLine.kind === 'scoped' ? (
+            <>
+              {/* The visible tag is hidden from readers and replaced by a
+                  span carrying the same words plus a separating colon, so
+                  what is heard does not depend on the visual layout. */}
+              <span aria-hidden className="text-gray-600">
+                Scoped to {stateLine.cause}
+              </span>
+              {/* Full names here where the visible tag carries short codes:
+                  the visible tag repeats across cards and is read once, like
+                  a column header; a screen reader hears each card alone, so
+                  the abbreviation would only cost meaning. */}
+              <span className="sr-only">
+                Scoped to {stateLine.spokenCause}:
+              </span>
+            </>
+          ) : (
+            <>
+              <span
+                className="font-semibold text-un-blue"
+                title={stateLine.title}
+              >
+                {stateLine.name}
+              </span>{' '}
+              <span className="text-gray-600">selected</span>
+            </>
+          )}
+        </span>
+      )}
+      {/* The count line. The figure is the only character that scales with
+          the card (hence @container, and cqw rather than a breakpoint);
+          everything beside it — prefix, unit, denominator clause — holds body
+          size, so nothing competes with the figure for first read.
 
-          Count and noun share the first line on every card, and the type scales
-          with the card (hence @container, and cqw rather than a breakpoint) so
-          they always fit on it: at fixed sizes "42,904 documents" wrapped at
-          four cards across a 1024px viewport while "22 organs" did not, and the
-          four tiles disagreed about their own shape. The coefficient is set by
-          the longest line any card can hold — a six-figure count plus
-          "documents" — so the type is as large as that line allows and every
-          card is sized alike.
+          The coefficient is fit to the longest line a card can now hold, a
+          four-digit figure plus "of the 27,942 shown" (cqw resolves against
+          the container's CONTENT box — the card interior, not its border
+          box): at 13.5cqw that line just fits one-line at the widest
+          four-across interior (a 28px figure + 132px of clause inside
+          207px, with slack for fallback-font metrics). In the narrow band
+          just above the lg breakpoint the same line no longer fits, and the
+          clause WRAPS under the figure rather than shrinking it — which is
+          why the old whitespace-nowrap is gone. Keeping it would have meant
+          sizing every card's figure to that one clause at a 171px interior,
+          leaving it at ~17px against 14px body text: no hierarchy left.
+          Cards already take their natural height, so an occasional second
+          line costs nothing fixed heights were buying.
 
           The chevron is out of the flow (bottom right, beside the quiet line)
           rather than a flex sibling: in the flow it took 32px off the top line
           of every card, and the top line is the one that needed the room. */}
-      <span className="block leading-tight whitespace-nowrap">
-        <span className="text-[clamp(1.25rem,14.5cqw,2.25rem)] leading-none font-bold text-gray-900 tabular-nums">
-          {count.toLocaleString()}
-        </span>{' '}
-        <span className="text-[clamp(0.75rem,7.9cqw,1.25rem)] font-semibold text-gray-900">
-          {count === 1 ? singular : noun}
+      {count !== undefined && (
+        <span className="block leading-tight">
+          {countPrefix !== undefined && (
+            <>
+              <span className="text-sm font-semibold text-gray-900">
+                {countPrefix}
+              </span>{' '}
+            </>
+          )}
+          <span className="text-[clamp(1.25rem,13.5cqw,2.25rem)] leading-none font-bold text-gray-900 tabular-nums">
+            {count.toLocaleString()}
+          </span>
+          {countUnit !== undefined && (
+            <>
+              {' '}
+              <span className="text-sm font-semibold text-gray-900">
+                {countUnit}
+              </span>
+            </>
+          )}
         </span>
-      </span>
-      {/* pr-7 keeps the quiet line clear of the chevron. */}
-      <span className="mt-1.5 block pr-7 text-sm leading-snug text-gray-600">
-        {predicate}
-      </span>
+      )}
+      {/* The chevron shares a horizontal band with only the card's FINAL
+          content line, so only that line owes it clearance. This used to be
+          pr-7 on the whole quiet line, which made every line pay: card 3's
+          one-line subtext wrapped purely because of padding reserved for a
+          chevron two lines below it. Now an inline-block shim rides the end
+          of the text instead — 20px, sized from the chevron's geometry (its
+          box overlaps the content box by ~15px and its drawn ink starts ~4px
+          inside, so 20px keeps text ~9px clear of the ink). When text plus
+          shim cannot fit, the empty shim wraps alone rather than pulling a
+          word down with it.
+
+          Cards whose last line is the count line (card 1 selected/scoped)
+          carry no shim: their content is two lines against taller siblings
+          in the same row, so the bottom-anchored chevron sits well below
+          their text. */}
+      {quietLine !== undefined && (
+        <span className="mt-1.5 block text-sm leading-snug text-gray-600 after:inline-block after:w-5 after:content-['']">
+          {quietLine}
+        </span>
+      )}
       <ChevronRight
         aria-hidden
         className="absolute right-4 bottom-4 size-5 text-gray-300 transition-transform group-hover:translate-x-0.5 group-hover:text-un-blue"
