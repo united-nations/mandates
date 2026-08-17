@@ -292,6 +292,7 @@ function DetailHowTo({ children }: { children: string }) {
         side="bottom"
         align="start"
         sideOffset={6}
+        aria-label="How to use this section"
         className="w-80 max-w-[calc(100vw-2rem)] rounded-md border-gray-200 p-3 text-sm shadow-md"
         onPointerEnter={hoverKeepOpen}
         onPointerLeave={hoverClose}
