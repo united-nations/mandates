@@ -2501,7 +2501,7 @@ export function ParagraphsSection({
               <div className="p-4">
                 <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-900">
                   <FileText className="h-4 w-4" />
-                  Table of Contents
+                  Table of contents
                 </h4>
                 <div className="space-y-1">
                   {tocItems.length > 0 ? (
@@ -2718,7 +2718,7 @@ export function ParagraphsSection({
             <div className="sticky top-4 mb-8 rounded-lg bg-white p-4">
               <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-900">
                 <FileText className="h-4 w-4" />
-                Table of Contents
+                Table of contents
               </h4>
               <div className="space-y-1">
                 {tocItems.length > 0 ? (

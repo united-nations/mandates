@@ -203,9 +203,7 @@ function SummaryTile({
 }) {
   return (
     <div className="min-w-38 rounded-lg border border-gray-200 px-3.5 py-2.5">
-      <div className="text-[11px] tracking-wide text-gray-500 uppercase">
-        {label}
-      </div>
+      <div className="text-[11px] text-gray-500">{label}</div>
       <div className="mt-0.5 text-[1.375rem] leading-tight font-semibold text-gray-900">
         {value}
       </div>

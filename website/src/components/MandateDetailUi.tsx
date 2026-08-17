@@ -32,8 +32,9 @@ import { cn } from '@/lib/utils'
  * the section offers and how to work it, off the page until asked for). A
  * plain `DetailFootnote` is for lines that are neither.
  *
- * Style follows the UN Transparency Portal: uppercase non-bold headings,
- * borders rather than shadows, un-blue as an accent only.
+ * Style: semibold sentence-case headings (the question strings are authored
+ * in sentence case and rendered as written), borders rather than shadows,
+ * un-blue as an accent only.
  */
 
 export function DetailSectionHeading({
@@ -54,9 +55,7 @@ export function DetailSectionHeading({
 }) {
   return (
     <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-      <h2 className="text-lg font-normal tracking-wider text-gray-900 uppercase">
-        {children}
-      </h2>
+      <h2 className="text-base font-semibold text-gray-900">{children}</h2>
       {hint && <span className="text-sm text-gray-500">{hint}</span>}
       {howTo && <DetailHowTo>{howTo}</DetailHowTo>}
     </div>
@@ -73,9 +72,7 @@ export function DetailSubsectionHeading({
 }) {
   return (
     <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-      <h3 className="text-sm font-normal tracking-wide text-gray-600 uppercase">
-        {children}
-      </h3>
+      <h3 className="text-sm font-semibold text-gray-600">{children}</h3>
       {hint && <span className="text-xs text-gray-500">{hint}</span>}
     </div>
   )

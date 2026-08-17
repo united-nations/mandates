@@ -61,8 +61,10 @@ export default async function MandatePage({
         className="mb-8 pr-12"
       />
 
-      {/* Content */}
-      <div className="space-y-6 sm:pr-2">
+      {/* Content. 3rem between sections: the heading treatment is quieter
+          than the uppercase one it replaced, so the space between sections
+          has to do more of the separating. One rule, all sections. */}
+      <div className="space-y-12 sm:pr-2">
         <MandateMetadata mandate={mandate} organs={organs} />
         {series && (
           <MandateVersionHistory
