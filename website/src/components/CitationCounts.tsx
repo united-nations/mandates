@@ -24,8 +24,11 @@ import type { BudgetLocation, Entity, Mandate } from '@/types'
 import { ChevronDown, ChevronUp, MousePointerClick } from 'lucide-react'
 
 /**
- * "Who implements this mandate?" — the entities that cite the document in the
- * budget, as one wrapped row of acronym chips.
+ * "Who cites this mandate in the budget?" — the entities that cite the
+ * document in the budget, as one wrapped row of acronym chips. The heading
+ * asks exactly what the data records: a citation in a budget submission is
+ * not evidence of implementation, and a question that promised "who
+ * implements" would promise an answer the schema cannot give.
  *
  * The row is deliberately flat and dense: entities are the unit nearly everyone
  * reasons about, a document can be cited by thirty of them, and the long names
@@ -169,7 +172,7 @@ export function CitationCounts({ mandate, entities }: CitationCountsProps) {
           'Each chip is an entity that cites this document in its budget submission. Click a chip to see the entity’s full name and where in the budget the citation appears.'
         }
       >
-        Who implements this mandate?
+        Who cites this mandate in the budget?
       </DetailSectionHeading>
 
       <div className="flex flex-wrap gap-1.5">

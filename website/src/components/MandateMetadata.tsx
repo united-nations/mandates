@@ -30,7 +30,7 @@ import { DetailSectionHeading, FilterChip } from '@/components/MandateDetailUi'
  *
  * The old "Budget Document" row is gone: which budget stream cites this
  * document is a property of the citing entity, and now lives in that entity's
- * popover under "Who implements this mandate?".
+ * popover under "Who cites this mandate in the budget?".
  */
 
 interface MandateMetadataProps {

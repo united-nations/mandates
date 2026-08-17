@@ -16,8 +16,8 @@ import { cn } from '@/lib/utils'
  * chip, and the subject-label formatter.
  *
  * The detail view is organised as questions — who created this mandate, how has
- * it changed, who implements it, what it is about — each introduced by a
- * `DetailSectionHeading`. Anything genuinely *inside* one of those answers (the
+ * it changed, who cites it in the budget, what it is about — each introduced by
+ * a `DetailSectionHeading`. Anything genuinely *inside* one of those answers (the
  * related-documents list under "What is this mandate about?") gets a
  * `DetailSubsectionHeading`, so the visual weight of a heading always tells the
  * truth about the nesting.
