@@ -234,30 +234,26 @@ export function DirectoryExplorer({
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
       <ExploreButton
         count={organCount}
-        noun="organs"
-        singular="organ"
-        predicate="creating mandates"
+        countUnit={organCount === 1 ? 'organ' : 'organs'}
+        quietLine="creating mandates"
         onClick={() => setPanel('organs')}
       />
       <ExploreButton
         count={tableDocumentCount}
-        noun="documents"
-        singular="document"
-        predicate="adopted"
+        countUnit={tableDocumentCount === 1 ? 'document' : 'documents'}
+        quietLine="adopted"
         onClick={() => setPanel('catalogue')}
       />
       <ExploreButton
         count={citedDocumentCount}
-        noun="documents"
-        singular="document"
-        predicate={citedPredicate}
+        countUnit={citedDocumentCount === 1 ? 'document' : 'documents'}
+        quietLine={citedPredicate}
         onClick={() => setPanel('cited')}
       />
       <ExploreButton
         count={entityCount}
-        noun="entities"
-        singular="entity"
-        predicate="implementing mandates"
+        countUnit={entityCount === 1 ? 'entity' : 'entities'}
+        quietLine="implementing mandates"
         onClick={() => setPanel('entities')}
       />
 
@@ -377,18 +373,46 @@ function scrollToMandates() {
   })
 }
 
+/**
+ * The line above the count that names the card's state.
+ *
+ * - `scoped`: "Scoped to <cause>" — the card shows part of something larger,
+ *   and the cause is what narrowed it.
+ * - `selected`: "<name> selected" — the card holds the active filter. The name
+ *   carries the accent and the word "selected" stays in body colour, so the
+ *   two are not read as one phrase; the word is there because colour alone
+ *   cannot be the carrier of the selected/scoped distinction (WCAG 1.4.1).
+ */
+type ExploreCardStateLine =
+  | { kind: 'scoped'; cause: string }
+  | {
+      kind: 'selected'
+      name: string
+      /** The unabbreviated name, where the visible label is a short code. */
+      title?: string
+    }
+
 function ExploreButton({
+  stateLine,
   count,
-  noun,
-  singular,
-  predicate,
+  countPrefix,
+  countUnit,
+  quietLine,
   onClick,
 }: {
-  count: number
-  noun: string
-  /** Used at count 1, which filtering to a single organ now reaches. */
-  singular: string
-  predicate: string
+  stateLine?: ExploreCardStateLine
+  /** Omitted on a card whose figure sits inside the quiet line instead. */
+  count?: number
+  /** Body-size word(s) rendered before the large figure ("all"). */
+  countPrefix?: string
+  /** Body-size remainder of the count line: a unit or a denominator clause. */
+  countUnit?: string
+  /**
+   * The line under the count: a predicate ("listed in the registry") or a
+   * denominator ("of the 42,944 in the registry") — one slot, so a card can
+   * never carry both.
+   */
+  quietLine?: string
   onClick: () => void
 }) {
   return (
@@ -397,33 +421,74 @@ function ExploreButton({
       onClick={onClick}
       className="group @container relative block rounded-lg border border-gray-200 bg-white px-5 py-4 text-left transition-all hover:border-un-blue hover:shadow-md focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:outline-none"
     >
-      {/* The sentence, broken so the count and its noun carry the weight and
-          the verb phrase sits under them as the quiet half.
+      {stateLine && (
+        <span className="mb-1 block pr-7 text-sm leading-snug">
+          {stateLine.kind === 'scoped' ? (
+            <>
+              {/* The visible tag is hidden from readers and replaced by a
+                  span carrying the same words plus a separating colon, so
+                  what is heard does not depend on the visual layout. */}
+              <span aria-hidden className="text-gray-600">
+                Scoped to {stateLine.cause}
+              </span>
+              <span className="sr-only">Scoped to {stateLine.cause}:</span>
+            </>
+          ) : (
+            <>
+              <span
+                className="font-semibold text-un-blue"
+                title={stateLine.title}
+              >
+                {stateLine.name}
+              </span>{' '}
+              <span className="text-gray-600">selected</span>
+            </>
+          )}
+        </span>
+      )}
+      {/* The count line, broken so the figure carries the weight and whatever
+          follows it sits beside it at body size.
 
-          Count and noun share the first line on every card, and the type scales
-          with the card (hence @container, and cqw rather than a breakpoint) so
-          they always fit on it: at fixed sizes "42,904 documents" wrapped at
-          four cards across a 1024px viewport while "22 organs" did not, and the
-          four tiles disagreed about their own shape. The coefficient is set by
-          the longest line any card can hold — a six-figure count plus
-          "documents" — so the type is as large as that line allows and every
-          card is sized alike.
+          Figure and unit share the first line on every card, and the type
+          scales with the card (hence @container, and cqw rather than a
+          breakpoint) so they always fit on it: at fixed sizes "42,904
+          documents" wrapped at four cards across a 1024px viewport while "22
+          organs" did not, and the four tiles disagreed about their own shape.
+          The coefficient is set by the longest line any card can hold — a
+          six-figure count plus "documents" — so the type is as large as that
+          line allows and every card is sized alike.
 
           The chevron is out of the flow (bottom right, beside the quiet line)
           rather than a flex sibling: in the flow it took 32px off the top line
           of every card, and the top line is the one that needed the room. */}
-      <span className="block leading-tight whitespace-nowrap">
-        <span className="text-[clamp(1.25rem,14.5cqw,2.25rem)] leading-none font-bold text-gray-900 tabular-nums">
-          {count.toLocaleString()}
-        </span>{' '}
-        <span className="text-[clamp(0.75rem,7.9cqw,1.25rem)] font-semibold text-gray-900">
-          {count === 1 ? singular : noun}
+      {count !== undefined && (
+        <span className="block leading-tight whitespace-nowrap">
+          {countPrefix !== undefined && (
+            <>
+              <span className="text-sm font-semibold text-gray-900">
+                {countPrefix}
+              </span>{' '}
+            </>
+          )}
+          <span className="text-[clamp(1.25rem,14.5cqw,2.25rem)] leading-none font-bold text-gray-900 tabular-nums">
+            {count.toLocaleString()}
+          </span>
+          {countUnit !== undefined && (
+            <>
+              {' '}
+              <span className="text-[clamp(0.75rem,7.9cqw,1.25rem)] font-semibold text-gray-900">
+                {countUnit}
+              </span>
+            </>
+          )}
         </span>
-      </span>
+      )}
       {/* pr-7 keeps the quiet line clear of the chevron. */}
-      <span className="mt-1.5 block pr-7 text-sm leading-snug text-gray-600">
-        {predicate}
-      </span>
+      {quietLine !== undefined && (
+        <span className="mt-1.5 block pr-7 text-sm leading-snug text-gray-600">
+          {quietLine}
+        </span>
+      )}
       <ChevronRight
         aria-hidden
         className="absolute right-4 bottom-4 size-5 text-gray-300 transition-transform group-hover:translate-x-0.5 group-hover:text-un-blue"
