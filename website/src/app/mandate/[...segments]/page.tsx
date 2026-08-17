@@ -72,12 +72,12 @@ export default async function MandatePage({
             series={series}
           />
         )}
-        {SHOW_MANDATED_SG_REPORTS && <MandateSgReports reports={sgReports} />}
         <CitationCounts mandate={mandate} entities={entities} />
         <MandateTopics
           subjects={mandate.subject_headings ?? []}
           related={related}
         />
+        {SHOW_MANDATED_SG_REPORTS && <MandateSgReports reports={sgReports} />}
         <ParagraphsSection
           paragraphs={paragraphs}
           documentSymbol={documentSymbol}
