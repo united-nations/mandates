@@ -19,6 +19,10 @@ import {
 } from '@/components/ui/dialog'
 import { DirectorySelectContext } from '@/contexts/DirectorySelectContext'
 import { useFilters } from '@/contexts/FilterContext'
+import type {
+  ExploreCardState,
+  ExploreCardStates,
+} from '@/lib/explore-card-state'
 import type { FilterParamKey } from '@/lib/filter-constants'
 import { cn } from '@/lib/utils'
 import type {
@@ -34,14 +38,16 @@ import type {
 type Panel = 'organs' | 'catalogue' | 'cited' | 'entities'
 
 interface DirectoryExplorerProps {
+  /**
+   * The resolved condition of each card (full / selected / scoped), with the
+   * live and full-state figures the copy is built from. Resolved on the
+   * server, where the baseline figures and the organ/entity name lists live.
+   */
+  cardStates: ExploreCardStates
   organGroups: OrganGroup[]
   budgetStreams: BudgetStream[]
   subjectDomains: SubjectDomain[]
   documentTypes: DocumentTypeCatalogue
-  /** Distinct organs in the result set. */
-  organCount: number
-  /** Distinct citing entities in the result set. */
-  entityCount: number
   /** Documents under the active filters with `cited` ignored. */
   allDocumentsCount: number
   /** Documents under the active filters with `cited` on. */
@@ -101,10 +107,10 @@ const BUDGET_LEVEL_PARAM: Record<BudgetTreeLevel, FilterParamKey> = {
 }
 
 /**
- * The four entry points at the top of the mandate explorer. Each states one fact
- * about the CURRENT filter selection as a sentence — "22 organs creating
- * mandates" — and doubles as a gateway: clicking it opens the matching directory
- * or filter panel.
+ * The four entry points at the top of the mandate explorer. Each states one
+ * fact about the CURRENT result set — "42,944 documents listed in the
+ * registry" — and doubles as a gateway: clicking it opens the matching
+ * directory or filter panel.
  *
  * ONE rule: every card number honours every active filter, its own dimension
  * included. Each states what the table below is showing — filter to one organ
@@ -114,15 +120,21 @@ const BUDGET_LEVEL_PARAM: Record<BudgetTreeLevel, FilterParamKey> = {
  *
  * The four numbers, all over the current result set:
  *
- *   1. organs creating mandates       — distinct organs in it
- *   2. documents adopted              — the table total
- *   3. documents cited as mandates    — the cited subset of it
- *   4. entities implementing mandates — distinct citing entities in it
+ *   1. organs & bodies — distinct issuing bodies in it
+ *   2. documents       — the table total
+ *   3. cited documents — the cited subset of it, measured against card 2
+ *   4. entities        — distinct citing entities in it
+ *
+ * On top of that, each card wears its resolved condition (cardStates): a card
+ * holding the active filter names its selection; a card whose figure is
+ * smaller than its full-state figure says what narrowed it ("Scoped to …")
+ * and swaps its predicate for a denominator. See lib/explore-card-state.ts
+ * for how the conditions are resolved.
  *
  * The panels' option LISTS are the one place the own dimension is dropped, and
  * only there: a list that collapsed to the value already chosen could never be
  * used to choose anything else (see DIMENSION_GROUPS). Card 1 can therefore
- * read 1 while its panel still lists all 22 organs — the card reports, the
+ * read 1 while its panel still lists all the organs — the card reports, the
  * panel offers. For the same reason the "All documents" option in card 3's
  * chooser states the count it would produce rather than the current one.
  *
@@ -130,19 +142,20 @@ const BUDGET_LEVEL_PARAM: Record<BudgetTreeLevel, FilterParamKey> = {
  * That choice is a lens, not a filter: the list always covers the whole
  * catalogue unified with what the selected version cites, and the version
  * decides which citations — counts, entities, budget locations — are attached
- * to those documents. Switching it therefore moves every number on the page.
+ * to those documents. Switching it therefore moves every number on the page,
+ * and — because the full-state figures are read through the same lens — marks
+ * no card as scoped.
  *
  * Styling follows the UN Transparency Portal: a white tile with a grey border,
  * un-blue used only as an accent on hover, shadow on hover only, everything
  * left-aligned. No leading icons — the number is the anchor.
  */
 export function DirectoryExplorer({
+  cardStates,
   organGroups,
   budgetStreams,
   subjectDomains,
   documentTypes,
-  organCount,
-  entityCount,
   allDocumentsCount,
   citedDocumentCount,
   versions,
@@ -159,10 +172,12 @@ export function DirectoryExplorer({
     ? citedDocumentCount
     : allDocumentsCount
   const activeVersion = versions.find((v) => v.slug === activeVersionSlug)
-  // The budget version is only named when it is NOT the current one. Naming it
-  // always ("…in PPB 2027") spent the card's second line on the default, which
-  // is what every reader already assumes; an older version is the exception and
-  // is the only case worth saying out loud.
+  // Panel copy only. On the panel surfaces the budget version is named when it
+  // is NOT the current one: naming it always spent the line on the default,
+  // which is what every reader already assumes. The CARDS name the cycle year
+  // unconditionally — card 3's and card 4's figures are version-scoped, and a
+  // card with no qualifier standing beside them would imply the figure is
+  // version-invariant.
   const latestVersionYear = versions.reduce(
     (year, v) => Math.max(year, v.ppb_year),
     0
@@ -171,6 +186,10 @@ export function DirectoryExplorer({
     activeVersion && activeVersion.ppb_year !== latestVersionYear
       ? `cited as mandates in PPB ${activeVersion.ppb_year}`
       : 'cited as mandates'
+  // The cards degrade to versionless copy in the (unobserved) case of an
+  // active version that matches no known slug; nothing false is stated, the
+  // year is just not named.
+  const cycleYear = activeVersion?.ppb_year
 
   /** Write one dimension, keeping every other active filter. */
   const applySelection = useCallback(
@@ -232,28 +251,103 @@ export function DirectoryExplorer({
 
   return (
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      {/* Card 1. Its figure is a facet cardinality over PRESENT issuing
+          bodies: it asserts that N distinct bodies appear among the documents
+          shown, not that every document has one. A small set of documents
+          (114 at the time of writing, 0.26% of the corpus) carries no
+          recorded issuing body, so the bodies here did not issue every
+          document in view — which is why the quiet line reads "recorded as
+          issuing the documents shown" and not "issuing": a bare transitive
+          verb would quantify over every row. The unattributed set does not
+          falsify the count and gets no caveat on the card. */}
       <ExploreButton
-        count={organCount}
-        countUnit={organCount === 1 ? 'organ' : 'organs'}
-        quietLine="creating mandates"
+        stateLine={cardStateLine(cardStates.organs, cardStates.scopeCause)}
+        count={cardStates.organs.value}
+        countUnit={
+          cardStates.organs.condition === 'full'
+            ? cardStates.organs.value === 1
+              ? 'organ or body'
+              : 'organs & bodies'
+            : `of ${cardStates.organs.baselineValue.toLocaleString()} organs & bodies`
+        }
+        quietLine={
+          cardStates.organs.condition === 'full'
+            ? 'recorded as issuing the documents shown'
+            : undefined
+        }
         onClick={() => setPanel('organs')}
       />
+      {/* Card 2. When narrowed, the denominator line replaces the predicate:
+          the two never render together. */}
       <ExploreButton
-        count={tableDocumentCount}
-        countUnit={tableDocumentCount === 1 ? 'document' : 'documents'}
-        quietLine="adopted"
+        stateLine={cardStateLine(cardStates.documents, cardStates.scopeCause)}
+        count={cardStates.documents.value}
+        countUnit={cardStates.documents.value === 1 ? 'document' : 'documents'}
+        quietLine={
+          cardStates.documents.condition === 'scoped'
+            ? `of the ${cardStates.documents.baselineValue.toLocaleString()} in the registry`
+            : 'listed in the registry'
+        }
         onClick={() => setPanel('catalogue')}
       />
+      {/* Card 3. Its identity is "subset of card 2", so its denominator is
+          card 2's LIVE figure — the one deliberate exception to denominators
+          being in the card's own unit, and the only expression of the subset
+          relation that survives the grid reflowing the two cards onto
+          different rows. When the two figures collapse to one (every document
+          in view is cited — the COMMON path under an organ selection, not an
+          edge case) the fraction says nothing and the all-form renders
+          instead. */}
       <ExploreButton
-        count={citedDocumentCount}
-        countUnit={citedDocumentCount === 1 ? 'document' : 'documents'}
-        quietLine={citedPredicate}
+        stateLine={cardStateLine(cardStates.cited, cardStates.scopeCause)}
+        count={cardStates.cited.value}
+        countPrefix={cardStates.cited.citedMatchesShown ? 'all' : undefined}
+        countUnit={
+          cardStates.cited.citedMatchesShown
+            ? 'of them'
+            : cardStates.cited.condition === 'scoped'
+              ? `of the ${cardStates.cited.shownDocumentsValue.toLocaleString()} shown`
+              : 'of them'
+        }
+        quietLine={
+          cycleYear !== undefined
+            ? `cited in the ${cycleYear} budget cycle`
+            : 'cited in the budget cycle'
+        }
         onClick={() => setPanel('cited')}
       />
+      {/* Card 4. The schema records that an entity CITED a document in its
+          budget submission; there is no implementation signal anywhere in the
+          system, so the card says what the artefact is. The figure is
+          version-scoped, so the cycle year is always named. When an entity is
+          selected the figure sits inside the sentence — every entity that
+          cites the same documents is in it, which is why the card does not
+          read "1". */}
       <ExploreButton
-        count={entityCount}
-        countUnit={entityCount === 1 ? 'entity' : 'entities'}
-        quietLine="implementing mandates"
+        stateLine={cardStateLine(cardStates.entities, cardStates.scopeCause)}
+        count={
+          cardStates.entities.condition === 'selected'
+            ? undefined
+            : cardStates.entities.value
+        }
+        countUnit={
+          cardStates.entities.condition === 'selected'
+            ? undefined
+            : cardStates.entities.value === 1
+              ? 'entity'
+              : 'entities'
+        }
+        quietLine={
+          cardStates.entities.condition === 'selected'
+            ? `among ${cardStates.entities.value.toLocaleString()} ${
+                cardStates.entities.value === 1 ? 'entity' : 'entities'
+              } citing these documents`
+            : cardStates.entities.condition === 'scoped'
+              ? `of ${cardStates.entities.baselineValue.toLocaleString()}`
+              : cycleYear !== undefined
+                ? `citing them in their ${cycleYear} budget submissions`
+                : 'citing them in their budget submissions'
+        }
         onClick={() => setPanel('entities')}
       />
 
@@ -352,10 +446,13 @@ export function DirectoryExplorer({
         </div>
       </DirectoryDialog>
 
+      {/* "Citing", not "implementing": the data records citation in budget
+          submissions and nothing about implementation, so the heading says
+          what the data can support. */}
       <DirectoryDialog
         open={panel === 'entities'}
         onClose={close}
-        title="Entities implementing mandates"
+        title="Entities citing mandates"
         hint="Click an entity to show the mandates it cites in the budget."
       >
         <EntitiesDirectory streams={budgetStreams} selection={selection} />
@@ -391,6 +488,31 @@ type ExploreCardStateLine =
       /** The unabbreviated name, where the visible label is a short code. */
       title?: string
     }
+
+/** The state line a resolved card condition renders, if any. */
+function cardStateLine(
+  state: ExploreCardState,
+  scopeCause: string | null
+): ExploreCardStateLine | undefined {
+  if (state.condition === 'selected' && state.selection) {
+    return {
+      kind: 'selected',
+      name: state.selection.name,
+      // The title only earns its place when it says more than the label —
+      // organ selections abbreviated to their short code carry the long name
+      // here; every other surface (the panel, the sentence) keeps the long
+      // name visible.
+      title:
+        state.selection.fullName !== state.selection.name
+          ? state.selection.fullName
+          : undefined,
+    }
+  }
+  if (state.condition === 'scoped' && scopeCause !== null) {
+    return { kind: 'scoped', cause: scopeCause }
+  }
+  return undefined
+}
 
 function ExploreButton({
   stateLine,

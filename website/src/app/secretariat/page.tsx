@@ -22,8 +22,13 @@ import {
 } from '@/lib/data/budget-documents'
 import { getAllEntities } from '@/lib/data/entities'
 import { getAllOrgans } from '@/lib/data/organs'
-import { getExploreCardData, getMandatePageData } from '@/lib/data/mandates'
+import {
+  getExploreCardBaseline,
+  getExploreCardData,
+  getMandatePageData,
+} from '@/lib/data/mandates'
 import { explainerTexts } from '@/lib/en_text_contents'
+import { resolveExploreCardStates } from '@/lib/explore-card-state'
 import { parseSearchParams } from '@/lib/filter-constants'
 
 export const metadata: Metadata = {
@@ -59,16 +64,55 @@ export default async function Page({ searchParams }: PageProps) {
   // DB default) — the lens chosen in card 3's panel. It decides which citations
   // exist as far as this page is concerned, so it moves every number here and
   // every citation column in the table below.
-  const [versions, entities, organs, cards] = await Promise.all([
+  const [versions, entities, organs, cards, cardBaseline] = await Promise.all([
     getBudgetVersions(),
     getAllEntities(),
     getAllOrgans(),
     getExploreCardData(filters),
+    // The cards' full-state figures: the card-owned selections dropped, the
+    // version lens and every other filter kept. Resolved through the same
+    // per-query caches as the live figures, so on the unfiltered view this is
+    // pure cache reads.
+    getExploreCardBaseline(filters),
   ])
   const activeVersionSlug =
     versions.find((v) => v.slug === filters.ppb_version)?.slug ??
     getDefaultVersionSlug(versions)
   const activeVersion = versions.find((v) => v.slug === activeVersionSlug)
+
+  // Which condition each card is in — full, selected, or scoped — decided by
+  // comparing each live figure to its full-state figure. Resolved here rather
+  // than in the client component because the organ and entity name lists are
+  // already on this page for ActiveFilters, and a name lookup that misses
+  // falls back to the code, matching how the rest of the page renders unknown
+  // values.
+  const cardStates = resolveExploreCardStates(
+    {
+      organCount: cards.organCount,
+      entityCount: cards.entityCount,
+      allDocumentsCount: cards.allDocumentsCount,
+      citedDocumentCount: cards.citedDocumentCount,
+    },
+    cardBaseline,
+    {
+      organ: filters.organ
+        ? {
+            code: filters.organ,
+            longName:
+              organs.find((o) => o.short === filters.organ)?.long ?? null,
+          }
+        : undefined,
+      entity: filters.entity
+        ? {
+            code: filters.entity,
+            longName:
+              entities.find((e) => e.entity === filters.entity)?.entity_long ??
+              null,
+          }
+        : undefined,
+      citedOnly: filters.cited === '1',
+    }
+  )
 
   return (
     <div>
@@ -100,12 +144,11 @@ export default async function Page({ searchParams }: PageProps) {
           className="mb-4"
         />
         <DirectoryExplorer
+          cardStates={cardStates}
           organGroups={cards.organGroups}
           budgetStreams={cards.budgetStreams}
           subjectDomains={cards.subjectDomains}
           documentTypes={cards.documentTypes}
-          organCount={cards.organCount}
-          entityCount={cards.entityCount}
           allDocumentsCount={cards.allDocumentsCount}
           citedDocumentCount={cards.citedDocumentCount}
           versions={versions}
