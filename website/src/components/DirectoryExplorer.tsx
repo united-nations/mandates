@@ -564,7 +564,7 @@ function ExploreButton({
       )}
     >
       {stateLine && (
-        <span className="mb-1 block pr-7 text-sm leading-snug">
+        <span className="mb-1 block text-sm leading-snug">
           {stateLine.kind === 'scoped' ? (
             <>
               {/* The visible tag is hidden from readers and replaced by a
@@ -638,9 +638,23 @@ function ExploreButton({
           )}
         </span>
       )}
-      {/* pr-7 keeps the quiet line clear of the chevron. */}
+      {/* The chevron shares a horizontal band with only the card's FINAL
+          content line, so only that line owes it clearance. This used to be
+          pr-7 on the whole quiet line, which made every line pay: card 3's
+          one-line subtext wrapped purely because of padding reserved for a
+          chevron two lines below it. Now an inline-block shim rides the end
+          of the text instead — 20px, sized from the chevron's geometry (its
+          box overlaps the content box by ~15px and its drawn ink starts ~4px
+          inside, so 20px keeps text ~9px clear of the ink). When text plus
+          shim cannot fit, the empty shim wraps alone rather than pulling a
+          word down with it.
+
+          Cards whose last line is the count line (card 1 selected/scoped)
+          carry no shim: their content is two lines against taller siblings
+          in the same row, so the bottom-anchored chevron sits well below
+          their text. */}
       {quietLine !== undefined && (
-        <span className="mt-1.5 block pr-7 text-sm leading-snug text-gray-600">
+        <span className="mt-1.5 block text-sm leading-snug text-gray-600 after:inline-block after:w-5 after:content-['']">
           {quietLine}
         </span>
       )}
