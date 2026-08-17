@@ -195,9 +195,7 @@ export function MandateVersionHistory({
       <DetailFootnote>
         {series.is_collection
           ? 'Grouped automatically by matching titles within the same organ. This group bundles related documents that are not individually ordered.'
-          : 'Versions are identified automatically by matching titles within the same organ (~97% accuracy on a manual audit).'}{' '}
-        Each compare button opens that document and the one directly before it
-        side by side in the diff viewer.
+          : 'Versions are identified automatically by matching titles within the same organ (~97% accuracy on a manual audit).'}
       </DetailFootnote>
     </section>
   )

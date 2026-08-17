@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import {
-  DetailFootnote,
   DetailSectionHeading,
   formatSubjectLabel,
 } from '@/components/MandateDetailUi'
@@ -54,56 +53,38 @@ export function MandateTopics({ subjects, related }: MandateTopicsProps) {
       </DetailSectionHeading>
 
       {sorted.length > 0 && (
-        <>
-          <div className="flex flex-wrap items-start gap-x-1 gap-y-1.5">
-            {shown.map((subject) => {
-              return (
-                <Chip
-                  key={subject}
-                  href={`/secretariat?subject=${encodeURIComponent(subject.trim())}`}
-                  title={`Show mandates on ${formatSubjectLabel(subject)}`}
-                >
-                  <span>{formatSubjectLabel(subject)}</span>
-                </Chip>
-              )
-            })}
-            {sorted.length > DEFAULT_SHOWN && (
-              <button
-                type="button"
-                onClick={() => setShowAll(!showAll)}
-                className="ml-1 inline-flex items-center gap-1 self-center text-xs font-medium text-un-blue hover:underline"
+        <div className="flex flex-wrap items-start gap-x-1 gap-y-1.5">
+          {shown.map((subject) => {
+            return (
+              <Chip
+                key={subject}
+                href={`/secretariat?subject=${encodeURIComponent(subject.trim())}`}
+                title={`Show mandates on ${formatSubjectLabel(subject)}`}
               >
-                {showAll ? (
-                  <>
-                    <ChevronUp className="h-3 w-3" />
-                    Show fewer
-                  </>
-                ) : (
-                  <>
-                    <ChevronDown className="h-3 w-3" />
-                    Show all {sorted.length}
-                  </>
-                )}
-              </button>
-            )}
-          </div>
-
-          {/* The coloured dot on each chip was previously unexplained, so it
-              read as decoration. Legend and provenance both live here. */}
-          <DetailFootnote>
-            Click a topic to see every mandate document that shares it. Topics
-            come from the{' '}
-            <a
-              href="https://metadata.un.org/thesaurus/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline decoration-dotted underline-offset-2 hover:text-un-blue"
+                <span>{formatSubjectLabel(subject)}</span>
+              </Chip>
+            )
+          })}
+          {sorted.length > DEFAULT_SHOWN && (
+            <button
+              type="button"
+              onClick={() => setShowAll(!showAll)}
+              className="ml-1 inline-flex items-center gap-1 self-center text-xs font-medium text-un-blue hover:underline"
             >
-              UN Library thesaurus
-            </a>
-            .
-          </DetailFootnote>
-        </>
+              {showAll ? (
+                <>
+                  <ChevronUp className="h-3 w-3" />
+                  Show fewer
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="h-3 w-3" />
+                  Show all {sorted.length}
+                </>
+              )}
+            </button>
+          )}
+        </div>
       )}
 
       {SHOW_RELATED_MANDATES && <RelatedMandates related={related} />}

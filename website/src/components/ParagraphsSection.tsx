@@ -2461,23 +2461,17 @@ export function ParagraphsSection({
               </Tooltip>
             )}
 
-            {/* Reset — only visible when filters are active */}
+            {/* Reset — only visible when filters are active. No tooltip: it
+                would only restate the button's own label. */}
             {hasActiveFilters && (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    onClick={resetFilters}
-                    className="ml-1 inline-flex cursor-pointer items-center gap-1 self-center text-xs font-medium text-un-blue hover:underline"
-                    aria-label="Reset all filters"
-                  >
-                    <X className="h-3 w-3" />
-                    <span>Reset</span>
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="top">
-                  <p>Reset all filters to default</p>
-                </TooltipContent>
-              </Tooltip>
+              <button
+                onClick={resetFilters}
+                className="ml-1 inline-flex cursor-pointer items-center gap-1 self-center text-xs font-medium text-un-blue hover:underline"
+                aria-label="Reset all filters"
+              >
+                <X className="h-3 w-3" />
+                <span>Reset</span>
+              </button>
             )}
           </div>
         )}

@@ -204,19 +204,12 @@ export function CitationCounts({ mandate, entities }: CitationCountsProps) {
           the chips it describes, and only when at least one chip actually
           carries one — otherwise the footnote describes something not on
           screen. */}
-      <DetailFootnote>
-        Click an entity to see its full name and where in the budget it cites
-        this document.
-        {citingEntities.some((e) =>
-          isFoundational(e, foundationalEntities)
-        ) && (
-          <>
-            {' '}
-            A dot marks an entity that cites it in its “{FOUNDATIONAL_LABEL}”
-            narrative, not only in its {LEGISLATIVE_LABEL}.
-          </>
-        )}
-      </DetailFootnote>
+      {citingEntities.some((e) => isFoundational(e, foundationalEntities)) && (
+        <DetailFootnote>
+          A dot marks an entity that cites it in its “{FOUNDATIONAL_LABEL}”
+          narrative, not only in its {LEGISLATIVE_LABEL}.
+        </DetailFootnote>
+      )}
     </section>
   )
 }
