@@ -187,6 +187,44 @@ html {
   box-shadow: none;
 }
 
+/*
+ * The explore cards' scope mark: an inner hairline in one corner, implying a
+ * layer beneath the card — "this card shows one part of something larger".
+ *
+ * Construction: a pseudo-element copy of the card's own border box, inset by
+ * 2px, clipped to a fixed corner square. Because the clip does the cropping,
+ * the mark is a border everywhere it is visible and inherits the corner
+ * radius without anyone computing an arc. The square is a fixed 26px, never a
+ * percentage: a corner mark is a constant, not a proportion of its container.
+ *
+ * Drawn as a border, not a filled box, deliberately: at fractional device
+ * pixel ratios (150% laptop scaling) a 1px border computes to one device
+ * pixel — 0.667px — exactly like the card's own border, while a 1px-high
+ * filled box keeps its full height and out-weighs the card edge beside it.
+ *
+ * The corner is a parameter — the coordinate pair below — feeding all of the
+ * clip geometry, so it can be moved after someone has looked at it without a
+ * rewrite. Bottom-right is unavailable: the chevron sits there, deliberately.
+ * Grey, not the accent: selection owns colour.
+ */
+.explore-scope-mark::after {
+  /* The corner the mark occupies: 0 = left, 1 = right; 0 = top, 1 = bottom. */
+  --scope-mark-corner-x: 0;
+  --scope-mark-corner-y: 1;
+  content: '';
+  position: absolute;
+  inset: 2px;
+  pointer-events: none;
+  border: 1px solid var(--color-gray-300);
+  border-radius: calc(var(--radius-lg) - 2px);
+  clip-path: inset(
+    calc(var(--scope-mark-corner-y) * (100% - 26px))
+      calc((1 - var(--scope-mark-corner-x)) * (100% - 26px))
+      calc((1 - var(--scope-mark-corner-y)) * (100% - 26px))
+      calc(var(--scope-mark-corner-x) * (100% - 26px))
+  );
+}
+
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

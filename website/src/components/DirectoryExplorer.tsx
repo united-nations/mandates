@@ -541,7 +541,13 @@ function ExploreButton({
     <button
       type="button"
       onClick={onClick}
-      className="group @container relative block rounded-lg border border-gray-200 bg-white px-5 py-4 text-left transition-all hover:border-un-blue hover:shadow-md focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:outline-none"
+      className={cn(
+        'group @container relative block rounded-lg border border-gray-200 bg-white px-5 py-4 text-left transition-all hover:border-un-blue hover:shadow-md focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:outline-none',
+        // The corner mark renders exactly when the "Scoped to …" line does:
+        // the mark alone would say a number is partial without saying partial
+        // of what.
+        stateLine?.kind === 'scoped' && 'explore-scope-mark'
+      )}
     >
       {stateLine && (
         <span className="mb-1 block pr-7 text-sm leading-snug">
