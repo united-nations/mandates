@@ -48,6 +48,11 @@ export function MandateTopics({ subjects, related }: MandateTopicsProps) {
             ? `${sorted.length} ${sorted.length === 1 ? 'topic' : 'topics'}`
             : undefined
         }
+        howTo={
+          sorted.length > 0
+            ? 'Each chip is a subject heading assigned to this document. Click one to list every mandate document that shares it.'
+            : undefined
+        }
       >
         What subjects does this mandate have?
       </DetailSectionHeading>

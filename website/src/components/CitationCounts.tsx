@@ -165,6 +165,9 @@ export function CitationCounts({ mandate, entities }: CitationCountsProps) {
         hint={`${citingEntities.length} ${
           citingEntities.length === 1 ? 'entity' : 'entities'
         }`}
+        howTo={
+          'Each chip is an entity that cites this document in its budget submission. Click a chip to see the entity’s full name and where in the budget the citation appears.'
+        }
       >
         Who implements this mandate?
       </DetailSectionHeading>

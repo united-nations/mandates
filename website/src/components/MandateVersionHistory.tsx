@@ -84,6 +84,11 @@ export function MandateVersionHistory({
     <section className="space-y-3">
       <DetailSectionHeading
         hint={`${series.series_count} ${unit}${span ? ` · ${span}` : ''}`}
+        howTo={
+          series.is_collection
+            ? 'Each row is one document in this group, newest first. The compare button on a row opens that document and the one directly before it side by side, so you can see how they differ.'
+            : 'Each row is one version of this document, newest first. The compare button on a row opens that version and the one directly before it side by side, so you can see what changed.'
+        }
       >
         {series.is_collection
           ? 'What else is in this group?'
