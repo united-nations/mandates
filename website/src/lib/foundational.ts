@@ -95,6 +95,17 @@ export function partInDocumentLabel(value: string): string {
 export const FOUNDATIONAL_TOOLTIP =
   'Cited in this entity’s “Mandates and background” narrative in the programme budget fascicle, not only in its Legislative mandates list. Many documents appear in both.'
 
+/**
+ * The legend for the blue dot on the detail page's entity chips — the one
+ * surface where the claim is anchored to a dot rather than to a badge, so it
+ * needs its own referent and cannot reuse FOUNDATIONAL_TOOLTIP, whose two
+ * badge consumers have no dot to point at. One paragraph, reassurance
+ * included: the footnote's visible text flows as a single block, and the
+ * two section names identify the fascicle well enough on a page that is
+ * already about budget citations.
+ */
+export const FOUNDATIONAL_DOT_LEGEND = `A dot marks an entity citing this document in its “${FOUNDATIONAL_LABEL}” narrative rather than only its ${LEGISLATIVE_LABEL}. Many do both.`
+
 /** True if `entity` cites this document in its Mandates and background narrative. */
 export function isFoundational(
   entity: string | null | undefined,

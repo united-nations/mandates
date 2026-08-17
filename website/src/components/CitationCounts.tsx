@@ -7,15 +7,15 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import {
+  DetailDisclaimer,
   DetailFootnote,
   DetailSectionHeading,
 } from '@/components/MandateDetailUi'
 import { Chip, ChipDot } from '@/components/ui/chip'
 import { BUDGET_STREAM_LABELS } from '@/lib/filter-constants'
 import {
-  FOUNDATIONAL_LABEL,
+  FOUNDATIONAL_DOT_LEGEND,
   FOUNDATIONAL_PART_IN_DOCUMENT,
-  LEGISLATIVE_LABEL,
   isFoundational,
   partInDocumentLabel,
 } from '@/lib/foundational'
@@ -23,8 +23,11 @@ import type { BudgetLocation, Entity, Mandate } from '@/types'
 import { ChevronDown, ChevronUp, MousePointerClick } from 'lucide-react'
 
 /**
- * "Who implements this mandate?" — the entities that cite the document in the
- * budget, as one wrapped row of acronym chips.
+ * "Who cites this mandate in the budget?" — the entities that cite the
+ * document in the budget, as one wrapped row of acronym chips. The heading
+ * asks exactly what the data records: a citation in a budget submission is
+ * not evidence of implementation, and a question that promised "who
+ * implements" would promise an answer the schema cannot give.
  *
  * The row is deliberately flat and dense: entities are the unit nearly everyone
  * reasons about, a document can be cited by thirty of them, and the long names
@@ -164,8 +167,11 @@ export function CitationCounts({ mandate, entities }: CitationCountsProps) {
         hint={`${citingEntities.length} ${
           citingEntities.length === 1 ? 'entity' : 'entities'
         }`}
+        howTo={
+          'Each chip is an entity that cites this document in its budget submission. Click a chip to see the entity’s full name and where in the budget the citation appears.'
+        }
       >
-        Who implements this mandate?
+        Who cites this mandate in the budget?
       </DetailSectionHeading>
 
       <div className="flex flex-wrap gap-1.5">
@@ -200,23 +206,22 @@ export function CitationCounts({ mandate, entities }: CitationCountsProps) {
         )}
       </div>
 
-      {/* The one explanation of the dot in the whole app. It stays here, under
-          the chips it describes, and only when at least one chip actually
-          carries one — otherwise the footnote describes something not on
-          screen. */}
-      <DetailFootnote>
-        Click an entity to see its full name and where in the budget it cites
-        this document.
+      {/* Two blocks: the dot legend (the one explanation of the dot in the
+          whole app, one paragraph wrapping naturally, rendered only when a
+          dot is actually on screen), then the i-marked extraction disclaimer.
+          Only the i line is structurally its own block — the own-line rule
+          belongs to the marker, not to every visible sentence. The
+          disclaimer's wording is deliberately self-contained: a version that
+          referred back to the fascicle would silently inherit the legend's
+          condition and vanish with it. */}
+      <div>
         {citingEntities.some((e) =>
           isFoundational(e, foundationalEntities)
-        ) && (
-          <>
-            {' '}
-            A dot marks an entity that cites it in its “{FOUNDATIONAL_LABEL}”
-            narrative, not only in its {LEGISLATIVE_LABEL}.
-          </>
-        )}
-      </DetailFootnote>
+        ) && <DetailFootnote>{FOUNDATIONAL_DOT_LEGEND}</DetailFootnote>}
+        <DetailDisclaimer>
+          Extracted automatically from each entity&rsquo;s budget submission.
+        </DetailDisclaimer>
+      </div>
     </section>
   )
 }

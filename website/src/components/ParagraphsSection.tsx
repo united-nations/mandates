@@ -21,7 +21,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton'
 import { Chip } from '@/components/ui/chip'
 import {
-  DetailFootnote,
+  DetailDisclaimer,
   DetailSectionHeading,
 } from '@/components/MandateDetailUi'
 
@@ -2461,23 +2461,17 @@ export function ParagraphsSection({
               </Tooltip>
             )}
 
-            {/* Reset — only visible when filters are active */}
+            {/* Reset — only visible when filters are active. No tooltip: it
+                would only restate the button's own label. */}
             {hasActiveFilters && (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    onClick={resetFilters}
-                    className="ml-1 inline-flex cursor-pointer items-center gap-1 self-center text-xs font-medium text-un-blue hover:underline"
-                    aria-label="Reset all filters"
-                  >
-                    <X className="h-3 w-3" />
-                    <span>Reset</span>
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="top">
-                  <p>Reset all filters to default</p>
-                </TooltipContent>
-              </Tooltip>
+              <button
+                onClick={resetFilters}
+                className="ml-1 inline-flex cursor-pointer items-center gap-1 self-center text-xs font-medium text-un-blue hover:underline"
+                aria-label="Reset all filters"
+              >
+                <X className="h-3 w-3" />
+                <span>Reset</span>
+              </button>
             )}
           </div>
         )}
@@ -2501,7 +2495,7 @@ export function ParagraphsSection({
               <div className="p-4">
                 <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-900">
                   <FileText className="h-4 w-4" />
-                  Table of Contents
+                  Table of contents
                 </h4>
                 <div className="space-y-1">
                   {tocItems.length > 0 ? (
@@ -2705,9 +2699,9 @@ export function ParagraphsSection({
                 badge next to the heading, now stated where the other sections
                 state theirs. */}
             <div className="mt-6">
-              <DetailFootnote>
+              <DetailDisclaimer>
                 {explainerTexts.mandateDetail.paragraphs.betaDisclaimer}
-              </DetailFootnote>
+              </DetailDisclaimer>
             </div>
           </div>
         </div>
@@ -2718,7 +2712,7 @@ export function ParagraphsSection({
             <div className="sticky top-4 mb-8 rounded-lg bg-white p-4">
               <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-900">
                 <FileText className="h-4 w-4" />
-                Table of Contents
+                Table of contents
               </h4>
               <div className="space-y-1">
                 {tocItems.length > 0 ? (

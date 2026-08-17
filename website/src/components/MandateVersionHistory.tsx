@@ -4,9 +4,11 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { ArrowRight, ChevronDown, ChevronUp, GitCompare } from 'lucide-react'
 import type { ResolutionSeriesInfo } from '@/lib/data/mandates'
+import { explainerTexts } from '@/lib/en_text_contents'
 import { DocumentSymbol } from '@/components/DocumentSymbol'
 import { getMandateUrl } from '@/components/table/MandateColumns'
 import {
+  DetailDisclaimer,
   DetailFootnote,
   DetailSectionHeading,
 } from '@/components/MandateDetailUi'
@@ -83,6 +85,11 @@ export function MandateVersionHistory({
     <section className="space-y-3">
       <DetailSectionHeading
         hint={`${series.series_count} ${unit}${span ? ` · ${span}` : ''}`}
+        howTo={
+          series.is_collection
+            ? 'Each row is one document in this group, newest first. The compare button on a row opens that document and the one directly before it side by side, so you can see how they differ.'
+            : 'Each row is one version of this document, newest first. The compare button on a row opens that version and the one directly before it side by side, so you can see what changed.'
+        }
       >
         {series.is_collection
           ? 'What else is in this group?'
@@ -192,13 +199,26 @@ export function MandateVersionHistory({
         </button>
       )}
 
-      <DetailFootnote>
-        {series.is_collection
-          ? 'Grouped automatically by matching titles within the same organ. This group bundles related documents that are not individually ordered.'
-          : 'Versions are identified automatically by matching titles within the same organ (~97% accuracy on a manual audit).'}{' '}
-        Each compare button opens that document and the one directly before it
-        side by side in the diff viewer.
-      </DetailFootnote>
+      {/* The derivation is a disclaimer and carries the i; the collection
+          variant's "bundles" sentence is definitional — neither disclaimer
+          nor pointer — so it stays a plain footnote line the i must not
+          mark. Unmarked lines sit above the marked one, the order the
+          entities footnote also uses. */}
+      {series.is_collection ? (
+        <div>
+          <DetailFootnote>
+            This group bundles related documents that are not individually
+            ordered.
+          </DetailFootnote>
+          <DetailDisclaimer>
+            Grouped automatically by matching titles within the same organ.
+          </DetailDisclaimer>
+        </div>
+      ) : (
+        <DetailDisclaimer>
+          {explainerTexts.versionMatching.disclaimer}
+        </DetailDisclaimer>
+      )}
     </section>
   )
 }
