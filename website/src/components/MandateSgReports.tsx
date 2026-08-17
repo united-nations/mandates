@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import {
-  DetailFootnote,
+  DetailDisclaimer,
   DetailSectionHeading,
 } from '@/components/MandateDetailUi'
 import { Chip } from '@/components/ui/chip'
@@ -176,10 +176,10 @@ export function MandateSgReports({ reports }: { reports: MandatedSgReport[] }) {
         </button>
       )}
 
-      <DetailFootnote>
+      <DetailDisclaimer>
         Identified automatically from the metadata in each report&rsquo;s UN
         Digital Library catalogue record.
-      </DetailFootnote>
+      </DetailDisclaimer>
     </section>
   )
 }

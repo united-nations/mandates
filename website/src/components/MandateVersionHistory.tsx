@@ -7,6 +7,7 @@ import type { ResolutionSeriesInfo } from '@/lib/data/mandates'
 import { DocumentSymbol } from '@/components/DocumentSymbol'
 import { getMandateUrl } from '@/components/table/MandateColumns'
 import {
+  DetailDisclaimer,
   DetailFootnote,
   DetailSectionHeading,
 } from '@/components/MandateDetailUi'
@@ -192,11 +193,27 @@ export function MandateVersionHistory({
         </button>
       )}
 
-      <DetailFootnote>
-        {series.is_collection
-          ? 'Grouped automatically by matching titles within the same organ. This group bundles related documents that are not individually ordered.'
-          : 'Versions are identified automatically by matching titles within the same organ (~97% accuracy on a manual audit).'}
-      </DetailFootnote>
+      {/* The derivation is a disclaimer and carries the i; the collection
+          variant's "bundles" sentence is definitional — neither disclaimer
+          nor pointer — so it stays a plain footnote line the i must not
+          mark. Unmarked lines sit above the marked one, the order the
+          entities footnote also uses. */}
+      {series.is_collection ? (
+        <div>
+          <DetailFootnote>
+            This group bundles related documents that are not individually
+            ordered.
+          </DetailFootnote>
+          <DetailDisclaimer>
+            Grouped automatically by matching titles within the same organ.
+          </DetailDisclaimer>
+        </div>
+      ) : (
+        <DetailDisclaimer>
+          Versions are identified automatically by matching titles within the
+          same organ (~97% accuracy on a manual audit).
+        </DetailDisclaimer>
+      )}
     </section>
   )
 }

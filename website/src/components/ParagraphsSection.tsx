@@ -21,7 +21,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton'
 import { Chip } from '@/components/ui/chip'
 import {
-  DetailFootnote,
+  DetailDisclaimer,
   DetailSectionHeading,
 } from '@/components/MandateDetailUi'
 
@@ -2699,9 +2699,9 @@ export function ParagraphsSection({
                 badge next to the heading, now stated where the other sections
                 state theirs. */}
             <div className="mt-6">
-              <DetailFootnote>
+              <DetailDisclaimer>
                 {explainerTexts.mandateDetail.paragraphs.betaDisclaimer}
-              </DetailFootnote>
+              </DetailDisclaimer>
             </div>
           </div>
         </div>
