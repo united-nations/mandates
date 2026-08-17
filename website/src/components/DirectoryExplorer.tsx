@@ -568,23 +568,30 @@ function ExploreButton({
           )}
         </span>
       )}
-      {/* The count line, broken so the figure carries the weight and whatever
-          follows it sits beside it at body size.
+      {/* The count line. The figure is the only character that scales with
+          the card (hence @container, and cqw rather than a breakpoint);
+          everything beside it — prefix, unit, denominator clause — holds body
+          size, so nothing competes with the figure for first read.
 
-          Figure and unit share the first line on every card, and the type
-          scales with the card (hence @container, and cqw rather than a
-          breakpoint) so they always fit on it: at fixed sizes "42,904
-          documents" wrapped at four cards across a 1024px viewport while "22
-          organs" did not, and the four tiles disagreed about their own shape.
-          The coefficient is set by the longest line any card can hold — a
-          six-figure count plus "documents" — so the type is as large as that
-          line allows and every card is sized alike.
+          The coefficient is fit to the longest line a card can now hold, a
+          four-digit figure plus "of the 27,942 shown" (cqw resolves against
+          the container's CONTENT box — the card interior, not its border
+          box): at 13.5cqw that line just fits one-line at the widest
+          four-across interior (a 28px figure + 132px of clause inside
+          207px, with slack for fallback-font metrics). In the narrow band
+          just above the lg breakpoint the same line no longer fits, and the
+          clause WRAPS under the figure rather than shrinking it — which is
+          why the old whitespace-nowrap is gone. Keeping it would have meant
+          sizing every card's figure to that one clause at a 171px interior,
+          leaving it at ~17px against 14px body text: no hierarchy left.
+          Cards already take their natural height, so an occasional second
+          line costs nothing fixed heights were buying.
 
           The chevron is out of the flow (bottom right, beside the quiet line)
           rather than a flex sibling: in the flow it took 32px off the top line
           of every card, and the top line is the one that needed the room. */}
       {count !== undefined && (
-        <span className="block leading-tight whitespace-nowrap">
+        <span className="block leading-tight">
           {countPrefix !== undefined && (
             <>
               <span className="text-sm font-semibold text-gray-900">
@@ -592,13 +599,13 @@ function ExploreButton({
               </span>{' '}
             </>
           )}
-          <span className="text-[clamp(1.25rem,14.5cqw,2.25rem)] leading-none font-bold text-gray-900 tabular-nums">
+          <span className="text-[clamp(1.25rem,13.5cqw,2.25rem)] leading-none font-bold text-gray-900 tabular-nums">
             {count.toLocaleString()}
           </span>
           {countUnit !== undefined && (
             <>
               {' '}
-              <span className="text-[clamp(0.75rem,7.9cqw,1.25rem)] font-semibold text-gray-900">
+              <span className="text-sm font-semibold text-gray-900">
                 {countUnit}
               </span>
             </>
