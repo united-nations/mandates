@@ -563,8 +563,12 @@ function ExploreButton({
         stateLine?.kind === 'scoped' && 'explore-scope-mark'
       )}
     >
+      {/* One step below the body scale: the state line repeats across every
+          scoped card in the row, names a cause the selected card already
+          carries in full, and must not compete with the figure. At body size
+          the conjunction form wrapped at the narrowest four-across column. */}
       {stateLine && (
-        <span className="mb-1 block text-sm leading-snug">
+        <span className="mb-1 block text-xs leading-snug">
           {stateLine.kind === 'scoped' ? (
             <>
               {/* The visible tag is hidden from readers and replaced by a
