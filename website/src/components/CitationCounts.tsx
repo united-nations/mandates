@@ -7,15 +7,16 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import {
+  DetailDisclaimer,
   DetailFootnote,
   DetailSectionHeading,
 } from '@/components/MandateDetailUi'
 import { Chip, ChipDot } from '@/components/ui/chip'
 import { BUDGET_STREAM_LABELS } from '@/lib/filter-constants'
 import {
-  FOUNDATIONAL_LABEL,
+  FOUNDATIONAL_BOTH_NOTE,
+  FOUNDATIONAL_DOT_LEGEND,
   FOUNDATIONAL_PART_IN_DOCUMENT,
-  LEGISLATIVE_LABEL,
   isFoundational,
   partInDocumentLabel,
 } from '@/lib/foundational'
@@ -200,16 +201,26 @@ export function CitationCounts({ mandate, entities }: CitationCountsProps) {
         )}
       </div>
 
-      {/* The one explanation of the dot in the whole app. It stays here, under
-          the chips it describes, and only when at least one chip actually
-          carries one — otherwise the footnote describes something not on
-          screen. */}
-      {citingEntities.some((e) => isFoundational(e, foundationalEntities)) && (
-        <DetailFootnote>
-          A dot marks an entity that cites it in its “{FOUNDATIONAL_LABEL}”
-          narrative, not only in its {LEGISLATIVE_LABEL}.
-        </DetailFootnote>
-      )}
+      {/* Three footnote lines, each its own block so the order holds at every
+          width: the dot legend (the one explanation of the dot in the whole
+          app, rendered only when a dot is actually on screen), the
+          reassurance against misreading it, and last the i-marked extraction
+          disclaimer. The disclaimer's wording is deliberately self-contained:
+          a version that referred back to the fascicle would silently inherit
+          the legend's condition and vanish with it. */}
+      <div>
+        {citingEntities.some((e) =>
+          isFoundational(e, foundationalEntities)
+        ) && (
+          <>
+            <DetailFootnote>{FOUNDATIONAL_DOT_LEGEND}</DetailFootnote>
+            <DetailFootnote>{FOUNDATIONAL_BOTH_NOTE}</DetailFootnote>
+          </>
+        )}
+        <DetailDisclaimer>
+          Extracted automatically from each entity&rsquo;s budget submission.
+        </DetailDisclaimer>
+      </div>
     </section>
   )
 }
