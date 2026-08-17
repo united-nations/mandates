@@ -13,6 +13,10 @@ import { getMandateDisplayTitle, safeHighlightSearchTerms } from '@/lib/utils'
 import { getAllEntities } from './entities'
 import { getAllOrgans, getOrganMap } from './organs'
 import { getBudgetVersions } from './budget-documents'
+import {
+  exploreCardBaselineFilters,
+  type ExploreCardFigures,
+} from '@/lib/explore-card-state'
 import { FOUNDATIONAL_PART_IN_DOCUMENT } from '@/lib/foundational'
 import { ORGAN_CATEGORIES } from '@/lib/organ-groups'
 import { SUBJECT_DOMAIN_LABELS } from '@/lib/filter-constants'
@@ -1567,6 +1571,40 @@ export const getExploreCardData = cache((filters: FilterOptions = {}) => {
     { revalidate: 3600 }
   )()
 })
+
+/**
+ * The four card figures in their FULL state: the card-owned selections (organ,
+ * entity, cited) dropped, every other filter — the version lens above all —
+ * kept. See exploreCardBaselineFilters for why the line is drawn there.
+ *
+ * Deliberately a counts-only fetch rather than a second getExploreCardData
+ * call: the comparison needs the four figures and nothing else, and the wide
+ * call would also compute four panel hierarchies (two of them ~3s uncached)
+ * for a scope nobody is rendering. The three reads below go through the same
+ * per-query caches getExploreCardData itself uses, so on the unfiltered
+ * landing view they resolve from the very entries the page has already
+ * warmed, and on filtered views the baseline is one extra cache entry per
+ * lens, shared by every filtered view under it.
+ */
+export const getExploreCardBaseline = cache(
+  async (filters: FilterOptions = {}): Promise<ExploreCardFigures> => {
+    const { facets, allDocuments, cited } = exploreCardScopes(
+      exploreCardBaselineFilters(filters)
+    )
+    const [dimensionCounts, allDocumentsCount, citedDocumentCount] =
+      await Promise.all([
+        getFilteredDimensionCounts(facets),
+        getFilteredDocumentCount(allDocuments),
+        getFilteredDocumentCount(cited),
+      ])
+    return {
+      organCount: dimensionCounts.organs,
+      entityCount: dimensionCounts.entities,
+      allDocumentsCount,
+      citedDocumentCount,
+    }
+  }
+)
 
 /**
  * Get entity counts for the sidebar
