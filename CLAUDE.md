@@ -22,7 +22,7 @@ Web app (run from `website/`):
 - `pnpm lint` — ESLint (flat config, `eslint.config.mjs`).
 - `pnpm typecheck` — `tsc --noEmit`. Run this and `lint` before considering work done.
 - `pnpm format` / `pnpm format:check` — Prettier (with Tailwind class sorting).
-- No test runner is configured.
+- `pnpm test` — Node's built-in test runner (`node --test`; no test framework is installed). Covers pure helpers in `src/lib/` only; components, routes, and data access have no tests.
 
 Data pipeline (run from `data-processing/`):
 
