@@ -13,7 +13,12 @@
  *
  * Every organ short code in the database should appear in exactly one category.
  * getOrganHierarchy folds any DB organ not listed here into the last ("Treaty
- * bodies & other") category, so a newly-seeded organ is grouped, never dropped.
+ * bodies & other") category, and the organ-entity heatmap does the same, so a
+ * newly-seeded organ is grouped there rather than dropped. The Organ column
+ * filter has no such catch-all: it walks the declared categories and looks up
+ * each code, never the reverse, so an organ in no category is offered as no
+ * filter option at all while its documents stay in the table. An organ that
+ * belongs to a particular category has to be listed here by name.
  */
 
 export interface OrganCategory {
@@ -27,7 +32,7 @@ export const ORGAN_CATEGORIES: OrganCategory[] = [
   {
     id: 'principal',
     label: 'Principal organs',
-    organs: ['GA', 'SC', 'ECOSOC', 'TC', 'Charter'],
+    organs: ['GA', 'SC', 'ECOSOC', 'TC'],
   },
   {
     id: 'subsidiary',
@@ -53,6 +58,6 @@ export const ORGAN_CATEGORIES: OrganCategory[] = [
   {
     id: 'other',
     label: 'Treaty bodies & other',
-    organs: ['INCB', 'UNTOC COP', 'UNCLOS', 'WTO', 'Other'],
+    organs: ['Charter', 'INCB', 'UNTOC COP', 'UNCLOS', 'WTO', 'Other'],
   },
 ]
