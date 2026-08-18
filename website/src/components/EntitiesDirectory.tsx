@@ -18,10 +18,10 @@ import { ChevronRight, Layers, LayoutGrid, Tag } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 
 /**
- * The entity directory: every budget-holding entity that implements mandates,
- * in three flat groups — Secretariat, Special Political Missions, Peacekeeping
- * Operations. Reads the same `BudgetStream[]` as the table's budget filter
- * (getBudgetHierarchy).
+ * The entity directory: every budget-holding entity that cited a mandate in
+ * its budget submission, in three flat groups — Secretariat, Special Political
+ * Missions, Peacekeeping Operations. Reads the same `BudgetStream[]` as the
+ * table's budget filter (getBudgetHierarchy).
  *
  * The three groups are derived from the data on every render, never hardcoded:
  * the split is version-dependent (PPB 2026 has 38 special political missions,
@@ -37,7 +37,7 @@ import { useEffect, useMemo, useState } from 'react'
  * Secretariat. That is what the budget documents actually say.
  *
  * The Programme Budget's part/section hierarchy and the Plan Outline are
- * deliberately absent — this modal answers "who implements mandates", not
+ * deliberately absent — this modal answers "who cited a mandate", not
  * "where in the budget document does it sit" (the table's budget filter still
  * does the latter). The Plan Outline contributes no entities at all: its
  * citations carry entity IS NULL.
