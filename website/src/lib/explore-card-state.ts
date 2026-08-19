@@ -32,6 +32,36 @@ import type { FilterOptions } from '@/types'
 export type ExploreCardCondition = 'full' | 'selected' | 'scoped'
 
 /**
+ * Which of the three forms card 3's count line takes. All three are decided
+ * here, once, from card 3's value and card 2's LIVE value: a component that
+ * receives only its own props cannot re-derive the relation without the two
+ * cards coming to disagree, and a component handed two booleans would be
+ * reconstructing a distinction that was already made.
+ *
+ *   - `empty`     — nothing is shown at all, so there is no fraction to state.
+ *   - `collapsed` — every document in view is cited: the two figures are the
+ *                   same non-zero number and the fraction says nothing, so the
+ *                   card says "all" of them instead. This is the COMMON path
+ *                   under an organ selection, not an edge case — only the
+ *                   catalogue symbol families contain uncited documents, so
+ *                   every other body's documents are in the registry BECAUSE
+ *                   they were cited, and shown equals cited for most of them.
+ *   - `fraction`  — card 3 is a proper subset of card 2, and the two figures
+ *                   are worth stating against each other.
+ *
+ * Empty is a form of its own rather than a small collapse. The collapse
+ * justification is that a fraction of a number by itself says nothing; at zero
+ * the fraction says the most useful thing the card can say, and the totality
+ * claim that replaces it ("all 0 of them") is vacuously true and reads as a
+ * defect. The two cases part company on the reasoning, not on magnitude.
+ *
+ * ONE is inside `collapsed` deliberately. "all 1 of them" is awkward English
+ * and true, and a threshold at two would have nothing behind it — do not add
+ * one.
+ */
+export type CitedCountForm = 'empty' | 'collapsed' | 'fraction'
+
+/**
  * The two display forms of a selection, plus the unabbreviated original.
  *
  * `name` is how the selection labels itself on its own card ("Cited only");
@@ -81,13 +111,8 @@ export interface ExploreCardStates {
      * grid reflows the two cards onto different rows.
      */
     shownDocumentsValue: number
-    /**
-     * True when every document in view is cited — the two figures collapse to
-     * one and a fraction would say nothing. Computed here, once, from card 3's
-     * value and card 2's live value: a component that receives only its own
-     * props cannot re-derive it without the two cards coming to disagree.
-     */
-    citedMatchesShown: boolean
+    /** Which of the three forms card 3's count line takes. */
+    countForm: CitedCountForm
   }
   entities: ExploreCardState
   /**
@@ -251,6 +276,18 @@ export function resolveExploreCardStates(
     ? current.citedDocumentCount
     : current.allDocumentsCount
 
+  // Emptiness is tested first, and against card 2's figure rather than card
+  // 3's, because "the shown count is zero" is the condition. The two are equal
+  // whenever it holds — card 3 is a subset of card 2 — so an equality test
+  // placed first would swallow the empty case as a collapse, which is the
+  // defect this ordering exists to prevent.
+  const citedCountForm: CitedCountForm =
+    shownDocumentsValue === 0
+      ? 'empty'
+      : current.citedDocumentCount === shownDocumentsValue
+        ? 'collapsed'
+        : 'fraction'
+
   return {
     organs: {
       condition: conditionOf(
@@ -284,7 +321,7 @@ export function resolveExploreCardStates(
       baselineValue: baseline.citedDocumentCount,
       selection: citedSelection,
       shownDocumentsValue,
-      citedMatchesShown: current.citedDocumentCount === shownDocumentsValue,
+      countForm: citedCountForm,
     },
     entities: {
       condition: conditionOf(

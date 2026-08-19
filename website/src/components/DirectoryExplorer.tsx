@@ -191,6 +191,8 @@ export function DirectoryExplorer({
   // year is just not named.
   const cycleYear = activeVersion?.ppb_year
 
+  const citedCount = citedCountLine(cardStates.cited)
+
   /** Write one dimension, keeping every other active filter. */
   const applySelection = useCallback(
     (param: FilterParamKey, value: string | undefined) => {
@@ -300,21 +302,14 @@ export function DirectoryExplorer({
           card 2's LIVE figure — the one deliberate exception to denominators
           being in the card's own unit, and the only expression of the subset
           relation that survives the grid reflowing the two cards onto
-          different rows. When the two figures collapse to one (every document
-          in view is cited — the COMMON path under an organ selection, not an
-          edge case) the fraction says nothing and the all-form renders
-          instead. */}
+          different rows. Which of the three forms that relation takes is
+          resolved upstream (ExploreCardStates.cited.countForm); the strings
+          for each are in citedCountLine, below. */}
       <ExploreButton
         stateLine={cardStateLine(cardStates.cited, cardStates)}
-        count={cardStates.cited.value}
-        countPrefix={cardStates.cited.citedMatchesShown ? 'all' : undefined}
-        countUnit={
-          cardStates.cited.citedMatchesShown
-            ? 'of them'
-            : cardStates.cited.condition === 'scoped'
-              ? `of the ${cardStates.cited.shownDocumentsValue.toLocaleString()} shown`
-              : 'of them'
-        }
+        count={citedCount.count}
+        countPrefix={citedCount.prefix}
+        countUnit={citedCount.unit}
         quietLine={
           cycleYear !== undefined
             ? `cited in the ${cycleYear} budget cycle`
@@ -534,6 +529,44 @@ function cardStateLine(
   return undefined
 }
 
+/**
+ * Card 3's count line, one branch per form. The three outcomes are named
+ * upstream (see CitedCountForm) and only worded here, so a reader changing the
+ * wording cannot change which state renders it, and a reader changing the rule
+ * has one place to go rather than three ternaries to keep in agreement.
+ *
+ *   empty      none of them
+ *   collapsed  all 433 of them
+ *   fraction   1,180 of the 27,942 shown        (scoped)
+ *              2,777 of them                    (full)
+ *
+ * The empty form has no figure. "none" is the count, in words, and a 0 beside
+ * it would be the same fact twice.
+ */
+function citedCountLine(state: ExploreCardStates['cited']): {
+  count?: number
+  prefix?: string
+  unit: string
+} {
+  switch (state.countForm) {
+    case 'empty':
+      return { prefix: 'none', unit: 'of them' }
+    case 'collapsed':
+      return { count: state.value, prefix: 'all', unit: 'of them' }
+    case 'fraction':
+      return {
+        count: state.value,
+        // Only the scoped card states the denominator. In the full state the
+        // card is the whole cited set and "of them" points at card 2 without
+        // repeating its figure.
+        unit:
+          state.condition === 'scoped'
+            ? `of the ${state.shownDocumentsValue.toLocaleString()} shown`
+            : 'of them',
+      }
+  }
+}
+
 function ExploreButton({
   stateLine,
   count,
@@ -543,9 +576,13 @@ function ExploreButton({
   onClick,
 }: {
   stateLine?: ExploreCardStateLine
-  /** Omitted on a card whose figure sits inside the quiet line instead. */
+  /**
+   * Omitted on a card that states no figure here: card 4 selected, whose
+   * figure sits inside the quiet line, and card 3 empty, where the prefix is
+   * the count in words.
+   */
   count?: number
-  /** Body-size word(s) rendered before the large figure ("all"). */
+  /** Body-size word(s) rendered before the large figure ("all", "none"). */
   countPrefix?: string
   /** Body-size remainder of the count line: a unit or a denominator clause. */
   countUnit?: string
@@ -626,18 +663,25 @@ function ExploreButton({
           The chevron is out of the flow (bottom right, beside the quiet line)
           rather than a flex sibling: in the flow it took 32px off the top line
           of every card, and the top line is the one that needed the room. */}
-      {count !== undefined && (
+      {/* The figure is optional within the line, not the line's condition:
+          card 3's empty form is a count line whose count is the word "none"
+          (see citedCountLine). The separating space rides with the figure so
+          that form does not render two of them. */}
+      {(count !== undefined || countPrefix !== undefined) && (
         <span className="block leading-tight">
           {countPrefix !== undefined && (
+            <span className="text-sm font-semibold text-gray-900">
+              {countPrefix}
+            </span>
+          )}
+          {count !== undefined && (
             <>
-              <span className="text-sm font-semibold text-gray-900">
-                {countPrefix}
-              </span>{' '}
+              {countPrefix !== undefined && ' '}
+              <span className="text-[clamp(1.25rem,13.5cqw,2.25rem)] leading-none font-bold text-gray-900 tabular-nums">
+                {count.toLocaleString()}
+              </span>
             </>
           )}
-          <span className="text-[clamp(1.25rem,13.5cqw,2.25rem)] leading-none font-bold text-gray-900 tabular-nums">
-            {count.toLocaleString()}
-          </span>
           {countUnit !== undefined && (
             <>
               {' '}

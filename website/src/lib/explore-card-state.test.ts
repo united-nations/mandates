@@ -35,6 +35,7 @@ describe('resolveExploreCardStates', () => {
     assert.equal(states.cited.condition, 'full')
     assert.equal(states.entities.condition, 'full')
     assert.equal(states.scopeCause, null)
+    assert.equal(states.cited.countForm, 'fraction')
   })
 
   it('keeps every card full under a version switch, with no version logic', () => {
@@ -75,7 +76,7 @@ describe('resolveExploreCardStates', () => {
     assert.equal(states.documents.baselineValue, 42_944)
     assert.equal(states.cited.condition, 'scoped')
     assert.equal(states.cited.shownDocumentsValue, 27_942)
-    assert.equal(states.cited.citedMatchesShown, false)
+    assert.equal(states.cited.countForm, 'fraction')
     assert.equal(states.entities.condition, 'scoped')
     // ...while the visible cause abbreviates to the code, and the spoken
     // cause keeps the full name.
@@ -101,7 +102,7 @@ describe('resolveExploreCardStates', () => {
     assert.equal(states.organs.baselineValue, 23)
     assert.equal(states.documents.condition, 'scoped')
     assert.equal(states.cited.condition, 'scoped')
-    assert.equal(states.cited.citedMatchesShown, true)
+    assert.equal(states.cited.countForm, 'collapsed')
     assert.equal(states.entities.condition, 'selected')
     assert.equal(states.entities.selection?.name, 'OHCHR')
     assert.equal(states.entities.value, 14)
@@ -135,7 +136,68 @@ describe('resolveExploreCardStates', () => {
     assert.equal(states.spokenScopeCause, 'the cited set')
     // Under the cited filter, shown and cited are the same number by
     // construction.
-    assert.equal(states.cited.citedMatchesShown, true)
+    assert.equal(states.cited.countForm, 'collapsed')
+  })
+
+  // Card 3's three count forms. The equality that used to decide this had no
+  // lower bound, so an empty result set satisfied it and card 3 claimed all of
+  // nothing.
+  it('gives card 3 the empty form when nothing is shown', () => {
+    // No card-owned selection: a filter the cards cannot name (a keyword, say)
+    // matches nothing, so the baseline is empty too and every card is full.
+    // Emptiness is therefore not a scoped-state concern, and this is the case
+    // that proves it.
+    const empty: ExploreCardFigures = {
+      organCount: 0,
+      entityCount: 0,
+      allDocumentsCount: 0,
+      citedDocumentCount: 0,
+    }
+    const states = resolveExploreCardStates(empty, empty, NO_SELECTIONS)
+    assert.equal(states.cited.condition, 'full')
+    assert.equal(states.cited.value, 0)
+    assert.equal(states.cited.shownDocumentsValue, 0)
+    assert.equal(states.cited.countForm, 'empty')
+  })
+
+  it('gives card 3 the empty form under a selection that shows nothing', () => {
+    // The live state this was found in: an organ selection with an agenda and
+    // a document type filter alongside it, returning nothing. Card 1's
+    // baseline of 2 is the measured figure; the other baselines are set only
+    // non-zero, which follows from two sources matching the filters that
+    // survive into the baseline, and nothing is asserted about them.
+    const states = resolveExploreCardStates(
+      {
+        organCount: 0,
+        entityCount: 0,
+        allDocumentsCount: 0,
+        citedDocumentCount: 0,
+      },
+      { organCount: 2, entityCount: 3, allDocumentsCount: 9, citedDocumentCount: 4 },
+      { organ: { code: 'UNCTAD', longName: null }, citedOnly: false }
+    )
+    assert.equal(states.organs.condition, 'selected')
+    assert.equal(states.cited.condition, 'scoped')
+    assert.equal(states.cited.countForm, 'empty')
+  })
+
+  it('keeps the collapsed form at one rather than treating it as degenerate', () => {
+    // "all 1 of them" is awkward and true. A threshold at two would have
+    // nothing behind it, so this pins the inclusion against being read later
+    // as an oversight and quietly raised.
+    const current: ExploreCardFigures = {
+      organCount: 1,
+      entityCount: 1,
+      allDocumentsCount: 1,
+      citedDocumentCount: 1,
+    }
+    const states = resolveExploreCardStates(current, FULL, {
+      organ: { code: 'GA', longName: 'General Assembly' },
+      citedOnly: false,
+    })
+    assert.equal(states.cited.value, 1)
+    assert.equal(states.cited.shownDocumentsValue, 1)
+    assert.equal(states.cited.countForm, 'collapsed')
   })
 
   it('joins conjunction causes in card order, not selection order', () => {
