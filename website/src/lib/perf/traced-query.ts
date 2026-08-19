@@ -3,6 +3,7 @@ import type { Pool, PoolClient, QueryResult, QueryResultRow } from 'pg'
 import {
   performanceTraceElapsed,
   recordQueryTrace,
+  trackPerformanceQuery,
 } from '#lib/perf/trace-context'
 import { fingerprintSql } from '#lib/perf/trace-summary'
 import type { PoolSnapshot, QueryTrace } from '#lib/perf/types'
@@ -111,11 +112,13 @@ export async function tracedPoolQuery<T extends QueryResultRow>(
   text: string,
   params?: unknown[]
 ): Promise<QueryResult<T>> {
-  const timing = startTiming(pool, text, params)
-  const client = await connect(pool, timing)
-  try {
-    return await execute<T>(client, timing)
-  } finally {
-    client.release()
-  }
+  return trackPerformanceQuery(async () => {
+    const timing = startTiming(pool, text, params)
+    const client = await connect(pool, timing)
+    try {
+      return await execute<T>(client, timing)
+    } finally {
+      client.release()
+    }
+  })
 }

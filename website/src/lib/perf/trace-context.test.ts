@@ -4,6 +4,7 @@ import test from 'node:test'
 import {
   isDynamicCacheBypassed,
   recordQueryTrace,
+  trackPerformanceQuery,
   traceSpan,
   withPerformanceTrace,
 } from '#lib/perf/trace-context'
@@ -44,15 +45,26 @@ test('recordQueryTrace is inert outside a trace context', () => {
 })
 
 test('performance context returns the partial trace when work fails', async () => {
+  let backgroundFinished = false
   const result = await withPerformanceTrace(
     { bypassDynamicCache: true, id: 'failed', route: '/secretariat' },
     async () => {
       recordQueryTrace({ ...tracedQuery, error: 'Query read timeout' })
+      void trackPerformanceQuery(
+        () =>
+          new Promise<void>((resolve) => {
+            queueMicrotask(() => {
+              backgroundFinished = true
+              resolve()
+            })
+          })
+      )
       throw new Error('Query read timeout')
     }
   )
 
   assert.equal(result.error, 'Query read timeout')
+  assert.equal(backgroundFinished, true)
   assert.equal(result.trace.queries[0]?.error, 'Query read timeout')
   assert.ok(result.trace.durationMs >= 0)
 })

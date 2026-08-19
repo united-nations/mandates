@@ -8,6 +8,8 @@ import type {
 } from '#lib/perf/types'
 
 interface TraceStore {
+  activeQueries: number
+  idleResolvers: Set<() => void>
   startedAt: number
   trace: PerformanceTrace
 }
@@ -16,6 +18,8 @@ const storage = new AsyncLocalStorage<TraceStore>()
 const elapsed = (startedAt: number) => performance.now() - startedAt
 
 const createStore = (options: PerformanceTraceOptions): TraceStore => ({
+  activeQueries: 0,
+  idleResolvers: new Set(),
   startedAt: performance.now(),
   trace: {
     ...options,
@@ -25,6 +29,18 @@ const createStore = (options: PerformanceTraceOptions): TraceStore => ({
     startedAtEpochMs: Date.now(),
   },
 })
+
+const waitForQueries = async (store: TraceStore): Promise<void> => {
+  if (store.activeQueries === 0) return
+  await new Promise<void>((resolve) => store.idleResolvers.add(resolve))
+}
+
+const queryFinished = (store: TraceStore): void => {
+  store.activeQueries -= 1
+  if (store.activeQueries !== 0) return
+  for (const resolve of store.idleResolvers) resolve()
+  store.idleResolvers.clear()
+}
 
 export async function withPerformanceTrace<T>(
   options: PerformanceTraceOptions,
@@ -37,9 +53,11 @@ export async function withPerformanceTrace<T>(
   return storage.run(store, async () => {
     try {
       const value = await operation()
+      await waitForQueries(store)
       store.trace.durationMs = elapsed(store.startedAt)
       return { trace: store.trace, value }
     } catch (error) {
+      await waitForQueries(store)
       store.trace.durationMs = elapsed(store.startedAt)
       return {
         error: error instanceof Error ? error.message : String(error),
@@ -91,3 +109,12 @@ export const recordQueryTrace = (query: QueryTrace): void => {
 
 export const isPerformanceTracing = (): boolean =>
   storage.getStore() !== undefined
+
+export const trackPerformanceQuery = <T>(
+  operation: () => Promise<T>
+): Promise<T> => {
+  const store = storage.getStore()
+  if (!store) return operation()
+  store.activeQueries += 1
+  return operation().finally(() => queryFinished(store))
+}
