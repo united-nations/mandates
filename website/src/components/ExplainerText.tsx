@@ -15,7 +15,17 @@ export function ExplainerText() {
           UN80 Initiative
         </Link>
         , this registry serves as a transparency tool for understanding UN
-        mandates and programmes.
+        mandates and programmes.{' '}
+        {/* A secondary pointer, not a call to action, so it rides the end of
+            the sentence at body size rather than standing on its own line.
+            It carries its own accent colour: inline, nothing else supplies
+            one. The hover treatment differs from the UN80 link above — that
+            is the two links as they were written, not a normalisation
+            anyone has ruled on. */}
+        <Link href="/methodology" className="text-un-blue hover:underline">
+          See the methodology
+        </Link>
+        .
       </p>
     </div>
   )

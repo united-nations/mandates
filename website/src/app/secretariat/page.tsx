@@ -7,7 +7,6 @@ import {
   Target,
 } from 'lucide-react'
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import { Suspense } from 'react'
 
 import { MandateExplorerServer } from '@/app/_mandateExplorerServer'
@@ -121,14 +120,10 @@ export default async function Page({ searchParams }: PageProps) {
         <h1 className="mb-4 text-4xl font-bold tracking-tight text-foreground">
           {explainerTexts.mainHeader.headline}
         </h1>
-        <ExplainerText />
-        {/* The analytics page still exists at /secretariat/analytics but is
+        {/* Carries the methodology link at the end of its last sentence. The
+            analytics page still exists at /secretariat/analytics but is
             deliberately unlinked for now — it should not be discoverable. */}
-        <p className="mt-4 text-sm font-medium text-un-blue">
-          <Link href="/methodology" className="hover:underline">
-            See the methodology
-          </Link>
-        </p>
+        <ExplainerText />
       </section>
 
       {/* Active filters, then the four explore cards. The bar sits ABOVE the
