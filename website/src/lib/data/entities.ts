@@ -19,6 +19,7 @@ import type { Entity } from '@/types'
 const loadAllEntities = unstable_cache(
   async (): Promise<Entity[]> => {
     const query = `
+      /* trace:entities.all */
       SELECT
         entity,
         entity_long
@@ -39,4 +40,3 @@ const loadAllEntities = unstable_cache(
 )
 
 export const getAllEntities = cache(loadAllEntities)
-

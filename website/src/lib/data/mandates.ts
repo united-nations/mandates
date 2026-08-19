@@ -19,6 +19,7 @@ import {
 } from '@/lib/explore-card-state'
 import { FOUNDATIONAL_PART_IN_DOCUMENT } from '@/lib/foundational'
 import { ORGAN_CATEGORIES } from '@/lib/organ-groups'
+import { readDynamicCache } from '@/lib/perf/dynamic-cache'
 import { SUBJECT_DOMAIN_LABELS } from '@/lib/filter-constants'
 import {
   pairKey,
@@ -780,6 +781,7 @@ export async function getMandates(
     // plain columns of the page CTE, so strip the qualifiers.
     const outerOrderBy = orderBy.replace(/\b[mc]\./g, '')
     query = `
+    /* trace:mandates.list-grouped */
     WITH ${cte},
     ${seriesLookupCte},
     enriched AS (
@@ -840,6 +842,7 @@ export async function getMandates(
   `
   } else {
     query = `
+    /* trace:mandates.list */
     WITH ${cte},
     ${seriesLookupCte},
     counted AS (
@@ -1240,7 +1243,7 @@ interface AggregateBundleRow {
  * organ, document-type catalogue — still run their own queries.
  */
 const getFilteredAggregates = cache((filters: FilterOptions = {}) =>
-  unstable_cache(
+  readDynamicCache(
     async () => {
       const { cte, params, versionClause, versionParam } =
         buildFilteredDocsCTE(filters, {
@@ -1252,6 +1255,7 @@ const getFilteredAggregates = cache((filters: FilterOptions = {}) =>
         })
 
       const query = `
+        /* trace:mandates.filtered-aggregates */
         WITH ${cte},
         cites AS (
           SELECT c.ppb_full_document_symbol AS sym, c.entity, c.programme_title
@@ -1370,7 +1374,7 @@ const getFilteredAggregates = cache((filters: FilterOptions = {}) =>
     // count over a wider population than the surface it feeds now describes.
     ['filtered-aggregates-v2', JSON.stringify(filters)],
     { revalidate: 3600 }
-  )()
+  )
 )
 
 /**
@@ -1419,7 +1423,7 @@ export async function getMandateCounts(filters: FilterOptions = {}): Promise<{
  * grouped one.
  */
 export const getFilteredDocumentCount = cache((filters: FilterOptions = {}) =>
-  unstable_cache(
+  readDynamicCache(
     async () => {
       // Deliberately its own narrow query rather than a read off
       // getFilteredAggregates. The explore cards ask for this count under two
@@ -1431,7 +1435,8 @@ export const getFilteredDocumentCount = cache((filters: FilterOptions = {}) =>
         groupCols: 'd.ppb_full_document_symbol',
       })
       const row = await queryOne<{ count: string }>(
-        `WITH ${cte} SELECT COUNT(*) AS count FROM filtered_docs`,
+        `/* trace:mandates.filtered-document-count */
+         WITH ${cte} SELECT COUNT(*) AS count FROM filtered_docs`,
         params
       )
       return parseInt(row?.count ?? '0', 10)
@@ -1440,7 +1445,7 @@ export const getFilteredDocumentCount = cache((filters: FilterOptions = {}) =>
     // version lens), so v1 entries would answer a question no longer asked.
     ['filtered-document-count-v2', JSON.stringify(filters)],
     { revalidate: 3600 }
-  )()
+  )
 )
 
 /**
@@ -1544,7 +1549,7 @@ export interface ExploreCardData {
  */
 export const getExploreCardData = cache((filters: FilterOptions = {}) => {
   const { facets, allDocuments, cited } = exploreCardScopes(filters)
-  return unstable_cache(
+  return readDynamicCache(
     async (): Promise<ExploreCardData> => {
       const [
         organGroups,
@@ -1590,7 +1595,7 @@ export const getExploreCardData = cache((filters: FilterOptions = {}) => {
     // renders nothing.
     ['explore-card-data-v4', JSON.stringify(facets)],
     { revalidate: 3600 }
-  )()
+  )
 })
 
 /**
@@ -1649,6 +1654,7 @@ export async function getOrganCounts(filters: FilterOptions = {}): Promise<Organ
   const havingClause = `HAVING ${allHaving.join(' AND ')}`
 
   const query = `
+    /* trace:mandates.organ-counts */
     SELECT
       d.ppb_body as short,
       COUNT(DISTINCT d.ppb_full_document_symbol) as count
@@ -1706,7 +1712,8 @@ async function _getOrganHierarchyInner(
   const [organs, countRows] = await Promise.all([
     getAllOrgans(),
     queryMany<{ short: string; count: string }>(
-      `WITH ${cte}
+      `/* trace:mandates.organ-hierarchy */
+       WITH ${cte}
        SELECT ppb_body AS short, COUNT(*) AS count
        FROM filtered_docs
        WHERE ppb_body IS NOT NULL AND ppb_body != ''
@@ -1762,11 +1769,11 @@ async function _getOrganHierarchyInner(
  * result in its own entry, so a half-bump serves stale groups for up to an hour.
  */
 export const getOrganHierarchy = cache((filters: FilterOptions = {}) =>
-  unstable_cache(
+  readDynamicCache(
     () => _getOrganHierarchyInner(filters),
     ['organ-hierarchy-v4', JSON.stringify(filters)],
     { revalidate: 3600 }
-  )()
+  )
 )
 
 /**
@@ -1797,7 +1804,8 @@ async function _getDocumentTypeCatalogueInner(
     groupCols: 'd.ppb_full_document_symbol, d.ppb_type',
   })
   const rows = await queryMany<{ value: string | null; count: string }>(
-    `WITH ${cte}
+    `/* trace:mandates.document-type-catalogue */
+     WITH ${cte}
      SELECT NULLIF(TRIM(ppb_type), '') AS value, COUNT(*) AS count
      FROM filtered_docs
      GROUP BY 1
@@ -1819,11 +1827,11 @@ async function _getDocumentTypeCatalogueInner(
 }
 
 export const getDocumentTypeCatalogue = cache((filters: FilterOptions = {}) =>
-  unstable_cache(
+  readDynamicCache(
     () => _getDocumentTypeCatalogueInner(filters),
     ['document-type-catalogue-v2', JSON.stringify(filters)],
     { revalidate: 3600 }
-  )()
+  )
 )
 
 /**
@@ -2271,6 +2279,7 @@ async function _getBudgetHierarchyInner(
   // interface already declares (pg returns bigint as text; to_jsonb of a
   // bigint would give a JSON number instead).
   const query = `
+    /* trace:mandates.budget-hierarchy */
     WITH ${cte}, ${citesCte},
     p AS (SELECT * FROM cites WHERE doc_type = 'ppb'),
     pk AS (
@@ -2591,6 +2600,7 @@ export async function getSubjectHierarchy(
   })
 
   const query = `
+    /* trace:mandates.subject-hierarchy */
     WITH ${cte},
     subj AS (
       SELECT DISTINCT
@@ -3117,20 +3127,20 @@ const stripListKeys = (filters: FilterOptions): FilterOptions => ({
 })
 
 const getSharedPageData = cache((filters: FilterOptions) =>
-  unstable_cache(
+  readDynamicCache(
     () => _getSharedPageDataInner(filters),
     [PAGE_DATA_CACHE_VERSION, 'shared', JSON.stringify(filters)],
     { revalidate: 3600 } // 1 hour — data changes infrequently
-  )()
+  )
 )
 
 const getMandateList = cache(
   (filters: FilterOptions, page: number, limit: number) =>
-    unstable_cache(
+    readDynamicCache(
       () => _getMandateListInner(filters, page, limit),
       [PAGE_DATA_CACHE_VERSION, 'list', JSON.stringify(filters), String(page), String(limit)],
       { revalidate: 3600 }
-    )()
+    )
 )
 
 /**
