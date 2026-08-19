@@ -1,5 +1,7 @@
 import { AsyncLocalStorage } from 'node:async_hooks'
 
+import { withRequestQueryCache } from '#lib/db/request-query-cache'
+
 import type {
   PerformanceSpan,
   PerformanceTrace,
@@ -50,21 +52,23 @@ export async function withPerformanceTrace<T>(
   | { error?: undefined; trace: PerformanceTrace; value: T }
 > {
   const store = createStore(options)
-  return storage.run(store, async () => {
-    try {
-      const value = await operation()
-      await waitForQueries(store)
-      store.trace.durationMs = elapsed(store.startedAt)
-      return { trace: store.trace, value }
-    } catch (error) {
-      await waitForQueries(store)
-      store.trace.durationMs = elapsed(store.startedAt)
-      return {
-        error: error instanceof Error ? error.message : String(error),
-        trace: store.trace,
+  return storage.run(store, () =>
+    withRequestQueryCache(async () => {
+      try {
+        const value = await operation()
+        await waitForQueries(store)
+        store.trace.durationMs = elapsed(store.startedAt)
+        return { trace: store.trace, value }
+      } catch (error) {
+        await waitForQueries(store)
+        store.trace.durationMs = elapsed(store.startedAt)
+        return {
+          error: error instanceof Error ? error.message : String(error),
+          trace: store.trace,
+        }
       }
-    }
-  })
+    })
+  )
 }
 
 export async function traceSpan<T>(
