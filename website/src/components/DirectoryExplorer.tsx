@@ -120,7 +120,7 @@ const BUDGET_LEVEL_PARAM: Record<BudgetTreeLevel, FilterParamKey> = {
  *
  * The four numbers, all over the current result set:
  *
- *   1. organs & bodies — distinct issuing bodies in it
+ *   1. sources         — distinct recorded sources in it, as the panel lists them
  *   2. documents       — the table total
  *   3. cited documents — the cited subset of it, measured against card 2
  *   4. entities        — distinct citing entities in it
@@ -263,12 +263,18 @@ export function DirectoryExplorer({
       <ExploreButton
         stateLine={cardStateLine(cardStates.organs, cardStates)}
         count={cardStates.organs.value}
+        // The narrowed form takes a different noun from the plural, and the two
+        // are not to be normalised. In the full state the unit is followed by
+        // the quiet line, which supplies its context; the narrowed state drops
+        // that line, so there the unit is the only noun on the card and a bare
+        // "of 23 sources" reads as sources of anything. Cut or reword the quiet
+        // line and the full-state plural needs revisiting with it.
         countUnit={
           cardStates.organs.condition === 'full'
             ? cardStates.organs.value === 1
-              ? 'organ or body'
-              : 'organs & bodies'
-            : `of ${cardStates.organs.baselineValue.toLocaleString()} organs & bodies`
+              ? 'source'
+              : 'sources'
+            : `of ${cardStates.organs.baselineValue.toLocaleString()} mandate sources`
         }
         quietLine={
           cardStates.organs.condition === 'full'
@@ -354,7 +360,7 @@ export function DirectoryExplorer({
       <DirectoryDialog
         open={panel === 'organs'}
         onClose={close}
-        title="Organs creating mandates"
+        title="Sources of mandates"
         hint="Click an organ to add it to the filters below."
       >
         <OrgansDirectory groups={organGroups} selection={selection} />
