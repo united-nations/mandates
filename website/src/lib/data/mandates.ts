@@ -20,6 +20,12 @@ import {
 import { FOUNDATIONAL_PART_IN_DOCUMENT } from '@/lib/foundational'
 import { ORGAN_CATEGORIES } from '@/lib/organ-groups'
 import { readDynamicCache } from '@/lib/perf/dynamic-cache'
+import { subjectCountSql } from './subject-count-sql'
+import { buildUngroupedListSql } from './mandate-list-sql'
+import {
+  buildDirectBudgetCitations,
+  buildQualifiedBudgetCitations,
+} from './budget-citation-sql'
 import { SUBJECT_DOMAIN_LABELS } from '@/lib/filter-constants'
 import {
   pairKey,
@@ -841,22 +847,14 @@ export async function getMandates(
     ORDER BY po.page_ord
   `
   } else {
-    query = `
-    /* trace:mandates.list */
-    WITH ${cte},
-    ${seriesLookupCte},
-    counted AS (
-      SELECT *, COUNT(*) OVER() as total_count
-      FROM filtered_docs
-    )
-    SELECT
-      c.*,${seriesCols}${keywordRankExpr}
-    FROM counted c
-    LEFT JOIN series_lookup rs
-      ON rs.document_symbol = c.ppb_full_document_symbol
-    ${orderBy}
-    LIMIT $${bind(limit)} OFFSET $${bind(offset)}
-  `
+    query = buildUngroupedListSql({
+      filteredCte: cte,
+      keywordRank: keywordRankExpr,
+      limitParam: `$${bind(limit)}`,
+      offsetParam: `$${bind(offset)}`,
+      orderBy,
+      seriesColumns: seriesCols,
+    })
   }
 
   const rows = await queryMany<MandateListRow>(query, params)
@@ -1267,12 +1265,7 @@ const getFilteredAggregates = cache((filters: FilterOptions = {}) =>
             ON fd.ppb_full_document_symbol = c.ppb_full_document_symbol
             AND ${versionClause('c')}
         ),
-        subj AS (
-          SELECT fd.ppb_full_document_symbol AS sym,
-                 LOWER(UNNEST(fd.subjects)) AS subject
-          FROM filtered_docs fd
-          WHERE fd.subjects IS NOT NULL
-        ),
+        ${subjectCountSql('filtered_docs')},
         agenda AS (
           SELECT fd.ppb_full_document_symbol AS sym, (elem->>'desc') AS item
           FROM filtered_docs fd
@@ -1337,11 +1330,7 @@ const getFilteredAggregates = cache((filters: FilterOptions = {}) =>
                FROM filtered_docs WHERE ppb_year IS NOT NULL GROUP BY ppb_year
              ) x) AS year_counts,
           (SELECT jsonb_agg(jsonb_build_array(subject, n) ORDER BY n DESC, subject)
-             FROM (
-               SELECT subject, COUNT(DISTINCT sym)::int AS n
-               FROM subj WHERE subject IS NOT NULL AND subject != ''
-               GROUP BY subject
-             ) x) AS subject_counts,
+             FROM subject_counts) AS subject_counts,
           (SELECT jsonb_agg(jsonb_build_array(ppb_type, n) ORDER BY n DESC, ppb_type)
              FROM (
                SELECT ppb_type, COUNT(DISTINCT ppb_full_document_symbol)::int AS n
@@ -2244,30 +2233,29 @@ async function _getBudgetHierarchyInner(
   // as well. Selecting a node therefore narrows the tree to that node's branch
   // rather than keeping its siblings on display, so the active-filter chip is
   // the way back out.
-  const { cte, params, versionClause } = buildFilteredDocsCTE(filters, {
-    selectCols: 'd.ppb_full_document_symbol',
-    groupCols: 'd.ppb_full_document_symbol',
+  const built = buildFilterClauses(filters)
+  const whereClause = built.clauses.length
+    ? `WHERE ${built.clauses.join(' AND ')}`
+    : ''
+  let prefix = ''
+  let params = built.params
+  let citesCte = buildDirectBudgetCitations({
+    subprogramme: subProgrammeExpr('c.sub_programme'),
+    versionClause: built.versionClause('c'),
+    whereClause,
   })
-
-  // Shared: every filtered doc's version-scoped citations, tagged with the
-  // budget-document stream. Each citation matches exactly one budget document
-  // (the match_patterns are mutually exclusive).
-  const citesCte = `
-    cites AS (
-      SELECT
-        c.ppb_full_document_symbol AS sym,
-        c.budget_part_number, c.section, c.section_title,
-        c.programme, c.programme_title, c.entity,
-        ${subProgrammeExpr('c.sub_programme')} AS sub_programme, c.sub_programme_number,
-        bd.doc_type, bd.display_name AS stream_label, bd.sort_order AS stream_sort,
-        (c.section_title LIKE 'Administrative and budgetary aspects%') AS is_support
-      FROM filtered_docs fd
-      JOIN ppb2026.source_document_citations c
-        ON fd.ppb_full_document_symbol = c.ppb_full_document_symbol
-        AND ${versionClause('c')}
-      JOIN ppb2026.budget_documents bd
-        ON c.origin_document ~ bd.match_pattern
-    )`
+  if (built.havingClauses.length) {
+    const filtered = buildFilteredDocsCTE(filters, {
+      selectCols: 'd.ppb_full_document_symbol',
+      groupCols: 'd.ppb_full_document_symbol',
+    })
+    prefix = `${filtered.cte},`
+    params = filtered.params
+    citesCte = buildQualifiedBudgetCitations({
+      subprogramme: subProgrammeExpr('c.sub_programme'),
+      versionClause: filtered.versionClause('c'),
+    })
+  }
 
   const partCols = 'p.budget_part_number, bp.part_title, bp.sort_order'
   const sectionCols =
@@ -2284,7 +2272,7 @@ async function _getBudgetHierarchyInner(
   // bigint would give a JSON number instead).
   const query = `
     /* trace:mandates.budget-hierarchy */
-    WITH ${cte}, ${citesCte},
+    WITH ${prefix} ${citesCte},
     p AS (SELECT * FROM cites WHERE doc_type = 'ppb'),
     pk AS (
       SELECT * FROM cites
