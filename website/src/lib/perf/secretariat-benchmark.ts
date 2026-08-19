@@ -1,10 +1,10 @@
 import { getBudgetVersions } from '@/lib/data/budget-documents'
 import { getAllEntities } from '@/lib/data/entities'
 import {
-  getExploreCardBaseline,
-  getExploreCardData,
-  getMandatePageData,
-} from '@/lib/data/mandates'
+  getExploreCardBaselineFigures,
+  getExploreCardFigures,
+} from '@/lib/data/explore-card-figure-loader'
+import { getMandatePageData } from '@/lib/data/mandates'
 import { getAllOrgans } from '@/lib/data/organs'
 import type { FilterOptions } from '@/types'
 import { allSettledOrThrow } from '#lib/perf/all-settled'
@@ -26,8 +26,8 @@ const loadSecretariat = async (filters: FilterOptions) => {
       measured('versions', getBudgetVersions),
       measured('entities', getAllEntities),
       measured('organs', getAllOrgans),
-      measured('cards', () => getExploreCardData(filters)),
-      measured('card-baseline', () => getExploreCardBaseline(filters)),
+      measured('cards', () => getExploreCardFigures(filters)),
+      measured('card-baseline', () => getExploreCardBaselineFigures(filters)),
     ] as const)
   return { cardBaseline, cards, entities, organs, pageData, versions }
 }
