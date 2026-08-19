@@ -33,7 +33,11 @@ const collectQueries = (queries) => {
   }
 }
 
-const compactQuery = ({ sql: _sql, ...query }) => query
+const compactQuery = (query) => {
+  const compact = { ...query }
+  delete compact.sql
+  return compact
+}
 
 const compactResult = (result, run) => {
   collectQueries(result.trace.queries)
@@ -52,7 +56,8 @@ const compactResult = (result, run) => {
 const runOnce = async (scenario, mode, iteration) => {
   const id = `${scenario.id}-${mode}-${iteration}-${Date.now()}`
   const startedAt = performance.now()
-  await fetchOk(buildUrl(scenario, mode, id))
+  const pageResponse = await fetchOk(buildUrl(scenario, mode, id))
+  await pageResponse.arrayBuffer()
   const wallMs = performance.now() - startedAt
   const result = await fetchOk(`${BASE_URL}/api/performance/result/${id}`).then(
     (r) => r.json()
