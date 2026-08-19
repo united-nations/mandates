@@ -1845,6 +1845,7 @@ export async function getCrossCitations(
   version?: string | null
 ): Promise<CrossCitation[]> {
   const query = `
+    /* trace:mandates.entity-cross-citations */
     WITH entity_docs AS (
       -- Documents cited by this entity within the selected budget version
       SELECT DISTINCT ec.ppb_full_document_symbol

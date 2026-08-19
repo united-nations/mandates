@@ -29,12 +29,23 @@ const createStore = (options: PerformanceTraceOptions): TraceStore => ({
 export async function withPerformanceTrace<T>(
   options: PerformanceTraceOptions,
   operation: () => Promise<T>
-): Promise<{ trace: PerformanceTrace; value: T }> {
+): Promise<
+  | { error: string; trace: PerformanceTrace; value?: undefined }
+  | { error?: undefined; trace: PerformanceTrace; value: T }
+> {
   const store = createStore(options)
   return storage.run(store, async () => {
-    const value = await operation()
-    store.trace.durationMs = elapsed(store.startedAt)
-    return { trace: store.trace, value }
+    try {
+      const value = await operation()
+      store.trace.durationMs = elapsed(store.startedAt)
+      return { trace: store.trace, value }
+    } catch (error) {
+      store.trace.durationMs = elapsed(store.startedAt)
+      return {
+        error: error instanceof Error ? error.message : String(error),
+        trace: store.trace,
+      }
+    }
   })
 }
 

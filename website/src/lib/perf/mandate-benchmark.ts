@@ -3,7 +3,10 @@ import { getMandateBySymbol, getResolutionSeries } from '@/lib/data/mandates'
 import { getAllOrgans } from '@/lib/data/organs'
 import { getParagraphsBySymbol } from '@/lib/data/paragraphs'
 import { getSgReportsMandatedByResolution } from '@/lib/data/sg-report-links'
-import { buildBenchmarkResult } from '#lib/perf/benchmark-result'
+import {
+  buildBenchmarkFailure,
+  buildBenchmarkResult,
+} from '#lib/perf/benchmark-result'
 import { traceSpan, withPerformanceTrace } from '#lib/perf/trace-context'
 import type { PerformanceTraceOptions } from '#lib/perf/types'
 
@@ -31,5 +34,7 @@ export const runMandateBenchmark = async (
   const result = await withPerformanceTrace(options, () =>
     loadMandate(symbol, version)
   )
+  if (result.error !== undefined)
+    return buildBenchmarkFailure(result.trace, result.error)
   return buildBenchmarkResult(result.trace, result.value)
 }

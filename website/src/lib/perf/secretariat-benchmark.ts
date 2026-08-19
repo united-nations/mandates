@@ -7,7 +7,10 @@ import {
 } from '@/lib/data/mandates'
 import { getAllOrgans } from '@/lib/data/organs'
 import type { FilterOptions } from '@/types'
-import { buildBenchmarkResult } from '#lib/perf/benchmark-result'
+import {
+  buildBenchmarkFailure,
+  buildBenchmarkResult,
+} from '#lib/perf/benchmark-result'
 import { traceSpan, withPerformanceTrace } from '#lib/perf/trace-context'
 import type { PerformanceTraceOptions } from '#lib/perf/types'
 
@@ -35,5 +38,7 @@ export const runSecretariatBenchmark = async (
   const result = await withPerformanceTrace(options, () =>
     loadSecretariat(filters)
   )
+  if (result.error !== undefined)
+    return buildBenchmarkFailure(result.trace, result.error)
   return buildBenchmarkResult(result.trace, result.value)
 }

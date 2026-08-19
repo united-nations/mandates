@@ -6,6 +6,15 @@ const BASE_URL = process.env.PERFORMANCE_BASE_URL ?? 'http://127.0.0.1:3100'
 const ITERATIONS = Number(process.env.PERFORMANCE_ITERATIONS ?? 7)
 const OUTPUT =
   process.env.PERFORMANCE_OUTPUT ?? '../docs/performance-inventory-data.json'
+const SELECTED_IDS = new Set(
+  (process.env.PERFORMANCE_SCENARIO_IDS ?? '')
+    .split(',')
+    .map((value) => value.trim())
+    .filter(Boolean)
+)
+const SCENARIOS = SELECTED_IDS.size
+  ? PERFORMANCE_SCENARIOS.filter((scenario) => SELECTED_IDS.has(scenario.id))
+  : PERFORMANCE_SCENARIOS
 const queryCatalog = new Map()
 
 const buildUrl = (scenario, mode, id) => {
@@ -48,9 +57,12 @@ const compactQuery = (query) => {
 
 const compactResult = (result, run) => {
   collectQueries(result.trace.queries)
+  const outcome = result.error
+    ? { error: result.error }
+    : { artifact: result.artifact }
   return {
     ...run,
-    artifact: result.artifact,
+    ...outcome,
     querySummary: result.querySummary,
     trace: {
       durationMs: result.trace.durationMs,
@@ -109,7 +121,7 @@ const runScenario = async (scenario) => {
 
 const verdict = (runs) => {
   const queries = runs.flatMap((run) => run.trace?.queries ?? [])
-  const scenarios = PERFORMANCE_SCENARIOS.map((scenario) =>
+  const scenarios = SCENARIOS.map((scenario) =>
     runs.filter((run) => run.scenario === scenario.id)
   )
   return {
@@ -128,7 +140,7 @@ const buildOutput = (runs) => ({
   iterations: ITERATIONS,
   queries: Object.fromEntries(queryCatalog),
   runs,
-  scenarios: PERFORMANCE_SCENARIOS,
+  scenarios: SCENARIOS,
   verdict: verdict(runs),
 })
 
@@ -140,7 +152,7 @@ const writeOutput = async (runs) => {
 
 const main = async () => {
   const runs = []
-  for (const scenario of PERFORMANCE_SCENARIOS) {
+  for (const scenario of SCENARIOS) {
     runs.push(...(await runScenario(scenario)))
     await writeOutput(runs)
   }

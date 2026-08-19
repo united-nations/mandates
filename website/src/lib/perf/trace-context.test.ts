@@ -42,3 +42,17 @@ test('performance context collects spans and query traces', async () => {
 test('recordQueryTrace is inert outside a trace context', () => {
   assert.doesNotThrow(() => recordQueryTrace(tracedQuery))
 })
+
+test('performance context returns the partial trace when work fails', async () => {
+  const result = await withPerformanceTrace(
+    { bypassDynamicCache: true, id: 'failed', route: '/secretariat' },
+    async () => {
+      recordQueryTrace({ ...tracedQuery, error: 'Query read timeout' })
+      throw new Error('Query read timeout')
+    }
+  )
+
+  assert.equal(result.error, 'Query read timeout')
+  assert.equal(result.trace.queries[0]?.error, 'Query read timeout')
+  assert.ok(result.trace.durationMs >= 0)
+})

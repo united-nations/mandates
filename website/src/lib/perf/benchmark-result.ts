@@ -9,7 +9,8 @@ export interface ArtifactDigest {
 }
 
 export interface BenchmarkResult {
-  artifact: ArtifactDigest
+  artifact?: ArtifactDigest
+  error?: string
   querySummary: QuerySummary
   trace: PerformanceTrace
 }
@@ -27,6 +28,15 @@ export const buildBenchmarkResult = (
   value: unknown
 ): BenchmarkResult => ({
   artifact: digestArtifact(value),
+  querySummary: summarizeQueries(trace.queries),
+  trace,
+})
+
+export const buildBenchmarkFailure = (
+  trace: PerformanceTrace,
+  error: string
+): BenchmarkResult => ({
+  error,
   querySummary: summarizeQueries(trace.queries),
   trace,
 })
