@@ -23,9 +23,10 @@ import { useMemo, useState } from 'react'
  * itself is injected by DirectoryExplorer (see DirectorySelection) because it
  * has to match the scope these counts were computed under.
  *
- * One view only: cards with names. There are ~23 organs in all, so the compact
- * acronym-pill view the entity directory still needs bought nothing here except
- * a toggle to get wrong — it was removed along with its localStorage pref.
+ * One view only: cards with names. The vocabulary holds 26 codes and fewer than
+ * that ever render at once, so the compact acronym-pill view the entity
+ * directory still needs bought nothing here except a toggle to get wrong — it
+ * was removed along with its localStorage pref.
  */
 
 interface OrgansDirectoryProps {

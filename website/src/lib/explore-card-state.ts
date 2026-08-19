@@ -107,7 +107,12 @@ export interface ExploreCardStates {
 
 /** The four figures the cards are built from, in either scope. */
 export interface ExploreCardFigures {
-  /** Distinct organs in the result set — card 1. */
+  /**
+   * Card 1: distinct sources of mandate in the result set. Narrower than every
+   * value the documents record — a handful name a body the vocabulary has no
+   * entry for, and those are counted here by nothing, because nothing on the
+   * page can be clicked to reach them.
+   */
   organCount: number
   /** Distinct citing entities in the result set — card 4. */
   entityCount: number

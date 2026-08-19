@@ -1294,8 +1294,18 @@ const getFilteredAggregates = cache((filters: FilterOptions = {}) =>
         )
         SELECT
           (SELECT COUNT(*) FROM filtered_docs) AS total_documents,
-          (SELECT COUNT(DISTINCT ppb_body) FROM filtered_docs
-            WHERE ppb_body IS NOT NULL) AS total_organs,
+          -- Card 1's figure. Joined to the organ vocabulary rather than counted
+          -- straight off the column, so it counts the same population the panel
+          -- it opens lists: a code with a row in ppb2026.organs and at least one
+          -- document in view. Two observed values (SGB, DP) have no organ row
+          -- and render nowhere — not as cards, not as filter options, not as
+          -- heatmap rows — so counting them advertised a door that does not
+          -- exist. The join subsumes the old IS NOT NULL: a null body matches no
+          -- organ row. The documents behind those two are acknowledged in the
+          -- directory's notes panel instead, which is where a fact the reader
+          -- cannot navigate to belongs.
+          (SELECT COUNT(DISTINCT fd.ppb_body) FROM filtered_docs fd
+            JOIN ppb2026.organs o ON o.short = fd.ppb_body) AS total_organs,
           (SELECT COUNT(DISTINCT entity) FROM cites
             WHERE entity IS NOT NULL) AS result_entities,
           -- Catalogue-wide totals for the version on display: deliberately NOT
@@ -1356,7 +1366,9 @@ const getFilteredAggregates = cache((filters: FilterOptions = {}) =>
       const row = await queryOne<AggregateBundleRow>(query, params)
       return row
     },
-    ['filtered-aggregates-v1', JSON.stringify(filters)],
+    // -v2: total_organs now joins the organ vocabulary, so v1 entries hold a
+    // count over a wider population than the surface it feeds now describes.
+    ['filtered-aggregates-v2', JSON.stringify(filters)],
     { revalidate: 3600 }
   )()
 )
@@ -1376,6 +1388,11 @@ export async function getMandateCounts(filters: FilterOptions = {}): Promise<{
   // to budget_versions.is_default, which made them contradict every other
   // number on the page as soon as the reader switched to the other version.
   // Source Documents and UN Organs stay filter-driven catalogue totals.
+  //
+  // totalOrgans is the same figure card 1 shows, so it narrowed when card 1 did:
+  // it now counts only bodies the reader can reach. Nothing mounted renders it
+  // today — HeaderStats, its only consumer, is not on any page — but a surface
+  // that revives it inherits that population and the promise it makes.
   const row = await getFilteredAggregates(filters)
 
   return {
@@ -1566,8 +1583,12 @@ export const getExploreCardData = cache((filters: FilterOptions = {}) => {
         citedDocumentCount,
       }
     },
-    // -v3: cards 1 and 4 now carry their own counts (see above).
-    ['explore-card-data-v3', JSON.stringify(facets)],
+    // -v4: this payload embeds the organ hierarchy, whose categories and
+    // membership changed, and card 1's count narrowed with it. Bumping the
+    // hierarchy key alone would leave THIS entry serving the old groups for the
+    // full hour — the two have to move together or the change deploys green and
+    // renders nothing.
+    ['explore-card-data-v4', JSON.stringify(facets)],
     { revalidate: 3600 }
   )()
 })
@@ -1713,7 +1734,10 @@ async function _getOrganHierarchyInner(
   const groups: OrganGroup[] = ORGAN_CATEGORIES.map((category) => {
     const members = [...category.organs]
     // Fold any DB organ not placed in a category into the catch-all bucket.
-    if (category.id === ORGAN_CATEGORIES[ORGAN_CATEGORIES.length - 1].id) {
+    // Selected by the declared flag, not by array position: the residue is last
+    // for display reasons, and a reordering that moved it would otherwise send
+    // unlisted codes into whichever category happened to be last.
+    if (category.isCatchAll) {
       for (const organ of organs) {
         if (!listed.has(organ.short)) members.push(organ.short)
       }
@@ -1730,11 +1754,17 @@ async function _getOrganHierarchyInner(
   return groups.filter((g) => g.organs.length > 0)
 }
 
-/** Filter-scoped and cached per filter set, like getDocumentTypeCatalogue. */
+/**
+ * Filter-scoped and cached per filter set, like getDocumentTypeCatalogue.
+ *
+ * -v4: the categories, their labels and their membership changed. Bump this key
+ * and explore-card-data together — that one awaits this function and stores the
+ * result in its own entry, so a half-bump serves stale groups for up to an hour.
+ */
 export const getOrganHierarchy = cache((filters: FilterOptions = {}) =>
   unstable_cache(
     () => _getOrganHierarchyInner(filters),
-    ['organ-hierarchy-v3', JSON.stringify(filters)],
+    ['organ-hierarchy-v4', JSON.stringify(filters)],
     { revalidate: 3600 }
   )()
 )

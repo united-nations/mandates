@@ -81,18 +81,18 @@ export function OrganEntityHeatmap({ matrix }: { matrix: OrganEntityMatrix }) {
   }, [columns])
 
   // Rows grouped by /organs category, folding any uncategorised organ into the
-  // last ("Treaty bodies & other") group — mirrors getOrganHierarchy. Organs
-  // and whole groups with no citations among the shown columns are dropped so
-  // no empty rows appear.
+  // category flagged as the catch-all — mirrors getOrganHierarchy. Organs and
+  // whole groups with no citations among the shown columns are dropped so no
+  // empty rows appear.
   const rowGroups = useMemo(() => {
     const present = new Set(matrix.organs)
     const listed = new Set(ORGAN_CATEGORIES.flatMap((c) => c.organs))
     const hasData = (organ: string) =>
       columns.some((c) => value(organ, c.code) > 0)
 
-    return ORGAN_CATEGORIES.map((cat, idx) => {
+    return ORGAN_CATEGORIES.map((cat) => {
       const members = cat.organs.filter((s) => present.has(s))
-      if (idx === ORGAN_CATEGORIES.length - 1) {
+      if (cat.isCatchAll) {
         for (const s of matrix.organs) if (!listed.has(s)) members.push(s)
       }
       return {
