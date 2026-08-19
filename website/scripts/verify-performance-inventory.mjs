@@ -1,5 +1,7 @@
 import { readFile } from 'node:fs/promises'
 
+import { evaluatePerformanceAcceptance } from '../src/lib/perf/acceptance.ts'
+
 const path = process.argv[2] ?? '../docs/performance-inventory-data.json'
 const result = JSON.parse(await readFile(path, 'utf8'))
 const issues = []
@@ -59,3 +61,10 @@ if (issues.length) {
   process.stdout.write(`${issues.join('\n')}\n`)
   process.exitCode = 1
 }
+
+const acceptance = evaluatePerformanceAcceptance(result)
+process.stdout.write(
+  `${acceptance.passed ? 'PASS' : 'FAIL'} acceptance` +
+    `${acceptance.failures.length ? ` — ${acceptance.failures.join('; ')}` : ' — all criteria fulfilled'}.\n`
+)
+if (!acceptance.passed) process.exitCode = 1
