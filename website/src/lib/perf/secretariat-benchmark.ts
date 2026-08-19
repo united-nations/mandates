@@ -7,6 +7,7 @@ import {
 } from '@/lib/data/mandates'
 import { getAllOrgans } from '@/lib/data/organs'
 import type { FilterOptions } from '@/types'
+import { allSettledOrThrow } from '#lib/perf/all-settled'
 import {
   buildBenchmarkFailure,
   buildBenchmarkResult,
@@ -20,14 +21,14 @@ const measured = <T>(name: string, operation: () => Promise<T>): Promise<T> =>
 const loadSecretariat = async (filters: FilterOptions) => {
   const table = measured('table', () => getMandatePageData(filters))
   const [pageData, versions, entities, organs, cards, cardBaseline] =
-    await Promise.all([
+    await allSettledOrThrow([
       table,
       measured('versions', getBudgetVersions),
       measured('entities', getAllEntities),
       measured('organs', getAllOrgans),
       measured('cards', () => getExploreCardData(filters)),
       measured('card-baseline', () => getExploreCardBaseline(filters)),
-    ])
+    ] as const)
   return { cardBaseline, cards, entities, organs, pageData, versions }
 }
 

@@ -3,6 +3,7 @@ import { getMandateBySymbol, getResolutionSeries } from '@/lib/data/mandates'
 import { getAllOrgans } from '@/lib/data/organs'
 import { getParagraphsBySymbol } from '@/lib/data/paragraphs'
 import { getSgReportsMandatedByResolution } from '@/lib/data/sg-report-links'
+import { allSettledOrThrow } from '#lib/perf/all-settled'
 import {
   buildBenchmarkFailure,
   buildBenchmarkResult,
@@ -15,14 +16,14 @@ const measured = <T>(name: string, operation: () => Promise<T>): Promise<T> =>
 
 const loadMandate = async (symbol: string, version?: string) => {
   const [mandate, entities, organs, paragraphs, series, reports] =
-    await Promise.all([
+    await allSettledOrThrow([
       measured('mandate', () => getMandateBySymbol(symbol, version)),
       measured('entities', getAllEntities),
       measured('organs', getAllOrgans),
       measured('paragraphs', () => getParagraphsBySymbol(symbol)),
       measured('series', () => getResolutionSeries(symbol)),
       measured('sg-reports', () => getSgReportsMandatedByResolution(symbol)),
-    ])
+    ] as const)
   return { entities, mandate, organs, paragraphs, reports, series }
 }
 
