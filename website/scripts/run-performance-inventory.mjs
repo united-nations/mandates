@@ -23,6 +23,13 @@ const fetchOk = async (url) => {
   return response
 }
 
+const runMetadata = (scenario, mode, iteration, wallMs) => ({
+  iteration,
+  mode,
+  scenario: scenario.id,
+  wallMs,
+})
+
 const collectQueries = (queries) => {
   for (const query of queries) {
     if (queryCatalog.has(query.fingerprint)) continue
@@ -56,25 +63,33 @@ const compactResult = (result, run) => {
 const runOnce = async (scenario, mode, iteration) => {
   const id = `${scenario.id}-${mode}-${iteration}-${Date.now()}`
   const startedAt = performance.now()
-  const pageResponse = await fetchOk(buildUrl(scenario, mode, id))
-  await pageResponse.arrayBuffer()
-  const wallMs = performance.now() - startedAt
-  const result = await fetchOk(`${BASE_URL}/api/performance/result/${id}`).then(
-    (r) => r.json()
-  )
-  return compactResult(result, {
-    iteration,
-    mode,
-    scenario: scenario.id,
-    wallMs,
-  })
+  try {
+    const pageResponse = await fetch(buildUrl(scenario, mode, id))
+    await pageResponse.arrayBuffer()
+    const wallMs = performance.now() - startedAt
+    if (!pageResponse.ok)
+      throw new Error(`Benchmark page returned ${pageResponse.status}`)
+    const resultUrl = `${BASE_URL}/api/performance/result/${id}`
+    const result = await fetchOk(resultUrl).then((response) => response.json())
+    return compactResult(result, runMetadata(scenario, mode, iteration, wallMs))
+  } catch (error) {
+    return {
+      ...runMetadata(scenario, mode, iteration, performance.now() - startedAt),
+      error: error instanceof Error ? error.message : String(error),
+    }
+  }
 }
 
-const verifyScenario = (runs) => {
-  const digests = new Set(runs.map((run) => run.artifact.digest))
-  if (digests.size !== 1)
-    throw new Error(`Output mismatch: ${runs[0].scenario}`)
+const successful = (runs) => runs.filter((run) => run.artifact)
+
+const scenarioArtifactsMatch = (runs) => {
+  const completed = successful(runs)
+  const digests = new Set(completed.map((run) => run.artifact.digest))
+  return completed.length > 0 && digests.size === 1
 }
+
+const progress = (run) =>
+  run.error ? `ERROR ${run.error}` : `${Math.round(run.wallMs)} ms`
 
 const runScenario = async (scenario) => {
   const runs = []
@@ -82,39 +97,54 @@ const runScenario = async (scenario) => {
     const run = await runOnce(scenario, 'off', iteration)
     runs.push(run)
     process.stdout.write(
-      `${scenario.id} ${iteration}/${ITERATIONS}: ${Math.round(run.wallMs)} ms\n`
+      `${scenario.id} ${iteration}/${ITERATIONS}: ${progress(run)}\n`
     )
   }
-  await runOnce(scenario, 'warm', 0)
-  runs.push(await runOnce(scenario, 'warm', 1))
-  verifyScenario(runs)
+  const warmup = await runOnce(scenario, 'warm', 0)
+  const warm = await runOnce(scenario, 'warm', 1)
+  if (warmup.error) warm.warmupError = warmup.error
+  runs.push(warm)
   return runs
 }
 
 const verdict = (runs) => {
-  const queries = runs.flatMap((run) => run.trace.queries)
+  const queries = runs.flatMap((run) => run.trace?.queries ?? [])
+  const scenarios = PERFORMANCE_SCENARIOS.map((scenario) =>
+    runs.filter((run) => run.scenario === scenario.id)
+  )
   return {
-    artifactsMatch: true,
+    artifactsMatch: scenarios.every(scenarioArtifactsMatch),
     queryErrors: queries.filter((query) => query.error).length,
+    requestErrors: runs.filter((run) => run.error).length,
     totalRuns: runs.length,
     unknownQueries: queries.filter((query) => query.caller === 'unknown')
       .length,
+    warmupErrors: runs.filter((run) => run.warmupError).length,
   }
+}
+
+const buildOutput = (runs) => ({
+  generatedAt: new Date().toISOString(),
+  iterations: ITERATIONS,
+  queries: Object.fromEntries(queryCatalog),
+  runs,
+  scenarios: PERFORMANCE_SCENARIOS,
+  verdict: verdict(runs),
+})
+
+const writeOutput = async (runs) => {
+  const output = buildOutput(runs)
+  await writeFile(OUTPUT, `${JSON.stringify(output, null, 2)}\n`)
+  return output
 }
 
 const main = async () => {
   const runs = []
-  for (const scenario of PERFORMANCE_SCENARIOS)
+  for (const scenario of PERFORMANCE_SCENARIOS) {
     runs.push(...(await runScenario(scenario)))
-  const output = {
-    generatedAt: new Date().toISOString(),
-    iterations: ITERATIONS,
-    queries: Object.fromEntries(queryCatalog),
-    runs,
-    scenarios: PERFORMANCE_SCENARIOS,
-    verdict: verdict(runs),
+    await writeOutput(runs)
   }
-  await writeFile(OUTPUT, `${JSON.stringify(output, null, 2)}\n`)
+  const output = await writeOutput(runs)
   process.stdout.write(`Wrote ${OUTPUT}\n${JSON.stringify(output.verdict)}\n`)
 }
 
