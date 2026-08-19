@@ -72,21 +72,31 @@ const compactResult = (result, run) => {
   }
 }
 
+const performAttempt = async ({ id, iteration, mode, scenario, startedAt }) => {
+  const pageResponse = await fetch(buildUrl(scenario, mode, id))
+  await pageResponse.arrayBuffer()
+  const wallMs = performance.now() - startedAt
+  if (!pageResponse.ok)
+    throw new Error(`Benchmark page returned ${pageResponse.status}`)
+  const resultUrl = `${BASE_URL}/api/performance/result/${id}`
+  const result = await fetchOk(resultUrl).then((response) => response.json())
+  return compactResult(result, runMetadata(scenario, mode, iteration, wallMs))
+}
+
 const runOnce = async (scenario, mode, iteration) => {
-  const id = `${scenario.id}-${mode}-${iteration}-${Date.now()}`
-  const startedAt = performance.now()
+  const context = {
+    id: `${scenario.id}-${mode}-${iteration}-${Date.now()}`,
+    iteration,
+    mode,
+    scenario,
+    startedAt: performance.now(),
+  }
   try {
-    const pageResponse = await fetch(buildUrl(scenario, mode, id))
-    await pageResponse.arrayBuffer()
-    const wallMs = performance.now() - startedAt
-    if (!pageResponse.ok)
-      throw new Error(`Benchmark page returned ${pageResponse.status}`)
-    const resultUrl = `${BASE_URL}/api/performance/result/${id}`
-    const result = await fetchOk(resultUrl).then((response) => response.json())
-    return compactResult(result, runMetadata(scenario, mode, iteration, wallMs))
+    return await performAttempt(context)
   } catch (error) {
+    const wallMs = performance.now() - context.startedAt
     return {
-      ...runMetadata(scenario, mode, iteration, performance.now() - startedAt),
+      ...runMetadata(scenario, mode, iteration, wallMs),
       error: error instanceof Error ? error.message : String(error),
     }
   }
