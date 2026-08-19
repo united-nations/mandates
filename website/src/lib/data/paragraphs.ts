@@ -211,6 +211,7 @@ export const getParagraphsBySymbol = cache(
     // Arm 1 — mandates.paragraphs (richer). Indexed on document_symbol.
     const mandatesRows = await queryMany<ParagraphRow>(
       `
+      /* trace:paragraphs.curated */
       SELECT
         p.id,
         p.position,
@@ -268,6 +269,7 @@ export const getParagraphsBySymbol = cache(
     // permanent operative filter, so the mapping is render-safe as-is.
     const dlRows = await queryMany<ParagraphRow>(
       `
+      /* trace:paragraphs.digital-library */
       SELECT
         dp.id,
         dp.position,

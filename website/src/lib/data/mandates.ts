@@ -948,6 +948,7 @@ export async function getMandateCitations(
   foundationalEntities: string[]
 }> {
   const query = `
+    /* trace:mandates.detail-citations */
     SELECT
       c.origin_document,
       c.budget_part,
@@ -1046,6 +1047,7 @@ export async function getMandateBySymbol(
   version?: string | null
 ): Promise<Mandate | null> {
   const query = `
+    /* trace:mandates.detail-document */
     SELECT
       d.ppb_full_document_symbol,
       d.ppb_link,
@@ -1150,6 +1152,7 @@ export async function getResolutionSeries(
   symbol: string
 ): Promise<ResolutionSeriesInfo | null> {
   const query = `
+    /* trace:mandates.resolution-series */
     WITH me AS (
       SELECT series_key, un_body, doc_type, is_collection, has_newer,
              is_latest, superseded_by
