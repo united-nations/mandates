@@ -319,6 +319,67 @@ describe('resolveExploreCardStates', () => {
     assert.equal(states.documents.frame, 'registryDenominator')
   })
 
+  // The cause line's hedge. It names what it can name and admits to the rest,
+  // reusing card 2's registry predicate because no count of active filters
+  // exists to be more specific with.
+  it('hedges the cause line when a filter the cards cannot name is narrowing it', () => {
+    const states = resolveExploreCardStates(
+      { organCount: 1, entityCount: 4, documentsCount: 1, citedDocumentCount: 1 },
+      { organCount: 2, entityCount: 9, documentsCount: 3, citedDocumentCount: 3 },
+      {
+        organ: { code: 'SC', longName: 'Security Council' },
+        entity: { code: 'OHCHR', longName: null },
+        citedOnly: false,
+      },
+      REGISTRY_2027
+    )
+    assert.equal(states.scopeCause, 'SC and OHCHR + other filters')
+    // The spoken cause is hedged to the same standard. It keeps full names
+    // where the visible one abbreviates, but it does not get to be the one
+    // that sounds exhaustive.
+    assert.equal(
+      states.spokenScopeCause,
+      'Security Council and OHCHR + other filters'
+    )
+  })
+
+  it('leaves the cause line unhedged when only card-owned filters narrow it', () => {
+    const current: ExploreCardFigures = {
+      organCount: 1,
+      entityCount: 61,
+      documentsCount: 27_942,
+      citedDocumentCount: 1_180,
+    }
+    const states = resolveExploreCardStates(
+      current,
+      FULL,
+      { organ: { code: 'GA', longName: 'General Assembly' }, citedOnly: false },
+      REGISTRY_2027
+    )
+    assert.equal(states.scopeCause, 'GA')
+    assert.equal(states.spokenScopeCause, 'General Assembly')
+  })
+
+  it('hedges nothing when nothing is selected, however narrow the row', () => {
+    // No selection means no card is scoped and no cause line renders, so there
+    // is nothing to hedge even though the baseline is well below the registry.
+    const conferences: ExploreCardFigures = {
+      organCount: 9,
+      entityCount: 44,
+      documentsCount: 3_495,
+      citedDocumentCount: 402,
+    }
+    const states = resolveExploreCardStates(
+      conferences,
+      conferences,
+      NO_SELECTIONS,
+      REGISTRY_2027
+    )
+    assert.equal(states.documents.frame, 'filtersPredicate')
+    assert.equal(states.scopeCause, null)
+    assert.equal(states.spokenScopeCause, null)
+  })
+
   it('joins conjunction causes in card order, not selection order', () => {
     const current: ExploreCardFigures = {
       organCount: 1,

@@ -167,11 +167,19 @@ export interface ExploreCardStates {
    * the order the user picked them — so two routes to the same state produce
    * one string. Null when nothing is selected, in which case no card is
    * scoped.
+   *
+   * Carries a trailing "+ other filters" when something the cards cannot name
+   * is also narrowing the row, because otherwise a line that names two filters
+   * implies those are the two there are. It is a claim of incompleteness, not
+   * a count — see the hedge in the resolver for why no count is available to
+   * be more specific with.
    */
   scopeCause: string | null
   /**
    * The same cause built from `spokenFrame`s — full names — for the
-   * visually-hidden copy of the scoped tag. Null exactly when scopeCause is.
+   * visually-hidden copy of the scoped tag. Null exactly when scopeCause is,
+   * and hedged exactly when it is: the spoken tag makes the same claim to the
+   * same standard, so it cannot be the one that sounds exhaustive.
    */
   spokenScopeCause: string | null
 }
@@ -321,16 +329,36 @@ export function resolveExploreCardStates(
       }
     : undefined
 
+  // Whether card 2's baseline is the registry. Two things read it: card 2's
+  // own frame, and the hedge on the cause line below. It is hoisted here
+  // because a filter that narrows the document baseline narrows every card's
+  // baseline — a conjunctive filter can only remove documents — so this one
+  // test answers "is something narrowing this row that no card can name" for
+  // the whole row, not just for card 2.
+  const baselineIsRegistry = baseline.documentsCount === registryCountForVersion
+
+  // The cause line names the selections the cards can name, and there is no
+  // count of the rest to fall back on: nothing in this codebase counts active
+  // filters, and the two things that come closest disagree with each other
+  // about whether a keyword and a sort are filters. The hedge says there are
+  // others without saying how many, which is all this predicate supports and
+  // all the line needs to stop implying it has listed them.
+  //
+  // A filter that is switched on but narrows nothing leaves the baseline equal
+  // to the registry and takes no hedge. That is right rather than a gap: the
+  // claim being hedged is about the number being narrowed.
+  const scopeHedge = baselineIsRegistry ? '' : ' + other filters'
+
   // Card order, not selection order.
   const activeSelections = [organSelection, entitySelection, citedSelection]
     .filter((s) => s !== undefined)
   const scopeCause =
     activeSelections.length > 0
-      ? activeSelections.map((s) => s.frame).join(' and ')
+      ? activeSelections.map((s) => s.frame).join(' and ') + scopeHedge
       : null
   const spokenScopeCause =
     activeSelections.length > 0
-      ? activeSelections.map((s) => s.spokenFrame).join(' and ')
+      ? activeSelections.map((s) => s.spokenFrame).join(' and ') + scopeHedge
       : null
 
   // Card 2 shows whichever document count the active filters select.
@@ -362,7 +390,6 @@ export function resolveExploreCardStates(
     baseline.documentsCount,
     anySelectionActive
   )
-  const baselineIsRegistry = baseline.documentsCount === registryCountForVersion
   // Card 2 never holds a selection (see the `false` above), so the condition
   // here is 'scoped' or 'full' and nothing else.
   const documentsFrame: DocumentsFrame =
