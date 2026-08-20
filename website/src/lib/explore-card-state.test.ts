@@ -334,12 +334,14 @@ describe('resolveExploreCardStates', () => {
       REGISTRY_2027
     )
     assert.equal(states.scopeCause, 'SC and OHCHR + other filters')
-    // The spoken cause is hedged to the same standard. It keeps full names
-    // where the visible one abbreviates, but it does not get to be the one
-    // that sounds exhaustive.
+    // The spoken cause is hedged to the same standard and in the same state,
+    // but not in the same words: "+" is announced as "plus", so the spoken
+    // form spells the conjunction out. It keeps full names where the visible
+    // one abbreviates, and it does not get to be the one that sounds
+    // exhaustive.
     assert.equal(
       states.spokenScopeCause,
-      'Security Council and OHCHR + other filters'
+      'Security Council and OHCHR and other filters'
     )
   })
 

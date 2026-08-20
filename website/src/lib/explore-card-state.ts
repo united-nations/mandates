@@ -179,7 +179,10 @@ export interface ExploreCardStates {
    * The same cause built from `spokenFrame`s — full names — for the
    * visually-hidden copy of the scoped tag. Null exactly when scopeCause is,
    * and hedged exactly when it is: the spoken tag makes the same claim to the
-   * same standard, so it cannot be the one that sounds exhaustive.
+   * same standard, so it cannot be the one that sounds exhaustive. The hedge
+   * is WORDED differently — "and other filters", not "+ other filters" — for
+   * the same reason the frames differ. A screen reader announces "+" as
+   * "plus".
    */
   spokenScopeCause: string | null
 }
@@ -347,7 +350,15 @@ export function resolveExploreCardStates(
   // A filter that is switched on but narrows nothing leaves the baseline equal
   // to the registry and takes no hedge. That is right rather than a gap: the
   // claim being hedged is about the number being narrowed.
+  //
+  // The two hedges differ for the same reason `frame` and `spokenFrame` do.
+  // "+" is a visual shorthand that survives being read once, like a column
+  // header, at the end of a tag that repeats across the row; a screen reader
+  // announces it as "plus", which is not what the line says. The spoken form
+  // spells the conjunction out. Same claim, said the way each surface can
+  // carry it.
   const scopeHedge = baselineIsRegistry ? '' : ' + other filters'
+  const spokenScopeHedge = baselineIsRegistry ? '' : ' and other filters'
 
   // Card order, not selection order.
   const activeSelections = [organSelection, entitySelection, citedSelection]
@@ -358,7 +369,8 @@ export function resolveExploreCardStates(
       : null
   const spokenScopeCause =
     activeSelections.length > 0
-      ? activeSelections.map((s) => s.spokenFrame).join(' and ') + scopeHedge
+      ? activeSelections.map((s) => s.spokenFrame).join(' and ') +
+        spokenScopeHedge
       : null
 
   // Card 2 shows whichever document count the active filters select.
