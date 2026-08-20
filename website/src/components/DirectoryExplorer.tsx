@@ -630,20 +630,53 @@ function ExploreButton({
     <button
       type="button"
       onClick={onClick}
+      // flex-col is load-bearing, not stylistic. A button centres its contents
+      // vertically whatever its display is set to, so a card with less content
+      // than the tallest in its row sat half the difference low. Which card
+      // that was moved with the viewport, since which quiet lines wrap decides
+      // which cards are short: at the narrowest four-across it was card 2
+      // alone, nine pixels down, and at other widths a different set.
+      //
+      // Making the button a flex container replaces that with ordinary top
+      // alignment. Setting align-items, align-content or display:flow-root
+      // does NOT work — measured, all three: the centring belongs to the
+      // button itself and no alignment property on it reaches the anonymous
+      // box doing it. Swapping the element for a div fixes it too, which is
+      // how the cause was pinned down.
+      //
+      // This aligns the figures wherever the state line above them occupies
+      // the same height on every card, which is every state where it is absent
+      // from all four or present on all four with a cause short enough to fit
+      // one line. It does NOT align them where the state line is absent on
+      // some cards and present on others (the cited-only state does exactly
+      // that), or where a long cause wraps on one card and not another. The
+      // state line sits above the figure and pushes it down, and no alignment
+      // property fixes a difference in content height. That residual is known
+      // and unfixed here.
       className={cn(
-        'group @container relative block rounded-lg border border-gray-200 bg-white px-4 py-4 text-left transition-all hover:border-un-blue hover:shadow-md focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:outline-none',
+        'group @container relative flex flex-col rounded-lg border border-gray-200 bg-white px-4 py-4 text-left transition-all hover:border-un-blue hover:shadow-md focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:outline-none',
         // The corner mark renders exactly when the "Scoped to …" line does:
         // the mark alone would say a number is partial without saying partial
         // of what.
         stateLine?.kind === 'scoped' && 'explore-scope-mark'
       )}
     >
-      {/* One step below the body scale: the state line repeats across every
-          scoped card in the row, names a cause the selected card already
-          carries in full, and must not compete with the figure. At body size
-          the conjunction form wrapped at the narrowest four-across column. */}
+      {/* Just below the body scale: the state line repeats across every scoped
+          card in the row, names a cause the selected card already carries in
+          full, and must not compete with the figure. At body size the
+          conjunction form wrapped at the narrowest four-across column. At 12px
+          it read as fine print, which is the wrong register for the first
+          thing on the card and the only line naming what narrowed the figure
+          below it. 13px is a deliberately small lift: enough to stop it
+          reading as a footnote, not enough to compete with the figure.
+
+          One size for both forms. The selected form has the accent and the
+          weight to distinguish it and needs no size of its own, and giving it
+          one would offset the two forms against each other by the difference —
+          reintroducing by hand the misalignment the flex column above removes
+          by construction. */}
       {stateLine && (
-        <span className="mb-1 block text-xs leading-snug">
+        <span className="mb-1 block text-[13px] leading-snug">
           {stateLine.kind === 'scoped' ? (
             <>
               {/* The visible tag is hidden from readers and replaced by a
@@ -683,11 +716,13 @@ function ExploreButton({
           the container's CONTENT box — the card interior, not its border
           box): at 13.5cqw that line just fits one-line at the widest
           four-across interior (a 28px figure + 132px of clause inside
-          207px, with slack for fallback-font metrics). In the narrow band
-          just above the lg breakpoint the same line no longer fits, and the
-          clause WRAPS under the figure rather than shrinking it — which is
-          why the old whitespace-nowrap is gone. Keeping it would have meant
-          sizing every card's figure to that one clause at a 171px interior,
+          207px — that width is unverified, no reading has been taken above a
+          1024px viewport). In the narrow band just above the lg breakpoint the
+          same line no longer fits, and the clause WRAPS under the figure
+          rather than shrinking it — which is why the old whitespace-nowrap is
+          gone. Keeping it would have meant sizing every card's figure to that
+          one clause at a 181.65px interior (measured: the figure computes to
+          24.5236px there, and 24.5236 / 0.135 is the container's content box),
           leaving it at ~17px against 14px body text: no hierarchy left.
           Cards already take their natural height, so an occasional second
           line costs nothing fixed heights were buying.
