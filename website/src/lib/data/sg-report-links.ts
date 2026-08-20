@@ -98,7 +98,8 @@ export interface MandatedSgReport {
 export const getSgReportsMandatedByResolution = cache(
   async (pageSymbol: string): Promise<MandatedSgReport[]> => {
     return queryMany<MandatedSgReport>(
-      `SELECT l.report_recid,
+      `/* trace:sg-reports.by-mandate */
+       SELECT l.report_recid,
               l.report_symbol,
               d.title,
               d.date_publication::text AS date_published,

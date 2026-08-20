@@ -19,6 +19,13 @@ import {
 } from '@/lib/explore-card-state'
 import { FOUNDATIONAL_PART_IN_DOCUMENT } from '@/lib/foundational'
 import { ORGAN_CATEGORIES } from '@/lib/organ-groups'
+import { readDynamicCache } from '@/lib/perf/dynamic-cache'
+import { subjectCountSql } from './subject-count-sql'
+import { buildUngroupedListSql } from './mandate-list-sql'
+import {
+  buildDirectBudgetCitations,
+  buildQualifiedBudgetCitations,
+} from './budget-citation-sql'
 import { SUBJECT_DOMAIN_LABELS } from '@/lib/filter-constants'
 import {
   pairKey,
@@ -780,6 +787,7 @@ export async function getMandates(
     // plain columns of the page CTE, so strip the qualifiers.
     const outerOrderBy = orderBy.replace(/\b[mc]\./g, '')
     query = `
+    /* trace:mandates.list-grouped */
     WITH ${cte},
     ${seriesLookupCte},
     enriched AS (
@@ -839,21 +847,14 @@ export async function getMandates(
     ORDER BY po.page_ord
   `
   } else {
-    query = `
-    WITH ${cte},
-    ${seriesLookupCte},
-    counted AS (
-      SELECT *, COUNT(*) OVER() as total_count
-      FROM filtered_docs
-    )
-    SELECT
-      c.*,${seriesCols}${keywordRankExpr}
-    FROM counted c
-    LEFT JOIN series_lookup rs
-      ON rs.document_symbol = c.ppb_full_document_symbol
-    ${orderBy}
-    LIMIT $${bind(limit)} OFFSET $${bind(offset)}
-  `
+    query = buildUngroupedListSql({
+      filteredCte: cte,
+      keywordRank: keywordRankExpr,
+      limitParam: `$${bind(limit)}`,
+      offsetParam: `$${bind(offset)}`,
+      orderBy,
+      seriesColumns: seriesCols,
+    })
   }
 
   const rows = await queryMany<MandateListRow>(query, params)
@@ -945,6 +946,7 @@ export async function getMandateCitations(
   foundationalEntities: string[]
 }> {
   const query = `
+    /* trace:mandates.detail-citations */
     SELECT
       c.origin_document,
       c.budget_part,
@@ -1043,6 +1045,7 @@ export async function getMandateBySymbol(
   version?: string | null
 ): Promise<Mandate | null> {
   const query = `
+    /* trace:mandates.detail-document */
     SELECT
       d.ppb_full_document_symbol,
       d.ppb_link,
@@ -1147,6 +1150,7 @@ export async function getResolutionSeries(
   symbol: string
 ): Promise<ResolutionSeriesInfo | null> {
   const query = `
+    /* trace:mandates.resolution-series */
     WITH me AS (
       SELECT series_key, un_body, doc_type, is_collection, has_newer,
              is_latest, superseded_by
@@ -1240,7 +1244,7 @@ interface AggregateBundleRow {
  * organ, document-type catalogue — still run their own queries.
  */
 const getFilteredAggregates = cache((filters: FilterOptions = {}) =>
-  unstable_cache(
+  readDynamicCache(
     async () => {
       const { cte, params, versionClause, versionParam } =
         buildFilteredDocsCTE(filters, {
@@ -1252,6 +1256,7 @@ const getFilteredAggregates = cache((filters: FilterOptions = {}) =>
         })
 
       const query = `
+        /* trace:mandates.filtered-aggregates */
         WITH ${cte},
         cites AS (
           SELECT c.ppb_full_document_symbol AS sym, c.entity, c.programme_title
@@ -1260,12 +1265,7 @@ const getFilteredAggregates = cache((filters: FilterOptions = {}) =>
             ON fd.ppb_full_document_symbol = c.ppb_full_document_symbol
             AND ${versionClause('c')}
         ),
-        subj AS (
-          SELECT fd.ppb_full_document_symbol AS sym,
-                 LOWER(UNNEST(fd.subjects)) AS subject
-          FROM filtered_docs fd
-          WHERE fd.subjects IS NOT NULL
-        ),
+        ${subjectCountSql('filtered_docs')},
         agenda AS (
           SELECT fd.ppb_full_document_symbol AS sym, (elem->>'desc') AS item
           FROM filtered_docs fd
@@ -1330,11 +1330,7 @@ const getFilteredAggregates = cache((filters: FilterOptions = {}) =>
                FROM filtered_docs WHERE ppb_year IS NOT NULL GROUP BY ppb_year
              ) x) AS year_counts,
           (SELECT jsonb_agg(jsonb_build_array(subject, n) ORDER BY n DESC, subject)
-             FROM (
-               SELECT subject, COUNT(DISTINCT sym)::int AS n
-               FROM subj WHERE subject IS NOT NULL AND subject != ''
-               GROUP BY subject
-             ) x) AS subject_counts,
+             FROM subject_counts) AS subject_counts,
           (SELECT jsonb_agg(jsonb_build_array(ppb_type, n) ORDER BY n DESC, ppb_type)
              FROM (
                SELECT ppb_type, COUNT(DISTINCT ppb_full_document_symbol)::int AS n
@@ -1370,7 +1366,7 @@ const getFilteredAggregates = cache((filters: FilterOptions = {}) =>
     // count over a wider population than the surface it feeds now describes.
     ['filtered-aggregates-v2', JSON.stringify(filters)],
     { revalidate: 3600 }
-  )()
+  )
 )
 
 /**
@@ -1419,7 +1415,7 @@ export async function getMandateCounts(filters: FilterOptions = {}): Promise<{
  * grouped one.
  */
 export const getFilteredDocumentCount = cache((filters: FilterOptions = {}) =>
-  unstable_cache(
+  readDynamicCache(
     async () => {
       // Deliberately its own narrow query rather than a read off
       // getFilteredAggregates. The explore cards ask for this count under two
@@ -1431,7 +1427,8 @@ export const getFilteredDocumentCount = cache((filters: FilterOptions = {}) =>
         groupCols: 'd.ppb_full_document_symbol',
       })
       const row = await queryOne<{ count: string }>(
-        `WITH ${cte} SELECT COUNT(*) AS count FROM filtered_docs`,
+        `/* trace:mandates.filtered-document-count */
+         WITH ${cte} SELECT COUNT(*) AS count FROM filtered_docs`,
         params
       )
       return parseInt(row?.count ?? '0', 10)
@@ -1440,7 +1437,7 @@ export const getFilteredDocumentCount = cache((filters: FilterOptions = {}) =>
     // version lens), so v1 entries would answer a question no longer asked.
     ['filtered-document-count-v2', JSON.stringify(filters)],
     { revalidate: 3600 }
-  )()
+  )
 )
 
 /**
@@ -1544,7 +1541,7 @@ export interface ExploreCardData {
  */
 export const getExploreCardData = cache((filters: FilterOptions = {}) => {
   const { facets, allDocuments, cited } = exploreCardScopes(filters)
-  return unstable_cache(
+  return readDynamicCache(
     async (): Promise<ExploreCardData> => {
       const [
         organGroups,
@@ -1590,7 +1587,7 @@ export const getExploreCardData = cache((filters: FilterOptions = {}) => {
     // renders nothing.
     ['explore-card-data-v4', JSON.stringify(facets)],
     { revalidate: 3600 }
-  )()
+  )
 })
 
 /**
@@ -1679,6 +1676,7 @@ export async function getOrganCounts(filters: FilterOptions = {}): Promise<Organ
   const havingClause = `HAVING ${allHaving.join(' AND ')}`
 
   const query = `
+    /* trace:mandates.organ-counts */
     SELECT
       d.ppb_body as short,
       COUNT(DISTINCT d.ppb_full_document_symbol) as count
@@ -1736,7 +1734,8 @@ async function _getOrganHierarchyInner(
   const [organs, countRows] = await Promise.all([
     getAllOrgans(),
     queryMany<{ short: string; count: string }>(
-      `WITH ${cte}
+      `/* trace:mandates.organ-hierarchy */
+       WITH ${cte}
        SELECT ppb_body AS short, COUNT(*) AS count
        FROM filtered_docs
        WHERE ppb_body IS NOT NULL AND ppb_body != ''
@@ -1792,11 +1791,11 @@ async function _getOrganHierarchyInner(
  * result in its own entry, so a half-bump serves stale groups for up to an hour.
  */
 export const getOrganHierarchy = cache((filters: FilterOptions = {}) =>
-  unstable_cache(
+  readDynamicCache(
     () => _getOrganHierarchyInner(filters),
     ['organ-hierarchy-v4', JSON.stringify(filters)],
     { revalidate: 3600 }
-  )()
+  )
 )
 
 /**
@@ -1827,7 +1826,8 @@ async function _getDocumentTypeCatalogueInner(
     groupCols: 'd.ppb_full_document_symbol, d.ppb_type',
   })
   const rows = await queryMany<{ value: string | null; count: string }>(
-    `WITH ${cte}
+    `/* trace:mandates.document-type-catalogue */
+     WITH ${cte}
      SELECT NULLIF(TRIM(ppb_type), '') AS value, COUNT(*) AS count
      FROM filtered_docs
      GROUP BY 1
@@ -1849,11 +1849,11 @@ async function _getDocumentTypeCatalogueInner(
 }
 
 export const getDocumentTypeCatalogue = cache((filters: FilterOptions = {}) =>
-  unstable_cache(
+  readDynamicCache(
     () => _getDocumentTypeCatalogueInner(filters),
     ['document-type-catalogue-v2', JSON.stringify(filters)],
     { revalidate: 3600 }
-  )()
+  )
 )
 
 /**
@@ -1864,6 +1864,7 @@ export async function getCrossCitations(
   version?: string | null
 ): Promise<CrossCitation[]> {
   const query = `
+    /* trace:mandates.entity-cross-citations */
     WITH entity_docs AS (
       -- Documents cited by this entity within the selected budget version
       SELECT DISTINCT ec.ppb_full_document_symbol
@@ -2262,30 +2263,29 @@ async function _getBudgetHierarchyInner(
   // as well. Selecting a node therefore narrows the tree to that node's branch
   // rather than keeping its siblings on display, so the active-filter chip is
   // the way back out.
-  const { cte, params, versionClause } = buildFilteredDocsCTE(filters, {
-    selectCols: 'd.ppb_full_document_symbol',
-    groupCols: 'd.ppb_full_document_symbol',
+  const built = buildFilterClauses(filters)
+  const whereClause = built.clauses.length
+    ? `WHERE ${built.clauses.join(' AND ')}`
+    : ''
+  let prefix = ''
+  let params = built.params
+  let citesCte = buildDirectBudgetCitations({
+    subprogramme: subProgrammeExpr('c.sub_programme'),
+    versionClause: built.versionClause('c'),
+    whereClause,
   })
-
-  // Shared: every filtered doc's version-scoped citations, tagged with the
-  // budget-document stream. Each citation matches exactly one budget document
-  // (the match_patterns are mutually exclusive).
-  const citesCte = `
-    cites AS (
-      SELECT
-        c.ppb_full_document_symbol AS sym,
-        c.budget_part_number, c.section, c.section_title,
-        c.programme, c.programme_title, c.entity,
-        ${subProgrammeExpr('c.sub_programme')} AS sub_programme, c.sub_programme_number,
-        bd.doc_type, bd.display_name AS stream_label, bd.sort_order AS stream_sort,
-        (c.section_title LIKE 'Administrative and budgetary aspects%') AS is_support
-      FROM filtered_docs fd
-      JOIN ppb2026.source_document_citations c
-        ON fd.ppb_full_document_symbol = c.ppb_full_document_symbol
-        AND ${versionClause('c')}
-      JOIN ppb2026.budget_documents bd
-        ON c.origin_document ~ bd.match_pattern
-    )`
+  if (built.havingClauses.length) {
+    const filtered = buildFilteredDocsCTE(filters, {
+      selectCols: 'd.ppb_full_document_symbol',
+      groupCols: 'd.ppb_full_document_symbol',
+    })
+    prefix = `${filtered.cte},`
+    params = filtered.params
+    citesCte = buildQualifiedBudgetCitations({
+      subprogramme: subProgrammeExpr('c.sub_programme'),
+      versionClause: filtered.versionClause('c'),
+    })
+  }
 
   const partCols = 'p.budget_part_number, bp.part_title, bp.sort_order'
   const sectionCols =
@@ -2301,7 +2301,8 @@ async function _getBudgetHierarchyInner(
   // interface already declares (pg returns bigint as text; to_jsonb of a
   // bigint would give a JSON number instead).
   const query = `
-    WITH ${cte}, ${citesCte},
+    /* trace:mandates.budget-hierarchy */
+    WITH ${prefix} ${citesCte},
     p AS (SELECT * FROM cites WHERE doc_type = 'ppb'),
     pk AS (
       SELECT * FROM cites
@@ -2621,6 +2622,7 @@ export async function getSubjectHierarchy(
   })
 
   const query = `
+    /* trace:mandates.subject-hierarchy */
     WITH ${cte},
     subj AS (
       SELECT DISTINCT
@@ -3147,20 +3149,20 @@ const stripListKeys = (filters: FilterOptions): FilterOptions => ({
 })
 
 const getSharedPageData = cache((filters: FilterOptions) =>
-  unstable_cache(
+  readDynamicCache(
     () => _getSharedPageDataInner(filters),
     [PAGE_DATA_CACHE_VERSION, 'shared', JSON.stringify(filters)],
     { revalidate: 3600 } // 1 hour — data changes infrequently
-  )()
+  )
 )
 
 const getMandateList = cache(
   (filters: FilterOptions, page: number, limit: number) =>
-    unstable_cache(
+    readDynamicCache(
       () => _getMandateListInner(filters, page, limit),
       [PAGE_DATA_CACHE_VERSION, 'list', JSON.stringify(filters), String(page), String(limit)],
       { revalidate: 3600 }
-    )()
+    )
 )
 
 /**

@@ -59,7 +59,8 @@ export interface BudgetVersion {
 const loadBudgetVersions = unstable_cache(
   async (): Promise<BudgetVersion[]> => {
     const rows = await queryMany<BudgetVersion>(
-      `SELECT slug, display_name, ppb_year, is_default, sort_order
+      `/* trace:budget-versions.all */
+       SELECT slug, display_name, ppb_year, is_default, sort_order
        FROM ppb2026.budget_versions
        ORDER BY sort_order`,
       []
