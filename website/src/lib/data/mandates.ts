@@ -1612,7 +1612,7 @@ export const getExploreCardBaseline = cache(
     const { facets, allDocuments, cited } = exploreCardScopes(
       exploreCardBaselineFilters(filters)
     )
-    const [dimensionCounts, allDocumentsCount, citedDocumentCount] =
+    const [dimensionCounts, documentsCount, citedDocumentCount] =
       await Promise.all([
         getFilteredDimensionCounts(facets),
         getFilteredDocumentCount(allDocuments),
@@ -1621,7 +1621,7 @@ export const getExploreCardBaseline = cache(
     return {
       organCount: dimensionCounts.organs,
       entityCount: dimensionCounts.entities,
-      allDocumentsCount,
+      documentsCount,
       citedDocumentCount,
     }
   }

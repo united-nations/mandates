@@ -89,7 +89,7 @@ export default async function Page({ searchParams }: PageProps) {
     {
       organCount: cards.organCount,
       entityCount: cards.entityCount,
-      allDocumentsCount: cards.allDocumentsCount,
+      documentsCount: cards.allDocumentsCount,
       citedDocumentCount: cards.citedDocumentCount,
     },
     cardBaseline,

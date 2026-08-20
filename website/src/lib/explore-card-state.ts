@@ -141,8 +141,17 @@ export interface ExploreCardFigures {
   organCount: number
   /** Distinct citing entities in the result set — card 4. */
   entityCount: number
-  /** Documents with `cited` ignored — card 2 when the cited filter is off. */
-  allDocumentsCount: number
+  /**
+   * Documents with `cited` ignored — card 2 when the cited filter is off.
+   *
+   * NOT a count of all documents in either scope, which is why it is not
+   * called one. In the live scope it is the documents matching every active
+   * filter; in the baseline scope it is the documents matching every filter
+   * the cards cannot name. Only when neither is present does it reach the
+   * whole registry, and a name that claimed otherwise would assert the one
+   * property this figure does not have.
+   */
+  documentsCount: number
   /** Documents with `cited` on — card 3 always, card 2 when the filter is on. */
   citedDocumentCount: number
 }
@@ -274,7 +283,7 @@ export function resolveExploreCardStates(
   // Card 2 shows whichever document count the active filters select.
   const shownDocumentsValue = citedOnly
     ? current.citedDocumentCount
-    : current.allDocumentsCount
+    : current.documentsCount
 
   // Emptiness is tested first, and against card 2's figure rather than card
   // 3's, because "the shown count is zero" is the condition. The two are equal
@@ -304,11 +313,11 @@ export function resolveExploreCardStates(
       condition: conditionOf(
         false,
         shownDocumentsValue,
-        baseline.allDocumentsCount,
+        baseline.documentsCount,
         anySelectionActive
       ),
       value: shownDocumentsValue,
-      baselineValue: baseline.allDocumentsCount,
+      baselineValue: baseline.documentsCount,
     },
     cited: {
       condition: conditionOf(

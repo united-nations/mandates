@@ -21,7 +21,7 @@ import {
 const FULL: ExploreCardFigures = {
   organCount: 23,
   entityCount: 107,
-  allDocumentsCount: 42_944,
+  documentsCount: 42_944,
   citedDocumentCount: 2_777,
 }
 
@@ -46,7 +46,7 @@ describe('resolveExploreCardStates', () => {
     const lens2026: ExploreCardFigures = {
       organCount: 23,
       entityCount: 110,
-      allDocumentsCount: 43_020,
+      documentsCount: 43_020,
       citedDocumentCount: 3_962,
     }
     const states = resolveExploreCardStates(lens2026, lens2026, NO_SELECTIONS)
@@ -61,7 +61,7 @@ describe('resolveExploreCardStates', () => {
     const current: ExploreCardFigures = {
       organCount: 1,
       entityCount: 61,
-      allDocumentsCount: 27_942,
+      documentsCount: 27_942,
       citedDocumentCount: 1_180,
     }
     const states = resolveExploreCardStates(current, FULL, {
@@ -90,7 +90,7 @@ describe('resolveExploreCardStates', () => {
     const current: ExploreCardFigures = {
       organCount: 8,
       entityCount: 14,
-      allDocumentsCount: 433,
+      documentsCount: 433,
       citedDocumentCount: 433,
     }
     const states = resolveExploreCardStates(current, FULL, {
@@ -120,7 +120,7 @@ describe('resolveExploreCardStates', () => {
     const current: ExploreCardFigures = {
       organCount: 23,
       entityCount: 107,
-      allDocumentsCount: 42_944,
+      documentsCount: 42_944,
       citedDocumentCount: 2_777,
     }
     const states = resolveExploreCardStates(current, FULL, { citedOnly: true })
@@ -150,7 +150,7 @@ describe('resolveExploreCardStates', () => {
     const empty: ExploreCardFigures = {
       organCount: 0,
       entityCount: 0,
-      allDocumentsCount: 0,
+      documentsCount: 0,
       citedDocumentCount: 0,
     }
     const states = resolveExploreCardStates(empty, empty, NO_SELECTIONS)
@@ -170,10 +170,10 @@ describe('resolveExploreCardStates', () => {
       {
         organCount: 0,
         entityCount: 0,
-        allDocumentsCount: 0,
+        documentsCount: 0,
         citedDocumentCount: 0,
       },
-      { organCount: 2, entityCount: 3, allDocumentsCount: 9, citedDocumentCount: 4 },
+      { organCount: 2, entityCount: 3, documentsCount: 9, citedDocumentCount: 4 },
       { organ: { code: 'UNCTAD', longName: null }, citedOnly: false }
     )
     assert.equal(states.organs.condition, 'selected')
@@ -188,7 +188,7 @@ describe('resolveExploreCardStates', () => {
     const current: ExploreCardFigures = {
       organCount: 1,
       entityCount: 1,
-      allDocumentsCount: 1,
+      documentsCount: 1,
       citedDocumentCount: 1,
     }
     const states = resolveExploreCardStates(current, FULL, {
@@ -204,7 +204,7 @@ describe('resolveExploreCardStates', () => {
     const current: ExploreCardFigures = {
       organCount: 1,
       entityCount: 5,
-      allDocumentsCount: 310,
+      documentsCount: 310,
       citedDocumentCount: 310,
     }
     const states = resolveExploreCardStates(current, FULL, {
