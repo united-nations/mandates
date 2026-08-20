@@ -97,6 +97,15 @@ const DIMENSION_GROUPS: FilterParamKey[][] = [
   ],
 ]
 
+/**
+ * The state line's slot: one line of its own type, plus the gap under it. The
+ * rendered line and the empty reservation that stands in for it on cards with
+ * nothing to say both carry this, so the two cannot drift apart — which is the
+ * whole point, since the reservation only works while it is exactly as tall as
+ * the thing it is reserving for.
+ */
+const STATE_LINE_SLOT = 'mb-1 block text-[13px] leading-snug'
+
 /** Which filter param each level of the budget tree writes to. */
 const BUDGET_LEVEL_PARAM: Record<BudgetTreeLevel, FilterParamKey> = {
   stream: 'budget_document',
@@ -193,6 +202,28 @@ export function DirectoryExplorer({
 
   const citedCount = citedCountLine(cardStates.cited)
 
+  // The four state lines, resolved once here rather than at each call site,
+  // because a card now needs to know something no card knows about itself:
+  // whether any OTHER card is showing one. A card with no state line reserves
+  // its height when a sibling has one, so the figures stay level instead of
+  // the bare cards riding a line higher.
+  //
+  // Derived from the rendered lines themselves, not from a proxy for them.
+  // `scopeCause !== null` is equivalent today — a state line appears exactly
+  // when a selection is active — but it is equivalent by a chain of reasoning
+  // about the resolver rather than by construction, and a condition that
+  // learns to show a state line without a selection behind it would break the
+  // proxy silently. Asking the same function the render asks cannot drift.
+  const stateLines = {
+    organs: cardStateLine(cardStates.organs, cardStates),
+    documents: cardStateLine(cardStates.documents, cardStates),
+    cited: cardStateLine(cardStates.cited, cardStates),
+    entities: cardStateLine(cardStates.entities, cardStates),
+  }
+  const anyStateLine = Object.values(stateLines).some(
+    (line) => line !== undefined
+  )
+
   /** Write one dimension, keeping every other active filter. */
   const applySelection = useCallback(
     (param: FilterParamKey, value: string | undefined) => {
@@ -263,7 +294,8 @@ export function DirectoryExplorer({
           verb would quantify over every row. The unattributed set does not
           falsify the count and gets no caveat on the card. */}
       <ExploreButton
-        stateLine={cardStateLine(cardStates.organs, cardStates)}
+        stateLine={stateLines.organs}
+        reserveStateLine={anyStateLine}
         count={cardStates.organs.value}
         // The narrowed form takes a different noun from the plural, and the two
         // are not to be normalised. In the full state the unit is followed by
@@ -291,7 +323,8 @@ export function DirectoryExplorer({
           upstream (ExploreCardStates.documents.frame) and worded in
           documentsQuietLine, below. */}
       <ExploreButton
-        stateLine={cardStateLine(cardStates.documents, cardStates)}
+        stateLine={stateLines.documents}
+        reserveStateLine={anyStateLine}
         count={cardStates.documents.value}
         countUnit={cardStates.documents.value === 1 ? 'document' : 'documents'}
         quietLine={documentsQuietLine(cardStates.documents)}
@@ -305,7 +338,8 @@ export function DirectoryExplorer({
           resolved upstream (ExploreCardStates.cited.countForm); the strings
           for each are in citedCountLine, below. */}
       <ExploreButton
-        stateLine={cardStateLine(cardStates.cited, cardStates)}
+        stateLine={stateLines.cited}
+        reserveStateLine={anyStateLine}
         count={citedCount.count}
         countPrefix={citedCount.prefix}
         countUnit={citedCount.unit}
@@ -324,7 +358,8 @@ export function DirectoryExplorer({
           cites the same documents is in it, which is why the card does not
           read "1". */}
       <ExploreButton
-        stateLine={cardStateLine(cardStates.entities, cardStates)}
+        stateLine={stateLines.entities}
+        reserveStateLine={anyStateLine}
         count={
           cardStates.entities.condition === 'selected'
             ? undefined
@@ -601,6 +636,7 @@ function citedCountLine(state: ExploreCardStates['cited']): {
 
 function ExploreButton({
   stateLine,
+  reserveStateLine,
   count,
   countPrefix,
   countUnit,
@@ -608,6 +644,14 @@ function ExploreButton({
   onClick,
 }: {
   stateLine?: ExploreCardStateLine
+  /**
+   * True when ANY card in the row is showing a state line — including this
+   * one, which simply ignores it then. A card cannot work this out for itself:
+   * it is a fact about its siblings, and it is what lets a card with nothing
+   * to say hold the space rather than close up. Required rather than optional
+   * so a new card has to answer it.
+   */
+  reserveStateLine: boolean
   /**
    * Omitted on a card that states no figure here: card 4 selected, whose
    * figure sits inside the quiet line, and card 3 empty, where the prefix is
@@ -644,15 +688,17 @@ function ExploreButton({
       // box doing it. Swapping the element for a div fixes it too, which is
       // how the cause was pinned down.
       //
-      // This aligns the figures wherever the state line above them occupies
-      // the same height on every card, which is every state where it is absent
-      // from all four or present on all four with a cause short enough to fit
-      // one line. It does NOT align them where the state line is absent on
-      // some cards and present on others (the cited-only state does exactly
-      // that), or where a long cause wraps on one card and not another. The
-      // state line sits above the figure and pushes it down, and no alignment
-      // property fixes a difference in content height. That residual is known
-      // and unfixed here.
+      // Top alignment is half of it. The other half is that the state line
+      // above the figure has to be the same height on every card, which the
+      // reservation below now handles for the case where some cards have one
+      // and some do not.
+      //
+      // What is still NOT handled: a cause long enough to wrap on one card and
+      // not another. Card 2 can carry all three selection names plus the
+      // hedge, which runs to three lines at the narrowest four-across where
+      // its neighbours run to one, and the reservation is one line tall. So
+      // the figures sit level whenever every state line occupies one line, and
+      // do not when one of them wraps further than the rest.
       className={cn(
         'group @container relative flex flex-col rounded-lg border border-gray-200 bg-white px-4 py-4 text-left transition-all hover:border-un-blue hover:shadow-md focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:outline-none',
         // The corner mark renders exactly when the "Scoped to …" line does:
@@ -675,8 +721,8 @@ function ExploreButton({
           one would offset the two forms against each other by the difference —
           reintroducing by hand the misalignment the flex column above removes
           by construction. */}
-      {stateLine && (
-        <span className="mb-1 block text-[13px] leading-snug">
+      {stateLine ? (
+        <span className={STATE_LINE_SLOT}>
           {stateLine.kind === 'scoped' ? (
             <>
               {/* The visible tag is hidden from readers and replaced by a
@@ -705,7 +751,21 @@ function ExploreButton({
             </>
           )}
         </span>
-      )}
+      ) : reserveStateLine ? (
+        // Empty, and empty on purpose. Cards 1 and 4 have nothing to say in
+        // the cited-only state, but the two cards beside them do, and without
+        // this they would ride a line higher. `1lh` is one line of whatever
+        // type STATE_LINE_SLOT sets, so the reservation is the same height as
+        // the line it stands in for by definition rather than by a number
+        // somebody measured once and would have to measure again.
+        //
+        // aria-hidden because there is nothing here to hear. A reader moving
+        // across the row should meet a state line on the cards that have one
+        // and nothing at all on the cards that do not, which is the truth of
+        // it; an empty element announced in the same position would imply the
+        // card had a cause it was declining to name.
+        <span aria-hidden className={cn(STATE_LINE_SLOT, 'min-h-[1lh]')} />
+      ) : null}
       {/* The count line. The figure is the only character that scales with
           the card (hence @container, and cqw rather than a breakpoint);
           everything beside it — prefix, unit, denominator clause — holds body
