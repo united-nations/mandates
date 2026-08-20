@@ -1,11 +1,14 @@
 import { writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 
 import { PERFORMANCE_SCENARIOS } from './performance-scenarios.mjs'
 
 const BASE_URL = process.env.PERFORMANCE_BASE_URL ?? 'http://127.0.0.1:3100'
 const ITERATIONS = Number(process.env.PERFORMANCE_ITERATIONS ?? 7)
 const OUTPUT =
-  process.env.PERFORMANCE_OUTPUT ?? '../docs/performance-inventory-data.json'
+  process.env.PERFORMANCE_OUTPUT ??
+  join(tmpdir(), 'mandates-performance-inventory.json')
 const SELECTED_IDS = new Set(
   (process.env.PERFORMANCE_SCENARIO_IDS ?? '')
     .split(',')

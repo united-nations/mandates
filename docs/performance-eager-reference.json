@@ -1,6 +1,0 @@
-{
-  "description": "Successful eager-payload digests captured after the list rewrite and before directory lazy loading. Used only where the original inventory timed out before producing an artifact.",
-  "scenarios": {
-    "document-type": "b0612430caa75731eeb932202e4b2ad8914287b132806618731af7878e092f8e"
-  }
-}

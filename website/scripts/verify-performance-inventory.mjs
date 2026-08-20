@@ -1,8 +1,11 @@
 import { readFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 
 import { evaluatePerformanceAcceptance } from '../src/lib/perf/acceptance.ts'
 
-const path = process.argv[2] ?? '../docs/performance-inventory-data.json'
+const path =
+  process.argv[2] ?? join(tmpdir(), 'mandates-performance-inventory.json')
 const result = JSON.parse(await readFile(path, 'utf8'))
 const issues = []
 

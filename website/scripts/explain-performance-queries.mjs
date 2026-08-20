@@ -1,12 +1,15 @@
 import { readFile, writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 
 import pg from 'pg'
 
 const INPUT =
-  process.env.PERFORMANCE_INPUT ?? '../docs/performance-inventory-data.json'
+  process.env.PERFORMANCE_INPUT ??
+  join(tmpdir(), 'mandates-performance-inventory.json')
 const OUTPUT =
   process.env.PERFORMANCE_EXPLAIN_OUTPUT ??
-  '../docs/performance-query-plans.json'
+  join(tmpdir(), 'mandates-performance-query-plans.json')
 const LIMIT = Number(process.env.PERFORMANCE_EXPLAIN_LIMIT ?? 6)
 
 const assertReadOnly = (sql) => {
