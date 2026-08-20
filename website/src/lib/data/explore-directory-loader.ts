@@ -1,14 +1,15 @@
 /**
  * @file Database-backed explore-directory loader
- * @description Connects lazy directory composition to mandate readers.
+ * @description Connects panel-specific composition to mandate readers.
  *
  * Key exports:
- * - getExploreDirectoryData() - Loads filter-scoped directory payloads.
+ * - getExplorePanelData() - Loads one filter-scoped panel payload.
  */
 
+import type { DirectoryPanel } from '@/lib/directory-request'
 import type { FilterOptions } from '@/types'
 
-import { loadExploreDirectoryData } from './explore-directory-data'
+import { loadExplorePanelData } from './explore-directory-data'
 import {
   exploreCardScopes,
   getBudgetHierarchy,
@@ -17,10 +18,13 @@ import {
   getSubjectHierarchy,
 } from './mandates'
 
-/** Loads all directory panels for the active filter scope. */
-export const getExploreDirectoryData = (filters: FilterOptions) => {
+/** Loads one directory panel for the active filter scope. */
+export const getExplorePanelData = (
+  filters: FilterOptions,
+  panel: DirectoryPanel
+) => {
   const { facets } = exploreCardScopes(filters)
-  return loadExploreDirectoryData({
+  return loadExplorePanelData(panel, {
     loadOrgans: () => getOrganHierarchy(facets),
     loadBudget: () => getBudgetHierarchy(facets),
     loadSubjects: () => getSubjectHierarchy(facets),

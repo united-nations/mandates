@@ -21,6 +21,7 @@ const versionContext = (props: DirectoryExplorerProps) => {
 export function DirectoryExplorer(props: DirectoryExplorerProps) {
   const state = useExplorerActions()
   const version = versionContext(props)
+  const { data, error, loading } = state.directories
   return (
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
       <CardGrid
@@ -30,10 +31,12 @@ export function DirectoryExplorer(props: DirectoryExplorerProps) {
       />
       <DirectoryPanels
         {...props}
-        {...state.directories}
         actions={state.actions}
         citedPredicate={version.predicate}
+        data={data}
+        error={error}
         filters={state.filters}
+        loading={loading}
         panel={state.panel}
       />
     </div>

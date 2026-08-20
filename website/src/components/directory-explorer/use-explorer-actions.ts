@@ -63,7 +63,7 @@ const useSelection = (
 export const useExplorerActions = () => {
   const { filters, setMultipleFilters } = useFilters()
   const [panel, setPanel] = useState<DirectoryPanel | null>(null)
-  const directories = useDirectoryData(panel !== null)
+  const directories = useDirectoryData(panel)
   const loadDirectories = directories.load
   const close = useCallback(() => setPanel(null), [])
   const apply = useApplySelection(setMultipleFilters)
@@ -71,7 +71,7 @@ export const useExplorerActions = () => {
   const openPanel = useCallback(
     (next: DirectoryPanel) => {
       setPanel(next)
-      void loadDirectories()
+      void loadDirectories(next)
     },
     [loadDirectories]
   )

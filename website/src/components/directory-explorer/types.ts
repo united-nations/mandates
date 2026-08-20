@@ -2,6 +2,7 @@
 
 import type { ExploreCardStates } from '@/lib/explore-card-state'
 import type { BudgetTreeLevel } from '@/components/table/BudgetStreamTree'
+import type { DirectoryPanel } from '@/lib/directory-request'
 import type {
   BudgetStream,
   DirectorySelection,
@@ -10,13 +11,13 @@ import type {
   SubjectDomain,
 } from '@/types'
 
-export type DirectoryPanel = 'organs' | 'catalogue' | 'cited' | 'entities'
+export type { DirectoryPanel } from '@/lib/directory-request'
 
 export interface DirectoryData {
-  organGroups: OrganGroup[]
-  budgetStreams: BudgetStream[]
-  subjectDomains: SubjectDomain[]
-  documentTypes: DocumentTypeCatalogue
+  organGroups?: OrganGroup[]
+  budgetStreams?: BudgetStream[]
+  subjectDomains?: SubjectDomain[]
+  documentTypes?: DocumentTypeCatalogue
 }
 
 export interface DirectoryExplorerProps {

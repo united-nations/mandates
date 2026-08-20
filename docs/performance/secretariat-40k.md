@@ -63,7 +63,11 @@ The fixed matrix contains 16 Secretariat list states and one mandate-detail stat
 
 The read-only database snapshot at measurement time contained 43,912 unified documents, 5,425 distinct cited documents, 9,976 citation rows, 3,779 subject terms, and 56,773 resolution-series rows.
 
-The first uncached directory request is no longer on the initial page path; a production smoke test measured it at 2.60s. Subsequent panel opens for the same filter state reuse the client-held result.
+### Directory popup follow-up
+
+An August 20 follow-up split the lazy endpoint by panel. The organs popup had still requested every directory and waited for unrelated catalogue and budget queries. On the same production path, its first response fell from 2.809s and 222,055 bytes to 0.421s and 3,243 bytes. Seven immediately repeated requests had a 3ms p50 through the existing one-hour filter-result cache. A filtered organs response completed in 0.249s.
+
+Catalogue data remains the largest panel-specific request; it is now paid only when the documents popup opens. Cited and entities panels share one client-held budget hierarchy, while all panel resources are invalidated when the active filter query changes.
 
 ## Rerunning the benchmark
 

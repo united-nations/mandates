@@ -66,7 +66,7 @@ const BudgetLocations = (props: CitedPanelProps) => (
   <section className="space-y-3">
     <PanelHeading>Budget location</PanelHeading>
     <PanelStatus loading={props.loading} error={props.error}>
-      {props.data?.budgetStreams.length ? (
+      {props.data?.budgetStreams?.length ? (
         <BudgetStreamTree
           hierarchy={props.data.budgetStreams}
           active={{
