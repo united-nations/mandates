@@ -7,7 +7,10 @@ import {
   getDefaultVersionSlug,
 } from '@/lib/data/budget-documents'
 import { getAllEntities } from '@/lib/data/entities'
-import { getMandatePageData } from '@/lib/data/mandates'
+import {
+  getExploreCardRegistryCount,
+  getMandatePageData,
+} from '@/lib/data/mandates'
 import { getAllOrgans } from '@/lib/data/organs'
 import { resolveExploreCardStates } from '@/lib/explore-card-state'
 import type { FilterOptions } from '@/types'
@@ -54,21 +57,27 @@ const activeVersion = (
   return { slug, version: versions.find((item) => item.slug === slug) }
 }
 
-/** Starts the table immediately and resolves only initial-page card data. */
-export const loadSecretariatPageData = async (filters: FilterOptions) => {
-  const dataPromise = getMandatePageData(filters)
-  const [versions, entities, organs, cards, baseline] = await Promise.all([
+const loadPageInputs = (filters: FilterOptions) =>
+  Promise.all([
     getBudgetVersions(),
     getAllEntities(),
     getAllOrgans(),
     getExploreCardFigures(filters),
     getExploreCardBaselineFigures(filters),
+    getExploreCardRegistryCount(filters),
   ])
+
+/** Starts the table immediately and resolves only initial-page card data. */
+export const loadSecretariatPageData = async (filters: FilterOptions) => {
+  const dataPromise = getMandatePageData(filters)
+  const [versions, entities, organs, cards, baseline, registryCount] =
+    await loadPageInputs(filters)
   const active = activeVersion(filters, versions)
   const cardStates = resolveExploreCardStates(
     cards,
     baseline,
-    selectedLabels(filters, entities, organs)
+    selectedLabels(filters, entities, organs),
+    registryCount
   )
   return { active, cards, cardStates, dataPromise, entities, organs, versions }
 }

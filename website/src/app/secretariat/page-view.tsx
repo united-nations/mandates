@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import { Suspense } from 'react'
 
 import { MandateExplorerServer } from '@/app/_mandateExplorerServer'
@@ -19,11 +18,6 @@ const Intro = () => (
       {explainerTexts.mainHeader.headline}
     </h1>
     <ExplainerText />
-    <p className="mt-4 text-sm font-medium text-un-blue">
-      <Link href="/methodology" className="hover:underline">
-        See the methodology
-      </Link>
-    </p>
   </section>
 )
 
@@ -39,7 +33,7 @@ const Summary = ({ data }: { data: PageData }) => (
     />
     <DirectoryExplorer
       cardStates={data.cardStates}
-      allDocumentsCount={data.cards.allDocumentsCount}
+      allDocumentsCount={data.cards.documentsCount}
       citedDocumentCount={data.cards.citedDocumentCount}
       versions={data.versions}
       activeVersionSlug={data.active.slug}

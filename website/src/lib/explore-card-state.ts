@@ -23,6 +23,12 @@
  * necessary here, the baseline is being computed without the lens; fix that
  * instead.
  *
+ * A third figure sits beside those two: the registry total under the same lens
+ * (`registryCountForVersion`). It answers a question the comparison above
+ * cannot, because the baseline keeps every filter no card can name and so is
+ * not the registry whenever one is active. Only card 2 asks it — see
+ * DocumentsFrame.
+ *
  * Everything in this module is pure so it can be exercised by `pnpm test`
  * without a database.
  */
@@ -30,6 +36,73 @@
 import type { FilterOptions } from '@/types'
 
 export type ExploreCardCondition = 'full' | 'selected' | 'scoped'
+
+/**
+ * Which of the three forms card 3's count line takes. All three are decided
+ * here, once, from card 3's value and card 2's LIVE value: a component that
+ * receives only its own props cannot re-derive the relation without the two
+ * cards coming to disagree, and a component handed two booleans would be
+ * reconstructing a distinction that was already made.
+ *
+ *   - `empty`     — nothing is shown at all, so there is no fraction to state.
+ *   - `collapsed` — every document in view is cited: the two figures are the
+ *                   same non-zero number and the fraction says nothing, so the
+ *                   card says "all" of them instead. This is the COMMON path
+ *                   under an organ selection, not an edge case — only the
+ *                   catalogue symbol families contain uncited documents, so
+ *                   every other body's documents are in the registry BECAUSE
+ *                   they were cited, and shown equals cited for most of them.
+ *   - `fraction`  — card 3 is a proper subset of card 2, and the two figures
+ *                   are worth stating against each other.
+ *
+ * Empty is a form of its own rather than a small collapse. The collapse
+ * justification is that a fraction of a number by itself says nothing; at zero
+ * the fraction says the most useful thing the card can say, and the totality
+ * claim that replaces it ("all 0 of them") is vacuously true and reads as a
+ * defect. The two cases part company on the reasoning, not on magnitude.
+ *
+ * ONE is inside `collapsed` deliberately. "all 1 of them" is awkward English
+ * and true, and a threshold at two would have nothing behind it — do not add
+ * one.
+ */
+export type CitedCountForm = 'empty' | 'collapsed' | 'fraction'
+
+/**
+ * Which of the four forms card 2's second line takes.
+ *
+ * Two independent facts decide it, which is why there are four and not two:
+ * the card's CONDITION — is this figure narrower than its baseline, the
+ * question that also governs the mark and the "Scoped to" line — and whether
+ * that baseline IS the registry. Neither implies the other.
+ *
+ *   registryPredicate        listed in the registry
+ *   filtersPredicate         matching your filters
+ *   registryDenominator      of the 42,944 in the registry
+ *   otherFiltersDenominator  of the 3 matching your other filters
+ *
+ * Collapsing the two facts into one is what let the card say "listed in the
+ * registry" over a subject-filtered figure of 3,495 against a registry of
+ * roughly 43,000: the baseline is narrowed by the same filter as the value, so
+ * the two compare equal and the card reads as full while standing over a
+ * fraction of the corpus.
+ *
+ * Card 2 is the only card that needs this, and the reason is structural rather
+ * than an accident of its copy. Every other card's second line is anaphoric —
+ * "of them", "the documents shown", "citing them" — and points at whatever
+ * population is on screen, so it stays true under any filter without knowing
+ * what the filters are. Card 2 is the card that ESTABLISHES that population,
+ * so it has nothing to point at and has to name its own scope. Do not
+ * generalise this to the others.
+ *
+ * "Other" in `otherFiltersDenominator` is load-bearing and cannot be dropped.
+ * It can only render in a state where it is true: the card is scoped, so a
+ * card-owned selection is active for the remaining filters to be other than.
+ */
+export type DocumentsFrame =
+  | 'registryPredicate'
+  | 'filtersPredicate'
+  | 'registryDenominator'
+  | 'otherFiltersDenominator'
 
 /**
  * The two display forms of a selection, plus the unabbreviated original.
@@ -72,7 +145,10 @@ export interface ExploreCardState {
 
 export interface ExploreCardStates {
   organs: ExploreCardState
-  documents: ExploreCardState
+  documents: ExploreCardState & {
+    /** Which of the four forms card 2's second line takes. */
+    frame: DocumentsFrame
+  }
   cited: ExploreCardState & {
     /**
      * Card 2's live figure. Card 3 is measured against the documents currently
@@ -81,13 +157,8 @@ export interface ExploreCardStates {
      * grid reflows the two cards onto different rows.
      */
     shownDocumentsValue: number
-    /**
-     * True when every document in view is cited — the two figures collapse to
-     * one and a fraction would say nothing. Computed here, once, from card 3's
-     * value and card 2's live value: a component that receives only its own
-     * props cannot re-derive it without the two cards coming to disagree.
-     */
-    citedMatchesShown: boolean
+    /** Which of the three forms card 3's count line takes. */
+    countForm: CitedCountForm
   }
   entities: ExploreCardState
   /**
@@ -96,11 +167,22 @@ export interface ExploreCardStates {
    * the order the user picked them — so two routes to the same state produce
    * one string. Null when nothing is selected, in which case no card is
    * scoped.
+   *
+   * Carries a trailing "+ other filters" when something the cards cannot name
+   * is also narrowing the row, because otherwise a line that names two filters
+   * implies those are the two there are. It is a claim of incompleteness, not
+   * a count — see the hedge in the resolver for why no count is available to
+   * be more specific with.
    */
   scopeCause: string | null
   /**
    * The same cause built from `spokenFrame`s — full names — for the
-   * visually-hidden copy of the scoped tag. Null exactly when scopeCause is.
+   * visually-hidden copy of the scoped tag. Null exactly when scopeCause is,
+   * and hedged exactly when it is: the spoken tag makes the same claim to the
+   * same standard, so it cannot be the one that sounds exhaustive. The hedge
+   * is WORDED differently — "and other filters", not "+ other filters" — for
+   * the same reason the frames differ. A screen reader announces "+" as
+   * "plus".
    */
   spokenScopeCause: string | null
 }
@@ -116,8 +198,17 @@ export interface ExploreCardFigures {
   organCount: number
   /** Distinct citing entities in the result set — card 4. */
   entityCount: number
-  /** Documents with `cited` ignored — card 2 when the cited filter is off. */
-  allDocumentsCount: number
+  /**
+   * Documents with `cited` ignored — card 2 when the cited filter is off.
+   *
+   * NOT a count of all documents in either scope, which is why it is not
+   * called one. In the live scope it is the documents matching every active
+   * filter; in the baseline scope it is the documents matching every filter
+   * the cards cannot name. Only when neither is present does it reach the
+   * whole registry, and a name that claimed otherwise would assert the one
+   * property this figure does not have.
+   */
+  documentsCount: number
   /** Documents with `cited` on — card 3 always, card 2 when the filter is on. */
   citedDocumentCount: number
 }
@@ -201,12 +292,19 @@ function conditionOf(
 
 /**
  * Resolve the state of all four cards from the live figures, the full-state
- * figures, and the active selections.
+ * figures, the active selections, and the registry total.
+ *
+ * `registryCountForVersion` is the document count with every filter dropped
+ * except the version lens — see getExploreCardRegistryCount. It is required,
+ * not optional: card 2's frame is a claim about what its number is, and a
+ * resolver that could reach a default here would answer that claim without
+ * having been told.
  */
 export function resolveExploreCardStates(
   current: ExploreCardFigures,
   baseline: ExploreCardFigures,
-  selections: ExploreCardSelections
+  selections: ExploreCardSelections,
+  registryCountForVersion: number
 ): ExploreCardStates {
   const { organ, entity, citedOnly } = selections
   const anySelectionActive = Boolean(organ || entity || citedOnly)
@@ -234,22 +332,86 @@ export function resolveExploreCardStates(
       }
     : undefined
 
+  // Whether card 2's baseline is the registry. Two things read it: card 2's
+  // own frame, and the hedge on the cause line below. It is hoisted here
+  // because a filter that narrows the document baseline narrows every card's
+  // baseline — a conjunctive filter can only remove documents — so this one
+  // test answers "is something narrowing this row that no card can name" for
+  // the whole row, not just for card 2.
+  const baselineIsRegistry = baseline.documentsCount === registryCountForVersion
+
+  // The cause line names the selections the cards can name, and there is no
+  // count of the rest to fall back on: nothing in this codebase counts active
+  // filters, and the two things that come closest disagree with each other
+  // about whether a keyword and a sort are filters. The hedge says there are
+  // others without saying how many, which is all this predicate supports and
+  // all the line needs to stop implying it has listed them.
+  //
+  // A filter that is switched on but narrows nothing leaves the baseline equal
+  // to the registry and takes no hedge. That is right rather than a gap: the
+  // claim being hedged is about the number being narrowed.
+  //
+  // The two hedges differ for the same reason `frame` and `spokenFrame` do.
+  // "+" is a visual shorthand that survives being read once, like a column
+  // header, at the end of a tag that repeats across the row; a screen reader
+  // announces it as "plus", which is not what the line says. The spoken form
+  // spells the conjunction out. Same claim, said the way each surface can
+  // carry it.
+  const scopeHedge = baselineIsRegistry ? '' : ' + other filters'
+  const spokenScopeHedge = baselineIsRegistry ? '' : ' and other filters'
+
   // Card order, not selection order.
   const activeSelections = [organSelection, entitySelection, citedSelection]
     .filter((s) => s !== undefined)
   const scopeCause =
     activeSelections.length > 0
-      ? activeSelections.map((s) => s.frame).join(' and ')
+      ? activeSelections.map((s) => s.frame).join(' and ') + scopeHedge
       : null
   const spokenScopeCause =
     activeSelections.length > 0
-      ? activeSelections.map((s) => s.spokenFrame).join(' and ')
+      ? activeSelections.map((s) => s.spokenFrame).join(' and ') +
+        spokenScopeHedge
       : null
 
   // Card 2 shows whichever document count the active filters select.
   const shownDocumentsValue = citedOnly
     ? current.citedDocumentCount
-    : current.allDocumentsCount
+    : current.documentsCount
+
+  // Emptiness is tested first, and against card 2's figure rather than card
+  // 3's, because "the shown count is zero" is the condition. The two are equal
+  // whenever it holds — card 3 is a subset of card 2 — so an equality test
+  // placed first would swallow the empty case as a collapse, which is the
+  // defect this ordering exists to prevent.
+  const citedCountForm: CitedCountForm =
+    shownDocumentsValue === 0
+      ? 'empty'
+      : current.citedDocumentCount === shownDocumentsValue
+        ? 'collapsed'
+        : 'fraction'
+
+  // Card 2's two facts, resolved separately because they are separate
+  // questions. The condition asks whether the figure is narrower than its
+  // baseline; the predicate asks whether that baseline is the registry. A
+  // filter no card can name narrows both operands of the first and so answers
+  // it "no", while answering the second "no" as well — which is the pair of
+  // answers the old single test could not represent.
+  const documentsCondition = conditionOf(
+    false,
+    shownDocumentsValue,
+    baseline.documentsCount,
+    anySelectionActive
+  )
+  // Card 2 never holds a selection (see the `false` above), so the condition
+  // here is 'scoped' or 'full' and nothing else.
+  const documentsFrame: DocumentsFrame =
+    documentsCondition === 'scoped'
+      ? baselineIsRegistry
+        ? 'registryDenominator'
+        : 'otherFiltersDenominator'
+      : baselineIsRegistry
+        ? 'registryPredicate'
+        : 'filtersPredicate'
 
   return {
     organs: {
@@ -264,14 +426,10 @@ export function resolveExploreCardStates(
       selection: organSelection,
     },
     documents: {
-      condition: conditionOf(
-        false,
-        shownDocumentsValue,
-        baseline.allDocumentsCount,
-        anySelectionActive
-      ),
+      condition: documentsCondition,
       value: shownDocumentsValue,
-      baselineValue: baseline.allDocumentsCount,
+      baselineValue: baseline.documentsCount,
+      frame: documentsFrame,
     },
     cited: {
       condition: conditionOf(
@@ -284,7 +442,7 @@ export function resolveExploreCardStates(
       baselineValue: baseline.citedDocumentCount,
       selection: citedSelection,
       shownDocumentsValue,
-      citedMatchesShown: current.citedDocumentCount === shownDocumentsValue,
+      countForm: citedCountForm,
     },
     entities: {
       condition: conditionOf(

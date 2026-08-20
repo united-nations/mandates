@@ -4,7 +4,10 @@ import {
   getExploreCardBaselineFigures,
   getExploreCardFigures,
 } from '@/lib/data/explore-card-figure-loader'
-import { getMandatePageData } from '@/lib/data/mandates'
+import {
+  getExploreCardRegistryCount,
+  getMandatePageData,
+} from '@/lib/data/mandates'
 import { getAllOrgans } from '@/lib/data/organs'
 import type { FilterOptions } from '@/types'
 import { allSettledOrThrow } from '#lib/perf/all-settled'
@@ -18,18 +21,36 @@ import type { PerformanceTraceOptions } from '#lib/perf/types'
 const measured = <T>(name: string, operation: () => Promise<T>): Promise<T> =>
   traceSpan(name, operation)
 
+const secretariatTasks = (filters: FilterOptions) =>
+  [
+    measured('table', () => getMandatePageData(filters)),
+    measured('versions', getBudgetVersions),
+    measured('entities', getAllEntities),
+    measured('organs', getAllOrgans),
+    measured('cards', () => getExploreCardFigures(filters)),
+    measured('card-baseline', () => getExploreCardBaselineFigures(filters)),
+    measured('card-registry', () => getExploreCardRegistryCount(filters)),
+  ] as const
+
 const loadSecretariat = async (filters: FilterOptions) => {
-  const table = measured('table', () => getMandatePageData(filters))
-  const [pageData, versions, entities, organs, cards, cardBaseline] =
-    await allSettledOrThrow([
-      table,
-      measured('versions', getBudgetVersions),
-      measured('entities', getAllEntities),
-      measured('organs', getAllOrgans),
-      measured('cards', () => getExploreCardFigures(filters)),
-      measured('card-baseline', () => getExploreCardBaselineFigures(filters)),
-    ] as const)
-  return { cardBaseline, cards, entities, organs, pageData, versions }
+  const [
+    pageData,
+    versions,
+    entities,
+    organs,
+    cards,
+    cardBaseline,
+    registryCount,
+  ] = await allSettledOrThrow(secretariatTasks(filters))
+  return {
+    cardBaseline,
+    cards,
+    entities,
+    organs,
+    pageData,
+    registryCount,
+    versions,
+  }
 }
 
 export const runSecretariatBenchmark = async (

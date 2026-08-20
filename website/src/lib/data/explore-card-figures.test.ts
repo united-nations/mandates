@@ -25,7 +25,7 @@ test('reuses the aggregate total when cited is not active', async () => {
   assert.deepEqual(result, {
     organCount: 4,
     entityCount: 6,
-    allDocumentsCount: 40,
+    documentsCount: 40,
     citedDocumentCount: 10,
   })
   assert.equal(countLoads, 1)
@@ -43,7 +43,7 @@ test('loads the wider total when cited is active', async () => {
     },
   })
 
-  assert.equal(result.allDocumentsCount, 40)
+  assert.equal(result.documentsCount, 40)
   assert.equal(result.citedDocumentCount, 10)
   assert.deepEqual(loads, ['1', undefined])
 })

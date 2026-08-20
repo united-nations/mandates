@@ -40,7 +40,7 @@ const loadDocumentFigures = async (options: FigureLoadOptions) => {
 export const loadExploreCardFigures = async (
   options: FigureLoadOptions
 ): Promise<ExploreCardFigures> => {
-  const [dimensions, [allDocumentsCount, citedDocumentCount]] =
+  const [dimensions, [documentsCount, citedDocumentCount]] =
     await Promise.all([
       options.loadDimensions(options.scopes.facets),
       loadDocumentFigures(options),
@@ -48,7 +48,7 @@ export const loadExploreCardFigures = async (
   return {
     organCount: dimensions.organs,
     entityCount: dimensions.entities,
-    allDocumentsCount,
+    documentsCount,
     citedDocumentCount,
   }
 }

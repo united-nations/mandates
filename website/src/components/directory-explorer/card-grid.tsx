@@ -6,36 +6,27 @@ import type {
 } from '@/lib/explore-card-state'
 
 import { ExploreButton } from './explore-button'
-import type { ExploreCardStateLine } from './explore-button'
 import type { CardGridProps } from './types'
 
-const selectedLine = (
-  state: ExploreCardState
-): ExploreCardStateLine | undefined => {
-  if (state.condition !== 'selected' || !state.selection) return undefined
-  const { name, fullName } = state.selection
-  return {
-    kind: 'selected',
-    name,
-    title: fullName !== name ? fullName : undefined,
-  }
-}
-
-const scopedLine = (
-  states: ExploreCardStates
-): ExploreCardStateLine | undefined => {
-  if (states.scopeCause === null || states.spokenScopeCause === null)
-    return undefined
-  return {
-    kind: 'scoped',
-    cause: states.scopeCause,
-    spokenCause: states.spokenScopeCause,
-  }
-}
-
 const stateLine = (state: ExploreCardState, states: ExploreCardStates) =>
-  selectedLine(state) ??
-  (state.condition === 'scoped' ? scopedLine(states) : undefined)
+  state.condition === 'selected' && state.selection
+    ? {
+        kind: 'selected' as const,
+        name: state.selection.name,
+        title:
+          state.selection.fullName !== state.selection.name
+            ? state.selection.fullName
+            : undefined,
+      }
+    : state.condition === 'scoped' &&
+        states.scopeCause !== null &&
+        states.spokenScopeCause !== null
+      ? {
+          kind: 'scoped' as const,
+          cause: states.scopeCause,
+          spokenCause: states.spokenScopeCause,
+        }
+      : undefined
 
 const organProps = ({ cardStates, openPanel }: CardGridProps) => {
   const card = cardStates.organs
@@ -59,30 +50,42 @@ const organProps = ({ cardStates, openPanel }: CardGridProps) => {
 
 const documentProps = ({ cardStates, openPanel }: CardGridProps) => {
   const card = cardStates.documents
+  const quietLine = {
+    registryPredicate: 'listed in the registry',
+    filtersPredicate: 'matching your filters',
+    registryDenominator: `of the ${card.baselineValue.toLocaleString()} in the registry`,
+    otherFiltersDenominator: `of the ${card.baselineValue.toLocaleString()} matching your other filters`,
+  }[card.frame]
   return {
     stateLine: stateLine(card, cardStates),
     count: card.value,
     countUnit: card.value === 1 ? 'document' : 'documents',
-    quietLine:
-      card.condition === 'scoped'
-        ? `of the ${card.baselineValue.toLocaleString()} in the registry`
-        : 'listed in the registry',
+    quietLine,
     onClick: () => openPanel('catalogue'),
+  }
+}
+
+const citedCountLine = (card: ExploreCardStates['cited']) => {
+  if (card.countForm === 'empty') return { prefix: 'none', unit: 'of them' }
+  if (card.countForm === 'collapsed')
+    return { count: card.value, prefix: 'all', unit: 'of them' }
+  return {
+    count: card.value,
+    unit:
+      card.condition === 'scoped'
+        ? `of the ${card.shownDocumentsValue.toLocaleString()} shown`
+        : 'of them',
   }
 }
 
 const citedProps = ({ cardStates, cycleYear, openPanel }: CardGridProps) => {
   const card = cardStates.cited
-  const countUnit = card.citedMatchesShown
-    ? 'of them'
-    : card.condition === 'scoped'
-      ? `of the ${card.shownDocumentsValue.toLocaleString()} shown`
-      : 'of them'
+  const countLine = citedCountLine(card)
   return {
     stateLine: stateLine(card, cardStates),
-    count: card.value,
-    countPrefix: card.citedMatchesShown ? 'all' : undefined,
-    countUnit,
+    count: countLine.count,
+    countPrefix: countLine.prefix,
+    countUnit: countLine.unit,
     quietLine: cycleYear
       ? `cited in the ${cycleYear} budget cycle`
       : 'cited in the budget cycle',
@@ -113,12 +116,29 @@ const entityProps = (props: CardGridProps) => {
   }
 }
 
+const reservesStateLine = (states: ExploreCardStates) =>
+  [states.organs, states.documents, states.cited, states.entities].some(
+    (card) => stateLine(card, states) !== undefined
+  )
+
 /** Renders the four immediately available summary cards. */
-export const CardGrid = (props: CardGridProps) => (
-  <>
-    <ExploreButton {...organProps(props)} />
-    <ExploreButton {...documentProps(props)} />
-    <ExploreButton {...citedProps(props)} />
-    <ExploreButton {...entityProps(props)} />
-  </>
-)
+export const CardGrid = (props: CardGridProps) => {
+  const reserveStateLine = reservesStateLine(props.cardStates)
+  const cards = [
+    ['organs', organProps(props)],
+    ['documents', documentProps(props)],
+    ['cited', citedProps(props)],
+    ['entities', entityProps(props)],
+  ] as const
+  return (
+    <>
+      {cards.map(([key, card]) => (
+        <ExploreButton
+          key={key}
+          reserveStateLine={reserveStateLine}
+          {...card}
+        />
+      ))}
+    </>
+  )
+}
