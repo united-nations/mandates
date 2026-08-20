@@ -27,9 +27,17 @@ const FULL: ExploreCardFigures = {
 
 const NO_SELECTIONS = { citedOnly: false }
 
+/**
+ * The registry total under each lens: the document count with every filter
+ * dropped except the version. Equal to that lens's FULL documentsCount, which
+ * is the point — the registry IS the full state when no filter is active.
+ */
+const REGISTRY_2027 = 42_944
+const REGISTRY_2026 = 43_020
+
 describe('resolveExploreCardStates', () => {
   it('resolves every card full when nothing is selected', () => {
-    const states = resolveExploreCardStates(FULL, FULL, NO_SELECTIONS)
+    const states = resolveExploreCardStates(FULL, FULL, NO_SELECTIONS, REGISTRY_2027)
     assert.equal(states.organs.condition, 'full')
     assert.equal(states.documents.condition, 'full')
     assert.equal(states.cited.condition, 'full')
@@ -49,7 +57,7 @@ describe('resolveExploreCardStates', () => {
       documentsCount: 43_020,
       citedDocumentCount: 3_962,
     }
-    const states = resolveExploreCardStates(lens2026, lens2026, NO_SELECTIONS)
+    const states = resolveExploreCardStates(lens2026, lens2026, NO_SELECTIONS, REGISTRY_2026)
     assert.equal(states.organs.condition, 'full')
     assert.equal(states.documents.condition, 'full')
     assert.equal(states.cited.condition, 'full')
@@ -64,10 +72,12 @@ describe('resolveExploreCardStates', () => {
       documentsCount: 27_942,
       citedDocumentCount: 1_180,
     }
-    const states = resolveExploreCardStates(current, FULL, {
-      organ: { code: 'GA', longName: 'General Assembly' },
-      citedOnly: false,
-    })
+    const states = resolveExploreCardStates(
+      current,
+      FULL,
+      { organ: { code: 'GA', longName: 'General Assembly' }, citedOnly: false },
+      REGISTRY_2027
+    )
     assert.equal(states.organs.condition, 'selected')
     // The selected card's own label keeps the long name where it fits...
     assert.equal(states.organs.selection?.name, 'General Assembly')
@@ -93,10 +103,18 @@ describe('resolveExploreCardStates', () => {
       documentsCount: 433,
       citedDocumentCount: 433,
     }
-    const states = resolveExploreCardStates(current, FULL, {
-      entity: { code: 'OHCHR', longName: 'Office of the High Commissioner for Human Rights' },
-      citedOnly: false,
-    })
+    const states = resolveExploreCardStates(
+      current,
+      FULL,
+      {
+        entity: {
+          code: 'OHCHR',
+          longName: 'Office of the High Commissioner for Human Rights',
+        },
+        citedOnly: false,
+      },
+      REGISTRY_2027
+    )
     assert.equal(states.organs.condition, 'scoped')
     assert.equal(states.organs.value, 8)
     assert.equal(states.organs.baselineValue, 23)
@@ -123,7 +141,12 @@ describe('resolveExploreCardStates', () => {
       documentsCount: 42_944,
       citedDocumentCount: 2_777,
     }
-    const states = resolveExploreCardStates(current, FULL, { citedOnly: true })
+    const states = resolveExploreCardStates(
+      current,
+      FULL,
+      { citedOnly: true },
+      REGISTRY_2027
+    )
     assert.equal(states.organs.condition, 'full')
     assert.equal(states.documents.condition, 'scoped')
     assert.equal(states.documents.value, 2_777)
@@ -153,7 +176,7 @@ describe('resolveExploreCardStates', () => {
       documentsCount: 0,
       citedDocumentCount: 0,
     }
-    const states = resolveExploreCardStates(empty, empty, NO_SELECTIONS)
+    const states = resolveExploreCardStates(empty, empty, NO_SELECTIONS, REGISTRY_2027)
     assert.equal(states.cited.condition, 'full')
     assert.equal(states.cited.value, 0)
     assert.equal(states.cited.shownDocumentsValue, 0)
@@ -174,7 +197,8 @@ describe('resolveExploreCardStates', () => {
         citedDocumentCount: 0,
       },
       { organCount: 2, entityCount: 3, documentsCount: 9, citedDocumentCount: 4 },
-      { organ: { code: 'UNCTAD', longName: null }, citedOnly: false }
+      { organ: { code: 'UNCTAD', longName: null }, citedOnly: false },
+      REGISTRY_2027
     )
     assert.equal(states.organs.condition, 'selected')
     assert.equal(states.cited.condition, 'scoped')
@@ -191,13 +215,108 @@ describe('resolveExploreCardStates', () => {
       documentsCount: 1,
       citedDocumentCount: 1,
     }
-    const states = resolveExploreCardStates(current, FULL, {
-      organ: { code: 'GA', longName: 'General Assembly' },
-      citedOnly: false,
-    })
+    const states = resolveExploreCardStates(
+      current,
+      FULL,
+      { organ: { code: 'GA', longName: 'General Assembly' }, citedOnly: false },
+      REGISTRY_2027
+    )
     assert.equal(states.cited.value, 1)
     assert.equal(states.cited.shownDocumentsValue, 1)
     assert.equal(states.cited.countForm, 'collapsed')
+  })
+
+  // Card 2's frame. Its condition and the identity of its baseline vary
+  // independently, so there are four outcomes. Two of them were unreachable
+  // before: the card said "in the registry" over any figure whose baseline had
+  // been narrowed by a filter no card can name, because value and baseline are
+  // narrowed together and the comparison returns equal.
+  it('lets card 2 name the registry when its baseline is the registry', () => {
+    const states = resolveExploreCardStates(FULL, FULL, NO_SELECTIONS, REGISTRY_2027)
+    assert.equal(states.documents.condition, 'full')
+    assert.equal(states.documents.frame, 'registryPredicate')
+  })
+
+  it('stops card 2 naming the registry under a filter no card can name', () => {
+    // Subject: Conferences alone. 3,495 is the measured figure; the other
+    // three are set only to plausible non-zero values and nothing is asserted
+    // about them. No card-owned selection, so every card is full and the
+    // baseline equals the value, and 3,495 is not what "listed in the
+    // registry" describes.
+    const conferences: ExploreCardFigures = {
+      organCount: 9,
+      entityCount: 44,
+      documentsCount: 3_495,
+      citedDocumentCount: 402,
+    }
+    const states = resolveExploreCardStates(
+      conferences,
+      conferences,
+      NO_SELECTIONS,
+      REGISTRY_2027
+    )
+    assert.equal(states.documents.condition, 'full')
+    assert.equal(states.documents.value, 3_495)
+    assert.equal(states.documents.frame, 'filtersPredicate')
+  })
+
+  it('gives card 2 the registry denominator when only card-owned filters narrow it', () => {
+    const current: ExploreCardFigures = {
+      organCount: 1,
+      entityCount: 61,
+      documentsCount: 27_942,
+      citedDocumentCount: 1_180,
+    }
+    const states = resolveExploreCardStates(
+      current,
+      FULL,
+      { organ: { code: 'GA', longName: 'General Assembly' }, citedOnly: false },
+      REGISTRY_2027
+    )
+    assert.equal(states.documents.condition, 'scoped')
+    assert.equal(states.documents.baselineValue, 42_944)
+    assert.equal(states.documents.frame, 'registryDenominator')
+  })
+
+  it('gives card 2 the other-filters denominator when both kinds are active', () => {
+    // Entity, organ, a subject and an agenda item all active. The measured
+    // figures are card 2's own pair: it reads 1 against a baseline of 3, and
+    // the 3 is what the subject and agenda filters match, not the registry.
+    // The other figures are unasserted. "Other" is true here precisely
+    // because the organ and entity selections are what it is other than.
+    const states = resolveExploreCardStates(
+      { organCount: 1, entityCount: 4, documentsCount: 1, citedDocumentCount: 1 },
+      { organCount: 2, entityCount: 9, documentsCount: 3, citedDocumentCount: 3 },
+      {
+        organ: { code: 'SC', longName: 'Security Council' },
+        entity: { code: 'OHCHR', longName: null },
+        citedOnly: false,
+      },
+      REGISTRY_2027
+    )
+    assert.equal(states.documents.condition, 'scoped')
+    assert.equal(states.documents.value, 1)
+    assert.equal(states.documents.baselineValue, 3)
+    assert.equal(states.documents.frame, 'otherFiltersDenominator')
+  })
+
+  it("compares card 2's cited-scope value against its all-documents baseline", () => {
+    // Under `cited only` card 2's value is the CITED count while its baseline
+    // stays the all-documents one, so the two operands count different
+    // populations. That is existing behaviour and this pins it rather than
+    // endorsing it: the baseline is still the registry, so the frame is the
+    // registry denominator, and the denominator the reader sees is a
+    // registry-wide figure under a numerator that is not.
+    const states = resolveExploreCardStates(
+      FULL,
+      FULL,
+      { citedOnly: true },
+      REGISTRY_2027
+    )
+    assert.equal(states.documents.value, 2_777)
+    assert.equal(states.documents.baselineValue, 42_944)
+    assert.equal(states.documents.condition, 'scoped')
+    assert.equal(states.documents.frame, 'registryDenominator')
   })
 
   it('joins conjunction causes in card order, not selection order', () => {
@@ -207,12 +326,17 @@ describe('resolveExploreCardStates', () => {
       documentsCount: 310,
       citedDocumentCount: 310,
     }
-    const states = resolveExploreCardStates(current, FULL, {
-      // Passed entity-first: the cause must still read organ-first.
-      entity: { code: 'OHCHR', longName: null },
-      organ: { code: 'GA', longName: 'General Assembly' },
-      citedOnly: false,
-    })
+    const states = resolveExploreCardStates(
+      current,
+      FULL,
+      {
+        // Passed entity-first: the cause must still read organ-first.
+        entity: { code: 'OHCHR', longName: null },
+        organ: { code: 'GA', longName: 'General Assembly' },
+        citedOnly: false,
+      },
+      REGISTRY_2027
+    )
     assert.equal(states.scopeCause, 'GA and OHCHR')
     // The entity has no long name in this fixture, so its spoken frame falls
     // back to what it has: the code.

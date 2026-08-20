@@ -24,6 +24,7 @@ import { getAllOrgans } from '@/lib/data/organs'
 import {
   getExploreCardBaseline,
   getExploreCardData,
+  getExploreCardRegistryCount,
   getMandatePageData,
 } from '@/lib/data/mandates'
 import { explainerTexts } from '@/lib/en_text_contents'
@@ -63,17 +64,23 @@ export default async function Page({ searchParams }: PageProps) {
   // DB default) — the lens chosen in card 3's panel. It decides which citations
   // exist as far as this page is concerned, so it moves every number here and
   // every citation column in the table below.
-  const [versions, entities, organs, cards, cardBaseline] = await Promise.all([
-    getBudgetVersions(),
-    getAllEntities(),
-    getAllOrgans(),
-    getExploreCardData(filters),
-    // The cards' full-state figures: the card-owned selections dropped, the
-    // version lens and every other filter kept. Resolved through the same
-    // per-query caches as the live figures, so on the unfiltered view this is
-    // pure cache reads.
-    getExploreCardBaseline(filters),
-  ])
+  const [versions, entities, organs, cards, cardBaseline, registryCount] =
+    await Promise.all([
+      getBudgetVersions(),
+      getAllEntities(),
+      getAllOrgans(),
+      getExploreCardData(filters),
+      // The cards' full-state figures: the card-owned selections dropped, the
+      // version lens and every other filter kept. Resolved through the same
+      // per-query caches as the live figures, so on the unfiltered view this is
+      // pure cache reads.
+      getExploreCardBaseline(filters),
+      // The registry total under the same lens. Card 2 compares its baseline
+      // against this to decide whether it can say "in the registry" — the
+      // baseline keeps every filter the cards cannot name, so it is not the
+      // registry whenever one of those is active.
+      getExploreCardRegistryCount(filters),
+    ])
   const activeVersionSlug =
     versions.find((v) => v.slug === filters.ppb_version)?.slug ??
     getDefaultVersionSlug(versions)
@@ -110,7 +117,8 @@ export default async function Page({ searchParams }: PageProps) {
           }
         : undefined,
       citedOnly: filters.cited === '1',
-    }
+    },
+    registryCount
   )
 
   return (

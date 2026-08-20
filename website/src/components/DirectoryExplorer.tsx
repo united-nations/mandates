@@ -285,17 +285,16 @@ export function DirectoryExplorer({
         }
         onClick={() => setPanel('organs')}
       />
-      {/* Card 2. When narrowed, the denominator line replaces the predicate:
-          the two never render together. */}
+      {/* Card 2. Its second line is a predicate or a denominator, never both,
+          and whether it can call its population the registry is a separate
+          question from whether it is narrowed — four outcomes, resolved
+          upstream (ExploreCardStates.documents.frame) and worded in
+          documentsQuietLine, below. */}
       <ExploreButton
         stateLine={cardStateLine(cardStates.documents, cardStates)}
         count={cardStates.documents.value}
         countUnit={cardStates.documents.value === 1 ? 'document' : 'documents'}
-        quietLine={
-          cardStates.documents.condition === 'scoped'
-            ? `of the ${cardStates.documents.baselineValue.toLocaleString()} in the registry`
-            : 'listed in the registry'
-        }
+        quietLine={documentsQuietLine(cardStates.documents)}
         onClick={() => setPanel('catalogue')}
       />
       {/* Card 3. Its identity is "subset of card 2", so its denominator is
@@ -527,6 +526,39 @@ function cardStateLine(
     }
   }
   return undefined
+}
+
+/**
+ * Card 2's second line, one branch per frame. Which frame is resolved upstream
+ * (see DocumentsFrame); only the wording is here.
+ *
+ * The card names its own population, so it is the one card whose second line
+ * can be false under a filter it cannot name. "In the registry" therefore
+ * renders only when the baseline really is the registry, and the possessive
+ * forms take over when it is not:
+ *
+ *   registryPredicate        listed in the registry
+ *   filtersPredicate         matching your filters
+ *   registryDenominator      of the 42,944 in the registry
+ *   otherFiltersDenominator  of the 3 matching your other filters
+ *
+ * "Your other filters", not "your filters", in the last one: the card is
+ * scoped, so a card-owned selection is narrowing it further and the baseline
+ * is what the REST of the filters match. Dropping "other" would claim the
+ * figure below matches all of them, which is the number the card is showing
+ * as smaller.
+ */
+function documentsQuietLine(state: ExploreCardStates['documents']): string {
+  switch (state.frame) {
+    case 'registryPredicate':
+      return 'listed in the registry'
+    case 'filtersPredicate':
+      return 'matching your filters'
+    case 'registryDenominator':
+      return `of the ${state.baselineValue.toLocaleString()} in the registry`
+    case 'otherFiltersDenominator':
+      return `of the ${state.baselineValue.toLocaleString()} matching your other filters`
+  }
 }
 
 /**

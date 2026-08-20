@@ -23,6 +23,12 @@
  * necessary here, the baseline is being computed without the lens; fix that
  * instead.
  *
+ * A third figure sits beside those two: the registry total under the same lens
+ * (`registryCountForVersion`). It answers a question the comparison above
+ * cannot, because the baseline keeps every filter no card can name and so is
+ * not the registry whenever one is active. Only card 2 asks it — see
+ * DocumentsFrame.
+ *
  * Everything in this module is pure so it can be exercised by `pnpm test`
  * without a database.
  */
@@ -60,6 +66,43 @@ export type ExploreCardCondition = 'full' | 'selected' | 'scoped'
  * one.
  */
 export type CitedCountForm = 'empty' | 'collapsed' | 'fraction'
+
+/**
+ * Which of the four forms card 2's second line takes.
+ *
+ * Two independent facts decide it, which is why there are four and not two:
+ * the card's CONDITION — is this figure narrower than its baseline, the
+ * question that also governs the mark and the "Scoped to" line — and whether
+ * that baseline IS the registry. Neither implies the other.
+ *
+ *   registryPredicate        listed in the registry
+ *   filtersPredicate         matching your filters
+ *   registryDenominator      of the 42,944 in the registry
+ *   otherFiltersDenominator  of the 3 matching your other filters
+ *
+ * Collapsing the two facts into one is what let the card say "listed in the
+ * registry" over a subject-filtered figure of 3,495 against a registry of
+ * roughly 43,000: the baseline is narrowed by the same filter as the value, so
+ * the two compare equal and the card reads as full while standing over a
+ * fraction of the corpus.
+ *
+ * Card 2 is the only card that needs this, and the reason is structural rather
+ * than an accident of its copy. Every other card's second line is anaphoric —
+ * "of them", "the documents shown", "citing them" — and points at whatever
+ * population is on screen, so it stays true under any filter without knowing
+ * what the filters are. Card 2 is the card that ESTABLISHES that population,
+ * so it has nothing to point at and has to name its own scope. Do not
+ * generalise this to the others.
+ *
+ * "Other" in `otherFiltersDenominator` is load-bearing and cannot be dropped.
+ * It can only render in a state where it is true: the card is scoped, so a
+ * card-owned selection is active for the remaining filters to be other than.
+ */
+export type DocumentsFrame =
+  | 'registryPredicate'
+  | 'filtersPredicate'
+  | 'registryDenominator'
+  | 'otherFiltersDenominator'
 
 /**
  * The two display forms of a selection, plus the unabbreviated original.
@@ -102,7 +145,10 @@ export interface ExploreCardState {
 
 export interface ExploreCardStates {
   organs: ExploreCardState
-  documents: ExploreCardState
+  documents: ExploreCardState & {
+    /** Which of the four forms card 2's second line takes. */
+    frame: DocumentsFrame
+  }
   cited: ExploreCardState & {
     /**
      * Card 2's live figure. Card 3 is measured against the documents currently
@@ -235,12 +281,19 @@ function conditionOf(
 
 /**
  * Resolve the state of all four cards from the live figures, the full-state
- * figures, and the active selections.
+ * figures, the active selections, and the registry total.
+ *
+ * `registryCountForVersion` is the document count with every filter dropped
+ * except the version lens — see getExploreCardRegistryCount. It is required,
+ * not optional: card 2's frame is a claim about what its number is, and a
+ * resolver that could reach a default here would answer that claim without
+ * having been told.
  */
 export function resolveExploreCardStates(
   current: ExploreCardFigures,
   baseline: ExploreCardFigures,
-  selections: ExploreCardSelections
+  selections: ExploreCardSelections,
+  registryCountForVersion: number
 ): ExploreCardStates {
   const { organ, entity, citedOnly } = selections
   const anySelectionActive = Boolean(organ || entity || citedOnly)
@@ -297,6 +350,30 @@ export function resolveExploreCardStates(
         ? 'collapsed'
         : 'fraction'
 
+  // Card 2's two facts, resolved separately because they are separate
+  // questions. The condition asks whether the figure is narrower than its
+  // baseline; the predicate asks whether that baseline is the registry. A
+  // filter no card can name narrows both operands of the first and so answers
+  // it "no", while answering the second "no" as well — which is the pair of
+  // answers the old single test could not represent.
+  const documentsCondition = conditionOf(
+    false,
+    shownDocumentsValue,
+    baseline.documentsCount,
+    anySelectionActive
+  )
+  const baselineIsRegistry = baseline.documentsCount === registryCountForVersion
+  // Card 2 never holds a selection (see the `false` above), so the condition
+  // here is 'scoped' or 'full' and nothing else.
+  const documentsFrame: DocumentsFrame =
+    documentsCondition === 'scoped'
+      ? baselineIsRegistry
+        ? 'registryDenominator'
+        : 'otherFiltersDenominator'
+      : baselineIsRegistry
+        ? 'registryPredicate'
+        : 'filtersPredicate'
+
   return {
     organs: {
       condition: conditionOf(
@@ -310,14 +387,10 @@ export function resolveExploreCardStates(
       selection: organSelection,
     },
     documents: {
-      condition: conditionOf(
-        false,
-        shownDocumentsValue,
-        baseline.documentsCount,
-        anySelectionActive
-      ),
+      condition: documentsCondition,
       value: shownDocumentsValue,
       baselineValue: baseline.documentsCount,
+      frame: documentsFrame,
     },
     cited: {
       condition: conditionOf(

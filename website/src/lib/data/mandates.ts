@@ -1628,6 +1628,36 @@ export const getExploreCardBaseline = cache(
 )
 
 /**
+ * How many documents the registry holds as the SELECTED budget version
+ * displays it: getFilteredDocumentCount with every filter dropped except
+ * `ppb_version`. A third scope alongside the live and baseline ones, and the
+ * same query — nothing new is being counted here, only counted wider.
+ *
+ * Card 2 needs it because card 2 is the one card that NAMES its own
+ * population ("listed in the registry"). The other three point at whatever is
+ * on screen — "of them", "the documents shown", "citing them" — and stay true
+ * under any filter without knowing what the filters are. Naming a population
+ * means being able to tell whether the number really is that population,
+ * which is a different question from whether the number is narrower than its
+ * baseline, and needs its own operand.
+ *
+ * The lens is retained, and that is the whole reason this is a query rather
+ * than a constant. The registry as displayed is the catalogue symbol families
+ * unified with whatever the selected version cites (the membership clause in
+ * buildFilterClauses), so it moves when the lens moves: the code there records
+ * 42,904 under PPB 2027 against 43,020 under PPB 2026. Keeping `ppb_version`
+ * on this side too means both operands of card 2's comparison move together,
+ * so a version switch leaves the card's wording alone — which is the standing
+ * rule for the lens. A version-free total over the whole matview would never
+ * equal the baseline in any state, and card 2 would silently stop saying "in
+ * the registry" everywhere.
+ */
+export const getExploreCardRegistryCount = (
+  filters: FilterOptions = {}
+): Promise<number> =>
+  getFilteredDocumentCount({ ppb_version: filters.ppb_version })
+
+/**
  * Get entity counts for the sidebar
  */
 export async function getEntityCounts(filters: FilterOptions = {}): Promise<EntityWithCount[]> {
