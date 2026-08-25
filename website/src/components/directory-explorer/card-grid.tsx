@@ -109,15 +109,24 @@ const citedProps = ({ cardStates, cycleYear, openPanel }: CardGridProps) => {
   }
 }
 
+// The full branch used to read "citing these documents in their <year>
+// budgets". "These documents" pointed at card 2's registry population while the
+// count is measured over card 3's cited subset, which is a factor of roughly
+// eleven apart on the landing view. It now names that subset by its figure:
+// card 3 displays the same number two cards to the left whenever nothing is
+// selected, so a reader can check it. The scoped branch keeps the anaphor,
+// because there card 3 displays its live value rather than its baseline and a
+// figure here would match nothing on screen.
 const entityQuietLine = (props: CardGridProps): string => {
   const card = props.cardStates.entities
+  const budgets = props.cycleYear
+    ? `their ${props.cycleYear} budgets`
+    : 'their budgets'
   if (card.condition === 'selected')
-    return `among ${card.value.toLocaleString()} ${card.value === 1 ? 'entity' : 'entities'} citing these documents`
+    return `among ${card.value.toLocaleString()} ${card.value === 1 ? 'entity' : 'entities'} that cite these documents`
   if (card.condition === 'scoped')
-    return `of ${card.baselineValue.toLocaleString()}`
-  return props.cycleYear
-    ? `citing these documents in their ${props.cycleYear} budgets`
-    : 'citing these documents in their budgets'
+    return `cite these documents in ${budgets}`
+  return `cite those ${props.cardStates.cited.baselineValue.toLocaleString()} in ${budgets}`
 }
 
 const entityProps = (props: CardGridProps) => {
@@ -126,7 +135,13 @@ const entityProps = (props: CardGridProps) => {
   return {
     stateLine: stateLine(card, props.cardStates),
     count: selected ? undefined : card.value,
-    countUnit: selected ? undefined : card.value === 1 ? 'entity' : 'entities',
+    countUnit: selected
+      ? undefined
+      : card.condition === 'scoped'
+        ? `of ${card.baselineValue.toLocaleString()} entities`
+        : card.value === 1
+          ? 'entity'
+          : 'entities',
     quietLine: entityQuietLine(props),
     onClick: () => props.openPanel('entities'),
   }
