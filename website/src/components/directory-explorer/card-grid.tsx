@@ -59,7 +59,7 @@ const organProps = ({ cardStates, openPanel }: CardGridProps) => {
     stateLine: stateLine(card, cardStates),
     count: card.value,
     countUnit,
-    quietLine: 'issuing the documents shown',
+    quietLine: `${card.value === 1 ? 'issues' : 'issue'} the documents shown`,
     onClick: () => openPanel('organs'),
   }
 }
@@ -94,6 +94,19 @@ const citedCountLine = (card: ExploreCardStates['cited']) => {
   }
 }
 
+// The verb agrees with the count line's head, which is not the same figure in
+// every form. In the fraction form the head is the card's own value, so a lone
+// cited document reads "1 of the 5 shown is cited". The empty and collapsed
+// forms lead with "none" and "all", which take a plural verb whatever follows
+// them.
+//
+// "None of them are cited" rather than "is cited". English settles neither, and
+// every other form on this card is plural, so a lone singular in the empty
+// state would read as a different sentence rather than as the same sentence
+// about nothing.
+const citedVerb = (card: ExploreCardStates['cited']) =>
+  card.countForm === 'fraction' && card.value === 1 ? 'is' : 'are'
+
 const citedProps = ({ cardStates, cycleYear, openPanel }: CardGridProps) => {
   const card = cardStates.cited
   const countLine = citedCountLine(card)
@@ -103,8 +116,8 @@ const citedProps = ({ cardStates, cycleYear, openPanel }: CardGridProps) => {
     countPrefix: countLine.prefix,
     countUnit: countLine.unit,
     quietLine: cycleYear
-      ? `cited in the ${cycleYear} budget cycle`
-      : 'cited in the budget cycle',
+      ? `${citedVerb(card)} cited in the ${cycleYear} budget cycle`
+      : `${citedVerb(card)} cited in the budget cycle`,
     onClick: () => openPanel('cited'),
   }
 }
