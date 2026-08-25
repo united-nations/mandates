@@ -54,7 +54,7 @@ const organProps = ({ cardStates, openPanel }: CardGridProps) => {
       ? card.value === 1
         ? 'source'
         : 'sources'
-      : `of ${card.baselineValue.toLocaleString()} mandate sources`
+      : `of ${card.baselineValue.toLocaleString()} mandate ${card.baselineValue === 1 ? 'source' : 'sources'}`
   return {
     stateLine: stateLine(card, cardStates),
     count: card.value,
