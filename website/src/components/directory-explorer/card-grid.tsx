@@ -71,6 +71,15 @@ const organProps = ({ cardStates, openPanel }: CardGridProps) => {
 // Both predicate frames take it. filtersPredicate is the same reduced relative
 // as registryPredicate over the same head, so leaving it a participle would put
 // the inconsistency inside one card rather than between two.
+//
+// The two denominator frames are left alone, and the card is finite in one
+// frame and verbless in the other as a result. Neither is a predicate of the
+// count: "of the 42,944 in the registry" is a bare prepositional phrase, and
+// the participle in otherFiltersDenominator modifies the figure it stands
+// beside rather than the head, so there is no attachment for a finite verb to
+// close. A verb could be introduced by naming what the figure is, which is what
+// card 3 does with "shown" in "1,180 of the 27,942 shown" - the vocabulary is
+// already on the page. Left open deliberately; the wording has not been chosen.
 const documentProps = ({ cardStates, openPanel }: CardGridProps) => {
   const card = cardStates.documents
   const singular = card.value === 1
