@@ -23,9 +23,9 @@ const StateLine = ({ state }: { state: ExploreCardStateLine }) => (
     {state.kind === 'scoped' ? (
       <>
         <span aria-hidden className="text-gray-600">
-          Scoped to {state.cause}
+          Filtered to {state.cause}
         </span>
-        <span className="sr-only">Scoped to {state.spokenCause}:</span>
+        <span className="sr-only">Filtered to {state.spokenCause}:</span>
       </>
     ) : (
       <>

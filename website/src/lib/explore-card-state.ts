@@ -72,7 +72,7 @@ export type CitedCountForm = 'empty' | 'collapsed' | 'fraction'
  *
  * Two independent facts decide it, which is why there are four and not two:
  * the card's CONDITION — is this figure narrower than its baseline, the
- * question that also governs the mark and the "Scoped to" line — and whether
+ * question that also governs the mark and the "Filtered to" line — and whether
  * that baseline IS the registry. Neither implies the other.
  *
  *   registryPredicate        listed in the registry
@@ -108,10 +108,10 @@ export type DocumentsFrame =
  * The two display forms of a selection, plus the unabbreviated original.
  *
  * `name` is how the selection labels itself on its own card ("Cited only");
- * `frame` is how it reads as the object of the visible "Scoped to …" tag; and
+ * `frame` is how it reads as the object of the visible "Filtered to …" tag; and
  * `spokenFrame` is the same slot for the screen-reader copy of that tag.
  *
- * The visible frame carries the SHORT code ("Scoped to ECOSOC"), not the long
+ * The visible frame carries the SHORT code ("Filtered to ECOSOC"), not the long
  * name: the tag repeats identically across every scoped card, and a label
  * read three times is read like a column header — brevity wins there. The
  * full name is always present on the selected card itself, so the code is
@@ -121,7 +121,7 @@ export type DocumentsFrame =
  * deliberate; do not collapse the two.
  *
  * All fields are required rather than defaulting through `name`: the default
- * is right for proper nouns and silently wrong for everything else ("Scoped
+ * is right for proper nouns and silently wrong for everything else ("Filtered
  * to Cited only" is not English), so a future selection kind must decide its
  * frames explicitly.
  */
@@ -257,7 +257,7 @@ export function organSelectionLabel(
  *
  * Every other filter (keyword, subject, document type, budget location, year
  * range, …) is also kept, for a different reason: the scoped treatment names
- * its cause ("Scoped to …"), and only the three card-owned selections have a
+ * its cause ("Filtered to …"), and only the three card-owned selections have a
  * name the cards can render. A baseline that dropped a keyword filter would
  * mark cards as scoped with nothing to attribute the scoping to. Filters
  * outside the card model therefore narrow the figures on both sides equally
