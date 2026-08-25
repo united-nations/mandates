@@ -64,11 +64,19 @@ const organProps = ({ cardStates, openPanel }: CardGridProps) => {
   }
 }
 
+// Card 2's count line is not a partitive, so the finite verb closes no
+// ambiguity here; it is taken so that all four cards read the same way. It does
+// add an agreement point that did not exist, because the count can be 1.
+//
+// Both predicate frames take it. filtersPredicate is the same reduced relative
+// as registryPredicate over the same head, so leaving it a participle would put
+// the inconsistency inside one card rather than between two.
 const documentProps = ({ cardStates, openPanel }: CardGridProps) => {
   const card = cardStates.documents
+  const singular = card.value === 1
   const quietLine = {
-    registryPredicate: 'listed in the registry',
-    filtersPredicate: 'matching your filters',
+    registryPredicate: `${singular ? 'is' : 'are'} listed in the registry`,
+    filtersPredicate: `${singular ? 'matches' : 'match'} your filters`,
     registryDenominator: `of the ${card.baselineValue.toLocaleString()} in the registry`,
     otherFiltersDenominator: `of the ${card.baselineValue.toLocaleString()} matching your other filters`,
   }[card.frame]
