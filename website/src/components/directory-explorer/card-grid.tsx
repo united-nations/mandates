@@ -28,6 +28,25 @@ const stateLine = (state: ExploreCardState, states: ExploreCardStates) =>
         }
       : undefined
 
+// The narrowed count unit absorbs the denominator ("of 23 mandate sources")
+// because this line used to render only in the full state: a narrowed card
+// swapped its predicate for a denominator in its own unit, and the two never
+// rendered together. That is no longer the rule. The predicate is true of the
+// value in every state, and a bare "4 of 23 mandate sources" does not say what
+// the 4 is, so the line does more work under a filter than on the landing
+// view. The narrowed unit keeps its fuller noun, which now sits beside the
+// line rather than standing in for it.
+//
+// Matt note: the quiet line renders in every state, not only when full. The
+// trailing participle can be read as attaching to the baseline ("23 mandate
+// sources issuing the documents shown"), which is false under a filter.
+// Overruled on two grounds: the other three cards all attach their quiet line
+// to the value rather than the baseline, so a reader arrives here trained on
+// that pattern; and card 1's value genuinely is the bodies issuing the
+// documents shown in every state, including entity selections that narrow it
+// without selecting an organ. The ambiguity is live but is resolved the right
+// way by convention and by the line break. Revisit if a reader reports
+// otherwise.
 const organProps = ({ cardStates, openPanel }: CardGridProps) => {
   const card = cardStates.organs
   const countUnit =
@@ -40,10 +59,7 @@ const organProps = ({ cardStates, openPanel }: CardGridProps) => {
     stateLine: stateLine(card, cardStates),
     count: card.value,
     countUnit,
-    quietLine:
-      card.condition === 'full'
-        ? 'issuing the documents shown'
-        : undefined,
+    quietLine: 'issuing the documents shown',
     onClick: () => openPanel('organs'),
   }
 }
