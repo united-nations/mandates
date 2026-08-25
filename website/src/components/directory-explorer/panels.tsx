@@ -47,15 +47,17 @@ const OrganDialog = (props: DirectoryPanelsProps) => (
   </DirectoryDialog>
 )
 
+// Every count in this panel is measured under the active filters, each list
+// with its own dimension dropped so it stays navigable (see
+// DocumentsDirectory), so a pill's count is what the table returns when it is
+// clicked. The intro line carries direction and no figures, because prose
+// restating numbers rendered live below it drifts out of step with them.
 const CatalogueDialog = (props: DirectoryPanelsProps) => (
   <DirectoryDialog
     open={props.panel === 'catalogue'}
     onClose={props.actions.close}
     title="Documents adopted"
-    hint={`The ${(props.filters.cited === '1'
-      ? props.citedDocumentCount
-      : props.allDocumentsCount
-    ).toLocaleString()} documents matching the current filters — resolutions, decisions and presidential statements of the General Assembly, Security Council, ECOSOC and Human Rights Council, plus anything else the budget cites. Every count below is under those same filters, so picking a type or topic narrows the table to exactly that number.`}
+    hint="Narrow the table by document type or topic."
   >
     {status(
       props,
