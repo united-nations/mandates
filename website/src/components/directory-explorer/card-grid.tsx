@@ -109,24 +109,22 @@ const citedProps = ({ cardStates, cycleYear, openPanel }: CardGridProps) => {
   }
 }
 
-// The full branch used to read "citing these documents in their <year>
-// budgets". "These documents" pointed at card 2's registry population while the
-// count is measured over card 3's cited subset, which is a factor of roughly
-// eleven apart on the landing view. It now names that subset by its figure:
-// card 3 displays the same number two cards to the left whenever nothing is
-// selected, so a reader can check it. The scoped branch keeps the anaphor,
-// because there card 3 displays its live value rather than its baseline and a
-// figure here would match nothing on screen.
+// Two agreement points, on two different figures. The noun sits inside "of
+// <baseline> entities", so it agrees with the BASELINE; the verb's subject is
+// the partitive head, so it agrees with the VALUE. "1 of 107 entities cites
+// these documents" is right on both counts, and keying either to the other
+// figure gets one of them wrong.
 const entityQuietLine = (props: CardGridProps): string => {
   const card = props.cardStates.entities
+  const cite = card.value === 1 ? 'cites' : 'cite'
   const budgets = props.cycleYear
     ? `their ${props.cycleYear} budgets`
     : 'their budgets'
   if (card.condition === 'selected')
-    return `among ${card.value.toLocaleString()} ${card.value === 1 ? 'entity' : 'entities'} that cite these documents`
+    return `among ${card.value.toLocaleString()} ${card.value === 1 ? 'entity' : 'entities'} that ${cite} these documents`
   if (card.condition === 'scoped')
-    return `cite these documents in ${budgets}`
-  return `cite those ${props.cardStates.cited.baselineValue.toLocaleString()} in ${budgets}`
+    return `${cite} these documents in ${budgets}`
+  return `${cite} those ${props.cardStates.cited.baselineValue.toLocaleString()} in ${budgets}`
 }
 
 const entityProps = (props: CardGridProps) => {
@@ -138,7 +136,7 @@ const entityProps = (props: CardGridProps) => {
     countUnit: selected
       ? undefined
       : card.condition === 'scoped'
-        ? `of ${card.baselineValue.toLocaleString()} entities`
+        ? `of ${card.baselineValue.toLocaleString()} ${card.baselineValue === 1 ? 'entity' : 'entities'}`
         : card.value === 1
           ? 'entity'
           : 'entities',
