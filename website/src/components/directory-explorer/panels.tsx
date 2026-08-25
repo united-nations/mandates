@@ -77,7 +77,7 @@ const CitedDialog = (props: DirectoryPanelsProps) => (
     open={props.panel === 'cited'}
     onClose={props.actions.close}
     title={`Documents ${props.citedPredicate}`}
-    hint="Choose which budget the citation data comes from, narrow the table to the documents it cites, or go to one place in it."
+    hint="Choose a budget version, then narrow the table to the documents that budget cites, or to one location within that budget."
   >
     <CitedPanel {...props} />
   </DirectoryDialog>
