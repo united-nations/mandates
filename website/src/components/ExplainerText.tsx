@@ -23,7 +23,7 @@ export function ExplainerText() {
             is the two links as they were written, not a normalisation
             anyone has ruled on. */}
         <Link href="/methodology" className="text-un-blue hover:underline">
-          See the methodology
+          Learn more
         </Link>
         .
       </p>
