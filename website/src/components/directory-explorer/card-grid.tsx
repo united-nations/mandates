@@ -42,7 +42,7 @@ const organProps = ({ cardStates, openPanel }: CardGridProps) => {
     countUnit,
     quietLine:
       card.condition === 'full'
-        ? 'recorded as issuing the documents shown'
+        ? 'issuing the documents shown'
         : undefined,
     onClick: () => openPanel('organs'),
   }
@@ -100,8 +100,8 @@ const entityQuietLine = (props: CardGridProps): string => {
   if (card.condition === 'scoped')
     return `of ${card.baselineValue.toLocaleString()}`
   return props.cycleYear
-    ? `citing them in their ${props.cycleYear} budget submissions`
-    : 'citing them in their budget submissions'
+    ? `citing these documents in their ${props.cycleYear} budgets`
+    : 'citing these documents in their budgets'
 }
 
 const entityProps = (props: CardGridProps) => {
