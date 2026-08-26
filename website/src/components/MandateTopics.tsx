@@ -13,11 +13,15 @@ import type { RelatedMandate } from '@/lib/data/related'
 
 /**
  * "What subjects does this mandate have?" — the UNBIS subject headings the UN
- * Library assigned to the document, as the same pills the /subjects map uses
- * (colour dot = thesaurus domain), and below them the documents that share
- * those topics.
+ * Library assigned to the document, as plain chips, and below them the
+ * documents that share those subjects.
  *
- * The pills are the navigation: each one filters the explorer to every mandate
+ * The chips carried a domain-coloured dot when this comment was written. They
+ * do not any more: the domain hue went with the rest of the ornament axis, and
+ * this page no longer fetches subject domain codes at all, so there is nothing
+ * here to colour a dot from.
+ *
+ * The chips are the navigation: each one filters the explorer to every mandate
  * carrying that heading, which is how a reader gets from one document to the
  * rest of a policy area.
  */
@@ -45,7 +49,7 @@ export function MandateTopics({ subjects, related }: MandateTopicsProps) {
       <DetailSectionHeading
         hint={
           sorted.length > 0
-            ? `${sorted.length} ${sorted.length === 1 ? 'topic' : 'topics'}`
+            ? `${sorted.length} ${sorted.length === 1 ? 'subject' : 'subjects'}`
             : undefined
         }
         howTo={

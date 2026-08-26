@@ -36,8 +36,8 @@ import { useMemo, useState } from 'react'
  * `WHERE ppb_type IS NOT NULL` facet query did.
  */
 
-const DEFAULT_TOP = 30 // topic pills shown by default
-const SEARCH_CAP = 300 // topic pills shown while searching
+const DEFAULT_TOP = 30 // subject pills shown by default
+const SEARCH_CAP = 300 // subject pills shown while searching
 
 interface FlatLeaf {
   subject: string
@@ -91,12 +91,12 @@ export function DocumentsDirectory({
   }, [domains])
 
   // The visible pill set, given search / default. Ordered by count, globally,
-  // with no re-sort afterwards: the list is a "most common topics" list, so a
+  // with no re-sort afterwards: the list is a "most common subjects" list, so a
   // monotonically falling count is the one ordering a reader can verify at a
   // glance. It used to be re-clustered by domain after the top-N cut, which
-  // buried the two largest topics mid-list and made the counts read as random —
+  // buried the two largest subjects mid-list and made the counts read as random —
   // and the only cue for the grouping was a 6px coloured dot with no legend.
-  // The domain is still carried by the dot's colour and named in each pill's
+  // That dot is gone too, so the domain is now named in words in each pill's
   // tooltip, which is where it is actually legible.
   const pills = useMemo<FlatLeaf[]>(() => {
     const pool = term
@@ -114,8 +114,8 @@ export function DocumentsDirectory({
   const overflow = Math.max(0, totalMatches - pills.length)
 
   const hint = term
-    ? `${totalMatches.toLocaleString()} matching topic${totalMatches === 1 ? '' : 's'}`
-    : 'Search to go beyond the most common topics'
+    ? `${totalMatches.toLocaleString()} matching subject${totalMatches === 1 ? '' : 's'}`
+    : 'Search to go beyond the most common subjects'
 
   const { types, untypedCount, totalCount } = documentTypes
   const untypedShare =
@@ -155,9 +155,9 @@ export function DocumentsDirectory({
         </section>
 
         <section className="space-y-3">
-          <SectionHeading>Topics</SectionHeading>
+          <SectionHeading>Subjects</SectionHeading>
           <ChartSearchInput
-            placeholder="Search all topics..."
+            placeholder="Search all subjects..."
             value={search}
             onChange={setSearch}
           />
@@ -178,7 +178,7 @@ export function DocumentsDirectory({
             </div>
           ) : (
             <p className="text-sm text-gray-500">
-              No topics match “{search.trim()}”.
+              No subjects match “{search.trim()}”.
             </p>
           )}
 
@@ -276,8 +276,11 @@ function SubjectPill({
         </Chip>
       </TooltipTrigger>
       <TooltipContent side="top" className="max-w-xs">
+        {/* The domain is a level up in the same taxonomy, so under a section
+            headed "Subjects" a bare domain name reads as another subject. The
+            qualifier is the one the active-filter bar already uses. */}
         <div className="font-medium">
-          {SUBJECT_DOMAIN_LABELS[leaf.code] ?? leaf.code}
+          Subject domain: {SUBJECT_DOMAIN_LABELS[leaf.code] ?? leaf.code}
         </div>
         <div className="mt-0.5 text-xs text-gray-500">
           {leaf.count.toLocaleString()} document

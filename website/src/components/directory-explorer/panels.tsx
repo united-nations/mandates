@@ -57,7 +57,7 @@ const CatalogueDialog = (props: DirectoryPanelsProps) => (
     open={props.panel === 'catalogue'}
     onClose={props.actions.close}
     title="Documents adopted"
-    hint="Narrow the table by document type or topic."
+    hint="Narrow the table by document type or subject."
   >
     {status(
       props,
