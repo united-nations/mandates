@@ -3,8 +3,8 @@ import type { Mandate, Organ } from '@/types'
 import { DetailSectionHeading, FilterChip } from '@/components/MandateDetailUi'
 
 /**
- * "Who created this mandate?" — the provenance of the document, written as one
- * sentence whose nouns are chips:
+ * "Who adopted this document and its mandates?" — the provenance of the
+ * document, written as one sentence whose nouns are chips:
  *
  *   A (Resolution) of the (General Assembly), under agenda item (10 Global
  *   health), published in (2024).
@@ -164,7 +164,9 @@ export function MandateMetadata({ mandate, organs }: MandateMetadataProps) {
 
   return (
     <section className="space-y-3">
-      <DetailSectionHeading>Who created this mandate?</DetailSectionHeading>
+      <DetailSectionHeading>
+        Who adopted this document and its mandates?
+      </DetailSectionHeading>
       <p className="text-sm leading-8 text-gray-700">
         {clauses.map((clause, index) => (
           <span key={clause.key}>

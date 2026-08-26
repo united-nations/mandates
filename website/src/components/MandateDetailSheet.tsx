@@ -70,12 +70,16 @@ export function MandateDetailSheet({
         <SheetTitle className="sr-only">{title}</SheetTitle>
         {/* Radix warns (and screen readers lose the announcement) when a
             DialogContent has no description. */}
-        {/* Mirrors the visible section questions. Says "cites it in the
-            budget", never "implements": the data records budget citations,
-            and the sr-only layer must not assert more than the headings do. */}
+        {/* Mirrors the visible section questions, and has to be re-read
+            whenever one of them changes - it drifted once already, still
+            saying "what it is about" after that heading became "What
+            subjects does this mandate have?". Says "cites it in the budget",
+            never "implements": the data records budget citations, and the
+            sr-only layer must not assert more than the headings do. */}
         <SheetDescription className="sr-only">
-          Details for mandate document {title}: who created it, how it has
-          changed, who cites it in the budget and what it is about.
+          Details for mandate document {title}: who adopted it, how it has
+          changed, who cites it in the budget, what subjects it has and what is
+          in it.
         </SheetDescription>
 
         <div className="flex shrink-0 items-center justify-end gap-1 border-b border-gray-200 px-2 py-1">

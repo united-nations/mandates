@@ -2339,7 +2339,7 @@ export function ParagraphsSection({
     <div className="space-y-4">
       <div ref={paragraphsTitleRef} className="space-y-3">
         <DetailSectionHeading hint={headingHint}>
-          What does this mandate say?
+          What&rsquo;s in this document?
         </DetailSectionHeading>
 
         {/* Filters — their own line under the heading, in the chip language of

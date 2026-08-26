@@ -11,10 +11,11 @@ import { cn } from '@/lib/utils'
  * The shared primitives of the mandate detail view: the section headings, the
  * chip, and the subject-label formatter.
  *
- * The detail view is organised as questions — who created this mandate, how has
- * it changed, who cites it in the budget, what it is about — each introduced by
- * a `DetailSectionHeading`. Anything genuinely *inside* one of those answers (the
- * related-documents list under "What is this mandate about?") gets a
+ * The detail view is organised as questions — who adopted this document and
+ * its mandates, what other versions it has, who cites it in the budget, what
+ * subjects it has, what is in it — each introduced by a
+ * `DetailSectionHeading`. Anything genuinely *inside* one of those answers (the
+ * related-documents list under "What subjects does this mandate have?") gets a
  * `DetailSubsectionHeading`, so the visual weight of a heading always tells the
  * truth about the nesting.
  *
