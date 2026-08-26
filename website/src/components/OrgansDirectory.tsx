@@ -135,17 +135,18 @@ const CARD_GLYPH =
  * can search for, and these were reviewed as sentences.
  */
 const ABOUT_THIS_LIST = [
-  'Bodies with no documents in the current view are not listed — the Trusteeship Council among them.',
-  'The grouping into categories is editorial — a choice made for this page.',
-  'Some instruments are recorded under Other rather than here.',
-  'Some documents record an issuing body that is not shown in this list.',
+  'Bodies with no documents in the current view are not listed. The Trusteeship Council is one.',
+  'The grouping into categories is editorial, a choice made for this page.',
+  'Some instruments are grouped under Other rather than listed separately, among them the International Covenants and the Framework Convention on Climate Change.',
+  'Some documents record an issuing body that is not one of these, such as a Secretary-General’s bulletin.',
+  'Some record no issuing body at all, and are counted under no body here.',
 ]
 
 /**
  * What a reader needs to know about the list that the list cannot say itself:
  * which bodies are missing from it, that the grouping is a choice, where the
- * rest of the instruments are, and that a few documents name a source no card
- * here stands for.
+ * rest of the instruments are, that a few documents name a source no card here
+ * stands for, and that a few name none.
  *
  * Notes, not a disclaimer, with one exception. A disclaimer is earned by
  * content produced by a process that can be wrong in ways the reader cannot
@@ -154,10 +155,14 @@ const ABOUT_THIS_LIST = [
  * documents are itemised nowhere, and a reader looking for an instrument has no
  * way to discover that some are inside it.
  *
- * The last line depends on card 1 counting what this list counts. While the two
- * disagreed, the line that belonged here was the one describing the difference;
- * asserting the totals agree before they do is worse than the silent
- * disagreement, because the page then vouches for it.
+ * The last two lines depend on card 1 counting what this list counts. While the
+ * two disagreed, the line that belonged here was the one describing the
+ * difference; asserting the totals agree before they do is worse than the
+ * silent disagreement, because the page then vouches for it.
+ *
+ * No figures in the lines. Each claim is measured, but a count written here
+ * sits above counts the page computes live, and the two drift apart silently —
+ * which is why card 2's intro lost the one it carried.
  *
  * Same disclosure primitive as the card markers, and lighter than the cards on
  * purpose — a trigger, not a fifth entry in the list of categories.
