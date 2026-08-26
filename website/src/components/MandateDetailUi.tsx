@@ -83,7 +83,14 @@ export function DetailSubsectionHeading({
  */
 export type FilterChipTone = 'default' | 'accent'
 
-/** The sidebar's two tones, in the shared vocabulary. */
+/**
+ * The sidebar's two tones, in the shared vocabulary. `accent` has never had a
+ * call site - every FilterChip in the sidebar takes the default - so this row
+ * is the second dead route into `emphasis`, alongside the entity chips' own,
+ * which is now behind MARK_FOUNDATIONAL_CHIPS_ON_DETAIL_PAGE. Left as it is:
+ * removing an unreachable mapping is tidying, and it would hide that the tone
+ * has no consumer left at all.
+ */
 const FILTER_CHIP_TONE: Record<FilterChipTone, ChipTone> = {
   default: 'neutral',
   accent: 'emphasis',

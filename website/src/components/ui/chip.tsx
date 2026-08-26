@@ -18,24 +18,37 @@ import { cn } from '@/lib/utils'
  *    never means anything else.
  *
  * Ornament is passed in by the caller (ChipDot) rather than derived from a
- * `kind`: only one ornament survives — the dot marking an entity that cites a
- * document in its "Mandates and background" narrative. Document symbols left
- * the system entirely (components/DocumentSymbol.tsx): a symbol is an
- * identifier, not a facet, and it reads as a code, so it keeps square corners
- * and a blue ground rather than becoming another pill.
+ * `kind`. The axis is currently empty: the domain dot on subject chips went
+ * with the document-symbol refactor, and the dot marking an entity that cites
+ * a document in its "Mandates and background" narrative is behind
+ * MARK_FOUNDATIONAL_CHIPS_ON_DETAIL_PAGE (lib/foundational.ts), which is off.
+ * Document symbols left the system entirely (components/DocumentSymbol.tsx): a
+ * symbol is an identifier, not a facet, and it reads as a code, so it keeps
+ * square corners and a blue ground rather than becoming another pill.
  *
  * THE COLOUR BUDGET
  * -----------------
  * Ornament carries kind; colour carries emphasis. If every kind had its own hue
  * the page becomes confetti and un-blue stops reading as "interactive". So the
- * ground is neutral grey and exactly two things earn colour:
+ * ground is neutral grey and one thing earns colour:
  *
- *   - `emphasis` (un-blue-deep tint + dot) — a document cited in an entity's
- *     "Mandates and background" narrative rather than only its Legislative
- *     mandates table. This is the one semantic distinction worth a colour.
  *   - `selected` (un-blue fill, white text) — the state of an active facet.
  *
- * Domain hues appear ONLY as a 6px dot on topic chips. Nothing else gets a fill.
+ * `emphasis` (un-blue-deep tint, meant to pair with a dot) was the second, for
+ * a document cited in an entity's "Mandates and background" narrative rather
+ * than only its Legislative mandates table. It has no live call site: the one
+ * surface that passed it is behind MARK_FOUNDATIONAL_CHIPS_ON_DETAIL_PAGE
+ * (lib/foundational.ts), which is off, and FilterChip's `accent` mapping into
+ * it (MandateDetailUi.tsx) has never had a call site at all. The tone is kept
+ * rather than deleted because the hold is on marking that one distinction, not
+ * on the tone; deleting a primitive is a separate decision from withdrawing
+ * its one use. Read it as "currently spent on nothing", not as budget to
+ * spend: un-blue-deep sits a shade off un-blue, and two shades of blue carry
+ * no meaning on their own.
+ *
+ * Domain hues are gone. They appeared as a 6px dot on subject chips until
+ * document symbols stopped being pills, and no surface fetches domain codes to
+ * colour one from any more. Nothing gets a fill except `selected`.
  *
  * THE RULES THAT FIX REAL BUGS
  * ----------------------------
@@ -207,9 +220,14 @@ export function ChipCount({
 /**
  * The ornament that carries KIND.
  *
- * A topic chip takes a domain-coloured dot; an entity cited in "Mandates and
- * background" takes a solid un-blue-deep one. Both were previously unexplained
- * on screen, so every surface using them must legend them in its footnote.
+ * No consumer at present. A subject chip took a domain-coloured dot until the
+ * domain hues left the system, and an entity cited in "Mandates and
+ * background" took a solid un-blue-deep one until that marking went behind
+ * MARK_FOUNDATIONAL_CHIPS_ON_DETAIL_PAGE (lib/foundational.ts), which is off.
+ * Kept because withdrawing the one use is not a decision to drop the
+ * primitive, and because the rule it carries is the part worth keeping: both
+ * dots were unexplained on screen, so any surface that renders one must legend
+ * it in its footnote.
  */
 export function ChipDot({ color }: { color?: string }) {
   return (

@@ -17,6 +17,7 @@ import {
   FOUNDATIONAL_DOT_LEGEND,
   FOUNDATIONAL_PART_IN_DOCUMENT,
   isFoundational,
+  MARK_FOUNDATIONAL_CHIPS_ON_DETAIL_PAGE,
   partInDocumentLabel,
 } from '@/lib/foundational'
 import type { BudgetLocation, Entity, Mandate } from '@/types'
@@ -131,7 +132,10 @@ export function CitationCounts({ mandate, entities }: CitationCountsProps) {
       else if (!list.includes(citation.part_in_document))
         list.push(citation.part_in_document)
     }
-    // Narrative first when both are present, mirroring the chip row's order.
+    // Narrative first when both are present. This used to mirror the chip
+    // row's own order; the row is plain alphabetical now, and the ordering is
+    // kept here because the popover is where the distinction still shows and
+    // the narrative is the less expected of the two places to find a citation.
     for (const list of map.values()) {
       list.sort((a, b) => {
         if (a === FOUNDATIONAL_PART_IN_DOCUMENT) return -1
@@ -142,14 +146,22 @@ export function CitationCounts({ mandate, entities }: CitationCountsProps) {
     return map
   }, [mandate.citation_info])
 
-  // Distinct citing entities, foundational ones first — they are the ones a
-  // reader scanning for "why does this entity exist" wants to see.
+  // Distinct citing entities. Alphabetical, unless the section is marking the
+  // "Mandates and background" ones, in which case they lead — they are the
+  // ones a reader scanning for "why does this entity exist" wants to see.
+  // Two orderings rather than one comparator with a branch inside it: with
+  // the marking off there is then no foundational logic in the sort at all,
+  // rather than a comparison that always returns the same thing.
   const citingEntities = useMemo(() => {
     const seen = new Set<string>()
     for (const citation of mandate.citation_info ?? []) {
       if (citation.entity) seen.add(citation.entity)
     }
-    return [...seen].sort((a, b) => {
+    const distinct = [...seen]
+    if (!MARK_FOUNDATIONAL_CHIPS_ON_DETAIL_PAGE) {
+      return distinct.sort((a, b) => a.localeCompare(b))
+    }
+    return distinct.sort((a, b) => {
       const aFound = foundationalEntities.includes(a)
       const bFound = foundationalEntities.includes(b)
       if (aFound !== bFound) return aFound ? -1 : 1
@@ -208,16 +220,18 @@ export function CitationCounts({ mandate, entities }: CitationCountsProps) {
 
       {/* Two blocks: the dot legend (the one explanation of the dot in the
           whole app, one paragraph wrapping naturally, rendered only when a
-          dot is actually on screen), then the i-marked extraction disclaimer.
+          dot is actually on screen — which is never while the marking is
+          off), then the i-marked extraction disclaimer.
           Only the i line is structurally its own block — the own-line rule
           belongs to the marker, not to every visible sentence. The
           disclaimer's wording is deliberately self-contained: a version that
           referred back to the fascicle would silently inherit the legend's
           condition and vanish with it. */}
       <div>
-        {citingEntities.some((e) =>
-          isFoundational(e, foundationalEntities)
-        ) && <DetailFootnote>{FOUNDATIONAL_DOT_LEGEND}</DetailFootnote>}
+        {MARK_FOUNDATIONAL_CHIPS_ON_DETAIL_PAGE &&
+          citingEntities.some((e) =>
+            isFoundational(e, foundationalEntities)
+          ) && <DetailFootnote>{FOUNDATIONAL_DOT_LEGEND}</DetailFootnote>}
         <DetailDisclaimer>
           Extracted automatically from each entity&rsquo;s budget submission.
         </DetailDisclaimer>
@@ -239,6 +253,8 @@ function EntityChip({
   locations: BudgetLocation[]
   partsInDocumentByLocation: Map<string, string[]>
 }) {
+  const marked = MARK_FOUNDATIONAL_CHIPS_ON_DETAIL_PAGE && foundational
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -246,14 +262,20 @@ function EntityChip({
             chip resolves to a real <button> — the element, not the styling, is
             what makes it keyboard-reachable. Entity chips are the interaction
             the section's copy asks the reader to perform, so they take the full
-            44px touch target on small viewports (density="touch"). */}
+            44px touch target on small viewports (density="touch").
+
+            `marked` is derived once and read twice: the tone and the dot are
+            the same claim, and a chip that had one without the other would be
+            saying half of it. The prop stays `foundational` because the
+            citation still is - what the toggle governs is whether the chip
+            says so. */}
         <Chip
           density="touch"
-          tone={foundational ? 'emphasis' : 'neutral'}
+          tone={marked ? 'emphasis' : 'neutral'}
           aria-label={`Budget details for ${entityLong ?? entity}`}
         >
           {entity}
-          {foundational && <ChipDot />}
+          {marked && <ChipDot />}
         </Chip>
       </PopoverTrigger>
 

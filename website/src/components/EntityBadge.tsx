@@ -13,11 +13,15 @@ import { cn } from '@/lib/utils'
  * An entity chip: the acronym, with the long name in a tooltip.
  *
  * It used to render "Mandates and background" citations in the emphasis tone
- * (deeper blue) wherever it appeared. That styling is now confined to the
- * mandate detail sidebar, which is the one place with room to legend it. The
- * split is a 2020 formatting decision inside the fascicle (see
- * lib/foundational.ts), not a hierarchy of importance, and a colour the reader
- * meets in a dense table with no legend asserts exactly that hierarchy.
+ * (deeper blue) wherever it appeared. That went first from here, on the
+ * grounds that the split is a 2020 formatting decision inside the fascicle
+ * (see lib/foundational.ts), not a hierarchy of importance, and a colour the
+ * reader meets in a dense table with no legend asserts exactly that hierarchy.
+ * It was kept on the mandate detail sidebar, the one surface with room to
+ * legend it, and has since gone from there too
+ * (MARK_FOUNDATIONAL_CHIPS_ON_DETAIL_PAGE): the legend explains the dot while
+ * the colour does its own work on the reader, so legending it did not save
+ * it. No entity chip anywhere renders the emphasis tone now.
  *
  * The `foundational` prop is kept — call sites still pass it and the data is
  * still true — but it no longer changes how the chip looks or reads.
@@ -92,7 +96,10 @@ export function EntityBadge({
  *
  * Neutral tone, not emphasis: it states *where* in the fascicle the citation
  * sits and claims nothing about its weight. The un-blue-deep tint and the dot
- * are reserved for the detail sidebar, which legends them.
+ * that once carried the same fact on the detail sidebar are off
+ * (MARK_FOUNDATIONAL_CHIPS_ON_DETAIL_PAGE), so every surface that still names
+ * the distinction now names it in words. That is why this is the form that
+ * survived.
  */
 export function FoundationalTag() {
   return (

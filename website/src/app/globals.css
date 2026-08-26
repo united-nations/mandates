@@ -4,10 +4,17 @@
 /* https://tailwindcss.com/docs/colors#customizing-your-colors */
 @theme {
   --color-un-blue: #009edb;
-  /* Darker UN blue. Marks an entity badge whose citation is a general mandate
-     (see lib/foundational.ts). The colour is only a hint — it is always paired
-     with a tooltip, and with an explicit badge where there is room, because two
-     shades of blue carry no meaning on their own. */
+  /* Darker UN blue. It marks nothing on its own any more. It was the tint on
+     an entity chip whose citation sits in the fascicle's "Mandates and
+     background" narrative (see lib/foundational.ts); that marking is off
+     (MARK_FOUNDATIONAL_CHIPS_ON_DETAIL_PAGE), for the reason this comment
+     already gave — two shades of blue carry no meaning on their own, and this
+     one sits a shade off --color-un-blue. What still uses it is a darker step
+     of un-blue where a surface is already blue: the hover state of a selected
+     chip, the hover of a selected trend pill, and a checkbox accent. Anything
+     that wants it to MEAN something needs a legend and an argument that the
+     legend is enough, which is the argument that failed on the entity
+     chips. */
   --color-un-blue-deep: #0090cc;
 
   --color-trout: #495057;

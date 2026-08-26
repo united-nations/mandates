@@ -96,13 +96,52 @@ export const FOUNDATIONAL_TOOLTIP =
   'Cited in this entity’s “Mandates and background” narrative in the programme budget fascicle, not only in its Legislative mandates list. Many documents appear in both.'
 
 /**
- * The legend for the blue dot on the detail page's entity chips — the one
- * surface where the claim is anchored to a dot rather than to a badge, so it
- * needs its own referent and cannot reuse FOUNDATIONAL_TOOLTIP, whose two
- * badge consumers have no dot to point at. One paragraph, reassurance
- * included: the footnote's visible text flows as a single block, and the
- * two section names identify the fascicle well enough on a page that is
- * already about budget citations.
+ * Whether the detail page's entity chips mark this distinction at all. The
+ * mark is four things - the chip's emphasis tone, its dot, the ordering that
+ * puts marked chips ahead of the alphabetical run, and the legend sentence
+ * below the row - and they are gated together because they are one claim said
+ * four ways. Gated separately they produce states nobody designed: a legend
+ * describing a dot that does not render, or four unmarked chips still sorted
+ * to the front saying "these four are different" with nothing to say it with.
+ *
+ * Off. Around twenty entities cite a typical document and a handful carry the
+ * mark, so a reader scanning the row takes the marked ones for the ones doing
+ * the citing - the opposite of what the heading says, since all of them cite
+ * it. The colour produces that reading on its own: un-blue-deep and un-blue
+ * are the same hue a shade apart, globals.css says in its own words that two
+ * shades of blue carry no meaning alone, and blue already means "this filter
+ * is applied" in the paragraph section further down the same page. The split
+ * being marked is a 2020 formatting decision inside the fascicle (see the
+ * header above), not a hierarchy of importance, so it is not worth a colour
+ * that asserts one.
+ *
+ * Nothing is lost while it is off. Each chip's popover lists every budget
+ * location the citation was found at, part-in-document included, and the
+ * table's Mandates and background tag names the distinction in words. Screen
+ * readers never had it either way: the dot is aria-hidden and the chip's
+ * aria-label names only the entity.
+ *
+ * WHAT TURNS IT BACK ON: a way for the section to carry the distinction that
+ * does not spend a colour on it - marked entities in their own labelled group,
+ * or an ornament that is not a second blue - or blue ceasing to mean "applied
+ * filter" elsewhere on this page. WHEN THE BRANCH GOES: if neither has
+ * happened by the next design pass over this section, delete this constant and
+ * the four branches it gates, and the row stays plain and alphabetical.
+ */
+export const MARK_FOUNDATIONAL_CHIPS_ON_DETAIL_PAGE: boolean = false
+
+/**
+ * The legend for the dot on the detail page's entity chips — the one surface
+ * where the claim is anchored to a dot rather than to a badge, so it needs its
+ * own referent and cannot reuse FOUNDATIONAL_TOOLTIP, whose two badge
+ * consumers have no dot to point at. One paragraph, reassurance included: the
+ * footnote's visible text flows as a single block, and the two section names
+ * identify the fascicle well enough on a page that is already about budget
+ * citations.
+ *
+ * Renders only while MARK_FOUNDATIONAL_CHIPS_ON_DETAIL_PAGE is on. It is kept
+ * rather than deleted for the same reason as the constant: this is a hold on
+ * the marking, not a decision that the distinction is unsayable.
  */
 export const FOUNDATIONAL_DOT_LEGEND = `A dot marks an entity citing this document in its “${FOUNDATIONAL_LABEL}” narrative rather than only its ${LEGISLATIVE_LABEL}. Many do both.`
 
