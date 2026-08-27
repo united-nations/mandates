@@ -72,7 +72,11 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
     id: 'detail',
     label: '',
     defaultVisible: true,
-    widthClass: 'w-[92px]',
+    // Icon-only rail: a 14px chevron plus the button's 4px padding and 1px
+    // border on each side, inside the cell's own px-3. Nothing wider, because
+    // this is the one column that never scrolls out of view — its width comes
+    // off the visible area at every scroll position.
+    widthClass: 'w-[48px]',
     align: 'center',
   },
   {

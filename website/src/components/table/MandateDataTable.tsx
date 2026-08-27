@@ -636,14 +636,18 @@ function CellContent({
 
     case 'detail':
       // The whole row navigates (see handleRowClick); this is the visible
-      // affordance for it, so the click is left to bubble.
+      // affordance for it, so the click is left to bubble. Icon-only, so the
+      // aria-label is the button's only accessible name.
+      //
+      // ChevronRight because it already means "open this record" on the explore
+      // cards and directory rows; Info is this app's marker for a data caveat.
       return (
         <button
           type="button"
           tabIndex={-1}
-          className="inline-flex items-center gap-0.5 rounded border border-gray-200 bg-white px-2 py-0.5 text-xs font-medium whitespace-nowrap text-muted-foreground transition-colors group-hover:border-un-blue group-hover:text-un-blue"
+          aria-label="Details"
+          className="inline-flex items-center rounded border border-gray-200 bg-white p-1 text-muted-foreground transition-colors group-hover:border-un-blue group-hover:text-un-blue"
         >
-          Details
           <ChevronRight className="h-3.5 w-3.5" />
         </button>
       )
