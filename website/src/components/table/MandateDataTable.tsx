@@ -43,7 +43,11 @@ import {
   getColumnFilterOptions,
   type FilterFacets,
 } from './columnFacets'
-import { COLUMN_DEFINITIONS, getMandateUrl } from './MandateColumns'
+import {
+  COLUMN_DEFINITIONS,
+  getMandateUrl,
+  tableMinWidth,
+} from './MandateColumns'
 import {
   GroupBadge,
   GroupHiddenVersionsNote,
@@ -177,13 +181,21 @@ export function MandateDataTable({
         className={`overflow-hidden rounded-lg border border-gray-200 transition-opacity duration-150 [&>div]:[scrollbar-color:#d1d5db_#f3f4f6] [&>div::-webkit-scrollbar]:h-2.5 [&>div::-webkit-scrollbar-thumb]:rounded-full [&>div::-webkit-scrollbar-thumb]:bg-gray-300 [&>div::-webkit-scrollbar-track]:bg-gray-100 ${isPending ? 'opacity-50' : 'opacity-100'}`}
       >
         <TooltipProvider>
-          <Table>
+          {/* Fixed layout, so the declared column widths bind instead of being
+              recomputed from whatever the rows happen to contain. The title
+              is the only column without a width, which is how the surplus
+              reaches it and nothing else. */}
+          <Table
+            className="table-fixed"
+            style={{ minWidth: tableMinWidth(columns) }}
+          >
             <TableHeader>
               <TableRow className="border-b bg-gray-50 hover:bg-gray-50">
                 {columns.map((col) => (
                   <TableHead
                     key={col.id}
-                    className={`${col.widthClass} ${col.minWidthClass || ''} ${ALIGN_CLASS[col.align ?? ''] ?? ''} ${col.id === 'detail' ? STICKY_DETAIL_CELL + ' bg-gray-50' : ''} h-10 px-3 text-xs font-medium tracking-wider text-muted-foreground uppercase`}
+                    style={{ width: col.flexible ? undefined : col.width }}
+                    className={`${ALIGN_CLASS[col.align ?? ''] ?? ''} ${col.id === 'detail' ? STICKY_DETAIL_CELL + ' bg-gray-50' : ''} h-10 px-3 text-xs font-medium tracking-wider text-muted-foreground uppercase`}
                   >
                     {col.id === 'detail' ? (
                       // The rail carries no filter or sort, but the header cell

@@ -7,8 +7,19 @@ export interface ColumnDef {
   sortKeys?: { asc: string; desc: string }
   filterParam?: string
   filterType?: 'pill' | 'yearRange' | 'simpleSelect' | 'hierarchy'
-  widthClass: string
-  minWidthClass?: string
+  /**
+   * Column width in px. The table runs on `table-layout: fixed`, so this is
+   * taken exactly rather than treated as a hint the browser may overrule from
+   * whatever happens to be in the cells.
+   */
+  width: number
+  /**
+   * The one column that declares no width and absorbs whatever the table has
+   * over its minimum, so its `width` is a floor rather than an exact value.
+   * Only the title is flexible: it is the column whose content has no upper
+   * bound, and the only one that gains anything from being wider.
+   */
+  flexible?: true
   align?: 'left' | 'right' | 'center'
 }
 
@@ -21,7 +32,7 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
     id: 'symbol',
     label: 'Symbol',
     defaultVisible: true,
-    widthClass: 'w-[140px]',
+    width: 140,
     align: 'left',
   },
   {
@@ -33,15 +44,15 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
     defaultVisible: false,
     filterParam: 'organ',
     filterType: 'pill',
-    widthClass: 'w-[80px]',
+    width: 80,
     align: 'left',
   },
   {
     id: 'title',
     label: 'Title',
     defaultVisible: true,
-    widthClass: 'w-auto',
-    minWidthClass: 'min-w-[200px]',
+    width: 200,
+    flexible: true,
     align: 'left',
   },
   {
@@ -51,7 +62,7 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
     sortKeys: { asc: 'year_asc', desc: 'year_desc' },
     filterParam: 'start_year',
     filterType: 'yearRange',
-    widthClass: 'w-[70px]',
+    width: 70,
     align: 'left',
   },
   {
@@ -64,8 +75,7 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
     },
     filterParam: 'entity',
     filterType: 'pill',
-    widthClass: 'w-auto',
-    minWidthClass: 'min-w-[150px]',
+    width: 150,
     align: 'left',
   },
   {
@@ -76,7 +86,7 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
     // border on each side, inside the cell's own px-3. Nothing wider, because
     // this is the one column that never scrolls out of view — its width comes
     // off the visible area at every scroll position.
-    widthClass: 'w-[48px]',
+    width: 48,
     align: 'center',
   },
   {
@@ -85,8 +95,7 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
     defaultVisible: false,
     filterParam: 'subject',
     filterType: 'pill',
-    widthClass: 'max-w-[200px]',
-    minWidthClass: 'min-w-[150px]',
+    width: 200,
     align: 'left',
   },
   {
@@ -102,8 +111,7 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
     defaultVisible: false,
     filterParam: 'budget_part',
     filterType: 'hierarchy',
-    widthClass: 'w-[260px]',
-    minWidthClass: 'min-w-[200px]',
+    width: 260,
     align: 'left',
   },
   {
@@ -115,7 +123,7 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
     defaultVisible: false,
     filterParam: 'document_type',
     filterType: 'pill',
-    widthClass: 'w-[100px]',
+    width: 100,
     align: 'left',
   },
   {
@@ -124,8 +132,7 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
     defaultVisible: false,
     filterParam: 'agenda_item',
     filterType: 'pill',
-    widthClass: 'w-auto',
-    minWidthClass: 'min-w-[150px]',
+    width: 150,
     align: 'left',
   },
   {
@@ -148,7 +155,7 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
     filterType: 'pill',
     // Wide enough for "# ENTITIES" plus the sort chevron and the filter funnel;
     // the circles themselves sit at the right edge, against the Details rail.
-    widthClass: 'w-[142px]',
+    width: 142,
     align: 'right',
   },
 ]
@@ -160,6 +167,20 @@ export const DEFAULT_VISIBLE_COLUMNS = new Set(
 export const TOGGLEABLE_COLUMNS = COLUMN_DEFINITIONS.filter(
   (c) => c.id !== 'detail'
 )
+
+/**
+ * The table's own minimum width: every visible column at its declared width,
+ * with the flexible column at its floor. Above this the table is w-full and
+ * the surplus goes to the flexible column; below it the table holds here and
+ * the wrapper scrolls sideways.
+ *
+ * Summed over the visible columns rather than all of them. A constant sized
+ * for the full set would put a scrollbar under the default view, where four
+ * columns are on.
+ */
+export function tableMinWidth(columns: ColumnDef[]): number {
+  return columns.reduce((total, col) => total + col.width, 0)
+}
 
 /**
  * Whether this column's filter currently holds a value.
