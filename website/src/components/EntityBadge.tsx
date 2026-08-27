@@ -38,6 +38,13 @@ interface EntityBadgeProps {
    */
   foundational?: boolean
   onClick?: () => void
+  /**
+   * Let the chip shrink and ellipsize instead of holding its full width.
+   * For the fixed-width table cells: a badge that will not yield pushes the
+   * "+N" overflow count out of the cell, and a clipped count reads as a
+   * smaller number rather than as a truncation.
+   */
+  truncate?: boolean
   className?: string
 }
 
@@ -45,6 +52,7 @@ export function EntityBadge({
   entity,
   entityLong,
   onClick,
+  truncate,
   className = '',
 }: EntityBadgeProps) {
   // `onClick` present ⇒ Chip renders a real <button>: focusable, with the
@@ -54,7 +62,11 @@ export function EntityBadge({
     <Chip
       density="dense"
       onClick={onClick}
-      className={cn('shrink-0 whitespace-nowrap', className)}
+      truncate={truncate}
+      className={cn(
+        truncate ? 'shrink' : 'shrink-0 whitespace-nowrap',
+        className
+      )}
     >
       {entity}
     </Chip>

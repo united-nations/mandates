@@ -609,12 +609,15 @@ function CellContent({
             {isFoundational(entity, foundational) && <FoundationalTag />}
           </span>
         ) : (
+          // In the cell, so it truncates — the badges yield, the "+N" beside
+          // them does not. See the comment on the overflow row below.
           <EntityBadge
             key={entity}
             entity={entity}
             entityLong={longName}
             foundational={isFoundational(entity, foundational)}
             onClick={() => onFacetClick('entity', entity)}
+            truncate
           />
         )
       }
@@ -628,6 +631,11 @@ function CellContent({
       }
 
       return (
+        // The "+N" is the one thing here that cannot be guessed from what is
+        // shown, and a clipped count reads as a smaller number rather than as
+        // a truncation — "+21" cut short is "+2". So it holds its width and
+        // the badges give theirs up; a badge cut short still shows what kind
+        // of thing it is.
         <HoverCard openDelay={100} closeDelay={100}>
           <HoverCardTrigger asChild>
             <div className="flex cursor-default items-center gap-1 overflow-hidden">
