@@ -51,7 +51,13 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
     id: 'title',
     label: 'Title',
     defaultVisible: true,
-    width: 200,
+    // 40 characters of title, at roughly 6.33px a character plus the cell's
+    // 24px of padding. 200px was about 28 characters, which stops inside
+    // "Report of the Secretary-General on" - a column at that floor would
+    // show rows reading identically. Distinguishability climbs steeply to 35
+    // characters and then flattens, so 40 buys the margin for titles with
+    // acronyms and digits cheaply where 60 would not.
+    width: 280,
     flexible: true,
     align: 'left',
   },
