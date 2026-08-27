@@ -588,7 +588,15 @@ function CellContent({
       const foundational = mandate.foundational_entities ?? []
       const entities = citingEntities(mandate)
       if (entities.length === 0) return null
-      const maxShow = 2
+      // One badge, not two. Two dividing a 150px cell left each showing two
+      // characters of its acronym — "OD…", "C…" — and an acronym cut that
+      // short is not a shortened answer the way a shortened phrase is, it is
+      // no answer at all. One stays whole and the count absorbs the rest.
+      //
+      // Fixed at one rather than measured: how many fit depends on how wide
+      // they render, so the choice is a fixed number or a layout measurement,
+      // and one column of one fixed width does not earn a measurement layer.
+      const maxShow = 1
       const visible = entities.slice(0, maxShow)
       const remaining = entities.length - maxShow
 
@@ -609,8 +617,11 @@ function CellContent({
             {isFoundational(entity, foundational) && <FoundationalTag />}
           </span>
         ) : (
-          // In the cell, so it truncates — the badges yield, the "+N" beside
-          // them does not. See the comment on the overflow row below.
+          // Still truncating, but with one badge to a cell it bites only on
+          // the codes that are phrases rather than acronyms — the longest in
+          // the reference list is "SESG-Horn of Africa", which does not fit
+          // a 150px cell whole. Those shorten legibly, acronyms now have the
+          // room not to, and the badge's tooltip carries the full name.
           <EntityBadge
             key={entity}
             entity={entity}
@@ -634,8 +645,7 @@ function CellContent({
         // The "+N" is the one thing here that cannot be guessed from what is
         // shown, and a clipped count reads as a smaller number rather than as
         // a truncation — "+21" cut short is "+2". So it holds its width and
-        // the badges give theirs up; a badge cut short still shows what kind
-        // of thing it is.
+        // the badge gives its own up on the rare row where something has to.
         <HoverCard openDelay={100} closeDelay={100}>
           <HoverCardTrigger asChild>
             <div className="flex cursor-default items-center gap-1 overflow-hidden">
