@@ -44,7 +44,7 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
     defaultVisible: false,
     filterParam: 'organ',
     filterType: 'pill',
-    width: 80,
+    width: 84,
     align: 'left',
   },
   {
@@ -68,7 +68,11 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
     sortKeys: { asc: 'year_asc', desc: 'year_desc' },
     filterParam: 'start_year',
     filterType: 'yearRange',
-    width: 70,
+    // Sized for the header, not the cells: "YEAR" with its sort chevron and
+    // filter funnel is wider than four digits. Headers do not wrap and the
+    // cell does not clip them, so a column's floor is whichever of its header
+    // and its content needs more — here that is the header.
+    width: 90,
     align: 'left',
   },
   {
@@ -129,7 +133,11 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
     defaultVisible: false,
     filterParam: 'document_type',
     filterType: 'pill',
-    width: 100,
+    // The header governs here too, and by a wide margin: "DOCUMENT TYPE"
+    // plus the filter funnel needs half again what the values under it do.
+    // Shortening this to fit the content puts the header over the next
+    // column.
+    width: 148,
     align: 'left',
   },
   {
