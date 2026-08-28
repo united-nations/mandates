@@ -677,15 +677,17 @@ interface SearchTerm {
 }
 
 /**
- * Comparable form for the paragraph search: the query and the paragraph text
- * both pass through here before a substring match. UN prose spells the same
- * word more than one way — curly and straight apostrophes, non-breaking and
- * ASCII hyphens, a non-breaking space inside "Rule 32" — with both forms live
- * in this corpus, so the reader's keyboard form has to reach all of them.
- * Every fold below answers occurrences counted in the paragraph text itself;
- * characters counted at zero there are deliberately not handled.
+ * The folds that run before a query is tokenized: case, invisible
+ * characters, quotes, whitespace. Each answers occurrences counted in the
+ * paragraph text itself — UN prose spells the same word more than one way
+ * (curly and straight apostrophes coexist in the same corpus; "Rule 32" can
+ * carry a non-breaking space) — and characters counted at zero there are
+ * deliberately not handled. Quotes belong in this stage because phone
+ * keyboards silently smarten `"` into curly quotes, and folding them before
+ * tokenizing is what keeps phrase syntax working for those readers. Dashes
+ * are deliberately deferred — see foldDashes.
  */
-function searchFold(text: string): string {
+function foldBeforeTokenize(text: string): string {
   return (
     text
       .toLowerCase()
@@ -697,18 +699,33 @@ function searchFold(text: string): string {
       // Curly quotes and apostrophes -> their straight keyboard forms.
       .replace(/[\u2018\u2019]/g, "'")
       .replace(/[\u201C\u201D]/g, '"')
-      // U+2010 hyphen, U+2011 non-breaking hyphen, en dash, em dash — all
-      // four occur. Escapes because three of them are indistinguishable from
-      // an ASCII hyphen in an editor. Folding the dashes in with the hyphens
-      // is the aggressive half of this class; it trades a visible,
-      // dismissable false positive for an invisible miss.
-      .replace(/[\u2010\u2011\u2013\u2014]/g, '-')
       // \s covers NBSP and the thin-space family, and collapses doubles.
       .replace(/\s+/g, ' ')
       .trim()
   )
 }
 
+/**
+ * The dash fold, applied to each term only after the tokenizer has consumed
+ * a leading exclusion minus. U+2010 hyphen, U+2011 non-breaking hyphen, en
+ * dash, em dash — all four occur in the corpus; escapes because three of
+ * them are indistinguishable from an ASCII hyphen in an editor. Folding the
+ * dashes in with the hyphens trades a visible, dismissable false positive
+ * for an invisible miss, and folding them this late is what stops a pasted
+ * leading dash from reading as an operator (see parseSearchQuery).
+ */
+function foldDashes(text: string): string {
+  return text.replace(/[\u2010\u2011\u2013\u2014]/g, '-')
+}
+
+/**
+ * Comparable form for paragraph text: both fold stages. The query side runs
+ * the same two stages, but split around tokenization — parseSearchQuery
+ * says why the order matters there.
+ */
+function searchFold(text: string): string {
+  return foldDashes(foldBeforeTokenize(text))
+}
 /**
  * Parse a search query into terms ready to match. Three conventions, the
  * ones every search box has already taught readers: whitespace-separated
@@ -717,23 +734,26 @@ function searchFold(text: string): string {
  * while it is still being typed); a leading minus excludes its term or
  * phrase.
  *
- * The whole query is folded before it is tokenized, and the order matters:
- * phone keyboards silently smarten `"` into curly quotes, and folding first
- * is what keeps phrase syntax working for those readers — the failure the
- * other order produces (quote syntax dead on mobile, terms that require a
- * literal `"` in the text) is invisible. Folding first also applies the
- * folds inside quoted phrases for free: quoting promises adjacency, not
- * byte-identity, so "follow-up" still finds the non-breaking-hyphen
- * spelling. The accepted cost is that folded punctuation pasted from a
- * document can act as syntax. A minus or a quote pair with nothing behind
- * it is not yet a term and contributes nothing.
+ * The fold is split around tokenization, and the split carries the syntax
+ * rules. Quotes fold before tokenizing: phone keyboards silently smarten
+ * `"` into curly quotes, and folding first is what keeps phrase syntax
+ * working for those readers. Dashes fold after, per term: no keyboard
+ * smartens a leading minus, so deferring costs a typed query nothing, and
+ * folding earlier would let an en dash pasted flush against a word read as
+ * an exclusion the reader never typed. Both stages still apply inside
+ * quoted phrases — quoting promises adjacency, not byte-identity, so
+ * "follow-up" finds the non-breaking-hyphen spelling. A minus or a quote
+ * pair with nothing behind it is not yet a term, and a term that folds to
+ * a bare minus (a pasted dash standing between words) is separator
+ * punctuation, not a word: both contribute nothing.
  */
 function parseSearchQuery(query: string): SearchTerm[] {
-  const folded = searchFold(query)
+  const folded = foldBeforeTokenize(query)
   const terms: SearchTerm[] = []
   let i = 0
   while (i < folded.length) {
-    // After the fold, the only whitespace left is single ASCII spaces.
+    // After the pre-tokenize fold, the only whitespace left is single
+    // ASCII spaces.
     if (folded[i] === ' ') {
       i++
       continue
@@ -753,8 +773,8 @@ function parseSearchQuery(query: string): SearchTerm[] {
       while (i < folded.length && folded[i] !== ' ') i++
       term = folded.slice(start, i)
     }
-    term = term.trim()
-    if (term) terms.push({ term, exclude })
+    term = foldDashes(term.trim())
+    if (term && term !== '-') terms.push({ term, exclude })
   }
   return terms
 }
