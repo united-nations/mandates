@@ -677,7 +677,7 @@ interface SearchTerm {
 }
 
 /**
- * Comparable form for the paragraph search: query terms and paragraph text
+ * Comparable form for the paragraph search: the query and the paragraph text
  * both pass through here before a substring match. UN prose spells the same
  * word more than one way — curly and straight apostrophes, non-breaking and
  * ASCII hyphens, a non-breaking space inside "Rule 32" — with both forms live
@@ -710,44 +710,50 @@ function searchFold(text: string): string {
 }
 
 /**
- * Parse a search query into folded terms. Three conventions, the ones every
- * search box has already taught readers: whitespace-separated terms are all
- * required; a double-quoted span is one exact phrase (an unclosed quote runs
- * to the end of the query, so a phrase narrows sensibly while it is still
- * being typed); a leading minus excludes its term or phrase.
+ * Parse a search query into terms ready to match. Three conventions, the
+ * ones every search box has already taught readers: whitespace-separated
+ * terms are all required; a double-quoted span is one exact phrase (an
+ * unclosed quote runs to the end of the query, so a phrase narrows sensibly
+ * while it is still being typed); a leading minus excludes its term or
+ * phrase.
  *
- * Only ASCII `"` and `-` act as syntax, and only at the start of a term —
- * the query is parsed raw and each term folded afterwards, so unicode quotes
- * or dashes pasted from a document are text to find, never operators. Quoted
- * phrases fold like everything else: quoting promises adjacency, not
+ * The whole query is folded before it is tokenized, and the order matters:
+ * phone keyboards silently smarten `"` into curly quotes, and folding first
+ * is what keeps phrase syntax working for those readers — the failure the
+ * other order produces (quote syntax dead on mobile, terms that require a
+ * literal `"` in the text) is invisible. Folding first also applies the
+ * folds inside quoted phrases for free: quoting promises adjacency, not
  * byte-identity, so "follow-up" still finds the non-breaking-hyphen
- * spelling. A minus or a quote pair with nothing behind it is not yet a term
- * and contributes nothing.
+ * spelling. The accepted cost is that folded punctuation pasted from a
+ * document can act as syntax. A minus or a quote pair with nothing behind
+ * it is not yet a term and contributes nothing.
  */
 function parseSearchQuery(query: string): SearchTerm[] {
+  const folded = searchFold(query)
   const terms: SearchTerm[] = []
   let i = 0
-  while (i < query.length) {
-    if (/\s/.test(query[i])) {
+  while (i < folded.length) {
+    // After the fold, the only whitespace left is single ASCII spaces.
+    if (folded[i] === ' ') {
       i++
       continue
     }
     let exclude = false
-    if (query[i] === '-') {
+    if (folded[i] === '-') {
       exclude = true
       i++
     }
-    let raw: string
-    if (query[i] === '"') {
-      const close = query.indexOf('"', i + 1)
-      raw = close === -1 ? query.slice(i + 1) : query.slice(i + 1, close)
-      i = close === -1 ? query.length : close + 1
+    let term: string
+    if (folded[i] === '"') {
+      const close = folded.indexOf('"', i + 1)
+      term = close === -1 ? folded.slice(i + 1) : folded.slice(i + 1, close)
+      i = close === -1 ? folded.length : close + 1
     } else {
       const start = i
-      while (i < query.length && !/\s/.test(query[i])) i++
-      raw = query.slice(start, i)
+      while (i < folded.length && folded[i] !== ' ') i++
+      term = folded.slice(start, i)
     }
-    const term = searchFold(raw)
+    term = term.trim()
     if (term) terms.push({ term, exclude })
   }
   return terms
