@@ -1282,9 +1282,11 @@ export function ParagraphsSection({
     [allParagraphs]
   )
 
-  // Frontend filtering of paragraphs
-  const paragraphs = useMemo(() => {
-    if (!allParagraphs) return allParagraphs
+  // Frontend filtering of paragraphs. Returns the searched list the section
+  // renders, plus the query-blind view the heading count is computed from.
+  const { paragraphs, headingCountElements } = useMemo(() => {
+    if (!allParagraphs)
+      return { paragraphs: allParagraphs, headingCountElements: allParagraphs }
 
     // Helper function to check if a paragraph matches the current filters
     const paragraphMatchesFilters = (paragraph: Paragraph): boolean => {
@@ -1472,8 +1474,13 @@ export function ParagraphsSection({
     // query must never switch on — see the search gate below.
     const hasActiveFilters = hasEnhancedFilters || hasQuery
 
-    // Helper function to determine if a paragraph should be included (with parent-child logic)
-    const shouldIncludeParagraph = (index: number): boolean => {
+    // Helper function to determine if a paragraph should be included (with
+    // parent-child logic). ignoreQuery serves the heading count's query-blind
+    // pass below; every other caller applies the search.
+    const shouldIncludeParagraph = (
+      index: number,
+      ignoreQuery = false
+    ): boolean => {
       const paragraph = allParagraphs[index]
 
       // Hide structural chrome and the document title (duplicates the H1).
@@ -1499,7 +1506,11 @@ export function ParagraphsSection({
       // paragraphs that do not contain the query — a spurious hit the reader
       // cannot check, where a missed match is visible on the page. It also
       // makes the search intersect with the dropdowns rather than union.
-      if (hasQuery && !matchesSearchTerms(paragraph.text, searchTerms)) {
+      if (
+        !ignoreQuery &&
+        hasQuery &&
+        !matchesSearchTerms(paragraph.text, searchTerms)
+      ) {
         return false
       }
 
@@ -1571,7 +1582,18 @@ export function ParagraphsSection({
       }
     )
 
-    return filtered
+    // The heading count's input: the same pass with the search query ignored,
+    // so the dropdowns move the heading number and the search does not (its
+    // match count reports beside the field instead). Headings are omitted
+    // because the counts never count them.
+    const headingCountElements = hasQuery
+      ? allParagraphs.filter(
+          (paragraph: Paragraph, index: number) =>
+            paragraph.type !== 'heading' && shouldIncludeParagraph(index, true)
+        )
+      : filtered
+
+    return { paragraphs: filtered, headingCountElements }
   }, [
     allParagraphs,
     paragraphFilter,
@@ -2444,19 +2466,32 @@ export function ParagraphsSection({
   // counted as such; the Digital Library arm carries body paragraphs with no
   // paragraph_type at all, so those are counted plainly rather than reported
   // as "0 operative paragraphs".
-  const renderedOperativeCount = (paragraphs || []).filter(
+  //
+  // The count derives from the dropdown-filtered view and deliberately
+  // ignores the search query. The heading asks what is in the document; a
+  // count of what matched a query answers a different question in the same
+  // slot, and that number is reported beside the search field instead. So
+  // the dropdowns move this number and the search does not — do not point
+  // these back at the searched `paragraphs` list.
+  const countsAsBody = (p: Paragraph) =>
+    p.type !== 'heading' && p.type !== 'title'
+  const headingOperativeCount = (headingCountElements || []).filter(
     (p: Paragraph) => p.paragraph_type === 'operative'
   ).length
-  const renderedBodyCount = (paragraphs || []).filter(
-    (p: Paragraph) => p.type !== 'heading' && p.type !== 'title'
+  const headingBodyCount = (headingCountElements || []).filter(
+    countsAsBody
   ).length
-  const headingCount = renderedOperativeCount || renderedBodyCount
+  const headingCount = headingOperativeCount || headingBodyCount
   const headingHint =
     headingCount > 0
-      ? `${headingCount} ${renderedOperativeCount ? 'operative ' : ''}paragraph${
+      ? `${headingCount} ${headingOperativeCount ? 'operative ' : ''}paragraph${
           headingCount === 1 ? '' : 's'
         }`
       : undefined
+
+  // What the search matched: the same body-row population, counted over the
+  // searched list.
+  const matchedBodyCount = (paragraphs || []).filter(countsAsBody).length
 
   return (
     <div className="space-y-4">
@@ -2484,8 +2519,8 @@ export function ParagraphsSection({
                 count above deliberately does not move with the query. */}
             {hasSearchQuery && (
               <span className="text-xs text-gray-500">
-                {renderedBodyCount.toLocaleString()} matching paragraph
-                {renderedBodyCount === 1 ? '' : 's'}
+                {matchedBodyCount.toLocaleString()} matching paragraph
+                {matchedBodyCount === 1 ? '' : 's'}
               </span>
             )}
           </div>
