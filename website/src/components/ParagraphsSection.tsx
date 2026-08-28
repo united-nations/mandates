@@ -21,6 +21,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton'
 import { Chip } from '@/components/ui/chip'
 import { ChartSearchInput } from '@/components/ui/chart-search-input'
+import { DisclosurePopover } from '@/components/ui/disclosure-popover'
 import {
   DetailDisclaimer,
   DetailSectionHeading,
@@ -2424,6 +2425,29 @@ export function ParagraphsSection({
               value={searchQuery}
               onChange={setSearchQuery}
             />
+            {/* The same ? affordance the section headings carry, on the shared
+                DisclosurePopover; the headings' own DetailHowTo stays
+                unexported and baseline-bound, so this circle is instantiated
+                here and centers against the field instead. The panel exists
+                mainly for the last rule, which a reader cannot guess. */}
+            <DisclosurePopover
+              label="How search works"
+              side="bottom"
+              align="start"
+              sideOffset={6}
+              trigger="?"
+              triggerClassName="inline-block h-4 w-4 shrink-0 cursor-pointer overflow-hidden rounded-full border border-gray-300 p-0 text-center text-[10px] leading-[0.875rem] font-semibold text-gray-500 select-none hover:border-un-blue hover:text-un-blue focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none"
+            >
+              <ul className="list-disc space-y-1 pl-4">
+                <li>Terms separated by spaces must all appear.</li>
+                <li>Use &quot;quotes&quot; to match an exact phrase.</li>
+                <li>Start a term with a minus to exclude it.</li>
+                <li>
+                  Only a typed minus excludes. A dash pasted from a document is
+                  searched as text.
+                </li>
+              </ul>
+            </DisclosurePopover>
             {/* The match count reports here, beside the control it answers,
                 in the grammar of the app's other search fields. The heading
                 count above deliberately does not move with the query. */}
