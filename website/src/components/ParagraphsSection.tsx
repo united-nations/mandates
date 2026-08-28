@@ -669,6 +669,97 @@ function findTitleEchoIndex(paragraphs: Paragraph[] | null): number | null {
   return null
 }
 
+/** One parsed unit of the paragraph search: a folded term, required or excluded. */
+interface SearchTerm {
+  term: string
+  exclude: boolean
+}
+
+/**
+ * Comparable form for the paragraph search: query terms and paragraph text
+ * both pass through here before a substring match. UN prose spells the same
+ * word more than one way — curly and straight apostrophes, non-breaking and
+ * ASCII hyphens, a non-breaking space inside "Rule 32" — with both forms live
+ * in this corpus, so the reader's keyboard form has to reach all of them.
+ * Every fold below answers occurrences counted in the paragraph text itself;
+ * characters counted at zero there are deliberately not handled.
+ */
+function searchFold(text: string): string {
+  return (
+    text
+      .toLowerCase()
+      // Soft hyphens (U+00AD) render as nothing and zero-width spaces
+      // (U+200B) as no width, so the reader types the word without them:
+      // deleted, never substituted for. Escapes, not literals — both
+      // characters are invisible in source.
+      .replace(/[\u00AD\u200B]/g, '')
+      // Curly quotes and apostrophes -> their straight keyboard forms.
+      .replace(/[\u2018\u2019]/g, "'")
+      .replace(/[\u201C\u201D]/g, '"')
+      // U+2010 hyphen, U+2011 non-breaking hyphen, en dash, em dash — all
+      // four occur. Escapes because three of them are indistinguishable from
+      // an ASCII hyphen in an editor. Folding the dashes in with the hyphens
+      // is the aggressive half of this class; it trades a visible,
+      // dismissable false positive for an invisible miss.
+      .replace(/[\u2010\u2011\u2013\u2014]/g, '-')
+      // \s covers NBSP and the thin-space family, and collapses doubles.
+      .replace(/\s+/g, ' ')
+      .trim()
+  )
+}
+
+/**
+ * Parse a search query into folded terms. Three conventions, the ones every
+ * search box has already taught readers: whitespace-separated terms are all
+ * required; a double-quoted span is one exact phrase (an unclosed quote runs
+ * to the end of the query, so a phrase narrows sensibly while it is still
+ * being typed); a leading minus excludes its term or phrase.
+ *
+ * Only ASCII `"` and `-` act as syntax, and only at the start of a term —
+ * the query is parsed raw and each term folded afterwards, so unicode quotes
+ * or dashes pasted from a document are text to find, never operators. Quoted
+ * phrases fold like everything else: quoting promises adjacency, not
+ * byte-identity, so "follow-up" still finds the non-breaking-hyphen
+ * spelling. A minus or a quote pair with nothing behind it is not yet a term
+ * and contributes nothing.
+ */
+function parseSearchQuery(query: string): SearchTerm[] {
+  const terms: SearchTerm[] = []
+  let i = 0
+  while (i < query.length) {
+    if (/\s/.test(query[i])) {
+      i++
+      continue
+    }
+    let exclude = false
+    if (query[i] === '-') {
+      exclude = true
+      i++
+    }
+    let raw: string
+    if (query[i] === '"') {
+      const close = query.indexOf('"', i + 1)
+      raw = close === -1 ? query.slice(i + 1) : query.slice(i + 1, close)
+      i = close === -1 ? query.length : close + 1
+    } else {
+      const start = i
+      while (i < query.length && !/\s/.test(query[i])) i++
+      raw = query.slice(start, i)
+    }
+    const term = searchFold(raw)
+    if (term) terms.push({ term, exclude })
+  }
+  return terms
+}
+
+/** Whether one paragraph's text satisfies every parsed search term. */
+function matchesSearchTerms(text: string, terms: SearchTerm[]): boolean {
+  const folded = searchFold(text)
+  return terms.every(({ term, exclude }) =>
+    exclude ? !folded.includes(term) : folded.includes(term)
+  )
+}
+
 /** Indentation for nested list levels. */
 function getIndentClass(level: number): string {
   if (level <= 1) return ''
