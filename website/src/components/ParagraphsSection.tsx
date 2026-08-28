@@ -20,6 +20,7 @@ import {
 
 import { Skeleton } from '@/components/ui/skeleton'
 import { Chip } from '@/components/ui/chip'
+import { ChartSearchInput } from '@/components/ui/chart-search-input'
 import {
   DetailDisclaimer,
   DetailSectionHeading,
@@ -811,24 +812,36 @@ export function ParagraphsSection({
   const [activeHeadingId, setActiveHeadingId] = useState<string | null>(null)
   const [isMobileTOCOpen, setIsMobileTOCOpen] = useState(false)
   const [showFloatingTOC, setShowFloatingTOC] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
 
   const isMobile = useIsMobile()
   const paragraphsTitleRef = useRef<HTMLDivElement>(null)
+
+  // Parsed once per keystroke. The paragraph filter below depends on the
+  // parsed form, so a query that parses to nothing (whitespace, a lone
+  // minus) is not a search at all.
+  const searchTerms = useMemo(
+    () => parseSearchQuery(searchQuery),
+    [searchQuery]
+  )
+  const hasSearchQuery = searchTerms.length > 0
 
   // Check if any filters are active (excluding paragraph type which defaults to 'operative')
   const hasActiveFilters = useMemo(() => {
     return (
       deliverableFilter !== 'all' ||
       assigneeFilter !== 'all' ||
-      actionVerbFilter !== 'all'
+      actionVerbFilter !== 'all' ||
+      hasSearchQuery
     )
-  }, [deliverableFilter, assigneeFilter, actionVerbFilter])
+  }, [deliverableFilter, assigneeFilter, actionVerbFilter, hasSearchQuery])
 
   // Reset all filters to default
   const resetFilters = useCallback(() => {
     setDeliverableFilter('all')
     setAssigneeFilter('all')
     setActionVerbFilter('all')
+    setSearchQuery('')
     // Keep paragraph filter as 'operative' since that's the default
   }, [])
 
@@ -1449,9 +1462,15 @@ export function ParagraphsSection({
       assigneeFilter !== 'all' ||
       actionVerbFilter !== 'all'
 
-    // Only the mandate-attribute filters narrow the list; the base view shows
-    // every content element (operative + neutral body + annex content).
-    const hasActiveFilters = hasEnhancedFilters
+    const hasQuery = searchTerms.length > 0
+
+    // The mandate-attribute filters and the search query both narrow the list
+    // (and both gate heading retention below); with neither active the base
+    // view shows every content element (operative + neutral body + annex
+    // content). The two values are deliberately not the same thing:
+    // hasEnhancedFilters alone gates the parent/child widening, which the
+    // query must never switch on — see the search gate below.
+    const hasActiveFilters = hasEnhancedFilters || hasQuery
 
     // Helper function to determine if a paragraph should be included (with parent-child logic)
     const shouldIncludeParagraph = (index: number): boolean => {
@@ -1469,6 +1488,18 @@ export function ParagraphsSection({
         paragraph.paragraph_type === 'preambular' &&
         !isAnnexSection(paragraph.section)
       ) {
+        return false
+      }
+
+      // The search gate. Its position is load-bearing: it sits before the
+      // early exit below and before the parent/child widening, because the
+      // search matches only the paragraph's own text. The widening exists so
+      // that an attribute annotated on one element of a clause returns the
+      // whole readable clause; letting the search inherit it would return
+      // paragraphs that do not contain the query — a spurious hit the reader
+      // cannot check, where a missed match is visible on the page. It also
+      // makes the search intersect with the dropdowns rather than union.
+      if (hasQuery && !matchesSearchTerms(paragraph.text, searchTerms)) {
         return false
       }
 
@@ -1548,6 +1579,7 @@ export function ParagraphsSection({
     assigneeFilter,
     actionVerbFilter,
     titleEchoIndex,
+    searchTerms,
   ])
 
   // Build TOC from paragraphs
@@ -2433,6 +2465,32 @@ export function ParagraphsSection({
           What&rsquo;s in this document?
         </DetailSectionHeading>
 
+        {/* Search — its own line between the heading and the filter row, so
+            the section reads name it, count it, search it, filter it. It
+            filters the paragraphs rendered below; matching runs over the raw
+            text, so nothing can be hidden that the reader could not otherwise
+            see. Gated on the list having content — but an active query keeps
+            the field mounted, or a query matching nothing would unmount the
+            control it was typed into. */}
+        {(hasSearchQuery || (paragraphs && paragraphs.length > 0)) && (
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <ChartSearchInput
+              placeholder="Search these paragraphs..."
+              value={searchQuery}
+              onChange={setSearchQuery}
+            />
+            {/* The match count reports here, beside the control it answers,
+                in the grammar of the app's other search fields. The heading
+                count above deliberately does not move with the query. */}
+            {hasSearchQuery && (
+              <span className="text-xs text-gray-500">
+                {renderedBodyCount.toLocaleString()} matching paragraph
+                {renderedBodyCount === 1 ? '' : 's'}
+              </span>
+            )}
+          </div>
+        )}
+
         {/* Filters — their own line under the heading, in the chip language of
             the sections above. Omitted entirely when no dropdown has options;
             each dropdown is additionally hidden on its own when its own option
@@ -2778,6 +2836,14 @@ export function ParagraphsSection({
                   </section>
                 ))}
               </div>
+            ) : hasSearchQuery ? (
+              /* Search-miss state, in the register of the app's other search
+                 fields. Distinct from the no-paragraphs card below, which is
+                 a claim about extraction — false here, where extraction
+                 succeeded and the query simply missed. */
+              <p className="text-sm text-gray-500">
+                No paragraphs match &ldquo;{searchQuery.trim()}&rdquo;.
+              </p>
             ) : (
               <div className="rounded-lg bg-muted/30 p-3">
                 <p className="text-sm leading-relaxed text-muted-foreground italic">
