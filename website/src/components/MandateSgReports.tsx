@@ -178,7 +178,8 @@ export function MandateSgReports({ reports }: { reports: MandatedSgReport[] }) {
 
       <DetailDisclaimer>
         Identified automatically from the metadata in each report&rsquo;s UN
-        Digital Library catalogue record.
+        Digital Library catalogue record. This can be an incomplete picture of
+        which reports were submitted under this mandate.
       </DetailDisclaimer>
     </section>
   )
