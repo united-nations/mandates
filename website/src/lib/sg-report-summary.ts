@@ -13,7 +13,39 @@
  * a date the span is null and the classifier returns null — the sentence
  * drops its year clause and the tiles that would state a date-derived fact do
  * not render.
+ *
+ * The tile rules below are dormant while
+ * SUMMARISE_SG_REPORTS_AS_TILES_ON_DETAIL_PAGE is off. They are kept, not
+ * deleted, for the reason that constant gives.
  */
+
+/**
+ * Whether the reports block states its figures as tiles above the list, as
+ * well as in the summary sentence. The tiles are one unit — the Reports,
+ * Span and Cadence tiles, and the threshold tests that decide which of them
+ * has a finding to state — and they are gated together because they are one
+ * rendering of the block. Gated separately they would produce a row of one
+ * tile stating a figure the sentence directly above it already states, which
+ * is not a design anyone chose.
+ *
+ * Off. The count now sits beside the heading, in the slot every sibling
+ * section uses, so a Reports tile is the third statement of the same number
+ * in the space of a few lines. The tiles have only figures to show, and the
+ * sentence already says every figure they carry, in words and in less space.
+ *
+ * Nothing is lost while it is off. The summary sentence states the count,
+ * the year span and the annex qualification in prose, and the row list
+ * carries every per-report fact the tiles summarised.
+ *
+ * WHAT TURNS IT BACK ON: the SG report text enrichment landing, which would
+ * give the tiles something to say that the sentence and the list do not
+ * already say. WHEN THE BRANCH GOES: if that has not happened by the close
+ * of this arc of work, delete this constant, the SgReportSummaryTiles
+ * component, and the tile thresholds and cadence classifier below together
+ * with their tests — the tiles are the only consumer of any of them. The
+ * span helper stays either way; the summary sentence uses it.
+ */
+export const SUMMARISE_SG_REPORTS_AS_TILES_ON_DETAIL_PAGE: boolean = false
 
 /**
  * The Reports tile renders only at this count or above. Measured over the

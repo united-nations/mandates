@@ -14,6 +14,7 @@ import {
   observedYearSpan,
   REPORTS_TILE_MIN_COUNT,
   SPAN_TILE_MIN_YEARS,
+  SUMMARISE_SG_REPORTS_AS_TILES_ON_DETAIL_PAGE,
 } from '@/lib/sg-report-summary'
 
 /**
@@ -21,12 +22,10 @@ import {
  * whose Digital Library catalogue record names this resolution as the one
  * they were submitted pursuant to.
  *
- * The block reads heading → summary sentence → tiles → list → footnote, and
- * the sparse rendering is the normal one: the sentence always renders, but
- * each tile renders only when its number is itself a finding (the sentence
- * already states count and span in prose), so on ~94% of visible pages no
- * tile qualifies and the tiles row is omitted entirely — that state is
- * deliberate, not degraded.
+ * The block reads heading → summary sentence → list → footnote. The tiles
+ * that used to sit between the sentence and the list are behind
+ * SUMMARISE_SG_REPORTS_AS_TILES_ON_DETAIL_PAGE, which is off; that constant
+ * carries the reasoning and the condition for bringing them back.
  *
  * The row presentation follows the version-history list — year, symbol,
  * title — because both answer "which other document should I open next".
@@ -44,8 +43,8 @@ function undlRecordUrl(recid: number): string {
 /**
  * Annex-position entries assert a different relationship — the annex, not the
  * report itself, answers the resolution. Shown as the tooltip of the row's
- * ghost chip and of the Reports tile's "via annex" sub-line; the summary
- * sentence carries the same fact in prose.
+ * ghost chip and, while the tiles are on, of the Reports tile's "via annex"
+ * sub-line; the summary sentence carries the same fact in prose.
  */
 const ANNEX_POSITION_NOTE =
   'An annex to this report, rather than the report itself, was submitted pursuant to this resolution.'
@@ -55,14 +54,8 @@ export function MandateSgReports({ reports }: { reports: MandatedSgReport[] }) {
   if (reports.length === 0) return null
 
   const n = reports.length
-  const dates = reports.map((r) => r.date_published)
-  const span = observedYearSpan(dates)
-  const cadence = classifyReportCadence(dates)
+  const span = observedYearSpan(reports.map((r) => r.date_published))
   const annexCount = reports.filter((r) => r.annex_position_only).length
-
-  const showReportsTile = n >= REPORTS_TILE_MIN_COUNT
-  const spanTile =
-    span !== null && span.years >= SPAN_TILE_MIN_YEARS ? span : null
 
   const shown = showAll ? reports : reports.slice(0, DEFAULT_SHOWN)
   const hidden = reports.length - shown.length
@@ -82,31 +75,8 @@ export function MandateSgReports({ reports }: { reports: MandatedSgReport[] }) {
         {annexPositionClause(annexCount, n)}
       </p>
 
-      {(showReportsTile || spanTile || cadence) && (
-        <div className="flex flex-wrap gap-3">
-          {showReportsTile && (
-            <SummaryTile
-              label="Reports"
-              value={String(n)}
-              sub={annexCount > 0 ? `${annexCount} via annex` : undefined}
-              subTitle={ANNEX_POSITION_NOTE}
-            />
-          )}
-          {spanTile && (
-            <SummaryTile
-              label="Span"
-              value={spanTile.label}
-              sub={`${spanTile.years} years`}
-            />
-          )}
-          {cadence && (
-            <SummaryTile
-              label="Cadence"
-              value={cadence.value}
-              sub={cadence.sub}
-            />
-          )}
-        </div>
+      {SUMMARISE_SG_REPORTS_AS_TILES_ON_DETAIL_PAGE && (
+        <SgReportSummaryTiles reports={reports} />
       )}
 
       <ul className="divide-y divide-gray-100 border-y border-gray-100">
@@ -182,6 +152,55 @@ export function MandateSgReports({ reports }: { reports: MandatedSgReport[] }) {
         which reports were submitted under this mandate.
       </DetailDisclaimer>
     </section>
+  )
+}
+
+/**
+ * The summary row: the count, the year span and the publication cadence
+ * stated as figures above the list. Every expression of the tiles lives in
+ * here — the threshold tests, the cadence classification and the tiles
+ * themselves — so SUMMARISE_SG_REPORTS_AS_TILES_ON_DETAIL_PAGE has exactly
+ * one call site to gate and the row cannot half-render.
+ *
+ * Returns null when no figure clears its threshold, which is the ordinary
+ * outcome rather than a degraded one: the sentence above already states the
+ * count and the span in prose, so a tile earns its place only where its
+ * number is itself a finding, and on ~94% of visible pages none is.
+ */
+function SgReportSummaryTiles({ reports }: { reports: MandatedSgReport[] }) {
+  const n = reports.length
+  const dates = reports.map((r) => r.date_published)
+  const span = observedYearSpan(dates)
+  const cadence = classifyReportCadence(dates)
+  const annexCount = reports.filter((r) => r.annex_position_only).length
+
+  const showReportsTile = n >= REPORTS_TILE_MIN_COUNT
+  const spanTile =
+    span !== null && span.years >= SPAN_TILE_MIN_YEARS ? span : null
+
+  if (!showReportsTile && !spanTile && !cadence) return null
+
+  return (
+    <div className="flex flex-wrap gap-3">
+      {showReportsTile && (
+        <SummaryTile
+          label="Reports"
+          value={String(n)}
+          sub={annexCount > 0 ? `${annexCount} via annex` : undefined}
+          subTitle={ANNEX_POSITION_NOTE}
+        />
+      )}
+      {spanTile && (
+        <SummaryTile
+          label="Span"
+          value={spanTile.label}
+          sub={`${spanTile.years} years`}
+        />
+      )}
+      {cadence && (
+        <SummaryTile label="Cadence" value={cadence.value} sub={cadence.sub} />
+      )}
+    </div>
   )
 }
 
