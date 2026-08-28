@@ -74,7 +74,9 @@ type ParagraphMandate = NonNullable<Paragraph['mandates']>[number]
  * `*verb*`, `<<assignee>>`, `{{mentioned entity}}`, `[[deliverable]]`. A
  * paragraph whose raw text already contains any of them cannot be marked up
  * unambiguously (the renderer's non-greedy regexes would pair the wrong
- * characters), so it is left un-highlighted. Affects ~49 of 508,923 DL rows.
+ * characters), so it is left un-highlighted. Affects ~1,700 of 724,733 DL
+ * rows, almost all of them bare asterisks; the double-character pairs are
+ * single digits (measured against the corpus, Aug 2026).
  */
 const HIGHLIGHT_DELIMITERS = ['*', '<<', '>>', '{{', '}}', '[[', ']]']
 
