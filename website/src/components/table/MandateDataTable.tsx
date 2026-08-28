@@ -509,13 +509,30 @@ function CellContent({
       const title = mandate.displayTitle || 'Untitled'
       const highlighted = mandate.highlightedFields?.title
       return (
-        <div className="leading-tight">
-          {highlighted ? (
-            <span dangerouslySetInnerHTML={{ __html: highlighted }} />
-          ) : (
-            title
-          )}
-        </div>
+        // One line, so every row is the same height. `line-clamp-1` rather
+        // than `truncate`: truncate sets white-space: nowrap, which makes the
+        // column's min-content the longest title on the page — the opposite
+        // of what a clamp is for. It also puts the ellipsis on a -webkit-box
+        // rather than relying on text-overflow, which is what fails silently
+        // on a flex container (see the note on PillList).
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="line-clamp-1 leading-tight">
+              {highlighted ? (
+                <span dangerouslySetInnerHTML={{ __html: highlighted }} />
+              ) : (
+                title
+              )}
+            </div>
+          </TooltipTrigger>
+          {/* The plain title, not the highlighted markup. Most titles are
+              longer than the column once a few more are switched on, so this
+              is where the untruncated string lives — the same treatment the
+              symbol and organ cells already give their full values. */}
+          <TooltipContent className="max-w-xs">
+            <p>{title}</p>
+          </TooltipContent>
+        </Tooltip>
       )
     }
 
