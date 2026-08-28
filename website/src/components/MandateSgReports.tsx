@@ -62,7 +62,9 @@ export function MandateSgReports({ reports }: { reports: MandatedSgReport[] }) {
 
   return (
     <section className="space-y-3">
-      <DetailSectionHeading hint={`${n} report${n === 1 ? '' : 's'}`}>
+      <DetailSectionHeading
+        hint={`${n} report${n === 1 ? '' : 's'}${span ? ` · ${span.label}` : ''}`}
+      >
         Which reports were submitted under this mandate?
       </DetailSectionHeading>
 
