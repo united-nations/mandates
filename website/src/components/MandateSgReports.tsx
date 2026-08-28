@@ -9,7 +9,7 @@ import {
 import { Chip } from '@/components/ui/chip'
 import type { MandatedSgReport } from '@/lib/data/sg-report-links'
 import {
-  annexPositionClause,
+  annexPositionNote,
   classifyReportCadence,
   observedYearSpan,
   REPORTS_TILE_MIN_COUNT,
@@ -22,8 +22,13 @@ import {
  * whose Digital Library catalogue record names this resolution as the one
  * they were submitted pursuant to.
  *
- * The block reads heading → summary sentence → list → footnote. The tiles
- * that used to sit between the sentence and the list are behind
+ * The block reads heading → list → footnote. The heading carries the count
+ * and the observed year span in its hint slot, the way every sibling section
+ * states its own count, so nothing between it and the list restates them.
+ * The one line that can sit in between is the annex note, and it renders
+ * only when some row was submitted through an annex.
+ *
+ * The tiles that used to sit there are behind
  * SUMMARISE_SG_REPORTS_AS_TILES_ON_DETAIL_PAGE, which is off; that constant
  * carries the reasoning and the condition for bringing them back.
  *
@@ -44,7 +49,9 @@ function undlRecordUrl(recid: number): string {
  * Annex-position entries assert a different relationship — the annex, not the
  * report itself, answers the resolution. Shown as the tooltip of the row's
  * ghost chip and, while the tiles are on, of the Reports tile's "via annex"
- * sub-line; the summary sentence carries the same fact in prose.
+ * sub-line. Neither is the disclosure: a title attribute is mouse-only and
+ * this span cannot be focused, so the annex note above the list is what
+ * actually states the fact on the page.
  */
 const ANNEX_POSITION_NOTE =
   'An annex to this report, rather than the report itself, was submitted pursuant to this resolution.'
@@ -56,6 +63,7 @@ export function MandateSgReports({ reports }: { reports: MandatedSgReport[] }) {
   const n = reports.length
   const span = observedYearSpan(reports.map((r) => r.date_published))
   const annexCount = reports.filter((r) => r.annex_position_only).length
+  const annexNote = annexPositionNote(annexCount, n)
 
   const shown = showAll ? reports : reports.slice(0, DEFAULT_SHOWN)
   const hidden = reports.length - shown.length
@@ -68,14 +76,9 @@ export function MandateSgReports({ reports }: { reports: MandatedSgReport[] }) {
         Which reports were submitted under this mandate?
       </DetailSectionHeading>
 
-      <p className="max-w-[44rem] text-sm text-gray-700">
-        <strong>
-          {n} report{n === 1 ? '' : 's'} of the Secretary-General
-        </strong>{' '}
-        submitted under this mandate
-        {span ? `, ${span.label}` : ''}
-        {annexPositionClause(annexCount, n)}
-      </p>
+      {annexNote && (
+        <p className="max-w-[44rem] text-sm text-gray-700">{annexNote}</p>
+      )}
 
       {SUMMARISE_SG_REPORTS_AS_TILES_ON_DETAIL_PAGE && (
         <SgReportSummaryTiles reports={reports} />
@@ -165,9 +168,9 @@ export function MandateSgReports({ reports }: { reports: MandatedSgReport[] }) {
  * one call site to gate and the row cannot half-render.
  *
  * Returns null when no figure clears its threshold, which is the ordinary
- * outcome rather than a degraded one: the sentence above already states the
- * count and the span in prose, so a tile earns its place only where its
- * number is itself a finding, and on ~94% of visible pages none is.
+ * outcome rather than a degraded one: the heading already states the count
+ * and the span, so a tile earns its place only where its number is itself a
+ * finding, and on ~94% of visible pages none is.
  */
 function SgReportSummaryTiles({ reports }: { reports: MandatedSgReport[] }) {
   const n = reports.length

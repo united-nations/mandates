@@ -11,7 +11,7 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 import {
-  annexPositionClause,
+  annexPositionNote,
   classifyReportCadence,
   observedYearSpan,
   REPORTS_TILE_MIN_COUNT,
@@ -158,18 +158,51 @@ describe('tile visibility thresholds', () => {
   })
 })
 
-describe('annexPositionClause', () => {
-  const table: [number, number, string][] = [
-    [0, 5, '.'],
-    [0, 1, '.'],
-    [1, 1, ' — as an annex rather than the report itself.'],
-    [3, 3, '. All of them via an annex rather than the report itself.'],
-    [2, 7, '. 2 of them via an annex rather than the report itself.'],
-    [1, 7, '. 1 of them via an annex rather than the report itself.'],
+describe('annexPositionNote', () => {
+  // null, not '', so the caller renders no paragraph at all rather than an
+  // empty one. The predecessor returned '.' here, which is truthy — a caller
+  // testing the return value for emptiness would have printed a bare period.
+  const table: [number, number, string | null][] = [
+    [0, 5, null],
+    [0, 1, null],
+    [
+      1,
+      1,
+      'This report was submitted as an annex rather than the report itself.',
+    ],
+    [
+      3,
+      3,
+      'All of these reports were submitted via an annex rather than the report itself.',
+    ],
+    [
+      2,
+      7,
+      '2 of these reports were submitted via an annex rather than the report itself.',
+    ],
+    [
+      1,
+      7,
+      '1 of these reports were submitted via an annex rather than the report itself.',
+    ],
   ]
   for (const [annexCount, reportCount, expected] of table) {
-    it(`annexCount=${annexCount} of reportCount=${reportCount} closes the sentence with ${JSON.stringify(expected)}`, () => {
-      assert.equal(annexPositionClause(annexCount, reportCount), expected)
+    it(`annexCount=${annexCount} of reportCount=${reportCount} reads ${JSON.stringify(expected)}`, () => {
+      assert.equal(annexPositionNote(annexCount, reportCount), expected)
     })
   }
+
+  // Every non-zero case has to stand on its own now that nothing precedes it.
+  it('returns a complete sentence whenever it returns anything', () => {
+    for (const [annexCount, reportCount] of [
+      [1, 1],
+      [3, 3],
+      [2, 7],
+    ]) {
+      const note = annexPositionNote(annexCount, reportCount)
+      assert.ok(note, 'expected a note')
+      assert.match(note, /^[A-Z0-9]/, 'starts a sentence, not a fragment')
+      assert.match(note, /\.$/, 'ends a sentence')
+    }
+  })
 })

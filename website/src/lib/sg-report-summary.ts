@@ -1,7 +1,7 @@
 /**
  * Display logic for the mandated-SG-reports block: the observed year span,
  * the summary-tile visibility thresholds, the cadence classifier, and the
- * annex clause of the summary sentence.
+ * annex note that qualifies the list.
  *
  * Pure functions over the row values (`MandatedSgReport.date_published` /
  * `annex_position_only`), kept out of the component so the rules are testable
@@ -10,9 +10,9 @@
  * `date_published` is nullable and the read sorts it NULLS LAST. A missing
  * date produces a missing claim, never a substituted one: undated rows are
  * excluded from the span and the cadence computation, and when no row carries
- * a date the span is null and the classifier returns null — the sentence
- * drops its year clause and the tiles that would state a date-derived fact do
- * not render.
+ * a date the span is null and the classifier returns null — the heading
+ * drops its span, and the tiles that would state a date-derived fact do not
+ * render.
  *
  * The tile rules below are dormant while
  * SUMMARISE_SG_REPORTS_AS_TILES_ON_DETAIL_PAGE is off. They are kept, not
@@ -21,20 +21,20 @@
 
 /**
  * Whether the reports block states its figures as tiles above the list, as
- * well as in the summary sentence. The tiles are one unit — the Reports,
+ * well as beside the heading. The tiles are one unit — the Reports,
  * Span and Cadence tiles, and the threshold tests that decide which of them
  * has a finding to state — and they are gated together because they are one
  * rendering of the block. Gated separately they would produce a row of one
  * tile stating a figure the sentence directly above it already states, which
  * is not a design anyone chose.
  *
- * Off. The count now sits beside the heading, in the slot every sibling
- * section uses, so a Reports tile is the third statement of the same number
- * in the space of a few lines. The tiles have only figures to show, and the
- * sentence already says every figure they carry, in words and in less space.
+ * Off. The count and the span now sit beside the heading, in the slot every
+ * sibling section uses, so a Reports or Span tile restates a figure printed
+ * a line above it. The tiles have only figures to show, and the heading
+ * already carries every figure they carry, in less space.
  *
- * Nothing is lost while it is off. The summary sentence states the count,
- * the year span and the annex qualification in prose, and the row list
+ * Nothing is lost while it is off. The heading states the count and the
+ * year span, the annex note states the annex qualification, and the row list
  * carries every per-report fact the tiles summarised.
  *
  * WHAT TURNS IT BACK ON: the SG report text enrichment landing, which would
@@ -43,22 +43,22 @@
  * of this arc of work, delete this constant, the SgReportSummaryTiles
  * component, and the tile thresholds and cadence classifier below together
  * with their tests — the tiles are the only consumer of any of them. The
- * span helper stays either way; the summary sentence uses it.
+ * span helper stays either way; the heading's span comes from it.
  */
 export const SUMMARISE_SG_REPORTS_AS_TILES_ON_DETAIL_PAGE: boolean = false
 
 /**
  * The Reports tile renders only at this count or above. Measured over the
  * live corpus, 95.6% of visible pages carry four reports or fewer, and the
- * summary sentence already states the count in prose — so a count below this
- * is not a finding worth a tile.
+ * heading already states the count beside the question — so a count below
+ * this is not a finding worth a tile.
  */
 export const REPORTS_TILE_MIN_COUNT = 5
 
 /**
  * The Span tile renders only at this many observed years or above. Measured
  * over the live corpus, 85.8% of visible pages span a single year; below this
- * the span is already fully carried by the sentence's year clause.
+ * the span is already fully carried by the heading.
  */
 export const SPAN_TILE_MIN_YEARS = 5
 
@@ -86,7 +86,7 @@ function datedYears(dates: (string | null)[]): number[] {
     .map((d) => Number(d.slice(0, 4)))
 }
 
-/** The years the dated rows cover, as the summary sentence states them. */
+/** The years the dated rows cover, as the heading states them. */
 export interface ObservedYearSpan {
   /** "2015" for a single year, "2006–2026" otherwise. */
   label: string
@@ -132,8 +132,8 @@ export interface ReportCadence {
  * never a hedged label.
  *
  * Blind spots, both directions: a series whose early years are uncatalogued
- * reads as a shorter clean run (the span in the summary sentence bounds the
- * claim to the observed window), and a year that genuinely had two reports
+ * reads as a shorter clean run (the span beside the heading bounds the claim
+ * to the observed window), and a year that genuinely had two reports
  * with one missing from the catalogue can CREATE an "Annual" reading rather
  * than break one — the rule detects dropped years, not dropped reports
  * within a year.
@@ -179,28 +179,37 @@ export function classifyReportCadence(
 }
 
 /**
- * Closes the summary sentence: the text that follows the count-and-span
- * claim, starting at its terminal punctuation. Four cases:
+ * The annex qualification as its own sentence, or null when no row carries
+ * one and there is nothing to say.
  *
- * - no annex-mediated rows — the sentence just ends.
- * - one report which is annex-mediated — the fact folds into the sentence
- *   itself (", 2015 — as an annex rather than the report itself."): at one
- *   row of one there is nothing to locate, so a separate clause would assert
- *   the same fact about the same visible row twice.
- * - all of several — "All of them …", locating the fact on every row.
- * - some of several — "{count} of them …", locating the fact on a subset.
+ * This is the block's only always-visible statement that a report answered
+ * the resolution through an annex. The per-row marker abbreviates the same
+ * fact to "annex" and keeps the explanation in a title attribute, which is
+ * mouse-only and sits on a span nothing can focus, so it does not carry the
+ * disclosure by itself.
+ *
+ * Each case is a complete sentence. It used to be a fragment starting at its
+ * terminal punctuation, because it closed a summary sentence that stated the
+ * count and the span in front of it; the heading states both now, so the
+ * fragment has nothing to attach to and supplies its own subject.
+ *
+ * - one report which is annex-mediated — names that report.
+ * - all of several — "All of these reports …", on every row.
+ * - some of several — "{count} of these reports …", on a subset.
  *
  * `annexCount` is the number of rows with `annex_position_only`; it can
  * never exceed `reportCount`.
  */
-export function annexPositionClause(
+export function annexPositionNote(
   annexCount: number,
   reportCount: number
-): string {
-  if (annexCount === 0) return '.'
-  if (reportCount === 1) return ' — as an annex rather than the report itself.'
-  if (annexCount === reportCount) {
-    return '. All of them via an annex rather than the report itself.'
+): string | null {
+  if (annexCount === 0) return null
+  if (reportCount === 1) {
+    return 'This report was submitted as an annex rather than the report itself.'
   }
-  return `. ${annexCount} of them via an annex rather than the report itself.`
+  if (annexCount === reportCount) {
+    return 'All of these reports were submitted via an annex rather than the report itself.'
+  }
+  return `${annexCount} of these reports were submitted via an annex rather than the report itself.`
 }
