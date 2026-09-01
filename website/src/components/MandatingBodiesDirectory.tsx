@@ -39,12 +39,15 @@ import { useMemo, useState } from 'react'
  * was removed along with its localStorage pref.
  */
 
-interface OrgansDirectoryProps {
+interface MandatingBodiesDirectoryProps {
   groups: OrganGroup[]
   selection: DirectorySelection
 }
 
-export function OrgansDirectory({ groups, selection }: OrgansDirectoryProps) {
+export function MandatingBodiesDirectory({
+  groups,
+  selection,
+}: MandatingBodiesDirectoryProps) {
   const [search, setSearch] = useState('')
   const term = search.trim().toLowerCase()
   const active = selection.active('organ')

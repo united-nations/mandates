@@ -2,7 +2,7 @@
 
 import { DocumentsDirectory } from '@/components/DocumentsDirectory'
 import { EntitiesDirectory } from '@/components/EntitiesDirectory'
-import { OrgansDirectory } from '@/components/MandatingBodiesDirectory'
+import { MandatingBodiesDirectory } from '@/components/MandatingBodiesDirectory'
 import type { FilterOptions } from '@/types'
 
 import { CitedPanel } from './cited-panel'
@@ -39,7 +39,7 @@ const OrganDialog = (props: DirectoryPanelsProps) => (
   >
     {status(
       props,
-      <OrgansDirectory
+      <MandatingBodiesDirectory
         groups={props.data?.organGroups ?? []}
         selection={props.actions.selection}
       />

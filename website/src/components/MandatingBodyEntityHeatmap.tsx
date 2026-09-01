@@ -46,7 +46,11 @@ interface OrganRow {
  * list, which then shows exactly that organ's documents cited by that entity.
  * Columns reuse the curated entity figure; rows reuse the /organs categories.
  */
-export function OrganEntityHeatmap({ matrix }: { matrix: OrganEntityMatrix }) {
+export function MandatingBodyEntityHeatmap({
+  matrix,
+}: {
+  matrix: OrganEntityMatrix
+}) {
   const { filters } = useFilters()
   const applyFilters = useCrossPageFilters()
   const [hover, setHover] = useState<{

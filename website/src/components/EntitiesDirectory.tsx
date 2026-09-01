@@ -473,7 +473,7 @@ function EntityCard({
               />
             </div>
             {entity.entity_long && (
-              // Multi-line rather than one truncated line — see OrgansDirectory;
+              // Multi-line rather than one truncated line — see MandatingBodiesDirectory;
               // `title` is the recovery path should a name still clamp.
               <div
                 title={entity.entity_long}

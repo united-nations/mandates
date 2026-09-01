@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 
 import { AnalyticsTabs } from '@/components/AnalyticsTabs'
 import { CoCitationHeatmap } from '@/components/CoCitationHeatmap'
-import { OrganEntityHeatmap } from '@/components/MandatingBodyEntityHeatmap'
+import { MandatingBodyEntityHeatmap } from '@/components/MandatingBodyEntityHeatmap'
 import { ResolutionCitationTrend } from '@/components/ResolutionCitationTrend'
 import { ResolutionRecurrenceTrend } from '@/components/ResolutionRecurrenceTrend'
 import { TopicTrends } from '@/components/TopicTrends'
@@ -95,7 +95,7 @@ export default async function AnalyticsPage({ searchParams }: PageProps) {
         title="Citation patterns between entities and mandating bodies"
         description="Which mandating bodies each entity draws its mandates from. Click a cell to see those documents in the main table."
       >
-        <OrganEntityHeatmap matrix={organEntityMatrix} />
+        <MandatingBodyEntityHeatmap matrix={organEntityMatrix} />
       </Chart>
     </>
   )
