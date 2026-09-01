@@ -211,7 +211,8 @@ export function MandateVersionHistory({
             ordered.
           </DetailFootnote>
           <DetailDisclaimer>
-            Grouped automatically by matching titles within the same organ.
+            Grouped automatically by matching titles within the same mandating
+            body.
           </DetailDisclaimer>
         </div>
       ) : (

@@ -178,7 +178,7 @@ export const explainerTexts = {
   // surface most readers meet first disclosed less.
   versionMatching: {
     disclaimer:
-      'Versions are identified automatically by matching titles within the same organ (~97% accuracy on a manual audit).',
+      'Versions are identified automatically by matching titles within the same mandating body (~97% accuracy on a manual audit).',
   },
 
   // Mandate Detail Page
