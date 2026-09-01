@@ -20,9 +20,13 @@ import { useMemo, useState } from 'react'
  * Reads the same category structure the table's Organ filter groups by
  * (getOrganHierarchy).
  *
- * Not all of it is an organ — two instruments and one organisation outside the
- * UN sit among the bodies — which is why the dialog is titled by what the
- * members have in common and why two cards carry a marker the others do not.
+ * Titled "Mandating bodies", after the term the mandate implementation review
+ * defines for the intergovernmental bodies that issue mandates. This list is
+ * wider than that term: not all of it is an organ, and two instruments and one
+ * organisation outside the UN sit among the bodies. The gap is disclosed on the
+ * cards that fall outside the term, each carrying a marker the rest do not, and
+ * in the notes panel below the list. It is not hedged in the title, because a
+ * title that qualified itself would stop naming the thing the page is about.
  *
  * On the single page, selecting an organ ADDS it to the active filters and
  * scrolls to the mandates section; the active organ is highlighted. The write
@@ -69,7 +73,7 @@ export function OrgansDirectory({ groups, selection }: OrgansDirectoryProps) {
     <TooltipProvider delayDuration={200}>
       <div className="space-y-6">
         <ChartSearchInput
-          placeholder="Search organs by acronym or name..."
+          placeholder="Search mandating bodies by acronym or name..."
           value={search}
           onChange={setSearch}
         />
@@ -94,7 +98,7 @@ export function OrgansDirectory({ groups, selection }: OrgansDirectoryProps) {
           </div>
         ) : (
           <p className="text-sm text-gray-500">
-            No organs match “{search.trim()}”.
+            No mandating bodies match “{search.trim()}”.
           </p>
         )}
 
@@ -104,7 +108,7 @@ export function OrgansDirectory({ groups, selection }: OrgansDirectoryProps) {
         {!term && (
           <div className="space-y-1 pt-2">
             <p className="text-xs text-gray-500">
-              {totalOrgans.toLocaleString()} sources of mandates listed.
+              {totalOrgans.toLocaleString()} mandating bodies listed.
             </p>
             <AboutThisList />
           </div>

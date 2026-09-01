@@ -34,8 +34,8 @@ const OrganDialog = (props: DirectoryPanelsProps) => (
   <DirectoryDialog
     open={props.panel === 'organs'}
     onClose={props.actions.close}
-    title="Sources of mandates"
-    hint="Click an organ to add it to the filters below."
+    title="Mandating bodies"
+    hint="Click a mandating body to add it to the filters below."
   >
     {status(
       props,

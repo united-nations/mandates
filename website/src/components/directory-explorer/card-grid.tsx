@@ -28,18 +28,18 @@ const stateLine = (state: ExploreCardState, states: ExploreCardStates) =>
         }
       : undefined
 
-// The narrowed count unit absorbs the denominator ("of 23 mandate sources")
+// The narrowed count unit absorbs the denominator ("of 23 mandating bodies")
 // because this line used to render only in the full state: a narrowed card
 // swapped its predicate for a denominator in its own unit, and the two never
 // rendered together. That is no longer the rule. The predicate is true of the
-// value in every state, and a bare "4 of 23 mandate sources" does not say what
+// value in every state, and a bare "4 of 23 mandating bodies" does not say what
 // the 4 is, so the line does more work under a filter than on the landing
 // view. The narrowed unit keeps its fuller noun, which now sits beside the
 // line rather than standing in for it.
 //
 // Matt note: the quiet line renders in every state, not only when full. The
-// trailing participle can be read as attaching to the baseline ("23 mandate
-// sources issuing the documents shown"), which is false under a filter.
+// trailing participle can be read as attaching to the baseline ("23 mandating
+// bodies issuing the documents shown"), which is false under a filter.
 // Overruled on two grounds: the other three cards all attach their quiet line
 // to the value rather than the baseline, so a reader arrives here trained on
 // that pattern; and card 1's value genuinely is the bodies issuing the
@@ -52,9 +52,9 @@ const organProps = ({ cardStates, openPanel }: CardGridProps) => {
   const countUnit =
     card.condition === 'full'
       ? card.value === 1
-        ? 'source'
-        : 'sources'
-      : `of ${card.baselineValue.toLocaleString()} mandate ${card.baselineValue === 1 ? 'source' : 'sources'}`
+        ? 'mandating body'
+        : 'mandating bodies'
+      : `of ${card.baselineValue.toLocaleString()} mandating ${card.baselineValue === 1 ? 'body' : 'bodies'}`
   return {
     stateLine: stateLine(card, cardStates),
     count: card.value,

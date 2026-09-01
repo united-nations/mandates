@@ -47,6 +47,19 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
     // Between Symbol and Title: the organ is part of how a document identifies
     // itself ("this is a GA resolution"), so it belongs beside the symbol rather
     // than after the title where it read as just another attribute.
+    //
+    // The label is the one place on the site still reading "Organ". Everywhere
+    // else the population is called "mandating bodies" — the card, the panel it
+    // opens, the filter chip, the analytics captions. The holdout is width, not
+    // vocabulary. Under table-fixed this 84 binds exactly, leaving 60px of
+    // content box after px-3, and the label is whitespace-nowrap in a flex row
+    // it shares with the filter funnel: it overflows rather than wraps. "ORGAN"
+    // is five characters at text-xs uppercase with tracking-wider; "MANDATING
+    // BODY" is fourteen and does not fit in any part of that. By the rule the
+    // Year column states below, the header would then become this column's
+    // floor and the width would have to rise with it, which it takes off the
+    // visible area at every scroll position. The label follows the rest of the
+    // site once the column can carry it.
     id: 'organ',
     label: 'Organ',
     defaultVisible: false,

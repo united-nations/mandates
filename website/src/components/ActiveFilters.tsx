@@ -133,7 +133,7 @@ export function ActiveFilters({
             <FilterBadge
               label={
                 <>
-                  Organ:&nbsp;
+                  Mandating body:&nbsp;
                   <OrganName
                     organName={displayFilters.organ}
                     allOrgans={allOrgans}
