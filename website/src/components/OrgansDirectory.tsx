@@ -121,7 +121,7 @@ export function OrgansDirectory({ groups, selection }: OrgansDirectoryProps) {
 /* The `i` roundel, in the two weights this surface uses. The hairline form is
    the same mark the detail view puts beside a disclaimer line; the card form is
    a size up, filled, and fills with the accent colour when its panel is open,
-   because on those two cards the marker is the only thing explaining why the
+   because on the marked cards the marker is the only thing explaining why the
    card is where it is and it has to read as a control rather than as
    decoration. */
 const NOTE_GLYPH =
@@ -211,13 +211,19 @@ function AboutThisList() {
 }
 
 /**
- * The two cards whose category label does not describe them, and what the
- * marker says. Keyed by the code, not by the category: both keep their marker
- * wherever their card is grouped, and the grouping is the thing most likely to
- * be revised next.
+ * The cards the list's own title does not describe, and what the marker says.
+ * Keyed by the code, not by the category: each keeps its marker wherever its
+ * card is grouped, and the grouping is the thing most likely to be revised
+ * next.
  *
- * Both markers carry the same weight. Two matched markers read as "these have
- * context"; one heavier than the other reads as "something is wrong with this
+ * Two of them are not bodies at all. The Charter and UNCLOS are instruments,
+ * so "mandating bodies" is false of them, and this is the only place a reader
+ * standing at their cards can learn it - the title cannot carry the exception
+ * without ceasing to name the population. The other two are bodies that the
+ * term fits imperfectly for their own reasons.
+ *
+ * Every marker carries the same weight. Matched markers read as "these have
+ * context"; one heavier than the rest reads as "something is wrong with this
  * one", which is the reading per-card placement exists to avoid.
  */
 const CARD_NOTES: Record<string, string> = {
@@ -229,6 +235,16 @@ const CARD_NOTES: Record<string, string> = {
     'The International Narcotics Control Board is established by treaty, but ' +
     'it monitors how conventions are implemented rather than adopting ' +
     'decisions.',
+  Charter:
+    'The Charter of the United Nations is a founding instrument rather than ' +
+    'a body. Documents appear under it because the budget records mandates ' +
+    'against the Charter itself rather than against a decision of a ' +
+    'mandating body.',
+  UNCLOS:
+    'The United Nations Convention on the Law of the Sea is a treaty rather ' +
+    'than a body. Documents appear under it because the budget records ' +
+    'mandates against the Convention itself rather than against a decision ' +
+    'taken under it.',
 }
 
 /** h3, not h2: the dialog's own DialogTitle is the h2 of this subtree. */
