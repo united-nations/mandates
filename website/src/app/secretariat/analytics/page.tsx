@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 
 import { AnalyticsTabs } from '@/components/AnalyticsTabs'
 import { CoCitationHeatmap } from '@/components/CoCitationHeatmap'
-import { OrganEntityHeatmap } from '@/components/OrganEntityHeatmap'
+import { OrganEntityHeatmap } from '@/components/MandatingBodyEntityHeatmap'
 import { ResolutionCitationTrend } from '@/components/ResolutionCitationTrend'
 import { ResolutionRecurrenceTrend } from '@/components/ResolutionRecurrenceTrend'
 import { TopicTrends } from '@/components/TopicTrends'

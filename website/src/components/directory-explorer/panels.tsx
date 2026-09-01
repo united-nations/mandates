@@ -2,7 +2,7 @@
 
 import { DocumentsDirectory } from '@/components/DocumentsDirectory'
 import { EntitiesDirectory } from '@/components/EntitiesDirectory'
-import { OrgansDirectory } from '@/components/OrgansDirectory'
+import { OrgansDirectory } from '@/components/MandatingBodiesDirectory'
 import type { FilterOptions } from '@/types'
 
 import { CitedPanel } from './cited-panel'
