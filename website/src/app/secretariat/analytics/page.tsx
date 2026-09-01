@@ -18,7 +18,7 @@ import { parseSearchParams } from '@/lib/filter-constants'
 export const metadata: Metadata = {
   title: 'Mandate Analytics',
   description:
-    'Charts of the UN Secretariat mandate registry — trends over time and citation relationships between organs, entities, and topics.',
+    'Charts of the UN Secretariat mandate registry — trends over time and citation relationships between mandating bodies, entities, and topics.',
 }
 
 interface PageProps {
@@ -92,8 +92,8 @@ export default async function AnalyticsPage({ searchParams }: PageProps) {
         <CoCitationHeatmap matrix={coCitationMatrix} />
       </Chart>
       <Chart
-        title="Citation patterns between entities and organs"
-        description="Which intergovernmental organs each entity draws its mandates from. Click a cell to see those documents in the main table."
+        title="Citation patterns between entities and mandating bodies"
+        description="Which mandating bodies each entity draws its mandates from. Click a cell to see those documents in the main table."
       >
         <OrganEntityHeatmap matrix={organEntityMatrix} />
       </Chart>
@@ -108,8 +108,8 @@ export default async function AnalyticsPage({ searchParams }: PageProps) {
         </h1>
         <p className="mt-2 max-w-3xl text-base leading-relaxed text-gray-600">
           Charts drawn from the mandate registry: how citations and resolutions
-          move over time, and how organs, entities, and topics relate to one
-          another. Click any item to open the main table filtered to it.
+          move over time, and how mandating bodies, entities, and topics relate
+          to one another. Click any item to open the main table filtered to it.
         </p>
       </header>
 

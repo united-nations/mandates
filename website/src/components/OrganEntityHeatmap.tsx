@@ -31,10 +31,10 @@ interface OrganRow {
 }
 
 /**
- * Organ × Entity citation-pattern heatmap for the /secretariat "Citation
- * patterns between entities and organs" card. Each cell counts the documents
- * adopted by an organ (row) that an entity (column) cites, in the selected
- * budget version.
+ * Mandating body × Entity citation-pattern heatmap for the /secretariat
+ * "Citation patterns between entities and mandating bodies" card. Each cell
+ * counts the documents adopted by a mandating body (row) that an entity
+ * (column) cites, in the selected budget version.
  *
  * Because the counts are heavily skewed (the General Assembly dwarfs every
  * other organ), intensity is normalised PER ROW — each organ against its own
@@ -152,10 +152,10 @@ export function OrganEntityHeatmap({ matrix }: { matrix: OrganEntityMatrix }) {
   return (
     <div>
       <p className="mb-3 max-w-3xl text-sm text-gray-500">
-        Each square counts the documents adopted by an organ (row) that an
-        entity (column) cites. Click a square to filter the mandates below to
-        that organ and entity. Colour intensity is scaled within each row, so an
-        organ&rsquo;s busiest entity is always fully saturated.
+        Each square counts the documents adopted by a mandating body (row) that
+        an entity (column) cites. Click a square to filter the mandates below to
+        that body and entity. Colour intensity is scaled within each row, so a
+        mandating body&rsquo;s busiest entity is always fully saturated.
       </p>
 
       {/* Hover status bar */}
@@ -214,7 +214,7 @@ export function OrganEntityHeatmap({ matrix }: { matrix: OrganEntityMatrix }) {
               className="flex items-end justify-start pr-1 text-[10px] font-semibold text-gray-500"
               style={{ width: ROW_LABEL_W, height: COLHEAD_H }}
             >
-              Organ&nbsp;↓ / Entity&nbsp;→
+              Mandating body&nbsp;↓ / Entity&nbsp;→
             </div>
             {columns.map((c) => (
               <div
