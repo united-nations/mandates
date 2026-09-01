@@ -158,7 +158,7 @@ export function ColumnFilterBody({
       )}
       {column.filterType === 'pill' && (
         <PillFilter
-          filterParam={column.filterParam!}
+          searchNoun={column.filterNoun ?? column.label}
           options={options || []}
           groups={groups}
           currentValue={currentValue}
@@ -265,14 +265,14 @@ function FilterPopover({
 }
 
 function PillFilter({
-  filterParam,
+  searchNoun,
   options,
   groups,
   currentValue,
   onSelect,
   onClear,
 }: {
-  filterParam: string
+  searchNoun: string
   options: FilterOption[]
   groups?: FilterGroup[]
   currentValue?: string
@@ -338,7 +338,7 @@ function PillFilter({
         <div className="relative">
           <Search className="absolute top-1/2 left-2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
           <Input
-            placeholder={`Search ${filterParam}...`}
+            placeholder={`Search ${searchNoun}...`}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="h-8 pl-7 text-sm focus-visible:ring-1 focus-visible:ring-offset-0"

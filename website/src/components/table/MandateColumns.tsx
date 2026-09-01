@@ -8,6 +8,15 @@ export interface ColumnDef {
   filterParam?: string
   filterType?: 'pill' | 'yearRange' | 'simpleSelect' | 'hierarchy'
   /**
+   * What the filter popover's search box says it is searching, where the
+   * column's own label does not name the options underneath it. Only
+   * `# Entities` needs one: its label names a count, while the options it
+   * offers are entities — the same ones the Entities column offers, because
+   * the two share the `entity` filter. Every other column's label names its
+   * own options, and the placeholder uses `label` when this is absent.
+   */
+  filterNoun?: string
+  /**
    * Column width in px. The table runs on `table-layout: fixed`, so this is
    * taken exactly rather than treated as a hint the browser may overrule from
    * whatever happens to be in the cells.
@@ -188,6 +197,8 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
     // ways, exactly as the organ/budget columns already share theirs.
     filterParam: 'entity',
     filterType: 'pill',
+    // "Search # Entities..." would be asking the reader to search a count.
+    filterNoun: 'Entities',
     // Wide enough for "# ENTITIES" plus the sort chevron and the filter funnel;
     // the circles themselves sit at the right edge, against the Details rail.
     width: 142,

@@ -13,9 +13,19 @@
  *
  * The vocabulary is not all organs. It holds deliberative bodies alongside two
  * instruments (the Charter, UNCLOS), an organisation outside the UN (WTO) and a
- * residue bucket, which is why the surface that renders it is titled by what
- * every member has in common — being named as the source of a mandate — rather
- * than by what most of them are.
+ * residue bucket.
+ *
+ * The surface that renders it is titled "Mandating bodies", after the term the
+ * Secretary-General's report on the mandate implementation review defines for
+ * the intergovernmental bodies that issue mandates. That title is deliberately
+ * narrower than the list it heads: an instrument is not a body, and the WTO is
+ * not a UN one. The alternative was a title true of every member and
+ * recognisable to none — the previous one, "Sources of mandates", took that
+ * road, and it collided with the phrase the analytics captions use for the
+ * documents. Each member the definition does not reach carries an information
+ * marker on its own card instead, so the exception is disclosed where a reader
+ * meets it rather than in the heading; see CARD_NOTES in
+ * MandatingBodiesDirectory.
  *
  * Every short code in the database should appear in exactly one category.
  * getOrganHierarchy folds any DB code not listed here into the category flagged
