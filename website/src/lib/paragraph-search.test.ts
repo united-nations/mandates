@@ -9,6 +9,8 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 import {
+  compileSearchMarker,
+  findMarkRanges,
   matchesSearchTerms,
   parseSearchQuery,
   searchFold,
@@ -229,5 +231,170 @@ describe('matchesSearchTerms', () => {
 
   it('an empty term list matches everything', () => {
     assert.equal(matches('some text', ''), true)
+  })
+})
+
+/**
+ * Marking runs a pattern over the raw text rather than translating an offset
+ * out of the folded string, so every case here asserts two things at once: the
+ * filter still matches, and the mark lands on the characters the reader sees.
+ * A case where the filter matches and the mark does not is a real outcome, not
+ * a failure - the paragraph renders unmarked. `marked` makes both visible.
+ */
+function ranges(text: string, query: string) {
+  return findMarkRanges(text, compileSearchMarker(parseSearchQuery(query)))
+}
+
+/** The text with every marked range wrapped, so a case reads as its result. */
+function marked(text: string, query: string): string {
+  let out = ''
+  let at = 0
+  for (const { start, end } of ranges(text, query)) {
+    out += text.slice(at, start) + '[' + text.slice(start, end) + ']'
+    at = end
+  }
+  return out + text.slice(at)
+}
+
+describe('findMarkRanges', () => {
+  it('marks a plain single-term match', () => {
+    assert.equal(
+      marked('Requests the Secretary-General to report', 'report'),
+      'Requests the Secretary-General to [report]'
+    )
+  })
+
+  it('marks every occurrence of a term, not just the first', () => {
+    assert.equal(
+      marked('report on the report', 'report'),
+      '[report] on the [report]'
+    )
+  })
+
+  it('is case-insensitive without lowercasing, so offsets stay raw', () => {
+    assert.equal(
+      marked('Decides to REQUEST a report', 'request'),
+      'Decides to [REQUEST] a report'
+    )
+  })
+
+  it('marks a term straddling a soft hyphen', () => {
+    const text = 'the devel' + '\u00AD' + 'opment agenda'
+    assert.equal(
+      marked(text, 'development'),
+      'the [devel' + '\u00AD' + 'opment] agenda'
+    )
+  })
+
+  it('marks across a zero-width space', () => {
+    const text = 'peace' + '\u200B' + 'keeping mandate'
+    assert.equal(
+      marked(text, 'peacekeeping'),
+      '[peace' + '\u200B' + 'keeping] mandate'
+    )
+  })
+
+  it('a straight apostrophe marks the curly spelling', () => {
+    const text = 'the Council' + '\u2019' + 's decision'
+    assert.equal(
+      marked(text, "council's"),
+      'the [Council' + '\u2019' + 's] decision'
+    )
+  })
+
+  it('a keyboard hyphen marks an en dash source', () => {
+    const text = 'the Secretary' + '\u2013' + 'General reported'
+    assert.equal(
+      marked(text, 'secretary-general'),
+      'the [Secretary' + '\u2013' + 'General] reported'
+    )
+  })
+
+  it('a keyboard hyphen marks a non-breaking hyphen source', () => {
+    const text = 'System' + '\u2011' + 'wide coherence'
+    assert.equal(
+      marked(text, 'system-wide'),
+      '[System' + '\u2011' + 'wide] coherence'
+    )
+  })
+
+  it('marks a multi-word phrase across a doubled space', () => {
+    assert.equal(
+      marked('on oceans  and seas today', '"oceans and seas"'),
+      'on [oceans  and seas] today'
+    )
+  })
+
+  it('marks a phrase across a line break', () => {
+    const text = 'on oceans and' + '\n' + 'seas today'
+    assert.equal(
+      marked(text, '"oceans and seas"'),
+      'on [oceans and' + '\n' + 'seas] today'
+    )
+  })
+
+  it('marks two ANDed terms separately', () => {
+    assert.equal(
+      marked('the report of the Council', 'report council'),
+      'the [report] of the [Council]'
+    )
+  })
+
+  it('an excluded term marks nowhere', () => {
+    assert.equal(
+      marked('a report on funding', 'report -funding'),
+      'a [report] on funding'
+    )
+  })
+
+  it('a query of only exclusions marks nothing', () => {
+    assert.deepEqual(ranges('a report on funding', '-funding'), [])
+  })
+
+  it('an empty query marks nothing', () => {
+    assert.deepEqual(ranges('a report on funding', '   '), [])
+  })
+
+  it('returns no ranges rather than throwing when the term is not there', () => {
+    assert.deepEqual(ranges('Requests the Secretary-General', 'budget'), [])
+  })
+
+  it('merges overlapping ranges so no character is emitted twice', () => {
+    assert.equal(
+      marked('the reporting cycle', 'report reporting'),
+      'the [reporting] cycle'
+    )
+  })
+
+  it('merges ranges that overlap only partly', () => {
+    assert.equal(marked('coordination', 'coord dination'), '[coordination]')
+  })
+
+  it('treats regex metacharacters in a term as literal text', () => {
+    assert.equal(
+      marked('costs (net) of the plan', '"(net)"'),
+      'costs [(net)] of the plan'
+    )
+  })
+
+  it('marks the phrase, not its component words', () => {
+    assert.equal(
+      marked('oceans and seas; seas and oceans', '"oceans and seas"'),
+      '[oceans and seas]; seas and oceans'
+    )
+  })
+
+  it('a marker compiled once is safe to run against segment after segment', () => {
+    const marker = compileSearchMarker(parseSearchQuery('report'))
+    assert.deepEqual(findMarkRanges('report', marker), [{ start: 0, end: 6 }])
+    assert.deepEqual(findMarkRanges('report', marker), [{ start: 0, end: 6 }])
+    assert.deepEqual(findMarkRanges('a report', marker), [{ start: 2, end: 8 }])
+  })
+
+  it('every case the filter matches on is either marked or deliberately not', () => {
+    const text = 'Requests the Secretary' + '\u2013' + 'General to report'
+    const query = 'secretary-general report'
+    assert.equal(matchesSearchTerms(text, parseSearchQuery(query)), true)
+    assert.equal(ranges(text, query).length, 2)
   })
 })

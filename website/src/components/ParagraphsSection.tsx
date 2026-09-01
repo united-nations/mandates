@@ -29,7 +29,13 @@ import {
 
 import { cn } from '@/lib/utils'
 import { explainerTexts } from '@/lib/en_text_contents'
-import { matchesSearchTerms, parseSearchQuery } from '@/lib/paragraph-search'
+import {
+  compileSearchMarker,
+  findMarkRanges,
+  matchesSearchTerms,
+  parseSearchQuery,
+  type SearchMarker,
+} from '@/lib/paragraph-search'
 import { useIsMobile } from '@/hooks/use-mobile'
 import type { Entity, Paragraph } from '@/types'
 import { EntityName } from '@/components/EntityName'
@@ -695,6 +701,60 @@ function getIndentClass(level: number): string {
   }
 }
 
+/**
+ * The search-match treatment. Reused rather than invented: this is what a
+ * search hit already looks like on the mandate table (lib/utils.ts), and the
+ * two searches should not read as different features.
+ *
+ * Deliberately not bg-yellow-200. Inside renderProcessedText that already
+ * means "matches the active attribute dropdown", on verbs, entities and
+ * deliverables alike, and a dropdown and a query can be live at the same
+ * time. The other grounds in this component are spoken for too: un-blue is
+ * interactive, red bold is the budget phrase, gray-200 is the idle pill.
+ */
+const MARK_CLASS = 'bg-[#b3d9f0] text-[#00557a] px-0.5 rounded'
+
+/**
+ * Mark the search terms inside one already-rendered run of text.
+ *
+ * Matching runs per rendered segment rather than across the paragraph, and
+ * that is the load-bearing decision. A segment's text is what the reader sees:
+ * the delimiters are already stripped from an annotation's inner text, and the
+ * offsets are its own. So there is no offset to translate, no way for a mark
+ * to reach the `replacements` array and displace a tooltip, and no way for one
+ * to print a raw `*` or `<<`.
+ *
+ * What it costs: a term spanning a segment boundary marks only the parts that
+ * fall inside each segment, and a phrase straddling a tooltip may mark partly
+ * or not at all. Accepted — an unmarked paragraph is what the reader had
+ * before, and a mark on the wrong words is not.
+ *
+ * Returns the string untouched when there is nothing to mark, so a paragraph
+ * with no hits renders exactly the nodes it rendered before.
+ */
+function markSearchHits(
+  text: string,
+  marker: SearchMarker | null
+): React.ReactNode {
+  if (!marker) return text
+  const ranges = findMarkRanges(text, marker)
+  if (ranges.length === 0) return text
+
+  const parts: React.ReactNode[] = []
+  let at = 0
+  ranges.forEach(({ start, end }, i) => {
+    if (start > at) parts.push(text.slice(at, start))
+    parts.push(
+      <mark key={`mark-${i}`} className={MARK_CLASS}>
+        {text.slice(start, end)}
+      </mark>
+    )
+    at = end
+  })
+  if (at < text.length) parts.push(text.slice(at))
+  return <>{parts}</>
+}
+
 export function ParagraphsSection({
   paragraphs: allParagraphs,
   documentSymbol,
@@ -736,6 +796,13 @@ export function ParagraphsSection({
     [searchQuery]
   )
   const hasSearchQuery = searchTerms.length > 0
+  // Compiled once per query rather than once per segment: this component
+  // re-renders on every keystroke, and a long document splits into thousands
+  // of segments. An empty query compiles to no patterns and so marks nothing.
+  const searchMarker = useMemo(
+    () => compileSearchMarker(searchTerms),
+    [searchTerms]
+  )
 
   // Check if any filters are active (excluding paragraph type which defaults to 'operative')
   const hasActiveFilters = useMemo(() => {
@@ -1916,8 +1983,11 @@ export function ParagraphsSection({
   const renderProcessedText = (
     text: string,
     links: [string, string][],
-    textWithHighlights?: string,
-    mandates?: ParagraphMandate[]
+    textWithHighlights: string | undefined,
+    mandates: ParagraphMandate[] | undefined,
+    // Null where a call site must not mark. Required rather than optional so
+    // that adding a call site is a decision about marking, not an omission.
+    marker: SearchMarker | null
   ) => {
     // The string every span offset below is positioned against: the annotated
     // form when the extraction produced one, the paragraph's own text
@@ -1965,6 +2035,9 @@ export function ParagraphsSection({
       let match
       while ((match = pattern.exec(spanSource)) !== null) {
         const matchText = type === 'highlight' ? match[0] : match[1]
+        // What this span shows. `matchText` itself stays a string — the
+        // mandate and deliverable lookups below compare against it.
+        const matchLabel = markSearchHits(matchText, marker)
         let component: React.ReactNode
 
         if (type === 'highlight') {
@@ -1973,7 +2046,7 @@ export function ParagraphsSection({
               key={`highlight-${segmentKey++}`}
               className="font-bold text-red-600"
             >
-              {matchText}
+              {matchLabel}
             </span>
           )
         } else if (type === 'verb') {
@@ -1996,7 +2069,7 @@ export function ParagraphsSection({
           component = (
             <Tooltip key={`verb-${segmentKey++}`}>
               <TooltipTrigger asChild>
-                <span className={verbClasses}>{matchText}</span>
+                <span className={verbClasses}>{matchLabel}</span>
               </TooltipTrigger>
               <TooltipContent className="max-w-xs">
                 <div className="space-y-1">
@@ -2060,7 +2133,7 @@ export function ParagraphsSection({
               <TooltipTrigger asChild>
                 <span className={entityClasses}>
                   <Users className="mr-1 inline h-3 w-3 align-middle" />
-                  {matchText}
+                  {matchLabel}
                 </span>
               </TooltipTrigger>
               <TooltipContent className="max-w-xs">
@@ -2111,7 +2184,7 @@ export function ParagraphsSection({
               <TooltipTrigger asChild>
                 <span className={deliverableClasses}>
                   <Package className="mr-1 inline h-3 w-3 align-middle" />
-                  {matchText}
+                  {matchLabel}
                 </span>
               </TooltipTrigger>
               <TooltipContent className="max-w-xs">
@@ -2198,7 +2271,11 @@ export function ParagraphsSection({
       if (replacement.start > lastIndex) {
         const textBefore = spanSource.slice(lastIndex, replacement.start)
         if (textBefore) {
-          segments.push(<span key={`text-${segmentKey++}`}>{textBefore}</span>)
+          segments.push(
+            <span key={`text-${segmentKey++}`}>
+              {markSearchHits(textBefore, marker)}
+            </span>
+          )
         }
       }
 
@@ -2211,7 +2288,11 @@ export function ParagraphsSection({
     if (lastIndex < spanSource.length) {
       const remainingText = spanSource.slice(lastIndex)
       if (remainingText) {
-        segments.push(<span key={`text-${segmentKey++}`}>{remainingText}</span>)
+        segments.push(
+          <span key={`text-${segmentKey++}`}>
+            {markSearchHits(remainingText, marker)}
+          </span>
+        )
       }
     }
 
@@ -2259,7 +2340,8 @@ export function ParagraphsSection({
                 paragraph.text,
                 paragraph.links,
                 paragraph.textWithHighlights,
-                paragraph.mandates
+                paragraph.mandates,
+                searchMarker
               )}
             </HeadingTag>
           </div>
@@ -2278,7 +2360,8 @@ export function ParagraphsSection({
             paragraph.text,
             paragraph.links,
             paragraph.textWithHighlights,
-            paragraph.mandates
+            paragraph.mandates,
+            searchMarker
           )}
         </p>
       )
@@ -2303,7 +2386,8 @@ export function ParagraphsSection({
                   paragraph.text,
                   paragraph.links,
                   paragraph.textWithHighlights,
-                  paragraph.mandates
+                  paragraph.mandates,
+                  searchMarker
                 )}
               </div>
             </div>
@@ -2734,7 +2818,13 @@ export function ParagraphsSection({
                                           paragraph.text,
                                           paragraph.links,
                                           paragraph.textWithHighlights,
-                                          paragraph.mandates
+                                          paragraph.mandates,
+                                          // No marks here. This block renders
+                                          // main-section preambular clauses
+                                          // from the unsearched list, so a
+                                          // mark would claim a match the
+                                          // paragraph never made.
+                                          null
                                         )}
                                       </div>
                                     </div>
