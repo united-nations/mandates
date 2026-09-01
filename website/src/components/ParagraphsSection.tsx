@@ -1900,15 +1900,30 @@ export function ParagraphsSection({
     )
   }
 
-  // Helper function to parse and render text with proper React tooltip components
+  // Parse a paragraph into React elements: annotation spans with their
+  // tooltips, the budget phrase, and links out to cited documents.
+  //
+  // This used to fork. A paragraph carrying extraction markup was built as
+  // React elements, because the verb and entity tooltips cannot be expressed
+  // in a string; a paragraph without markup went through an older path that
+  // assembled an HTML string by successive replaces and emitted it through
+  // dangerouslySetInnerHTML. That string path was the original implementation
+  // of the whole function, kept when the tooltips arrived because the case it
+  // served had no tooltip to attach — not because it did anything the element
+  // path could not. It ended up doing strictly less: both paths grew the
+  // budget phrase and the link handling separately, and had to be kept in step
+  // by hand.
   const renderProcessedText = (
     text: string,
-    actionVerb: string | null,
     links: [string, string][],
     textWithHighlights?: string,
     mandates?: ParagraphMandate[]
   ) => {
-    const sourceText = textWithHighlights || text
+    // The string every span offset below is positioned against: the annotated
+    // form when the extraction produced one, the paragraph's own text
+    // otherwise. Not what the reader sees — the delimiters are dropped as each
+    // span is built.
+    const spanSource = textWithHighlights || text
 
     // Check if any assignee/deliverable/action verb filters are active for enhanced highlighting
     const hasEnhancedFilters =
@@ -1916,43 +1931,25 @@ export function ParagraphsSection({
       deliverableFilter !== 'all' ||
       actionVerbFilter !== 'all'
 
-    if (!textWithHighlights) {
-      // Handle links and special phrase highlighting for non-highlighted text
-      let processedText = sourceText
-
-      // First, highlight "within existing resources" in bold red
-      const withinExistingResourcesRegex = /within existing resources/gi
-      processedText = processedText.replace(
-        withinExistingResourcesRegex,
-        '<span class="font-bold text-red-600">within existing resources</span>'
-      )
-
-      // Then handle links
-      if (links && links.length > 0) {
-        links.forEach(([linkText, url]) => {
-          const linkRegex = new RegExp(
-            linkText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
-            'g'
-          )
-          processedText = processedText.replace(
-            linkRegex,
-            `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-un-blue hover:underline font-medium">${linkText}</a>`
-          )
-        })
-      }
-      return <span dangerouslySetInnerHTML={{ __html: processedText }} />
-    }
-
     // Parse text and create segments with proper React components
     const segments: React.ReactNode[] = []
     let segmentKey = 0
 
-    // Split text by all special patterns to process sequentially
+    // Split text by all special patterns to process sequentially. The four
+    // annotation patterns are looked for only in a string the extraction
+    // marked up: in a paragraph's own text a `*` or a `<<` is the document's
+    // punctuation, and reading it as a delimiter would swallow the words
+    // around it. The budget phrase and the links are properties of the prose
+    // and are found in either.
     const allPatterns = [
-      { pattern: /\*(.*?)\*/g, type: 'verb' },
-      { pattern: /<<(.*?)>>/g, type: 'assignee' },
-      { pattern: /\{\{(.*?)\}\}/g, type: 'mentioned_entity' },
-      { pattern: /\[\[(.*?)\]\]/g, type: 'deliverable' },
+      ...(textWithHighlights
+        ? [
+            { pattern: /\*(.*?)\*/g, type: 'verb' },
+            { pattern: /<<(.*?)>>/g, type: 'assignee' },
+            { pattern: /\{\{(.*?)\}\}/g, type: 'mentioned_entity' },
+            { pattern: /\[\[(.*?)\]\]/g, type: 'deliverable' },
+          ]
+        : []),
       { pattern: /within existing resources/gi, type: 'highlight' },
     ]
 
@@ -1966,7 +1963,7 @@ export function ParagraphsSection({
     // Find all matches across all patterns
     allPatterns.forEach(({ pattern, type }) => {
       let match
-      while ((match = pattern.exec(sourceText)) !== null) {
+      while ((match = pattern.exec(spanSource)) !== null) {
         const matchText = type === 'highlight' ? match[0] : match[1]
         let component: React.ReactNode
 
@@ -2150,16 +2147,15 @@ export function ParagraphsSection({
       pattern.lastIndex = 0 // Reset regex
     })
 
-    // Linked symbols. The plain-text path above renders these; this path used to
-    // drop them silently, which was invisible while only 96 documents carried
-    // highlight markup and none of them many links. The Digital Library arm
-    // supplies both, so they are rendered here too.
+    // Linked symbols, in either kind of paragraph. A link's text can straddle
+    // an annotation span, which is why these are pushed as spans and reconciled
+    // below rather than substituted in place.
     if (links && links.length > 0) {
       links.forEach(([linkText, url]) => {
         if (!linkText || !url) return
         let from = 0
         for (;;) {
-          const idx = sourceText.indexOf(linkText, from)
+          const idx = spanSource.indexOf(linkText, from)
           if (idx === -1) break
           replacements.push({
             start: idx,
@@ -2200,7 +2196,7 @@ export function ParagraphsSection({
     disjointReplacements.forEach((replacement) => {
       // Add text before this replacement
       if (replacement.start > lastIndex) {
-        const textBefore = sourceText.slice(lastIndex, replacement.start)
+        const textBefore = spanSource.slice(lastIndex, replacement.start)
         if (textBefore) {
           segments.push(<span key={`text-${segmentKey++}`}>{textBefore}</span>)
         }
@@ -2212,8 +2208,8 @@ export function ParagraphsSection({
     })
 
     // Add remaining text
-    if (lastIndex < sourceText.length) {
-      const remainingText = sourceText.slice(lastIndex)
+    if (lastIndex < spanSource.length) {
+      const remainingText = spanSource.slice(lastIndex)
       if (remainingText) {
         segments.push(<span key={`text-${segmentKey++}`}>{remainingText}</span>)
       }
@@ -2261,7 +2257,6 @@ export function ParagraphsSection({
               )}
               {renderProcessedText(
                 paragraph.text,
-                paragraph.mandates?.[0]?.action_verb || null,
                 paragraph.links,
                 paragraph.textWithHighlights,
                 paragraph.mandates
@@ -2281,7 +2276,6 @@ export function ParagraphsSection({
         >
           {renderProcessedText(
             paragraph.text,
-            null,
             paragraph.links,
             paragraph.textWithHighlights,
             paragraph.mandates
@@ -2307,7 +2301,6 @@ export function ParagraphsSection({
               <div className="text-sm leading-relaxed">
                 {renderProcessedText(
                   paragraph.text,
-                  paragraph.mandates?.[0]?.action_verb || null,
                   paragraph.links,
                   paragraph.textWithHighlights,
                   paragraph.mandates
@@ -2739,8 +2732,6 @@ export function ParagraphsSection({
                                       <div className="flex-1 text-sm leading-relaxed text-gray-700">
                                         {renderProcessedText(
                                           paragraph.text,
-                                          paragraph.mandates?.[0]
-                                            ?.action_verb || null,
                                           paragraph.links,
                                           paragraph.textWithHighlights,
                                           paragraph.mandates
