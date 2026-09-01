@@ -139,18 +139,18 @@ const CARD_GLYPH =
  * can search for, and these were reviewed as sentences.
  */
 const ABOUT_THIS_LIST = [
-  'Bodies with no documents in the current view are not listed. The Trusteeship Council is one.',
+  'Mandating bodies with no documents in the current view are not listed. The Trusteeship Council is one.',
   'The grouping into categories is editorial, a choice made for this page.',
   'Some instruments are grouped under Other rather than listed separately, among them the International Covenants and the Framework Convention on Climate Change.',
-  'Some documents record an issuing body that is not one of these, such as a Secretary-General’s bulletin.',
-  'Some record no issuing body at all, and are counted under no body here.',
+  'Some documents record a mandating body that is not one of these, such as a Secretary-General’s bulletin.',
+  'Some record no mandating body at all, and are counted under none here.',
 ]
 
 /**
  * What a reader needs to know about the list that the list cannot say itself:
  * which bodies are missing from it, that the grouping is a choice, where the
- * rest of the instruments are, that a few documents name a source no card here
- * stands for, and that a few name none.
+ * rest of the instruments are, that a few documents name a mandating body no
+ * card here stands for, and that a few name none.
  *
  * Notes, not a disclaimer, with one exception. A disclaimer is earned by
  * content produced by a process that can be wrong in ways the reader cannot
