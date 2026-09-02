@@ -63,8 +63,14 @@ export default async function MandatePage({
 
       {/* Content. 3rem between sections: the heading treatment is quieter
           than the uppercase one it replaced, so the space between sections
-          has to do more of the separating. One rule, all sections. */}
-      <div className="space-y-12 sm:pr-2">
+          has to do more of the separating. One rule, all sections.
+
+          A hairline above each section carries the rest. The sections are
+          mostly chips and short rows, so the headings were the only heavy
+          elements on the page and the eye had nothing else to find structure
+          by; space alone left four bold questions floating. The rule makes the
+          boundary visible before it is read. */}
+      <div className="divide-y divide-border [&>*+*]:pt-12 sm:pr-2">
         <MandateMetadata mandate={mandate} organs={organs} />
         {series && (
           <MandateVersionHistory

@@ -5,6 +5,7 @@ import { ExternalLink, FileText } from 'lucide-react'
 import { DocumentSymbol } from '@/components/DocumentSymbol'
 import { Chip, type ChipTone } from '@/components/ui/chip'
 import { DisclosurePopover } from '@/components/ui/disclosure-popover'
+import { typography } from '@/lib/typography'
 import { cn } from '@/lib/utils'
 
 /**
@@ -51,9 +52,9 @@ export function DetailSectionHeading({
   howTo?: string
 }) {
   return (
-    <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-      <h2 className="text-base font-semibold text-gray-900">{children}</h2>
-      {hint && <span className="text-sm text-gray-500">{hint}</span>}
+    <div className="mb-3 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+      <h2 className={typography.subTitle}>{children}</h2>
+      {hint && <span className={typography.meta}>{hint}</span>}
       {howTo && <DetailHowTo>{howTo}</DetailHowTo>}
     </div>
   )
@@ -69,8 +70,8 @@ export function DetailSubsectionHeading({
 }) {
   return (
     <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-      <h3 className="text-sm font-semibold text-gray-600">{children}</h3>
-      {hint && <span className="text-xs text-gray-500">{hint}</span>}
+      <h3 className={cn(typography.eyebrow, "text-muted-foreground")}>{children}</h3>
+      {hint && <span className={typography.caption}>{hint}</span>}
     </div>
   )
 }
@@ -140,7 +141,7 @@ export function FilterChip({
  * distinguishable at a glance.
  */
 export function DetailFootnote({ children }: { children: ReactNode }) {
-  return <p className="text-xs text-gray-500">{children}</p>
+  return <p className={typography.meta}>{children}</p>
 }
 
 /**
@@ -163,10 +164,10 @@ export function DetailFootnote({ children }: { children: ReactNode }) {
  */
 export function DetailDisclaimer({ children }: { children: ReactNode }) {
   return (
-    <p className="text-xs text-gray-500">
+    <p className="text-xs text-muted-foreground">
       <span
         aria-hidden
-        className="mr-1 inline-block h-3.5 w-3.5 overflow-hidden rounded-full border border-gray-300 text-center align-[-3px] font-serif text-[9px] leading-3 text-gray-500 italic select-none"
+        className="mr-1 inline-block h-3.5 w-3.5 overflow-hidden rounded-full border border-border text-center align-[-3px] font-serif text-micro leading-3 text-muted-foreground italic select-none"
       >
         i
       </span>
@@ -195,7 +196,7 @@ function DetailHowTo({ children }: { children: string }) {
       // centre on the cap-height midpoint (a button keeps its content baseline
       // under overflow-hidden, unlike a span, so its nudge differs from
       // DetailDisclaimer's align value).
-      triggerClassName="relative -top-[2.33px] inline-block h-4 w-4 shrink-0 cursor-pointer self-baseline overflow-hidden rounded-full border border-gray-300 p-0 text-center text-[10px] leading-[0.875rem] font-semibold text-gray-500 select-none hover:border-un-blue hover:text-un-blue focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none"
+      triggerClassName="relative -top-[2.33px] inline-block h-4 w-4 shrink-0 cursor-pointer self-baseline overflow-hidden rounded-full border border-gray-300 p-0 text-center text-micro leading-[0.875rem] font-semibold text-gray-500 select-none hover:border-un-blue hover:text-un-blue focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none"
       trigger="?"
     >
       {children}
@@ -226,7 +227,7 @@ export function MandateDetailHeader({
   className?: string
 }) {
   return (
-    <header className={cn('border-b border-gray-200 pb-4', className)}>
+    <header className={cn('border-b border-border pb-4', className)}>
       <h1 className="text-xl leading-tight font-bold text-gray-900 md:text-2xl">
         {title}
       </h1>
@@ -246,7 +247,7 @@ export function MandateDetailHeader({
         ) : (
           // A disabled dark button gave a dead control top billing and no
           // reason; a plain note says the same thing without the weight.
-          <span className="text-sm text-gray-400">No PDF available</span>
+          <span className="text-sm text-muted-foreground">No PDF available</span>
         )}
       </div>
     </header>

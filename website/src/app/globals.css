@@ -1,9 +1,11 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
+/* Shared EOSG/UN80 design tokens. Same mechanism as tw-animate-css above —
+   a versioned CSS package from node_modules. Pinned in package.json. */
+@import '@un-eosg/ui/theme.css';
 
 /* https://tailwindcss.com/docs/colors#customizing-your-colors */
 @theme {
-  --color-un-blue: #009edb;
   /* Darker UN blue. It marks nothing on its own any more. It was the tint on
      an entity chip whose citation sits in the fascicle's "Mandates and
      background" narrative (see lib/foundational.ts); that marking is off
@@ -17,13 +19,7 @@
      chips. */
   --color-un-blue-deep: #0090cc;
 
-  --color-trout: #495057;
-  --color-shuttle-gray: #5a6c7d;
-  --color-camouflage-green: #7d8471;
   --color-moss: #62803f;
-  --color-smoky: #6c5b7b;
-  --color-au-chico: #a0665c;
-  --color-faded-jade: #4a7c7e;
 
   /* Categorical palette for the subject domains on the /subjects treemap and
      pill-map. One stable colour per visually-significant domain; the five
@@ -34,25 +30,17 @@
      accent shouts over the body. Colour carries category, never magnitude,
      and is always paired with a label. */
   --color-un-blue-muted: #4a90a4;
-  --color-dusty-gray: #969696;
   --color-forest-muted: #4b7048;
   --color-terracotta: #aa6238;
   --color-dusty-rose: #9c5a6e;
   --color-indigo-muted: #55578f;
   --color-plum: #7d5a8c;
 
-  --color-geyser: #dde2e6;
-  --color-iron: #d9dcdf;
-  --color-card-gray: #f6f7f8;
 
-  /* Registry-tier traffic-light ramp (/system mandate-registry column).
-     Ordinal quality scale, worst→best. CVD-validated as a set (protan/deutan/
-     tritan ΔE ≥ 10 adjacent, ≥ 3:1 on white) — change only as a set, and only
-     after re-validating. Never color-alone: always paired with the dot count. */
-  --color-tier-1: #ab3a2c;
-  --color-tier-2: #c9820f;
-  --color-tier-3: #2aa392;
-  --color-tier-4: #276b35;
+  /* --color-tier-1..4 (the registry traffic-light ramp) now ship in
+     @un-eosg/ui, together with the CVD-validation note and the rule that they
+     are never used colour-alone. Promoted because they were the one validated
+     ordinal scale in the estate. Change them there, not here. */
 }
 
 html {
@@ -235,4 +223,41 @@ html {
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/**
+ * UN blue scrollbar, opt-in via `.un-scrollbar`.
+ *
+ * Two mechanisms, deliberately not stacked: Chromium ignores
+ * `::-webkit-scrollbar` as soon as `scrollbar-width` is present, so the
+ * standard properties go in a @supports block and the WebKit pseudo-elements
+ * are the fallback for engines that lack them (Safari).
+ *
+ * `scrollbar-gutter: stable` keeps the bar's space reserved, so content does
+ * not shift when it appears — and on macOS, where scrollbars are overlay by
+ * default and fade out, an explicit width is what makes it visible at all.
+ */
+.un-scrollbar {
+  scrollbar-gutter: stable;
+}
+
+.un-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+.un-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.un-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--color-un-blue);
+  border-radius: 9999px;
+}
+.un-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-un-blue-shade);
+}
+
+@supports (scrollbar-color: auto) {
+  .un-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-un-blue) transparent;
+  }
 }

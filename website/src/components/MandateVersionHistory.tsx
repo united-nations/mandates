@@ -153,7 +153,7 @@ export function MandateVersionHistory({
                 {m.title}
               </span>
               {!series.is_collection && m.is_latest && (
-                <span className="shrink-0 rounded bg-un-blue px-1.5 py-0.5 text-[10px] font-medium text-white">
+                <span className="shrink-0 rounded bg-un-blue px-1.5 py-0.5 text-micro font-medium text-white">
                   Latest
                 </span>
               )}

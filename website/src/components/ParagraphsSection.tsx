@@ -2376,7 +2376,7 @@ export function ParagraphsSection({
         <div className="rounded-lg bg-muted/30 p-3">
           <div className="flex items-start gap-2">
             {label && (
-              <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-un-blue text-[10px] font-medium text-white">
+              <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-un-blue text-micro font-medium text-white">
                 {label}
               </span>
             )}
@@ -2513,7 +2513,7 @@ export function ParagraphsSection({
               align="start"
               sideOffset={6}
               trigger="?"
-              triggerClassName="inline-block h-4 w-4 shrink-0 cursor-pointer overflow-hidden rounded-full border border-gray-300 p-0 text-center text-[10px] leading-[0.875rem] font-semibold text-gray-500 select-none hover:border-un-blue hover:text-un-blue focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none"
+              triggerClassName="inline-block h-4 w-4 shrink-0 cursor-pointer overflow-hidden rounded-full border border-gray-300 p-0 text-center text-micro leading-[0.875rem] font-semibold text-gray-500 select-none hover:border-un-blue hover:text-un-blue focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none"
             >
               <ul className="list-disc space-y-1 pl-4">
                 <li>Terms separated by spaces must all appear.</li>
@@ -2809,7 +2809,7 @@ export function ParagraphsSection({
                                   <div className="rounded-lg bg-muted/30 p-3">
                                     <div className="flex items-start gap-2">
                                       {label && (
-                                        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-un-blue text-[10px] font-medium text-white">
+                                        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-un-blue text-micro font-medium text-white">
                                           {label}
                                         </span>
                                       )}

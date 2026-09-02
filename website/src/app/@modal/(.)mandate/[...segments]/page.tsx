@@ -1,5 +1,6 @@
+import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
-import { getMandateDisplayTitle, decodeUrlSegments } from '@/lib/utils'
+import { decodeUrlSegments } from '@/lib/utils'
 
 import { getMandateBySymbol, getResolutionSeries } from '@/lib/data/mandates'
 import { getAllEntities } from '@/lib/data/entities'
@@ -13,7 +14,6 @@ import { getAllOrgans } from '@/lib/data/organs'
 import { getParagraphsBySymbol } from '@/lib/data/paragraphs'
 import { ParagraphsSection } from '@/components/ParagraphsSection'
 import { CitationCounts } from '@/components/CitationCounts'
-import { MandateDetailHeader } from '@/components/MandateDetailUi'
 import { MandateMetadata } from '@/components/MandateMetadata'
 import { MandateSgReports } from '@/components/MandateSgReports'
 import { MandateTopics } from '@/components/MandateTopics'
@@ -34,12 +34,11 @@ export default async function ModalMandatePage({
   const ppbVersion =
     typeof sp.ppb_version === 'string' ? sp.ppb_version : undefined
 
-  const [mandate, entities, organs, paragraphs, series, related, sgReports] =
+  const [mandate, entities, organs, series, related, sgReports] =
     await Promise.all([
       getMandateBySymbol(documentSymbol, ppbVersion),
       getAllEntities(),
       getAllOrgans(),
-      getParagraphsBySymbol(documentSymbol),
       getResolutionSeries(documentSymbol),
       // Flagged-off sections are skipped entirely, so the detail page does not
       // pay for their queries.
@@ -52,18 +51,18 @@ export default async function ModalMandatePage({
   if (!mandate) notFound()
 
   return (
+    // The record's name, symbol and source link are in the sheet header, so
+    // the body starts straight into the content. Repeating them here cost a
+    // screen-height and pushed the first answer below the fold.
     <div className="pb-12">
-      <MandateDetailHeader
-        title={getMandateDisplayTitle(mandate)}
-        symbol={mandate.full_document_symbol}
-        link={mandate.link}
-        className="mb-8"
-      />
-
-      {/* Content. 3rem between sections: the heading treatment is quieter
-          than the uppercase one it replaced, so the space between sections
-          has to do more of the separating. One rule, all sections. */}
-      <div className="space-y-12 sm:pr-2">
+      {/* One rule, all sections — and 2.5rem of space with it.
+          Space alone was carrying the separation, but the sections are almost
+          entirely chips and short rows, so the four headings were the only
+          heavy marks on the page and the eye had nothing to find structure by.
+          The rule (uniform connectedness) states the boundary before it is
+          read; the space (proximity) keeps each heading bound to its own
+          answer rather than floating between two. */}
+      <div className="divide-y divide-border [&>*]:pb-6 [&>*+*]:pt-6 [&>*:last-child]:pb-0 sm:pr-2">
         <MandateMetadata mandate={mandate} organs={organs} />
         {series && (
           <MandateVersionHistory
@@ -77,15 +76,51 @@ export default async function ModalMandatePage({
           related={related}
         />
         {SHOW_MANDATED_SG_REPORTS && <MandateSgReports reports={sgReports} />}
-        <ParagraphsSection
-          paragraphs={paragraphs}
-          documentSymbol={documentSymbol}
-          isLoading={false}
-          error={null}
-          compact
-          entities={entities}
-        />
+        {/* The document's own text is the expensive part and the last thing
+            read, so it must not hold up the four answers above it. Streaming
+            it lets everything else paint immediately; the section renders its
+            own skeleton until the paragraphs arrive. */}
+        <Suspense
+          fallback={
+            <ParagraphsSection
+              paragraphs={[]}
+              documentSymbol={documentSymbol}
+              isLoading
+              error={null}
+              compact
+              entities={entities}
+            />
+          }
+        >
+          <MandateParagraphs documentSymbol={documentSymbol} entities={entities} />
+        </Suspense>
       </div>
     </div>
+  )
+}
+
+/**
+ * The paragraphs, fetched off the critical path.
+ *
+ * Kept as its own async component so React can stream it: the surrounding page
+ * resolves without it and this boundary fills in when the query returns.
+ */
+async function MandateParagraphs({
+  documentSymbol,
+  entities,
+}: {
+  documentSymbol: string
+  entities: Awaited<ReturnType<typeof getAllEntities>>
+}) {
+  const paragraphs = await getParagraphsBySymbol(documentSymbol)
+  return (
+    <ParagraphsSection
+      paragraphs={paragraphs}
+      documentSymbol={documentSymbol}
+      isLoading={false}
+      error={null}
+      compact
+      entities={entities}
+    />
   )
 }
