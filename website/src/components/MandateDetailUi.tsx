@@ -36,6 +36,22 @@ import { cn } from '@/lib/utils'
  * un-blue as an accent only.
  */
 
+/**
+ * The section list's own rule-and-rhythm: a hairline between sections (one
+ * rule, all sections — states the boundary before it is read) plus 24px of
+ * padding on both sides of it (proximity — keeps each heading bound to its
+ * own answer rather than floating between two).
+ *
+ * Both the full page and the modal wrap their section list in this — same
+ * constant, not two hand-tuned copies. They drifted once already: the full
+ * page had only `[&>*+*]:pt-12` with no matching `pb` and no last-child
+ * reset, so every hairline sat flush against the content above it and then
+ * left a lopsided gap before the next heading, while the modal's symmetric
+ * version read as the more finished one.
+ */
+export const detailSectionListClassName =
+  'divide-y divide-border [&>*]:pb-6 [&>*+*]:pt-6 [&>*:last-child]:pb-0 sm:pr-2'
+
 export function DetailSectionHeading({
   children,
   hint,

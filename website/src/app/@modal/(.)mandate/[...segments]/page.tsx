@@ -14,6 +14,7 @@ import { getAllOrgans } from '@/lib/data/organs'
 import { getParagraphsBySymbol } from '@/lib/data/paragraphs'
 import { ParagraphsSection } from '@/components/ParagraphsSection'
 import { CitationCounts } from '@/components/CitationCounts'
+import { detailSectionListClassName } from '@/components/MandateDetailUi'
 import { MandateMetadata } from '@/components/MandateMetadata'
 import { MandateSgReports } from '@/components/MandateSgReports'
 import { MandateTopics } from '@/components/MandateTopics'
@@ -55,14 +56,9 @@ export default async function ModalMandatePage({
     // the body starts straight into the content. Repeating them here cost a
     // screen-height and pushed the first answer below the fold.
     <div className="pb-12">
-      {/* One rule, all sections — and 2.5rem of space with it.
-          Space alone was carrying the separation, but the sections are almost
-          entirely chips and short rows, so the four headings were the only
-          heavy marks on the page and the eye had nothing to find structure by.
-          The rule (uniform connectedness) states the boundary before it is
-          read; the space (proximity) keeps each heading bound to its own
-          answer rather than floating between two. */}
-      <div className="divide-y divide-border [&>*]:pb-6 [&>*+*]:pt-6 [&>*:last-child]:pb-0 sm:pr-2">
+      {/* Same section rhythm as the full page — see detailSectionListClassName's
+          doc for why this is a shared constant and not its own tuning. */}
+      <div className={detailSectionListClassName}>
         <MandateMetadata mandate={mandate} organs={organs} />
         {series && (
           <MandateVersionHistory

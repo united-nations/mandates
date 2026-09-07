@@ -13,7 +13,10 @@ import { getAllOrgans } from '@/lib/data/organs'
 import { getParagraphsBySymbol } from '@/lib/data/paragraphs'
 import { ParagraphsSection } from '@/components/ParagraphsSection'
 import { CitationCounts } from '@/components/CitationCounts'
-import { MandateDetailHeader } from '@/components/MandateDetailUi'
+import {
+  detailSectionListClassName,
+  MandateDetailHeader,
+} from '@/components/MandateDetailUi'
 import { MandateMetadata } from '@/components/MandateMetadata'
 import { MandateSgReports } from '@/components/MandateSgReports'
 import { MandateTopics } from '@/components/MandateTopics'
@@ -61,16 +64,9 @@ export default async function MandatePage({
         className="mb-8 pr-12"
       />
 
-      {/* Content. 3rem between sections: the heading treatment is quieter
-          than the uppercase one it replaced, so the space between sections
-          has to do more of the separating. One rule, all sections.
-
-          A hairline above each section carries the rest. The sections are
-          mostly chips and short rows, so the headings were the only heavy
-          elements on the page and the eye had nothing else to find structure
-          by; space alone left four bold questions floating. The rule makes the
-          boundary visible before it is read. */}
-      <div className="divide-y divide-border [&>*+*]:pt-12 sm:pr-2">
+      {/* Same section rhythm as the modal — see detailSectionListClassName's
+          doc for why this is a shared constant and not its own tuning. */}
+      <div className={detailSectionListClassName}>
         <MandateMetadata mandate={mandate} organs={organs} />
         {series && (
           <MandateVersionHistory
