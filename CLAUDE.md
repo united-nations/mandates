@@ -2,6 +2,8 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+@AGENTS.md
+
 ## Repository Layout
 
 This is a monorepo with two independent codebases plus shared data/SQL:
