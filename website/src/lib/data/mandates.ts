@@ -927,6 +927,106 @@ export async function getMandates(
   return { mandates, totalCount }
 }
 
+interface LocationCitationCountRow {
+  entity: string
+  section: string | null
+  sub_programme: string | null
+  /** 1 on the row where GROUPING SETS aggregated the subprogramme away. */
+  section_level: string | number
+  total_citations: string
+}
+
+/**
+ * For each (entity, section, sub_programme) this mandate is cited at, how
+ * many DISTINCT mandate documents that same entity cites at that same
+ * location — this mandate included. Answers "how big a place is this in the
+ * entity's budget", the context a bare location path can't give on its own.
+ *
+ * Counted at TWO grains, because the detail row has two: a location that
+ * names a specific subprogramme is counted within that subprogramme, and one
+ * that does not is counted across the whole (entity, section). Counting
+ * everything at the finer grain was the first attempt and it produced a
+ * number nobody could read: for a location with no subprogramme it returned
+ * only the no-subprogramme SUBSET (DESA/section 9 → 56) while the row showed
+ * a blank subprogramme cell, so the figure looked like the entity's whole
+ * section (which is far larger — DESA cites 102 under Subprogramme 2 alone).
+ * The grain has to match what the row actually displays or the number lies
+ * about its own scope.
+ *
+ * `subProgrammeExpr` normalizes on BOTH sides here (this query and the
+ * lookup below), so PPB 2026's literal "All Subprogrammes" and PPB 2027's
+ * NULL — the same generic case spelled two ways across editions — land in
+ * one bucket instead of two.
+ *
+ * Scoped to just this mandate's citing entities via `entity = ANY(...)`
+ * rather than the whole catalogue: `getBudgetHierarchy` computes the same
+ * kind of count for every filtered document and is already the most
+ * expensive query in the app, which would be wasteful for the handful of
+ * rows one mandate needs.
+ */
+async function getLocationCitationCounts(
+  entities: string[],
+  version?: string | null
+): Promise<Map<string, number>> {
+  const map = new Map<string, number>()
+  if (entities.length === 0) return map
+
+  const subprogramme = subProgrammeExpr('c.sub_programme')
+  const query = `
+    /* trace:mandates.detail-location-citation-counts */
+    SELECT
+      c.entity,
+      c.section,
+      ${subprogramme} AS sub_programme,
+      GROUPING(${subprogramme}) AS section_level,
+      COUNT(DISTINCT c.ppb_full_document_symbol) AS total_citations
+    FROM ppb2026.source_document_citations c
+    WHERE c.entity = ANY($1::text[])
+      AND ${versionPredicateSql('c', '$2')}
+    GROUP BY GROUPING SETS (
+      (c.entity, c.section),
+      (c.entity, c.section, ${subprogramme})
+    )
+  `
+
+  const rows = await queryMany<LocationCitationCountRow>(query, [
+    entities,
+    version ?? null,
+  ])
+  for (const row of rows) {
+    // GROUPING() is 1 for the row that aggregated the subprogramme away, so
+    // the two grains cannot collide on a shared NULL subprogramme.
+    const key =
+      Number(row.section_level) === 1
+        ? locationCitationCountKey(row.section, row.entity, null)
+        : locationCitationCountKey(row.section, row.entity, row.sub_programme)
+    map.set(key, parseInt(row.total_citations, 10) || 0)
+  }
+  return map
+}
+
+/**
+ * Join key between a `BudgetLocation` and `getLocationCitationCounts`'s
+ * result. A null `subprogramme` addresses the whole (entity, section) —
+ * which is what a location with no specific subprogramme is counted at.
+ */
+function locationCitationCountKey(
+  section: string | null,
+  entity: string | null,
+  subprogramme: string | null
+): string {
+  return [section ?? '', entity ?? '', subprogramme ?? ''].join('\0')
+}
+
+/**
+ * The generic-subprogramme label PPB 2026 uses where PPB 2027 uses NULL.
+ * Mirrors `subProgrammeExpr`'s NULLIF on the application side, so a
+ * `BudgetLocation` built from either edition looks the count up the same way.
+ */
+function normalizeSubprogramme(subprogramme: string | null): string | null {
+  return subprogramme === GENERIC_SUBPROGRAMME_LABEL ? null : subprogramme
+}
+
 /**
  * Fetch detailed citation info for a specific mandate
  * Used for enriching individual mandates on detail pages
@@ -973,6 +1073,14 @@ export async function getMandateCitations(
 
   const rows = await queryMany<CitationQueryRow>(query, [symbol, version ?? null])
 
+  const citingEntities = [
+    ...new Set(rows.map((row) => row.entity).filter((e): e is string => !!e)),
+  ]
+  const locationCitationCounts = await getLocationCitationCounts(
+    citingEntities,
+    version
+  )
+
   const citations = rows.map((row) => ({
     origin_document: row.origin_document || '',
     budget_part: row.budget_part || '',
@@ -1008,6 +1116,17 @@ export async function getMandateCitations(
       entity_long: row.entity_long,
       subprogramme: row.sub_programme,
       subprogramme_number: row.sub_programme_number,
+      // Matched at the grain this location will be DISPLAYED at: a specific
+      // subprogramme counts within it, a generic one counts across the
+      // section. See getLocationCitationCounts for why.
+      total_citations_at_location:
+        locationCitationCounts.get(
+          locationCitationCountKey(
+            row.section,
+            row.entity,
+            normalizeSubprogramme(row.sub_programme)
+          )
+        ) ?? null,
     }
     const key = [
       location.part,
@@ -2227,6 +2346,7 @@ function sortBudgetLocations(
       subprogramme: location.subprogramme,
       subprogramme_number: location.subprogramme_number,
       is_support: location.is_support,
+      total_citations_at_location: location.total_citations_at_location,
     }))
 }
 

@@ -152,6 +152,12 @@ export interface BudgetLocation {
   subprogramme_number: number | null
   /** pko only: an individual mission (false) vs. the shared support account (true). */
   is_support?: boolean
+  /**
+   * How many distinct mandate documents this entity cites at this same
+   * (section, subprogramme) — this document included. `null` when the count
+   * wasn't fetched (ppb stream only; see getMandateCitations).
+   */
+  total_citations_at_location?: number | null
 }
 
 export interface BudgetSubprogrammeNode {
@@ -283,11 +289,7 @@ export interface OrganWithCount {
  * The filter keys a /secretariat explore directory can set.
  */
 export type DirectoryFilterKey =
-  | 'organ'
-  | 'entity'
-  | 'subprogramme'
-  | 'subject'
-  | 'document_type'
+  'organ' | 'entity' | 'subprogramme' | 'subject' | 'document_type'
 
 /**
  * How a directory (organs / entities / documents) talks to the filter state.
@@ -484,11 +486,7 @@ export interface UnSystemBody {
 export type UnSystemBodyEntry = { ref: string } | UnSystemBody
 
 export type UnSystemRegistryPoint =
-  | 'documents'
-  | 'mandates'
-  | 'budget'
-  | 'implementation'
-  | 'results'
+  'documents' | 'mandates' | 'budget' | 'implementation' | 'results'
 
 /** true = point earned; 'partial' = half a point (linked but weak form). */
 export type UnSystemPointValue = boolean | 'partial'
