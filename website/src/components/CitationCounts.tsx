@@ -7,11 +7,11 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import {
-  DetailDisclaimer,
   DetailFootnote,
   DetailSectionHeading,
 } from '@/components/MandateDetailUi'
 import { Chip, ChipDot } from '@/components/ui/chip'
+import { explainerTexts } from '@/lib/en_text_contents'
 import { BUDGET_STREAM_LABELS } from '@/lib/filter-constants'
 import {
   FOUNDATIONAL_DOT_LEGEND,
@@ -180,7 +180,7 @@ export function CitationCounts({ mandate, entities }: CitationCountsProps) {
           citingEntities.length === 1 ? 'entity' : 'entities'
         }`}
         howTo={
-          'Each chip is an entity that cites this document in its budget submission. Click a chip to see the entity’s full name and where in the budget the citation appears.'
+          `Each chip is an entity that cites this document in its budget submission. Click a chip to see the entity’s full name and where in the budget the citation appears. ${explainerTexts.mandateDetail.citationCounts.disclaimer}`
         }
       >
         Who cites this mandate in the budget?
@@ -218,24 +218,14 @@ export function CitationCounts({ mandate, entities }: CitationCountsProps) {
         )}
       </div>
 
-      {/* Two blocks: the dot legend (the one explanation of the dot in the
-          whole app, one paragraph wrapping naturally, rendered only when a
-          dot is actually on screen — which is never while the marking is
-          off), then the i-marked extraction disclaimer.
-          Only the i line is structurally its own block — the own-line rule
-          belongs to the marker, not to every visible sentence. The
-          disclaimer's wording is deliberately self-contained: a version that
-          referred back to the fascicle would silently inherit the legend's
-          condition and vanish with it. */}
-      <div>
-        {MARK_FOUNDATIONAL_CHIPS_ON_DETAIL_PAGE &&
-          citingEntities.some((e) =>
-            isFoundational(e, foundationalEntities)
-          ) && <DetailFootnote>{FOUNDATIONAL_DOT_LEGEND}</DetailFootnote>}
-        <DetailDisclaimer>
-          Extracted automatically from each entity&rsquo;s budget submission.
-        </DetailDisclaimer>
-      </div>
+      {/* The dot legend — the one explanation of the dot in the whole app —
+          rendered only when a dot is actually on screen, which is never
+          while the marking is off. The extraction disclaimer that used to
+          sit beside it now lives in the heading's "?": see howTo above. */}
+      {MARK_FOUNDATIONAL_CHIPS_ON_DETAIL_PAGE &&
+        citingEntities.some((e) => isFoundational(e, foundationalEntities)) && (
+          <DetailFootnote>{FOUNDATIONAL_DOT_LEGEND}</DetailFootnote>
+        )}
     </section>
   )
 }

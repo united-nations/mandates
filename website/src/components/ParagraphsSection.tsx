@@ -21,11 +21,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton'
 import { Chip } from '@/components/ui/chip'
 import { ChartSearchInput } from '@/components/ui/chart-search-input'
-import { DisclosurePopover } from '@/components/ui/disclosure-popover'
-import {
-  DetailDisclaimer,
-  DetailSectionHeading,
-} from '@/components/MandateDetailUi'
+import { DetailSectionHeading } from '@/components/MandateDetailUi'
 
 import { cn } from '@/lib/utils'
 import { explainerTexts } from '@/lib/en_text_contents'
@@ -2484,7 +2480,28 @@ export function ParagraphsSection({
   return (
     <div className="space-y-4">
       <div ref={paragraphsTitleRef} className="space-y-3">
-        <DetailSectionHeading hint={headingHint}>
+        <DetailSectionHeading
+          hint={headingHint}
+          howTo={
+            <div className="space-y-2">
+              <p>{explainerTexts.mandateDetail.paragraphs.betaDisclaimer}</p>
+              <div>
+                <p className="font-medium text-foreground">
+                  How search works
+                </p>
+                <ul className="list-disc space-y-1 pl-4">
+                  <li>Terms separated by spaces must all appear.</li>
+                  <li>Use &quot;quotes&quot; to match an exact phrase.</li>
+                  <li>Start a term with a minus to exclude it.</li>
+                  <li>
+                    Only a typed minus excludes. A dash pasted from a document
+                    is searched as text.
+                  </li>
+                </ul>
+              </div>
+            </div>
+          }
+        >
           What&rsquo;s in this document?
         </DetailSectionHeading>
 
@@ -2494,7 +2511,10 @@ export function ParagraphsSection({
             text, so nothing can be hidden that the reader could not otherwise
             see. Gated on the list having content — but an active query keeps
             the field mounted, or a query matching nothing would unmount the
-            control it was typed into. */}
+            control it was typed into.
+            Search syntax used to have its own "?" beside the field, a second
+            circle a few pixels from the heading's. Both explain this section,
+            so both now live behind the heading's — one glyph, not two. */}
         {(hasSearchQuery || (paragraphs && paragraphs.length > 0)) && (
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
             <ChartSearchInput
@@ -2502,29 +2522,6 @@ export function ParagraphsSection({
               value={searchQuery}
               onChange={setSearchQuery}
             />
-            {/* The same ? affordance the section headings carry, on the shared
-                DisclosurePopover; the headings' own DetailHowTo stays
-                unexported and baseline-bound, so this circle is instantiated
-                here and centers against the field instead. The panel exists
-                mainly for the last rule, which a reader cannot guess. */}
-            <DisclosurePopover
-              label="How search works"
-              side="bottom"
-              align="start"
-              sideOffset={6}
-              trigger="?"
-              triggerClassName="inline-block h-4 w-4 shrink-0 cursor-pointer overflow-hidden rounded-full border border-gray-300 p-0 text-center text-micro leading-[0.875rem] font-semibold text-gray-500 select-none hover:border-un-blue hover:text-un-blue focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none"
-            >
-              <ul className="list-disc space-y-1 pl-4">
-                <li>Terms separated by spaces must all appear.</li>
-                <li>Use &quot;quotes&quot; to match an exact phrase.</li>
-                <li>Start a term with a minus to exclude it.</li>
-                <li>
-                  Only a typed minus excludes. A dash pasted from a document is
-                  searched as text.
-                </li>
-              </ul>
-            </DisclosurePopover>
             {/* The match count reports here, beside the control it answers,
                 in the grammar of the app's other search fields. The heading
                 count above deliberately does not move with the query. */}
@@ -2902,14 +2899,6 @@ export function ParagraphsSection({
               </div>
             )}
 
-            {/* How to read this — the copy that used to hide behind a "?"
-                badge next to the heading, now stated where the other sections
-                state theirs. */}
-            <div className="mt-6">
-              <DetailDisclaimer>
-                {explainerTexts.mandateDetail.paragraphs.betaDisclaimer}
-              </DetailDisclaimer>
-            </div>
           </div>
         </div>
 

@@ -24,11 +24,12 @@ import { cn } from '@/lib/utils'
  * link into the filtered explorer, so the sidebar reads as a sentence and works
  * as navigation. Kept here so the sections cannot drift apart.
  *
- * Secondary text under a section comes in two kinds, each with its own mark:
- * `DetailDisclaimer` (an always-visible `i` line — how the content was made
- * and how far to trust it) and the `?` a heading declares via `howTo` (what
- * the section offers and how to work it, off the page until asked for). A
- * plain `DetailFootnote` is for lines that are neither.
+ * Secondary text under a section comes in two kinds. A disclaimer — how the
+ * content was made and how far to trust it — folds into the `?` a heading
+ * declares via `howTo`, off the page until asked for; it used to render as
+ * its own always-visible `i` line, which read as more space and alarm than
+ * a methodology note earns. A plain `DetailFootnote` is for a visible line
+ * that is not a disclaimer at all — a legend, a definition, a status note.
  *
  * Style: semibold sentence-case headings (the question strings are authored
  * in sentence case and rendered as written), borders rather than shadows,
@@ -43,13 +44,16 @@ export function DetailSectionHeading({
   children: ReactNode
   hint?: ReactNode
   /**
-   * How-to-use text for the section, revealed behind a small `?` beside the
-   * heading. A plain string on purpose: the panel opens on hover, so nothing
-   * inside it can be clicked — a link in here would be unreachable. The moment
-   * a panel genuinely needs a link, it stops being this affordance and becomes
-   * a full Popover with click-only semantics.
+   * How-to-use content for the section, revealed behind a small `?` beside
+   * the heading — usually a plain sentence, but a static list is fine too
+   * (the paragraphs section folds its search-syntax bullets in here). What it
+   * must not carry is anything interactive: the panel opens on hover as well
+   * as click, so a link or button inside it would fire on a passing pointer
+   * rather than a deliberate action. The moment a section genuinely needs a
+   * click-only link, it stops being this affordance and becomes a full
+   * Popover instead.
    */
-  howTo?: string
+  howTo?: ReactNode
 }) {
   return (
     <div className="mb-3 flex flex-wrap items-baseline gap-x-3 gap-y-1">
@@ -64,14 +68,18 @@ export function DetailSectionHeading({
 export function DetailSubsectionHeading({
   children,
   hint,
+  howTo,
 }: {
   children: ReactNode
   hint?: ReactNode
+  /** Same affordance as `DetailSectionHeading`'s — see its `howTo` doc. */
+  howTo?: ReactNode
 }) {
   return (
     <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
       <h3 className={cn(typography.eyebrow, "text-muted-foreground")}>{children}</h3>
       {hint && <span className={typography.caption}>{hint}</span>}
+      {howTo && <DetailHowTo>{howTo}</DetailHowTo>}
     </div>
   )
 }
@@ -135,45 +143,12 @@ export function FilterChip({
 
 /**
  * Footnote under a section: a plain visible line — a legend, a definition, a
- * status note. Anything that is a *disclaimer* (the content was produced by a
- * process that can be wrong in ways the reader cannot see) goes through
- * `DetailDisclaimer` instead, so the two kinds of secondary text stay
- * distinguishable at a glance.
+ * status note, never a disclaimer. A disclaimer belongs behind the heading's
+ * `howTo` instead, so the two kinds of secondary text stay distinguishable —
+ * one is always on the page, the other is off it until asked for.
  */
 export function DetailFootnote({ children }: { children: ReactNode }) {
   return <p className={typography.meta}>{children}</p>
-}
-
-/**
- * A disclaimer line: an `i` roundel followed by the text it marks, always
- * visible — the `i` is a kind marker, not a control. Nothing opens or toggles.
- *
- * The marker always begins its own line, and that rule is structural: this
- * component renders a block and emits the roundel itself, so a call site
- * cannot place an `i` mid-line even by trying. Do not export the roundel
- * separately and do not add a prop that suppresses the block display — the
- * binding of marker to text is positional, and it survives only as long as
- * the marker has no independent existence.
- *
- * Glyph geometry: 14px circle, serif italic `i`, centred on the cap-height
- * midpoint of the first text line via `overflow-hidden` + `align-[-3px]`
- * (the inline-block's baseline becomes its bottom margin edge, so the
- * vertical-align length positions the circle deterministically). That trick
- * is span-specific — a `<button>` keeps its content baseline under
- * `overflow: hidden` and lands ~4.3px away with identical classes.
- */
-export function DetailDisclaimer({ children }: { children: ReactNode }) {
-  return (
-    <p className="text-xs text-muted-foreground">
-      <span
-        aria-hidden
-        className="mr-1 inline-block h-3.5 w-3.5 overflow-hidden rounded-full border border-border text-center align-[-3px] font-serif text-micro leading-3 text-muted-foreground italic select-none"
-      >
-        i
-      </span>
-      {children}
-    </p>
-  )
 }
 
 /**
@@ -185,7 +160,7 @@ export function DetailDisclaimer({ children }: { children: ReactNode }) {
  * `DisclosurePopover`; what stays here is this affordance's glyph, its label and
  * the geometry that lands it on a heading baseline.
  */
-function DetailHowTo({ children }: { children: string }) {
+function DetailHowTo({ children }: { children: ReactNode }) {
   return (
     <DisclosurePopover
       label="How to use this section"
@@ -194,8 +169,8 @@ function DetailHowTo({ children }: { children: string }) {
       sideOffset={6}
       // Baseline-aligned in the heading row; the top nudge lands the circle's
       // centre on the cap-height midpoint (a button keeps its content baseline
-      // under overflow-hidden, unlike a span, so its nudge differs from
-      // DetailDisclaimer's align value).
+      // under overflow-hidden, unlike a span, which is why this nudge is a
+      // plain top offset rather than the vertical-align trick a span needs).
       triggerClassName="relative -top-[2.33px] inline-block h-4 w-4 shrink-0 cursor-pointer self-baseline overflow-hidden rounded-full border border-gray-300 p-0 text-center text-micro leading-[0.875rem] font-semibold text-gray-500 select-none hover:border-un-blue hover:text-un-blue focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none"
       trigger="?"
     >

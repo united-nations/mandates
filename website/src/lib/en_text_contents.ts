@@ -181,12 +181,31 @@ export const explainerTexts = {
       'Versions are identified automatically by matching titles within the same mandating body (~97% accuracy on a manual audit).',
   },
 
-  // Mandate Detail Page
+  // Mandate Detail Page — the "?" beside each section heading. Disclaimers
+  // used to render as their own always-visible line (marked with an `i`
+  // roundel); folded in here so the panel states what a section does and how
+  // far to trust it in the same place, instead of splitting the two across a
+  // hover and a permanent line.
   mandateDetail: {
     paragraphs: {
       title: 'Paragraphs',
       betaDisclaimer:
         'Paragraph content is machine-extracted from UN documents. For authoritative content, please refer to the official UN document.',
+    },
+    citationCounts: {
+      disclaimer: 'Extracted automatically from each entity’s budget submission.',
+    },
+    sgReports: {
+      disclaimer:
+        'Identified automatically from the metadata in each report’s UN Digital Library catalogue record. This can be an incomplete picture of which reports were submitted under this mandate.',
+    },
+    versionHistory: {
+      collectionDisclaimer:
+        'Grouped automatically by matching titles within the same mandating body.',
+    },
+    relatedMandates: {
+      disclaimer:
+        'Experimental. Suggested automatically from shared UN Library subject headings, weighted by how rare each shared heading is; no editorial review. Documents in this document’s own version history are excluded.',
     },
   },
 } as const

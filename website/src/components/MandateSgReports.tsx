@@ -2,11 +2,9 @@
 
 import { useState } from 'react'
 import { ChevronDown, ChevronUp } from 'lucide-react'
-import {
-  DetailDisclaimer,
-  DetailSectionHeading,
-} from '@/components/MandateDetailUi'
+import { DetailSectionHeading } from '@/components/MandateDetailUi'
 import { Chip } from '@/components/ui/chip'
+import { explainerTexts } from '@/lib/en_text_contents'
 import type { MandatedSgReport } from '@/lib/data/sg-report-links'
 import {
   annexPositionNote,
@@ -72,6 +70,7 @@ export function MandateSgReports({ reports }: { reports: MandatedSgReport[] }) {
     <section className="space-y-3">
       <DetailSectionHeading
         hint={`${n} report${n === 1 ? '' : 's'}${span ? ` · ${span.label}` : ''}`}
+        howTo={explainerTexts.mandateDetail.sgReports.disclaimer}
       >
         Which reports were submitted under this mandate?
       </DetailSectionHeading>
@@ -150,12 +149,6 @@ export function MandateSgReports({ reports }: { reports: MandatedSgReport[] }) {
           Show fewer
         </button>
       )}
-
-      <DetailDisclaimer>
-        Identified automatically from the metadata in each report&rsquo;s UN
-        Digital Library catalogue record. This can be an incomplete picture of
-        which reports were submitted under this mandate.
-      </DetailDisclaimer>
     </section>
   )
 }

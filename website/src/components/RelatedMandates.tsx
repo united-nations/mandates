@@ -3,13 +3,13 @@
 import { useState } from 'react'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import {
-  DetailFootnote,
   DetailSubsectionHeading,
   formatSubjectLabel,
 } from '@/components/MandateDetailUi'
 import { Chip } from '@/components/ui/chip'
 import { DocumentSymbol } from '@/components/DocumentSymbol'
 import { getMandateUrl } from '@/components/table/MandateColumns'
+import { explainerTexts } from '@/lib/en_text_contents'
 import type { RelatedMandate } from '@/lib/data/related'
 
 /**
@@ -38,7 +38,9 @@ export function RelatedMandates({ related }: { related: RelatedMandate[] }) {
 
   return (
     <div className="space-y-2 pt-2">
-      <DetailSubsectionHeading>
+      <DetailSubsectionHeading
+        howTo={explainerTexts.mandateDetail.relatedMandates.disclaimer}
+      >
         Related mandate documents
       </DetailSubsectionHeading>
 
@@ -105,13 +107,6 @@ export function RelatedMandates({ related }: { related: RelatedMandate[] }) {
           Show fewer
         </button>
       )}
-
-      <DetailFootnote>
-        Experimental. Suggested automatically from shared UN Library subject
-        headings, weighted by how rare each shared heading is; no editorial
-        review. Documents in this document&rsquo;s own version history are
-        excluded.
-      </DetailFootnote>
     </div>
   )
 }

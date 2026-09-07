@@ -8,7 +8,6 @@ import { explainerTexts } from '@/lib/en_text_contents'
 import { DocumentSymbol } from '@/components/DocumentSymbol'
 import { getMandateUrl } from '@/components/table/MandateColumns'
 import {
-  DetailDisclaimer,
   DetailFootnote,
   DetailSectionHeading,
 } from '@/components/MandateDetailUi'
@@ -87,8 +86,8 @@ export function MandateVersionHistory({
         hint={`${series.series_count} ${unit}${span ? ` · ${span}` : ''}`}
         howTo={
           series.is_collection
-            ? 'Each row is one document in this group, newest first. The compare button on a row opens that document and the one directly before it side by side, so you can see how they differ.'
-            : 'Each row is one version of this document, newest first. The compare button on a row opens that version and the one directly before it side by side, so you can see what changed.'
+            ? `Each row is one document in this group, newest first. The compare button on a row opens that document and the one directly before it side by side, so you can see how they differ. ${explainerTexts.mandateDetail.versionHistory.collectionDisclaimer}`
+            : `Each row is one version of this document, newest first. The compare button on a row opens that version and the one directly before it side by side, so you can see what changed. ${explainerTexts.versionMatching.disclaimer}`
         }
       >
         {series.is_collection
@@ -199,26 +198,15 @@ export function MandateVersionHistory({
         </button>
       )}
 
-      {/* The derivation is a disclaimer and carries the i; the collection
-          variant's "bundles" sentence is definitional — neither disclaimer
-          nor pointer — so it stays a plain footnote line the i must not
-          mark. Unmarked lines sit above the marked one, the order the
-          entities footnote also uses. */}
-      {series.is_collection ? (
-        <div>
-          <DetailFootnote>
-            This group bundles related documents that are not individually
-            ordered.
-          </DetailFootnote>
-          <DetailDisclaimer>
-            Grouped automatically by matching titles within the same mandating
-            body.
-          </DetailDisclaimer>
-        </div>
-      ) : (
-        <DetailDisclaimer>
-          {explainerTexts.versionMatching.disclaimer}
-        </DetailDisclaimer>
+      {/* The collection variant's "bundles" sentence is definitional, not a
+          disclaimer, so it stays a plain visible footnote. The derivation
+          disclaimer that used to sit beside it now lives in the heading's
+          "?": see howTo above. */}
+      {series.is_collection && (
+        <DetailFootnote>
+          This group bundles related documents that are not individually
+          ordered.
+        </DetailFootnote>
       )}
     </section>
   )
