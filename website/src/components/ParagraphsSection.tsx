@@ -2483,24 +2483,20 @@ export function ParagraphsSection({
         <DetailSectionHeading
           hint={headingHint}
           howTo={
-            <div className="space-y-2">
-              <p>{explainerTexts.mandateDetail.paragraphs.betaDisclaimer}</p>
-              <div>
-                <p className="font-medium text-foreground">
-                  How search works
-                </p>
-                <ul className="list-disc space-y-1 pl-4">
-                  <li>Terms separated by spaces must all appear.</li>
-                  <li>Use &quot;quotes&quot; to match an exact phrase.</li>
-                  <li>Start a term with a minus to exclude it.</li>
-                  <li>
-                    Only a typed minus excludes. A dash pasted from a document
-                    is searched as text.
-                  </li>
-                </ul>
-              </div>
+            <div>
+              <p className="font-medium text-foreground">How search works</p>
+              <ul className="list-disc space-y-1 pl-4">
+                <li>Terms separated by spaces must all appear.</li>
+                <li>Use &quot;quotes&quot; to match an exact phrase.</li>
+                <li>Start a term with a minus to exclude it.</li>
+                <li>
+                  Only a typed minus excludes. A dash pasted from a document
+                  is searched as text.
+                </li>
+              </ul>
             </div>
           }
+          disclaimer={explainerTexts.mandateDetail.paragraphs.betaDisclaimer}
         >
           What&rsquo;s in this document?
         </DetailSectionHeading>

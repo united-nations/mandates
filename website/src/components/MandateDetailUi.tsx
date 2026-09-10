@@ -24,12 +24,15 @@ import { cn } from '@/lib/utils'
  * link into the filtered explorer, so the sidebar reads as a sentence and works
  * as navigation. Kept here so the sections cannot drift apart.
  *
- * Secondary text under a section comes in two kinds. A disclaimer — how the
- * content was made and how far to trust it — folds into the `?` a heading
- * declares via `howTo`, off the page until asked for; it used to render as
- * its own always-visible `i` line, which read as more space and alarm than
- * a methodology note earns. A plain `DetailFootnote` is for a visible line
- * that is not a disclaimer at all — a legend, a definition, a status note.
+ * Secondary text under a section comes in two kinds, each behind its own
+ * mark beside the heading and off the page until asked for: the `?` a heading
+ * declares via `howTo` (what the section offers and how to work it) and the
+ * `i` it declares via `disclaimer` (how the content was made and how far to
+ * trust it). Two marks rather than one panel, so a reader can tell a caveat
+ * from an instruction before opening either. The disclaimer used to render
+ * as its own always-visible `i` line, which read as more space and alarm
+ * than a methodology note earns. A plain `DetailFootnote` is for a visible
+ * line that is neither — a legend, a definition, a status note.
  *
  * Style: semibold sentence-case headings (the question strings are authored
  * in sentence case and rendered as written), borders rather than shadows,
@@ -56,6 +59,7 @@ export function DetailSectionHeading({
   children,
   hint,
   howTo,
+  disclaimer,
 }: {
   children: ReactNode
   hint?: ReactNode
@@ -70,12 +74,21 @@ export function DetailSectionHeading({
    * Popover instead.
    */
   howTo?: ReactNode
+  /**
+   * The section's disclaimer — how its content was derived and how far to
+   * trust it — revealed behind a small `i` immediately right of the `?`, or
+   * directly after the heading where there is no `?`. The same affordance as
+   * `howTo`, under the same rule about interactive content; only the glyph
+   * and the accessible name differ, so a caveat and an instruction stay
+   * distinguishable before either is opened.
+   */
+  disclaimer?: ReactNode
 }) {
   return (
     <div className="mb-3 flex flex-wrap items-baseline gap-x-3 gap-y-1">
       <h2 className={typography.subTitle}>{children}</h2>
       {hint && <span className={typography.meta}>{hint}</span>}
-      {howTo && <DetailHowTo>{howTo}</DetailHowTo>}
+      <HeadingMarks howTo={howTo} disclaimer={disclaimer} />
     </div>
   )
 }
@@ -85,18 +98,45 @@ export function DetailSubsectionHeading({
   children,
   hint,
   howTo,
+  disclaimer,
 }: {
   children: ReactNode
   hint?: ReactNode
   /** Same affordance as `DetailSectionHeading`'s — see its `howTo` doc. */
   howTo?: ReactNode
+  /** Same affordance as `DetailSectionHeading`'s — see its `disclaimer` doc. */
+  disclaimer?: ReactNode
 }) {
   return (
     <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
       <h3 className={cn(typography.eyebrow, "text-muted-foreground")}>{children}</h3>
       {hint && <span className={typography.caption}>{hint}</span>}
-      {howTo && <DetailHowTo>{howTo}</DetailHowTo>}
+      <HeadingMarks howTo={howTo} disclaimer={disclaimer} />
     </div>
+  )
+}
+
+/**
+ * The `?` and the `i` a heading declares, as one flex item in the heading
+ * row: they sit a little closer to each other than the row's own gap puts
+ * the heading, the hint and them, so the pair reads as the heading's marks
+ * rather than as two more items in the row. The `?` keeps its place in the
+ * row whether or not an `i` follows it. Renders nothing when neither is
+ * declared, so a heading with no marks has no empty item in its row.
+ */
+function HeadingMarks({
+  howTo,
+  disclaimer,
+}: {
+  howTo?: ReactNode
+  disclaimer?: ReactNode
+}) {
+  if (!howTo && !disclaimer) return null
+  return (
+    <span className="inline-flex items-baseline gap-x-1.5">
+      {howTo && <DetailHowTo>{howTo}</DetailHowTo>}
+      {disclaimer && <DetailDisclaimer>{disclaimer}</DetailDisclaimer>}
+    </span>
   )
 }
 
@@ -160,12 +200,25 @@ export function FilterChip({
 /**
  * Footnote under a section: a plain visible line — a legend, a definition, a
  * status note, never a disclaimer. A disclaimer belongs behind the heading's
- * `howTo` instead, so the two kinds of secondary text stay distinguishable —
- * one is always on the page, the other is off it until asked for.
+ * `disclaimer` (the `i`) instead, so the two kinds of secondary text stay
+ * distinguishable — one is always on the page, the other is off it until
+ * asked for.
  */
 export function DetailFootnote({ children }: { children: ReactNode }) {
   return <p className={typography.meta}>{children}</p>
 }
+
+/**
+ * The geometry the two marks beside a heading share: a 16px circle,
+ * baseline-aligned in the heading row, with a top nudge that lands the
+ * circle's centre on the cap-height midpoint (a button keeps its content
+ * baseline under overflow-hidden, unlike a span, which is why this nudge is a
+ * plain top offset rather than the vertical-align trick a span needs). Each
+ * mark adds only its glyph's face, so the two cannot drift apart in size or
+ * position.
+ */
+const headingMarkClassName =
+  'relative -top-[2.33px] inline-block h-4 w-4 shrink-0 cursor-pointer self-baseline overflow-hidden rounded-full border border-gray-300 p-0 text-center text-micro leading-[0.875rem] text-gray-500 select-none hover:border-un-blue hover:text-un-blue focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none'
 
 /**
  * The `?` beside a section heading: how-to-use text, off the page until asked
@@ -173,8 +226,8 @@ export function DetailFootnote({ children }: { children: ReactNode }) {
  * `howTo`, so it cannot be scattered onto arbitrary elements.
  *
  * The open/close behaviour, and the reasoning behind it, live in
- * `DisclosurePopover`; what stays here is this affordance's glyph, its label and
- * the geometry that lands it on a heading baseline.
+ * `DisclosurePopover`; what stays here is this affordance's glyph and its
+ * label.
  */
 function DetailHowTo({ children }: { children: ReactNode }) {
   return (
@@ -183,12 +236,36 @@ function DetailHowTo({ children }: { children: ReactNode }) {
       side="bottom"
       align="start"
       sideOffset={6}
-      // Baseline-aligned in the heading row; the top nudge lands the circle's
-      // centre on the cap-height midpoint (a button keeps its content baseline
-      // under overflow-hidden, unlike a span, which is why this nudge is a
-      // plain top offset rather than the vertical-align trick a span needs).
-      triggerClassName="relative -top-[2.33px] inline-block h-4 w-4 shrink-0 cursor-pointer self-baseline overflow-hidden rounded-full border border-gray-300 p-0 text-center text-micro leading-[0.875rem] font-semibold text-gray-500 select-none hover:border-un-blue hover:text-un-blue focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none"
+      triggerClassName={cn(headingMarkClassName, 'font-semibold')}
       trigger="?"
+    >
+      {children}
+    </DisclosurePopover>
+  )
+}
+
+/**
+ * The `i` beside a section heading: the disclaimer, off the page until asked
+ * for. The same control as the `?` — same primitive, same hover, focus and
+ * touch paths, same geometry — with the serif italic `i` this app already
+ * uses to mark a caveat about how content was derived, so the two marks
+ * stay distinguishable. Not exported, for the same reason `DetailHowTo` is
+ * not: an `i` exists only where a heading declares `disclaimer`.
+ *
+ * The accessible name is the same on every instance: it names the kind of
+ * text behind the mark, and the heading it sits beside is the previous thing
+ * in reading order, so deriving the label from the heading would repeat what
+ * a screen reader has just said.
+ */
+function DetailDisclaimer({ children }: { children: ReactNode }) {
+  return (
+    <DisclosurePopover
+      label="How this content was derived"
+      side="bottom"
+      align="start"
+      sideOffset={6}
+      triggerClassName={cn(headingMarkClassName, 'font-serif italic')}
+      trigger="i"
     >
       {children}
     </DisclosurePopover>

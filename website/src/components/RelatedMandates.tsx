@@ -39,7 +39,7 @@ export function RelatedMandates({ related }: { related: RelatedMandate[] }) {
   return (
     <div className="space-y-2 pt-2">
       <DetailSubsectionHeading
-        howTo={explainerTexts.mandateDetail.relatedMandates.disclaimer}
+        disclaimer={explainerTexts.mandateDetail.relatedMandates.disclaimer}
       >
         Related mandate documents
       </DetailSubsectionHeading>

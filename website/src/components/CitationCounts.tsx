@@ -216,7 +216,8 @@ export function CitationCounts({ mandate, entities }: CitationCountsProps) {
         hint={`${citingEntities.length} ${
           citingEntities.length === 1 ? 'entity' : 'entities'
         }`}
-        howTo={`Each row is one place in the budget this document is cited from — the entity, where in its fascicle, and how many mandates that entity cites at the same subprogramme. ${explainerTexts.mandateDetail.citationCounts.disclaimer}`}
+        howTo="Each row is one place in the budget this document is cited from — the entity, where in its fascicle, and how many mandates that entity cites at the same subprogramme."
+        disclaimer={explainerTexts.mandateDetail.citationCounts.disclaimer}
       >
         Who cites this mandate in the budget?
       </DetailSectionHeading>

@@ -181,11 +181,10 @@ export const explainerTexts = {
       'Versions are identified automatically by matching titles within the same mandating body (~97% accuracy on a manual audit).',
   },
 
-  // Mandate Detail Page — the "?" beside each section heading. Disclaimers
-  // used to render as their own always-visible line (marked with an `i`
-  // roundel); folded in here so the panel states what a section does and how
-  // far to trust it in the same place, instead of splitting the two across a
-  // hover and a permanent line.
+  // Mandate Detail Page — the disclaimers behind the `i` beside each section
+  // heading, off the page until asked for. They used to render as their own
+  // always-visible line; the `i` keeps a caveat about how content was derived
+  // distinguishable from the `?`, which says what a section does.
   mandateDetail: {
     paragraphs: {
       title: 'Paragraphs',

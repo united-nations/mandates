@@ -86,8 +86,13 @@ export function MandateVersionHistory({
         hint={`${series.series_count} ${unit}${span ? ` · ${span}` : ''}`}
         howTo={
           series.is_collection
-            ? `Each row is one document in this group, newest first. The compare button on a row opens that document and the one directly before it side by side, so you can see how they differ. ${explainerTexts.mandateDetail.versionHistory.collectionDisclaimer}`
-            : `Each row is one version of this document, newest first. The compare button on a row opens that version and the one directly before it side by side, so you can see what changed. ${explainerTexts.versionMatching.disclaimer}`
+            ? 'Each row is one document in this group, newest first. The compare button on a row opens that document and the one directly before it side by side, so you can see how they differ.'
+            : 'Each row is one version of this document, newest first. The compare button on a row opens that version and the one directly before it side by side, so you can see what changed.'
+        }
+        disclaimer={
+          series.is_collection
+            ? explainerTexts.mandateDetail.versionHistory.collectionDisclaimer
+            : explainerTexts.versionMatching.disclaimer
         }
       >
         {series.is_collection
@@ -200,8 +205,8 @@ export function MandateVersionHistory({
 
       {/* The collection variant's "bundles" sentence is definitional, not a
           disclaimer, so it stays a plain visible footnote. The derivation
-          disclaimer that used to sit beside it now lives in the heading's
-          "?": see howTo above. */}
+          disclaimer that used to sit beside it now lives behind the heading's
+          "i": see `disclaimer` above. */}
       {series.is_collection && (
         <DetailFootnote>
           This group bundles related documents that are not individually
