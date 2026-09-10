@@ -25,8 +25,8 @@ const pageWidth = 'max-w-4xl lg:max-w-6xl'
 const pagePadding = 'px-8 sm:px-12 lg:px-16'
 
 const navItems = [
-  { href: '/secretariat', label: 'UN Secretariat Mandates', icon: Landmark },
-  { href: '/system', label: 'UN System Mandates', icon: Globe },
+  { href: '/secretariat', label: 'UN Secretariat View', icon: Landmark },
+  { href: '/system', label: 'UN System View', icon: Globe },
 ]
 
 export function SiteHeader() {
