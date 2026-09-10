@@ -10,14 +10,28 @@ import { BUDGET_STREAM_LABELS } from '@/lib/filter-constants'
 import type { BudgetLocation, BudgetStreamType } from '@/types'
 
 /**
- * Where a document is cited in the budget, one line per citation site.
+ * Where a document is cited in the budget, on one line.
  *
- * Every line is prefixed with its stream (PPB / PKO / Plan Outline). Regular-
- * budget lines then read Part › Section › Entity › SP; peacekeeping lines read
- * just the mission entity; the Plan Outline has no sub-structure. The line is
+ * Every path is prefixed with its stream (PPB / PKO / Plan Outline). Regular-
+ * budget paths then read Part › Section › Entity › SP; peacekeeping paths read
+ * just the mission entity; the Plan Outline has no sub-structure. The path is
  * deliberately terse (numbers, not titles) because the column shares a table
- * row — the full path is in the tooltip. Only the first two are shown; the rest
- * collapse into a "+N" that reveals the full list on hover.
+ * row — the full path is in the tooltip.
+ *
+ * One path is shown and a "+N" carries the rest, with the full list behind it
+ * on hover — the shape the Entities column already uses for the same job. The
+ * cell used to stack two paths and a "+N more" line, which made it the one
+ * cell that could run a row to three lines while every other column held one,
+ * so row height depended on which columns were switched on.
+ *
+ * Nothing in the path truncates. Every segment is an identifier — a part
+ * number, a section number, an entity code — and an identifier cut short is
+ * not a shorter identifier, it is a different one ("UN-OH…" says nothing).
+ * So the segments hold their width, the count holds its width, and the column
+ * is sized (MandateColumns) for the longest path the segment forms allow.
+ * Should a path ever exceed that, it is the path that clips at its edge and
+ * never the count: a clipped count reads as a smaller number, which cannot be
+ * seen to be wrong.
  */
 
 const STREAM_SHORT: Record<BudgetStreamType, string> = {
@@ -27,8 +41,6 @@ const STREAM_SHORT: Record<BudgetStreamType, string> = {
 }
 
 const STREAM_ORDER: BudgetStreamType[] = ['ppb', 'pko', 'plan_outline']
-
-const VISIBLE = 2
 
 /**
  * When a stream is being filtered on, float its locations to the front so the
@@ -57,34 +69,33 @@ export function BudgetLocationCell({
   if (locations.length === 0) return null
 
   const activeStream = filters.budget_document as BudgetStreamType | undefined
-  const ordered = orderLocations(locations, activeStream)
-  const shown = ordered.slice(0, VISIBLE)
-  const overflow = ordered.slice(VISIBLE)
+  const [first, ...rest] = orderLocations(locations, activeStream)
 
   return (
-    <div className="space-y-0.5 text-xs">
-      {shown.map((location) => (
-        <Tooltip key={locationKey(location)}>
-          <TooltipTrigger asChild>
-            <div className="flex items-baseline gap-1 truncate">
-              <CompactPath location={location} />
-            </div>
-          </TooltipTrigger>
-          <TooltipContent side="left" className="max-w-sm">
-            <FullPath location={location} />
-          </TooltipContent>
-        </Tooltip>
-      ))}
+    <div className="flex items-baseline gap-1 overflow-hidden text-xs">
+      <Tooltip>
+        <TooltipTrigger asChild>
+          {/* min-w-0 so this, not the count, is what yields when the row is
+              over-full; overflow-hidden so what yields clips at its own edge
+              instead of running under the count. */}
+          <div className="flex min-w-0 items-baseline gap-1 overflow-hidden whitespace-nowrap">
+            <CompactPath location={first} />
+          </div>
+        </TooltipTrigger>
+        <TooltipContent side="left" className="max-w-sm">
+          <FullPath location={first} />
+        </TooltipContent>
+      </Tooltip>
 
-      {overflow.length > 0 && (
+      {rest.length > 0 && (
         <Tooltip>
           <TooltipTrigger asChild>
-            <div className="cursor-default text-muted-foreground">
-              +{overflow.length} more
-            </div>
+            <span className="shrink-0 cursor-default text-muted-foreground">
+              +{rest.length}
+            </span>
           </TooltipTrigger>
           <TooltipContent side="left" className="max-w-sm space-y-2">
-            {overflow.map((location) => (
+            {rest.map((location) => (
               <FullPath key={locationKey(location)} location={location} />
             ))}
           </TooltipContent>
@@ -124,7 +135,7 @@ function CompactPath({ location }: { location: BudgetLocation }) {
       )
     if (location.entity)
       segments.push(
-        <span key="entity" className="truncate font-medium text-un-blue">
+        <span key="entity" className="shrink-0 font-medium text-un-blue">
           {location.entity}
         </span>
       )
@@ -136,7 +147,7 @@ function CompactPath({ location }: { location: BudgetLocation }) {
       )
   } else if (location.stream === 'pko' && location.entity) {
     segments.push(
-      <span key="entity" className="truncate font-medium text-un-blue">
+      <span key="entity" className="shrink-0 font-medium text-un-blue">
         {location.entity}
       </span>
     )

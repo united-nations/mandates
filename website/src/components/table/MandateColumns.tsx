@@ -151,7 +151,18 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
     defaultVisible: false,
     filterParam: 'budget_part',
     filterType: 'hierarchy',
-    width: 260,
+    // Sized for the longest single path the segment forms allow plus the
+    // "+N" count, because nothing in this cell truncates: every segment is an
+    // identifier. Parts are roman numerals of up to four letters, sections
+    // run to "29F" or carry an "(Add.N)" suffix, entity codes run to 19
+    // characters ("SESG-Horn of Africa") and subprogramme numbers to two
+    // digits. Measured at text-xs in Roboto: "PPB › II › 3 (Add.9) ›
+    // SESG-Horn of Africa › SP 12" is 279px with Consolas as the mono face
+    // and about 288px with Menlo, "+999" is 27px, the gap between them 4px
+    // and the cell's padding 24px — 343px. The old 260 held a typical path
+    // ("PPB › IV › 9 › DESA › SP 2", 140px) with room to spare and an
+    // addendum path with a long entity code not at all.
+    width: 344,
     align: 'left',
   },
   {
