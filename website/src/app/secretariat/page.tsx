@@ -8,7 +8,7 @@ import { loadSecretariatPageData } from './page-data'
 import { SecretariatPageView } from './page-view'
 
 export const metadata: Metadata = {
-  title: 'UN Secretariat Mandates',
+  title: 'UN Secretariat View',
   description: explainerTexts.mainHeader.shortDescriptionPlain,
 }
 

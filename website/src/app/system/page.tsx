@@ -18,7 +18,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'UN System Mandates',
+  title: 'UN System View',
   description:
     'An overview of the governing bodies of UN system entities — funds, programmes, specialized agencies, related organizations and others — with the resources each publishes on its mandates, documents, finances and results.',
 }
