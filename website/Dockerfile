@@ -8,7 +8,9 @@ RUN corepack enable && corepack prepare pnpm@10.28.1 --activate
 # 2. Install dependencies
 FROM base AS deps
 COPY website/package.json website/pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
+# No git and no repository in this image, so the prepare script (which points
+# git at the repo's shared hooks) cannot run; drop it from this stage's copy.
+RUN pnpm pkg delete scripts.prepare && pnpm install --frozen-lockfile
 
 # 3. Build the application
 FROM base AS builder
