@@ -77,8 +77,12 @@ export function ActiveFilters({
             Active filters
           </span>
           {hasSearch && (
+            // A word label like every other chip's, and the query exactly as
+            // typed: quotes are part of the search grammar now, so wrapping
+            // the query in another pair would show a phrase query as
+            // ""framework convention"".
             <FilterBadge
-              label={`"${filters.keyword}"`}
+              label={`Search: ${filters.keyword}`}
               onClear={() => clearFilter('keyword')}
             />
           )}

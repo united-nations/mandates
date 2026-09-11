@@ -11,7 +11,7 @@ import { queryMany, queryOne } from '../db/query'
 import { titleCase } from 'title-case'
 import { getMandateDisplayTitle, safeHighlightSearchTerms } from '@/lib/utils'
 import { compileSearchMarker } from '@/lib/paragraph-search'
-import { parseSearchQuery } from '@/lib/search-query'
+import { parseSearchQuery, positiveTerms } from '@/lib/search-query'
 import {
   buildSearchPredicate,
   likePattern,
@@ -753,9 +753,7 @@ export async function getMandates(
   // match means every term is in the symbol and the first begins it, and a
   // title match means every term is in the title or the description. A query
   // with no positive terms has nothing to rank by and keeps the default sort.
-  const rankTerms = filters.keyword
-    ? parseSearchQuery(filters.keyword).filter(({ exclude }) => !exclude)
-    : []
+  const rankTerms = filters.keyword ? positiveTerms(filters.keyword) : []
   let keywordRankExpr = ''
   if (rankTerms.length > 0) {
     const symbol = searchFoldSql('c.ppb_full_document_symbol')

@@ -10,6 +10,7 @@ import type { SearchTerm } from '#lib/search-query'
 export {
   matchesSearchTerms,
   parseSearchQuery,
+  positiveTerms,
   searchFold,
   type SearchTerm,
 } from '#lib/search-query'

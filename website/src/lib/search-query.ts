@@ -120,6 +120,15 @@ export function parseSearchQuery(query: string): SearchTerm[] {
   return terms
 }
 
+/**
+ * The terms of a query that assert presence — the ones there is something to
+ * rank by or to mark. An excluded term has already removed its rows and says
+ * nothing about the ones left, so a query of nothing but exclusions has none.
+ */
+export function positiveTerms(query: string): SearchTerm[] {
+  return parseSearchQuery(query).filter(({ exclude }) => !exclude)
+}
+
 /** Whether one text satisfies every parsed search term. */
 export function matchesSearchTerms(text: string, terms: SearchTerm[]): boolean {
   const folded = searchFold(text)

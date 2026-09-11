@@ -36,6 +36,7 @@ import { titleCase } from 'title-case'
 import { EntityBadge, FoundationalTag } from '../EntityBadge'
 import { DocumentSymbol } from '@/components/DocumentSymbol'
 import { isFoundational } from '@/lib/foundational'
+import { positiveTerms } from '@/lib/search-query'
 import { ColumnHeaderFilter } from './ColumnHeaderFilter'
 import { BudgetLocationCell } from './BudgetLocationCell'
 import {
@@ -111,8 +112,13 @@ export function MandateDataTable({
     })
   }
 
+  // The header's sort indicator has to say what the list is actually sorted
+  // by. Under a keyword the data layer ranks by match — but only when the
+  // query has a term to rank on; a query of nothing but exclusions keeps the
+  // default sort, and the indicator follows the same rule.
+  const ranked = !!filters.keyword && positiveTerms(filters.keyword).length > 0
   const currentSort =
-    filters.sort_by || (filters.keyword ? 'default' : 'citing_entities_desc')
+    filters.sort_by || (ranked ? 'default' : 'citing_entities_desc')
 
   const columns = COLUMN_DEFINITIONS.filter((col) =>
     visibleColumns.has(col.id)
