@@ -1,6 +1,7 @@
 'use client'
 
 import { SearchInput } from './SearchInput'
+import { SearchSyntaxHint } from './SearchSyntaxHelp'
 import { useEffect, useState } from 'react'
 import { explainerTexts } from '@/lib/en_text_contents'
 import { useFilters } from '@/contexts/FilterContext'
@@ -47,8 +48,13 @@ export function FilterControls({ toolbarSlot }: FilterControlsProps) {
     <div>
       {/* Search bar + toolbar */}
       <div className="flex flex-wrap items-center gap-2">
-        <div className="relative min-w-0 grow basis-48">
-          <SearchInput
+        {/* The "?" beside the field is the same one the paragraph search
+            carries, on the same grammar: the field reads "convention
+            -accession" as the paragraph search does, and the rules behind
+            it are not guessable from a placeholder. */}
+        <div className="flex min-w-0 grow basis-48 items-center gap-2">
+          <div className="relative min-w-0 grow">
+            <SearchInput
             id="keyword-search"
             placeholder={explainerTexts.filters.keywordSearch.placeholder}
             value={searchInput}
@@ -68,6 +74,8 @@ export function FilterControls({ toolbarSlot }: FilterControlsProps) {
               clearFilter('keyword')
             }}
           />
+          </div>
+          <SearchSyntaxHint />
         </div>
         <div className="contents">{toolbarSlot}</div>
       </div>

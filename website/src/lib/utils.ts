@@ -1,4 +1,5 @@
 import type { Mandate } from '@/types'
+import { findMarkRanges, type SearchMarker } from '@/lib/paragraph-search'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import { titleCase } from 'title-case'
@@ -39,34 +40,39 @@ export function formatUrlForDisplay(url: string, maxLength?: number): string {
  * @param searchTerm The search term to highlight
  * @returns Text with highlighted search terms
  */
-export function highlightSearchTerms(text: string, searchTerm: string): string {
-  if (!text || !searchTerm) return text
+export function highlightSearchTerms(text: string, marker: SearchMarker): string {
+  if (!text || marker.patterns.length === 0) return text
 
-  // Escape special regex characters in search term
-  const escapedTerm = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-
-  // Create regex for case-insensitive search
-  const regex = new RegExp(`(${escapedTerm})`, 'gi')
-
-  // Replace matches with highlighted version
-  return text.replace(
-    regex,
-    '<mark class="bg-[#b3d9f0] text-[#00557a] px-0.5 rounded">$1</mark>'
-  )
+  // The ranges come from the paragraph search's marker over the parsed
+  // query, so the marks follow the query grammar: each positive term marks
+  // where it occurs, with the fold's tolerance for spelling, and an excluded
+  // term marks nothing. Ranges arrive merged and in order, so the text can
+  // be sliced straight through them.
+  let out = ''
+  let at = 0
+  for (const { start, end } of findMarkRanges(text, marker)) {
+    out +=
+      text.slice(at, start) +
+      '<mark class="bg-[#b3d9f0] text-[#00557a] px-0.5 rounded">' +
+      text.slice(start, end) +
+      '</mark>'
+    at = end
+  }
+  return out + text.slice(at)
 }
 
 /**
  * Safely highlights search terms in text, handling null/undefined values
  * @param text The text to highlight (can be null/undefined)
- * @param searchTerm The search term to highlight
+ * @param marker The compiled search marker for the query
  * @returns Highlighted text or original text if no highlighting possible
  */
 export function safeHighlightSearchTerms(
   text: string | null | undefined,
-  searchTerm: string
+  marker: SearchMarker
 ): string | undefined {
-  if (!text || !searchTerm) return text || undefined
-  return highlightSearchTerms(text, searchTerm)
+  if (!text) return text || undefined
+  return highlightSearchTerms(text, marker)
 }
 
 /**

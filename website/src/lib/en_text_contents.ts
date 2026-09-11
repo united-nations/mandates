@@ -139,6 +139,20 @@ export const explainerTexts = {
     },
   },
 
+  // The query grammar every search field over prose shares — the documents
+  // table search and the paragraph search on the detail page. Each field
+  // documents it behind a "?"; one copy here so the two cannot describe
+  // different rules.
+  searchSyntax: {
+    title: 'How search works',
+    rules: [
+      'Terms separated by spaces must all appear.',
+      'Use "quotes" to match an exact phrase.',
+      'Start a term with a minus to exclude it.',
+      'Only a typed minus excludes. A dash pasted from a document is searched as text.',
+    ],
+  },
+
   // Sorting and UI Elements
   sorting: {
     placeholder: 'Sort by...',

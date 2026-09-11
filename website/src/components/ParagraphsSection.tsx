@@ -22,6 +22,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Chip } from '@/components/ui/chip'
 import { ChartSearchInput } from '@/components/ui/chart-search-input'
 import { DetailSectionHeading } from '@/components/MandateDetailUi'
+import { SearchSyntaxHelp } from '@/components/SearchSyntaxHelp'
 
 import { cn } from '@/lib/utils'
 import { explainerTexts } from '@/lib/en_text_contents'
@@ -2482,20 +2483,7 @@ export function ParagraphsSection({
       <div ref={paragraphsTitleRef} className="space-y-3">
         <DetailSectionHeading
           hint={headingHint}
-          howTo={
-            <div>
-              <p className="font-medium text-foreground">How search works</p>
-              <ul className="list-disc space-y-1 pl-4">
-                <li>Terms separated by spaces must all appear.</li>
-                <li>Use &quot;quotes&quot; to match an exact phrase.</li>
-                <li>Start a term with a minus to exclude it.</li>
-                <li>
-                  Only a typed minus excludes. A dash pasted from a document
-                  is searched as text.
-                </li>
-              </ul>
-            </div>
-          }
+          howTo={<SearchSyntaxHelp />}
           disclaimer={explainerTexts.mandateDetail.paragraphs.betaDisclaimer}
         >
           What&rsquo;s in this document?

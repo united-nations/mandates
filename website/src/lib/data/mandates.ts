@@ -10,6 +10,15 @@ import { unstable_cache } from 'next/cache'
 import { queryMany, queryOne } from '../db/query'
 import { titleCase } from 'title-case'
 import { getMandateDisplayTitle, safeHighlightSearchTerms } from '@/lib/utils'
+import { compileSearchMarker } from '@/lib/paragraph-search'
+import { parseSearchQuery } from '@/lib/search-query'
+import {
+  buildSearchPredicate,
+  likePattern,
+  likePrefixPattern,
+  searchFoldSql,
+  type SearchField,
+} from './search-query-sql'
 import { getAllEntities } from './entities'
 import { getAllOrgans, getOrganMap } from './organs'
 import { getBudgetVersions } from './budget-documents'
@@ -224,6 +233,27 @@ function versionPredicateSql(citationAlias: string, versionParam: string): strin
       )
     )`
 }
+
+/**
+ * The fields the keyword search reads — the ones shown on the row: the
+ * symbol, the raw description, the rendered title and the subject headings.
+ * The ordering rank in getMandates reads the same fields.
+ *
+ * Which fold each field gets was counted, not assumed. Symbols carry the
+ * folded characters in a few dozen rows ("A/RES/79/259 A–C" with an en dash,
+ * a non-breaking hyphen in an OAS symbol, stray whitespace in 37), and
+ * descriptions and titles carry them in the hundreds, with doubled or edge
+ * whitespace in over ten thousand — those three get the full fold. Subject
+ * headings were counted at zero for every mapped character and every
+ * whitespace anomaly, so lower-casing them gives the same answer as the
+ * full fold, and this is the field with several values per row.
+ */
+const KEYWORD_SEARCH_FIELDS: SearchField[] = [
+  { expr: 'd.ppb_full_document_symbol', fold: 'text' },
+  { expr: 'd.ppb_description', fold: 'text' },
+  { expr: 'd.display_title', fold: 'text' },
+  { expr: 'd.subjects', fold: 'case', array: true },
+]
 
 function buildFilterClauses(
   filters: FilterOptions,
@@ -517,24 +547,25 @@ function buildFilterClauses(
     paramIndex++
   }
 
-  // Keyword search — only fields shown on the card:
-  //   ppb_full_document_symbol  (symbol badge)
-  //   ppb_description           (raw description / title fallback)
-  //   display_title             (the rendered title)
-  //   subjects                  (subject heading badges)
+  // Keyword search: the same query grammar as the paragraph search on the
+  // detail page (search-query.ts), over KEYWORD_SEARCH_FIELDS. Terms are
+  // ANDed, a quoted span is one phrase, a leading minus excludes; a term
+  // matches a row if it appears in any of the fields, and an excluded term
+  // rejects the row if it appears in any of them. A query that parses to no
+  // terms — whitespace, a bare minus, an empty quote pair — is no search.
+  // Every count on the page comes through this clause, so the list, its
+  // total, the grouped view and the facets all read the same filtered set.
   if (filters.keyword) {
-    const keyword = `%${filters.keyword.toLowerCase()}%`
-    clauses.push(`(
-      LOWER(d.ppb_full_document_symbol) LIKE $${paramIndex}
-      OR LOWER(d.ppb_description) LIKE $${paramIndex}
-      OR LOWER(COALESCE(d.display_title, '')) LIKE $${paramIndex}
-      OR EXISTS (
-        SELECT 1 FROM UNNEST(COALESCE(d.subjects, '{}'::text[])) s
-        WHERE LOWER(s) LIKE $${paramIndex}
-      )
-    )`)
-    params.push(keyword)
-    paramIndex++
+    const search = buildSearchPredicate(
+      parseSearchQuery(filters.keyword),
+      KEYWORD_SEARCH_FIELDS,
+      paramIndex
+    )
+    if (search.clause) {
+      clauses.push(search.clause)
+      params.push(...search.params)
+      paramIndex += search.params.length
+    }
   }
 
   // Exact document symbol match
@@ -713,22 +744,43 @@ export async function getMandates(
   // placeholders.
   const bind = (value: SqlParam): number => params.push(value)
 
-  // Keyword rank params. Ranks: 0=exact symbol, 1=symbol prefix,
-  // 2=title/description match, 3=subject-only.
+  // Ordering under a keyword: rows whose symbol is the query first, then
+  // symbol-prefix matches, then title or description matches, then the rest
+  // (subject-only matches). The rank reads the positive terms of the parsed
+  // query — an excluded term has already removed its rows and says nothing
+  // about the ones left — and at each level every positive term has to hold:
+  // the symbol equals the query only when the query is one term, a prefix
+  // match means every term is in the symbol and the first begins it, and a
+  // title match means every term is in the title or the description. A query
+  // with no positive terms has nothing to rank by and keeps the default sort.
+  const rankTerms = filters.keyword
+    ? parseSearchQuery(filters.keyword).filter(({ exclude }) => !exclude)
+    : []
   let keywordRankExpr = ''
-  if (filters.keyword) {
-    const kw = filters.keyword.toLowerCase()
-    const exactIdx = bind(kw)
-    const prefixIdx = bind(`${kw}%`)
-    const containsIdx = bind(`%${kw}%`)
+  if (rankTerms.length > 0) {
+    const symbol = searchFoldSql('c.ppb_full_document_symbol')
+    const title = searchFoldSql("COALESCE(c.display_title, '')")
+    const description = searchFoldSql("COALESCE(c.ppb_description, '')")
+    const exactSymbol =
+      rankTerms.length === 1 ? `${symbol} = $${bind(rankTerms[0].term)}` : 'false'
+    const symbolPrefix = rankTerms
+      .map(({ term }, i) =>
+        i === 0
+          ? `${symbol} LIKE $${bind(likePrefixPattern(term))}`
+          : `${symbol} LIKE $${bind(likePattern(term))}`
+      )
+      .join(' AND ')
+    const inTitle = rankTerms
+      .map(({ term }) => {
+        const pattern = bind(likePattern(term))
+        return `(${title} LIKE $${pattern} OR ${description} LIKE $${pattern})`
+      })
+      .join(' AND ')
     keywordRankExpr = `,
       CASE
-        WHEN LOWER(c.ppb_full_document_symbol) = $${exactIdx} THEN 0
-        WHEN LOWER(c.ppb_full_document_symbol) LIKE $${prefixIdx} THEN 1
-        WHEN (
-          LOWER(COALESCE(c.display_title, '')) LIKE $${containsIdx}
-          OR LOWER(COALESCE(c.ppb_description, '')) LIKE $${containsIdx}
-        ) THEN 2
+        WHEN ${exactSymbol} THEN 0
+        WHEN ${symbolPrefix} THEN 1
+        WHEN ${inTitle} THEN 2
         ELSE 3
       END AS keyword_rank`
   }
@@ -745,7 +797,7 @@ export async function getMandates(
 
   // When keyword is active with no explicit sort, rank by relevance only.
   // When an explicit sort_by is chosen, use relevance as primary then the chosen sort.
-  const orderBy = filters.keyword
+  const orderBy = keywordRankExpr
     ? filters.sort_by
       ? `ORDER BY keyword_rank ASC, ${buildOrderByClause(filters.sort_by).replace('ORDER BY ', '')}`
       : 'ORDER BY keyword_rank ASC'
@@ -3312,6 +3364,13 @@ export const getMandatePageData = cache(
 
     const { mandates, totalCount } = list
 
+    // The marks on the row use the paragraph search's own marker over the
+    // parsed query, so a straight apostrophe marks a curly one and an
+    // excluded term marks nothing. Compiled once per page, not per row.
+    const marker = filters.keyword
+      ? compileSearchMarker(parseSearchQuery(filters.keyword))
+      : null
+
     const enrichedMandates = mandates.map((mandate) => {
       const base = {
         ...mandate,
@@ -3319,26 +3378,25 @@ export const getMandatePageData = cache(
         body_long: organMap.get(mandate.body)?.long || mandate.body,
       }
 
-      if (!filters.keyword) return base
+      if (!marker) return base
 
-      const kw = filters.keyword
       const highlightedFields: Record<string, string> = {}
       const matchedFields: Array<{ field: string; value: string }> = []
 
-      const ht = safeHighlightSearchTerms(base.displayTitle, kw)
+      const ht = safeHighlightSearchTerms(base.displayTitle, marker)
       if (ht && ht !== base.displayTitle) {
         highlightedFields.title = ht
         matchedFields.push({ field: 'title', value: base.displayTitle ?? '' })
       }
 
-      const hs = safeHighlightSearchTerms(base.full_document_symbol, kw)
+      const hs = safeHighlightSearchTerms(base.full_document_symbol, marker)
       if (hs && hs !== base.full_document_symbol) {
         highlightedFields.full_document_symbol = hs
         matchedFields.push({ field: 'symbol', value: base.full_document_symbol })
       }
 
       const matchedSubjects = base.subject_headings
-        .map((s) => safeHighlightSearchTerms(s, kw) ?? s)
+        .map((s) => safeHighlightSearchTerms(s, marker) ?? s)
         .filter((s, i) => s !== base.subject_headings[i])
       if (matchedSubjects.length > 0) {
         highlightedFields.subject_headings = matchedSubjects.join(', ')
