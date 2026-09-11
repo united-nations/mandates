@@ -12,7 +12,7 @@ const versionContext = (props: DirectoryExplorerProps) => {
   const latest = Math.max(...props.versions.map((version) => version.ppb_year))
   const predicate =
     active && active.ppb_year !== latest
-      ? `cited as mandates in PPB ${active.ppb_year}`
+      ? `cited as mandates in the UN Programme Budget ${active.ppb_year}`
       : 'cited as mandates'
   return { active, predicate }
 }

@@ -27,7 +27,7 @@ const VersionChoices = (props: CitedPanelProps) => (
       {props.versions.map((version) => (
         <ScopeButton
           key={version.slug}
-          label={`PPB ${version.ppb_year}`}
+          label={`UN Programme Budget ${version.ppb_year}`}
           detail={version.display_name}
           selected={props.activeVersionSlug === version.slug}
           onClick={() => props.actions.setVersion(version.slug)}

@@ -64,7 +64,7 @@ export default async function AnalyticsPage({ searchParams }: PageProps) {
     <>
       <Chart
         title="Resolutions and cited mandates"
-        description="Resolutions adopted each year against the subset cited as mandate sources in the proposed programme budget."
+        description="Resolutions adopted each year against the subset cited as mandate sources in the proposed UN programme budget."
       >
         <ResolutionCitationTrend data={resolutionTrend} />
       </Chart>

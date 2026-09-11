@@ -30,11 +30,12 @@ export default function MethodologyPage() {
         />
 
         <p>
-          Some citations in the 2027 proposed programme budget are preliminary,
-          drawn from advance versions of the underlying documents, and may change
-          in the final budget: Section&nbsp;1 (Overall policymaking, direction
-          and coordination), from A/81/6&nbsp;(Sect.&nbsp;1); and the special
-          political missions, from A/81/6&nbsp;(Sect.&nbsp;3)/Add.1–4.
+          Some citations in the 2027 proposed UN programme budget are
+          preliminary, drawn from advance versions of the underlying documents,
+          and may change in the final budget: Section&nbsp;1 (Overall
+          policymaking, direction and coordination), from
+          A/81/6&nbsp;(Sect.&nbsp;1); and the special political missions, from
+          A/81/6&nbsp;(Sect.&nbsp;3)/Add.1–4.
         </p>
 
         <p className="text-gray-600 italic">

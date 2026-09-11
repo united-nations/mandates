@@ -26,7 +26,7 @@ interface Organ {
 interface ActiveFiltersProps {
   entitiesData: Entity[]
   allOrgans: Organ[]
-  /** How the `cited` chip names the budget on display, e.g. "PPB 2027". */
+  /** How the `cited` chip names the budget on display, e.g. "UN Programme Budget 2027". */
   citedVersionLabel?: string
   className?: string
 }

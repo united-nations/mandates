@@ -19,7 +19,7 @@ const resources = [
   },
   {
     title: 'Programme Budget Results',
-    description: 'Results information for the proposed programme budget.',
+    description: 'Results information for the proposed UN programme budget.',
     href: 'https://results.un.org/',
     icon: Target,
   },

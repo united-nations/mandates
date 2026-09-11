@@ -27,7 +27,9 @@ const Summary = ({ data }: { data: PageData }) => (
       entitiesData={data.entities}
       allOrgans={data.organs}
       citedVersionLabel={
-        data.active.version ? `PPB ${data.active.version.ppb_year}` : undefined
+        data.active.version
+          ? `UN Programme Budget ${data.active.version.ppb_year}`
+          : undefined
       }
       className="mb-4"
     />
