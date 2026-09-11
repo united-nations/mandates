@@ -15,6 +15,7 @@ import {
   likePattern,
   likePrefixPattern,
   searchFoldSql,
+  termFoldSql,
   type SearchField,
 } from '#lib/data/search-query-sql'
 
@@ -91,13 +92,41 @@ describe('buildSearchPredicate', () => {
   })
 
   it('folds each field the way its declaration says', () => {
-    const { clause } = predicate('report')
+    const { clause } = predicate('"annual report"')
     assert.ok(clause)
     const [group] = groups(clause)
     // The text field goes through every stage; the case field is LOWER alone.
     assert.match(group, /btrim\(regexp_replace\(translate\(replace\(replace\(LOWER\(COALESCE\(d\.title, ''\)\)/)
     assert.match(group, /WHERE LOWER\(element\.value\) LIKE/)
     assert.doesNotMatch(group, /translate\(replace\(replace\(LOWER\(element\.value\)/)
+  })
+
+  // A term with no whitespace matches the same rows whether or not the
+  // column's whitespace is normalised, so it skips the stages that cost the
+  // most. Only a phrase pays for them.
+  it('a term without whitespace skips the whitespace stages', () => {
+    const { clause } = predicate('report')
+    assert.ok(clause)
+    const [group] = groups(clause)
+    assert.match(group, /translate\(replace\(replace\(LOWER\(COALESCE\(d\.title, ''\)\)/)
+    assert.doesNotMatch(group, /regexp_replace|btrim|\\u00A0|\\u202F/)
+  })
+
+  it('a phrase takes the whitespace stages', () => {
+    const { clause } = predicate('"annual report"')
+    assert.ok(clause)
+    const [group] = groups(clause)
+    assert.match(group, /regexp_replace/)
+    assert.match(group, /btrim/)
+    assert.match(group, /\\u00A0\\u202F/)
+  })
+
+  it('mixed queries fold each term on its own terms', () => {
+    const { clause } = predicate('"annual report" -draft')
+    assert.ok(clause)
+    const [phrase, word] = groups(clause)
+    assert.match(phrase, /regexp_replace/)
+    assert.doesNotMatch(word, /regexp_replace/)
   })
 
   it('numbers parameters from the index the caller gives', () => {
@@ -132,6 +161,24 @@ describe('likePattern', () => {
 describe('caseFoldSql', () => {
   it('is LOWER and nothing else', () => {
     assert.equal(caseFoldSql('d.title'), 'LOWER(d.title)')
+  })
+})
+
+describe('termFoldSql', () => {
+  it('is the full fold without its whitespace stages', () => {
+    const sql = termFoldSql('d.title')
+    assert.match(sql, /^translate\(replace\(replace\(LOWER\(d\.title\)/)
+    assert.match(
+      sql,
+      /E'\\u2018\\u2019\\u201C\\u201D\\u2010\\u2011\\u2013\\u2014', E'\\'\\'""----'\)$/
+    )
+    assert.doesNotMatch(sql, /regexp_replace|btrim/)
+  })
+
+  it('maps eight characters to eight', () => {
+    const from = '\u2018\u2019\u201C\u201D\u2010\u2011\u2013\u2014'
+    const to = "''\"\"----"
+    assert.equal(from.length, to.length)
   })
 })
 

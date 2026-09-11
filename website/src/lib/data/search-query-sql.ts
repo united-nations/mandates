@@ -36,12 +36,39 @@ import type { SearchTerm } from '#lib/search-query'
  * named rather than typed.
  */
 export function searchFoldSql(expr: string): string {
-  const lowered = `LOWER(${expr})`
-  const deleted = `replace(replace(${lowered}, E'\\u00AD', ''), E'\\u200B', '')`
   // Ten characters map to ten: two apostrophes, two double quotes, four
   // dashes, two spaces.
-  const mapped = `translate(${deleted}, E'\\u2018\\u2019\\u201C\\u201D\\u2010\\u2011\\u2013\\u2014\\u00A0\\u202F', E'\\'\\'""----  ')`
+  const mapped = `translate(${characterFoldSql(expr)}, E'\\u2018\\u2019\\u201C\\u201D\\u2010\\u2011\\u2013\\u2014\\u00A0\\u202F', E'\\'\\'""----  ')`
   return `btrim(regexp_replace(${mapped}, '\\s+', ' ', 'g'))`
+}
+
+/**
+ * The fold for a term with no whitespace in it: every stage of `searchFoldSql`
+ * except the whitespace ones, which cannot change the answer for such a term.
+ *
+ * The argument: the whitespace stages only replace, collapse or trim runs of
+ * whitespace characters, and never touch a character outside that class or
+ * put one in. So the maximal runs of non-whitespace text are the same before
+ * and after, character for character and in the same order. A term with no
+ * whitespace in it cannot straddle a whitespace run, so it is a substring of
+ * some non-whitespace run or of nothing — and that is the same run either way.
+ * The term side is safe too: the parser has already collapsed every kind of
+ * whitespace in the query to a single space, so a term without a space holds
+ * no no-break space or any other member of the class.
+ *
+ * This is the cheap fold, and it is used for every term except a quoted
+ * phrase: the regexp is the expensive stage, and it runs per row, per field,
+ * per term.
+ */
+export function termFoldSql(expr: string): string {
+  // Eight characters map to eight: two apostrophes, two double quotes, four
+  // dashes.
+  return `translate(${characterFoldSql(expr)}, E'\\u2018\\u2019\\u201C\\u201D\\u2010\\u2011\\u2013\\u2014', E'\\'\\'""----')`
+}
+
+/** The stages before any character mapping: lower-case, delete invisibles. */
+function characterFoldSql(expr: string): string {
+  return `replace(replace(LOWER(${expr}), E'\\u00AD', ''), E'\\u200B', '')`
 }
 
 /**
@@ -87,9 +114,15 @@ export interface SearchField {
   array?: true
 }
 
-const FOLD: Record<SearchField['fold'], (expr: string) => string> = {
-  text: searchFoldSql,
-  case: caseFoldSql,
+/**
+ * The fold for one field under one term. A `text` field takes the full fold
+ * only when the term is a phrase — the one kind of term that can contain a
+ * space — and the cheaper term fold otherwise; see `termFoldSql` for why
+ * the two cannot disagree on such a term.
+ */
+function foldFor(field: SearchField, term: string): (expr: string) => string {
+  if (field.fold === 'case') return caseFoldSql
+  return term.includes(' ') ? searchFoldSql : termFoldSql
 }
 
 /**
@@ -115,11 +148,12 @@ export function buildSearchPredicate(
     // WHERE reads as false — so a document with no description would vanish
     // from every negative query. The array field's EXISTS is never NULL.
     const anyField = fields
-      .map(({ expr, fold, array }) =>
-        array
-          ? `EXISTS (SELECT 1 FROM UNNEST(COALESCE(${expr}, '{}'::text[])) AS element(value) WHERE ${FOLD[fold]('element.value')} LIKE ${placeholder})`
-          : `${FOLD[fold](`COALESCE(${expr}, '')`)} LIKE ${placeholder}`
-      )
+      .map((field) => {
+        const fold = foldFor(field, term)
+        return field.array
+          ? `EXISTS (SELECT 1 FROM UNNEST(COALESCE(${field.expr}, '{}'::text[])) AS element(value) WHERE ${fold('element.value')} LIKE ${placeholder})`
+          : `${fold(`COALESCE(${field.expr}, '')`)} LIKE ${placeholder}`
+      })
       .join(' OR ')
     return exclude ? `NOT (${anyField})` : `(${anyField})`
   })
