@@ -1,7 +1,10 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-  output: 'standalone', //  for Docker
+  // Standalone is what the Docker image copies and runs; omitted on Vercel,
+  // whose builders fail after page generation on Next 16.3.4 with standalone
+  // set, looking for a .next/next-server.js.nft.json that is never written.
+  output: process.env.VERCEL ? undefined : 'standalone',
 
   serverExternalPackages: ['undifferent'],
 
