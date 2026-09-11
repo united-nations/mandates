@@ -209,16 +209,21 @@ export function DetailFootnote({ children }: { children: ReactNode }) {
 }
 
 /**
- * The geometry the two marks beside a heading share: a 16px circle,
- * baseline-aligned in the heading row, with a top nudge that lands the
- * circle's centre on the cap-height midpoint (a button keeps its content
- * baseline under overflow-hidden, unlike a span, which is why this nudge is a
- * plain top offset rather than the vertical-align trick a span needs). Each
- * mark adds only its glyph's face, so the two cannot drift apart in size or
- * position.
+ * The two marks beside a heading, as one class string they share whole: a
+ * 16px circle, a 10px semibold glyph on a 14px line, baseline-aligned in the
+ * heading row with a top nudge that lands the circle's centre on the
+ * cap-height midpoint (a button keeps its content baseline under
+ * overflow-hidden, unlike a span, which is why this nudge is a plain top
+ * offset rather than the vertical-align trick a span needs). The `?` and the
+ * `i` differ in nothing but the glyph and the accessible name.
+ *
+ * Passed to the trigger as this string, never through `cn`: tailwind-merge
+ * does not know `text-micro` as a size, reads it as a colour, and drops it in
+ * favour of `text-gray-500` — which left both glyphs at the heading's 16px
+ * inside a 16px circle.
  */
 const headingMarkClassName =
-  'relative -top-[2.33px] inline-block h-4 w-4 shrink-0 cursor-pointer self-baseline overflow-hidden rounded-full border border-gray-300 p-0 text-center text-micro leading-[0.875rem] text-gray-500 select-none hover:border-un-blue hover:text-un-blue focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none'
+  'relative -top-[2.33px] inline-block h-4 w-4 shrink-0 cursor-pointer self-baseline overflow-hidden rounded-full border border-gray-300 p-0 text-center text-micro leading-[0.875rem] font-semibold text-gray-500 select-none hover:border-un-blue hover:text-un-blue focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none'
 
 /**
  * The `?` beside a section heading: how-to-use text, off the page until asked
@@ -236,7 +241,7 @@ function DetailHowTo({ children }: { children: ReactNode }) {
       side="bottom"
       align="start"
       sideOffset={6}
-      triggerClassName={cn(headingMarkClassName, 'font-semibold')}
+      triggerClassName={headingMarkClassName}
       trigger="?"
     >
       {children}
@@ -247,10 +252,12 @@ function DetailHowTo({ children }: { children: ReactNode }) {
 /**
  * The `i` beside a section heading: the disclaimer, off the page until asked
  * for. The same control as the `?` — same primitive, same hover, focus and
- * touch paths, same geometry — with the serif italic `i` this app already
- * uses to mark a caveat about how content was derived, so the two marks
- * stay distinguishable. Not exported, for the same reason `DetailHowTo` is
- * not: an `i` exists only where a heading declares `disclaimer`.
+ * touch paths, same circle, face, size and colour — with only the glyph and
+ * the accessible name different, so the two marks read as a pair and stay
+ * distinguishable. (The mandating-bodies directory draws its `i` in a serif
+ * italic; that is a different face from the `?`, so it is not reused here.)
+ * Not exported, for the same reason `DetailHowTo` is not: an `i` exists only
+ * where a heading declares `disclaimer`.
  *
  * The accessible name is the same on every instance: it names the kind of
  * text behind the mark, and the heading it sits beside is the previous thing
@@ -264,7 +271,7 @@ function DetailDisclaimer({ children }: { children: ReactNode }) {
       side="bottom"
       align="start"
       sideOffset={6}
-      triggerClassName={cn(headingMarkClassName, 'font-serif italic')}
+      triggerClassName={headingMarkClassName}
       trigger="i"
     >
       {children}
