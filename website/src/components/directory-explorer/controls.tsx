@@ -36,7 +36,7 @@ export const ScopeButton = (props: ScopeButtonProps) => (
     onClick={props.onClick}
     aria-pressed={props.selected}
     className={cn(
-      'flex max-w-xs min-w-0 flex-col items-start gap-0.5 rounded-lg border px-3 py-2 text-left transition-all focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none',
+      'flex max-w-sm min-w-0 flex-col items-start gap-0.5 rounded-lg border px-3 py-2 text-left transition-all focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none',
       props.selected
         ? 'border-un-blue bg-un-blue/5'
         : 'border-gray-200 bg-white hover:border-un-blue'
