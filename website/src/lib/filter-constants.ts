@@ -7,7 +7,7 @@
 // `budget_document` filter now carries: a doc_type). Version-agnostic, so used
 // for filter chips where the version-specific document name would be noise.
 export const BUDGET_STREAM_LABELS = {
-  ppb: 'Programme Budget',
+  ppb: 'UN Programme Budget',
   pko: 'Peacekeeping Operations',
   plan_outline: 'Plan Outline',
 } as const
