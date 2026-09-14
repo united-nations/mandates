@@ -33,6 +33,13 @@ import {
   parseSearchQuery,
   type SearchMarker,
 } from '@/lib/paragraph-search'
+import {
+  isAnnexSection,
+  isContentElement,
+  resolveVisibilityTier,
+  isMainPreambular,
+  shouldCollapsePreamble,
+} from '@/lib/paragraph-presentation'
 import { useIsMobile } from '@/hooks/use-mobile'
 import type { Entity, Paragraph } from '@/types'
 import { EntityName } from '@/components/EntityName'
@@ -556,27 +563,6 @@ function cleanPrefix(prefix: string) {
   return prefix.replace(/[.\(\)\[\]]/g, '').trim()
 }
 
-/**
- * Element types that are structural boilerplate and stay hidden for now.
- * Vote records, footnotes, tables and horizontal dividers are deferred future
- * work (see PROJECT NOTES at the bottom of this file); mastheads/frontmatter,
- * backmatter, footers and signatures are pure document chrome.
- */
-const HIDDEN_TYPES = new Set([
-  'frontmatter',
-  'backmatter',
-  'footnote',
-  'footer',
-  'signature',
-  'vote_record',
-  'divider',
-  'table',
-])
-
-function isAnnexSection(section?: string): boolean {
-  return section === 'annex' || section === 'appendix'
-}
-
 /** A heading whose text opens an annex/appendix (used when there is no
  * Digital Library section metadata, e.g. the mandates corpus). */
 const ANNEX_START_RE = /^(annex|appendix)\b/i
@@ -605,17 +591,6 @@ function romanNumeral(n: number): string {
     }
   }
   return out
-}
-
-/**
- * Whether an element renders as visible content anywhere in the flow. Hides
- * structural chrome; hides the document-level `title` (it duplicates the page
- * H1) but keeps annex/appendix titles, which become the annex subtitle.
- */
-function isContentElement(p: Paragraph): boolean {
-  if (HIDDEN_TYPES.has(p.type)) return false
-  if (p.type === 'title') return isAnnexSection(p.section)
-  return true
 }
 
 /**
@@ -1252,6 +1227,14 @@ export function ParagraphsSection({
 
   // The one heading that only repeats the document title (see
   // findTitleEchoIndex); dropped from the flow and from the TOC.
+  const visibilityTier = useMemo(
+    () => resolveVisibilityTier(allParagraphs ?? []),
+    [allParagraphs]
+  )
+  const collapsePreamble = shouldCollapsePreamble(
+    allParagraphs ?? [],
+    hasSearchQuery
+  )
   const titleEchoIndex = useMemo(
     () => findTitleEchoIndex(allParagraphs),
     [allParagraphs]
@@ -1459,17 +1442,13 @@ export function ParagraphsSection({
       const paragraph = allParagraphs[index]
 
       // Hide structural chrome and the document title (duplicates the H1).
-      if (!isContentElement(paragraph)) {
+      if (!isContentElement(paragraph, visibilityTier)) {
         return false
       }
 
       // Main-section preambular clauses render in the collapsible above, not
       // the list. Preambular inside an annex renders inline within its block.
-      if (
-        paragraph.type !== 'heading' &&
-        paragraph.paragraph_type === 'preambular' &&
-        !isAnnexSection(paragraph.section)
-      ) {
+      if (collapsePreamble && isMainPreambular(paragraph)) {
         return false
       }
 
@@ -1576,6 +1555,8 @@ export function ParagraphsSection({
     assigneeFilter,
     actionVerbFilter,
     titleEchoIndex,
+    visibilityTier,
+    collapsePreamble,
     searchTerms,
   ])
 
@@ -2092,22 +2073,18 @@ export function ParagraphsSection({
           ).flatMap((mandate) => [
             ...(mandate.assignees ?? [])
               .filter((a) => a.assignee.toLowerCase() === needle)
-              .map(
-                (a): EntityTooltipData => ({
-                  ...a,
-                  entityType: 'assignee',
-                })
-              ),
+              .map((a): EntityTooltipData => ({
+                ...a,
+                entityType: 'assignee',
+              })),
             ...(mandate.mentioned_entities ?? [])
               .filter((e) => e.mentioned_entity.toLowerCase() === needle)
-              .map(
-                (e): EntityTooltipData => ({
-                  assignee: e.mentioned_entity,
-                  assignee_normalized: e.mentioned_entity_normalized,
-                  assignee_type: e.mentioned_entity_type,
-                  entityType: 'mentioned_entity',
-                })
-              ),
+              .map((e): EntityTooltipData => ({
+                assignee: e.mentioned_entity,
+                assignee_normalized: e.mentioned_entity_normalized,
+                assignee_type: e.mentioned_entity_type,
+                entityType: 'mentioned_entity',
+              })),
           ])
           const entityData: EntityTooltipData | null =
             entityCandidates[entityCandidates.length - 1] ?? null
@@ -2459,7 +2436,7 @@ export function ParagraphsSection({
   // the dropdowns move this number and the search does not — do not point
   // these back at the searched `paragraphs` list.
   const countsAsBody = (p: Paragraph) =>
-    p.type !== 'heading' && p.type !== 'title'
+    p.type !== 'heading' && (p.type !== 'title' || visibilityTier === 'title')
   const headingOperativeCount = (headingCountElements || []).filter(
     (p: Paragraph) => p.paragraph_type === 'operative'
   ).length
@@ -2488,6 +2465,12 @@ export function ParagraphsSection({
         >
           What&rsquo;s in this document?
         </DetailSectionHeading>
+
+        {allParagraphs?.[0]?.source_symbol && (
+          <p className="text-xs text-muted-foreground">
+            {allParagraphs[0].source_symbol} [{allParagraphs[0].part_letter}]
+          </p>
+        )}
 
         {/* Search — its own line between the heading and the filter row, so
             the section reads name it, count it, search it, filter it. It
@@ -2745,10 +2728,9 @@ export function ParagraphsSection({
                 {(() => {
                   const preambularParagraphs = (allParagraphs || []).filter(
                     (p: Paragraph) =>
-                      p.paragraph_type === 'preambular' &&
-                      p.type !== 'heading' &&
-                      !isAnnexSection(p.section) &&
-                      p.text?.trim()
+                      collapsePreamble &&
+                      isMainPreambular(p) &&
+                      isContentElement(p, visibilityTier)
                   )
                   if (preambularParagraphs.length === 0) return null
                   return (
@@ -2882,7 +2864,6 @@ export function ParagraphsSection({
                 </p>
               </div>
             )}
-
           </div>
         </div>
 

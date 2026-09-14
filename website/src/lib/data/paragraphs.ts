@@ -1,26 +1,17 @@
 /**
  * Paragraph Database Queries
  *
- * Fetches paragraph-level fulltext content for a document. Two corpora back this:
+ * Fetches paragraph-level fulltext content from the authoritative Digital
+ * Library semantic layer. Only English documents whose extraction ledger is in
+ * the successful `parsed` state are eligible. Scalar, deterministic
+ * action-verb/assignee classifications are reassembled into the markup grammar
+ * consumed by the UI (see synthesizeDlAnnotations).
  *
- *   1. mandates.paragraphs — the richer, mandate-NER-tagged corpus (~2.8k
- *      PPB-cited docs), with linked-symbol pairs and per-paragraph mandate
- *      objects. This wins whenever it covers the symbol *and* carries the
- *      pre-rendered markup that makes it richer.
- *   2. digitallibrary.document_paragraphs — the semantic fulltext layer for UN
- *      resolutions/PRSTs (lang='en'). Fills in every other document, mapped into
- *      the same return contract. It has no pre-rendered highlight markup, but it
- *      does carry scalar verb/assignee annotations, which are reassembled into
- *      the same markup grammar here (see synthesizeDlAnnotations). Deliverables,
- *      mentioned entities and uncertainties genuinely do not exist on this arm.
+ * The legacy mandates.paragraphs corpus is deliberately not consulted: mixing
+ * two parsers made document structure, counts and annotations depend on which
+ * corpus happened to have a row for a symbol.
  *
- * This mirrors public.unified_paragraphs (sql/migrations/029), but is expressed
- * as two per-symbol, index-driven queries with fallback rather than a single
- * SELECT against the view: the view's precedence anti-join full-scans
- * mandates.paragraphs (~120ms), whereas running the mandates arm first and the
- * Digital Library arm only when needed keeps every lookup on a symbol index
- * (idx_paragraphs_symbol / idx_document_paragraphs_symbol, <10ms).
- * The Digital Library arm matches on the
+ * The Digital Library query matches on the
  * whitespace/upper-case normalized symbol, the same join semantics the rest of
  * the app uses (see unified_documents).
  *
@@ -30,6 +21,7 @@
 import { cache } from 'react'
 import { queryMany } from '../db/query'
 import type { Paragraph } from '@/types'
+import { parseBracketPart, isolateBracketPart } from '../paragraph-presentation'
 
 // ============================================================================
 // Types for DB Rows (internal)
@@ -50,13 +42,14 @@ interface ParagraphRow {
   mandates: Paragraph['mandates'] | null
   /** json_agg result — pg parses this automatically */
   links: [string, string][] | null
-  /** DL-only structural metadata; NULL for the mandates arm. */
+  /** Digital Library structural metadata. */
   section: string | null
   annex_index: number | null
   text_index: number | null
+  subtype: string | null
+  parser_version: string | null
   /**
-   * DL-only scalar NLP annotations (absent on the mandates arm, which ships the
-   * same information pre-rendered in `text_with_highlights` / `mandates`).
+   * Digital Library deterministic scalar action annotations.
    */
   lead_verb?: string | null
   action_verb?: string | null
@@ -74,9 +67,7 @@ type ParagraphMandate = NonNullable<Paragraph['mandates']>[number]
  * `*verb*`, `<<assignee>>`, `{{mentioned entity}}`, `[[deliverable]]`. A
  * paragraph whose raw text already contains any of them cannot be marked up
  * unambiguously (the renderer's non-greedy regexes would pair the wrong
- * characters), so it is left un-highlighted. Affects ~1,700 of 724,733 DL
- * rows, almost all of them bare asterisks; the double-character pairs are
- * single digits (measured against the corpus, Aug 2026).
+ * characters), so it is left un-highlighted. Affects ~49 of 508,923 DL rows.
  */
 const HIGHLIGHT_DELIMITERS = ['*', '<<', '>>', '{{', '}}', '[[', ']]']
 
@@ -144,7 +135,9 @@ function synthesizeDlAnnotations(
 
   const wrappedVerb = verbStart === 0 && leadVerb ? leadVerb : null
   const wrappedAssignee =
-    assigneeStart >= 0 && assignee ? text.slice(assigneeStart, assigneeEnd) : null
+    assigneeStart >= 0 && assignee
+      ? text.slice(assigneeStart, assigneeEnd)
+      : null
 
   const mandate: ParagraphMandate = {
     // Must equal what sits between the asterisks for the tooltip lookup to hit.
@@ -188,6 +181,9 @@ function mapRow(row: ParagraphRow): Paragraph {
     section: row.section ?? undefined,
     annex_index: row.annex_index ?? undefined,
     text_index: row.text_index ?? undefined,
+    subtype: row.subtype ?? undefined,
+    parser_version: row.parser_version ?? undefined,
+    source: 'digitallibrary',
   }
 }
 
@@ -204,71 +200,17 @@ function mapDlRow(row: ParagraphRow): Paragraph {
 /**
  * Fetch all paragraphs for a document in order, with their links.
  *
- * Precedence: the mandates.paragraphs arm wins; the Digital Library arm is
- * consulted only when the mandates arm returns nothing. Returns an empty array
- * when no fulltext has been extracted for the symbol in either corpus.
+ * Returns an empty array when the English Digital Library extraction has not
+ * completed successfully. This fail-closed behavior prevents stale semantic
+ * rows from a previous parse being served after a failed reparse.
  */
-export const getParagraphsBySymbol = cache(
+const getDirectParagraphsBySymbol = cache(
   async (documentSymbol: string): Promise<Paragraph[]> => {
-    // Arm 1 — mandates.paragraphs (richer). Indexed on document_symbol.
-    const mandatesRows = await queryMany<ParagraphRow>(
-      `
-      /* trace:paragraphs.curated */
-      SELECT
-        p.id,
-        p.position,
-        p.text,
-        p.type,
-        p.heading_level,
-        p.paragraph_type,
-        p.paragraph_level,
-        p.prefix,
-        p.text_with_highlights,
-        p.uncertainties,
-        p.mandates,
-        COALESCE(
-          json_agg(
-            json_build_array(pl.linked_symbol, pl.linked_url)
-            ORDER BY pl.id
-          ) FILTER (WHERE pl.id IS NOT NULL),
-          '[]'::json
-        ) AS links,
-        NULL::text AS section,
-        NULL::smallint AS annex_index,
-        NULL::smallint AS text_index
-      FROM mandates.paragraphs p
-      LEFT JOIN mandates.paragraph_links pl ON pl.paragraph_id = p.id
-      WHERE p.document_symbol = $1
-      GROUP BY
-        p.id, p.position, p.text, p.type,
-        p.heading_level, p.paragraph_type, p.paragraph_level,
-        p.prefix, p.text_with_highlights, p.uncertainties, p.mandates
-      ORDER BY p.position
-      `,
-      [documentSymbol]
-    )
-
-    // Precedence. The mandates arm wins whenever it actually carries the thing
-    // it is richer for — the pre-rendered highlight markup. When it covers a
-    // symbol but every row has a NULL `text_with_highlights` (2,733 of its 2,829
-    // symbols), the Digital Library arm is consulted instead, because its scalar
-    // verb/assignee annotations can be turned back into markup below. That
-    // fallback is only taken when it costs no visible content — see the
-    // operative-paragraph guard after the second query.
-    const mandatesHaveHighlights = mandatesRows.some(
-      (r) => r.text_with_highlights != null && r.text_with_highlights !== ''
-    )
-    if (mandatesHaveHighlights) {
-      return mandatesRows.map(mapRow)
-    }
-
-    // Arm 2 — digitallibrary.document_paragraphs (semantic fulltext).
+    // digitallibrary.document_paragraphs (semantic fulltext).
     // Indexed on (symbol_normalized, lang). Match the app-wide normalized symbol
     // join (upper + strip whitespace). Masthead frontmatter is dropped as pure
-    // document boilerplate; every other DL `type` is carried through verbatim —
-    // ParagraphsSection only special-cases 'heading' and renders
-    // operative/preambular clauses, hiding all other elements under its
-    // permanent operative filter, so the mapping is render-safe as-is.
+    // document boilerplate; every other DL `type` is carried through verbatim
+    // so neutral adopted-instrument and annex body content remains visible.
     const dlRows = await queryMany<ParagraphRow>(
       `
       /* trace:paragraphs.digital-library */
@@ -294,6 +236,8 @@ export const getParagraphsBySymbol = cache(
         dp.section,
         dp.annex_index,
         dp.text_index,
+        dp.subtype,
+        parses.parser_version,
         dp.lead_verb,
         dp.action_verb,
         dp.action_verb_normalized,
@@ -302,40 +246,40 @@ export const getParagraphsBySymbol = cache(
         dp.assignee_head_noun,
         dp.assignee_class
       FROM digitallibrary.document_paragraphs dp
+      JOIN digitallibrary.document_files files
+        ON files.symbol_normalized = dp.symbol_normalized
+       AND files.lang = dp.lang
+       AND files.status = 'parsed'
+      JOIN digitallibrary.document_parses parses
+        ON parses.symbol_normalized = dp.symbol_normalized
+       AND parses.lang = dp.lang
       WHERE dp.symbol_normalized = upper(regexp_replace($1, '[[:space:]]', '', 'g'))
         AND dp.lang = 'en'
-        AND NOT (dp.type = 'frontmatter' AND dp.subtype = 'masthead')
+        AND NOT (dp.type = 'frontmatter' AND dp.subtype IS NOT DISTINCT FROM 'masthead')
       ORDER BY dp.position
       `,
       [documentSymbol]
     )
 
-    const dlParagraphs = dlRows.map(mapDlRow)
+    return dlRows.map(mapDlRow)
+  }
+)
 
-    if (mandatesRows.length === 0) {
-      return dlParagraphs
-    }
-
-    // Both arms cover this symbol and neither ships pre-rendered markup. Only
-    // switch to the Digital Library arm if it (a) actually yields highlights and
-    // (b) does not drop operative paragraphs — ParagraphsSection renders under a
-    // permanent `paragraph_type = 'operative'` filter, so a lower operative count
-    // is content the reader would simply stop seeing. Measured over the 2,260
-    // affected symbols: 2,161 qualify, 99 (annex-heavy declarations, where the DL
-    // parser classifies annexed text as non-operative) keep the mandates arm.
-    const hasSynthesizedHighlights = dlParagraphs.some((p) =>
-      Boolean(p.textWithHighlights)
-    )
-    if (!hasSynthesizedHighlights) {
-      return mandatesRows.map(mapRow)
-    }
-
-    const countOperative = (rows: { paragraph_type: string | null }[]) =>
-      rows.filter((r) => r.paragraph_type === 'operative').length
-    if (countOperative(dlRows) < countOperative(mandatesRows)) {
-      return mandatesRows.map(mapRow)
-    }
-
-    return dlParagraphs
+/** Resolve only exact, unambiguous lettered blocks from successfully parsed parents.
+ * Complex bracket expressions deliberately remain unavailable: whole-parent text
+ * must not silently stand in for the requested part. No legacy corpus fallback.
+ */
+export const getParagraphsBySymbol = cache(
+  async (documentSymbol: string): Promise<Paragraph[]> => {
+    const direct = await getDirectParagraphsBySymbol(documentSymbol)
+    if (direct.length > 0) return direct
+    const part = parseBracketPart(documentSymbol)
+    if (!part) return []
+    const parent = await getDirectParagraphsBySymbol(part.parentSymbol)
+    return isolateBracketPart(parent, part.letter).map((paragraph) => ({
+      ...paragraph,
+      source_symbol: part.parentSymbol,
+      part_letter: part.letter,
+    }))
   }
 )
