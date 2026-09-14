@@ -1,0 +1,54 @@
+# Shared UI integration
+
+Mandates imports the shared header, footer, animated corner logo, detail panel
+and controls, and document symbol. Wrappers retain route selection, English copy
+(there are no locale catalogues yet), the home-only corner mark, PDF source, and
+intercepted-route close/back behavior. Opening the full page remains a native
+anchor and preserves the complete query string.
+
+The UI contribution lives in the companion Codebox worktree
+/home/agent/.worktrees/ui-mandates-integration, branch agent/mandates-shared-ui.
+It adds header metadata/body slots, native-link panel actions, footer navigation
+labels/donation override, and canonical standalone DocumentSymbol with Storybook
+variants and a registry item. Existing concepts imports reexport the same symbol.
+
+## Integration gate
+
+The new shared APIs are not published. Manifest and lockfile deliberately retain
+the existing reachable GitHub pin, rather than naming an unpublished SHA or
+committing a machine-specific dependency. A fresh install of that pin cannot
+compile these new imports yet. Before releasing Mandates, publish the reviewed UI
+change and update both GitHub dependency pin and lockfile to that reachable commit.
+This is a paired change, not an independently deployable app commit.
+
+For local verification, install both worktrees' dependencies, then replace only
+the generated package symlink in this website's node_modules:
+
+    ln -sfn /home/agent/.worktrees/ui-mandates-integration node_modules/@un-eosg/ui
+
+Do not commit this machine-specific link. Avoid pnpm link: recent pnpm versions
+also alter the manifest and lockfile. A forced reinstall restores the declared
+dependency.
+
+## Intentional shared visual updates
+
+The corner mark now uses the shared combined asset at 123px (previously 110px
+plus a separate animated overlay), is hidden below the md breakpoint, and uses
+the shared 1.5s/2.5s entrance sequence. It now honors reduced-motion preferences.
+The header adopts the shared menu control/wordmark spacing; the panel adopts
+shared title sizing, padding and controls. These are component adoption changes,
+not a claim of pixel parity.
+
+## Verification bar
+
+- DocumentSymbol old concepts export and standalone export are identical.
+- Current Mandates light background, proportional type and subdued styling survive.
+- Full-page control renders an anchor with complete query scope; disabled actions
+  cannot navigate; close and outside/Escape dismissal preserve router.back().
+- Header metadata stays outside the single scrolling panel body.
+- Shared APIs and both consumers pass TypeScript checks.
+- All new variants appear under Concepts/DocumentSymbol in Storybook.
+
+Disposable server-render assertions cover structural rendering contracts.
+No browser checks were requested; scrolling, focus behavior and responsive visual
+appearance remain an explicit visual-review limitation.
