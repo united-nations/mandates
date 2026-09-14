@@ -67,7 +67,7 @@
       "note": null,
       "mandateRegistry": [
         {
-          "name": "Mandate Source Registry",
+          "name": "Mandate Registry",
           "category": "Mandate Registry",
           "url": "/secretariat",
           "points": {
@@ -1136,7 +1136,7 @@
       "mandateRegistry": [
         {
           "scope": "this-site",
-          "name": "Mandate Source Registry",
+          "name": "Mandate Registry",
           "category": "Mandate Registry",
           "url": "/secretariat?entity=ITC",
           "points": {
@@ -1252,7 +1252,7 @@
         },
         {
           "scope": "this-site",
-          "name": "Mandate Source Registry",
+          "name": "Mandate Registry",
           "category": "Mandate Registry",
           "url": "/secretariat?entity=UN-Women",
           "points": {
@@ -1352,7 +1352,7 @@
         },
         {
           "scope": "this-site",
-          "name": "Mandate Source Registry",
+          "name": "Mandate Registry",
           "category": "Mandate Registry",
           "url": "/secretariat?entity=UN-Habitat",
           "points": {
@@ -1480,7 +1480,7 @@
         },
         {
           "scope": "this-site",
-          "name": "Mandate Source Registry",
+          "name": "Mandate Registry",
           "category": "Mandate Registry",
           "url": "/secretariat?entity=UNCTAD",
           "points": {
@@ -1619,7 +1619,7 @@
         },
         {
           "scope": "this-site",
-          "name": "Mandate Source Registry",
+          "name": "Mandate Registry",
           "category": "Mandate Registry",
           "url": "/secretariat?entity=UNEP",
           "points": {
@@ -1759,7 +1759,7 @@
         },
         {
           "scope": "this-site",
-          "name": "Mandate Source Registry",
+          "name": "Mandate Registry",
           "category": "Mandate Registry",
           "url": "/secretariat?entity=UNHCR",
           "points": {
@@ -2002,7 +2002,7 @@
         },
         {
           "scope": "this-site",
-          "name": "Mandate Source Registry",
+          "name": "Mandate Registry",
           "category": "Mandate Registry",
           "url": "/secretariat?entity=UNODC",
           "points": {
@@ -2134,7 +2134,7 @@
       "mandateRegistry": [
         {
           "scope": "this-site",
-          "name": "Mandate Source Registry",
+          "name": "Mandate Registry",
           "category": "Mandate Registry",
           "url": "/secretariat?entity=UNRWA",
           "points": {
@@ -2888,7 +2888,7 @@
         },
         {
           "scope": "this-site",
-          "name": "Mandate Source Registry",
+          "name": "Mandate Registry",
           "category": "Mandate Registry",
           "url": "/secretariat?entity=ECA",
           "points": {
@@ -2952,7 +2952,7 @@
       "mandateRegistry": [
         {
           "scope": "this-site",
-          "name": "Mandate Source Registry",
+          "name": "Mandate Registry",
           "category": "Mandate Registry",
           "url": "/secretariat?entity=ECE",
           "points": {
@@ -3044,7 +3044,7 @@
         },
         {
           "scope": "this-site",
-          "name": "Mandate Source Registry",
+          "name": "Mandate Registry",
           "category": "Mandate Registry",
           "url": "/secretariat?entity=ECLAC",
           "points": {
@@ -3138,7 +3138,7 @@
         },
         {
           "scope": "this-site",
-          "name": "Mandate Source Registry",
+          "name": "Mandate Registry",
           "category": "Mandate Registry",
           "url": "/secretariat?entity=ESCAP",
           "points": {
@@ -3226,7 +3226,7 @@
         },
         {
           "scope": "this-site",
-          "name": "Mandate Source Registry",
+          "name": "Mandate Registry",
           "category": "Mandate Registry",
           "url": "/secretariat?entity=ESCWA",
           "points": {

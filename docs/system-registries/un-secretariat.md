@@ -6,7 +6,7 @@ scheme in [`../un-system-registries.md`](../un-system-registries.md).
 
 ## Systems
 
-- **Mandate Source Registry** (Mandate Registry) — </secretariat>
+- **Mandate Registry** — </secretariat>
 
 ## Point assessment
 

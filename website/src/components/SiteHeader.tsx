@@ -19,9 +19,9 @@ export function SiteHeader() {
   return (
     <SharedSiteHeader
       brand="United Nations"
-      descriptor="Mandate Source Registry"
+      descriptor="Mandate Registry"
       href="/secretariat"
-      homeLabel="Mandate Source Registry — home"
+      homeLabel="Mandate Registry — home"
       navItems={navItems}
       activeHref={pathname}
       mobileMenuLabel="Open navigation menu"

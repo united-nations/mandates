@@ -1,4 +1,4 @@
-# [UN Mandate Source Registry](https://mandates.un.org/)
+# [UN Mandate Registry](https://mandates.un.org/)
 
 This is a Next.js application that serves as a dashboard to explore and filter United Nations mandates.
 

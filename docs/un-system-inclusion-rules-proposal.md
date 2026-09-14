@@ -327,7 +327,7 @@ dropping it.
 
 ### C2. Whose score does the page show? — **resolved: one merged score**
 
-Thirteen entities carry a this-site *Mandate Source Registry* row, so `/system`
+Thirteen entities carry a this-site *Mandate Registry* row, so `/system`
 renders dots for entities whose own dossier says 0. Defensible as display, but
 undocumented.
 

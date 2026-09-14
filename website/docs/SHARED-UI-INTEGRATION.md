@@ -12,14 +12,13 @@ It adds header metadata/body slots, native-link panel actions, footer navigation
 labels/donation override, and canonical standalone DocumentSymbol with Storybook
 variants and a registry item. Existing concepts imports reexport the same symbol.
 
-## Integration gate
+## Published dependency
 
-The new shared APIs are not published. Manifest and lockfile deliberately retain
-the existing reachable GitHub pin, rather than naming an unpublished SHA or
-committing a machine-specific dependency. A fresh install of that pin cannot
-compile these new imports yet. Before releasing Mandates, publish the reviewed UI
-change and update both GitHub dependency pin and lockfile to that reachable commit.
-This is a paired change, not an independently deployable app commit.
+The shared APIs are published in UI commit 1533fc8. Mandates now pins that
+reachable commit in package.json and pnpm-lock.yaml; a normal pnpm install
+resolves the shared components. The earlier publication gate is resolved.
+
+### Historical pre-publication verification
 
 For local verification, the UI commit was packed with pnpm pack and its package
 contents unpacked into this worktree's generated node_modules/@un-eosg/ui.

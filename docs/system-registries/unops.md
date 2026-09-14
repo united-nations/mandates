@@ -53,7 +53,7 @@ cleanest of the six cases:
 - ECOSOC's only role is *electing* Board members; the Board itself
   approves UNOPS's budget estimates and strategic plan.
 
-Correspondingly, UNOPS carries no `this-site` Mandate Source Registry
+Correspondingly, UNOPS carries no `this-site` Mandate Registry
 entry — there are no programme-budget mandate citations to carry.
 
 ## Notes

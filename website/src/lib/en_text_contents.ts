@@ -6,7 +6,7 @@
 export const explainerTexts = {
   // Main page and overview
   mainHeader: {
-    title: 'UN Mandate Source Registry',
+    title: 'UN Mandate Registry',
     headline: 'See what the UN is asked to do.',
     versionTag: 'Beta Version',
     shortDescription:

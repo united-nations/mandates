@@ -9,12 +9,6 @@
   "imports": {
     "#lib/*": "./src/lib/*.ts"
   },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "sharp",
-      "unrs-resolver"
-    ]
-  },
   "scripts": {
     "prepare": "git config core.hooksPath ../.husky",
     "dev": "next dev",
@@ -54,7 +48,7 @@
     "@sentry/nextjs": "^10.73.0",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/pg": "^8.23.1",
-    "@un-eosg/ui": "github:UN-EOSG-Analytics/ui#v0.1.5",
+    "@un-eosg/ui": "github:UN-EOSG-Analytics/ui#1533fc8",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",

@@ -62,7 +62,7 @@ Supporting facts for the removal:
 - UNITAR has **no UN programme-budget section**
   (`data/references/ppb_sections_and_entities.tsv`), so the GA
   appropriates nothing for it; it is funded by voluntary contributions and
-  training fees. Correspondingly it carries no `this-site` Mandate Source
+  training fees. Correspondingly it carries no `this-site` Mandate
   Registry entry.
 - The GA and ECOSOC Presidents sit on the Board **ex officio**, and the
   Board *reports* to the GA and ECOSOC — a reporting and appointment

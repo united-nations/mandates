@@ -64,7 +64,7 @@ live):
 So the General Assembly appropriates **nothing** for UNU — consistent with
 UNU having no UN programme-budget section
 (`data/references/ppb_sections_and_entities.tsv`) and no `this-site`
-Mandate Source Registry entry. The GA/ECOSOC relationship is *reporting*
+Mandate Registry entry. The GA/ECOSOC relationship is *reporting*
 (the Council reports annually to both, and to the UNESCO Executive Board),
 not governing. Established by GA resolution 3081 (XXVIII), 6 December
 1973; headquarters Tokyo.

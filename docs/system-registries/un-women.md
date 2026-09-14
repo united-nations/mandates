@@ -59,7 +59,7 @@ UN-system-coordination side — on top of the Board-approved Integrated
 Budget. That share is the minority of UN Women's money, which is why the
 removal stands; but it means the GA is not *purely* constitutive here
 either. It also produces a visible oddity on the page: UN Women carries a
-`this-site` Mandate Source Registry entry whose contents are, by
+`this-site` Mandate Registry entry whose contents are, by
 construction, GA and ECOSOC mandates cited in the programme budget, while
 the governing-body column shows no GA. Noted for the inclusion rule.
 

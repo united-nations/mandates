@@ -91,6 +91,7 @@ export function MandateDetailSheet({
         </SheetDescription>
 
         <DetailPanel
+          className="[&>header_h2]:whitespace-normal [&>header_h2]:break-words"
           title={title}
           eyebrow={eyebrow}
           bodyClassName="un-scrollbar px-5 py-6"
