@@ -21,14 +21,23 @@ compile these new imports yet. Before releasing Mandates, publish the reviewed U
 change and update both GitHub dependency pin and lockfile to that reachable commit.
 This is a paired change, not an independently deployable app commit.
 
-For local verification, install both worktrees' dependencies, then replace only
-the generated package symlink in this website's node_modules:
+For local verification, the UI commit was packed with pnpm pack and its package
+contents unpacked into this worktree's generated node_modules/@un-eosg/ui.
+The tarball is /home/agent/.worktrees/shared-ui-verification/un-eosg-ui-0.1.5.tgz.
+This replaces only the generated dependency installation; it changes no tracked
+manifest or lockfile, and resolves React peers from the consumer.
 
-    ln -sfn /home/agent/.worktrees/ui-mandates-integration node_modules/@un-eosg/ui
+A live symlink passed TypeScript but failed Turbopack because the target was
+outside the app's filesystem root. After installing the packed dependency, the
+old symlink path remained in the failed build cache; clearing only this isolated
+worktree's generated .next directory fixed that. Avoid pnpm link: recent pnpm
+versions also alter the manifest and lockfile. A forced reinstall restores the
+declared dependency.
 
-Do not commit this machine-specific link. Avoid pnpm link: recent pnpm versions
-also alter the manifest and lockfile. A forced reinstall restores the declared
-dependency.
+The combined branch (shared UI + metrics + fulltext display) passed next build:
+compilation, TypeScript and 9/9 static pages. Six relevant shared CSS selectors
+were verified in the emitted production CSS. The initial symlink build and its
+cached retry failed; the clean packed-dependency build passed.
 
 ## Intentional shared visual updates
 
