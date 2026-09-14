@@ -2,9 +2,10 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { ArrowRight, ChevronDown, ChevronUp, GitCompare } from 'lucide-react'
+import { ArrowRight, ChevronDown, ChevronUp } from 'lucide-react'
 import type { ResolutionSeriesInfo } from '@/lib/data/mandates'
 import { explainerTexts } from '@/lib/en_text_contents'
+import { WordCount, TextSimilarity } from '@/components/DocumentTextMetrics'
 import { DocumentSymbol } from '@/components/DocumentSymbol'
 import { getMandateUrl } from '@/components/table/MandateColumns'
 import {
@@ -13,9 +14,6 @@ import {
 } from '@/components/MandateDetailUi'
 
 const MEMBERS_DEFAULT_SHOWN = 5
-
-/** The standalone diff viewer; no /diff route exists in this app. */
-const DIFF_VIEWER = 'https://diff.un-two-zero.dev/'
 
 interface MandateVersionHistoryProps {
   currentSymbol: string
@@ -67,18 +65,12 @@ export function MandateVersionHistory({
 
   const unit = series.is_collection ? 'documents' : 'versions'
 
-  // Members arrive newest first (ORDER BY year DESC, symbol DESC) and include
-  // the latest one — the current document is simply one row among them. So the
-  // default slice is the 5 most recent, and the *previous* version of any row
-  // is the next one down the full list, never the slice.
+  // Slice only affects visibility. Comparison targets are resolved server-side
+  // from complete series dates, never from this list or its visible neighbours.
   const shown = showAll
     ? series.members
     : series.members.slice(0, MEMBERS_DEFAULT_SHOWN)
   const hiddenCount = series.members.length - shown.length
-
-  const compareLabel = series.is_collection
-    ? 'Compare with earlier document'
-    : 'Compare with previous version'
 
   return (
     <section className="space-y-3">
@@ -86,8 +78,8 @@ export function MandateVersionHistory({
         hint={`${series.series_count} ${unit}${span ? ` · ${span}` : ''}`}
         howTo={
           series.is_collection
-            ? 'Each row is one document in this group, newest first. The compare button on a row opens that document and the one directly before it side by side, so you can see how they differ.'
-            : 'Each row is one version of this document, newest first. The compare button on a row opens that version and the one directly before it side by side, so you can see what changed.'
+            ? 'Each row is one document in this group, newest first. Word length counts substantive English text, including annexes. These documents are not ordered versions, so text similarity is unavailable.'
+            : 'Each row is one version, newest first. Word length counts substantive English text, including annexes. Text similarity compares with the previous version in the complete series. Select a similarity score or Compare to open both documents side by side. A dash means the metric is unavailable.'
         }
         disclaimer={
           series.is_collection
@@ -119,68 +111,74 @@ export function MandateVersionHistory({
         </div>
       )}
 
-      <ul className="divide-y divide-gray-100 border-y border-gray-100">
-        {shown.map((m, index) => {
-          const isCurrent = m.document_symbol === currentSymbol
-          // Index into the full ordered list, so "previous" stays correct when
-          // only the first five rows are shown.
-          const previous = series.members[index + 1]
-          return (
-            <li
-              key={m.document_symbol}
-              className={`flex flex-wrap items-center gap-x-3 gap-y-1.5 py-1.5 text-sm ${
-                isCurrent ? 'bg-blue-50/60' : ''
-              }`}
-            >
-              <span className="w-10 shrink-0 text-xs text-gray-500">
-                {m.year ?? '—'}
-              </span>
-              {/* The badge sizes to its content; the fixed width lives on the
-                  wrapper. `w-36` on the badge itself stretched every symbol
-                  into a bar the width of the longest one. */}
-              <span className="w-36 shrink-0">
-                {isCurrent ? (
-                  <DocumentSymbol subdued>{m.document_symbol}</DocumentSymbol>
-                ) : (
-                  <DocumentSymbol href={getMandateUrl(m.document_symbol)}>
-                    {m.document_symbol}
-                  </DocumentSymbol>
-                )}
-              </span>
-              <span
-                // min-w-32, not min-w-0: the title may shrink and ellipsize,
-                // but not to nothing — below 8rem the row wraps and the
-                // compare button drops to its own line instead.
-                className="min-w-32 flex-1 truncate text-xs text-gray-600"
-                title={m.title ?? undefined}
-              >
-                {m.title}
-              </span>
-              {!series.is_collection && m.is_latest && (
-                <span className="shrink-0 rounded bg-un-blue px-1.5 py-0.5 text-micro font-medium text-white">
-                  Latest
-                </span>
-              )}
-              {/* The oldest member has nothing before it, so it gets no
-                  button — the affordance is never a dead control. */}
-              {previous && (
-                <a
-                  href={`${DIFF_VIEWER}?symbol1=${encodeURIComponent(
-                    previous.document_symbol
-                  )}&symbol2=${encodeURIComponent(m.document_symbol)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title={`Compare ${previous.document_symbol} with ${m.document_symbol}`}
-                  className="ml-auto inline-flex shrink-0 items-center gap-1.5 rounded-md border border-gray-200 px-2 py-1 text-xs font-medium text-gray-600 transition-colors hover:border-un-blue hover:text-un-blue focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none"
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[460px] table-fixed border-y border-gray-100 text-left text-xs">
+          <thead className="text-gray-500">
+            <tr className="border-b border-gray-100">
+              <th scope="col" className="w-12 py-2 font-medium">
+                Year
+              </th>
+              <th scope="col" className="py-2 pr-3 font-medium">
+                Document
+              </th>
+              <th scope="col" className="w-24 py-2 pr-3 font-medium">
+                Word length
+              </th>
+              <th scope="col" className="w-28 py-2 font-medium">
+                Text similarity
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100">
+            {shown.map((m) => {
+              const isCurrent = m.document_symbol === currentSymbol
+              return (
+                <tr
+                  key={m.document_symbol}
+                  className={isCurrent ? 'bg-blue-50/60' : ''}
                 >
-                  <GitCompare aria-hidden className="h-3.5 w-3.5" />
-                  {compareLabel}
-                </a>
-              )}
-            </li>
-          )
-        })}
-      </ul>
+                  <td className="py-2 align-top text-gray-500">
+                    {m.year ?? '—'}
+                  </td>
+                  <td className="min-w-0 py-2 pr-3">
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      {isCurrent ? (
+                        <DocumentSymbol subdued>
+                          {m.document_symbol}
+                        </DocumentSymbol>
+                      ) : (
+                        <DocumentSymbol href={getMandateUrl(m.document_symbol)}>
+                          {m.document_symbol}
+                        </DocumentSymbol>
+                      )}
+                      {!series.is_collection && m.is_latest && (
+                        <span className="rounded bg-un-blue px-1.5 py-0.5 text-micro font-medium text-white">
+                          Latest
+                        </span>
+                      )}
+                    </div>
+                    <p
+                      className="mt-1 truncate text-gray-600"
+                      title={m.title ?? undefined}
+                    >
+                      {m.title}
+                    </p>
+                  </td>
+                  <td className="py-2 pr-3 align-top">
+                    <WordCount metrics={m.text_metrics} />
+                  </td>
+                  <td className="py-2 align-top">
+                    <TextSimilarity
+                      symbol={m.document_symbol}
+                      metrics={m.text_metrics}
+                    />
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
 
       {hiddenCount > 0 && (
         <button

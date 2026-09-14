@@ -1,5 +1,12 @@
+import type { DocumentTextMetrics } from '@/lib/text-analytics'
+
 // Core data types based on the DB schema (mandates.paragraphs)
 export interface Paragraph {
+  subtype?: string
+  parser_version?: string
+  source?: 'digitallibrary'
+  source_symbol?: string
+  part_letter?: string
   /** UUID from mandates.paragraphs */
   id?: string
   /** 0-based position within the document */
@@ -47,6 +54,7 @@ export interface Paragraph {
 }
 
 export interface Mandate {
+  text_metrics?: DocumentTextMetrics
   full_document_symbol: string
   num_citations: number
   num_entities: number
@@ -330,7 +338,12 @@ export interface MandateGroupInfo {
   min_year: number | null
   max_year: number | null
   /** matching co-members (representative excluded), newest first, capped at 100 */
-  members: { symbol: string; year: number | null; title: string | null }[]
+  members: {
+    symbol: string
+    year: number | null
+    title: string | null
+    text_metrics?: DocumentTextMetrics
+  }[]
 }
 
 export interface FilterOptions {
