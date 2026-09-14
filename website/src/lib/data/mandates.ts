@@ -692,7 +692,7 @@ function buildOrderByClause(sortBy?: string): string {
  */
 export async function getMandates(
   filters: FilterOptions = {},
-  options: { page?: number; limit?: number } = {}
+  options: { page?: number; limit?: number; includeMetrics?: boolean } = {}
 ): Promise<{ mandates: Mandate[]; totalCount: number }> {
   const page = options.page ?? 1
   const limit = options.limit ?? 15
@@ -976,19 +976,28 @@ export async function getMandates(
     })),
   }))
 
-  const metrics = await getDocumentTextMetrics(
-    mandates.flatMap((m) => [
-      m.full_document_symbol,
-      ...(m.group?.members.map((member) => member.symbol) ?? []),
-    ])
-  )
-  for (const mandate of mandates) {
-    mandate.text_metrics = metrics.get(mandate.full_document_symbol)
-    for (const member of mandate.group?.members ?? []) {
-      member.text_metrics = metrics.get(member.symbol)
-    }
+  if (options.includeMetrics !== false) {
+    return { mandates: await enrichTextMetrics(mandates), totalCount }
   }
   return { mandates, totalCount }
+}
+
+/** Revalidate content fingerprints after the hour-long document-list cache. */
+async function enrichTextMetrics(mandates: Mandate[]): Promise<Mandate[]> {
+  const metrics = await getDocumentTextMetrics(mandates.flatMap((m) => [
+    m.full_document_symbol,
+    ...(m.group?.members.map((member) => member.symbol) ?? []),
+  ]))
+  return mandates.map((mandate) => ({
+    ...mandate,
+    text_metrics: metrics.get(mandate.full_document_symbol),
+    group: mandate.group ? {
+      ...mandate.group,
+      members: mandate.group.members.map((member) => ({
+        ...member, text_metrics: metrics.get(member.symbol),
+      })),
+    } : undefined,
+  }))
 }
 
 interface LocationCitationCountRow {
@@ -3310,14 +3319,14 @@ async function _getMandateListInner(
   page: number,
   limit: number
 ): Promise<{ mandates: Mandate[]; totalCount: number }> {
-  return getMandates(filters, { page, limit })
+  return getMandates(filters, { page, limit, includeMetrics: false })
 }
 
 // Bump when the ApiResponse SHAPE changes, so cached entries produced by an
 // older deploy are never served to newer client code (the cache key is only
 // the filters, and entries persist for `revalidate`). This is the
 // data-version guard the refactor plan called for.
-const PAGE_DATA_CACHE_VERSION = 'v5-budget-hierarchy'
+const PAGE_DATA_CACHE_VERSION = 'v7-base-documents-live-metrics'
 
 /**
  * The shared slice is invariant to grouping and pagination, so its cache key
@@ -3344,12 +3353,16 @@ const getSharedPageData = cache((filters: FilterOptions) =>
 )
 
 const getMandateList = cache(
-  (filters: FilterOptions, page: number, limit: number) =>
-    readDynamicCache(
+  async (filters: FilterOptions, page: number, limit: number) => {
+    const list = await readDynamicCache(
       () => _getMandateListInner(filters, page, limit),
       [PAGE_DATA_CACHE_VERSION, 'list', JSON.stringify(filters), String(page), String(limit)],
       { revalidate: 3600 }
     )
+    // Counts/scores and content fingerprints are deliberately never hour-cached.
+    // New cache artifacts or changed source text take effect on the next request.
+    return { ...list, mandates: await enrichTextMetrics(list.mandates) }
+  }
 )
 
 /**

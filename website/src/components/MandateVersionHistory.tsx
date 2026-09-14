@@ -112,14 +112,17 @@ export function MandateVersionHistory({
       )}
 
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[460px] table-fixed border-y border-gray-100 text-left text-xs">
+        <table className="w-full min-w-[640px] table-fixed border-y border-gray-100 text-left text-xs">
           <thead className="text-gray-500">
             <tr className="border-b border-gray-100">
               <th scope="col" className="w-12 py-2 font-medium">
                 Year
               </th>
+              <th scope="col" className="w-36 py-2 pr-3 font-medium">
+                Symbol
+              </th>
               <th scope="col" className="py-2 pr-3 font-medium">
-                Document
+                Title
               </th>
               <th scope="col" className="w-24 py-2 pr-3 font-medium">
                 Word length
@@ -157,8 +160,10 @@ export function MandateVersionHistory({
                         </span>
                       )}
                     </div>
+                  </td>
+                  <td className="min-w-0 py-2 pr-3 align-top">
                     <p
-                      className="mt-1 truncate text-gray-600"
+                      className="truncate text-gray-600"
                       title={m.title ?? undefined}
                     >
                       {m.title}

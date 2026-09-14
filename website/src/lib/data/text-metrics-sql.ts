@@ -47,6 +47,12 @@ selected_groups AS (
         ON requested.symbol = pairs.document_symbol))
 )
 SELECT r.symbol,
+  CASE WHEN pair.document_symbol IS NULL THEN 'not_in_series'
+    WHEN pair.is_collection THEN 'collection'
+    WHEN pair.uncertain_series OR pair.date_count <> 1 THEN 'ambiguous_order'
+    WHEN pair.predecessor IS NULL THEN 'first'
+    WHEN NOT pair.valid_pair THEN 'ambiguous_order'
+    ELSE 'ordered' END AS comparison_unavailable_reason,
   current.word_count,
   CASE WHEN pair.valid_pair THEN pair.predecessor END AS previous_document_symbol,
   COALESCE(pair.valid_pair AND current.symbol_normalized IS NOT NULL

@@ -12,11 +12,15 @@ export function WordCount({ metrics }: { metrics?: DocumentTextMetrics }) {
   return (
     <span
       className="whitespace-nowrap tabular-nums"
-      aria-label={metrics?.word_count == null ? 'Word length unavailable' : undefined}
+      aria-label={
+        metrics?.word_count == null ? 'Word length unavailable' : undefined
+      }
       title={
         metrics?.word_count == null
           ? 'Word length unavailable'
-          : 'Words in the substantive English text, including annexes'
+          : metrics.provisional
+            ? 'Words in retained English text, including annexes. Internal accounting passed; original-source validation pending.'
+            : 'Words in the substantive English text, including annexes'
       }
     >
       {formatWordCount(metrics?.word_count)}
@@ -33,6 +37,24 @@ export function TextSimilarity({
 }) {
   const href = comparisonUrl(symbol, metrics)
   const score = href ? formatSimilarity(metrics?.similarity_to_previous) : null
+  if (!href && metrics?.comparison_unavailable_reason === 'collection') {
+    return <span title="Not applicable: this group is a collection, not ordered versions" aria-label="Not applicable: this group is a collection, not ordered versions">N/A</span>
+  }
+  if (
+    !href &&
+    ['first', 'not_in_series'].includes(
+      metrics?.comparison_unavailable_reason ?? ''
+    )
+  ) {
+    return (
+      <span
+        title="Not applicable: no previous version"
+        aria-label="Not applicable: no previous version"
+      >
+        N/A
+      </span>
+    )
+  }
   if (!href)
     return (
       <span
@@ -42,7 +64,7 @@ export function TextSimilarity({
         —
       </span>
     )
-  const label = `Compare ${symbol} with ${metrics?.previous_document_symbol}${score ? `; text similarity ${score}` : '; similarity unavailable'} (opens in a new tab)`
+  const label = `Compare ${symbol} with ${metrics?.previous_document_symbol}${score ? `; text similarity ${score}` : '; similarity unavailable'}${metrics?.provisional ? '; score uses retained text, original-source validation pending; external viewer may use different text' : ''} (opens in a new tab)`
   return (
     <a
       href={href}
