@@ -6,6 +6,8 @@ const nextConfig: NextConfig = {
   // set, looking for a .next/next-server.js.nft.json that is never written.
   output: process.env.VERCEL ? undefined : 'standalone',
 
+  transpilePackages: ['@un-eosg/ui'],
+
   serverExternalPackages: ['undifferent'],
 
   async redirects() {

@@ -1,5 +1,8 @@
 'use client'
 
+import { WordCount, TextSimilarity } from '@/components/DocumentTextMetrics'
+import type { DocumentTextMetrics } from '@/lib/text-analytics'
+
 import {
   Tooltip,
   TooltipContent,
@@ -169,6 +172,7 @@ export function GroupHiddenVersionsNote({ mandate }: { mandate: Mandate }) {
 
 /** One line of an expanded group. `current` marks the representative row. */
 export interface GroupMemberEntry {
+  text_metrics?: DocumentTextMetrics
   symbol: string
   year: number | null
   title: string | null
@@ -209,6 +213,7 @@ export function groupMemberEntries(mandate: Mandate): GroupMemberEntry[] {
     year: Number.isFinite(parsedYear) ? parsedYear : null,
     title: mandate.displayTitle || mandate.description || null,
     current: true,
+    text_metrics: mandate.text_metrics,
   }
   return [...(mandate.group?.members ?? []), representative].sort(
     byYearThenSymbolDesc
@@ -216,7 +221,15 @@ export function groupMemberEntries(mandate: Mandate): GroupMemberEntry[] {
 }
 
 /** Row content for one expanded group member (shared table/list markup). */
-export function GroupMemberLine({ member }: { member: GroupMemberEntry }) {
+export function GroupMemberLine({
+  member,
+  showWordCount = false,
+  showSimilarity = false,
+}: {
+  member: GroupMemberEntry
+  showWordCount?: boolean
+  showSimilarity?: boolean
+}) {
   return (
     <span className="flex min-w-0 items-center gap-3">
       <span className="w-10 shrink-0 text-xs text-muted-foreground">
@@ -233,6 +246,14 @@ export function GroupMemberLine({ member }: { member: GroupMemberEntry }) {
       <span className="min-w-0 truncate text-xs text-muted-foreground">
         {member.title}
       </span>
+      {showWordCount && (
+        <span className="shrink-0 text-xs">
+          <WordCount metrics={member.text_metrics} /> words
+        </span>
+      )}
+      {showSimilarity && (
+        <TextSimilarity symbol={member.symbol} metrics={member.text_metrics} />
+      )}
       {member.current && (
         <span className="shrink-0 text-xs text-muted-foreground">
           this document

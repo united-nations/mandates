@@ -106,6 +106,20 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
     align: 'left',
   },
   {
+    id: 'word_count',
+    label: 'Word length',
+    defaultVisible: false,
+    width: 118,
+    align: 'left',
+  },
+  {
+    id: 'text_similarity',
+    label: 'Text similarity',
+    defaultVisible: false,
+    width: 152,
+    align: 'left',
+  },
+  {
     id: 'entity_list',
     label: 'Entities',
     defaultVisible: false,

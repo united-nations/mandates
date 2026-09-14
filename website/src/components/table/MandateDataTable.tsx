@@ -1,5 +1,6 @@
 'use client'
 
+import { WordCount, TextSimilarity } from '@/components/DocumentTextMetrics'
 import { Chip } from '@/components/ui/chip'
 import {
   Table,
@@ -307,7 +308,13 @@ export function MandateDataTable({
                             colSpan={columns.length}
                             className="px-3 py-1.5 pl-11"
                           >
-                            <GroupMemberLine member={member} />
+                            <GroupMemberLine
+                              member={member}
+                              showWordCount={visibleColumns.has('word_count')}
+                              showSimilarity={visibleColumns.has(
+                                'text_similarity'
+                              )}
+                            />
                           </TableCell>
                         </TableRow>
                       ))}
@@ -564,6 +571,15 @@ function CellContent({
         </Tooltip>
       ) : null
 
+    case 'word_count':
+      return <WordCount metrics={mandate.text_metrics} />
+    case 'text_similarity':
+      return (
+        <TextSimilarity
+          symbol={mandate.full_document_symbol}
+          metrics={mandate.text_metrics}
+        />
+      )
     case 'year':
       return mandate.year && mandate.year !== '-' ? (
         <span>{mandate.year}</span>

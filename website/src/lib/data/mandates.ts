@@ -6,6 +6,8 @@
  */
 
 import { cache } from 'react'
+import { getDocumentTextMetrics } from './text-metrics'
+import type { DocumentTextMetrics } from '../text-analytics'
 import { unstable_cache } from 'next/cache'
 import { queryMany, queryOne } from '../db/query'
 import { titleCase } from 'title-case'
@@ -974,6 +976,18 @@ export async function getMandates(
     })),
   }))
 
+  const metrics = await getDocumentTextMetrics(
+    mandates.flatMap((m) => [
+      m.full_document_symbol,
+      ...(m.group?.members.map((member) => member.symbol) ?? []),
+    ])
+  )
+  for (const mandate of mandates) {
+    mandate.text_metrics = metrics.get(mandate.full_document_symbol)
+    for (const member of mandate.group?.members ?? []) {
+      member.text_metrics = metrics.get(member.symbol)
+    }
+  }
   return { mandates, totalCount }
 }
 
@@ -1284,6 +1298,7 @@ export async function getMandateBySymbol(
  * semantics and must never be presented as ordered versions.
  */
 export interface ResolutionSeriesMember {
+  text_metrics?: DocumentTextMetrics
   document_symbol: string
   title: string | null
   year: number | null
@@ -1347,12 +1362,13 @@ export async function getResolutionSeries(
      AND rs.un_body = me.un_body
      AND rs.doc_type = me.doc_type
     LEFT JOIN digitallibrary.documents d ON d.recid = rs.recid
-    ORDER BY rs.year DESC, rs.document_symbol DESC
+    ORDER BY d.date_publication DESC NULLS LAST, rs.document_symbol DESC
   `
   const rows = await queryMany<SeriesRow>(query, [symbol])
   if (rows.length <= 1) return null
 
   const head = rows[0]
+  const metrics = await getDocumentTextMetrics(rows.map((row) => row.document_symbol))
   return {
     series_count: head.series_count,
     first_year: head.series_first_year || null,
@@ -1363,6 +1379,7 @@ export async function getResolutionSeries(
     superseded_by: head.superseded_by,
     members: rows.map((r) => ({
       document_symbol: r.document_symbol,
+      text_metrics: metrics.get(r.document_symbol),
       title: r.title,
       year: r.year || null,
       is_latest: r.member_is_latest,
