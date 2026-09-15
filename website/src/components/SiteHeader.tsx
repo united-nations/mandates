@@ -12,6 +12,10 @@ import { usePathname } from 'next/navigation'
 const navItems = [
   { href: '/secretariat', label: 'UN Secretariat View' },
   { href: '/system', label: 'UN System View' },
+  // The full path, not '/focal-points'. The shared header decides the active
+  // entry by exact string equality against `activeHref` (the pathname), so a
+  // shorter href would never match and the entry would never light.
+  { href: '/focal-points/directory', label: 'Focal points' },
 ]
 
 export function SiteHeader() {
