@@ -6,9 +6,9 @@ import { getFocalPointDirectorySummary } from '@/lib/data/focal-points'
 import { typography } from '@/lib/typography'
 
 export const metadata: Metadata = {
-  title: 'Secretariat focal points',
+  title: 'Mandate focal points',
   description:
-    'Which Secretariat entity is the focal point for mandate design, who to contact there, and what subjects they cover.',
+    'Which UN entity is the focal point for mandate design, who to contact there, and what subjects they cover.',
 }
 
 /**
@@ -40,15 +40,14 @@ export default async function FocalPointDirectoryPage() {
   return (
     <div className="text-gray-900">
       <h1 className="mb-3 text-3xl font-bold tracking-tight text-gray-900">
-        Secretariat focal points
+        Mandate focal points
       </h1>
 
       <p className="mb-8 max-w-3xl text-base leading-relaxed text-gray-600">
-        The Secretariat entity designated as the focal point for mandate design,
-        who to contact there, and the subjects each designation says it covers.
-        Coverage is as claimed by the office and is not verified; two
-        designations may cover the same subject. Select a row for the full list
-        of subjects covered.
+        The UN entity designated as the focal point for mandate design, who to
+        contact there, and the subjects each designation says it covers.
+        Coverage is as claimed by the office; two designations may cover the
+        same subject. Select a row for the full list of subjects covered.
       </p>
 
       <DirectorySummaryTable designations={designations} />
@@ -61,7 +60,7 @@ export default async function FocalPointDirectoryPage() {
           not a banner, a callout, or anything above the table — and not in
           SiteFooter, which is every page's and not this one's. */}
       <p className={`mt-4 ${typography.caption}`}>
-        Secretariat entities designate their focal points at{' '}
+        UN entities designate their focal points at{' '}
         <ExternalLink
           href="https://mandate-focal-points.un-two-zero.org"
           className="text-un-blue hover:underline"

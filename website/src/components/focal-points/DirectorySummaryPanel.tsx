@@ -219,10 +219,7 @@ function CoverageSection({
 }) {
   const { coverage } = designation
   return (
-    <DetailSection
-      heading="What it covers"
-      hint="As claimed by the office, unverified"
-    >
+    <DetailSection heading="What it covers">
       {coverage.length === 0 ? (
         <p className="text-muted-foreground">
           This designation records no coverage claims.

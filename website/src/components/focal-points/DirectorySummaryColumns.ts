@@ -17,12 +17,24 @@
  * being a hint the browser may overrule from cell content. One column declares
  * `flexible` and absorbs the surplus.
  *
- * The widths sum to 1016px, which is what the page's own column leaves at the
- * `lg` breakpoint (`max-w-6xl` less `lg:px-16`). This page uses the shared
- * centred main column rather than the full-bleed treatment the mandate explorer
- * opts into, so the table has 1024px to work with and not the window. Narrower
- * than that it scrolls horizontally with the detail rail pinned, which is the
- * mandate table's behaviour too.
+ * The widths sum to 1016px. This page uses the shared centred main column
+ * rather than the full-bleed treatment the mandate explorer opts into, so what
+ * the table has to work with is that column's content box, not the window:
+ *
+ *   `mx-auto w-full max-w-4xl px-8 sm:px-12 lg:max-w-6xl lg:px-16`
+ *
+ * At and above 1152px of viewport the `max-w-6xl` cap binds and the content box
+ * is a constant 1152 − 128 = 1024px, so the table fits with 8px to spare. Below
+ * 1152 the cap is not reached and the container is the viewport itself, so the
+ * content box is `viewport − 128` and shrinks with it: 896px at a 1024px
+ * viewport. The table therefore fits from about a 1144px viewport upward
+ * (1144 − 128 = 1016) and scrolls horizontally below that, with the detail rail
+ * pinned — the mandate table's behaviour too.
+ *
+ * So there IS a band, roughly 1024px to 1143px of viewport, where the `lg`
+ * layout is in force but the table still scrolls. That is known and is left as
+ * it is; closing it means retuning every width down to 896px, which is a
+ * separate decision from what each column needs.
  */
 
 export interface DirectorySummaryColumn {

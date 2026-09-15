@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { ChevronRight } from 'lucide-react'
+import { SearchInput } from '@/components/SearchInput'
 import {
   Table,
   TableBody,
@@ -58,6 +59,7 @@ export function DirectorySummaryTable({
   // replaces it.
   const [shown, setShown] = useState<DirectorySummaryDesignation | null>(null)
   const [open, setOpen] = useState(false)
+  const [query, setQuery] = useState('')
 
   const columns = DIRECTORY_SUMMARY_COLUMNS
 
@@ -66,8 +68,55 @@ export function DirectorySummaryTable({
     setOpen(true)
   }
 
+  // Each row's searchable text, built once per data change rather than on every
+  // keystroke.
+  const rows = useMemo(
+    () =>
+      designations.map((designation) => ({
+        designation,
+        haystack: searchableText(designation),
+      })),
+    [designations]
+  )
+
+  const needle = query.trim().toLowerCase()
+  const visible = useMemo(
+    () =>
+      needle === ''
+        ? rows.map((row) => row.designation)
+        : rows
+            .filter((row) => row.haystack.includes(needle))
+            .map((row) => row.designation),
+    [rows, needle]
+  )
+
   return (
     <div>
+      {/* The magnifier-and-underline treatment, not a box: `border-bottom` is
+          what every other search field in this app uses (the sidebars, the
+          column filter popovers, the budget tree), and it is the same treatment
+          the focal points application itself uses. */}
+      <div className="mb-4 max-w-sm">
+        <SearchInput
+          variant="border-bottom"
+          // Exact wording, and it names only keywords on purpose. The search
+          // also matches bodies, agenda items and document symbols — see
+          // searchableText — but the page does not offer them. A delegation
+          // that searched a document symbol and got one office back would read
+          // the result as a register of which office owns that document. It is
+          // not: it is what offices say they cover, and three of them may cover
+          // the same thing. The search finds them; the page promises nothing.
+          placeholder="Search for keywords"
+          aria-label="Search for keywords"
+          value={query}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setQuery(e.target.value)
+          }
+          showClearButton
+          onClear={() => setQuery('')}
+        />
+      </div>
+
       <div className="overflow-hidden rounded-lg border border-gray-200">
         {/* Fixed layout, so the declared column widths bind instead of being
             recomputed from whatever the rows happen to contain. Coverage is the
@@ -103,17 +152,24 @@ export function DirectorySummaryTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {designations.length === 0 ? (
+            {visible.length === 0 ? (
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
                   className="px-3 py-8 text-center text-muted-foreground"
                 >
-                  No focal point designations are currently listed.
+                  {/* Two different absences, and they are not the same thing to
+                      say. A plain statement either way — no spelling
+                      suggestion, no nearest match, no "did you mean": the
+                      search is a substring filter and has nothing to suggest
+                      from. */}
+                  {needle === ''
+                    ? 'No focal point designations are currently listed.'
+                    : 'Nothing matched that search.'}
                 </TableCell>
               </TableRow>
             ) : (
-              designations.map((designation) => (
+              visible.map((designation) => (
                 <TableRow
                   key={designation.id}
                   className="group cursor-pointer border-b border-gray-100 hover:bg-gray-50"
@@ -297,4 +353,42 @@ function DirectorySummaryCell({
  */
 function stopRowClick(event: React.MouseEvent<HTMLAnchorElement>) {
   event.stopPropagation()
+}
+
+/**
+ * Everything a row carries, as one lower-cased string to match substrings in.
+ *
+ * All of it, not only what the placeholder names: the office's display name and
+ * its code, the sub-unit, every contact's name, title, address and working
+ * languages, the functional mailbox, and every coverage claim of every kind —
+ * bodies, agenda items, document symbols and keywords alike. A reader who pastes
+ * an address or a document symbol finds the row; the interface simply does not
+ * advertise the last three (see the placeholder's note).
+ *
+ * Case-insensitive substring matching and nothing else. No fuzzy distance, no
+ * ranking, no stemming: this is a filter over a few dozen rows, and anything
+ * cleverer would start deciding that a near-miss counts as coverage when the
+ * office never claimed it.
+ *
+ * `filter(Boolean)` drops the absent fields rather than defaulting them — a
+ * designation with no functional mailbox contributes no text for one, which is
+ * the truth about it.
+ */
+function searchableText(designation: DirectorySummaryDesignation): string {
+  return [
+    designation.office.name,
+    designation.office.code,
+    designation.subUnit,
+    designation.functionalMailbox,
+    ...designation.contacts.flatMap((contact) => [
+      contact.name,
+      contact.title,
+      contact.email,
+      ...(contact.workingLanguages ?? []),
+    ]),
+    ...designation.coverage.map((claim) => claim.value),
+  ]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase()
 }
