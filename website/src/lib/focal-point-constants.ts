@@ -16,7 +16,7 @@
 
 /**
  * The four kinds a coverage claim can have, in the order the panel reads them:
- * the controlled list first, then the identifiers an office may know, then the
+ * the controlled list first, then the identifiers an entity may know, then the
  * free-text terms.
  *
  * Also the validation set — `designation_coverage_claims_coverage_kind_check`
@@ -76,34 +76,34 @@ export interface DirectorySummaryClaim {
 }
 
 /**
- * The office a designation belongs to, in the two forms a reader needs.
+ * The entity a designation belongs to, in the two forms a reader needs.
  *
- * `focal_point_designations` records the office one of two ways, and
- * `chk_focal_point_designations_office_code_or_unmatched` guarantees exactly
+ * `focal_point_designations` records the entity one of two ways, and
+ * `chk_focal_point_designations_entity_code_or_unmatched` guarantees exactly
  * one of them: a code from the roster, or free text where the respondent used
  * the picker's "Other" option. The two produce the same pair of slots here, but
  * they are not the same thing, which is why `code` is nullable:
  *
- *   rostered office   `code` is the roster code; `name` is the display name
+ *   rostered entity   `code` is the roster code; `name` is the display name
  *                     from `mandate_focal_points.entity_display_names`, and is
  *                     NULL when that view has no row for the code.
- *   "Other" office    `code` is NULL — there is no code, because the office is
+ *   "Other" entity    `code` is NULL — there is no code, because the entity is
  *                     not on the roster; `name` is the text the respondent
  *                     typed, which is the only name that exists for it.
  *
- * A NULL `name` on a row that HAS a code is a real gap: the office is rostered
+ * A NULL `name` on a row that HAS a code is a real gap: the entity is rostered
  * but the view does not name it. It is rendered as a gap and never filled in
  * with the code, so the missing name stays visible as something to fix rather
  * than being smoothed over at the point where anyone would notice.
  */
-export interface DirectorySummaryOffice {
+export interface DirectorySummaryEntity {
   code: string | null
   name: string | null
 }
 
 export interface DirectorySummaryDesignation {
   id: number
-  office: DirectorySummaryOffice
+  entity: DirectorySummaryEntity
   /** Division, branch or section. Required, and never blank (CHECK). */
   subUnit: string
   functionalMailbox: string | null

@@ -15,7 +15,7 @@ export const metadata: Metadata = {
  * The page takes no search params, so without this Next prerenders it once at
  * build time and every later deploy is the only thing that can change it. The
  * table it reads is written by a different application: a focal point who moves
- * on, or a designation an office takes off the site, has to stop being shown
+ * on, or a designation an entity takes off the site, has to stop being shown
  * when that application says so, not when this site is next built.
  */
 export const dynamic = 'force-dynamic'
@@ -46,7 +46,7 @@ export default async function FocalPointDirectoryPage() {
       <p className="mb-8 max-w-3xl text-base leading-relaxed text-gray-600">
         The UN entity designated as the focal point for mandate design, who to
         contact there, and the subjects each designation says it covers.
-        Coverage is as claimed by the office; two designations may cover the
+        Coverage is as claimed by the entity; two designations may cover the
         same subject. Select a row for the full list of subjects covered.
       </p>
 

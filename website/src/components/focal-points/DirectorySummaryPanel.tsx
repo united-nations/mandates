@@ -19,7 +19,7 @@ import {
   COVERAGE_KINDS,
   coverageKindHeading,
   type DirectorySummaryDesignation,
-  type DirectorySummaryOffice,
+  type DirectorySummaryEntity,
 } from '@/lib/focal-point-constants'
 
 /**
@@ -47,7 +47,7 @@ import {
  * button standing in for a page that does not exist.
  *
  * NO RECORD SECTION. Two sections, People and Coverage, and the header. Who
- * cleared the designation, who submitted it and when, whether the office leads
+ * cleared the designation, who submitted it and when, whether the entity leads
  * or shares, and the supersession history are the administrative cut — they are
  * not in the query behind this page at all, so there is nothing here to omit.
  */
@@ -79,13 +79,13 @@ export function DirectorySummaryPanel({
         {designation && (
           <>
             <SheetTitle className="sr-only">
-              {officeLabel(designation.office)} — {designation.subUnit}
+              {entityLabel(designation.entity)} — {designation.subUnit}
             </SheetTitle>
             {/* Radix warns, and screen readers lose the announcement, when a
                 DialogContent has no description. Mirrors the two visible
                 sections, and has to be re-read whenever they change. */}
             <SheetDescription className="sr-only">
-              Focal point designation for {officeLabel(designation.office)},{' '}
+              Focal point designation for {entityLabel(designation.entity)},{' '}
               {designation.subUnit}: who to contact there, and what subjects the
               designation covers.
             </SheetDescription>
@@ -100,18 +100,18 @@ export function DirectorySummaryPanel({
                   {/* The name in full — no clamp here. The table clamps at two
                       lines because a row has a height to keep; the panel is
                       where the whole of a 227-character name belongs. */}
-                  {designation.office.name ? (
+                  {designation.entity.name ? (
                     <span className="text-sm text-foreground">
-                      {designation.office.name}
+                      {designation.entity.name}
                     </span>
                   ) : (
                     // Rostered but unnamed by the view. The code below is not
                     // promoted into this slot to cover for it.
                     <span className="text-sm text-muted-foreground">—</span>
                   )}
-                  {designation.office.code && (
+                  {designation.entity.code && (
                     <Chip density="dense" title="Entity code">
-                      {designation.office.code}
+                      {designation.entity.code}
                     </Chip>
                   )}
                 </>
@@ -210,7 +210,7 @@ function PeopleSection({
  * cannot, since a cell will not hold seven keywords without becoming the row.
  *
  * Grouped by kind, in COVERAGE_KINDS order. A kind with no claims renders
- * nothing: an office that claims no agenda items has not left a gap to fill.
+ * nothing: an entity that claims no agenda items has not left a gap to fill.
  */
 function CoverageSection({
   designation,
@@ -283,14 +283,14 @@ function contactCountHint(count: number): string {
 }
 
 /**
- * How the office is announced to a screen reader.
+ * How the entity is announced to a screen reader.
  *
  * Joins the parts that exist rather than choosing one to stand for the other —
- * the same two facts the visible header shows, in the same order. An office
+ * the same two facts the visible header shows, in the same order. An entity
  * whose name the view does not carry is announced by its code alone, which is
  * what is on the screen for it too; nothing is substituted that is not also
  * visible.
  */
-function officeLabel(office: DirectorySummaryOffice): string {
-  return [office.name, office.code].filter(Boolean).join(' ')
+function entityLabel(entity: DirectorySummaryEntity): string {
+  return [entity.name, entity.code].filter(Boolean).join(' ')
 }

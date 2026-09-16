@@ -102,9 +102,9 @@ export function DirectorySummaryTable({
           // Exact wording, and it names only keywords on purpose. The search
           // also matches bodies, agenda items and document symbols — see
           // searchableText — but the page does not offer them. A delegation
-          // that searched a document symbol and got one office back would read
-          // the result as a register of which office owns that document. It is
-          // not: it is what offices say they cover, and three of them may cover
+          // that searched a document symbol and got one entity back would read
+          // the result as a register of which entity owns that document. It is
+          // not: it is what entities say they cover, and three of them may cover
           // the same thing. The search finds them; the page promises nothing.
           placeholder="Search for keywords"
           aria-label="Search for keywords"
@@ -220,7 +220,7 @@ function DirectorySummaryCell({
 }) {
   switch (columnId) {
     case 'entity': {
-      const { code, name } = designation.office
+      const { code, name } = designation.entity
       return (
         <div className="min-w-0">
           {/* Clamped, not truncated to one line: the median display name is 42
@@ -358,7 +358,7 @@ function stopRowClick(event: React.MouseEvent<HTMLAnchorElement>) {
 /**
  * Everything a row carries, as one lower-cased string to match substrings in.
  *
- * All of it, not only what the placeholder names: the office's display name and
+ * All of it, not only what the placeholder names: the entity's display name and
  * its code, the sub-unit, every contact's name, title, address and working
  * languages, the functional mailbox, and every coverage claim of every kind —
  * bodies, agenda items, document symbols and keywords alike. A reader who pastes
@@ -368,7 +368,7 @@ function stopRowClick(event: React.MouseEvent<HTMLAnchorElement>) {
  * Case-insensitive substring matching and nothing else. No fuzzy distance, no
  * ranking, no stemming: this is a filter over a few dozen rows, and anything
  * cleverer would start deciding that a near-miss counts as coverage when the
- * office never claimed it.
+ * entity never claimed it.
  *
  * `filter(Boolean)` drops the absent fields rather than defaulting them — a
  * designation with no functional mailbox contributes no text for one, which is
@@ -376,8 +376,8 @@ function stopRowClick(event: React.MouseEvent<HTMLAnchorElement>) {
  */
 function searchableText(designation: DirectorySummaryDesignation): string {
   return [
-    designation.office.name,
-    designation.office.code,
+    designation.entity.name,
+    designation.entity.code,
     designation.subUnit,
     designation.functionalMailbox,
     ...designation.contacts.flatMap((contact) => [

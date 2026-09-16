@@ -13,11 +13,11 @@
  *
  *   entity_display_names          entity_code -> entity_display_name
  *
- * and nothing else in that schema. `focal_point_designations.office_code` is a
- * foreign key into `candidate_offices`, which this credential still cannot read
+ * and nothing else in that schema. `focal_point_designations.entity_code` is a
+ * foreign key into `candidate_entities`, which this credential still cannot read
  * and must not: that table carries scope decisions and a written exclusion
- * reason on every row, including offices ruled out and offices awaiting a
- * ruling. The view exists so a consumer can name an office without seeing any
+ * reason on every row, including entities ruled out and entities awaiting a
+ * ruling. The view exists so a consumer can name an entity without seeing any
  * of that, and it exposes those two columns and nothing else. Join the view;
  * never reach past it.
  *
@@ -25,7 +25,7 @@
  * ---------------
  * This is the "directory summary" column set: the same designations the
  * internal directory lists, minus the administrative record — who cleared it,
- * who submitted it, when, whether the office leads or shares, which population
+ * who submitted it, when, whether the entity leads or shares, which population
  * the designation belongs to, who removed a listing, and the whole supersession
  * history. Those columns are not selected by any query in this file. The cut is
  * by column KIND (administrative vs. contact), which is why it is named for
@@ -37,7 +37,7 @@
  *
  *   superseded_at        NULL means this designation is live. A replacement is
  *                        a new row, and the row it replaces gets this set.
- *   listing_removed_at   NULL means it is still shown. Set when the office took
+ *   listing_removed_at   NULL means it is still shown. Set when the entity took
  *                        the designation off the site. The column's own comment
  *                        requires every read that renders designations to a user
  *                        to exclude these, because the record is kept on purpose
@@ -59,14 +59,14 @@ import {
   type DirectorySummaryClaim,
   type DirectorySummaryContact,
   type DirectorySummaryDesignation,
-  type DirectorySummaryOffice,
+  type DirectorySummaryEntity,
 } from '../focal-point-constants'
 import { queryMany } from '../db/query'
 
 interface DesignationRow {
   id: number
-  office_code: string | null
-  unmatched_office_text: string | null
+  entity_code: string | null
+  unmatched_entity_text: string | null
   entity_display_name: string | null
   sub_unit: string
   functional_mailbox: string | null
@@ -95,7 +95,7 @@ interface ClaimRow {
  * of rows, the pool already fans out far more than this per render, and the
  * alternative needs a COALESCE around each `json_agg` to turn "no rows" into an
  * empty array — a default standing in for an absence that is not one. Here an
- * office with no claims simply has no claim rows, and its array is empty
+ * entity with no claims simply has no claim rows, and its array is empty
  * because nothing was put in it.
  *
  * `scope` is not filtered on. The column separates Secretariat technical focal
@@ -110,12 +110,12 @@ async function loadFocalPointDirectorySummary(): Promise<
   DirectorySummaryDesignation[]
 > {
   const designations = await queryMany<DesignationRow>(
-    // A LEFT JOIN, not an inner one: an office whose code the view does not
+    // A LEFT JOIN, not an inner one: an entity whose code the view does not
     // name must still appear, with the gap visible. An inner join would drop
     // the designation and the gap with it.
     //
-    // The join cannot multiply rows. `office_code` is a foreign key onto
-    // `candidate_offices.entity_code`, so that column is unique, and the view
+    // The join cannot multiply rows. `entity_code` is a foreign key onto
+    // `candidate_entities.entity_code`, so that column is unique, and the view
     // is keyed on it.
     //
     // Ordered by what the reader actually sees. NULLS LAST rather than a
@@ -123,18 +123,18 @@ async function loadFocalPointDirectorySummary(): Promise<
     // with no name has no place among the named ones.
     `/* trace:focalPoints.directorySummary */
      SELECT d.id,
-            d.office_code,
-            d.unmatched_office_text,
+            d.entity_code,
+            d.unmatched_entity_text,
             n.entity_display_name,
             d.sub_unit,
             d.functional_mailbox
        FROM mandate_focal_points.focal_point_designations d
        LEFT JOIN mandate_focal_points.entity_display_names n
-              ON n.entity_code = d.office_code
+              ON n.entity_code = d.entity_code
       WHERE d.superseded_at IS NULL
         AND d.listing_removed_at IS NULL
       ORDER BY n.entity_display_name NULLS LAST,
-               d.unmatched_office_text NULLS LAST,
+               d.unmatched_entity_text NULLS LAST,
                d.sub_unit,
                d.id`,
     []
@@ -201,7 +201,7 @@ async function loadFocalPointDirectorySummary(): Promise<
 
   return designations.map((row) => ({
     id: row.id,
-    office: officeOf(row),
+    entity: entityOf(row),
     subUnit: row.sub_unit,
     functionalMailbox: row.functional_mailbox,
     contacts: contactsByDesignation.get(row.id) ?? [],
@@ -214,33 +214,33 @@ export const getFocalPointDirectorySummary = cache(
 )
 
 /**
- * The office, as a code and a name.
+ * The entity, as a code and a name.
  *
- * `chk_focal_point_designations_office_code_or_unmatched` guarantees exactly one
- * of `office_code` and `unmatched_office_text` is set, so the two branches below
+ * `chk_focal_point_designations_entity_code_or_unmatched` guarantees exactly one
+ * of `entity_code` and `unmatched_entity_text` is set, so the two branches below
  * are exhaustive. Neither being set is a broken row and throws rather than
  * rendering as "Unknown": a broken row nobody finds is worse than a crash with
  * the id in it.
  *
  * The rostered branch passes the view's name through UNCHANGED, including when
- * it is NULL. That NULL means the roster names an office the view does not, and
+ * it is NULL. That NULL means the roster names an entity the view does not, and
  * it is carried to the surface as an absence. Substituting the code here is the
- * one thing this function must not do — the code is not the office's name, and
+ * one thing this function must not do — the code is not the entity's name, and
  * a page that quietly prints one where the other is missing looks correct while
  * the gap goes unnoticed and unfixed.
  */
-function officeOf(row: DesignationRow): DirectorySummaryOffice {
-  if (row.office_code !== null) {
-    return { code: row.office_code, name: row.entity_display_name }
+function entityOf(row: DesignationRow): DirectorySummaryEntity {
+  if (row.entity_code !== null) {
+    return { code: row.entity_code, name: row.entity_display_name }
   }
-  if (row.unmatched_office_text !== null) {
+  if (row.unmatched_entity_text !== null) {
     // Not on the roster, so there is no code and nothing for the view to name.
     // The typed text is not a stand-in for a lookup that failed; it is the only
-    // name this office has.
-    return { code: null, name: row.unmatched_office_text }
+    // name this entity has.
+    return { code: null, name: row.unmatched_entity_text }
   }
   throw new Error(
-    `focal_point_designations id=${row.id} has neither office_code nor unmatched_office_text`
+    `focal_point_designations id=${row.id} has neither entity_code nor unmatched_entity_text`
   )
 }
 
