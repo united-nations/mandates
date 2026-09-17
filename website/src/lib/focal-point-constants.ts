@@ -60,16 +60,24 @@ export function coverageKindHeading(kind: CoverageKind): string {
 }
 
 /**
- * The nine classes the focal points application assigns to an entity, in the
+ * The ten classes the focal points application assigns to an entity, in the
  * order it groups them. `candidate_entities_entity_class_check` in that
  * application's schema allows exactly these, so nothing else can reach this
  * page; the list is here for the labels, not as a validation set.
+ *
+ * `related_organization` is the newest of the ten and was split out of
+ * `specialized_agency`, which had been holding both constitutional kinds under
+ * one word. This list must learn a new value BEFORE the upstream migration
+ * that starts storing it: `entityClassLabel` below falls back to the stored
+ * string, so a value this file has not met renders as `related_organization`
+ * in a public table rather than as a label.
  */
 export const ENTITY_CLASSES = [
   'secretariat',
   'regional_commission',
   'fund_programme_institute',
   'specialized_agency',
+  'related_organization',
   'special_adviser_or_envoy',
   'political_mission',
   'peacekeeping_operation',
@@ -84,7 +92,8 @@ export const ENTITY_CLASS_LABELS: Record<EntityClass, string> = {
   secretariat: 'Secretariat department or office',
   regional_commission: 'Regional commission',
   fund_programme_institute: 'Fund, programme or institute',
-  specialized_agency: 'Specialized agency or related organization',
+  specialized_agency: 'Specialized agency',
+  related_organization: 'Related organization',
   special_adviser_or_envoy: 'Special adviser or envoy',
   political_mission: 'Political mission',
   peacekeeping_operation: 'Peacekeeping operation',
