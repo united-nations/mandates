@@ -19,7 +19,7 @@ import {
   type DirectorySummaryDesignation,
 } from '@/lib/focal-point-constants'
 import {
-  directorySummaryMinWidth,
+  directorySummaryLayout,
   visibleSummaryColumns,
 } from './DirectorySummaryColumns'
 import { DirectorySummaryColumnPicker } from './DirectorySummaryColumnPicker'
@@ -78,6 +78,11 @@ export function DirectorySummaryTable({
   const [added, setAdded] = useState<ReadonlySet<string>>(() => new Set())
 
   const columns = useMemo(() => visibleSummaryColumns(added), [added])
+
+  // Widths for the columns actually on screen, not per-column constants: the
+  // set changes as the reader adds columns, and so does what each one can have.
+  // See `directorySummaryLayout`.
+  const layout = useMemo(() => directorySummaryLayout(columns), [columns])
 
   const toggleColumn = (columnId: string) => {
     setAdded((current) => {
@@ -170,26 +175,29 @@ export function DirectorySummaryTable({
 
       <div className="overflow-hidden rounded-lg border border-gray-200">
         {/* Fixed layout, so the declared column widths bind instead of being
-            recomputed from whatever the rows happen to contain. Coverage is the
-            only column without an exact width, which is how the surplus reaches
-            it and nothing else. */}
-        <Table
-          className="table-fixed"
-          style={{ minWidth: directorySummaryMinWidth(columns) }}
-        >
+            recomputed from whatever the rows happen to contain. Every column
+            carries an exact width now, and they sum to the table's width, so
+            there is no surplus for the browser to place and no column left
+            holding it. `minWidth` is that same total: below it the table
+            scrolls rather than compressing columns past their floors. */}
+        <Table className="table-fixed" style={{ minWidth: layout.total }}>
           <TableHeader>
             <TableRow className="border-b bg-gray-50 hover:bg-gray-50">
-              {columns.map((column) => (
+              {columns.map((column, index) => (
                 <TableHead
                   key={column.id}
-                  style={
-                    column.flexible ? undefined : { width: column.width }
-                  }
+                  style={{ width: layout.widths[index] }}
+                  /* `whitespace-nowrap` makes "a header does not wrap" a
+                     property of the markup rather than of the numbers holding.
+                     Every floor in DirectorySummaryColumns clears its own
+                     header, so it is never reached; a label lengthened past its
+                     column would overflow visibly instead of quietly wrapping,
+                     which is the failure worth having. */
                   className={`${ALIGN_CLASS[column.align ?? 'left']} ${
                     column.id === 'detail'
                       ? `${STICKY_DETAIL_CELL} bg-gray-50`
                       : ''
-                  } h-10 px-3 ${typography.tableHeader}`}
+                  } h-10 px-3 whitespace-nowrap ${typography.tableHeader}`}
                 >
                   {/* The detail rail's header is empty on purpose: it labels a
                       row affordance, not a column of data. */}
