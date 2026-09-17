@@ -27,11 +27,11 @@
  * ---------------
  * This is the "directory summary" column set: the same designations the
  * internal directory lists, minus the administrative record — who cleared it,
- * who submitted it, when, whether the entity leads or shares, which population
- * the designation belongs to, who removed a listing, and the whole supersession
- * history. Those columns are not selected by any query in this file. The cut is
- * by column KIND (administrative vs. contact), which is why it is named for
- * that property rather than for who is allowed to see it.
+ * who submitted it, when, whether the entity leads or shares, who removed a
+ * listing, and the whole supersession history. Those columns are not selected
+ * by any query in this file. The cut is by column KIND (administrative vs.
+ * contact), which is why it is named for that property rather than for who is
+ * allowed to see it.
  *
  * WHAT IS LISTED
  * --------------
@@ -45,8 +45,8 @@
  *                        to exclude these, because the record is kept on purpose
  *                        and the exclusion is a read-time decision.
  *
- * A row with either one set is excluded. `scope` is deliberately NOT filtered
- * on — see getFocalPointDirectorySummary.
+ * A row with either one set is excluded, and those two are now the whole of
+ * the listing rule.
  *
  * The record shapes and the coverage vocabulary are in
  * `lib/focal-point-constants.ts` rather than here: the table and the panel are
@@ -101,13 +101,12 @@ interface ClaimRow {
  * entity with no claims simply has no claim rows, and its array is empty
  * because nothing was put in it.
  *
- * `scope` is not filtered on. The column separates Secretariat technical focal
- * points from the wider system contact points, and every row in the database
- * today is the former, so a filter would be untested on the case it exists for
- * and would silently drop rows the day the other population is added. The two
- * conditions that govern listing are the two above. If this page should be
- * narrowed to one scope, that is a decision with a visible consequence and
- * belongs in the query explicitly, not as a guard added in advance.
+ * This file used to carry a paragraph explaining why it did not filter on
+ * `scope`, a column separating Secretariat technical focal points from the
+ * wider system contact points. That column has been dropped upstream: there is
+ * no second population and there was never a second round, so the distinction
+ * named nothing. `superseded_at` and `listing_removed_at` are the two
+ * conditions that govern listing, and now the only two.
  */
 async function loadFocalPointDirectorySummary(): Promise<
   DirectorySummaryDesignation[]

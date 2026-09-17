@@ -8,7 +8,7 @@
  *
  * "Summary" names the COLUMN SET, not the audience. The difference between this
  * and the internal directory's own column list is administrative fields — who
- * cleared the designation, who submitted it and when, lead or shared, scope,
+ * cleared the designation, who submitted it and when, lead or shared,
  * and the supersession record. None of them is read by the query behind this
  * table (see `lib/data/focal-points.ts`), so the cut is made where the data is
  * fetched, not hidden here at the point of rendering.
