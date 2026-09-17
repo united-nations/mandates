@@ -15,8 +15,10 @@ import { typography } from '@/lib/typography'
 import {
   COVERAGE_KINDS,
   coverageKindCount,
+  entityClassLabel,
   type DirectorySummaryDesignation,
 } from '@/lib/focal-point-constants'
+import { SHOW_ENTITY_CLASSIFICATION } from '@/lib/feature-flags'
 import {
   DIRECTORY_SUMMARY_COLUMNS,
   directorySummaryMinWidth,
@@ -246,6 +248,20 @@ function DirectorySummaryCell({
       )
     }
 
+    case 'entity_class': {
+      // The label where one is known, the stored value where not. No class is
+      // the same absence as no name above it: a dash, not the code and not a
+      // stand-in class.
+      const { entityClass } = designation.entity
+      return entityClass === null ? (
+        <span className="text-muted-foreground">—</span>
+      ) : (
+        <span className="text-xs text-muted-foreground">
+          {entityClassLabel(entityClass)}
+        </span>
+      )
+    }
+
     case 'sub_unit':
       return <span className="text-foreground">{designation.subUnit}</span>
 
@@ -359,11 +375,14 @@ function stopRowClick(event: React.MouseEvent<HTMLAnchorElement>) {
  * Everything a row carries, as one lower-cased string to match substrings in.
  *
  * All of it, not only what the placeholder names: the entity's display name and
- * its code, the sub-unit, every contact's name, title, address and working
- * languages, the functional mailbox, and every coverage claim of every kind —
- * bodies, agenda items, document symbols and keywords alike. A reader who pastes
- * an address or a document symbol finds the row; the interface simply does not
- * advertise the last three (see the placeholder's note).
+ * its code, its class label while the class column is shown, the sub-unit,
+ * every contact's name, title, address and working languages, the functional
+ * mailbox, and every coverage claim of every kind — bodies, agenda items,
+ * document symbols and keywords alike. A reader who pastes an address or a
+ * document symbol finds the row; the interface simply does not advertise the
+ * last three (see the placeholder's note). The class label is searched only
+ * while it is rendered, so a search cannot match on a column the page does not
+ * show.
  *
  * Case-insensitive substring matching and nothing else. No fuzzy distance, no
  * ranking, no stemming: this is a filter over a few dozen rows, and anything
@@ -378,6 +397,9 @@ function searchableText(designation: DirectorySummaryDesignation): string {
   return [
     designation.entity.name,
     designation.entity.code,
+    SHOW_ENTITY_CLASSIFICATION && designation.entity.entityClass !== null
+      ? entityClassLabel(designation.entity.entityClass)
+      : null,
     designation.subUnit,
     designation.functionalMailbox,
     ...designation.contacts.flatMap((contact) => [

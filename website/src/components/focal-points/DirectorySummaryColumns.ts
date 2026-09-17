@@ -17,9 +17,12 @@
  * being a hint the browser may overrule from cell content. One column declares
  * `flexible` and absorbs the surplus.
  *
- * The widths sum to 1016px. This page uses the shared centred main column
- * rather than the full-bleed treatment the mandate explorer opts into, so what
- * the table has to work with is that column's content box, not the window:
+ * The widths sum to 1016px with the entity class column in, and to 916px
+ * without it (the column is present only while SHOW_ENTITY_CLASSIFICATION is
+ * on; off, its 100px goes to the flexible column as surplus). This page uses
+ * the shared centred main column rather than the full-bleed treatment the
+ * mandate explorer opts into, so what the table has to work with is that
+ * column's content box, not the window:
  *
  *   `mx-auto w-full max-w-4xl px-8 sm:px-12 lg:max-w-6xl lg:px-16`
  *
@@ -35,7 +38,15 @@
  * layout is in force but the table still scrolls. That is known and is left as
  * it is; closing it means retuning every width down to 896px, which is a
  * separate decision from what each column needs.
+ *
+ * The class column was admitted by taking its 100px off five neighbours rather
+ * than by widening the table past the content box, which would have made it
+ * scroll at every viewport: sub-unit 146 to 126, focal points 200 to 180,
+ * functional mailbox 196 to 174, languages 92 to 80, coverage's floor 146 to
+ * 120. Each cut is noted on the column it was taken from.
  */
+
+import { SHOW_ENTITY_CLASSIFICATION } from '@/lib/feature-flags'
 
 export interface DirectorySummaryColumn {
   id: string
@@ -49,6 +60,23 @@ export interface DirectorySummaryColumn {
    */
   flexible?: true
   align?: 'left' | 'right' | 'center'
+}
+
+/**
+ * What kind of body the entity is, as the focal points application classified
+ * it and publishes it through the view this site reads. Beside the entity,
+ * because it is a fact about the entity and not about the designation. An
+ * entity the roster does not know, or one the view does not carry, has no
+ * class and the cell shows the same dash the other absences show.
+ *
+ * 100px holds the longest label, "Specialized agency or related organization",
+ * on three lines at the caption size the cell uses.
+ */
+const ENTITY_CLASS_COLUMN: DirectorySummaryColumn = {
+  id: 'entity_class',
+  label: 'Entity class',
+  width: 100,
+  align: 'left',
 }
 
 export const DIRECTORY_SUMMARY_COLUMNS: DirectorySummaryColumn[] = [
@@ -74,46 +102,56 @@ export const DIRECTORY_SUMMARY_COLUMNS: DirectorySummaryColumn[] = [
     width: 180,
     align: 'left',
   },
+  ...(SHOW_ENTITY_CLASSIFICATION ? [ENTITY_CLASS_COLUMN] : []),
   {
     // "DPPA" does not route a query and "DPPA, Middle East Division" does —
     // which is the reason the underlying column is required. It is the closest
-    // thing a designation has to a name, so it carries the row.
+    // thing a designation has to a name, so it carries the row. 126 rather
+    // than 146: a sub-unit name wraps in either, and the 20px went to the
+    // class column.
     id: 'sub_unit',
     label: 'Sub-unit',
-    width: 146,
+    width: 126,
     align: 'left',
   },
   {
     // Name, title and address stay in one cell per person. Split across three
     // columns they line up only by position, which breaks the moment a
     // designation names two people — and it may: a large division can name two
-    // equal primaries, and alternates are rows rather than a fixed pair.
+    // equal primaries, and alternates are rows rather than a fixed pair. 180
+    // rather than 200: the name and the title truncate, the address already
+    // did; 20px went to the class column.
     id: 'people',
     label: 'Focal points',
-    width: 200,
+    width: 180,
     align: 'left',
   },
   {
+    // 174 rather than 196: the address truncates a little earlier; 22px went
+    // to the class column.
     id: 'functional_mailbox',
     label: 'Functional mailbox',
-    width: 196,
+    width: 174,
     align: 'left',
   },
   {
     // Codes as given on the form. Not a controlled vocabulary upstream, so this
-    // shows what was entered.
+    // shows what was entered. 80 rather than 92 holds three codes and their
+    // separators; 12px went to the class column.
     id: 'languages',
     label: 'Languages',
-    width: 92,
+    width: 80,
     align: 'left',
   },
   {
     // The summary form: how many claims of each kind. The claims themselves are
     // in the panel, in full — a cell cannot hold seven keywords without
-    // becoming the row.
+    // becoming the row. The floor is 120 rather than 146, 26px having gone to
+    // the class column; at the capped content box it still gets the 8px
+    // surplus, and "1 document symbol" fits on one line at 128.
     id: 'coverage',
     label: 'Coverage',
-    width: 146,
+    width: 120,
     flexible: true,
     align: 'left',
   },

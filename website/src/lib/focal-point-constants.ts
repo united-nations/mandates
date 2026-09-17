@@ -59,6 +59,50 @@ export function coverageKindHeading(kind: CoverageKind): string {
   return plural.charAt(0).toUpperCase() + plural.slice(1)
 }
 
+/**
+ * The nine classes the focal points application assigns to an entity, in the
+ * order it groups them. `candidate_entities_entity_class_check` in that
+ * application's schema allows exactly these, so nothing else can reach this
+ * page; the list is here for the labels, not as a validation set.
+ */
+export const ENTITY_CLASSES = [
+  'secretariat',
+  'regional_commission',
+  'fund_programme_institute',
+  'specialized_agency',
+  'special_adviser_or_envoy',
+  'political_mission',
+  'peacekeeping_operation',
+  'intergovernmental_or_expert_body',
+  'mechanism_or_tribunal',
+] as const
+
+export type EntityClass = (typeof ENTITY_CLASSES)[number]
+
+/** What each class is called on screen; the stored value is the key. */
+export const ENTITY_CLASS_LABELS: Record<EntityClass, string> = {
+  secretariat: 'Secretariat department or office',
+  regional_commission: 'Regional commission',
+  fund_programme_institute: 'Fund, programme or institute',
+  specialized_agency: 'Specialized agency or related organization',
+  special_adviser_or_envoy: 'Special adviser or envoy',
+  political_mission: 'Political mission',
+  peacekeeping_operation: 'Peacekeeping operation',
+  intergovernmental_or_expert_body: 'Intergovernmental or expert body',
+  mechanism_or_tribunal: 'Mechanism or tribunal',
+}
+
+/**
+ * The label for a stored class, or the stored value itself where this list
+ * has no label for it. The CHECK on the column makes a value outside the nine
+ * unstorable, so the second branch is not a guard against a bad row: it is
+ * what a class added upstream before this list learns its label looks like,
+ * and the true value unlabelled is a better cell than a thrown page.
+ */
+export function entityClassLabel(value: string): string {
+  return (ENTITY_CLASS_LABELS as Record<string, string | undefined>)[value] ?? value
+}
+
 export interface DirectorySummaryContact {
   name: string
   /** Required of a primary contact by CHECK; NULL on an alternate means it was not given. */
@@ -84,21 +128,27 @@ export interface DirectorySummaryClaim {
  * the picker's "Other" option. The two produce the same pair of slots here, but
  * they are not the same thing, which is why `code` is nullable:
  *
- *   rostered entity   `code` is the roster code; `name` is the display name
- *                     from `mandate_focal_points.entity_display_names`, and is
+ *   rostered entity   `code` is the roster code; `name` and `entityClass` are
+ *                     the display name and the class from
+ *                     `mandate_focal_points.entity_display_names`, and are
  *                     NULL when that view has no row for the code.
  *   "Other" entity    `code` is NULL — there is no code, because the entity is
  *                     not on the roster; `name` is the text the respondent
- *                     typed, which is the only name that exists for it.
+ *                     typed, which is the only name that exists for it, and
+ *                     `entityClass` is NULL because nothing classified it.
  *
  * A NULL `name` on a row that HAS a code is a real gap: the entity is rostered
  * but the view does not name it. It is rendered as a gap and never filled in
  * with the code, so the missing name stays visible as something to fix rather
- * than being smoothed over at the point where anyone would notice.
+ * than being smoothed over at the point where anyone would notice. The same
+ * holds for `entityClass`: NULL renders as an absence, never as a stand-in
+ * class.
  */
 export interface DirectorySummaryEntity {
   code: string | null
   name: string | null
+  /** The stored class as the view carries it; labelled at render time by entityClassLabel. */
+  entityClass: string | null
 }
 
 export interface DirectorySummaryDesignation {

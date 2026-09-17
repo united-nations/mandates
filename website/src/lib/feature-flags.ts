@@ -40,3 +40,18 @@ export const SHOW_MANDATE_REGISTRY_RATING: boolean = false
  * revert. When off, the query is skipped entirely, not run and discarded.
  */
 export const SHOW_MANDATED_SG_REPORTS: boolean = true
+
+/**
+ * The "Entity class" column on the focal point directory (/focal-points/
+ * directory): what kind of body each designating entity is, as the focal
+ * points application classified it and publishes it through the view this
+ * site reads. On, the column is in the table and its label is searchable. Off,
+ * the column is not rendered and the table's widths return to what they were
+ * before it existed; the value is still read from the view, so flipping this
+ * changes nothing about the query.
+ *
+ * The same name gates the same rendering in the focal points application, so
+ * the two directories can be switched together. They are separate constants
+ * in separate repositories and have to be flipped in both.
+ */
+export const SHOW_ENTITY_CLASSIFICATION: boolean = true

@@ -11,14 +11,16 @@
  *
  * plus one view:
  *
- *   entity_display_names          entity_code -> entity_display_name
+ *   entity_display_names          entity_code -> entity_display_name, entity_class
  *
  * and nothing else in that schema. `focal_point_designations.entity_code` is a
  * foreign key into `candidate_entities`, which this credential still cannot read
  * and must not: that table carries scope decisions and a written exclusion
- * reason on every row, including entities ruled out and entities awaiting a
- * ruling. The view exists so a consumer can name an entity without seeing any
- * of that, and it exposes those two columns and nothing else. Join the view;
+ * reason on every row, including entities ruled out, entities awaiting a
+ * ruling and entities nobody has considered. The view exists so a consumer can
+ * name an entity without seeing any of that, and it exposes those three columns
+ * and nothing else: the class is a classification the focal points application
+ * made, not a ruling, which is why it was allowed to travel. Join the view;
  * never reach past it.
  *
  * THE SUMMARY CUT
@@ -68,6 +70,7 @@ interface DesignationRow {
   entity_code: string | null
   unmatched_entity_text: string | null
   entity_display_name: string | null
+  entity_class: string | null
   sub_unit: string
   functional_mailbox: string | null
 }
@@ -126,6 +129,7 @@ async function loadFocalPointDirectorySummary(): Promise<
             d.entity_code,
             d.unmatched_entity_text,
             n.entity_display_name,
+            n.entity_class,
             d.sub_unit,
             d.functional_mailbox
        FROM mandate_focal_points.focal_point_designations d
@@ -227,17 +231,26 @@ export const getFocalPointDirectorySummary = cache(
  * it is carried to the surface as an absence. Substituting the code here is the
  * one thing this function must not do — the code is not the entity's name, and
  * a page that quietly prints one where the other is missing looks correct while
- * the gap goes unnoticed and unfixed.
+ * the gap goes unnoticed and unfixed. The class is treated the same way: NULL
+ * from the view is NULL here, and a value passes through as stored. It is not
+ * checked against the label list: the CHECK on the source column already
+ * holds it to the nine known values, so a check here would guard a state the
+ * schema cannot produce, and the cell labels what it knows and shows the rest
+ * as stored.
  */
 function entityOf(row: DesignationRow): DirectorySummaryEntity {
   if (row.entity_code !== null) {
-    return { code: row.entity_code, name: row.entity_display_name }
+    return {
+      code: row.entity_code,
+      name: row.entity_display_name,
+      entityClass: row.entity_class,
+    }
   }
   if (row.unmatched_entity_text !== null) {
-    // Not on the roster, so there is no code and nothing for the view to name.
-    // The typed text is not a stand-in for a lookup that failed; it is the only
-    // name this entity has.
-    return { code: null, name: row.unmatched_entity_text }
+    // Not on the roster, so there is no code and nothing for the view to name
+    // or classify. The typed text is not a stand-in for a lookup that failed;
+    // it is the only name this entity has.
+    return { code: null, name: row.unmatched_entity_text, entityClass: null }
   }
   throw new Error(
     `focal_point_designations id=${row.id} has neither entity_code nor unmatched_entity_text`
