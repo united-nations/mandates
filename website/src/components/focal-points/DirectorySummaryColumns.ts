@@ -13,13 +13,26 @@
  * table (see `lib/data/focal-points.ts`), so the cut is made where the data is
  * fetched, not hidden here at the point of rendering.
  *
+ * There are then TWO cuts, and they are different things. The one above is what
+ * this page can show at all. The one below — `addable` — is what it shows on
+ * arrival. A reader here is not an administrator: they have come to find out
+ * who to write to about a subject, they are not signed in, and they will
+ * probably not come back. So the table opens on the four columns that answer
+ * that question and offers three more behind a control. Everything else the
+ * query returns is in the panel, in full, one click away; nothing is hidden by
+ * being off by default.
+ *
  * The table runs `table-layout: fixed`, so `width` binds exactly rather than
  * being a hint the browser may overrule from cell content. One column declares
  * `flexible` and absorbs the surplus.
  *
- * The widths sum to 1016px with the entity class column in, and to 916px
- * without it (the column is present only while SHOW_ENTITY_CLASSIFICATION is
- * on; off, its 100px goes to the flexible column as surplus). This page uses
+ * The widths sum to 1016px with every column switched on and the entity class
+ * column in, and to 916px without it (the column exists only while
+ * SHOW_ENTITY_CLASSIFICATION is on; off, its 100px goes to the flexible column
+ * as surplus). That 1016 is now the MAXIMUM rather than the usual: the default
+ * five come to 662px and the flexible column takes the rest, so the table as it
+ * first draws does not go near the figures below. They still have to hold,
+ * because a reader can switch all three extras on. This page uses
  * the shared centred main column rather than the full-bleed treatment the
  * mandate explorer opts into, so what the table has to work with is that
  * column's content box, not the window:
@@ -59,6 +72,14 @@ export interface DirectorySummaryColumn {
    * the only one that gains from being wider.
    */
   flexible?: true
+  /**
+   * Off when the page loads, and offered by the column picker. A column without
+   * this is always shown and is never offered — there is no sign-in here, so a
+   * reader who switched off Focal points on a page of focal points would have
+   * broken it for themselves with nothing but Reset to get back, and the four
+   * that carry the answer are what the page IS rather than a preference.
+   */
+  addable?: true
   align?: 'left' | 'right' | 'center'
 }
 
@@ -76,6 +97,12 @@ const ENTITY_CLASS_COLUMN: DirectorySummaryColumn = {
   id: 'entity_class',
   label: 'Entity class',
   width: 100,
+  // Addable, not default. It is a fact about the ENTITY and not about the
+  // designation, and it answers a question about the shape of the roster
+  // rather than the question this page is for. A reader working out whether
+  // the roster reaches past the Secretariat wants it; a reader looking up who
+  // to write to about oceans does not.
+  addable: true,
   align: 'left',
 }
 
@@ -127,20 +154,35 @@ export const DIRECTORY_SUMMARY_COLUMNS: DirectorySummaryColumn[] = [
     align: 'left',
   },
   {
+    // Addable, not default. It is the address that outlives the person and the
+    // one publishable under OP6, so it is not a minor field — but most readers
+    // arrive wanting a name, the panel carries it in full for the rest, and a
+    // second column of addresses beside Focal points reads as a repetition of
+    // it. Switched on by the reader who means to write to the division rather
+    // than to a person.
+    //
     // 174 rather than 196: the address truncates a little earlier; 22px went
     // to the class column.
     id: 'functional_mailbox',
     label: 'Functional mailbox',
     width: 174,
+    addable: true,
     align: 'left',
   },
   {
+    // Addable, not default. A francophone delegation wanting a focal point who
+    // works in French is a real routing need and the reason the field is
+    // collected at all — but it is a minority of readers, and 80px of language
+    // codes standing between the people and what they cover is clutter for
+    // everyone else.
+    //
     // Codes as given on the form. Not a controlled vocabulary upstream, so this
     // shows what was entered. 80 rather than 92 holds three codes and their
     // separators; 12px went to the class column.
     id: 'languages',
     label: 'Languages',
     width: 80,
+    addable: true,
     align: 'left',
   },
   {
@@ -158,12 +200,39 @@ export const DIRECTORY_SUMMARY_COLUMNS: DirectorySummaryColumn[] = [
   {
     // Pinned right. The visible affordance for the row click, not a control of
     // its own — see the `detail` case in DirectorySummaryTable.
+    //
+    // Neither default nor addable, and the only column that is in neither list
+    // rather than in one of them: it holds no data, its header is empty, and
+    // switching it off would take away the visible way into the panel while
+    // leaving the row still clickable. There is nothing here for a reader to
+    // decide.
     id: 'detail',
     label: '',
     width: 56,
     align: 'center',
   },
 ]
+
+/**
+ * The columns the picker offers, in table order. Three of them, against the
+ * internal directory's fifteen or so — that directory is a management view read
+ * by people who return to it and build a working set; this one is read once by
+ * someone who came for a name and an address.
+ */
+export const ADDABLE_SUMMARY_COLUMNS: DirectorySummaryColumn[] =
+  DIRECTORY_SUMMARY_COLUMNS.filter((column) => column.addable === true)
+
+/**
+ * The columns to draw, given the ids the reader has switched on. A column that
+ * is not addable is always in; an addable one is in when it has been added.
+ */
+export function visibleSummaryColumns(
+  added: ReadonlySet<string>
+): DirectorySummaryColumn[] {
+  return DIRECTORY_SUMMARY_COLUMNS.filter(
+    (column) => column.addable !== true || added.has(column.id)
+  )
+}
 
 /**
  * The table's minimum width: every column's declared width, with the flexible

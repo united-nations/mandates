@@ -18,11 +18,11 @@ import {
   entityClassLabel,
   type DirectorySummaryDesignation,
 } from '@/lib/focal-point-constants'
-import { SHOW_ENTITY_CLASSIFICATION } from '@/lib/feature-flags'
 import {
-  DIRECTORY_SUMMARY_COLUMNS,
   directorySummaryMinWidth,
+  visibleSummaryColumns,
 } from './DirectorySummaryColumns'
+import { DirectorySummaryColumnPicker } from './DirectorySummaryColumnPicker'
 import { DirectorySummaryPanel, EmailLink } from './DirectorySummaryPanel'
 
 /**
@@ -63,22 +63,55 @@ export function DirectorySummaryTable({
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
 
-  const columns = DIRECTORY_SUMMARY_COLUMNS
+  // The added columns, in component state and nowhere else — not localStorage,
+  // the way the focal points application's own directory keeps them.
+  //
+  // That directory is signed in and is somebody's working tool; the choice is
+  // their setup and asking for it again every morning would be the picker
+  // forgetting. This page is neither. It is anonymous, it is the centralised
+  // location the resolution points delegations at, and it is read once. Two
+  // people on a call comparing the same URL would see different tables with
+  // nothing on the page to explain why, which on a list whose whole value is
+  // being the one list is a worse outcome than re-ticking a box. A stored set
+  // also needs a versioned key and a version bump every time the default
+  // changes, maintained on a site nobody administers day to day.
+  const [added, setAdded] = useState<ReadonlySet<string>>(() => new Set())
+
+  const columns = useMemo(() => visibleSummaryColumns(added), [added])
+
+  const toggleColumn = (columnId: string) => {
+    setAdded((current) => {
+      const next = new Set(current)
+      if (next.has(columnId)) next.delete(columnId)
+      else next.add(columnId)
+      return next
+    })
+  }
+
+  const resetColumns = () => setAdded(new Set())
 
   const openDesignation = (designation: DirectorySummaryDesignation) => {
     setShown(designation)
     setOpen(true)
   }
 
+  // Whether the class label is part of what a search looks at. It follows the
+  // COLUMN rather than the feature flag now that the column can be switched
+  // off: a search that matched on a class nobody can see would return a row
+  // with no visible reason for being there.
+  const showsEntityClass = columns.some(
+    (column) => column.id === 'entity_class'
+  )
+
   // Each row's searchable text, built once per data change rather than on every
-  // keystroke.
+  // keystroke. Rebuilt when the class column is switched, which is rare.
   const rows = useMemo(
     () =>
       designations.map((designation) => ({
         designation,
-        haystack: searchableText(designation),
+        haystack: searchableText(designation, showsEntityClass),
       })),
-    [designations]
+    [designations, showsEntityClass]
   )
 
   const needle = query.trim().toLowerCase()
@@ -94,28 +127,44 @@ export function DirectorySummaryTable({
 
   return (
     <div>
-      {/* The magnifier-and-underline treatment, not a box: `border-bottom` is
-          what every other search field in this app uses (the sidebars, the
-          column filter popovers, the budget tree), and it is the same treatment
-          the focal points application itself uses. */}
-      <div className="mb-4 max-w-sm">
-        <SearchInput
-          variant="border-bottom"
-          // Exact wording, and it names only keywords on purpose. The search
-          // also matches bodies, agenda items and document symbols — see
-          // searchableText — but the page does not offer them. A delegation
-          // that searched a document symbol and got one entity back would read
-          // the result as a register of which entity owns that document. It is
-          // not: it is what entities say they cover, and three of them may cover
-          // the same thing. The search finds them; the page promises nothing.
-          placeholder="Search for keywords"
-          aria-label="Search for keywords"
-          value={query}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setQuery(e.target.value)
-          }
-          showClearButton
-          onClear={() => setQuery('')}
+      {/* One toolbar row: the search on the left where reading starts, the
+          column control on the right, hard against the table's right edge where
+          the popover opens without overhanging the page margin. They wrap onto
+          two rows on a narrow viewport rather than the search shrinking. */}
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        {/* The magnifier-and-underline treatment, not a box: `border-bottom` is
+            what every other search field in this app uses (the sidebars, the
+            column filter popovers, the budget tree), and it is the same
+            treatment the focal points application itself uses. */}
+        {/* Grows into the free space and stops at the old max-w-sm, so the
+            search keeps the width it had and the picker stays hard right. Not
+            w-full: in a wrapping flex row that is a 100% basis, and it would
+            push the picker onto a second row at every viewport. */}
+        <div className="min-w-0 max-w-sm flex-1 basis-64">
+          <SearchInput
+            variant="border-bottom"
+            // Exact wording, and it names only keywords on purpose. The search
+            // also matches bodies, agenda items and document symbols — see
+            // searchableText — but the page does not offer them. A delegation
+            // that searched a document symbol and got one entity back would
+            // read the result as a register of which entity owns that document.
+            // It is not: it is what entities say they cover, and three of them
+            // may cover the same thing. The search finds them; the page
+            // promises nothing.
+            placeholder="Search for keywords"
+            aria-label="Search for keywords"
+            value={query}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setQuery(e.target.value)
+            }
+            showClearButton
+            onClear={() => setQuery('')}
+          />
+        </div>
+        <DirectorySummaryColumnPicker
+          added={added}
+          onToggle={toggleColumn}
+          onReset={resetColumns}
         />
       </div>
 
@@ -375,12 +424,13 @@ function stopRowClick(event: React.MouseEvent<HTMLAnchorElement>) {
  * Everything a row carries, as one lower-cased string to match substrings in.
  *
  * All of it, not only what the placeholder names: the entity's display name and
- * its code, its class label while the class column is shown, the sub-unit,
- * every contact's name, title, address and working languages, the functional
- * mailbox, and every coverage claim of every kind — bodies, agenda items,
- * document symbols and keywords alike. A reader who pastes an address or a
- * document symbol finds the row; the interface simply does not advertise the
- * last three (see the placeholder's note). The class label is searched only
+ * its code, its class label while the class column is shown — which now means
+ * switched on by the reader, not merely permitted by the feature flag — the
+ * sub-unit, every contact's name, title, address and working languages, the
+ * functional mailbox, and every coverage claim of every kind — bodies, agenda
+ * items, document symbols and keywords alike. A reader who pastes an address
+ * or a document symbol finds the row; the interface simply does not advertise
+ * the last three (see the placeholder's note). The class label is searched only
  * while it is rendered, so a search cannot match on a column the page does not
  * show.
  *
@@ -393,11 +443,14 @@ function stopRowClick(event: React.MouseEvent<HTMLAnchorElement>) {
  * designation with no functional mailbox contributes no text for one, which is
  * the truth about it.
  */
-function searchableText(designation: DirectorySummaryDesignation): string {
+function searchableText(
+  designation: DirectorySummaryDesignation,
+  showsEntityClass: boolean
+): string {
   return [
     designation.entity.name,
     designation.entity.code,
-    SHOW_ENTITY_CLASSIFICATION && designation.entity.entityClass !== null
+    showsEntityClass && designation.entity.entityClass !== null
       ? entityClassLabel(designation.entity.entityClass)
       : null,
     designation.subUnit,
