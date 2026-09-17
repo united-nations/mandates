@@ -17,6 +17,7 @@ import {
 import { DetailPanelControls } from '@un-eosg/ui/components/detail-panel-controls'
 import {
   COVERAGE_KINDS,
+  coverageClaimLabel,
   coverageKindHeading,
   type DirectorySummaryDesignation,
   type DirectorySummaryEntity,
@@ -91,7 +92,7 @@ export function DirectorySummaryPanel({
             </SheetDescription>
 
             <DetailPanel
-              className="[&>header_h2]:whitespace-normal [&>header_h2]:break-words"
+              className="[&>header_h2]:break-words [&>header_h2]:whitespace-normal"
               eyebrow="Focal point designation"
               title={designation.subUnit}
               bodyClassName="un-scrollbar px-5 py-6"
@@ -211,6 +212,14 @@ function PeopleSection({
  *
  * Grouped by kind, in COVERAGE_KINDS order. A kind with no claims renders
  * nothing: an entity that claims no agenda items has not left a gap to fill.
+ *
+ * A body the entity named itself is a chip among the bodies rather than a
+ * group of its own, because it is one of the bodies the division supports and
+ * reads as one. The line under the group is what keeps it honest: the
+ * controlled list is a list somebody drew up, and a name that is not on it is
+ * a claim about a body rather than a choice from the nine on offer. That
+ * distinction is the same one the entity column makes about an entity the
+ * roster does not hold, and it is worth a line for the same reason.
  */
 function CoverageSection({
   designation,
@@ -218,6 +227,9 @@ function CoverageSection({
   designation: DirectorySummaryDesignation
 }) {
   const { coverage } = designation
+  const named = coverage
+    .map((claim) => claim.unmatchedBodyText)
+    .filter((text): text is string => text !== null)
   return (
     <DetailSection heading="What it covers">
       {coverage.length === 0 ? (
@@ -237,10 +249,17 @@ function CoverageSection({
                 <div className="flex flex-wrap gap-1.5">
                   {claims.map((claim) => (
                     <Chip key={claim.value} density="dense">
-                      {claim.value}
+                      {coverageClaimLabel(claim)}
                     </Chip>
                   ))}
                 </div>
+                {kind === 'body' && named.length > 0 && (
+                  <p className="mt-1.5 text-xs text-muted-foreground">
+                    {named.join(', ')} {named.length === 1 ? 'is' : 'are'} not
+                    on the list of bodies offered; the entity named{' '}
+                    {named.length === 1 ? 'it' : 'them'}.
+                  </p>
+                )}
               </div>
             )
           })}

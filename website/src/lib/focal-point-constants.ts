@@ -87,11 +87,19 @@ export const ENTITY_CLASSES = [
 
 export type EntityClass = (typeof ENTITY_CLASSES)[number]
 
-/** What each class is called on screen; the stored value is the key. */
+/**
+ * What each class is called on screen; the stored value is the key.
+ *
+ * `fund_programme_institute` reads "Funds and programmes". The label used to
+ * name institutes too, after the stored value's third word, and no entity in
+ * the directory is one - every institute in the class is excluded upstream, so
+ * the word described no row anybody sees here. The stored value is unchanged;
+ * this is the one key whose label deliberately does not track it.
+ */
 export const ENTITY_CLASS_LABELS: Record<EntityClass, string> = {
   secretariat: 'Secretariat department or office',
   regional_commission: 'Regional commission',
-  fund_programme_institute: 'Fund, programme or institute',
+  fund_programme_institute: 'Funds and programmes',
   specialized_agency: 'Specialized agency',
   related_organization: 'Related organization',
   special_adviser_or_envoy: 'Special adviser or envoy',
@@ -109,7 +117,9 @@ export const ENTITY_CLASS_LABELS: Record<EntityClass, string> = {
  * and the true value unlabelled is a better cell than a thrown page.
  */
 export function entityClassLabel(value: string): string {
-  return (ENTITY_CLASS_LABELS as Record<string, string | undefined>)[value] ?? value
+  return (
+    (ENTITY_CLASS_LABELS as Record<string, string | undefined>)[value] ?? value
+  )
 }
 
 export interface DirectorySummaryContact {
@@ -124,8 +134,33 @@ export interface DirectorySummaryContact {
 
 export interface DirectorySummaryClaim {
   kind: CoverageKind
-  /** `coverage_value`, the claim as the respondent gave it. The one to display. */
+  /** `coverage_value`, the claim as the respondent gave it. */
   value: string
+  /**
+   * `unmatched_body_text`: the body the respondent named where the controlled
+   * list had none. Set exactly on a body claim of `Other` and NULL everywhere
+   * else, by a CHECK on the column stating both directions. Render it in place
+   * of the word `Other` - see `coverageClaimLabel` below.
+   */
+  unmatchedBodyText: string | null
+}
+
+/**
+ * What to show for one claim.
+ *
+ * `Other` says a checkbox was ticked, which is a fact about the form the
+ * entity filled in rather than an answer to what it covers. The name the
+ * respondent typed is the answer, so it takes the word's place and the bodies
+ * read as one list. The panel adds a line saying which of them was typed
+ * rather than chosen; the table cell counts claims and needs no distinction.
+ *
+ * Not a fallback for a missing value: the CHECK puts the text on the `Other`
+ * row and on no other, so this is a substitution between two columns that are
+ * never both absent.
+ */
+export function coverageClaimLabel(claim: DirectorySummaryClaim): string {
+  if (claim.unmatchedBodyText !== null) return claim.unmatchedBodyText
+  return claim.value
 }
 
 /**

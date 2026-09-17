@@ -14,6 +14,7 @@ import {
 import { typography } from '@/lib/typography'
 import {
   COVERAGE_KINDS,
+  coverageClaimLabel,
   coverageKindCount,
   entityClassLabel,
   type DirectorySummaryDesignation,
@@ -145,7 +146,7 @@ export function DirectorySummaryTable({
             search keeps the width it had and the picker stays hard right. Not
             w-full: in a wrapping flex row that is a 100% basis, and it would
             push the picker onto a second row at every viewport. */}
-        <div className="min-w-0 max-w-sm flex-1 basis-64">
+        <div className="max-w-sm min-w-0 flex-1 basis-64">
           <SearchInput
             variant="border-bottom"
             // Exact wording, and it names only keywords on purpose. The search
@@ -297,7 +298,10 @@ function DirectorySummaryCell({
             <div className="text-muted-foreground">—</div>
           )}
           {code && (
-            <div className="truncate text-xs text-muted-foreground" title={code}>
+            <div
+              className="truncate text-xs text-muted-foreground"
+              title={code}
+            >
               {code}
             </div>
           )}
@@ -469,7 +473,10 @@ function searchableText(
       contact.email,
       ...(contact.workingLanguages ?? []),
     ]),
-    ...designation.coverage.map((claim) => claim.value),
+    // The claim as it renders, so a reader searching for the body an
+    // entity named itself finds the row. `claim.value` is the word
+    // "Other" there, which matches nothing anybody would type.
+    ...designation.coverage.map(coverageClaimLabel),
   ]
     .filter(Boolean)
     .join(' ')

@@ -48,6 +48,17 @@
  * A row with either one set is excluded, and those two are now the whole of
  * the listing rule.
  *
+ * `listing_removed_at` now reaches rows that are NOT superseded. Upstream, a
+ * CHECK allowed removal only of an already-superseded designation, so every
+ * removed row was in practice excluded twice over and this query's second
+ * predicate had nothing of its own to do. That CHECK was dropped on
+ * 17 September 2026: an entity whose focal point had left was being made to
+ * display a stale name here until it invented a replacement, and no name routes
+ * a delegation better than a name that does not answer. So an entity can now
+ * take its current designation off the site, and this page is where that takes
+ * effect. Nothing in the query changes - the predicate that was redundant is
+ * now the one doing the work, and it was already correct.
+ *
  * The record shapes and the coverage vocabulary are in
  * `lib/focal-point-constants.ts` rather than here: the table and the panel are
  * Client Components and need them at runtime, and they must not reach a module
@@ -88,6 +99,7 @@ interface ClaimRow {
   designation_id: number
   coverage_kind: string
   coverage_value: string
+  unmatched_body_text: string | null
 }
 
 /**
@@ -167,11 +179,17 @@ async function loadFocalPointDirectorySummary(): Promise<
                  person_name`,
       [ids]
     ),
+    // `unmatched_body_text` is the body a respondent named where the
+    // controlled list had none. It is selected because the alternative is a
+    // page that renders the word `Other` and tells the reader nothing; see
+    // `coverageClaimLabel`. A coverage column rather than an administrative
+    // one, so it is inside the summary cut rather than an exception to it.
     queryMany<ClaimRow>(
       `/* trace:focalPoints.coverage */
        SELECT designation_id,
               coverage_kind,
-              coverage_value
+              coverage_value,
+              unmatched_body_text
          FROM mandate_focal_points.designation_coverage_claims
         WHERE designation_id = ANY($1::int[])
         ORDER BY designation_id, coverage_kind, coverage_value`,
@@ -198,6 +216,11 @@ async function loadFocalPointDirectorySummary(): Promise<
     list.push({
       kind: asCoverageKind(row.coverage_kind),
       value: row.coverage_value,
+      // Passed through as stored, NULL included. NULL is the state of every
+      // claim but a body of `Other`, and it is an absence rather than a value
+      // withheld; nothing substitutes the coverage value for it here, because
+      // the two are different columns answering different questions.
+      unmatchedBodyText: row.unmatched_body_text,
     })
     claimsByDesignation.set(row.designation_id, list)
   }
