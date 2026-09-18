@@ -345,7 +345,12 @@ function CitationRowItem({ row }: { row: CitationRow }) {
     : 'No budget location recorded for this citation.'
 
   return (
-    <li className="py-1 text-xs">
+    // 32px rows, the height every row list in the detail panel is set to, so
+    // that scrolling the panel does not read as four tables that each set
+    // their own rhythm: see MandateVersionHistory, RelatedMandates and
+    // MandateSgReports for the other three. This list was the short one at
+    // 24px, against 32 either side of it.
+    <li className="py-2 text-xs">
       <div className="flex items-baseline gap-2">
         {/* Every cell renders even when empty: a cell that disappears takes
             its column's alignment with it, and alignment down the column is
@@ -392,7 +397,15 @@ function CitationRowItem({ row }: { row: CitationRow }) {
         >
           —
         </span>
-        <span className={COL.link}>
+        {/* self-center, not baseline: the icon is 14px in a row whose text
+            strut is 12px, so as a baseline-aligned flex item it needs more
+            room above the baseline than the text does and the rows carrying
+            an outlink sit 2px taller than the rows without one - alternating
+            down the list with the data. Taking this one cell out of the
+            baseline calculation is what evens them, the same move the annex
+            chip in MandateSgReports already makes; changing the row's own
+            alignment would move all seven columns to fix one. */}
+        <span className={cn(COL.link, 'self-center')}>
           {outlinkHref && (
             <a
               href={outlinkHref}

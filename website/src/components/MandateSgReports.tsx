@@ -83,9 +83,16 @@ export function MandateSgReports({ reports }: { reports: MandatedSgReport[] }) {
         <SgReportSummaryTiles reports={reports} />
       )}
 
+      {/* 32px rows, the height every row list in the detail panel is set to:
+          see MandateVersionHistory, CitationCounts and RelatedMandates for
+          the other three. py-2 rather than the py-1.5 next door in
+          RelatedMandates, because nothing in this row is taller than its own
+          16px line box: the symbol here is plain text, where that list has a
+          DocumentSymbol whose own padding makes it 20px and carries its rows
+          the last 4px on its own. */}
       <ul className="divide-y divide-gray-100 border-y border-gray-100">
         {shown.map((report) => (
-          <li key={report.report_recid} className="py-1.5 text-sm">
+          <li key={report.report_recid} className="py-2 text-sm">
             <div className="flex items-baseline gap-3">
               <span className="w-10 shrink-0 text-xs text-gray-500">
                 {report.date_published?.slice(0, 4) ?? '—'}

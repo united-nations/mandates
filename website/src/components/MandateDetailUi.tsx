@@ -3,7 +3,6 @@
 import { type ReactNode } from 'react'
 import { ExternalLink, FileText } from 'lucide-react'
 import { DocumentSymbol } from '@/components/DocumentSymbol'
-import { Chip, type ChipTone } from '@/components/ui/chip'
 import { DisclosurePopover } from '@/components/ui/disclosure-popover'
 import { typography } from '@/lib/typography'
 import { cn } from '@/lib/utils'
@@ -146,54 +145,54 @@ function HeadingMarks({
  * rounded label in the app gets its radius, padding, tone and focus ring. Read
  * that file's header before adding a variant here.
  */
-export type FilterChipTone = 'default' | 'accent'
-
 /**
- * The sidebar's two tones, in the shared vocabulary. `accent` has never had a
- * call site - every FilterChip in the sidebar takes the default - so this row
- * is the second dead route into `emphasis`, alongside the entity chips' own,
- * which is now behind MARK_FOUNDATIONAL_CHIPS_ON_DETAIL_PAGE. Left as it is:
- * removing an unreachable mapping is tidying, and it would hide that the tone
- * has no consumer left at all.
- */
-const FILTER_CHIP_TONE: Record<FilterChipTone, ChipTone> = {
-  default: 'neutral',
-  accent: 'emphasis',
-}
-
-/**
- * A chip that filters the explorer. Rendered as a plain anchor (not a router
- * link) because the detail view is also served as an intercepting modal over
- * the list, where a full navigation is exactly the intended behaviour.
+ * A link that filters the explorer, inline in the panel's opening sentence.
+ * A plain anchor (not a router link) because the detail view is also served as
+ * an intercepting modal over the list, where a full navigation is exactly the
+ * intended behaviour.
  *
- * A thin wrapper over `Chip` rather than a second implementation: it exists
- * only to name the sidebar's default density and to keep `tone="accent"`
- * spelled the way this view's call sites already spell it.
+ * Not a `Chip` any more. Four of these sit inside one running sentence, and a
+ * pill puts 12px text and a bordered grey ground inside 14px prose - the eye
+ * reads the sentence as broken into fragments rather than as a sentence with
+ * links in it. Colour and an underline on hover carry "this is a link", which
+ * is all these ever meant.
+ *
+ * No size class at all: inheriting the surrounding size is the whole point,
+ * and it keeps this component clear of the custom-font-size hazard `cn`
+ * carries (see lib/utils.ts).
+ *
+ * The focus ring is written out rather than inherited, because `Chip`'s was
+ * the only reason these were keyboard-visible and every other link in the
+ * panel carries the same one.
+ *
+ * What this gives up: `Chip`'s `comfortable` density grew these to a 36px
+ * touch target below the `sm` breakpoint, and an inline link does not. That
+ * is a deliberate trade for the sentence reading as a sentence, not an
+ * oversight - do not quietly pad it back.
  */
 export function FilterChip({
   href,
-  tone = 'default',
   className,
   children,
   ...rest
 }: {
   href?: string
-  tone?: FilterChipTone
   className?: string
   children: ReactNode
   title?: string
   'aria-label'?: string
 }) {
   return (
-    <Chip
+    <a
       href={href}
-      tone={FILTER_CHIP_TONE[tone]}
-      density="comfortable"
-      className={className}
+      className={cn(
+        'text-un-blue hover:underline focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none',
+        className
+      )}
       {...rest}
     >
       {children}
-    </Chip>
+    </a>
   )
 }
 

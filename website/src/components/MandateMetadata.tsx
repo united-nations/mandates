@@ -127,11 +127,11 @@ export function MandateMetadata({ mandate, organs }: MandateMetadataProps) {
                 href={explorerUrl('agenda_item', item.title)}
                 title={`Show mandates under “${item.label}”`}
               >
-                {item.number && (
-                  <span className="font-medium text-gray-900">
-                    {item.number}
-                  </span>
-                )}
+                {/* The space is written out. These were two flex children of
+                    a chip, which set the gap between them; as plain inline
+                    spans in a sentence they would render as "12Situation of
+                    human rights". */}
+                {item.number && <span>{item.number} </span>}
                 <span>{item.label}</span>
               </FilterChip>
             </span>
@@ -167,7 +167,7 @@ export function MandateMetadata({ mandate, organs }: MandateMetadataProps) {
       <DetailSectionHeading>
         Who adopted this document and its mandates?
       </DetailSectionHeading>
-      <p className="text-sm leading-8 text-gray-700">
+      <p className="text-sm leading-relaxed text-gray-700">
         {clauses.map((clause, index) => (
           <span key={clause.key}>
             {index > 0 && clause.separator}

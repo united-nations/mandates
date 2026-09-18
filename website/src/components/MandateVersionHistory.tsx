@@ -132,6 +132,14 @@ export function MandateVersionHistory({
               </th>
             </tr>
           </thead>
+          {/* 32px rows. Every row list in the detail panel is 32px high, so
+              that scrolling the panel does not read as four tables that each
+              set their own rhythm: see CitationCounts, RelatedMandates and
+              MandateSgReports for the other three. Here that is py-1.5 rather
+              than the py-2 two of the others use, because the symbol cell
+              holds a DocumentSymbol - an inline-block with its own padding,
+              20px tall inside a 16px line - and it is the cell that sets the
+              row height. */}
           <tbody className="divide-y divide-gray-100">
             {shown.map((m) => {
               const isCurrent = m.document_symbol === currentSymbol
@@ -140,10 +148,10 @@ export function MandateVersionHistory({
                   key={m.document_symbol}
                   className={isCurrent ? 'bg-blue-50/60' : ''}
                 >
-                  <td className="py-2 align-top text-gray-500">
+                  <td className="py-1.5 align-top text-gray-500">
                     {m.year ?? '—'}
                   </td>
-                  <td className="min-w-0 py-2 pr-3">
+                  <td className="min-w-0 py-1.5 pr-3">
                     <div className="flex flex-wrap items-center gap-1.5">
                       {isCurrent ? (
                         <DocumentSymbol subdued>
@@ -161,7 +169,7 @@ export function MandateVersionHistory({
                       )}
                     </div>
                   </td>
-                  <td className="min-w-0 py-2 pr-3 align-top">
+                  <td className="min-w-0 py-1.5 pr-3 align-top">
                     <p
                       className="truncate text-gray-600"
                       title={m.title ?? undefined}
@@ -169,10 +177,10 @@ export function MandateVersionHistory({
                       {m.title}
                     </p>
                   </td>
-                  <td className="py-2 pr-3 align-top">
+                  <td className="py-1.5 pr-3 align-top">
                     <WordCount metrics={m.text_metrics} />
                   </td>
-                  <td className="py-2 align-top">
+                  <td className="py-1.5 align-top">
                     <TextSimilarity
                       symbol={m.document_symbol}
                       metrics={m.text_metrics}
