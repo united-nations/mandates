@@ -61,6 +61,28 @@ const GENERIC_SUBPROGRAMME_LABEL = 'All Subprogrammes'
 const subProgrammeExpr = (col: string) =>
   `NULLIF(${col}, '${GENERIC_SUBPROGRAMME_LABEL}')`
 
+// ppb_type is free text curated per document, so the recorded types run to a
+// long tail of categories carrying one or two documents each, underneath the
+// three the registry is actually read for. Everything outside those three is
+// grouped under one label, and every surface that counts or filters on the
+// type reads this one expression rather than the raw column - a facet and a
+// predicate that agree because they are the same SQL, not by luck.
+//
+// The NULL branch comes FIRST and the order is load-bearing. A large share of
+// the catalogue has no recorded type at all (see the note on
+// _getDocumentTypeCatalogueInner); those rows have to stay NULL so the modal
+// can still count them and disclose the gap. Test the bucket first and they
+// are absorbed into it, the untyped count goes to zero, the footnote that
+// reports the gap disappears, and the panel silently claims a complete
+// partition of a catalogue it covers under half of.
+const OTHER_DOCUMENT_TYPE_LABEL = 'Other document types'
+const documentTypeGroupExpr = (col: string) => `CASE
+      WHEN NULLIF(TRIM(${col}), '') IS NULL THEN NULL
+      WHEN TRIM(${col}) IN ('Resolutions', 'Decisions', 'Presidential Statements')
+        THEN TRIM(${col})
+      ELSE '${OTHER_DOCUMENT_TYPE_LABEL}'
+    END`
+
 // ============================================================================
 // Types for DB Rows (internal)
 // ============================================================================
@@ -526,9 +548,18 @@ function buildFilterClauses(
     paramIndex++
   }
 
-  // Document type filter — uses ppb_type from source_documents (well-populated)
+  // Document type filter — the grouped label the facets render, OR the raw
+  // stored value. The second arm is the predicate exactly as it stood, kept
+  // because the app itself minted links for every value of the old long tail
+  // (the type pills' href is /secretariat?document_type=<stored value>), so
+  // URLs like ?document_type=Letters are already in shared links and browser
+  // history. Without that arm they resolve to the grouped label, match
+  // nothing, and return an empty table with no error and no explanation.
   if (filters.document_type) {
-    clauses.push(`LOWER(d.ppb_type) = LOWER($${paramIndex})`)
+    clauses.push(`(
+      LOWER(${documentTypeGroupExpr('d.ppb_type')}) = LOWER($${paramIndex})
+      OR LOWER(d.ppb_type) = LOWER($${paramIndex})
+    )`)
     params.push(filters.document_type)
     paramIndex++
   }
@@ -1526,13 +1557,22 @@ const getFilteredAggregates = cache((filters: FilterOptions = {}) =>
              ) x) AS year_counts,
           (SELECT jsonb_agg(jsonb_build_array(subject, n) ORDER BY n DESC, subject)
              FROM subject_counts) AS subject_counts,
-          (SELECT jsonb_agg(jsonb_build_array(ppb_type, n) ORDER BY n DESC, ppb_type)
+          -- Grouped (documentTypeGroupExpr), so this facet and the explore
+          -- modal's offer the same options with the same counts. The untyped
+          -- remainder is still discarded here and only here: it arrives as
+          -- NULL from the expression, and this filter has no footnote to
+          -- disclose it in. The grouped label sorts last whatever its count,
+          -- so a shift in the corpus cannot float it above a real type.
+          (SELECT jsonb_agg(jsonb_build_array(value, n)
+                            ORDER BY (value IS NOT DISTINCT FROM '${OTHER_DOCUMENT_TYPE_LABEL}'),
+                                     n DESC, value)
              FROM (
-               SELECT ppb_type, COUNT(DISTINCT ppb_full_document_symbol)::int AS n
+               SELECT ${documentTypeGroupExpr('ppb_type')} AS value,
+                      COUNT(DISTINCT ppb_full_document_symbol)::int AS n
                FROM filtered_docs
-               WHERE ppb_type IS NOT NULL AND ppb_type != ''
-               GROUP BY ppb_type
-             ) x) AS type_counts,
+               GROUP BY 1
+             ) x
+            WHERE value IS NOT NULL) AS type_counts,
           (SELECT jsonb_agg(jsonb_build_array(item, n) ORDER BY n DESC, item)
              FROM (
                SELECT item, COUNT(DISTINCT sym)::int AS n
@@ -1559,7 +1599,8 @@ const getFilteredAggregates = cache((filters: FilterOptions = {}) =>
     },
     // -v2: total_organs now joins the organ vocabulary, so v1 entries hold a
     // count over a wider population than the surface it feeds now describes.
-    ['filtered-aggregates-v2', JSON.stringify(filters)],
+    // -v3: type_counts is grouped, so v2 entries hold the ungrouped long tail.
+    ['filtered-aggregates-v3', JSON.stringify(filters)],
     { revalidate: 3600 }
   )
 )
@@ -2002,6 +2043,11 @@ export const getOrganHierarchy = cache((filters: FilterOptions = {}) =>
  * backs the table's own column filter; this one exists only because the modal
  * additionally needs the untyped remainder.
  *
+ * The values are grouped by documentTypeGroupExpr, the same expression the
+ * table's facet and the document_type predicate use, so a pill's count and the
+ * rows it filters to are one statement rather than two that have to be kept in
+ * agreement by hand.
+ *
  * `totalCount` is therefore the population of the TYPE LIST (every active filter
  * except document_type), not necessarily the number on the tile above it — when
  * a type is selected the tile is narrower by exactly that filter.
@@ -2023,10 +2069,13 @@ async function _getDocumentTypeCatalogueInner(
   const rows = await queryMany<{ value: string | null; count: string }>(
     `/* trace:mandates.document-type-catalogue */
      WITH ${cte}
-     SELECT NULLIF(TRIM(ppb_type), '') AS value, COUNT(*) AS count
-     FROM filtered_docs
-     GROUP BY 1
-     ORDER BY count DESC, value`,
+     SELECT value, count FROM (
+       SELECT ${documentTypeGroupExpr('ppb_type')} AS value, COUNT(*) AS count
+       FROM filtered_docs
+       GROUP BY 1
+     ) t
+     ORDER BY (value IS NOT DISTINCT FROM '${OTHER_DOCUMENT_TYPE_LABEL}'),
+              count DESC, value`,
     params
   )
 
@@ -2046,7 +2095,8 @@ async function _getDocumentTypeCatalogueInner(
 export const getDocumentTypeCatalogue = cache((filters: FilterOptions = {}) =>
   readDynamicCache(
     () => _getDocumentTypeCatalogueInner(filters),
-    ['document-type-catalogue-v2', JSON.stringify(filters)],
+    // -v3: the types are grouped, so v2 entries hold the ungrouped long tail.
+    ['document-type-catalogue-v3', JSON.stringify(filters)],
     { revalidate: 3600 }
   )
 )
