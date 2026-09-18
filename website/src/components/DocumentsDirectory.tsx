@@ -1,5 +1,6 @@
 'use client'
 
+import { ClickHint } from '@/components/DirectoryControls'
 import { ChartSearchInput } from '@/components/ui/chart-search-input'
 import { Chip, ChipCount } from '@/components/ui/chip'
 import {
@@ -14,7 +15,6 @@ import type {
   DocumentTypeCatalogue,
   SubjectDomain,
 } from '@/types'
-import { MousePointerClick } from 'lucide-react'
 import { useMemo, useState } from 'react'
 
 /**
@@ -227,10 +227,7 @@ function TypePill({
         </Chip>
       </TooltipTrigger>
       <TooltipContent side="top" className="max-w-xs">
-        <div className="flex items-center gap-1 text-un-blue">
-          <MousePointerClick className="h-3.5 w-3.5" />
-          Click to show mandates
-        </div>
+        <ClickHint />
       </TooltipContent>
     </Tooltip>
   )
@@ -286,10 +283,7 @@ function SubjectPill({
           {leaf.count.toLocaleString()} document
           {leaf.count === 1 ? '' : 's'}
         </div>
-        <div className="mt-0.5 flex items-center gap-1 text-un-blue">
-          <MousePointerClick className="h-3.5 w-3.5" />
-          Click to show mandates
-        </div>
+        <ClickHint />
       </TooltipContent>
     </Tooltip>
   )

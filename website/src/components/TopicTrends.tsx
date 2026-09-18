@@ -6,11 +6,12 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import { ClickHint } from '@/components/DirectoryControls'
 import { useSectionFilter } from '@/hooks/use-section-filter'
 import { SUBJECT_DOMAIN_LABELS } from '@/lib/filter-constants'
 import { cn } from '@/lib/utils'
 import type { TopicTrendSubject, TopicTrendYear } from '@/lib/data/mandates'
-import { MousePointerClick, Sparkles } from 'lucide-react'
+import { Sparkles } from 'lucide-react'
 
 /**
  * Topic trends: for each of the last ten years, the subjects that grew
@@ -137,10 +138,7 @@ function TrendPill({
           {formatPct(subject.shareBefore)} → {formatPct(subject.shareNow)} of
           documents ({subject.docCount} in {year}).
         </div>
-        <div className="mt-0.5 flex items-center gap-1 text-un-blue">
-          <MousePointerClick className="h-3.5 w-3.5" />
-          Click to show mandates
-        </div>
+        <ClickHint />
       </TooltipContent>
     </Tooltip>
   )
