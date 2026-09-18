@@ -127,9 +127,44 @@ export interface DirectorySummaryContact {
   /** Required of a primary contact by CHECK; NULL on an alternate means it was not given. */
   title: string | null
   email: string
+  /** `person_telephone`, as the respondent typed it. NULL means none was given. */
+  telephone: string | null
+  /** `person_telephone_extension`. NULL unless `telephone` is set, by CHECK. */
+  telephoneExtension: string | null
   role: 'primary' | 'alternate'
   /** Language codes as given on the form (EN, FR, ES). NULL means unanswered. */
   workingLanguages: string[] | null
+}
+
+/**
+ * A number and its extension as one string — "+1 917 367 5000 ext. 4521" — or
+ * the number alone, or null where there is no number.
+ *
+ * ONE CELL AND ONE STRING, which is a decision about the table as much as
+ * about the format. A separate Extension column would cost a floor set by its
+ * own header for content that is three or four digits and absent on most rows,
+ * in a table whose seven-column state has no spare width at all; and it would
+ * present as two independent facts what a caller does as one action, in
+ * sequence. The panel shows the same string for the same reason.
+ *
+ * NEITHER VALUE IS TOUCHED. Both are printed exactly as they are stored, which
+ * is exactly as they were typed. The only thing this adds is the word between
+ * them, which is a label this page writes rather than part of either column —
+ * so a respondent who wrote the word themselves will see it twice, and that is
+ * their text shown as given rather than silently edited away.
+ *
+ * Null in, null out: absence is carried to the caller, which renders it the
+ * way it renders every other absence. An extension with no number cannot be
+ * stored — `chk_designation_contacts_extension_needs_telephone` refuses it —
+ * and would be dropped here in any case.
+ */
+export function contactTelephone(
+  contact: DirectorySummaryContact
+): string | null {
+  if (contact.telephone === null) return null
+  return contact.telephoneExtension === null
+    ? contact.telephone
+    : `${contact.telephone} ext. ${contact.telephoneExtension}`
 }
 
 export interface DirectorySummaryClaim {

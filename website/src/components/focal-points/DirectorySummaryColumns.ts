@@ -57,38 +57,59 @@
  *
  * This page uses the shared centred main column rather than the full-bleed
  * treatment the mandate explorer opts into, so the figure is that column's
- * content box, not the window:
+ * content box, not the window. This route, and only this route, takes the WIDE
+ * variant of that column — see `isWideColumn` in `RootLayoutClient`:
  *
- *   `mx-auto w-full max-w-4xl px-8 sm:px-12 lg:max-w-6xl lg:px-16`
+ *   `mx-auto w-full max-w-4xl px-8 sm:px-12 lg:max-w-7xl`
  *
- * At and above 1152px of viewport the `max-w-6xl` cap binds and the content box
- * is a constant 1152 - 128 = 1024px, at 1280 and at 1440 and at any width
- * above. The table does not get all of it: it sits inside a wrapper with a 1px
- * border on each side, so what it has is 1022. That is `DESIGN_WIDTH`, and the
- * widths are worked out against it — 1024 overflows the wrapper by exactly the
- * two pixels of its own border. Below 1152 the cap is not reached, the content
- * box is `viewport - 128` and shrinks with it, and the table scrolls
- * horizontally with the detail rail pinned — the mandate table's behaviour too,
- * and what this table already did below about 1144.
+ * Two things changed there and both were needed. The cap went from `max-w-6xl`
+ * to `max-w-7xl`, and the padding stays at the `sm` step of 48px a side rather
+ * than going up to 64 at `lg`. The second is the one that is easy to miss, and
+ * leaving it out is a bug this file had for one revision: what the table gets
+ * is the cap MINUS the padding MINUS the scrollbar, and at a 1280 viewport the
+ * cap is never reached, because the scrollbar takes 15px before anything else
+ * does. With `lg:px-16` the content box at 1280 is 1137, the table's floors sum
+ * to 1150, and a public table scrolls sideways at the commonest desktop width.
  *
- * The seven-column set's floors sum to exactly `DESIGN_WIDTH`. That is not a
+ * MEASURED, on the rendered page, at both widths and in both column states:
+ *
+ *   viewport 1280   main 1265   content 1169   table 1167   no scroll
+ *   viewport 1440   main 1280   content 1184   table 1182   no scroll
+ *
+ * (1265 rather than 1280 is the scrollbar; 1280 rather than 1440 is the cap
+ * binding. The table is the content box less the wrapper's two 1px borders.)
+ * The table fills whatever the wrapper gives and never goes below the floors,
+ * so the two column states measure the same width and differ only in how it is
+ * shared. Below about 1263 the wrapper drops under the floor sum and the table
+ * scrolls horizontally with the detail rail pinned — the mandate table's
+ * behaviour too. That boundary was about 1144 before this column was added,
+ * and moving it is what the eighth column cost.
+ *
+ * `DESIGN_WIDTH` IS THE FLOOR SUM, NOT THE CONTENT BOX. It was the second of
+ * those until the cap moved, and the two happened to coincide; they no longer
+ * do, and the name means what the value is. It is the narrowest the table is
+ * ever laid out to — the width the shares are budgeted against — and above
+ * it the surplus is handed out by the shares below.
+ *
+ * The eight-column set's floors sum to exactly `DESIGN_WIDTH`. That is not a
  * coincidence, it is the binding constraint: the floors are what the content
- * needs, and their sum is what the wrapper gives. There is no slack in the
- * seven-column state — a floor raised here has to come off another column, or
- * the table starts scrolling at every viewport. The four-column set's floors
- * sum to 620, so that state has 402px to hand out, and the shares below decide
- * where it goes.
+ * needs, and their sum is what a 1280 viewport can be made to give. There is no
+ * slack in the eight-column state — a floor raised here has to come off
+ * another column, or the table starts scrolling above 1280. The five-column
+ * set's floors sum to 748, so that state has 402px to hand out, and the shares
+ * below decide where it goes.
  */
 
 import { SHOW_ENTITY_CLASSIFICATION } from '@/lib/feature-flags'
 
 /**
- * What the table has to fill wherever the `max-w-6xl` cap binds — every viewport
- * from 1152px up. The centred column's content box is 1024 there; the table is
- * inside a wrapper whose 1px borders take two of them. Laid out to this width,
- * and scrolls below it rather than compressing columns past their floors.
+ * The narrowest the table is ever laid out to: the sum of the eight-column
+ * set's floors, and the width a 1280 viewport can be made to give it once the
+ * scrollbar and the column's padding are taken off. The table renders wider
+ * wherever the wrapper is wider — 1167 at 1280, 1182 at 1440, both measured —
+ * and scrolls below this rather than compressing columns past their floors.
  */
-export const DESIGN_WIDTH = 1022
+export const DESIGN_WIDTH = 1150
 
 export interface DirectorySummaryColumn {
   id: string
@@ -221,6 +242,54 @@ export const DIRECTORY_SUMMARY_COLUMNS: DirectorySummaryColumn[] = [
     label: 'Focal points',
     min: 136,
     grow: 30,
+    align: 'left',
+  },
+  {
+    // Default, and the reason is a promise rather than a preference. The Chef
+    // de Cabinet's memo of 14 September 2026 tells 67 Heads of entity that the
+    // form will request a telephone number, so a column for it is what makes
+    // the collected field visible to the delegations the memo is collecting it
+    // for. Immediately after Focal points, because the two are one thing: the
+    // person, and how to reach them.
+    //
+    // Number and extension in ONE cell, joined by `contactTelephone` — the
+    // reasoning is on that function. Briefly: a caller dials them in sequence,
+    // and a second column would take a floor set by its own header for three
+    // or four digits that most rows do not have, out of a budget that had none
+    // to give.
+    //
+    // One line per person, matching the Focal points cell beside it, so a
+    // designation naming two people lines its numbers up against its names.
+    //
+    // Floor 128, share 10. Both figures are measured on the rendered table.
+    //
+    // The header is not what sets it: "Telephone" renders 72.5px uppercase at
+    // the header's size and tracking, so 96.5 with the cell's 24px of `px-3`
+    // would clear it. The CONTENT sets it, and the phrase that must not split
+    // is the number itself — a telephone number broken across two lines is not
+    // a telephone number. Nothing normalises these, so the worst case is one
+    // written with no spaces at all: "+442071234567" measures 101.4px at the
+    // cell's 14px and wants 125.4 with the padding. 128 clears that by 2.6px,
+    // which the column needs for the same half-pixel reason Coverage's floor
+    // does — a floor set flush against its requirement wraps on the rounding.
+    //
+    // NOT covered, and named rather than smoothed over: an unspaced number
+    // longer than 13 characters. E.164 allows 15 digits, and "+123456789012345"
+    // would want about 149. No such number is in the table — none is, yet — and
+    // sizing the column for the theoretical maximum would take 21px out of a
+    // budget that has none. A number that long, written unspaced, wraps.
+    //
+    // The extension does NOT set the floor, because it is allowed to wrap: it
+    // follows a space, so "+1 917 367 5000 ext. 4521" breaks after the number
+    // and onto a second line, which is legible. Only the number is protected.
+    //
+    // Share 10, the smallest non-zero in the table: past the longest number the
+    // column is padding, and it takes a token share rather than none only so
+    // the numbers are not pressed against the cell edge.
+    id: 'telephone',
+    label: 'Telephone',
+    min: 128,
+    grow: 10,
     align: 'left',
   },
   {

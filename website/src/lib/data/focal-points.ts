@@ -11,7 +11,8 @@
  *
  * plus one view:
  *
- *   entity_display_names          entity_code -> entity_display_name, entity_class
+ *   entity_display_names          entity_code -> entity_display_name,
+ *                                 entity_class, public_listing_status
  *
  * and nothing else in that schema. `focal_point_designations.entity_code` is a
  * foreign key into `candidate_entities`, which this credential still cannot read
@@ -45,8 +46,32 @@
  *                        to exclude these, because the record is kept on purpose
  *                        and the exclusion is a read-time decision.
  *
- * A row with either one set is excluded, and those two are now the whole of
- * the listing rule.
+ * A THIRD now governs it, and it is not a column on the designation at all:
+ *
+ *   public_listing_status  on `candidate_entities`, reached through
+ *                          `entity_display_names`. `listed` means the Chef de
+ *                          Cabinet's memo of 14 September 2026 asked this
+ *                          entity to designate a focal point; `not_listed`
+ *                          means it did not.
+ *
+ * A row with any of the three against it is excluded.
+ *
+ * The third is a different KIND of rule from the other two and the difference
+ * is worth holding onto. `superseded_at` and `listing_removed_at` are facts
+ * about a designation - it was replaced, or the entity took it down.
+ * `public_listing_status` is a fact about the ENTITY, and it is a distribution
+ * decision rather than a property: management wants this page to show the
+ * entities it asked and only those, while the form's own picker keeps offering
+ * every entity the roster includes. So an entity that finds the form and
+ * designates without having been asked is recorded upstream, is visible on the
+ * internal directory and on its own record, and does not appear here. Around
+ * 36 included entities are in that position, which is the intended state and
+ * not a gap.
+ *
+ * It is not derived from `entity_class`, upstream or here. The memo's
+ * addressees happen to sit inside a describable set of classes today, which is
+ * exactly why a class filter would work now and be wrong the first time
+ * management adds an addressee.
  *
  * `listing_removed_at` now reaches rows that are NOT superseded. Upstream, a
  * CHECK allowed removal only of an already-superseded designation, so every
@@ -91,6 +116,8 @@ interface ContactRow {
   person_name: string
   person_title: string | null
   person_email: string
+  person_telephone: string | null
+  person_telephone_extension: string | null
   working_languages: string[] | null
   contact_role: string
 }
@@ -132,6 +159,30 @@ async function loadFocalPointDirectorySummary(): Promise<
     // `candidate_entities.entity_code`, so that column is unique, and the view
     // is keyed on it.
     //
+    // THE THREE LISTING RULES ARE HERE, TOGETHER, AND THAT IS DELIBERATE. The
+    // query is where the other two already were, so putting the third beside
+    // them keeps the whole of what this page shows in one readable clause
+    // rather than splitting it between a WHERE and a filter applied to the
+    // rows afterwards. A reader asking "why is this entity not on the page"
+    // has one place to look, and the query does not return rows it then
+    // discards.
+    //
+    // `n.public_listing_status = 'listed'` ALSO EXCLUDES THE OFF-ROSTER
+    // DESIGNATIONS, and that is intended rather than incidental. A designation
+    // whose entity was not on the roster carries `unmatched_entity_text` and a
+    // NULL `entity_code`, so the LEFT JOIN finds no view row, the comparison
+    // is NULL, and the row drops. That is the right answer: an entity the
+    // roster does not know cannot have been on a distribution list, so
+    // management did not ask it, so it is not published. It remains recorded
+    // and remains visible internally.
+    //
+    // It is the ONLY way the comparison can be NULL. `entity_code` is a
+    // foreign key, the view selects every row of the table it reads, and
+    // `public_listing_status` is NOT NULL there - so a designation with a code
+    // always finds a row with a value. The gap the LEFT JOIN exists for is a
+    // missing `entity_display_name`, not a missing row, and a row in that
+    // state still carries a listing status and is still shown.
+    //
     // Ordered by what the reader actually sees. NULLS LAST rather than a
     // COALESCE onto the code: the order is over the displayed name, and a row
     // with no name has no place among the named ones.
@@ -148,6 +199,7 @@ async function loadFocalPointDirectorySummary(): Promise<
               ON n.entity_code = d.entity_code
       WHERE d.superseded_at IS NULL
         AND d.listing_removed_at IS NULL
+        AND n.public_listing_status = 'listed'
       ORDER BY n.entity_display_name NULLS LAST,
                d.unmatched_entity_text NULLS LAST,
                d.sub_unit,
@@ -169,6 +221,8 @@ async function loadFocalPointDirectorySummary(): Promise<
               person_name,
               person_title,
               person_email,
+              person_telephone,
+              person_telephone_extension,
               working_languages,
               contact_role
          FROM mandate_focal_points.designation_contacts
@@ -204,6 +258,12 @@ async function loadFocalPointDirectorySummary(): Promise<
       name: row.person_name,
       title: row.person_title,
       email: row.person_email,
+      // Both passed through as stored. Neither is reformatted here or
+      // anywhere downstream: the column holds what a respondent typed, and
+      // this page is not the place to decide what a telephone number ought to
+      // look like. NULL stays NULL and renders as absence.
+      telephone: row.person_telephone,
+      telephoneExtension: row.person_telephone_extension,
       role: asContactRole(row.contact_role),
       workingLanguages: row.working_languages,
     })

@@ -16,6 +16,7 @@ import {
 } from '@un-eosg/ui/components/detail-panel'
 import { DetailPanelControls } from '@un-eosg/ui/components/detail-panel-controls'
 import {
+  contactTelephone,
   COVERAGE_KINDS,
   coverageClaimLabel,
   coverageKindHeading,
@@ -165,30 +166,48 @@ function PeopleSection({
         </p>
       ) : (
         <ul className="space-y-5">
-          {contacts.map((contact) => (
-            <li key={contact.email + contact.name} className="min-w-0">
-              <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-                <span className="font-medium text-foreground">
-                  {contact.name}
-                </span>
-                {contact.role === 'alternate' && (
-                  <span className="text-xs text-muted-foreground">
-                    Alternate
+          {contacts.map((contact) => {
+            const telephone = contactTelephone(contact)
+            return (
+              <li key={contact.email + contact.name} className="min-w-0">
+                <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                  <span className="font-medium text-foreground">
+                    {contact.name}
                   </span>
+                  {contact.role === 'alternate' && (
+                    <span className="text-xs text-muted-foreground">
+                      Alternate
+                    </span>
+                  )}
+                </div>
+                {contact.title && (
+                  <p className="text-muted-foreground">{contact.title}</p>
                 )}
-              </div>
-              {contact.title && (
-                <p className="text-muted-foreground">{contact.title}</p>
-              )}
-              <EmailLink address={contact.email} className="mt-1" />
-              {contact.workingLanguages &&
-                contact.workingLanguages.length > 0 && (
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    Works in {contact.workingLanguages.join(', ')}
+                <EmailLink address={contact.email} className="mt-1" />
+                {/* Absent unless a number was given, and rendered as nothing
+                  rather than as a dash: the panel is a stack of what is known
+                  about this person, and a line saying a field is empty is not
+                  one of them. The table's cell does show a dash, because a
+                  cell in a column has to hold its row's height. */}
+                {telephone !== null && (
+                  <p className="mt-1">
+                    <a
+                      href={`tel:${contact.telephone}`}
+                      className="text-un-blue hover:underline"
+                    >
+                      {telephone}
+                    </a>
                   </p>
                 )}
-            </li>
-          ))}
+                {contact.workingLanguages &&
+                  contact.workingLanguages.length > 0 && (
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Works in {contact.workingLanguages.join(', ')}
+                    </p>
+                  )}
+              </li>
+            )
+          })}
         </ul>
       )}
 

@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/table'
 import { typography } from '@/lib/typography'
 import {
+  contactTelephone,
   COVERAGE_KINDS,
   coverageClaimLabel,
   coverageKindCount,
@@ -357,6 +358,43 @@ function DirectorySummaryCell({
         </ul>
       )
 
+    case 'telephone': {
+      if (designation.contacts.length === 0) {
+        return <span className="text-muted-foreground">—</span>
+      }
+      // One line per person, in the same order as the Focal points cell, so
+      // the two columns read across. A person with no number contributes the
+      // dash rather than a blank line: the row beside it has a name on it, and
+      // an empty line would read as the column having failed rather than as
+      // that person not having given one.
+      //
+      // `tel:` on the number as stored. The href is the value, unedited — this
+      // page does not know what a dialable form of somebody's number is, and
+      // guessing one is how a link ends up dialling the wrong country.
+      return (
+        <ul className="space-y-2">
+          {designation.contacts.map((contact) => {
+            const telephone = contactTelephone(contact)
+            return (
+              <li key={contact.email + contact.name} className="min-w-0">
+                {telephone === null ? (
+                  <span className="text-muted-foreground">—</span>
+                ) : (
+                  <a
+                    href={`tel:${contact.telephone}`}
+                    onClick={stopRowClick}
+                    className="text-un-blue hover:underline"
+                  >
+                    {telephone}
+                  </a>
+                )}
+              </li>
+            )
+          })}
+        </ul>
+      )
+    }
+
     case 'functional_mailbox':
       return designation.functionalMailbox ? (
         <EmailLink
@@ -438,7 +476,8 @@ function stopRowClick(event: React.MouseEvent<HTMLAnchorElement>) {
  * All of it, not only what the placeholder names: the entity's display name and
  * its code, its class label while the class column is shown — which now means
  * switched on by the reader, not merely permitted by the feature flag — the
- * sub-unit, every contact's name, title, address and working languages, the
+ * sub-unit, every contact's name, title, address, telephone number and
+ * working languages, the
  * functional mailbox, and every coverage claim of every kind — bodies, agenda
  * items, document symbols and keywords alike. A reader who pastes an address
  * or a document symbol finds the row; the interface simply does not advertise
@@ -471,6 +510,15 @@ function searchableText(
       contact.name,
       contact.title,
       contact.email,
+      // The number and the extension as two entries rather than the joined
+      // string, so that either matches on its own. Matching is a plain
+      // substring test over text stored exactly as it was typed, so a reader
+      // who pastes a number in a different spacing from the one the entity
+      // wrote will not find it. That is the cost of not normalising and it is
+      // the right side to err on: the alternative is this page deciding what
+      // two numbers are the same number.
+      contact.telephone,
+      contact.telephoneExtension,
       ...(contact.workingLanguages ?? []),
     ]),
     // The claim as it renders, so a reader searching for the body an
