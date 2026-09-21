@@ -18,9 +18,7 @@ export function WordCount({ metrics }: { metrics?: DocumentTextMetrics }) {
       title={
         metrics?.word_count == null
           ? 'Word length unavailable'
-          : metrics.provisional
-            ? 'Words in retained English text, including annexes. Internal accounting passed; original-source validation pending.'
-            : 'Words in the substantive English text, including annexes'
+          : 'Words in the substantive English text, including annexes'
       }
     >
       {formatWordCount(metrics?.word_count)}
@@ -64,7 +62,7 @@ export function TextSimilarity({
         —
       </span>
     )
-  const label = `Compare ${symbol} with ${metrics?.previous_document_symbol}${score ? `; text similarity ${score}` : '; similarity unavailable'}${metrics?.provisional ? '; score uses retained text, original-source validation pending; external viewer may use different text' : ''} (opens in a new tab)`
+  const label = `Compare ${symbol} with ${metrics?.previous_document_symbol}${score ? `; text similarity ${score}` : '; similarity unavailable'} (opens in a new tab)`
   return (
     <a
       href={href}

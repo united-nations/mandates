@@ -82,6 +82,7 @@ export default async function MandatePage({
         {SHOW_MANDATED_SG_REPORTS && <MandateSgReports reports={sgReports} />}
         <ParagraphsSection
           paragraphs={paragraphs}
+          sourceUrl={mandate.link}
           documentSymbol={documentSymbol}
           isLoading={false}
           error={null}

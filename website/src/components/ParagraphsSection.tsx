@@ -51,6 +51,7 @@ import {
 } from '@/components/ui/tooltip'
 
 interface ParagraphsSectionProps {
+  sourceUrl?: string | null
   paragraphs: Paragraph[]
   documentSymbol: string
   isLoading: boolean
@@ -729,6 +730,7 @@ function markSearchHits(
 
 export function ParagraphsSection({
   paragraphs: allParagraphs,
+  sourceUrl,
   documentSymbol,
   isLoading,
   error,
@@ -2472,6 +2474,18 @@ export function ParagraphsSection({
           </p>
         )}
 
+        {allParagraphs?.some(
+          (paragraph) => paragraph.extraction_quality_warning === true
+        ) && (
+          <p
+            role="note"
+            className="rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm"
+          >
+            This extracted fulltext may contain errors or omissions. Please check
+            the source document.
+          </p>
+        )}
+
         {/* Search — its own line between the heading and the filter row, so
             the section reads name it, count it, search it, filter it. It
             filters the paragraphs rendered below; matching runs over the raw
@@ -2858,10 +2872,20 @@ export function ParagraphsSection({
                 No paragraphs match &ldquo;{searchQuery.trim()}&rdquo;.
               </p>
             ) : (
-              <div className="rounded-lg bg-muted/30 p-3">
-                <p className="text-sm leading-relaxed text-muted-foreground italic">
-                  No paragraphs currently available for this document.
+              <div className="space-y-2 rounded-lg bg-muted/30 p-3">
+                <p className="text-sm leading-relaxed text-muted-foreground">
+                  Fulltext could not be extracted.
                 </p>
+                {sourceUrl && (
+                  <a
+                    href={sourceUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-un-blue underline underline-offset-2"
+                  >
+                    View source document
+                  </a>
+                )}
               </div>
             )}
           </div>

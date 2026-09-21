@@ -2,8 +2,7 @@
  * Paragraph Database Queries
  *
  * Fetches paragraph-level fulltext content from the authoritative Digital
- * Library semantic layer. Only English documents whose extraction ledger is in
- * the successful `parsed` state are eligible. Scalar, deterministic
+ * Library semantic layer. Only successful English parses are eligible. Scalar, deterministic
  * action-verb/assignee classifications are reassembled into the markup grammar
  * consumed by the UI (see synthesizeDlAnnotations).
  *
@@ -19,6 +18,7 @@
  */
 
 import { cache } from 'react'
+import { hasFulltextQualityWarning } from '../fulltext-quality'
 import { queryMany } from '../db/query'
 import type { Paragraph } from '@/types'
 import { parseBracketPart, isolateBracketPart } from '../paragraph-presentation'
@@ -28,6 +28,7 @@ import { parseBracketPart, isolateBracketPart } from '../paragraph-presentation'
 // ============================================================================
 
 interface ParagraphRow {
+  extraction_issues: unknown
   id: string
   position: number
   text: string
@@ -166,6 +167,7 @@ function synthesizeDlAnnotations(
 
 function mapRow(row: ParagraphRow): Paragraph {
   return {
+    extraction_quality_warning: hasFulltextQualityWarning(row.extraction_issues),
     id: row.id,
     position: row.position,
     text: row.text,
@@ -200,12 +202,12 @@ function mapDlRow(row: ParagraphRow): Paragraph {
 /**
  * Fetch all paragraphs for a document in order, with their links.
  *
- * Returns an empty array when the English Digital Library extraction has not
- * completed successfully. This fail-closed behavior prevents stale semantic
- * rows from a previous parse being served after a failed reparse.
+ * Only successful parses are readable. Failed or unfinished processing must
+ * not expose old semantic rows from a previous parse.
  */
 const getDirectParagraphsBySymbol = cache(
   async (documentSymbol: string): Promise<Paragraph[]> => {
+    const normalizedSymbol = documentSymbol.replace(/\s/g, '').toUpperCase()
     // digitallibrary.document_paragraphs (semantic fulltext).
     // Indexed on (symbol_normalized, lang). Match the app-wide normalized symbol
     // join (upper + strip whitespace). Masthead frontmatter is dropped as pure
@@ -238,6 +240,7 @@ const getDirectParagraphsBySymbol = cache(
         dp.text_index,
         dp.subtype,
         parses.parser_version,
+        parses.issues AS extraction_issues,
         dp.lead_verb,
         dp.action_verb,
         dp.action_verb_normalized,
@@ -253,19 +256,19 @@ const getDirectParagraphsBySymbol = cache(
       JOIN digitallibrary.document_parses parses
         ON parses.symbol_normalized = dp.symbol_normalized
        AND parses.lang = dp.lang
-      WHERE dp.symbol_normalized = upper(regexp_replace($1, '[[:space:]]', '', 'g'))
+      WHERE dp.symbol_normalized = ANY($1::text[])
         AND dp.lang = 'en'
         AND NOT (dp.type = 'frontmatter' AND dp.subtype IS NOT DISTINCT FROM 'masthead')
       ORDER BY dp.position
       `,
-      [documentSymbol]
+      [[normalizedSymbol]]
     )
 
     return dlRows.map(mapDlRow)
   }
 )
 
-/** Resolve only exact, unambiguous lettered blocks from successfully parsed parents.
+/** Resolve exact, unambiguous lettered blocks from successfully parsed parents.
  * Complex bracket expressions deliberately remain unavailable: whole-parent text
  * must not silently stand in for the requested part. No legacy corpus fallback.
  */

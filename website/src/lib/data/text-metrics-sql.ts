@@ -41,7 +41,7 @@ selected_groups AS (
   JOIN digitallibrary.document_parses p USING (symbol_normalized, lang)
   WHERE tm.lang = 'en' AND tm.text_profile_version = 'substantive-v1'
     AND tm.metric_version = 'unicode-word-v1' AND f.status = 'parsed'
-    AND tm.parser_version = p.parser_version AND tm.computed_at >= p.parsed_at
+    AND tm.parser_version = p.parser_version AND tm.source_parsed_at = p.parsed_at
     AND (tm.symbol_normalized IN (SELECT symbol FROM requested)
       OR tm.symbol_normalized IN (SELECT predecessor FROM pairs JOIN requested
         ON requested.symbol = pairs.document_symbol))

@@ -88,7 +88,11 @@ export default async function ModalMandatePage({
             />
           }
         >
-          <MandateParagraphs documentSymbol={documentSymbol} entities={entities} />
+          <MandateParagraphs
+            sourceUrl={mandate.link}
+            documentSymbol={documentSymbol}
+            entities={entities}
+          />
         </Suspense>
       </div>
     </div>
@@ -102,9 +106,11 @@ export default async function ModalMandatePage({
  * resolves without it and this boundary fills in when the query returns.
  */
 async function MandateParagraphs({
+  sourceUrl,
   documentSymbol,
   entities,
 }: {
+  sourceUrl?: string | null
   documentSymbol: string
   entities: Awaited<ReturnType<typeof getAllEntities>>
 }) {
@@ -112,6 +118,7 @@ async function MandateParagraphs({
   return (
     <ParagraphsSection
       paragraphs={paragraphs}
+      sourceUrl={sourceUrl}
       documentSymbol={documentSymbol}
       isLoading={false}
       error={null}

@@ -4,7 +4,6 @@ export interface DocumentTextMetrics {
   similarity_to_previous: number | null
   previous_document_symbol: string | null
   can_compare: boolean
-  provisional?: boolean
   comparison_unavailable_reason?:
     'not_in_series' | 'first' | 'ambiguous_order' | 'collection' | 'ordered'
 }

@@ -2,6 +2,8 @@ import type { DocumentTextMetrics } from '@/lib/text-analytics'
 
 // Core data types based on the DB schema (mandates.paragraphs)
 export interface Paragraph {
+  /** Document-level quality flag; internal issue details stay on the server. */
+  extraction_quality_warning?: boolean
   subtype?: string
   parser_version?: string
   source?: 'digitallibrary'

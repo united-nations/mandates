@@ -7,6 +7,8 @@
 
 import { cache } from 'react'
 import { getDocumentTextMetrics } from './text-metrics'
+import { getDocumentPdfUrl } from './source-links'
+import { getHistoricalDocument } from './historical-document'
 import type { DocumentTextMetrics } from '../text-analytics'
 import { unstable_cache } from 'next/cache'
 import { queryMany, queryOne } from '../db/query'
@@ -943,7 +945,7 @@ export async function getMandates(
     num_entities: parseInt(row.num_entities) || 0,
     entities: row.entities || [],
     foundational_entities: row.foundational_entities || [],
-    link: row.ppb_link || null,
+    link: getDocumentPdfUrl(row.ppb_full_document_symbol),
     year: row.ppb_year?.toString() || '',
     body: row.ppb_body || '',
     description: row.ppb_description || null,
@@ -1262,6 +1264,7 @@ export async function getMandateBySymbol(
   `
 
   const row = await queryOne<MandateListRow>(query, [symbol, version ?? null])
+    ?? await getHistoricalDocument(symbol)
   if (!row) return null
 
   // Fetch citations separately for the detail view
@@ -1274,7 +1277,7 @@ export async function getMandateBySymbol(
     num_citations: parseInt(row.num_citations) || 0,
     num_entities: parseInt(row.num_entities) || 0,
     entities: row.entities || [],
-    link: row.ppb_link || null,
+    link: getDocumentPdfUrl(symbol),
     year: row.ppb_year?.toString() || '',
     body: row.ppb_body || '',
     description: row.ppb_description || null,
