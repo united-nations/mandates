@@ -69,6 +69,31 @@ export function DirectoryToggle<T extends string>({
 }
 
 /**
+ * The "click to do the thing" line at the foot of a tooltip.
+ *
+ * One component rather than the string, the icon and the colour written out at
+ * each tooltip that wants them: it was four hand-kept copies that had already
+ * drifted to three different top margins, and the string is the kind that gets
+ * reworded once and then only in three places.
+ *
+ * The margin belongs here, not to the caller. Every site sets the same gap for
+ * the same reason - the hint follows a block of tooltip body - and passing it
+ * in is how the three margins happened.
+ *
+ * The icon is un-blue; the text is not. Colour marks the affordance, and a
+ * whole line of it reads as a second heading rather than as an aside. The text
+ * takes whatever the tooltip around it is using.
+ */
+export function ClickHint() {
+  return (
+    <div className="mt-1 flex items-center gap-1">
+      <MousePointerClick aria-hidden className="h-3.5 w-3.5 text-un-blue" />
+      Click to show mandates
+    </div>
+  )
+}
+
+/**
  * Tooltip body for a selectable directory node: the full name, a legend for the
  * bare numbers on the card/pill, an optional set of sub-level pills (an entity's
  * subprogrammes), and the click hint.
@@ -79,6 +104,10 @@ export function DirectoryToggle<T extends string>({
  *
  * The pills are filters in their own right. Radix keeps the content hoverable,
  * so the pointer can travel from the trigger into the tooltip and click one.
+ * No caller passes them at present - the entity directory did, with an
+ * entity's subprogrammes, until subprogrammes came off card 4. The prop is
+ * kept because the hold is on showing that one sub-level, not on the tooltip
+ * being able to show a sub-level at all.
  */
 export function ClickTooltip({
   name,
@@ -117,10 +146,7 @@ export function ClickTooltip({
           ))}
         </div>
       )}
-      <div className="mt-1 flex items-center gap-1 text-un-blue">
-        <MousePointerClick className="h-3.5 w-3.5" />
-        Click to show mandates
-      </div>
+      <ClickHint />
     </TooltipContent>
   )
 }

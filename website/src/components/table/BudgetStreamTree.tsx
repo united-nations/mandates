@@ -60,16 +60,25 @@ export function BudgetStreamTree({
   forceExpandAll = false,
   foundationalEntities = [],
 }: BudgetStreamTreeProps) {
-  // The two structured streams open to their first level by default; seed the
-  // opened set with their keys. Toggling removes them (collapse), re-adds them
-  // (expand).
+  // Every stream opens collapsed. The two structured streams used to be seeded
+  // open at their first level, which put thirteen Programme Budget part rows
+  // and the peacekeeping groups on screen before anyone had asked for them -
+  // the document rows they sit under were the thing to choose between, and
+  // they were buried. Toggling adds a key (expand), toggling again removes it
+  // (collapse).
+  //
+  // Nothing that has to be visible depends on this: a search sets
+  // forceExpandAll, and a branch holding the active selection opens through
+  // containsActive at every depth, so a deep link still arrives expanded.
+  //
+  // Both consumers get this - card 3's Budget location block and the table's
+  // budget column filter. Same tree, same complaint; a prop to give two call
+  // sites different defaults would be a fork of the behaviour, not a setting.
+  //
+  // Lazy initializer form kept deliberately: the bare `useState(new Set())`
+  // allocates a fresh Set on every render.
   const [manuallyOpened, setManuallyOpened] = useState<Set<string>>(
-    () =>
-      new Set(
-        hierarchy
-          .filter((s) => s.type !== 'plan_outline')
-          .map((s) => `stream:${s.type}`)
-      )
+    () => new Set()
   )
 
   const isOpen = (key: string, containsActive: boolean) =>

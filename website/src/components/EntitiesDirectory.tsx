@@ -14,7 +14,7 @@ import type {
   BudgetStream,
   DirectorySelection,
 } from '@/types'
-import { ChevronRight, Layers, LayoutGrid, Tag } from 'lucide-react'
+import { ChevronRight, LayoutGrid, Tag } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 
 /**
@@ -50,8 +50,8 @@ import { useEffect, useMemo, useState } from 'react'
  * clearing any other budget location, which is the same dimension) and scrolls
  * to the mandates section; the active node is highlighted. The write is injected
  * by DirectoryExplorer (see DirectorySelection) so it matches the scope these
- * counts were computed under. One view toggle, persisted in localStorage:
- * compact (acronym pills, the default) vs. full cards with names.
+ * counts were computed under. One view toggle, persisted for the browser
+ * session: compact (acronym pills, the default) vs. full cards with names.
  */
 
 interface EntitiesDirectoryProps {
@@ -80,14 +80,20 @@ export function EntitiesDirectory({
   const active = selection.active('entity')
   const select = (value: string) => selection.select('entity', value)
 
+  // Session storage, not local: switching to Full is a "let me look at this
+  // one thing" move, and carrying it across browser sessions meant the panel
+  // opened in a view nobody had chosen that day. The toggle is still sticky
+  // while you are working - reopen the panel, get the view you left - and a
+  // new browser session opens compact again.
+  //
   // Restore the saved preference after mount (avoids an SSR hydration mismatch).
   useEffect(() => {
-    const c = localStorage.getItem('entities.compact')
+    const c = sessionStorage.getItem('entities.compact')
     /* eslint-disable-next-line react-hooks/set-state-in-effect -- one-time restore of a persisted UI pref */
     if (c !== null) setCompact(c === '1')
   }, [])
   useEffect(() => {
-    localStorage.setItem('entities.compact', compact ? '1' : '0')
+    sessionStorage.setItem('entities.compact', compact ? '1' : '0')
   }, [compact])
 
   const buckets = useMemo<EntityBucket[]>(
@@ -139,7 +145,6 @@ export function EntitiesDirectory({
                     compact={compact}
                     active={active}
                     onSelect={select}
-                    selection={selection}
                   />
                 </div>
               </div>
@@ -243,13 +248,11 @@ function EntityGroup({
   compact,
   active,
   onSelect,
-  selection,
 }: {
   entities: BudgetEntityNode[]
   compact: boolean
   active?: string
   onSelect: (value: string) => void
-  selection: DirectorySelection
 }) {
   if (compact) {
     return (
@@ -260,7 +263,6 @@ function EntityGroup({
             entity={entity}
             active={active === entity.entity}
             onSelect={onSelect}
-            selection={selection}
           />
         ))}
       </div>
@@ -274,7 +276,6 @@ function EntityGroup({
           entity={entity}
           active={active === entity.entity}
           onSelect={onSelect}
-          selection={selection}
         />
       ))}
     </div>
@@ -282,8 +283,8 @@ function EntityGroup({
 }
 
 /**
- * Wraps an entity node in the shared hover tooltip: full name, the entity's
- * subprogrammes as their own filter pills, and the click hint.
+ * Wraps an entity node in the shared hover tooltip: full name, a legend for the
+ * bare number on the pill, and the click hint.
  *
  * `render` rather than a fixed anchor, because the two views are different
  * elements: the compact view is a `Chip` (the shared primitive owns its
@@ -294,7 +295,6 @@ function EntityAnchor({
   entity,
   onSelect,
   render,
-  selection,
 }: {
   entity: BudgetEntityNode
   onSelect: (value: string) => void
@@ -302,11 +302,7 @@ function EntityAnchor({
     href: string
     onClick: (event: React.MouseEvent<HTMLElement>) => void
   }) => React.ReactElement
-  selection: DirectorySelection
 }) {
-  const activeSub = selection.active('subprogramme')
-  const selectSub = (value: string) => selection.select('subprogramme', value)
-
   return (
     <Tooltip>
       <TooltipTrigger asChild>
@@ -318,91 +314,30 @@ function EntityAnchor({
           },
         })}
       </TooltipTrigger>
-      <ClickTooltip
-        name={entity.entity_long}
-        meta={entityMeta(entity)}
-        pills={entity.subprogrammes.map((sp) => ({
-          label: sp.subprogramme,
-          value: sp.subprogramme,
-        }))}
-        onPillSelect={selectSub}
-        activePill={activeSub}
-      />
+      <ClickTooltip name={entity.entity_long} meta={entityMeta(entity)} />
     </Tooltip>
   )
 }
 
-/** Spells out the card's two bare numbers for the hover tooltip. */
+/** Spells out the card's bare number for the hover tooltip. */
 function entityMeta(entity: BudgetEntityNode): string {
-  const parts = [
-    `${entity.count.toLocaleString()} mandate${entity.count === 1 ? '' : 's'}`,
-  ]
-  const subs = entity.subprogrammes.length
-  if (subs > 0)
-    parts.push(`${subs.toLocaleString()} subprogramme${subs === 1 ? '' : 's'}`)
-  return parts.join(' · ')
-}
-
-/**
- * How many subprogrammes an entity has, shown only when there are any: 70 of the
- * 94 Programme Budget entities have none (the generic "All Subprogrammes" bucket
- * is nulled out upstream), so an always-on badge would read "0" on most of them.
- *
- * The layers glyph is load-bearing, not decoration: without it the pill reads
- * "OHCHR 433 4" — two unlabelled numbers that run together into "4334" at
- * mobile widths. Icon + number is visibly a different kind of quantity from the
- * bare mandate count, and the tooltip (see entityMeta) names both.
- */
-function SubprogrammeBadge({
-  count,
-  active,
-}: {
-  count: number
-  active: boolean
-}) {
-  if (count <= 0) return null
-  const label = `${count} subprogramme${count === 1 ? '' : 's'}`
-  return (
-    // No inner pill any more: a count inside a chip is a slot, not a second
-    // chip. The glyph alone carries "this is a different quantity", and the
-    // number is the shared 10px ChipCount rather than the 9px it used to be —
-    // the smallest type anywhere in the app, on a number nobody could read.
-    <span
-      title={label}
-      className="ml-0.5 inline-flex shrink-0 items-baseline gap-0.5"
-    >
-      <Layers
-        aria-hidden
-        className={cn(
-          'size-2.5 self-center',
-          active ? 'text-white/80' : 'text-gray-500'
-        )}
-      />
-      <ChipCount tone={active ? 'selected' : 'neutral'}>
-        {count.toLocaleString()}
-      </ChipCount>
-      <span className="sr-only">{label}</span>
-    </span>
-  )
+  return `${entity.count.toLocaleString()} mandate${entity.count === 1 ? '' : 's'}`
 }
 
 function EntityPill({
   entity,
   active,
   onSelect,
-  selection,
 }: {
   entity: BudgetEntityNode
   active: boolean
   onSelect: (value: string) => void
-  selection: DirectorySelection
 }) {
   const mandates = `${entity.count.toLocaleString()} mandate${entity.count === 1 ? '' : 's'}`
   return (
     <EntityAnchor
       entity={entity}
       onSelect={onSelect}
-      selection={selection}
       render={({ href, onClick }) => (
         <Chip
           tone={active ? 'selected' : 'neutral'}
@@ -413,10 +348,6 @@ function EntityPill({
           <ChipCount tone={active ? 'selected' : 'neutral'}>
             <span title={mandates}>{entity.count.toLocaleString()}</span>
           </ChipCount>
-          <SubprogrammeBadge
-            count={entity.subprogrammes.length}
-            active={active}
-          />
         </Chip>
       )}
     />
@@ -427,18 +358,15 @@ function EntityCard({
   entity,
   active,
   onSelect,
-  selection,
 }: {
   entity: BudgetEntityNode
   active: boolean
   onSelect: (value: string) => void
-  selection: DirectorySelection
 }) {
   return (
     <EntityAnchor
       entity={entity}
       onSelect={onSelect}
-      selection={selection}
       render={({ href, onClick }) => (
         <a
           href={href}
@@ -467,10 +395,6 @@ function EntityCard({
                   {entity.count.toLocaleString()}
                 </span>
               </ChipCount>
-              <SubprogrammeBadge
-                count={entity.subprogrammes.length}
-                active={false}
-              />
             </div>
             {entity.entity_long && (
               // Multi-line rather than one truncated line — see MandatingBodiesDirectory;

@@ -44,6 +44,11 @@ export function RelatedMandates({ related }: { related: RelatedMandate[] }) {
         Related mandate documents
       </DetailSubsectionHeading>
 
+      {/* 32px rows, the height every row list in the detail panel is set to:
+          see MandateVersionHistory, CitationCounts and MandateSgReports for
+          the other three. py-1.5 reaches it here because the DocumentSymbol
+          is an inline-block 20px tall inside a 16px line and sets the row
+          height; a list without one needs py-2 to land in the same place. */}
       <ul className="divide-y divide-gray-100 border-y border-gray-100">
         {shown.map((item) => (
           <li key={item.document_symbol} className="py-1.5 text-sm">

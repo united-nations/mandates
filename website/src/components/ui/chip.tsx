@@ -38,13 +38,14 @@ import { cn } from '@/lib/utils'
  * a document cited in an entity's "Mandates and background" narrative rather
  * than only its Legislative mandates table. It has no live call site: the one
  * surface that passed it is behind MARK_FOUNDATIONAL_CHIPS_ON_DETAIL_PAGE
- * (lib/foundational.ts), which is off, and FilterChip's `accent` mapping into
- * it (MandateDetailUi.tsx) has never had a call site at all. The tone is kept
- * rather than deleted because the hold is on marking that one distinction, not
- * on the tone; deleting a primitive is a separate decision from withdrawing
- * its one use. Read it as "currently spent on nothing", not as budget to
- * spend: un-blue-deep sits a shade off un-blue, and two shades of blue carry
- * no meaning on their own.
+ * (lib/foundational.ts), which is off. It had a second route in, through
+ * FilterChip's `accent` tone in MandateDetailUi, which never had a call site
+ * either; that route is gone with the mapping, since FilterChip is an inline
+ * link now and not a chip at all. The tone is kept rather than deleted because
+ * the hold is on marking that one distinction, not on the tone; deleting a
+ * primitive is a separate decision from withdrawing its one use. Read it as
+ * "currently spent on nothing", not as budget to spend: un-blue-deep sits a
+ * shade off un-blue, and two shades of blue carry no meaning on their own.
  *
  * Domain hues are gone. They appeared as a 6px dot on subject chips until
  * document symbols stopped being pills, and no surface fetches domain codes to

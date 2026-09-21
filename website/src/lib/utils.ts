@@ -1,8 +1,27 @@
 import type { Mandate } from '@/types'
 import { findMarkRanges, type SearchMarker } from '@/lib/paragraph-search'
 import { clsx, type ClassValue } from 'clsx'
-import { twMerge } from 'tailwind-merge'
+import { extendTailwindMerge } from 'tailwind-merge'
 import { titleCase } from 'title-case'
+
+/**
+ * `text-micro` (10px) and `text-mini` (11px) are font sizes from the shared
+ * theme, below Tailwind's own scale. tailwind-merge only knows the scale it
+ * ships with, so to a bare twMerge they are not sizes at all - they parse as
+ * `text-<colour>`, which means they conflict with the text colour beside them
+ * and lose to it, and the size disappears with no warning, no error and no
+ * lint. It has cost us a rendered size at least once already; the note on
+ * MandateDetailUi's headingMarkClassName records that one, which had to be
+ * fixed by routing that string around `cn` entirely.
+ *
+ * Declaring both in the font-size group is the fix at the source: they now
+ * conflict with `text-xs` and the rest, which is what they actually do, and
+ * the last size written wins the way every other size does. Any custom size
+ * added to the theme has to be added here too, or it inherits the same bug.
+ */
+const twMerge = extendTailwindMerge({
+  extend: { classGroups: { 'font-size': ['text-micro', 'text-mini'] } },
+})
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))

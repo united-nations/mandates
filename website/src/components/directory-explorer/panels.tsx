@@ -8,26 +8,30 @@ import type { FilterOptions } from '@/types'
 import { CitedPanel } from './cited-panel'
 import { DirectoryDialog } from './controls'
 import { PanelStatus } from './panel-status'
-import type { DirectoryData, DirectoryPanel, PanelActions } from './types'
+import type {
+  DirectoryData,
+  DirectoryPanel,
+  PanelActions,
+  PanelChoice,
+  PanelProgress,
+} from './types'
 
 interface DirectoryPanelsProps {
   actions: PanelActions
   activeVersionSlug: string
   allDocumentsCount: number
+  choice: PanelChoice
   citedDocumentCount: number
   citedPredicate: string
   data: DirectoryData | null
-  error: string | null
   filters: FilterOptions
-  loading: boolean
   panel: DirectoryPanel | null
+  progress: PanelProgress
   versions: { slug: string; ppb_year: number; display_name: string }[]
 }
 
 const status = (props: DirectoryPanelsProps, children: React.ReactNode) => (
-  <PanelStatus loading={props.loading} error={props.error}>
-    {children}
-  </PanelStatus>
+  <PanelStatus {...props.progress}>{children}</PanelStatus>
 )
 
 const OrganDialog = (props: DirectoryPanelsProps) => (
