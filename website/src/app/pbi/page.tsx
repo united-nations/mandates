@@ -11,6 +11,8 @@ import {
 } from 'lucide-react'
 import { Fragment, useEffect, useMemo, useState } from 'react'
 
+import { Spinner } from '@/components/ui/spinner'
+
 type SortField = 'resolution' | 'amount'
 type SortDirection = 'asc' | 'desc'
 
@@ -463,7 +465,7 @@ export default function PBIPage() {
       <div className="container mx-auto p-6">
         <div className="py-8 text-center">
           <div className="inline-flex items-center gap-2 text-gray-600">
-            <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-un-blue"></div>
+            <Spinner />
             Loading PBI data...
           </div>
         </div>
