@@ -41,3 +41,16 @@ export interface PanelActions {
   setCited: (cited: boolean) => void
   setVersion: (slug: string) => void
 }
+
+/**
+ * What the reader has asked for, which is ahead of `filters` while the
+ * navigation that applies it is still in flight. The controls read from this
+ * so a click registers at once; anything showing a FIGURE reads from the
+ * server-rendered props, which are still the previous selection's.
+ */
+export interface PanelChoice {
+  cited: boolean
+  version: string
+}
+
+export type { PanelProgress } from '@/lib/directory-panel-view'

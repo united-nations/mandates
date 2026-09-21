@@ -19,9 +19,8 @@ const versionContext = (props: DirectoryExplorerProps) => {
 
 /** Renders summary cards immediately and fetches directories on first open. */
 export function DirectoryExplorer(props: DirectoryExplorerProps) {
-  const state = useExplorerActions()
+  const state = useExplorerActions(props.activeVersionSlug)
   const version = versionContext(props)
-  const { data, error, loading } = state.directories
   return (
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
       <CardGrid
@@ -32,12 +31,12 @@ export function DirectoryExplorer(props: DirectoryExplorerProps) {
       <DirectoryPanels
         {...props}
         actions={state.actions}
+        choice={state.choice}
         citedPredicate={version.predicate}
-        data={data}
-        error={error}
+        data={state.data}
         filters={state.filters}
-        loading={loading}
         panel={state.panel}
+        progress={state.progress}
       />
     </div>
   )

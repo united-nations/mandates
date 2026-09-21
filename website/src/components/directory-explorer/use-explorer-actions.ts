@@ -8,7 +8,12 @@ import type { FilterParamKey } from '@/lib/filter-constants'
 import type { DirectorySelection, FilterOptions } from '@/types'
 
 import { BUDGET_LEVEL_PARAM, DIMENSION_GROUPS } from './constants'
-import type { DirectoryPanel, PanelActions } from './types'
+import type {
+  DirectoryPanel,
+  PanelActions,
+  PanelChoice,
+  PanelProgress,
+} from './types'
 import { useDirectoryData } from './use-directory-data'
 
 const scrollToMandates = () =>
@@ -26,6 +31,37 @@ const clearDimension = (
     if (!group.includes(param)) continue
     for (const key of group) updates[key] = undefined
   }
+}
+
+/**
+ * Shows the reader their own click while the navigation that applies it is
+ * still running.
+ *
+ * Every control in these panels writes the URL, and the write goes through a
+ * transition, so neither the query string nor the server-rendered figures move
+ * until the new page is ready - reported at around three seconds on this page.
+ * Without this the button the reader pressed simply does not respond for that
+ * whole time.
+ *
+ * A request only ever stands in for the wait it started. It is dropped the
+ * moment the committed value moves, which covers both the navigation landing
+ * and the reader leaving by some other route - a back button that returns to
+ * the budget they switched away from must not find a months-old click still
+ * on file and report it as in progress. A transition that ends without moving
+ * the committed value drops it too, through `isPending`.
+ */
+const useRequested = <T extends string | boolean>(
+  committed: T,
+  isPending: boolean
+) => {
+  const [requested, request] = useState<T | null>(null)
+  const [answered, setAnswered] = useState(committed)
+  if (answered !== committed) {
+    setAnswered(committed)
+    request(null)
+  }
+  const pending = isPending && requested !== null && requested !== committed
+  return { pending, request, value: pending ? (requested as T) : committed }
 }
 
 const useApplySelection = (
@@ -60,14 +96,16 @@ const useSelection = (
   )
 
 /** Owns filter writes, dialog state, and lazy directory loading. */
-export const useExplorerActions = () => {
-  const { filters, setMultipleFilters } = useFilters()
+export const useExplorerActions = (activeVersionSlug: string) => {
+  const { filters, isPending, setMultipleFilters } = useFilters()
   const [panel, setPanel] = useState<DirectoryPanel | null>(null)
   const directories = useDirectoryData(panel)
   const loadDirectories = directories.load
   const close = useCallback(() => setPanel(null), [])
   const apply = useApplySelection(setMultipleFilters)
   const selection = useSelection(filters, apply, close)
+  const version = useRequested(activeVersionSlug, isPending)
+  const cited = useRequested(filters.cited === '1', isPending)
   const openPanel = useCallback(
     (next: DirectoryPanel) => {
       setPanel(next)
@@ -84,10 +122,31 @@ export const useExplorerActions = () => {
     close,
     selectBudgetLocation,
     selection,
-    setCited: (cited) =>
-      setMultipleFilters({ cited: cited ? '1' : undefined, page: undefined }),
-    setVersion: (slug) =>
-      setMultipleFilters({ ppb_version: slug, page: undefined }),
+    setCited: (next) => {
+      cited.request(next)
+      setMultipleFilters({ cited: next ? '1' : undefined, page: undefined })
+    },
+    setVersion: (slug) => {
+      version.request(slug)
+      setMultipleFilters({ ppb_version: slug, page: undefined })
+    },
   }
-  return { actions, directories, filters, openPanel, panel }
+  const choice: PanelChoice = { cited: cited.value, version: version.value }
+  // One wait, not two. A version switch has two halves - the navigation that
+  // moves the page's own figures, then the request for the hierarchy that goes
+  // with them - and the reader should see them as one.
+  const progress: PanelProgress = {
+    empty: directories.empty,
+    error: directories.error,
+    pending: directories.pending || version.pending,
+  }
+  return {
+    actions,
+    choice,
+    data: directories.data,
+    filters,
+    openPanel,
+    panel,
+    progress,
+  }
 }
