@@ -21,7 +21,6 @@ export default async function ModalMandateLayout({
 
   return (
     <MandateDetailSheet
-      eyebrow="Mandate document"
       title={mandate ? getMandateDisplayTitle(mandate) : symbol}
       symbol={mandate?.full_document_symbol ?? symbol}
       link={mandate?.link ?? null}

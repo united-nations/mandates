@@ -90,8 +90,8 @@ importers:
         specifier: ^8.23.1
         version: 8.23.1
       '@un-eosg/ui':
-        specifier: github:UN-EOSG-Analytics/ui#1533fc8
-        version: https://codeload.github.com/UN-EOSG-Analytics/ui/tar.gz/1533fc80c28b3bc552ab88e3eca6990d1c305ce1(@radix-ui/react-dialog@1.1.23(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@radix-ui/react-dropdown-menu@2.1.24(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@radix-ui/react-popover@1.1.23(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(class-variance-authority@0.7.1)(clsx@2.1.1)(lucide-react@0.574.0(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tailwind-merge@3.6.0)(tw-animate-css@1.4.0)
+        specifier: github:UN-EOSG-Analytics/ui#26cd9c918b66f3d6b0d20f8ce35e0a77a2bb6ba7
+        version: https://codeload.github.com/UN-EOSG-Analytics/ui/tar.gz/26cd9c918b66f3d6b0d20f8ce35e0a77a2bb6ba7(@radix-ui/react-dialog@1.1.23(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@radix-ui/react-dropdown-menu@2.1.24(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@radix-ui/react-popover@1.1.23(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@radix-ui/react-tooltip@1.2.16(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(class-variance-authority@0.7.1)(clsx@2.1.1)(lucide-react@0.574.0(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tailwind-merge@3.6.0)(tw-animate-css@1.4.0)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -1871,13 +1871,14 @@ packages:
     resolution: {integrity: sha512-+rmdgPA+EXkNgKYvHvFfhrs35utXbwaC5PGpDquSXcoXQDKUA5UjV0LmTucG/4JXkM31BTu4TilHtrN8IVBe8w==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@un-eosg/ui@https://codeload.github.com/UN-EOSG-Analytics/ui/tar.gz/1533fc80c28b3bc552ab88e3eca6990d1c305ce1':
-    resolution: {tarball: https://codeload.github.com/UN-EOSG-Analytics/ui/tar.gz/1533fc80c28b3bc552ab88e3eca6990d1c305ce1}
+  '@un-eosg/ui@https://codeload.github.com/UN-EOSG-Analytics/ui/tar.gz/26cd9c918b66f3d6b0d20f8ce35e0a77a2bb6ba7':
+    resolution: {tarball: https://codeload.github.com/UN-EOSG-Analytics/ui/tar.gz/26cd9c918b66f3d6b0d20f8ce35e0a77a2bb6ba7}
     version: 0.1.5
     peerDependencies:
       '@radix-ui/react-dialog': '>=1.1'
       '@radix-ui/react-dropdown-menu': '>=2.1'
       '@radix-ui/react-popover': '>=1.1'
+      '@radix-ui/react-tooltip': '>=1.2'
       class-variance-authority: '>=0.7'
       clsx: '>=2'
       lucide-react: '>=0.5'
@@ -1891,6 +1892,8 @@ packages:
       '@radix-ui/react-dropdown-menu':
         optional: true
       '@radix-ui/react-popover':
+        optional: true
+      '@radix-ui/react-tooltip':
         optional: true
       class-variance-authority:
         optional: true
@@ -5717,11 +5720,12 @@ snapshots:
       '@typescript-eslint/types': 8.69.0
       eslint-visitor-keys: 5.0.1
 
-  '@un-eosg/ui@https://codeload.github.com/UN-EOSG-Analytics/ui/tar.gz/1533fc80c28b3bc552ab88e3eca6990d1c305ce1(@radix-ui/react-dialog@1.1.23(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@radix-ui/react-dropdown-menu@2.1.24(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@radix-ui/react-popover@1.1.23(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(class-variance-authority@0.7.1)(clsx@2.1.1)(lucide-react@0.574.0(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tailwind-merge@3.6.0)(tw-animate-css@1.4.0)':
+  '@un-eosg/ui@https://codeload.github.com/UN-EOSG-Analytics/ui/tar.gz/26cd9c918b66f3d6b0d20f8ce35e0a77a2bb6ba7(@radix-ui/react-dialog@1.1.23(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@radix-ui/react-dropdown-menu@2.1.24(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@radix-ui/react-popover@1.1.23(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@radix-ui/react-tooltip@1.2.16(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(class-variance-authority@0.7.1)(clsx@2.1.1)(lucide-react@0.574.0(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tailwind-merge@3.6.0)(tw-animate-css@1.4.0)':
     optionalDependencies:
       '@radix-ui/react-dialog': 1.1.23(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@radix-ui/react-dropdown-menu': 2.1.24(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@radix-ui/react-popover': 1.1.23(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@radix-ui/react-tooltip': 1.2.16(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       class-variance-authority: 0.7.1
       clsx: 2.1.1
       lucide-react: 0.574.0(react@19.2.4)

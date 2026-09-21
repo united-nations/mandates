@@ -16,7 +16,7 @@ import {
 import { DocumentSymbol } from '@/components/DocumentSymbol'
 import { DetailPanel } from '@un-eosg/ui/components/detail-panel'
 import { DetailPanelControls } from '@un-eosg/ui/components/detail-panel-controls'
-import type { ReactNode } from 'react'
+import { useEffect, type ReactNode } from 'react'
 
 interface MandateDetailSheetProps {
   /** The record's name. Visible in the header, and it stays there. */
@@ -63,22 +63,26 @@ export function MandateDetailSheet({
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
+  // Match open/: no reserved page gutter beside the fixed sidebar.
+  // Radix handles scroll locking; restore the page gutter when this closes.
+  useEffect(() => {
+    const rootStyle = document.documentElement.style
+    const previousGutter = rootStyle.scrollbarGutter
+    rootStyle.scrollbarGutter = 'auto'
+    return () => {
+      rootStyle.scrollbarGutter = previousGutter
+    }
+  }, [])
+
   const qs = searchParams.toString()
   const fullPageHref = qs ? `${pathname}?${qs}` : pathname
 
   return (
     <Sheet open onOpenChange={(open) => !open && router.back()}>
-      {/* The page reserves a permanent scrollbar gutter
-          (html { scrollbar-gutter: stable }), so a fixed right:0 element is
-          laid out inside that gutter and sits ~15px from the physical window
-          edge. Radix's scroll-lock (react-remove-scroll) publishes the exact
-          width as the inherited CSS var --removed-body-scroll-bar-size on the
-          locked body; offset the sheet right by that. Falls back to 0px when
-          unset (overlay scrollbars / not locked) so it never over-corrects. */}
       <SheetContent
         side="right"
         hideClose
-        className="mr-[calc(var(--removed-body-scroll-bar-size,0px)*-1)] flex w-full flex-col gap-0 p-0 sm:max-w-2xl lg:max-w-3xl"
+        className="flex w-full flex-col gap-0 p-0 sm:max-w-2xl lg:max-w-3xl"
       >
         <SheetTitle className="sr-only">{title}</SheetTitle>
         {/* Radix warns (and screen readers lose the announcement) when a
@@ -91,10 +95,8 @@ export function MandateDetailSheet({
         </SheetDescription>
 
         <DetailPanel
-          className="[&>header_h2]:whitespace-normal [&>header_h2]:break-words"
           title={title}
           eyebrow={eyebrow}
-          bodyClassName="un-scrollbar px-5 py-6"
           headerMetadata={
             (symbol || link) && (
               <>
