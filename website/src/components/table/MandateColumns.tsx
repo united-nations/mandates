@@ -165,18 +165,31 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
     defaultVisible: false,
     filterParam: 'budget_part',
     filterType: 'hierarchy',
-    // Sized for the longest single path the segment forms allow plus the
-    // "+N" count, because nothing in this cell truncates: every segment is an
-    // identifier. Parts are roman numerals of up to four letters, sections
-    // run to "29F" or carry an "(Add.N)" suffix, entity codes run to 19
-    // characters ("SESG-Horn of Africa") and subprogramme numbers to two
-    // digits. Measured at text-xs in Roboto: "PPB › II › 3 (Add.9) ›
-    // SESG-Horn of Africa › SP 12" is 279px with Consolas as the mono face
-    // and about 288px with Menlo, "+999" is 27px, the gap between them 4px
-    // and the cell's padding 24px — 343px. The old 260 held a typical path
-    // ("PPB › IV › 9 › DESA › SP 2", 140px) with room to spare and an
-    // addendum path with a long entity code not at all.
-    width: 344,
+    // Sized so a path of 34 characters or fewer renders in full beside a
+    // one-digit "+N" count. Of the first budget path on 5,425 documents, 95%
+    // are 29 characters or fewer, 99% are 34 or fewer, and the longest is 42.
+    //
+    // Measured, not counted: the face is proportional, so an all-capitals
+    // 33-character path can outrun a mixed-case 34. Widest of every path at
+    // 34 characters or fewer is "PPB > II > 3 (Add.2) > OSESG-SYRIA" --
+    // 203px in Roboto at text-xs, 211px in the Arial-backed fallback face
+    // next/font uses until Roboto loads, and 220px where the monospaced
+    // segments land on Menlo's wider advance instead of Consolas. Take the
+    // widest of those three, add 4px for the gap, 14px for a one-digit count
+    // and 24px for the cell's px-3: 262.
+    //
+    // Paths over 34 characters -- about 1% of documents -- truncate with an
+    // ellipsis, and the cell's hover tooltip carries the full path in words
+    // whatever the terse one does. Reserving only one digit for the count is
+    // deliberate: on the rare row whose count runs to two or three digits the
+    // path yields a few more pixels to the ellipsis and the count still never
+    // clips, which is the way round that loses nothing, since a clipped count
+    // reads as a smaller number.
+    //
+    // The old 344 was sized for an addendum section carrying both a 19-
+    // character entity code and a two-digit subprogramme. The census finds no
+    // such path: no long path carries a subprogramme at all. (S-060)
+    width: 262,
     align: 'left',
   },
   {

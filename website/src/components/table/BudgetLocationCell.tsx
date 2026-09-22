@@ -24,14 +24,20 @@ import type { BudgetLocation, BudgetStreamType } from '@/types'
  * cell that could run a row to three lines while every other column held one,
  * so row height depended on which columns were switched on.
  *
- * Nothing in the path truncates. Every segment is an identifier — a part
- * number, a section number, an entity code — and an identifier cut short is
- * not a shorter identifier, it is a different one ("UN-OH…" says nothing).
- * So the segments hold their width, the count holds its width, and the column
- * is sized (MandateColumns) for the longest path the segment forms allow.
- * Should a path ever exceed that, it is the path that clips at its edge and
- * never the count: a clipped count reads as a smaller number, which cannot be
- * seen to be wrong.
+ * The path truncates with an ellipsis; the count never does. Every segment is
+ * an identifier — a part number, a section number, an entity code — and an
+ * identifier cut short is not a shorter identifier, it is a different one, so
+ * a cut has to be visible as a cut: hence the ellipsis rather than a clean
+ * clip at the cell edge, and hence the tooltip, which carries the whole path
+ * in words whatever happens to the terse one. The column is sized
+ * (MandateColumns) so that the paths nearly all documents have render whole
+ * and only the long tail truncates. The count holds its width regardless: a
+ * clipped count reads as a smaller number, which cannot be seen to be wrong.
+ *
+ * The path is laid out as inline text rather than a flex row because
+ * `text-overflow: ellipsis` has nothing to act on inside a flex container —
+ * its children are flex items, not text. The separators carry the spacing the
+ * flex gap used to (4px either side, the same 8px between segments).
  */
 
 const STREAM_SHORT: Record<BudgetStreamType, string> = {
@@ -76,9 +82,9 @@ export function BudgetLocationCell({
       <Tooltip>
         <TooltipTrigger asChild>
           {/* min-w-0 so this, not the count, is what yields when the row is
-              over-full; overflow-hidden so what yields clips at its own edge
-              instead of running under the count. */}
-          <div className="flex min-w-0 items-baseline gap-1 overflow-hidden whitespace-nowrap">
+              over-full; overflow-hidden/text-ellipsis so what yields ends in
+              an ellipsis at its own edge instead of running under the count. */}
+          <div className="min-w-0 overflow-hidden text-ellipsis whitespace-nowrap">
             <CompactPath location={first} />
           </div>
         </TooltipTrigger>
@@ -106,13 +112,13 @@ export function BudgetLocationCell({
 }
 
 function Separator() {
-  return <span className="shrink-0 text-muted-foreground">›</span>
+  return <span className="mx-1 text-muted-foreground">›</span>
 }
 
 /** The terse one-line path, stream-prefixed. */
 function CompactPath({ location }: { location: BudgetLocation }) {
   const segments: React.ReactNode[] = [
-    <span key="stream" className="shrink-0 font-mono text-foreground">
+    <span key="stream" className="font-mono text-foreground">
       {STREAM_SHORT[location.stream]}
     </span>,
   ]
@@ -120,7 +126,7 @@ function CompactPath({ location }: { location: BudgetLocation }) {
   if (location.stream === 'ppb') {
     if (location.part)
       segments.push(
-        <span key="part" className="shrink-0 font-mono text-foreground">
+        <span key="part" className="font-mono text-foreground">
           {location.part}
         </span>
       )
@@ -128,26 +134,26 @@ function CompactPath({ location }: { location: BudgetLocation }) {
       segments.push(
         <span
           key="section"
-          className="shrink-0 font-mono text-foreground"
+          className="font-mono text-foreground"
         >
           {location.section}
         </span>
       )
     if (location.entity)
       segments.push(
-        <span key="entity" className="shrink-0 font-medium text-un-blue-text">
+        <span key="entity" className="font-medium text-un-blue-text">
           {location.entity}
         </span>
       )
     if (location.subprogramme_number !== null)
       segments.push(
-        <span key="sp" className="shrink-0 text-muted-foreground">
+        <span key="sp" className="text-muted-foreground">
           SP&nbsp;{location.subprogramme_number}
         </span>
       )
   } else if (location.stream === 'pko' && location.entity) {
     segments.push(
-      <span key="entity" className="shrink-0 font-medium text-un-blue-text">
+      <span key="entity" className="font-medium text-un-blue-text">
         {location.entity}
       </span>
     )
@@ -156,7 +162,7 @@ function CompactPath({ location }: { location: BudgetLocation }) {
   return (
     <>
       {segments.map((segment, i) => (
-        <span key={i} className="flex items-baseline gap-1">
+        <span key={i}>
           {i > 0 && <Separator />}
           {segment}
         </span>
