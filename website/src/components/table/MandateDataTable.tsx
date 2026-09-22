@@ -258,18 +258,14 @@ export function MandateDataTable({
                         return (
                           <TableCell
                             key={col.id}
-                            className={`${ALIGN_CLASS[col.align ?? ''] ?? ''} ${col.id === 'detail' ? STICKY_DETAIL_CELL + ' bg-white group-hover:bg-gray-50' : ''} overflow-hidden px-3 py-2 align-top text-sm`}
+                            className={`${ALIGN_CLASS[col.align ?? ''] ?? ''} ${col.id === 'detail' ? STICKY_DETAIL_CELL + ' bg-white group-hover:bg-gray-50' : ''} overflow-hidden px-3 py-2 align-baseline text-sm`}
                           >
                             {showExpander || showMarkers ? (
-                              // In the symbol cell, h-5 keeps the row exactly as
-                              // tall as it was when the expander had a column of
-                              // its own. In the fallback column (symbol hidden)
-                              // the content can be multi-line, so it only aligns
-                              // to the top.
+                              // Align symbol text with the row; allow its padding to set the height.
                               <span
                                 className={
                                   col.id === 'symbol'
-                                    ? 'flex h-5 items-center gap-1.5'
+                                    ? 'flex min-h-5 items-baseline gap-1.5'
                                     : 'flex items-start gap-1.5'
                                 }
                               >

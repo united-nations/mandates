@@ -5,9 +5,9 @@ import './globals.css'
 
 // https://fonts.google.com/specimen/Roboto
 // https://nextjs.org/docs/app/getting-started/fonts
-// 100 (Thin), 300 (Light), 400 (Regular), 500 (Medium), 700 (Bold), 800 (ExtraBold), 900 (Black)
+// 100 (Thin), 300 (Light), 400 (Regular), 500 (Medium), 600 (Semibold), 700 (Bold), 800 (ExtraBold), 900 (Black)
 const roboto = Roboto({
-  weight: ['100', '300', '400', '500', '700', '800', '900'],
+  weight: ['100', '300', '400', '500', '600', '700', '800', '900'],
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-roboto',

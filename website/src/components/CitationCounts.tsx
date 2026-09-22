@@ -222,36 +222,31 @@ export function CitationCounts({ mandate, entities }: CitationCountsProps) {
         Who cites this mandate in the budget?
       </DetailSectionHeading>
 
-      {/* Only the two numeric columns are labelled. The others say what they
-          are on sight — an acronym, a section number, a title — while a bare
-          figure does not, and a full header rail over six columns would be
-          heavier than the five rows beneath it. */}
-      <div
-        aria-hidden
-        className="flex items-baseline gap-2 pb-1 text-micro tracking-wide text-gray-400 uppercase"
-      >
-        <span className={COL.entity} />
-        <span className={COL.section} />
-        <span className={COL.title} />
-        <span className={COL.subprogramme} />
-        <span className={COL.count}>Cites</span>
-        <span className={COL.budget}>
-          Budget <span className="text-red-500">WIP</span>
-        </span>
-        <span className={COL.link} />
-      </div>
+      <div className="overflow-x-auto">
+        <div className="min-w-[640px]">
+          <div className="flex min-h-10 items-baseline gap-2 border-t border-gray-100 py-1 text-xs font-medium text-muted-foreground">
+            <span className={COL.entity}>Entity</span>
+            <span className={COL.location}>Budget section</span>
+            <span className={COL.subprogramme}>Subprogramme</span>
+            <span className={COL.count}>Total mandates cited</span>
+            <span className={COL.budget}>
+              Total budget <span className="text-red-500">WIP</span>
+            </span>
+          </div>
 
-      <ul className="divide-y divide-gray-100 border-y border-gray-100">
-        {shown.map((row) => (
-          <CitationRowItem key={row.key} row={row} />
-        ))}
-      </ul>
+          <ul className="divide-y divide-gray-100 border-y border-gray-100">
+            {shown.map((row) => (
+              <CitationRowItem key={row.key} row={row} />
+            ))}
+          </ul>
+        </div>
+      </div>
 
       {hidden > 0 && (
         <button
           type="button"
           onClick={() => setShowAll(true)}
-          className="inline-flex items-center gap-1 text-xs font-medium text-un-blue hover:underline"
+          className="inline-flex items-center gap-1 text-sm font-medium text-un-blue hover:underline"
         >
           <ChevronDown className="h-3 w-3" />
           Show all {rows.length}
@@ -261,7 +256,7 @@ export function CitationCounts({ mandate, entities }: CitationCountsProps) {
         <button
           type="button"
           onClick={() => setShowAll(false)}
-          className="inline-flex items-center gap-1 text-xs font-medium text-un-blue hover:underline"
+          className="inline-flex items-center gap-1 text-sm font-medium text-un-blue hover:underline"
         >
           <ChevronUp className="h-3 w-3" />
           Show fewer
@@ -293,13 +288,13 @@ const subprogrammeLabel = (subprogramme: string): string =>
  * hand-kept copies of six widths is exactly how that gets lost.
  */
 const COL = {
-  count: 'w-8 shrink-0 text-right tabular-nums',
+  count: 'w-24 shrink-0 text-right tabular-nums',
   entity: 'w-20 shrink-0',
   section: 'w-8 shrink-0 text-right tabular-nums',
+  location: 'min-w-0 flex-1',
   title: 'min-w-0 flex-1',
-  subprogramme: 'w-40 shrink-0 truncate',
-  budget: 'w-16 shrink-0 text-right tabular-nums',
-  link: 'w-4 shrink-0',
+  subprogramme: 'w-40 shrink-0',
+  budget: 'w-26 shrink-0 text-right whitespace-nowrap tabular-nums',
 } as const
 
 /**
@@ -345,12 +340,7 @@ function CitationRowItem({ row }: { row: CitationRow }) {
     : 'No budget location recorded for this citation.'
 
   return (
-    // 32px rows, the height every row list in the detail panel is set to, so
-    // that scrolling the panel does not read as four tables that each set
-    // their own rhythm: see MandateVersionHistory, RelatedMandates and
-    // MandateSgReports for the other three. This list was the short one at
-    // 24px, against 32 either side of it.
-    <li className="py-2 text-xs">
+    <li className="min-h-8 py-1 text-sm whitespace-nowrap">
       <div className="flex items-baseline gap-2">
         {/* Every cell renders even when empty: a cell that disappears takes
             its column's alignment with it, and alignment down the column is
@@ -366,20 +356,22 @@ function CitationRowItem({ row }: { row: CitationRow }) {
           {entity}
           {marked && <ChipDot />}
         </a>
-        <span className={cn(COL.section, 'text-gray-400')}>
-          {location?.section ?? '—'}
-        </span>
-        <span
-          className={cn(COL.title, 'truncate text-gray-700')}
-          title={fullLabel}
-        >
-          {sectionTitle ?? fullLabel}
-        </span>
-        <span className={cn(COL.subprogramme, 'text-gray-500')}>
+        <div className={cn(COL.location, 'flex items-baseline gap-2')}>
+          <span className={cn(COL.section, 'truncate text-black')}>
+            {location?.section ?? '—'}
+          </span>
+          <span
+            className={cn(COL.title, 'truncate text-gray-700')}
+            title={fullLabel}
+          >
+            {sectionTitle ?? fullLabel}
+          </span>
+        </div>
+        <span className={cn(COL.subprogramme, 'truncate text-gray-700')} title={location?.subprogramme ?? undefined}>
           {subprogramme ?? ''}
         </span>
         <span
-          className={cn(COL.count, 'text-gray-500')}
+          className={cn(COL.count, 'text-gray-700')}
           title={
             count === null
               ? undefined
@@ -391,33 +383,24 @@ function CitationRowItem({ row }: { row: CitationRow }) {
         {/* PLACEHOLDER — the entity's budget at this location. Holds the
             column's width so the layout is settled before the figures land;
             see BUDGET_COLUMN_STATUS for what fills it and how it matches. */}
-        <span
-          className={cn(COL.budget, 'text-gray-300')}
-          title="Budget figures are not wired up yet"
-        >
-          —
-        </span>
-        {/* self-center, not baseline: the icon is 14px in a row whose text
-            strut is 12px, so as a baseline-aligned flex item it needs more
-            room above the baseline than the text does and the rows carrying
-            an outlink sit 2px taller than the rows without one - alternating
-            down the list with the data. Taking this one cell out of the
-            baseline calculation is what evens them, the same move the annex
-            chip in MandateSgReports already makes; changing the row's own
-            alignment would move all seven columns to fix one. */}
-        <span className={cn(COL.link, 'self-center')}>
-          {outlinkHref && (
-            <a
-              href={outlinkHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              title="Open this budget section on open.un.org"
-              className="text-gray-400 hover:text-un-blue"
-            >
-              <ExternalLink aria-hidden className="h-3.5 w-3.5" />
-              <span className="sr-only">Open on open.un.org</span>
-            </a>
-          )}
+        <span className={cn(COL.budget, 'inline-flex items-baseline justify-end gap-2')}>
+          <span className="text-gray-300" title="Budget figures are not wired up yet">
+            —
+          </span>
+          <span className="w-4 shrink-0 self-center">
+            {outlinkHref && (
+              <a
+                href={outlinkHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Open this budget section on open.un.org"
+                className="text-gray-400 hover:text-un-blue"
+              >
+                <ExternalLink aria-hidden className="h-3.5 w-3.5" />
+                <span className="sr-only">Open on open.un.org</span>
+              </a>
+            )}
+          </span>
         </span>
       </div>
     </li>

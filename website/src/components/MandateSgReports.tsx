@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import { DetailSectionHeading } from '@/components/MandateDetailUi'
+import { DocumentSymbol } from '@/components/DocumentSymbol'
 import { Chip } from '@/components/ui/chip'
 import { explainerTexts } from '@/lib/en_text_contents'
 import type { MandatedSgReport } from '@/lib/data/sg-report-links'
@@ -83,18 +84,11 @@ export function MandateSgReports({ reports }: { reports: MandatedSgReport[] }) {
         <SgReportSummaryTiles reports={reports} />
       )}
 
-      {/* 32px rows, the height every row list in the detail panel is set to:
-          see MandateVersionHistory, CitationCounts and RelatedMandates for
-          the other three. py-2 rather than the py-1.5 next door in
-          RelatedMandates, because nothing in this row is taller than its own
-          16px line box: the symbol here is plain text, where that list has a
-          DocumentSymbol whose own padding makes it 20px and carries its rows
-          the last 4px on its own. */}
       <ul className="divide-y divide-gray-100 border-y border-gray-100">
         {shown.map((report) => (
-          <li key={report.report_recid} className="py-2 text-sm">
+          <li key={report.report_recid} className="min-h-8 py-1 text-sm">
             <div className="flex items-baseline gap-3">
-              <span className="w-10 shrink-0 text-xs text-gray-500">
+              <span className="w-10 shrink-0 text-sm text-black tabular-nums">
                 {report.date_published?.slice(0, 4) ?? '—'}
               </span>
               <span className="flex w-36 shrink-0 items-baseline gap-1.5">
@@ -103,30 +97,25 @@ export function MandateSgReports({ reports }: { reports: MandatedSgReport[] }) {
                   target="_blank"
                   rel="noopener noreferrer"
                   title={`Open ${report.report_symbol} in the UN Digital Library`}
-                  className="min-w-0 truncate font-mono text-xs font-medium text-un-blue hover:underline"
+                  className="inline-flex min-w-0 items-baseline rounded hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-un-blue"
                 >
-                  {report.report_symbol}
+                  <DocumentSymbol className="inline-flex min-w-0 max-w-full items-baseline text-sm">
+                    <span className="min-w-0 truncate">{report.report_symbol}</span>
+                  </DocumentSymbol>
                 </a>
                 {report.annex_position_only && (
-                  // Size overrides against chip.tsx's no-hand-written-classes
-                  // rule, deliberately: the dense density's 12px text and
-                  // padding would make annex rows taller than their
-                  // neighbours, and this list depends on a uniform
-                  // single-line row rhythm. One call site does not justify a
-                  // fourth density on the primitive; if a second sub-row-size
-                  // chip appears, promote these sizes to a density there.
                   <Chip
                     tone="ghost"
                     density="dense"
                     title={ANNEX_POSITION_NOTE}
-                    className="shrink-0 cursor-help self-center px-1.5 py-[2px] text-micro leading-none"
+                    className="shrink-0 cursor-help self-center"
                   >
                     annex
                   </Chip>
                 )}
               </span>
               <span
-                className="min-w-0 flex-1 truncate text-xs text-gray-600"
+                className="min-w-0 flex-1 truncate text-sm text-gray-700"
                 title={report.title ?? undefined}
               >
                 {report.title}
@@ -140,7 +129,7 @@ export function MandateSgReports({ reports }: { reports: MandatedSgReport[] }) {
         <button
           type="button"
           onClick={() => setShowAll(true)}
-          className="inline-flex items-center gap-1 text-xs font-medium text-un-blue hover:underline"
+          className="inline-flex items-center gap-1 text-sm font-medium text-un-blue hover:underline"
         >
           <ChevronDown className="h-3 w-3" />
           Show all {reports.length}
@@ -150,7 +139,7 @@ export function MandateSgReports({ reports }: { reports: MandatedSgReport[] }) {
         <button
           type="button"
           onClick={() => setShowAll(false)}
-          className="inline-flex items-center gap-1 text-xs font-medium text-un-blue hover:underline"
+          className="inline-flex items-center gap-1 text-sm font-medium text-un-blue hover:underline"
         >
           <ChevronUp className="h-3 w-3" />
           Show fewer

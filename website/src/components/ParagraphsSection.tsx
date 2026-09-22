@@ -2352,7 +2352,7 @@ export function ParagraphsSection({
         <div className="rounded-lg bg-muted/30 p-3">
           <div className="flex items-start gap-2">
             {label && (
-              <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-un-blue text-micro font-medium text-white">
+              <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-un-blue text-xs font-medium text-white">
                 {label}
               </span>
             )}
@@ -2752,7 +2752,7 @@ export function ParagraphsSection({
                       <button
                         type="button"
                         onClick={() => setShowPreamble(!showPreamble)}
-                        className="inline-flex cursor-pointer items-center gap-1 text-xs font-medium text-un-blue hover:underline"
+                        className="inline-flex cursor-pointer items-center gap-1 text-sm font-medium text-un-blue hover:underline"
                       >
                         {showPreamble ? (
                           <>
@@ -2786,7 +2786,7 @@ export function ParagraphsSection({
                                   <div className="rounded-lg bg-muted/30 p-3">
                                     <div className="flex items-start gap-2">
                                       {label && (
-                                        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-un-blue text-micro font-medium text-white">
+                                        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-un-blue text-xs font-medium text-white">
                                           {label}
                                         </span>
                                       )}

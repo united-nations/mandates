@@ -116,7 +116,7 @@ export const COLUMN_DEFINITIONS: ColumnDef[] = [
     id: 'text_similarity',
     label: 'Text similarity',
     defaultVisible: false,
-    width: 152,
+    width: 176,
     align: 'left',
   },
   {

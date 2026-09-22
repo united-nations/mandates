@@ -82,7 +82,7 @@ export function MandateDetailSheet({
       <SheetContent
         side="right"
         hideClose
-        className="flex w-full flex-col gap-0 p-0 sm:max-w-2xl lg:max-w-3xl"
+        className="mandate-detail-sidebar flex w-full flex-col gap-0 p-0 sm:max-w-2xl lg:max-w-3xl"
       >
         <SheetTitle className="sr-only">{title}</SheetTitle>
         {/* Radix warns (and screen readers lose the announcement) when a
@@ -99,21 +99,21 @@ export function MandateDetailSheet({
           eyebrow={eyebrow}
           headerMetadata={
             (symbol || link) && (
-              <>
-                {symbol && <DocumentSymbol>{symbol}</DocumentSymbol>}
+              <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                {symbol && <DocumentSymbol className="inline-flex items-baseline text-sm">{symbol}</DocumentSymbol>}
                 {link && (
                   <a
                     href={link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs font-medium text-un-blue hover:underline"
+                    className="inline-flex items-baseline gap-1.5 text-sm font-medium text-un-blue hover:underline"
                   >
-                    <FileText aria-hidden className="h-3.5 w-3.5" />
-                    View PDF
-                    <ExternalLinkIcon aria-hidden className="h-3 w-3" />
+                    <FileText aria-hidden className="h-3.5 w-3.5 self-center" />
+                    <span>View PDF</span>
+                    <ExternalLinkIcon aria-hidden className="h-3 w-3 self-center" />
                   </a>
                 )}
-              </>
+              </div>
             )
           }
           controls={

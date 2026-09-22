@@ -112,75 +112,63 @@ export function MandateVersionHistory({
       )}
 
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[640px] table-fixed border-y border-gray-100 text-left text-xs">
-          <thead className="text-gray-500">
+        <table className="w-full min-w-[640px] table-fixed border-y border-gray-100 text-left text-sm">
+          <thead className="h-10 text-xs text-muted-foreground">
             <tr className="border-b border-gray-100">
-              <th scope="col" className="w-12 py-2 font-medium">
+              <th scope="col" className="w-12 py-1 align-top font-medium">
                 Year
               </th>
-              <th scope="col" className="w-36 py-2 pr-3 font-medium">
+              <th scope="col" className="w-36 py-1 pr-2 align-top font-medium">
                 Symbol
               </th>
-              <th scope="col" className="py-2 pr-3 font-medium">
+              <th scope="col" className="py-1 pr-2 align-top font-medium">
                 Title
               </th>
-              <th scope="col" className="w-24 py-2 pr-3 font-medium">
+              <th scope="col" className="w-24 py-1 pr-2 text-right align-top font-medium">
                 Word length
               </th>
-              <th scope="col" className="w-28 py-2 font-medium">
+              <th scope="col" className="w-40 py-1 text-right align-top font-medium">
                 Text similarity
               </th>
             </tr>
           </thead>
-          {/* 32px rows. Every row list in the detail panel is 32px high, so
-              that scrolling the panel does not read as four tables that each
-              set their own rhythm: see CitationCounts, RelatedMandates and
-              MandateSgReports for the other three. Here that is py-1.5 rather
-              than the py-2 two of the others use, because the symbol cell
-              holds a DocumentSymbol - an inline-block with its own padding,
-              20px tall inside a 16px line - and it is the cell that sets the
-              row height. */}
           <tbody className="divide-y divide-gray-100">
             {shown.map((m) => {
               const isCurrent = m.document_symbol === currentSymbol
               return (
                 <tr
                   key={m.document_symbol}
-                  className={isCurrent ? 'bg-blue-50/60' : ''}
+                  className={isCurrent ? 'h-8 bg-blue-50/60' : 'h-8'}
                 >
-                  <td className="py-1.5 align-top text-gray-500">
+                  <td className="py-1 align-baseline text-sm text-black tabular-nums">
                     {m.year ?? '—'}
                   </td>
-                  <td className="min-w-0 py-1.5 pr-3">
-                    <div className="flex flex-wrap items-center gap-1.5">
+                  <td className="min-w-0 py-1 pr-2 align-baseline">
+                    <div className="flex min-w-0 items-baseline gap-1.5">
                       {isCurrent ? (
-                        <DocumentSymbol subdued>
-                          {m.document_symbol}
+                        <DocumentSymbol subdued className="max-w-full text-sm" title={m.document_symbol}>
+                          <span className="block truncate">{m.document_symbol}</span>
                         </DocumentSymbol>
                       ) : (
-                        <DocumentSymbol href={getMandateUrl(m.document_symbol)}>
-                          {m.document_symbol}
+                        <DocumentSymbol href={getMandateUrl(m.document_symbol)} className="max-w-full text-sm" title={m.document_symbol}>
+                          <span className="block truncate">{m.document_symbol}</span>
                         </DocumentSymbol>
                       )}
-                      {!series.is_collection && m.is_latest && (
-                        <span className="rounded bg-un-blue px-1.5 py-0.5 text-micro font-medium text-white">
-                          Latest
-                        </span>
-                      )}
+
                     </div>
                   </td>
-                  <td className="min-w-0 py-1.5 pr-3 align-top">
+                  <td className="min-w-0 py-1 pr-2 align-baseline">
                     <p
-                      className="truncate text-gray-600"
+                      className="truncate text-gray-700"
                       title={m.title ?? undefined}
                     >
                       {m.title}
                     </p>
                   </td>
-                  <td className="py-1.5 pr-3 align-top">
+                  <td className="py-1 pr-2 text-right align-baseline text-black">
                     <WordCount metrics={m.text_metrics} />
                   </td>
-                  <td className="py-1.5 align-top">
+                  <td className="py-1 text-right align-baseline text-black">
                     <TextSimilarity
                       symbol={m.document_symbol}
                       metrics={m.text_metrics}
@@ -197,7 +185,7 @@ export function MandateVersionHistory({
         <button
           type="button"
           onClick={() => setShowAll(true)}
-          className="inline-flex items-center gap-1 text-xs font-medium text-un-blue hover:underline"
+          className="inline-flex items-center gap-1 text-sm font-medium text-un-blue hover:underline"
         >
           <ChevronDown className="h-3 w-3" />
           Show all {series.members.length}
@@ -207,7 +195,7 @@ export function MandateVersionHistory({
         <button
           type="button"
           onClick={() => setShowAll(false)}
-          className="inline-flex items-center gap-1 text-xs font-medium text-un-blue hover:underline"
+          className="inline-flex items-center gap-1 text-sm font-medium text-un-blue hover:underline"
         >
           <ChevronUp className="h-3 w-3" />
           Show fewer

@@ -51,16 +51,16 @@ export function RelatedMandates({ related }: { related: RelatedMandate[] }) {
           height; a list without one needs py-2 to land in the same place. */}
       <ul className="divide-y divide-gray-100 border-y border-gray-100">
         {shown.map((item) => (
-          <li key={item.document_symbol} className="py-1.5 text-sm">
+          <li key={item.document_symbol} className="min-h-8 py-1 text-sm">
             <div className="flex items-baseline gap-3">
               <span className="w-10 shrink-0 text-xs text-gray-500">
                 {item.year ?? '—'}
               </span>
               <DocumentSymbol
                 href={getMandateUrl(item.document_symbol)}
-                className="w-36 shrink-0 truncate"
+                className="w-36 shrink-0"
               >
-                {item.document_symbol}
+                <span className="block truncate">{item.document_symbol}</span>
               </DocumentSymbol>
               <span
                 className="min-w-0 flex-1 truncate text-xs text-gray-600"
@@ -96,7 +96,7 @@ export function RelatedMandates({ related }: { related: RelatedMandate[] }) {
         <button
           type="button"
           onClick={() => setShowAll(true)}
-          className="inline-flex items-center gap-1 text-xs font-medium text-un-blue hover:underline"
+          className="inline-flex items-center gap-1 text-sm font-medium text-un-blue hover:underline"
         >
           <ChevronDown className="h-3 w-3" />
           Show all {related.length}
@@ -106,7 +106,7 @@ export function RelatedMandates({ related }: { related: RelatedMandate[] }) {
         <button
           type="button"
           onClick={() => setShowAll(false)}
-          className="inline-flex items-center gap-1 text-xs font-medium text-un-blue hover:underline"
+          className="inline-flex items-center gap-1 text-sm font-medium text-un-blue hover:underline"
         >
           <ChevronUp className="h-3 w-3" />
           Show fewer

@@ -67,6 +67,7 @@ export function MandateTopics({ subjects, related }: MandateTopicsProps) {
             return (
               <Chip
                 key={subject}
+                className="text-sm"
                 href={`/secretariat?subject=${encodeURIComponent(subject.trim())}`}
                 title={`Show mandates on ${formatSubjectLabel(subject)}`}
               >
@@ -78,7 +79,7 @@ export function MandateTopics({ subjects, related }: MandateTopicsProps) {
             <button
               type="button"
               onClick={() => setShowAll(!showAll)}
-              className="ml-1 inline-flex items-center gap-1 self-center text-xs font-medium text-un-blue hover:underline"
+              className="ml-1 inline-flex items-center gap-1 self-center text-sm font-medium text-un-blue hover:underline"
             >
               {showAll ? (
                 <>

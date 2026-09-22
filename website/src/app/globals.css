@@ -261,3 +261,23 @@ body {
     scrollbar-color: var(--color-un-blue) transparent;
   }
 }
+
+/* Mandate sidebar: primary text is black; supporting text is dark grey.
+   Keep light greys for surfaces/borders and preserve link/selection colours. */
+@layer utilities {
+  .mandate-detail-sidebar {
+    --muted-foreground: #4b5563;
+  }
+
+  :where(.mandate-detail-sidebar) :is(.text-gray-700, .text-gray-800, .text-gray-900) {
+    color: #000;
+  }
+
+  :where(.mandate-detail-sidebar) :is(.text-gray-300, .text-gray-400, .text-gray-500, .text-gray-600) {
+    color: #4b5563;
+  }
+
+  :where(.mandate-detail-sidebar) .placeholder-gray-400::placeholder {
+    color: #4b5563;
+  }
+}

@@ -231,7 +231,7 @@ export function GroupMemberLine({
   showSimilarity?: boolean
 }) {
   return (
-    <span className="flex min-w-0 items-center gap-3">
+    <span className="flex min-w-0 items-baseline gap-3">
       <span className="w-10 shrink-0 text-xs text-muted-foreground">
         {member.year ?? '—'}
       </span>
@@ -239,9 +239,9 @@ export function GroupMemberLine({
           list, but not somewhere to go. */}
       <DocumentSymbol
         subdued={member.current}
-        className="w-36 shrink-0 truncate"
+        className="w-36 shrink-0"
       >
-        {member.symbol}
+        <span className="block truncate">{member.symbol}</span>
       </DocumentSymbol>
       <span className="min-w-0 truncate text-xs text-muted-foreground">
         {member.title}
