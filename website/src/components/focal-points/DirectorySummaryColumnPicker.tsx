@@ -50,6 +50,8 @@ export function DirectorySummaryColumnPicker({
   onToggle,
   onReset,
 }: Props) {
+  if (ADDABLE_SUMMARY_COLUMNS.length === 0) return null
+
   const count = ADDABLE_SUMMARY_COLUMNS.filter((column) =>
     added.has(column.id)
   ).length

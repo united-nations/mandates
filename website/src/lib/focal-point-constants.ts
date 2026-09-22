@@ -109,6 +109,24 @@ export const ENTITY_CLASS_LABELS: Record<EntityClass, string> = {
   mechanism_or_tribunal: 'Mechanism or tribunal',
 }
 
+/** Plural labels for directory group headings. */
+export const ENTITY_CLASS_GROUP_LABELS: Record<EntityClass, string> = {
+  secretariat: 'Secretariat Departments and Offices',
+  regional_commission: 'Regional Commissions',
+  fund_programme_institute: 'Funds and Programmes',
+  specialized_agency: 'Specialized Agencies',
+  related_organization: 'Related Organizations',
+  special_adviser_or_envoy: 'Special Advisers and Envoys',
+  political_mission: 'Political Missions',
+  peacekeeping_operation: 'Peacekeeping Operations',
+  intergovernmental_or_expert_body: 'Intergovernmental and Expert Bodies',
+  mechanism_or_tribunal: 'Mechanisms and Tribunals',
+}
+
+export function entityClassGroupLabel(value: string): string {
+  return (ENTITY_CLASS_GROUP_LABELS as Record<string, string | undefined>)[value] ?? value
+}
+
 /**
  * The label for a stored class, or the stored value itself where this list
  * has no label for it. The CHECK on the column makes a value outside the nine

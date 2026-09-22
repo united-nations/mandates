@@ -41,18 +41,5 @@ export const SHOW_MANDATE_REGISTRY_RATING: boolean = false
  */
 export const SHOW_MANDATED_SG_REPORTS: boolean = true
 
-/**
- * The "Entity class" column on the focal point directory (/focal-points/
- * directory): what kind of body each designating entity is, as the focal
- * points application classified it and publishes it through the view this
- * site reads. On, the column EXISTS — it is off in the table until a reader
- * adds it from the column picker, and its label is searchable only while they
- * have. Off, the column is not in the picker either and the table's widths
- * return to what they were before it existed; the value is still read from the
- * view, so flipping this changes nothing about the query.
- *
- * The same name gates the same rendering in the focal points application, so
- * the two directories can be switched together. They are separate constants
- * in separate repositories and have to be flipped in both.
- */
+/** Group the focal point directory by the entity classification from its source. */
 export const SHOW_ENTITY_CLASSIFICATION: boolean = true

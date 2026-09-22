@@ -181,7 +181,7 @@ function PeopleSection({
                   )}
                 </div>
                 {contact.title && (
-                  <p className="text-muted-foreground">{contact.title}</p>
+                  <p className="text-foreground">{contact.title}</p>
                 )}
                 <EmailLink address={contact.email} className="mt-1" />
                 {/* Absent unless a number was given, and rendered as nothing
@@ -216,7 +216,7 @@ function PeopleSection({
           field. */}
       {functionalMailbox && (
         <DetailFields columns={1} className="mt-6">
-          <DetailField label="Functional mailbox">
+          <DetailField label="Functional mailbox" className="[&>dt]:text-foreground">
             <EmailLink address={functionalMailbox} />
           </DetailField>
         </DetailFields>

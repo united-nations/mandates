@@ -186,6 +186,9 @@ export const explainerTexts = {
   },
 
   // Version matching: concise toggle guidance and the detailed methodology disclaimer.
+  focalPointGrouping: {
+    unclassified: 'Other / Unclassified',
+  },
   versionMatching: {
     groupTooltip:
       'Show recurring resolutions as one row per series, displaying the most recent version matching your filters. Expand a row to see earlier versions. Versions are grouped automatically by title and mandating body.',

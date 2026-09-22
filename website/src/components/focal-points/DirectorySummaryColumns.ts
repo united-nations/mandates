@@ -1,115 +1,11 @@
 /**
- * The directory summary's columns.
- *
- * Data-driven from this list, the way `COLUMN_DEFINITIONS` in
- * `components/table/MandateColumns.ts` is: array order is column order, and the
- * table renders by mapping over it. Cell bodies are a switch on `id` in
- * `DirectorySummaryTable.tsx`, again following that file.
- *
- * "Summary" names the COLUMN SET, not the audience. The difference between this
- * and the internal directory's own column list is administrative fields — who
- * cleared the designation, who submitted it and when, lead or shared,
- * and the supersession record. None of them is read by the query behind this
- * table (see `lib/data/focal-points.ts`), so the cut is made where the data is
- * fetched, not hidden here at the point of rendering.
- *
- * There are then TWO cuts, and they are different things. The one above is what
- * this page can show at all. The one below — `addable` — is what it shows on
- * arrival. A reader here is not an administrator: they have come to find out
- * who to write to about a subject, they are not signed in, and they will
- * probably not come back. So the table opens on the four columns that answer
- * that question and offers three more behind a control. Everything else the
- * query returns is in the panel, in full, one click away; nothing is hidden by
- * being off by default.
- *
- * ---------------------------------------------------------------------------
- * HOW A COLUMN IS SIZED
- *
- * Each column declares a FLOOR and a SHARE, not a width. The width is worked
- * out for the set of columns actually on screen, by `directorySummaryLayout`
- * below. A fixed width per column cannot do this: the same number has to serve
- * a four-column table and a seven-column one, and it is wrong for at least one
- * of them. Four columns of fixed widths left 360px over, all of which landed in
- * the single column declared flexible — Coverage rendered 480px wide holding
- * three short counts — while the seven-column table was tight enough that two
- * headers and three cells broke.
- *
- * `min` is the floor: the width below which something observably breaks. Every
- * one of them below is a measured number with the breakage named beside it, not
- * a guess. Two kinds of breakage set them:
- *
- *   - The HEADER. A header must never wrap, and a one-word header does not
- *     wrap, it overflows its cell silently. Every floor is at or above its
- *     header's rendered width plus the 24px the cell's `px-3` takes.
- *   - A PHRASE in the cell that should not be split. Where content truncates or
- *     clamps at any width — display names, contact names, addresses — there is
- *     no such phrase, and the header alone sets the floor.
- *
- * `grow` is the share of whatever the table has spare, relative to the other
- * columns on screen. It is a weight, not a percentage: the shares of the
- * visible columns are summed and each column takes its fraction, so adding or
- * removing a column redistributes automatically. Zero means the column never
- * grows — its content has a bounded upper length and extra width would buy
- * nothing but white space, which is the fault this replaced.
- *
- * ---------------------------------------------------------------------------
- * WHAT THE TABLE HAS TO WORK WITH
- *
- * This page uses the shared centred main column rather than the full-bleed
- * treatment the mandate explorer opts into, so the figure is that column's
- * content box, not the window. This route, and only this route, takes the WIDE
- * variant of that column — see `isWideColumn` in `RootLayoutClient`:
- *
- *   `mx-auto w-full max-w-4xl px-8 sm:px-12 lg:max-w-7xl`
- *
- * Two things changed there and both were needed. The cap went from `max-w-6xl`
- * to `max-w-7xl`, and the padding stays at the `sm` step of 48px a side rather
- * than going up to 64 at `lg`. The second is the one that is easy to miss, and
- * leaving it out is a bug this file had for one revision: what the table gets
- * is the cap MINUS the padding MINUS the scrollbar, and at a 1280 viewport the
- * cap is never reached, because the scrollbar takes 15px before anything else
- * does. With `lg:px-16` the content box at 1280 is 1137, the table's floors sum
- * to 1150, and a public table scrolls sideways at the commonest desktop width.
- *
- * MEASURED, on the rendered page, at both widths and in both column states:
- *
- *   viewport 1280   main 1265   content 1169   table 1167   no scroll
- *   viewport 1440   main 1280   content 1184   table 1182   no scroll
- *
- * (1265 rather than 1280 is the scrollbar; 1280 rather than 1440 is the cap
- * binding. The table is the content box less the wrapper's two 1px borders.)
- * The table fills whatever the wrapper gives and never goes below the floors,
- * so the two column states measure the same width and differ only in how it is
- * shared. Below about 1263 the wrapper drops under the floor sum and the table
- * scrolls horizontally with the detail rail pinned — the mandate table's
- * behaviour too. That boundary was about 1144 before this column was added,
- * and moving it is what the eighth column cost.
- *
- * `DESIGN_WIDTH` IS THE FLOOR SUM, NOT THE CONTENT BOX. It was the second of
- * those until the cap moved, and the two happened to coincide; they no longer
- * do, and the name means what the value is. It is the narrowest the table is
- * ever laid out to — the width the shares are budgeted against — and above
- * it the surplus is handed out by the shares below.
- *
- * The eight-column set's floors sum to exactly `DESIGN_WIDTH`. That is not a
- * coincidence, it is the binding constraint: the floors are what the content
- * needs, and their sum is what a 1280 viewport can be made to give. There is no
- * slack in the eight-column state — a floor raised here has to come off
- * another column, or the table starts scrolling above 1280. The five-column
- * set's floors sum to 748, so that state has 402px to hand out, and the shares
- * below decide where it goes.
+ * Columns for the focal point directory. Personal contact details and working
+ * languages live together in Focal points, below the office mailbox.
+ * Each column has a minimum width and a share of the remaining space.
  */
 
-import { SHOW_ENTITY_CLASSIFICATION } from '@/lib/feature-flags'
-
-/**
- * The narrowest the table is ever laid out to: the sum of the eight-column
- * set's floors, and the width a 1280 viewport can be made to give it once the
- * scrollbar and the column's padding are taken off. The table renders wider
- * wherever the wrapper is wider — 1167 at 1280, 1182 at 1440, both measured —
- * and scrolls below this rather than compressing columns past their floors.
- */
-export const DESIGN_WIDTH = 1150
+/** Minimum design width after combining telephone and language columns. */
+export const DESIGN_WIDTH = 922
 
 export interface DirectorySummaryColumn {
   id: string
@@ -136,91 +32,14 @@ export interface DirectorySummaryColumn {
   align?: 'left' | 'right' | 'center'
 }
 
-/**
- * What kind of body the entity is, as the focal points application classified
- * it and publishes it through the view this site reads. Beside the entity,
- * because it is a fact about the entity and not about the designation. An
- * entity the roster does not know, or one the view does not carry, has no
- * class and the cell shows the same dash the other absences show.
- *
- * Floor 136. The header "Entity class" needs 112 to stay on one line — at the
- * 100 this column used to declare it wrapped onto two, the only header in the
- * table that did. The cell then asks for more than the header does: the nine
- * labels are a closed vocabulary, so the floor is set by the longest one that
- * has to read well. "Secretariat department or office" reaches two lines at
- * 133, and was breaking across three. The longest label of the nine,
- * "Specialized agency or related organization", wants 140 for two lines and
- * takes three here — which costs nothing, because the row's height is set by
- * the entity name and the contact block beside it, and three lines of caption
- * text do not reach it.
- *
- * No share. Nine labels of known length: past 140 the column is padding.
- */
-const ENTITY_CLASS_COLUMN: DirectorySummaryColumn = {
-  id: 'entity_class',
-  label: 'Entity class',
-  min: 136,
-  grow: 0,
-  // Addable, not default. It is a fact about the ENTITY and not about the
-  // designation, and it answers a question about the shape of the roster
-  // rather than the question this page is for. A reader working out whether
-  // the roster reaches past the Secretariat wants it; a reader looking up who
-  // to write to about oceans does not.
-  addable: true,
-  align: 'left',
-}
-
 export const DIRECTORY_SUMMARY_COLUMNS: DirectorySummaryColumn[] = [
   {
-    // The display name, with the code beneath it.
-    //
-    // The code stays because it is not an internal identifier: 59 of the 62
-    // entries in `entity_display_names` are single-token acronyms, and they are
-    // the ones the documents and the delegations already use — OCHA, DPPA,
-    // DESA, UNEP, OHCHR. Only one code appears verbatim inside its own display
-    // name, so it is almost never a repetition of the line above it. It is also
-    // the only workable handle at the extremes: IIIM's display name is 227
-    // characters, and nobody scans a column for that.
-    //
-    // So the name leads, because that is what a reader who does not know the
-    // acronym needs, and the code follows in caption grey, because that is what
-    // a reader who does know it scans for. Dropping either costs one of them.
-    //
-    // Floor 158, share 30 — the largest share in the table, with Focal points.
-    // The floor is the header (68) well cleared and one real name measured:
-    // "Executive Office of the Secretary-General" holds two lines at 158. It is
-    // a floor and not a target. Longer names are common — "Office of the High
-    // Commissioner for Human Rights" wants 227, "Office for the Coordination of
-    // Humanitarian Affairs" 189 — and the cell clamps at two lines with the
-    // full name on `title`, so the floor costs a clamp rather than a broken
-    // layout. The share is what makes the floor rare: on arrival this column
-    // renders 285 and the names above fit whole. Only a reader who has switched
-    // on all three extras sees it at the floor.
+    // Entity and sub-unit identify a designation together. Keep both in one
+    // column, with space for the entity name above its sub-unit.
     id: 'entity',
     label: 'Entity',
-    min: 158,
-    grow: 30,
-    align: 'left',
-  },
-  ...(SHOW_ENTITY_CLASSIFICATION ? [ENTITY_CLASS_COLUMN] : []),
-  {
-    // "DPPA" does not route a query and "DPPA, Middle East Division" does —
-    // which is the reason the underlying column is required. It is the closest
-    // thing a designation has to a name, so it carries the row.
-    //
-    // Floor 132, share 20. This is the column the fixed widths hurt most
-    // visibly: at 126 "Executive Office; UN80 team" broke as "Executive /
-    // Office; UN80 / team", splitting a phrase the semicolon had already
-    // separated. "Executive Office;" needs 127 to stay whole, so the floor
-    // clears it and the break falls at the semicolon where it belongs. The
-    // whole value wants 200 for one line, which the share reaches on arrival —
-    // this column renders 217 in the four-column state and the value does not
-    // wrap at all. The share is below Entity's and Focal points' because the
-    // gain stops there: past the longest sub-unit name the width is spent.
-    id: 'sub_unit',
-    label: 'Sub-unit',
-    min: 132,
-    grow: 20,
+    min: 240,
+    grow: 40,
     align: 'left',
   },
   {
@@ -242,97 +61,6 @@ export const DIRECTORY_SUMMARY_COLUMNS: DirectorySummaryColumn[] = [
     label: 'Focal points',
     min: 136,
     grow: 30,
-    align: 'left',
-  },
-  {
-    // Default, and the reason is a promise rather than a preference. The Chef
-    // de Cabinet's memo of 14 September 2026 tells 67 Heads of entity that the
-    // form will request a telephone number, so a column for it is what makes
-    // the collected field visible to the delegations the memo is collecting it
-    // for. Immediately after Focal points, because the two are one thing: the
-    // person, and how to reach them.
-    //
-    // Number and extension in ONE cell, joined by `contactTelephone` — the
-    // reasoning is on that function. Briefly: a caller dials them in sequence,
-    // and a second column would take a floor set by its own header for three
-    // or four digits that most rows do not have, out of a budget that had none
-    // to give.
-    //
-    // One line per person, matching the Focal points cell beside it, so a
-    // designation naming two people lines its numbers up against its names.
-    //
-    // Floor 128, share 10. Both figures are measured on the rendered table.
-    //
-    // The header is not what sets it: "Telephone" renders 72.5px uppercase at
-    // the header's size and tracking, so 96.5 with the cell's 24px of `px-3`
-    // would clear it. The CONTENT sets it, and the phrase that must not split
-    // is the number itself — a telephone number broken across two lines is not
-    // a telephone number. Nothing normalises these, so the worst case is one
-    // written with no spaces at all: "+442071234567" measures 101.4px at the
-    // cell's 14px and wants 125.4 with the padding. 128 clears that by 2.6px,
-    // which the column needs for the same half-pixel reason Coverage's floor
-    // does — a floor set flush against its requirement wraps on the rounding.
-    //
-    // NOT covered, and named rather than smoothed over: an unspaced number
-    // longer than 13 characters. E.164 allows 15 digits, and "+123456789012345"
-    // would want about 149. No such number is in the table — none is, yet — and
-    // sizing the column for the theoretical maximum would take 21px out of a
-    // budget that has none. A number that long, written unspaced, wraps.
-    //
-    // The extension does NOT set the floor, because it is allowed to wrap: it
-    // follows a space, so "+1 917 367 5000 ext. 4521" breaks after the number
-    // and onto a second line, which is legible. Only the number is protected.
-    //
-    // Share 10, the smallest non-zero in the table: past the longest number the
-    // column is padding, and it takes a token share rather than none only so
-    // the numbers are not pressed against the cell edge.
-    id: 'telephone',
-    label: 'Telephone',
-    min: 128,
-    grow: 10,
-    align: 'left',
-  },
-  {
-    // Addable, not default. It is the address that outlives the person and the
-    // one publishable under OP6, so it is not a minor field — but most readers
-    // arrive wanting a name, the panel carries it in full for the rest, and a
-    // second column of addresses beside Focal points reads as a repetition of
-    // it. Switched on by the reader who means to write to the division rather
-    // than to a person.
-    //
-    // Floor 166, share 15. The floor is the header and nothing else: at 163
-    // "Functional mailbox" is the widest header in the table, and the addresses
-    // under it truncate at any width. That is also why the share is small — a
-    // wider column shows more of an address, which is worth something but not
-    // as much as a name that stops being cut.
-    id: 'functional_mailbox',
-    label: 'Functional mailbox',
-    min: 166,
-    grow: 15,
-    addable: true,
-    align: 'left',
-  },
-  {
-    // Addable, not default. A francophone delegation wanting a focal point who
-    // works in French is a real routing need and the reason the field is
-    // collected at all — but it is a minority of readers, and a column of
-    // language codes standing between the people and what they cover is clutter
-    // for everyone else.
-    //
-    // Codes as given on the form. Not a controlled vocabulary upstream, so this
-    // shows what was entered.
-    //
-    // Floor 100, no share. The header sets it, and the header was a bug: at the
-    // 80 this column used to declare, "Languages" overflowed its cell by
-    // 18.5px. One word cannot wrap, so nothing about that showed as wrapping —
-    // it simply spilled into Coverage. 99 is what the word needs and 100 is the
-    // floor. No share because three codes and their separators are the whole of
-    // the content.
-    id: 'languages',
-    label: 'Languages',
-    min: 100,
-    grow: 0,
-    addable: true,
     align: 'left',
   },
   {

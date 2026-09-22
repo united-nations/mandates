@@ -3,7 +3,6 @@ import type { Metadata } from 'next'
 import { ExternalLink } from '@/components/external-link'
 import { DirectorySummaryTable } from '@/components/focal-points/DirectorySummaryTable'
 import { getFocalPointDirectorySummary } from '@/lib/data/focal-points'
-import { typography } from '@/lib/typography'
 
 export const metadata: Metadata = {
   title: 'Mandate focal points',
@@ -59,7 +58,7 @@ export default async function FocalPointDirectoryPage() {
           the page and sits after the thing it is a footnote to. Deliberately
           not a banner, a callout, or anything above the table — and not in
           SiteFooter, which is every page's and not this one's. */}
-      <p className={`mt-4 ${typography.caption}`}>
+      <p className="mt-4 text-sm text-muted-foreground">
         UN entities designate their focal points at{' '}
         <ExternalLink
           href="https://mandate-focal-points.un-two-zero.org"

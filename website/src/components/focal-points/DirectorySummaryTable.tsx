@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import { ChevronRight } from 'lucide-react'
+import { Chip } from '@/components/ui/chip'
 import { SearchInput } from '@/components/SearchInput'
 import {
   Table,
@@ -11,6 +12,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { SHOW_ENTITY_CLASSIFICATION } from '@/lib/feature-flags'
+import { explainerTexts } from '@/lib/en_text_contents'
 import { typography } from '@/lib/typography'
 import {
   contactTelephone,
@@ -18,6 +21,7 @@ import {
   coverageClaimLabel,
   coverageKindCount,
   entityClassLabel,
+  entityClassGroupLabel,
   type DirectorySummaryDesignation,
 } from '@/lib/focal-point-constants'
 import {
@@ -102,16 +106,8 @@ export function DirectorySummaryTable({
     setOpen(true)
   }
 
-  // Whether the class label is part of what a search looks at. It follows the
-  // COLUMN rather than the feature flag now that the column can be switched
-  // off: a search that matched on a class nobody can see would return a row
-  // with no visible reason for being there.
-  const showsEntityClass = columns.some(
-    (column) => column.id === 'entity_class'
-  )
+  const showsEntityClass = SHOW_ENTITY_CLASSIFICATION
 
-  // Each row's searchable text, built once per data change rather than on every
-  // keystroke. Rebuilt when the class column is switched, which is rare.
   const rows = useMemo(
     () =>
       designations.map((designation) => ({
@@ -131,6 +127,25 @@ export function DirectorySummaryTable({
             .map((row) => row.designation),
     [rows, needle]
   )
+
+  const groups = useMemo(() => {
+    if (!showsEntityClass) return [{ label: null, designations: visible }]
+    const byClass = new Map<string | null, DirectorySummaryDesignation[]>()
+    for (const designation of visible) {
+      const key = designation.entity.entityClass
+      const entries = byClass.get(key) ?? []
+      entries.push(designation)
+      byClass.set(key, entries)
+    }
+    return Array.from(byClass)
+      .sort(([a], [b]) =>
+        a === null ? 1 : b === null ? -1 : entityClassGroupLabel(a).localeCompare(entityClassGroupLabel(b))
+      )
+      .map(([key, entries]) => ({
+        label: key === null ? explainerTexts.focalPointGrouping.unclassified : entityClassGroupLabel(key),
+        designations: entries,
+      }))
+  }, [visible, showsEntityClass])
 
   return (
     <div>
@@ -197,7 +212,7 @@ export function DirectorySummaryTable({
                      which is the failure worth having. */
                   className={`${ALIGN_CLASS[column.align ?? 'left']} ${
                     column.id === 'detail'
-                      ? `${STICKY_DETAIL_CELL} bg-muted`
+                      ? 'sticky right-0 z-10 bg-muted'
                       : ''
                   } h-10 px-3 whitespace-nowrap ${typography.tableHeader}`}
                 >
@@ -212,8 +227,8 @@ export function DirectorySummaryTable({
               ))}
             </TableRow>
           </TableHeader>
-          <TableBody>
-            {visible.length === 0 ? (
+          {visible.length === 0 ? (
+            <TableBody>
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
@@ -229,8 +244,21 @@ export function DirectorySummaryTable({
                     : 'Nothing matched that search.'}
                 </TableCell>
               </TableRow>
-            ) : (
-              visible.map((designation) => (
+            </TableBody>
+          ) : groups.map((group) => (
+            <TableBody key={group.label ?? 'all'}>
+              {group.label !== null && (
+                <TableRow className="bg-muted hover:bg-muted">
+                  <th
+                    scope="rowgroup"
+                    colSpan={columns.length}
+                    className="px-3 py-2 text-left text-sm font-semibold text-foreground"
+                  >
+                    {group.label}
+                  </th>
+                </TableRow>
+              )}
+              {group.designations.map((designation) => (
                 <TableRow
                   key={designation.id}
                   className="group cursor-pointer border-b border-border hover:bg-muted"
@@ -252,9 +280,9 @@ export function DirectorySummaryTable({
                     </TableCell>
                   ))}
                 </TableRow>
-              ))
-            )}
-          </TableBody>
+              ))}
+            </TableBody>
+          ))}
         </Table>
       </div>
 
@@ -284,61 +312,61 @@ function DirectorySummaryCell({
       const { code, name } = designation.entity
       return (
         <div className="min-w-0">
+          {code && (
+            <div
+              className="truncate text-sm font-bold text-foreground"
+              title={code}
+            >
+              {code}
+            </div>
+          )}
           {/* Clamped, not truncated to one line: the median display name is 42
               characters and the longest is 227, so one line would cut most of
               them mid-word. Two lines carry the common case whole, `title`
               carries the rest on hover, and the panel has it in full. */}
           {name ? (
-            <div className="line-clamp-2 text-foreground" title={name}>
+            <div className="line-clamp-2 font-bold text-foreground" title={name}>
               {name}
             </div>
           ) : (
             // Rostered, but the view does not name it. Shown as the absence it
-            // is — never backfilled with the code below, which would read as a
+            // is — never backfilled with the code above, which would read as a
             // name and hide the gap.
-            <div className="text-foreground">—</div>
+            <div className="text-muted-foreground">—</div>
           )}
-          {code && (
-            <div
-              className="truncate text-sm text-foreground"
-              title={code}
-            >
-              {code}
+          {designation.subUnit && (
+            <div className="mt-1 text-sm text-foreground">
+              {designation.subUnit}
             </div>
           )}
         </div>
       )
     }
 
-    case 'entity_class': {
-      // The label where one is known, the stored value where not. No class is
-      // the same absence as no name above it: a dash, not the code and not a
-      // stand-in class.
-      const { entityClass } = designation.entity
-      return entityClass === null ? (
-        <span className="text-foreground">—</span>
-      ) : (
-        <span className="text-sm text-foreground">
-          {entityClassLabel(entityClass)}
-        </span>
-      )
-    }
-
-    case 'sub_unit':
-      return <span className="text-foreground">{designation.subUnit}</span>
-
     case 'people':
-      if (designation.contacts.length === 0) {
-        return <span className="text-foreground">—</span>
+      if (designation.contacts.length === 0 && !designation.functionalMailbox) {
+        return <span className="text-muted-foreground">—</span>
       }
       return (
         <ul className="space-y-2">
+          {designation.functionalMailbox && (
+            <li className="min-w-0">
+              <div className="text-sm font-medium text-foreground">
+                Functional mailbox
+              </div>
+              <EmailLink
+                address={designation.functionalMailbox}
+                className="text-sm"
+                onClick={stopRowClick}
+              />
+            </li>
+          )}
           {designation.contacts.map((contact) => (
             <li key={contact.email + contact.name} className="min-w-0">
               <div className="truncate font-medium text-foreground">
                 {contact.name}
                 {contact.role === 'alternate' && (
-                  <span className="ml-1.5 text-sm font-normal text-foreground">
+                  <span className="ml-1.5 text-sm font-normal text-muted-foreground">
                     (alternate)
                   </span>
                 )}
@@ -353,74 +381,26 @@ function DirectorySummaryCell({
                 className="text-sm"
                 onClick={stopRowClick}
               />
+              {contact.telephone && (
+                <a
+                  href={`tel:${contact.telephone}`}
+                  onClick={stopRowClick}
+                  className="block text-sm text-un-blue-text hover:underline"
+                >
+                  {contactTelephone(contact)}
+                </a>
+              )}
+              {contact.workingLanguages && contact.workingLanguages.length > 0 && (
+                <div className="mt-1 flex flex-wrap gap-1">
+                  {contact.workingLanguages.map((language) => (
+                    <Chip key={language} density="dense">{language}</Chip>
+                  ))}
+                </div>
+              )}
             </li>
           ))}
         </ul>
       )
-
-    case 'telephone': {
-      if (designation.contacts.length === 0) {
-        return <span className="text-foreground">—</span>
-      }
-      // One line per person, in the same order as the Focal points cell, so
-      // the two columns read across. A person with no number contributes the
-      // dash rather than a blank line: the row beside it has a name on it, and
-      // an empty line would read as the column having failed rather than as
-      // that person not having given one.
-      //
-      // `tel:` on the number as stored. The href is the value, unedited — this
-      // page does not know what a dialable form of somebody's number is, and
-      // guessing one is how a link ends up dialling the wrong country.
-      return (
-        <ul className="space-y-2">
-          {designation.contacts.map((contact) => {
-            const telephone = contactTelephone(contact)
-            return (
-              <li key={contact.email + contact.name} className="min-w-0">
-                {telephone === null ? (
-                  <span className="text-foreground">—</span>
-                ) : (
-                  <a
-                    href={`tel:${contact.telephone}`}
-                    onClick={stopRowClick}
-                    className="text-un-blue-text hover:underline"
-                  >
-                    {telephone}
-                  </a>
-                )}
-              </li>
-            )
-          })}
-        </ul>
-      )
-    }
-
-    case 'functional_mailbox':
-      return designation.functionalMailbox ? (
-        <EmailLink
-          address={designation.functionalMailbox}
-          className="text-sm"
-          onClick={stopRowClick}
-        />
-      ) : (
-        <span className="text-foreground">—</span>
-      )
-
-    case 'languages': {
-      // One row per person would repeat the name; the set is what the column
-      // answers ("can this designation take a query in French?").
-      const languages = [
-        ...new Set(
-          designation.contacts.flatMap(
-            (contact) => contact.workingLanguages ?? []
-          )
-        ),
-      ]
-      if (languages.length === 0) {
-        return <span className="text-foreground">—</span>
-      }
-      return <span className="text-foreground">{languages.join(', ')}</span>
-    }
 
     case 'coverage': {
       const counts = COVERAGE_KINDS.map((kind) => ({
@@ -428,7 +408,7 @@ function DirectorySummaryCell({
         n: designation.coverage.filter((claim) => claim.kind === kind).length,
       })).filter((entry) => entry.n > 0)
       if (counts.length === 0) {
-        return <span className="text-foreground">—</span>
+        return <span className="text-muted-foreground">—</span>
       }
       // Counts, not the claims themselves: the claims in full are the panel's
       // job, and seven keywords in a cell would become the row.
@@ -502,7 +482,7 @@ function searchableText(
     designation.entity.name,
     designation.entity.code,
     showsEntityClass && designation.entity.entityClass !== null
-      ? entityClassLabel(designation.entity.entityClass)
+      ? [entityClassLabel(designation.entity.entityClass), entityClassGroupLabel(designation.entity.entityClass)].join(" ")
       : null,
     designation.subUnit,
     designation.functionalMailbox,
