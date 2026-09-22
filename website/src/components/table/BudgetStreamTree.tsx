@@ -425,14 +425,14 @@ function TreeRow({
           type="button"
           onClick={onSelect}
           aria-pressed={isActive}
-          className={`flex min-w-0 flex-1 items-baseline gap-2 rounded px-1.5 py-1 text-left text-xs hover:bg-accent ${
-            isActive ? 'bg-un-blue/10 font-medium text-un-blue' : ''
+          className={`flex min-w-0 flex-1 items-baseline gap-2 rounded px-1.5 py-1 text-left text-sm hover:bg-accent ${
+            isActive ? 'bg-accent font-medium text-accent-foreground' : ''
           }`}
         >
           {body}
         </button>
       ) : (
-        <span className="flex min-w-0 flex-1 items-baseline gap-2 px-1.5 py-1 text-left text-xs font-medium text-muted-foreground">
+        <span className="flex min-w-0 flex-1 items-baseline gap-2 px-1.5 py-1 text-left text-sm font-medium text-muted-foreground">
           {body}
         </span>
       )}

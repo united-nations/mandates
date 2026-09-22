@@ -43,7 +43,7 @@ import { DirectorySummaryPanel, EmailLink } from './DirectorySummaryPanel'
  * rather than floating over it. Same treatment as the mandate table's.
  */
 const STICKY_DETAIL_CELL =
-  'sticky right-0 z-10 border-l border-gray-200 shadow-[-8px_0_8px_-8px_rgba(0,0,0,0.18)]'
+  'sticky right-0 z-10 border-l border-border shadow-[-8px_0_8px_-8px_rgba(0,0,0,0.18)]'
 
 const ALIGN_CLASS: Record<string, string> = {
   left: 'text-left',
@@ -175,7 +175,7 @@ export function DirectorySummaryTable({
         />
       </div>
 
-      <div className="overflow-hidden rounded-lg border border-gray-200">
+      <div className="overflow-hidden rounded-lg border border-border">
         {/* Fixed layout, so the declared column widths bind instead of being
             recomputed from whatever the rows happen to contain. Every column
             carries an exact width now, and they sum to the table's width, so
@@ -184,7 +184,7 @@ export function DirectorySummaryTable({
             scrolls rather than compressing columns past their floors. */}
         <Table className="table-fixed" style={{ minWidth: layout.total }}>
           <TableHeader>
-            <TableRow className="border-b bg-gray-50 hover:bg-gray-50">
+            <TableRow className="border-b bg-muted hover:bg-muted">
               {columns.map((column, index) => (
                 <TableHead
                   key={column.id}
@@ -197,7 +197,7 @@ export function DirectorySummaryTable({
                      which is the failure worth having. */
                   className={`${ALIGN_CLASS[column.align ?? 'left']} ${
                     column.id === 'detail'
-                      ? `${STICKY_DETAIL_CELL} bg-gray-50`
+                      ? `${STICKY_DETAIL_CELL} bg-muted`
                       : ''
                   } h-10 px-3 whitespace-nowrap ${typography.tableHeader}`}
                 >
@@ -233,7 +233,7 @@ export function DirectorySummaryTable({
               visible.map((designation) => (
                 <TableRow
                   key={designation.id}
-                  className="group cursor-pointer border-b border-gray-100 hover:bg-gray-50"
+                  className="group cursor-pointer border-b border-border hover:bg-muted"
                   onClick={() => openDesignation(designation)}
                 >
                   {columns.map((column) => (
@@ -241,7 +241,7 @@ export function DirectorySummaryTable({
                       key={column.id}
                       className={`${ALIGN_CLASS[column.align ?? 'left']} ${
                         column.id === 'detail'
-                          ? `${STICKY_DETAIL_CELL} bg-white group-hover:bg-gray-50`
+                          ? `${STICKY_DETAIL_CELL} bg-white group-hover:bg-muted`
                           : ''
                       } overflow-hidden px-3 py-3 align-top text-sm`}
                     >
@@ -296,11 +296,11 @@ function DirectorySummaryCell({
             // Rostered, but the view does not name it. Shown as the absence it
             // is — never backfilled with the code below, which would read as a
             // name and hide the gap.
-            <div className="text-muted-foreground">—</div>
+            <div className="text-foreground">—</div>
           )}
           {code && (
             <div
-              className="truncate text-xs text-muted-foreground"
+              className="truncate text-sm text-foreground"
               title={code}
             >
               {code}
@@ -316,9 +316,9 @@ function DirectorySummaryCell({
       // stand-in class.
       const { entityClass } = designation.entity
       return entityClass === null ? (
-        <span className="text-muted-foreground">—</span>
+        <span className="text-foreground">—</span>
       ) : (
-        <span className="text-xs text-muted-foreground">
+        <span className="text-sm text-foreground">
           {entityClassLabel(entityClass)}
         </span>
       )
@@ -329,7 +329,7 @@ function DirectorySummaryCell({
 
     case 'people':
       if (designation.contacts.length === 0) {
-        return <span className="text-muted-foreground">—</span>
+        return <span className="text-foreground">—</span>
       }
       return (
         <ul className="space-y-2">
@@ -338,19 +338,19 @@ function DirectorySummaryCell({
               <div className="truncate font-medium text-foreground">
                 {contact.name}
                 {contact.role === 'alternate' && (
-                  <span className="ml-1.5 text-xs font-normal text-muted-foreground">
+                  <span className="ml-1.5 text-sm font-normal text-foreground">
                     (alternate)
                   </span>
                 )}
               </div>
               {contact.title && (
-                <div className="truncate text-xs text-muted-foreground">
+                <div className="truncate text-sm text-foreground">
                   {contact.title}
                 </div>
               )}
               <EmailLink
                 address={contact.email}
-                className="text-xs"
+                className="text-sm"
                 onClick={stopRowClick}
               />
             </li>
@@ -360,7 +360,7 @@ function DirectorySummaryCell({
 
     case 'telephone': {
       if (designation.contacts.length === 0) {
-        return <span className="text-muted-foreground">—</span>
+        return <span className="text-foreground">—</span>
       }
       // One line per person, in the same order as the Focal points cell, so
       // the two columns read across. A person with no number contributes the
@@ -378,12 +378,12 @@ function DirectorySummaryCell({
             return (
               <li key={contact.email + contact.name} className="min-w-0">
                 {telephone === null ? (
-                  <span className="text-muted-foreground">—</span>
+                  <span className="text-foreground">—</span>
                 ) : (
                   <a
                     href={`tel:${contact.telephone}`}
                     onClick={stopRowClick}
-                    className="text-un-blue hover:underline"
+                    className="text-un-blue-text hover:underline"
                   >
                     {telephone}
                   </a>
@@ -399,11 +399,11 @@ function DirectorySummaryCell({
       return designation.functionalMailbox ? (
         <EmailLink
           address={designation.functionalMailbox}
-          className="text-xs"
+          className="text-sm"
           onClick={stopRowClick}
         />
       ) : (
-        <span className="text-muted-foreground">—</span>
+        <span className="text-foreground">—</span>
       )
 
     case 'languages': {
@@ -417,7 +417,7 @@ function DirectorySummaryCell({
         ),
       ]
       if (languages.length === 0) {
-        return <span className="text-muted-foreground">—</span>
+        return <span className="text-foreground">—</span>
       }
       return <span className="text-foreground">{languages.join(', ')}</span>
     }
@@ -428,12 +428,12 @@ function DirectorySummaryCell({
         n: designation.coverage.filter((claim) => claim.kind === kind).length,
       })).filter((entry) => entry.n > 0)
       if (counts.length === 0) {
-        return <span className="text-muted-foreground">—</span>
+        return <span className="text-foreground">—</span>
       }
       // Counts, not the claims themselves: the claims in full are the panel's
       // job, and seven keywords in a cell would become the row.
       return (
-        <ul className="space-y-0.5 text-xs text-muted-foreground">
+        <ul className="space-y-0.5 text-sm text-foreground">
           {counts.map(({ kind, n }) => (
             <li key={kind}>{coverageKindCount(kind, n)}</li>
           ))}
@@ -451,7 +451,7 @@ function DirectorySummaryCell({
           type="button"
           tabIndex={-1}
           aria-label="Details"
-          className="inline-flex items-center rounded border border-gray-200 bg-white p-1 text-muted-foreground transition-colors group-hover:border-un-blue group-hover:text-un-blue"
+          className="inline-flex items-center rounded border border-border bg-white p-1 text-muted-foreground transition-colors group-hover:border-un-blue group-hover:text-un-blue-text"
         >
           <ChevronRight className="h-3.5 w-3.5" />
         </button>

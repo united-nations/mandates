@@ -73,7 +73,7 @@ export function ActiveFilters({
     <div className={className}>
       <div className="rounded-md border border-border px-3 py-2.5">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs font-medium text-muted-foreground">
+          <span className="text-sm font-medium text-muted-foreground">
             Active filters
           </span>
           {hasSearch && (

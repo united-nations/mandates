@@ -49,11 +49,11 @@ export function RelatedMandates({ related }: { related: RelatedMandate[] }) {
           the other three. py-1.5 reaches it here because the DocumentSymbol
           is an inline-block 20px tall inside a 16px line and sets the row
           height; a list without one needs py-2 to land in the same place. */}
-      <ul className="divide-y divide-gray-100 border-y border-gray-100">
+      <ul className="divide-y divide-gray-100 border-y border-border">
         {shown.map((item) => (
           <li key={item.document_symbol} className="min-h-8 py-1 text-sm">
             <div className="flex items-baseline gap-3">
-              <span className="w-10 shrink-0 text-xs text-gray-500">
+              <span className="w-10 shrink-0 text-sm text-foreground">
                 {item.year ?? '—'}
               </span>
               <DocumentSymbol
@@ -63,7 +63,7 @@ export function RelatedMandates({ related }: { related: RelatedMandate[] }) {
                 <span className="block truncate">{item.document_symbol}</span>
               </DocumentSymbol>
               <span
-                className="min-w-0 flex-1 truncate text-xs text-gray-600"
+                className="min-w-0 flex-1 truncate text-sm text-foreground"
                 title={item.title ?? undefined}
               >
                 {item.title}
@@ -81,7 +81,7 @@ export function RelatedMandates({ related }: { related: RelatedMandate[] }) {
                   </Chip>
                 ))}
                 {item.shared_count > item.shared_subjects.length && (
-                  <span className="text-[11px] text-gray-500">
+                  <span className="text-sm text-muted-foreground">
                     +{item.shared_count - item.shared_subjects.length} more
                     shared
                   </span>
@@ -96,7 +96,7 @@ export function RelatedMandates({ related }: { related: RelatedMandate[] }) {
         <button
           type="button"
           onClick={() => setShowAll(true)}
-          className="inline-flex items-center gap-1 text-sm font-medium text-un-blue hover:underline"
+          className="inline-flex items-center gap-1 text-sm font-medium text-un-blue-text hover:underline"
         >
           <ChevronDown className="h-3 w-3" />
           Show all {related.length}
@@ -106,7 +106,7 @@ export function RelatedMandates({ related }: { related: RelatedMandate[] }) {
         <button
           type="button"
           onClick={() => setShowAll(false)}
-          className="inline-flex items-center gap-1 text-sm font-medium text-un-blue hover:underline"
+          className="inline-flex items-center gap-1 text-sm font-medium text-un-blue-text hover:underline"
         >
           <ChevronUp className="h-3 w-3" />
           Show fewer

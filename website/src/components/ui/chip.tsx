@@ -100,18 +100,18 @@ const DENSITY: Record<ChipDensity, string> = {
 }
 
 const TONE: Record<ChipTone, string> = {
-  neutral: 'border-gray-200 bg-gray-50 text-gray-700',
+  neutral: 'border-border bg-muted text-muted-foreground',
   emphasis:
-    'border-un-blue-deep/30 bg-un-blue-deep/5 font-medium text-un-blue-deep',
-  selected: 'border-un-blue bg-un-blue font-medium text-white',
-  ghost: 'border-dashed border-gray-300 bg-transparent text-gray-500',
+    'border-un-blue-deep/30 bg-un-blue-shade/5 font-medium text-un-blue-shade',
+  selected: 'border-un-blue bg-un-blue-text font-medium text-white',
+  ghost: 'border-dashed border-border bg-transparent text-muted-foreground',
 }
 
 /** Hover only exists for chips that actually do something. */
 const TONE_HOVER: Record<ChipTone, string> = {
-  neutral: 'hover:border-un-blue hover:bg-gray-100',
-  emphasis: 'hover:bg-un-blue-deep/10',
-  selected: 'hover:bg-un-blue-deep',
+  neutral: 'hover:border-un-blue hover:bg-secondary',
+  emphasis: 'hover:bg-un-blue-shade/10',
+  selected: 'hover:bg-un-blue-shade',
   ghost: 'hover:border-un-blue',
 }
 
@@ -209,8 +209,8 @@ export function ChipCount({
   return (
     <span
       className={cn(
-        'text-[10px] tabular-nums',
-        tone === 'selected' ? 'text-white/80' : 'text-gray-500'
+        'text-xs tabular-nums',
+        tone === 'selected' ? 'text-white/80' : 'text-muted-foreground'
       )}
     >
       {children}
@@ -236,7 +236,7 @@ export function ChipDot({ color }: { color?: string }) {
       aria-hidden
       className={cn(
         'size-1.5 self-center rounded-full',
-        !color && 'bg-un-blue-deep'
+        !color && 'bg-un-blue-shade'
       )}
       style={color ? { backgroundColor: color } : undefined}
     />

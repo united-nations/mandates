@@ -14,8 +14,8 @@ import {
 import { organEntityKey, type OrganEntityMatrix } from '@/lib/heatmap/matrix'
 import { ORGAN_CATEGORIES } from '@/lib/organ-groups'
 
-const CELL = 18
-const COLHEAD_H = 62 // top label gutter height (vertical entity labels)
+const CELL = 24
+const COLHEAD_H = 84 // top label gutter height (vertical entity labels)
 const ROW_LABEL_W = 96 // left gutter width — organ short codes can be long
 const GAMMA = 0.5 // sqrt transfer; matches the co-citation heatmap's saturation
 
@@ -155,7 +155,7 @@ export function MandatingBodyEntityHeatmap({
 
   return (
     <div>
-      <p className="mb-3 max-w-3xl text-sm text-gray-500">
+      <p className="mb-3 max-w-3xl text-sm text-muted-foreground">
         Each square counts the documents adopted by a mandating body (row) that
         an entity (column) cites. Click a square to filter the mandates below to
         that body and entity. Colour intensity is scaled within each row, so a
@@ -163,21 +163,21 @@ export function MandatingBodyEntityHeatmap({
       </p>
 
       {/* Hover status bar */}
-      <div className="mb-2 h-5 text-xs text-gray-600">
+      <div className="mb-2 h-5 text-xs text-muted-foreground">
         {hover ? (
           <span>
-            <span className="font-medium text-gray-900">
+            <span className="font-medium text-foreground">
               {hover.entity.label}
             </span>
             {' cites '}
-            <span className="font-medium text-gray-900">
+            <span className="font-medium text-foreground">
               {hover.organ.label}
             </span>
             {' — '}
             {`${hover.value} document${hover.value === 1 ? '' : 's'}`}
           </span>
         ) : (
-          <span className="text-gray-400">Hover a cell for details</span>
+          <span className="text-muted-foreground">Hover a cell for details</span>
         )}
       </div>
 
@@ -187,7 +187,7 @@ export function MandatingBodyEntityHeatmap({
           {/* Column section bands */}
           <div
             className="relative flex items-end"
-            style={{ marginLeft: ROW_LABEL_W, height: 30 }}
+            style={{ marginLeft: ROW_LABEL_W, height: 40 }}
           >
             {bands.map((b, i) => {
               const bc = sectionColor(b.section)
@@ -198,8 +198,8 @@ export function MandatingBodyEntityHeatmap({
                   style={{ width: b.count * CELL }}
                 >
                   <span
-                    className="absolute bottom-1 left-0 w-full text-center text-[11px] leading-[1.05] font-semibold"
-                    style={{ color: bc, hyphens: 'manual' }}
+                    className="absolute bottom-1 left-0 w-full text-center text-xs leading-[1.05] font-semibold"
+                    style={{ color: 'var(--foreground)', hyphens: 'manual' }}
                   >
                     {SECTION_META[b.section].label}
                   </span>
@@ -215,7 +215,7 @@ export function MandatingBodyEntityHeatmap({
           {/* Column labels */}
           <div className="flex items-end">
             <div
-              className="flex items-end justify-start pr-1 text-[10px] font-semibold text-gray-500"
+              className="flex items-end justify-start pr-1 text-xs font-semibold text-muted-foreground"
               style={{ width: ROW_LABEL_W, height: COLHEAD_H }}
             >
               Mandating body&nbsp;↓ / Entity&nbsp;→
@@ -228,11 +228,11 @@ export function MandatingBodyEntityHeatmap({
                   width: CELL,
                   height: COLHEAD_H,
                   backgroundColor: tintFor(c.section),
-                  borderRight: '1px solid rgba(255,255,255,0.7)',
+                  borderRight: '1px solid color-mix(in srgb, var(--color-un-white) 70%, transparent)',
                 }}
               >
                 <span
-                  className="py-1 text-[10px] text-gray-700"
+                  className="py-1 text-xs text-foreground"
                   style={{
                     writingMode: 'vertical-rl',
                     transform: 'rotate(180deg)',
@@ -248,7 +248,7 @@ export function MandatingBodyEntityHeatmap({
           {rowGroups.map((g) => (
             <div key={g.id}>
               <div
-                className="border-b border-gray-100 pt-2 pb-0.5 pl-0.5 text-[11px] font-semibold text-gray-400"
+                className="border-b border-border pt-2 pb-0.5 pl-0.5 text-xs font-semibold text-muted-foreground"
                 style={{ width: ROW_LABEL_W + columns.length * CELL }}
               >
                 {g.label}
@@ -256,7 +256,7 @@ export function MandatingBodyEntityHeatmap({
               {g.organs.map((organ) => (
                 <div key={organ.code} className="flex items-center">
                   <div
-                    className="truncate px-1 text-right text-[10px] text-gray-700"
+                    className="truncate px-1 text-right text-xs text-foreground"
                     style={{ width: ROW_LABEL_W, height: CELL }}
                     title={organ.label}
                   >
@@ -284,10 +284,10 @@ export function MandatingBodyEntityHeatmap({
                         style={{
                           width: CELL,
                           height: CELL,
-                          backgroundColor: bg ?? '#fff',
+                          backgroundColor: bg ?? 'var(--background)',
                           outline: isSelected
-                            ? '2px solid #111827'
-                            : '0.5px solid rgba(0,0,0,0.04)',
+                            ? '2px solid var(--foreground)'
+                            : '0.5px solid color-mix(in srgb, var(--foreground) 4%, transparent)',
                           outlineOffset: isSelected ? '-1px' : undefined,
                           cursor: 'pointer',
                         }}
@@ -302,7 +302,7 @@ export function MandatingBodyEntityHeatmap({
       </div>
 
       {/* Legend */}
-      <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] text-gray-600">
+      <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-muted-foreground">
         {legendItems.map((it) => (
           <span key={it.label} className="inline-flex items-center gap-1.5">
             <span
@@ -312,7 +312,7 @@ export function MandatingBodyEntityHeatmap({
             {it.label}
           </span>
         ))}
-        <span className="text-gray-400">
+        <span className="text-muted-foreground">
           Intensity = citations, relative within each organ row
         </span>
       </div>

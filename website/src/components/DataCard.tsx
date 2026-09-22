@@ -44,7 +44,7 @@ function MiniBar({ item, maxCount }: { item: PreviewItem; maxCount: number }) {
       <div className="self-center text-right text-sm whitespace-nowrap text-foreground">
         {label}
       </div>
-      <div className="relative h-1.5 self-center rounded-full bg-un-blue/10">
+      <div className="relative h-1.5 self-center rounded-full bg-accent">
         <div
           className="h-1.5 rounded-full bg-un-blue/50"
           style={{ width: `${Math.max(barWidth, 4)}%` }}
@@ -91,12 +91,12 @@ export function DataCard({
       <PopoverTrigger asChild>
         <Card
           className={cn(
-            'relative h-full cursor-pointer border-0 bg-un-blue/10 px-4 py-3 shadow-none transition-all hover:scale-[1.02]'
+            'relative h-full cursor-pointer border-0 bg-accent px-4 py-3 shadow-none transition-all hover:scale-[1.02]'
           )}
         >
           <div className="flex items-center gap-2">
-            <Icon className="size-4 shrink-0 text-un-blue" />
-            <span className="text-base leading-tight font-medium text-un-blue">
+            <Icon className="size-4 shrink-0 text-un-blue-text" />
+            <span className="text-base leading-tight font-medium text-un-blue-text">
               {title}
             </span>
             <span className="ml-auto text-2xl leading-tight font-bold tabular-nums text-foreground">

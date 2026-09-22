@@ -108,12 +108,12 @@ function Button({
   setFocus: (position: string | null) => void
 }) {
   return (
-    <div className="flex items-center overflow-hidden rounded-md border border-gray-300 bg-gray-100 transition-all duration-200 hover:border-gray-400">
+    <div className="flex items-center overflow-hidden rounded-md border border-border bg-secondary transition-all duration-200 hover:border-gray-400">
       <button
         className={`h-7 cursor-pointer px-3 text-xs transition-all duration-200 ${
           focus === 'left'
-            ? 'bg-un-blue text-white'
-            : 'bg-transparent text-gray-700 hover:bg-gray-200 hover:text-gray-900'
+            ? 'bg-un-blue-text text-white'
+            : 'bg-transparent text-foreground hover:bg-muted hover:text-foreground'
         }`}
         onClick={() => setFocus('left')}
       >
@@ -123,8 +123,8 @@ function Button({
       <button
         className={`h-7 cursor-pointer px-3 text-xs transition-all duration-200 ${
           focus === null
-            ? 'bg-un-blue text-white'
-            : 'bg-transparent text-gray-700 hover:bg-gray-200 hover:text-gray-900'
+            ? 'bg-un-blue-text text-white'
+            : 'bg-transparent text-foreground hover:bg-muted hover:text-foreground'
         }`}
         onClick={() => setFocus(null)}
       >
@@ -134,8 +134,8 @@ function Button({
       <button
         className={`h-7 cursor-pointer px-3 text-xs transition-all duration-200 ${
           focus === 'right'
-            ? 'bg-un-blue text-white'
-            : 'bg-transparent text-gray-700 hover:bg-gray-200 hover:text-gray-900'
+            ? 'bg-un-blue-text text-white'
+            : 'bg-transparent text-foreground hover:bg-muted hover:text-foreground'
         }`}
         onClick={() => setFocus('right')}
       >
@@ -161,10 +161,10 @@ function FocusToggle({
     <button
       className={`rounded p-0.5 transition-all duration-200 ${
         isActive
-          ? 'bg-un-blue/10 text-un-blue'
+          ? 'bg-accent text-accent-foreground'
           : isFaded
-            ? 'text-gray-400 opacity-50'
-            : 'text-gray-600 hover:bg-gray-100 hover:text-un-blue'
+            ? 'text-muted-foreground opacity-50'
+            : 'text-muted-foreground hover:bg-secondary hover:text-un-blue-text'
       }`}
       onClick={(e) => {
         e.stopPropagation()
@@ -196,7 +196,7 @@ function Item({
       case 'yellow':
         return 'bg-yellow-50'
       case 'blue':
-        return 'bg-blue-50'
+        return 'bg-accent'
       default:
         return content ? 'bg-card' : ''
     }

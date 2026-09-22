@@ -100,7 +100,7 @@ export function MandatingBodiesDirectory({
             ))}
           </div>
         ) : (
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-muted-foreground">
             No mandating bodies match “{search.trim()}”.
           </p>
         )}
@@ -110,7 +110,7 @@ export function MandatingBodiesDirectory({
             of a search result. */}
         {!term && (
           <div className="space-y-1 pt-2">
-            <p className="text-xs text-gray-500">
+            <p className="text-sm text-muted-foreground">
               {totalOrgans.toLocaleString()} mandating bodies listed.
             </p>
             <AboutThisList />
@@ -128,9 +128,9 @@ export function MandatingBodiesDirectory({
    card is where it is and it has to read as a control rather than as
    decoration. */
 const NOTE_GLYPH =
-  'inline-block h-3.5 w-3.5 shrink-0 overflow-hidden rounded-full border border-gray-300 text-center font-serif text-[9px] leading-3 text-gray-500 italic select-none'
+  'inline-block h-4 w-4 shrink-0 overflow-hidden rounded-full border border-border text-center text-xs leading-[0.875rem] font-semibold text-muted-foreground select-none'
 const CARD_GLYPH =
-  'inline-block h-4 w-4 shrink-0 overflow-hidden rounded-full border border-gray-400 bg-gray-100 text-center font-serif text-[10px] leading-[0.875rem] font-bold text-gray-700 italic select-none'
+  'inline-block h-4 w-4 shrink-0 overflow-hidden rounded-full border border-gray-400 bg-secondary text-center text-xs leading-[0.875rem] font-semibold text-muted-foreground select-none'
 
 /**
  * The notes, in render order. The zero-documents line leads because it answers
@@ -186,14 +186,14 @@ function AboutThisList() {
       contentClassName="w-[27rem]"
       trigger={
         <>
-          <span className="border-b border-dotted border-gray-300 pb-px text-xs text-gray-500 group-hover/notes:border-un-blue group-hover/notes:text-un-blue group-data-[state=open]/notes:border-un-blue group-data-[state=open]/notes:text-un-blue">
+          <span className="border-b border-dotted border-border pb-px text-sm text-muted-foreground group-hover/notes:border-un-blue group-hover/notes:text-un-blue-text group-data-[state=open]/notes:border-un-blue group-data-[state=open]/notes:text-un-blue-text">
             About this list
           </span>
           <span
             aria-hidden
             className={cn(
               NOTE_GLYPH,
-              'group-hover/notes:border-un-blue group-hover/notes:text-un-blue group-data-[state=open]/notes:border-un-blue group-data-[state=open]/notes:text-un-blue'
+              'group-hover/notes:border-un-blue group-hover/notes:text-un-blue-text group-data-[state=open]/notes:border-un-blue group-data-[state=open]/notes:text-un-blue-text'
             )}
           >
             i
@@ -201,10 +201,10 @@ function AboutThisList() {
         </>
       }
     >
-      <span className="mb-2 block text-[11px] font-semibold tracking-[0.04em] text-gray-500 uppercase">
+      <span className="mb-2 block text-sm font-semibold tracking-[0.04em] text-muted-foreground uppercase">
         About this list
       </span>
-      <ul className="list-disc space-y-1.5 pl-3.5 text-xs leading-relaxed text-gray-600 marker:text-gray-300">
+      <ul className="list-disc space-y-1.5 pl-3.5 text-sm leading-relaxed text-muted-foreground marker:text-muted-foreground">
         {ABOUT_THIS_LIST.map((line) => (
           <li key={line}>{line}</li>
         ))}
@@ -253,7 +253,7 @@ const CARD_NOTES: Record<string, string> = {
 /** h3, not h2: the dialog's own DialogTitle is the h2 of this subtree. */
 function GroupHeading({ children }: { children: React.ReactNode }) {
   return (
-    <h3 className="border-b border-gray-200 pb-1.5 text-sm font-normal tracking-wide text-gray-600 uppercase">
+    <h3 className="border-b border-border pb-1.5 text-sm font-normal tracking-wide text-muted-foreground uppercase">
       {children}
     </h3>
   )
@@ -277,7 +277,7 @@ function OrganCard({
         'group flex items-start justify-between gap-2 rounded-lg border bg-white px-3 py-2 transition-all',
         active
           ? 'border-un-blue'
-          : 'border-gray-200 hover:border-un-blue hover:shadow-md'
+          : 'border-border hover:border-un-blue hover:shadow-md'
       )}
     >
       <Tooltip>
@@ -298,7 +298,7 @@ function OrganCard({
               <span
                 className={cn(
                   'text-sm font-semibold',
-                  active ? 'text-un-blue' : 'text-gray-900'
+                  active ? 'text-un-blue-text' : 'text-foreground'
                 )}
               >
                 {organ.short}
@@ -312,7 +312,7 @@ function OrganCard({
               // last-resort recovery path should a name ever still clamp.
               <div
                 title={longName}
-                className="line-clamp-3 text-xs leading-snug text-gray-500"
+                className="line-clamp-3 text-sm leading-snug text-muted-foreground"
               >
                 {longName}
               </div>
@@ -343,7 +343,7 @@ function OrganCard({
                 aria-hidden
                 className={cn(
                   CARD_GLYPH,
-                  'group-hover/marker:border-un-blue group-hover/marker:bg-un-blue group-hover/marker:text-white group-data-[state=open]/marker:border-un-blue group-data-[state=open]/marker:bg-un-blue group-data-[state=open]/marker:text-white'
+                  'group-hover/marker:border-un-blue group-hover/marker:bg-un-blue-text group-hover/marker:text-white group-data-[state=open]/marker:border-un-blue group-data-[state=open]/marker:bg-un-blue-text group-data-[state=open]/marker:text-white'
                 )}
               >
                 i
@@ -360,7 +360,7 @@ function OrganCard({
             rel="noopener noreferrer"
             aria-label={`Official website of ${organ.short} (opens in a new tab)`}
             title="Official website"
-            className="rounded-sm text-gray-300 hover:text-un-blue focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none"
+            className="rounded-sm text-muted-foreground hover:text-un-blue-text focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none"
           >
             <ExternalLink aria-hidden className="h-3.5 w-3.5" />
           </a>
@@ -369,7 +369,7 @@ function OrganCard({
           aria-hidden
           className={cn(
             'h-3.5 w-3.5',
-            active ? 'text-un-blue' : 'text-gray-300 group-hover:text-un-blue'
+            active ? 'text-un-blue-text' : 'text-muted-foreground group-hover:text-un-blue-text'
           )}
         />
       </div>

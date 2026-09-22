@@ -49,19 +49,19 @@ export function ExpandableCard({
         id={id}
         className={`flex w-full scroll-mt-20 items-center justify-between py-4 text-left transition-colors ${
           variant === 'filled'
-            ? 'bg-gray-50 px-4 hover:bg-gray-100'
-            : 'border-b border-gray-200 hover:bg-gray-50'
+            ? 'bg-muted px-4 hover:bg-secondary'
+            : 'border-b border-border hover:bg-muted'
         }`}
       >
-        <h3 className="text-lg font-medium text-gray-900">{title}</h3>
+        <h3 className="text-lg font-medium text-foreground">{title}</h3>
         <ChevronDown
-          className={`h-5 w-5 text-gray-500 transition-transform duration-200 ${
+          className={`h-5 w-5 text-muted-foreground transition-transform duration-200 ${
             isOpen ? 'rotate-180' : ''
           }`}
         />
       </CollapsibleTrigger>
       <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
-        <div className="py-4 text-sm leading-relaxed text-gray-600">
+        <div className="py-4 text-sm leading-relaxed text-muted-foreground">
           {children}
         </div>
       </CollapsibleContent>

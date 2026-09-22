@@ -246,7 +246,7 @@ export function SearchableDropdown({
                       className={cn(
                         'h-auto w-full justify-between py-2 font-normal',
                         highlightedIndex === index &&
-                          'bg-un-blue/10! text-un-blue!',
+                          'bg-accent! text-accent-foreground!',
                         option.disabled && 'cursor-not-allowed opacity-50'
                       )}
                       onClick={() => handleSelect(option.value, option)}
@@ -268,7 +268,7 @@ export function SearchableDropdown({
                           </span>
                         )}
                         {value === option.value && (
-                          <Check className="h-4 w-4 text-un-blue" />
+                          <Check className="h-4 w-4 text-un-blue-text" />
                         )}
                       </div>
                     </Button>

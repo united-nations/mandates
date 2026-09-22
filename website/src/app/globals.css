@@ -17,7 +17,7 @@
      that wants it to MEAN something needs a legend and an argument that the
      legend is enough, which is the argument that failed on the entity
      chips. */
-  --color-un-blue-deep: #0090cc;
+  --color-un-blue-deep: var(--color-un-blue-shade);
 
   --color-moss: #62803f;
 
@@ -59,36 +59,36 @@ html {
 
 /* shadcn semantic colors */
 :root {
-  --background: white;
-  --foreground: black;
+  --background: var(--color-un-white);
+  --foreground: var(--color-un-black);
 
-  --card: hsl(0 0% 97%);
-  --card-foreground: hsl(0 0% 25%);
+  --card: var(--color-un-white);
+  --card-foreground: var(--color-un-black);
 
-  --dashboard-card: hsl(0 0% 92%);
-  --dashboard-card-foreground: hsl(0 0% 25%);
+  --dashboard-card: var(--color-neutral-surface);
+  --dashboard-card-foreground: var(--color-un-black);
 
-  --popover: hsl(0 0% 100%);
-  --popover-foreground: hsl(0 0% 25%);
+  --popover: var(--color-un-white);
+  --popover-foreground: var(--color-un-black);
 
-  --primary: hsl(0 0% 20%);
-  --primary-foreground: hsl(0 0% 100%);
+  --primary: var(--color-un-blue-text);
+  --primary-foreground: var(--color-un-white);
 
-  --secondary: hsl(0 0% 90%);
-  --secondary-foreground: hsl(0 0% 35%);
+  --secondary: var(--color-neutral-surface);
+  --secondary-foreground: var(--color-neutral-text);
 
-  --muted: hsl(0 0% 88%);
-  --muted-foreground: hsl(0 0% 35%);
+  --muted: var(--color-neutral-surface);
+  --muted-foreground: var(--color-neutral-text);
 
-  --accent: hsl(0 0% 96%);
-  --accent-foreground: hsl(0 0% 15%);
+  --accent: var(--color-un-blue-tint-50);
+  --accent-foreground: var(--color-un-blue-shade);
 
-  --destructive: var(--color-au-chico);
-  --destructive-foreground: hsl(0 0% 100%);
+  --destructive: var(--color-un-red-text);
+  --destructive-foreground: var(--color-un-white);
 
-  --input: hsl(0 0% 100%);
+  --input: var(--color-neutral-border);
 
-  --border: hsl(0 0% 91%);
+  --border: var(--color-neutral-border);
   --ring: var(--color-un-blue);
 
   --radius: 0.5rem;
@@ -96,13 +96,13 @@ html {
   --radius-md: calc(0.5rem - 2px);
   --radius-sm: calc(0.5rem - 4px);
 
-  --sidebar: hsl(0 0% 98%);
-  --sidebar-foreground: hsl(0 0% 26%);
-  --sidebar-primary: hsl(0 0% 10%);
-  --sidebar-primary-foreground: hsl(0 0% 98%);
-  --sidebar-accent: hsl(0 0% 96%);
-  --sidebar-accent-foreground: hsl(0 0% 10%);
-  --sidebar-border: hsl(0 0% 91%);
+  --sidebar: var(--color-un-white);
+  --sidebar-foreground: var(--color-un-black);
+  --sidebar-primary: var(--color-un-blue-text);
+  --sidebar-primary-foreground: var(--color-un-white);
+  --sidebar-accent: var(--color-un-blue-tint-50);
+  --sidebar-accent-foreground: var(--color-un-blue-shade);
+  --sidebar-border: var(--color-neutral-border);
   --sidebar-ring: var(--color-un-blue);
 }
 
@@ -259,25 +259,5 @@ body {
   .un-scrollbar {
     scrollbar-width: thin;
     scrollbar-color: var(--color-un-blue) transparent;
-  }
-}
-
-/* Mandate sidebar: primary text is black; supporting text is dark grey.
-   Keep light greys for surfaces/borders and preserve link/selection colours. */
-@layer utilities {
-  .mandate-detail-sidebar {
-    --muted-foreground: #4b5563;
-  }
-
-  :where(.mandate-detail-sidebar) :is(.text-gray-700, .text-gray-800, .text-gray-900) {
-    color: #000;
-  }
-
-  :where(.mandate-detail-sidebar) :is(.text-gray-300, .text-gray-400, .text-gray-500, .text-gray-600) {
-    color: #4b5563;
-  }
-
-  :where(.mandate-detail-sidebar) .placeholder-gray-400::placeholder {
-    color: #4b5563;
   }
 }

@@ -37,7 +37,7 @@ const CustomizedBar = (props: CustomizedBarProps) => {
         y={y + height - 1}
         width={width / 2}
         height={1}
-        fill="hsl(var(--muted-foreground))"
+        fill="var(--muted-foreground)"
         opacity={0.3}
       />
     )
@@ -106,7 +106,7 @@ export function YearSlider({
             />
             <Bar
               dataKey="displayHeight"
-              fill="hsl(var(--primary))"
+              fill="var(--primary)"
               shape={(barProps: unknown) => (
                 <CustomizedBar
                   {...(barProps as CustomizedBarProps)}

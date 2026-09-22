@@ -14,7 +14,7 @@ import type { UnSystemBody, UnSystemContact } from '@/types'
 import { ExternalLink, Info, Mail } from 'lucide-react'
 
 const iconButton =
-  'inline-flex h-5 w-5 items-center justify-center rounded text-un-blue transition-colors hover:bg-un-blue/10'
+  'inline-flex h-5 w-5 items-center justify-center rounded text-accent-foreground transition-colors hover:bg-accent'
 
 function contactHref(contact: UnSystemContact) {
   return contact.email ? `mailto:${contact.email}` : contact.url!
@@ -37,7 +37,7 @@ export function UnSystemBodyLine({ body }: { body: UnSystemBody }) {
               href={body.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-un-blue transition-colors hover:underline"
+              className="text-un-blue-text transition-colors hover:underline"
             >
               {body.name}
             </a>
@@ -85,7 +85,7 @@ export function UnSystemBodyLine({ body }: { body: UnSystemBody }) {
                     href={contactHref(contact)}
                     target={contact.email ? undefined : '_blank'}
                     rel={contact.email ? undefined : 'noopener noreferrer'}
-                    className="inline-flex items-center gap-1.5 text-sm text-un-blue hover:underline"
+                    className="inline-flex items-center gap-1.5 text-sm text-un-blue-text hover:underline"
                   >
                     {contact.email ? (
                       <Mail className="h-3.5 w-3.5 shrink-0" />

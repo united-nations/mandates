@@ -186,7 +186,7 @@ export function FilterChip({
     <a
       href={href}
       className={cn(
-        'text-un-blue hover:underline focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none',
+        'text-un-blue-text hover:underline focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none',
         className
       )}
       {...rest}
@@ -217,12 +217,12 @@ export function DetailFootnote({ children }: { children: ReactNode }) {
  * `i` differ in nothing but the glyph and the accessible name.
  *
  * Passed to the trigger as this string, never through `cn`: tailwind-merge
- * does not know `text-micro` as a size, reads it as a colour, and drops it in
- * favour of `text-gray-500` — which left both glyphs at the heading's 16px
+ * does not know `text-xs` as a size, reads it as a colour, and drops it in
+ * favour of `text-muted-foreground` — which left both glyphs at the heading's 16px
  * inside a 16px circle.
  */
 const headingMarkClassName =
-  'relative -top-[2.33px] inline-block h-4 w-4 shrink-0 cursor-pointer self-baseline overflow-hidden rounded-full border border-gray-300 p-0 text-center text-xs leading-[0.875rem] font-semibold text-gray-500 select-none hover:border-un-blue hover:text-un-blue focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none'
+  'relative -top-[2.33px] inline-block h-4 w-4 shrink-0 cursor-pointer self-baseline overflow-hidden rounded-full border border-border p-0 text-center text-xs leading-[0.875rem] font-semibold text-muted-foreground select-none hover:border-un-blue hover:text-un-blue-text focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none'
 
 /**
  * The `?` beside a section heading: how-to-use text, off the page until asked
@@ -302,7 +302,7 @@ export function MandateDetailHeader({
 }) {
   return (
     <header className={cn('border-b border-border pb-4', className)}>
-      <h1 className="text-xl leading-tight font-bold text-gray-900 md:text-2xl">
+      <h1 className="text-3xl leading-tight font-bold tracking-tight text-foreground">
         {title}
       </h1>
       <div className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-2">
@@ -312,7 +312,7 @@ export function MandateDetailHeader({
             href={link}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-un-blue hover:underline"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-un-blue-text hover:underline"
           >
             <FileText aria-hidden className="h-3.5 w-3.5" />
             View PDF

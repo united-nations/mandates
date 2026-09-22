@@ -10,7 +10,7 @@ export const typography = {
   /** Intro or lead paragraph sitting under a title. */
   lead: "text-lg text-foreground",
   /** Default body / paragraph text. */
-  body: "text-sm leading-relaxed",
+  body: "text-sm leading-relaxed text-foreground",
   /** Long-form prose pages (about, methodology). */
   prose: "text-base leading-relaxed text-foreground",
   /** Metadata rows — date, category, duration, counts. */
@@ -18,7 +18,7 @@ export const typography = {
   /** Small captions, timestamps, back-links. */
   caption: "text-xs text-muted-foreground",
   /** Inline form/control labels, button text, badge text. */
-  label: "text-xs font-medium",
+  label: "text-sm font-medium",
   /**
    * Eyebrow / overline — the small uppercase label above a heading or section.
    * Same case-and-tracking treatment as `tableHeader`, but it sits in prose
@@ -41,11 +41,11 @@ export const typography = {
    */
   numeric: "text-sm tabular-nums",
   /**
-   * The micro tier — 10px. Badges, dense table meta, chip labels.
+   * The compact tier — 12px. Badges, dense table meta, chip labels.
    * Named so it stops being an arbitrary value in six separate repos.
-   * Do not go below this: 9px failed legibility review.
+   * 12px is the minimum for readable captions and compact labels.
    */
-  micro: "text-micro font-medium",
+  micro: "text-xs font-medium",
 } as const;
 
 export type TypographyTier = keyof typeof typography;

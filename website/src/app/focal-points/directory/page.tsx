@@ -38,12 +38,12 @@ export default async function FocalPointDirectoryPage() {
   const designations = await getFocalPointDirectorySummary()
 
   return (
-    <div className="text-gray-900">
-      <h1 className="mb-3 text-3xl font-bold tracking-tight text-gray-900">
+    <div className="text-foreground">
+      <h1 className="mb-3 text-3xl font-bold tracking-tight text-foreground">
         Mandate focal points
       </h1>
 
-      <p className="mb-8 max-w-3xl text-base leading-relaxed text-gray-600">
+      <p className="mb-8 max-w-3xl text-base leading-relaxed text-muted-foreground">
         The UN entity designated as the focal point for mandate design, who to
         contact there, and the subjects each designation says it covers.
         Coverage is as claimed by the entity; two designations may cover the
@@ -63,7 +63,7 @@ export default async function FocalPointDirectoryPage() {
         UN entities designate their focal points at{' '}
         <ExternalLink
           href="https://mandate-focal-points.un-two-zero.org"
-          className="text-un-blue hover:underline"
+          className="text-un-blue-text hover:underline"
         >
           mandate-focal-points.un-two-zero.org
         </ExternalLink>

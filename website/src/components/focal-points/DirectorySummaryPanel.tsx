@@ -193,7 +193,7 @@ function PeopleSection({
                   <p className="mt-1">
                     <a
                       href={`tel:${contact.telephone}`}
-                      className="text-un-blue hover:underline"
+                      className="text-un-blue-text hover:underline"
                     >
                       {telephone}
                     </a>
@@ -308,7 +308,7 @@ export function EmailLink({
     <a
       href={`mailto:${address}`}
       onClick={onClick}
-      className={`inline-flex min-w-0 items-center gap-1.5 text-un-blue hover:underline ${className ?? ''}`}
+      className={`inline-flex min-w-0 items-center gap-1.5 text-un-blue-text hover:underline ${className ?? ''}`}
     >
       <Mail aria-hidden className="h-3.5 w-3.5 shrink-0" />
       <span className="truncate">{address}</span>

@@ -75,17 +75,17 @@ export function GenericSidebar<T>({
     showExpandCollapse && filteredItems.length > maxItemsBeforeExpand
 
   return (
-    <div className={borderless ? '' : 'border-l border-gray-200 pl-4'}>
+    <div className={borderless ? '' : 'border-l border-border pl-4'}>
       {!hideHeader && (
         <div className="mb-4">
           <div className="mb-2 flex items-center gap-2">
-            <Icon className="h-5 w-5 text-un-blue" />
+            <Icon className="h-5 w-5 text-un-blue-text" />
             {titleLink ? (
               <a
                 href={titleLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-lg font-semibold hover:text-un-blue hover:underline"
+                className="text-lg font-semibold hover:text-un-blue-text hover:underline"
               >
                 {title}
               </a>
@@ -135,7 +135,7 @@ export function GenericSidebar<T>({
               {hasMoreItems && (
                 <button
                   onClick={() => setShowAll(!showAll)}
-                  className="mt-2 w-full text-left text-sm text-un-blue hover:text-un-blue/80"
+                  className="mt-2 w-full text-left text-sm text-un-blue-text hover:text-un-blue-shade"
                 >
                   {showAll
                     ? 'Show less'

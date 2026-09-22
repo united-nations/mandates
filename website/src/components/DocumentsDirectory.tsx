@@ -141,10 +141,10 @@ export function DocumentsDirectory({
               ))}
             </div>
           ) : (
-            <p className="text-sm text-gray-500">No recorded document types.</p>
+            <p className="text-sm text-muted-foreground">No recorded document types.</p>
           )}
           {untypedCount > 0 && (
-            <p className="text-xs text-gray-500">
+            <p className="text-sm text-muted-foreground">
               The type is only recorded for{' '}
               {(totalCount - untypedCount).toLocaleString()} of the{' '}
               {totalCount.toLocaleString()} documents. The remaining{' '}
@@ -177,12 +177,12 @@ export function DocumentsDirectory({
               )}
             </div>
           ) : (
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted-foreground">
               No subjects match “{search.trim()}”.
             </p>
           )}
 
-          <p className="text-xs text-gray-500">{hint}</p>
+          <p className="text-sm text-muted-foreground">{hint}</p>
         </section>
       </div>
     </TooltipProvider>
@@ -192,7 +192,7 @@ export function DocumentsDirectory({
 /** h3, not h2: the dialog's own DialogTitle is the h2 of this subtree. */
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
-    <h3 className="border-b border-gray-200 pb-1.5 text-sm font-normal tracking-wide text-gray-600 uppercase">
+    <h3 className="border-b border-border pb-1.5 text-sm font-normal tracking-wide text-muted-foreground uppercase">
       {children}
     </h3>
   )
@@ -279,7 +279,7 @@ function SubjectPill({
         <div className="font-medium">
           Subject domain: {SUBJECT_DOMAIN_LABELS[leaf.code] ?? leaf.code}
         </div>
-        <div className="mt-0.5 text-xs text-gray-500">
+        <div className="mt-0.5 text-sm text-muted-foreground">
           {leaf.count.toLocaleString()} document
           {leaf.count === 1 ? '' : 's'}
         </div>

@@ -56,7 +56,7 @@ const resources = [
 export const FurtherResources = () => (
   <section id="resources" className="scroll-mt-20 bg-white py-10 md:py-12">
     <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-16">
-      <h2 className="mb-6 text-2xl font-bold text-gray-900">
+      <h2 className="mb-6 text-2xl font-bold text-foreground">
         Further resources
       </h2>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

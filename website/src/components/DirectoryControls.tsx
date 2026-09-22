@@ -41,7 +41,7 @@ export function DirectoryToggle<T extends string>({
     <div
       role="group"
       aria-label={label}
-      className="inline-flex shrink-0 items-center rounded-md bg-gray-100 p-0.5 whitespace-nowrap"
+      className="inline-flex shrink-0 items-center rounded-md bg-secondary p-0.5 whitespace-nowrap"
     >
       {options.map((option) => {
         const Icon = option.icon
@@ -53,10 +53,10 @@ export function DirectoryToggle<T extends string>({
             onClick={() => onChange(option.value)}
             aria-pressed={selected}
             className={cn(
-              'inline-flex h-7 cursor-pointer items-center gap-1.5 rounded-sm px-2.5 text-xs font-medium transition-all',
+              'inline-flex h-7 cursor-pointer items-center gap-1.5 rounded-sm px-2.5 text-sm font-medium transition-all',
               selected
-                ? 'bg-background text-gray-900 shadow'
-                : 'text-gray-500 hover:text-gray-900'
+                ? 'bg-background text-foreground shadow'
+                : 'text-muted-foreground hover:text-foreground'
             )}
           >
             <Icon aria-hidden className="h-3.5 w-3.5" />
@@ -87,7 +87,7 @@ export function DirectoryToggle<T extends string>({
 export function ClickHint() {
   return (
     <div className="mt-1 flex items-center gap-1">
-      <MousePointerClick aria-hidden className="h-3.5 w-3.5 text-un-blue" />
+      <MousePointerClick aria-hidden className="h-3.5 w-3.5 text-un-blue-text" />
       Click to show mandates
     </div>
   )
@@ -126,7 +126,7 @@ export function ClickTooltip({
   return (
     <TooltipContent side="top" className={hasPills ? 'max-w-sm' : 'max-w-xs'}>
       {name && <div className="font-medium">{name}</div>}
-      {meta && <div className="mt-0.5 text-xs text-gray-500">{meta}</div>}
+      {meta && <div className="mt-0.5 text-sm text-muted-foreground">{meta}</div>}
       {hasPills && (
         <div className="mt-1.5 flex flex-wrap gap-1">
           {pills.map((pill) => (

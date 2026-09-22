@@ -14,8 +14,8 @@ import {
 } from '@/lib/heatmap/entity-sections'
 import { pairKey, type CoCitationMatrix } from '@/lib/heatmap/matrix'
 
-const CELL = 18
-const COLHEAD_H = 62 // top label gutter height
+const CELL = 24
+const COLHEAD_H = 84 // top label gutter height
 const LABEL_W = COLHEAD_H // left label gutter width — kept equal to the header height
 const GAMMA = 0.5 // sqrt transfer; matches the reference figure's saturation
 
@@ -135,23 +135,23 @@ export function CoCitationHeatmap({ matrix }: { matrix: CoCitationMatrix }) {
 
   return (
     <div>
-      <p className="mb-3 max-w-3xl text-sm text-gray-500">
+      <p className="mb-3 max-w-3xl text-sm text-muted-foreground">
         Each square counts the mandate documents cited by both entities. Click a
         square to filter the mandates below to the ones the two entities share.
       </p>
 
       {/* Hover status bar */}
-      <div className="mb-2 h-5 text-xs text-gray-600">
+      <div className="mb-2 h-5 text-xs text-muted-foreground">
         {hover ? (
           <span>
-            <span className="font-medium text-gray-900">{hover.a.label}</span>
+            <span className="font-medium text-foreground">{hover.a.label}</span>
             {' ↔ '}
-            <span className="font-medium text-gray-900">{hover.b.label}</span>
+            <span className="font-medium text-foreground">{hover.b.label}</span>
             {' — '}
             {`${hover.value} shared mandate${hover.value === 1 ? '' : 's'}`}
           </span>
         ) : (
-          <span className="text-gray-400">Hover a cell for details</span>
+          <span className="text-muted-foreground">Hover a cell for details</span>
         )}
       </div>
 
@@ -162,7 +162,7 @@ export function CoCitationHeatmap({ matrix }: { matrix: CoCitationMatrix }) {
               centred label may overflow (never truncated) into empty space. */}
           <div
             className="relative flex items-end"
-            style={{ marginLeft: LABEL_W, height: 30 }}
+            style={{ marginLeft: LABEL_W, height: 40 }}
           >
             {bands.map((b, i) => {
               const bc = sectionColor(b.section)
@@ -173,8 +173,8 @@ export function CoCitationHeatmap({ matrix }: { matrix: CoCitationMatrix }) {
                   style={{ width: b.count * CELL }}
                 >
                   <span
-                    className="absolute bottom-1 left-0 w-full text-center text-[11px] leading-[1.05] font-semibold"
-                    style={{ color: bc, hyphens: 'manual' }}
+                    className="absolute bottom-1 left-0 w-full text-center text-xs leading-[1.05] font-semibold"
+                    style={{ color: 'var(--foreground)', hyphens: 'manual' }}
                   >
                     {SECTION_META[b.section].label}
                   </span>
@@ -190,7 +190,7 @@ export function CoCitationHeatmap({ matrix }: { matrix: CoCitationMatrix }) {
           {/* Column labels */}
           <div className="flex items-end">
             <div
-              className="flex items-end justify-start pr-1 text-[10px] font-semibold text-gray-500"
+              className="flex items-end justify-start pr-1 text-xs font-semibold text-muted-foreground"
               style={{ width: LABEL_W, height: COLHEAD_H }}
             >
               Cross-citation
@@ -203,11 +203,11 @@ export function CoCitationHeatmap({ matrix }: { matrix: CoCitationMatrix }) {
                   width: CELL,
                   height: COLHEAD_H,
                   backgroundColor: tintFor(e.section),
-                  borderRight: '1px solid rgba(255,255,255,0.7)',
+                  borderRight: '1px solid color-mix(in srgb, var(--color-un-white) 70%, transparent)',
                 }}
               >
                 <span
-                  className="py-1 text-[10px] text-gray-700"
+                  className="py-1 text-xs text-foreground"
                   style={{
                     writingMode: 'vertical-rl',
                     transform: 'rotate(180deg)',
@@ -223,12 +223,12 @@ export function CoCitationHeatmap({ matrix }: { matrix: CoCitationMatrix }) {
           {entities.map((rowE) => (
             <div key={rowE.code} className="flex items-center">
               <div
-                className="truncate px-1 text-right text-[10px] leading-[1.125rem] text-gray-700"
+                className="truncate px-1 text-right text-xs leading-6 text-foreground"
                 style={{
                   width: LABEL_W,
                   height: CELL,
                   backgroundColor: tintFor(rowE.section),
-                  borderBottom: '1px solid rgba(255,255,255,0.7)',
+                  borderBottom: '1px solid color-mix(in srgb, var(--color-un-white) 70%, transparent)',
                 }}
                 title={rowE.code}
               >
@@ -258,10 +258,10 @@ export function CoCitationHeatmap({ matrix }: { matrix: CoCitationMatrix }) {
                     style={{
                       width: CELL,
                       height: CELL,
-                      backgroundColor: bg ?? (isDiagonal ? '#f9fafb' : '#fff'),
+                      backgroundColor: bg ?? (isDiagonal ? 'var(--muted)' : 'var(--background)'),
                       outline: isSelected
-                        ? '2px solid #111827'
-                        : '0.5px solid rgba(0,0,0,0.04)',
+                        ? '2px solid var(--foreground)'
+                        : '0.5px solid color-mix(in srgb, var(--foreground) 4%, transparent)',
                       outlineOffset: isSelected ? '-1px' : undefined,
                       cursor: isDiagonal ? 'default' : 'pointer',
                     }}
@@ -274,7 +274,7 @@ export function CoCitationHeatmap({ matrix }: { matrix: CoCitationMatrix }) {
       </div>
 
       {/* Legend */}
-      <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] text-gray-600">
+      <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-muted-foreground">
         {legendItems.map((it) => (
           <span key={it.label} className="inline-flex items-center gap-1.5">
             <span
@@ -284,7 +284,7 @@ export function CoCitationHeatmap({ matrix }: { matrix: CoCitationMatrix }) {
             {it.label}
           </span>
         ))}
-        <span className="text-gray-400">
+        <span className="text-muted-foreground">
           Intensity = number of shared mandates
         </span>
       </div>

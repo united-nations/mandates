@@ -91,7 +91,7 @@ export function BudgetHierarchyTree({ hierarchy }: BudgetHierarchyTreeProps) {
 
   if (hierarchy.length === 0) {
     return (
-      <p className="py-2 text-xs text-muted-foreground">
+      <p className="py-2 text-sm text-muted-foreground">
         No budget locations for the current filters.
       </p>
     )
@@ -111,7 +111,7 @@ export function BudgetHierarchyTree({ hierarchy }: BudgetHierarchyTreeProps) {
       {/* Cuts across the tree rather than sitting in it: a citation is
           foundational or not at every level at once. */}
       <label
-        className="flex cursor-pointer items-center gap-2 text-xs"
+        className="flex cursor-pointer items-center gap-2 text-sm"
         title={FOUNDATIONAL_TOOLTIP}
       >
         <input
@@ -136,7 +136,7 @@ export function BudgetHierarchyTree({ hierarchy }: BudgetHierarchyTreeProps) {
             forceExpandAll={searching}
           />
         ) : (
-          <p className="py-2 text-xs text-muted-foreground">No matches.</p>
+          <p className="py-2 text-sm text-muted-foreground">No matches.</p>
         )}
       </div>
     </div>

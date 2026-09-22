@@ -2,3 +2,6 @@ onlyBuiltDependencies:
   - sharp
   - undifferent
   - unrs-resolver
+
+patchedDependencies:
+  '@un-eosg/ui@0.1.5': patches/@un-eosg__ui@0.1.5.patch

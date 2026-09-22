@@ -65,13 +65,13 @@ export function GroupBadge({
               the greys and the focus ring are shared. Count first, then the
               chevron: the count annotates the symbol it now follows, and the
               chevron stays the outermost thing — the edge you aim at to open. */}
-          <span className="flex h-5 w-5 items-center justify-center rounded-full border border-gray-200 bg-gray-50 text-[11px] font-medium text-gray-700 transition-colors group-hover/expander:border-un-blue group-hover/expander:bg-gray-100">
+          <span className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-border bg-muted text-xs leading-none font-medium text-muted-foreground transition-colors group-hover/expander:border-un-blue group-hover/expander:bg-secondary">
             {group.size > 99 ? '99+' : group.size}
           </span>
           {expanded ? (
-            <ChevronUp className="h-4 w-4 text-muted-foreground" />
+            <ChevronUp className="h-4 w-4 self-center text-muted-foreground" />
           ) : (
-            <ChevronDown className="h-4 w-4 text-muted-foreground" />
+            <ChevronDown className="h-4 w-4 self-center text-muted-foreground" />
           )}
         </button>
       </TooltipTrigger>
@@ -97,7 +97,7 @@ export function SeriesMarkers({ mandate }: { mandate: Mandate }) {
           <a
             href={getMandateUrl(series.superseded_by)}
             onClick={(e) => e.stopPropagation()}
-            className="inline-flex align-middle text-gray-400 transition-colors hover:text-un-blue"
+            className="inline-flex self-center text-muted-foreground transition-colors hover:text-un-blue-text"
             aria-label={`Not the latest version — the latest is ${series.superseded_by}`}
           >
             <History className="h-3.5 w-3.5" />
@@ -114,7 +114,7 @@ export function SeriesMarkers({ mandate }: { mandate: Mandate }) {
     return (
       <Tooltip>
         <TooltipTrigger asChild>
-          <span className="inline-flex align-middle text-gray-300">
+          <span className="inline-flex self-center text-muted-foreground">
             <Layers className="h-3.5 w-3.5" />
           </span>
         </TooltipTrigger>
@@ -156,13 +156,13 @@ export function GroupHiddenVersionsNote({ mandate }: { mandate: Mandate }) {
   const shownCount = Math.min(group.members.length + 1, total)
   const isCollection = mandate.series?.is_collection
   return (
-    <span className="flex min-w-0 items-center gap-1 text-xs text-muted-foreground">
+    <span className="flex min-w-0 items-center gap-1 text-sm text-muted-foreground">
       <span className="truncate">
         Showing {shownCount} of {total}{' '}
         {isCollection ? 'related resolutions' : 'versions'} — only those in the
         current table view.
       </span>
-      <span className="inline-flex shrink-0 items-center gap-1 font-medium text-un-blue">
+      <span className="inline-flex shrink-0 items-center gap-1 font-medium text-un-blue-text">
         See details for the full {isCollection ? 'list' : 'version history'}
         <ArrowRight className="h-3 w-3" />
       </span>
@@ -231,8 +231,8 @@ export function GroupMemberLine({
   showSimilarity?: boolean
 }) {
   return (
-    <span className="flex min-w-0 items-baseline gap-3">
-      <span className="w-10 shrink-0 text-xs text-muted-foreground">
+    <span className="flex min-w-0 items-center gap-3">
+      <span className="w-10 shrink-0 text-sm text-muted-foreground tabular-nums">
         {member.year ?? '—'}
       </span>
       {/* `subdued` = the document you are already looking at: present in the
@@ -243,11 +243,11 @@ export function GroupMemberLine({
       >
         <span className="block truncate">{member.symbol}</span>
       </DocumentSymbol>
-      <span className="min-w-0 truncate text-xs text-muted-foreground">
+      <span className="min-w-0 truncate text-sm text-muted-foreground">
         {member.title}
       </span>
       {showWordCount && (
-        <span className="shrink-0 text-xs">
+        <span className="shrink-0 text-sm">
           <WordCount metrics={member.text_metrics} /> words
         </span>
       )}
@@ -255,7 +255,7 @@ export function GroupMemberLine({
         <TextSimilarity symbol={member.symbol} metrics={member.text_metrics} />
       )}
       {member.current && (
-        <span className="shrink-0 text-xs text-muted-foreground">
+        <span className="shrink-0 text-sm text-muted-foreground">
           this document
         </span>
       )}

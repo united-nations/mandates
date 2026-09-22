@@ -30,7 +30,7 @@ export function SidebarAccordion({ items }: SidebarAccordionProps) {
             <AccordionItem key={item.id} value={item.id} className="border-b-0">
               <AccordionTrigger className="px-4 py-3 hover:bg-muted/30 hover:no-underline">
                 <div className="flex items-center gap-2">
-                  <Icon className="h-5 w-5 text-un-blue" />
+                  <Icon className="h-5 w-5 text-un-blue-text" />
                   <span className="font-semibold">{item.title}</span>
                 </div>
               </AccordionTrigger>

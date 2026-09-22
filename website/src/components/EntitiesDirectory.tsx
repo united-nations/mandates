@@ -151,13 +151,13 @@ export function EntitiesDirectory({
             ))}
           </div>
         ) : (
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-muted-foreground">
             No entities match “{search.trim()}”.
           </p>
         )}
 
         {!term && (
-          <p className="pt-2 text-xs text-gray-500">
+          <p className="pt-2 text-sm text-muted-foreground">
             {totalEntities.toLocaleString()} entities across the budget.
           </p>
         )}
@@ -234,9 +234,9 @@ function GroupHeading({
   children: React.ReactNode
 }) {
   return (
-    <h3 className="flex items-baseline gap-2 border-b border-gray-200 pb-1.5 text-sm font-normal tracking-wide text-gray-600 uppercase">
+    <h3 className="flex items-baseline gap-2 border-b border-border pb-1.5 text-sm font-normal tracking-wide text-muted-foreground uppercase">
       {children}
-      <span className="text-xs text-gray-500 tabular-nums">
+      <span className="text-sm text-muted-foreground tabular-nums">
         {count.toLocaleString()}
       </span>
     </h3>
@@ -375,7 +375,7 @@ function EntityCard({
             'group flex items-start justify-between gap-2 rounded-lg border bg-white px-3 py-2 transition-all focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none',
             active
               ? 'border-un-blue'
-              : 'border-gray-200 hover:border-un-blue hover:shadow-md'
+              : 'border-border hover:border-un-blue hover:shadow-md'
           )}
         >
           <div className="min-w-0">
@@ -383,7 +383,7 @@ function EntityCard({
               <span
                 className={cn(
                   'text-sm font-semibold',
-                  active ? 'text-un-blue' : 'text-gray-900'
+                  active ? 'text-un-blue-text' : 'text-foreground'
                 )}
               >
                 {entity.entity}
@@ -401,7 +401,7 @@ function EntityCard({
               // `title` is the recovery path should a name still clamp.
               <div
                 title={entity.entity_long}
-                className="line-clamp-3 text-xs leading-snug text-gray-500"
+                className="line-clamp-3 text-sm leading-snug text-muted-foreground"
               >
                 {entity.entity_long}
               </div>
@@ -410,7 +410,7 @@ function EntityCard({
           <ChevronRight
             className={cn(
               'mt-0.5 h-3.5 w-3.5 shrink-0',
-              active ? 'text-un-blue' : 'text-gray-300 group-hover:text-un-blue'
+              active ? 'text-un-blue-text' : 'text-muted-foreground group-hover:text-un-blue-text'
             )}
           />
         </a>

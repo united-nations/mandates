@@ -26,12 +26,12 @@ export function TopicTrends({ years }: { years: TopicTrendYear[] }) {
 
   return (
     <TooltipProvider delayDuration={200}>
-      <p className="mb-4 max-w-3xl text-sm text-gray-500">
+      <p className="mb-4 max-w-3xl text-sm text-muted-foreground">
         Subjects that became distinctively more frequent than the previous five
         years combined, by their share of that year’s documents — the deeper the
         blue, the sharper the rise.{' '}
         <span className="inline-flex items-center gap-0.5 align-baseline">
-          <Sparkles className="h-3 w-3 text-un-blue" />
+          <Sparkles className="h-3 w-3 text-un-blue-text" />
         </span>{' '}
         marks a subject’s first notable appearance. Recurring agenda items and
         procedural subjects are set aside so genuine shifts stand out.
@@ -41,16 +41,16 @@ export function TopicTrends({ years }: { years: TopicTrendYear[] }) {
         {years.map((year) => (
           <div
             key={year.year}
-            className="grid grid-cols-[3rem_1fr] gap-4 border-b border-gray-100 py-3 last:border-b-0 sm:grid-cols-[4rem_1fr] sm:gap-6"
+            className="grid grid-cols-[3rem_1fr] gap-4 border-b border-border py-3 last:border-b-0 sm:grid-cols-[4rem_1fr] sm:gap-6"
           >
             <div className="pt-0.5">
-              <div className="text-lg font-semibold text-gray-900 tabular-nums">
+              <div className="text-lg font-semibold text-foreground tabular-nums">
                 {year.year}
               </div>
             </div>
             <div className="flex flex-wrap items-start gap-1.5">
               {year.subjects.length === 0 ? (
-                <span className="self-center text-sm text-gray-400">
+                <span className="self-center text-sm text-muted-foreground">
                   No standout new topics
                 </span>
               ) : (
@@ -87,10 +87,10 @@ function scoreTier(z: number, isNew: boolean): PillTier {
 }
 
 const TIER_CLASS: Record<PillTier, string> = {
-  strong: 'border-un-blue bg-un-blue font-medium text-white hover:bg-un-blue-deep',
-  mid: 'border-un-blue/40 bg-un-blue/25 text-gray-900 hover:bg-un-blue/35',
-  low: 'border-un-blue/25 bg-un-blue/10 text-gray-800 hover:bg-un-blue/20',
-  faint: 'border-gray-200 bg-gray-50 text-gray-500 hover:border-un-blue/40',
+  strong: 'border-un-blue bg-un-blue-text font-medium text-white hover:bg-un-blue-shade',
+  mid: 'border-un-blue/40 bg-accent text-foreground hover:bg-un-blue/35',
+  low: 'border-un-blue/25 bg-accent text-foreground hover:bg-accent',
+  faint: 'border-border bg-muted text-muted-foreground hover:border-un-blue/40',
 }
 
 function TrendPill({
@@ -124,7 +124,7 @@ function TrendPill({
             <Sparkles className="h-3 w-3 self-center" />
           )}
           <span>{subject.subject}</span>
-          <span className="text-[10px] opacity-60 tabular-nums">
+          <span className="text-xs tabular-nums">
             {formatPct(subject.shareNow)}
           </span>
         </a>

@@ -66,7 +66,7 @@ import type { FilterParamKey } from '@/lib/filter-constants'
  * ("Budget Location" showing as "BU") instead of floating over it.
  */
 const STICKY_DETAIL_CELL =
-  'sticky right-0 z-10 border-l border-gray-200 shadow-[-8px_0_8px_-8px_rgba(0,0,0,0.18)]'
+  'sticky right-0 z-10 border-l border-border shadow-[-8px_0_8px_-8px_rgba(0,0,0,0.18)]'
 
 /** Cell text alignment, from the column's `align`. */
 const ALIGN_CLASS: Record<string, string> = {
@@ -185,7 +185,7 @@ export function MandateDataTable({
           a 1135px box read as broken rather than scrollable. */}
       <div
         ref={scrollBoxRef}
-        className={`overflow-hidden rounded-lg border border-gray-200 transition-opacity duration-150 [&>div]:[scrollbar-color:#d1d5db_#f3f4f6] [&>div::-webkit-scrollbar]:h-2.5 [&>div::-webkit-scrollbar-thumb]:rounded-full [&>div::-webkit-scrollbar-thumb]:bg-gray-300 [&>div::-webkit-scrollbar-track]:bg-gray-100 ${isPending ? 'opacity-50' : 'opacity-100'}`}
+        className={`overflow-hidden rounded-lg border border-border transition-opacity duration-150 [&>div]:[scrollbar-color:#d1d5db_#f3f4f6] [&>div::-webkit-scrollbar]:h-2.5 [&>div::-webkit-scrollbar-thumb]:rounded-full [&>div::-webkit-scrollbar-thumb]:bg-gray-300 [&>div::-webkit-scrollbar-track]:bg-secondary ${isPending ? 'opacity-50' : 'opacity-100'}`}
       >
         <TooltipProvider>
           {/* Fixed layout, so the declared column widths bind instead of being
@@ -197,12 +197,12 @@ export function MandateDataTable({
             style={{ minWidth: tableMinWidth(columns) }}
           >
             <TableHeader>
-              <TableRow className="border-b bg-gray-50 hover:bg-gray-50">
+              <TableRow className="border-b bg-muted hover:bg-muted">
                 {columns.map((col) => (
                   <TableHead
                     key={col.id}
                     style={{ width: col.flexible ? undefined : col.width }}
-                    className={`${ALIGN_CLASS[col.align ?? ''] ?? ''} ${col.id === 'detail' ? STICKY_DETAIL_CELL + ' bg-gray-50' : ''} h-10 px-3 text-xs font-medium tracking-wider text-muted-foreground uppercase`}
+                    className={`${ALIGN_CLASS[col.align ?? ''] ?? ''} ${col.id === 'detail' ? STICKY_DETAIL_CELL + ' bg-muted' : ''} h-10 px-3 text-xs font-medium tracking-wider text-muted-foreground uppercase`}
                   >
                     {col.id === 'detail' ? (
                       // The rail carries no filter or sort, but the header cell
@@ -230,11 +230,11 @@ export function MandateDataTable({
                 const isExpanded = expandedGroups.has(
                   mandate.full_document_symbol
                 )
-                const dimmed = !grouped && !!mandate.series?.superseded_by
+
                 return (
                   <Fragment key={mandate.full_document_symbol}>
                     <TableRow
-                      className={`group cursor-pointer border-b border-gray-100 hover:bg-gray-50 ${dimmed ? 'opacity-60' : ''}`}
+                      className={`group cursor-pointer border-b border-border hover:bg-muted`}
                       onClick={(e) => handleRowClick(mandate, e)}
                     >
                       {columns.map((col) => {
@@ -258,34 +258,23 @@ export function MandateDataTable({
                         return (
                           <TableCell
                             key={col.id}
-                            className={`${ALIGN_CLASS[col.align ?? ''] ?? ''} ${col.id === 'detail' ? STICKY_DETAIL_CELL + ' bg-white group-hover:bg-gray-50' : ''} overflow-hidden px-3 py-2 align-baseline text-sm`}
+                            className={`${ALIGN_CLASS[col.align ?? ''] ?? ''} ${col.id === 'detail' ? STICKY_DETAIL_CELL + ' bg-white group-hover:bg-muted' : ''} overflow-hidden px-3 py-2 align-middle text-sm text-foreground`}
                           >
-                            {showExpander || showMarkers ? (
-                              // Align symbol text with the row; allow its padding to set the height.
-                              <span
-                                className={
-                                  col.id === 'symbol'
-                                    ? 'flex min-h-5 items-baseline gap-1.5'
-                                    : 'flex items-start gap-1.5'
-                                }
-                              >
-                                {cell}
-                                {showMarkers && (
-                                  <SeriesMarkers mandate={mandate} />
-                                )}
-                                {showExpander && (
-                                  <GroupBadge
-                                    mandate={mandate}
-                                    expanded={isExpanded}
-                                    onToggle={() =>
-                                      toggleGroup(mandate.full_document_symbol)
-                                    }
-                                  />
-                                )}
-                              </span>
-                            ) : (
-                              cell
-                            )}
+                            <div
+                              className={`flex min-h-6 min-w-0 items-center gap-1.5 ${col.align === 'right' ? 'justify-end' : col.align === 'center' ? 'justify-center' : ''}`}
+                            >
+                              {cell}
+                              {showMarkers && <SeriesMarkers mandate={mandate} />}
+                              {showExpander && (
+                                <GroupBadge
+                                  mandate={mandate}
+                                  expanded={isExpanded}
+                                  onToggle={() =>
+                                    toggleGroup(mandate.full_document_symbol)
+                                  }
+                                />
+                              )}
+                            </div>
                           </TableCell>
                         )
                       })}
@@ -295,7 +284,7 @@ export function MandateDataTable({
                       groupMemberEntries(mandate).map((member) => (
                         <TableRow
                           key={member.symbol}
-                          className="cursor-pointer border-b border-gray-100 bg-gray-50/60 hover:bg-gray-100"
+                          className="cursor-pointer border-b border-border bg-muted/60 hover:bg-secondary"
                           onClick={() =>
                             router.push(mandateHref(member.symbol))
                           }
@@ -318,7 +307,7 @@ export function MandateDataTable({
                       isExpanded &&
                       groupHasHiddenVersions(mandate) && (
                         <TableRow
-                          className="cursor-pointer border-b border-gray-100 bg-gray-50/60 hover:bg-gray-100"
+                          className="cursor-pointer border-b border-border bg-muted/60 hover:bg-secondary"
                           onClick={(e) => handleRowClick(mandate, e)}
                         >
                           <TableCell
@@ -347,7 +336,7 @@ export function MandateDataTable({
         </TooltipProvider>
       </div>
       {overflows && (
-        <p className="mt-1.5 flex items-center gap-1.5 text-xs text-muted-foreground">
+        <p className="mt-1.5 flex items-center gap-1.5 text-sm text-muted-foreground">
           <MoveHorizontal aria-hidden className="h-3.5 w-3.5" />
           More columns to the right — scroll the table sideways.
         </p>
@@ -420,7 +409,7 @@ function PillList({
             </Chip>
           ))}
           {remaining > 0 && (
-            <span className="shrink-0 text-xs text-muted-foreground">
+            <span className="shrink-0 text-sm text-foreground">
               +{remaining}
             </span>
           )}
@@ -499,7 +488,7 @@ function CellContent({
                 real <a> so it can be opened in a new tab or copied; a plain
                 click bubbles to the row, which preventDefaults and pushes the
                 same URL. */}
-            <DocumentSymbol href={href} className="whitespace-nowrap">
+            <DocumentSymbol href={href} className="inline-flex items-center whitespace-nowrap">
               {highlighted ? (
                 <span dangerouslySetInnerHTML={{ __html: highlighted }} />
               ) : (
@@ -597,7 +586,7 @@ function CellContent({
                 outlined because this one is a fact about the row, not a
                 control. Three digits would stretch it, so it clamps at 99+;
                 no document is cited by 100 entities anyway. */}
-            <span className="inline-flex size-5 cursor-default items-center justify-center rounded-full bg-un-blue text-[11px] font-medium text-white tabular-nums">
+            <span className="inline-flex size-5 cursor-default items-center justify-center rounded-full bg-un-blue-text text-xs font-medium text-white tabular-nums">
               {entities.length > 99 ? '99+' : entities.length}
             </span>
           </HoverCardTrigger>
@@ -647,7 +636,7 @@ function CellContent({
               onClick={() => onFacetClick('entity', entity)}
             />
             {longName && longName !== entity && (
-              <span className="text-xs text-muted-foreground">{longName}</span>
+              <span className="text-sm text-foreground">{longName}</span>
             )}
             {isFoundational(entity, foundational) && <FoundationalTag />}
           </span>
@@ -685,7 +674,7 @@ function CellContent({
           <HoverCardTrigger asChild>
             <div className="flex cursor-default items-center gap-1 overflow-hidden">
               {visible.map((e) => pill(e, false))}
-              <span className="shrink-0 text-xs text-muted-foreground">
+              <span className="shrink-0 text-sm text-foreground">
                 +{remaining}
               </span>
             </div>
@@ -711,7 +700,7 @@ function CellContent({
           type="button"
           tabIndex={-1}
           aria-label="Details"
-          className="inline-flex items-center rounded border border-gray-200 bg-white p-1 text-muted-foreground transition-colors group-hover:border-un-blue group-hover:text-un-blue"
+          className="inline-flex items-center rounded border border-border bg-white p-1 text-muted-foreground transition-colors group-hover:border-un-blue group-hover:text-un-blue-text"
         >
           <ChevronRight className="h-3.5 w-3.5" />
         </button>
@@ -736,7 +725,7 @@ function CellContent({
 
     case 'document_type':
       return mandate.type ? (
-        <span className="text-xs">{mandate.type}</span>
+        <span className="text-sm">{mandate.type}</span>
       ) : null
 
     case 'agenda_item':

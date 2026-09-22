@@ -1,0 +1,425 @@
+diff --git a/components/binary-toggle.tsx b/components/binary-toggle.tsx
+index b8fde6d8e5206a6820d5c81990c9478decd07bd9..e181188db7058c364bdc545e032624ecfb888554 100644
+--- a/components/binary-toggle.tsx
++++ b/components/binary-toggle.tsx
+@@ -58,7 +58,7 @@ export function BinaryToggle({
+         onClick={() => onValueChange(options[checked ? 0 : 1].value)}
+         className={cn(
+           "inline-flex h-5 w-9 shrink-0 items-center rounded-full border-2 border-transparent shadow-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-un-blue disabled:cursor-not-allowed",
+-          checked ? "bg-un-blue" : "bg-gray-200",
++          checked ? "bg-un-blue" : "bg-muted",
+         )}
+       >
+         <span
+diff --git a/components/chip.tsx b/components/chip.tsx
+index 624316284af03844268dbf2c1eb0040f752e6d51..b78bc236215961ffc963f1237744ad73034c5626 100644
+--- a/components/chip.tsx
++++ b/components/chip.tsx
+@@ -52,7 +52,7 @@ const DENSITY: Record<ChipDensity, string> = {
+ 
+ const TONE: Record<ChipTone, string> = {
+   neutral: "border-border bg-secondary text-secondary-foreground",
+-  selected: "border-un-blue bg-un-blue font-medium text-white",
++  selected: "border-un-blue bg-un-blue-text font-medium text-white",
+   ghost: "border-dashed border-border bg-transparent text-muted-foreground",
+ };
+ 
+diff --git a/components/data-table.tsx b/components/data-table.tsx
+index e704f7e27354a5c91b24f5188993135f4aba75e6..ef44c2f13b08549271a174239cb7e611e754fc30 100644
+--- a/components/data-table.tsx
++++ b/components/data-table.tsx
+@@ -44,7 +44,7 @@ export function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
+   return (
+     <tr
+       className={cn(
+-        "border-b border-border transition-colors last:border-0 hover:bg-un-blue/5",
++        "border-b border-border transition-colors last:border-0 hover:bg-accent",
+         className,
+       )}
+       {...props}
+diff --git a/components/document-symbol.tsx b/components/document-symbol.tsx
+index 6d12ffbc62d1e437b421a72d5f141233010b83ef..f414e64a66298137c7285341f48de90e79551405 100644
+--- a/components/document-symbol.tsx
++++ b/components/document-symbol.tsx
+@@ -23,9 +23,9 @@ export function DocumentSymbol({
+   const classes = cn(
+     typography.label,
+     "inline-block rounded px-2 py-0.5",
+-    subdued ? "bg-gray-100 text-gray-700" : "bg-blue-50 text-un-blue",
++    subdued ? "bg-secondary text-foreground" : "bg-accent text-accent-foreground",
+     href &&
+-      "transition-colors hover:bg-blue-100 focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none",
++      "transition-colors hover:bg-un-blue-tint focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none",
+     className,
+   );
+   return href ? (
+diff --git a/components/filter-popover.tsx b/components/filter-popover.tsx
+index 116acf98b8625d3dbc61ad85247077f91c66d33b..da7ce56346005b6a69e2a1c953a18b40ac483abd 100644
+--- a/components/filter-popover.tsx
++++ b/components/filter-popover.tsx
+@@ -74,7 +74,7 @@ export function FilterPopover({
+           size="sm"
+           className={cn(
+             selected.length > 0 &&
+-              "border-un-blue bg-un-blue-tint-50 text-un-blue-text",
++              "border-un-blue bg-un-blue-tint-50 text-accent-foreground",
+             className,
+           )}
+         >
+@@ -126,7 +126,7 @@ export function FilterPopover({
+                       className={cn(
+                         "flex size-4 shrink-0 items-center justify-center rounded-sm border",
+                         isSelected
+-                          ? "border-un-blue bg-un-blue text-white"
++                          ? "border-un-blue bg-un-blue-text text-white"
+                           : "border-input",
+                       )}
+                     >
+diff --git a/components/financial-panel-parts.tsx b/components/financial-panel-parts.tsx
+index a9af56f09182b0ef2722f871570a85f910a00a9c..3010584d83a143ccb8e6f8d7286ddb398fb87e52 100644
+--- a/components/financial-panel-parts.tsx
++++ b/components/financial-panel-parts.tsx
+@@ -116,7 +116,7 @@ export function FinancialPanelYearSelector({
+               "inline-flex shrink-0 items-center gap-1 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-un-blue/50",
+               variant === "pill"
+                 ? "h-8 rounded-full bg-secondary px-3 text-muted-foreground hover:bg-muted hover:text-foreground"
+-                : "border-b border-gray-400 text-gray-600 hover:text-gray-900",
++                : "border-b border-gray-400 text-gray-600 hover:text-foreground",
+             )}
+           >
+             <span className="font-medium">{selected}</span>
+@@ -132,7 +132,7 @@ export function FinancialPanelYearSelector({
+           <Popover.Content
+             align="start"
+             sideOffset={4}
+-            className="z-[100] min-w-20 rounded-md border border-gray-300 bg-white p-1 shadow-md"
++            className="z-[100] min-w-20 rounded-md border border-border bg-white p-1 shadow-md"
+           >
+             <div className="flex flex-col">
+               {years.map((year) => (
+@@ -148,8 +148,8 @@ export function FinancialPanelYearSelector({
+                     typography.body,
+                     "rounded px-3 py-1.5 text-start",
+                     year === selected
+-                      ? "bg-gray-100 font-medium text-gray-900"
+-                      : "text-gray-600 hover:bg-gray-50",
++                      ? "bg-secondary font-medium text-foreground"
++                      : "text-gray-600 hover:bg-muted",
+                   )}
+                 >
+                   {year}
+@@ -225,7 +225,7 @@ export function FinancialPanelRankedRow({
+       onClick={badge ? onClick : undefined}
+       className={cn(
+         "flex w-full items-center gap-2",
+-        badge && onClick && "group rounded hover:bg-gray-50",
++        badge && onClick && "group rounded hover:bg-muted",
+       )}
+     >
+       {onClick && !badge ? (
+@@ -235,7 +235,7 @@ export function FinancialPanelRankedRow({
+           title={title ?? label}
+           className={cn(
+             typography.label,
+-            "w-24 shrink-0 truncate text-start text-gray-700 hover:text-un-blue hover:underline",
++            "w-24 shrink-0 truncate text-start text-foreground hover:text-un-blue-text hover:underline",
+             labelClassName,
+           )}
+         >
+@@ -246,7 +246,7 @@ export function FinancialPanelRankedRow({
+           title={title ?? label}
+           className={cn(
+             typography.label,
+-            "w-24 shrink-0 truncate text-start text-gray-700 group-hover:text-un-blue group-hover:underline",
++            "w-24 shrink-0 truncate text-start text-foreground group-hover:text-un-blue-text group-hover:underline",
+             labelClassName,
+           )}
+         >
+diff --git a/components/financial-tooltip.tsx b/components/financial-tooltip.tsx
+index df267860fba6531480d99fcfb42b3f2b6fb28382..edd3c0c3ffc17fa14f3b15e8d15016211eabd556 100644
+--- a/components/financial-tooltip.tsx
++++ b/components/financial-tooltip.tsx
+@@ -158,7 +158,7 @@ export function FinancialTooltip({
+         >
+           <MousePointerClick
+             aria-hidden="true"
+-            className="size-3.5 shrink-0 text-un-blue"
++            className="size-3.5 shrink-0 text-un-blue-text"
+           />
+           {actionHint}
+         </p>
+diff --git a/components/hierarchical-multi-select.tsx b/components/hierarchical-multi-select.tsx
+index 50dc865e88e619424ab08cf765a1a1f8d5e84a66..1b11b06fe6ee7a4714e2497363430b32546f63d4 100644
+--- a/components/hierarchical-multi-select.tsx
++++ b/components/hierarchical-multi-select.tsx
+@@ -172,8 +172,8 @@ export function HierarchicalMultiSelect({
+               type="button"
+               className={cn(
+                 pillStyles,
+-                "bg-secondary transition-colors hover:bg-gray-200",
+-                open && "border-gray-400 bg-gray-200",
++                "bg-secondary transition-colors hover:bg-muted",
++                open && "border-gray-400 bg-muted",
+               )}
+             >
+               {selectionSummary !== undefined ? (
+@@ -208,7 +208,7 @@ export function HierarchicalMultiSelect({
+                   }}
+                   className={cn(
+                     pillStyles,
+-                    "group bg-secondary transition-colors hover:bg-gray-200",
++                    "group bg-secondary transition-colors hover:bg-muted",
+                   )}
+                 >
+                   <span
+@@ -226,12 +226,12 @@ export function HierarchicalMultiSelect({
+             })}
+         </div>
+         <PopoverContent
+-          className="w-[320px] border-gray-300 bg-white p-0"
++          className="w-[320px] border-border bg-white p-0"
+           align="start"
+           sideOffset={4}
+         >
+           {/* Search input - minimal style matching ChartSearchInput */}
+-          <div className="relative border-b border-gray-200">
++          <div className="relative border-b border-border">
+             <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
+             <input
+               type="text"
+@@ -275,7 +275,7 @@ export function HierarchicalMultiSelect({
+                   return (
+                     <label
+                       key={group.id}
+-                      className="flex cursor-pointer items-center gap-2 px-3 py-2 text-sm hover:bg-gray-100"
++                      className="flex cursor-pointer items-center gap-2 px-3 py-2 text-sm hover:bg-secondary"
+                     >
+                       <input
+                         type="checkbox"
+@@ -305,7 +305,7 @@ export function HierarchicalMultiSelect({
+                   <div key={group.id}>
+                     {/* Group header (selectable for aggregate) */}
+                     <div
+-                      className="flex w-full items-center gap-2 px-3 py-2 hover:bg-gray-100 transition-colors cursor-pointer"
++                      className="flex w-full items-center gap-2 px-3 py-2 hover:bg-secondary transition-colors cursor-pointer"
+                       onClick={() => hasExpandable && toggleExpanded(group.id)}
+                     >
+                       {/* Expand/collapse chevron */}
+@@ -356,7 +356,7 @@ export function HierarchicalMultiSelect({
+                           <div key={subgroup.id}>
+                             {/* Subgroup header */}
+                             <div
+-                              className="flex w-full items-center gap-2 pl-7 pr-3 py-1.5 hover:bg-gray-100 transition-colors cursor-pointer"
++                              className="flex w-full items-center gap-2 pl-7 pr-3 py-1.5 hover:bg-secondary transition-colors cursor-pointer"
+                               onClick={() =>
+                                 sgHasChildren && toggleExpanded(subgroup.id)
+                               }
+@@ -405,7 +405,7 @@ export function HierarchicalMultiSelect({
+                                 <button
+                                   type="button"
+                                   key={child}
+-                                  className="flex w-full items-center gap-2 pl-14 pr-3 py-1.5 text-left hover:bg-gray-100 transition-colors"
++                                  className="flex w-full items-center gap-2 pl-14 pr-3 py-1.5 text-left hover:bg-secondary transition-colors"
+                                   onClick={(e) => toggleItem(child, e)}
+                                 >
+                                   {/* Colored checkbox */}
+@@ -435,7 +435,7 @@ export function HierarchicalMultiSelect({
+                         <button
+                           type="button"
+                           key={child}
+-                          className="flex w-full items-center gap-2 pl-10 pr-3 py-1.5 text-left hover:bg-gray-100 transition-colors"
++                          className="flex w-full items-center gap-2 pl-10 pr-3 py-1.5 text-left hover:bg-secondary transition-colors"
+                           onClick={(e) => toggleItem(child, e)}
+                         >
+                           {/* Colored checkbox */}
+diff --git a/components/hierarchical-single-select.tsx b/components/hierarchical-single-select.tsx
+index 0f7f63c1d3906109e9509b43921f1843b366ee9f..b0ffe1812d05659ebd1705cab3e61a676d5168a3 100644
+--- a/components/hierarchical-single-select.tsx
++++ b/components/hierarchical-single-select.tsx
+@@ -121,8 +121,8 @@ export function HierarchicalSingleSelect({
+             type="button"
+             className={cn(
+               pillStyles,
+-              "bg-secondary transition-colors hover:bg-gray-200",
+-              open && "bg-gray-200",
++              "bg-secondary transition-colors hover:bg-muted",
++              open && "bg-muted",
+             )}
+           >
+             <span className="max-w-[180px] truncate font-medium">
+@@ -137,12 +137,12 @@ export function HierarchicalSingleSelect({
+           </button>
+         </PopoverTrigger>
+         <PopoverContent
+-          className="w-[320px] border-gray-300 bg-white p-0"
++          className="w-[320px] border-border bg-white p-0"
+           align="start"
+           sideOffset={4}
+         >
+           {/* Search input */}
+-          <div className="relative border-b border-gray-200">
++          <div className="relative border-b border-border">
+             <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
+             <input
+               type="text"
+@@ -180,7 +180,7 @@ export function HierarchicalSingleSelect({
+                     <div
+                       className={cn(
+                         "flex w-full items-center gap-2 px-3 py-2 transition-colors cursor-pointer",
+-                        isGroupSelected ? "bg-gray-100" : "hover:bg-gray-50",
++                        isGroupSelected ? "bg-secondary" : "hover:bg-muted",
+                       )}
+                       onClick={() => selectItem(group.id)}
+                     >
+@@ -216,8 +216,8 @@ export function HierarchicalSingleSelect({
+                         className={cn(
+                           "flex-1 min-w-0 text-sm truncate",
+                           isGroupSelected
+-                            ? "font-medium text-gray-900"
+-                            : "text-gray-700",
++                            ? "font-medium text-foreground"
++                            : "text-foreground",
+                         )}
+                       >
+                         {group.label}
+@@ -242,8 +242,8 @@ export function HierarchicalSingleSelect({
+                             className={cn(
+                               "flex w-full items-center gap-2 pl-10 pr-3 py-1.5 text-left transition-colors",
+                               isChildSelected
+-                                ? "bg-gray-100"
+-                                : "hover:bg-gray-50",
++                                ? "bg-secondary"
++                                : "hover:bg-muted",
+                             )}
+                             onClick={() => selectItem(child)}
+                           >
+@@ -251,7 +251,7 @@ export function HierarchicalSingleSelect({
+                               className={cn(
+                                 "flex-1 min-w-0 text-sm truncate",
+                                 isChildSelected
+-                                  ? "font-medium text-gray-900"
++                                  ? "font-medium text-foreground"
+                                   : "text-gray-600",
+                               )}
+                             >
+diff --git a/components/interaction-hint.tsx b/components/interaction-hint.tsx
+index 2930ecf8249163a91515e9b8bc84d4f88ecd9f25..bcb92fae8145530971378531efd23fdef5bf93ca 100644
+--- a/components/interaction-hint.tsx
++++ b/components/interaction-hint.tsx
+@@ -18,7 +18,7 @@ export function InteractionHint({ text, className }: InteractionHintProps) {
+       )}
+     >
+       <MousePointerClick
+-        className="size-4 shrink-0 text-un-blue"
++        className="size-4 shrink-0 text-un-blue-text"
+         aria-hidden="true"
+       />
+       {text}
+diff --git a/components/secondary-header.tsx b/components/secondary-header.tsx
+index a2a0d8f986a85c467d499a93c1a212d66fd4eee9..4470aa5ecbd33fe5b32207a021ac4bdfc0305738 100644
+--- a/components/secondary-header.tsx
++++ b/components/secondary-header.tsx
+@@ -52,7 +52,7 @@ export function SecondaryHeader({
+   return (
+     <div
+       className={cn(
+-        "sticky top-[65px] z-30 border-b border-gray-200 min-[1408px]:top-14",
++        "sticky top-[65px] z-30 border-b border-border min-[1408px]:top-14",
+         secondaryHeaderTransparencyClasses[transparency],
+         className,
+       )}
+@@ -69,8 +69,8 @@ export function SecondaryHeader({
+             className: cn(
+               "shrink-0 border-b-2 px-3 py-3 text-sm whitespace-nowrap transition-colors first:pl-0",
+               active
+-                ? "border-un-blue font-semibold text-un-blue"
+-                : "border-transparent text-gray-600 hover:border-gray-300 hover:text-gray-900",
++                ? "border-un-blue font-semibold text-un-blue-text"
++                : "border-transparent text-gray-600 hover:border-border hover:text-foreground",
+             ),
+             children: item.label,
+           };
+diff --git a/components/site-header.tsx b/components/site-header.tsx
+index 16a08a0f0a3e1a08f6f08fc4d067cddf4a3f570a..8ebc795c76cec9a9cc57dcb19bfc31220699a6ce 100644
+--- a/components/site-header.tsx
++++ b/components/site-header.tsx
+@@ -183,7 +183,7 @@ export function SiteHeader({
+               <span className="font-light">{descriptor}</span>
+             </span>
+             {typeof badge === "string" ? (
+-              <span className="rounded-md bg-un-blue/10 px-1.5 py-0.5 text-micro leading-none font-semibold whitespace-nowrap text-un-blue md:px-2 md:py-1 md:text-xs">
++              <span className="rounded-md bg-accent px-1.5 py-0.5 text-micro leading-none font-semibold whitespace-nowrap text-accent-foreground md:px-2 md:py-1 md:text-xs">
+                 {badge}
+               </span>
+             ) : (
+@@ -205,7 +205,7 @@ export function SiteHeader({
+                     className={cn(
+                       "inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm whitespace-nowrap transition-colors",
+                       active
+-                        ? "bg-un-blue/10 font-medium text-un-blue"
++                        ? "bg-accent font-medium text-accent-foreground"
+                         : "text-foreground/80 hover:bg-muted hover:text-foreground",
+                     )}
+                   >
+@@ -243,7 +243,7 @@ export function SiteHeader({
+                         className={cn(
+                           "relative flex cursor-default items-center rounded-sm px-2 py-1.5 text-sm text-foreground outline-none select-none focus:bg-accent focus:text-accent-foreground",
+                           active &&
+-                            "bg-un-blue/10 font-medium text-un-blue-text focus:bg-un-blue/10 focus:text-un-blue-text",
++                            "bg-accent font-medium text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+                         )}
+                       >
+                         {active ? (
+diff --git a/components/stat-tile.tsx b/components/stat-tile.tsx
+index a67b1f3ef055d2190a398b5b9527d963c80324f7..a666a23084540fba77d883dfc363d09ffb938ca6 100644
+--- a/components/stat-tile.tsx
++++ b/components/stat-tile.tsx
+@@ -51,7 +51,7 @@ export function StatTile({
+   );
+ 
+   const base = cn(
+-    "flex w-full items-center gap-2 rounded-lg bg-un-blue/10 px-3 py-1.5 text-start",
++    "flex w-full items-center gap-2 rounded-lg bg-accent px-3 py-1.5 text-start",
+     className,
+   );
+ 
+@@ -63,7 +63,7 @@ export function StatTile({
+       onClick={onClick}
+       className={cn(
+         base,
+-        "transition-colors hover:bg-un-blue/20",
++        "transition-colors hover:bg-accent",
+         "focus-visible:ring-focus-ring focus-visible:ring-un-blue/50 focus-visible:outline-none",
+       )}
+     >
+diff --git a/components/year-slider.tsx b/components/year-slider.tsx
+index 09fbe1b0dc2b3ba66353b2847aa8f42f0c0bcfeb..7a40a37e754df629e7b285bd726b73c7d0e26518 100644
+--- a/components/year-slider.tsx
++++ b/components/year-slider.tsx
+@@ -214,7 +214,7 @@ export function YearSlider({
+           />
+         </div>
+       </div>
+-      <span className="min-w-[3ch] text-sm font-medium whitespace-nowrap text-gray-900">
++      <span className="min-w-[3ch] text-sm font-medium whitespace-nowrap text-foreground">
+         {formatLabel ? formatLabel(displayYear) : displayYear}
+       </span>
+     </div>
+diff --git a/tokens/theme.css b/tokens/theme.css
+index bf5c7f7c129488591de0c76f4ff002ac0c4fda41..e03bbc526f186efd962dfc020f63583e3beec3b8 100644
+--- a/tokens/theme.css
++++ b/tokens/theme.css
+@@ -29,6 +29,13 @@
+   --color-un-blue: #009edb;
+   --color-un-black: #000000;
+   --color-un-white: #ffffff;
++  /* Neutral UI reference values, shared with Storybook and consuming apps. */
++  --color-neutral-surface: #f4f4f5;
++  --color-neutral-border: #e4e4e7;
++  --color-neutral-text: #52525b;
++  /* Existing co-citation chart hue; retained so token adoption does not change data encoding. */
++  --color-un80-warm-gray: #9b8b7a;
++
+ 
+   /* UN Blue's full ramp. This is the only accent that earns a complete set,
+      because it is the only one used at any volume. */

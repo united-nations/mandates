@@ -39,7 +39,7 @@ export function SearchSyntaxHint() {
       align="start"
       sideOffset={6}
       trigger="?"
-      triggerClassName="inline-block h-4 w-4 shrink-0 cursor-pointer overflow-hidden rounded-full border border-gray-300 p-0 text-center text-micro leading-[0.875rem] font-semibold text-gray-500 select-none hover:border-un-blue hover:text-un-blue focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none"
+      triggerClassName="inline-block h-4 w-4 shrink-0 cursor-pointer overflow-hidden rounded-full border border-border p-0 text-center text-xs leading-[0.875rem] font-semibold text-muted-foreground select-none hover:border-un-blue hover:text-un-blue-text focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none"
     >
       <SearchSyntaxHelp />
     </DisclosurePopover>

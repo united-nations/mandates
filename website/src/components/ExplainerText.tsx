@@ -10,7 +10,7 @@ export function ExplainerText() {
           href={explainerTexts.mainHeader.un80Link}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-un-blue transition-colors hover:text-shuttle-gray"
+          className="text-un-blue-text transition-colors hover:text-shuttle-gray"
         >
           UN80 Initiative
         </Link>
@@ -22,7 +22,7 @@ export function ExplainerText() {
             one. The hover treatment differs from the UN80 link above — that
             is the two links as they were written, not a normalisation
             anyone has ruled on. */}
-        <Link href="/methodology" className="text-un-blue hover:underline">
+        <Link href="/methodology" className="text-un-blue-text hover:underline">
           Learn more
         </Link>
         .

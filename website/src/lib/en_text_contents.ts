@@ -185,12 +185,10 @@ export const explainerTexts = {
       'Citation count shows how often this mandate document is cited by UN Entities in their budget submissions.',
   },
 
-  // Version matching — shared between the detail page's version-history
-  // disclaimer and the explorer's group-versions toggle tooltip, so the two
-  // surfaces cannot drift in what they disclose. Before this constant the
-  // toggle carried the same sentence without the accuracy bound, so the
-  // surface most readers meet first disclosed less.
+  // Version matching: concise toggle guidance and the detailed methodology disclaimer.
   versionMatching: {
+    groupTooltip:
+      'Show recurring resolutions as one row per series, displaying the most recent version matching your filters. Expand a row to see earlier versions. Versions are grouped automatically by title and mandating body.',
     disclaimer:
       'Versions are identified automatically by matching titles within the same mandating body (~97% accuracy on a manual audit).',
   },

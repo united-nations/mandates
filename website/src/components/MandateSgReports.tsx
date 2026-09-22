@@ -77,18 +77,18 @@ export function MandateSgReports({ reports }: { reports: MandatedSgReport[] }) {
       </DetailSectionHeading>
 
       {annexNote && (
-        <p className="max-w-[44rem] text-sm text-gray-700">{annexNote}</p>
+        <p className="max-w-[44rem] text-sm text-foreground">{annexNote}</p>
       )}
 
       {SUMMARISE_SG_REPORTS_AS_TILES_ON_DETAIL_PAGE && (
         <SgReportSummaryTiles reports={reports} />
       )}
 
-      <ul className="divide-y divide-gray-100 border-y border-gray-100">
+      <ul className="divide-y divide-gray-100 border-y border-border">
         {shown.map((report) => (
           <li key={report.report_recid} className="min-h-8 py-1 text-sm">
             <div className="flex items-baseline gap-3">
-              <span className="w-10 shrink-0 text-sm text-black tabular-nums">
+              <span className="w-10 shrink-0 text-sm text-foreground tabular-nums">
                 {report.date_published?.slice(0, 4) ?? '—'}
               </span>
               <span className="flex w-36 shrink-0 items-baseline gap-1.5">
@@ -99,7 +99,7 @@ export function MandateSgReports({ reports }: { reports: MandatedSgReport[] }) {
                   title={`Open ${report.report_symbol} in the UN Digital Library`}
                   className="inline-flex min-w-0 items-baseline rounded hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-un-blue"
                 >
-                  <DocumentSymbol className="inline-flex min-w-0 max-w-full items-baseline text-sm">
+                  <DocumentSymbol className="inline-flex min-w-0 max-w-full items-baseline">
                     <span className="min-w-0 truncate">{report.report_symbol}</span>
                   </DocumentSymbol>
                 </a>
@@ -115,7 +115,7 @@ export function MandateSgReports({ reports }: { reports: MandatedSgReport[] }) {
                 )}
               </span>
               <span
-                className="min-w-0 flex-1 truncate text-sm text-gray-700"
+                className="min-w-0 flex-1 truncate text-sm text-foreground"
                 title={report.title ?? undefined}
               >
                 {report.title}
@@ -129,7 +129,7 @@ export function MandateSgReports({ reports }: { reports: MandatedSgReport[] }) {
         <button
           type="button"
           onClick={() => setShowAll(true)}
-          className="inline-flex items-center gap-1 text-sm font-medium text-un-blue hover:underline"
+          className="inline-flex items-center gap-1 text-sm font-medium text-un-blue-text hover:underline"
         >
           <ChevronDown className="h-3 w-3" />
           Show all {reports.length}
@@ -139,7 +139,7 @@ export function MandateSgReports({ reports }: { reports: MandatedSgReport[] }) {
         <button
           type="button"
           onClick={() => setShowAll(false)}
-          className="inline-flex items-center gap-1 text-sm font-medium text-un-blue hover:underline"
+          className="inline-flex items-center gap-1 text-sm font-medium text-un-blue-text hover:underline"
         >
           <ChevronUp className="h-3 w-3" />
           Show fewer
@@ -216,9 +216,9 @@ function SummaryTile({
   subTitle?: string
 }) {
   return (
-    <div className="min-w-38 rounded-lg border border-gray-200 px-3.5 py-2.5">
+    <div className="min-w-38 rounded-lg border border-border px-3.5 py-2.5">
       <div className="text-xs text-muted-foreground">{label}</div>
-      <div className="mt-0.5 text-[1.375rem] leading-tight font-semibold text-gray-900">
+      <div className="mt-0.5 text-[1.375rem] leading-tight font-semibold text-foreground">
         {value}
       </div>
       {sub && (

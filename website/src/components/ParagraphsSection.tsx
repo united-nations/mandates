@@ -108,12 +108,12 @@ interface TOCItem {
 const filterPillTone = (currentFilter: string) =>
   cn(
     'bg-transparent',
-    currentFilter !== 'all' ? 'font-medium text-un-blue' : 'text-gray-600'
+    currentFilter !== 'all' ? 'font-medium text-un-blue-text' : 'text-muted-foreground'
   )
 
 /** Popover panel, anchored under the pill whatever the pill's height is. */
 const FILTER_PANEL =
-  'absolute top-full left-0 z-50 mt-1 min-w-48 rounded-md border border-gray-200 bg-white py-1 shadow-lg'
+  'absolute top-full left-0 z-50 mt-1 min-w-48 rounded-md border border-border bg-white py-1 shadow-lg'
 
 // Reusable filter dropdown component
 interface FilterDropdownProps {
@@ -162,7 +162,7 @@ function FilterDropdown({
                 : `${titleCase(currentFilter.replace(/_/g, ' '))} (${typeCounts[currentFilter] || 0})`}
         </span>
         <ChevronDown
-          className={`h-3 w-3 shrink-0 self-center text-un-blue transition-transform ${isOpen ? 'rotate-180' : ''}`}
+          className={`h-3 w-3 shrink-0 self-center text-un-blue-text transition-transform ${isOpen ? 'rotate-180' : ''}`}
         />
       </Chip>
       {isOpen && (
@@ -170,28 +170,28 @@ function FilterDropdown({
           {/* All paragraphs option */}
           <button
             onClick={() => onFilterChange('all')}
-            className={`flex w-full items-center justify-between py-1.5 text-left text-xs hover:bg-gray-50 ${
+            className={`flex w-full items-center justify-between py-1.5 text-left text-sm hover:bg-muted ${
               currentFilter === 'all'
-                ? 'bg-un-blue/10 text-un-blue'
-                : 'text-gray-700'
+                ? 'bg-accent text-accent-foreground'
+                : 'text-foreground'
             }`}
           >
             <span className="pl-3">All paragraphs</span>
-            <span className="pr-3 text-gray-500">{filteredTotalCount}</span>
+            <span className="pr-3 text-muted-foreground">{filteredTotalCount}</span>
           </button>
 
           {/* With items option */}
           {withItemsCount > 0 && withItemsLabel && (
             <button
               onClick={() => onFilterChange(withItemsKey)}
-              className={`flex w-full items-center justify-between py-1.5 text-left text-xs hover:bg-gray-50 ${
+              className={`flex w-full items-center justify-between py-1.5 text-left text-sm hover:bg-muted ${
                 currentFilter === withItemsKey
-                  ? 'bg-un-blue/10 text-un-blue'
-                  : 'text-gray-700'
+                  ? 'bg-accent text-accent-foreground'
+                  : 'text-foreground'
               }`}
             >
               <span className="pl-3">{withItemsLabel}</span>
-              <span className="pr-3 text-gray-500">{withItemsCount}</span>
+              <span className="pr-3 text-muted-foreground">{withItemsCount}</span>
             </button>
           )}
 
@@ -213,19 +213,19 @@ function FilterDropdown({
                       count > 0 ? onFilterChange(type) : undefined
                     }
                     disabled={count === 0}
-                    className={`flex w-full items-center justify-between py-1.5 text-left text-xs ${
+                    className={`flex w-full items-center justify-between py-1.5 text-left text-sm ${
                       count === 0
-                        ? 'cursor-not-allowed text-gray-400'
+                        ? 'cursor-not-allowed text-muted-foreground'
                         : currentFilter === type
-                          ? 'bg-un-blue/10 text-un-blue hover:bg-gray-50'
-                          : 'text-gray-700 hover:bg-gray-50'
+                          ? 'bg-accent text-accent-foreground hover:bg-muted'
+                          : 'text-foreground hover:bg-muted'
                     }`}
                   >
                     <span className="pl-6">
                       {titleCase(type.replace(/_/g, ' '))}
                     </span>
                     <span
-                      className={`pr-3 ${count === 0 ? 'text-gray-400' : 'text-gray-500'}`}
+                      className={`pr-3 ${count === 0 ? 'text-muted-foreground' : 'text-muted-foreground'}`}
                     >
                       {count}
                     </span>
@@ -251,19 +251,19 @@ function FilterDropdown({
                               : undefined
                           }
                           disabled={itemCount === 0}
-                          className={`flex w-full items-center justify-between py-1.5 text-left text-xs ${
+                          className={`flex w-full items-center justify-between py-1.5 text-left text-sm ${
                             itemCount === 0
-                              ? 'cursor-not-allowed text-gray-400'
+                              ? 'cursor-not-allowed text-muted-foreground'
                               : currentFilter === `${type}:${itemName}`
-                                ? 'bg-un-blue/10 text-un-blue hover:bg-gray-50'
-                                : 'text-gray-600 hover:bg-gray-50'
+                                ? 'bg-accent text-accent-foreground hover:bg-muted'
+                                : 'text-muted-foreground hover:bg-muted'
                           }`}
                         >
-                          <span className="pl-10 text-xs">
+                          <span className="pl-10 text-sm">
                             {titleCase(itemName)}
                           </span>
                           <span
-                            className={`pr-3 text-xs ${itemCount === 0 ? 'text-gray-400' : 'text-gray-400'}`}
+                            className={`pr-3 text-sm ${itemCount === 0 ? 'text-muted-foreground' : 'text-muted-foreground'}`}
                           >
                             {itemCount}
                           </span>
@@ -372,19 +372,19 @@ function SearchableFilterDropdown({
                 : `${titleCase(currentFilter.replace(/_/g, ' '))} (${typeCounts[currentFilter] || 0})`}
         </span>
         <ChevronDown
-          className={`h-3 w-3 shrink-0 self-center text-un-blue transition-transform ${isOpen ? 'rotate-180' : ''}`}
+          className={`h-3 w-3 shrink-0 self-center text-un-blue-text transition-transform ${isOpen ? 'rotate-180' : ''}`}
         />
       </Chip>
       {isOpen && (
         <div className={FILTER_PANEL}>
           {/* Search input */}
-          <div className="border-b border-gray-100 px-3 py-2">
+          <div className="border-b border-border px-3 py-2">
             <input
               type="text"
               placeholder={`Search ${label.toLowerCase()}...`}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full rounded border border-gray-200 px-2 py-1 text-xs focus:border-un-blue focus:ring-1 focus:ring-un-blue focus:outline-hidden"
+              className="w-full rounded border border-border px-2 py-1 text-sm focus:border-un-blue focus:ring-1 focus:ring-un-blue focus:outline-hidden"
               autoFocus
             />
           </div>
@@ -394,28 +394,28 @@ function SearchableFilterDropdown({
             {/* All paragraphs option */}
             <button
               onClick={() => onFilterChange('all')}
-              className={`flex w-full items-center justify-between py-1.5 text-left text-xs hover:bg-gray-50 ${
+              className={`flex w-full items-center justify-between py-1.5 text-left text-sm hover:bg-muted ${
                 currentFilter === 'all'
-                  ? 'bg-un-blue/10 text-un-blue'
-                  : 'text-gray-700'
+                  ? 'bg-accent text-accent-foreground'
+                  : 'text-foreground'
               }`}
             >
               <span className="pl-3">All paragraphs</span>
-              <span className="pr-3 text-gray-500">{filteredTotalCount}</span>
+              <span className="pr-3 text-muted-foreground">{filteredTotalCount}</span>
             </button>
 
             {/* With items option */}
             {withItemsCount && withItemsCount > 0 && withItemsLabel && (
               <button
                 onClick={() => onFilterChange(`with-${label.toLowerCase()}`)}
-                className={`flex w-full items-center justify-between py-1.5 text-left text-xs hover:bg-gray-50 ${
+                className={`flex w-full items-center justify-between py-1.5 text-left text-sm hover:bg-muted ${
                   currentFilter === `with-${label.toLowerCase()}`
-                    ? 'bg-un-blue/10 text-un-blue'
-                    : 'text-gray-700'
+                    ? 'bg-accent text-accent-foreground'
+                    : 'text-foreground'
                 }`}
               >
                 <span className="pl-3">{withItemsLabel}</span>
-                <span className="pr-3 text-gray-500">{withItemsCount}</span>
+                <span className="pr-3 text-muted-foreground">{withItemsCount}</span>
               </button>
             )}
 
@@ -449,19 +449,19 @@ function SearchableFilterDropdown({
                             typeCount > 0 ? onFilterChange(type) : undefined
                           }
                           disabled={typeCount === 0}
-                          className={`flex w-full items-center justify-between py-1.5 text-left text-xs ${
+                          className={`flex w-full items-center justify-between py-1.5 text-left text-sm ${
                             typeCount === 0
-                              ? 'cursor-not-allowed text-gray-400'
+                              ? 'cursor-not-allowed text-muted-foreground'
                               : currentFilter === type
-                                ? 'bg-un-blue/10 text-un-blue hover:bg-gray-50'
-                                : 'text-gray-700 hover:bg-gray-50'
+                                ? 'bg-accent text-accent-foreground hover:bg-muted'
+                                : 'text-foreground hover:bg-muted'
                           }`}
                         >
                           <span className="pl-6">
                             {titleCase(type.replace(/_/g, ' '))}
                           </span>
                           <span
-                            className={`pr-3 ${typeCount === 0 ? 'text-gray-400' : 'text-gray-500'}`}
+                            className={`pr-3 ${typeCount === 0 ? 'text-muted-foreground' : 'text-muted-foreground'}`}
                           >
                             {typeCount}
                           </span>
@@ -484,22 +484,22 @@ function SearchableFilterDropdown({
                                   : undefined
                               }
                               disabled={entityCount === 0}
-                              className={`flex w-full items-center justify-between py-1.5 text-left text-xs ${
+                              className={`flex w-full items-center justify-between py-1.5 text-left text-sm ${
                                 entityCount === 0
-                                  ? 'cursor-not-allowed text-gray-400'
+                                  ? 'cursor-not-allowed text-muted-foreground'
                                   : currentFilter === `${type}:${entityName}`
-                                    ? 'bg-un-blue/10 text-un-blue hover:bg-gray-50'
-                                    : 'text-gray-600 hover:bg-gray-50'
+                                    ? 'bg-accent text-accent-foreground hover:bg-muted'
+                                    : 'text-muted-foreground hover:bg-muted'
                               }`}
                             >
-                              <span className="pl-10 text-xs">
+                              <span className="pl-10 text-sm">
                                 <EntityName
                                   entityName={titleCase(entityName)}
                                   entityLong={entityLongMap?.[entityName]}
                                 />
                               </span>
                               <span
-                                className={`pr-3 text-xs ${entityCount === 0 ? 'text-gray-400' : 'text-gray-400'}`}
+                                className={`pr-3 text-sm ${entityCount === 0 ? 'text-muted-foreground' : 'text-muted-foreground'}`}
                               >
                                 {entityCount}
                               </span>
@@ -509,7 +509,7 @@ function SearchableFilterDropdown({
                     )
                   })
               ) : searchTerm ? (
-                <div className="px-3 py-2 text-xs text-gray-500 italic">
+                <div className="px-3 py-2 text-sm text-muted-foreground italic">
                   No {label.toLowerCase()} found matching "{searchTerm}"
                 </div>
               ) : null
@@ -530,26 +530,26 @@ function SearchableFilterDropdown({
                       count > 0 ? onFilterChange(option) : undefined
                     }
                     disabled={count === 0}
-                    className={`flex w-full items-center justify-between py-1.5 text-left text-xs ${
+                    className={`flex w-full items-center justify-between py-1.5 text-left text-sm ${
                       count === 0
-                        ? 'cursor-not-allowed text-gray-400'
+                        ? 'cursor-not-allowed text-muted-foreground'
                         : currentFilter === option
-                          ? 'bg-un-blue/10 text-un-blue hover:bg-gray-50'
-                          : 'text-gray-700 hover:bg-gray-50'
+                          ? 'bg-accent text-accent-foreground hover:bg-muted'
+                          : 'text-foreground hover:bg-muted'
                     }`}
                   >
                     <span className="pl-6">
                       {titleCase(option.replace(/_/g, ' '))}
                     </span>
                     <span
-                      className={`pr-3 ${count === 0 ? 'text-gray-400' : 'text-gray-500'}`}
+                      className={`pr-3 ${count === 0 ? 'text-muted-foreground' : 'text-muted-foreground'}`}
                     >
                       {count}
                     </span>
                   </button>
                 ))
             ) : searchTerm ? (
-              <div className="px-3 py-2 text-xs text-gray-500 italic">
+              <div className="px-3 py-2 text-sm text-muted-foreground italic">
                 No {label.toLowerCase()} found matching "{searchTerm}"
               </div>
             ) : null}
@@ -679,13 +679,13 @@ function getIndentClass(level: number): string {
  * search hit already looks like on the mandate table (lib/utils.ts), and the
  * two searches should not read as different features.
  *
- * Deliberately not bg-yellow-200. Inside renderProcessedText that already
+ * Deliberately not bg-un-yellow-tint. Inside renderProcessedText that already
  * means "matches the active attribute dropdown", on verbs, entities and
  * deliverables alike, and a dropdown and a query can be live at the same
  * time. The other grounds in this component are spoken for too: un-blue is
  * interactive, red bold is the budget phrase, gray-200 is the idle pill.
  */
-const MARK_CLASS = 'bg-[#b3d9f0] text-[#00557a] px-0.5 rounded'
+const MARK_CLASS = 'bg-un-blue-tint-50 text-un-blue-shade px-0.5 rounded'
 
 /**
  * Mark the search terms inside one already-rendered run of text.
@@ -1904,7 +1904,7 @@ export function ParagraphsSection({
             {hasChildren && (
               <button
                 onClick={() => handleTOCClick(item.id)}
-                className="rounded p-0.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+                className="rounded p-0.5 text-muted-foreground hover:bg-secondary hover:text-muted-foreground"
                 title={`Go to ${item.text}`}
               >
                 <svg
@@ -1923,10 +1923,10 @@ export function ParagraphsSection({
           </div>
           <button
             onClick={() => handleTOCClick(item.id)}
-            className={`flex-1 rounded px-2 py-1 text-left text-xs transition-colors hover:bg-gray-100 ${
+            className={`flex-1 rounded px-2 py-1 text-left text-sm transition-colors hover:bg-secondary ${
               isActive
-                ? 'bg-un-blue/10 font-medium text-un-blue'
-                : 'text-gray-700 hover:text-gray-900'
+                ? 'bg-accent font-medium text-accent-foreground'
+                : 'text-foreground hover:text-foreground'
             } ${isTopLevel ? 'font-medium' : ''}`}
             style={{ marginLeft: `${(item.level - 1) * 12}px` }}
           >
@@ -2043,8 +2043,8 @@ export function ParagraphsSection({
             actionVerbKey(correspondingMandate) === actionVerbFilter
           const verbClasses =
             hasEnhancedFilters && isFilteredVerb
-              ? 'text-un-blue cursor-help bg-yellow-200 px-1 py-0.5 rounded font-semibold shadow-xs'
-              : 'text-un-blue cursor-help'
+              ? 'text-un-blue-shade cursor-help bg-un-yellow-tint px-1 py-0.5 rounded font-semibold shadow-xs'
+              : 'text-un-blue-text cursor-help'
 
           component = (
             <Tooltip key={`verb-${segmentKey++}`}>
@@ -2101,8 +2101,8 @@ export function ParagraphsSection({
                 entityData?.assignee_type === assigneeFilter))
           const entityClasses =
             hasEnhancedFilters && isFilteredEntity
-              ? 'bg-yellow-200 px-2 py-0.5 rounded-full text-sm font-semibold cursor-help shadow-xs'
-              : 'bg-gray-200 px-2 py-0.5 rounded-full text-sm font-medium cursor-help'
+              ? 'bg-un-yellow-tint px-2 py-0.5 rounded-full text-sm font-semibold cursor-help shadow-xs'
+              : 'bg-muted px-2 py-0.5 rounded-full text-sm font-medium cursor-help'
 
           component = (
             <Tooltip key={`entity-${segmentKey++}`}>
@@ -2125,7 +2125,7 @@ export function ParagraphsSection({
                       )}
                     </div>
                     {entityData?.assignee_normalized && (
-                      <div className="text-gray-500">
+                      <div className="text-muted-foreground">
                         {entityData.assignee_normalized}
                       </div>
                     )}
@@ -2152,8 +2152,8 @@ export function ParagraphsSection({
             hasEnhancedFilters && isFilteredDeliverable
               ? // gray-350 is not a Tailwind colour and is not defined in
                 // globals.css, so this border has never rendered at all.
-                'bg-yellow-200 border border-gray-300 px-2 py-0.5 rounded-full text-sm font-semibold cursor-help shadow-xs'
-              : 'bg-gray-200 border border-gray-300 px-2 py-0.5 rounded-full text-sm font-medium cursor-help'
+                'bg-un-yellow-tint border border-border px-2 py-0.5 rounded-full text-sm font-semibold cursor-help shadow-xs'
+              : 'bg-muted border border-border px-2 py-0.5 rounded-full text-sm font-medium cursor-help'
 
           component = (
             <Tooltip key={`deliverable-${segmentKey++}`}>
@@ -2175,7 +2175,7 @@ export function ParagraphsSection({
                       )}
                     </div>
                     {deliverableData?.deliverable_normalized && (
-                      <div className="text-gray-500">
+                      <div className="text-muted-foreground">
                         {deliverableData.deliverable_normalized}
                       </div>
                     )}
@@ -2215,7 +2215,7 @@ export function ParagraphsSection({
                 href={url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-medium text-un-blue hover:underline"
+                className="font-medium text-un-blue-text hover:underline"
               >
                 {linkText}
               </a>
@@ -2308,7 +2308,7 @@ export function ParagraphsSection({
               className={`${headingClass} mb-3 scroll-mt-4 leading-tight text-foreground`}
             >
               {paragraph.prefix && (
-                <span className="mr-2 font-medium text-un-blue">
+                <span className="mr-2 font-medium text-un-blue-text">
                   {paragraph.prefix}
                 </span>
               )}
@@ -2349,10 +2349,10 @@ export function ParagraphsSection({
 
     return (
       <div key={`${documentSymbol}-${index}`} className={`${indentClass}`}>
-        <div className="rounded-lg bg-muted/30 p-3">
+        <div className="rounded-lg bg-muted p-3">
           <div className="flex items-start gap-2">
             {label && (
-              <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-un-blue text-xs font-medium text-white">
+              <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-un-blue-text text-xs font-medium text-white">
                 {label}
               </span>
             )}
@@ -2469,7 +2469,7 @@ export function ParagraphsSection({
         </DetailSectionHeading>
 
         {allParagraphs?.[0]?.source_symbol && (
-          <p className="text-xs text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             {allParagraphs[0].source_symbol} [{allParagraphs[0].part_letter}]
           </p>
         )}
@@ -2479,7 +2479,7 @@ export function ParagraphsSection({
         ) && (
           <p
             role="note"
-            className="rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm"
+            className="rounded-md border border-border bg-secondary px-3 py-2 text-sm"
           >
             This extracted fulltext may contain errors or omissions. Please check
             the source document.
@@ -2507,7 +2507,7 @@ export function ParagraphsSection({
                 in the grammar of the app's other search fields. The heading
                 count above deliberately does not move with the query. */}
             {hasSearchQuery && (
-              <span className="text-xs text-gray-500">
+              <span className="text-sm text-muted-foreground">
                 {matchedBodyCount.toLocaleString()} matching paragraph
                 {matchedBodyCount === 1 ? '' : 's'}
               </span>
@@ -2639,7 +2639,7 @@ export function ParagraphsSection({
             {hasActiveFilters && (
               <button
                 onClick={resetFilters}
-                className="ml-1 inline-flex cursor-pointer items-center gap-1 self-center text-xs font-medium text-un-blue hover:underline"
+                className="ml-1 inline-flex cursor-pointer items-center gap-1 self-center text-sm font-medium text-un-blue-text hover:underline"
                 aria-label="Reset all filters"
               >
                 <X className="h-3 w-3" />
@@ -2656,17 +2656,17 @@ export function ParagraphsSection({
           {/* Floating TOC Button */}
           <button
             onClick={() => setIsMobileTOCOpen(!isMobileTOCOpen)}
-            className="fixed top-4 left-4 z-50 rounded-lg border border-gray-200 bg-white p-2 shadow-lg transition-colors hover:bg-gray-50"
+            className="fixed top-4 left-4 z-50 rounded-lg border border-border bg-white p-2 shadow-lg transition-colors hover:bg-muted"
             aria-label="Toggle table of contents"
           >
-            <Menu className="h-4 w-4 text-gray-700" />
+            <Menu className="h-4 w-4 text-foreground" />
           </button>
 
           {/* Expandable TOC Panel */}
           {isMobileTOCOpen && (
-            <div className="fixed top-14 left-4 z-40 max-h-96 w-80 max-w-xs overflow-y-auto rounded-lg border border-gray-200 bg-white shadow-lg">
+            <div className="fixed top-14 left-4 z-40 max-h-96 w-80 max-w-xs overflow-y-auto rounded-lg border border-border bg-white shadow-lg">
               <div className="p-4">
-                <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-900">
+                <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold text-foreground">
                   <FileText className="h-4 w-4" />
                   Table of contents
                 </h4>
@@ -2674,7 +2674,7 @@ export function ParagraphsSection({
                   {tocItems.length > 0 ? (
                     tocItems.map((item) => renderTOCItem(item, true))
                   ) : (
-                    <div className="text-xs text-gray-500 italic">
+                    <div className="text-sm text-muted-foreground italic">
                       No headings found in this document.
                     </div>
                   )}
@@ -2693,37 +2693,37 @@ export function ParagraphsSection({
             {isLoading ? (
               <div className="space-y-3">
                 <div className="space-y-2">
-                  <div className="rounded-lg bg-muted/30 p-3">
+                  <div className="rounded-lg bg-muted p-3">
                     <Skeleton className="mb-2 h-4 w-3/4" />
                     <Skeleton className="mb-1 h-4 w-full" />
                     <Skeleton className="h-4 w-5/6" />
                   </div>
                   <div className="ml-6 space-y-2">
-                    <div className="rounded-lg bg-muted/20 p-3">
+                    <div className="rounded-lg bg-muted p-3">
                       <Skeleton className="mb-1 h-4 w-4/5" />
                       <Skeleton className="h-4 w-full" />
                     </div>
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <div className="rounded-lg bg-muted/30 p-3">
+                  <div className="rounded-lg bg-muted p-3">
                     <Skeleton className="mb-2 h-4 w-2/3" />
                     <Skeleton className="mb-1 h-4 w-full" />
                     <Skeleton className="h-4 w-4/5" />
                   </div>
                   <div className="ml-6 space-y-2">
-                    <div className="rounded-lg bg-muted/20 p-3">
+                    <div className="rounded-lg bg-muted p-3">
                       <Skeleton className="mb-1 h-4 w-3/4" />
                       <Skeleton className="h-4 w-full" />
                     </div>
-                    <div className="rounded-lg bg-muted/20 p-3">
+                    <div className="rounded-lg bg-muted p-3">
                       <Skeleton className="mb-1 h-4 w-5/6" />
                       <Skeleton className="h-4 w-full" />
                     </div>
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <div className="rounded-lg bg-muted/30 p-3">
+                  <div className="rounded-lg bg-muted p-3">
                     <Skeleton className="mb-2 h-4 w-3/5" />
                     <Skeleton className="mb-1 h-4 w-full" />
                     <Skeleton className="h-4 w-3/4" />
@@ -2752,7 +2752,7 @@ export function ParagraphsSection({
                       <button
                         type="button"
                         onClick={() => setShowPreamble(!showPreamble)}
-                        className="inline-flex cursor-pointer items-center gap-1 text-sm font-medium text-un-blue hover:underline"
+                        className="inline-flex cursor-pointer items-center gap-1 text-sm font-medium text-un-blue-text hover:underline"
                       >
                         {showPreamble ? (
                           <>
@@ -2783,14 +2783,14 @@ export function ParagraphsSection({
                                   key={`preamble-${i}`}
                                   style={{ marginLeft: indent }}
                                 >
-                                  <div className="rounded-lg bg-muted/30 p-3">
+                                  <div className="rounded-lg bg-muted p-3">
                                     <div className="flex items-start gap-2">
                                       {label && (
-                                        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-un-blue text-xs font-medium text-white">
+                                        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-un-blue-text text-xs font-medium text-white">
                                           {label}
                                         </span>
                                       )}
-                                      <div className="flex-1 text-sm leading-relaxed text-gray-700">
+                                      <div className="flex-1 text-sm leading-relaxed text-foreground">
                                         {renderProcessedText(
                                           paragraph.text,
                                           paragraph.links,
@@ -2830,7 +2830,7 @@ export function ParagraphsSection({
                     <React.Fragment key={`main-${index}`}>
                       {showTextDivider && (
                         <div
-                          className="my-6 border-t border-gray-100"
+                          className="my-6 border-t border-border"
                           aria-hidden
                         />
                       )}
@@ -2843,7 +2843,7 @@ export function ParagraphsSection({
                 {annexGroups.map((group) => (
                   <section
                     key={group.key}
-                    className="mt-8 space-y-4 border-t border-gray-200 pt-6"
+                    className="mt-8 space-y-4 border-t border-border pt-6"
                   >
                     <div
                       id={
@@ -2851,11 +2851,11 @@ export function ParagraphsSection({
                           ? `heading-${group.startIndex}`
                           : undefined
                       }
-                      className="scroll-mt-4 text-xs font-semibold tracking-wide text-un-blue uppercase"
+                      className="scroll-mt-4 text-sm font-semibold tracking-wide text-un-blue-text uppercase"
                     >
                       {group.label}
                     </div>
-                    <div className="space-y-4 border-l-2 border-gray-200 pl-4">
+                    <div className="space-y-4 border-l-2 border-border pl-4">
                       {group.items.map(({ paragraph, index }) =>
                         renderParagraphElement(paragraph, index)
                       )}
@@ -2868,11 +2868,11 @@ export function ParagraphsSection({
                  fields. Distinct from the no-paragraphs card below, which is
                  a claim about extraction — false here, where extraction
                  succeeded and the query simply missed. */
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-muted-foreground">
                 No paragraphs match &ldquo;{searchQuery.trim()}&rdquo;.
               </p>
             ) : (
-              <div className="space-y-2 rounded-lg bg-muted/30 p-3">
+              <div className="space-y-2 rounded-lg bg-muted p-3">
                 <p className="text-sm leading-relaxed text-muted-foreground">
                   Fulltext could not be extracted.
                 </p>
@@ -2881,7 +2881,7 @@ export function ParagraphsSection({
                     href={sourceUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-un-blue underline underline-offset-2"
+                    className="text-sm text-un-blue-text underline underline-offset-2"
                   >
                     View source document
                   </a>
@@ -2895,7 +2895,7 @@ export function ParagraphsSection({
         {!isMobile && !compact && (
           <div className="w-[30%] shrink-0">
             <div className="sticky top-4 mb-8 rounded-lg bg-white p-4">
-              <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-900">
+              <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold text-foreground">
                 <FileText className="h-4 w-4" />
                 Table of contents
               </h4>
@@ -2903,7 +2903,7 @@ export function ParagraphsSection({
                 {tocItems.length > 0 ? (
                   tocItems.map((item) => renderTOCItem(item, true))
                 ) : (
-                  <div className="text-xs text-gray-500 italic">
+                  <div className="text-sm text-muted-foreground italic">
                     No headings found in this document.
                   </div>
                 )}

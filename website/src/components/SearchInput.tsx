@@ -24,6 +24,9 @@ interface SearchInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
    */
   onClear?: () => void
 
+  /** Optional help control shown inside the field when it contains a query. */
+  helpControl?: React.ReactNode
+
   /**
    * Additional CSS classes
    */
@@ -36,13 +39,16 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
       variant = 'bordered',
       showClearButton = false,
       onClear,
+      helpControl,
       className,
       value,
       ...props
     },
     ref
   ) => {
-    const hasValue = value && value.toString().length > 0
+    const hasValue = Boolean(value && value.toString().length > 0)
+    const showClear = showClearButton && hasValue && Boolean(onClear)
+    const showHelp = hasValue && Boolean(helpControl)
 
     const getVariantStyles = () => {
       switch (variant) {
@@ -58,30 +64,36 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
 
     return (
       <div className="relative">
-        <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+        <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
         <Input
           ref={ref}
           value={value}
           className={cn(
             'pl-10',
-            showClearButton && hasValue && 'pr-10',
-            'h-9 text-sm placeholder:text-gray-400',
+            (showClear || showHelp) && 'pr-10',
+            showClear && showHelp && 'pr-16',
+            'h-9 text-sm text-muted-foreground placeholder:text-muted-foreground',
             getVariantStyles(),
             className
           )}
           {...props}
         />
-        {showClearButton && hasValue && onClear && (
+        {(showClear || showHelp) && (
+          <div className="absolute top-1/2 right-2 flex -translate-y-1/2 items-center gap-2">
+            {showHelp && helpControl}
+            {showClear && (
           <Button
             variant="ghost"
             size="sm"
-            className="absolute top-1/2 right-2 h-6 w-6 -translate-y-1/2 rounded-full p-0 hover:bg-muted"
+            className="h-6 w-6 rounded-full p-0 hover:bg-muted"
             onClick={onClear}
             title="Clear search"
             type="button"
           >
             <X className="h-3 w-3" />
           </Button>
+            )}
+          </div>
         )}
       </div>
     )

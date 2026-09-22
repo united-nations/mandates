@@ -93,11 +93,11 @@ export function MandateVersionHistory({
       </DetailSectionHeading>
 
       {series.superseded_by && (
-        <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+        <div className="rounded-lg border border-border bg-secondary px-3 py-2 text-sm text-muted-foreground">
           This is an older version — the most recent is{' '}
           <Link
             href={getMandateUrl(series.superseded_by)}
-            className="inline-flex items-center gap-1 font-medium underline underline-offset-2 hover:text-un-blue"
+            className="inline-flex items-center gap-1 font-medium underline underline-offset-2 hover:text-un-blue-text"
           >
             {series.superseded_by}
             <ArrowRight className="h-3 w-3" />
@@ -105,16 +105,16 @@ export function MandateVersionHistory({
         </div>
       )}
       {!series.superseded_by && series.has_newer && (
-        <div className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700">
+        <div className="rounded-lg border border-border bg-muted px-3 py-2 text-sm text-muted-foreground">
           Newer documents in this group exist
           {series.last_year ? ` (latest: ${series.last_year})` : ''}.
         </div>
       )}
 
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[640px] table-fixed border-y border-gray-100 text-left text-sm">
+        <table className="w-full min-w-[640px] table-fixed border-y border-border text-left text-sm text-muted-foreground">
           <thead className="h-10 text-xs text-muted-foreground">
-            <tr className="border-b border-gray-100">
+            <tr className="border-b border-border">
               <th scope="col" className="w-12 py-1 align-top font-medium">
                 Year
               </th>
@@ -138,19 +138,19 @@ export function MandateVersionHistory({
               return (
                 <tr
                   key={m.document_symbol}
-                  className={isCurrent ? 'h-8 bg-blue-50/60' : 'h-8'}
+                  className={isCurrent ? 'h-8 bg-accent/60' : 'h-8'}
                 >
-                  <td className="py-1 align-baseline text-sm text-black tabular-nums">
+                  <td className="py-1 align-baseline text-sm text-foreground tabular-nums">
                     {m.year ?? '—'}
                   </td>
                   <td className="min-w-0 py-1 pr-2 align-baseline">
                     <div className="flex min-w-0 items-baseline gap-1.5">
                       {isCurrent ? (
-                        <DocumentSymbol subdued className="max-w-full text-sm" title={m.document_symbol}>
+                        <DocumentSymbol subdued className="max-w-full" title={m.document_symbol}>
                           <span className="block truncate">{m.document_symbol}</span>
                         </DocumentSymbol>
                       ) : (
-                        <DocumentSymbol href={getMandateUrl(m.document_symbol)} className="max-w-full text-sm" title={m.document_symbol}>
+                        <DocumentSymbol href={getMandateUrl(m.document_symbol)} className="max-w-full" title={m.document_symbol}>
                           <span className="block truncate">{m.document_symbol}</span>
                         </DocumentSymbol>
                       )}
@@ -159,16 +159,16 @@ export function MandateVersionHistory({
                   </td>
                   <td className="min-w-0 py-1 pr-2 align-baseline">
                     <p
-                      className="truncate text-gray-700"
+                      className="truncate text-foreground"
                       title={m.title ?? undefined}
                     >
                       {m.title}
                     </p>
                   </td>
-                  <td className="py-1 pr-2 text-right align-baseline text-black">
+                  <td className="py-1 pr-2 text-right align-baseline text-foreground">
                     <WordCount metrics={m.text_metrics} />
                   </td>
-                  <td className="py-1 text-right align-baseline text-black">
+                  <td className="py-1 text-right align-baseline text-foreground">
                     <TextSimilarity
                       symbol={m.document_symbol}
                       metrics={m.text_metrics}
@@ -185,7 +185,7 @@ export function MandateVersionHistory({
         <button
           type="button"
           onClick={() => setShowAll(true)}
-          className="inline-flex items-center gap-1 text-sm font-medium text-un-blue hover:underline"
+          className="inline-flex items-center gap-1 text-sm font-medium text-un-blue-text hover:underline"
         >
           <ChevronDown className="h-3 w-3" />
           Show all {series.members.length}
@@ -195,7 +195,7 @@ export function MandateVersionHistory({
         <button
           type="button"
           onClick={() => setShowAll(false)}
-          className="inline-flex items-center gap-1 text-sm font-medium text-un-blue hover:underline"
+          className="inline-flex items-center gap-1 text-sm font-medium text-un-blue-text hover:underline"
         >
           <ChevronUp className="h-3 w-3" />
           Show fewer

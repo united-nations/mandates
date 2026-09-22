@@ -60,12 +60,12 @@ export function DirectorySummaryColumnPicker({
         <PopoverTrigger asChild>
           <button
             type="button"
-            className="inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-md bg-gray-100 px-2.5 text-sm font-medium whitespace-nowrap text-gray-500 transition-colors hover:bg-gray-200 hover:text-gray-900 data-[state=open]:bg-gray-200 data-[state=open]:text-gray-900"
+            className="inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-md bg-secondary px-2.5 text-sm font-medium whitespace-nowrap text-muted-foreground transition-colors hover:bg-muted hover:text-foreground data-[state=open]:bg-muted data-[state=open]:text-foreground"
           >
             <SlidersHorizontal className="h-3.5 w-3.5" />
             More columns
             {count > 0 && <ChipCount>{count}</ChipCount>}
-            <ChevronDown className="h-3.5 w-3.5 opacity-60" />
+            <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
           </button>
         </PopoverTrigger>
         <PopoverContent align="end" className="w-60 p-1">
@@ -87,7 +87,7 @@ export function DirectorySummaryColumnPicker({
         type="button"
         onClick={onReset}
         disabled={count === 0}
-        className="inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-md px-2.5 text-sm font-medium whitespace-nowrap text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900 disabled:cursor-default disabled:text-gray-300 disabled:hover:bg-transparent"
+        className="inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-md px-2.5 text-sm font-medium whitespace-nowrap text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground disabled:cursor-default disabled:text-muted-foreground disabled:hover:bg-transparent"
       >
         <RotateCcw className="h-3.5 w-3.5" />
         Reset to defaults

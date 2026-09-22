@@ -81,13 +81,13 @@ export function SidebarListItem({
   const variantStyles = {
     navigation: {
       container: 'hover:bg-muted/20 transition-colors',
-      label: 'group-hover:text-un-blue transition-colors',
+      label: 'group-hover:text-un-blue-text transition-colors',
       active: '', // Navigation items don't have active state since they navigate away
     },
     filter: {
       container: 'hover:bg-muted/30 transition-colors',
       label: 'transition-colors',
-      active: 'bg-un-blue/10 border-un-blue/30',
+      active: 'bg-accent border-un-blue/30',
     },
   }
 
@@ -114,14 +114,14 @@ export function SidebarListItem({
         <span className="flex w-full items-center">
           <span
             className={cn(
-              'flex max-w-[32px] min-w-[28px] shrink-0 justify-end pr-2 text-right text-xs tabular-nums text-un-blue',
+              'flex max-w-[32px] min-w-[28px] shrink-0 justify-end pr-2 text-right text-xs tabular-nums text-un-blue-text',
               countClassName
             )}
           >
             {count.toLocaleString()}
           </span>
           {showProgressBar && (
-            <span className="relative h-1.5 flex-1 rounded bg-un-blue/10">
+            <span className="relative h-1.5 flex-1 rounded bg-accent">
               <span
                 className="absolute top-0 left-0 h-1.5 rounded bg-un-blue/60"
                 style={{

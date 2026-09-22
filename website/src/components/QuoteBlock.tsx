@@ -15,15 +15,15 @@ export function QuoteBlock({
   imageAlt = '',
 }: QuoteBlockProps) {
   return (
-    <section className="w-full bg-gray-50 py-12 md:py-16">
+    <section className="w-full bg-muted py-12 md:py-16">
       <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-16">
         <div className="flex flex-col items-center gap-8 md:flex-row md:gap-12">
           <div className="flex-1">
             <blockquote className="relative">
-              <span className="absolute -left-4 -top-4 text-6xl text-un-blue opacity-20">
+              <span className="absolute -left-4 -top-4 text-6xl text-un-blue-text opacity-20">
                 &ldquo;
               </span>
-              <p className="text-base leading-relaxed text-gray-700 md:text-lg lg:text-xl">
+              <p className="text-base leading-relaxed text-foreground md:text-lg lg:text-xl">
                 {lines.map((line, i) => (
                   <span key={i} className="block">
                     {line}
@@ -31,7 +31,7 @@ export function QuoteBlock({
                 ))}
               </p>
               <footer className="mt-6">
-                <cite className="not-italic text-gray-600">— {attribution}</cite>
+                <cite className="not-italic text-muted-foreground">— {attribution}</cite>
               </footer>
             </blockquote>
           </div>

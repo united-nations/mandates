@@ -224,17 +224,17 @@ export function CitationCounts({ mandate, entities }: CitationCountsProps) {
 
       <div className="overflow-x-auto">
         <div className="min-w-[640px]">
-          <div className="flex min-h-10 items-baseline gap-2 border-t border-gray-100 py-1 text-xs font-medium text-muted-foreground">
+          <div className="flex min-h-10 items-baseline gap-2 border-t border-border py-1 text-xs font-medium text-muted-foreground">
             <span className={COL.entity}>Entity</span>
             <span className={COL.location}>Budget section</span>
             <span className={COL.subprogramme}>Subprogramme</span>
             <span className={COL.count}>Total mandates cited</span>
             <span className={COL.budget}>
-              Total budget <span className="text-red-500">WIP</span>
+              Total budget <span className="text-muted-foreground">WIP</span>
             </span>
           </div>
 
-          <ul className="divide-y divide-gray-100 border-y border-gray-100">
+          <ul className="divide-y divide-gray-100 border-y border-border">
             {shown.map((row) => (
               <CitationRowItem key={row.key} row={row} />
             ))}
@@ -246,7 +246,7 @@ export function CitationCounts({ mandate, entities }: CitationCountsProps) {
         <button
           type="button"
           onClick={() => setShowAll(true)}
-          className="inline-flex items-center gap-1 text-sm font-medium text-un-blue hover:underline"
+          className="inline-flex items-center gap-1 text-sm font-medium text-un-blue-text hover:underline"
         >
           <ChevronDown className="h-3 w-3" />
           Show all {rows.length}
@@ -256,7 +256,7 @@ export function CitationCounts({ mandate, entities }: CitationCountsProps) {
         <button
           type="button"
           onClick={() => setShowAll(false)}
-          className="inline-flex items-center gap-1 text-sm font-medium text-un-blue hover:underline"
+          className="inline-flex items-center gap-1 text-sm font-medium text-un-blue-text hover:underline"
         >
           <ChevronUp className="h-3 w-3" />
           Show fewer
@@ -340,7 +340,7 @@ function CitationRowItem({ row }: { row: CitationRow }) {
     : 'No budget location recorded for this citation.'
 
   return (
-    <li className="min-h-8 py-1 text-sm whitespace-nowrap">
+    <li className="min-h-8 py-1 text-sm text-foreground whitespace-nowrap">
       <div className="flex items-baseline gap-2">
         {/* Every cell renders even when empty: a cell that disappears takes
             its column's alignment with it, and alignment down the column is
@@ -350,28 +350,28 @@ function CitationRowItem({ row }: { row: CitationRow }) {
           title={entityLong ?? entity}
           className={cn(
             COL.entity,
-            'flex items-baseline gap-1 truncate font-medium text-gray-900 hover:text-un-blue hover:underline'
+            'flex items-baseline gap-1 truncate font-medium text-foreground hover:text-un-blue-text hover:underline'
           )}
         >
           {entity}
           {marked && <ChipDot />}
         </a>
         <div className={cn(COL.location, 'flex items-baseline gap-2')}>
-          <span className={cn(COL.section, 'truncate text-black')}>
+          <span className={cn(COL.section, 'truncate text-foreground')}>
             {location?.section ?? '—'}
           </span>
           <span
-            className={cn(COL.title, 'truncate text-gray-700')}
+            className={cn(COL.title, 'truncate text-foreground')}
             title={fullLabel}
           >
             {sectionTitle ?? fullLabel}
           </span>
         </div>
-        <span className={cn(COL.subprogramme, 'truncate text-gray-700')} title={location?.subprogramme ?? undefined}>
+        <span className={cn(COL.subprogramme, 'truncate text-foreground')} title={location?.subprogramme ?? undefined}>
           {subprogramme ?? ''}
         </span>
         <span
-          className={cn(COL.count, 'text-gray-700')}
+          className={cn(COL.count, 'text-foreground')}
           title={
             count === null
               ? undefined
@@ -384,7 +384,7 @@ function CitationRowItem({ row }: { row: CitationRow }) {
             column's width so the layout is settled before the figures land;
             see BUDGET_COLUMN_STATUS for what fills it and how it matches. */}
         <span className={cn(COL.budget, 'inline-flex items-baseline justify-end gap-2')}>
-          <span className="text-gray-300" title="Budget figures are not wired up yet">
+          <span className="text-muted-foreground" title="Budget figures are not wired up yet">
             —
           </span>
           <span className="w-4 shrink-0 self-center">
@@ -394,7 +394,7 @@ function CitationRowItem({ row }: { row: CitationRow }) {
                 target="_blank"
                 rel="noopener noreferrer"
                 title="Open this budget section on open.un.org"
-                className="text-gray-400 hover:text-un-blue"
+                className="text-muted-foreground hover:text-un-blue-text"
               >
                 <ExternalLink aria-hidden className="h-3.5 w-3.5" />
                 <span className="sr-only">Open on open.un.org</span>

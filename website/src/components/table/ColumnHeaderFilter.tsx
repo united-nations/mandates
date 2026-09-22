@@ -90,12 +90,12 @@ export function ColumnHeaderFilter({
       {column.sortKeys && (
         <button
           onClick={handleSort}
-          className="transition-colors hover:text-gray-600"
+          className="transition-colors hover:text-muted-foreground"
         >
           {sortDirection === 'asc' ? (
-            <ChevronUp className="h-3.5 w-3.5 text-un-blue" />
+            <ChevronUp className="h-3.5 w-3.5 text-un-blue-text" />
           ) : sortDirection === 'desc' ? (
-            <ChevronDown className="h-3.5 w-3.5 text-un-blue" />
+            <ChevronDown className="h-3.5 w-3.5 text-un-blue-text" />
           ) : (
             <ChevronDown className="h-3.5 w-3.5 opacity-40" />
           )}
@@ -237,8 +237,8 @@ function FilterPopover({
           aria-label={`Filter by ${column.label}`}
           className={`flex h-5 w-5 items-center justify-center rounded transition-colors ${
             isActive
-              ? 'bg-un-blue text-white'
-              : 'text-gray-400 hover:bg-gray-200 hover:text-gray-600'
+              ? 'bg-un-blue-text text-white'
+              : 'text-muted-foreground hover:bg-muted hover:text-muted-foreground'
           }`}
         >
           <Filter className="h-3 w-3" />
@@ -336,7 +336,7 @@ function PillFilter({
     <div className="w-64 space-y-3">
       {showSearch && (
         <div className="relative">
-          <Search className="absolute top-1/2 left-2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
+          <Search className="absolute top-1/2 left-2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder={`Search ${searchNoun}...`}
             value={searchQuery}
@@ -349,7 +349,7 @@ function PillFilter({
       {currentValue && (
         <button
           onClick={onClear}
-          className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+          className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
         >
           <X className="h-3 w-3" />
           Clear filter
@@ -360,7 +360,7 @@ function PillFilter({
         <div className="max-h-72 space-y-3 overflow-y-auto">
           {grouped.map((group) => (
             <div key={group.label} className="space-y-1.5">
-              <p className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+              <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
                 {group.label}
               </p>
               <div className="flex flex-wrap gap-1.5">
@@ -369,7 +369,7 @@ function PillFilter({
             </div>
           ))}
           {grouped.length === 0 && (
-            <p className="py-2 text-xs text-gray-400">No options found</p>
+            <p className="py-2 text-sm text-muted-foreground">No options found</p>
           )}
         </div>
       ) : (
@@ -377,14 +377,14 @@ function PillFilter({
           <div className="flex max-h-64 flex-wrap gap-1.5 overflow-y-auto">
             {displayed.map(renderPill)}
             {displayed.length === 0 && (
-              <p className="py-2 text-xs text-gray-400">No options found</p>
+              <p className="py-2 text-sm text-muted-foreground">No options found</p>
             )}
           </div>
 
           {hasMore && (
             <button
               onClick={() => setShowAll(true)}
-              className="text-xs text-gray-500 hover:text-gray-700"
+              className="text-sm text-muted-foreground hover:text-foreground"
             >
               Show {filtered.length - lazyThreshold} more...
             </button>
@@ -431,9 +431,9 @@ function YearRangeFilter({
           value={start}
           onChange={(e) => setStart(e.target.value.replace(/\D/g, ''))}
           onKeyDown={(e) => e.key === 'Enter' && handleApply()}
-          className="h-7 w-16 rounded border border-input bg-transparent px-2 text-center text-xs focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
+          className="h-7 w-16 rounded border border-input bg-transparent px-2 text-center text-sm focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
         />
-        <span className="text-xs text-muted-foreground">–</span>
+        <span className="text-sm text-muted-foreground">–</span>
         <input
           type="text"
           inputMode="numeric"
@@ -442,13 +442,13 @@ function YearRangeFilter({
           value={end}
           onChange={(e) => setEnd(e.target.value.replace(/\D/g, ''))}
           onKeyDown={(e) => e.key === 'Enter' && handleApply()}
-          className="h-7 w-16 rounded border border-input bg-transparent px-2 text-center text-xs focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
+          className="h-7 w-16 rounded border border-input bg-transparent px-2 text-center text-sm focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
         />
         <Button
           size="sm"
           variant="ghost"
           onClick={handleApply}
-          className="h-7 px-2 text-xs"
+          className="h-7 px-2 text-sm"
         >
           Apply
         </Button>
@@ -456,7 +456,7 @@ function YearRangeFilter({
       {hasValue && (
         <button
           onClick={onClear}
-          className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+          className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
         >
           <X className="h-3 w-3" />
           Clear
@@ -482,7 +482,7 @@ function SimpleSelectFilter({
       {currentValue && (
         <button
           onClick={onClear}
-          className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+          className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
         >
           <X className="h-3 w-3" />
           Clear filter
@@ -497,7 +497,7 @@ function SimpleSelectFilter({
               onClick={() => (isSelected ? onClear() : onSelect(option.value))}
               className={`flex w-full items-center justify-between gap-2 rounded px-2 py-1.5 text-left text-sm transition-colors ${
                 isSelected
-                  ? 'bg-un-blue/10 font-medium text-un-blue'
+                  ? 'bg-accent font-medium text-accent-foreground'
                   : 'hover:bg-accent hover:text-accent-foreground'
               }`}
             >

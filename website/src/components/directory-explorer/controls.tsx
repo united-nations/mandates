@@ -28,8 +28,8 @@ export const PanelHeading = ({
   aside?: React.ReactNode
   children: React.ReactNode
 }) => (
-  <div className="flex items-center justify-between gap-3 border-b border-gray-200 pb-1.5">
-    <h3 className="min-w-0 truncate text-sm font-normal tracking-wide text-gray-600 uppercase">
+  <div className="flex items-center justify-between gap-3 border-b border-border pb-1.5">
+    <h3 className="min-w-0 truncate text-sm font-normal tracking-wide text-muted-foreground uppercase">
       {children}
     </h3>
     {aside}
@@ -44,7 +44,7 @@ export const PanelHeading = ({
 export const HeadingProgress = ({ label }: { label: string }) => (
   <span
     role="status"
-    className="flex shrink-0 items-center gap-2 text-xs text-un-blue"
+    className="flex shrink-0 items-center gap-2 text-sm text-un-blue-text"
   >
     <Spinner />
     {label}
@@ -68,21 +68,21 @@ export const ScopeButton = (props: ScopeButtonProps) => (
     className={cn(
       'flex max-w-sm min-w-0 flex-col items-start gap-0.5 rounded-lg border px-3 py-2 text-left transition-all focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none',
       props.selected
-        ? 'border-un-blue bg-un-blue/5'
-        : 'border-gray-200 bg-white hover:border-un-blue'
+        ? 'border-un-blue bg-accent'
+        : 'border-border bg-white hover:border-un-blue'
     )}
   >
     <span
       className={cn(
         'text-sm font-semibold',
-        props.selected ? 'text-un-blue' : 'text-gray-900'
+        props.selected ? 'text-un-blue-text' : 'text-foreground'
       )}
     >
       {props.label}
     </span>
     <span
       className={cn(
-        'line-clamp-2 text-xs leading-snug text-gray-500 transition-opacity duration-150',
+        'line-clamp-2 text-sm leading-snug text-muted-foreground transition-opacity duration-150',
         props.detailPending ? 'opacity-40' : 'opacity-100'
       )}
     >

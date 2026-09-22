@@ -158,7 +158,7 @@ export function DisclosurePopover({
         sideOffset={sideOffset}
         aria-label={label}
         className={cn(
-          'w-80 max-w-[calc(100vw-2rem)] rounded-md border-gray-200 p-3 text-sm shadow-md',
+          'w-80 max-w-[calc(100vw-2rem)] rounded-md border-border p-3 text-sm shadow-md',
           contentClassName
         )}
         onPointerEnter={hoverKeepOpen}

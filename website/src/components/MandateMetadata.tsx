@@ -119,7 +119,7 @@ export function MandateMetadata({ mandate, organs }: MandateMetadataProps) {
           {agendaItems.map((item, index) => (
             <span key={`${item.number}-${item.label}-${index}`}>
               {index > 0 && (
-                <span className="text-gray-500">
+                <span className="text-muted-foreground">
                   {index === agendaItems.length - 1 ? ' and ' : ', '}
                 </span>
               )}
@@ -167,7 +167,7 @@ export function MandateMetadata({ mandate, organs }: MandateMetadataProps) {
       <DetailSectionHeading>
         Who adopted this document and its mandates?
       </DetailSectionHeading>
-      <p className="text-sm leading-relaxed text-gray-700">
+      <p className="text-sm leading-relaxed text-foreground">
         {clauses.map((clause, index) => (
           <span key={clause.key}>
             {index > 0 && clause.separator}

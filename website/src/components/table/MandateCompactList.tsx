@@ -1,5 +1,6 @@
 'use client'
 
+import { DocumentSymbol } from '@/components/DocumentSymbol'
 import { Chip } from '@/components/ui/chip'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { useFilters } from '@/contexts/FilterContext'
@@ -53,25 +54,23 @@ export function MandateCompactList({ mandates }: MandateCompactListProps) {
   return (
     <TooltipProvider>
       <div
-        className={`overflow-hidden rounded-lg border border-gray-200 transition-opacity duration-150 ${isPending ? 'opacity-50' : 'opacity-100'}`}
+        className={`overflow-hidden rounded-lg border border-border transition-opacity duration-150 ${isPending ? 'opacity-50' : 'opacity-100'}`}
       >
         {mandates.map((mandate) => {
           const isExpanded = expandedGroups.has(mandate.full_document_symbol)
-          const dimmed = !grouped && !!mandate.series?.superseded_by
+
           return (
             <Fragment key={mandate.full_document_symbol}>
               <div
                 onClick={(e) => handleClick(mandate, e)}
-                className={`flex cursor-pointer items-center gap-3 border-b border-gray-100 px-3 py-2.5 transition-colors hover:bg-gray-50 ${dimmed ? 'opacity-60' : ''}`}
+                className={`flex cursor-pointer items-center gap-3 border-b border-border px-3 py-2.5 transition-colors hover:bg-muted`}
               >
                 <div className="min-w-0 flex-1">
                   <div className="truncate text-sm font-medium">
                     {mandate.displayTitle || 'Untitled'}
                   </div>
-                  <div className="mt-0.5 flex items-center gap-2 text-xs text-muted-foreground">
-                    <span className="font-medium text-un-blue">
-                      {mandate.full_document_symbol}
-                    </span>
+                  <div className="mt-0.5 flex items-baseline gap-2 text-sm text-muted-foreground">
+                    <DocumentSymbol>{mandate.full_document_symbol}</DocumentSymbol>
                     {/* Right of the symbol, same as the table: the count is a
                         property of the symbol it follows. */}
                     {grouped && (
@@ -88,7 +87,7 @@ export function MandateCompactList({ mandates }: MandateCompactListProps) {
                     )}
                     {mandate.body && (
                       <>
-                        <span className="text-gray-300">·</span>
+                        <span className="text-muted-foreground">·</span>
                         <Chip
                           density="dense"
                           className="whitespace-nowrap"
@@ -104,7 +103,7 @@ export function MandateCompactList({ mandates }: MandateCompactListProps) {
                     )}
                     {mandate.year && mandate.year !== '-' && (
                       <>
-                        <span className="text-gray-300">·</span>
+                        <span className="text-muted-foreground">·</span>
                         <span>{mandate.year}</span>
                       </>
                     )}
@@ -126,7 +125,7 @@ export function MandateCompactList({ mandates }: MandateCompactListProps) {
                         )
                       )
                     }
-                    className="cursor-pointer border-b border-gray-100 bg-gray-50/60 px-3 py-1.5 pl-8 transition-colors hover:bg-gray-100"
+                    className="cursor-pointer border-b border-border bg-muted/60 px-3 py-1.5 pl-8 transition-colors hover:bg-secondary"
                   >
                     <GroupMemberLine member={member} />
                   </div>
@@ -134,7 +133,7 @@ export function MandateCompactList({ mandates }: MandateCompactListProps) {
               {grouped && isExpanded && groupHasHiddenVersions(mandate) && (
                 <div
                   onClick={(e) => handleClick(mandate, e)}
-                  className="cursor-pointer border-b border-gray-100 bg-gray-50/60 px-3 py-1.5 pl-8 transition-colors hover:bg-gray-100"
+                  className="cursor-pointer border-b border-border bg-muted/60 px-3 py-1.5 pl-8 transition-colors hover:bg-secondary"
                 >
                   <GroupHiddenVersionsNote mandate={mandate} />
                 </div>

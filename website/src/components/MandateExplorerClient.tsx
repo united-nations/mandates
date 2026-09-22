@@ -49,8 +49,8 @@ export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
         <label
           className={`inline-flex h-8 cursor-pointer items-center gap-1.5 text-sm whitespace-nowrap transition-colors ${
             filters.group === '1'
-              ? 'font-medium text-gray-900'
-              : 'text-gray-500'
+              ? 'font-medium text-foreground'
+              : 'text-muted-foreground'
           }`}
         >
           <Switch
@@ -63,9 +63,7 @@ export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
         </label>
       </TooltipTrigger>
       <TooltipContent side="bottom" className="max-w-xs">
-        Collapse recurring resolutions to one row per series — the most recent
-        matching version, expandable to its earlier versions.{' '}
-        {explainerTexts.versionMatching.disclaimer}
+        {explainerTexts.versionMatching.groupTooltip}
       </TooltipContent>
     </Tooltip>
   )

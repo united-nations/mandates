@@ -12,6 +12,7 @@ import {
 import { Fragment, useEffect, useMemo, useState } from 'react'
 
 import { Spinner } from '@/components/ui/spinner'
+import { DocumentSymbol } from '@/components/DocumentSymbol'
 
 type SortField = 'resolution' | 'amount'
 type SortDirection = 'asc' | 'desc'
@@ -163,7 +164,7 @@ function SortHeader({
   const isActive = field === currentField
   return (
     <th
-      className={`cursor-pointer px-4 py-2 text-xs font-medium tracking-wider whitespace-nowrap text-gray-500 uppercase select-none ${
+      className={`cursor-pointer px-4 py-2 text-xs font-medium tracking-wider whitespace-nowrap text-muted-foreground uppercase select-none ${
         align === 'right' ? 'text-right' : 'text-left'
       }`}
       onClick={() => onSort(field)}
@@ -221,19 +222,19 @@ function YearTable({
   return (
     <div className="overflow-hidden rounded-lg border bg-white">
       {/* Year header bar */}
-      <div className="flex items-center justify-between border-b bg-un-blue/10 px-4 py-3">
-        <span className="text-lg font-bold text-un-blue">
+      <div className="flex items-center justify-between border-b bg-accent px-4 py-3">
+        <span className="text-lg font-bold text-un-blue-text">
           {year === 0 ? 'Unknown Year' : year}
         </span>
-        <span className="text-sm font-semibold text-gray-700">
-          Total: <span className="text-un-blue">{formatAmount(total)}</span>
+        <span className="text-sm font-semibold text-muted-foreground">
+          Total: <span className="text-un-blue-text">{formatAmount(total)}</span>
         </span>
       </div>
 
       <table className="w-full">
-        <thead className="border-b bg-gray-50">
+        <thead className="border-b bg-muted">
           <tr>
-            <th className="w-8 px-4 py-2 text-left text-xs font-medium tracking-wider text-gray-500 uppercase"></th>
+            <th className="w-8 px-4 py-2 text-left text-xs font-medium tracking-wider text-muted-foreground uppercase"></th>
             <SortHeader
               field="resolution"
               currentField={sortField}
@@ -242,7 +243,7 @@ function YearTable({
             >
               Draft Resolution
             </SortHeader>
-            <th className="px-4 py-2 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
+            <th className="px-4 py-2 text-left text-xs font-medium tracking-wider text-muted-foreground uppercase">
               Title
             </th>
             <SortHeader
@@ -274,15 +275,15 @@ function YearTable({
 
             return (
               <Fragment key={item.referenced_resolution}>
-                <tr className="hover:bg-gray-50">
+                <tr className="hover:bg-muted">
                   <td
                     className="cursor-pointer px-4 py-3"
                     onClick={() => toggleRow(item.referenced_resolution)}
                   >
                     {isExpanded ? (
-                      <ChevronDown className="h-4 w-4 text-gray-400" />
+                      <ChevronDown className="h-4 w-4 text-muted-foreground" />
                     ) : (
-                      <ChevronRight className="h-4 w-4 text-gray-400" />
+                      <ChevronRight className="h-4 w-4 text-muted-foreground" />
                     )}
                   </td>
                   <td className="px-4 py-3">
@@ -290,15 +291,15 @@ function YearTable({
                       href={`https://docs.un.org/en/${item.referenced_resolution}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1 font-mono text-sm text-un-blue hover:underline"
+                      className="flex items-baseline gap-1 text-sm text-un-blue-text hover:underline"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      {item.referenced_resolution}
-                      <ExternalLink className="h-3 w-3" />
+                      <DocumentSymbol>{item.referenced_resolution}</DocumentSymbol>
+                      <ExternalLink className="h-3 w-3 self-center" />
                     </a>
                   </td>
                   <td
-                    className="cursor-pointer px-4 py-3 text-sm text-gray-700"
+                    className="cursor-pointer px-4 py-3 text-sm text-foreground"
                     onClick={() => toggleRow(item.referenced_resolution)}
                   >
                     {resolutionTitle}
@@ -313,14 +314,14 @@ function YearTable({
 
                 {isExpanded && (
                   <tr key={`${item.referenced_resolution}-expanded`}>
-                    <td colSpan={4} className="bg-gray-100 px-4 py-4">
+                    <td colSpan={4} className="bg-secondary px-4 py-4">
                       <div className="space-y-3">
-                        <div className="mb-2 text-xs font-semibold tracking-wider text-gray-500 uppercase">
+                        <div className="mb-2 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
                           Workflow Stages
                         </div>
 
                         <div className="overflow-hidden rounded-lg border bg-white">
-                          <table className="w-full text-sm">
+                          <table className="w-full text-sm text-foreground">
                             <tbody className="divide-y divide-gray-200">
                               {sortedStages.map((stage, idx) => {
                                 const prevStage =
@@ -332,12 +333,12 @@ function YearTable({
                                 return (
                                   <tr key={idx}>
                                     <td className="w-8 px-3 py-2">
-                                      <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-un-blue/10 text-xs font-bold text-un-blue">
+                                      <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-accent text-xs font-bold text-accent-foreground">
                                         {idx + 1}
                                       </span>
                                     </td>
                                     <td className="px-3 py-2">
-                                      <span className="font-semibold whitespace-nowrap text-gray-700">
+                                      <span className="font-semibold whitespace-nowrap text-foreground">
                                         {getStageLabel(stage)}
                                       </span>
                                     </td>
@@ -346,16 +347,16 @@ function YearTable({
                                         href={`https://docs.un.org/en/${stage.symbol}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="flex items-center gap-1 font-mono text-xs whitespace-nowrap text-un-blue hover:underline"
+                                        className="flex items-baseline gap-1 text-sm whitespace-nowrap text-un-blue-text hover:underline"
                                         onClick={(e) => e.stopPropagation()}
                                       >
-                                        {stage.symbol}
-                                        <ExternalLink className="h-3 w-3" />
+                                        <DocumentSymbol>{stage.symbol}</DocumentSymbol>
+                                        <ExternalLink className="h-3 w-3 self-center" />
                                       </a>
                                     </td>
                                     <td className="px-3 py-2">
                                       {stage.posts_count && (
-                                        <span className="text-xs whitespace-nowrap text-gray-500">
+                                        <span className="text-xs whitespace-nowrap text-muted-foreground">
                                           {stage.posts_count} posts
                                         </span>
                                       )}
@@ -364,7 +365,7 @@ function YearTable({
                                       {prevStage && (
                                         <a
                                           href={`/diff?symbol1=${encodeURIComponent(prevStage.symbol)}&symbol2=${encodeURIComponent(stage.symbol)}`}
-                                          className="inline-flex items-center gap-1 rounded bg-un-blue/10 px-2 py-0.5 text-xs whitespace-nowrap text-un-blue hover:bg-un-blue/20"
+                                          className="inline-flex items-center gap-1 rounded bg-accent px-2 py-0.5 text-xs whitespace-nowrap text-accent-foreground hover:bg-accent"
                                           onClick={(e) => e.stopPropagation()}
                                         >
                                           <ArrowLeftRight className="h-3 w-3" />
@@ -373,7 +374,7 @@ function YearTable({
                                       )}
                                     </td>
                                     <td className="px-3 py-2 text-right">
-                                      <span className="font-medium whitespace-nowrap text-gray-900">
+                                      <span className="font-medium whitespace-nowrap text-muted-foreground">
                                         {formatAmount(stage.amount)}
                                       </span>
                                     </td>
@@ -464,7 +465,7 @@ export default function PBIPage() {
     return (
       <div className="container mx-auto p-6">
         <div className="py-8 text-center">
-          <div className="inline-flex items-center gap-2 text-gray-600">
+          <div className="inline-flex items-center gap-2 text-muted-foreground">
             <Spinner />
             Loading PBI data...
           </div>
@@ -476,12 +477,12 @@ export default function PBIPage() {
   return (
     <div className="container mx-auto space-y-6 p-6">
       <div className="space-y-4">
-        <h1 className="flex items-center gap-3 text-2xl font-bold">
-          <DollarSign className="h-6 w-6 text-un-blue" />
+        <h1 className="flex items-center gap-3 text-3xl font-bold tracking-tight">
+          <DollarSign className="h-6 w-6 text-un-blue-text" />
           Programme Budget Implications
         </h1>
 
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-muted-foreground">
           Data has been automatically extracted from official UN documents.
           Please consult the original documents for authoritative information.
         </p>

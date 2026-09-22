@@ -10,8 +10,8 @@ export const metadata: Metadata = {
 
 export default function MethodologyPage() {
   return (
-    <article className="text-base leading-relaxed text-gray-900">
-      <h1 className="mb-6 text-3xl font-bold tracking-tight text-gray-900">
+    <article className="text-base leading-relaxed text-foreground">
+      <h1 className="mb-6 text-3xl font-bold tracking-tight text-foreground">
         Methodology and Scope
       </h1>
 
@@ -38,7 +38,7 @@ export default function MethodologyPage() {
           A/81/6&nbsp;(Sect.&nbsp;3)/Add.1–4.
         </p>
 
-        <p className="text-gray-600 italic">
+        <p className="text-muted-foreground italic">
           {explainerTexts.mainHeader.disclaimer}
         </p>
       </div>

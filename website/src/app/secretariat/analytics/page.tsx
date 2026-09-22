@@ -35,9 +35,9 @@ function Chart({
   children: React.ReactNode
 }) {
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-4 md:p-6">
-      <h3 className="text-base font-semibold text-gray-900">{title}</h3>
-      <p className="mt-1 mb-4 max-w-3xl text-sm text-gray-500">{description}</p>
+    <div className="rounded-xl border border-border bg-white p-4 md:p-6">
+      <h3 className="text-base font-semibold text-foreground">{title}</h3>
+      <p className="mt-1 mb-4 max-w-3xl text-sm text-muted-foreground">{description}</p>
       {children}
     </div>
   )
@@ -106,7 +106,7 @@ export default async function AnalyticsPage({ searchParams }: PageProps) {
         <h1 className="text-3xl font-bold tracking-tight text-foreground">
           Mandate analytics
         </h1>
-        <p className="mt-2 max-w-3xl text-base leading-relaxed text-gray-600">
+        <p className="mt-2 max-w-3xl text-base leading-relaxed text-muted-foreground">
           Charts drawn from the mandate registry: how citations and resolutions
           move over time, and how mandating bodies, entities, and topics relate
           to one another. Click any item to open the main table filtered to it.

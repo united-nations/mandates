@@ -73,7 +73,7 @@ const VersionChoices = (props: CitedPanelProps) => {
           />
         ))}
       </div>
-      <p className="text-xs text-gray-500">
+      <p className="text-sm text-muted-foreground">
         The whole document catalogue stays in the table either way. The budget
         you pick here supplies the citation counts, the citing entities and the
         budget locations shown against each document.
@@ -131,12 +131,12 @@ const BudgetLocations = (props: CitedPanelProps) => (
           onSelect={props.actions.selectBudgetLocation}
         />
       ) : (
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-muted-foreground">
           No budget locations for the current filters.
         </p>
       )}
     </PanelStatus>
-    <p className="text-xs text-gray-500">
+    <p className="text-sm text-muted-foreground">
       Counts are documents cited at that point of{' '}
       {props.versions.find((item) => item.slug === props.activeVersionSlug)
         ?.display_name ?? 'the budget'}

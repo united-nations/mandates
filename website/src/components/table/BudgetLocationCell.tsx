@@ -72,7 +72,7 @@ export function BudgetLocationCell({
   const [first, ...rest] = orderLocations(locations, activeStream)
 
   return (
-    <div className="flex items-baseline gap-1 overflow-hidden text-xs">
+    <div className="flex items-baseline gap-1 overflow-hidden text-sm">
       <Tooltip>
         <TooltipTrigger asChild>
           {/* min-w-0 so this, not the count, is what yields when the row is
@@ -106,13 +106,13 @@ export function BudgetLocationCell({
 }
 
 function Separator() {
-  return <span className="shrink-0 text-muted-foreground/50">›</span>
+  return <span className="shrink-0 text-muted-foreground">›</span>
 }
 
 /** The terse one-line path, stream-prefixed. */
 function CompactPath({ location }: { location: BudgetLocation }) {
   const segments: React.ReactNode[] = [
-    <span key="stream" className="shrink-0 font-mono text-muted-foreground">
+    <span key="stream" className="shrink-0 font-mono text-foreground">
       {STREAM_SHORT[location.stream]}
     </span>,
   ]
@@ -120,7 +120,7 @@ function CompactPath({ location }: { location: BudgetLocation }) {
   if (location.stream === 'ppb') {
     if (location.part)
       segments.push(
-        <span key="part" className="shrink-0 font-mono text-muted-foreground">
+        <span key="part" className="shrink-0 font-mono text-foreground">
           {location.part}
         </span>
       )
@@ -128,14 +128,14 @@ function CompactPath({ location }: { location: BudgetLocation }) {
       segments.push(
         <span
           key="section"
-          className="shrink-0 font-mono text-muted-foreground"
+          className="shrink-0 font-mono text-foreground"
         >
           {location.section}
         </span>
       )
     if (location.entity)
       segments.push(
-        <span key="entity" className="shrink-0 font-medium text-un-blue">
+        <span key="entity" className="shrink-0 font-medium text-un-blue-text">
           {location.entity}
         </span>
       )
@@ -147,7 +147,7 @@ function CompactPath({ location }: { location: BudgetLocation }) {
       )
   } else if (location.stream === 'pko' && location.entity) {
     segments.push(
-      <span key="entity" className="shrink-0 font-medium text-un-blue">
+      <span key="entity" className="shrink-0 font-medium text-un-blue-text">
         {location.entity}
       </span>
     )
@@ -173,7 +173,7 @@ function FullPath({ location }: { location: BudgetLocation }) {
       location.section_title.toLowerCase()
 
   return (
-    <div className="space-y-0.5 text-xs">
+    <div className="space-y-0.5 text-sm">
       <div className="font-medium">{BUDGET_STREAM_LABELS[location.stream]}</div>
 
       {location.stream === 'ppb' && (

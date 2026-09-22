@@ -41,12 +41,12 @@ function StatRow({
         <button
           type="button"
           className={cn(
-            'flex w-full items-center gap-2 rounded-lg bg-un-blue/10 px-3 py-1.5 text-left transition-colors',
-            'hover:bg-un-blue/20 focus-visible:bg-un-blue/20 focus-visible:outline-none'
+            'flex w-full items-center gap-2 rounded-lg bg-accent px-3 py-1.5 text-left transition-colors',
+            'hover:bg-accent focus-visible:bg-accent focus-visible:outline-none'
           )}
         >
-          <Icon className="size-4 shrink-0 text-un-blue" />
-          <span className="text-sm leading-tight text-un-blue">{label}</span>
+          <Icon className="size-4 shrink-0 text-un-blue-text" />
+          <span className="text-sm leading-tight text-un-blue-text">{label}</span>
           <span className="ml-auto text-2xl leading-none font-bold text-foreground tabular-nums">
             {typeof value === 'number' ? value.toLocaleString() : value}
           </span>

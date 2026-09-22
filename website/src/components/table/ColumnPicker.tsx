@@ -88,13 +88,13 @@ export function ColumnPicker({
       <PopoverTrigger asChild>
         <button
           type="button"
-          className="inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-md bg-gray-100 px-2.5 text-sm font-medium whitespace-nowrap text-gray-500 transition-colors hover:bg-gray-200 hover:text-gray-900 data-[state=open]:bg-gray-200 data-[state=open]:text-gray-900"
+          className="inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-md bg-secondary px-2.5 text-sm font-medium whitespace-nowrap text-muted-foreground transition-colors hover:bg-muted hover:text-foreground data-[state=open]:bg-muted data-[state=open]:text-foreground"
         >
           <SlidersHorizontal className="h-3.5 w-3.5" />
           More columns and filters
           {/* One count treatment, shared with every chip in the app. */}
           {extraCount > 0 && <ChipCount>{extraCount}</ChipCount>}
-          <ChevronDown className="h-3.5 w-3.5 opacity-60" />
+          <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
         </button>
       </PopoverTrigger>
       {/* align="end": the trigger sits at the right end of the toolbar, so an
@@ -115,7 +115,7 @@ export function ColumnPicker({
           }
         }}
       >
-        <p className="px-2 py-1.5 text-xs text-muted-foreground">
+        <p className="px-2 py-1.5 text-sm text-muted-foreground">
           Columns to show, and their filters
         </p>
         <div className="max-h-[60vh] overflow-y-auto">
@@ -136,7 +136,7 @@ export function ColumnPicker({
             <button
               type="button"
               onClick={onReset}
-              className="w-full cursor-pointer rounded-sm px-2 py-1.5 text-left text-xs text-muted-foreground hover:bg-accent hover:text-foreground"
+              className="w-full cursor-pointer rounded-sm px-2 py-1.5 text-left text-sm text-muted-foreground hover:bg-accent hover:text-foreground"
             >
               Reset to defaults
             </button>
@@ -200,8 +200,8 @@ function ColumnRow({
           aria-label={`Filter by ${column.label}`}
           onClick={() => setOpen(true)}
           className={cn(
-            'flex h-6 shrink-0 cursor-pointer items-center gap-0.5 rounded px-1 text-xs transition-colors',
-            filtered ? 'text-un-blue' : 'text-gray-400'
+            'flex h-6 shrink-0 cursor-pointer items-center gap-0.5 rounded px-1 text-sm transition-colors',
+            filtered ? 'text-un-blue-text' : 'text-muted-foreground'
           )}
         >
           {/* The dot is the state: a column whose filter holds a value reads as
@@ -238,7 +238,7 @@ function ColumnRow({
           column.filterType === 'hierarchy' && 'w-[420px]'
         )}
       >
-        <p className="mb-2 text-xs font-medium text-muted-foreground">
+        <p className="mb-2 text-sm font-medium text-muted-foreground">
           Filter by {column.label}
         </p>
         <ColumnFilterBody

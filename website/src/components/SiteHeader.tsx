@@ -34,7 +34,7 @@ export function SiteHeader() {
       badge={
         <Tooltip>
           <TooltipTrigger asChild>
-            <span className="cursor-help rounded-md bg-un-blue/10 px-1.5 py-0.5 text-[10px] leading-none font-semibold whitespace-nowrap text-un-blue md:px-2 md:py-1 md:text-xs">
+            <span className="cursor-help rounded-md bg-accent px-1.5 py-0.5 text-xs leading-none font-semibold whitespace-nowrap text-accent-foreground md:px-2 md:py-1 md:text-xs">
               Beta Version
             </span>
           </TooltipTrigger>
@@ -44,7 +44,7 @@ export function SiteHeader() {
               the{' '}
               <Link
                 href="/methodology"
-                className="font-medium text-un-blue underline hover:text-shuttle-gray"
+                className="font-medium text-un-blue-text underline hover:text-shuttle-gray"
               >
                 methodology
               </Link>{' '}

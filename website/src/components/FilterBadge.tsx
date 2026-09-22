@@ -55,7 +55,7 @@ export function FilterBadge({
           onClick={onClear}
           title="Clear filter"
           aria-label="Clear filter"
-          className="-mr-1 inline-flex size-6 shrink-0 cursor-pointer items-center justify-center self-center rounded-full text-gray-500 transition-colors hover:bg-gray-200 hover:text-gray-900 focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none"
+          className="-mr-1 inline-flex size-6 shrink-0 cursor-pointer items-center justify-center self-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none"
         >
           <X className="size-3" />
         </button>

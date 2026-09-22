@@ -35,7 +35,7 @@ export function TextSimilarity({
   const href = comparisonUrl(symbol, metrics)
   const score = href ? formatSimilarity(metrics?.similarity_to_previous) : null
   if (!href && metrics?.comparison_unavailable_reason === 'collection') {
-    return <span title="Not applicable: this group is a collection, not ordered versions" aria-label="Not applicable: this group is a collection, not ordered versions">N/A</span>
+    return <span title="Not applicable: this group is a collection, not ordered versions" aria-label="Not applicable: this group is a collection, not ordered versions">–</span>
   }
   if (
     !href &&
@@ -48,7 +48,7 @@ export function TextSimilarity({
         title="Not applicable: no previous version"
         aria-label="Not applicable: no previous version"
       >
-        N/A
+        –
       </span>
     )
   }
@@ -64,7 +64,7 @@ export function TextSimilarity({
   const label = `Compare ${symbol} with ${metrics?.previous_document_symbol}${score ? `; text similarity ${score}` : '; similarity unavailable'} (opens in a new tab)`
   return (
     <span className="inline-flex items-baseline gap-2 whitespace-nowrap text-sm">
-      <span className="font-normal text-black tabular-nums">{score ?? '—'}</span>
+      <span className="font-normal text-foreground tabular-nums">{score ?? '—'}</span>
       <a
         href={href}
         target="_blank"
@@ -72,7 +72,7 @@ export function TextSimilarity({
         onClick={(event) => event.stopPropagation()}
         aria-label={label}
         title={label}
-        className="inline-block rounded border border-gray-200 px-2 py-0 text-sm font-medium text-black hover:border-un-blue hover:text-un-blue focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:outline-none"
+        className="inline-block rounded border border-border px-2 py-0 text-sm font-medium text-muted-foreground hover:border-un-blue hover:text-un-blue-text focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:outline-none"
       >
         Compare
       </a>

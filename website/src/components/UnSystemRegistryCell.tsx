@@ -189,7 +189,7 @@ function PointLegend({ registries }: { registries: UnSystemRegistry[] }) {
  */
 export function UnSystemRegistryLegend() {
   return (
-    <div className="rounded-r-lg border-l-[3px] border-un-blue bg-un-blue/5 px-5 py-4 text-sm leading-relaxed text-foreground">
+    <div className="rounded-r-lg border-l-[3px] border-un-blue bg-accent px-5 py-4 text-sm leading-relaxed text-foreground">
       <p className="mb-2">
         The registry score shows how far an organization&apos;s mandates can be
         traced publicly — one point for each of the following (filled dot = met,
@@ -232,7 +232,7 @@ export function UnSystemRegistryDots({
       <Tooltip>
         <TooltipTrigger
           aria-label="No mandate registry — details"
-          className="inline-flex cursor-help items-center gap-1 text-sm text-gray-900"
+          className="inline-flex cursor-help items-center gap-1 text-sm text-foreground"
         >
           — <Info className="h-3.5 w-3.5" />
         </TooltipTrigger>
@@ -271,7 +271,7 @@ export function UnSystemRegistryLink({
   // No external-link icon: nearly every link on this page leaves the site, so
   // the icon marked nothing and only added a third signal to an already
   // over-specified set. Rank is carried by size alone.
-  const linkClass = 'text-sm text-un-blue hover:underline'
+  const linkClass = 'text-sm text-un-blue-text hover:underline'
 
   return (
     <Tooltip>

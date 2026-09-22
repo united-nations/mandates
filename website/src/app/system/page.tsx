@@ -61,15 +61,15 @@ function EntityRow({ entity }: { entity: UnSystemEntity }) {
           href={entity.homepage}
           target="_blank"
           rel="noopener noreferrer"
-          className="font-semibold text-gray-900 transition-colors hover:text-un-blue"
+          className="font-semibold text-foreground transition-colors hover:text-un-blue-text"
         >
           {entity.code}
         </a>
         {entity.name !== entity.code && (
-          <div className="text-sm text-gray-900">{entity.name}</div>
+          <div className="text-sm text-foreground">{entity.name}</div>
         )}
       </div>
-      <ul className="space-y-1 text-sm text-gray-900">
+      <ul className="space-y-1 text-sm text-foreground">
         {entity.governingBodies.map(resolveBody).map((body) => (
           <UnSystemBodyLine key={body.name} body={body} />
         ))}
@@ -103,8 +103,8 @@ function EntityRow({ entity }: { entity: UnSystemEntity }) {
               rel="noopener noreferrer"
               className={
                 resource.prominent
-                  ? 'text-sm text-un-blue hover:underline'
-                  : 'text-sm text-gray-900 transition-colors hover:text-un-blue hover:underline'
+                  ? 'text-sm text-un-blue-text hover:underline'
+                  : 'text-sm text-foreground transition-colors hover:text-un-blue-text hover:underline'
               }
             >
               {resource.name}
@@ -129,7 +129,7 @@ export default function UnSystemPage() {
           Beyond the{' '}
           <Link
             href="/secretariat"
-            className="text-un-blue transition-colors hover:text-shuttle-gray"
+            className="text-un-blue-text transition-colors hover:text-shuttle-gray"
           >
             UN Secretariat
           </Link>
@@ -154,11 +154,11 @@ export default function UnSystemPage() {
             <section key={grouping} className="mb-10">
               {title && (
                 <>
-                  <h2 className="mb-3 text-lg font-semibold text-gray-900">
+                  <h2 className="mb-3 text-lg font-semibold text-foreground">
                     {title}
                   </h2>
                   <div
-                    className={`hidden gap-x-4 px-4 pb-1.5 text-xs font-medium tracking-wide text-gray-900 uppercase sm:grid ${HEADER_GRID_COLS}`}
+                    className={`hidden gap-x-4 px-4 pb-1.5 text-xs font-medium tracking-wide text-foreground uppercase sm:grid ${HEADER_GRID_COLS}`}
                   >
                     {/* Pulled out of the box inset so it left-aligns with the section title. */}
                     <span className="-ms-4">Organization</span>
@@ -175,7 +175,7 @@ export default function UnSystemPage() {
                   </div>
                 </>
               )}
-              <ul className="divide-y divide-gray-200 rounded-lg border border-gray-200 bg-white">
+              <ul className="divide-y divide-gray-200 rounded-lg border border-border bg-white">
                 {organizations
                   .filter((entity) => entity.grouping === grouping)
                   .map((entity) => (

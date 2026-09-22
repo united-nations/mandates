@@ -103,10 +103,10 @@ export function YearOverlayTrend({
 
   return (
     <div>
-      <p className="mb-3 max-w-3xl text-sm text-gray-500">{description}</p>
+      <p className="mb-3 max-w-3xl text-sm text-muted-foreground">{description}</p>
 
       {/* Legend + hover status */}
-      <div className="mb-2 flex flex-wrap items-center gap-x-5 gap-y-1 text-[11px] text-gray-600">
+      <div className="mb-2 flex flex-wrap items-center gap-x-5 gap-y-1 text-xs text-muted-foreground">
         <span className="inline-flex items-center gap-1.5">
           <span className="inline-block h-3 w-3 rounded-sm bg-gray-300" />
           {totalLabel}
@@ -115,17 +115,17 @@ export function YearOverlayTrend({
           <span className="inline-block h-3 w-3 rounded-sm bg-un-blue" />
           {highlightLabel}
         </span>
-        <span className="ml-auto text-gray-500">
+        <span className="ml-auto text-muted-foreground">
           {hover ? (
             <span>
-              <span className="font-medium text-gray-900">{hover.year}</span>
+              <span className="font-medium text-foreground">{hover.year}</span>
               {` — ${hover.total.toLocaleString()} ${totalHoverLabel} · `}
-              <span className="font-medium text-un-blue">
+              <span className="font-medium text-un-blue-text">
                 {`${hover.highlight.toLocaleString()} ${highlightHoverLabel}`}
               </span>
             </span>
           ) : (
-            <span className="text-gray-400">Hover a year for details</span>
+            <span className="text-muted-foreground">Hover a year for details</span>
           )}
         </span>
       </div>
@@ -176,7 +176,7 @@ export function YearOverlayTrend({
       </div>
 
       {/* Decade axis */}
-      <div className="relative mt-1 h-4 text-[10px] text-gray-400">
+      <div className="relative mt-1 h-4 text-xs text-muted-foreground">
         {decades.map((y) => (
           <span
             key={y}
