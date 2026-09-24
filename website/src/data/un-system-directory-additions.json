@@ -1,0 +1,157 @@
+[
+  {
+    "code": "CTED",
+    "name": "Counter-Terrorism Committee Executive Directorate",
+    "entityClass": "secretariat"
+  },
+  {
+    "code": "DCO",
+    "name": "Development Coordination Office",
+    "entityClass": "secretariat"
+  },
+  {
+    "code": "DESA",
+    "name": "Department of Economic and Social Affairs",
+    "entityClass": "secretariat"
+  },
+  {
+    "code": "DGACM",
+    "name": "Department for General Assembly and Conference Management",
+    "entityClass": "secretariat"
+  },
+  {
+    "code": "DGC",
+    "name": "Department of Global Communications",
+    "entityClass": "secretariat"
+  },
+  {
+    "code": "DMSPC",
+    "name": "Department of Management Strategy, Policy and Compliance",
+    "entityClass": "secretariat"
+  },
+  {
+    "code": "DOS",
+    "name": "Department of Operational Support",
+    "entityClass": "secretariat"
+  },
+  {
+    "code": "DPO",
+    "name": "Department of Peace Operations",
+    "entityClass": "secretariat"
+  },
+  {
+    "code": "DPPA",
+    "name": "Department of Political and Peacebuilding Affairs",
+    "entityClass": "secretariat"
+  },
+  {
+    "code": "DSS",
+    "name": "Department of Safety and Security",
+    "entityClass": "secretariat"
+  },
+  {
+    "code": "OCHA",
+    "name": "Office for the Coordination of Humanitarian Affairs",
+    "entityClass": "secretariat"
+  },
+  {
+    "code": "OCT",
+    "name": "Office of Counter-Terrorism",
+    "entityClass": "secretariat"
+  },
+  {
+    "code": "ODA",
+    "name": "Office for Disarmament Affairs",
+    "entityClass": "secretariat"
+  },
+  {
+    "code": "ODET",
+    "name": "Office for Digital and Emerging Technologies",
+    "entityClass": "secretariat"
+  },
+  {
+    "code": "OHCHR",
+    "name": "Office of the United Nations High Commissioner for Human Rights",
+    "entityClass": "secretariat"
+  },
+  {
+    "code": "OIOS",
+    "name": "Office of Internal Oversight Services",
+    "entityClass": "secretariat"
+  },
+  {
+    "code": "OLA",
+    "name": "Office of Legal Affairs",
+    "entityClass": "secretariat"
+  },
+  {
+    "code": "OOSA",
+    "name": "Office for Outer Space Affairs",
+    "entityClass": "secretariat"
+  },
+  {
+    "code": "OSAA",
+    "name": "Office of the Special Adviser on Africa",
+    "entityClass": "special_adviser_or_envoy"
+  },
+  {
+    "code": "OSASG-Genocide",
+    "name": "Office of the Special Adviser to the Secretary-General on the Prevention of Genocide",
+    "entityClass": "special_adviser_or_envoy"
+  },
+  {
+    "code": "OSC-SEA",
+    "name": "Office of the Special Coordinator on Improving the UN Response to Sexual Exploitation and Abuse",
+    "entityClass": "special_adviser_or_envoy"
+  },
+  {
+    "code": "SRSG-CAAC",
+    "name": "Office of the Special Representative of the Secretary-General for Children and Armed Conflict",
+    "entityClass": "special_adviser_or_envoy"
+  },
+  {
+    "code": "SRSG-SVC",
+    "name": "Office of the Special Representative of the Secretary-General on Sexual Violence in Conflict",
+    "entityClass": "special_adviser_or_envoy"
+  },
+  {
+    "code": "UNAOC",
+    "name": "United Nations Alliance of Civilizations",
+    "entityClass": "secretariat"
+  },
+  {
+    "code": "UNDRR",
+    "name": "United Nations Office for Disaster Risk Reduction",
+    "entityClass": "secretariat"
+  },
+  {
+    "code": "UNGC",
+    "name": "United Nations Global Compact",
+    "entityClass": "secretariat"
+  },
+  {
+    "code": "UNOG",
+    "name": "United Nations Office at Geneva",
+    "entityClass": "secretariat"
+  },
+  {
+    "code": "UN-OHRLLS",
+    "name": "Office of the High Representative for the Least Developed Countries, Landlocked Developing Countries and Small Island Developing States",
+    "entityClass": "special_adviser_or_envoy"
+  },
+  {
+    "code": "UNON",
+    "name": "United Nations Office at Nairobi",
+    "entityClass": "secretariat"
+  },
+  {
+    "code": "UNOV",
+    "name": "United Nations Office at Vienna",
+    "entityClass": "secretariat"
+  },
+  {
+    "code": "UN Youth",
+    "name": "United Nations Youth Office",
+    "entityClass": "secretariat"
+  }
+]

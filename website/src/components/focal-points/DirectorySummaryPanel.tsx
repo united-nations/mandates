@@ -128,15 +128,26 @@ export function DirectorySummaryPanel({
                 />
               }
             >
-              <div className="space-y-8">
-                <PeopleSection designation={designation} />
-                <CoverageSection designation={designation} />
-              </div>
+              <DesignationDetails designation={designation} />
             </DetailPanel>
           </>
         )}
       </SheetContent>
     </Sheet>
+  )
+}
+
+/** Shared contact and coverage content for designation and entity panels. */
+export function DesignationDetails({
+  designation,
+}: {
+  designation: DirectorySummaryDesignation
+}) {
+  return (
+    <div className="space-y-6">
+      <PeopleSection designation={designation} />
+      <CoverageSection designation={designation} />
+    </div>
   )
 }
 
@@ -216,7 +227,10 @@ function PeopleSection({
           field. */}
       {functionalMailbox && (
         <DetailFields columns={1} className="mt-6">
-          <DetailField label="Functional mailbox" className="[&>dt]:text-foreground">
+          <DetailField
+            label="Functional mailbox"
+            className="[&>dt]:text-foreground"
+          >
             <EmailLink address={functionalMailbox} />
           </DetailField>
         </DetailFields>
