@@ -76,7 +76,7 @@ export function SidebarListItem({
 
   // Different styles based on variant
   const baseStyles =
-    'flex items-center justify-between p-1.5 rounded-sm cursor-pointer group border-b border-muted/30 last:border-b-0'
+    'flex items-center justify-between p-1.5 rounded-sm cursor-pointer group border-b border-border last:border-b-0'
 
   const variantStyles = {
     navigation: {

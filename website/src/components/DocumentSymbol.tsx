@@ -22,7 +22,7 @@ export function DocumentSymbol({
       className={cn(
         className,
         'text-xs',
-        subdued && 'inline-flex items-baseline gap-1 bg-primary font-medium text-primary-foreground'
+        subdued && 'inline-flex items-baseline gap-1 border-primary bg-primary font-medium text-primary-foreground'
       )}
     >
       {children}

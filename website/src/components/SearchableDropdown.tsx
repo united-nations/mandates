@@ -230,7 +230,7 @@ export function SearchableDropdown({
                     return (
                       <div
                         key={option.value}
-                        className="mx-2 my-1.5 border-b border-border/30"
+                        className="mx-2 my-1.5 border-b border-border"
                       />
                     )
                   }

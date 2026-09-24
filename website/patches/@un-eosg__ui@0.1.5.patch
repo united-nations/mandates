@@ -1,34 +1,54 @@
 diff --git a/components/binary-toggle.tsx b/components/binary-toggle.tsx
-index b8fde6d8e5206a6820d5c81990c9478decd07bd9..e181188db7058c364bdc545e032624ecfb888554 100644
 --- a/components/binary-toggle.tsx
 +++ b/components/binary-toggle.tsx
-@@ -58,7 +58,7 @@ export function BinaryToggle({
+@@ -57,8 +57,8 @@
+         disabled={disabled}
          onClick={() => onValueChange(options[checked ? 0 : 1].value)}
          className={cn(
-           "inline-flex h-5 w-9 shrink-0 items-center rounded-full border-2 border-transparent shadow-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-un-blue disabled:cursor-not-allowed",
+-          "inline-flex h-5 w-9 shrink-0 items-center rounded-full border-2 border-transparent shadow-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-un-blue disabled:cursor-not-allowed",
 -          checked ? "bg-un-blue" : "bg-gray-200",
-+          checked ? "bg-un-blue" : "bg-muted",
++          "inline-flex h-5 w-9 shrink-0 items-center rounded-full border border-border px-px shadow-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-un-blue disabled:cursor-not-allowed",
++          checked ? "border-un-blue bg-un-blue" : "bg-secondary",
          )}
        >
          <span
+diff --git a/components/button.tsx b/components/button.tsx
+--- a/components/button.tsx
++++ b/components/button.tsx
+@@ -20,7 +20,7 @@
+   {
+     variants: {
+       variant: {
+-        default: "bg-primary text-primary-foreground hover:bg-un-blue-shade",
++        default: "bg-primary text-primary-foreground hover:inset-ring-2 hover:inset-ring-white/70",
+         destructive:
+           "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/40",
+         outline:
 diff --git a/components/chip.tsx b/components/chip.tsx
-index 624316284af03844268dbf2c1eb0040f752e6d51..b78bc236215961ffc963f1237744ad73034c5626 100644
 --- a/components/chip.tsx
 +++ b/components/chip.tsx
-@@ -52,7 +52,7 @@ const DENSITY: Record<ChipDensity, string> = {
- 
+@@ -52,14 +52,14 @@
+
  const TONE: Record<ChipTone, string> = {
    neutral: "border-border bg-secondary text-secondary-foreground",
 -  selected: "border-un-blue bg-un-blue font-medium text-white",
 +  selected: "border-un-blue bg-un-blue-text font-medium text-white",
    ghost: "border-dashed border-border bg-transparent text-muted-foreground",
  };
- 
+
+ /** Hover only exists for chips that actually do something. */
+ const TONE_HOVER: Record<ChipTone, string> = {
+-  neutral: "hover:border-un-blue hover:bg-un-blue-tint-50",
+-  selected: "hover:bg-un-blue-shade",
++  neutral: "hover:border-un-blue hover:bg-un-blue-surface",
++  selected: "hover:inset-ring-2 hover:inset-ring-white/70",
+   ghost: "hover:border-un-blue",
+ };
+
 diff --git a/components/data-table.tsx b/components/data-table.tsx
-index e704f7e27354a5c91b24f5188993135f4aba75e6..ef44c2f13b08549271a174239cb7e611e754fc30 100644
 --- a/components/data-table.tsx
 +++ b/components/data-table.tsx
-@@ -44,7 +44,7 @@ export function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
+@@ -44,7 +44,7 @@
    return (
      <tr
        className={cn(
@@ -38,35 +58,45 @@ index e704f7e27354a5c91b24f5188993135f4aba75e6..ef44c2f13b08549271a174239cb7e611
        )}
        {...props}
 diff --git a/components/document-symbol.tsx b/components/document-symbol.tsx
-index 6d12ffbc62d1e437b421a72d5f141233010b83ef..f414e64a66298137c7285341f48de90e79551405 100644
 --- a/components/document-symbol.tsx
 +++ b/components/document-symbol.tsx
-@@ -23,9 +23,9 @@ export function DocumentSymbol({
+@@ -22,10 +22,12 @@
+ }: DocumentSymbolProps) {
    const classes = cn(
      typography.label,
-     "inline-block rounded px-2 py-0.5",
+-    "inline-block rounded px-2 py-0.5",
 -    subdued ? "bg-gray-100 text-gray-700" : "bg-blue-50 text-un-blue",
-+    subdued ? "bg-secondary text-foreground" : "bg-accent text-accent-foreground",
++    "inline-block rounded border px-2 py-0.5",
++    subdued
++      ? "border-border bg-secondary text-foreground"
++      : "border-un-blue-text/30 bg-un-blue-surface text-un-blue-text",
      href &&
 -      "transition-colors hover:bg-blue-100 focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none",
-+      "transition-colors hover:bg-un-blue-tint focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none",
++      "transition-colors hover:bg-un-blue-surface hover:underline focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none",
      className,
    );
    return href ? (
 diff --git a/components/filter-popover.tsx b/components/filter-popover.tsx
-index 116acf98b8625d3dbc61ad85247077f91c66d33b..da7ce56346005b6a69e2a1c953a18b40ac483abd 100644
 --- a/components/filter-popover.tsx
 +++ b/components/filter-popover.tsx
-@@ -74,7 +74,7 @@ export function FilterPopover({
+@@ -74,7 +74,7 @@
            size="sm"
            className={cn(
              selected.length > 0 &&
 -              "border-un-blue bg-un-blue-tint-50 text-un-blue-text",
-+              "border-un-blue bg-un-blue-tint-50 text-accent-foreground",
++              "border-un-blue bg-un-blue-surface text-accent-foreground",
              className,
            )}
          >
-@@ -126,7 +126,7 @@ export function FilterPopover({
+@@ -119,14 +119,14 @@
+                     className={cn(
+                       "flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-start transition-colors",
+                       "hover:bg-accent focus-visible:ring-focus-ring focus-visible:ring-un-blue/50 focus-visible:outline-none",
+-                      isSelected && "bg-un-blue-tint-50",
++                      isSelected && "bg-un-blue-surface",
+                     )}
+                   >
+                     <span
                        className={cn(
                          "flex size-4 shrink-0 items-center justify-center rounded-sm border",
                          isSelected
@@ -76,10 +106,9 @@ index 116acf98b8625d3dbc61ad85247077f91c66d33b..da7ce56346005b6a69e2a1c953a18b40
                        )}
                      >
 diff --git a/components/financial-panel-parts.tsx b/components/financial-panel-parts.tsx
-index a9af56f09182b0ef2722f871570a85f910a00a9c..3010584d83a143ccb8e6f8d7286ddb398fb87e52 100644
 --- a/components/financial-panel-parts.tsx
 +++ b/components/financial-panel-parts.tsx
-@@ -116,7 +116,7 @@ export function FinancialPanelYearSelector({
+@@ -116,7 +116,7 @@
                "inline-flex shrink-0 items-center gap-1 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-un-blue/50",
                variant === "pill"
                  ? "h-8 rounded-full bg-secondary px-3 text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -88,7 +117,7 @@ index a9af56f09182b0ef2722f871570a85f910a00a9c..3010584d83a143ccb8e6f8d7286ddb39
              )}
            >
              <span className="font-medium">{selected}</span>
-@@ -132,7 +132,7 @@ export function FinancialPanelYearSelector({
+@@ -132,7 +132,7 @@
            <Popover.Content
              align="start"
              sideOffset={4}
@@ -97,7 +126,7 @@ index a9af56f09182b0ef2722f871570a85f910a00a9c..3010584d83a143ccb8e6f8d7286ddb39
            >
              <div className="flex flex-col">
                {years.map((year) => (
-@@ -148,8 +148,8 @@ export function FinancialPanelYearSelector({
+@@ -148,8 +148,8 @@
                      typography.body,
                      "rounded px-3 py-1.5 text-start",
                      year === selected
@@ -108,7 +137,7 @@ index a9af56f09182b0ef2722f871570a85f910a00a9c..3010584d83a143ccb8e6f8d7286ddb39
                    )}
                  >
                    {year}
-@@ -225,7 +225,7 @@ export function FinancialPanelRankedRow({
+@@ -225,7 +225,7 @@
        onClick={badge ? onClick : undefined}
        className={cn(
          "flex w-full items-center gap-2",
@@ -117,7 +146,7 @@ index a9af56f09182b0ef2722f871570a85f910a00a9c..3010584d83a143ccb8e6f8d7286ddb39
        )}
      >
        {onClick && !badge ? (
-@@ -235,7 +235,7 @@ export function FinancialPanelRankedRow({
+@@ -235,7 +235,7 @@
            title={title ?? label}
            className={cn(
              typography.label,
@@ -126,7 +155,7 @@ index a9af56f09182b0ef2722f871570a85f910a00a9c..3010584d83a143ccb8e6f8d7286ddb39
              labelClassName,
            )}
          >
-@@ -246,7 +246,7 @@ export function FinancialPanelRankedRow({
+@@ -246,7 +246,7 @@
            title={title ?? label}
            className={cn(
              typography.label,
@@ -136,10 +165,9 @@ index a9af56f09182b0ef2722f871570a85f910a00a9c..3010584d83a143ccb8e6f8d7286ddb39
            )}
          >
 diff --git a/components/financial-tooltip.tsx b/components/financial-tooltip.tsx
-index df267860fba6531480d99fcfb42b3f2b6fb28382..edd3c0c3ffc17fa14f3b15e8d15016211eabd556 100644
 --- a/components/financial-tooltip.tsx
 +++ b/components/financial-tooltip.tsx
-@@ -158,7 +158,7 @@ export function FinancialTooltip({
+@@ -158,7 +158,7 @@
          >
            <MousePointerClick
              aria-hidden="true"
@@ -148,11 +176,22 @@ index df267860fba6531480d99fcfb42b3f2b6fb28382..edd3c0c3ffc17fa14f3b15e8d1501621
            />
            {actionHint}
          </p>
+diff --git a/components/grouped-treemap.tsx b/components/grouped-treemap.tsx
+--- a/components/grouped-treemap.tsx
++++ b/components/grouped-treemap.tsx
+@@ -892,7 +892,7 @@
+               <span className="inline-flex flex-wrap gap-x-1">
+                 {source.href ? (
+                   <a
+-                    className="text-un-blue-text underline underline-offset-2 hover:text-un-blue-shade focus-visible:ring-2 focus-visible:ring-un-blue/50 focus-visible:outline-none"
++                    className="text-un-blue-text underline underline-offset-2 hover:decoration-2 focus-visible:ring-2 focus-visible:ring-un-blue/50 focus-visible:outline-none"
+                     href={source.href}
+                     target={source.openInNewTab ? "_blank" : undefined}
+                     rel={
 diff --git a/components/hierarchical-multi-select.tsx b/components/hierarchical-multi-select.tsx
-index 50dc865e88e619424ab08cf765a1a1f8d5e84a66..1b11b06fe6ee7a4714e2497363430b32546f63d4 100644
 --- a/components/hierarchical-multi-select.tsx
 +++ b/components/hierarchical-multi-select.tsx
-@@ -172,8 +172,8 @@ export function HierarchicalMultiSelect({
+@@ -172,8 +172,8 @@
                type="button"
                className={cn(
                  pillStyles,
@@ -163,7 +202,7 @@ index 50dc865e88e619424ab08cf765a1a1f8d5e84a66..1b11b06fe6ee7a4714e2497363430b32
                )}
              >
                {selectionSummary !== undefined ? (
-@@ -208,7 +208,7 @@ export function HierarchicalMultiSelect({
+@@ -208,7 +208,7 @@
                    }}
                    className={cn(
                      pillStyles,
@@ -172,7 +211,7 @@ index 50dc865e88e619424ab08cf765a1a1f8d5e84a66..1b11b06fe6ee7a4714e2497363430b32
                    )}
                  >
                    <span
-@@ -226,12 +226,12 @@ export function HierarchicalMultiSelect({
+@@ -226,12 +226,12 @@
              })}
          </div>
          <PopoverContent
@@ -187,7 +226,7 @@ index 50dc865e88e619424ab08cf765a1a1f8d5e84a66..1b11b06fe6ee7a4714e2497363430b32
              <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
              <input
                type="text"
-@@ -275,7 +275,7 @@ export function HierarchicalMultiSelect({
+@@ -275,7 +275,7 @@
                    return (
                      <label
                        key={group.id}
@@ -196,7 +235,7 @@ index 50dc865e88e619424ab08cf765a1a1f8d5e84a66..1b11b06fe6ee7a4714e2497363430b32
                      >
                        <input
                          type="checkbox"
-@@ -305,7 +305,7 @@ export function HierarchicalMultiSelect({
+@@ -305,7 +305,7 @@
                    <div key={group.id}>
                      {/* Group header (selectable for aggregate) */}
                      <div
@@ -205,7 +244,7 @@ index 50dc865e88e619424ab08cf765a1a1f8d5e84a66..1b11b06fe6ee7a4714e2497363430b32
                        onClick={() => hasExpandable && toggleExpanded(group.id)}
                      >
                        {/* Expand/collapse chevron */}
-@@ -356,7 +356,7 @@ export function HierarchicalMultiSelect({
+@@ -356,7 +356,7 @@
                            <div key={subgroup.id}>
                              {/* Subgroup header */}
                              <div
@@ -214,7 +253,7 @@ index 50dc865e88e619424ab08cf765a1a1f8d5e84a66..1b11b06fe6ee7a4714e2497363430b32
                                onClick={() =>
                                  sgHasChildren && toggleExpanded(subgroup.id)
                                }
-@@ -405,7 +405,7 @@ export function HierarchicalMultiSelect({
+@@ -405,7 +405,7 @@
                                  <button
                                    type="button"
                                    key={child}
@@ -223,7 +262,7 @@ index 50dc865e88e619424ab08cf765a1a1f8d5e84a66..1b11b06fe6ee7a4714e2497363430b32
                                    onClick={(e) => toggleItem(child, e)}
                                  >
                                    {/* Colored checkbox */}
-@@ -435,7 +435,7 @@ export function HierarchicalMultiSelect({
+@@ -435,7 +435,7 @@
                          <button
                            type="button"
                            key={child}
@@ -233,10 +272,9 @@ index 50dc865e88e619424ab08cf765a1a1f8d5e84a66..1b11b06fe6ee7a4714e2497363430b32
                          >
                            {/* Colored checkbox */}
 diff --git a/components/hierarchical-single-select.tsx b/components/hierarchical-single-select.tsx
-index 0f7f63c1d3906109e9509b43921f1843b366ee9f..b0ffe1812d05659ebd1705cab3e61a676d5168a3 100644
 --- a/components/hierarchical-single-select.tsx
 +++ b/components/hierarchical-single-select.tsx
-@@ -121,8 +121,8 @@ export function HierarchicalSingleSelect({
+@@ -121,8 +121,8 @@
              type="button"
              className={cn(
                pillStyles,
@@ -247,7 +285,7 @@ index 0f7f63c1d3906109e9509b43921f1843b366ee9f..b0ffe1812d05659ebd1705cab3e61a67
              )}
            >
              <span className="max-w-[180px] truncate font-medium">
-@@ -137,12 +137,12 @@ export function HierarchicalSingleSelect({
+@@ -137,12 +137,12 @@
            </button>
          </PopoverTrigger>
          <PopoverContent
@@ -262,7 +300,7 @@ index 0f7f63c1d3906109e9509b43921f1843b366ee9f..b0ffe1812d05659ebd1705cab3e61a67
              <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
              <input
                type="text"
-@@ -180,7 +180,7 @@ export function HierarchicalSingleSelect({
+@@ -180,7 +180,7 @@
                      <div
                        className={cn(
                          "flex w-full items-center gap-2 px-3 py-2 transition-colors cursor-pointer",
@@ -271,7 +309,7 @@ index 0f7f63c1d3906109e9509b43921f1843b366ee9f..b0ffe1812d05659ebd1705cab3e61a67
                        )}
                        onClick={() => selectItem(group.id)}
                      >
-@@ -216,8 +216,8 @@ export function HierarchicalSingleSelect({
+@@ -216,8 +216,8 @@
                          className={cn(
                            "flex-1 min-w-0 text-sm truncate",
                            isGroupSelected
@@ -282,7 +320,7 @@ index 0f7f63c1d3906109e9509b43921f1843b366ee9f..b0ffe1812d05659ebd1705cab3e61a67
                          )}
                        >
                          {group.label}
-@@ -242,8 +242,8 @@ export function HierarchicalSingleSelect({
+@@ -242,8 +242,8 @@
                              className={cn(
                                "flex w-full items-center gap-2 pl-10 pr-3 py-1.5 text-left transition-colors",
                                isChildSelected
@@ -293,7 +331,7 @@ index 0f7f63c1d3906109e9509b43921f1843b366ee9f..b0ffe1812d05659ebd1705cab3e61a67
                              )}
                              onClick={() => selectItem(child)}
                            >
-@@ -251,7 +251,7 @@ export function HierarchicalSingleSelect({
+@@ -251,7 +251,7 @@
                                className={cn(
                                  "flex-1 min-w-0 text-sm truncate",
                                  isChildSelected
@@ -303,10 +341,9 @@ index 0f7f63c1d3906109e9509b43921f1843b366ee9f..b0ffe1812d05659ebd1705cab3e61a67
                                )}
                              >
 diff --git a/components/interaction-hint.tsx b/components/interaction-hint.tsx
-index 2930ecf8249163a91515e9b8bc84d4f88ecd9f25..bcb92fae8145530971378531efd23fdef5bf93ca 100644
 --- a/components/interaction-hint.tsx
 +++ b/components/interaction-hint.tsx
-@@ -18,7 +18,7 @@ export function InteractionHint({ text, className }: InteractionHintProps) {
+@@ -18,7 +18,7 @@
        )}
      >
        <MousePointerClick
@@ -316,10 +353,9 @@ index 2930ecf8249163a91515e9b8bc84d4f88ecd9f25..bcb92fae8145530971378531efd23fde
        />
        {text}
 diff --git a/components/secondary-header.tsx b/components/secondary-header.tsx
-index a2a0d8f986a85c467d499a93c1a212d66fd4eee9..4470aa5ecbd33fe5b32207a021ac4bdfc0305738 100644
 --- a/components/secondary-header.tsx
 +++ b/components/secondary-header.tsx
-@@ -52,7 +52,7 @@ export function SecondaryHeader({
+@@ -52,7 +52,7 @@
    return (
      <div
        className={cn(
@@ -328,7 +364,7 @@ index a2a0d8f986a85c467d499a93c1a212d66fd4eee9..4470aa5ecbd33fe5b32207a021ac4bdf
          secondaryHeaderTransparencyClasses[transparency],
          className,
        )}
-@@ -69,8 +69,8 @@ export function SecondaryHeader({
+@@ -69,8 +69,8 @@
              className: cn(
                "shrink-0 border-b-2 px-3 py-3 text-sm whitespace-nowrap transition-colors first:pl-0",
                active
@@ -340,50 +376,68 @@ index a2a0d8f986a85c467d499a93c1a212d66fd4eee9..4470aa5ecbd33fe5b32207a021ac4bdf
              children: item.label,
            };
 diff --git a/components/site-header.tsx b/components/site-header.tsx
-index 16a08a0f0a3e1a08f6f08fc4d067cddf4a3f570a..8ebc795c76cec9a9cc57dcb19bfc31220699a6ce 100644
 --- a/components/site-header.tsx
 +++ b/components/site-header.tsx
-@@ -183,7 +183,7 @@ export function SiteHeader({
+@@ -183,7 +183,7 @@
                <span className="font-light">{descriptor}</span>
              </span>
              {typeof badge === "string" ? (
 -              <span className="rounded-md bg-un-blue/10 px-1.5 py-0.5 text-micro leading-none font-semibold whitespace-nowrap text-un-blue md:px-2 md:py-1 md:text-xs">
-+              <span className="rounded-md bg-accent px-1.5 py-0.5 text-micro leading-none font-semibold whitespace-nowrap text-accent-foreground md:px-2 md:py-1 md:text-xs">
++              <span className="rounded-md border border-un-blue-text/30 bg-un-blue-surface px-1.5 py-0.5 text-micro leading-none font-semibold whitespace-nowrap text-un-blue-text md:px-2 md:py-1 md:text-xs">
                  {badge}
                </span>
              ) : (
-@@ -205,7 +205,7 @@ export function SiteHeader({
+@@ -192,9 +192,9 @@
+           </span>
+         </a>
+
+-        <div className="ms-auto flex items-center gap-3">
++        <div className="ms-auto flex self-stretch items-center gap-3">
+           {navItems.length > 0 && (
+-            <nav className="hidden items-center gap-1 lg:flex">
++            <nav className="hidden self-stretch items-stretch gap-1 lg:flex">
+               {navItems.map(({ href: itemHref, label, icon: Icon }) => {
+                 const active = activeHref === itemHref;
+                 return (
+@@ -203,10 +203,10 @@
+                     href={itemHref}
+                     aria-current={active ? "page" : undefined}
                      className={cn(
-                       "inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm whitespace-nowrap transition-colors",
+-                      "inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm whitespace-nowrap transition-colors",
++                      "-my-3 inline-flex items-center gap-2 border-b-2 px-3 py-3 text-sm whitespace-nowrap transition-colors focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-2",
                        active
 -                        ? "bg-un-blue/10 font-medium text-un-blue"
-+                        ? "bg-accent font-medium text-accent-foreground"
-                         : "text-foreground/80 hover:bg-muted hover:text-foreground",
+-                        : "text-foreground/80 hover:bg-muted hover:text-foreground",
++                        ? "border-un-blue font-semibold text-un-blue-text"
++                        : "border-transparent text-foreground/80 hover:border-border hover:text-foreground",
                      )}
                    >
-@@ -243,7 +243,7 @@ export function SiteHeader({
+                     {Icon && <Icon className="size-4" />}
+@@ -241,9 +241,9 @@
+                         asChild={!active}
+                         aria-current={active ? "page" : undefined}
                          className={cn(
-                           "relative flex cursor-default items-center rounded-sm px-2 py-1.5 text-sm text-foreground outline-none select-none focus:bg-accent focus:text-accent-foreground",
+-                          "relative flex cursor-default items-center rounded-sm px-2 py-1.5 text-sm text-foreground outline-none select-none focus:bg-accent focus:text-accent-foreground",
++                          "relative flex cursor-default items-center border-s-2 border-transparent px-2 py-1.5 text-sm text-foreground outline-none select-none focus:bg-un-blue-surface focus:text-un-blue-text",
                            active &&
 -                            "bg-un-blue/10 font-medium text-un-blue-text focus:bg-un-blue/10 focus:text-un-blue-text",
-+                            "bg-accent font-medium text-accent-foreground focus:bg-accent focus:text-accent-foreground",
++                            "border-un-blue font-semibold text-un-blue-text focus:text-un-blue-text",
                          )}
                        >
                          {active ? (
 diff --git a/components/stat-tile.tsx b/components/stat-tile.tsx
-index a67b1f3ef055d2190a398b5b9527d963c80324f7..a666a23084540fba77d883dfc363d09ffb938ca6 100644
 --- a/components/stat-tile.tsx
 +++ b/components/stat-tile.tsx
-@@ -51,7 +51,7 @@ export function StatTile({
+@@ -51,7 +51,7 @@
    );
- 
+
    const base = cn(
 -    "flex w-full items-center gap-2 rounded-lg bg-un-blue/10 px-3 py-1.5 text-start",
 +    "flex w-full items-center gap-2 rounded-lg bg-accent px-3 py-1.5 text-start",
      className,
    );
- 
-@@ -63,7 +63,7 @@ export function StatTile({
+
+@@ -63,7 +63,7 @@
        onClick={onClick}
        className={cn(
          base,
@@ -393,10 +447,9 @@ index a67b1f3ef055d2190a398b5b9527d963c80324f7..a666a23084540fba77d883dfc363d09f
        )}
      >
 diff --git a/components/year-slider.tsx b/components/year-slider.tsx
-index 09fbe1b0dc2b3ba66353b2847aa8f42f0c0bcfeb..7a40a37e754df629e7b285bd726b73c7d0e26518 100644
 --- a/components/year-slider.tsx
 +++ b/components/year-slider.tsx
-@@ -214,7 +214,7 @@ export function YearSlider({
+@@ -214,7 +214,7 @@
            />
          </div>
        </div>
@@ -406,20 +459,32 @@ index 09fbe1b0dc2b3ba66353b2847aa8f42f0c0bcfeb..7a40a37e754df629e7b285bd726b73c7
        </span>
      </div>
 diff --git a/tokens/theme.css b/tokens/theme.css
-index bf5c7f7c129488591de0c76f4ff002ac0c4fda41..e03bbc526f186efd962dfc020f63583e3beec3b8 100644
 --- a/tokens/theme.css
 +++ b/tokens/theme.css
-@@ -29,6 +29,13 @@
+@@ -29,6 +29,15 @@
    --color-un-blue: #009edb;
    --color-un-black: #000000;
    --color-un-white: #ffffff;
 +  /* Neutral UI reference values, shared with Storybook and consuming apps. */
 +  --color-neutral-surface: #f4f4f5;
 +  --color-neutral-border: #e4e4e7;
++  /* Control tracks need more contrast than decorative dividers (3.43:1 on white). */
++  --color-neutral-control: #8a8a92;
 +  --color-neutral-text: #52525b;
 +  /* Existing co-citation chart hue; retained so token adoption does not change data encoding. */
 +  --color-un80-warm-gray: #9b8b7a;
 +
- 
+
    /* UN Blue's full ramp. This is the only accent that earns a complete set,
       because it is the only one used at any volume. */
+@@ -37,6 +46,10 @@
+   --color-un-blue-shade: #004987; /* Pantone 301 — text on light, deep fills */
+   --color-un-blue-text: #0077b8; /* AA on white */
+   --color-un-blue-text-aaa: #005392; /* AAA on white */
++  /* Opaque UI surfaces: text-blue clears AA even inside a tinted parent.
++     Blue surface 4.62:1; yellow surface 4.72:1. Brand/chart tints stay intact. */
++  --color-un-blue-surface: #f5faff;
++  --color-un-yellow-surface: #fffcef;
+
+   /* ===============================================================
+      ACCENTS — used sparingly, per the brand guide

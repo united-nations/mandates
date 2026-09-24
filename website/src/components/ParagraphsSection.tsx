@@ -170,9 +170,9 @@ function FilterDropdown({
           {/* All paragraphs option */}
           <button
             onClick={() => onFilterChange('all')}
-            className={`flex w-full items-center justify-between py-1.5 text-left text-sm hover:bg-muted ${
+            className={`flex w-full items-center justify-between py-1.5 text-left text-sm hover:bg-accent ${
               currentFilter === 'all'
-                ? 'bg-accent text-accent-foreground'
+                ? 'bg-accent font-medium text-accent-foreground underline underline-offset-2'
                 : 'text-foreground'
             }`}
           >
@@ -184,9 +184,9 @@ function FilterDropdown({
           {withItemsCount > 0 && withItemsLabel && (
             <button
               onClick={() => onFilterChange(withItemsKey)}
-              className={`flex w-full items-center justify-between py-1.5 text-left text-sm hover:bg-muted ${
+              className={`flex w-full items-center justify-between py-1.5 text-left text-sm hover:bg-accent ${
                 currentFilter === withItemsKey
-                  ? 'bg-accent text-accent-foreground'
+                  ? 'bg-accent font-medium text-accent-foreground underline underline-offset-2'
                   : 'text-foreground'
               }`}
             >
@@ -217,8 +217,8 @@ function FilterDropdown({
                       count === 0
                         ? 'cursor-not-allowed text-muted-foreground'
                         : currentFilter === type
-                          ? 'bg-accent text-accent-foreground hover:bg-muted'
-                          : 'text-foreground hover:bg-muted'
+                          ? 'bg-accent font-medium text-accent-foreground underline underline-offset-2 hover:bg-accent'
+                          : 'text-foreground hover:bg-accent'
                     }`}
                   >
                     <span className="pl-6">
@@ -255,8 +255,8 @@ function FilterDropdown({
                             itemCount === 0
                               ? 'cursor-not-allowed text-muted-foreground'
                               : currentFilter === `${type}:${itemName}`
-                                ? 'bg-accent text-accent-foreground hover:bg-muted'
-                                : 'text-muted-foreground hover:bg-muted'
+                                ? 'bg-accent font-medium text-accent-foreground underline underline-offset-2 hover:bg-accent'
+                                : 'text-muted-foreground hover:bg-accent'
                           }`}
                         >
                           <span className="pl-10 text-sm">
@@ -394,9 +394,9 @@ function SearchableFilterDropdown({
             {/* All paragraphs option */}
             <button
               onClick={() => onFilterChange('all')}
-              className={`flex w-full items-center justify-between py-1.5 text-left text-sm hover:bg-muted ${
+              className={`flex w-full items-center justify-between py-1.5 text-left text-sm hover:bg-accent ${
                 currentFilter === 'all'
-                  ? 'bg-accent text-accent-foreground'
+                  ? 'bg-accent font-medium text-accent-foreground underline underline-offset-2'
                   : 'text-foreground'
               }`}
             >
@@ -408,9 +408,9 @@ function SearchableFilterDropdown({
             {withItemsCount && withItemsCount > 0 && withItemsLabel && (
               <button
                 onClick={() => onFilterChange(`with-${label.toLowerCase()}`)}
-                className={`flex w-full items-center justify-between py-1.5 text-left text-sm hover:bg-muted ${
+                className={`flex w-full items-center justify-between py-1.5 text-left text-sm hover:bg-accent ${
                   currentFilter === `with-${label.toLowerCase()}`
-                    ? 'bg-accent text-accent-foreground'
+                    ? 'bg-accent font-medium text-accent-foreground underline underline-offset-2'
                     : 'text-foreground'
                 }`}
               >
@@ -453,8 +453,8 @@ function SearchableFilterDropdown({
                             typeCount === 0
                               ? 'cursor-not-allowed text-muted-foreground'
                               : currentFilter === type
-                                ? 'bg-accent text-accent-foreground hover:bg-muted'
-                                : 'text-foreground hover:bg-muted'
+                                ? 'bg-accent font-medium text-accent-foreground underline underline-offset-2 hover:bg-accent'
+                                : 'text-foreground hover:bg-accent'
                           }`}
                         >
                           <span className="pl-6">
@@ -488,8 +488,8 @@ function SearchableFilterDropdown({
                                 entityCount === 0
                                   ? 'cursor-not-allowed text-muted-foreground'
                                   : currentFilter === `${type}:${entityName}`
-                                    ? 'bg-accent text-accent-foreground hover:bg-muted'
-                                    : 'text-muted-foreground hover:bg-muted'
+                                    ? 'bg-accent font-medium text-accent-foreground underline underline-offset-2 hover:bg-accent'
+                                    : 'text-muted-foreground hover:bg-accent'
                               }`}
                             >
                               <span className="pl-10 text-sm">
@@ -534,8 +534,8 @@ function SearchableFilterDropdown({
                       count === 0
                         ? 'cursor-not-allowed text-muted-foreground'
                         : currentFilter === option
-                          ? 'bg-accent text-accent-foreground hover:bg-muted'
-                          : 'text-foreground hover:bg-muted'
+                          ? 'bg-accent font-medium text-accent-foreground underline underline-offset-2 hover:bg-accent'
+                          : 'text-foreground hover:bg-accent'
                     }`}
                   >
                     <span className="pl-6">
@@ -685,7 +685,7 @@ function getIndentClass(level: number): string {
  * time. The other grounds in this component are spoken for too: un-blue is
  * interactive, red bold is the budget phrase, gray-200 is the idle pill.
  */
-const MARK_CLASS = 'bg-un-blue-tint-50 text-un-blue-shade px-0.5 rounded'
+const MARK_CLASS = 'bg-accent text-un-blue-text underline decoration-un-blue/50 underline-offset-2 px-0.5 rounded'
 
 /**
  * Mark the search terms inside one already-rendered run of text.
@@ -1923,7 +1923,7 @@ export function ParagraphsSection({
           </div>
           <button
             onClick={() => handleTOCClick(item.id)}
-            className={`flex-1 rounded px-2 py-1 text-left text-sm transition-colors hover:bg-secondary ${
+            className={`flex-1 rounded px-2 py-1 text-left text-sm transition-colors hover:bg-accent ${
               isActive
                 ? 'bg-accent font-medium text-accent-foreground'
                 : 'text-foreground hover:text-foreground'
@@ -2043,7 +2043,7 @@ export function ParagraphsSection({
             actionVerbKey(correspondingMandate) === actionVerbFilter
           const verbClasses =
             hasEnhancedFilters && isFilteredVerb
-              ? 'text-un-blue-shade cursor-help bg-un-yellow-tint px-1 py-0.5 rounded font-semibold shadow-xs'
+              ? 'text-un-blue-text cursor-help bg-un-yellow-surface px-1 py-0.5 rounded font-semibold shadow-xs'
               : 'text-un-blue-text cursor-help'
 
           component = (
@@ -2656,7 +2656,7 @@ export function ParagraphsSection({
           {/* Floating TOC Button */}
           <button
             onClick={() => setIsMobileTOCOpen(!isMobileTOCOpen)}
-            className="fixed top-4 left-4 z-50 rounded-lg border border-border bg-white p-2 shadow-lg transition-colors hover:bg-muted"
+            className="fixed top-4 left-4 z-50 rounded-lg border border-border bg-white p-2 shadow-lg transition-colors hover:bg-accent"
             aria-label="Toggle table of contents"
           >
             <Menu className="h-4 w-4 text-foreground" />

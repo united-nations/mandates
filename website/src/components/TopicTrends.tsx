@@ -87,7 +87,7 @@ function scoreTier(z: number, isNew: boolean): PillTier {
 }
 
 const TIER_CLASS: Record<PillTier, string> = {
-  strong: 'border-un-blue bg-un-blue-text font-medium text-white hover:bg-un-blue-shade',
+  strong: 'border-un-blue bg-un-blue-text font-medium text-white hover:inset-ring-2 hover:inset-ring-white/70',
   mid: 'border-un-blue/40 bg-accent text-foreground hover:bg-un-blue/35',
   low: 'border-un-blue/25 bg-accent text-foreground hover:bg-accent',
   faint: 'border-border bg-muted text-muted-foreground hover:border-un-blue/40',

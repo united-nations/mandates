@@ -28,13 +28,14 @@ export function SiteHeader() {
       homeLabel="Mandate Registry — home"
       navItems={navItems}
       activeHref={pathname}
+      transparency="none"
       mobileMenuLabel="Open navigation menu"
       emblemPlacement="outboard"
       containerClassName="max-w-4xl px-8 sm:px-12 lg:max-w-6xl lg:px-16"
       badge={
         <Tooltip>
           <TooltipTrigger asChild>
-            <span className="cursor-help rounded-md bg-accent px-1.5 py-0.5 text-xs leading-none font-semibold whitespace-nowrap text-accent-foreground md:px-2 md:py-1 md:text-xs">
+            <span className="cursor-help rounded-md border border-un-blue-text/30 bg-un-blue-surface px-1.5 py-0.5 text-xs leading-none font-semibold whitespace-nowrap text-un-blue-text md:px-2 md:py-1 md:text-xs">
               Beta Version
             </span>
           </TooltipTrigger>

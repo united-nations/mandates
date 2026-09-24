@@ -53,7 +53,7 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
     const getVariantStyles = () => {
       switch (variant) {
         case 'border-bottom':
-          return 'border-0 border-b border-muted bg-transparent focus-visible:ring-0 focus-visible:border-un-blue rounded-none'
+          return 'border-0 border-b border-border bg-transparent focus-visible:ring-0 focus-visible:border-un-blue rounded-none'
         case 'minimal':
           return 'border-0 bg-transparent focus-visible:ring-0 focus-visible:border-un-blue'
         case 'bordered':

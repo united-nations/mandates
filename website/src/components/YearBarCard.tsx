@@ -59,7 +59,7 @@ function YearBars({
               <div
                 className={cn(
                   'w-full rounded-[1px] transition-colors',
-                  isSelected ? 'bg-un-blue/50' : 'bg-muted'
+                  isSelected ? 'bg-un-blue/50' : 'bg-gray-300'
                 )}
                 style={{ height: `${height}%` }}
               />
@@ -225,7 +225,7 @@ function YearSelector({
                 <div
                   className={cn(
                     'w-full rounded-[1px] transition-colors',
-                    isSelected ? 'bg-un-blue/50' : 'bg-muted'
+                    isSelected ? 'bg-un-blue/50' : 'bg-gray-300'
                   )}
                   style={{ height: `${height}%` }}
                 />

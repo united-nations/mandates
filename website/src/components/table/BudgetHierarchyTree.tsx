@@ -122,7 +122,7 @@ export function BudgetHierarchyTree({ hierarchy }: BudgetHierarchyTreeProps) {
               ? setFilter('foundational', 'true')
               : clearFilter('foundational')
           }
-          className="h-3.5 w-3.5 accent-un-blue-deep"
+          className="h-3.5 w-3.5 accent-un-blue-text"
         />
         <span>{FOUNDATIONAL_FILTER_LABEL}</span>
       </label>

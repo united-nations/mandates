@@ -88,7 +88,7 @@ export function ColumnPicker({
       <PopoverTrigger asChild>
         <button
           type="button"
-          className="inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-md bg-secondary px-2.5 text-sm font-medium whitespace-nowrap text-muted-foreground transition-colors hover:bg-muted hover:text-foreground data-[state=open]:bg-muted data-[state=open]:text-foreground"
+          className="inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-md border border-border bg-secondary px-2.5 text-sm font-medium whitespace-nowrap text-muted-foreground transition-colors hover:bg-muted hover:text-foreground data-[state=open]:bg-muted data-[state=open]:text-foreground"
         >
           <SlidersHorizontal className="h-3.5 w-3.5" />
           More columns and filters

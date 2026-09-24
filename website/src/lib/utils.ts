@@ -72,7 +72,7 @@ export function highlightSearchTerms(text: string, marker: SearchMarker): string
   for (const { start, end } of findMarkRanges(text, marker)) {
     out +=
       text.slice(at, start) +
-      '<mark class="bg-un-blue-tint-50 text-un-blue-shade px-0.5 rounded">' +
+      '<mark class="bg-accent text-un-blue-text underline decoration-un-blue/50 underline-offset-2 px-0.5 rounded">' +
       text.slice(start, end) +
       '</mark>'
     at = end

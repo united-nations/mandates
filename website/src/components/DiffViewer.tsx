@@ -164,7 +164,7 @@ function FocusToggle({
           ? 'bg-accent text-accent-foreground'
           : isFaded
             ? 'text-muted-foreground opacity-50'
-            : 'text-muted-foreground hover:bg-secondary hover:text-un-blue-text'
+            : 'text-muted-foreground hover:bg-accent hover:text-un-blue-text'
       }`}
       onClick={(e) => {
         e.stopPropagation()

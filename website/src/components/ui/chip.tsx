@@ -101,8 +101,7 @@ const DENSITY: Record<ChipDensity, string> = {
 
 const TONE: Record<ChipTone, string> = {
   neutral: 'border-border bg-muted text-muted-foreground',
-  emphasis:
-    'border-un-blue-deep/30 bg-un-blue-shade/5 font-medium text-un-blue-shade',
+  emphasis: 'border-un-blue-text/30 bg-accent font-medium text-un-blue-text',
   selected: 'border-un-blue bg-un-blue-text font-medium text-white',
   ghost: 'border-dashed border-border bg-transparent text-muted-foreground',
 }
@@ -110,8 +109,8 @@ const TONE: Record<ChipTone, string> = {
 /** Hover only exists for chips that actually do something. */
 const TONE_HOVER: Record<ChipTone, string> = {
   neutral: 'hover:border-un-blue hover:bg-secondary',
-  emphasis: 'hover:bg-un-blue-shade/10',
-  selected: 'hover:bg-un-blue-shade',
+  emphasis: 'hover:border-un-blue-text hover:underline',
+  selected: 'hover:inset-ring-2 hover:inset-ring-white/70',
   ghost: 'hover:border-un-blue',
 }
 
@@ -236,7 +235,7 @@ export function ChipDot({ color }: { color?: string }) {
       aria-hidden
       className={cn(
         'size-1.5 self-center rounded-full',
-        !color && 'bg-un-blue-shade'
+        !color && 'bg-un-blue-text'
       )}
       style={color ? { backgroundColor: color } : undefined}
     />

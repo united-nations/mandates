@@ -135,7 +135,7 @@ export function GenericSidebar<T>({
               {hasMoreItems && (
                 <button
                   onClick={() => setShowAll(!showAll)}
-                  className="mt-2 w-full text-left text-sm text-un-blue-text hover:text-un-blue-shade"
+                  className="mt-2 w-full text-left text-sm text-un-blue-text hover:underline"
                 >
                   {showAll
                     ? 'Show less'
