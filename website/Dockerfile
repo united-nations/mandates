@@ -7,7 +7,9 @@ RUN corepack enable && corepack prepare pnpm@10.28.1 --activate
 
 # 2. Install dependencies
 FROM base AS deps
-COPY website/package.json website/pnpm-lock.yaml ./
+COPY website/package.json website/pnpm-lock.yaml website/pnpm-workspace.yaml ./
+# Frozen installs need both the patch configuration and its referenced files.
+COPY website/patches/ ./patches/
 # No git and no repository in this image, so the prepare script (which points
 # git at the repo's shared hooks) cannot run; drop it from this stage's copy.
 RUN pnpm pkg delete scripts.prepare && pnpm install --frozen-lockfile
