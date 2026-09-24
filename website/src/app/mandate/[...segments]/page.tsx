@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 import { getMandateDisplayTitle, decodeUrlSegments } from '@/lib/utils'
 
@@ -13,6 +14,7 @@ import { getAllOrgans } from '@/lib/data/organs'
 import { getParagraphsBySymbol } from '@/lib/data/paragraphs'
 import { ParagraphsSection } from '@/components/ParagraphsSection'
 import { CitationCounts } from '@/components/CitationCounts'
+import { CitationCountsWithExpenditure } from '@/components/CitationCountsWithExpenditure'
 import {
   detailSectionListClassName,
   MandateDetailHeader,
@@ -74,7 +76,9 @@ export default async function MandatePage({
             series={series}
           />
         )}
-        <CitationCounts mandate={mandate} entities={entities} />
+        <Suspense fallback={<CitationCounts mandate={mandate} entities={entities} />}>
+          <CitationCountsWithExpenditure mandate={mandate} entities={entities} />
+        </Suspense>
         <MandateTopics
           subjects={mandate.subject_headings ?? []}
           related={related}

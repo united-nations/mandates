@@ -14,6 +14,7 @@ import { getAllOrgans } from '@/lib/data/organs'
 import { getParagraphsBySymbol } from '@/lib/data/paragraphs'
 import { ParagraphsSection } from '@/components/ParagraphsSection'
 import { CitationCounts } from '@/components/CitationCounts'
+import { CitationCountsWithExpenditure } from '@/components/CitationCountsWithExpenditure'
 import { detailSectionListClassName } from '@/components/MandateDetailUi'
 import { MandateMetadata } from '@/components/MandateMetadata'
 import { MandateSgReports } from '@/components/MandateSgReports'
@@ -66,7 +67,9 @@ export default async function ModalMandatePage({
             series={series}
           />
         )}
-        <CitationCounts mandate={mandate} entities={entities} />
+        <Suspense fallback={<CitationCounts mandate={mandate} entities={entities} />}>
+          <CitationCountsWithExpenditure mandate={mandate} entities={entities} />
+        </Suspense>
         <MandateTopics
           subjects={mandate.subject_headings ?? []}
           related={related}

@@ -186,6 +186,26 @@ export const explainerTexts = {
   },
 
   // Version matching: concise toggle guidance and the detailed methodology disclaimer.
+  entityExpenditure: {
+    heading: 'Entity expenditure',
+    loading: 'Loading expenditure…',
+    note: '2025 expenditure across reported funding sources (2024/25 for peacekeeping). Figures cover the entity, not this mandate, and repeat where an entity has several citation locations.',
+    period: 'Reporting period',
+    source: 'Source data',
+    open: 'Open expenditure in Open UN',
+    funding: {
+      regular_budget: 'Regular budget',
+      other_assessed: 'Other assessed',
+      extrabudgetary: 'Extrabudgetary',
+    },
+    unavailable: {
+      dco_scope: 'DCO expenditure unavailable: the Resident Coordinator System has a different financial scope.',
+      unsoh_period: 'Unavailable: UNSOH was established after the 2024/25 expenditure reporting period.',
+      not_matched: 'Entity expenditure unavailable: no matching amount is published in the selected data.',
+      ambiguous: 'Entity expenditure unavailable: the financial scope could not be matched unambiguously.',
+      source_unavailable: 'Expenditure data is temporarily unavailable.',
+    },
+  },
   focalPointGrouping: {
     unclassified: 'Other / Unclassified',
   },

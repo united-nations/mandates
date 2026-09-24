@@ -1,6 +1,8 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import type { EntityExpenditure, ExpenditureMap } from '@/lib/entity-expenditure'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { ChevronDown, ChevronUp, ExternalLink } from 'lucide-react'
 import {
   DetailFootnote,
@@ -42,68 +44,11 @@ import type { BudgetLocation, Entity, Mandate } from '@/types'
 interface CitationCountsProps {
   mandate: Mandate
   entities: Entity[]
+  expenditures?: ExpenditureMap
 }
 
 const explorerUrl = (key: string, value: string) =>
   `/secretariat?${key}=${encodeURIComponent(value)}`
-
-/**
- * Points at the /open repo's current preview deployment while its rework is
- * in progress, not the production open.un.org domain yet. Swap this one
- * constant once that rework ships to open.un.org — nothing else here should
- * need to change.
- */
-const OPEN_UN_ORG_BASE_URL = 'https://open-1uitcc2t6-eosg-dev.vercel.app'
-
-/**
- * The one genuine, derivable open.un.org deep link: a budget section on the
- * regular-budget treemap, `#regular-budget=section-{code}`. Entity- and
- * subprogramme-level ids on that site are build-generated slugs with no
- * formula back to our data (verified against their export script and JSON;
- * getting those would mean a runtime lookup against open.un.org's own public
- * data files) — so this stays section-only, and only for the ppb stream,
- * which is the only stream a `section` ever survives into on a BudgetLocation.
- */
-const openUnOrgSectionUrl = (section: string) =>
-  `${OPEN_UN_ORG_BASE_URL}/secretariat/programme-budget/#regular-budget=section-${encodeURIComponent(section)}`
-
-/**
- * BUDGET_COLUMN_STATUS — the money column is a placeholder for now; the
- * matching below is worked out and measured, only the plumbing is parked.
- *
- * WHAT GOES IN IT: the ENTITY's budget at this location — the figure the
- * budget documents themselves lead with — clearly labelled as that, and
- * never as what this mandate costs. A section's money is shared by every
- * mandate cited in it (that is what the count column beside it says), so an
- * unlabelled figure here reads as "this mandate has $X", which is false.
- *
- * WHERE IT COMES FROM: open's published tree, `budget-ppb-proposed-{year}.json`,
- * whose `nodes` array is flat with `tier` / `kind` / `code` / `label` /
- * `amount`. Editions line up exactly with our budget versions, and both are
- * the `proposed` measure — the same documents our citations are extracted
- * from: ppb2026 → proposed-2026 (A/80/6), ppb2027 → proposed-2027 (A/81/6).
- *
- * HOW TO MATCH (measured against our real citation rows, not assumed):
- *   · Section codes match exactly once "3 (Add.3)" is normalized to "3" —
- *     309/309 of our distinct (section, entity, subprogramme) rows.
- *   · Each section node carries open's own `entityStatus`. Where it is
- *     `single_owner` (28 of 41 sections) the section IS that entity's
- *     budget, so the section amount is the entity figure.
- *   · Where it is `multiple_entities` (8 sections), match the entity's own
- *     `tier: 'budget_unit'`, `kind: 'entity'` child by normalized label
- *     against our `entity_long`.
- *   · Those two together cover 56/104 (54%) of distinct (section, entity)
- *     pairs across the whole corpus. The misses are Section 1's many small
- *     offices and Section 3's Add.N political missions, where our entity
- *     granularity is finer than open's. Common citers (DESA, DGC, ECE,
- *     ECLAC, ESCAP) are all single_owner, so a typical page fares better.
- *   · Unmatched rows must render blank. Never fall back to a coarser
- *     figure to fill the cell — a section total shown in an entity column
- *     is a wrong number, not an approximate one.
- *
- * DELIVERY: a vendored snapshot in this repo plus a refresh script, not a
- * runtime fetch — open's current deployment URL is a preview that rotates.
- */
 
 interface CitationRow {
   key: string
@@ -115,7 +60,7 @@ interface CitationRow {
 
 const DEFAULT_SHOWN = 5
 
-export function CitationCounts({ mandate, entities }: CitationCountsProps) {
+export function CitationCounts({ mandate, entities, expenditures = {} }: CitationCountsProps) {
   const [showAll, setShowAll] = useState(false)
 
   const foundationalEntities = useMemo(
@@ -230,13 +175,13 @@ export function CitationCounts({ mandate, entities }: CitationCountsProps) {
             <span className={COL.subprogramme}>Subprogramme</span>
             <span className={COL.count}>Total mandates cited</span>
             <span className={COL.budget}>
-              Total budget <span className="text-muted-foreground">WIP</span>
+              {explainerTexts.entityExpenditure.heading}
             </span>
           </div>
 
           <ul className="divide-y divide-gray-100 border-y border-border">
             {shown.map((row) => (
-              <CitationRowItem key={row.key} row={row} />
+              <CitationRowItem key={row.key} row={row} expenditure={expenditures[row.entity]} />
             ))}
           </ul>
         </div>
@@ -262,6 +207,8 @@ export function CitationCounts({ mandate, entities }: CitationCountsProps) {
           Show fewer
         </button>
       )}
+
+      <p className="text-sm text-muted-foreground">{explainerTexts.entityExpenditure.note}</p>
 
       {/* The dot legend — the one explanation of the dot in the whole app —
           rendered only when a dot is actually on screen, which is never
@@ -294,15 +241,9 @@ const COL = {
   location: 'min-w-0 flex-1',
   title: 'min-w-0 flex-1',
   subprogramme: 'w-40 shrink-0',
-  budget: 'w-26 shrink-0 text-right whitespace-nowrap tabular-nums',
+  budget: 'w-28 shrink-0 text-right tabular-nums',
 } as const
 
-/**
- * Compact USD, the way budget figures are read rather than audited:
- * $1.2b / $235.7m / $84k. Unused until the budget column has data — see
- * BUDGET_COLUMN_STATUS — but kept beside the column it belongs to so the
- * notation is settled rather than invented later under time pressure.
- */
 export function formatBudgetUsd(amount: number): string {
   if (amount >= 1_000_000_000) return `$${(amount / 1_000_000_000).toFixed(1)}b`
   if (amount >= 1_000_000) return `$${(amount / 1_000_000).toFixed(1)}m`
@@ -310,7 +251,7 @@ export function formatBudgetUsd(amount: number): string {
   return `$${amount}`
 }
 
-function CitationRowItem({ row }: { row: CitationRow }) {
+function CitationRowItem({ row, expenditure }: { row: CitationRow; expenditure?: EntityExpenditure }) {
   const { entity, entityLong, foundational, location } = row
   const marked = MARK_FOUNDATIONAL_CHIPS_ON_DETAIL_PAGE && foundational
 
@@ -319,14 +260,6 @@ function CitationRowItem({ row }: { row: CitationRow }) {
     ? subprogrammeLabel(location.subprogramme)
     : null
   const count = location?.total_citations_at_location ?? null
-  // Only the ppb stream ever carries a section (pko/plan_outline citations
-  // never reach budget_locations at all — see getMandateCitations), so this
-  // check is mostly documentation of intent rather than a live branch today.
-  const outlinkHref =
-    location?.stream === 'ppb' && location.section
-      ? openUnOrgSectionUrl(location.section)
-      : null
-
   // The full path, for the row's tooltip: the columns truncate, and at sheet
   // width the section title is the first thing to lose its tail.
   const fullLabel = location
@@ -380,29 +313,53 @@ function CitationRowItem({ row }: { row: CitationRow }) {
         >
           {count ?? ''}
         </span>
-        {/* PLACEHOLDER — the entity's budget at this location. Holds the
-            column's width so the layout is settled before the figures land;
-            see BUDGET_COLUMN_STATUS for what fills it and how it matches. */}
         <span className={cn(COL.budget, 'inline-flex items-baseline justify-end gap-2')}>
-          <span className="text-muted-foreground" title="Budget figures are not wired up yet">
-            —
-          </span>
+          <ExpenditureAmount expenditure={expenditure} />
           <span className="w-4 shrink-0 self-center">
-            {outlinkHref && (
+            {expenditure?.status === 'matched' && (
               <a
-                href={outlinkHref}
+                href={expenditure.openUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                title="Open this budget section on open.un.org"
+                title={explainerTexts.entityExpenditure.open}
                 className="text-muted-foreground hover:text-un-blue-text"
               >
                 <ExternalLink aria-hidden className="h-3.5 w-3.5" />
-                <span className="sr-only">Open on open.un.org</span>
+                <span className="sr-only">{explainerTexts.entityExpenditure.open}</span>
               </a>
             )}
           </span>
         </span>
       </div>
     </li>
+  )
+}
+
+
+function ExpenditureAmount({ expenditure }: { expenditure?: EntityExpenditure }) {
+  const text = explainerTexts.entityExpenditure
+  if (!expenditure || expenditure.status === 'unavailable') {
+    return <span className="text-muted-foreground" title={expenditure?.status === 'unavailable' ? text.unavailable[expenditure.reason] : text.loading}>–</span>
+  }
+  const sources = [...new Map(expenditure.sources.filter(s => s.url).map(s => [s.url, s])).values()]
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <button type="button" className="rounded-sm text-foreground underline decoration-dotted underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+          {formatBudgetUsd(expenditure.amount)}
+        </button>
+      </PopoverTrigger>
+      <PopoverContent align="end" className="w-80 max-w-[calc(100vw-2rem)] whitespace-normal text-sm" aria-label={text.heading}>
+        <p className="font-medium">{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(expenditure.amount)}</p>
+        <p>{text.period}: {expenditure.period}</p>
+        {Object.entries(expenditure.funding).map(([key, amount]) => (
+          <p key={key}>{text.funding[key as keyof typeof text.funding]}: {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(amount)}</p>
+        ))}
+        {sources.map(source => (
+          <a key={source.url} className="block underline" href={source.url} target="_blank" rel="noopener noreferrer">{source.symbol ?? text.source}</a>
+        ))}
+        <a className="block underline" href={expenditure.datasetUrl} target="_blank" rel="noopener noreferrer">{text.source}</a>
+      </PopoverContent>
+    </Popover>
   )
 }
