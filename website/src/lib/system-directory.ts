@@ -7,6 +7,7 @@ import type { UnSystemBody, UnSystemData, UnSystemEntity } from '@/types'
 
 /** Display groups, not a replacement for either source's classification. */
 export const SYSTEM_DIRECTORY_GROUPS = [
+  { id: 'fund-programme', label: 'Funds and programmes', depth: 0 },
   { id: 'secretariat', label: 'UN Secretariat', depth: 0 },
   { id: 'departments', label: 'Departments and offices', depth: 1 },
   { id: 'offices', label: 'Offices away from headquarters', depth: 1 },
@@ -16,12 +17,11 @@ export const SYSTEM_DIRECTORY_GROUPS = [
     depth: 1,
   },
   { id: 'commissions', label: 'Regional commissions', depth: 1 },
-  { id: 'fund-programme', label: 'Funds and programmes', depth: 0 },
-  { id: 'research', label: 'Research and training', depth: 0 },
-  { id: 'other-entity', label: 'Other UN entities', depth: 0 },
   { id: 'specialized-agency', label: 'Specialized agencies', depth: 0 },
+  { id: 'other-entity', label: 'Other UN entities', depth: 0 },
   { id: 'related-organization', label: 'Related organizations', depth: 0 },
   { id: 'conventions', label: 'Convention secretariats', depth: 1 },
+  { id: 'research', label: 'Research and training', depth: 0 },
   { id: 'joint-hosted', label: 'Joint and hosted bodies', depth: 0 },
   {
     id: 'unclassified',

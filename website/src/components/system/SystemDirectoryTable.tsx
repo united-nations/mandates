@@ -30,6 +30,9 @@ const COLUMNS = [
   'Interoperability',
 ]
 
+const DETAIL_CELL =
+  'sticky right-0 z-10 border-l border-border shadow-[-8px_0_8px_-8px_rgba(0,0,0,0.18)]'
+
 function Available({ label }: { label: string }) {
   return (
     <span className="inline-flex text-un-blue-text" title={label}>
@@ -102,6 +105,7 @@ export function SystemDirectoryTable({
             {COLUMNS.slice(1).map((column) => (
               <col key={column} />
             ))}
+            <col className="w-10" />
           </colgroup>
           <TableHeader>
             <TableRow className="hover:bg-transparent">
@@ -114,13 +118,19 @@ export function SystemDirectoryTable({
                   {column}
                 </TableHead>
               ))}
+              <TableHead
+                scope="col"
+                className={`${DETAIL_CELL} bg-white px-1.5 text-center`}
+              >
+                <span className="sr-only">Details</span>
+              </TableHead>
             </TableRow>
           </TableHeader>
           {groups.length === 0 ? (
             <TableBody>
               <TableRow>
                 <TableCell
-                  colSpan={COLUMNS.length}
+                  colSpan={COLUMNS.length + 1}
                   className="py-10 text-center text-muted-foreground"
                 >
                   No matching entities.
@@ -135,8 +145,8 @@ export function SystemDirectoryTable({
                   <TableRow className="bg-muted/60 hover:bg-muted/60">
                     <th
                       scope="rowgroup"
-                      colSpan={COLUMNS.length}
-                      className={`py-2 text-left text-sm font-semibold ${group.depth ? 'pr-3 pl-7' : 'px-3'}`}
+                      colSpan={COLUMNS.length + 1}
+                      className={`py-1 text-left text-sm font-semibold ${group.depth ? 'pr-3 pl-7' : 'px-3'}`}
                     >
                       {group.label}
                     </th>
@@ -156,23 +166,13 @@ export function SystemDirectoryTable({
                   >
                     <th
                       scope="row"
-                      className={`sticky left-0 z-10 bg-white py-2 pr-3 text-left text-sm group-hover:bg-muted ${group.depth ? 'pl-7' : 'pl-3'}`}
+                      className={`sticky left-0 z-10 bg-white py-1 pr-3 text-left text-sm group-hover:bg-muted ${group.depth ? 'pl-7' : 'pl-3'}`}
                     >
-                      <button
-                        type="button"
-                        aria-label={`View ${entity.code} details`}
-                        aria-haspopup="dialog"
-                        title={entity.name ?? entity.code}
-                        className="flex w-full items-center justify-between gap-2 rounded py-1 text-left font-semibold text-foreground outline-offset-4 focus-visible:outline-2 focus-visible:outline-un-blue-text"
-                      >
-                        <span>{entity.code}</span>
-                        <ChevronRight
-                          aria-hidden
-                          className="h-3.5 w-3.5 shrink-0 text-muted-foreground"
-                        />
-                      </button>
+                      <span title={entity.name ?? entity.code}>
+                        {entity.code}
+                      </span>
                     </th>
-                    <TableCell className="px-3 py-2 text-center">
+                    <TableCell className="px-3 py-1 text-center">
                       {entity.governingBodies !== null ? (
                         <span title="Number of listed governing bodies">
                           {entity.governingBodies.length}
@@ -181,7 +181,7 @@ export function SystemDirectoryTable({
                         <span className="sr-only">Not yet populated</span>
                       )}
                     </TableCell>
-                    <TableCell className="px-3 py-2 text-center">
+                    <TableCell className="px-3 py-1 text-center">
                       {focalPointsAvailable &&
                       entity.designations.length > 0 ? (
                         <Available
@@ -195,7 +195,7 @@ export function SystemDirectoryTable({
                         </span>
                       )}
                     </TableCell>
-                    <TableCell className="px-3 py-2 text-center">
+                    <TableCell className="px-3 py-1 text-center">
                       {documentRegistryLinks(entity).length > 0 ? (
                         <Available
                           label={documentRegistryLinks(entity)
@@ -207,10 +207,22 @@ export function SystemDirectoryTable({
                       )}
                     </TableCell>
                     {COLUMNS.slice(4).map((column) => (
-                      <TableCell key={column} className="px-3 py-2">
+                      <TableCell key={column} className="px-3 py-1">
                         <span className="sr-only">Not yet populated</span>
                       </TableCell>
                     ))}
+                    <TableCell
+                      className={`${DETAIL_CELL} bg-white px-1.5 py-1 text-center group-hover:bg-muted`}
+                    >
+                      <button
+                        type="button"
+                        aria-label={`View ${entity.code} details`}
+                        aria-haspopup="dialog"
+                        className="inline-flex items-center rounded border border-border bg-white p-1 text-muted-foreground transition-colors group-hover:border-un-blue group-hover:text-un-blue-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-un-blue-text"
+                      >
+                        <ChevronRight aria-hidden className="h-3.5 w-3.5" />
+                      </button>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

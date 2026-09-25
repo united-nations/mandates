@@ -38,17 +38,17 @@ unchanged in the source dataset.
 
 | Group | Rows |
 | --- | ---: |
+| Funds and programmes | 8 |
 | UN Secretariat parent | 1 |
 | ↳ Departments and offices (including UNODC) | 23 |
 | ↳ Offices away from headquarters: UNOG, UNON, UNOV | 3 |
 | ↳ Special advisers, representatives and envoys | 6 |
 | ↳ Regional commissions | 5 |
-| Funds and programmes | 8 |
-| Research and training | 6 |
-| Other UN entities | 7 |
 | Specialized agencies | 15 |
+| Other UN entities | 7 |
 | Related organizations | 8 |
 | ↳ Convention secretariats: UNFCCC, UNCCD | 2 |
+| Research and training | 6 |
 | Joint and hosted bodies (including UNAIDS) | 4 |
 
 Research and training contains UNITAR, UNU, UNSSC, UNIDIR, UNICRI and UNRISD.
