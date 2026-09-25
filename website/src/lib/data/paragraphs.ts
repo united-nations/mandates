@@ -18,6 +18,7 @@
  */
 
 import { cache } from 'react'
+import { synthesizeDlAnnotations } from '../fulltext-annotations'
 import { hasFulltextQualityWarning } from '../fulltext-quality'
 import { queryMany } from '../db/query'
 import type { Paragraph } from '@/types'
@@ -28,6 +29,8 @@ import { parseBracketPart, isolateBracketPart } from '../paragraph-presentation'
 // ============================================================================
 
 interface ParagraphRow {
+  note_references: Paragraph['note_references'] | null
+  note_ids: number[] | null
   extraction_issues: unknown
   id: string
   position: number
@@ -52,6 +55,7 @@ interface ParagraphRow {
   /**
    * Digital Library deterministic scalar action annotations.
    */
+  action_inherited?: boolean | null
   lead_verb?: string | null
   action_verb?: string | null
   action_verb_normalized?: string | null
@@ -61,115 +65,13 @@ interface ParagraphRow {
   assignee_class?: string | null
 }
 
-type ParagraphMandate = NonNullable<Paragraph['mandates']>[number]
-
-/**
- * Delimiters of the highlight markup grammar consumed by ParagraphsSection:
- * `*verb*`, `<<assignee>>`, `{{mentioned entity}}`, `[[deliverable]]`. A
- * paragraph whose raw text already contains any of them cannot be marked up
- * unambiguously (the renderer's non-greedy regexes would pair the wrong
- * characters), so it is left un-highlighted. Affects ~49 of 508,923 DL rows.
- */
-const HIGHLIGHT_DELIMITERS = ['*', '<<', '>>', '{{', '}}', '[[', ']]']
-
-function containsHighlightDelimiter(text: string): boolean {
-  return HIGHLIGHT_DELIMITERS.some((d) => text.includes(d))
-}
-
-/**
- * Rebuild the `text_with_highlights` markup and the `mandates` object for a
- * Digital Library paragraph from its scalar annotation columns.
- *
- * The DL layer stores no character offsets, but the spans are recoverable:
- * `lead_verb` is by construction the literal opening span of `text`
- * (508,718/508,923 = 99.96% of annotated rows satisfy `text.startsWith`), and
- * `assignee` is a literal substring (114,318/114,335 = 99.99% of rows that have
- * both). Both are verified per row before use — a mismatch drops that span
- * rather than mis-wrapping it.
- *
- * `mandates[0].action_verb` is deliberately the raw `lead_verb` (not the
- * canonical `action_verb`), because ParagraphsSection resolves the verb tooltip
- * by string-equality against the text it found between the asterisks.
- *
- * Returns `null` when the row carries no canonical verb annotation at all.
- * `textWithHighlights` is `undefined` when no span could be wrapped (e.g.
- * `action_inherited` rows, which have an `action_verb` but no `lead_verb`);
- * such rows still get a `mandates` entry so the filters can see them.
- */
-function synthesizeDlAnnotations(
-  row: ParagraphRow
-): Pick<Paragraph, 'textWithHighlights' | 'mandates'> | null {
-  const canonicalVerb = row.action_verb ?? null
-  if (!canonicalVerb) return null
-
-  const text = row.text
-  const leadVerb = row.lead_verb ?? null
-  const assignee = row.assignee ?? null
-
-  // Offsets first, markup second: inserting a delimiter shifts every later
-  // offset, so both spans are located against the pristine text and then
-  // spliced in descending order.
-  const canMarkUp = !containsHighlightDelimiter(text)
-
-  const verbStart = canMarkUp && leadVerb && text.startsWith(leadVerb) ? 0 : -1
-  const verbEnd = verbStart === 0 && leadVerb ? leadVerb.length : -1
-
-  let assigneeStart = -1
-  if (canMarkUp && assignee) {
-    // Search past the verb span so the two can never overlap.
-    const from = verbEnd > 0 ? verbEnd : 0
-    assigneeStart = text.indexOf(assignee, from)
-  }
-  const assigneeEnd =
-    assigneeStart >= 0 && assignee ? assigneeStart + assignee.length : -1
-
-  let marked = text
-  if (assigneeStart >= 0) {
-    marked =
-      marked.slice(0, assigneeStart) +
-      `<<${marked.slice(assigneeStart, assigneeEnd)}>>` +
-      marked.slice(assigneeEnd)
-  }
-  if (verbStart === 0) {
-    marked = `*${marked.slice(0, verbEnd)}*` + marked.slice(verbEnd)
-  }
-
-  const wrappedVerb = verbStart === 0 && leadVerb ? leadVerb : null
-  const wrappedAssignee =
-    assigneeStart >= 0 && assignee
-      ? text.slice(assigneeStart, assigneeEnd)
-      : null
-
-  const mandate: ParagraphMandate = {
-    // Must equal what sits between the asterisks for the tooltip lookup to hit.
-    action_verb: wrappedVerb ?? canonicalVerb,
-    action_verb_normalized: row.action_verb_normalized ?? undefined,
-    action_verb_type: row.action_category ?? 'unclear',
-    assignees: wrappedAssignee
-      ? [
-          {
-            assignee: wrappedAssignee,
-            assignee_normalized: row.assignee_head_noun ?? wrappedAssignee,
-            assignee_type: row.assignee_class ?? 'unclear',
-          },
-        ]
-      : [],
-    // The Digital Library layer has no columns for either.
-    mentioned_entities: [],
-    deliverables: [],
-  }
-
-  return {
-    textWithHighlights: marked === text ? undefined : marked,
-    mandates: [mandate],
-  }
-}
-
 function mapRow(row: ParagraphRow): Paragraph {
   return {
     extraction_quality_warning: hasFulltextQualityWarning(row.extraction_issues),
     id: row.id,
     position: row.position,
+    note_ids: row.note_ids ?? [],
+    note_references: row.note_references ?? [],
     text: row.text,
     type: row.type,
     heading_level: row.heading_level,
@@ -219,6 +121,8 @@ const getDirectParagraphsBySymbol = cache(
       SELECT
         dp.id,
         dp.position,
+        dp.note_ids,
+        dp.note_references,
         dp.text,
         dp.type,
         dp.heading_level,
@@ -241,6 +145,7 @@ const getDirectParagraphsBySymbol = cache(
         dp.subtype,
         parses.parser_version,
         parses.issues AS extraction_issues,
+        dp.action_inherited,
         dp.lead_verb,
         dp.action_verb,
         dp.action_verb_normalized,

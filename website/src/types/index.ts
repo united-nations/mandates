@@ -2,6 +2,10 @@ import type { DocumentTextMetrics } from '@/lib/text-analytics'
 
 // Core data types based on the DB schema (mandates.paragraphs)
 export interface Paragraph {
+  /** Source footnote boundaries measured in UTF-16 code units into text. */
+  note_references?: { note_id: number; offset: number }[]
+  note_ids?: number[]
+  footnotes?: Paragraph[]
   /** Document-level quality flag; internal issue details stay on the server. */
   extraction_quality_warning?: boolean
   subtype?: string

@@ -43,3 +43,6 @@ export const SHOW_MANDATED_SG_REPORTS: boolean = true
 
 /** Group the focal point directory by the entity classification from its source. */
 export const SHOW_ENTITY_CLASSIFICATION: boolean = true
+
+/** Paragraph assignee/entity highlights and filter; held back pending better extraction. */
+export const SHOW_PARAGRAPH_ENTITIES: boolean = false

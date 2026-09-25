@@ -32,8 +32,8 @@ symbol. A source link is a reference, not evidence that extraction succeeded.
 The sidebar uses the native scrollbar and removes the page's reserved scrollbar
 gutter while open, restoring it on close.
 
-Existing paragraph structure, deterministic action/assignee annotations,
-footnotes, table handling and bracket-part boundaries remain unchanged.
+Paragraph structure, table handling and bracket-part boundaries are preserved.
+Annotation corrections and footnote presentation are described below.
 
 ## Metrics
 
@@ -69,3 +69,48 @@ not samples: paragraph output, word counts and similarity must have zero losses
 or unexplained changes. Keep the quality-warning and paragraph-boundary tests.
 Typecheck the shared route/component contracts and verify the generic empty
 state, warning and PDF link against the existing local server.
+
+## Annotation and footnote presentation (24 September 2026)
+
+`src/lib/data/paragraphs.ts` reads scalar classifications and `note_ids` from
+Digital Library. `src/lib/fulltext-annotations.ts` builds highlight spans from
+`action_verb`, not `lead_verb`: the latter is a structural first-word guess and
+can be “We” or a gerund subject. Inherited actions remain filterable but are not
+highlighted. Operative gerunds and bare “We will/shall” annotations are omitted;
+preambular participles remain eligible. The reader removes selected contextual
+qualifiers from assignees and rejects abstract-object heads (cooperation,
+efforts, contribution, engagement, implementation, participation, support).
+These are conservative reader corrections, not a database reparse.
+
+The upstream parser lives in the sibling `documents.unfck.org` repository:
+
+- `data-pipeline/pipeline/resolutions/sources/fulltext_extract_raw.py`: source
+  paragraphs and Word footnote references.
+- `data-pipeline/pipeline/resolutions/parsing/fulltext_parse.py`: semantic
+  structure, first-word `lead_verb` heuristic, note rows, chapeau inheritance.
+- `data-pipeline/pipeline/resolutions/parsing/fulltext_verbs.py`: hardcoded
+  `LEXICON`, modifier lists, `ADDRESSEE_RULES`, `_ARTICLE_PREFIXES`, surface
+  matching and `_extract_assignee`. The latter takes the text before “to”;
+  class assignment uses substring keywords. It is not general-purpose NER.
+
+`src/lib/fulltext-footnotes.ts` associates notes with paragraphs using explicit
+source IDs, including repeated references. The reading view shows their full
+text below the referencing paragraph and searches that text. Notes without a
+supported reference remain visible instead of being discarded. IDs establish
+paragraph ownership. `note_references` stores `{note_id, offset}` boundaries in
+UTF-16 units, recovered from the archived Word source and aligned with the
+semantic paragraph. The renderer inserts clickable superscripts at those
+boundaries, preserves annotation/search spans, splits external links around
+markers to avoid nested anchors, and gives each note a return link. Component
+instance IDs prevent collisions between the standalone view and sidebar.
+
+The documents repository owns migration `009_inline_footnote_references.sql`,
+raw-v4 / sem-v6 extraction, and the source-verified
+`pipeline/maintenance/fulltext_note_positions.py` backfill. Apply the additive
+migration before deploying the reader. The backfill changes annotation metadata
+only: text, paragraph IDs, parse timestamps and metric generations stay intact.
+Missing, ambiguous or changed source text produces no guessed inline marker;
+its existing paragraph-level note remains available below the paragraph.
+
+TOC labels use one-line CSS ellipsis with the complete title available on hover.
+Paragraph numbers use variable-width rectangular badges with tabular digits.

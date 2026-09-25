@@ -1,6 +1,7 @@
 'use client'
 
 import React, {
+  useId,
   useState,
   useMemo,
   useEffect,
@@ -25,6 +26,8 @@ import { DetailSectionHeading } from '@/components/MandateDetailUi'
 import { SearchSyntaxHelp } from '@/components/SearchSyntaxHelp'
 
 import { cn } from '@/lib/utils'
+import { SHOW_PARAGRAPH_ENTITIES } from '@/lib/feature-flags'
+import { attachFootnotes, plainTextOffsets } from '@/lib/fulltext-footnotes'
 import { explainerTexts } from '@/lib/en_text_contents'
 import {
   compileSearchMarker,
@@ -108,7 +111,9 @@ interface TOCItem {
 const filterPillTone = (currentFilter: string) =>
   cn(
     'bg-transparent',
-    currentFilter !== 'all' ? 'font-medium text-un-blue-text' : 'text-muted-foreground'
+    currentFilter !== 'all'
+      ? 'font-medium text-un-blue-text'
+      : 'text-muted-foreground'
   )
 
 /** Popover panel, anchored under the pill whatever the pill's height is. */
@@ -177,7 +182,9 @@ function FilterDropdown({
             }`}
           >
             <span className="pl-3">All paragraphs</span>
-            <span className="pr-3 text-muted-foreground">{filteredTotalCount}</span>
+            <span className="pr-3 text-muted-foreground">
+              {filteredTotalCount}
+            </span>
           </button>
 
           {/* With items option */}
@@ -191,7 +198,9 @@ function FilterDropdown({
               }`}
             >
               <span className="pl-3">{withItemsLabel}</span>
-              <span className="pr-3 text-muted-foreground">{withItemsCount}</span>
+              <span className="pr-3 text-muted-foreground">
+                {withItemsCount}
+              </span>
             </button>
           )}
 
@@ -401,7 +410,9 @@ function SearchableFilterDropdown({
               }`}
             >
               <span className="pl-3">All paragraphs</span>
-              <span className="pr-3 text-muted-foreground">{filteredTotalCount}</span>
+              <span className="pr-3 text-muted-foreground">
+                {filteredTotalCount}
+              </span>
             </button>
 
             {/* With items option */}
@@ -415,7 +426,9 @@ function SearchableFilterDropdown({
                 }`}
               >
                 <span className="pl-3">{withItemsLabel}</span>
-                <span className="pr-3 text-muted-foreground">{withItemsCount}</span>
+                <span className="pr-3 text-muted-foreground">
+                  {withItemsCount}
+                </span>
               </button>
             )}
 
@@ -685,7 +698,8 @@ function getIndentClass(level: number): string {
  * time. The other grounds in this component are spoken for too: un-blue is
  * interactive, red bold is the budget phrase, gray-200 is the idle pill.
  */
-const MARK_CLASS = 'bg-accent text-un-blue-text underline decoration-un-blue/50 underline-offset-2 px-0.5 rounded'
+const MARK_CLASS =
+  'bg-accent text-un-blue-text underline decoration-un-blue/50 underline-offset-2 px-0.5 rounded'
 
 /**
  * Mark the search terms inside one already-rendered run of text.
@@ -729,7 +743,7 @@ function markSearchHits(
 }
 
 export function ParagraphsSection({
-  paragraphs: allParagraphs,
+  paragraphs: sourceParagraphs,
   sourceUrl,
   documentSymbol,
   isLoading,
@@ -737,6 +751,11 @@ export function ParagraphsSection({
   compact = false,
   entities,
 }: ParagraphsSectionProps) {
+  const footnoteScope = useId()
+  const allParagraphs = useMemo(
+    () => attachFootnotes(sourceParagraphs),
+    [sourceParagraphs]
+  )
   const entityLongMap = useMemo(
     () =>
       Object.fromEntries(
@@ -1246,7 +1265,10 @@ export function ParagraphsSection({
   // renders, plus the query-blind view the heading count is computed from.
   const { paragraphs, headingCountElements } = useMemo(() => {
     if (!allParagraphs)
-      return { paragraphs: allParagraphs, headingCountElements: allParagraphs }
+      return {
+        paragraphs: allParagraphs,
+        headingCountElements: allParagraphs,
+      }
 
     // Helper function to check if a paragraph matches the current filters
     const paragraphMatchesFilters = (paragraph: Paragraph): boolean => {
@@ -1465,7 +1487,13 @@ export function ParagraphsSection({
       if (
         !ignoreQuery &&
         hasQuery &&
-        !matchesSearchTerms(paragraph.text, searchTerms)
+        !matchesSearchTerms(
+          [
+            paragraph.text,
+            ...(paragraph.footnotes ?? []).map((note) => note.text),
+          ].join(' '),
+          searchTerms
+        )
       ) {
         return false
       }
@@ -1923,18 +1951,15 @@ export function ParagraphsSection({
           </div>
           <button
             onClick={() => handleTOCClick(item.id)}
-            className={`flex-1 rounded px-2 py-1 text-left text-sm transition-colors hover:bg-accent ${
+            title={item.text}
+            className={`min-w-0 flex-1 rounded px-2 py-1 text-left text-sm transition-colors hover:bg-accent ${
               isActive
                 ? 'bg-accent font-medium text-accent-foreground'
                 : 'text-foreground hover:text-foreground'
             } ${isTopLevel ? 'font-medium' : ''}`}
             style={{ marginLeft: `${(item.level - 1) * 12}px` }}
           >
-            <span className="line-clamp-2 leading-tight">
-              {item.text.length > 35
-                ? `${item.text.substring(0, 35)}...`
-                : item.text}
-            </span>
+            <span className="block truncate leading-tight">{item.text}</span>
           </button>
         </div>
 
@@ -1946,6 +1971,51 @@ export function ParagraphsSection({
       </div>
     )
   }
+
+  const footnoteId = (paragraph: Paragraph, noteId: number) =>
+    `${footnoteScope}-note-${paragraph.id ?? paragraph.position ?? allParagraphs.indexOf(paragraph)}-${noteId}`
+
+  const renderFootnotes = (paragraph: Paragraph) =>
+    paragraph.footnotes?.length ? (
+      <div
+        className="mt-2 space-y-1 border-t border-border pt-2 text-xs text-muted-foreground"
+        role="note"
+        aria-label="Footnotes"
+      >
+        {paragraph.footnotes.map((note, index) => {
+          const noteId = note.note_ids?.[0]
+          const reference = paragraph.note_references?.find(
+            (ref) => ref.note_id === noteId
+          )
+          const target =
+            noteId == null ? undefined : footnoteId(paragraph, noteId)
+          return (
+            <p key={note.id ?? index} id={target} className="scroll-mt-4">
+              <sup className="mr-1 font-medium">
+                {reference ? (
+                  <a
+                    href={`#${target}-ref-${reference.offset}`}
+                    aria-label={`Back to footnote ${noteId} reference`}
+                    className="text-un-blue-text hover:underline"
+                  >
+                    {noteId}
+                  </a>
+                ) : (
+                  note.note_ids?.join(', ')
+                )}
+              </sup>
+              {renderProcessedText(
+                note.text,
+                note.links,
+                undefined,
+                undefined,
+                searchMarker
+              )}
+            </p>
+          )
+        })}
+      </div>
+    ) : null
 
   // Parse a paragraph into React elements: annotation spans with their
   // tooltips, the budget phrase, and links out to cited documents.
@@ -1967,13 +2037,84 @@ export function ParagraphsSection({
     mandates: ParagraphMandate[] | undefined,
     // Null where a call site must not mark. Required rather than optional so
     // that adding a call site is a decision about marking, not an omission.
-    marker: SearchMarker | null
+    marker: SearchMarker | null,
+    paragraph?: Paragraph
   ) => {
     // The string every span offset below is positioned against: the annotated
     // form when the extraction produced one, the paragraph's own text
     // otherwise. Not what the reader sees — the delimiters are dropped as each
     // span is built.
     const spanSource = textWithHighlights || text
+    const offsets = paragraph?.note_references?.length
+      ? plainTextOffsets(text, spanSource)
+      : null
+    const references = (paragraph?.note_references ?? [])
+      .filter(
+        (ref) =>
+          Number.isInteger(ref.offset) &&
+          ref.offset >= 0 &&
+          ref.offset <= text.length &&
+          paragraph?.footnotes?.some((note) =>
+            note.note_ids?.includes(ref.note_id)
+          )
+      )
+      .sort((a, b) => a.offset - b.offset || a.note_id - b.note_id)
+    // Split links around markers so footnote anchors are never nested in links.
+    const inlineText = (
+      value: string,
+      sourceStart: number,
+      wrap: (children: React.ReactNode, key: string) => React.ReactNode = (
+        children,
+        key
+      ) => <React.Fragment key={key}>{children}</React.Fragment>
+    ): React.ReactNode => {
+      const start = offsets?.[sourceStart]
+      if (start == null || !paragraph || !references.length)
+        return wrap(markSearchHits(value, marker), `text-${sourceStart}`)
+      const parts: React.ReactNode[] = []
+      let from = 0
+      for (const ref of references) {
+        if (ref.offset <= start && !(start === 0 && ref.offset === 0)) continue
+        if (ref.offset > start + value.length) continue
+        const at = ref.offset - start
+        if (at > from)
+          parts.push(
+            wrap(
+              markSearchHits(value.slice(from, at), marker),
+              `text-${sourceStart}-${from}`
+            )
+          )
+        const target = footnoteId(paragraph, ref.note_id)
+        const note = paragraph.footnotes?.find((note) =>
+          note.note_ids?.includes(ref.note_id)
+        )
+        parts.push(
+          <sup
+            key={`note-${ref.note_id}-${ref.offset}`}
+            className="ml-0.5 text-[0.7em] leading-none"
+          >
+            <a
+              id={`${target}-ref-${ref.offset}`}
+              href={`#${target}`}
+              aria-label={`Footnote ${ref.note_id}`}
+              title={note?.text}
+              className="scroll-mt-4 font-medium text-un-blue-text hover:underline focus-visible:outline-2"
+            >
+              {ref.note_id}
+            </a>
+          </sup>
+        )
+        from = at
+      }
+      if (from < value.length)
+        parts.push(
+          wrap(
+            markSearchHits(value.slice(from), marker),
+            `text-${sourceStart}-${from}`
+          )
+        )
+      return <>{parts}</>
+    }
 
     // Check if any assignee/deliverable/action verb filters are active for enhanced highlighting
     const hasEnhancedFilters =
@@ -2017,7 +2158,9 @@ export function ParagraphsSection({
         const matchText = type === 'highlight' ? match[0] : match[1]
         // What this span shows. `matchText` itself stays a string — the
         // mandate and deliverable lookups below compare against it.
-        const matchLabel = markSearchHits(matchText, marker)
+        const delimiterLength =
+          type === 'highlight' ? 0 : type === 'verb' ? 1 : 2
+        const matchLabel = inlineText(matchText, match.index + delimiterLength)
         let component: React.ReactNode
 
         if (type === 'highlight') {
@@ -2064,6 +2207,13 @@ export function ParagraphsSection({
                 </div>
               </TooltipContent>
             </Tooltip>
+          )
+        } else if (
+          !SHOW_PARAGRAPH_ENTITIES &&
+          (type === 'assignee' || type === 'mentioned_entity')
+        ) {
+          component = (
+            <React.Fragment key={segmentKey++}>{matchLabel}</React.Fragment>
           )
         } else if (type === 'assignee' || type === 'mentioned_entity') {
           // Search assignees and mentioned_entities; last match wins (preserves
@@ -2209,17 +2359,17 @@ export function ParagraphsSection({
           replacements.push({
             start: idx,
             end: idx + linkText.length,
-            component: (
+            component: inlineText(linkText, idx, (children, key) => (
               <a
-                key={`link-${segmentKey++}`}
+                key={`link-${key}`}
                 href={url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-medium text-un-blue-text hover:underline"
               >
-                {linkText}
+                {children}
               </a>
-            ),
+            )),
             text: linkText,
           })
           from = idx + linkText.length
@@ -2249,7 +2399,7 @@ export function ParagraphsSection({
         if (textBefore) {
           segments.push(
             <span key={`text-${segmentKey++}`}>
-              {markSearchHits(textBefore, marker)}
+              {inlineText(textBefore, lastIndex)}
             </span>
           )
         }
@@ -2266,7 +2416,7 @@ export function ParagraphsSection({
       if (remainingText) {
         segments.push(
           <span key={`text-${segmentKey++}`}>
-            {markSearchHits(remainingText, marker)}
+            {inlineText(remainingText, lastIndex)}
           </span>
         )
       }
@@ -2317,9 +2467,11 @@ export function ParagraphsSection({
                 paragraph.links,
                 paragraph.textWithHighlights,
                 paragraph.mandates,
-                searchMarker
+                searchMarker,
+                paragraph
               )}
             </HeadingTag>
+            {renderFootnotes(paragraph)}
           </div>
         </div>
       )
@@ -2337,7 +2489,8 @@ export function ParagraphsSection({
             paragraph.links,
             paragraph.textWithHighlights,
             paragraph.mandates,
-            searchMarker
+            searchMarker,
+            paragraph
           )}
         </p>
       )
@@ -2352,7 +2505,7 @@ export function ParagraphsSection({
         <div className="rounded-lg bg-muted p-3">
           <div className="flex items-start gap-2">
             {label && (
-              <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-un-blue-text text-xs font-medium text-white">
+              <span className="mt-0.5 flex min-h-5 min-w-5 shrink-0 items-center justify-center rounded-md bg-un-blue-text px-1.5 text-xs font-medium text-white tabular-nums">
                 {label}
               </span>
             )}
@@ -2363,9 +2516,11 @@ export function ParagraphsSection({
                   paragraph.links,
                   paragraph.textWithHighlights,
                   paragraph.mandates,
-                  searchMarker
+                  searchMarker,
+                  paragraph
                 )}
               </div>
+              {renderFootnotes(paragraph)}
             </div>
           </div>
         </div>
@@ -2481,8 +2636,8 @@ export function ParagraphsSection({
             role="note"
             className="rounded-md border border-border bg-secondary px-3 py-2 text-sm"
           >
-            This extracted fulltext may contain errors or omissions. Please check
-            the source document.
+            This extracted fulltext may contain errors or omissions. Please
+            check the source document.
           </p>
         )}
 
@@ -2523,43 +2678,44 @@ export function ParagraphsSection({
         {hasAnyFilterOptions && (
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
             {/* Assignee type dropdown */}
-            {Object.keys(assigneeTypeCounts).length > 0 && (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div>
-                    <SearchableFilterDropdown
-                      label="Entities"
-                      currentFilter={assigneeFilter}
-                      isOpen={isAssigneeDropdownOpen}
-                      onToggle={() =>
-                        setIsAssigneeDropdownOpen(!isAssigneeDropdownOpen)
-                      }
-                      onFilterChange={(filter) => {
-                        setAssigneeFilter(filter)
-                        setIsAssigneeDropdownOpen(false)
-                      }}
-                      typeCounts={assigneeTypeCounts}
-                      className="assignee-dropdown"
-                      filteredTotalCount={assigneeFilteredTotalCount}
-                      hierarchicalData={assigneesByType}
-                      withItemsCount={paragraphsWithAssigneesCount}
-                      withItemsLabel="With entities"
-                      entityLongMap={entityLongMap}
-                    />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent className="max-w-sm" side="top">
-                  <div className="space-y-2">
-                    <div className="font-medium">Filter by Entity</div>
-                    <div className="text-sm">
-                      Entities include both assignees (organizations assigned to
-                      carry out mandates) and mentioned entities (organizations
-                      referenced in the text).
+            {SHOW_PARAGRAPH_ENTITIES &&
+              Object.keys(assigneeTypeCounts).length > 0 && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div>
+                      <SearchableFilterDropdown
+                        label="Entities"
+                        currentFilter={assigneeFilter}
+                        isOpen={isAssigneeDropdownOpen}
+                        onToggle={() =>
+                          setIsAssigneeDropdownOpen(!isAssigneeDropdownOpen)
+                        }
+                        onFilterChange={(filter) => {
+                          setAssigneeFilter(filter)
+                          setIsAssigneeDropdownOpen(false)
+                        }}
+                        typeCounts={assigneeTypeCounts}
+                        className="assignee-dropdown"
+                        filteredTotalCount={assigneeFilteredTotalCount}
+                        hierarchicalData={assigneesByType}
+                        withItemsCount={paragraphsWithAssigneesCount}
+                        withItemsLabel="With entities"
+                        entityLongMap={entityLongMap}
+                      />
                     </div>
-                  </div>
-                </TooltipContent>
-              </Tooltip>
-            )}
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-sm" side="top">
+                    <div className="space-y-2">
+                      <div className="font-medium">Filter by Entity</div>
+                      <div className="text-sm">
+                        Entities include both assignees (organizations assigned
+                        to carry out mandates) and mentioned entities
+                        (organizations referenced in the text).
+                      </div>
+                    </div>
+                  </TooltipContent>
+                </Tooltip>
+              )}
 
             {/* Deliverable type dropdown */}
             {Object.keys(deliverableTypeCounts).length > 0 && (
@@ -2786,7 +2942,7 @@ export function ParagraphsSection({
                                   <div className="rounded-lg bg-muted p-3">
                                     <div className="flex items-start gap-2">
                                       {label && (
-                                        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-un-blue-text text-xs font-medium text-white">
+                                        <span className="mt-0.5 flex min-h-5 min-w-5 shrink-0 items-center justify-center rounded-md bg-un-blue-text px-1.5 text-xs font-medium text-white tabular-nums">
                                           {label}
                                         </span>
                                       )}
@@ -2801,8 +2957,10 @@ export function ParagraphsSection({
                                           // from the unsearched list, so a
                                           // mark would claim a match the
                                           // paragraph never made.
-                                          null
+                                          null,
+                                          paragraph
                                         )}
+                                        {renderFootnotes(paragraph)}
                                       </div>
                                     </div>
                                   </div>
