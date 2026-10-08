@@ -349,8 +349,10 @@ function buildFilterClauses(
     `)
   }
 
-  // Entity filter - document must have a citation by this entity
-  if (filters.entity) {
+  const hasBudgetLocation = Boolean(filters.budget_document || filters.budget_group || filters.budget_part || filters.section || filters.subprogramme)
+  // Standalone entity selection is catalogue-wide. A location plus entity
+  // must match one citation, handled together below.
+  if (filters.entity && !hasBudgetLocation) {
     clauses.push(`
       EXISTS (
         SELECT 1 FROM ppb2026.source_document_citations c2
@@ -414,9 +416,9 @@ function buildFilterClauses(
     paramIndex++
   }
 
-  // Budget hierarchy filters. Each level is an independent exact-match
-  // predicate on the citations, so they compose: part IV + subprogramme 2
-  // narrows to documents cited at both.
+  // Full-path budget location: all selected fields must match the SAME
+  // citation. Independent EXISTS predicates could combine an entity from
+  // one location and a subprogramme from another, broadening tree links.
   //
   // `section` matches the stored value EXACTLY, addendum suffix included. It
   // used to strip "(Add.N)" from the column before comparing, so that section 3
@@ -443,26 +445,44 @@ function buildFilterClauses(
       column: (p) => `ch.sub_programme = ${p}`,
     },
   ]
+  const locationPredicates: string[] = []
   for (const level of hierarchyLevels) {
     if (!level.value) continue
-    // Restricted to the `ppb` stream, because part/section/subprogramme numbers
-    // are only unique WITHIN a stream and only the Programme Budget branch of
-    // the tree exposes them (peacekeeping is Missions -> entity, the Plan
-    // Outline is a leaf). Without this, ?section=1 also matched the peacekeeping
-    // fascicles' own "section 1": the budget tree counted 26 documents under
-    // Part I › Section 1 for organ=SC, and clicking it returned 32.
+    locationPredicates.push(level.column(`$${paramIndex}`))
+    params.push(level.value)
+    paramIndex++
+  }
+  if (hasBudgetLocation) {
+    if (filters.budget_document) {
+      locationPredicates.push(`bdh.doc_type = $${paramIndex}`)
+      params.push(filters.budget_document)
+      paramIndex++
+    } else {
+      locationPredicates.push(filters.budget_group ? "bdh.doc_type = 'pko'" : "bdh.doc_type = 'ppb'")
+    }
+    if (hierarchyLevels.some(level => level.value)) locationPredicates.push("bdh.doc_type = 'ppb'")
+    if (filters.entity) {
+      locationPredicates.push(`ch.entity = $${paramIndex}`)
+      params.push(filters.entity)
+      paramIndex++
+    }
+    if (filters.budget_group) {
+      locationPredicates.push("bdh.doc_type = 'pko'")
+      locationPredicates.push("ch.entity IS NOT NULL AND ch.entity <> ''")
+      if (filters.budget_group === 'support') locationPredicates.push("(ch.section_title LIKE 'Administrative and budgetary aspects%') IS TRUE")
+      else if (filters.budget_group === 'missions') locationPredicates.push("(ch.section_title LIKE 'Administrative and budgetary aspects%') IS NOT TRUE")
+      else locationPredicates.push('FALSE')
+    }
     clauses.push(`
       EXISTS (
         SELECT 1 FROM ppb2026.source_document_citations ch
         JOIN ppb2026.budget_documents bdh
-          ON ch.origin_document ~ bdh.match_pattern AND bdh.doc_type = 'ppb'
+          ON ch.origin_document ~ bdh.match_pattern
         WHERE ch.ppb_full_document_symbol = d.ppb_full_document_symbol
-        AND ${level.column(`$${paramIndex}`)}
+        AND ${locationPredicates.join(' AND ')}
         AND ${versionClause('ch')}
       )
     `)
-    params.push(level.value)
-    paramIndex++
   }
 
   // Foundational filter: the document is cited in an entity's "Mandates and
@@ -530,23 +550,6 @@ function buildFilterClauses(
       )
     `)
     params.push(filters.subject_domain)
-    paramIndex++
-  }
-
-  // Budget stream filter — the top level of the budget hierarchy. The value is
-  // a doc_type (ppb | pko | plan_outline); a document matches if it has a
-  // citation from any budget document of that stream in the active version.
-  if (filters.budget_document) {
-    clauses.push(`
-      EXISTS (
-        SELECT 1 FROM ppb2026.source_document_citations c5
-        JOIN ppb2026.budget_documents bd5 ON c5.origin_document ~ bd5.match_pattern
-        WHERE c5.ppb_full_document_symbol = d.ppb_full_document_symbol
-        AND bd5.doc_type = $${paramIndex}
-        AND ${versionClause('c5')}
-      )
-    `)
-    params.push(filters.budget_document)
     paramIndex++
   }
 
@@ -1603,7 +1606,7 @@ const getFilteredAggregates = cache((filters: FilterOptions = {}) =>
     // -v2: total_organs now joins the organ vocabulary, so v1 entries hold a
     // count over a wider population than the surface it feeds now describes.
     // -v3: type_counts is grouped, so v2 entries hold the ungrouped long tail.
-    ['filtered-aggregates-v3', JSON.stringify(filters)],
+    ['filtered-aggregates-v4', JSON.stringify(filters)],
     { revalidate: 3600 }
   )
 )
@@ -1674,7 +1677,7 @@ export const getFilteredDocumentCount = cache((filters: FilterOptions = {}) =>
     },
     // -v2: the filter shape changed (`mode` -> `cited` + an always-applied
     // version lens), so v1 entries would answer a question no longer asked.
-    ['filtered-document-count-v2', JSON.stringify(filters)],
+    ['filtered-document-count-v3', JSON.stringify(filters)],
     { revalidate: 3600 }
   )
 )
@@ -1824,7 +1827,7 @@ export const getExploreCardData = cache((filters: FilterOptions = {}) => {
     // hierarchy key alone would leave THIS entry serving the old groups for the
     // full hour — the two have to move together or the change deploys green and
     // renders nothing.
-    ['explore-card-data-v4', JSON.stringify(facets)],
+    ['explore-card-data-v5', JSON.stringify(facets)],
     { revalidate: 3600 }
   )
 })
@@ -2032,7 +2035,7 @@ async function _getOrganHierarchyInner(
 export const getOrganHierarchy = cache((filters: FilterOptions = {}) =>
   readDynamicCache(
     () => _getOrganHierarchyInner(filters),
-    ['organ-hierarchy-v4', JSON.stringify(filters)],
+    ['organ-hierarchy-v5', JSON.stringify(filters)],
     { revalidate: 3600 }
   )
 )
@@ -2099,7 +2102,7 @@ export const getDocumentTypeCatalogue = cache((filters: FilterOptions = {}) =>
   readDynamicCache(
     () => _getDocumentTypeCatalogueInner(filters),
     // -v3: the types are grouped, so v2 entries hold the ungrouped long tail.
-    ['document-type-catalogue-v3', JSON.stringify(filters)],
+    ['document-type-catalogue-v4', JSON.stringify(filters)],
     { revalidate: 3600 }
   )
 )
@@ -3379,7 +3382,7 @@ async function _getMandateListInner(
 // older deploy are never served to newer client code (the cache key is only
 // the filters, and entries persist for `revalidate`). This is the
 // data-version guard the refactor plan called for.
-const PAGE_DATA_CACHE_VERSION = 'v7-base-documents-live-metrics'
+const PAGE_DATA_CACHE_VERSION = 'v8-exact-budget-location-live-metrics'
 
 /**
  * The shared slice is invariant to grouping and pagination, so its cache key

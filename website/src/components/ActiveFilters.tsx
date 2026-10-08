@@ -8,6 +8,7 @@ import {
   SUBJECT_DOMAIN_LABELS,
 } from '@/lib/filter-constants'
 import { FOUNDATIONAL_LABEL } from '@/lib/foundational'
+import { explainerTexts } from '@/lib/en_text_contents'
 import { X } from 'lucide-react'
 import { titleCase } from 'title-case'
 import { EntityName } from './EntityName'
@@ -152,6 +153,13 @@ export function ActiveFilters({
             <FilterBadge
               label={`Part: ${displayFilters.budget_part}`}
               onClear={() => clearFilter('budget_part')}
+            />
+          )}
+
+          {displayFilters.budget_group && (
+            <FilterBadge
+              label={`${explainerTexts.entitiesAndProgrammes.peacekeepingGroup}: ${explainerTexts.entitiesAndProgrammes.groups[displayFilters.budget_group as 'missions' | 'support'] ?? displayFilters.budget_group}`}
+              onClear={() => clearFilter('budget_group')}
             />
           )}
 

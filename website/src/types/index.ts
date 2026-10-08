@@ -376,6 +376,8 @@ export interface FilterOptions {
   start_year?: string
   end_year?: string
   budget_document?: string
+  /** Exact peacekeeping citation group, independent of financial scopes. */
+  budget_group?: string
   document_type?: string
   agenda_item?: string
   full_document_symbol?: string
