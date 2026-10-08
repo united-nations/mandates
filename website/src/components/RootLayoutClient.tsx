@@ -29,16 +29,20 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
   // narrowing the list behind it. Detect the active modal slot and treat the
   // interception as if we were still on the underlying (full-bleed) list.
   const isModalOpen = useSelectedLayoutSegment('modal') !== null
+  const isSectionPage = [
+    '/secretariat',
+    '/secretariat/entities-and-programs',
+    '/secretariat/agenda-items',
+    '/system',
+  ].includes(pathname)
   // Top-level nav destinations don't get a back button — it's reserved for
   // detail pages reached from within the app.
-  const isMainPage =
-    isModalOpen || ['/secretariat', '/system'].includes(pathname)
+  const isMainPage = isModalOpen || isSectionPage
   const isDiffPage = pathname === '/diff'
   // The redesigned /secretariat and /system pages are full-bleed (hero
   // banners, colour bands) and manage their own per-section widths, so they
   // opt out of the shared centred/padded main column.
-  const isFullBleed =
-    isModalOpen || ['/secretariat', '/system'].includes(pathname)
+  const isFullBleed = isModalOpen || isSectionPage
   const columnClass = 'max-w-4xl px-8 sm:px-12 lg:max-w-6xl lg:px-16'
 
   return (

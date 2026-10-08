@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/tooltip'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useEffect, useRef } from 'react'
 
 const navItems = [
   { href: '/secretariat', label: 'UN Secretariat View' },
@@ -20,40 +21,62 @@ const navItems = [
 
 export function SiteHeader() {
   const pathname = usePathname()
+  const headerContainer = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const header = headerContainer.current?.querySelector('header')
+    if (!header) return
+    const updateHeight = () =>
+      document.documentElement.style.setProperty(
+        '--site-header-height',
+        `${header.getBoundingClientRect().height}px`
+      )
+    updateHeight()
+    const observer = new ResizeObserver(updateHeight)
+    observer.observe(header)
+    return () => {
+      observer.disconnect()
+      document.documentElement.style.removeProperty('--site-header-height')
+    }
+  }, [])
   return (
-    <SharedSiteHeader
-      brand="United Nations"
-      descriptor="Mandate Registry"
-      href="/secretariat"
-      homeLabel="Mandate Registry — home"
-      navItems={navItems}
-      activeHref={pathname}
-      transparency="none"
-      mobileMenuLabel="Open navigation menu"
-      emblemPlacement="outboard"
-      containerClassName="max-w-4xl px-8 sm:px-12 lg:max-w-6xl lg:px-16"
-      badge={
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <span className="cursor-help rounded-md border border-un-blue-text/30 bg-un-blue-surface px-1.5 py-0.5 text-xs leading-none font-semibold whitespace-nowrap text-un-blue-text md:px-2 md:py-1 md:text-xs">
-              Beta Version
-            </span>
-          </TooltipTrigger>
-          <TooltipContent side="bottom" className="max-w-56">
-            <p className="text-sm">
-              The development of the mandate registry is still ongoing. Go to
-              the{' '}
-              <Link
-                href="/methodology"
-                className="font-medium text-un-blue-text underline hover:text-shuttle-gray"
-              >
-                methodology
-              </Link>{' '}
-              section for information on the current scope.
-            </p>
-          </TooltipContent>
-        </Tooltip>
-      }
-    />
+    <div ref={headerContainer} className="contents">
+      <SharedSiteHeader
+        className="mandates-site-header"
+        brand="United Nations"
+        descriptor="Mandate Registry"
+        href="/secretariat"
+        homeLabel="Mandate Registry — home"
+        navItems={navItems}
+        activeHref={
+          pathname.startsWith('/secretariat/') ? '/secretariat' : pathname
+        }
+        transparency="none"
+        mobileMenuLabel="Open navigation menu"
+        emblemPlacement="outboard"
+        containerClassName="max-w-4xl px-8 sm:px-12 lg:max-w-6xl lg:px-16"
+        badge={
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="cursor-help rounded-md border border-un-blue-text/30 bg-un-blue-surface px-1.5 py-0.5 text-xs leading-none font-semibold whitespace-nowrap text-un-blue-text md:px-2 md:py-1 md:text-xs">
+                Beta Version
+              </span>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="max-w-56">
+              <p className="text-sm">
+                The development of the mandate registry is still ongoing. Go to
+                the{' '}
+                <Link
+                  href="/methodology"
+                  className="font-medium text-un-blue-text underline hover:text-shuttle-gray"
+                >
+                  methodology
+                </Link>{' '}
+                section for information on the current scope.
+              </p>
+            </TooltipContent>
+          </Tooltip>
+        }
+      />
+    </div>
   )
 }
