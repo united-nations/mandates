@@ -4,6 +4,32 @@
  */
 
 export const explainerTexts = {
+  secretariatNavigation: {
+    label: 'Secretariat navigation',
+    mandateSources: 'Mandate sources',
+    entitiesAndPrograms: 'Entities and programmes',
+    agendaItems: 'Agenda items',
+  },
+  entitiesAndProgrammes: {
+    location: 'Budget location',
+    documents: 'Mandates',
+    openMandates: 'View mandates cited at this budget location',
+    peacekeepingGroup: 'Peacekeeping group',
+    groups: { missions: 'Missions', support: 'Support account' },
+    expenditure: 'Expenditure',
+    unavailable: 'Unavailable',
+    unavailableScope: 'No matching historical expenditure breakdown is published for this location.',
+    empty: 'No budget locations recorded for this citation budget cycle.',
+    coverage: 'Counts are distinct mandate source documents cited at each location. Bars compare each count with the largest count in this table. Locations are citation-derived and do not form a complete budget inventory. Counts overlap: parent counts need not equal child sums.',
+    moneyNote: 'Historical expenditure is shown only for matched entity and subprogramme scopes. Bars compare each amount with the largest displayed amount; figures cover reported funding sources and may have different financial scopes. Amounts must not be added across hierarchy levels or repeated locations and are not allocated to mandates. Reporting periods are 2025 for programme-budget expenditure and 2024/25 for peacekeeping accounts, independently of the citation budget cycle. Open an amount for its period, funding breakdown and source documents.',
+    part: 'Part',
+    section: 'Section',
+    programme: 'Programme',
+    subprogramme: 'Subprogramme',
+    expand: 'Expand',
+    collapse: 'Collapse',
+  },
+
   // Main page and overview
   mainHeader: {
     title: 'UN Mandate Registry',
@@ -192,6 +218,12 @@ export const explainerTexts = {
     note: '2025 expenditure across reported funding sources (2024/25 for peacekeeping). Figures cover the entity, not this mandate, and repeat where an entity has several citation locations.',
     period: 'Reporting period',
     source: 'Source data',
+    detailHeading: 'Historical expenditure (USD)',
+    breakdown: 'By funding source',
+    sources: 'Source documents',
+    document: 'Source document',
+    dataset: 'Data (JSON)',
+    portal: 'Open UN',
     open: 'Open expenditure in Open UN',
     funding: {
       regular_budget: 'Regular budget',

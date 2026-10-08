@@ -2,8 +2,8 @@
 
 import { useMemo, useState } from 'react'
 import type { EntityExpenditure, ExpenditureMap } from '@/lib/entity-expenditure'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { ChevronDown, ChevronUp, ExternalLink } from 'lucide-react'
+import { ExpenditureAmount } from '@/components/ExpenditureAmount'
+import { ChevronDown, ChevronUp } from 'lucide-react'
 import {
   DetailFootnote,
   DetailSectionHeading,
@@ -17,6 +17,8 @@ import {
 } from '@/lib/foundational'
 import { cn } from '@/lib/utils'
 import type { BudgetLocation, Entity, Mandate } from '@/types'
+
+export { ExpenditureAmount, formatBudgetUsd } from '@/components/ExpenditureAmount'
 
 /**
  * "Who cites this mandate in the budget?" — one row per place in the budget
@@ -244,13 +246,6 @@ const COL = {
   budget: 'w-28 shrink-0 text-right tabular-nums',
 } as const
 
-export function formatBudgetUsd(amount: number): string {
-  if (amount >= 1_000_000_000) return `$${(amount / 1_000_000_000).toFixed(1)}b`
-  if (amount >= 1_000_000) return `$${(amount / 1_000_000).toFixed(1)}m`
-  if (amount >= 1_000) return `$${Math.round(amount / 1_000)}k`
-  return `$${amount}`
-}
-
 function CitationRowItem({ row, expenditure }: { row: CitationRow; expenditure?: EntityExpenditure }) {
   const { entity, entityLong, foundational, location } = row
   const marked = MARK_FOUNDATIONAL_CHIPS_ON_DETAIL_PAGE && foundational
@@ -314,52 +309,9 @@ function CitationRowItem({ row, expenditure }: { row: CitationRow; expenditure?:
           {count ?? ''}
         </span>
         <span className={cn(COL.budget, 'inline-flex items-baseline justify-end gap-2')}>
-          <ExpenditureAmount expenditure={expenditure} />
-          <span className="w-4 shrink-0 self-center">
-            {expenditure?.status === 'matched' && (
-              <a
-                href={expenditure.openUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                title={explainerTexts.entityExpenditure.open}
-                className="text-muted-foreground hover:text-un-blue-text"
-              >
-                <ExternalLink aria-hidden className="h-3.5 w-3.5" />
-                <span className="sr-only">{explainerTexts.entityExpenditure.open}</span>
-              </a>
-            )}
-          </span>
+          <ExpenditureAmount expenditure={expenditure} scopeLabel={entityLong ?? entity} />
         </span>
       </div>
     </li>
-  )
-}
-
-
-function ExpenditureAmount({ expenditure }: { expenditure?: EntityExpenditure }) {
-  const text = explainerTexts.entityExpenditure
-  if (!expenditure || expenditure.status === 'unavailable') {
-    return <span className="text-muted-foreground" title={expenditure?.status === 'unavailable' ? text.unavailable[expenditure.reason] : text.loading}>–</span>
-  }
-  const sources = [...new Map(expenditure.sources.filter(s => s.url).map(s => [s.url, s])).values()]
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <button type="button" className="rounded-sm text-foreground underline decoration-dotted underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-          {formatBudgetUsd(expenditure.amount)}
-        </button>
-      </PopoverTrigger>
-      <PopoverContent align="end" className="w-80 max-w-[calc(100vw-2rem)] whitespace-normal text-sm" aria-label={text.heading}>
-        <p className="font-medium">{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(expenditure.amount)}</p>
-        <p>{text.period}: {expenditure.period}</p>
-        {Object.entries(expenditure.funding).map(([key, amount]) => (
-          <p key={key}>{text.funding[key as keyof typeof text.funding]}: {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(amount)}</p>
-        ))}
-        {sources.map(source => (
-          <a key={source.url} className="block underline" href={source.url} target="_blank" rel="noopener noreferrer">{source.symbol ?? text.source}</a>
-        ))}
-        <a className="block underline" href={expenditure.datasetUrl} target="_blank" rel="noopener noreferrer">{text.source}</a>
-      </PopoverContent>
-    </Popover>
   )
 }

@@ -34,6 +34,14 @@ const nodeSchema = z.object({
       expenditure: z.record(z.string(), z.array(sourceSchema)),
     })
     .optional(),
+  sources: z.record(z.string(), sourceSchema).optional(),
+  note: z.string().optional(),
+  breakdowns: z.record(z.string(), z.object({
+    childAmount: z.number().finite().nullable(),
+    difference: z.number().finite().nullable(),
+    outcome: z.string(),
+    completeness: z.string(),
+  })).optional(),
 })
 const datasetSchema = z.object({
   meta: z.object({
@@ -104,6 +112,25 @@ export function parseExpenditureDataset(
       throw new Error(
         'Expenditure amount does not reconcile to funding sources'
       )
+  }
+  // Cross-totals use source-declared child coverage, preserving printed
+  // differences rather than silently replacing authoritative parent amounts.
+  for (const n of data.nodes) {
+    const children = data.nodes.filter(child => child.parentId === n.id)
+    if (stream === 'pko' && n.tier === 'whole' && n.amount !== null &&
+      children.every(child => child.tier === 'mission' && child.amount !== null) &&
+      Math.abs(n.amount - children.reduce((sum, child) => sum + (child.amount ?? 0), 0)) > 0.01)
+      throw new Error('Peacekeeping mission accounts do not reconcile to their source total')
+    for (const key of FUNDING_SOURCES) {
+      const breakdown = n.breakdowns?.[key]
+      if (!breakdown || breakdown.childAmount === null) continue
+      const amounts = children.flatMap(child => typeof child.values[key] === 'number' ? [child.values[key] as number] : [])
+      if (!amounts.length || Math.abs(amounts.reduce((a, b) => a + b, 0) - breakdown.childAmount) > 0.01)
+        throw new Error('Expenditure children do not reconcile to declared source coverage')
+      if (typeof n.values[key] === 'number' && breakdown.difference !== null &&
+        Math.abs((n.values[key] as number) - breakdown.childAmount - breakdown.difference) > 0.01)
+        throw new Error('Expenditure source difference is not conserved')
+    }
   }
   return {
     ...data,
@@ -226,7 +253,7 @@ export function matchEntityExpenditure(
     funding,
     nodeIds: matches.map((m) => m.node.id),
     sources: matches.flatMap((m) =>
-      Object.values(m.node.metricSources?.expenditure ?? {}).flat()
+      [...Object.values(m.node.metricSources?.expenditure ?? {}).flat(), ...Object.values(m.node.sources ?? {})]
     ),
     datasetUrl: first.dataset.url,
     // The PPB page currently defaults to 2025 expenditure. The JSON link for

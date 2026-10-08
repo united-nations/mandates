@@ -16,7 +16,7 @@ const loadDataset = (stream: 'ppb' | 'pko') => unstable_cache(async () => {
   if (Buffer.byteLength(JSON.stringify(data)) > 1_800_000)
     throw new Error('Expenditure index exceeds cache budget')
   return data
-}, ['open-un-entity-expenditure-v1', stream, '2025'], { revalidate: 86400, tags: ['entity-expenditure'] })
+}, ['open-un-entity-expenditure-v2', stream, '2025'], { revalidate: 86400, tags: ['entity-expenditure'] })
 
 const ppb = loadDataset('ppb')
 const pko = loadDataset('pko')
@@ -30,6 +30,8 @@ const load = cache(async (): Promise<ExpenditureDataset[]> => {
     return []
   })
 })
+
+export const getExpenditureDatasets = load
 
 export async function getEntityExpenditures(
   entities: { entity: string; entity_long?: string }[],
