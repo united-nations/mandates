@@ -21,6 +21,7 @@ import {
 
 import { Skeleton } from '@/components/ui/skeleton'
 import { Chip } from '@/components/ui/chip'
+import { ParagraphNumberBadge } from '@/components/ui/paragraph-number-badge'
 import { ChartSearchInput } from '@/components/ui/chart-search-input'
 import { DetailSectionHeading } from '@/components/MandateDetailUi'
 import { SearchSyntaxHelp } from '@/components/SearchSyntaxHelp'
@@ -2505,9 +2506,7 @@ export function ParagraphsSection({
         <div className="rounded-lg bg-muted p-3">
           <div className="flex items-start gap-2">
             {label && (
-              <span className="mt-0.5 flex min-h-5 min-w-5 shrink-0 items-center justify-center rounded-md bg-un-blue-text px-1.5 text-xs font-medium text-white tabular-nums">
-                {label}
-              </span>
+              <ParagraphNumberBadge>{label}</ParagraphNumberBadge>
             )}
             <div className="max-w-4xl flex-1">
               <div className="text-sm leading-relaxed">
@@ -2942,9 +2941,7 @@ export function ParagraphsSection({
                                   <div className="rounded-lg bg-muted p-3">
                                     <div className="flex items-start gap-2">
                                       {label && (
-                                        <span className="mt-0.5 flex min-h-5 min-w-5 shrink-0 items-center justify-center rounded-md bg-un-blue-text px-1.5 text-xs font-medium text-white tabular-nums">
-                                          {label}
-                                        </span>
+                                        <ParagraphNumberBadge>{label}</ParagraphNumberBadge>
                                       )}
                                       <div className="flex-1 text-sm leading-relaxed text-foreground">
                                         {renderProcessedText(
