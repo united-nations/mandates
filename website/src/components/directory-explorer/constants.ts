@@ -8,6 +8,7 @@ export const DIMENSION_GROUPS: FilterParamKey[][] = [
   [
     'budget_document',
     'budget_group',
+    'budget_location',
     'budget_part',
     'section',
     'entity',

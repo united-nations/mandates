@@ -48,6 +48,7 @@ const LEVEL_PARAM: Record<BudgetTreeLevel, FilterParamKey> = {
 const BUDGET_LOCATION_PARAMS: FilterParamKey[] = [
   'budget_document',
   'budget_group',
+  'budget_location',
   'budget_part',
   'section',
   'entity',

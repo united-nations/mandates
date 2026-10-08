@@ -9,6 +9,10 @@ import {
 } from '@/lib/filter-constants'
 import { FOUNDATIONAL_LABEL } from '@/lib/foundational'
 import { explainerTexts } from '@/lib/en_text_contents'
+import {
+  BUDGET_LOCATION_KEYS,
+  budgetLocationLabel,
+} from '@/lib/budget-location-scope'
 import { X } from 'lucide-react'
 import { titleCase } from 'title-case'
 import { EntityName } from './EntityName'
@@ -57,6 +61,10 @@ export function ActiveFilters({
   // "documents cited as mandates" card and there is no "off" state to clear to.
   delete displayFilters.ppb_version
   delete displayFilters.group
+  if (filters.budget_location) {
+    for (const key of BUDGET_LOCATION_KEYS)
+      if (key !== 'budget_location') delete displayFilters[key]
+  }
 
   const hasFilters = Object.values(displayFilters).some(
     (value) => value && value !== 'all'
@@ -85,6 +93,13 @@ export function ActiveFilters({
             <FilterBadge
               label={`Search: ${filters.keyword}`}
               onClear={() => clearFilter('keyword')}
+            />
+          )}
+
+          {displayFilters.budget_location && (
+            <FilterBadge
+              label={budgetLocationLabel(filters, BUDGET_STREAM_LABELS)}
+              onClear={() => clearFilter('budget_location')}
             />
           )}
 

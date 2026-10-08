@@ -17,6 +17,10 @@ import {
 } from '@/lib/filter-constants'
 import type { FilterOptions } from '@/types'
 import { LoadingFallback } from '@/components/LoadingFallback'
+import {
+  BUDGET_LOCATION_KEYS,
+  withoutBudgetLocation,
+} from '@/lib/budget-location-scope'
 
 /**
  * Filter state is the URL. We derive it directly from searchParams via the
@@ -74,7 +78,15 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
 
   const setFilter = useCallback(
     (key: FilterParamKey, value: string | undefined) => {
-      const newParams = new URLSearchParams(searchParams.toString())
+      const current = new URLSearchParams(searchParams.toString())
+      const isLocationKey = BUDGET_LOCATION_KEYS.some(
+        (locationKey) => locationKey === key
+      )
+      const newParams =
+        isLocationKey &&
+        (key === 'budget_location' || current.has('budget_location'))
+          ? withoutBudgetLocation(current)
+          : current
       writeParam(newParams, key, value)
 
       // Any filter change resets pagination; page/limit changes do not.

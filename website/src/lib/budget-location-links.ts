@@ -30,8 +30,9 @@ export function budgetLocationHref(
   version: string
 ): string {
   const filters = budgetLocationFilters(row, version)
-  const params = new URLSearchParams()
-  for (const [key, value] of Object.entries(filters))
-    if (value !== undefined) params.set(key, value)
+  const params = new URLSearchParams({
+    ppb_version: filters.ppb_version ?? version,
+    budget_location: row.id,
+  })
   return `/secretariat?${params}`
 }

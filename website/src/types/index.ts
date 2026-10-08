@@ -378,6 +378,8 @@ export interface FilterOptions {
   budget_document?: string
   /** Exact peacekeeping citation group, independent of financial scopes. */
   budget_group?: string
+  /** Full path encoded as one visible/removable budget-location filter. */
+  budget_location?: string
   document_type?: string
   agenda_item?: string
   full_document_symbol?: string

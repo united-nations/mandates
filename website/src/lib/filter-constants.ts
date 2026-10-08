@@ -2,6 +2,10 @@
  * Central definition of all filter parameters used throughout the application.
  * This ensures consistency between URL parameters, API calls, and type definitions.
  */
+import {
+  BUDGET_LOCATION_KEYS,
+  parseBudgetLocation,
+} from '#lib/budget-location-scope'
 
 // Friendly labels for the top-level budget streams (the values the
 // `budget_document` filter now carries: a doc_type). Version-agnostic, so used
@@ -54,6 +58,7 @@ export const FILTER_PARAMS = [
   'end_year',
   'budget_document',
   'budget_group',
+  'budget_location',
   'document_type',
   'agenda_item',
   'full_document_symbol',
@@ -84,6 +89,7 @@ export const FILTER_ONLY_PARAMS = [
   'end_year',
   'budget_document',
   'budget_group',
+  'budget_location',
   'document_type',
   'agenda_item',
   'full_document_symbol',
@@ -138,7 +144,7 @@ export function parseSearchParams(
   const cited =
     getString('cited') ?? (legacyMode === 'active_mandates' ? '1' : undefined)
 
-  return {
+  const filters: import('@/types').FilterOptions = {
     cited,
     // No hardcoded default: when absent, the data layer's versionClause
     // COALESCEs to ppb2026.budget_versions.is_default (single source of truth).
@@ -168,4 +174,16 @@ export function parseSearchParams(
     page: getString('page') || '1',
     limit: getString('limit') || '15',
   }
+  const location = getString('budget_location')
+  if (location) {
+    for (const key of BUDGET_LOCATION_KEYS) delete filters[key]
+    Object.assign(
+      filters,
+      parseBudgetLocation(location) ?? {
+        budget_document: 'invalid-budget-location',
+      }
+    )
+    filters.budget_location = location
+  }
+  return filters
 }
