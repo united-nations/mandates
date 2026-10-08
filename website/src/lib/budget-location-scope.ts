@@ -1,5 +1,6 @@
 import type { FilterOptions } from '../types/index'
 import { explainerTexts } from '#lib/en_text_contents'
+import { parseCitationScope } from '#lib/citation-budget-location'
 
 export const BUDGET_LOCATION_KEYS = [
   'budget_location',
@@ -16,6 +17,23 @@ export const BUDGET_LOCATION_KEYS = [
 export function parseBudgetLocation(value: string): FilterOptions | null {
   try {
     const path: unknown = JSON.parse(value)
+    const citation = parseCitationScope(value)
+    if (citation)
+      return {
+        entity: citation.entity,
+        budget_document: citation.stream ?? undefined,
+        budget_part: citation.part ?? undefined,
+        section: citation.section ?? undefined,
+        subprogramme: citation.subprogramme ?? undefined,
+      }
+    if (
+      Array.isArray(path) &&
+      path.length === 2 &&
+      path[0] === 'entity' &&
+      typeof path[1] === 'string' &&
+      path[1]
+    )
+      return { entity: path[1] }
     if (
       !Array.isArray(path) ||
       path.length < 2 ||
@@ -81,6 +99,17 @@ export function budgetLocationLabel(
   streamLabels: Record<string, string>
 ): string {
   const text = explainerTexts.entitiesAndProgrammes
+  const citation = scope.budget_location
+    ? parseCitationScope(scope.budget_location)
+    : null
+  if (citation)
+    return (
+      citation.subprogramme ??
+      (citation.section
+        ? `${text.section} ${citation.section}: ${explainerTexts.mandateDetail.citationCounts.general}`
+        : (streamLabels[citation.stream ?? ''] ??
+          explainerTexts.mandateDetail.citationCounts.noLocation))
+    )
   if (scope.subprogramme) return scope.subprogramme
   if (scope.entity) return scope.entity
   if (scope.section) return `${text.section} ${scope.section}`

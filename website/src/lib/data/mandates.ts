@@ -40,6 +40,8 @@ import {
   buildQualifiedBudgetCitations,
 } from './budget-citation-sql'
 import { SUBJECT_DOMAIN_LABELS } from '@/lib/filter-constants'
+import { citationScope, citationScopeKey, parseCitationScope, citationScopePredicates } from '@/lib/citation-budget-location'
+import type { DetailBudgetLocation } from '@/types'
 import {
   pairKey,
   organEntityKey,
@@ -165,6 +167,8 @@ interface MandateListRow {
 
 /** Row type for citation query results */
 interface CitationQueryRow {
+  stream: DetailBudgetLocation['stream']
+  is_support: boolean | null
   origin_document: string | null
   budget_part: string | null
   budget_part_number: string | null
@@ -349,7 +353,8 @@ function buildFilterClauses(
     `)
   }
 
-  const hasBudgetLocation = Boolean(filters.budget_document || filters.budget_group || filters.budget_part || filters.section || filters.subprogramme)
+  const exactCitationScope = filters.budget_location ? parseCitationScope(filters.budget_location) : null
+  const hasBudgetLocation = Boolean(exactCitationScope || filters.budget_document || filters.budget_group || filters.budget_part || filters.section || filters.subprogramme)
   // Standalone entity selection is catalogue-wide. A location plus entity
   // must match one citation, handled together below.
   if (filters.entity && !hasBudgetLocation) {
@@ -447,12 +452,22 @@ function buildFilterClauses(
   ]
   const locationPredicates: string[] = []
   for (const level of hierarchyLevels) {
-    if (!level.value) continue
+    if (!level.value || exactCitationScope) continue
     locationPredicates.push(level.column(`$${paramIndex}`))
     params.push(level.value)
     paramIndex++
   }
-  if (hasBudgetLocation) {
+  if (exactCitationScope) {
+    const exact = citationScopePredicates(exactCitationScope, paramIndex)
+    params.push(...exact.params)
+    paramIndex += exact.params.length
+    clauses.push(`EXISTS (
+      SELECT 1 FROM ppb2026.source_document_citations ch
+      LEFT JOIN ppb2026.budget_documents bdh ON ch.origin_document ~ bdh.match_pattern
+      WHERE ch.ppb_full_document_symbol = d.ppb_full_document_symbol
+      AND ${exact.predicates.join(' AND ')} AND ${versionClause('ch')}
+    )`)
+  } else if (hasBudgetLocation) {
     if (filters.budget_document) {
       locationPredicates.push(`bdh.doc_type = $${paramIndex}`)
       params.push(filters.budget_document)
@@ -1038,93 +1053,58 @@ async function enrichTextMetrics(mandates: Mandate[]): Promise<Mandate[]> {
 
 interface LocationCitationCountRow {
   entity: string
+  stream: DetailBudgetLocation['stream']
+  part: string | null
   section: string | null
   sub_programme: string | null
-  /** 1 on the row where GROUPING SETS aggregated the subprogramme away. */
-  section_level: string | number
+  number: number | null
+  support: boolean | null
+  entity_level: number
   total_citations: string
 }
 
-/**
- * For each (entity, section, sub_programme) this mandate is cited at, how
- * many DISTINCT mandate documents that same entity cites at that same
- * location — this mandate included. Answers "how big a place is this in the
- * entity's budget", the context a bare location path can't give on its own.
- *
- * Counted at TWO grains, because the detail row has two: a location that
- * names a specific subprogramme is counted within that subprogramme, and one
- * that does not is counted across the whole (entity, section). Counting
- * everything at the finer grain was the first attempt and it produced a
- * number nobody could read: for a location with no subprogramme it returned
- * only the no-subprogramme SUBSET (DESA/section 9 → 56) while the row showed
- * a blank subprogramme cell, so the figure looked like the entity's whole
- * section (which is far larger — DESA cites 102 under Subprogramme 2 alone).
- * The grain has to match what the row actually displays or the number lies
- * about its own scope.
- *
- * `subProgrammeExpr` normalizes on BOTH sides here (this query and the
- * lookup below), so PPB 2026's literal "All Subprogrammes" and PPB 2027's
- * NULL — the same generic case spelled two ways across editions — land in
- * one bucket instead of two.
- *
- * Scoped to just this mandate's citing entities via `entity = ANY(...)`
- * rather than the whole catalogue: `getBudgetHierarchy` computes the same
- * kind of count for every filtered document and is already the most
- * expensive query in the app, which would be wasteful for the handful of
- * rows one mandate needs.
- */
+/** Independent entity totals and exact location totals from the same version. */
 async function getLocationCitationCounts(
   entities: string[],
   version?: string | null
-): Promise<Map<string, number>> {
-  const map = new Map<string, number>()
-  if (entities.length === 0) return map
-
-  const subprogramme = subProgrammeExpr('c.sub_programme')
+): Promise<{ locations: Map<string, number>; entities: Record<string, number> }> {
+  const result = { locations: new Map<string, number>(), entities: {} as Record<string, number> }
+  if (!entities.length) return result
   const query = `
     /* trace:mandates.detail-location-citation-counts */
-    SELECT
-      c.entity,
-      c.section,
-      ${subprogramme} AS sub_programme,
-      GROUPING(${subprogramme}) AS section_level,
-      COUNT(DISTINCT c.ppb_full_document_symbol) AS total_citations
-    FROM ppb2026.source_document_citations c
-    WHERE c.entity = ANY($1::text[])
-      AND ${versionPredicateSql('c', '$2')}
-    GROUP BY GROUPING SETS (
-      (c.entity, c.section),
-      (c.entity, c.section, ${subprogramme})
+    WITH sites AS (
+      SELECT c.entity, c.ppb_full_document_symbol,
+        bd.doc_type AS stream,
+        NULLIF(c.budget_part_number, '') AS part,
+        NULLIF(c.section, '') AS section,
+        NULLIF(${subProgrammeExpr('c.sub_programme')}, '') AS sub_programme,
+        CASE WHEN NULLIF(${subProgrammeExpr('c.sub_programme')}, '') IS NULL
+          THEN NULL ELSE c.sub_programme_number END AS number,
+        CASE WHEN bd.doc_type = 'pko' THEN
+          COALESCE(c.section_title LIKE 'Administrative and budgetary aspects%', FALSE)
+          ELSE NULL END AS support
+      FROM ppb2026.source_document_citations c
+      LEFT JOIN ppb2026.budget_documents bd ON c.origin_document ~ bd.match_pattern
+      JOIN public.unified_documents d ON d.ppb_full_document_symbol = c.ppb_full_document_symbol
+      WHERE c.entity = ANY($1::text[]) AND ${versionPredicateSql('c', '$2')}
     )
-  `
-
-  const rows = await queryMany<LocationCitationCountRow>(query, [
-    entities,
-    version ?? null,
-  ])
+    SELECT entity, stream, part, section, sub_programme, number, support,
+      GROUPING(stream) AS entity_level,
+      COUNT(DISTINCT ppb_full_document_symbol)::text AS total_citations
+    FROM sites
+    GROUP BY GROUPING SETS (
+      (entity), (entity, stream, part, section, sub_programme, number, support)
+    )`
+  const rows = await queryMany<LocationCitationCountRow>(query, [entities, version ?? null])
   for (const row of rows) {
-    // GROUPING() is 1 for the row that aggregated the subprogramme away, so
-    // the two grains cannot collide on a shared NULL subprogramme.
-    const key =
-      Number(row.section_level) === 1
-        ? locationCitationCountKey(row.section, row.entity, null)
-        : locationCitationCountKey(row.section, row.entity, row.sub_programme)
-    map.set(key, parseInt(row.total_citations, 10) || 0)
+    const count = Number(row.total_citations)
+    if (Number(row.entity_level) === 1) result.entities[row.entity] = count
+    else result.locations.set(citationScopeKey({
+      entity: row.entity, stream: row.stream, part: row.part, section: row.section,
+      subprogramme: row.sub_programme, number: row.number, support: row.support,
+    }), count)
   }
-  return map
-}
-
-/**
- * Join key between a `BudgetLocation` and `getLocationCitationCounts`'s
- * result. A null `subprogramme` addresses the whole (entity, section) —
- * which is what a location with no specific subprogramme is counted at.
- */
-function locationCitationCountKey(
-  section: string | null,
-  entity: string | null,
-  subprogramme: string | null
-): string {
-  return [section ?? '', entity ?? '', subprogramme ?? ''].join('\0')
+  return result
 }
 
 /**
@@ -1140,11 +1120,9 @@ function normalizeSubprogramme(subprogramme: string | null): string | null {
  * Fetch detailed citation info for a specific mandate
  * Used for enriching individual mandates on detail pages
  *
- * Returns both shapes over the same rows: `citation_info` (the long-standing
- * denormalized view) and `budget_locations` (the hierarchy, ordered down the
- * budget). Locations exist only for citations that sit inside the regular-budget
- * part structure, so PKM and Plan Outline citations appear in citation_info but
- * not in budget_locations.
+ * Retains every citing entity and every distinct citation site, including
+ * PKO, Plan Outline and sites outside the named subprogramme structure.
+ * Entity totals and exact location totals count distinct documents separately.
  */
 export async function getMandateCitations(
   symbol: string,
@@ -1153,11 +1131,15 @@ export async function getMandateCitations(
   citations: Mandate['citation_info']
   budgetLocations: BudgetLocation[]
   foundationalEntities: string[]
+  detailBudgetLocations: DetailBudgetLocation[]
+  entityCitationTotals: Record<string, number>
 }> {
   const query = `
     /* trace:mandates.detail-citations */
     SELECT
       c.origin_document,
+      bd.doc_type AS stream,
+      (c.section_title LIKE 'Administrative and budgetary aspects%') AS is_support,
       c.budget_part,
       c.budget_part_number,
       bp.part_title,
@@ -1174,6 +1156,7 @@ export async function getMandateCitations(
       e.entity_long
     FROM ppb2026.source_document_citations c
     LEFT JOIN systemchart.entities e ON c.entity = e.entity
+    LEFT JOIN ppb2026.budget_documents bd ON c.origin_document ~ bd.match_pattern
     LEFT JOIN ppb2026.budget_parts bp ON bp.part_number = c.budget_part_number
     WHERE c.ppb_full_document_symbol = $1
       AND ${versionPredicateSql('c', '$2')}
@@ -1205,46 +1188,30 @@ export async function getMandateCitations(
     part_in_document: row.part_in_document || '',
   }))
 
-  // The same location can arrive twice — once from the entity's "Mandates and
-  // background" narrative and once from its Legislative mandates table — so
-  // dedupe on the location itself. (In PPB 2027 this accounts for every
-  // duplicated citation: 131 of 131.)
-  const seen = new Map<string, BudgetLocation & { part_sort: number }>()
+  // Narrative and legislative-list occurrences at the same scope share one child.
+  // Keep every stream and every genuine null location; only entities are required.
+  const detailSeen = new Map<string, DetailBudgetLocation>()
   for (const row of rows) {
-    if (row.budget_part_number === null) continue
-    const location = {
-      stream: 'ppb' as const,
-      part: row.budget_part_number,
-      part_title: row.part_title ?? '',
-      part_sort: row.part_sort ?? 0,
-      section: row.section ?? '',
-      section_title: row.section_title ?? '',
+    if (!row.entity) continue
+    const location: DetailBudgetLocation = {
+      stream: row.stream,
+      part: row.budget_part_number || null,
+      part_title: row.part_title,
+      section: row.section || null,
+      section_title: row.section_title,
       programme: row.programme,
       programme_title: row.programme_title,
       entity: row.entity,
       entity_long: row.entity_long,
-      subprogramme: row.sub_programme,
-      subprogramme_number: row.sub_programme_number,
-      // Matched at the grain this location will be DISPLAYED at: a specific
-      // subprogramme counts within it, a generic one counts across the
-      // section. See getLocationCitationCounts for why.
-      total_citations_at_location:
-        locationCitationCounts.get(
-          locationCitationCountKey(
-            row.section,
-            row.entity,
-            normalizeSubprogramme(row.sub_programme)
-          )
-        ) ?? null,
+      subprogramme: normalizeSubprogramme(row.sub_programme) || null,
+      subprogramme_number: normalizeSubprogramme(row.sub_programme) ? row.sub_programme_number : null,
+      is_support: row.stream === 'pko' ? !!row.is_support : undefined,
     }
-    const key = [
-      location.part,
-      location.section,
-      location.entity,
-      location.subprogramme,
-    ].join('\u0000')
-    if (!seen.has(key)) seen.set(key, location)
+    const key = citationScopeKey(citationScope(location))
+    location.total_citations_at_location = locationCitationCounts.locations.get(key) ?? null
+    if (!detailSeen.has(key)) detailSeen.set(key, location)
   }
+  const detailBudgetLocations = [...detailSeen.values()]
 
   const foundationalEntities = [
     ...new Set(
@@ -1260,7 +1227,9 @@ export async function getMandateCitations(
 
   return {
     citations,
-    budgetLocations: sortBudgetLocations([...seen.values()]),
+    budgetLocations: sortBudgetLocations(detailBudgetLocations.filter((location): location is BudgetLocation => location.stream !== null)),
+    detailBudgetLocations,
+    entityCitationTotals: locationCitationCounts.entities,
     foundationalEntities,
   }
 }
@@ -1302,7 +1271,7 @@ export async function getMandateBySymbol(
   if (!row) return null
 
   // Fetch citations separately for the detail view
-  const { citations, budgetLocations, foundationalEntities } =
+  const { citations, budgetLocations, foundationalEntities, detailBudgetLocations, entityCitationTotals } =
     await getMandateCitations(symbol, version)
 
   return {
@@ -1328,6 +1297,8 @@ export async function getMandateBySymbol(
     agenda_item_titles: dlAgendaField(row.agenda_items, 'desc'),
     citation_info: citations,
     budget_locations: budgetLocations,
+    detail_budget_locations: detailBudgetLocations,
+    citation_entity_totals: entityCitationTotals,
     foundational_entities: foundationalEntities,
   }
 }

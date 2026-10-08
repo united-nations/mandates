@@ -121,6 +121,10 @@ export interface Mandate {
    * outside the part structure.
    */
   budget_locations?: BudgetLocation[]
+  /** Detail-only citation sites, including unclassified and non-PPB citations. */
+  detail_budget_locations?: DetailBudgetLocation[]
+  /** Distinct mandate documents per citing entity, independently counted. */
+  citation_entity_totals?: Record<string, number>
   text?: string
 
   // Resolution series facts (migration 021; null/absent when not in a series)
@@ -167,11 +171,15 @@ export interface BudgetLocation {
   /** pko only: an individual mission (false) vs. the shared support account (true). */
   is_support?: boolean
   /**
-   * How many distinct mandate documents this entity cites at this same
-   * (section, subprogramme) — this document included. `null` when the count
-   * wasn't fetched (ppb stream only; see getMandateCitations).
+   * Distinct mandate documents at this exact citation scope, including this
+   * document. General citations count their own subset, not the whole section.
+   * Absent/null when totals have not been fetched (e.g. list-query locations).
    */
   total_citations_at_location?: number | null
+}
+
+export type DetailBudgetLocation = Omit<BudgetLocation, 'stream'> & {
+  stream: BudgetStreamType | null
 }
 
 export interface BudgetSubprogrammeNode {

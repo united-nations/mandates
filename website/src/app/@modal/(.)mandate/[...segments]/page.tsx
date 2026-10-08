@@ -67,8 +67,8 @@ export default async function ModalMandatePage({
             series={series}
           />
         )}
-        <Suspense fallback={<CitationCounts mandate={mandate} entities={entities} />}>
-          <CitationCountsWithExpenditure mandate={mandate} entities={entities} />
+        <Suspense fallback={<CitationCounts mandate={mandate} entities={entities} budgetVersion={ppbVersion} />}>
+          <CitationCountsWithExpenditure mandate={mandate} entities={entities} budgetVersion={ppbVersion} />
         </Suspense>
         <MandateTopics
           subjects={mandate.subject_headings ?? []}

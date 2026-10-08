@@ -215,7 +215,7 @@ export const explainerTexts = {
   entityExpenditure: {
     heading: 'Entity expenditure',
     loading: 'Loading expenditure…',
-    note: '2025 expenditure across reported funding sources (2024/25 for peacekeeping). Figures cover the entity, not this mandate, and repeat where an entity has several citation locations.',
+    note: 'Historical expenditure covers the entity or named subprogramme, not this mandate. Financial reporting periods appear in the tooltips and may differ from the citation budget cycle.',
     period: 'Reporting period',
     source: 'Source data',
     detailHeading: 'Historical expenditure (USD)',
@@ -259,6 +259,17 @@ export const explainerTexts = {
         'Paragraph content is machine-extracted from UN documents. For authoritative content, please refer to the official UN document.',
     },
     citationCounts: {
+      title: 'Who cites this mandate in the budget?',
+      location: 'Entity / subprogramme',
+      mandates: 'Total mandates cited',
+      expenditure: 'Expenditure',
+      howTo: 'Entities with cited subprogrammes expand to show this mandate’s exact citation locations. Counts are distinct mandate documents cited by the entity or at that location; entity totals are counted independently, not added from the children.',
+      general: 'General budget citations',
+      noLocation: 'No budget location recorded',
+      showAll: 'Show all',
+      showFewer: 'Show fewer',
+      entity: 'entity',
+      entities: 'entities',
       disclaimer: 'Extracted automatically from each entity’s budget submission.',
     },
     sgReports: {
