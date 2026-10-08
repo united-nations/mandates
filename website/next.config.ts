@@ -1,4 +1,10 @@
 import type { NextConfig } from 'next'
+import { existsSync, realpathSync } from 'node:fs'
+import path from 'node:path'
+
+const installedUi = path.join(__dirname, 'node_modules/@un-eosg/ui')
+const localUi = path.resolve(__dirname, '../../ui')
+const linkedUi = existsSync(installedUi) && realpathSync(installedUi) === localUi
 
 const nextConfig: NextConfig = {
   // Standalone is what the Docker image copies and runs; omitted on Vercel,
@@ -7,6 +13,8 @@ const nextConfig: NextConfig = {
   output: process.env.VERCEL ? undefined : 'standalone',
 
   transpilePackages: ['@un-eosg/ui'],
+  // A live sibling package must be inside Turbopack's watched filesystem root.
+  turbopack: { root: linkedUi ? path.resolve(__dirname, '../..') : __dirname },
 
   serverExternalPackages: ['undifferent'],
 
