@@ -1,212 +1,516 @@
-import { UnSystemBodyLine } from '@/components/UnSystemBodyLine'
 import {
-  UnSystemRegistryDots,
-  UnSystemRegistryLegend,
-  UnSystemRegistryLink,
-} from '@/components/UnSystemRegistryCell'
-import unSystemData from '@/data/un-system.json'
-import { explainerTexts } from '@/lib/en_text_contents'
-import { SHOW_MANDATE_REGISTRY_RATING } from '@/lib/feature-flags'
-import type {
-  UnSystemBody,
-  UnSystemBodyEntry,
-  UnSystemData,
-  UnSystemEntity,
-  UnSystemGrouping,
-} from '@/types'
-import type { Metadata } from 'next'
-import Link from 'next/link'
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { ExternalLink, Mail } from 'lucide-react'
+import contactsData from '../../../public/data/organ_contacts.json'
 
-export const metadata: Metadata = {
-  title: 'UN System View',
-  description:
-    'An overview of the governing bodies of UN system entities — funds, programmes, specialized agencies, related organizations and others — with the resources each publishes on its mandates, documents, finances and results.',
+interface OrganContact {
+  entity: string | null
+  entity_long: string | null
+  governing_bodies: string
+  intergov_bodies_link: string
+  secretariats: string
+  order: string | null
+  system_grouping: string | null
 }
 
-const { bodies, organizations } = unSystemData as UnSystemData
-
-const sections: { grouping: UnSystemGrouping; title: string | null }[] = [
-  { grouping: 'secretariat', title: 'UN Secretariat' },
-  { grouping: 'fund-programme', title: 'Funds and Programmes' },
-  { grouping: 'specialized-agency', title: 'Specialized Agencies' },
-  { grouping: 'related-organization', title: 'Related Organizations' },
-  { grouping: 'regional-commission', title: 'Regional Commissions' },
-  { grouping: 'joint-hosted', title: 'Joint and Hosted Bodies' },
-]
-
-// Row and header share one column template. Both variants are written out in
-// full rather than composed at runtime: Tailwind only emits classes it can see
-// literally in the source, so a computed class name would never be generated.
-// With the rating hidden its 3.5rem column goes with it.
-const ROW_GRID_COLS = SHOW_MANDATE_REGISTRY_RATING
-  ? 'sm:grid-cols-[minmax(0,2fr)_minmax(0,2.5fr)_3.5rem_minmax(0,1.5fr)]'
-  : 'sm:grid-cols-[minmax(0,2fr)_minmax(0,2.5fr)_minmax(0,1.5fr)]'
-
-const HEADER_GRID_COLS = SHOW_MANDATE_REGISTRY_RATING
-  ? 'grid-cols-[minmax(0,2fr)_minmax(0,2.5fr)_3.5rem_minmax(0,1.5fr)]'
-  : 'grid-cols-[minmax(0,2fr)_minmax(0,2.5fr)_minmax(0,1.5fr)]'
-
-function resolveBody(entry: UnSystemBodyEntry): UnSystemBody {
-  return 'ref' in entry ? bodies[entry.ref] : entry
+/**
+ * Parse a markdown bullet-list field into an array of trimmed items.
+ * Strips leading `- ` bullets and blank lines.
+ */
+function parseBulletList(raw: string): string[] {
+  if (!raw) return []
+  return raw
+    .split('\n')
+    .map((l) => l.replace(/^[-•*]\s*/, '').trim())
+    .filter(Boolean)
 }
 
-function EntityRow({ entity }: { entity: UnSystemEntity }) {
-  return (
-    <li
-      className={`grid grid-cols-1 items-baseline gap-x-4 gap-y-2 px-4 py-3 ${ROW_GRID_COLS}`}
-    >
-      <div>
-        {/* The abbreviation is the organization's own link — no separate icon. */}
-        <a
-          href={entity.homepage}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-semibold text-foreground transition-colors hover:text-un-blue-text"
-        >
-          {entity.code}
-        </a>
-        {entity.name !== entity.code && (
-          <div className="text-sm text-foreground">{entity.name}</div>
-        )}
-      </div>
-      <ul className="space-y-1 text-sm text-foreground">
-        {entity.governingBodies.map(resolveBody).map((body) => (
-          <UnSystemBodyLine key={body.name} body={body} />
-        ))}
-      </ul>
-      {SHOW_MANDATE_REGISTRY_RATING && (
-        <div>
-          {/* One score per organization, merged across every registry that
-              covers it. Who publishes the registry does not change how far
-              the organization's mandates can actually be traced. */}
-          <UnSystemRegistryDots
-            registries={entity.mandateRegistry}
-            note={entity.registryNote}
-          />
-        </div>
-      )}
-      <div>
-        {/* Each registry on its own line — the link itself renders inline. */}
-        {entity.mandateRegistry.map((registry) => (
-          <div key={registry.url}>
-            <UnSystemRegistryLink registry={registry} />
-          </div>
-        ))}
-        {/* Everything else the organization publishes. Rank is carried by size
-            and colour only — no dotted underline, no icon. `prominent` lifts an
-            item to registry weight without scoring it. */}
-        {entity.resources.map((resource) => (
-          <div key={resource.url} className="mt-1 leading-snug">
-            <a
-              href={resource.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={
-                resource.prominent
-                  ? 'text-sm text-un-blue-text hover:underline'
-                  : 'text-sm text-foreground transition-colors hover:text-un-blue-text hover:underline'
-              }
-            >
-              {resource.name}
-            </a>
-          </div>
-        ))}
-      </div>
-    </li>
+/**
+ * Parse a markdown-style rich text field into an array of link/text segments.
+ * Handles patterns like:
+ *   - <https://example.com>
+ *   - [label](url)
+ *   - mailto: links
+ *   - plain email addresses
+ *   - plain text
+ */
+function parseRichText(raw: string): React.ReactNode[] {
+  if (
+    !raw ||
+    raw.trim() === '-' ||
+    raw.toLowerCase().trim() === 'to be updated'
   )
+    return []
+
+  // Split into lines (each line is typically a bullet)
+  const lines = raw
+    .split('\n')
+    .map((l) => l.replace(/^[-•*]\s*/, '').trim())
+    .filter(Boolean)
+
+  return lines.map((line, i) => {
+    const nodes: React.ReactNode[] = []
+    const remaining = line
+
+    // Pattern to match markdown links [text](url) and angle-bracket links <url>
+    const linkPattern =
+      /\[([^\]]+)\]\(((?:https?:\/\/|mailto:)[^)]+)\)|<((?:https?:\/\/|mailto:)[^>]+)>/g
+    let match: RegExpExecArray | null
+    let lastIndex = 0
+
+    while ((match = linkPattern.exec(remaining)) !== null) {
+      // Add any text before this match
+      if (match.index > lastIndex) {
+        const before = remaining
+          .slice(lastIndex, match.index)
+          .replace(/^:\s*/, '')
+          .trim()
+        if (before)
+          nodes.push(<span key={`t-${i}-${lastIndex}`}>{before} </span>)
+      }
+
+      const label = match[1] || match[3] || ''
+      const rawUrl = match[2] || match[3] || ''
+      // Detect email: explicit mailto:, @ in label, or http(s) URL that's actually an email
+      const looksLikeEmail =
+        rawUrl.startsWith('mailto:') ||
+        label.includes('@') ||
+        /^https?:\/\/[^/]+@/.test(rawUrl)
+      const url = looksLikeEmail
+        ? rawUrl.replace(/^https?:\/\//, '').replace(/^mailto:/, '')
+        : rawUrl
+      const href = looksLikeEmail ? `mailto:${url}` : rawUrl
+      const displayLabel = looksLikeEmail
+        ? label.includes('@')
+          ? label
+          : url
+        : label
+            .replace(/^https?:\/\//, '')
+            .replace(/^www\d*\./, '')
+            .replace(/\/$/, '')
+
+      nodes.push(
+        <a
+          key={`l-${i}-${match.index}`}
+          href={href}
+          target={looksLikeEmail ? undefined : '_blank'}
+          rel={looksLikeEmail ? undefined : 'noopener noreferrer'}
+          className="text-un-blue underline decoration-un-blue/30 underline-offset-2 transition-colors hover:text-un-blue/80 hover:decoration-un-blue"
+        >
+          {displayLabel}
+          {looksLikeEmail ? (
+            <Mail className="mb-0.5 ml-0.5 inline h-3 w-3" />
+          ) : (
+            <ExternalLink className="mb-0.5 ml-0.5 inline h-3 w-3" />
+          )}
+        </a>
+      )
+
+      lastIndex = match.index + match[0].length
+    }
+
+    // Remaining text after last match
+    if (lastIndex < remaining.length) {
+      const tail = remaining.slice(lastIndex).replace(/^:\s*/, '').trim()
+      if (tail) {
+        // Check for bare email addresses
+        const emailMatch = tail.match(
+          /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/
+        )
+        if (emailMatch) {
+          const before = tail.slice(0, emailMatch.index).trim()
+          const after = tail
+            .slice((emailMatch.index ?? 0) + emailMatch[0].length)
+            .trim()
+          if (before) nodes.push(<span key={`bt-${i}`}>{before} </span>)
+          nodes.push(
+            <a
+              key={`em-${i}`}
+              href={`mailto:${emailMatch[1]}`}
+              className="text-un-blue underline decoration-un-blue/30 underline-offset-2 transition-colors hover:text-un-blue/80 hover:decoration-un-blue"
+            >
+              {emailMatch[1]}
+              <Mail className="mb-0.5 ml-0.5 inline h-3 w-3" />
+            </a>
+          )
+          if (after) nodes.push(<span key={`at-${i}`}> {after}</span>)
+        } else {
+          nodes.push(<span key={`r-${i}`}>{tail}</span>)
+        }
+      }
+    }
+
+    if (nodes.length === 0) return null
+
+    return <li key={i}>{nodes}</li>
+  })
 }
 
-export default function UnSystemPage() {
+export default function OrgansPage() {
+  const allContacts = contactsData as OrganContact[]
+
+  // Split into entity-based orgs and standalone UN bodies
+  const entityContacts = allContacts
+    .filter((c) => c.entity)
+    .sort((a, b) => a.entity!.localeCompare(b.entity!))
+
+  const specializedAgencies = entityContacts.filter(
+    (c) => c.system_grouping === 'Specialized Agencies'
+  )
+  const fundsAndProgrammes = entityContacts.filter(
+    (c) => c.system_grouping === 'Funds and Programmes'
+  )
+  const relatedOrganizations = entityContacts.filter(
+    (c) => c.system_grouping === 'Related Organizations'
+  )
+
+  const unBodies = allContacts
+    .filter((c) => !c.entity)
+    .sort((a, b) => {
+      // Items with order come first, sorted by order ascending
+      const orderA = a.order ? parseInt(a.order, 10) : Infinity
+      const orderB = b.order ? parseInt(b.order, 10) : Infinity
+      if (orderA !== orderB) return orderA - orderB
+      // Then alphabetically by body name
+      const nameA = a.governing_bodies.replace(/^[-\s]+/, '').trim()
+      const nameB = b.governing_bodies.replace(/^[-\s]+/, '').trim()
+      return nameA.localeCompare(nameB)
+    })
+
   return (
-    <div className="pb-16">
-      {/* Hero — text-only, mirroring /secretariat. This is a standalone page,
-          not a section of the explorer, so no SectionBanner here. */}
-      <section className="mx-auto max-w-6xl px-6 pt-10 pb-8 md:px-12 lg:px-16">
+    <div className="mx-auto max-w-6xl px-6 py-6 md:px-12 lg:px-16">
+      <section className="pt-4 pb-8">
         <h1 className="mb-6 text-4xl font-bold tracking-tight text-foreground">
-          {explainerTexts.systemHeader.headline}
+          Explore intergovernmental organs and bodies.
         </h1>
-        <p className="max-w-3xl text-base leading-relaxed text-foreground md:text-lg">
-          Beyond the{' '}
-          <Link
-            href="/secretariat"
-            className="text-un-blue-text transition-colors hover:text-shuttle-gray"
-          >
-            UN Secretariat
-          </Link>
-          , the UN system comprises dozens of funds, programmes, specialized
-          agencies, related organizations, and other entities. This page gives
-          an overview of the governing bodies of UN system entities. It also
-          lists related resources that provide transparency over mandates,
-          documents, finances, or results.
+        <div className="max-w-3xl text-left text-foreground">
+          <p className="mb-0 text-base leading-relaxed md:text-lg">
+            See how the UN system is organized and who to contact.
+          </p>
+          <p className="mb-0 text-base leading-relaxed md:text-lg">
+            Explore entities across the UN system, their governing bodies and
+            contacts.
+          </p>
+        </div>
+        <p className="mt-6 max-w-3xl text-sm leading-relaxed text-muted-foreground">
+          This draft overview is for informational purposes only and
+          exhaustiveness is not guaranteed. The relevant rules of the
+          organization concerned should be consulted in order to establish the
+          legal status, functions and reporting lines of each entity listed.
         </p>
-        {SHOW_MANDATE_REGISTRY_RATING && (
-          <div className="mt-6 max-w-3xl">
-            <UnSystemRegistryLegend />
-          </div>
-        )}
       </section>
 
-      <div className="py-4">
-        {/* Normal page width, like every other content column on the site —
-            the wide break-out is no longer used anywhere. */}
-        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-16">
-          {sections.map(({ grouping, title }) => (
-            <section key={grouping} className="mb-10">
-              {title && (
-                <>
-                  <h2 className="mb-3 text-lg font-semibold text-foreground">
-                    {title}
-                  </h2>
-                  <div
-                    className={`hidden gap-x-4 px-4 pb-1.5 text-xs font-medium tracking-wide text-foreground uppercase sm:grid ${HEADER_GRID_COLS}`}
-                  >
-                    {/* Pulled out of the box inset so it left-aligns with the section title. */}
-                    <span className="-ms-4">Organization</span>
-                    <span>Governing bodies</span>
-                    <span
-                      className={
-                        SHOW_MANDATE_REGISTRY_RATING ? 'col-span-2' : ''
-                      }
-                    >
-                      {SHOW_MANDATE_REGISTRY_RATING
-                        ? 'Mandate Registry'
-                        : 'Related resources'}
-                    </span>
-                  </div>
-                </>
-              )}
-              <ul className="divide-y divide-gray-200 rounded-lg border border-border bg-white">
-                {organizations
-                  .filter((entity) => entity.grouping === grouping)
-                  .map((entity) => (
-                    <EntityRow key={entity.code} entity={entity} />
-                  ))}
-              </ul>
-            </section>
-          ))}
-        </div>
+      {/* Principal & Subsidiary UN Bodies */}
+      <div className="overflow-hidden rounded-lg border border-border bg-white shadow-sm">
+        <Table className="w-full table-fixed break-words">
+          <TableHeader>
+            <TableRow className="bg-muted/30 hover:bg-muted/30">
+              <TableHead className="w-[40%] font-semibold text-foreground">
+                Principal UN Organs
+              </TableHead>
+              <TableHead className="w-[30%] font-semibold text-foreground">
+                Official Page
+              </TableHead>
+              <TableHead className="w-[30%] font-semibold text-foreground">
+                Secretariat Contact
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {unBodies.map((contact, idx) => {
+              const links = parseRichText(contact.intergov_bodies_link)
+              const secretariat = parseRichText(contact.secretariats)
+              const hasSecretariat = secretariat.filter(Boolean).length > 0
 
-        {/* Disclaimer, demoted to a footnote — kept honest without being the
-            page's opening statement. Narrow column: the wide format is only
-            for the tables. */}
-        <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-16">
-          <p className="mb-3 max-w-3xl text-sm leading-relaxed italic">
-            This page covers the organizations of the UN system that are members
-            of the UN System Chief Executives Board for Coordination, are
-            invited to its meetings, or report financial data to it. Governing
-            bodies, contacts and links are taken from each organization&apos;s
-            own website and official documents, and may not be exhaustive. For
-            updates and corrections, please reach out using the feedback button
-            on this page.
-          </p>
-          <p className="max-w-3xl text-sm leading-relaxed italic">
-            This draft overview is for informational purposes only and
-            exhaustiveness is not guaranteed. The relevant rules of the
-            organization concerned should be consulted in order to establish the
-            legal status, functions and reporting lines of each entity listed.
-          </p>
-        </div>
+              return (
+                <TableRow key={idx} className="hover:bg-muted/10">
+                  <TableCell className="align-top font-semibold text-foreground">
+                    {contact.governing_bodies.replace(/^[-\s]+/, '').trim()}
+                  </TableCell>
+                  <TableCell className="align-top text-sm">
+                    {links.filter(Boolean).length > 0 ? (
+                      <ul className="list-disc space-y-0.5 pl-4 marker:text-un-blue">
+                        {links}
+                      </ul>
+                    ) : (
+                      <span className="text-xs text-muted-foreground italic">
+                        —
+                      </span>
+                    )}
+                  </TableCell>
+                  <TableCell className="align-top text-sm">
+                    {hasSecretariat ? (
+                      <ul className="list-disc space-y-0.5 pl-4 marker:text-un-blue">
+                        {secretariat}
+                      </ul>
+                    ) : (
+                      <span className="text-xs text-muted-foreground italic">
+                        To be updated
+                      </span>
+                    )}
+                  </TableCell>
+                </TableRow>
+              )
+            })}
+          </TableBody>
+        </Table>
       </div>
+      <p className="mt-2 mb-10" />
+
+      {/* Funds and Programmes */}
+      <div className="overflow-hidden rounded-lg border border-border bg-white shadow-sm">
+        <Table className="w-full table-fixed break-words">
+          <TableHeader>
+            <TableRow className="bg-muted/30 hover:bg-muted/30">
+              <TableHead
+                colSpan={2}
+                className="w-[40%] font-semibold text-foreground"
+              >
+                Funds and Programmes
+              </TableHead>
+              <TableHead className="w-[30%] font-semibold text-foreground">
+                Official Pages
+              </TableHead>
+              <TableHead className="w-[30%] font-semibold text-foreground">
+                Secretariat Contacts
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {fundsAndProgrammes.map((contact, idx) => {
+              const links = parseRichText(contact.intergov_bodies_link)
+              const secretariat = parseRichText(contact.secretariats)
+              const hasSecretariat = secretariat.filter(Boolean).length > 0
+
+              return (
+                <TableRow key={idx} className="hover:bg-muted/10">
+                  <TableCell className="align-top">
+                    <div>
+                      <div className="font-semibold text-foreground">
+                        {contact.entity}
+                      </div>
+                      {contact.entity_long && (
+                        <div className="text-xs text-muted-foreground">
+                          {contact.entity_long}
+                        </div>
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell className="align-top text-sm text-foreground">
+                    <ul className="list-disc space-y-0.5 pl-4 marker:text-un-blue">
+                      {parseBulletList(contact.governing_bodies).map(
+                        (item, i) => (
+                          <li
+                            key={i}
+                            className="font-medium text-foreground/75"
+                          >
+                            {item}
+                          </li>
+                        )
+                      )}
+                    </ul>
+                  </TableCell>
+                  <TableCell className="align-top text-sm">
+                    {links.filter(Boolean).length > 0 ? (
+                      <ul className="list-disc space-y-0.5 pl-4 marker:text-un-blue">
+                        {links}
+                      </ul>
+                    ) : (
+                      <span className="text-xs text-muted-foreground italic">
+                        —
+                      </span>
+                    )}
+                  </TableCell>
+                  <TableCell className="align-top text-sm">
+                    {hasSecretariat ? (
+                      <ul className="list-disc space-y-0.5 pl-4 marker:text-un-blue">
+                        {secretariat}
+                      </ul>
+                    ) : (
+                      <span className="text-xs text-muted-foreground italic">
+                        To be updated
+                      </span>
+                    )}
+                  </TableCell>
+                </TableRow>
+              )
+            })}
+          </TableBody>
+        </Table>
+      </div>
+      <p className="mt-2 mb-10" />
+
+      {/* Specialized Agencies */}
+      <div className="overflow-hidden rounded-lg border border-border bg-white shadow-sm">
+        <Table className="w-full table-fixed break-words">
+          <TableHeader>
+            <TableRow className="bg-muted/30 hover:bg-muted/30">
+              <TableHead
+                colSpan={2}
+                className="w-[40%] font-semibold text-foreground"
+              >
+                Specialized Agencies
+              </TableHead>
+              <TableHead className="w-[30%] font-semibold text-foreground">
+                Official Pages
+              </TableHead>
+              <TableHead className="w-[30%] font-semibold text-foreground">
+                Secretariat Contacts
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {specializedAgencies.map((contact, idx) => {
+              const links = parseRichText(contact.intergov_bodies_link)
+              const secretariat = parseRichText(contact.secretariats)
+              const hasSecretariat = secretariat.filter(Boolean).length > 0
+
+              return (
+                <TableRow key={idx} className="hover:bg-muted/10">
+                  <TableCell className="align-top">
+                    <div>
+                      <div className="font-semibold text-foreground">
+                        {contact.entity}
+                      </div>
+                      {contact.entity_long && (
+                        <div className="text-xs text-muted-foreground">
+                          {contact.entity_long}
+                        </div>
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell className="align-top text-sm text-foreground">
+                    <ul className="list-disc space-y-0.5 pl-4 marker:text-un-blue">
+                      {parseBulletList(contact.governing_bodies).map(
+                        (item, i) => (
+                          <li
+                            key={i}
+                            className="font-medium text-foreground/75"
+                          >
+                            {item}
+                          </li>
+                        )
+                      )}
+                    </ul>
+                  </TableCell>
+                  <TableCell className="align-top text-sm">
+                    {links.filter(Boolean).length > 0 ? (
+                      <ul className="list-disc space-y-0.5 pl-4 marker:text-un-blue">
+                        {links}
+                      </ul>
+                    ) : (
+                      <span className="text-xs text-muted-foreground italic">
+                        —
+                      </span>
+                    )}
+                  </TableCell>
+                  <TableCell className="align-top text-sm">
+                    {hasSecretariat ? (
+                      <ul className="list-disc space-y-0.5 pl-4 marker:text-un-blue">
+                        {secretariat}
+                      </ul>
+                    ) : (
+                      <span className="text-xs text-muted-foreground italic">
+                        To be updated
+                      </span>
+                    )}
+                  </TableCell>
+                </TableRow>
+              )
+            })}
+          </TableBody>
+        </Table>
+      </div>
+      <p className="mt-2 mb-10" />
+
+      {/* Related Organizations */}
+      <div className="overflow-hidden rounded-lg border border-border bg-white shadow-sm">
+        <Table className="w-full table-fixed break-words">
+          <TableHeader>
+            <TableRow className="bg-muted/30 hover:bg-muted/30">
+              <TableHead
+                colSpan={2}
+                className="w-[40%] font-semibold text-foreground"
+              >
+                Related Organizations
+              </TableHead>
+              <TableHead className="w-[30%] font-semibold text-foreground">
+                Official Pages
+              </TableHead>
+              <TableHead className="w-[30%] font-semibold text-foreground">
+                Secretariat Contacts
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {relatedOrganizations.map((contact, idx) => {
+              const links = parseRichText(contact.intergov_bodies_link)
+              const secretariat = parseRichText(contact.secretariats)
+              const hasSecretariat = secretariat.filter(Boolean).length > 0
+
+              return (
+                <TableRow key={idx} className="hover:bg-muted/10">
+                  <TableCell className="align-top">
+                    <div>
+                      <div className="font-semibold text-foreground">
+                        {contact.entity}
+                      </div>
+                      {contact.entity_long && (
+                        <div className="text-xs text-muted-foreground">
+                          {contact.entity_long}
+                        </div>
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell className="align-top text-sm text-foreground">
+                    <ul className="list-disc space-y-0.5 pl-4 marker:text-un-blue">
+                      {parseBulletList(contact.governing_bodies).map(
+                        (item, i) => (
+                          <li
+                            key={i}
+                            className="font-medium text-foreground/75"
+                          >
+                            {item}
+                          </li>
+                        )
+                      )}
+                    </ul>
+                  </TableCell>
+                  <TableCell className="align-top text-sm">
+                    {links.filter(Boolean).length > 0 ? (
+                      <ul className="list-disc space-y-0.5 pl-4 marker:text-un-blue">
+                        {links}
+                      </ul>
+                    ) : (
+                      <span className="text-xs text-muted-foreground italic">
+                        —
+                      </span>
+                    )}
+                  </TableCell>
+                  <TableCell className="align-top text-sm">
+                    {hasSecretariat ? (
+                      <ul className="list-disc space-y-0.5 pl-4 marker:text-un-blue">
+                        {secretariat}
+                      </ul>
+                    ) : (
+                      <span className="text-xs text-muted-foreground italic">
+                        To be updated
+                      </span>
+                    )}
+                  </TableCell>
+                </TableRow>
+              )
+            })}
+          </TableBody>
+        </Table>
+      </div>
+      <p className="mt-2 mb-10" />
     </div>
   )
 }

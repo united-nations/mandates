@@ -34,14 +34,13 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
     '/secretariat/entities-and-programs',
     '/secretariat/agenda-items',
     '/system',
+    '/system-new',
   ].includes(pathname)
   // Top-level nav destinations don't get a back button — it's reserved for
   // detail pages reached from within the app.
   const isMainPage = isModalOpen || isSectionPage
   const isDiffPage = pathname === '/diff'
-  // The redesigned /secretariat and /system pages are full-bleed (hero
-  // banners, colour bands) and manage their own per-section widths, so they
-  // opt out of the shared centred/padded main column.
+  // Secretariat and both System views manage their own content widths.
   const isFullBleed = isModalOpen || isSectionPage
   const columnClass = 'max-w-4xl px-8 sm:px-12 lg:max-w-6xl lg:px-16'
 
