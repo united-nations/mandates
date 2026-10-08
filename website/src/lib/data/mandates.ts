@@ -42,6 +42,7 @@ import {
 import { SUBJECT_DOMAIN_LABELS } from '@/lib/filter-constants'
 import { citationScope, citationScopeKey, parseCitationScope, citationScopePredicates } from '@/lib/citation-budget-location'
 import type { DetailBudgetLocation } from '@/types'
+import { agendaResolutionPredicate, parseAgendaScope } from '@/lib/agenda-scope'
 import {
   pairKey,
   organEntityKey,
@@ -187,7 +188,7 @@ interface CitationQueryRow {
 }
 
 /** SQL parameter value types */
-type SqlParam = string | number | boolean | null
+type SqlParam = string | string[] | number | boolean | null
 
 /** Row type for entity/organ counts */
 interface EntityCountRow {
@@ -589,7 +590,12 @@ function buildFilterClauses(
   // for the same reason as the subject filter: getAgendaItemOptions counts one
   // row per distinct "desc", so a substring match would return more documents
   // than the count the user clicked.
-  if (filters.agenda_item) {
+  if (filters.agenda_scope) {
+    const agenda = agendaResolutionPredicate(parseAgendaScope(filters.agenda_scope),paramIndex)
+    clauses.push(agenda.predicate)
+    params.push(...agenda.params)
+    paramIndex+=agenda.params.length
+  } else if (filters.agenda_item) {
     clauses.push(`
       EXISTS (
         SELECT 1 FROM jsonb_array_elements(COALESCE(d.agenda_items, '[]'::jsonb)) a

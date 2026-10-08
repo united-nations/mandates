@@ -390,6 +390,8 @@ export interface FilterOptions {
   budget_location?: string
   document_type?: string
   agenda_item?: string
+  /** Body, referenced agenda session and official item/subitem rollup. */
+  agenda_scope?: string
   full_document_symbol?: string
   min_citations?: string
   max_citations?: string

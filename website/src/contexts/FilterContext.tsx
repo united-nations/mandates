@@ -87,6 +87,10 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
         (key === 'budget_location' || current.has('budget_location'))
           ? withoutBudgetLocation(current)
           : current
+      if (key === 'agenda_scope' || key === 'agenda_item') {
+        newParams.delete('agenda_scope')
+        newParams.delete('agenda_item')
+      }
       writeParam(newParams, key, value)
 
       // Any filter change resets pagination; page/limit changes do not.
