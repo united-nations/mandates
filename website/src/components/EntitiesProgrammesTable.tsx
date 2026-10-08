@@ -1,6 +1,8 @@
 'use client'
 
 import { useState } from 'react'
+import { SearchInput } from '@un-eosg/ui/components/search-input'
+import { searchTableRows } from '@/lib/table-search'
 import { ChevronDown, ChevronRight, CircleArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { budgetLocationHref } from '@/lib/budget-location-links'
@@ -41,14 +43,20 @@ export function EntitiesProgrammesTable({
   )
   // Exceptions to the default: ancestors open, entity children collapsed.
   const [toggled, setToggled] = useState<Set<string>>(() => new Set())
+  const [query, setQuery] = useState('')
+  const searching = Boolean(query.trim())
   const visible = new Set<string>()
-  const visibleRows = rows.filter((row) => {
-    if (row.parentId && !visible.has(row.parentId)) return false
-    const open =
-      row.kind === 'entity' ? toggled.has(row.id) : !toggled.has(row.id)
-    if (open) visible.add(row.id)
-    return true
-  })
+  const visibleRows = searching
+    ? searchTableRows(rows, query, (row) =>
+        [row.label, row.detail, row.entityCode].filter(Boolean).join(' ')
+      )
+    : rows.filter((row) => {
+        if (row.parentId && !visible.has(row.parentId)) return false
+        const open =
+          row.kind === 'entity' ? toggled.has(row.id) : !toggled.has(row.id)
+        if (open) visible.add(row.id)
+        return true
+      })
   const toggle = (id: string) =>
     setToggled((previous) => {
       const next = new Set(previous)
@@ -58,7 +66,18 @@ export function EntitiesProgrammesTable({
     })
 
   return (
-    <div>
+    <div className="space-y-4">
+      <div className="w-64 max-w-full">
+        <SearchInput
+          variant="border-bottom"
+          aria-label={text.search}
+          placeholder={text.search}
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          showClear
+          onClear={() => setQuery('')}
+        />
+      </div>
       {rows.length === 0 ? (
         <p>{text.empty}</p>
       ) : (
@@ -81,11 +100,22 @@ export function EntitiesProgrammesTable({
             </TableRow>
           </TableHeader>
           <TableBody>
+            {visibleRows.length === 0 && (
+              <TableRow>
+                <TableCell
+                  colSpan={3}
+                  className="px-2 py-3 text-muted-foreground"
+                >
+                  {text.noResults}
+                </TableCell>
+              </TableRow>
+            )}
             {visibleRows.map((row) => {
               const open =
-                row.kind === 'entity'
+                searching ||
+                (row.kind === 'entity'
                   ? toggled.has(row.id)
-                  : !toggled.has(row.id)
+                  : !toggled.has(row.id))
               const expenditure = expenditures[row.id]
               const showExpenditure =
                 row.kind === 'entity' || row.kind === 'subprogramme'
@@ -97,12 +127,15 @@ export function EntitiesProgrammesTable({
                     title={[row.label, row.detail].filter(Boolean).join(' — ')}
                   >
                     <div
-                      style={{ paddingLeft: `calc(var(--budget-indent) * ${row.depth})` }}
+                      style={{
+                        paddingLeft: `calc(var(--budget-indent) * ${row.depth})`,
+                      }}
                       className="min-w-0 whitespace-nowrap"
                     >
                       {row.hasChildren ? (
                         <button
                           type="button"
+                          disabled={searching}
                           onClick={() => toggle(row.id)}
                           aria-expanded={open}
                           aria-label={`${open ? text.collapse : text.expand} ${row.label}`}
