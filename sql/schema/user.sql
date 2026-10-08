@@ -33,3 +33,7 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public       GRANT SELECT ON TABLES TO mandat
 ALTER DEFAULT PRIVILEGES IN SCHEMA ppb2026      GRANT SELECT ON TABLES TO mandates_readonly;
 ALTER DEFAULT PRIVILEGES IN SCHEMA mandates     GRANT SELECT ON TABLES TO mandates_readonly;
 ALTER DEFAULT PRIVILEGES IN SCHEMA systemchart  GRANT SELECT ON TABLES TO mandates_readonly;
+
+-- Daily-owned agenda mirror: narrow existing-table access only (migration 040).
+GRANT USAGE ON SCHEMA un_daily_mirror TO mandates_readonly;
+GRANT SELECT ON TABLE un_daily_mirror.igov_agenda_items TO mandates_readonly;
