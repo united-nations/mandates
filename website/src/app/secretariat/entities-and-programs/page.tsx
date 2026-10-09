@@ -1,3 +1,4 @@
+import { connection } from 'next/server'
 import { explainerTexts } from '@/lib/en_text_contents'
 import { EntitiesProgrammesTable } from '@/components/EntitiesProgrammesTable'
 import { getBudgetVersions } from '@/lib/data/budget-documents'
@@ -23,6 +24,8 @@ export const metadata = {
 }
 
 export default async function EntitiesAndProgramsPage() {
+  // Citation inventory requires the runtime database, unavailable during builds.
+  await connection()
   return withRequestQueryCache(async () => {
     const [versions, entities] = await Promise.all([
       getBudgetVersions(),
