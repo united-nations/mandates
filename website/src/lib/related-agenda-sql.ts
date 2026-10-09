@@ -6,8 +6,8 @@ import {
   normalizedDocumentSql,
   scRegistryResolutionSql,
 } from '#lib/agenda-scope'
-import { scAgendaSnapshot } from '#lib/sc-agenda-snapshot'
-import { scHeadingResolutions } from '#lib/sc-agenda'
+import { getScAgendaSnapshot } from '#lib/sc-agenda-snapshot'
+import { scHeadingMandateDocuments } from '#lib/sc-agenda'
 import type { RelatedOccurrence } from '#lib/related-agenda-model'
 
 /** Union the existing row targets; source PDF editions remain provenance, not filter aliases. */
@@ -40,8 +40,8 @@ export function relatedOccurrencePredicate(
         .filter((row) => row.body === 'SC')
         .flatMap(
           (row) =>
-            scHeadingResolutions(
-              scAgendaSnapshot,
+            scHeadingMandateDocuments(
+              getScAgendaSnapshot(row.session)!,
               row.session,
               row.scHeadingId!
             ) ?? []
@@ -73,7 +73,7 @@ function referenceUnionSql(start: number) {
     JOIN jsonb_to_recordset($${start}::jsonb) AS b(body text, documents text[], items text[])
       ON ${normalizedDocumentSql("a.reference->>'doc'")} = ANY(b.documents)
       AND ${normalizedAgendaItemSql("a.reference->>'item'")} = ANY(b.items)
-      AND (b.body <> 'HRC' OR ${normalizedDocumentSql('a.symbol')} ~ '^A/HRC/RES/[0-9]+/')`
+      AND (b.body <> 'HRC' OR ${normalizedDocumentSql('a.symbol')} ~ '^A/HRC/')`
 }
 
 /** Count exact latest-occurrence targets in one canonical membership query. */
@@ -88,8 +88,8 @@ export function relatedOccurrenceCountsSql(occurrences: RelatedOccurrence[]) {
       items: row.scope!.items,
       symbols:
         row.body === 'SC'
-          ? (scHeadingResolutions(
-              scAgendaSnapshot,
+          ? (scHeadingMandateDocuments(
+              getScAgendaSnapshot(row.session)!,
               row.session,
               row.scHeadingId!
             ) ?? [])
@@ -108,7 +108,7 @@ export function relatedOccurrenceCountsSql(occurrences: RelatedOccurrence[]) {
         JOIN agenda_resolution_refs a
           ON ${normalizedDocumentSql("a.reference->>'doc'")} = ANY(b.documents)
           AND ${normalizedAgendaItemSql("a.reference->>'item'")} = ANY(b.items)
-          AND (b.body <> 'HRC' OR ${normalizedDocumentSql('a.symbol')} ~ '^A/HRC/RES/[0-9]+/')
+          AND (b.body <> 'HRC' OR ${normalizedDocumentSql('a.symbol')} ~ '^A/HRC/')
         UNION
         SELECT b.id, s.symbol FROM related_count_bindings b
         JOIN (${scRegistryResolutionSql(2)}) s ON s.identity = ANY(b.symbols)

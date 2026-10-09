@@ -2,7 +2,7 @@ import {
   normalizeAgendaItem,
   type AgendaBody,
   type AgendaScope,
-} from '#lib/agenda-scope'
+} from '#lib/agenda-scope-client'
 
 export interface MirroredAgendaRow {
   row_id: string

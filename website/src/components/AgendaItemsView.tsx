@@ -1,14 +1,29 @@
 'use client'
 
-import { Fragment, useState } from 'react'
+import {
+  Fragment,
+  Suspense,
+  useCallback,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react'
+import {
+  AgendaCountResult,
+  AgendaCountSkeleton,
+} from '@/components/AgendaCountLoading'
 import { RelatedItemsCell } from '@/components/RelatedItemsCell'
 import { SegmentedControl } from '@un-eosg/ui/components/segmented-control'
 import { YearSlider } from '@un-eosg/ui/components/year-slider'
 import { SearchInput } from '@un-eosg/ui/components/search-input'
 import { useRouter } from 'next/navigation'
 import { ChevronDown, ChevronRight, CircleArrowRight } from 'lucide-react'
-import type { getAgendaPageData } from '@/lib/data/agenda-items'
-import { agendaScopeHref, type AgendaBody } from '@/lib/agenda-scope'
+import type {
+  AgendaTitleData,
+  AgendaMainCounts,
+  AgendaRelatedCounts,
+} from '@/lib/data/agenda-items'
+import { agendaScopeHref, type AgendaBody } from '@/lib/agenda-scope-client'
 import { explainerTexts } from '@/lib/en_text_contents'
 import { ParagraphNumberBadge } from '@/components/ui/paragraph-number-badge'
 import { groupAgendaNodes, visibleAgendaEntries } from '@/lib/agenda-tree'
@@ -24,11 +39,46 @@ import {
   TableCell,
 } from '@/components/ui/table'
 
-type Props = { data: Awaited<ReturnType<typeof getAgendaPageData>> }
+type Props = {
+  data: AgendaTitleData
+  mainCounts?: Promise<AgendaMainCounts>
+  relatedCounts?: Promise<AgendaRelatedCounts>
+}
 const viewHref = (body: AgendaBody, session?: string) =>
   `/secretariat/agenda-items?${new URLSearchParams({ agenda_body: body, ...(session ? { agenda_session: session } : {}) })}`
 
-export function AgendaItemsView({ data }: Props) {
+export function AgendaItemsView({ data, mainCounts, relatedCounts }: Props) {
+  const [mainResult, setMainResult] = useState<{
+    promise: Promise<AgendaMainCounts>
+    result: AgendaMainCounts
+  }>()
+  const [relatedResult, setRelatedResult] = useState<{
+    promise: Promise<AgendaRelatedCounts>
+    result: AgendaRelatedCounts
+  }>()
+  const activePromises = useRef({ mainCounts, relatedCounts })
+  useLayoutEffect(() => {
+    activePromises.current = { mainCounts, relatedCounts }
+  }, [mainCounts, relatedCounts])
+  const receiveMain = useCallback(
+    (promise: Promise<AgendaMainCounts>, result: AgendaMainCounts) => {
+      if (activePromises.current.mainCounts === promise)
+        setMainResult({ promise, result })
+    },
+    []
+  )
+  const receiveRelated = useCallback(
+    (promise: Promise<AgendaRelatedCounts>, result: AgendaRelatedCounts) => {
+      if (activePromises.current.relatedCounts === promise)
+        setRelatedResult({ promise, result })
+    },
+    []
+  )
+  // A previous body/session or refresh promise can never supply the current cells.
+  const main =
+    mainResult?.promise === mainCounts ? mainResult?.result : undefined
+  const related =
+    relatedResult?.promise === relatedCounts ? relatedResult?.result : undefined
   const router = useRouter()
   const text = explainerTexts.agendaItems
   const isSc = data.body === 'SC'
@@ -95,6 +145,16 @@ export function AgendaItemsView({ data }: Props) {
   }
   return (
     <div className="space-y-4">
+      {mainCounts && (
+        <Suspense fallback={null}>
+          <AgendaCountResult promise={mainCounts} onReady={receiveMain} />
+        </Suspense>
+      )}
+      {relatedCounts && (
+        <Suspense fallback={null}>
+          <AgendaCountResult promise={relatedCounts} onReady={receiveRelated} />
+        </Suspense>
+      )}
       <div className="flex flex-wrap items-center gap-3">
         {/* Body dots use the shared UN brand tokens and Transcripts' category mapping. */}
         <div className="[&_label:nth-of-type(1)>span]:after:bg-un-green [&_label:nth-of-type(2)>span]:after:bg-un-orange [&_label:nth-of-type(3)>span]:after:bg-un-blue [&_label:nth-of-type(4)>span]:after:bg-un-purple [&_label>span]:inline-flex [&_label>span]:items-center [&_label>span]:gap-1.5 [&_label>span]:after:size-1.5 [&_label>span]:after:shrink-0 [&_label>span]:after:rounded-full">
@@ -134,6 +194,19 @@ export function AgendaItemsView({ data }: Props) {
           )}
         </div>
       </div>
+      {(main?.status === 'unavailable' ||
+        related?.status === 'unavailable') && (
+        <p role="status" className="text-xs text-muted-foreground">
+          {text.countsUnavailable}{' '}
+          <button
+            type="button"
+            onClick={() => router.refresh()}
+            className="rounded-sm text-un-blue-text hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            {text.retryCounts}
+          </button>
+        </p>
+      )}
       <div className="w-64 max-w-full">
         <SearchInput
           variant="border-bottom"
@@ -148,9 +221,10 @@ export function AgendaItemsView({ data }: Props) {
       </div>
       {ready ? (
         <>
-          {isSc && (
+          {isSc && data.status === 'ready' && (
             <p className="text-sm text-muted-foreground">
-              {text.scExplanation}
+              {text.scExplanation.replace('{year}', data.session)}
+              {data.dataCutoff && <> {' '}{(data.coverage === 'partial' ? text.scCoveragePartial : text.scCoverageComplete).replace('{date}', data.dataCutoff)}</>}
             </p>
           )}
           <Table className="table-fixed">
@@ -168,7 +242,7 @@ export function AgendaItemsView({ data }: Props) {
                 >
                   {text.relatedItems}
                 </TableHead>
-                {isSc && (
+                {isSc && data.status === 'ready' && (
                   <TableHead
                     className="h-8 w-20 px-2 text-right sm:w-24"
                     style={{ fontSize: '12px', fontWeight: 500 }}
@@ -247,6 +321,12 @@ export function AgendaItemsView({ data }: Props) {
                 const displayTitles = node.titles.map((title) =>
                   isSc ? scHeadingDisplayTitle(title) : title
                 )
+                const countData =
+                  main?.status === 'ready' &&
+                  main.body === data.body &&
+                  main.session === ready.session
+                    ? main.nodes[node.id]
+                    : undefined
                 return (
                   <TableRow key={node.id}>
                     <TableCell
@@ -254,7 +334,7 @@ export function AgendaItemsView({ data }: Props) {
                       title={[
                         ...displayTitles,
                         ...node.allocations,
-                        ...node.titleDifferences,
+                        ...(countData?.titleDifferences ?? []),
                       ].join(' · ')}
                     >
                       <div
@@ -334,27 +414,40 @@ export function AgendaItemsView({ data }: Props) {
                       <RelatedItemsCell
                         clusters={node.relatedItems ?? []}
                         text={text}
+                        counts={related?.counts}
+                        countsPending={!related}
                       />
                     </TableCell>
-                    {isSc && (
+                    {isSc && data.status === 'ready' && (
                       <TableCell className="px-2 py-1.5 text-right whitespace-nowrap tabular-nums">
                         {node.meetingCount?.toLocaleString('en-US')}
                       </TableCell>
                     )}
                     <TableCell className="py-1.5 ps-1 pe-2 whitespace-nowrap tabular-nums">
-                      {node.symbols.length > 0 && (
-                        <span className="flex items-center justify-end gap-2">
-                          <a
-                            href={agendaScopeHref(node.scope)}
-                            aria-label={`${text.openResolutions}: ${isSc ? displayTitles.join(' / ') : node.item}`}
-                            className="inline-flex items-center gap-2 rounded-sm text-un-blue-text hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
-                          >
-                            <span className="text-foreground">
-                              {node.symbols.length.toLocaleString('en-US')}
-                            </span>
-                            <CircleArrowRight className="size-4" aria-hidden />
-                          </a>
+                      {!main ? (
+                        <AgendaCountSkeleton label={text.countsLoading} />
+                      ) : !countData ? (
+                        <span className="text-xs text-muted-foreground">
+                          {text.unavailable}
                         </span>
+                      ) : (
+                        countData.count > 0 && (
+                          <span className="flex items-center justify-end gap-2">
+                            <a
+                              href={agendaScopeHref(node.scope)}
+                              aria-label={`${text.openResolutions}: ${isSc ? displayTitles.join(' / ') : node.item}`}
+                              className="inline-flex items-center gap-2 rounded-sm text-un-blue-text hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                            >
+                              <span className="text-foreground">
+                                {countData.count.toLocaleString('en-US')}
+                              </span>
+                              <CircleArrowRight
+                                className="size-4"
+                                aria-hidden
+                              />
+                            </a>
+                          </span>
+                        )
                       )}
                     </TableCell>
                   </TableRow>

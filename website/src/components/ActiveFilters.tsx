@@ -9,7 +9,7 @@ import {
 } from '@/lib/filter-constants'
 import { FOUNDATIONAL_LABEL } from '@/lib/foundational'
 import { explainerTexts } from '@/lib/en_text_contents'
-import { parseAgendaScope, agendaScopeItemLabel } from '@/lib/agenda-scope'
+import { parseAgendaScope, agendaScopeItemLabel } from '@/lib/agenda-scope-client'
 import { relatedScopeLabel } from '@/lib/related-agenda-label'
 import {
   BUDGET_LOCATION_KEYS,

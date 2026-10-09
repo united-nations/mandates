@@ -8,9 +8,9 @@ import { buildAgendaTree, validAgendaRow, type MirroredAgendaRow, type AgendaRef
 import { agendaDocumentSymbols, agendaResolutionReferenceCte, normalizedDocumentSql, type AgendaBody } from '#lib/agenda-scope'
 import { buildHrcAgenda, hrcAgendaSessions } from '#lib/hrc-agenda'
 import { buildScAgenda, type ScRegistryResolution } from '#lib/sc-agenda'
-import { scAgendaSnapshot } from '#lib/sc-agenda-snapshot'
+import { scAgendaSnapshot, scAgendaSessions, getScAgendaSnapshot } from '#lib/sc-agenda-snapshot'
 import { scRegistryResolutionSql } from '#lib/agenda-scope'
-import { withRelatedItems, getRelatedResolutionCounts } from '#lib/related-agenda'
+import { withRelatedItems, getRelatedResolutionCounts, relatedClustersForNode } from '#lib/related-agenda'
 
 export const AGENDA_MIRROR_SQL = `
   SELECT row_id::text, igov_body, igov_session, agenda_item, title, allocation, data, synced_at
@@ -23,7 +23,7 @@ export const agendaReferencesSql = (body: AgendaBody = 'GA') => `
     reference->>'desc' AS description, reference->>'topic' AS topic, provenance
   FROM agenda_resolution_refs a
   WHERE ${normalizedDocumentSql("a.reference->>'doc'")} ${body === 'HRC' ? '= ANY($1::text[])' : '= $1'}
-  ${body === 'HRC' ? `AND ${normalizedDocumentSql('a.symbol')} ~ '^A/HRC/RES/[0-9]+/'` : ''}`
+  ${body === 'HRC' ? `AND ${normalizedDocumentSql('a.symbol')} ~ '^A/HRC/'` : ''}`
 
 // Successful JSON rows refresh every five minutes; query changes invalidate the key.
 const loadMirror = cache(unstable_cache(
@@ -44,12 +44,15 @@ const readReferences = unstable_cache(
 const loadReferences = cache((body: AgendaBody, session: string) =>
   readReferences(body, agendaDocumentSymbols(body, session))
 )
-const loadScRegistry = cache(unstable_cache(
-  () => queryMany<ScRegistryResolution>(scRegistryResolutionSql(1), [scAgendaSnapshot.resolutions]),
-  ['agenda-sc-registry-v1', createHash('sha256').update(scRegistryResolutionSql(1))
-    .update(JSON.stringify(scAgendaSnapshot.resolutions)).digest('hex')],
+const readScRegistry = unstable_cache(
+  (year: string, symbols: string[]) => queryMany<ScRegistryResolution>(scRegistryResolutionSql(1), [symbols]),
+  ['agenda-sc-registry-v2', createHash('sha256').update(scRegistryResolutionSql(1)).digest('hex')],
   { revalidate: 300 }
-))
+)
+const loadScRegistry = cache((year: string) => {
+  const snapshot = getScAgendaSnapshot(year)!
+  return readScRegistry(year, snapshot.documents ?? snapshot.resolutions)
+})
 
 function errorCode(error: unknown): string | undefined {
   if (!error || typeof error !== 'object') return undefined
@@ -65,9 +68,9 @@ async function loadAgendaPageData(body: AgendaBody, requestedSession?: string) {
   try {
     const relatedCounts = getRelatedResolutionCounts()
     if (body === 'SC') {
-      const session = scAgendaSnapshot.year
-      const [registry, counts] = await Promise.all([loadScRegistry(), relatedCounts])
-      return { status: 'ready' as const, body, sessions: [session], session, ...await withRelatedItems(buildScAgenda(scAgendaSnapshot, registry), counts) }
+      const session = requestedSession && scAgendaSessions.includes(requestedSession) ? requestedSession : scAgendaSnapshot.year
+      const [registry, counts] = await Promise.all([loadScRegistry(session), relatedCounts])
+      return { status: 'ready' as const, body, sessions: scAgendaSessions, session, ...await withRelatedItems(buildScAgenda(getScAgendaSnapshot(session)!, registry), counts) }
     }
     if (body === 'HRC') {
       const sessions = hrcAgendaSessions
@@ -90,4 +93,65 @@ async function loadAgendaPageData(body: AgendaBody, requestedSession?: string) {
     console.error('Agenda items unavailable', {code:code ?? 'unknown'})
     return {status:code==='42501' ? 'permission' as const : 'error' as const,body,sessions:[] as string[]}
   }
+}
+
+/** Lightweight title hierarchy; resolution diagnostics remain pending until enrichment. */
+export type AgendaTitleData =
+  | { status: 'ready'; body: AgendaBody; sessions: string[]; session: string; nodes: ReturnType<typeof buildAgendaTree>['nodes']; coverage?: 'complete' | 'partial'; dataCutoff?: string }
+  | { status: 'empty' | 'permission' | 'error'; body: AgendaBody; sessions: string[] }
+
+export interface AgendaMainCounts {
+  status: 'ready' | 'unavailable'
+  body: AgendaBody
+  session: string
+  nodes: Record<string, { count: number; titleDifferences: string[] }>
+}
+export interface AgendaRelatedCounts {
+  status: 'ready' | 'unavailable'
+  counts: Record<string, number>
+}
+
+/** Preserve exact title identity and subtree scopes when adding resolution metadata. */
+function titleIdentity(nodes: ReturnType<typeof buildAgendaTree>['nodes']) {
+  return JSON.stringify(nodes.map(({ id, titles, allocations, parentId, depth, scope, meetingCount }) =>
+    [id, titles, allocations, parentId, depth, scope, meetingCount]))
+}
+
+/** Separate promises let either count source finish without holding back the title table. */
+export async function getProgressiveAgendaPageData(body: AgendaBody, requestedSession?: string) {
+  return withRequestQueryCache(async () => {
+    const relatedCounts: Promise<AgendaRelatedCounts> = getRelatedResolutionCounts().then(counts => ({
+      status: counts.size ? 'ready' : 'unavailable', counts: Object.fromEntries(counts),
+    }))
+    try {
+      const rows = body === 'GA' || body === 'ECOSOC' ? await loadMirror() : []
+      const sessions = body === 'SC' ? scAgendaSessions : body === 'HRC' ? hrcAgendaSessions :
+        [...new Set(rows.filter(row => row.igov_body === body && validAgendaRow(row) && /^\d+$/.test(row.igov_session)).map(row => row.igov_session))].sort((a,b) => Number(b)-Number(a))
+      const preferred = body === 'GA' ? '80' : body === 'ECOSOC' ? '2026' : body === 'HRC' ? '62' : scAgendaSnapshot.year
+      const session = requestedSession && sessions.includes(requestedSession) ? requestedSession : sessions.includes(preferred) ? preferred : sessions[0]
+      if (!session) return { data: { status: 'empty', body, sessions } as AgendaTitleData }
+      const baseline = body === 'SC' ? buildScAgenda(getScAgendaSnapshot(session)!, []) : body === 'HRC' ? buildHrcAgenda(session, []) : buildAgendaTree(rows, body, session, [])
+      const mainCounts: Promise<AgendaMainCounts> = (async () => {
+        try {
+          const complete = body === 'SC' ? buildScAgenda(getScAgendaSnapshot(session)!, await loadScRegistry(session)) :
+            body === 'HRC' ? buildHrcAgenda(session, await loadReferences(body, session)) :
+              buildAgendaTree(rows, body, session, await loadReferences(body, session))
+          if (titleIdentity(complete.nodes) !== titleIdentity(baseline.nodes)) throw new Error('Agenda enrichment changed title hierarchy or scope')
+          return { status: 'ready', body, session, nodes: Object.fromEntries(complete.nodes.map(node =>
+            [node.id, { count: node.symbols.length, titleDifferences: node.titleDifferences }])) }
+        } catch {
+          console.error('Agenda resolution counts unavailable', { body, session })
+          return { status: 'unavailable', body, session, nodes: {} }
+        }
+      })()
+      const snapshot = body === 'SC' ? getScAgendaSnapshot(session) : undefined
+      const data: AgendaTitleData = { status: 'ready', body, sessions, session, ...(snapshot ? {coverage: snapshot.coverage ?? 'complete', dataCutoff: snapshot.dataCutoff ?? snapshot.headings.flatMap(heading => heading.meetings.map(meeting => meeting.date)).sort().at(-1)} : {}), nodes: baseline.nodes.map(node => ({
+        ...node, sourceRows: [], sourceIds: [], directSymbols: [], symbols: [],
+        relatedItems: relatedClustersForNode(node),
+      })) }
+      return { data, mainCounts, relatedCounts }
+    } catch (error) {
+      return { data: { status: errorCode(error) === '42501' ? 'permission' : 'error', body, sessions: [] } as AgendaTitleData }
+    }
+  })
 }

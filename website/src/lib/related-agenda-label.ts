@@ -1,3 +1,4 @@
+import { scAgendaClientIndex } from '#lib/sc-agenda-client-index'
 /** Small source-derived display index keeps the full audit ledger server-side. */
 import frozen from './data/ahwg-related-labels.json' with { type: 'json' }
 const labels: {
@@ -27,9 +28,17 @@ export function relatedScopeLabel(value: string) {
       : null
     if (!title) return null
     if (scope.occurrenceId === undefined) return title
-    const occurrence = Object.hasOwn(labels.occurrences, scope.occurrenceId)
-      ? labels.occurrences[scope.occurrenceId]
-      : null
+    const runtime = scAgendaClientIndex.relatedOccurrences.find(
+      (row) => row.id === scope.occurrenceId
+    )
+    const occurrence = runtime
+      ? {
+          clusterId: runtime.clusterId,
+          label: runtime.label,
+        }
+      : Object.hasOwn(labels.occurrences, scope.occurrenceId)
+        ? labels.occurrences[scope.occurrenceId]
+        : null
     return occurrence && occurrence.clusterId === scope.clusterId
       ? `${title} · ${occurrence.label}`
       : null

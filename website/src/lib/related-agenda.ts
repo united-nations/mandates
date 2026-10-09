@@ -1,8 +1,11 @@
 /** Trusted, version-qualified AHWG links and agenda-table projections. */
 import frozen from './data/ahwg-related-items.json' with { type: 'json' }
+import { applyScRelatedOccurrenceBindings } from '#lib/related-sc-bindings'
+import { scAgendaSnapshots } from '#lib/sc-agenda-snapshot'
 import {
   parseRelatedSelector,
   latestRelatedOccurrences,
+  hiddenHrcAnnotationConceptIds,
   relatedStructuralNeighbours,
   relatedScopeOccurrences,
   validateRelatedSnapshot,
@@ -22,10 +25,12 @@ import { queryMany } from './db/query'
 import type { AgendaNode } from '#lib/agenda-tree'
 import type { RelatedClusterView } from '../components/RelatedItemsCell'
 
+const sourceSnapshot = validateRelatedSnapshot(frozen as RelatedAgendaSnapshot)
+validateRelatedLabels(sourceSnapshot)
 export const relatedAgendaSnapshot = validateRelatedSnapshot(
-  frozen as RelatedAgendaSnapshot
+  applyScRelatedOccurrenceBindings(sourceSnapshot, scAgendaSnapshots)
 )
-validateRelatedLabels(relatedAgendaSnapshot)
+const hiddenAnnotations = hiddenHrcAnnotationConceptIds(relatedAgendaSnapshot)
 const latestOccurrences = latestRelatedOccurrences(relatedAgendaSnapshot)
 const structuralNeighbours = relatedStructuralNeighbours(relatedAgendaSnapshot)
 const latestCountSql = relatedOccurrenceCountsSql([
@@ -107,7 +112,11 @@ export function relatedClustersForNode(
         ? relatedScopeHref({ version, clusterId: cluster.id })
         : undefined,
       members: cluster.conceptIds
-        .filter((id) => current.has(id) || !structural.has(id))
+        .filter(
+          (id) =>
+            !hiddenAnnotations.has(id) &&
+            (current.has(id) || !structural.has(id))
+        )
         .map((id) => {
           const concept = concepts.find((row) => row.id === id)!
           return {

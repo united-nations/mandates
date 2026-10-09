@@ -1,5 +1,6 @@
 'use client'
 
+import { AgendaCountSkeleton } from '@/components/AgendaCountLoading'
 import { CircleArrowRight } from 'lucide-react'
 import type { AgendaBody } from '@/lib/agenda-scope'
 import { DisclosurePopover } from '@/components/ui/disclosure-popover'
@@ -34,7 +35,8 @@ export type RelatedItemsCellText = Record<
   | 'currentItem'
   | 'viewClusterResolutions'
   | 'viewResolutions'
-  | 'unavailable',
+  | 'unavailable'
+  | 'countsLoading',
   string
 >
 
@@ -59,9 +61,13 @@ function BodyDot({ className }: { className: string }) {
 export function RelatedItemsCell({
   clusters,
   text,
+  counts,
+  countsPending = false,
 }: {
   clusters: RelatedClusterView[]
   text: RelatedItemsCellText
+  counts?: Record<string, number>
+  countsPending?: boolean
 }) {
   if (!clusters.length) return null
   const badges = BODIES.map((body) => ({
@@ -123,39 +129,47 @@ export function RelatedItemsCell({
                           )}
                         </span>
                         <div className="shrink-0 text-xs tabular-nums">
-                          {member.occurrences.map((occurrence) => (
-                            <span key={occurrence.id}>
-                              {occurrence.status === 'verified' &&
-                              occurrence.href &&
-                              typeof occurrence.resolutionCount === 'number' ? (
-                                <a
-                                  href={occurrence.href}
-                                  className={cn(
-                                    LINK_CLASS,
-                                    'inline-flex items-center gap-1'
-                                  )}
-                                  aria-label={`${text.viewResolutions}: ${member.title} (${occurrence.resolutionCount})`}
-                                >
-                                  <span className="text-foreground">
-                                    {occurrence.resolutionCount.toLocaleString(
-                                      'en-US'
-                                    )}
-                                  </span>
-                                  <CircleArrowRight
-                                    className="size-3.5"
-                                    aria-hidden
+                          {member.occurrences.map((occurrence) => {
+                            const count =
+                              counts?.[occurrence.id] ??
+                              occurrence.resolutionCount
+                            return (
+                              <span key={occurrence.id}>
+                                {occurrence.status === 'verified' &&
+                                countsPending ? (
+                                  <AgendaCountSkeleton
+                                    label={text.countsLoading}
                                   />
-                                </a>
-                              ) : (
-                                <span
-                                  className="text-muted-foreground"
-                                  title={occurrence.reason}
-                                >
-                                  {text.unavailable}
-                                </span>
-                              )}
-                            </span>
-                          ))}
+                                ) : occurrence.status === 'verified' &&
+                                  occurrence.href &&
+                                  typeof count === 'number' ? (
+                                  <a
+                                    href={occurrence.href}
+                                    className={cn(
+                                      LINK_CLASS,
+                                      'inline-flex items-center gap-1'
+                                    )}
+                                    aria-label={`${text.viewResolutions}: ${member.title} (${count})`}
+                                  >
+                                    <span className="text-foreground">
+                                      {count.toLocaleString('en-US')}
+                                    </span>
+                                    <CircleArrowRight
+                                      className="size-3.5"
+                                      aria-hidden
+                                    />
+                                  </a>
+                                ) : (
+                                  <span
+                                    className="text-muted-foreground"
+                                    title={occurrence.reason}
+                                  >
+                                    {text.unavailable}
+                                  </span>
+                                )}
+                              </span>
+                            )
+                          })}
                         </div>
                       </div>
                     </li>

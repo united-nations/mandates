@@ -1,5 +1,5 @@
 import snapshot from './data/hrc-agenda-snapshot.json' with { type: 'json' }
-import { normalizeAgendaItem } from '#lib/agenda-scope'
+import { normalizeAgendaItem } from '#lib/agenda-scope-client'
 import type { AgendaNode, AgendaReference } from '#lib/agenda-tree'
 
 export const hrcAgendaSessions = snapshot.sessions

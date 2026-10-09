@@ -5,7 +5,7 @@ import {
   parseAgendaScope,
   type AgendaBody,
   type AgendaScope,
-} from '#lib/agenda-scope'
+} from '#lib/agenda-scope-client'
 
 export interface RelatedConcept {
   id: string
@@ -141,6 +141,7 @@ export function parseRelatedSelector(
       )
     )
       return null
+    const hidden = hiddenHrcAnnotationConceptIds(snapshot)
     const cluster = snapshot.clusters.find((row) => row.id === scope.clusterId)
     if (scope.version !== snapshot.version || !cluster) return null
     if (
@@ -149,6 +150,7 @@ export function parseRelatedSelector(
         (row) =>
           row.id === scope.occurrenceId &&
           row.status === 'verified' &&
+          !hidden.has(row.conceptId) &&
           cluster.conceptIds.includes(row.conceptId)
       )
     )
@@ -170,6 +172,7 @@ export function relatedScopeOccurrences(
   snapshot: RelatedAgendaSnapshot,
   scope: RelatedScope
 ) {
+  const hidden = hiddenHrcAnnotationConceptIds(snapshot)
   const validated = parseRelatedSelector(snapshot, JSON.stringify(scope))
   const cluster = snapshot.clusters.find(
     (row) => row.id === validated?.clusterId
@@ -178,10 +181,20 @@ export function relatedScopeOccurrences(
     ? snapshot.occurrences.filter(
         (row) =>
           row.status === 'verified' &&
+          !hidden.has(row.conceptId) &&
           cluster.conceptIds.includes(row.conceptId) &&
           (!validated?.occurrenceId || row.id === validated.occurrenceId)
       )
     : []
+}
+
+/** HRC annotation topics stay in the frozen ledger, outside displayed agenda items. */
+export function hiddenHrcAnnotationConceptIds(snapshot: RelatedAgendaSnapshot) {
+  return new Set(
+    snapshot.occurrences
+      .filter((row) => row.body === 'HRC' && /\/topic-\d/.test(row.item))
+      .map((row) => row.conceptId)
+  )
 }
 
 /** Latest represented item, regardless of count; unavailable only when none is verified. */
