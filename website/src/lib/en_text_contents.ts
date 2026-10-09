@@ -9,6 +9,15 @@ export const explainerTexts = {
     mandateSources: 'Mandate sources',
     entitiesAndPrograms: 'Entities and programmes',
     agendaItems: 'Agenda items',
+    reports: 'Reports',
+  },
+  secretariatReports: {
+    heading: 'Reports',
+    workInProgress:
+      'Work is in progress to integrate reports into the Mandate Registry.',
+    interim:
+      'In the meantime, explore information on Secretary-General’s reports:',
+    link: 'Explore Secretary-General’s reports',
   },
   entitiesAndProgrammes: {
     search: 'Search entities and programmes',

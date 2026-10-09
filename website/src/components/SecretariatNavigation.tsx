@@ -18,6 +18,7 @@ const items = [
     label: text.entitiesAndPrograms,
   },
   { href: '/secretariat/agenda-items', label: text.agendaItems },
+  { href: '/secretariat/reports', label: text.reports },
 ]
 
 export function SecretariatNavigation() {
