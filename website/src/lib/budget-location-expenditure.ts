@@ -135,7 +135,12 @@ export function matchBudgetLocationExpenditures(
       if (row.kind === 'section') value = exactlyOne(sections, ppb)
       if (row.kind === 'entity' && sections.length === 1) {
         const scoped = { ...ppb, nodes: descendants(ppb, [sections[0].id]) }
-        value = matchEntityExpenditure(path[7], names.get(path[7]), [scoped])
+        value = matchEntityExpenditure(
+          path[7],
+          names.get(path[7]) ??
+            (row.citationAvailable === false ? row.detail : undefined),
+          [scoped]
+        )
         // Same entity matcher as resolution details, but constrained to this
         // section. Preserve source provenance even where older metadata lacks metricSources.
         if (value.status === 'matched') {
@@ -150,7 +155,11 @@ export function matchBudgetLocationExpenditures(
             ])
         }
       }
-      if (row.kind === 'subprogramme') {
+      if (
+        row.kind === 'subprogramme' &&
+        path.length === 10 &&
+        path[6] === 'entity'
+      ) {
         const entity = row.parentId ? result[row.parentId] : undefined
         const [number, title] = JSON.parse(path[9]) as [number | null, string]
         if (entity?.status === 'matched' && number !== null) {

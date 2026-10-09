@@ -3,9 +3,11 @@
 import { useState } from 'react'
 import { SearchInput } from '@un-eosg/ui/components/search-input'
 import { searchTableRows } from '@/lib/table-search'
+import { clusterProgrammeRows } from '@/lib/programme-cluster-filter'
 import { ChevronDown, ChevronRight, CircleArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { budgetLocationHref } from '@/lib/budget-location-links'
+import { EntityBadge } from '@/components/EntityBadge'
 import { ExpenditureAmount } from '@/components/ExpenditureAmount'
 import {
   Table,
@@ -18,15 +20,26 @@ import {
 import type { EntityProgrammeRow } from '@/lib/entities-programmes-tree'
 import type { ExpenditureMap } from '@/lib/entity-expenditure'
 import { explainerTexts } from '@/lib/en_text_contents'
+import { HierarchicalSingleSelect } from '@un-eosg/ui/components/hierarchical-single-select'
+
+export interface ProgrammeCluster {
+  id: string
+  title: string
+  nodeIds: string[]
+  unsupportedCount?: number
+  reason?: string
+}
 
 export function EntitiesProgrammesTable({
   rows,
   expenditures,
   budgetVersion,
+  clusters,
 }: {
   rows: EntityProgrammeRow[]
   expenditures: ExpenditureMap
   budgetVersion: string
+  clusters?: ProgrammeCluster[]
 }) {
   const text = explainerTexts.entitiesAndProgrammes
   const moneyText = explainerTexts.entityExpenditure
@@ -44,19 +57,29 @@ export function EntitiesProgrammesTable({
   // Exceptions to the default: ancestors open, entity children collapsed.
   const [toggled, setToggled] = useState<Set<string>>(() => new Set())
   const [query, setQuery] = useState('')
+  const [selectedClusterId, setSelectedClusterId] = useState<string | null>(
+    null
+  )
   const searching = Boolean(query.trim())
+  const clusterSelected = selectedClusterId !== null
+  const selectedCluster = clusters?.find(
+    (cluster) => cluster.id === selectedClusterId
+  )
+  const filtered = searching || clusterSelected
   const visible = new Set<string>()
-  const visibleRows = searching
-    ? searchTableRows(rows, query, (row) =>
-        [row.label, row.detail, row.entityCode].filter(Boolean).join(' ')
-      )
-    : rows.filter((row) => {
-        if (row.parentId && !visible.has(row.parentId)) return false
-        const open =
-          row.kind === 'entity' ? toggled.has(row.id) : !toggled.has(row.id)
-        if (open) visible.add(row.id)
-        return true
-      })
+  const visibleRows = clusterSelected
+    ? clusterProgrammeRows(rows, selectedCluster?.nodeIds ?? [], query)
+    : searching
+      ? searchTableRows(rows, query, (row) =>
+          [row.label, row.detail, row.entityCode].filter(Boolean).join(' ')
+        )
+      : rows.filter((row) => {
+          if (row.parentId && !visible.has(row.parentId)) return false
+          const open =
+            row.kind === 'entity' ? toggled.has(row.id) : !toggled.has(row.id)
+          if (open) visible.add(row.id)
+          return true
+        })
   const toggle = (id: string) =>
     setToggled((previous) => {
       const next = new Set(previous)
@@ -67,17 +90,57 @@ export function EntitiesProgrammesTable({
 
   return (
     <div className="space-y-4">
-      <div className="w-64 max-w-full">
-        <SearchInput
-          variant="border-bottom"
-          aria-label={text.search}
-          placeholder={text.search}
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          showClear
-          onClear={() => setQuery('')}
-        />
+      <div className="flex flex-wrap items-center gap-3">
+        {clusters && clusters.length > 0 && (
+          <HierarchicalSingleSelect
+            label={text.cluster}
+            getLabel={(value) =>
+              value === 'all'
+                ? text.cluster
+                : (clusters.find(
+                    (cluster) => `cluster:${cluster.id}` === value
+                  )?.title ?? text.cluster)
+            }
+            groups={[
+              { id: 'all', label: text.allClusters, children: [] },
+              ...clusters.map((cluster) => ({
+                id: `cluster:${cluster.id}`,
+                label: cluster.title,
+                children: [],
+              })),
+            ]}
+            selected={
+              selectedClusterId === null
+                ? 'all'
+                : `cluster:${selectedClusterId}`
+            }
+            onChange={(value) =>
+              setSelectedClusterId(
+                value === 'all' ? null : value.slice('cluster:'.length)
+              )
+            }
+            searchPlaceholder={text.searchClusters}
+            clearSearchLabel={text.clearClusterSearch}
+            noResultsLabel={text.noClusterOptions}
+          />
+        )}
+        <div className="w-64 max-w-full">
+          <SearchInput
+            variant="border-bottom"
+            aria-label={text.search}
+            placeholder={text.search}
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            showClear
+            onClear={() => setQuery('')}
+          />
+        </div>
       </div>
+      {selectedCluster?.reason && (
+        <p role="status" className="text-sm text-muted-foreground">
+          {selectedCluster.reason}
+        </p>
+      )}
       {rows.length === 0 ? (
         <p>{text.empty}</p>
       ) : (
@@ -112,14 +175,17 @@ export function EntitiesProgrammesTable({
             )}
             {visibleRows.map((row) => {
               const open =
-                searching ||
+                filtered ||
                 (row.kind === 'entity'
                   ? toggled.has(row.id)
                   : !toggled.has(row.id))
               const expenditure = expenditures[row.id]
               const showExpenditure =
                 row.kind === 'entity' || row.kind === 'subprogramme'
-              const mandateHref = budgetLocationHref(row, budgetVersion)
+              const mandateHref =
+                row.citationAvailable === false
+                  ? undefined
+                  : budgetLocationHref(row, budgetVersion)
               return (
                 <TableRow key={row.id}>
                   <TableCell
@@ -135,7 +201,7 @@ export function EntitiesProgrammesTable({
                       {row.hasChildren ? (
                         <button
                           type="button"
-                          disabled={searching}
+                          disabled={filtered}
                           onClick={() => toggle(row.id)}
                           aria-expanded={open}
                           aria-label={`${open ? text.collapse : text.expand} ${row.label}`}
@@ -152,15 +218,15 @@ export function EntitiesProgrammesTable({
                               aria-hidden
                             />
                           )}
-                          <span
-                            className={
-                              row.kind === 'entity'
-                                ? 'shrink-0 font-semibold'
-                                : 'truncate'
-                            }
-                          >
-                            {row.label}
-                          </span>
+                          {row.kind === 'entity' ? (
+                            <EntityBadge
+                              entity={row.label}
+                              entityLong={row.detail}
+                              className="font-normal"
+                            />
+                          ) : (
+                            <span className="truncate">{row.label}</span>
+                          )}
                           {row.detail && (
                             <span className="truncate font-normal text-muted-foreground">
                               {row.detail}
@@ -169,15 +235,15 @@ export function EntitiesProgrammesTable({
                         </button>
                       ) : (
                         <span className="flex min-w-0 items-center gap-1.5 pl-[22px]">
-                          <span
-                            className={
-                              row.kind === 'entity'
-                                ? 'shrink-0 font-semibold'
-                                : 'truncate'
-                            }
-                          >
-                            {row.label}
-                          </span>
+                          {row.kind === 'entity' ? (
+                            <EntityBadge
+                              entity={row.label}
+                              entityLong={row.detail}
+                              className="font-normal"
+                            />
+                          ) : (
+                            <span className="truncate">{row.label}</span>
+                          )}
                           {row.detail && (
                             <span className="truncate font-normal text-muted-foreground">
                               {row.detail}
@@ -203,7 +269,7 @@ export function EntitiesProgrammesTable({
                       <span className="text-right">
                         {row.count.toLocaleString('en-US')}
                       </span>
-                      {
+                      {mandateHref && (
                         <Link
                           href={mandateHref}
                           prefetch={false}
@@ -213,7 +279,7 @@ export function EntitiesProgrammesTable({
                         >
                           <CircleArrowRight className="size-4" aria-hidden />
                         </Link>
-                      }
+                      )}
                     </span>
                   </TableCell>
                   <TableCell className="py-1 pr-1 pl-3 text-right leading-5 tabular-nums sm:pr-2 sm:pl-4">

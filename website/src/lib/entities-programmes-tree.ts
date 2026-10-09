@@ -1,8 +1,18 @@
 import type { BudgetEntityNode, BudgetStream } from '../types/index'
 import { explainerTexts } from '#lib/en_text_contents'
 
-type Kind = 'stream' | 'part' | 'section' | 'group' | 'entity' | 'subprogramme'
+type Kind =
+  | 'stream'
+  | 'part'
+  | 'section'
+  | 'group'
+  | 'entity'
+  | 'subprogramme'
+  | 'programme'
+  | 'component'
 export interface EntityProgrammeRow {
+  /** False for official source-only locations with no citation-backed scope. */
+  citationAvailable?: boolean
   id: string
   parentId?: string
   depth: number
