@@ -288,7 +288,7 @@ export const explainerTexts = {
     },
   },
   agendaItems: {
-    sessionWithYears: '{session} ({years})',
+    sessionWithYears: '{session} {years}',
     body: 'Agenda body',
     search: 'Search agenda items',
     noResults: 'No matching agenda items.',

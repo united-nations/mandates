@@ -44,6 +44,8 @@ export function AgendaItemsView({ data }: Props) {
   const [query, setQuery] = useState('')
   const searching = Boolean(query.trim())
   const allEntries = groupAgendaNodes(ready?.nodes ?? [])
+  const hasExpanders =
+    children.size > 0 || allEntries.some((entry) => entry.kind === 'group')
   const entries = searching
     ? searchTableRows(
         allEntries.map((entry) => ({
@@ -92,19 +94,21 @@ export function AgendaItemsView({ data }: Props) {
         <div className="flex items-center gap-2 text-sm">
           <span className="text-muted-foreground">{text.session}</span>
           {ready && data.sessions.length > 1 ? (
-            <YearSlider
-              years={data.sessions.map(Number)}
-              selectedYear={Number(ready.session)}
-              label={text.session}
-              formatLabel={(session) =>
-                agendaSessionLabel(data.body, String(session))
-              }
-              onChange={(session) =>
-                router.push(viewHref(data.body, String(session)))
-              }
-            />
+            <div className="[&_span]:font-normal">
+              <YearSlider
+                years={data.sessions.map(Number)}
+                selectedYear={Number(ready.session)}
+                label={text.session}
+                formatLabel={(session) =>
+                  agendaSessionLabel(data.body, String(session))
+                }
+                onChange={(session) =>
+                  router.push(viewHref(data.body, String(session)))
+                }
+              />
+            </div>
           ) : (
-            <span aria-disabled={!ready}>
+            <span className="font-normal" aria-disabled={!ready}>
               {ready
                 ? agendaSessionLabel(data.body, ready.session)
                 : text.sessionUnavailable}
@@ -215,26 +219,31 @@ export function AgendaItemsView({ data }: Props) {
                         style={{ paddingLeft: `${node.depth * 12}px` }}
                         className="flex min-w-0 items-start gap-2"
                       >
-                        <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center">
-                          {children.has(node.id) && (
-                            <button
-                              type="button"
-                              disabled={searching}
-                              aria-expanded={
-                                searching || !collapsed.has(node.id)
-                              }
-                              aria-label={`${collapsed.has(node.id) ? text.expand : text.collapse} ${node.item}`}
-                              className="flex size-5 shrink-0 items-center justify-center rounded-sm text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
-                              onClick={() => toggle(node.id)}
-                            >
-                              {!searching && collapsed.has(node.id) ? (
-                                <ChevronRight className="size-4" aria-hidden />
-                              ) : (
-                                <ChevronDown className="size-4" aria-hidden />
-                              )}
-                            </button>
-                          )}
-                        </span>
+                        {hasExpanders && (
+                          <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center">
+                            {children.has(node.id) && (
+                              <button
+                                type="button"
+                                disabled={searching}
+                                aria-expanded={
+                                  searching || !collapsed.has(node.id)
+                                }
+                                aria-label={`${collapsed.has(node.id) ? text.expand : text.collapse} ${node.item}`}
+                                className="flex size-5 shrink-0 items-center justify-center rounded-sm text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                                onClick={() => toggle(node.id)}
+                              >
+                                {!searching && collapsed.has(node.id) ? (
+                                  <ChevronRight
+                                    className="size-4"
+                                    aria-hidden
+                                  />
+                                ) : (
+                                  <ChevronDown className="size-4" aria-hidden />
+                                )}
+                              </button>
+                            )}
+                          </span>
+                        )}
                         <span
                           className="inline-flex min-w-5 shrink-0 items-center text-xs"
                           style={{
