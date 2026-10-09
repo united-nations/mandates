@@ -15,6 +15,7 @@ from utils.data_cleaning import (
     normalize_symbol,
 )
 from utils.llm_extract_mandates import llm_extract_mandates
+from utils.mandate_identity import resolve_rows
 
 
 # Legislative-mandate table cells list several symbols in one cell. They are
@@ -135,6 +136,7 @@ def get_mandates(
             mandates.extend(
                 get_mandates(
                     block,
+                    mandate_source=mandate_source,
                     subprogramme=current_subprogramme,
                     entity=entity,
                     file_name=file_name,
@@ -553,6 +555,8 @@ def extract_mandates(year: int):
     # commission/treaty mandates ("Commission on Narcotic Drugs resolutions",
     # ...) would otherwise import with no organ. See ppb_body_source_map.tsv.
     df["organ"] = df["source"].apply(map_body_source_to_organ)
+    identities = resolve_rows(df.fillna("").to_dict("records"))
+    df["full_document_symbol"] = [identity.key for identity in identities]
     df = df[
         [
             "origin_document",
@@ -591,6 +595,7 @@ def extract(year):
     _df.to_csv(
         f"../data/processed/ppb{year}/all_mandates.csv", index=False
     )
+    _df.to_csv(f"../data/processed/ppb{year}/all_mandates_resolved.csv", index=False)
     _df.to_excel(
         f"../data/processed/ppb{year}/all_mandates.xlsx", index=False
     )
