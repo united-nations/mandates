@@ -274,8 +274,38 @@ diff --git a/components/hierarchical-multi-select.tsx b/components/hierarchical-
 diff --git a/components/hierarchical-single-select.tsx b/components/hierarchical-single-select.tsx
 --- a/components/hierarchical-single-select.tsx
 +++ b/components/hierarchical-single-select.tsx
-@@ -121,8 +121,8 @@
+@@ -30,6 +30,11 @@
+   getLabel?: (id: string) => string;
+   /** Additional class names */
+   className?: string;
++  /** Accessible name for the selector; display selection is appended. */
++  label?: string;
++  searchPlaceholder?: string;
++  clearSearchLabel?: string;
++  noResultsLabel?: string;
+ }
+-
++
+ /**
+@@ -45,7 +50,12 @@
+   onChange,
+   getLabel,
+   className,
++  label,
++  searchPlaceholder = "Search...",
++  clearSearchLabel = "Clear search",
++  noResultsLabel = "No results found",
+ }: HierarchicalSingleSelectProps) {
++  const flat = groups.every((group) => group.children.length === 0);
+   const [open, setOpen] = React.useState(false);
+   const [expandedGroups, setExpandedGroups] = React.useState<Set<string>>(
+     new Set(),
+@@ -119,10 +129,12 @@
+         <PopoverTrigger asChild>
+           <button
              type="button"
++            aria-label={label ? `${label}: ${selectedLabel}` : selectedLabel}
++            title={selectedLabel}
              className={cn(
                pillStyles,
 -              "bg-secondary transition-colors hover:bg-gray-200",
@@ -285,44 +315,168 @@ diff --git a/components/hierarchical-single-select.tsx b/components/hierarchical
              )}
            >
              <span className="max-w-[180px] truncate font-medium">
-@@ -137,12 +137,12 @@
+@@ -137,26 +149,28 @@
            </button>
          </PopoverTrigger>
          <PopoverContent
 -          className="w-[320px] border-gray-300 bg-white p-0"
++          aria-label={label ?? selectedLabel}
 +          className="w-[320px] border-border bg-white p-0"
            align="start"
            sideOffset={4}
          >
            {/* Search input */}
 -          <div className="relative border-b border-gray-200">
+-            <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
 +          <div className="relative border-b border-border">
-             <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
++            <SearchIcon className="pointer-events-none absolute start-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
              <input
                type="text"
-@@ -180,7 +180,7 @@
+-              placeholder="Search..."
++              aria-label={searchPlaceholder}
++              placeholder={searchPlaceholder}
+               value={searchQuery}
+               onChange={(e) => setSearchQuery(e.target.value)}
+-              className={`block w-full border-0 bg-transparent py-2 pl-8 text-sm placeholder-gray-400 outline-none ${searchQuery ? "pr-8" : "pr-3"}`}
++              className={`block w-full border-0 bg-transparent py-2 ps-8 text-sm placeholder-gray-400 outline-none ${searchQuery ? "pe-8" : "pe-3"}`}
+             />
+             {searchQuery && (
+               <button
+                 type="button"
+                 onClick={() => setSearchQuery("")}
+-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 transition-colors hover:text-gray-600"
+-                aria-label="Clear search"
++                className="absolute end-3 top-1/2 -translate-y-1/2 text-gray-400 transition-colors hover:text-gray-600"
++                aria-label={clearSearchLabel}
+               >
+                 <XIcon className="h-3.5 w-3.5" />
+               </button>
+@@ -166,7 +180,7 @@
+           <div className="max-h-[300px] overflow-y-auto py-1">
+             {filteredGroups.length === 0 ? (
+               <div className="px-3 py-4 text-center text-sm text-gray-500">
+-                No results found
++                {noResultsLabel}
+               </div>
+             ) : (
+               filteredGroups.map((group) => {
+@@ -179,56 +193,64 @@
+                     {/* Group header (selectable for aggregate) */}
                      <div
                        className={cn(
-                         "flex w-full items-center gap-2 px-3 py-2 transition-colors cursor-pointer",
+-                        "flex w-full items-center gap-2 px-3 py-2 transition-colors cursor-pointer",
 -                        isGroupSelected ? "bg-gray-100" : "hover:bg-gray-50",
++                        "flex w-full items-center gap-2 px-3 transition-colors",
 +                        isGroupSelected ? "bg-secondary" : "hover:bg-muted",
                        )}
-                       onClick={() => selectItem(group.id)}
+-                      onClick={() => selectItem(group.id)}
                      >
-@@ -216,8 +216,8 @@
-                         className={cn(
-                           "flex-1 min-w-0 text-sm truncate",
-                           isGroupSelected
+-                      {/* Expand/collapse chevron */}
++                      {!flat && (
++                        <button
++                          type="button"
++                          className="w-4 shrink-0 rounded-sm focus-visible:outline-2 focus-visible:outline-un-blue"
++                          aria-label={group.label}
++                          aria-expanded={isExpanded}
++                          disabled={!hasChildren}
++                          onClick={(event) => toggleExpanded(group.id, event)}
++                        >
++                          {hasChildren && (
++                            <ChevronRightIcon
++                              aria-hidden
++                              className={cn(
++                                "h-4 w-4 text-gray-400 transition-transform duration-200 hover:text-gray-600",
++                                isExpanded && "rotate-90",
++                              )}
++                            />
++                          )}
++                        </button>
++                      )}
+                       <button
+                         type="button"
+-                        className="flex-shrink-0 w-4"
+-                        onClick={(e) => {
+-                          e.stopPropagation();
+-                          if (hasChildren) toggleExpanded(group.id, e);
+-                        }}
++                        aria-pressed={isGroupSelected}
++                        title={group.label}
++                        className="flex min-w-0 flex-1 items-center gap-2 rounded-sm py-2 text-start focus-visible:outline-2 focus-visible:outline-un-blue"
++                        onClick={() => selectItem(group.id)}
+                       >
+-                        {hasChildren && (
+-                          <ChevronRightIcon
+-                            className={cn(
+-                              "h-4 w-4 text-gray-400 transition-transform duration-200 hover:text-gray-600",
+-                              isExpanded && "rotate-90",
+-                            )}
++                        {/* Color indicator */}
++                        {group.color && (
++                          <span
++                            className="h-3 w-3 flex-shrink-0 rounded-full"
++                            style={{ backgroundColor: group.color }}
+                           />
+                         )}
++
++                        {/* Label */}
++                        <span
++                          className={cn(
++                            "flex-1 min-w-0 text-sm truncate",
++                            isGroupSelected
++                              ? "font-medium text-foreground"
++                              : "text-foreground",
++                          )}
++                        >
++                          {group.label}
++                        </span>
++
++                        {/* Count */}
++                        {hasChildren && (
++                          <span className="flex-shrink-0 text-xs text-gray-400">
++                            ({group.children.length})
++                          </span>
++                        )}
+                       </button>
+-
+-                      {/* Color indicator */}
+-                      {group.color && (
+-                        <span
+-                          className="h-3 w-3 flex-shrink-0 rounded-full"
+-                          style={{ backgroundColor: group.color }}
+-                        />
+-                      )}
+-
+-                      {/* Label */}
+-                      <span
+-                        className={cn(
+-                          "flex-1 min-w-0 text-sm truncate",
+-                          isGroupSelected
 -                            ? "font-medium text-gray-900"
 -                            : "text-gray-700",
-+                            ? "font-medium text-foreground"
-+                            : "text-foreground",
-                         )}
-                       >
-                         {group.label}
-@@ -242,8 +242,8 @@
+-                        )}
+-                      >
+-                        {group.label}
+-                      </span>
+-
+-                      {/* Count */}
+-                      {hasChildren && (
+-                        <span className="flex-shrink-0 text-xs text-gray-400">
+-                          ({group.children.length})
+-                        </span>
+-                      )}
+                     </div>
+-
++
+                     {/* Children (expandable) */}
+@@ -239,11 +261,13 @@
+                           <button
+                             type="button"
+                             key={child}
++                            aria-pressed={isChildSelected}
++                            title={child}
                              className={cn(
-                               "flex w-full items-center gap-2 pl-10 pr-3 py-1.5 text-left transition-colors",
+-                              "flex w-full items-center gap-2 pl-10 pr-3 py-1.5 text-left transition-colors",
++                              "flex w-full items-center gap-2 ps-10 pe-3 py-1.5 text-start transition-colors focus-visible:outline-2 focus-visible:outline-un-blue",
                                isChildSelected
 -                                ? "bg-gray-100"
 -                                : "hover:bg-gray-50",
@@ -331,7 +485,7 @@ diff --git a/components/hierarchical-single-select.tsx b/components/hierarchical
                              )}
                              onClick={() => selectItem(child)}
                            >
-@@ -251,7 +251,7 @@
+@@ -251,7 +275,7 @@
                                className={cn(
                                  "flex-1 min-w-0 text-sm truncate",
                                  isChildSelected
