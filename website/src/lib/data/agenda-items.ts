@@ -2,19 +2,21 @@ import 'server-only'
 import { cache } from 'react'
 import { queryMany } from '../db/query'
 import { buildAgendaTree, validAgendaRow, type MirroredAgendaRow, type AgendaReference } from '#lib/agenda-tree'
-import { agendaDocumentSymbol, agendaResolutionReferenceCte, normalizedDocumentSql, type AgendaBody } from '#lib/agenda-scope'
+import { agendaDocumentSymbol, agendaDocumentSymbols, agendaResolutionReferenceCte, normalizedDocumentSql, type AgendaBody } from '#lib/agenda-scope'
+import { buildHrcAgenda, hrcAgendaSessions } from '#lib/hrc-agenda'
 
 export const AGENDA_MIRROR_SQL = `
   SELECT row_id::text, igov_body, igov_session, agenda_item, title, allocation, data, synced_at
   FROM un_daily_mirror.igov_agenda_items
   WHERE igov_body IN ('GA', 'ECOSOC') ORDER BY row_id`
 
-export const agendaReferencesSql = () => `
+export const agendaReferencesSql = (body: AgendaBody = 'GA') => `
   WITH ${agendaResolutionReferenceCte()}
   SELECT DISTINCT symbol, reference->>'item' AS item,
     reference->>'desc' AS description, reference->>'topic' AS topic, provenance
   FROM agenda_resolution_refs a
-  WHERE ${normalizedDocumentSql("a.reference->>'doc'")} = $1`
+  WHERE ${normalizedDocumentSql("a.reference->>'doc'")} ${body === 'HRC' ? '= ANY($1::text[])' : '= $1'}
+  ${body === 'HRC' ? `AND ${normalizedDocumentSql('a.symbol')} ~ '^A/HRC/RES/[0-9]+/'` : ''}`
 
 const loadMirror = cache(() => queryMany<MirroredAgendaRow>(AGENDA_MIRROR_SQL))
 
@@ -26,6 +28,12 @@ function errorCode(error: unknown): string | undefined {
 
 export async function getAgendaPageData(body: AgendaBody, requestedSession?: string) {
   try {
+    if (body === 'HRC') {
+      const sessions = hrcAgendaSessions
+      const session = requestedSession && sessions.includes(requestedSession) ? requestedSession : sessions.includes('62') ? '62' : sessions[0]
+      const refs = await queryMany<AgendaReference>(agendaReferencesSql(body), [agendaDocumentSymbols(body, session)])
+      return { status: 'ready' as const, body, sessions, session, ...buildHrcAgenda(session, refs) }
+    }
     const rows = await loadMirror()
     const sessions = [...new Set(rows.filter(row => row.igov_body === body && validAgendaRow(row) && /^\d+$/.test(row.igov_session)).map(row => row.igov_session))].sort((a,b)=>Number(b)-Number(a))
     const preferredSession = body === 'GA' ? '80' : '2026'

@@ -383,6 +383,20 @@ grant select on digitallibrary.resolution_series to mandates_readonly;
 grant select on digitallibrary.document_paragraphs to mandates_readonly;
 grant select on digitallibrary.document_parses     to mandates_readonly;
 
+-- Issuing organ for adopted HRC outcomes, independent of their broad DL
+-- catalog body. Preserve every fallback for other/ambiguous symbol families.
+-- Whitespace, case and compatibility forms do not change symbol identity.
+create or replace function public.registry_issuing_body(document_symbol text, fallback_body text)
+returns text language sql immutable parallel safe
+as $issuing_body$
+    select case
+        when upper(regexp_replace(normalize(document_symbol, NFKC), '[[:space:]]', '', 'g'))
+            ~ '^A/HRC/(RES/((S-)?[1-9][0-9]*|OM/[1-9][0-9]*)/(R\.)?[1-9][0-9]*|PRST/([1-9][0-9]*|OS/[1-9][0-9]*)/[1-9][0-9]*)(/(CORR|REV|ADD)\.[1-9][0-9]*)?$'
+        then 'HRC'
+        else fallback_body
+    end
+$issuing_body$;
+
 -- Unified set: PPB source documents + Digital Library resolutions.
 -- Materialized (not a plain view) — the Digital Library branch full-scans
 -- ~380k rows with a regex + anti-join (~700ms) and is referenced ~16x per
@@ -422,7 +436,7 @@ select
     coalesce(dl.display_title, sd.ppb_description) as display_title,
     sd.ppb_link,
     coalesce(sd.ppb_year, extract(year from dl.date_publication)::smallint) as ppb_year,
-    sd.ppb_body,
+    public.registry_issuing_body(sd.ppb_full_document_symbol, sd.ppb_body) as ppb_body,
     -- Document type: prefer the type the Digital Library derives from the
     -- symbol family (same rule as the DL branch below), fall back to the
     -- curated Airtable ppb_type where the symbol carries no type signal
@@ -455,13 +469,13 @@ select
     dl.display_title,
     null as ppb_link,
     extract(year from dl.date_publication)::smallint as ppb_year,
-    coalesce(
+    public.registry_issuing_body(dl.document_symbol, coalesce(
         o.short,
         case dl.un_body
             when 'Other UN Bodies and Entities' then 'Other'
             else null
         end
-    ) as ppb_body,
+    )) as ppb_body,
     case
         when dl.document_symbol ~ '/PRST/' then 'Presidential Statements'
         when dl.document_symbol ~ '/DEC/'  then 'Decisions'

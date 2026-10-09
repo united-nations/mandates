@@ -1,0 +1,521 @@
+{
+  "body": "HRC",
+  "kind": "Agenda item",
+  "provenance": {
+    "repository": "ahwg-analysis",
+    "itemsFile": "work/items.json",
+    "itemsSha256": "641dac5ab521b65b2c4da20b7105bae48e5fd6c13c01510721ba262d733c40c8",
+    "appearancesFile": "work/appearances.json",
+    "appearancesSha256": "d7b18543bff149b2b6a62a7bc6ac37ee93c308a1bf2a4985bbcdc52eb1a463bf",
+    "review": "Review manually against the regular-session source agendas before extending the covered sessions."
+  },
+  "items": [
+    {
+      "item": "1",
+      "title": "Organizational and procedural matters",
+      "sourceId": "HRC-1da466cfa335",
+      "sessions": [
+        "49",
+        "50",
+        "51",
+        "52",
+        "53",
+        "54",
+        "55",
+        "56",
+        "57",
+        "58",
+        "59",
+        "60",
+        "61",
+        "62",
+        "63"
+      ]
+    },
+    {
+      "item": "2",
+      "title": "Annual report of the United Nations High Commissioner for Human Rights and reports of the Office of the High Commissioner and the Secretary-General",
+      "sourceId": "HRC-149dbd545ec0",
+      "sessions": [
+        "49",
+        "50",
+        "51",
+        "52",
+        "53",
+        "54",
+        "55",
+        "56",
+        "57",
+        "58",
+        "59",
+        "60",
+        "61",
+        "62",
+        "63"
+      ]
+    },
+    {
+      "item": "3",
+      "title": "Promotion and protection of all human rights, civil, political, economic, social and cultural rights, including the right to development",
+      "sourceId": "HRC-20302ae1e913",
+      "sessions": [
+        "49",
+        "50",
+        "51",
+        "52",
+        "53",
+        "54",
+        "55",
+        "56",
+        "57",
+        "58",
+        "59",
+        "60",
+        "61",
+        "62",
+        "63"
+      ]
+    },
+    {
+      "item": "4",
+      "title": "Human rights situations that require the Council’s attention",
+      "sourceId": "HRC-a7553f338ca8",
+      "sessions": [
+        "49",
+        "50",
+        "51",
+        "52",
+        "53",
+        "54",
+        "55",
+        "56",
+        "57",
+        "58",
+        "59",
+        "60",
+        "61",
+        "62",
+        "63"
+      ]
+    },
+    {
+      "item": "5",
+      "title": "Human rights bodies and mechanisms",
+      "sourceId": "HRC-c1d16d368a43",
+      "sessions": [
+        "49",
+        "50",
+        "51",
+        "52",
+        "53",
+        "54",
+        "55",
+        "56",
+        "57",
+        "58",
+        "59",
+        "60",
+        "61",
+        "62",
+        "63"
+      ]
+    },
+    {
+      "item": "6",
+      "title": "Universal periodic review",
+      "sourceId": "HRC-88e0a1d252e0",
+      "sessions": [
+        "49",
+        "50",
+        "51",
+        "52",
+        "53",
+        "54",
+        "55",
+        "56",
+        "57",
+        "58",
+        "59",
+        "60",
+        "61",
+        "62",
+        "63"
+      ]
+    },
+    {
+      "item": "7",
+      "title": "Human rights situation in Palestine and other occupied Arab territories",
+      "sourceId": "HRC-9232926d1f3c",
+      "sessions": [
+        "49",
+        "50",
+        "51",
+        "52",
+        "53",
+        "54",
+        "55",
+        "56",
+        "57",
+        "58",
+        "59",
+        "60",
+        "61",
+        "62",
+        "63"
+      ]
+    },
+    {
+      "item": "8",
+      "title": "Follow-up to and implementation of the Vienna Declaration and Programme of Action",
+      "sourceId": "HRC-9105ae14a668",
+      "sessions": [
+        "49",
+        "50",
+        "51",
+        "52",
+        "53",
+        "54",
+        "55",
+        "56",
+        "57",
+        "58",
+        "59",
+        "60",
+        "61",
+        "62",
+        "63"
+      ]
+    },
+    {
+      "item": "9",
+      "title": "Racism, racial discrimination, xenophobia and related forms of intolerance: follow-up to and implementation of the Durban Declaration and Programme of Action",
+      "sourceId": "HRC-187841ad456c",
+      "sessions": [
+        "49",
+        "50",
+        "51",
+        "52",
+        "53",
+        "54",
+        "55",
+        "56",
+        "57",
+        "58",
+        "59",
+        "60",
+        "61",
+        "62",
+        "63"
+      ]
+    },
+    {
+      "item": "10",
+      "title": "Technical assistance and capacity-building",
+      "sourceId": "HRC-926931fd380b",
+      "sessions": [
+        "49",
+        "50",
+        "51",
+        "52",
+        "53",
+        "54",
+        "55",
+        "56",
+        "57",
+        "58",
+        "59",
+        "60",
+        "61",
+        "62",
+        "63"
+      ]
+    }
+  ],
+  "sessions": [
+    {
+      "session": "49",
+      "symbol": "A/HRC/49/1",
+      "url": "https://documents.un.org/api/symbol/access?s=A%2FHRC%2F49%2F1&l=en&t=pdf",
+      "date": "2022-01-17",
+      "sourceKind": "Agenda and annotations",
+      "pages": {
+        "1": 1,
+        "2": 3,
+        "3": 4,
+        "4": 10,
+        "5": 12,
+        "6": 13,
+        "7": 13,
+        "8": 14,
+        "9": 14,
+        "10": 14
+      }
+    },
+    {
+      "session": "50",
+      "symbol": "A/HRC/50/1",
+      "url": "https://documents.un.org/api/symbol/access?s=A%2FHRC%2F50%2F1&l=en&t=pdf",
+      "date": "2022-05-06",
+      "sourceKind": "Agenda and annotations",
+      "pages": {
+        "1": 1,
+        "2": 3,
+        "3": 5,
+        "4": 10,
+        "5": 11,
+        "6": 12,
+        "7": 12,
+        "8": 12,
+        "9": 12,
+        "10": 13
+      }
+    },
+    {
+      "session": "51",
+      "symbol": "A/HRC/51/1",
+      "url": "https://documents.un.org/api/symbol/access?s=A%2FHRC%2F51%2F1&l=en&t=pdf",
+      "date": "2022-08-04",
+      "sourceKind": "Agenda and annotations",
+      "pages": {
+        "1": 1,
+        "2": 3,
+        "3": 4,
+        "4": 9,
+        "5": 11,
+        "6": 12,
+        "7": 12,
+        "8": 12,
+        "9": 12,
+        "10": 13
+      }
+    },
+    {
+      "session": "52",
+      "symbol": "A/HRC/52/1",
+      "url": "https://documents.un.org/api/symbol/access?s=A%2FHRC%2F52%2F1&l=en&t=pdf",
+      "date": "2023-01-19",
+      "sourceKind": "Agenda and annotations",
+      "pages": {
+        "1": 1,
+        "2": 3,
+        "3": 4,
+        "4": 9,
+        "5": 11,
+        "6": 11,
+        "7": 12,
+        "8": 12,
+        "9": 12,
+        "10": 13
+      }
+    },
+    {
+      "session": "53",
+      "symbol": "A/HRC/53/1",
+      "url": "https://documents.un.org/api/symbol/access?s=A%2FHRC%2F53%2F1&l=en&t=pdf",
+      "date": "2023-05-12",
+      "sourceKind": "Agenda and annotations",
+      "pages": {
+        "1": 1,
+        "2": 2,
+        "3": 4,
+        "4": 9,
+        "5": 10,
+        "6": 10,
+        "7": 11,
+        "8": 11,
+        "9": 11,
+        "10": 11
+      }
+    },
+    {
+      "session": "54",
+      "symbol": "A/HRC/54/1",
+      "url": "https://documents.un.org/api/symbol/access?s=A%2FHRC%2F54%2F1&l=en&t=pdf",
+      "date": "2023-08-07",
+      "sourceKind": "Agenda and annotations",
+      "pages": {
+        "1": 1,
+        "2": 3,
+        "3": 4,
+        "4": 10,
+        "5": 12,
+        "6": 13,
+        "7": 13,
+        "8": 13,
+        "9": 13,
+        "10": 14
+      }
+    },
+    {
+      "session": "55",
+      "symbol": "A/HRC/55/1",
+      "url": "https://documents.un.org/api/symbol/access?s=A%2FHRC%2F55%2F1&l=en&t=pdf",
+      "date": "2024-01-19",
+      "sourceKind": "Agenda and annotations",
+      "pages": {
+        "1": 1,
+        "2": 3,
+        "3": 5,
+        "4": 9,
+        "5": 11,
+        "6": 11,
+        "7": 11,
+        "8": 12,
+        "9": 12,
+        "10": 12
+      }
+    },
+    {
+      "session": "56",
+      "symbol": "A/HRC/56/1/Rev.1",
+      "url": "https://documents.un.org/api/symbol/access?s=A%2FHRC%2F56%2F1%2FRev.1&l=en&t=pdf",
+      "date": "2024-06-10",
+      "sourceKind": "Agenda and annotations revision",
+      "pages": {
+        "1": 1,
+        "2": 2,
+        "3": 4,
+        "4": 10,
+        "5": 11,
+        "6": 12,
+        "7": 12,
+        "8": 12,
+        "9": 12,
+        "10": 13
+      }
+    },
+    {
+      "session": "57",
+      "symbol": "A/HRC/57/1",
+      "url": "https://documents.un.org/api/symbol/access?s=A%2FHRC%2F57%2F1&l=en&t=pdf",
+      "date": "2024-07-31",
+      "sourceKind": "Agenda and annotations",
+      "pages": {
+        "1": 1,
+        "2": 3,
+        "3": 4,
+        "4": 10,
+        "5": 11,
+        "6": 12,
+        "7": 12,
+        "8": 12,
+        "9": 13,
+        "10": 14
+      }
+    },
+    {
+      "session": "58",
+      "symbol": "A/HRC/58/1",
+      "url": "https://documents.un.org/api/symbol/access?s=A%2FHRC%2F58%2F1&l=en&t=pdf",
+      "date": "2025-01-16",
+      "sourceKind": "Agenda and annotations",
+      "pages": {
+        "1": 1,
+        "2": 3,
+        "3": 5,
+        "4": 10,
+        "5": 11,
+        "6": 12,
+        "7": 12,
+        "8": 12,
+        "9": 13,
+        "10": 13
+      }
+    },
+    {
+      "session": "59",
+      "symbol": "A/HRC/59/1/Rev.1",
+      "url": "https://documents.un.org/api/symbol/access?s=A%2FHRC%2F59%2F1%2FRev.1&l=en&t=pdf",
+      "date": "2025-06-12",
+      "sourceKind": "Agenda and annotations revision",
+      "pages": {
+        "1": 1,
+        "2": 3,
+        "3": 4,
+        "4": 9,
+        "5": 10,
+        "6": 11,
+        "7": 11,
+        "8": 11,
+        "9": 12,
+        "10": 12
+      }
+    },
+    {
+      "session": "60",
+      "symbol": "A/HRC/60/1/Rev.1",
+      "url": "https://documents.un.org/api/symbol/access?s=A%2FHRC%2F60%2F1%2FRev.1&l=en&t=pdf",
+      "date": "2025-09-05",
+      "sourceKind": "Agenda and annotations revision",
+      "pages": {
+        "1": 1,
+        "2": 3,
+        "3": 4,
+        "4": 10,
+        "5": 11,
+        "6": 12,
+        "7": 12,
+        "8": 13,
+        "9": 13,
+        "10": 15
+      }
+    },
+    {
+      "session": "61",
+      "symbol": "A/HRC/61/1/Rev.1",
+      "url": "https://documents.un.org/api/symbol/access?s=A%2FHRC%2F61%2F1%2FRev.1&l=en&t=pdf",
+      "date": "2026-02-20",
+      "sourceKind": "Agenda and annotations revision",
+      "pages": {
+        "1": 1,
+        "2": 3,
+        "3": 5,
+        "4": 10,
+        "5": 11,
+        "6": 12,
+        "7": 12,
+        "8": 13,
+        "9": 13,
+        "10": 13
+      }
+    },
+    {
+      "session": "62",
+      "symbol": "A/HRC/62/1/Rev.1",
+      "url": "https://documents.un.org/api/symbol/access?s=A%2FHRC%2F62%2F1%2FRev.1&l=en&t=pdf",
+      "date": "2026-06-15",
+      "sourceKind": "Agenda and annotations revision",
+      "pages": {
+        "1": 1,
+        "2": 3,
+        "3": 4,
+        "4": 9,
+        "5": 10,
+        "6": 11,
+        "7": 11,
+        "8": 12,
+        "9": 12,
+        "10": 12
+      }
+    },
+    {
+      "session": "63",
+      "symbol": "A/HRC/63/1",
+      "url": "https://documents.un.org/api/symbol/access?s=A%2FHRC%2F63%2F1&l=en&t=pdf",
+      "date": "2026-07-30",
+      "sourceKind": "Agenda and annotations",
+      "pages": {
+        "1": 1,
+        "2": 3,
+        "3": 4,
+        "4": 10,
+        "5": 11,
+        "6": 12,
+        "7": 13,
+        "8": 13,
+        "9": 13,
+        "10": 14
+      }
+    }
+  ]
+}

@@ -1,4 +1,6 @@
-export type AgendaBody = 'GA' | 'ECOSOC'
+import hrcSnapshot from './data/hrc-agenda-snapshot.json' with { type: 'json' }
+
+export type AgendaBody = 'GA' | 'ECOSOC' | 'HRC'
 export interface AgendaScope {
   body: AgendaBody
   session: string
@@ -24,10 +26,14 @@ export function parseAgendaScope(value?: string): AgendaScope | null {
     const scope = JSON.parse(value)
     if (
       !scope ||
-      !['GA', 'ECOSOC'].includes(scope.body) ||
+      !['GA', 'ECOSOC', 'HRC'].includes(scope.body) ||
       typeof scope.session !== 'string' ||
       !/^\d+$/.test(scope.session) ||
       (scope.body === 'ECOSOC' && !/^\d{4}$/.test(scope.session)) ||
+      (scope.body === 'HRC' &&
+        !hrcSnapshot.sessions.some(
+          (source) => source.session === scope.session
+        )) ||
       typeof scope.item !== 'string' ||
       !normalizeAgendaItem(scope.item) ||
       !Array.isArray(scope.items) ||
@@ -39,6 +45,9 @@ export function parseAgendaScope(value?: string): AgendaScope | null {
       ) ||
       new Set(scope.items).size !== scope.items.length ||
       !scope.items.includes(normalizeAgendaItem(scope.item)) ||
+      (scope.body === 'HRC' &&
+        (scope.items.length !== 1 ||
+          !hrcSnapshot.items.some((item) => item.item === scope.item))) ||
       scope.items.some(
         (item: string) =>
           !item.startsWith(normalizeAgendaItem(scope.item)!) ||
@@ -53,7 +62,21 @@ export function parseAgendaScope(value?: string): AgendaScope | null {
 }
 
 export const agendaDocumentSymbol = (body: AgendaBody, session: string) =>
-  body === 'GA' ? `A/${session}/251` : `E/${session}/100`
+  body === 'GA'
+    ? `A/${session}/251`
+    : body === 'HRC'
+      ? `A/HRC/${session}/1`
+      : `E/${session}/100`
+
+/** Only the base agenda and the revision actually present in the verified snapshot. */
+export function agendaDocumentSymbols(body: AgendaBody, session: string) {
+  const base = agendaDocumentSymbol(body, session)
+  const source =
+    body === 'HRC'
+      ? hrcSnapshot.sessions.find((entry) => entry.session === session)
+      : undefined
+  return [...new Set([base, ...(source ? [source.symbol.toUpperCase()] : [])])]
+}
 
 export const agendaScopeHref = (scope: AgendaScope) =>
   `/secretariat?${new URLSearchParams({ agenda_scope: JSON.stringify(scope), group: '0' })}`
@@ -100,9 +123,15 @@ export function agendaResolutionPredicate(
     predicate: `d.ppb_full_document_symbol IN (
       WITH ${agendaResolutionReferenceCte()}
       SELECT symbol FROM agenda_resolution_refs a
-      WHERE ${normalizedDocumentSql("a.reference->>'doc'")} = $${start}
+      WHERE ${normalizedDocumentSql("a.reference->>'doc'")} ${scope.body === 'HRC' ? `= ANY($${start}::text[])` : `= $${start}`}
+      ${scope.body === 'HRC' ? `AND ${normalizedDocumentSql('a.symbol')} ~ '^A/HRC/RES/[0-9]+/'` : ''}
       AND ${normalizedAgendaItemSql("a.reference->>'item'")} = ANY($${start + 1}::text[])
     )`,
-    params: [agendaDocumentSymbol(scope.body, scope.session), scope.items],
+    params: [
+      scope.body === 'HRC'
+        ? agendaDocumentSymbols(scope.body, scope.session)
+        : agendaDocumentSymbol(scope.body, scope.session),
+      scope.items,
+    ],
   }
 }

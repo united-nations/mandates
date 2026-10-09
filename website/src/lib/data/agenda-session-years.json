@@ -1,0 +1,59 @@
+{
+  "GA": {
+    "source": "https://research.un.org/en/docs/ga/quick/regular/79",
+    "years": {
+      "71": "2016–2017",
+      "74": "2019–2020",
+      "75": "2020–2021",
+      "77": "2022–2023",
+      "78": "2023–2024",
+      "79": "2024–2025",
+      "80": "2025–2026",
+      "81": "2026–2027"
+    }
+  },
+  "ECOSOC": {
+    "sources": {
+      "2023": "https://digitallibrary.un.org/record/4021667",
+      "2024": "https://digitallibrary.un.org/record/4016152/files/E_2024_1-EN.pdf",
+      "2025": "https://digitallibrary.un.org/record/4054136/files/E_2025_1-EN.pdf",
+      "2026": "https://igov.un.org/igov/api/lookups/getGeneralInfo/2026",
+      "2027": "https://journal.un.org/en/new-york/generalinformations/2026-09-17"
+    },
+    "years": {
+      "2023": "2022–2023",
+      "2024": "2023–2024",
+      "2025": "2024–2025",
+      "2026": "2025–2026",
+      "2027": "2026–2027"
+    }
+  },
+  "HRC": {
+    "source": "https://hrcportal.ohchr.org/hrc-sessions",
+    "sources": {
+      "49": "https://hrcportal.ohchr.org/49th-regular-session-human-rights-council",
+      "50": "https://hrcportal.ohchr.org/50th-regular-session-human-rights-council",
+      "51": "https://hrcportal.ohchr.org/51st-regular-session-human-rights-council",
+      "52": "https://hrcportal.ohchr.org/52nd-regular-session-human-rights-council",
+      "53": "https://hrcportal.ohchr.org/53rd-regular-session-human-rights-council",
+      "54": "https://hrcportal.ohchr.org/54th-regular-session-human-rights-council"
+    },
+    "years": {
+      "49": "2022",
+      "50": "2022",
+      "51": "2022",
+      "52": "2023",
+      "53": "2023",
+      "54": "2023",
+      "55": "2024",
+      "56": "2024",
+      "57": "2024",
+      "58": "2025",
+      "59": "2025",
+      "60": "2025",
+      "61": "2026",
+      "62": "2026",
+      "63": "2026"
+    }
+  }
+}

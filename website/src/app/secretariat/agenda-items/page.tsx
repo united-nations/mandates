@@ -12,7 +12,12 @@ export default async function AgendaItemsPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>
 }) {
   const params = await searchParams
-  const body = params.agenda_body === 'ECOSOC' ? 'ECOSOC' : 'GA'
+  const body =
+    params.agenda_body === 'HRC'
+      ? 'HRC'
+      : params.agenda_body === 'ECOSOC'
+        ? 'ECOSOC'
+        : 'GA'
   const data = await getAgendaPageData(
     body,
     typeof params.agenda_session === 'string'

@@ -1,7 +1,7 @@
 'use client'
 
 import { Fragment, useState } from 'react'
-import { BinaryToggle } from '@un-eosg/ui/components/binary-toggle'
+import { SegmentedControl } from '@un-eosg/ui/components/segmented-control'
 import { YearSlider } from '@un-eosg/ui/components/year-slider'
 import { SearchInput } from '@un-eosg/ui/components/search-input'
 import { useRouter } from 'next/navigation'
@@ -12,6 +12,7 @@ import { explainerTexts } from '@/lib/en_text_contents'
 import { ParagraphNumberBadge } from '@/components/ui/paragraph-number-badge'
 import { groupAgendaNodes, visibleAgendaEntries } from '@/lib/agenda-tree'
 import { searchTableRows } from '@/lib/table-search'
+import { agendaSessionLabel } from '@/lib/agenda-session-label'
 import {
   Table,
   TableHeader,
@@ -78,12 +79,12 @@ export function AgendaItemsView({ data }: Props) {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-3">
-        <BinaryToggle
-          variant="segmented"
+        <SegmentedControl
           label={text.body}
           options={[
             { value: 'GA', label: text.ga },
             { value: 'ECOSOC', label: text.ecosoc },
+            { value: 'HRC', label: text.hrc },
           ]}
           value={data.body}
           onValueChange={(body) => router.push(viewHref(body as AgendaBody))}
@@ -95,14 +96,18 @@ export function AgendaItemsView({ data }: Props) {
               years={data.sessions.map(Number)}
               selectedYear={Number(ready.session)}
               label={text.session}
-              formatLabel={String}
+              formatLabel={(session) =>
+                agendaSessionLabel(data.body, String(session))
+              }
               onChange={(session) =>
                 router.push(viewHref(data.body, String(session)))
               }
             />
           ) : (
             <span aria-disabled={!ready}>
-              {ready?.session ?? text.sessionUnavailable}
+              {ready
+                ? agendaSessionLabel(data.body, ready.session)
+                : text.sessionUnavailable}
             </span>
           )}
         </div>
@@ -299,7 +304,9 @@ export function AgendaItemsView({ data }: Props) {
           className="rounded-md border border-border px-3 py-3 text-sm text-muted-foreground"
         >
           {data.status === 'permission'
-            ? text.permission
+            ? data.body === 'HRC'
+              ? text.hrcPermission
+              : text.permission
             : data.status === 'empty'
               ? text.empty
               : text.error}
