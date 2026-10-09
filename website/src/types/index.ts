@@ -392,6 +392,8 @@ export interface FilterOptions {
   agenda_item?: string
   /** Body, referenced agenda session and official item/subitem rollup. */
   agenda_scope?: string
+  /** Immutable AHWG source version and cluster/occurrence IDs. */
+  related_scope?: string
   full_document_symbol?: string
   min_citations?: string
   max_citations?: string

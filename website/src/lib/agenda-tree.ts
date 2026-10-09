@@ -22,6 +22,7 @@ export interface AgendaReference {
   provenance: string
 }
 export interface AgendaNode {
+  relatedItems?: import('../components/RelatedItemsCell').RelatedClusterView[]
   id: string
   item: string
   token: string

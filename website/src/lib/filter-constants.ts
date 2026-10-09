@@ -62,6 +62,7 @@ export const FILTER_PARAMS = [
   'document_type',
   'agenda_item',
   'agenda_scope',
+  'related_scope',
   'full_document_symbol',
   'min_citations',
   'max_citations',
@@ -94,6 +95,7 @@ export const FILTER_ONLY_PARAMS = [
   'document_type',
   'agenda_item',
   'agenda_scope',
+  'related_scope',
   'full_document_symbol',
   'min_citations',
   'max_citations',
@@ -170,6 +172,7 @@ export function parseSearchParams(
     document_type: getString('document_type'),
     agenda_item: getString('agenda_item'),
     agenda_scope: getString('agenda_scope'),
+    related_scope: getString('related_scope'),
     full_document_symbol: getString('full_document_symbol'),
     min_citations: getString('min_citations'),
     max_citations: getString('max_citations'),
@@ -178,6 +181,10 @@ export function parseSearchParams(
     limit: getString('limit') || '15',
   }
   const location = getString('budget_location')
+  if (filters.related_scope) {
+    delete filters.agenda_scope
+    delete filters.agenda_item
+  }
   if (filters.agenda_scope) delete filters.agenda_item
   if (location) {
     for (const key of BUDGET_LOCATION_KEYS) delete filters[key]

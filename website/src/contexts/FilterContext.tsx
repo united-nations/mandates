@@ -87,9 +87,14 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
         (key === 'budget_location' || current.has('budget_location'))
           ? withoutBudgetLocation(current)
           : current
-      if (key === 'agenda_scope' || key === 'agenda_item') {
+      if (
+        key === 'agenda_scope' ||
+        key === 'agenda_item' ||
+        key === 'related_scope'
+      ) {
         newParams.delete('agenda_scope')
         newParams.delete('agenda_item')
+        newParams.delete('related_scope')
       }
       writeParam(newParams, key, value)
 

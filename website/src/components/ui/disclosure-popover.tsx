@@ -41,6 +41,8 @@ import { useEffect, useRef, useState, type ReactNode } from 'react'
    cross the gap between button and panel without the panel vanishing underneath
    it. */
 const HOVER_DELAY_MS = 150
+const FOCUSABLE =
+  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex="0"]'
 
 export function DisclosurePopover({
   label,
@@ -51,6 +53,7 @@ export function DisclosurePopover({
   contentClassName,
   trigger,
   children,
+  interactive = false,
 }: {
   /** Accessible name for the trigger, and the panel's own label. */
   label: string
@@ -66,9 +69,12 @@ export function DisclosurePopover({
    */
   trigger: ReactNode
   children: ReactNode
+  /** Allow Tab navigation into panel controls; existing context panels stay read-only. */
+  interactive?: boolean
 }) {
   const [open, setOpen] = useState(false)
   const triggerRef = useRef<HTMLButtonElement | null>(null)
+  const contentRef = useRef<HTMLDivElement | null>(null)
   const openTimerRef = useRef<number | null>(null)
   const closeTimerRef = useRef<number | null>(null)
   // A click fires focus before it fires click; without this guard the focus
@@ -103,7 +109,11 @@ export function DisclosurePopover({
     if (event.pointerType === 'touch') return
     cancelTimers()
     closeTimerRef.current = window.setTimeout(
-      () => setOpen(false),
+      () => {
+        if (interactive && contentRef.current?.contains(document.activeElement))
+          return
+        setOpen(false)
+      },
       HOVER_DELAY_MS
     )
   }
@@ -148,11 +158,22 @@ export function DisclosurePopover({
               setOpen(true)
             }
           }}
+          onKeyDown={(event) => {
+            if (!interactive || !open || event.key !== 'Tab' || event.shiftKey)
+              return
+            const first = contentRef.current?.querySelector<HTMLElement>(FOCUSABLE)
+            if (first) {
+              event.preventDefault()
+              cancelTimers()
+              first.focus()
+            }
+          }}
         >
           {trigger}
         </button>
       </PopoverTrigger>
       <PopoverContent
+        ref={contentRef}
         side={side}
         align={align}
         sideOffset={sideOffset}
@@ -163,9 +184,49 @@ export function DisclosurePopover({
         )}
         onPointerEnter={hoverKeepOpen}
         onPointerLeave={hoverClose}
-        // Focus stays on the button (or wherever it was) while the panel is
-        // open — the panel holds nothing focusable, and moving focus into it
-        // would turn every hover-open into a focus trap.
+        onFocusCapture={() => {
+          if (interactive) cancelTimers()
+        }}
+        onFocusOutside={(event) => {
+          if (interactive && event.target === triggerRef.current)
+            event.preventDefault()
+        }}
+        onKeyDown={(event) => {
+          if (!interactive || event.key !== 'Tab') return
+          const controls = Array.from(
+            contentRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? []
+          )
+          if (event.shiftKey && document.activeElement === controls[0]) {
+            event.preventDefault()
+            triggerRef.current?.focus()
+          } else if (
+            !event.shiftKey &&
+            document.activeElement === controls[controls.length - 1]
+          ) {
+            // Radix loops Tab within content, even for non-modal popovers.
+            // Resume the surrounding page's tab order after this trigger.
+            const pageControls = Array.from(
+              document.querySelectorAll<HTMLElement>(FOCUSABLE)
+            ).filter(
+              (control) =>
+                !contentRef.current?.contains(control) &&
+                control.tabIndex >= 0 &&
+                !control.closest('[inert]') &&
+                control.getClientRects().length > 0
+            )
+            const trigger = triggerRef.current
+            const next = trigger
+              ? pageControls[pageControls.indexOf(trigger) + 1]
+              : undefined
+            event.preventDefault()
+            cancelTimers()
+            setOpen(false)
+            if (!next) suppressFocusOpenRef.current = true
+            ;(next ?? trigger)?.focus()
+          }
+        }}
+        // Hover never moves focus; interactive panels accept Tab explicitly
+        // from the trigger so their links join the surrounding page's order.
         onOpenAutoFocus={(event) => event.preventDefault()}
         // Radix would return focus to the trigger on *every* close; the ruled
         // behaviour ties focus return to Escape alone — an outside click puts

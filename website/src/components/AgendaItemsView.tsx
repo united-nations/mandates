@@ -1,6 +1,7 @@
 'use client'
 
 import { Fragment, useState } from 'react'
+import { RelatedItemsCell } from '@/components/RelatedItemsCell'
 import { SegmentedControl } from '@un-eosg/ui/components/segmented-control'
 import { YearSlider } from '@un-eosg/ui/components/year-slider'
 import { SearchInput } from '@un-eosg/ui/components/search-input'
@@ -161,6 +162,12 @@ export function AgendaItemsView({ data }: Props) {
                 >
                   {isSc ? text.matters : text.item}
                 </TableHead>
+                <TableHead
+                  className="h-8 w-40 ps-2 pe-1"
+                  style={{ fontSize: '12px', fontWeight: 500 }}
+                >
+                  {text.relatedItems}
+                </TableHead>
                 {isSc && (
                   <TableHead
                     className="h-8 w-20 px-2 text-right sm:w-24"
@@ -170,7 +177,7 @@ export function AgendaItemsView({ data }: Props) {
                   </TableHead>
                 )}
                 <TableHead
-                  className="h-8 w-28 px-2 text-right sm:w-36"
+                  className="h-8 w-20 ps-1 pe-2 text-right sm:w-24"
                   style={{ fontSize: '12px', fontWeight: 500 }}
                 >
                   {text.resolutions}
@@ -181,7 +188,7 @@ export function AgendaItemsView({ data }: Props) {
               {entries.length === 0 && (
                 <TableRow>
                   <TableCell
-                    colSpan={isSc ? 3 : 2}
+                    colSpan={isSc ? 4 : 3}
                     className="px-2 py-3 text-muted-foreground"
                   >
                     {isSc ? text.noMatters : text.noResults}
@@ -198,7 +205,7 @@ export function AgendaItemsView({ data }: Props) {
                   return (
                     <TableRow key={entry.id}>
                       <TableCell
-                        colSpan={2}
+                        colSpan={isSc ? 4 : 3}
                         className="overflow-hidden bg-muted/30 px-2 py-2 font-bold"
                       >
                         <button
@@ -323,12 +330,18 @@ export function AgendaItemsView({ data }: Props) {
                         </span>
                       </div>
                     </TableCell>
+                    <TableCell className="py-1.5 ps-2 pe-1">
+                      <RelatedItemsCell
+                        clusters={node.relatedItems ?? []}
+                        text={text}
+                      />
+                    </TableCell>
                     {isSc && (
                       <TableCell className="px-2 py-1.5 text-right whitespace-nowrap tabular-nums">
                         {node.meetingCount?.toLocaleString('en-US')}
                       </TableCell>
                     )}
-                    <TableCell className="px-2 py-1.5 whitespace-nowrap tabular-nums">
+                    <TableCell className="py-1.5 ps-1 pe-2 whitespace-nowrap tabular-nums">
                       {node.symbols.length > 0 && (
                         <span className="flex items-center justify-end gap-2">
                           <a

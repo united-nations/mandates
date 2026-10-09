@@ -43,6 +43,7 @@ import { SUBJECT_DOMAIN_LABELS } from '@/lib/filter-constants'
 import { citationScope, citationScopeKey, parseCitationScope, citationScopePredicates } from '@/lib/citation-budget-location'
 import type { DetailBudgetLocation } from '@/types'
 import { agendaResolutionPredicate, parseAgendaScope } from '@/lib/agenda-scope'
+import { relatedResolutionPredicate } from '@/lib/related-agenda'
 import {
   pairKey,
   organEntityKey,
@@ -590,7 +591,12 @@ function buildFilterClauses(
   // for the same reason as the subject filter: getAgendaItemOptions counts one
   // row per distinct "desc", so a substring match would return more documents
   // than the count the user clicked.
-  if (filters.agenda_scope) {
+  if (filters.related_scope) {
+    const related = relatedResolutionPredicate(filters.related_scope, paramIndex)
+    clauses.push(related.predicate)
+    params.push(...related.params)
+    paramIndex += related.params.length
+  } else if (filters.agenda_scope) {
     const agenda = agendaResolutionPredicate(parseAgendaScope(filters.agenda_scope),paramIndex)
     clauses.push(agenda.predicate)
     params.push(...agenda.params)

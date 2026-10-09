@@ -10,6 +10,7 @@ import {
 import { FOUNDATIONAL_LABEL } from '@/lib/foundational'
 import { explainerTexts } from '@/lib/en_text_contents'
 import { parseAgendaScope, agendaScopeItemLabel } from '@/lib/agenda-scope'
+import { relatedScopeLabel } from '@/lib/related-agenda-label'
 import {
   BUDGET_LOCATION_KEYS,
   budgetLocationLabel,
@@ -233,7 +234,13 @@ export function ActiveFilters({
             />
           )}
 
-          {displayFilters.agenda_scope && (
+          {displayFilters.related_scope && (
+            <FilterBadge
+              label={`${explainerTexts.agendaItems.relatedItems}: ${relatedScopeLabel(displayFilters.related_scope) ?? explainerTexts.agendaItems.unavailable}`}
+              onClear={() => clearFilter('related_scope')}
+            />
+          )}
+          {displayFilters.agenda_scope && !displayFilters.related_scope && (
             <FilterBadge
               label={(() => {
                 const scope = parseAgendaScope(displayFilters.agenda_scope)
@@ -244,12 +251,14 @@ export function ActiveFilters({
               onClear={() => clearFilter('agenda_scope')}
             />
           )}
-          {displayFilters.agenda_item && !displayFilters.agenda_scope && (
-            <FilterBadge
-              label={`Agenda: ${displayFilters.agenda_item}`}
-              onClear={() => clearFilter('agenda_item')}
-            />
-          )}
+          {displayFilters.agenda_item &&
+            !displayFilters.agenda_scope &&
+            !displayFilters.related_scope && (
+              <FilterBadge
+                label={`Agenda: ${displayFilters.agenda_item}`}
+                onClear={() => clearFilter('agenda_item')}
+              />
+            )}
 
           {yearRangeDisplay && (
             <FilterBadge

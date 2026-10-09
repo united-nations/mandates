@@ -21,6 +21,15 @@ export const explainerTexts = {
   },
   entitiesAndProgrammes: {
     search: 'Search entities and programmes',
+    cluster: 'Filter by cross-cutting topics',
+    allClusters: 'No filters',
+    searchClusters: 'Search cross-cutting topics',
+    clearClusterSearch: 'Clear topic search',
+    noClusterOptions: 'No matching topics.',
+    clusterUnavailable:
+      '{count} programme entries have no verified binding in this budget cycle.',
+    unverifiedCluster:
+      'No exact same-cycle source-to-row binding is available.',
     noResults: 'No matching budget locations.',
     location: 'Budget location',
     documents: 'Mandates',
@@ -29,10 +38,13 @@ export const explainerTexts = {
     groups: { missions: 'Missions', support: 'Support account' },
     expenditure: 'Expenditure',
     unavailable: 'Unavailable',
-    unavailableScope: 'No matching historical expenditure breakdown is published for this location.',
+    unavailableScope:
+      'No matching historical expenditure breakdown is published for this location.',
     empty: 'No budget locations recorded for this citation budget cycle.',
-    coverage: 'Counts are distinct mandate source documents cited at each location. Bars compare each count with the largest count in this table. Locations are citation-derived and do not form a complete budget inventory. Counts overlap: parent counts need not equal child sums.',
-    moneyNote: 'Historical expenditure is shown only for matched entity and subprogramme scopes. Bars compare each amount with the largest displayed amount; figures cover reported funding sources and may have different financial scopes. Amounts must not be added across hierarchy levels or repeated locations and are not allocated to mandates. Reporting periods are 2025 for programme-budget expenditure and 2024/25 for peacekeeping accounts, independently of the citation budget cycle. Open an amount for its period, funding breakdown and source documents.',
+    coverage:
+      'Counts are distinct mandate source documents cited at each location. Bars compare each count with the largest count in this table. The official 2027 programme structure includes locations with no recorded mandate citations; existing citation locations are retained. Counts overlap: parent counts need not equal child sums.',
+    moneyNote:
+      'Historical expenditure is shown only for matched entity and subprogramme scopes. Bars compare each amount with the largest displayed amount; figures cover reported funding sources and may have different financial scopes. Amounts must not be added across hierarchy levels or repeated locations and are not allocated to mandates. Reporting periods are 2025 for programme-budget expenditure and 2024/25 for peacekeeping accounts, independently of the citation budget cycle. Open an amount for its period, funding breakdown and source documents.',
     part: 'Part',
     section: 'Section',
     programme: 'Programme',
@@ -242,10 +254,14 @@ export const explainerTexts = {
       extrabudgetary: 'Extrabudgetary',
     },
     unavailable: {
-      dco_scope: 'DCO expenditure unavailable: the Resident Coordinator System has a different financial scope.',
-      unsoh_period: 'Unavailable: UNSOH was established after the 2024/25 expenditure reporting period.',
-      not_matched: 'Entity expenditure unavailable: no matching amount is published in the selected data.',
-      ambiguous: 'Entity expenditure unavailable: the financial scope could not be matched unambiguously.',
+      dco_scope:
+        'DCO expenditure unavailable: the Resident Coordinator System has a different financial scope.',
+      unsoh_period:
+        'Unavailable: UNSOH was established after the 2024/25 expenditure reporting period.',
+      not_matched:
+        'Entity expenditure unavailable: no matching amount is published in the selected data.',
+      ambiguous:
+        'Entity expenditure unavailable: the financial scope could not be matched unambiguously.',
       source_unavailable: 'Expenditure data is temporarily unavailable.',
     },
   },
@@ -271,17 +287,20 @@ export const explainerTexts = {
     },
     citationCounts: {
       title: 'Who cites this mandate in the budget?',
-      location: 'Entity / subprogramme',
+      location: 'Entity',
+      programme: '(Sub-)Programme',
       mandates: 'Total mandates cited',
       expenditure: 'Expenditure',
-      howTo: 'Entities with cited subprogrammes expand to show this mandate’s exact citation locations. Counts are distinct mandate documents cited by the entity or at that location; entity totals are counted independently, not added from the children.',
+      howTo:
+        'Each entity is followed by its cited subprogrammes. General budget citations are included in entity totals without a separate row. Counts are distinct mandate documents cited by the entity or at that location; entity totals are counted independently, not added from the children.',
       general: 'General budget citations',
       noLocation: 'No budget location recorded',
       showAll: 'Show all',
       showFewer: 'Show fewer',
       entity: 'entity',
       entities: 'entities',
-      disclaimer: 'Extracted automatically from each entity’s budget submission.',
+      disclaimer:
+        'Extracted automatically from each entity’s budget submission.',
     },
     sgReports: {
       disclaimer:
@@ -308,16 +327,24 @@ export const explainerTexts = {
     year: 'Year',
     matters: 'Matters considered',
     meetings: 'Meetings',
-    scExplanation: 'These are matters considered at formal Security Council meetings in 2025, rather than a single annual numbered agenda.',
+    scExplanation:
+      'These are matters considered at formal Security Council meetings in 2025, rather than a single annual numbered agenda.',
     scSearch: 'Search matters considered',
     noMatters: 'No matching matters considered.',
     scError: 'Matters considered could not be loaded. Please try again later.',
-    scPermission: 'Security Council resolution counts unavailable: read access to the document catalogue has not been configured.',
-    hrcPermission: 'HRC resolution counts unavailable: read access to the document catalogue has not been configured.',
+    scPermission:
+      'Security Council resolution counts unavailable: read access to the document catalogue has not been configured.',
+    hrcPermission:
+      'HRC resolution counts unavailable: read access to the document catalogue has not been configured.',
     session: 'Session',
     item: 'Agenda item',
     resolutions: 'Resolutions',
     openResolutions: 'Open resolutions',
+    relatedItems: 'Related items',
+    currentItem: 'Current item',
+    viewClusterResolutions: 'View cluster resolutions',
+    viewResolutions: 'View resolutions',
+    unavailable: 'Unavailable',
     filter: 'Agenda',
     committeeAbbreviations: {
       'First Committee': 'C1',
@@ -327,7 +354,8 @@ export const explainerTexts = {
       'Fifth Committee': 'C5',
       'Sixth Committee': 'C6',
     },
-    permission: 'Agenda items unavailable: read access to the agenda mirror has not been configured. An administrator needs to grant schema access and read access to the agenda items table.',
+    permission:
+      'Agenda items unavailable: read access to the agenda mirror has not been configured. An administrator needs to grant schema access and read access to the agenda items table.',
     error: 'Agenda items could not be loaded. Please try again later.',
     empty: 'No agenda snapshot is available for this body.',
     sessionUnavailable: 'Session unavailable',
@@ -336,10 +364,12 @@ export const explainerTexts = {
     rows: 'Source rows',
     nodes: 'Agenda items',
     duplicates: 'Repeated allocations combined',
-    exclusions: 'Rows excluded because their source body, session or item did not match',
+    exclusions:
+      'Rows excluded because their source body, session or item did not match',
     unresolved: 'Catalogue references without an unambiguous mirrored item',
     titleDifferences: 'Items with different catalogue titles',
-    provisional: 'This view uses the available mirror snapshot; source completeness has not been certified.',
+    provisional:
+      'This view uses the available mirror snapshot; source completeness has not been certified.',
     expand: 'Expand',
     collapse: 'Collapse',
     unclassifiedTitle: 'Title unavailable',
