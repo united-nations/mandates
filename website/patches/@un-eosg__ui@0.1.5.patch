@@ -449,15 +449,45 @@ diff --git a/components/stat-tile.tsx b/components/stat-tile.tsx
 diff --git a/components/year-slider.tsx b/components/year-slider.tsx
 --- a/components/year-slider.tsx
 +++ b/components/year-slider.tsx
-@@ -214,7 +214,7 @@
+@@ -1,6 +1,6 @@
+ "use client";
+-
++
+-import { useCallback, useRef, useState, useEffect, useMemo } from "react";
++import { useCallback, useRef, useState, useEffect, useMemo, type ReactNode } from "react";
+-
++
+ export interface YearSliderProps {
+   years: number[];
+@@ -11,6 +11,8 @@
+   /** Caption for a year. Peacekeeping runs July-June, so 2024 reads "2024/25". */
+   label?: string;
+   formatLabel?: (year: number) => string;
++  /** Optional visual caption; formatLabel still supplies accessible value text. */
++  renderLabel?: (year: number) => ReactNode;
+ }
+-
++
+ export function YearSlider({
+@@ -20,6 +22,7 @@
+   disabled = false,
+   compact = false,
+   formatLabel,
++  renderLabel,
+   label = "Select year",
+ }: YearSliderProps) {
+   const trackRef = useRef<HTMLDivElement>(null);
+@@ -214,8 +217,8 @@
            />
          </div>
        </div>
 -      <span className="min-w-[3ch] text-sm font-medium whitespace-nowrap text-gray-900">
+-        {formatLabel ? formatLabel(displayYear) : displayYear}
 +      <span className="min-w-[3ch] text-sm font-medium whitespace-nowrap text-foreground">
-         {formatLabel ? formatLabel(displayYear) : displayYear}
++        {renderLabel ? renderLabel(displayYear) : formatLabel ? formatLabel(displayYear) : displayYear}
        </span>
      </div>
+   );
 diff --git a/tokens/theme.css b/tokens/theme.css
 --- a/tokens/theme.css
 +++ b/tokens/theme.css

@@ -13,6 +13,7 @@ import { ParagraphNumberBadge } from '@/components/ui/paragraph-number-badge'
 import { groupAgendaNodes, visibleAgendaEntries } from '@/lib/agenda-tree'
 import { searchTableRows } from '@/lib/table-search'
 import { agendaSessionLabel } from '@/lib/agenda-session-label'
+import { scHeadingDisplayTitle } from '@/lib/sc-agenda'
 import {
   Table,
   TableHeader,
@@ -29,6 +30,9 @@ const viewHref = (body: AgendaBody, session?: string) =>
 export function AgendaItemsView({ data }: Props) {
   const router = useRouter()
   const text = explainerTexts.agendaItems
+  const isSc = data.body === 'SC'
+  const periodLabel = isSc ? text.year : text.session
+  const searchLabel = isSc ? text.scSearch : text.search
   const ready = data.status === 'ready' ? data : null
   const numberCharacters = Math.max(
     1,
@@ -60,7 +64,7 @@ export function AgendaItemsView({ data }: Props) {
           entry.kind === 'group'
             ? entry.label
             : [
-                entry.node.item,
+                ...(isSc ? [] : [entry.node.item]),
                 ...entry.node.titles,
                 ...entry.node.allocations,
                 ...entry.node.allocations.flatMap((allocation) =>
@@ -78,47 +82,62 @@ export function AgendaItemsView({ data }: Props) {
       else next.add(id)
       return next
     })
+  const renderSessionCaption = (session: string | number) => {
+    const number = String(session)
+    const caption = agendaSessionLabel(data.body, number)
+    return (
+      <>
+        <span className="font-bold">{number}</span>
+        <span className="font-normal">{caption.slice(number.length)}</span>
+      </>
+    )
+  }
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-3">
-        <SegmentedControl
-          label={text.body}
-          options={[
-            { value: 'GA', label: text.ga },
-            { value: 'ECOSOC', label: text.ecosoc },
-            { value: 'HRC', label: text.hrc },
-          ]}
-          value={data.body}
-          onValueChange={(body) => router.push(viewHref(body as AgendaBody))}
-        />
+        {/* Body dots use the shared UN brand tokens and Transcripts' category mapping. */}
+        <div className="[&_label:nth-of-type(1)>span]:after:bg-un-green [&_label:nth-of-type(2)>span]:after:bg-un-orange [&_label:nth-of-type(3)>span]:after:bg-un-blue [&_label:nth-of-type(4)>span]:after:bg-un-purple [&_label>span]:inline-flex [&_label>span]:items-center [&_label>span]:gap-1.5 [&_label>span]:after:size-1.5 [&_label>span]:after:shrink-0 [&_label>span]:after:rounded-full">
+          <SegmentedControl
+            label={text.body}
+            options={[
+              { value: 'GA', label: text.ga },
+              { value: 'SC', label: text.sc },
+              { value: 'ECOSOC', label: text.ecosoc },
+              { value: 'HRC', label: text.hrc },
+            ]}
+            value={data.body}
+            onValueChange={(body) => router.push(viewHref(body as AgendaBody))}
+          />
+        </div>
         <div className="flex items-center gap-2 text-sm">
-          <span className="text-muted-foreground">{text.session}</span>
+          <span className="text-muted-foreground">{periodLabel}</span>
           {ready && data.sessions.length > 1 ? (
-            <div className="[&_span]:font-normal">
-              <YearSlider
-                years={data.sessions.map(Number)}
-                selectedYear={Number(ready.session)}
-                label={text.session}
-                formatLabel={(session) =>
-                  agendaSessionLabel(data.body, String(session))
-                }
-                onChange={(session) =>
-                  router.push(viewHref(data.body, String(session)))
-                }
-              />
-            </div>
+            <YearSlider
+              years={data.sessions.map(Number)}
+              selectedYear={Number(ready.session)}
+              label={periodLabel}
+              formatLabel={(session) =>
+                agendaSessionLabel(data.body, String(session))
+              }
+              renderLabel={renderSessionCaption}
+              onChange={(session) =>
+                router.push(viewHref(data.body, String(session)))
+              }
+            />
           ) : (
             <span className="font-normal" aria-disabled={!ready}>
               {ready
-                ? agendaSessionLabel(data.body, ready.session)
+                ? renderSessionCaption(ready.session)
                 : text.sessionUnavailable}
             </span>
           )}
         </div>
+      </div>
+      <div className="w-64 max-w-full">
         <SearchInput
           variant="border-bottom"
-          aria-label={text.search}
-          placeholder={text.search}
+          aria-label={searchLabel}
+          placeholder={searchLabel}
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           showClear
@@ -128,6 +147,11 @@ export function AgendaItemsView({ data }: Props) {
       </div>
       {ready ? (
         <>
+          {isSc && (
+            <p className="text-sm text-muted-foreground">
+              {text.scExplanation}
+            </p>
+          )}
           <Table className="table-fixed">
             <TableHeader>
               <TableRow>
@@ -135,8 +159,16 @@ export function AgendaItemsView({ data }: Props) {
                   className="h-8 px-2"
                   style={{ fontSize: '12px', fontWeight: 500 }}
                 >
-                  {text.item}
+                  {isSc ? text.matters : text.item}
                 </TableHead>
+                {isSc && (
+                  <TableHead
+                    className="h-8 w-20 px-2 text-right sm:w-24"
+                    style={{ fontSize: '12px', fontWeight: 500 }}
+                  >
+                    {text.meetings}
+                  </TableHead>
+                )}
                 <TableHead
                   className="h-8 w-28 px-2 text-right sm:w-36"
                   style={{ fontSize: '12px', fontWeight: 500 }}
@@ -149,10 +181,10 @@ export function AgendaItemsView({ data }: Props) {
               {entries.length === 0 && (
                 <TableRow>
                   <TableCell
-                    colSpan={2}
+                    colSpan={isSc ? 3 : 2}
                     className="px-2 py-3 text-muted-foreground"
                   >
-                    {text.noResults}
+                    {isSc ? text.noMatters : text.noResults}
                   </TableCell>
                 </TableRow>
               )}
@@ -205,12 +237,15 @@ export function AgendaItemsView({ data }: Props) {
                   )
                 }
                 const node = entry.node
+                const displayTitles = node.titles.map((title) =>
+                  isSc ? scHeadingDisplayTitle(title) : title
+                )
                 return (
                   <TableRow key={node.id}>
                     <TableCell
                       className="overflow-hidden px-2 py-1.5 leading-5"
                       title={[
-                        ...node.titles,
+                        ...displayTitles,
                         ...node.allocations,
                         ...node.titleDifferences,
                       ].join(' · ')}
@@ -244,19 +279,22 @@ export function AgendaItemsView({ data }: Props) {
                             )}
                           </span>
                         )}
-                        <span
-                          className="inline-flex min-w-5 shrink-0 items-center text-xs"
-                          style={{
-                            width: `calc(${numberCharacters}ch + 0.75rem)`,
-                          }}
-                        >
-                          <ParagraphNumberBadge>
-                            {node.item}
-                          </ParagraphNumberBadge>
-                        </span>
+                        {!isSc && (
+                          <span
+                            className="inline-flex min-w-5 shrink-0 items-center text-xs"
+                            style={{
+                              width: `calc(${numberCharacters}ch + 0.75rem)`,
+                            }}
+                          >
+                            <ParagraphNumberBadge>
+                              {node.item}
+                            </ParagraphNumberBadge>
+                          </span>
+                        )}
                         <span className="flex min-w-0 flex-1 items-center gap-2 leading-6">
                           <span className="min-w-0 truncate">
-                            {node.titles.join(' / ') || text.unclassifiedTitle}
+                            {displayTitles.join(' / ') ||
+                              text.unclassifiedTitle}
                           </span>
                           {node.allocations.length > 0 && (
                             <span className="max-w-1/2 shrink-0 truncate text-xs text-muted-foreground">
@@ -285,12 +323,17 @@ export function AgendaItemsView({ data }: Props) {
                         </span>
                       </div>
                     </TableCell>
+                    {isSc && (
+                      <TableCell className="px-2 py-1.5 text-right whitespace-nowrap tabular-nums">
+                        {node.meetingCount?.toLocaleString('en-US')}
+                      </TableCell>
+                    )}
                     <TableCell className="px-2 py-1.5 whitespace-nowrap tabular-nums">
                       {node.symbols.length > 0 && (
                         <span className="flex items-center justify-end gap-2">
                           <a
                             href={agendaScopeHref(node.scope)}
-                            aria-label={`${text.openResolutions}: ${node.item}`}
+                            aria-label={`${text.openResolutions}: ${isSc ? displayTitles.join(' / ') : node.item}`}
                             className="inline-flex items-center gap-2 rounded-sm text-un-blue-text hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                           >
                             <span className="text-foreground">
@@ -313,12 +356,16 @@ export function AgendaItemsView({ data }: Props) {
           className="rounded-md border border-border px-3 py-3 text-sm text-muted-foreground"
         >
           {data.status === 'permission'
-            ? data.body === 'HRC'
-              ? text.hrcPermission
-              : text.permission
+            ? isSc
+              ? text.scPermission
+              : data.body === 'HRC'
+                ? text.hrcPermission
+                : text.permission
             : data.status === 'empty'
               ? text.empty
-              : text.error}
+              : isSc
+                ? text.scError
+                : text.error}
         </p>
       )}
     </div>

@@ -9,7 +9,7 @@ import {
 } from '@/lib/filter-constants'
 import { FOUNDATIONAL_LABEL } from '@/lib/foundational'
 import { explainerTexts } from '@/lib/en_text_contents'
-import { parseAgendaScope } from '@/lib/agenda-scope'
+import { parseAgendaScope, agendaScopeItemLabel } from '@/lib/agenda-scope'
 import {
   BUDGET_LOCATION_KEYS,
   budgetLocationLabel,
@@ -238,7 +238,7 @@ export function ActiveFilters({
               label={(() => {
                 const scope = parseAgendaScope(displayFilters.agenda_scope)
                 return scope
-                  ? `${explainerTexts.agendaItems.filter}: ${scope.body} ${scope.session} · ${scope.item}`
+                  ? `${explainerTexts.agendaItems.filter}: ${scope.body} ${scope.session} · ${agendaScopeItemLabel(scope)}`
                   : explainerTexts.agendaItems.filter
               })()}
               onClear={() => clearFilter('agenda_scope')}

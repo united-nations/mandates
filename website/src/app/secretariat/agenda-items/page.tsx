@@ -13,11 +13,13 @@ export default async function AgendaItemsPage({
 }) {
   const params = await searchParams
   const body =
-    params.agenda_body === 'HRC'
-      ? 'HRC'
-      : params.agenda_body === 'ECOSOC'
-        ? 'ECOSOC'
-        : 'GA'
+    params.agenda_body === 'SC'
+      ? 'SC'
+      : params.agenda_body === 'HRC'
+        ? 'HRC'
+        : params.agenda_body === 'ECOSOC'
+          ? 'ECOSOC'
+          : 'GA'
   const data = await getAgendaPageData(
     body,
     typeof params.agenda_session === 'string'
