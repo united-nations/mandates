@@ -33,6 +33,7 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
     '/secretariat',
     '/secretariat/entities-and-programs',
     '/secretariat/agenda-items',
+    '/secretariat/reports',
     '/system',
     '/system-new',
   ].includes(pathname)
