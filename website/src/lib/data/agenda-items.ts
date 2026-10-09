@@ -4,6 +4,9 @@ import { queryMany } from '../db/query'
 import { buildAgendaTree, validAgendaRow, type MirroredAgendaRow, type AgendaReference } from '#lib/agenda-tree'
 import { agendaDocumentSymbol, agendaDocumentSymbols, agendaResolutionReferenceCte, normalizedDocumentSql, type AgendaBody } from '#lib/agenda-scope'
 import { buildHrcAgenda, hrcAgendaSessions } from '#lib/hrc-agenda'
+import { buildScAgenda, type ScRegistryResolution } from '#lib/sc-agenda'
+import { scAgendaSnapshot } from '#lib/sc-agenda-snapshot'
+import { scRegistryResolutionSql } from '#lib/agenda-scope'
 
 export const AGENDA_MIRROR_SQL = `
   SELECT row_id::text, igov_body, igov_session, agenda_item, title, allocation, data, synced_at
@@ -28,6 +31,11 @@ function errorCode(error: unknown): string | undefined {
 
 export async function getAgendaPageData(body: AgendaBody, requestedSession?: string) {
   try {
+    if (body === 'SC') {
+      const session = scAgendaSnapshot.year
+      const registry = await queryMany<ScRegistryResolution>(scRegistryResolutionSql(1), [scAgendaSnapshot.resolutions])
+      return { status: 'ready' as const, body, sessions: [session], session, ...buildScAgenda(scAgendaSnapshot, registry) }
+    }
     if (body === 'HRC') {
       const sessions = hrcAgendaSessions
       const session = requestedSession && sessions.includes(requestedSession) ? requestedSession : sessions.includes('62') ? '62' : sessions[0]

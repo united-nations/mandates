@@ -28,6 +28,7 @@ export interface AgendaNode {
   titles: string[]
   allocations: string[]
   sourceRows: string[]
+  meetingCount?: number
   sourceIds: string[]
   heading: string
   parentId?: string

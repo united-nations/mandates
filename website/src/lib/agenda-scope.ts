@@ -1,6 +1,8 @@
 import hrcSnapshot from './data/hrc-agenda-snapshot.json' with { type: 'json' }
+import { scAgendaSnapshot } from '#lib/sc-agenda-snapshot'
+import { scHeadingResolutions, scHeadingDisplayTitle } from '#lib/sc-agenda'
 
-export type AgendaBody = 'GA' | 'ECOSOC' | 'HRC'
+export type AgendaBody = 'GA' | 'ECOSOC' | 'HRC' | 'SC'
 export interface AgendaScope {
   body: AgendaBody
   session: string
@@ -24,6 +26,23 @@ export function parseAgendaScope(value?: string): AgendaScope | null {
   try {
     if (!value) return null
     const scope = JSON.parse(value)
+    if (scope?.body === 'SC') {
+      if (
+        scope.session !== scAgendaSnapshot.year ||
+        typeof scope.item !== 'string' ||
+        !Array.isArray(scope.items) ||
+        scope.items.length !== 1 ||
+        scope.items[0] !== scope.item ||
+        !scHeadingResolutions(scAgendaSnapshot, scope.session, scope.item)
+      )
+        return null
+      return {
+        body: 'SC',
+        session: scope.session,
+        item: scope.item,
+        items: [scope.item],
+      }
+    }
     if (
       !scope ||
       !['GA', 'ECOSOC', 'HRC'].includes(scope.body) ||
@@ -61,12 +80,17 @@ export function parseAgendaScope(value?: string): AgendaScope | null {
   }
 }
 
-export const agendaDocumentSymbol = (body: AgendaBody, session: string) =>
-  body === 'GA'
+export const agendaDocumentSymbol = (body: AgendaBody, session: string) => {
+  if (body === 'SC')
+    throw new Error(
+      'SC considered matters have no annual numbered agenda document'
+    )
+  return body === 'GA'
     ? `A/${session}/251`
     : body === 'HRC'
       ? `A/HRC/${session}/1`
       : `E/${session}/100`
+}
 
 /** Only the base agenda and the revision actually present in the verified snapshot. */
 export function agendaDocumentSymbols(body: AgendaBody, session: string) {
@@ -83,6 +107,15 @@ export const agendaScopeHref = (scope: AgendaScope) =>
 
 export const normalizedDocumentSql = (value: string) =>
   `UPPER(REGEXP_REPLACE(NORMALIZE(${value}, NFKC), '[[:space:]]', '', 'g'))`
+
+/** One actual catalogue representative per verified SC adoption symbol. */
+export const scRegistryResolutionSql = (start: number) => `
+  SELECT MIN(d.ppb_full_document_symbol) AS symbol,
+    ${normalizedDocumentSql('d.ppb_full_document_symbol')} AS identity
+  FROM public.unified_documents d
+  WHERE d.is_catalog_pattern
+    AND ${normalizedDocumentSql('d.ppb_full_document_symbol')} = ANY($${start}::text[])
+  GROUP BY ${normalizedDocumentSql('d.ppb_full_document_symbol')}`
 
 // Symbol families, not unreliable stored type labels (drafts can say Resolutions).
 export const adoptedResolutionSql = (value: string) =>
@@ -119,6 +152,20 @@ export function agendaResolutionPredicate(
   start: number
 ) {
   if (!scope) return { predicate: 'FALSE', params: [] as (string | string[])[] }
+  if (scope.body === 'SC') {
+    const validated = parseAgendaScope(JSON.stringify(scope))
+    if (!validated)
+      return { predicate: 'FALSE', params: [] as (string | string[])[] }
+    const symbols = scHeadingResolutions(
+      scAgendaSnapshot,
+      validated.session,
+      validated.item
+    )!
+    return {
+      predicate: `d.ppb_full_document_symbol IN (SELECT symbol FROM (${scRegistryResolutionSql(start)}) sc_resolutions)`,
+      params: [symbols],
+    }
+  }
   return {
     predicate: `d.ppb_full_document_symbol IN (
       WITH ${agendaResolutionReferenceCte()}
@@ -135,3 +182,11 @@ export function agendaResolutionPredicate(
     ],
   }
 }
+
+export const agendaScopeItemLabel = (scope: AgendaScope) =>
+  scope.body === 'SC'
+    ? scHeadingDisplayTitle(
+        scAgendaSnapshot.headings.find((row) => row.id === scope.item)?.title ??
+          scope.item
+      )
+    : scope.item
