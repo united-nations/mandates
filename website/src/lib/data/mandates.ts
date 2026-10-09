@@ -1,3 +1,4 @@
+import { mandateMembershipSql, versionPredicateSql } from '@/lib/mandate-membership'
 /**
  * Mandate Database Queries
  *
@@ -231,42 +232,6 @@ interface FilterClauses {
 }
 
 /**
- * SQL predicate: citation `<citationAlias>` belongs to the budget version
- * bound at `<versionParam>` (a `$n` placeholder). Falls back to
- * budget_versions.is_default when that param is NULL. Single source of truth
- * for version scoping — used by the list/facet path (via versionClause) and
- * the mandate detail / cross-citation queries, so they can never drift.
- */
-function versionPredicateSql(citationAlias: string, versionParam: string): string {
-  // Written as an UNCORRELATED subquery on purpose. The obvious form —
-  // EXISTS (... AND <alias>.origin_document ~ bd.match_pattern) — references
-  // the outer row, so Postgres must re-run the regex join for every citation
-  // row it tests, in each of the ~30 queries an explorer render fires.
-  //
-  // The regex only ever resolves origin_document to a budget document, and
-  // there are just 11 distinct origin_document values against 5 anchored
-  // patterns. Matching the distinct values first makes the subquery
-  // independent of the outer row, so it is evaluated ONCE per query and the
-  // result reused as a hashed IN test. Same rows out (verified against both
-  // version slugs and the default), materially less work per query.
-  return `${citationAlias}.origin_document IN (
-      SELECT o.origin_document
-      FROM (
-        SELECT DISTINCT origin_document
-        FROM ppb2026.source_document_citations
-        WHERE origin_document IS NOT NULL
-      ) o
-      JOIN ppb2026.budget_documents bd
-        ON o.origin_document ~ bd.match_pattern
-      JOIN ppb2026.budget_document_versions bdv ON bdv.doc_slug = bd.slug
-      WHERE bdv.version_slug = COALESCE(
-        ${versionParam},
-        (SELECT slug FROM ppb2026.budget_versions WHERE is_default LIMIT 1)
-      )
-    )`
-}
-
-/**
  * The fields the keyword search reads — the ones shown on the row: the
  * symbol, the raw description, the rendered title and the subject headings.
  * The ordering rank in getMandates reads the same fields.
@@ -329,16 +294,7 @@ function buildFilterClauses(
   // 2027, 43,020 under PPB 2026. That keeps the set self-consistent — every row
   // outside the 8 families is there BECAUSE the version on display cites it, so
   // no row can appear with nothing to show for itself.
-  clauses.push(`
-    (
-      d.is_catalog_pattern
-      OR EXISTS (
-        SELECT 1 FROM ppb2026.source_document_citations c_cat
-        WHERE c_cat.ppb_full_document_symbol = d.ppb_full_document_symbol
-        AND ${versionClause('c_cat')}
-      )
-    )
-  `)
+  clauses.push(mandateMembershipSql('d', versionParam))
 
   // "Cited as mandates" — the subset of the catalogue the selected version
   // cites (the 2,737 / 3,962 documents behind explore card 3). This used to be
