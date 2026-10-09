@@ -1,13 +1,9 @@
 'use client'
 
 import { Fragment, useMemo, useState } from 'react'
-import {
-  ChevronDown,
-  ChevronRight,
-  ChevronUp,
-  CircleArrowRight,
-} from 'lucide-react'
+import { ChevronDown, ChevronUp, CircleArrowRight } from 'lucide-react'
 import { ExpenditureAmount } from '@/components/ExpenditureAmount'
+import { EntityBadge } from '@/components/EntityBadge'
 import {
   DetailFootnote,
   DetailSectionHeading,
@@ -27,6 +23,7 @@ import {
   resolutionCitationHref,
 } from '@/lib/resolution-citation-tree'
 import { explainerTexts } from '@/lib/en_text_contents'
+import { citationScope } from '@/lib/citation-budget-location'
 import {
   FOUNDATIONAL_DOT_LEGEND,
   isFoundational,
@@ -45,9 +42,9 @@ interface CitationCountsProps {
   expenditures?: ExpenditureMap
   budgetVersion?: string
 }
-const DEFAULT_SHOWN = 5
 // The shared table defaults to 14px. Pin headers independently of its scale.
 const HEADER_TEXT_STYLE = { fontSize: '12px', fontWeight: 500 } as const
+const DEFAULT_SHOWN = 5
 
 /** Entity totals are independent; children are only this resolution's citation sites. */
 export function CitationCounts({
@@ -57,7 +54,6 @@ export function CitationCounts({
   budgetVersion,
 }: CitationCountsProps) {
   const [showAll, setShowAll] = useState(false)
-  const [expanded, setExpanded] = useState<Set<string>>(() => new Set())
   const { tree } = useMemo(
     () => buildResolutionCitationTree(mandate, entities),
     [mandate, entities]
@@ -79,13 +75,6 @@ export function CitationCounts({
   )
   if (!tree.length) return null
   const shown = showAll ? tree : tree.slice(0, DEFAULT_SHOWN)
-  const toggle = (id: string) =>
-    setExpanded((previous) => {
-      const next = new Set(previous)
-      if (next.has(id)) next.delete(id)
-      else next.add(id)
-      return next
-    })
   const metrics = (
     id: string,
     label: string,
@@ -166,9 +155,15 @@ export function CitationCounts({
           <TableRow>
             <TableHead
               style={HEADER_TEXT_STYLE}
-              className="h-8 px-1 text-left sm:px-2"
+              className="h-8 w-20 px-1 text-left sm:w-28 sm:px-2"
             >
               {text.location}
+            </TableHead>
+            <TableHead
+              style={HEADER_TEXT_STYLE}
+              className="h-8 px-1 text-left sm:px-2"
+            >
+              {text.programme}
             </TableHead>
             <TableHead
               style={HEADER_TEXT_STYLE}
@@ -186,7 +181,6 @@ export function CitationCounts({
         </TableHeader>
         <TableBody>
           {shown.map((entity) => {
-            const open = entity.expandable && expanded.has(entity.id)
             const marked =
               MARK_FOUNDATIONAL_CHIPS_ON_DETAIL_PAGE &&
               isFoundational(entity.entity, mandate.foundational_entities ?? [])
@@ -198,26 +192,24 @@ export function CitationCounts({
                     title={entity.entityLong ?? entity.entity}
                   >
                     <div className="flex min-w-0 items-center gap-1.5 whitespace-nowrap">
-                      <span className="shrink-0 font-semibold">
-                        {entity.entity}
-                      </span>
+                      <EntityBadge
+                        entity={entity.entity}
+                        entityLong={entity.entityLong}
+                        className="font-normal"
+                        truncate
+                      />
                       {marked && <ChipDot />}
-                      {entity.expandable && (
-                        <button
-                          type="button"
-                          onClick={() => toggle(entity.id)}
-                          aria-expanded={open}
-                          aria-label={`${open ? locationText.collapse : locationText.expand} ${entity.entity}`}
-                          className="shrink-0 rounded-sm text-muted-foreground hover:text-un-blue-text focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
-                        >
-                          {open ? (
-                            <ChevronDown className="size-4" aria-hidden />
-                          ) : (
-                            <ChevronRight className="size-4" aria-hidden />
-                          )}
-                        </button>
-                      )}
                     </div>
+                  </TableCell>
+                  <TableCell className="overflow-hidden px-1 py-1 leading-5 sm:px-2">
+                    {entity.programmeLabels.length > 0 && (
+                      <span
+                        className="block truncate font-normal text-black dark:text-white"
+                        title={entity.programmeLabels.join(' · ')}
+                      >
+                        {entity.programmeLabels.join(' · ')}
+                      </span>
+                    )}
                   </TableCell>
                   {metrics(
                     entity.id,
@@ -226,11 +218,16 @@ export function CitationCounts({
                     true
                   )}
                 </TableRow>
-                {open &&
-                  entity.children.map((child) => (
+                {entity.children
+                  .filter(
+                    (child) =>
+                      citationScope(child.location).subprogramme !== null
+                  )
+                  .map((child) => (
                     <TableRow key={child.id}>
+                      <TableCell className="px-1 py-1 sm:px-2" />
                       <TableCell
-                        className="overflow-hidden px-1 py-1 pl-2 leading-5 sm:pr-2 sm:pl-8"
+                        className="overflow-hidden px-1 py-1 leading-5 sm:px-2"
                         title={child.label}
                       >
                         <span className="line-clamp-2 break-words sm:block sm:truncate">
@@ -253,7 +250,8 @@ export function CitationCounts({
       {tree.length > DEFAULT_SHOWN && (
         <button
           type="button"
-          onClick={() => setShowAll(!showAll)}
+          onClick={() => setShowAll((value) => !value)}
+          aria-expanded={showAll}
           className="inline-flex items-center gap-1 text-sm font-medium text-un-blue-text hover:underline"
         >
           {showAll ? (

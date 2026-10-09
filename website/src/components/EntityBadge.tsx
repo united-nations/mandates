@@ -65,6 +65,7 @@ export function EntityBadge({
       truncate={truncate}
       className={cn(
         truncate ? 'shrink' : 'shrink-0 whitespace-nowrap',
+        'text-black dark:text-white',
         className
       )}
     >

@@ -16,6 +16,7 @@ export interface ResolutionCitationEntity {
   id: string
   entity: string
   entityLong?: string
+  programmeLabels: string[]
   count: number | null
   expandable: boolean
   children: ResolutionCitationRow[]
@@ -143,6 +144,38 @@ export function buildResolutionCitationTree(
       return {
         id: JSON.stringify(['entity', entity]),
         entity,
+        programmeLabels: [
+          ...new Set(
+            locations.flatMap((location) => {
+              if (location.programme === null && !location.programme_title) {
+                if (!location.section && !location.section_title) return []
+                return [
+                  [
+                    [
+                      explainerTexts.entitiesAndProgrammes.section,
+                      location.section,
+                    ]
+                      .filter(Boolean)
+                      .join(' '),
+                    location.section_title,
+                  ]
+                    .filter(Boolean)
+                    .join(': '),
+                ]
+              }
+              return [
+                [
+                  location.programme === null
+                    ? explainerTexts.entitiesAndProgrammes.programme
+                    : `${explainerTexts.entitiesAndProgrammes.programme} ${location.programme}`,
+                  location.programme_title,
+                ]
+                  .filter(Boolean)
+                  .join(': '),
+              ]
+            })
+          ),
+        ],
         entityLong:
           names.get(entity) ??
           locations[0]?.entity_long ??
