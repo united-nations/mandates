@@ -10,6 +10,10 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { SUBJECT_DOMAIN_LABELS } from '@/lib/filter-constants'
+import {
+  getCatalogueSubjects,
+  type CatalogueSubject,
+} from '@/lib/catalogue-subjects'
 import type {
   DirectorySelection,
   DocumentTypeCatalogue,
@@ -39,15 +43,6 @@ import { useMemo, useState } from 'react'
 const DEFAULT_TOP = 30 // subject pills shown by default
 const SEARCH_CAP = 300 // subject pills shown while searching
 
-interface FlatLeaf {
-  subject: string
-  count: number
-  /** Domain code — drives the pill colour and the domain named in its tooltip. */
-  code: string
-  /** Sub-domain key — kept to make the React key unique per leaf. */
-  sub: string
-}
-
 interface DocumentsDirectoryProps {
   domains: SubjectDomain[]
   documentTypes: DocumentTypeCatalogue
@@ -66,29 +61,9 @@ export function DocumentsDirectory({
   const activeType = selection.active('document_type')
   const selectType = (value: string) => selection.select('document_type', value)
 
-  // Flatten every leaf once, tagged with its domain (drives the pill colour and
-  // the domain named in the pill's tooltip).
-  const allLeaves = useMemo<FlatLeaf[]>(() => {
-    const out: FlatLeaf[] = []
-    for (const d of domains) {
-      for (const l of d.directSubjects)
-        out.push({
-          subject: l.subject,
-          count: l.count,
-          code: d.code,
-          sub: `${d.code}::`,
-        })
-      for (const sd of d.subdomains)
-        for (const l of sd.subjects)
-          out.push({
-            subject: l.subject,
-            count: l.count,
-            code: d.code,
-            sub: `${d.code}::${sd.label}`,
-          })
-    }
-    return out
-  }, [domains])
+  // One pill per subject filter; polyhierarchical placements remain in its
+  // tooltip rather than becoming identical buttons in the flat catalogue.
+  const allLeaves = useMemo(() => getCatalogueSubjects(domains), [domains])
 
   // The visible pill set, given search / default. Ordered by count, globally,
   // with no re-sort afterwards: the list is a "most common subjects" list, so a
@@ -98,7 +73,7 @@ export function DocumentsDirectory({
   // and the only cue for the grouping was a 6px coloured dot with no legend.
   // That dot is gone too, so the domain is now named in words in each pill's
   // tooltip, which is where it is actually legible.
-  const pills = useMemo<FlatLeaf[]>(() => {
+  const pills = useMemo<CatalogueSubject[]>(() => {
     const pool = term
       ? allLeaves.filter((l) => l.subject.toLowerCase().includes(term))
       : allLeaves
@@ -141,7 +116,9 @@ export function DocumentsDirectory({
               ))}
             </div>
           ) : (
-            <p className="text-sm text-muted-foreground">No recorded document types.</p>
+            <p className="text-sm text-muted-foreground">
+              No recorded document types.
+            </p>
           )}
           {untypedCount > 0 && (
             <p className="text-sm text-muted-foreground">
@@ -166,7 +143,7 @@ export function DocumentsDirectory({
             <div className="flex flex-wrap items-start gap-x-1 gap-y-1.5">
               {pills.map((leaf) => (
                 <SubjectPill
-                  key={`${leaf.sub}-${leaf.subject}`}
+                  key={leaf.subject.toUpperCase()}
                   leaf={leaf}
                   active={active === leaf.subject}
                   onSelect={select}
@@ -245,7 +222,7 @@ function SubjectPill({
   active,
   onSelect,
 }: {
-  leaf: FlatLeaf
+  leaf: CatalogueSubject
   active: boolean
   onSelect: (value: string) => void
 }) {
@@ -276,9 +253,11 @@ function SubjectPill({
         {/* The domain is a level up in the same taxonomy, so under a section
             headed "Subjects" a bare domain name reads as another subject. The
             qualifier is the one the active-filter bar already uses. */}
-        <div className="font-medium">
-          Subject domain: {SUBJECT_DOMAIN_LABELS[leaf.code] ?? leaf.code}
-        </div>
+        {leaf.domainCodes.map((code) => (
+          <div key={code} className="font-medium">
+            Subject domain: {SUBJECT_DOMAIN_LABELS[code] ?? code}
+          </div>
+        ))}
         <div className="mt-0.5 text-sm text-muted-foreground">
           {leaf.count.toLocaleString()} document
           {leaf.count === 1 ? '' : 's'}
