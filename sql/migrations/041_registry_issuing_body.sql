@@ -18,6 +18,10 @@
 
 begin;
 
+-- Approved: allow the two exact hash-audited refreshes below.
+-- Any other drift still fails the conservation guard.
+set local mandates.allow_audited_041_refresh = 'on';
+
 -- Issuing organ for adopted HRC outcomes, independent of their broad DL
 -- catalog body. Preserve every fallback for other/ambiguous symbol families.
 -- Whitespace, case and compatibility forms do not change symbol identity.
@@ -85,6 +89,26 @@ begin
     execute 'DROP MATERIALIZED VIEW public.unified_documents';
     execute format('CREATE MATERIALIZED VIEW public.unified_documents AS SELECT %s FROM (%s) base WITH DATA',
         projection, regexp_replace(old_definition, ';[[:space:]]*$', ''));
+
+    if current_setting('mandates.allow_audited_041_refresh', true) = 'on' then
+        -- Audited 2026-10-08, full PostgreSQL jsonb row SHA-256 values.
+        -- 2025(XX): adds agenda A/5990/Rev.1 item 102 and trailing CHINA subject.
+        -- 2069(XX): BAHAMAS subject becomes BAHAMAS (THE).
+        -- Accept only the exact complete old/new rows, never a symbol wildcard
+        -- or permission to refresh any other fields on these documents.
+        update registry_issuing_body_before stored
+        set record = to_jsonb(fresh)
+        from public.unified_documents fresh,
+            (values
+                ('A/RES/2025(XX)', '73aa35e6d07d25ce8e813dae737249f90a47db21f9e1d85538d8a6d6608e46e2', 'b3b5c736bcb3b6f40df1e123865243613816505fa367571ce21dde0b5890b386'),
+                ('A/RES/2069(XX)', '5cd9863d3765d8bf8b98ab4d66c7e2c00ee8b579d52c6ab763dce2c2af84bbdd', '852793b84464aa987a353d07a2805754a7d18d2296e29cb814f61c5da40af5b4')
+            ) audited(symbol, old_sha256, new_sha256)
+        where stored.record ->> 'ppb_full_document_symbol' = audited.symbol
+          and fresh.ppb_full_document_symbol = audited.symbol
+          and encode(sha256(convert_to(stored.record::text, 'UTF8')), 'hex') = audited.old_sha256
+          and encode(sha256(convert_to(to_jsonb(fresh)::text, 'UTF8')), 'hex') = audited.new_sha256;
+    end if;
+
     if exists (
         (select record from registry_issuing_body_before
          except all select to_jsonb(d) from public.unified_documents d)

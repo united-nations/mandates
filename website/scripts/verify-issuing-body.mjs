@@ -2,6 +2,7 @@
  * Read-only preview of migration 041; no function/view creation or refresh.
  * From website/: node scripts/verify-issuing-body.mjs
  * Emits all changed symbols and any stored/source drift; exits 1 on drift.
+ * Add --allow-audited-refresh to preview the explicit two-row opt-in only.
  */
 import assert from 'node:assert/strict'
 import fs from 'node:fs'
@@ -25,6 +26,13 @@ const schema = fs.readFileSync(
   path.join(website, '../sql/schema/ppb2026.sql'),
   'utf8'
 )
+const allowAuditedRefresh = process.argv.includes('--allow-audited-refresh')
+const auditedRefresh = new Map(
+  [
+    ...migration.matchAll(/\('([^']+)', '([a-f0-9]{64})', '([a-f0-9]{64})'\)/g),
+  ].map((m) => [m[1], { old: m[2], new: m[3] }])
+)
+assert.equal(auditedRefresh.size, 2)
 const functionSql = migration
   .match(/as \$issuing_body\$([\s\S]*?)\$issuing_body\$;/)?.[1]
   .trim()
@@ -115,9 +123,18 @@ try {
   ).rows
   const freshness = (
     await client.query(
-      `${cte} SELECT COALESCE(l.ppb_full_document_symbol,p.ppb_full_document_symbol) AS symbol,to_jsonb(l) AS stored,to_jsonb(p) AS current_source FROM public.unified_documents l FULL JOIN preview p USING(ppb_full_document_symbol) WHERE (to_jsonb(l) || jsonb_build_object('ppb_body',${derive('l.ppb_full_document_symbol', 'l.ppb_body')})) IS DISTINCT FROM to_jsonb(p) ORDER BY 1`
+      `${cte} SELECT COALESCE(l.ppb_full_document_symbol,p.ppb_full_document_symbol) AS symbol,to_jsonb(l) AS stored,to_jsonb(p) AS current_source,encode(sha256(convert_to((to_jsonb(l) || jsonb_build_object('ppb_body',${derive('l.ppb_full_document_symbol', 'l.ppb_body')}))::text,'UTF8')),'hex') AS old_hash,encode(sha256(convert_to(to_jsonb(p)::text,'UTF8')),'hex') AS new_hash FROM public.unified_documents l FULL JOIN preview p USING(ppb_full_document_symbol) WHERE (to_jsonb(l) || jsonb_build_object('ppb_body',${derive('l.ppb_full_document_symbol', 'l.ppb_body')})) IS DISTINCT FROM to_jsonb(p) ORDER BY 1`
     )
   ).rows
+  const unauditedFreshness = freshness.filter((row) => {
+    const audited = auditedRefresh.get(row.symbol)
+    return (
+      !allowAuditedRefresh ||
+      !audited ||
+      row.old_hash !== audited.old ||
+      row.new_hash !== audited.new
+    )
+  })
   const supported = (
     await client.query(
       `${cte} SELECT COUNT(*)::int n FROM preview WHERE upper(regexp_replace(ppb_full_document_symbol,'[[:space:]]','','g')) ~ '^A/HRC/(RES|PRST)/' AND ppb_body IS DISTINCT FROM 'HRC'`
@@ -186,10 +203,12 @@ try {
   process.stdout.write(
     JSON.stringify(
       {
-        verdict: freshness.length
+        verdict: unauditedFreshness.length
           ? 'BLOCKED: source freshness drift; guarded migration will roll back'
           : 'PASS',
         body_derivation: 'PASS',
+        allow_audited_refresh: allowAuditedRefresh,
+        unaudited_freshness_count: unauditedFreshness.length,
         summary,
         freshness,
         changed_count: changed.length,
@@ -204,7 +223,7 @@ try {
       2
     ) + '\n'
   )
-  if (freshness.length) process.exitCode = 1
+  if (unauditedFreshness.length) process.exitCode = 1
 } finally {
   try {
     await client.query('ROLLBACK')
