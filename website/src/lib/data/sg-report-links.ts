@@ -45,7 +45,16 @@
  * evidence, or not at all. Each entry names its symbol, page(s), and
  * surviving sibling, so deleting an entry shows exactly which row reappears
  * where. The extractor knows nothing of this rule and records nothing about
- * these rows: this file is the only place the exclusion exists.
+ * these rows: this file is the only place the website applies the exclusion.
+ *
+ * MIRRORED IN THE DATABASE
+ * ------------------------
+ * The view mandates.sg_report_page_one_vs_stage1_keys
+ * (sql/migrations/043_sg_report_page_one_links.sql) copies both rules above,
+ * and the empty-candidates consequence of THE JOIN, so that its comparison of
+ * Stage 1 with page-one links sees what this page shows. A change to
+ * DISPLAY_ELIGIBLE_SENSES, DISPLAY_EXCLUDED_REPORT_RECIDS or the candidates
+ * match here must be made in that view too.
  */
 
 import { cache } from 'react'
