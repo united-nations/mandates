@@ -1,0 +1,37 @@
+/**
+ * The data for the "reports submitted under this mandate" block, from the
+ * source MANDATED_SG_REPORTS_SOURCE names. The only reader of that flag:
+ * pages call this and render MandatedSgReportsBlock, which follows the
+ * `source` tag on the result rather than reading the flag again.
+ */
+
+import { MANDATED_SG_REPORTS_SOURCE } from '../feature-flags'
+import {
+  getSgReportsMandatedByResolution,
+  type MandatedSgReport,
+} from './sg-report-links'
+import {
+  getSgReportsStatingResolution,
+  type PageOneSgReports,
+} from './sg-report-page-one-links'
+
+export type MandatedSgReports =
+  | { source: 'catalogue_notes'; reports: MandatedSgReport[] }
+  | { source: 'page_one'; data: PageOneSgReports }
+
+export async function getMandatedSgReports(
+  pageSymbol: string
+): Promise<MandatedSgReports> {
+  switch (MANDATED_SG_REPORTS_SOURCE) {
+    case 'catalogue_notes':
+      return {
+        source: 'catalogue_notes',
+        reports: await getSgReportsMandatedByResolution(pageSymbol),
+      }
+    case 'page_one':
+      return {
+        source: 'page_one',
+        data: await getSgReportsStatingResolution(pageSymbol),
+      }
+  }
+}

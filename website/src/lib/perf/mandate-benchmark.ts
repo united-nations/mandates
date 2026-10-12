@@ -2,7 +2,7 @@ import { getAllEntities } from '@/lib/data/entities'
 import { getMandateBySymbol, getResolutionSeries } from '@/lib/data/mandates'
 import { getAllOrgans } from '@/lib/data/organs'
 import { getParagraphsBySymbol } from '@/lib/data/paragraphs'
-import { getSgReportsMandatedByResolution } from '@/lib/data/sg-report-links'
+import { getMandatedSgReports } from '@/lib/data/mandated-sg-reports'
 import { allSettledOrThrow } from '#lib/perf/all-settled'
 import {
   buildBenchmarkFailure,
@@ -22,7 +22,7 @@ const loadMandate = async (symbol: string, version?: string) => {
       measured('organs', getAllOrgans),
       measured('paragraphs', () => getParagraphsBySymbol(symbol)),
       measured('series', () => getResolutionSeries(symbol)),
-      measured('sg-reports', () => getSgReportsMandatedByResolution(symbol)),
+      measured('sg-reports', () => getMandatedSgReports(symbol)),
     ] as const)
   return { entities, mandate, organs, paragraphs, reports, series }
 }

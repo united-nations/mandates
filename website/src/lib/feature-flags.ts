@@ -33,13 +33,28 @@ export const SHOW_MANDATE_REGISTRY_RATING: boolean = false
 
 /**
  * The "reports submitted under this mandate" list on the mandate detail view:
- * Secretary-General reports whose Digital Library catalogue notes cite the
- * page's resolution as mandating them (lib/data/sg-report-links.ts).
+ * Secretary-General reports linked to the page's resolution, from the source
+ * MANDATED_SG_REPORTS_SOURCE names.
  *
  * On by default; the flag exists so the block can be withdrawn without a
  * revert. When off, the query is skipped entirely, not run and discarded.
  */
 export const SHOW_MANDATED_SG_REPORTS: boolean = true
+
+/**
+ * Which source fills that block:
+ * - 'catalogue_notes': reports whose Digital Library catalogue notes cite the
+ *   resolution (lib/data/sg-report-links.ts, MandateSgReports);
+ * - 'page_one': reports that state on their own first pages that they were
+ *   submitted under it, from the accepted page-one run
+ *   (lib/data/sg-report-page-one-links.ts, MandatePageOneSgReports).
+ *
+ * One source at a time. Read only by
+ * getMandatedSgReports (lib/data/mandated-sg-reports.ts); switching back is
+ * this one value, and both paths stay compiled.
+ */
+export const MANDATED_SG_REPORTS_SOURCE: 'catalogue_notes' | 'page_one' =
+  'page_one'
 
 /** Group the focal point directory by the entity classification from its source. */
 export const SHOW_ENTITY_CLASSIFICATION: boolean = true
