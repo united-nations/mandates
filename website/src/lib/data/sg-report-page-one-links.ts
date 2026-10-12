@@ -61,8 +61,8 @@ export interface PageOneSgReport {
   report_recid: number
   /**
    * Every document symbol the report's Digital Library record carries, in
-   * the record's order: two for a report issued to two organs. Never empty
-   * here (checked on read).
+   * the record's order: two for a report issued to two organs, shown as two
+   * chips. Never empty here (checked on read).
    */
   report_symbols: string[]
   title: string | null

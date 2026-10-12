@@ -72,7 +72,7 @@ export function MandateSgReports({ reports }: { reports: MandatedSgReport[] }) {
       <SgReportList
         rows={reports.map((report) => ({
           report_recid: report.report_recid,
-          symbol: report.report_symbol,
+          symbols: [report.report_symbol],
           title: report.title,
           date_published: report.date_published,
           marker: report.annex_position_only && (

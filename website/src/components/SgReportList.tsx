@@ -3,6 +3,7 @@
 import { useState, type ReactNode } from 'react'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import { DocumentSymbol } from '@/components/DocumentSymbol'
+import { cn } from '@/lib/utils'
 
 /**
  * The list of Secretary-General reports on a mandate detail view: one row per
@@ -22,8 +23,12 @@ const DEFAULT_SHOWN = 5
 
 export interface SgReportListRow {
   report_recid: number
-  /** The symbol text as shown, one string even for a dual-symbol report. */
-  symbol: string
+  /**
+   * The report's symbols, each shown as its own chip in this order: one for
+   * most reports, two for a report issued to two organs. Every chip links to
+   * the same record page, which carries all of them.
+   */
+  symbols: string[]
   title: string | null
   date_published: string | null
   /** Rendered after the symbol, inside its column (the annex chip). */
@@ -50,18 +55,29 @@ export function SgReportList({ rows }: { rows: SgReportListRow[] }) {
               <span className="w-10 shrink-0 text-sm text-foreground tabular-nums">
                 {row.date_published?.slice(0, 4) ?? '—'}
               </span>
-              <span className="flex w-36 shrink-0 items-baseline gap-1.5">
-                <a
-                  href={undlRecordUrl(row.report_recid)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title={`Open ${row.symbol} in the UN Digital Library`}
-                  className="inline-flex min-w-0 items-baseline rounded hover:underline focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:outline-none"
-                >
-                  <DocumentSymbol className="inline-flex max-w-full min-w-0 items-baseline">
-                    <span className="min-w-0 truncate">{row.symbol}</span>
-                  </DocumentSymbol>
-                </a>
+              {/* Wraps only for a dual-symbol report, so two chips stack in the
+                  column. With one symbol the row lays out as before: a long
+                  symbol truncates and keeps the annex chip beside it. */}
+              <span
+                className={cn(
+                  'flex w-36 shrink-0 items-baseline gap-1.5',
+                  row.symbols.length > 1 && 'flex-wrap'
+                )}
+              >
+                {row.symbols.map((symbol) => (
+                  <a
+                    key={symbol}
+                    href={undlRecordUrl(row.report_recid)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title={`Open ${symbol} in the UN Digital Library`}
+                    className="inline-flex min-w-0 items-baseline rounded hover:underline focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:outline-none"
+                  >
+                    <DocumentSymbol className="inline-flex max-w-full min-w-0 items-baseline">
+                      <span className="min-w-0 truncate">{symbol}</span>
+                    </DocumentSymbol>
+                  </a>
+                ))}
                 {row.marker}
               </span>
               <span

@@ -53,10 +53,11 @@ export function MandatePageOneSgReports({ data }: { data: PageOneSgReports }) {
       <SgReportList
         rows={reports.map((report) => ({
           report_recid: report.report_recid,
-          // A report issued to two organs carries both symbols; joined as the
-          // Digital Library writes a dual symbol ("A/80/723 - S/2026/357"),
-          // which is also how the catalogue-notes block shows it.
-          symbol: report.report_symbols.join(' - '),
+          // Every symbol the record carries, each its own chip, in record
+          // order. The catalogue-notes block shows one symbol per report, from
+          // digitallibrary.documents.document_symbol, so for a report issued
+          // to two organs it shows only the first.
+          symbols: report.report_symbols,
           title: report.title,
           date_published: report.date_published,
         }))}

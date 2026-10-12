@@ -32,8 +32,9 @@ FROM mandates.sg_report_page_one_run_acceptances a
 ORDER BY a.accepted_at DESC, a.acceptance_id DESC
 LIMIT 1;
 
--- 2. What each page renders, in the page's order: year, symbol as shown, and
---    title. A page whose only row has a NULL report_recid renders no block.
+-- 2. What each page renders, in the page's order: year, symbols and title.
+--    shown_symbols is one chip per element, in this order. A page whose only
+--    row has a NULL report_recid renders no block.
 WITH accepted_run AS (
     SELECT a.run_id
     FROM mandates.sg_report_page_one_run_acceptances a
@@ -68,7 +69,7 @@ SELECT p.page_ordinal,
        p.page_symbol,
        x.report_recid,
        left(x.date_publication::text, 4) AS shown_year,
-       array_to_string(x.report_symbols, ' - ') AS shown_symbol,
+       x.report_symbols AS shown_symbols,
        x.title AS shown_title
 FROM fixture_pages p
 LEFT JOIN page_reports x ON x.page_symbol = p.page_symbol
@@ -133,18 +134,21 @@ JOIN mandates.sg_report_page_one_links l
  AND l.citation_role NOT IN ('mandating', 'mandating_founding', 'mandating_most_recent')
 ORDER BY p.page_symbol, l.report_recid, l.citation_role;
 
--- 5. Dual symbols: the page joins a report's symbols with ' - '. This lists
---    the Digital Library's own document_symbol beside it for the A/RES/46/182
---    reports; if the two differ, the separator or order on the page is not
---    the catalogue's.
+-- 5. Dual symbols, for the A/RES/46/182 reports: one row per chip, in the
+--    order the page shows them (record order). Two rows per report expected,
+--    A/ then E/. document_symbol is not what this page shows; it is what the
+--    catalogue-notes block shows for the same report (one symbol), listed so
+--    the two blocks can be told apart on a preview.
 SELECT o.report_recid,
-       array_to_string(o.report_symbols, ' - ') AS shown_symbol,
-       d.document_symbol AS catalogue_document_symbol
+       s.chip_ordinal,
+       s.chip_symbol,
+       d.document_symbol AS catalogue_notes_block_symbol
 FROM mandates.sg_report_page_one_outcomes o
+CROSS JOIN LATERAL unnest(o.report_symbols) WITH ORDINALITY AS s (chip_symbol, chip_ordinal)
 LEFT JOIN digitallibrary.documents d ON d.recid = o.report_recid
 WHERE o.run_id = (SELECT a.run_id
                   FROM mandates.sg_report_page_one_run_acceptances a
                   ORDER BY a.accepted_at DESC, a.acceptance_id DESC
                   LIMIT 1)
   AND o.report_recid IN (3858642, 3926632, 3972586, 4010533, 4051016, 4081587, 4114833)
-ORDER BY o.report_recid;
+ORDER BY o.report_recid, s.chip_ordinal;
