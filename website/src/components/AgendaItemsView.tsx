@@ -32,13 +32,7 @@ import {
   agendaAllocations,
   filterAgendaCommittee,
 } from '@/lib/agenda-committee-filter'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+import { HierarchicalSingleSelect } from '@un-eosg/ui/components/hierarchical-single-select'
 import { agendaSessionLabel } from '@/lib/agenda-session-label'
 import { scHeadingDisplayTitle } from '@/lib/sc-agenda'
 import {
@@ -243,27 +237,31 @@ export function AgendaItemsView({ data, mainCounts, relatedCounts }: Props) {
             disabled={!ready}
           />
         </div>
-        {data.body === 'GA' && (
-          <Select
-            value={committee || 'all'}
-            onValueChange={(value) =>
-              setCommittee(value === 'all' ? '' : value)
+        {data.body === 'GA' && ready && (
+          <HierarchicalSingleSelect
+            label={text.committee}
+            selected={committee || 'all'}
+            onChange={(value) => setCommittee(value === 'all' ? '' : value)}
+            getLabel={(value) =>
+              value === 'all'
+                ? text.committee
+                : value === 'untagged'
+                  ? text.noCommitteeTag
+                  : value
             }
-            disabled={!ready}
-          >
-            <SelectTrigger aria-label={text.committee} className="w-52">
-              <SelectValue placeholder={text.allCommittees} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{text.allCommittees}</SelectItem>
-              {committeeOptions.map((value) => (
-                <SelectItem key={value} value={value}>
-                  {value}
-                </SelectItem>
-              ))}
-              <SelectItem value="untagged">{text.noCommitteeTag}</SelectItem>
-            </SelectContent>
-          </Select>
+            groups={[
+              { id: 'all', label: text.allCommittees, children: [] },
+              ...committeeOptions.map((value) => ({
+                id: value,
+                label: value,
+                children: [],
+              })),
+              { id: 'untagged', label: text.noCommitteeTag, children: [] },
+            ]}
+            searchPlaceholder={text.searchCommittees}
+            clearSearchLabel={text.clearCommitteeSearch}
+            noResultsLabel={text.noCommitteeOptions}
+          />
         )}
       </div>
       {ready ? (
