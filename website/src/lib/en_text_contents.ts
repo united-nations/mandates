@@ -306,6 +306,13 @@ export const explainerTexts = {
       disclaimer:
         'Identified automatically from the metadata in each report’s UN Digital Library catalogue record. This can be an incomplete picture of which reports were submitted under this mandate.',
     },
+    sgReportsPageOne: {
+      title: 'Which reports state they were submitted under this mandate?',
+      disclaimer:
+        'Read automatically from what each report states, in its opening pages, it was submitted under. Only reports that have been read are included, and a report that does not state this in its opening pages is not listed.',
+      notAccepted:
+        'No reports are listed here yet: links read from the reports themselves have not been approved for display.',
+    },
     versionHistory: {
       collectionDisclaimer:
         'Grouped automatically by matching titles within the same mandating body.',
