@@ -1,9 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { ChevronDown, ChevronUp } from 'lucide-react'
 import { DetailSectionHeading } from '@/components/MandateDetailUi'
-import { DocumentSymbol } from '@/components/DocumentSymbol'
+import { SgReportList } from '@/components/SgReportList'
 import { Chip } from '@/components/ui/chip'
 import { explainerTexts } from '@/lib/en_text_contents'
 import type { MandatedSgReport } from '@/lib/data/sg-report-links'
@@ -31,18 +29,9 @@ import {
  * SUMMARISE_SG_REPORTS_AS_TILES_ON_DETAIL_PAGE, which is off; that constant
  * carries the reasoning and the condition for bringing them back.
  *
- * The row presentation follows the version-history list — year, symbol,
- * title — because both answer "which other document should I open next".
- * Each symbol links to the report's UN Digital Library record page rather
- * than to a file, so the reader chooses a language version there.
+ * The rows are SgReportList's, shared with the page-one block; this
+ * component adds the annex chip to a row through its marker.
  */
-
-const DEFAULT_SHOWN = 5
-
-/** The report's UNDL record page — language versions and files are chosen there. */
-function undlRecordUrl(recid: number): string {
-  return `https://digitallibrary.un.org/record/${recid}`
-}
 
 /**
  * Annex-position entries assert a different relationship — the annex, not the
@@ -56,16 +45,12 @@ const ANNEX_POSITION_NOTE =
   'An annex to this report, rather than the report itself, was submitted pursuant to this resolution.'
 
 export function MandateSgReports({ reports }: { reports: MandatedSgReport[] }) {
-  const [showAll, setShowAll] = useState(false)
   if (reports.length === 0) return null
 
   const n = reports.length
   const span = observedYearSpan(reports.map((r) => r.date_published))
   const annexCount = reports.filter((r) => r.annex_position_only).length
   const annexNote = annexPositionNote(annexCount, n)
-
-  const shown = showAll ? reports : reports.slice(0, DEFAULT_SHOWN)
-  const hidden = reports.length - shown.length
 
   return (
     <section className="space-y-3">
@@ -84,67 +69,24 @@ export function MandateSgReports({ reports }: { reports: MandatedSgReport[] }) {
         <SgReportSummaryTiles reports={reports} />
       )}
 
-      <ul className="divide-y divide-gray-100 border-y border-border">
-        {shown.map((report) => (
-          <li key={report.report_recid} className="min-h-8 py-1 text-sm">
-            <div className="flex items-baseline gap-3">
-              <span className="w-10 shrink-0 text-sm text-foreground tabular-nums">
-                {report.date_published?.slice(0, 4) ?? '—'}
-              </span>
-              <span className="flex w-36 shrink-0 items-baseline gap-1.5">
-                <a
-                  href={undlRecordUrl(report.report_recid)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title={`Open ${report.report_symbol} in the UN Digital Library`}
-                  className="inline-flex min-w-0 items-baseline rounded hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-un-blue"
-                >
-                  <DocumentSymbol className="inline-flex min-w-0 max-w-full items-baseline">
-                    <span className="min-w-0 truncate">{report.report_symbol}</span>
-                  </DocumentSymbol>
-                </a>
-                {report.annex_position_only && (
-                  <Chip
-                    tone="ghost"
-                    density="dense"
-                    title={ANNEX_POSITION_NOTE}
-                    className="shrink-0 cursor-help self-center"
-                  >
-                    annex
-                  </Chip>
-                )}
-              </span>
-              <span
-                className="min-w-0 flex-1 truncate text-sm text-foreground"
-                title={report.title ?? undefined}
-              >
-                {report.title}
-              </span>
-            </div>
-          </li>
-        ))}
-      </ul>
-
-      {hidden > 0 && (
-        <button
-          type="button"
-          onClick={() => setShowAll(true)}
-          className="inline-flex items-center gap-1 text-sm font-medium text-un-blue-text hover:underline"
-        >
-          <ChevronDown className="h-3 w-3" />
-          Show all {reports.length}
-        </button>
-      )}
-      {showAll && reports.length > DEFAULT_SHOWN && (
-        <button
-          type="button"
-          onClick={() => setShowAll(false)}
-          className="inline-flex items-center gap-1 text-sm font-medium text-un-blue-text hover:underline"
-        >
-          <ChevronUp className="h-3 w-3" />
-          Show fewer
-        </button>
-      )}
+      <SgReportList
+        rows={reports.map((report) => ({
+          report_recid: report.report_recid,
+          symbol: report.report_symbol,
+          title: report.title,
+          date_published: report.date_published,
+          marker: report.annex_position_only && (
+            <Chip
+              tone="ghost"
+              density="dense"
+              title={ANNEX_POSITION_NOTE}
+              className="shrink-0 cursor-help self-center"
+            >
+              annex
+            </Chip>
+          ),
+        }))}
+      />
     </section>
   )
 }
