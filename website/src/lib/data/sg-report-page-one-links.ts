@@ -22,11 +22,10 @@
  *
  * THE JOIN
  * --------
- * The same predicate as the catalogue-notes read: the page's own symbol is
- * tested byte-exactly against cited_display_candidates, the registry page
- * symbols the run looked up for each cited instrument. Nothing is picked
- * from the candidates and no symbol is normalised here. A cited instrument
- * with no registry page ({}) matches no page.
+ * Family symbols match cited_display_candidates byte-exactly, or their stored
+ * catalogue symbol_normalized identity matches cited_canonical. The latter
+ * includes historical family members with no registry page candidates. Calls
+ * without family targets retain the original single-page candidates match.
  *
  * DISPLAY SCOPE
  * -------------
@@ -44,11 +43,13 @@
  * The view mandates.sg_report_page_one_vs_stage1_keys takes the same roles
  * and the same non-empty-candidates rule for page one's side of its
  * comparison. A change to PAGE_ONE_DISPLAYED_CITATION_ROLES or to the
- * candidates match here must be made in that view too.
+ * single-page candidates match here must be made in that view too; family
+ * expansion is outside that per-page diagnostic scope.
  */
 
 import { cache } from 'react'
 import { queryMany, queryOne } from '../db/query'
+import type { SgReportResolutionTarget } from './sg-report-links'
 
 /** The citation roles shown as links (see DISPLAY SCOPE above). */
 const PAGE_ONE_DISPLAYED_CITATION_ROLES = [
@@ -68,6 +69,8 @@ export interface PageOneSgReport {
   title: string | null
   /** ISO date string, cast to text in SQL, as in the catalogue-notes read. */
   date_published: string | null
+  /** Exact family member symbols matched by this source's stored candidates. */
+  resolution_symbols?: string[]
 }
 
 export type PageOneSgReports =
@@ -92,8 +95,8 @@ const getAcceptedPageOneRunId = cache(async (): Promise<string | null> => {
 
 /**
  * Secretary-General reports whose first pages state they were submitted
- * under the resolution shown at `pageSymbol` (the page's own
- * ppb_full_document_symbol, byte-exact), in the accepted run, newest first.
+ * under any requested family member (or just `pageSymbol` by default), with
+ * byte-exact candidate matching, in the accepted run, newest first.
  * One entry per report.
  *
  * Title and date come from digitallibrary.documents by report_recid. The
@@ -102,7 +105,10 @@ const getAcceptedPageOneRunId = cache(async (): Promise<string | null> => {
  * title or date, and those then render as absent.
  */
 export const getSgReportsStatingResolution = cache(
-  async (pageSymbol: string): Promise<PageOneSgReports> => {
+  async (
+    pageSymbol: string,
+    familyTargets: SgReportResolutionTarget[] = [{ symbol: pageSymbol, canonical: null }]
+  ): Promise<PageOneSgReports> => {
     const acceptedRunId = await getAcceptedPageOneRunId()
     if (acceptedRunId === null) {
       console.warn(
@@ -116,23 +122,29 @@ export const getSgReportsStatingResolution = cache(
        SELECT o.report_recid,
               o.report_symbols,
               d.title,
-              d.date_publication::text AS date_published
+              d.date_publication::text AS date_published,
+              array_agg(DISTINCT matched.symbol ORDER BY matched.symbol) AS resolution_symbols
        FROM mandates.sg_report_page_one_links l
        JOIN mandates.sg_report_page_one_outcomes o
          ON o.run_id = l.run_id AND o.report_recid = l.report_recid
        LEFT JOIN digitallibrary.documents d ON d.recid = l.report_recid
+       JOIN jsonb_to_recordset($2::jsonb) matched(symbol text, canonical text)
+         ON matched.symbol = ANY (l.cited_display_candidates)
+         OR matched.canonical = l.cited_canonical
        WHERE l.run_id = $1
-         AND $2 = ANY (l.cited_display_candidates)
          AND l.citation_role = ANY ($3)
        GROUP BY o.report_recid, o.report_symbols, d.title, d.date_publication
        ORDER BY d.date_publication DESC NULLS LAST, o.report_symbols, o.report_recid`,
-      [acceptedRunId, pageSymbol, PAGE_ONE_DISPLAYED_CITATION_ROLES]
+      [acceptedRunId, JSON.stringify(familyTargets), PAGE_ONE_DISPLAYED_CITATION_ROLES]
     )
 
     // The schema allows {} (a catalogue record with no symbol), and the
     // accepted run has such outcomes, all refused. A linked one would render
     // as a link with no text, so it stops the page instead.
     for (const report of reports) {
+      if (!report.resolution_symbols?.length) {
+        throw new Error(`Page-one SG report ${report.report_recid}: missing resolution linkage data`)
+      }
       if (report.report_symbols.length === 0) {
         throw new Error(
           `Page-one SG report links: report ${report.report_recid} in run ${acceptedRunId} is linked to ${pageSymbol} but has no document symbol`

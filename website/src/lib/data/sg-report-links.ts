@@ -11,13 +11,11 @@
  *
  * THE JOIN
  * --------
- * The page's own symbol is tested byte-exactly against
- * resolution_display_candidates — the precomputed set of registry page symbols
- * each stored resolution identity resolves to. No symbol normalisation happens
- * here: the fold that maps prose variants to one stored identity ran once, at
- * write time, and the candidates array is that fold's inverse image. A page
- * created after the last extractor run matches no rows until the next run;
- * the control is run cadence, not read-time widening.
+ * Symbols match the precomputed registry display candidates byte-exactly.
+ * Family reads also match stored resolution_canonical to the catalogue's
+ * symbol_normalized identity, which the extractor uses. This includes genuine
+ * historical members with no registry candidates and retains symbol aliases
+ * without inventing a resolution identity from prose at read time.
  *
  * DISPLAY SCOPE
  * -------------
@@ -51,10 +49,11 @@
  * ------------------------
  * The view mandates.sg_report_page_one_vs_stage1_keys
  * (sql/migrations/043_sg_report_page_one_links.sql) copies both rules above,
- * and the empty-candidates consequence of THE JOIN, so that its comparison of
+ * and the single-page candidates match, so that its comparison of
  * Stage 1 with page-one links sees what this page shows. A change to
  * DISPLAY_ELIGIBLE_SENSES, DISPLAY_EXCLUDED_REPORT_RECIDS or the candidates
- * match here must be made in that view too.
+ * match here must be made in that view too. Family expansion is outside that
+ * per-page diagnostic scope; calls without family targets retain its match.
  */
 
 import { cache } from 'react'
@@ -95,32 +94,63 @@ export interface MandatedSgReport {
    * pursuant to this resolution, and the UI renders distinct prose for it.
    */
   annex_position_only: boolean
+  /** Exact family member symbols matched by this source's stored candidates. */
+  resolution_symbols?: string[]
+  /** Family members linked only through an annex, rather than the report. */
+  annex_resolution_symbols?: string[]
+}
+
+/** Stored catalogue identity plus the exact symbol to show in this family. */
+export interface SgReportResolutionTarget {
+  symbol: string
+  canonical: string | null
 }
 
 /**
- * Secretary-General reports mandated by the resolution shown at `pageSymbol`
- * (the page's own ppb_full_document_symbol, byte-exact), newest first. One
+ * Secretary-General reports mandated by the requested resolution family
+ * (or just `pageSymbol` when called without a family), newest first. One
  * entry per report; empty array when the resolution has none in display
  * scope. Report title and date come from digitallibrary.documents via
  * report_recid — the same join getResolutionSeries uses.
  */
 export const getSgReportsMandatedByResolution = cache(
-  async (pageSymbol: string): Promise<MandatedSgReport[]> => {
-    return queryMany<MandatedSgReport>(
+  async (
+    pageSymbol: string,
+    familyTargets: SgReportResolutionTarget[] = [{ symbol: pageSymbol, canonical: null }]
+  ): Promise<MandatedSgReport[]> => {
+    const reports = await queryMany<MandatedSgReport>(
       `/* trace:sg-reports.by-mandate */
+       WITH matched_links AS (
+         SELECT l.report_recid, l.report_symbol, matched.symbol,
+                bool_and(l.citation_position = 'annex_title') AS annex_only
+         FROM mandates.sg_report_to_mandate_links l
+         JOIN jsonb_to_recordset($1::jsonb) matched(symbol text, canonical text)
+           ON matched.symbol = ANY (l.resolution_display_candidates)
+           OR matched.canonical = l.resolution_canonical
+         WHERE l.citation_sense = ANY ($2)
+           AND l.report_recid <> ALL ($3)
+         GROUP BY l.report_recid, l.report_symbol, matched.symbol
+       )
        SELECT l.report_recid,
               l.report_symbol,
               d.title,
               d.date_publication::text AS date_published,
-              bool_and(l.citation_position = 'annex_title') AS annex_position_only
-       FROM mandates.sg_report_to_mandate_links l
+              bool_and(l.annex_only) AS annex_position_only,
+              array_agg(DISTINCT l.symbol ORDER BY l.symbol) AS resolution_symbols,
+              COALESCE(array_agg(DISTINCT l.symbol ORDER BY l.symbol)
+                FILTER (WHERE l.annex_only), ARRAY[]::text[]) AS annex_resolution_symbols
+       FROM matched_links l
        JOIN digitallibrary.documents d ON d.recid = l.report_recid
-       WHERE $1 = ANY (l.resolution_display_candidates)
-         AND l.citation_sense = ANY ($2)
-         AND l.report_recid <> ALL ($3)
        GROUP BY l.report_recid, l.report_symbol, d.title, d.date_publication
        ORDER BY d.date_publication DESC NULLS LAST, l.report_symbol`,
-      [pageSymbol, DISPLAY_ELIGIBLE_SENSES, DISPLAY_EXCLUDED_REPORT_RECIDS]
+      [JSON.stringify(familyTargets), DISPLAY_ELIGIBLE_SENSES, DISPLAY_EXCLUDED_REPORT_RECIDS]
     )
+    for (const report of reports) {
+      if (!report.resolution_symbols?.length ||
+          !Array.isArray(report.annex_resolution_symbols)) {
+        throw new Error(`SG report ${report.report_recid}: missing resolution linkage data`)
+      }
+    }
+    return reports
   }
 )

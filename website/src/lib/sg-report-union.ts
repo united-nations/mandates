@@ -4,10 +4,10 @@
  * Each source is read by its own function and stays the sole reader of its
  * tables: getSgReportsStatingResolution (page one, the report's own
  * statement) and getSgReportsMandatedByResolution (the Digital Library's
- * catalogue notes). Both are already scoped to the page's symbol, so a report
- * in both results is linked to this page by both sources; a report the
- * catalogue notes link to some other resolution is not in the catalogue
- * result here at all. This function only combines the two results. It runs
+ * catalogue notes). Both are already scoped to the requested family. A report
+ * found by both can cite different versions in each source; resolutionLinks
+ * preserves each symbol's own provenance and annex-only status. This function
+ * only combines the two results. It runs
  * no query and is pure, so it is tested on its own.
  *
  * One row per report_recid:
@@ -45,6 +45,11 @@ export interface UnionSgReport {
   date_published: string | null
   provenance: SgReportProvenance
   catalogueAnnexOnly: boolean | null
+  resolutionLinks?: {
+    symbol: string
+    provenance: SgReportProvenance
+    catalogueAnnexOnly: boolean | null
+  }[]
 }
 
 export interface UnionSgReports {
@@ -88,6 +93,11 @@ export function unionSgReports(
         date_published: report.date_published,
         provenance: 'page_one',
         catalogueAnnexOnly: null,
+        resolutionLinks: (report.resolution_symbols ?? []).map((symbol) => ({
+          symbol,
+          provenance: 'page_one',
+          catalogueAnnexOnly: null,
+        })),
       })
     }
   }
@@ -102,6 +112,13 @@ export function unionSgReports(
         date_published: report.date_published,
         provenance: 'catalogue_notes',
         catalogueAnnexOnly: report.annex_position_only,
+        resolutionLinks: (report.resolution_symbols ?? []).map((symbol) => ({
+          symbol,
+          provenance: 'catalogue_notes',
+          catalogueAnnexOnly:
+            report.annex_resolution_symbols?.includes(symbol) ??
+            report.annex_position_only,
+        })),
       })
       continue
     }
@@ -120,6 +137,22 @@ export function unionSgReports(
     }
     row.provenance = 'both'
     row.catalogueAnnexOnly = report.annex_position_only
+    for (const symbol of report.resolution_symbols ?? []) {
+      const link = row.resolutionLinks?.find((link) => link.symbol === symbol)
+      const annexOnly =
+        report.annex_resolution_symbols?.includes(symbol) ??
+        report.annex_position_only
+      if (link) {
+        link.provenance = 'both'
+        link.catalogueAnnexOnly = annexOnly
+      } else {
+        row.resolutionLinks?.push({
+          symbol,
+          provenance: 'catalogue_notes',
+          catalogueAnnexOnly: annexOnly,
+        })
+      }
+    }
   }
 
   return {
