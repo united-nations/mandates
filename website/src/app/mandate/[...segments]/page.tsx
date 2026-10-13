@@ -1,4 +1,6 @@
 import { Suspense } from 'react'
+import type { Metadata } from 'next'
+import { explainerTexts } from '@/lib/en_text_contents'
 import { notFound } from 'next/navigation'
 import { getMandateDisplayTitle, decodeUrlSegments } from '@/lib/utils'
 
@@ -28,6 +30,18 @@ import { ScrollToTop } from '@/components/ScrollToTop'
 interface MandatePageProps {
   params: Promise<{ segments: string[] }>
   searchParams: Promise<Record<string, string | string[] | undefined>>
+}
+
+export async function generateMetadata({
+  params,
+}: Pick<MandatePageProps, 'params'>): Promise<Metadata> {
+  const { segments } = await params
+  return {
+    title: explainerTexts.pageTitles.mandate.replace(
+      '{symbol}',
+      decodeUrlSegments(segments)
+    ),
+  }
 }
 
 export default async function MandatePage({

@@ -20,7 +20,7 @@ import {
 import { withRequestQueryCache } from '@/lib/db/request-query-cache'
 
 export const metadata = {
-  title: explainerTexts.secretariatNavigation.entitiesAndPrograms,
+  title: explainerTexts.pageTitles.entities,
 }
 
 export default async function EntitiesAndProgramsPage() {

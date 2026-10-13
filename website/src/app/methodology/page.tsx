@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { explainerTexts } from '@/lib/en_text_contents'
 
 export const metadata: Metadata = {
-  title: 'Methodology and Scope',
+  title: explainerTexts.pageTitles.about,
   description: explainerTexts.mainHeader.shortDescriptionPlain,
 }
 

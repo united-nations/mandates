@@ -4,12 +4,27 @@
  */
 
 export const explainerTexts = {
+  pageTitles: {
+    sources: 'Mandate Registry — Mandate sources',
+    agendas: 'Mandate Registry — Intergovernmental agendas',
+    entities: 'Mandate Registry — UN entities and programmes',
+    mandate: '{symbol} — Mandate Registry',
+    about: 'About the Mandate Registry',
+  },
   secretariatNavigation: {
     label: 'Secretariat navigation',
     mandateSources: 'Mandate sources',
     entitiesAndPrograms: 'UN entities and programmes',
     agendaItems: 'Intergovernmental agendas',
     reports: 'Reports',
+    explainers: {
+      sources:
+        'Find resolutions and other documents that establish mandates. Explore their versions, see where they are cited in the budget, and find reports submitted under them.',
+      agendas:
+        'Explore the agenda items under which intergovernmental bodies consider their work. Select an item to find related mandate documents.',
+      entities:
+        'Explore UN entities and their programmes. See which mandate documents they cite and compare historical expenditure.',
+    },
   },
   secretariatReports: {
     heading: 'Reports',
@@ -20,6 +35,8 @@ export const explainerTexts = {
     link: 'Explore Secretary-General’s reports',
   },
   entitiesAndProgrammes: {
+    clusterDisclaimer:
+      'These clusters group entities and programmes to help you explore. They do not represent official UN structures or reporting relationships.',
     search: 'Search entities and programmes',
     cluster: 'Filter by cross-cutting topics',
     allClusters: 'No filters',
@@ -342,6 +359,8 @@ export const explainerTexts = {
     },
   },
   agendaItems: {
+    clusterDisclaimer:
+      'These clusters group related agenda items to help you explore. They are not official classifications of intergovernmental work.',
     sessionWithYears: '{session} {years}',
     body: 'Agenda body',
     search: 'Search agenda items',
