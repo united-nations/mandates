@@ -1,0 +1,378 @@
+'use client'
+
+import { ClickTooltip } from '@/components/DirectoryControls'
+import { ChartSearchInput } from '@/components/ui/chart-search-input'
+import { ChipCount } from '@/components/ui/chip'
+import { DisclosurePopover } from '@/components/ui/disclosure-popover'
+import {
+  Tooltip,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
+import { cn } from '@/lib/utils'
+import type { DirectorySelection, OrganGroup, OrganWithCount } from '@/types'
+import { ChevronRight, ExternalLink } from 'lucide-react'
+import { useMemo, useState } from 'react'
+
+/**
+ * The directory behind card 1: everything the budget names as the source of a
+ * mandate, grouped by its place in the UN system (see lib/organ-groups.ts).
+ * Reads the same category structure the table's Organ filter groups by
+ * (getOrganHierarchy).
+ *
+ * Titled "Mandating bodies", after the term the mandate implementation review
+ * defines for the intergovernmental bodies that issue mandates. This list is
+ * wider than that term: not all of it is an organ, and two instruments and one
+ * organisation outside the UN sit among the bodies. The gap is disclosed on the
+ * cards that fall outside the term, each carrying a marker the rest do not, and
+ * in the notes panel below the list. It is not hedged in the title, because a
+ * title that qualified itself would stop naming the thing the page is about.
+ *
+ * On the single page, selecting an organ ADDS it to the active filters and
+ * scrolls to the mandates section; the active organ is highlighted. The write
+ * itself is injected by DirectoryExplorer (see DirectorySelection) because it
+ * has to match the scope these counts were computed under.
+ *
+ * One view only: cards with names. The vocabulary holds 26 codes and fewer than
+ * that ever render at once, so the compact acronym-pill view the entity
+ * directory still needs bought nothing here except a toggle to get wrong — it
+ * was removed along with its localStorage pref.
+ */
+
+interface MandatingBodiesDirectoryProps {
+  groups: OrganGroup[]
+  selection: DirectorySelection
+}
+
+export function MandatingBodiesDirectory({
+  groups,
+  selection,
+}: MandatingBodiesDirectoryProps) {
+  const [search, setSearch] = useState('')
+  const term = search.trim().toLowerCase()
+  const active = selection.active('organ')
+  const select = (value: string) => selection.select('organ', value)
+
+  const totalOrgans = useMemo(
+    () => groups.reduce((n, g) => n + g.organs.length, 0),
+    [groups]
+  )
+
+  const filtered = useMemo(() => {
+    if (!term) return groups
+    return groups
+      .map((g) => ({
+        ...g,
+        organs: g.organs.filter(
+          (o) =>
+            o.short.toLowerCase().includes(term) ||
+            o.long.toLowerCase().includes(term)
+        ),
+      }))
+      .filter((g) => g.organs.length > 0)
+  }, [groups, term])
+
+  return (
+    <TooltipProvider delayDuration={200}>
+      <div className="space-y-6">
+        <ChartSearchInput
+          placeholder="Search mandating bodies by acronym or name..."
+          value={search}
+          onChange={setSearch}
+        />
+
+        {filtered.length > 0 ? (
+          <div className="space-y-6">
+            {filtered.map((group) => (
+              <div key={group.id}>
+                <GroupHeading>{group.label}</GroupHeading>
+                <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                  {group.organs.map((organ) => (
+                    <OrganCard
+                      key={organ.short}
+                      organ={organ}
+                      active={active === organ.short}
+                      onSelect={select}
+                    />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-sm text-muted-foreground">
+            No mandating bodies match “{search.trim()}”.
+          </p>
+        )}
+
+        {/* The footer and the notes sit under the last category, and only when
+            nothing is typed: both describe the whole list, and neither is true
+            of a search result. */}
+        {!term && (
+          <div className="space-y-1 pt-2">
+            <p className="text-sm text-muted-foreground">
+              {totalOrgans.toLocaleString()} mandating bodies listed.
+            </p>
+            <AboutThisList />
+          </div>
+        )}
+      </div>
+    </TooltipProvider>
+  )
+}
+
+/* The `i` roundel, in the two weights this surface uses. The hairline form is
+   the same mark the detail view puts beside a disclaimer line; the card form is
+   a size up, filled, and fills with the accent colour when its panel is open,
+   because on the marked cards the marker is the only thing explaining why the
+   card is where it is and it has to read as a control rather than as
+   decoration. */
+const NOTE_GLYPH =
+  'inline-block h-4 w-4 shrink-0 overflow-hidden rounded-full border border-border text-center text-xs leading-[0.875rem] font-semibold text-muted-foreground select-none'
+const CARD_GLYPH =
+  'inline-block h-4 w-4 shrink-0 overflow-hidden rounded-full border border-gray-400 bg-secondary text-center text-xs leading-[0.875rem] font-semibold text-muted-foreground select-none'
+
+/**
+ * The notes, in render order. The zero-documents line leads because it answers
+ * the first question a reader has on opening the panel, which is why the list is
+ * shorter than the number above it.
+ *
+ * Held as whole strings rather than written into the markup: a sentence the
+ * formatter is free to break across source lines stops being one thing anyone
+ * can search for, and these were reviewed as sentences.
+ */
+const ABOUT_THIS_LIST = [
+  'Mandating bodies with no documents in the current view are not listed. The Trusteeship Council is one.',
+  'The grouping into categories is editorial, a choice made for this page.',
+  'Some instruments are grouped under Other rather than listed separately, among them the International Covenants and the Framework Convention on Climate Change.',
+  'Some documents record a mandating body that is not one of these, such as a Secretary-General’s bulletin.',
+  'Some record no mandating body at all, and are counted under none here.',
+]
+
+/**
+ * What a reader needs to know about the list that the list cannot say itself:
+ * which bodies are missing from it, that the grouping is a choice, where the
+ * rest of the instruments are, that a few documents name a mandating body no
+ * card here stands for, and that a few name none.
+ *
+ * Notes, not a disclaimer, with one exception. A disclaimer is earned by
+ * content produced by a process that can be wrong in ways the reader cannot
+ * see; a deterministic display rule cannot be wrong, only unstated. The third
+ * line is the exception and is a real disclaimer: `Other` is clickable, its
+ * documents are itemised nowhere, and a reader looking for an instrument has no
+ * way to discover that some are inside it.
+ *
+ * The last two lines depend on card 1 counting what this list counts. While the
+ * two disagreed, the line that belonged here was the one describing the
+ * difference; asserting the totals agree before they do is worse than the
+ * silent disagreement, because the page then vouches for it.
+ *
+ * No figures in the lines. Each claim is measured, but a count written here
+ * sits above counts the page computes live, and the two drift apart silently —
+ * which is why card 2's intro lost the one it carried.
+ *
+ * Same disclosure primitive as the card markers, and lighter than the cards on
+ * purpose — a trigger, not a fifth entry in the list of categories.
+ */
+function AboutThisList() {
+  return (
+    <DisclosurePopover
+      label="About this list"
+      // Anchored at the foot of the list, so it opens upward: a panel dropping
+      // downward from the last element opens off the end of the surface.
+      side="top"
+      align="start"
+      triggerClassName="group/notes inline-flex cursor-pointer items-center gap-1.5 rounded-sm p-0 focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none"
+      contentClassName="w-[27rem]"
+      trigger={
+        <>
+          <span className="border-b border-dotted border-border pb-px text-sm text-muted-foreground group-hover/notes:border-un-blue group-hover/notes:text-un-blue-text group-data-[state=open]/notes:border-un-blue group-data-[state=open]/notes:text-un-blue-text">
+            About this list
+          </span>
+          <span
+            aria-hidden
+            className={cn(
+              NOTE_GLYPH,
+              'group-hover/notes:border-un-blue group-hover/notes:text-un-blue-text group-data-[state=open]/notes:border-un-blue group-data-[state=open]/notes:text-un-blue-text'
+            )}
+          >
+            i
+          </span>
+        </>
+      }
+    >
+      <span className="mb-2 block text-sm font-semibold tracking-[0.04em] text-muted-foreground uppercase">
+        About this list
+      </span>
+      <ul className="list-disc space-y-1.5 pl-3.5 text-sm leading-relaxed text-muted-foreground marker:text-muted-foreground">
+        {ABOUT_THIS_LIST.map((line) => (
+          <li key={line}>{line}</li>
+        ))}
+      </ul>
+    </DisclosurePopover>
+  )
+}
+
+/**
+ * The cards the list's own title does not describe, and what the marker says.
+ * Keyed by the code, not by the category: each keeps its marker wherever its
+ * card is grouped, and the grouping is the thing most likely to be revised
+ * next.
+ *
+ * Two of them are not bodies at all. The Charter and UNCLOS are instruments,
+ * so "mandating bodies" is false of them, and this is the only place a reader
+ * standing at their cards can learn it - the title cannot carry the exception
+ * without ceasing to name the population. The other two are bodies that the
+ * term fits imperfectly for their own reasons.
+ *
+ * Every marker carries the same weight. Matched markers read as "these have
+ * context"; one heavier than the rest reads as "something is wrong with this
+ * one", which is the reading per-card placement exists to avoid.
+ */
+const CARD_NOTES: Record<string, string> = {
+  WTO:
+    'The World Trade Organization is not a United Nations body. It is a ' +
+    'standing intergovernmental organisation; its documents appear here ' +
+    'because the budget records obligations arising from them.',
+  INCB:
+    'The International Narcotics Control Board is established by treaty, but ' +
+    'it monitors how conventions are implemented rather than adopting ' +
+    'decisions.',
+  Charter:
+    'The Charter of the United Nations is a founding instrument rather than ' +
+    'a body. Documents appear under it because the budget records mandates ' +
+    'against the Charter itself rather than against a decision of a ' +
+    'mandating body.',
+  UNCLOS:
+    'The United Nations Convention on the Law of the Sea is a treaty rather ' +
+    'than a body. Documents appear under it because the budget records ' +
+    'mandates against the Convention itself rather than against a decision ' +
+    'taken under it.',
+}
+
+/** h3, not h2: the dialog's own DialogTitle is the h2 of this subtree. */
+function GroupHeading({ children }: { children: React.ReactNode }) {
+  return (
+    <h3 className="border-b border-border pb-1.5 text-sm font-normal tracking-wide text-muted-foreground uppercase">
+      {children}
+    </h3>
+  )
+}
+
+function OrganCard({
+  organ,
+  active,
+  onSelect,
+}: {
+  organ: OrganWithCount
+  active: boolean
+  onSelect: (value: string) => void
+}) {
+  const longName = organ.long && organ.long !== organ.short ? organ.long : null
+  const note = CARD_NOTES[organ.short]
+
+  return (
+    <div
+      className={cn(
+        'group flex items-start justify-between gap-2 rounded-lg border bg-white px-3 py-2 transition-all',
+        active
+          ? 'border-un-blue'
+          : 'border-border hover:border-un-blue hover:shadow-md'
+      )}
+    >
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <a
+            href={`/secretariat?organ=${encodeURIComponent(organ.short)}`}
+            onClick={(e) => {
+              e.preventDefault()
+              onSelect(organ.short)
+            }}
+            // The ring lives on the anchor, not on the card that wraps it: the
+            // card is a <div> and cannot take focus, so a ring drawn there
+            // would highlight a region the keyboard never lands on. Offset and
+            // radius match the shared chip focus treatment.
+            className="min-w-0 flex-1 rounded-sm focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none"
+          >
+            <div className="flex items-baseline gap-1.5">
+              <span
+                className={cn(
+                  'text-sm font-semibold',
+                  active ? 'text-un-blue-text' : 'text-foreground'
+                )}
+              >
+                {organ.short}
+              </span>
+              <ChipCount>{organ.count.toLocaleString()}</ChipCount>
+            </div>
+            {longName && (
+              // Up to three lines, not one truncated one: the whole point of the
+              // directory is expanding the acronym, and single-line truncation
+              // made ESCAP and ESCWA render identical text. `title` is the
+              // last-resort recovery path should a name ever still clamp.
+              <div
+                title={longName}
+                className="line-clamp-3 text-sm leading-snug text-muted-foreground"
+              >
+                {longName}
+              </div>
+            )}
+          </a>
+        </TooltipTrigger>
+        <ClickTooltip
+          name={longName ?? undefined}
+          meta={`${organ.count.toLocaleString()} mandate${organ.count === 1 ? '' : 's'}`}
+        />
+      </Tooltip>
+
+      {/* The marker sits in the card's top row after the count chip, as a
+          sibling of the name link rather than inside it: a button nested in an
+          anchor is not valid, and the name carries a tooltip of its own that
+          this must not be swallowed by. */}
+      <div className="mt-0.5 flex shrink-0 items-center gap-1">
+        {note && (
+          <DisclosurePopover
+            label={`About ${organ.short}`}
+            // Downward, and right-aligned to the card so the panel does not
+            // overflow the grid at the right-hand column.
+            side="bottom"
+            align="end"
+            triggerClassName="group/marker inline-flex cursor-pointer rounded-full p-0 focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none"
+            trigger={
+              <span
+                aria-hidden
+                className={cn(
+                  CARD_GLYPH,
+                  'group-hover/marker:border-un-blue group-hover/marker:bg-un-blue-text group-hover/marker:text-white group-data-[state=open]/marker:border-un-blue group-data-[state=open]/marker:bg-un-blue-text group-data-[state=open]/marker:text-white'
+                )}
+              >
+                i
+              </span>
+            }
+          >
+            {note}
+          </DisclosurePopover>
+        )}
+        {organ.website && (
+          <a
+            href={organ.website}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Official website of ${organ.short} (opens in a new tab)`}
+            title="Official website"
+            className="rounded-sm text-muted-foreground hover:text-un-blue-text focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none"
+          >
+            <ExternalLink aria-hidden className="h-3.5 w-3.5" />
+          </a>
+        )}
+        <ChevronRight
+          aria-hidden
+          className={cn(
+            'h-3.5 w-3.5',
+            active ? 'text-un-blue-text' : 'text-muted-foreground group-hover:text-un-blue-text'
+          )}
+        />
+      </div>
+    </div>
+  )
+}

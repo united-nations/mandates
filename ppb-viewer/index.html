@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Hierarchy Viewer</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 20px;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .tree {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .tree-item {
+            margin: 2px 0;
+        }
+        
+        .tree-content {
+            display: flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .tree-content:hover {
+            background-color: #f0f8ff;
+        }
+        
+        .toggle {
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #666;
+            background: #e9ecef;
+            border-radius: 2px;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .toggle:hover {
+            background: #dee2e6;
+        }
+        
+        .toggle.collapsed::before {
+            content: "▶";
+        }
+        
+        .toggle.expanded::before {
+            content: "▼";
+        }
+        
+        .toggle.empty {
+            visibility: hidden;
+        }
+        
+        .toggle.leaf {
+            visibility: hidden;
+        }
+        
+        .block-type {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-right: 8px;
+            min-width: 60px;
+            text-align: center;
+        }
+        
+        .block-type.entity-group { background: #e74c3c; color: white; }
+        .block-type.entity { background: #3498db; color: white; }
+        .block-type.a-b { background: #9b59b6; color: white; }
+        .block-type.heading-x { background: #f39c12; color: white; }
+        .block-type.table { background: #2ecc71; color: white; }
+        .block-type.figure { background: #1abc9c; color: white; }
+        .block-type.paragraph-1 { background: #95a5a6; color: white; }
+        .block-type.paragraph-2 { background: #7f8c8d; color: white; }
+        .block-type.table-content { background: #27ae60; color: white; }
+        .block-type.image { background: #8e44ad; color: white; }
+        .block-type.file { background: #2c3e50; color: white; font-weight: bold; }
+        .block-type.other { background: #34495e; color: white; }
+        
+        .text-content {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .children {
+            margin-left: 24px;
+            border-left: 1px solid #dee2e6;
+            padding-left: 16px;
+            display: none;
+        }
+        
+        .children.expanded {
+            display: block;
+        }
+        
+        .content-detail {
+            margin-left: 24px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            border-left: 3px solid #3498db;
+            margin-top: 5px;
+            display: none;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        
+        .content-detail.expanded {
+            display: block;
+        }
+        
+        .content-detail.table-content {
+            overflow-x: auto;
+        }
+        
+        .content-detail.table-content table {
+            border-collapse: collapse;
+            width: 100%;
+            font-size: 11px;
+        }
+        
+        .content-detail.table-content table, 
+        .content-detail.table-content th, 
+        .content-detail.table-content td {
+            border: 1px solid #ddd;
+            padding: 4px 6px;
+        }
+        
+        .content-detail.table-content th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        
+        .hyperlinks-section {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #dee2e6;
+        }
+        
+        .hyperlinks-title {
+            font-weight: bold;
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .hyperlink {
+            display: inline-block;
+            margin: 2px 4px 2px 0;
+            padding: 2px 6px;
+            background: #e3f2fd;
+            border-radius: 3px;
+            font-size: 10px;
+        }
+        
+        .hyperlink a {
+            color: #1976d2;
+            text-decoration: none;
+        }
+        
+        .hyperlink a:hover {
+            text-decoration: underline;
+        }
+        
+        .hyperlinks-indicator {
+            display: inline-block;
+            margin-left: 8px;
+            padding: 1px 4px;
+            background: #2196f3;
+            color: white;
+            border-radius: 8px;
+            font-size: 9px;
+            font-weight: bold;
+        }
+        
+        .load-button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        
+        .load-button:hover {
+            background: #2980b9;
+        }
+        
+        .stats {
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #ecf0f1;
+            border-radius: 5px;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Document Hierarchy Viewer</h1>
+        
+        <div style="margin-bottom: 20px;">
+            <label for="budget-year" style="margin-right: 10px; font-weight: bold;">Budget Year:</label>
+            <select id="budget-year" style="padding: 5px 10px; border-radius: 4px; border: 1px solid #ddd;">
+                <option value="2025">2025 (PPB2025)</option>
+                <option value="2026">2026 (PPB2026)</option>
+                <option value="2027">2027 (PPB2027)</option>
+            </select>
+        </div>
+        
+        <button class="load-button" onclick="loadJSON()">Load All JSON Files</button>
+        
+        <div id="stats" class="stats" style="display: none;">
+            <span id="file-count">0</span> files loaded, <span id="total-items">0</span> total items
+        </div>
+        
+        <div id="tree-container" class="tree"></div>
+    </div>
+
+    <script>
+        let treeData = null;
+        
+        // Path to data directory from server root
+        // Server runs from repo root, so we use absolute path from server root
+        const REPO_ROOT_PATH = '/';
+        
+        // List of all available JSON files for PPB2025
+        const jsonFiles2025 = [
+            'A_79_6_INTRODUCTION.json',
+            'A_79_6_INCOMESECT.1.json',
+            'A_79_6_INCOMESECT.2.json',
+            'A_79_6_INCOMESECT.3.json',
+            'A_79_6_SECT.1.json',
+            'A_79_6_SECT.2.json',
+            'A_79_6_SECT.3.json',
+            'A_79_6_SECT.3__ADD.1.json',
+            'A_79_6_SECT.3__ADD.2.json',
+            'A_79_6_SECT.3__ADD.3.json',
+            'A_79_6_SECT.3__ADD.4.json',
+            'A_79_6_SECT.3__ADD.5.json',
+            'A_79_6_SECT.3__ADD.6.json',
+            'A_79_6_SECT.3__ADD.7.json',
+            'A_79_6_SECT.3__ADD.8.json',
+            'A_79_6_SECT.3__ADD.9.json',
+            'A_79_6_SECT.3__ADD.10.json',
+            'A_79_6_SECT.4.json',
+            'A_79_6_SECT.5.json',
+            'A_79_6_SECT.6.json',
+            'A_79_6_SECT.7.json',
+            'A_79_6_SECT.8.json',
+            'A_79_6_SECT.9.json',
+            'A_79_6_SECT.10.json',
+            'A_79_6_SECT.11.json',
+            'A_79_6_SECT.12.json',
+            'A_79_6_SECT.13.json',
+            'A_79_6_SECT.14.json',
+            'A_79_6_SECT.15.json',
+            'A_79_6_SECT.16.json',
+            'A_79_6_SECT.17.json',
+            'A_79_6_SECT.18.json',
+            'A_79_6_SECT.19.json',
+            'A_79_6_SECT.20.json',
+            'A_79_6_SECT.21.json',
+            'A_79_6_SECT.22.json',
+            'A_79_6_SECT.23.json',
+            'A_79_6_SECT.24.json',
+            'A_79_6_SECT.24__CORR.1.json',
+            'A_79_6_SECT.25.json',
+            'A_79_6_SECT.26.json',
+            'A_79_6_SECT.27.json',
+            'A_79_6_SECT.27__CORR.1.json',
+            'A_79_6_SECT.28.json',
+            'A_79_6_SECT.29.json',
+            'A_79_6_SECT.29A.json',
+            'A_79_6_SECT.29B.json',
+            'A_79_6_SECT.29C.json',
+            'A_79_6_SECT.29D.json',
+            'A_79_6_SECT.29E.json',
+            'A_79_6_SECT.29F.json',
+            'A_79_6_SECT.30.json',
+            'A_79_6_SECT.31.json',
+            'A_79_6_SECT.32.json',
+            'A_79_6_SECT.33.json',
+            'A_79_6_SECT.34.json',
+            'A_79_6_SECT.35.json',
+            'A_79_6_SECT.36.json'
+        ];
+        
+        // List of all available JSON files for PPB2027
+        const jsonFiles2027 = [
+            'A_81_6 (SECT. 2).json',
+            'A_81_6 (SECT. 3).json',
+            'A_81_6 (SECT. 4).json',
+            'A_81_6 (SECT. 5).json',
+            'A_81_6 (SECT. 6).json',
+            'A_81_6 (SECT. 8).json',
+            'A_81_6 (SECT. 9).json',
+            'A_81_6 (SECT. 10).json',
+            'A_81_6 (SECT. 11).json',
+            'A_81_6 (SECT. 12).json',
+            'A_81_6 (SECT. 13).json',
+            'A_81_6 (SECT. 14).json',
+            'A_81_6 (SECT. 15).json',
+            'A_81_6 (SECT. 16).json',
+            'A_81_6 (SECT. 17).json',
+            'A_81_6 (SECT. 18).json',
+            'A_81_6 (SECT. 19).json',
+            'A_81_6 (SECT. 20).json',
+            'A_81_6 (SECT. 21).json',
+            'A_81_6 (SECT. 22).json',
+            'A_81_6 (SECT. 24).json',
+            'A_81_6 (SECT. 25).json',
+            'A_81_6 (SECT. 26).json',
+            'A_81_6 (SECT. 27).json',
+            'A_81_6 (SECT. 28).json',
+            'A_81_6 (SECT. 29A).json',
+            'A_81_6 (SECT. 29B).json',
+            'A_81_6 (SECT. 29C).json',
+            'A_81_6 (SECT. 29D).json',
+            'A_81_6 (SECT. 29E).json',
+            'A_81_6 (SECT. 29F).json',
+            'A_81_6 (SECT. 30).json',
+            'A_81_6 (SECT. 31).json',
+            'A_81_6 (SECT. 34).json'
+        ];
+
+        // List of all available JSON files for PPB2026
+        const jsonFiles2026 = [
+            'A_80_6 (SECT. 3)_ADD.1_CHAPEAU FASCICLE ADVANCE UNEDITED COPY FOR ACABQ.json',
+            'A_80_6 (SECT. 3)_ADD.2_CLUSTER I_FASCICLE ADVANCE UNEDITED COPY FOR ACABQ.json',
+            'A_80_6 (SECT. 3)_ADD.3_CLUSTER II_FASCICLE ADVANCE UNEDITED COPY FOR ACABQ.json',
+            'A_80_6 (SECT. 3)_ADD.4_CLUSTER_III_FASCICLE ADVANCE UNEDITED COPY FOR ACABQ.json',
+            'A_80_6 (SECT. 3)_ADD.5_UNAMA_FASCICLE ADVANCE UNEDITED COPY FOR ACABQ.json',
+            'A_80_6 (SECT. 3)_ADD.6_UNAMI_FASCICLE ADVANCE UNEDITED COPY FOR ACABQ.json',
+            'A_80_6_INCOMESECT.1.json',
+            'A_80_6_PLANOUTLINE.json',
+            'A_80_6_SECT.2.json',
+            'A_80_6_SECT.3.json',
+            'A_80_6_SECT.4.json',
+            'A_80_6_SECT.5.json',
+            'A_80_6_SECT.6.json',
+            'A_80_6_SECT.7.json',
+            'A_80_6_SECT.8.json',
+            'A_80_6_SECT.9.json',
+            'A_80_6_SECT.10.json',
+            'A_80_6_SECT.11.json',
+            'A_80_6_SECT.12.json',
+            'A_80_6_SECT.13.json',
+            'A_80_6_SECT.14.json',
+            'A_80_6_SECT.15.json',
+            'A_80_6_SECT.16.json',
+            'A_80_6_SECT.17.json',
+            'A_80_6_SECT.18.json',
+            'A_80_6_SECT.19.json',
+            'A_80_6_SECT.20.json',
+            'A_80_6_SECT.21.json',
+            'A_80_6_SECT.22.json',
+            'A_80_6_SECT.24.json',
+            'A_80_6_SECT.24__CORR.1.json',
+            'A_80_6_SECT.25.json',
+            'A_80_6_SECT.26.json',
+            'A_80_6_SECT.27.json',
+            'A_80_6_SECT.28.json',
+            'A_80_6_SECT.29.json',
+            'A_80_6_SECT.29A.json',
+            'A_80_6_SECT.29B.json',
+            'A_80_6_SECT.29C.json',
+            'A_80_6_SECT.29D.json',
+            'A_80_6_SECT.29E.json',
+            'A_80_6_SECT.29F.json',
+            'A_80_6_SECT.30.json',
+            'A_80_6_SECT.31.json',
+            'A_80_6_SECT.32.json',
+            'A_80_6_SECT.34.json',
+            'A_80_6_SECT.35.json',
+            'A_80_6_SECT.36.json',
+            'SECTION 1_PPB 2026_PART AB_CONSOLIDATED_FASCICLE_ADVANCED COPY TO ACABQ_22 MAY 2025.json'
+        ];
+        
+        async function loadJSON() {
+            try {
+                const budgetYear = document.getElementById('budget-year').value;
+                const jsonFiles = budgetYear === '2025' ? jsonFiles2025 : budgetYear === '2026' ? jsonFiles2026 : jsonFiles2027;
+                const dataPath = budgetYear === '2025' ? 'ppb2025' : budgetYear === '2026' ? 'ppb2026' : 'ppb2027';
+                
+                const loadButton = document.querySelector('.load-button');
+                loadButton.textContent = 'Loading...';
+                loadButton.disabled = true;
+                
+                const fileDataMap = new Map();
+                let loadedCount = 0;
+                let errorCount = 0;
+                
+                // Load all files concurrently
+                const loadPromises = jsonFiles.map(async (filename) => {
+                    try {
+                        const fileUrl = `${REPO_ROOT_PATH}data/processed/${dataPath}/json/${filename}`;
+                        console.log(`Attempting to load: ${fileUrl}`);
+                        const response = await fetch(fileUrl);
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        const data = await response.json();
+                        fileDataMap.set(filename, data);
+                        loadedCount++;
+                        
+                        // Update progress
+                        loadButton.textContent = `Loading... ${loadedCount}/${jsonFiles.length}`;
+                    } catch (error) {
+                        console.warn(`Failed to load ${filename}:`, error);
+                        errorCount++;
+                    }
+                });
+                
+                await Promise.all(loadPromises);
+                
+                // Convert to tree structure with files as top-level items
+                treeData = [];
+                for (const [filename, data] of fileDataMap) {
+                    if (Array.isArray(data) && data.length > 0) {
+                        treeData.push({
+                            text: filename,
+                            block_type: 'file',
+                            children: data,
+                            filename: filename,
+                            isFile: true
+                        });
+                    }
+                }
+                
+                // Sort files by name
+                treeData.sort((a, b) => {
+                    // Extract section number for proper numerical sorting
+                    const getNumber = (filename) => {
+                        const match = filename.match(/SECT\.(\d+)/);
+                        return match ? parseInt(match[1]) : 999;
+                    };
+                    return getNumber(a.filename) - getNumber(b.filename);
+                });
+                
+                renderTree();
+                updateStats();
+                
+                loadButton.textContent = `Loaded ${loadedCount} files (${budgetYear})`;
+                if (errorCount > 0) {
+                    loadButton.textContent += ` (${errorCount} errors)`;
+                }
+                setTimeout(() => {
+                    loadButton.textContent = 'Reload All Files';
+                    loadButton.disabled = false;
+                }, 2000);
+                
+            } catch (error) {
+                alert('Error loading JSON files: ' + error.message);
+                console.error('Error loading JSON:', error);
+                document.querySelector('.load-button').textContent = 'Load JSON files';
+                document.querySelector('.load-button').disabled = false;
+            }
+        }
+        
+        function renderTree() {
+            const container = document.getElementById('tree-container');
+            container.innerHTML = '';
+            
+            if (!treeData || !Array.isArray(treeData)) {
+                container.innerHTML = '<p>No valid tree data loaded.</p>';
+                return;
+            }
+            
+            treeData.forEach(item => {
+                container.appendChild(createTreeNode(item));
+            });
+        }
+        
+        function createTreeNode(item) {
+            const nodeDiv = document.createElement('div');
+            nodeDiv.className = 'tree-item';
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'tree-content';
+            
+            const toggle = document.createElement('span');
+            toggle.className = 'toggle';
+            
+            const hasChildren = item.children && item.children.length > 0;
+            const isLeaf = !hasChildren;
+            
+            if (hasChildren) {
+                toggle.classList.add('collapsed');
+            } else {
+                toggle.classList.add('leaf');
+            }
+            
+            const blockType = document.createElement('span');
+            blockType.className = `block-type ${item.block_type || 'unknown'}`;
+            blockType.textContent = item.block_type || 'unknown';
+            
+            const textContent = document.createElement('span');
+            textContent.className = 'text-content';
+            textContent.textContent = item.text || '';
+            textContent.title = item.text || ''; // Show full text on hover
+            
+            // Add hyperlinks indicator if hyperlinks exist
+            const hasHyperlinks = item.hyperlinks && item.hyperlinks.length > 0;
+            if (hasHyperlinks) {
+                const hyperlinksIndicator = document.createElement('span');
+                hyperlinksIndicator.className = 'hyperlinks-indicator';
+                hyperlinksIndicator.textContent = `${item.hyperlinks.length} link${item.hyperlinks.length > 1 ? 's' : ''}`;
+                textContent.appendChild(hyperlinksIndicator);
+            }
+            
+            contentDiv.appendChild(toggle);
+            contentDiv.appendChild(blockType);
+            contentDiv.appendChild(textContent);
+            nodeDiv.appendChild(contentDiv);
+            
+            // Make the entire content div clickable
+            contentDiv.onclick = (e) => {
+                e.stopPropagation();
+                if (hasChildren) {
+                    toggleNode(nodeDiv);
+                } else {
+                    toggleContentDetail(nodeDiv, item);
+                }
+            };
+            
+            if (hasChildren) {
+                const childrenDiv = document.createElement('div');
+                childrenDiv.className = 'children';
+                
+                item.children.forEach(child => {
+                    childrenDiv.appendChild(createTreeNode(child));
+                });
+                
+                nodeDiv.appendChild(childrenDiv);
+            } else {
+                // Create content detail div for leaf nodes
+                const contentDetailDiv = document.createElement('div');
+                contentDetailDiv.className = 'content-detail';
+                
+                if (item.block_type === 'table-content' && item.table_content) {
+                    contentDetailDiv.classList.add('table-content');
+                    contentDetailDiv.appendChild(renderTableFromStructuredData(item.table_content));
+                } else {
+                    contentDetailDiv.textContent = item.text || '';
+                }
+                
+                // Add hyperlinks if they exist
+                if (hasHyperlinks) {
+                    const hyperlinksSection = document.createElement('div');
+                    hyperlinksSection.className = 'hyperlinks-section';
+                    
+                    const hyperlinksTitle = document.createElement('div');
+                    hyperlinksTitle.className = 'hyperlinks-title';
+                    hyperlinksTitle.textContent = 'Referenced Links:';
+                    hyperlinksSection.appendChild(hyperlinksTitle);
+                    
+                    item.hyperlinks.forEach(([text, url]) => {
+                        const hyperlinkDiv = document.createElement('div');
+                        hyperlinkDiv.className = 'hyperlink';
+                        
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.target = '_blank';
+                        link.textContent = text;
+                        
+                        hyperlinkDiv.appendChild(link);
+                        hyperlinksSection.appendChild(hyperlinkDiv);
+                    });
+                    
+                    contentDetailDiv.appendChild(hyperlinksSection);
+                }
+                
+                nodeDiv.appendChild(contentDetailDiv);
+            }
+            
+            return nodeDiv;
+        }
+        
+        function renderTableFromStructuredData(tableContent) {
+            const table = document.createElement('table');
+            
+            tableContent.forEach((row, rowIndex) => {
+                const tr = document.createElement('tr');
+                
+                row.forEach((cell, cellIndex) => {
+                    const cellElement = rowIndex === 0 ? document.createElement('th') : document.createElement('td');
+                    
+                    // Handle cell text
+                    if (cell.text) {
+                        cellElement.textContent = cell.text;
+                    }
+                    
+                    // Handle cell hyperlinks
+                    if (cell.hyperlinks && cell.hyperlinks.length > 0) {
+                        // If there are hyperlinks, we need to handle them specially
+                        cellElement.innerHTML = '';
+                        
+                        // Add the text content
+                        if (cell.text) {
+                            const textNode = document.createTextNode(cell.text);
+                            cellElement.appendChild(textNode);
+                        }
+                        
+                        // Add hyperlinks
+                        cell.hyperlinks.forEach(([linkText, url]) => {
+                            const link = document.createElement('a');
+                            link.href = url;
+                            link.target = '_blank';
+                            link.textContent = linkText;
+                            link.style.marginLeft = '8px';
+                            link.style.color = '#1976d2';
+                            cellElement.appendChild(link);
+                        });
+                    }
+                    
+                    tr.appendChild(cellElement);
+                });
+                
+                table.appendChild(tr);
+            });
+            
+            return table;
+        }
+        
+        function toggleNode(nodeDiv) {
+            const toggle = nodeDiv.querySelector('.toggle');
+            const children = nodeDiv.querySelector('.children');
+            
+            if (children) {
+                if (children.classList.contains('expanded')) {
+                    children.classList.remove('expanded');
+                    toggle.classList.remove('expanded');
+                    toggle.classList.add('collapsed');
+                } else {
+                    children.classList.add('expanded');
+                    toggle.classList.remove('collapsed');
+                    toggle.classList.add('expanded');
+                }
+            }
+        }
+        
+        function toggleContentDetail(nodeDiv, item) {
+            const contentDetail = nodeDiv.querySelector('.content-detail');
+            
+            if (contentDetail) {
+                if (contentDetail.classList.contains('expanded')) {
+                    contentDetail.classList.remove('expanded');
+                } else {
+                    contentDetail.classList.add('expanded');
+                }
+            }
+        }
+        
+        function countItems(data) {
+            let count = 0;
+            if (Array.isArray(data)) {
+                data.forEach(item => {
+                    count++;
+                    if (item.children) {
+                        count += countItems(item.children);
+                    }
+                });
+            }
+            return count;
+        }
+        
+        function updateStats() {
+            if (treeData) {
+                const fileCount = treeData.length;
+                const totalItems = countItems(treeData);
+                document.getElementById('file-count').textContent = fileCount;
+                document.getElementById('total-items').textContent = totalItems;
+                document.getElementById('stats').style.display = 'block';
+            }
+        }
+        
+        // Add expand/collapse all functionality
+        function addGlobalControls() {
+            const container = document.querySelector('.container');
+            const controlsDiv = document.createElement('div');
+            controlsDiv.style.marginBottom = '10px';
+            
+            const expandAllBtn = document.createElement('button');
+            expandAllBtn.textContent = 'Expand All';
+            expandAllBtn.className = 'load-button';
+            expandAllBtn.style.marginRight = '10px';
+            expandAllBtn.onclick = () => toggleAll(true);
+            
+            const collapseAllBtn = document.createElement('button');
+            collapseAllBtn.textContent = 'Collapse All';
+            collapseAllBtn.className = 'load-button';
+            collapseAllBtn.onclick = () => toggleAll(false);
+            
+            controlsDiv.appendChild(expandAllBtn);
+            controlsDiv.appendChild(collapseAllBtn);
+            
+            const treeContainer = document.getElementById('tree-container');
+            container.insertBefore(controlsDiv, treeContainer);
+        }
+        
+        function toggleAll(expand) {
+            const allToggles = document.querySelectorAll('.toggle:not(.leaf)');
+            const allChildren = document.querySelectorAll('.children');
+            const allContentDetails = document.querySelectorAll('.content-detail');
+            
+            allToggles.forEach(toggle => {
+                if (expand) {
+                    toggle.classList.remove('collapsed');
+                    toggle.classList.add('expanded');
+                } else {
+                    toggle.classList.remove('expanded');
+                    toggle.classList.add('collapsed');
+                }
+            });
+            
+            allChildren.forEach(children => {
+                if (expand) {
+                    children.classList.add('expanded');
+                } else {
+                    children.classList.remove('expanded');
+                }
+            });
+            
+            // Don't auto-expand content details - they should be manually clicked
+            if (!expand) {
+                allContentDetails.forEach(detail => {
+                    detail.classList.remove('expanded');
+                });
+            }
+        }
+        
+        // Initialize controls when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            addGlobalControls();
+        });
+    </script>
+</body>
+</html> 

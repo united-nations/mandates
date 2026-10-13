@@ -1,0 +1,674 @@
+diff --git a/components/binary-toggle.tsx b/components/binary-toggle.tsx
+--- a/components/binary-toggle.tsx
++++ b/components/binary-toggle.tsx
+@@ -57,8 +57,8 @@
+         disabled={disabled}
+         onClick={() => onValueChange(options[checked ? 0 : 1].value)}
+         className={cn(
+-          "inline-flex h-5 w-9 shrink-0 items-center rounded-full border-2 border-transparent shadow-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-un-blue disabled:cursor-not-allowed",
+-          checked ? "bg-un-blue" : "bg-gray-200",
++          "inline-flex h-5 w-9 shrink-0 items-center rounded-full border border-border px-px shadow-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-un-blue disabled:cursor-not-allowed",
++          checked ? "border-un-blue bg-un-blue" : "bg-secondary",
+         )}
+       >
+         <span
+diff --git a/components/button.tsx b/components/button.tsx
+--- a/components/button.tsx
++++ b/components/button.tsx
+@@ -20,7 +20,7 @@
+   {
+     variants: {
+       variant: {
+-        default: "bg-primary text-primary-foreground hover:bg-un-blue-shade",
++        default: "bg-primary text-primary-foreground hover:inset-ring-2 hover:inset-ring-white/70",
+         destructive:
+           "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/40",
+         outline:
+diff --git a/components/chip.tsx b/components/chip.tsx
+--- a/components/chip.tsx
++++ b/components/chip.tsx
+@@ -52,14 +52,14 @@
+
+ const TONE: Record<ChipTone, string> = {
+   neutral: "border-border bg-secondary text-secondary-foreground",
+-  selected: "border-un-blue bg-un-blue font-medium text-white",
++  selected: "border-un-blue bg-un-blue-text font-medium text-white",
+   ghost: "border-dashed border-border bg-transparent text-muted-foreground",
+ };
+
+ /** Hover only exists for chips that actually do something. */
+ const TONE_HOVER: Record<ChipTone, string> = {
+-  neutral: "hover:border-un-blue hover:bg-un-blue-tint-50",
+-  selected: "hover:bg-un-blue-shade",
++  neutral: "hover:border-un-blue hover:bg-un-blue-surface",
++  selected: "hover:inset-ring-2 hover:inset-ring-white/70",
+   ghost: "hover:border-un-blue",
+ };
+
+diff --git a/components/data-table.tsx b/components/data-table.tsx
+--- a/components/data-table.tsx
++++ b/components/data-table.tsx
+@@ -44,7 +44,7 @@
+   return (
+     <tr
+       className={cn(
+-        "border-b border-border transition-colors last:border-0 hover:bg-un-blue/5",
++        "border-b border-border transition-colors last:border-0 hover:bg-accent",
+         className,
+       )}
+       {...props}
+diff --git a/components/document-symbol.tsx b/components/document-symbol.tsx
+--- a/components/document-symbol.tsx
++++ b/components/document-symbol.tsx
+@@ -22,10 +22,12 @@
+ }: DocumentSymbolProps) {
+   const classes = cn(
+     typography.label,
+-    "inline-block rounded px-2 py-0.5",
+-    subdued ? "bg-gray-100 text-gray-700" : "bg-blue-50 text-un-blue",
++    "inline-block rounded border px-2 py-0.5",
++    subdued
++      ? "border-border bg-secondary text-foreground"
++      : "border-un-blue-text/30 bg-un-blue-surface text-un-blue-text",
+     href &&
+-      "transition-colors hover:bg-blue-100 focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none",
++      "transition-colors hover:bg-un-blue-surface hover:underline focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-1 focus-visible:outline-none",
+     className,
+   );
+   return href ? (
+diff --git a/components/filter-popover.tsx b/components/filter-popover.tsx
+--- a/components/filter-popover.tsx
++++ b/components/filter-popover.tsx
+@@ -74,7 +74,7 @@
+           size="sm"
+           className={cn(
+             selected.length > 0 &&
+-              "border-un-blue bg-un-blue-tint-50 text-un-blue-text",
++              "border-un-blue bg-un-blue-surface text-accent-foreground",
+             className,
+           )}
+         >
+@@ -119,14 +119,14 @@
+                     className={cn(
+                       "flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-start transition-colors",
+                       "hover:bg-accent focus-visible:ring-focus-ring focus-visible:ring-un-blue/50 focus-visible:outline-none",
+-                      isSelected && "bg-un-blue-tint-50",
++                      isSelected && "bg-un-blue-surface",
+                     )}
+                   >
+                     <span
+                       className={cn(
+                         "flex size-4 shrink-0 items-center justify-center rounded-sm border",
+                         isSelected
+-                          ? "border-un-blue bg-un-blue text-white"
++                          ? "border-un-blue bg-un-blue-text text-white"
+                           : "border-input",
+                       )}
+                     >
+diff --git a/components/financial-panel-parts.tsx b/components/financial-panel-parts.tsx
+--- a/components/financial-panel-parts.tsx
++++ b/components/financial-panel-parts.tsx
+@@ -116,7 +116,7 @@
+               "inline-flex shrink-0 items-center gap-1 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-un-blue/50",
+               variant === "pill"
+                 ? "h-8 rounded-full bg-secondary px-3 text-muted-foreground hover:bg-muted hover:text-foreground"
+-                : "border-b border-gray-400 text-gray-600 hover:text-gray-900",
++                : "border-b border-gray-400 text-gray-600 hover:text-foreground",
+             )}
+           >
+             <span className="font-medium">{selected}</span>
+@@ -132,7 +132,7 @@
+           <Popover.Content
+             align="start"
+             sideOffset={4}
+-            className="z-[100] min-w-20 rounded-md border border-gray-300 bg-white p-1 shadow-md"
++            className="z-[100] min-w-20 rounded-md border border-border bg-white p-1 shadow-md"
+           >
+             <div className="flex flex-col">
+               {years.map((year) => (
+@@ -148,8 +148,8 @@
+                     typography.body,
+                     "rounded px-3 py-1.5 text-start",
+                     year === selected
+-                      ? "bg-gray-100 font-medium text-gray-900"
+-                      : "text-gray-600 hover:bg-gray-50",
++                      ? "bg-secondary font-medium text-foreground"
++                      : "text-gray-600 hover:bg-muted",
+                   )}
+                 >
+                   {year}
+@@ -225,7 +225,7 @@
+       onClick={badge ? onClick : undefined}
+       className={cn(
+         "flex w-full items-center gap-2",
+-        badge && onClick && "group rounded hover:bg-gray-50",
++        badge && onClick && "group rounded hover:bg-muted",
+       )}
+     >
+       {onClick && !badge ? (
+@@ -235,7 +235,7 @@
+           title={title ?? label}
+           className={cn(
+             typography.label,
+-            "w-24 shrink-0 truncate text-start text-gray-700 hover:text-un-blue hover:underline",
++            "w-24 shrink-0 truncate text-start text-foreground hover:text-un-blue-text hover:underline",
+             labelClassName,
+           )}
+         >
+@@ -246,7 +246,7 @@
+           title={title ?? label}
+           className={cn(
+             typography.label,
+-            "w-24 shrink-0 truncate text-start text-gray-700 group-hover:text-un-blue group-hover:underline",
++            "w-24 shrink-0 truncate text-start text-foreground group-hover:text-un-blue-text group-hover:underline",
+             labelClassName,
+           )}
+         >
+diff --git a/components/financial-tooltip.tsx b/components/financial-tooltip.tsx
+--- a/components/financial-tooltip.tsx
++++ b/components/financial-tooltip.tsx
+@@ -158,7 +158,7 @@
+         >
+           <MousePointerClick
+             aria-hidden="true"
+-            className="size-3.5 shrink-0 text-un-blue"
++            className="size-3.5 shrink-0 text-un-blue-text"
+           />
+           {actionHint}
+         </p>
+diff --git a/components/grouped-treemap.tsx b/components/grouped-treemap.tsx
+--- a/components/grouped-treemap.tsx
++++ b/components/grouped-treemap.tsx
+@@ -892,7 +892,7 @@
+               <span className="inline-flex flex-wrap gap-x-1">
+                 {source.href ? (
+                   <a
+-                    className="text-un-blue-text underline underline-offset-2 hover:text-un-blue-shade focus-visible:ring-2 focus-visible:ring-un-blue/50 focus-visible:outline-none"
++                    className="text-un-blue-text underline underline-offset-2 hover:decoration-2 focus-visible:ring-2 focus-visible:ring-un-blue/50 focus-visible:outline-none"
+                     href={source.href}
+                     target={source.openInNewTab ? "_blank" : undefined}
+                     rel={
+diff --git a/components/hierarchical-multi-select.tsx b/components/hierarchical-multi-select.tsx
+--- a/components/hierarchical-multi-select.tsx
++++ b/components/hierarchical-multi-select.tsx
+@@ -172,8 +172,8 @@
+               type="button"
+               className={cn(
+                 pillStyles,
+-                "bg-secondary transition-colors hover:bg-gray-200",
+-                open && "border-gray-400 bg-gray-200",
++                "bg-secondary transition-colors hover:bg-muted",
++                open && "border-gray-400 bg-muted",
+               )}
+             >
+               {selectionSummary !== undefined ? (
+@@ -208,7 +208,7 @@
+                   }}
+                   className={cn(
+                     pillStyles,
+-                    "group bg-secondary transition-colors hover:bg-gray-200",
++                    "group bg-secondary transition-colors hover:bg-muted",
+                   )}
+                 >
+                   <span
+@@ -226,12 +226,12 @@
+             })}
+         </div>
+         <PopoverContent
+-          className="w-[320px] border-gray-300 bg-white p-0"
++          className="w-[320px] border-border bg-white p-0"
+           align="start"
+           sideOffset={4}
+         >
+           {/* Search input - minimal style matching ChartSearchInput */}
+-          <div className="relative border-b border-gray-200">
++          <div className="relative border-b border-border">
+             <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
+             <input
+               type="text"
+@@ -275,7 +275,7 @@
+                   return (
+                     <label
+                       key={group.id}
+-                      className="flex cursor-pointer items-center gap-2 px-3 py-2 text-sm hover:bg-gray-100"
++                      className="flex cursor-pointer items-center gap-2 px-3 py-2 text-sm hover:bg-secondary"
+                     >
+                       <input
+                         type="checkbox"
+@@ -305,7 +305,7 @@
+                   <div key={group.id}>
+                     {/* Group header (selectable for aggregate) */}
+                     <div
+-                      className="flex w-full items-center gap-2 px-3 py-2 hover:bg-gray-100 transition-colors cursor-pointer"
++                      className="flex w-full items-center gap-2 px-3 py-2 hover:bg-secondary transition-colors cursor-pointer"
+                       onClick={() => hasExpandable && toggleExpanded(group.id)}
+                     >
+                       {/* Expand/collapse chevron */}
+@@ -356,7 +356,7 @@
+                           <div key={subgroup.id}>
+                             {/* Subgroup header */}
+                             <div
+-                              className="flex w-full items-center gap-2 pl-7 pr-3 py-1.5 hover:bg-gray-100 transition-colors cursor-pointer"
++                              className="flex w-full items-center gap-2 pl-7 pr-3 py-1.5 hover:bg-secondary transition-colors cursor-pointer"
+                               onClick={() =>
+                                 sgHasChildren && toggleExpanded(subgroup.id)
+                               }
+@@ -405,7 +405,7 @@
+                                 <button
+                                   type="button"
+                                   key={child}
+-                                  className="flex w-full items-center gap-2 pl-14 pr-3 py-1.5 text-left hover:bg-gray-100 transition-colors"
++                                  className="flex w-full items-center gap-2 pl-14 pr-3 py-1.5 text-left hover:bg-secondary transition-colors"
+                                   onClick={(e) => toggleItem(child, e)}
+                                 >
+                                   {/* Colored checkbox */}
+@@ -435,7 +435,7 @@
+                         <button
+                           type="button"
+                           key={child}
+-                          className="flex w-full items-center gap-2 pl-10 pr-3 py-1.5 text-left hover:bg-gray-100 transition-colors"
++                          className="flex w-full items-center gap-2 pl-10 pr-3 py-1.5 text-left hover:bg-secondary transition-colors"
+                           onClick={(e) => toggleItem(child, e)}
+                         >
+                           {/* Colored checkbox */}
+diff --git a/components/hierarchical-single-select.tsx b/components/hierarchical-single-select.tsx
+--- a/components/hierarchical-single-select.tsx
++++ b/components/hierarchical-single-select.tsx
+@@ -30,6 +30,11 @@
+   getLabel?: (id: string) => string;
+   /** Additional class names */
+   className?: string;
++  /** Accessible name for the selector; display selection is appended. */
++  label?: string;
++  searchPlaceholder?: string;
++  clearSearchLabel?: string;
++  noResultsLabel?: string;
+ }
+-
++
+ /**
+@@ -45,7 +50,12 @@
+   onChange,
+   getLabel,
+   className,
++  label,
++  searchPlaceholder = "Search...",
++  clearSearchLabel = "Clear search",
++  noResultsLabel = "No results found",
+ }: HierarchicalSingleSelectProps) {
++  const flat = groups.every((group) => group.children.length === 0);
+   const [open, setOpen] = React.useState(false);
+   const [expandedGroups, setExpandedGroups] = React.useState<Set<string>>(
+     new Set(),
+@@ -119,10 +129,12 @@
+         <PopoverTrigger asChild>
+           <button
+             type="button"
++            aria-label={label ? `${label}: ${selectedLabel}` : selectedLabel}
++            title={selectedLabel}
+             className={cn(
+               pillStyles,
+-              "bg-secondary transition-colors hover:bg-gray-200",
+-              open && "bg-gray-200",
++              "bg-secondary transition-colors hover:bg-muted",
++              open && "bg-muted",
+             )}
+           >
+             <span className="max-w-[180px] truncate font-medium">
+@@ -137,26 +149,28 @@
+           </button>
+         </PopoverTrigger>
+         <PopoverContent
+-          className="w-[320px] border-gray-300 bg-white p-0"
++          aria-label={label ?? selectedLabel}
++          className="w-[320px] border-border bg-white p-0"
+           align="start"
+           sideOffset={4}
+         >
+           {/* Search input */}
+-          <div className="relative border-b border-gray-200">
+-            <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
++          <div className="relative border-b border-border">
++            <SearchIcon className="pointer-events-none absolute start-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
+             <input
+               type="text"
+-              placeholder="Search..."
++              aria-label={searchPlaceholder}
++              placeholder={searchPlaceholder}
+               value={searchQuery}
+               onChange={(e) => setSearchQuery(e.target.value)}
+-              className={`block w-full border-0 bg-transparent py-2 pl-8 text-sm placeholder-gray-400 outline-none ${searchQuery ? "pr-8" : "pr-3"}`}
++              className={`block w-full border-0 bg-transparent py-2 ps-8 text-sm placeholder-gray-400 outline-none ${searchQuery ? "pe-8" : "pe-3"}`}
+             />
+             {searchQuery && (
+               <button
+                 type="button"
+                 onClick={() => setSearchQuery("")}
+-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 transition-colors hover:text-gray-600"
+-                aria-label="Clear search"
++                className="absolute end-3 top-1/2 -translate-y-1/2 text-gray-400 transition-colors hover:text-gray-600"
++                aria-label={clearSearchLabel}
+               >
+                 <XIcon className="h-3.5 w-3.5" />
+               </button>
+@@ -166,7 +180,7 @@
+           <div className="max-h-[300px] overflow-y-auto py-1">
+             {filteredGroups.length === 0 ? (
+               <div className="px-3 py-4 text-center text-sm text-gray-500">
+-                No results found
++                {noResultsLabel}
+               </div>
+             ) : (
+               filteredGroups.map((group) => {
+@@ -179,56 +193,64 @@
+                     {/* Group header (selectable for aggregate) */}
+                     <div
+                       className={cn(
+-                        "flex w-full items-center gap-2 px-3 py-2 transition-colors cursor-pointer",
+-                        isGroupSelected ? "bg-gray-100" : "hover:bg-gray-50",
++                        "flex w-full items-center gap-2 px-3 transition-colors",
++                        isGroupSelected ? "bg-secondary" : "hover:bg-muted",
+                       )}
+-                      onClick={() => selectItem(group.id)}
+                     >
+-                      {/* Expand/collapse chevron */}
++                      {!flat && (
++                        <button
++                          type="button"
++                          className="w-4 shrink-0 rounded-sm focus-visible:outline-2 focus-visible:outline-un-blue"
++                          aria-label={group.label}
++                          aria-expanded={isExpanded}
++                          disabled={!hasChildren}
++                          onClick={(event) => toggleExpanded(group.id, event)}
++                        >
++                          {hasChildren && (
++                            <ChevronRightIcon
++                              aria-hidden
++                              className={cn(
++                                "h-4 w-4 text-gray-400 transition-transform duration-200 hover:text-gray-600",
++                                isExpanded && "rotate-90",
++                              )}
++                            />
++                          )}
++                        </button>
++                      )}
+                       <button
+                         type="button"
+-                        className="flex-shrink-0 w-4"
+-                        onClick={(e) => {
+-                          e.stopPropagation();
+-                          if (hasChildren) toggleExpanded(group.id, e);
+-                        }}
++                        aria-pressed={isGroupSelected}
++                        title={group.label}
++                        className="flex min-w-0 flex-1 items-center gap-2 rounded-sm py-2 text-start focus-visible:outline-2 focus-visible:outline-un-blue"
++                        onClick={() => selectItem(group.id)}
+                       >
+-                        {hasChildren && (
+-                          <ChevronRightIcon
+-                            className={cn(
+-                              "h-4 w-4 text-gray-400 transition-transform duration-200 hover:text-gray-600",
+-                              isExpanded && "rotate-90",
+-                            )}
++                        {/* Color indicator */}
++                        {group.color && (
++                          <span
++                            className="h-3 w-3 flex-shrink-0 rounded-full"
++                            style={{ backgroundColor: group.color }}
+                           />
+                         )}
++
++                        {/* Label */}
++                        <span
++                          className={cn(
++                            "flex-1 min-w-0 text-sm truncate",
++                            isGroupSelected
++                              ? "font-medium text-foreground"
++                              : "text-foreground",
++                          )}
++                        >
++                          {group.label}
++                        </span>
++
++                        {/* Count */}
++                        {hasChildren && (
++                          <span className="flex-shrink-0 text-xs text-gray-400">
++                            ({group.children.length})
++                          </span>
++                        )}
+                       </button>
+-
+-                      {/* Color indicator */}
+-                      {group.color && (
+-                        <span
+-                          className="h-3 w-3 flex-shrink-0 rounded-full"
+-                          style={{ backgroundColor: group.color }}
+-                        />
+-                      )}
+-
+-                      {/* Label */}
+-                      <span
+-                        className={cn(
+-                          "flex-1 min-w-0 text-sm truncate",
+-                          isGroupSelected
+-                            ? "font-medium text-gray-900"
+-                            : "text-gray-700",
+-                        )}
+-                      >
+-                        {group.label}
+-                      </span>
+-
+-                      {/* Count */}
+-                      {hasChildren && (
+-                        <span className="flex-shrink-0 text-xs text-gray-400">
+-                          ({group.children.length})
+-                        </span>
+-                      )}
+                     </div>
+-
++
+                     {/* Children (expandable) */}
+@@ -239,11 +261,13 @@
+                           <button
+                             type="button"
+                             key={child}
++                            aria-pressed={isChildSelected}
++                            title={child}
+                             className={cn(
+-                              "flex w-full items-center gap-2 pl-10 pr-3 py-1.5 text-left transition-colors",
++                              "flex w-full items-center gap-2 ps-10 pe-3 py-1.5 text-start transition-colors focus-visible:outline-2 focus-visible:outline-un-blue",
+                               isChildSelected
+-                                ? "bg-gray-100"
+-                                : "hover:bg-gray-50",
++                                ? "bg-secondary"
++                                : "hover:bg-muted",
+                             )}
+                             onClick={() => selectItem(child)}
+                           >
+@@ -251,7 +275,7 @@
+                               className={cn(
+                                 "flex-1 min-w-0 text-sm truncate",
+                                 isChildSelected
+-                                  ? "font-medium text-gray-900"
++                                  ? "font-medium text-foreground"
+                                   : "text-gray-600",
+                               )}
+                             >
+diff --git a/components/interaction-hint.tsx b/components/interaction-hint.tsx
+--- a/components/interaction-hint.tsx
++++ b/components/interaction-hint.tsx
+@@ -18,7 +18,7 @@
+       )}
+     >
+       <MousePointerClick
+-        className="size-4 shrink-0 text-un-blue"
++        className="size-4 shrink-0 text-un-blue-text"
+         aria-hidden="true"
+       />
+       {text}
+diff --git a/components/secondary-header.tsx b/components/secondary-header.tsx
+--- a/components/secondary-header.tsx
++++ b/components/secondary-header.tsx
+@@ -52,7 +52,7 @@
+   return (
+     <div
+       className={cn(
+-        "sticky top-[65px] z-30 border-b border-gray-200 min-[1408px]:top-14",
++        "sticky top-[65px] z-30 border-b border-border min-[1408px]:top-14",
+         secondaryHeaderTransparencyClasses[transparency],
+         className,
+       )}
+@@ -69,8 +69,8 @@
+             className: cn(
+               "shrink-0 border-b-2 px-3 py-3 text-sm whitespace-nowrap transition-colors first:pl-0",
+               active
+-                ? "border-un-blue font-semibold text-un-blue"
+-                : "border-transparent text-gray-600 hover:border-gray-300 hover:text-gray-900",
++                ? "border-un-blue font-semibold text-un-blue-text"
++                : "border-transparent text-gray-600 hover:border-border hover:text-foreground",
+             ),
+             children: item.label,
+           };
+diff --git a/components/site-header.tsx b/components/site-header.tsx
+--- a/components/site-header.tsx
++++ b/components/site-header.tsx
+@@ -183,7 +183,7 @@
+               <span className="font-light">{descriptor}</span>
+             </span>
+             {typeof badge === "string" ? (
+-              <span className="rounded-md bg-un-blue/10 px-1.5 py-0.5 text-micro leading-none font-semibold whitespace-nowrap text-un-blue md:px-2 md:py-1 md:text-xs">
++              <span className="rounded-md border border-un-blue-text/30 bg-un-blue-surface px-1.5 py-0.5 text-micro leading-none font-semibold whitespace-nowrap text-un-blue-text md:px-2 md:py-1 md:text-xs">
+                 {badge}
+               </span>
+             ) : (
+@@ -192,9 +192,9 @@
+           </span>
+         </a>
+
+-        <div className="ms-auto flex items-center gap-3">
++        <div className="ms-auto flex self-stretch items-center gap-3">
+           {navItems.length > 0 && (
+-            <nav className="hidden items-center gap-1 lg:flex">
++            <nav className="hidden self-stretch items-stretch gap-1 lg:flex">
+               {navItems.map(({ href: itemHref, label, icon: Icon }) => {
+                 const active = activeHref === itemHref;
+                 return (
+@@ -203,10 +203,10 @@
+                     href={itemHref}
+                     aria-current={active ? "page" : undefined}
+                     className={cn(
+-                      "inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm whitespace-nowrap transition-colors",
++                      "-my-3 inline-flex items-center gap-2 border-b-2 px-3 py-3 text-sm whitespace-nowrap transition-colors focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:ring-offset-2",
+                       active
+-                        ? "bg-un-blue/10 font-medium text-un-blue"
+-                        : "text-foreground/80 hover:bg-muted hover:text-foreground",
++                        ? "border-un-blue font-semibold text-un-blue-text"
++                        : "border-transparent text-foreground/80 hover:border-border hover:text-foreground",
+                     )}
+                   >
+                     {Icon && <Icon className="size-4" />}
+@@ -241,9 +241,9 @@
+                         asChild={!active}
+                         aria-current={active ? "page" : undefined}
+                         className={cn(
+-                          "relative flex cursor-default items-center rounded-sm px-2 py-1.5 text-sm text-foreground outline-none select-none focus:bg-accent focus:text-accent-foreground",
++                          "relative flex cursor-default items-center border-s-2 border-transparent px-2 py-1.5 text-sm text-foreground outline-none select-none focus:bg-un-blue-surface focus:text-un-blue-text",
+                           active &&
+-                            "bg-un-blue/10 font-medium text-un-blue-text focus:bg-un-blue/10 focus:text-un-blue-text",
++                            "border-un-blue font-semibold text-un-blue-text focus:text-un-blue-text",
+                         )}
+                       >
+                         {active ? (
+diff --git a/components/stat-tile.tsx b/components/stat-tile.tsx
+--- a/components/stat-tile.tsx
++++ b/components/stat-tile.tsx
+@@ -51,7 +51,7 @@
+   );
+
+   const base = cn(
+-    "flex w-full items-center gap-2 rounded-lg bg-un-blue/10 px-3 py-1.5 text-start",
++    "flex w-full items-center gap-2 rounded-lg bg-accent px-3 py-1.5 text-start",
+     className,
+   );
+
+@@ -63,7 +63,7 @@
+       onClick={onClick}
+       className={cn(
+         base,
+-        "transition-colors hover:bg-un-blue/20",
++        "transition-colors hover:bg-accent",
+         "focus-visible:ring-focus-ring focus-visible:ring-un-blue/50 focus-visible:outline-none",
+       )}
+     >
+diff --git a/components/year-slider.tsx b/components/year-slider.tsx
+--- a/components/year-slider.tsx
++++ b/components/year-slider.tsx
+@@ -1,6 +1,6 @@
+ "use client";
+-
++
+-import { useCallback, useRef, useState, useEffect, useMemo } from "react";
++import { useCallback, useRef, useState, useEffect, useMemo, type ReactNode } from "react";
+-
++
+ export interface YearSliderProps {
+   years: number[];
+@@ -11,6 +11,8 @@
+   /** Caption for a year. Peacekeeping runs July-June, so 2024 reads "2024/25". */
+   label?: string;
+   formatLabel?: (year: number) => string;
++  /** Optional visual caption; formatLabel still supplies accessible value text. */
++  renderLabel?: (year: number) => ReactNode;
+ }
+-
++
+ export function YearSlider({
+@@ -20,6 +22,7 @@
+   disabled = false,
+   compact = false,
+   formatLabel,
++  renderLabel,
+   label = "Select year",
+ }: YearSliderProps) {
+   const trackRef = useRef<HTMLDivElement>(null);
+@@ -214,8 +217,8 @@
+           />
+         </div>
+       </div>
+-      <span className="min-w-[3ch] text-sm font-medium whitespace-nowrap text-gray-900">
+-        {formatLabel ? formatLabel(displayYear) : displayYear}
++      <span className="min-w-[3ch] text-sm font-medium whitespace-nowrap text-foreground">
++        {renderLabel ? renderLabel(displayYear) : formatLabel ? formatLabel(displayYear) : displayYear}
+       </span>
+     </div>
+   );
+diff --git a/tokens/theme.css b/tokens/theme.css
+--- a/tokens/theme.css
++++ b/tokens/theme.css
+@@ -29,6 +29,15 @@
+   --color-un-blue: #009edb;
+   --color-un-black: #000000;
+   --color-un-white: #ffffff;
++  /* Neutral UI reference values, shared with Storybook and consuming apps. */
++  --color-neutral-surface: #f4f4f5;
++  --color-neutral-border: #e4e4e7;
++  /* Control tracks need more contrast than decorative dividers (3.43:1 on white). */
++  --color-neutral-control: #8a8a92;
++  --color-neutral-text: #52525b;
++  /* Existing co-citation chart hue; retained so token adoption does not change data encoding. */
++  --color-un80-warm-gray: #9b8b7a;
++
+
+   /* UN Blue's full ramp. This is the only accent that earns a complete set,
+      because it is the only one used at any volume. */
+@@ -37,6 +46,10 @@
+   --color-un-blue-shade: #004987; /* Pantone 301 — text on light, deep fills */
+   --color-un-blue-text: #0077b8; /* AA on white */
+   --color-un-blue-text-aaa: #005392; /* AAA on white */
++  /* Opaque UI surfaces: text-blue clears AA even inside a tinted parent.
++     Blue surface 4.62:1; yellow surface 4.72:1. Brand/chart tints stay intact. */
++  --color-un-blue-surface: #f5faff;
++  --color-un-yellow-surface: #fffcef;
+
+   /* ===============================================================
+      ACCENTS — used sparingly, per the brand guide

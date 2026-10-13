@@ -1,0 +1,285 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+/* Shared EOSG/UN80 design tokens. Same mechanism as tw-animate-css above —
+   a versioned CSS package from node_modules. Pinned in package.json. */
+@import '@un-eosg/ui/theme.css';
+
+/* https://tailwindcss.com/docs/colors#customizing-your-colors */
+@theme {
+  --color-moss: #62803f;
+
+  /* Categorical palette for the subject domains on the /subjects treemap and
+     pill-map. One stable colour per visually-significant domain; the five
+     smallest domains (Employment, Intl Trade, Transport, Human Settlements,
+     Agriculture) share a single muted purple (bg-plum) rather than each
+     carrying a unique hue no one can tell apart at tile size. Everything sits
+     in one low-chroma muted band — un-blue is the sole bright anchor — so no
+     accent shouts over the body. Colour carries category, never magnitude,
+     and is always paired with a label. */
+  --color-un-blue-muted: #4a90a4;
+  --color-forest-muted: #4b7048;
+  --color-terracotta: #aa6238;
+  --color-dusty-rose: #9c5a6e;
+  --color-indigo-muted: #55578f;
+  --color-plum: #7d5a8c;
+
+
+  /* --color-tier-1..4 (the registry traffic-light ramp) now ship in
+     @un-eosg/ui, together with the CVD-validation note and the rule that they
+     are never used colour-alone. Promoted because they were the one validated
+     ordinal scale in the estate. Change them there, not here. */
+}
+
+html {
+  scrollbar-gutter: stable;
+}
+
+/* Keep the shared header's 40px emblem and 36px menu hit area without
+   letting either dictate the lockup's line height. Only the text lockup
+   (including its two-line mobile arrangement) determines the bar height. */
+.mandates-site-header > div > a.inline-flex {
+  position: relative;
+  padding-left: calc(var(--spacing-emblem-w) + var(--spacing-emblem-gap));
+}
+
+.mandates-site-header > div > a.inline-flex > img {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+}
+
+@media (min-width: 1408px) {
+  .mandates-site-header > div > a.inline-flex {
+    padding-left: 0;
+  }
+}
+
+@media (width < 1024px) {
+  .mandates-site-header > div > div:last-child {
+    position: relative;
+    min-width: 2.25rem;
+  }
+
+  .mandates-site-header > div > div:last-child > button {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+  }
+}
+
+/* react-remove-scroll-bar injects a runtime <style> adding margin-right to body[data-scroll-locked]
+   to compensate for the hidden scrollbar. scrollbar-gutter already reserves that space, so the
+   margin causes a layout shift instead. Higher specificity beats the injected !important rule. */
+@supports (scrollbar-gutter: stable) {
+  html body[data-scroll-locked] {
+    padding-right: 0 !important;
+    margin-right: 0 !important;
+  }
+}
+
+/* shadcn semantic colors */
+:root {
+  --background: var(--color-un-white);
+  --foreground: var(--color-un-black);
+
+  --card: var(--color-un-white);
+  --card-foreground: var(--color-un-black);
+
+  --dashboard-card: var(--color-neutral-surface);
+  --dashboard-card-foreground: var(--color-un-black);
+
+  --popover: var(--color-un-white);
+  --popover-foreground: var(--color-un-black);
+
+  --primary: var(--color-un-blue-text);
+  --primary-foreground: var(--color-un-white);
+
+  --secondary: var(--color-neutral-surface);
+  --secondary-foreground: var(--color-neutral-text);
+
+  --muted: var(--color-neutral-surface);
+  --muted-foreground: var(--color-neutral-text);
+
+  --accent: var(--color-un-blue-surface);
+  --accent-foreground: var(--color-un-blue-text);
+
+  --destructive: var(--color-un-red-text);
+  --destructive-foreground: var(--color-un-white);
+
+  --input: var(--color-neutral-border);
+
+  --border: var(--color-neutral-border);
+  --ring: var(--color-un-blue);
+
+  --radius: 0.5rem;
+  --radius-lg: 0.5rem;
+  --radius-md: calc(0.5rem - 2px);
+  --radius-sm: calc(0.5rem - 4px);
+
+  --sidebar: var(--color-un-white);
+  --sidebar-foreground: var(--color-un-black);
+  --sidebar-primary: var(--color-un-blue-text);
+  --sidebar-primary-foreground: var(--color-un-white);
+  --sidebar-accent: var(--color-un-blue-surface);
+  --sidebar-accent-foreground: var(--color-un-blue-text);
+  --sidebar-border: var(--color-neutral-border);
+  --sidebar-ring: var(--color-un-blue);
+}
+
+/* Expose shadcn variables to Tailwind utilities */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-dashboard-card: var(--dashboard-card);
+  --color-dashboard-card-foreground: var(--dashboard-card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  --font-weight-thin: 100;
+  --font-weight-extralight: 200;
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --font-weight-black: 900;
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Hide focus ring for mouse/touch users only; keyboard users retain visible focus */
+*:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none;
+}
+
+/*
+ * The explore cards' scope mark: an inner hairline in one corner, implying a
+ * layer beneath the card — "this card shows one part of something larger".
+ *
+ * Construction: a pseudo-element copy of the card's own border box, inset by
+ * 2px, clipped to a fixed corner square. Because the clip does the cropping,
+ * the mark is a border everywhere it is visible and inherits the corner
+ * radius without anyone computing an arc. The square is a fixed 26px, never a
+ * percentage: a corner mark is a constant, not a proportion of its container.
+ *
+ * Drawn as a border, not a filled box, deliberately: at fractional device
+ * pixel ratios (150% laptop scaling) a 1px border computes to one device
+ * pixel — 0.667px — exactly like the card's own border, while a 1px-high
+ * filled box keeps its full height and out-weighs the card edge beside it.
+ *
+ * The corner is a parameter — the coordinate pair below — feeding all of the
+ * clip geometry, so it can be moved after someone has looked at it without a
+ * rewrite. Bottom-right is unavailable: the chevron sits there, deliberately.
+ * Grey, not the accent: selection owns colour.
+ */
+.explore-scope-mark::after {
+  /* The corner the mark occupies: 0 = left, 1 = right; 0 = top, 1 = bottom. */
+  --scope-mark-corner-x: 0;
+  --scope-mark-corner-y: 1;
+  content: '';
+  position: absolute;
+  inset: 2px;
+  pointer-events: none;
+  border: 1px solid var(--color-gray-300);
+  border-radius: calc(var(--radius-lg) - 2px);
+  clip-path: inset(
+    calc(var(--scope-mark-corner-y) * (100% - 26px))
+      calc((1 - var(--scope-mark-corner-x)) * (100% - 26px))
+      calc((1 - var(--scope-mark-corner-y)) * (100% - 26px))
+      calc(var(--scope-mark-corner-x) * (100% - 26px))
+  );
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/**
+ * UN blue scrollbar, opt-in via `.un-scrollbar`.
+ *
+ * Two mechanisms, deliberately not stacked: Chromium ignores
+ * `::-webkit-scrollbar` as soon as `scrollbar-width` is present, so the
+ * standard properties go in a @supports block and the WebKit pseudo-elements
+ * are the fallback for engines that lack them (Safari).
+ *
+ * `scrollbar-gutter: stable` keeps the bar's space reserved, so content does
+ * not shift when it appears — and on macOS, where scrollbars are overlay by
+ * default and fade out, an explicit width is what makes it visible at all.
+ */
+.un-scrollbar {
+  scrollbar-gutter: stable;
+}
+
+.un-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+.un-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.un-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--color-un-blue);
+  border-radius: 9999px;
+}
+.un-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-un-blue-text);
+}
+
+@supports (scrollbar-color: auto) {
+  .un-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-un-blue) transparent;
+  }
+}

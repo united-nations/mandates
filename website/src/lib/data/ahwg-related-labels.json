@@ -1,0 +1,1981 @@
+{
+  "version": "ahwg-agenda-650729f28085a986a756e0b2",
+  "clusters": {
+    "1": "Durban Declaration and Programme of Action",
+    "2": "Vienna Declaration and Programme of Action",
+    "3": "Racism, racial discrimination, xenophobia and related intolerance",
+    "4": "Implementation of human rights instruments",
+    "5": "Rights of children",
+    "6": "Rights of Indigenous Peoples",
+    "7": "Gender mainstreaming across the UN system",
+    "8": "Women and development",
+    "9": "Operational activities for development",
+    "10": "Financing for Development conference follow-up",
+    "11": "Antigua and Barbuda Agenda for Small Island Developing States",
+    "12": "International cooperation in tax matters",
+    "13": "Science and technology for development",
+    "14": "Social development",
+    "15": "UNHCR reporting and consideration",
+    "16": "Humanitarian and disaster relief coordination",
+    "17": "Admission of new UN Members",
+    "18": "Election of International Court of Justice members",
+    "19": "Security Council annual report",
+    "20": "Cyprus situation",
+    "21": "Illicit trade in small arms and light weapons",
+    "22": "General rule of law among nations",
+    "23": "Israeli settlement activities in occupied territories",
+    "24": "Implementation of the 2030 Agenda for Sustainable Development",
+    "25": "Major UN conferences and summits: implementation and follow-up",
+    "26": "LDC5 / Doha Programme of Action follow-up",
+    "27": "International Court of Justice reporting and briefing",
+    "28": "UN peacekeeping operations: substantive review",
+    "29": "UN cooperation with the African Union",
+    "30": "UN cooperation with the League of Arab States",
+    "31": "UN cooperation with the Gulf Cooperation Council",
+    "32": "UN cooperation with the Organization of Islamic Cooperation",
+    "33": "UN programme budget for 2024",
+    "34": "UN programme budget for 2025",
+    "35": "UN programme budget for 2026",
+    "36": "UN programme budget for 2027",
+    "37": "Advancement of women",
+    "38": "Cooperation between the United Nations and the Collective Security Treaty Organization",
+    "39": "Crime prevention and criminal justice",
+    "40": "Implementation of the Declaration on the Granting of Independence to Colonial Countries and Peoples by the specialized agencies and the international institutions associated with the United Nations",
+    "41": "International Residual Mechanism for Criminal Tribunals",
+    "42": "Peacebuilding and sustaining peace",
+    "43": "South-South cooperation for development",
+    "44": "Sustainable development",
+    "45": "The situation in Afghanistan",
+    "46": "The situation in the Middle East"
+  },
+  "occurrences": {
+    "appearance-99838b73a8baffe52eb5c4fa": {
+      "clusterId": "25",
+      "label": "GA 77 · Integrated and coordinated implementation of and follow-up to the outcomes of the major United Nations conferences and summits in the economic, social and related fields"
+    },
+    "appearance-30ef09cfc15d2dcd1582c259": {
+      "clusterId": "10",
+      "label": "GA 77 · Follow-up to and implementation of the outcomes of the International Conferences on Financing for Development"
+    },
+    "appearance-12bddf3169a861a4b4b55fa7": {
+      "clusterId": "44",
+      "label": "GA 77 · Sustainable development"
+    },
+    "appearance-cf5c905512112751ee6564f3": {
+      "clusterId": "24",
+      "label": "GA 77 · Towards the achievement of sustainable development: implementation of the 2030 Agenda for Sustainable Development, including through sustainable consumption and production, building on Agenda 21"
+    },
+    "appearance-49e049912b6e3cea38091ced": {
+      "clusterId": "8",
+      "label": "GA 77 · Women in development"
+    },
+    "appearance-651c5179dc3f461b8644ccc5": {
+      "clusterId": "9",
+      "label": "GA 77 · Operational activities for development"
+    },
+    "appearance-85aa19c9d77617f5cf642065": {
+      "clusterId": "9",
+      "label": "GA 77 · Operational activities for development of the United Nations system"
+    },
+    "appearance-909ddac98e0a643e6c879c46": {
+      "clusterId": "43",
+      "label": "GA 77 · South-South cooperation for development"
+    },
+    "appearance-268ce296c195f9b124f82129": {
+      "clusterId": "37",
+      "label": "GA 77 · Advancement of women"
+    },
+    "appearance-396f5a5aeee36a172424434f": {
+      "clusterId": "19",
+      "label": "GA 77 · Report of the Security Council"
+    },
+    "appearance-cfe88acd0767a00822b2665c": {
+      "clusterId": "46",
+      "label": "GA 77 · The situation in the Middle East"
+    },
+    "appearance-c0d757d91f3756b4bfec520d": {
+      "clusterId": "45",
+      "label": "GA 77 · The situation in Afghanistan"
+    },
+    "appearance-2c09e90ddfce2f67e3990a5b": {
+      "clusterId": "20",
+      "label": "GA 77 · Question of Cyprus"
+    },
+    "appearance-60a57f94aa97b625d17be150": {
+      "clusterId": "23",
+      "label": "GA 77 · Israeli practices and settlement activities affecting the rights of the Palestinian people and other Arabs of the occupied territories"
+    },
+    "appearance-2a9792c4f3673a8ca6d91cac": {
+      "clusterId": "28",
+      "label": "GA 77 · Comprehensive review of the whole question of peacekeeping operations in all their aspects"
+    },
+    "appearance-07be3462e554b5d8278a52fa": {
+      "clusterId": "40",
+      "label": "GA 77 · Implementation of the Declaration on the Granting of Independence to Colonial Countries and Peoples by the specialized agencies and the international institutions associated with the United Nations"
+    },
+    "appearance-648b7341a037bd1eacec2938": {
+      "clusterId": "15",
+      "label": "GA 77 · Report of the United Nations High Commissioner for Refugees, questions relating to refugees, returnees and displaced persons and humanitarian questions"
+    },
+    "appearance-5892764ea097194604dc09b4": {
+      "clusterId": "42",
+      "label": "GA 77 · Peacebuilding and sustaining peace"
+    },
+    "appearance-14e0aab573f34541aac47295": {
+      "clusterId": "5",
+      "label": "GA 77 · Promotion and protection of the rights of children"
+    },
+    "appearance-14a6e8fa889a738a025dbd31": {
+      "clusterId": "5",
+      "label": "GA 77 · Promotion and protection of the rights of children"
+    },
+    "appearance-9a100e26bf81e4c6814e7e56": {
+      "clusterId": "6",
+      "label": "GA 77 · Rights of indigenous peoples"
+    },
+    "appearance-6b0f6bd386944fdbc4dd0e86": {
+      "clusterId": "6",
+      "label": "GA 77 · Rights of indigenous peoples"
+    },
+    "appearance-b4b48fe7ec45766959fa872e": {
+      "clusterId": "3",
+      "label": "GA 77 · Elimination of racism, racial discrimination, xenophobia and related intolerance"
+    },
+    "appearance-5018caa66b58e908d14fd9c8": {
+      "clusterId": "3",
+      "label": "GA 77 · Elimination of racism, racial discrimination, xenophobia and related intolerance"
+    },
+    "appearance-17cc899fbab2ed354b75dfe6": {
+      "clusterId": "1",
+      "label": "GA 77 · Comprehensive implementation of and follow-up to the Durban Declaration and Programme of Action"
+    },
+    "appearance-e944b3221dcba4f95b089e48": {
+      "clusterId": "4",
+      "label": "GA 77 · Implementation of human rights instruments"
+    },
+    "appearance-e18bab05dad8aa3add3d34aa": {
+      "clusterId": "2",
+      "label": "GA 77 · Comprehensive implementation of and follow-up to the Vienna Declaration and Programme of Action"
+    },
+    "appearance-cd0e044048009727bd581097": {
+      "clusterId": "16",
+      "label": "GA 77 · Strengthening of the coordination of humanitarian and disaster relief assistance of the United Nations, including special economic assistance"
+    },
+    "appearance-72094d20fa23197ddc66da62": {
+      "clusterId": "16",
+      "label": "GA 77 · Strengthening of the coordination of emergency humanitarian assistance of the United Nations"
+    },
+    "appearance-85926f2342706da8388e3f7d": {
+      "clusterId": "27",
+      "label": "GA 77 · Report of the International Court of Justice"
+    },
+    "appearance-6d17208867e1faabc87b1115": {
+      "clusterId": "22",
+      "label": "GA 77 · The rule of law at the national and international levels"
+    },
+    "appearance-f888261da5e6336c953438b4": {
+      "clusterId": "21",
+      "label": "GA 77 · Assistance to States for curbing the illicit traffic in small arms and light weapons and collecting them"
+    },
+    "appearance-0416faf6a7bdde61b597fb71": {
+      "clusterId": "21",
+      "label": "GA 77 · The illicit trade in small arms and light weapons in all its aspects"
+    },
+    "appearance-c5f4c9a391eab77861e96d35": {
+      "clusterId": "39",
+      "label": "GA 77 · Crime prevention and criminal justice"
+    },
+    "appearance-8ebceb1aa21139f1aa7bc062": {
+      "clusterId": "18",
+      "label": "GA 77 · Election of a member of the International Court of Justice"
+    },
+    "appearance-f375d1e8fec0cf85d6ff98d3": {
+      "clusterId": "17",
+      "label": "GA 77 · Admission of new Members to the United Nations"
+    },
+    "appearance-14cffb47c77534ef177eb2cd": {
+      "clusterId": "29",
+      "label": "GA 77 · Cooperation between the United Nations and the African Union"
+    },
+    "appearance-3244708b0f0b25f972a17a0d": {
+      "clusterId": "32",
+      "label": "GA 77 · Cooperation between the United Nations and the Organization of Islamic Cooperation"
+    },
+    "appearance-aa3451ac4b757e120c137eb0": {
+      "clusterId": "30",
+      "label": "GA 77 · Cooperation between the United Nations and the League of Arab States"
+    },
+    "appearance-8ee1838e37a0582af4f3c823": {
+      "clusterId": "38",
+      "label": "GA 77 · Cooperation between the United Nations and the Collective Security Treaty Organization"
+    },
+    "appearance-ff34193ecdc90b334893f344": {
+      "clusterId": "41",
+      "label": "GA 77 · International Residual Mechanism for Criminal Tribunals"
+    },
+    "appearance-9480acf7cc96ea0d835d7441": {
+      "clusterId": "25",
+      "label": "GA 78 · Integrated and coordinated implementation of and follow-up to the outcomes of the major United Nations conferences and summits in the economic, social and related fields"
+    },
+    "appearance-02ba516e9862beb639e51710": {
+      "clusterId": "12",
+      "label": "GA 78 · Promotion of inclusive and effective international cooperation on tax matters at the United Nations"
+    },
+    "appearance-7d146cadebf97feb6883fac3": {
+      "clusterId": "10",
+      "label": "GA 78 · Follow-up to and implementation of the outcomes of the International Conferences on Financing for Development"
+    },
+    "appearance-d6a1aff4a713594d4e0117b2": {
+      "clusterId": "44",
+      "label": "GA 78 · Sustainable development"
+    },
+    "appearance-35fd9e86047fad6f21872f36": {
+      "clusterId": "24",
+      "label": "GA 78 · Towards the achievement of sustainable development: implementation of the 2030 Agenda for Sustainable Development, including through sustainable consumption and production, building on Agenda 21"
+    },
+    "appearance-67f17889affa7a12274a19d9": {
+      "clusterId": "13",
+      "label": "GA 78 · Science, technology and innovation for sustainable development"
+    },
+    "appearance-53410c65aa97537fb916b5d4": {
+      "clusterId": "9",
+      "label": "GA 78 · Operational activities for development"
+    },
+    "appearance-75b4cd5e75817e27fb7bcaeb": {
+      "clusterId": "9",
+      "label": "GA 78 · Operational activities for development of the United Nations system"
+    },
+    "appearance-12e228de8b7dee46f2fc6dc3": {
+      "clusterId": "43",
+      "label": "GA 78 · South-South cooperation for development"
+    },
+    "appearance-7ba08b40bce4fd1bbd164195": {
+      "clusterId": "37",
+      "label": "GA 78 · Advancement of women"
+    },
+    "appearance-f0ca55051ea2058d34e46752": {
+      "clusterId": "19",
+      "label": "GA 78 · Report of the Security Council"
+    },
+    "appearance-36e7e3aac18e52d19739053d": {
+      "clusterId": "46",
+      "label": "GA 78 · The situation in the Middle East"
+    },
+    "appearance-726698acb72dce76d4e5cda5": {
+      "clusterId": "45",
+      "label": "GA 78 · The situation in Afghanistan"
+    },
+    "appearance-9b8eb3da69471ef23307ed3d": {
+      "clusterId": "20",
+      "label": "GA 78 · Question of Cyprus"
+    },
+    "appearance-78010e0f5bbb64aad14a3c2c": {
+      "clusterId": "23",
+      "label": "GA 78 · Israeli practices and settlement activities affecting the rights of the Palestinian people and other Arabs of the occupied territories"
+    },
+    "appearance-86d640ad548d882289f98fed": {
+      "clusterId": "28",
+      "label": "GA 78 · Comprehensive review of the whole question of peacekeeping operations in all their aspects"
+    },
+    "appearance-c8f047c50c57c3d52a42986a": {
+      "clusterId": "40",
+      "label": "GA 78 · Implementation of the Declaration on the Granting of Independence to Colonial Countries and Peoples by the specialized agencies and the international institutions associated with the United Nations"
+    },
+    "appearance-7dce82927a0c63cf5cfc3914": {
+      "clusterId": "15",
+      "label": "GA 78 · Report of the United Nations High Commissioner for Refugees, questions relating to refugees, returnees and displaced persons and humanitarian questions"
+    },
+    "appearance-a7aef8827bc8327208a52037": {
+      "clusterId": "42",
+      "label": "GA 78 · Peacebuilding and sustaining peace"
+    },
+    "appearance-ffd9a537135151a4f2e05f4d": {
+      "clusterId": "5",
+      "label": "GA 78 · Promotion and protection of the rights of children"
+    },
+    "appearance-a35dea170106a110b922240c": {
+      "clusterId": "6",
+      "label": "GA 78 · Rights of Indigenous Peoples"
+    },
+    "appearance-9a8fc79f29b8de51d69d85d6": {
+      "clusterId": "6",
+      "label": "GA 78 · Rights of Indigenous Peoples"
+    },
+    "appearance-d7e669bf67927d25e8605a80": {
+      "clusterId": "3",
+      "label": "GA 78 · Elimination of racism, racial discrimination, xenophobia and related intolerance"
+    },
+    "appearance-ae94439f1eec541b4d7ee557": {
+      "clusterId": "3",
+      "label": "GA 78 · Elimination of racism, racial discrimination, xenophobia and related intolerance"
+    },
+    "appearance-abf661b476710a8d1f78a8f1": {
+      "clusterId": "1",
+      "label": "GA 78 · Comprehensive implementation of and follow-up to the Durban Declaration and Programme of Action"
+    },
+    "appearance-19b36bbd6febffd3194859fa": {
+      "clusterId": "4",
+      "label": "GA 78 · Implementation of human rights instruments"
+    },
+    "appearance-786db9d126d3724470ddd0bc": {
+      "clusterId": "2",
+      "label": "GA 78 · Comprehensive implementation of and follow-up to the Vienna Declaration and Programme of Action"
+    },
+    "appearance-eda15806092d52cc48945a62": {
+      "clusterId": "16",
+      "label": "GA 78 · Strengthening of the coordination of humanitarian and disaster relief assistance of the United Nations, including special economic assistance"
+    },
+    "appearance-19508ecd3b44c6998aa18af2": {
+      "clusterId": "16",
+      "label": "GA 78 · Strengthening of the coordination of emergency humanitarian assistance of the United Nations"
+    },
+    "appearance-a2571c8d8767f61e75d0309a": {
+      "clusterId": "27",
+      "label": "GA 78 · Report of the International Court of Justice"
+    },
+    "appearance-9c08b9d3085ebf517a5dc935": {
+      "clusterId": "22",
+      "label": "GA 78 · The rule of law at the national and international levels"
+    },
+    "appearance-cf6e1272da87d2589a039629": {
+      "clusterId": "21",
+      "label": "GA 78 · Assistance to States for curbing the illicit traffic in small arms and light weapons and collecting them"
+    },
+    "appearance-369859b6b6043f0913934de7": {
+      "clusterId": "21",
+      "label": "GA 78 · The illicit trade in small arms and light weapons in all its aspects"
+    },
+    "appearance-f723444e0c0f581a61406405": {
+      "clusterId": "39",
+      "label": "GA 78 · Crime prevention and criminal justice"
+    },
+    "appearance-1d902d75c02e9ee0cac9181b": {
+      "clusterId": "18",
+      "label": "GA 78 · Election of members of the International Court of Justice"
+    },
+    "appearance-f9628347a5e3570f25be5aab": {
+      "clusterId": "17",
+      "label": "GA 78 · Admission of new Members to the United Nations"
+    },
+    "appearance-8d57f50d6e82e73ff7bfb083": {
+      "clusterId": "41",
+      "label": "GA 78 · International Residual Mechanism for Criminal Tribunals"
+    },
+    "appearance-3ba2bf9641fa6279a189036a": {
+      "clusterId": "33",
+      "label": "GA 78 · Proposed programme budget for 2024"
+    },
+    "appearance-b4887c2c426064c0f61a9392": {
+      "clusterId": "25",
+      "label": "GA 79 · Integrated and coordinated implementation of and follow-up to the outcomes of the major United Nations conferences and summits in the economic, social and related fields"
+    },
+    "appearance-a5e0deb0e8594c60e30c06a4": {
+      "clusterId": "12",
+      "label": "GA 79 · Promotion of inclusive and effective international cooperation on tax matters at the United Nations"
+    },
+    "appearance-eabf5ffac30c13bb88a28a96": {
+      "clusterId": "10",
+      "label": "GA 79 · Follow-up to and implementation of the outcomes of the International Conferences on Financing for Development"
+    },
+    "appearance-1b0dfe7c9ed863e75c2553ad": {
+      "clusterId": "44",
+      "label": "GA 79 · Sustainable development"
+    },
+    "appearance-ee66863e6f1ba96abea3019b": {
+      "clusterId": "24",
+      "label": "GA 79 · Towards the achievement of sustainable development: implementation of the 2030 Agenda for Sustainable Development, including through sustainable consumption and production, building on Agenda 21"
+    },
+    "appearance-2bb0317e41e9ca245f7324c7": {
+      "clusterId": "8",
+      "label": "GA 79 · Women in development"
+    },
+    "appearance-43616c6ccea27da86851e9ea": {
+      "clusterId": "9",
+      "label": "GA 79 · Operational activities for development"
+    },
+    "appearance-1205f2a362d3d4f511d4290e": {
+      "clusterId": "9",
+      "label": "GA 79 · Operational activities for development of the United Nations system"
+    },
+    "appearance-5263242ad9bd076cd53a7768": {
+      "clusterId": "43",
+      "label": "GA 79 · South-South cooperation for development"
+    },
+    "appearance-61a9a4f7bf5d6ab4799e9aa2": {
+      "clusterId": "37",
+      "label": "GA 79 · Advancement of women"
+    },
+    "appearance-4f861c64ee3df46f9341f814": {
+      "clusterId": "19",
+      "label": "GA 79 · Report of the Security Council"
+    },
+    "appearance-8ce265aa34d6d11293aa9fed": {
+      "clusterId": "46",
+      "label": "GA 79 · The situation in the Middle East"
+    },
+    "appearance-8267e54453eab345b5aa31fd": {
+      "clusterId": "45",
+      "label": "GA 79 · The situation in Afghanistan"
+    },
+    "appearance-6673dc96f2b4b57d560c3a13": {
+      "clusterId": "20",
+      "label": "GA 79 · Question of Cyprus"
+    },
+    "appearance-8ef48ef0657ab2e3859cbcdc": {
+      "clusterId": "23",
+      "label": "GA 79 · Israeli practices and settlement activities affecting the rights of the Palestinian people and other Arabs of the occupied territories"
+    },
+    "appearance-bcc8a3cf2b954facbdabcf05": {
+      "clusterId": "28",
+      "label": "GA 79 · Comprehensive review of the whole question of peacekeeping operations in all their aspects"
+    },
+    "appearance-c0f411db0d91b855c172a35a": {
+      "clusterId": "40",
+      "label": "GA 79 · Implementation of the Declaration on the Granting of Independence to Colonial Countries and Peoples by the specialized agencies and the international institutions associated with the United Nations"
+    },
+    "appearance-598151b6d71d6c6db86043a6": {
+      "clusterId": "15",
+      "label": "GA 79 · Report of the United Nations High Commissioner for Refugees, questions relating to refugees, returnees and displaced persons and humanitarian questions"
+    },
+    "appearance-def52389f58bdb564260aa1c": {
+      "clusterId": "42",
+      "label": "GA 79 · Peacebuilding and sustaining peace"
+    },
+    "appearance-c7151b7f77a0033fc997d784": {
+      "clusterId": "5",
+      "label": "GA 79 · Promotion and protection of the rights of children"
+    },
+    "appearance-1f72e126f72016bd6978d3ce": {
+      "clusterId": "5",
+      "label": "GA 79 · Promotion and protection of the rights of children"
+    },
+    "appearance-859747deb7eac5fbe1188a61": {
+      "clusterId": "6",
+      "label": "GA 79 · Rights of Indigenous Peoples"
+    },
+    "appearance-7c6d7de2a1672fe718f3e53d": {
+      "clusterId": "6",
+      "label": "GA 79 · Rights of Indigenous Peoples"
+    },
+    "appearance-6995d0c0b36594d3d45a51e9": {
+      "clusterId": "3",
+      "label": "GA 79 · Elimination of racism, racial discrimination, xenophobia and related intolerance"
+    },
+    "appearance-2c5842f6dbd7ef03b562aa7a": {
+      "clusterId": "3",
+      "label": "GA 79 · Elimination of racism, racial discrimination, xenophobia and related intolerance"
+    },
+    "appearance-971c7e8795cbcbcdf5ef1ef5": {
+      "clusterId": "1",
+      "label": "GA 79 · Comprehensive implementation of and follow-up to the Durban Declaration and Programme of Action"
+    },
+    "appearance-4fb0183b1c9aec3820ddb7b5": {
+      "clusterId": "4",
+      "label": "GA 79 · Implementation of human rights instruments"
+    },
+    "appearance-5c56652f4109ad962f48c699": {
+      "clusterId": "2",
+      "label": "GA 79 · Comprehensive implementation of and follow-up to the Vienna Declaration and Programme of Action"
+    },
+    "appearance-f8fa676928322c08c664fa5a": {
+      "clusterId": "16",
+      "label": "GA 79 · Strengthening of the coordination of humanitarian and disaster relief assistance of the United Nations, including special economic assistance"
+    },
+    "appearance-b5f6afac8b5aea7b193c5fa7": {
+      "clusterId": "16",
+      "label": "GA 79 · Strengthening of the coordination of emergency humanitarian assistance of the United Nations"
+    },
+    "appearance-20d0e60df9d4fcdae7f52d14": {
+      "clusterId": "27",
+      "label": "GA 79 · Report of the International Court of Justice"
+    },
+    "appearance-4314121d64122738d0527fb9": {
+      "clusterId": "22",
+      "label": "GA 79 · The rule of law at the national and international levels"
+    },
+    "appearance-a5dea307cbd413352c47b25c": {
+      "clusterId": "21",
+      "label": "GA 79 · Assistance to States for curbing the illicit traffic in small arms and light weapons and collecting them"
+    },
+    "appearance-297ab59db44e2d208d92c2f5": {
+      "clusterId": "21",
+      "label": "GA 79 · The illicit trade in small arms and light weapons in all its aspects"
+    },
+    "appearance-221d5488b5709f0a822e1574": {
+      "clusterId": "39",
+      "label": "GA 79 · Crime prevention and criminal justice"
+    },
+    "appearance-586a6468be441250eb37809d": {
+      "clusterId": "18",
+      "label": "GA 79 · Election of a member of the International Court of Justice"
+    },
+    "appearance-34398b3a7d2cbcc1cae3256d": {
+      "clusterId": "29",
+      "label": "GA 79 · Cooperation between the United Nations and the African Union"
+    },
+    "appearance-c13e7037a1aac4861c02b408": {
+      "clusterId": "32",
+      "label": "GA 79 · Cooperation between the United Nations and the Organization of Islamic Cooperation"
+    },
+    "appearance-57c993321ce59dd2d62d0d1b": {
+      "clusterId": "30",
+      "label": "GA 79 · Cooperation between the United Nations and the League of Arab States"
+    },
+    "appearance-9ad16ae8772f3a53e2fe80d6": {
+      "clusterId": "38",
+      "label": "GA 79 · Cooperation between the United Nations and the Collective Security Treaty Organization"
+    },
+    "appearance-d0259a9aece1495ee2bbe2e7": {
+      "clusterId": "41",
+      "label": "GA 79 · International Residual Mechanism for Criminal Tribunals"
+    },
+    "appearance-8ed810a1f11f613925f0e2e3": {
+      "clusterId": "33",
+      "label": "GA 79 · Programme budget for 2024"
+    },
+    "appearance-7be1e28f5c28d4fc17e0b5b6": {
+      "clusterId": "34",
+      "label": "GA 79 · Proposed programme budget for 2025"
+    },
+    "appearance-e3bea0a83ca2437cd5f50d1c": {
+      "clusterId": "18",
+      "label": "GA 79 · Election of a member of the International Court of Justice"
+    },
+    "appearance-1258c04c34578cbcb2718a3f": {
+      "clusterId": "25",
+      "label": "GA 80 · Integrated and coordinated implementation of and follow-up to the outcomes of the major United Nations conferences and summits in the economic, social and related fields"
+    },
+    "appearance-cc4067984cc1d89e28cbb539": {
+      "clusterId": "10",
+      "label": "GA 80 · Follow-up to and implementation of the outcomes of the International Conferences on Financing for Development"
+    },
+    "appearance-9cb9464173357ba4d916a887": {
+      "clusterId": "44",
+      "label": "GA 80 · Sustainable development"
+    },
+    "appearance-384c546307ff086adb04f22d": {
+      "clusterId": "24",
+      "label": "GA 80 · Towards the achievement of sustainable development: implementation of the 2030 Agenda for Sustainable Development, including through sustainable consumption and production, building on Agenda 21"
+    },
+    "appearance-9cf54f9f2b4ade2c28d97d39": {
+      "clusterId": "11",
+      "label": "GA 80 · Follow-up to and implementation of the Antigua and Barbuda Agenda for Small Island Developing States: A Renewed Declaration for Resilient Prosperity"
+    },
+    "appearance-90e25be9fb986c1477b08c04": {
+      "clusterId": "13",
+      "label": "GA 80 · Science, technology and innovation for sustainable development"
+    },
+    "appearance-53390d21749f1b3f8fbfaed4": {
+      "clusterId": "9",
+      "label": "GA 80 · Operational activities for development"
+    },
+    "appearance-02f04a4d8841c7cc4a42eb67": {
+      "clusterId": "9",
+      "label": "GA 80 · Operational activities for development of the United Nations system"
+    },
+    "appearance-a67a2970f53db4ae4aed607a": {
+      "clusterId": "43",
+      "label": "GA 80 · South-South cooperation for development"
+    },
+    "appearance-b0135740b926c435f8777099": {
+      "clusterId": "37",
+      "label": "GA 80 · Advancement of women"
+    },
+    "appearance-9638cb4718a6004d6551d551": {
+      "clusterId": "37",
+      "label": "GA 80 · Advancement of women"
+    },
+    "appearance-8e09ae44091c8e673643d8f4": {
+      "clusterId": "19",
+      "label": "GA 80 · Report of the Security Council"
+    },
+    "appearance-e715d061f4bfc7e80ac0fa93": {
+      "clusterId": "46",
+      "label": "GA 80 · The situation in the Middle East"
+    },
+    "appearance-37c7b43c3e78c96095881eb5": {
+      "clusterId": "45",
+      "label": "GA 80 · The situation in Afghanistan"
+    },
+    "appearance-bdd88b3b5eae750933a2eda2": {
+      "clusterId": "20",
+      "label": "GA 80 · Question of Cyprus"
+    },
+    "appearance-801531cb046e641ac0a6d490": {
+      "clusterId": "23",
+      "label": "GA 80 · Israeli practices and settlement activities affecting the rights of the Palestinian people and other Arabs of the occupied territories"
+    },
+    "appearance-709e659c9179c2adf70b075b": {
+      "clusterId": "28",
+      "label": "GA 80 · Comprehensive review of the whole question of peacekeeping operations in all their aspects"
+    },
+    "appearance-0a840eb9b5530d781fdba1e0": {
+      "clusterId": "40",
+      "label": "GA 80 · Implementation of the Declaration on the Granting of Independence to Colonial Countries and Peoples by the specialized agencies and the international institutions associated with the United Nations"
+    },
+    "appearance-50d892a183e0ed57374b7c18": {
+      "clusterId": "15",
+      "label": "GA 80 · Report of the United Nations High Commissioner for Refugees, questions relating to refugees, returnees and displaced persons and humanitarian questions"
+    },
+    "appearance-fc133ec230805a65bb2f88b0": {
+      "clusterId": "42",
+      "label": "GA 80 · Peacebuilding and sustaining peace"
+    },
+    "appearance-c505b076c63dea5c235687d6": {
+      "clusterId": "42",
+      "label": "GA 80 · Peacebuilding and sustaining peace"
+    },
+    "appearance-5df937c2c672b6622d78c480": {
+      "clusterId": "5",
+      "label": "GA 80 · Promotion and protection of the rights of children"
+    },
+    "appearance-2a35140ec392f19a2aa3e01a": {
+      "clusterId": "6",
+      "label": "GA 80 · Rights of Indigenous Peoples"
+    },
+    "appearance-7d082dbe2965efef6880e510": {
+      "clusterId": "6",
+      "label": "GA 80 · Rights of Indigenous Peoples"
+    },
+    "appearance-0fc9d40682e097716c0feb22": {
+      "clusterId": "3",
+      "label": "GA 80 · Elimination of racism, racial discrimination, xenophobia and related intolerance"
+    },
+    "appearance-5a14fe6a2c3a8d4a4ddcafd1": {
+      "clusterId": "3",
+      "label": "GA 80 · Elimination of racism, racial discrimination, xenophobia and related intolerance"
+    },
+    "appearance-0b9e1051eef01f407a63e51d": {
+      "clusterId": "1",
+      "label": "GA 80 · Comprehensive implementation of and follow-up to the Durban Declaration and Programme of Action"
+    },
+    "appearance-bdffcbb776d64d08006ea036": {
+      "clusterId": "4",
+      "label": "GA 80 · Implementation of human rights instruments"
+    },
+    "appearance-13d4b7e0031834ac1871d3e5": {
+      "clusterId": "2",
+      "label": "GA 80 · Comprehensive implementation of and follow-up to the Vienna Declaration and Programme of Action"
+    },
+    "appearance-1c562817735f5277060d41f5": {
+      "clusterId": "16",
+      "label": "GA 80 · Strengthening of the coordination of humanitarian and disaster relief assistance of the United Nations, including special economic assistance"
+    },
+    "appearance-465db876395b2b540982ed4c": {
+      "clusterId": "16",
+      "label": "GA 80 · Strengthening of the coordination of emergency humanitarian assistance of the United Nations"
+    },
+    "appearance-1de04ffba4fbb271c6fbee5e": {
+      "clusterId": "27",
+      "label": "GA 80 · Report of the International Court of Justice"
+    },
+    "appearance-4320b5c7874ef12c1d8c40fc": {
+      "clusterId": "22",
+      "label": "GA 80 · The rule of law at the national and international levels"
+    },
+    "appearance-10edbe06b4149ee1dec8cd1a": {
+      "clusterId": "21",
+      "label": "GA 80 · Assistance to States for curbing the illicit traffic in small arms and light weapons and collecting them"
+    },
+    "appearance-0524a3b0ec2512b7776c2d7a": {
+      "clusterId": "21",
+      "label": "GA 80 · The illicit trade in small arms and light weapons in all its aspects"
+    },
+    "appearance-a52265d5302820d8518c11f7": {
+      "clusterId": "39",
+      "label": "GA 80 · Crime prevention and criminal justice"
+    },
+    "appearance-7502a86dbb442977dbb38ed3": {
+      "clusterId": "18",
+      "label": "GA 80 · Election of a member of the International Court of Justice"
+    },
+    "appearance-584f90c4f1779e3d6e989142": {
+      "clusterId": "17",
+      "label": "GA 80 · Admission of new Members to the United Nations"
+    },
+    "appearance-634bd96a7e8f2e9f2921c887": {
+      "clusterId": "31",
+      "label": "GA 80 · Cooperation between the United Nations and the Gulf Cooperation Council"
+    },
+    "appearance-690fd4feb2e7e33f9a9ab098": {
+      "clusterId": "41",
+      "label": "GA 80 · International Residual Mechanism for Criminal Tribunals"
+    },
+    "appearance-60529da91d51a0738b161fdb": {
+      "clusterId": "34",
+      "label": "GA 80 · Programme budget for 2025"
+    },
+    "appearance-48c17b67b396f50360c2bad2": {
+      "clusterId": "35",
+      "label": "GA 80 · Proposed programme budget for 2026"
+    },
+    "appearance-4f32d9dc22f588a3baa09258": {
+      "clusterId": "25",
+      "label": "GA 81 · Integrated and coordinated implementation of and follow-up to the outcomes of the major United Nations conferences and summits in the economic, social and related fields"
+    },
+    "appearance-c0ad4b9556e757be84190be1": {
+      "clusterId": "12",
+      "label": "GA 81 · Promotion of inclusive and effective international tax cooperation at the United Nations"
+    },
+    "appearance-872e02a4db334a5fde7807d8": {
+      "clusterId": "10",
+      "label": "GA 81 · Follow-up to and implementation of the outcomes of the International Conferences on Financing for Development"
+    },
+    "appearance-234344efe42d1b129335bddb": {
+      "clusterId": "44",
+      "label": "GA 81 · Sustainable development"
+    },
+    "appearance-23faf726e2cc70fa18f46c39": {
+      "clusterId": "24",
+      "label": "GA 81 · Towards the achievement of sustainable development: implementation of the 2030 Agenda for Sustainable Development, including through sustainable consumption and production, building on Agenda 21"
+    },
+    "appearance-7d6a1d24179f1f1ebef19f18": {
+      "clusterId": "11",
+      "label": "GA 81 · Follow-up to and implementation of the Antigua and Barbuda Agenda for Small Island Developing States: A Renewed Declaration for Resilient Prosperity"
+    },
+    "appearance-7d2111e7255f84035d5b91c1": {
+      "clusterId": "26",
+      "label": "GA 81 · Follow-up to the Fifth United Nations Conference on the Least Developed Countries"
+    },
+    "appearance-1de7ebc99aad718823084ca8": {
+      "clusterId": "8",
+      "label": "GA 81 · Women in development"
+    },
+    "appearance-947612acc6c84101e642a37a": {
+      "clusterId": "9",
+      "label": "GA 81 · Operational activities for development"
+    },
+    "appearance-86b106e5d3f048a99df6b4ea": {
+      "clusterId": "9",
+      "label": "GA 81 · Operational activities for development of the United Nations system"
+    },
+    "appearance-5be102d3a3763c52a136a13c": {
+      "clusterId": "43",
+      "label": "GA 81 · South-South cooperation for development"
+    },
+    "appearance-c9039b72ef19b64043d2a4fe": {
+      "clusterId": "14",
+      "label": "GA 81 · Social development"
+    },
+    "appearance-247153e7a6a5eb88ce931908": {
+      "clusterId": "14",
+      "label": "GA 81 · Social development, including questions relating to the world social situation and to youth, ageing, persons with disabilities and the family"
+    },
+    "appearance-a1d93df75251f575a7981479": {
+      "clusterId": "37",
+      "label": "GA 81 · Advancement of women"
+    },
+    "appearance-e1054ba355173ad9f8f40bd7": {
+      "clusterId": "19",
+      "label": "GA 81 · Report of the Security Council"
+    },
+    "appearance-cdd6a9e2b5433ad41cc94dba": {
+      "clusterId": "46",
+      "label": "GA 81 · The situation in the Middle East"
+    },
+    "appearance-5c167b1f0a4aca251d6ac691": {
+      "clusterId": "45",
+      "label": "GA 81 · The situation in Afghanistan"
+    },
+    "appearance-fb5e1cd068d3fabbcc195291": {
+      "clusterId": "20",
+      "label": "GA 81 · Question of Cyprus"
+    },
+    "appearance-8e2b8039e3f59d8104a330b4": {
+      "clusterId": "23",
+      "label": "GA 81 · Israeli practices and settlement activities affecting the rights of the Palestinian people and other Arabs of the occupied territories"
+    },
+    "appearance-6e8dea6d69615a7314298467": {
+      "clusterId": "28",
+      "label": "GA 81 · Comprehensive review of the whole question of peacekeeping operations in all their aspects"
+    },
+    "appearance-219c882676913266bf7f5c24": {
+      "clusterId": "40",
+      "label": "GA 81 · Implementation of the Declaration on the Granting of Independence to Colonial Countries and Peoples by the specialized agencies and the international institutions associated with the United Nations"
+    },
+    "appearance-cde28c8d1ee0abda9a0bf149": {
+      "clusterId": "15",
+      "label": "GA 81 · Report of the United Nations High Commissioner for Refugees, questions relating to refugees, returnees and displaced persons and humanitarian questions"
+    },
+    "appearance-63cd650ee6f34ab423631051": {
+      "clusterId": "42",
+      "label": "GA 81 · Peacebuilding and sustaining peace"
+    },
+    "appearance-1326925affd0b6bedaa351c4": {
+      "clusterId": "42",
+      "label": "GA 81 · Peacebuilding and sustaining peace"
+    },
+    "appearance-ee34cf162e67ac238635e8b7": {
+      "clusterId": "5",
+      "label": "GA 81 · Promotion and protection of the rights of children"
+    },
+    "appearance-f7344af5d53ccf1b76137f66": {
+      "clusterId": "5",
+      "label": "GA 81 · Promotion and protection of the rights of children"
+    },
+    "appearance-748f22ed69a73ef3975ea732": {
+      "clusterId": "6",
+      "label": "GA 81 · Rights of Indigenous Peoples"
+    },
+    "appearance-5961435638ec7ea62cd9954b": {
+      "clusterId": "6",
+      "label": "GA 81 · Rights of Indigenous Peoples"
+    },
+    "appearance-8c516a4ee54bd677269e2cd2": {
+      "clusterId": "3",
+      "label": "GA 81 · Elimination of racism, racial discrimination, xenophobia and related intolerance"
+    },
+    "appearance-de1d40dcf51641060af9a2ab": {
+      "clusterId": "3",
+      "label": "GA 81 · Elimination of racism, racial discrimination, xenophobia and related intolerance"
+    },
+    "appearance-4240c8755b4ac31ef4bb3265": {
+      "clusterId": "1",
+      "label": "GA 81 · Comprehensive implementation of and follow-up to the Durban Declaration and Programme of Action"
+    },
+    "appearance-289b0a0e3381bc7e6fec6da9": {
+      "clusterId": "4",
+      "label": "GA 81 · Implementation of human rights instruments"
+    },
+    "appearance-5f17a84b54b1dca7bf294457": {
+      "clusterId": "2",
+      "label": "GA 81 · Comprehensive implementation of and follow-up to the Vienna Declaration and Programme of Action"
+    },
+    "appearance-363205aa092654dcfaa0066f": {
+      "clusterId": "16",
+      "label": "GA 81 · Strengthening of the coordination of humanitarian and disaster relief assistance of the United Nations, including special economic assistance"
+    },
+    "appearance-a2c593df5e24275a87afb1bb": {
+      "clusterId": "16",
+      "label": "GA 81 · Strengthening of the coordination of emergency humanitarian assistance of the United Nations"
+    },
+    "appearance-68d925d279358ccb0e79d04c": {
+      "clusterId": "27",
+      "label": "GA 81 · Report of the International Court of Justice"
+    },
+    "appearance-5761fdd1d9ed6376b737fc9d": {
+      "clusterId": "22",
+      "label": "GA 81 · The rule of law at the national and international levels"
+    },
+    "appearance-0d172e9b7ceea92226614209": {
+      "clusterId": "21",
+      "label": "GA 81 · Assistance to States for curbing the illicit traffic in small arms and light weapons and collecting them"
+    },
+    "appearance-c513779f3cfce0e0036029c9": {
+      "clusterId": "21",
+      "label": "GA 81 · The illicit trade in small arms and light weapons in all its aspects"
+    },
+    "appearance-6ef5745b858192a446c137c2": {
+      "clusterId": "39",
+      "label": "GA 81 · Crime prevention and criminal justice"
+    },
+    "appearance-c2eac5b3098f4ca1ac7c65ce": {
+      "clusterId": "18",
+      "label": "GA 81 · Election of members of the International Court of Justice"
+    },
+    "appearance-c1f45fb8aa5f847d9db9d388": {
+      "clusterId": "17",
+      "label": "GA 81 · Admission of new Members to the United Nations"
+    },
+    "appearance-aa5f3b0808a6cbcc3554bf03": {
+      "clusterId": "29",
+      "label": "GA 81 · Cooperation between the United Nations and the African Union"
+    },
+    "appearance-3db75c494342c2e76170e809": {
+      "clusterId": "32",
+      "label": "GA 81 · Cooperation between the United Nations and the Organization of Islamic Cooperation"
+    },
+    "appearance-a2bddfc35261df51a3b32f28": {
+      "clusterId": "30",
+      "label": "GA 81 · Cooperation between the United Nations and the League of Arab States"
+    },
+    "appearance-789a140d8d9b9885fcd51641": {
+      "clusterId": "38",
+      "label": "GA 81 · Cooperation between the United Nations and the Collective Security Treaty Organization"
+    },
+    "appearance-cb87eadf83917da55b046e97": {
+      "clusterId": "31",
+      "label": "GA 81 · Cooperation between the United Nations and the Gulf Cooperation Council"
+    },
+    "appearance-9ce9ad17c61014d7c4c8eb22": {
+      "clusterId": "41",
+      "label": "GA 81 · International Residual Mechanism for Criminal Tribunals"
+    },
+    "appearance-8d7cc93cb8637d2fa7a719b3": {
+      "clusterId": "35",
+      "label": "GA 81 · Programme budget for 2026"
+    },
+    "appearance-f85b7074bdb1535aae29d39d": {
+      "clusterId": "36",
+      "label": "GA 81 · Proposed programme budget for 2027"
+    },
+    "appearance-86c065225862332b71ad86f3": {
+      "clusterId": "9",
+      "label": "ECOSOC 2023 · Operational activities of the United Nations for international development cooperation"
+    },
+    "appearance-92da4af90effc5d4c933008d": {
+      "clusterId": "43",
+      "label": "ECOSOC 2023 · South-South cooperation for development"
+    },
+    "appearance-94a46cf8f8be244038562d31": {
+      "clusterId": "16",
+      "label": "ECOSOC 2023 · Special economic, humanitarian and disaster relief assistance"
+    },
+    "appearance-b9bfdc1bb0971954e68969b0": {
+      "clusterId": "24",
+      "label": "ECOSOC 2023 · The role of the United Nations system in the integration of the three dimensions of sustainable development into the implementation of and follow-up to the 2030 Agenda for Sustainable Development"
+    },
+    "appearance-f217e1f4907cf1613e0739d3": {
+      "clusterId": "25",
+      "label": "ECOSOC 2023 · Implementation of and follow-up to major United Nations conferences and summits"
+    },
+    "appearance-9990b69209743545b778a061": {
+      "clusterId": "10",
+      "label": "ECOSOC 2023 · Follow-up to the International Conference on Financing for Development"
+    },
+    "appearance-bed8e28fcd067e6a37262550": {
+      "clusterId": "26",
+      "label": "ECOSOC 2023 · Review and coordination of the implementation of the Doha Programme of Action for the Least Developed Countries"
+    },
+    "appearance-0224aa2a58ae920a5834db73": {
+      "clusterId": "33",
+      "label": "ECOSOC 2023 · Proposed programme budget for 2024"
+    },
+    "appearance-89392aeb709da8b387d7e758": {
+      "clusterId": "7",
+      "label": "ECOSOC 2023 · Mainstreaming a gender perspective into all policies and programmes in the United Nations system"
+    },
+    "appearance-18dd986352d144d92b782e12": {
+      "clusterId": "40",
+      "label": "ECOSOC 2023 · Implementation of the Declaration on the Granting of Independence to Colonial Countries and Peoples by the specialized agencies and the international institutions associated with the United Nations"
+    },
+    "appearance-36caaadf49755d8fc724da33": {
+      "clusterId": "44",
+      "label": "ECOSOC 2023 · Sustainable development"
+    },
+    "appearance-020a2e6107bec1491eafd1db": {
+      "clusterId": "13",
+      "label": "ECOSOC 2023 · Science and technology for development"
+    },
+    "appearance-0ce9d9f78762f5c7ebd20b89": {
+      "clusterId": "12",
+      "label": "ECOSOC 2023 · International cooperation in tax matters"
+    },
+    "appearance-42855925bcb90fd945927803": {
+      "clusterId": "8",
+      "label": "ECOSOC 2023 · Women and development"
+    },
+    "appearance-ca2f715a550a99b54ffb220a": {
+      "clusterId": "37",
+      "label": "ECOSOC 2023 · Advancement of women"
+    },
+    "appearance-56beb01567b2951ed9430a83": {
+      "clusterId": "14",
+      "label": "ECOSOC 2023 · Social development"
+    },
+    "appearance-703bd6896b42b0cc0c68c193": {
+      "clusterId": "39",
+      "label": "ECOSOC 2023 · Crime prevention and criminal justice"
+    },
+    "appearance-b775c3a67654e7c4bd620e4f": {
+      "clusterId": "15",
+      "label": "ECOSOC 2023 · United Nations High Commissioner for Refugees"
+    },
+    "appearance-2a31b78ed935c688bdf9383f": {
+      "clusterId": "1",
+      "label": "ECOSOC 2023 · Comprehensive implementation of the Durban Declaration and Programme of Action"
+    },
+    "appearance-ffa7018a1a659dd8f31ddba6": {
+      "clusterId": "9",
+      "label": "ECOSOC 2024 · Operational activities of the United Nations for international development cooperation"
+    },
+    "appearance-f997926f17cbacb38e736b8a": {
+      "clusterId": "16",
+      "label": "ECOSOC 2024 · Special economic, humanitarian and disaster relief assistance"
+    },
+    "appearance-3ea631002880239d1060fb54": {
+      "clusterId": "24",
+      "label": "ECOSOC 2024 · The role of the United Nations system in the integration of the three dimensions of sustainable development into the implementation of and follow-up to the 2030 Agenda for Sustainable Development"
+    },
+    "appearance-8034480e160ea2427d1ff3b1": {
+      "clusterId": "25",
+      "label": "ECOSOC 2024 · Implementation of and follow-up to major United Nations conferences and summits"
+    },
+    "appearance-8423673c0c627353802d7e6c": {
+      "clusterId": "10",
+      "label": "ECOSOC 2024 · Follow-up to the International Conference on Financing for Development"
+    },
+    "appearance-de7516cdccec9070db52da4d": {
+      "clusterId": "26",
+      "label": "ECOSOC 2024 · Review and coordination of the implementation of the Doha Programme of Action for the Least Developed Countries"
+    },
+    "appearance-b41e8f4bb2295d88c0203107": {
+      "clusterId": "34",
+      "label": "ECOSOC 2024 · Proposed programme budget for 2025"
+    },
+    "appearance-b9076c4c8640b1ba2690f0b7": {
+      "clusterId": "7",
+      "label": "ECOSOC 2024 · Mainstreaming a gender perspective into all policies and programmes in the United Nations system"
+    },
+    "appearance-0ce36b7e36e338483f0cd9b2": {
+      "clusterId": "40",
+      "label": "ECOSOC 2024 · Implementation of the Declaration on the Granting of Independence to Colonial Countries and Peoples by the specialized agencies and the international institutions associated with the United Nations"
+    },
+    "appearance-874a71847f780985b9a507f3": {
+      "clusterId": "44",
+      "label": "ECOSOC 2024 · Sustainable development"
+    },
+    "appearance-ac5853411969fe8062329a05": {
+      "clusterId": "13",
+      "label": "ECOSOC 2024 · Science and technology for development"
+    },
+    "appearance-dffd261664075e790ed7d77c": {
+      "clusterId": "12",
+      "label": "ECOSOC 2024 · International cooperation in tax matters"
+    },
+    "appearance-017f8a81e3d9ee536a184c77": {
+      "clusterId": "8",
+      "label": "ECOSOC 2024 · Women and development"
+    },
+    "appearance-a86792bfadd5a84f4b801d36": {
+      "clusterId": "37",
+      "label": "ECOSOC 2024 · Advancement of women"
+    },
+    "appearance-cf510c52210fe8e486121c8d": {
+      "clusterId": "14",
+      "label": "ECOSOC 2024 · Social development"
+    },
+    "appearance-8785845951ecd2e567bf3287": {
+      "clusterId": "39",
+      "label": "ECOSOC 2024 · Crime prevention and criminal justice"
+    },
+    "appearance-347f4e6685a2f0a1cb8e99bf": {
+      "clusterId": "15",
+      "label": "ECOSOC 2024 · United Nations High Commissioner for Refugees"
+    },
+    "appearance-b72b9f890f11c44b01c187c1": {
+      "clusterId": "1",
+      "label": "ECOSOC 2024 · Comprehensive implementation of the Durban Declaration and Programme of Action"
+    },
+    "appearance-ff008de458fd9bd9f717bf07": {
+      "clusterId": "9",
+      "label": "ECOSOC 2025 · Operational activities of the United Nations for international development cooperation"
+    },
+    "appearance-97eef41b42ddba3308b6234e": {
+      "clusterId": "43",
+      "label": "ECOSOC 2025 · South-South cooperation for development"
+    },
+    "appearance-97619ba2e3cdaba0441250d4": {
+      "clusterId": "16",
+      "label": "ECOSOC 2025 · Special economic, humanitarian and disaster relief assistance"
+    },
+    "appearance-71070885425c99f1db9ebb48": {
+      "clusterId": "24",
+      "label": "ECOSOC 2025 · The role of the United Nations system in the integration of the three dimensions of sustainable development into the implementation of and follow-up to the 2030 Agenda for Sustainable Development"
+    },
+    "appearance-d537c1b09ebb205cfe68f557": {
+      "clusterId": "25",
+      "label": "ECOSOC 2025 · Implementation of and follow-up to major United Nations conferences and summits"
+    },
+    "appearance-12cd435e446448532b0741ff": {
+      "clusterId": "10",
+      "label": "ECOSOC 2025 · Follow-up to the International Conference on Financing for Development"
+    },
+    "appearance-49df88ef8a187b0293bc2a6c": {
+      "clusterId": "26",
+      "label": "ECOSOC 2025 · Review and coordination of the implementation of the Doha Programme of Action for the Least Developed Countries"
+    },
+    "appearance-272ad5d93af5ca3519f66e9d": {
+      "clusterId": "35",
+      "label": "ECOSOC 2025 · Proposed programme budget for 2026"
+    },
+    "appearance-25f5589277d8d17915149812": {
+      "clusterId": "7",
+      "label": "ECOSOC 2025 · Mainstreaming a gender perspective into all policies and programmes in the United Nations system"
+    },
+    "appearance-548c875f3d293b785ba8fb39": {
+      "clusterId": "40",
+      "label": "ECOSOC 2025 · Implementation of the Declaration on the Granting of Independence to Colonial Countries and Peoples by the specialized agencies and the international institutions associated with the United Nations"
+    },
+    "appearance-005371fc75236a46bee32ee2": {
+      "clusterId": "44",
+      "label": "ECOSOC 2025 · Sustainable development"
+    },
+    "appearance-b151f01a46a9c3a5e5e14397": {
+      "clusterId": "13",
+      "label": "ECOSOC 2025 · Science and technology for development"
+    },
+    "appearance-069be53054abd86f1c34a466": {
+      "clusterId": "12",
+      "label": "ECOSOC 2025 · International cooperation in tax matters"
+    },
+    "appearance-c09448961a39b15f85171869": {
+      "clusterId": "8",
+      "label": "ECOSOC 2025 · Women and development"
+    },
+    "appearance-ef60812c05a641c06985178b": {
+      "clusterId": "37",
+      "label": "ECOSOC 2025 · Advancement of women"
+    },
+    "appearance-84019c7f4e3f8b5d41149b7a": {
+      "clusterId": "14",
+      "label": "ECOSOC 2025 · Social development"
+    },
+    "appearance-ee4fd990d2b85149729bed5a": {
+      "clusterId": "39",
+      "label": "ECOSOC 2025 · Crime prevention and criminal justice"
+    },
+    "appearance-092b24a36ac69a6483848c12": {
+      "clusterId": "15",
+      "label": "ECOSOC 2025 · United Nations High Commissioner for Refugees"
+    },
+    "appearance-b29a93bb3716786d79a68c42": {
+      "clusterId": "1",
+      "label": "ECOSOC 2025 · Comprehensive implementation of the Durban Declaration and Programme of Action"
+    },
+    "appearance-d968a77a3e410120542bd989": {
+      "clusterId": "9",
+      "label": "ECOSOC 2026 · Operational activities of the United Nations for international development cooperation"
+    },
+    "appearance-3e616e9768d0c5541b8b879d": {
+      "clusterId": "16",
+      "label": "ECOSOC 2026 · Special economic, humanitarian and disaster relief assistance"
+    },
+    "appearance-a0200408003fe3b443e87db1": {
+      "clusterId": "24",
+      "label": "ECOSOC 2026 · The role of the United Nations system in the integration of the three dimensions of sustainable development into the implementation of and follow-up to the 2030 Agenda for Sustainable Development"
+    },
+    "appearance-3f707fc7d9de61669cf2e96b": {
+      "clusterId": "25",
+      "label": "ECOSOC 2026 · Implementation of and follow-up to major United Nations conferences and summits"
+    },
+    "appearance-37ebcf2e34f4154b6bb196dc": {
+      "clusterId": "10",
+      "label": "ECOSOC 2026 · Follow-up to the International Conferences on Financing for Development"
+    },
+    "appearance-fa260c2680c296d248eb58ba": {
+      "clusterId": "26",
+      "label": "ECOSOC 2026 · Review and coordination of the implementation of the Doha Programme of Action for the Least Developed Countries"
+    },
+    "appearance-a4653435317c38360dc50e17": {
+      "clusterId": "11",
+      "label": "ECOSOC 2026 · Follow-up to and implementation of the Antigua and Barbuda Agenda for Small Island Developing States"
+    },
+    "appearance-6fd35700b54b6699159fd748": {
+      "clusterId": "36",
+      "label": "ECOSOC 2026 · Proposed programme budget for 2027"
+    },
+    "appearance-e76fc420c839ee95828740ed": {
+      "clusterId": "7",
+      "label": "ECOSOC 2026 · Mainstreaming a gender perspective into all policies and programmes in the United Nations system"
+    },
+    "appearance-16a34a2b9220475462059015": {
+      "clusterId": "40",
+      "label": "ECOSOC 2026 · Implementation of the Declaration on the Granting of Independence to Colonial Countries and Peoples by the specialized agencies and the international institutions associated with the United Nations"
+    },
+    "appearance-3aefdb13e0c576cdc4340627": {
+      "clusterId": "44",
+      "label": "ECOSOC 2026 · Sustainable development"
+    },
+    "appearance-10a4aebb70efbbfab9dc9e48": {
+      "clusterId": "13",
+      "label": "ECOSOC 2026 · Science and technology for development"
+    },
+    "appearance-82f418fbbed7e632f31fa8b2": {
+      "clusterId": "12",
+      "label": "ECOSOC 2026 · International cooperation in tax matters"
+    },
+    "appearance-eafdf5e2747c03012da4ade1": {
+      "clusterId": "8",
+      "label": "ECOSOC 2026 · Women and development"
+    },
+    "appearance-1e9ac131ad9d447d02578ac1": {
+      "clusterId": "37",
+      "label": "ECOSOC 2026 · Advancement of women"
+    },
+    "appearance-66e2aa6f999234e6aa26a4f6": {
+      "clusterId": "14",
+      "label": "ECOSOC 2026 · Social development"
+    },
+    "appearance-c652fbe924d0cec0b46988ab": {
+      "clusterId": "39",
+      "label": "ECOSOC 2026 · Crime prevention and criminal justice"
+    },
+    "appearance-ff85c19ed9c5f84896df7837": {
+      "clusterId": "15",
+      "label": "ECOSOC 2026 · United Nations High Commissioner for Refugees"
+    },
+    "appearance-f12d7f6bab7db874b15394b0": {
+      "clusterId": "1",
+      "label": "ECOSOC 2026 · Comprehensive implementation of the Durban Declaration and Programme of Action"
+    },
+    "appearance-4dbcf21f1a5fd92f01fc8870": {
+      "clusterId": "2",
+      "label": "HRC 49 · Follow-up to and implementation of the Vienna Declaration and Programme of Action"
+    },
+    "appearance-d05e2e199cf6a63738449d7c": {
+      "clusterId": "1",
+      "label": "HRC 49 · Racism, racial discrimination, xenophobia and related forms of intolerance: follow-up to and implementation of the Durban Declaration and Programme of Action"
+    },
+    "appearance-564d81b9c2be0c474b1ba1f9": {
+      "clusterId": "2",
+      "label": "HRC 50 · Follow-up to and implementation of the Vienna Declaration and Programme of Action"
+    },
+    "appearance-19eef7880b3dbe546f071c6b": {
+      "clusterId": "1",
+      "label": "HRC 50 · Racism, racial discrimination, xenophobia and related forms of intolerance: follow-up to and implementation of the Durban Declaration and Programme of Action"
+    },
+    "appearance-0ec74ef6f288d8c2e01984c6": {
+      "clusterId": "2",
+      "label": "HRC 51 · Follow-up to and implementation of the Vienna Declaration and Programme of Action"
+    },
+    "appearance-c4d98ce10e2ec7249fd7dbf5": {
+      "clusterId": "1",
+      "label": "HRC 51 · Racism, racial discrimination, xenophobia and related forms of intolerance: follow-up to and implementation of the Durban Declaration and Programme of Action"
+    },
+    "appearance-f393adaebe768d59afbf46de": {
+      "clusterId": "2",
+      "label": "HRC 52 · Follow-up to and implementation of the Vienna Declaration and Programme of Action"
+    },
+    "appearance-6adc2c7c4bcb7ea0355a7ca8": {
+      "clusterId": "1",
+      "label": "HRC 52 · Racism, racial discrimination, xenophobia and related forms of intolerance: follow-up to and implementation of the Durban Declaration and Programme of Action"
+    },
+    "appearance-87ec9b7c5f4b24ebe96fdc1c": {
+      "clusterId": "2",
+      "label": "HRC 53 · Follow-up to and implementation of the Vienna Declaration and Programme of Action"
+    },
+    "appearance-917b93fc258bb7422a5e2213": {
+      "clusterId": "1",
+      "label": "HRC 53 · Racism, racial discrimination, xenophobia and related forms of intolerance: follow-up to and implementation of the Durban Declaration and Programme of Action"
+    },
+    "appearance-b5af26df1558027c6779cd73": {
+      "clusterId": "2",
+      "label": "HRC 54 · Follow-up to and implementation of the Vienna Declaration and Programme of Action"
+    },
+    "appearance-2e6c4a82ad103c2f54290631": {
+      "clusterId": "1",
+      "label": "HRC 54 · Racism, racial discrimination, xenophobia and related forms of intolerance: follow-up to and implementation of the Durban Declaration and Programme of Action"
+    },
+    "appearance-f4121e1ab35294a315b4f64b": {
+      "clusterId": "2",
+      "label": "HRC 55 · Follow-up to and implementation of the Vienna Declaration and Programme of Action"
+    },
+    "appearance-c06bd1796e141c6d89686396": {
+      "clusterId": "1",
+      "label": "HRC 55 · Racism, racial discrimination, xenophobia and related forms of intolerance: follow-up to and implementation of the Durban Declaration and Programme of Action"
+    },
+    "appearance-7282dd93cc8359dc10c04d1b": {
+      "clusterId": "2",
+      "label": "HRC 56 · Follow-up to and implementation of the Vienna Declaration and Programme of Action"
+    },
+    "appearance-d29f45a255acf98555277e9d": {
+      "clusterId": "1",
+      "label": "HRC 56 · Racism, racial discrimination, xenophobia and related forms of intolerance: follow-up to and implementation of the Durban Declaration and Programme of Action"
+    },
+    "appearance-e6c83f44473b845d53c4083c": {
+      "clusterId": "2",
+      "label": "HRC 57 · Follow-up to and implementation of the Vienna Declaration and Programme of Action"
+    },
+    "appearance-6fa47746c6b48c7a5e13c526": {
+      "clusterId": "1",
+      "label": "HRC 57 · Racism, racial discrimination, xenophobia and related forms of intolerance: follow-up to and implementation of the Durban Declaration and Programme of Action"
+    },
+    "appearance-10cfdb52645670a0780d09ac": {
+      "clusterId": "2",
+      "label": "HRC 58 · Follow-up to and implementation of the Vienna Declaration and Programme of Action"
+    },
+    "appearance-036bf3f8abac587ad29d0b9a": {
+      "clusterId": "1",
+      "label": "HRC 58 · Racism, racial discrimination, xenophobia and related forms of intolerance: follow-up to and implementation of the Durban Declaration and Programme of Action"
+    },
+    "appearance-92973d1a4800d7decb89c2ee": {
+      "clusterId": "2",
+      "label": "HRC 59 · Follow-up to and implementation of the Vienna Declaration and Programme of Action"
+    },
+    "appearance-3b088b1a7d815a6c744e01e7": {
+      "clusterId": "1",
+      "label": "HRC 59 · Racism, racial discrimination, xenophobia and related forms of intolerance: follow-up to and implementation of the Durban Declaration and Programme of Action"
+    },
+    "appearance-88d8be573ff925a2d4393e59": {
+      "clusterId": "2",
+      "label": "HRC 60 · Follow-up to and implementation of the Vienna Declaration and Programme of Action"
+    },
+    "appearance-94e20ab0457cf4d227359657": {
+      "clusterId": "1",
+      "label": "HRC 60 · Racism, racial discrimination, xenophobia and related forms of intolerance: follow-up to and implementation of the Durban Declaration and Programme of Action"
+    },
+    "appearance-75289b6dc9c02c1039ae9dbf": {
+      "clusterId": "2",
+      "label": "HRC 61 · Follow-up to and implementation of the Vienna Declaration and Programme of Action"
+    },
+    "appearance-57cda56406e096adba8bdd44": {
+      "clusterId": "1",
+      "label": "HRC 61 · Racism, racial discrimination, xenophobia and related forms of intolerance: follow-up to and implementation of the Durban Declaration and Programme of Action"
+    },
+    "appearance-d937c705096935ec1b38b382": {
+      "clusterId": "2",
+      "label": "HRC 62 · Follow-up to and implementation of the Vienna Declaration and Programme of Action"
+    },
+    "appearance-c9531575ab291915748725b9": {
+      "clusterId": "1",
+      "label": "HRC 62 · Racism, racial discrimination, xenophobia and related forms of intolerance: follow-up to and implementation of the Durban Declaration and Programme of Action"
+    },
+    "appearance-e15aafe7ea3e847df777f929": {
+      "clusterId": "2",
+      "label": "HRC 63 · Follow-up to and implementation of the Vienna Declaration and Programme of Action"
+    },
+    "appearance-20655702c553aa4b39ef84f8": {
+      "clusterId": "1",
+      "label": "HRC 63 · Racism, racial discrimination, xenophobia and related forms of intolerance: follow-up to and implementation of the Durban Declaration and Programme of Action"
+    },
+    "appearance-8509a3931086a84e041fa5df": {
+      "clusterId": "19",
+      "label": "SC 2025 · Consideration of the draft report of the Security Council to the General Assembly"
+    },
+    "appearance-e037407e98ab3db35e4a8f28": {
+      "clusterId": "20",
+      "label": "SC 2025 · The situation in Cyprus"
+    },
+    "appearance-19c16358a6b03b64df87ecef": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-18ebb5be7ac8a885d85f76c5": {
+      "clusterId": "28",
+      "label": "SC 2025 · United Nations peacekeeping operations"
+    },
+    "appearance-1339b9b65eb1ae80b5dc5d8e": {
+      "clusterId": "45",
+      "label": "SC 2025 · The situation in Afghanistan"
+    },
+    "appearance-7ee1fb1d839125d7589d1511": {
+      "clusterId": "41",
+      "label": "SC 2025 · International Residual Mechanism for Criminal Tribunals"
+    },
+    "appearance-5c7654da45814a3a12f2d4fe": {
+      "clusterId": "27",
+      "label": "SC 2025 · Briefing by the President of the International Court of Justice"
+    },
+    "appearance-94a373f7b437e55d8757c173": {
+      "clusterId": "15",
+      "label": "SC 2025 · Briefing by the United Nations High Commissioner for Refugees"
+    },
+    "appearance-9e2dcf177c131519a5cd7574": {
+      "clusterId": "42",
+      "label": "SC 2025 · Peacebuilding and sustaining peace"
+    },
+    "appearance-7135150e139f225371ae5d37": {
+      "clusterId": "19",
+      "label": "SC 2025 · Consideration of the draft report of the Security Council to the General Assembly"
+    },
+    "appearance-f85d61e4802afd85a26584e4": {
+      "clusterId": "20",
+      "label": "SC 2025 · The situation in Cyprus"
+    },
+    "appearance-af538fd521dc67a94d02781f": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-a36609517312e56222342ead": {
+      "clusterId": "28",
+      "label": "SC 2025 · United Nations peacekeeping operations"
+    },
+    "appearance-b5965a6729e317c7f70cb5bf": {
+      "clusterId": "45",
+      "label": "SC 2025 · The situation in Afghanistan"
+    },
+    "appearance-8612d26fc62ffb9cdbb40c29": {
+      "clusterId": "41",
+      "label": "SC 2025 · International Residual Mechanism for Criminal Tribunals"
+    },
+    "appearance-a692662e6cd1f2d1d0b3ac68": {
+      "clusterId": "27",
+      "label": "SC 2025 · Briefing by the President of the International Court of Justice"
+    },
+    "appearance-780e0823b0d516db42a4197b": {
+      "clusterId": "15",
+      "label": "SC 2025 · Briefing by the United Nations High Commissioner for Refugees"
+    },
+    "appearance-ca6fa70c2d6809a0c8bd1279": {
+      "clusterId": "42",
+      "label": "SC 2025 · Peacebuilding and sustaining peace"
+    },
+    "appearance-642da9fe0dbf9f2a1083a055": {
+      "clusterId": "19",
+      "label": "SC 2025 · Consideration of the draft report of the Security Council to the General Assembly"
+    },
+    "appearance-feab07f06f218d44183be96a": {
+      "clusterId": "20",
+      "label": "SC 2025 · The situation in Cyprus"
+    },
+    "appearance-2ca5c339f43ace1bf391a7fd": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-f52f648bdf5355ebdbbfdb04": {
+      "clusterId": "28",
+      "label": "SC 2025 · United Nations peacekeeping operations"
+    },
+    "appearance-ad1f4fba8020d374ee1fcaac": {
+      "clusterId": "45",
+      "label": "SC 2025 · The situation in Afghanistan"
+    },
+    "appearance-da7607bdc9577ee5937ba41c": {
+      "clusterId": "41",
+      "label": "SC 2025 · International Residual Mechanism for Criminal Tribunals"
+    },
+    "appearance-027957d4bec073a0d1d5b76d": {
+      "clusterId": "27",
+      "label": "SC 2025 · Briefing by the President of the International Court of Justice"
+    },
+    "appearance-9761ef6b65fefe0e5ab5ff12": {
+      "clusterId": "15",
+      "label": "SC 2025 · Briefing by the United Nations High Commissioner for Refugees"
+    },
+    "appearance-45fa0967cbb8b429d453ee59": {
+      "clusterId": "42",
+      "label": "SC 2025 · Peacebuilding and sustaining peace"
+    },
+    "appearance-5e33e6aa0ad401e57f5bb791": {
+      "clusterId": "19",
+      "label": "SC 2025 · Consideration of the draft report of the Security Council to the General Assembly"
+    },
+    "appearance-34bcebb5195c011f9d23e112": {
+      "clusterId": "20",
+      "label": "SC 2025 · The situation in Cyprus"
+    },
+    "appearance-0e8d50961a0216bac5f2a604": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-c820ecb0a0fdc78e90bfaa54": {
+      "clusterId": "28",
+      "label": "SC 2025 · United Nations peacekeeping operations"
+    },
+    "appearance-f5c5c14ba3568077e303d6aa": {
+      "clusterId": "45",
+      "label": "SC 2025 · The situation in Afghanistan"
+    },
+    "appearance-deadd5a737da4b6ba9fd428d": {
+      "clusterId": "41",
+      "label": "SC 2025 · International Residual Mechanism for Criminal Tribunals"
+    },
+    "appearance-fb07021e1768ba8d8f84b633": {
+      "clusterId": "27",
+      "label": "SC 2025 · Briefing by the President of the International Court of Justice"
+    },
+    "appearance-fa09583b88fd6bed8863533c": {
+      "clusterId": "15",
+      "label": "SC 2025 · Briefing by the United Nations High Commissioner for Refugees"
+    },
+    "appearance-cb80d8199e7940eac12543b9": {
+      "clusterId": "42",
+      "label": "SC 2025 · Peacebuilding and sustaining peace"
+    },
+    "appearance-b09a753dbcce5cf333a37409": {
+      "clusterId": "19",
+      "label": "SC 2025 · Consideration of the draft report of the Security Council to the General Assembly"
+    },
+    "appearance-cb4ba95993da310e8c50c47b": {
+      "clusterId": "20",
+      "label": "SC 2025 · The situation in Cyprus"
+    },
+    "appearance-0301bb75eda7860e16ab63bd": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-927688823b8dd2adb11faa7a": {
+      "clusterId": "28",
+      "label": "SC 2025 · United Nations peacekeeping operations"
+    },
+    "appearance-09c6f7606de8025bf7621d3a": {
+      "clusterId": "45",
+      "label": "SC 2025 · The situation in Afghanistan"
+    },
+    "appearance-d9dfdd4fff53f140656eac47": {
+      "clusterId": "41",
+      "label": "SC 2025 · International Residual Mechanism for Criminal Tribunals"
+    },
+    "appearance-d7c5d9316ee6e48e7b8e3314": {
+      "clusterId": "27",
+      "label": "SC 2025 · Briefing by the President of the International Court of Justice"
+    },
+    "appearance-54b9f7d5220bd858e3678494": {
+      "clusterId": "15",
+      "label": "SC 2025 · Briefing by the United Nations High Commissioner for Refugees"
+    },
+    "appearance-c15035752c5a0674863b059d": {
+      "clusterId": "42",
+      "label": "SC 2025 · Peacebuilding and sustaining peace"
+    },
+    "appearance-6007eeb26e7e0176472dda8a": {
+      "clusterId": "19",
+      "label": "SC 2025 · Consideration of the draft report of the Security Council to the General Assembly"
+    },
+    "appearance-e0ade929f02545705661d1c6": {
+      "clusterId": "20",
+      "label": "SC 2025 · The situation in Cyprus"
+    },
+    "appearance-e9ae30c0ac68256404b69fc6": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-42ab9720df65733d82f17430": {
+      "clusterId": "28",
+      "label": "SC 2025 · United Nations peacekeeping operations"
+    },
+    "appearance-c20241465c36982b62f651d0": {
+      "clusterId": "45",
+      "label": "SC 2025 · The situation in Afghanistan"
+    },
+    "appearance-60e65b03e36ca80a89b92e67": {
+      "clusterId": "41",
+      "label": "SC 2025 · International Residual Mechanism for Criminal Tribunals"
+    },
+    "appearance-65d6a3f02c56347da32f679c": {
+      "clusterId": "27",
+      "label": "SC 2025 · Briefing by the President of the International Court of Justice"
+    },
+    "appearance-12ab39e80151c3f180fa7681": {
+      "clusterId": "15",
+      "label": "SC 2025 · Briefing by the United Nations High Commissioner for Refugees"
+    },
+    "appearance-94d861f696446a8af485d93d": {
+      "clusterId": "42",
+      "label": "SC 2025 · Peacebuilding and sustaining peace"
+    },
+    "appearance-3cee4c0b77448562196aef6f": {
+      "clusterId": "19",
+      "label": "SC 2025 · Consideration of the draft report of the Security Council to the General Assembly"
+    },
+    "appearance-fc328d29ad645dfe990047e1": {
+      "clusterId": "20",
+      "label": "SC 2025 · The situation in Cyprus"
+    },
+    "appearance-5dfbede1573ae4aa28103785": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-48c2bf8bc9ac736b63f0336c": {
+      "clusterId": "28",
+      "label": "SC 2025 · United Nations peacekeeping operations"
+    },
+    "appearance-0d6f984fb3014bca23bf5bab": {
+      "clusterId": "45",
+      "label": "SC 2025 · The situation in Afghanistan"
+    },
+    "appearance-1cf1b94377eba77825610bd7": {
+      "clusterId": "41",
+      "label": "SC 2025 · International Residual Mechanism for Criminal Tribunals"
+    },
+    "appearance-6dfe063def3ffd5eca4a894a": {
+      "clusterId": "27",
+      "label": "SC 2025 · Briefing by the President of the International Court of Justice"
+    },
+    "appearance-096ba636088cd927d0176431": {
+      "clusterId": "15",
+      "label": "SC 2025 · Briefing by the United Nations High Commissioner for Refugees"
+    },
+    "appearance-eeea58d16103a598d60c98e2": {
+      "clusterId": "42",
+      "label": "SC 2025 · Peacebuilding and sustaining peace"
+    },
+    "appearance-3ffb15d26896374c906d2e92": {
+      "clusterId": "19",
+      "label": "SC 2025 · Consideration of the draft report of the Security Council to the General Assembly"
+    },
+    "appearance-bd71e193b08610d2884f5b9a": {
+      "clusterId": "20",
+      "label": "SC 2025 · The situation in Cyprus"
+    },
+    "appearance-39cccaacf1bb1676fa3d5823": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-d2b60b6bdcb19350222320fa": {
+      "clusterId": "28",
+      "label": "SC 2025 · United Nations peacekeeping operations"
+    },
+    "appearance-09eda4511d3a7f8c181525ed": {
+      "clusterId": "45",
+      "label": "SC 2025 · The situation in Afghanistan"
+    },
+    "appearance-6c643ac2a81027e1791bca03": {
+      "clusterId": "41",
+      "label": "SC 2025 · International Residual Mechanism for Criminal Tribunals"
+    },
+    "appearance-66d046feee27ee8b56a2b62f": {
+      "clusterId": "27",
+      "label": "SC 2025 · Briefing by the President of the International Court of Justice"
+    },
+    "appearance-15c1f04fb7de2f4d290641ba": {
+      "clusterId": "15",
+      "label": "SC 2025 · Briefing by the United Nations High Commissioner for Refugees"
+    },
+    "appearance-cbd690e27332689ed50975dd": {
+      "clusterId": "42",
+      "label": "SC 2025 · Peacebuilding and sustaining peace"
+    },
+    "appearance-5f74870912b6712295b2b2e6": {
+      "clusterId": "19",
+      "label": "SC 2025 · Consideration of the draft report of the Security Council to the General Assembly"
+    },
+    "appearance-a8c000299c82dda9208c8e33": {
+      "clusterId": "20",
+      "label": "SC 2025 · The situation in Cyprus"
+    },
+    "appearance-7978716aa303cda17650f71a": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-25b056cd3ceac5282df0f5ca": {
+      "clusterId": "28",
+      "label": "SC 2025 · United Nations peacekeeping operations"
+    },
+    "appearance-41a5c11a72ded067585f05c4": {
+      "clusterId": "45",
+      "label": "SC 2025 · The situation in Afghanistan"
+    },
+    "appearance-3f15703ef96e3bcc5b11b4be": {
+      "clusterId": "41",
+      "label": "SC 2025 · International Residual Mechanism for Criminal Tribunals"
+    },
+    "appearance-9b8a988d64f3989d06fbf7ea": {
+      "clusterId": "27",
+      "label": "SC 2025 · Briefing by the President of the International Court of Justice"
+    },
+    "appearance-f909228f2acd9b7ee0ff2c56": {
+      "clusterId": "15",
+      "label": "SC 2025 · Briefing by the United Nations High Commissioner for Refugees"
+    },
+    "appearance-078814c082ec5e3c4509ad9b": {
+      "clusterId": "42",
+      "label": "SC 2025 · Peacebuilding and sustaining peace"
+    },
+    "appearance-e1dd4052d80f989d32b16886": {
+      "clusterId": "19",
+      "label": "SC 2025 · Consideration of the draft report of the Security Council to the General Assembly"
+    },
+    "appearance-d7ecc60c832aeb43e85def48": {
+      "clusterId": "20",
+      "label": "SC 2025 · The situation in Cyprus"
+    },
+    "appearance-2566059b58e2653f4a8f134c": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-997f9edbe3859a89a490731f": {
+      "clusterId": "28",
+      "label": "SC 2025 · United Nations peacekeeping operations"
+    },
+    "appearance-65bdfa5b38adaa2b8698c80b": {
+      "clusterId": "45",
+      "label": "SC 2025 · The situation in Afghanistan"
+    },
+    "appearance-e4538b9a5fb5661f941840ea": {
+      "clusterId": "41",
+      "label": "SC 2025 · International Residual Mechanism for Criminal Tribunals"
+    },
+    "appearance-a8b22608236524e115ecfca2": {
+      "clusterId": "27",
+      "label": "SC 2025 · Briefing by the President of the International Court of Justice"
+    },
+    "appearance-8a4c93618c287ab7501c7b20": {
+      "clusterId": "15",
+      "label": "SC 2025 · Briefing by the United Nations High Commissioner for Refugees"
+    },
+    "appearance-2bd0a386afe4965d682f3404": {
+      "clusterId": "42",
+      "label": "SC 2025 · Peacebuilding and sustaining peace"
+    },
+    "appearance-2ca0ef5b37fbab795dc3b4d0": {
+      "clusterId": "19",
+      "label": "SC 2025 · Consideration of the draft report of the Security Council to the General Assembly"
+    },
+    "appearance-27eedcb6d1d3577d0219915b": {
+      "clusterId": "20",
+      "label": "SC 2025 · The situation in Cyprus"
+    },
+    "appearance-6caf3de8f7368f95111f676e": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-dda89efe00f6cd0a66fd3abb": {
+      "clusterId": "28",
+      "label": "SC 2025 · United Nations peacekeeping operations"
+    },
+    "appearance-79ac3d09857e22e436249779": {
+      "clusterId": "45",
+      "label": "SC 2025 · The situation in Afghanistan"
+    },
+    "appearance-acebc9d3fc4836f01b387fb7": {
+      "clusterId": "41",
+      "label": "SC 2025 · International Residual Mechanism for Criminal Tribunals"
+    },
+    "appearance-8762666f5434f8774c05cd7d": {
+      "clusterId": "27",
+      "label": "SC 2025 · Briefing by the President of the International Court of Justice"
+    },
+    "appearance-f7a2f815024e8115b5ea2fb1": {
+      "clusterId": "15",
+      "label": "SC 2025 · Briefing by the United Nations High Commissioner for Refugees"
+    },
+    "appearance-301b4a96ef1fa7d6e07979ef": {
+      "clusterId": "42",
+      "label": "SC 2025 · Peacebuilding and sustaining peace"
+    },
+    "appearance-a8a9b9ea2e03187ddb3ce4e3": {
+      "clusterId": "19",
+      "label": "SC 2025 · Consideration of the draft report of the Security Council to the General Assembly"
+    },
+    "appearance-9021959afc0511dbe0a7f8e9": {
+      "clusterId": "20",
+      "label": "SC 2025 · The situation in Cyprus"
+    },
+    "appearance-6cbffd287acf24ea96490074": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-27a0450cad5e66060018c386": {
+      "clusterId": "28",
+      "label": "SC 2025 · United Nations peacekeeping operations"
+    },
+    "appearance-533cfe5229e126932134472c": {
+      "clusterId": "45",
+      "label": "SC 2025 · The situation in Afghanistan"
+    },
+    "appearance-390af9a170b281679d90600a": {
+      "clusterId": "41",
+      "label": "SC 2025 · International Residual Mechanism for Criminal Tribunals"
+    },
+    "appearance-7c42d6bf39f5ef5c9a194cf5": {
+      "clusterId": "27",
+      "label": "SC 2025 · Briefing by the President of the International Court of Justice"
+    },
+    "appearance-0bd8e555e560476c4238be7f": {
+      "clusterId": "15",
+      "label": "SC 2025 · Briefing by the United Nations High Commissioner for Refugees"
+    },
+    "appearance-17c8954194fa76fd53ab4dd8": {
+      "clusterId": "42",
+      "label": "SC 2025 · Peacebuilding and sustaining peace"
+    },
+    "appearance-253b33072c15c0e1003bb2fa": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-7141b9bdc29542e84b9a8bd9": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-7a56139c253ef7861a9d33fa": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-36ddaaadf4b9fe849c28f4a6": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-34aa8af9ae501fd1e9ae9dab": {
+      "clusterId": "42",
+      "label": "SC 2025 · Peacebuilding and sustaining peace"
+    },
+    "appearance-f752ae64590270730d6cccb6": {
+      "clusterId": "20",
+      "label": "SC 2025 · The situation in Cyprus"
+    },
+    "appearance-8655a4a0c10920ead81c8287": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-fe574c4c02f9f73e0e08409f": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-258ebc63f8e922b007eea3c8": {
+      "clusterId": "28",
+      "label": "SC 2025 · United Nations peacekeeping operations"
+    },
+    "appearance-0982a3607295cf545ca79741": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-78ff0e4af1843a59fefea663": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-76b575f5a42bfc54670821b7": {
+      "clusterId": "45",
+      "label": "SC 2025 · The situation in Afghanistan"
+    },
+    "appearance-e70b47a5afe71f581ccc0643": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-93f24db3c6271cb6c20dce00": {
+      "clusterId": "45",
+      "label": "SC 2025 · The situation in Afghanistan"
+    },
+    "appearance-b0f44b4748cb309c0a416315": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-0f3eab073fb17cf4e7391e5f": {
+      "clusterId": "28",
+      "label": "SC 2025 · United Nations peacekeeping operations"
+    },
+    "appearance-d3e5127e1226e09d69ba7921": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-a2c92db74097a982e7dca3c8": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-7ea7949e6c29f98f16a596b9": {
+      "clusterId": "15",
+      "label": "SC 2025 · Briefing by the United Nations High Commissioner for Refugees"
+    },
+    "appearance-296da1d5c9be25bb90ceb6d7": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-2b5ac6b5b23887837602e3fb": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-3f0cb1232afc090068e656bb": {
+      "clusterId": "18",
+      "label": "SC 2025 · Election of a member of the International Court of Justice"
+    },
+    "appearance-2efbf10b3126b2e6a0f27c4b": {
+      "clusterId": "19",
+      "label": "SC 2025 · Consideration of the draft report of the Security Council to the General Assembly"
+    },
+    "appearance-3c399b8ec1170f8c8631f59a": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-8222efc01cb122277e9a08b6": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-59c9c56ea71af59502c4ea9c": {
+      "clusterId": "41",
+      "label": "SC 2025 · International Residual Mechanism for Criminal Tribunals"
+    },
+    "appearance-40238ee1b378ff61a154330b": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-e24679da4c67d24d8125067b": {
+      "clusterId": "45",
+      "label": "SC 2025 · The situation in Afghanistan"
+    },
+    "appearance-032aa3e9e1fc9eb01bb8fcac": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-390eb93e6e6824aa6af854dc": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-0756be75542c282dd068b334": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-55fe948474b4fb5cfda8edcb": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-69f89aa4edabeeeee8af5e45": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-24ac6c849876cd99773c3749": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-3409e268cd01ed1f5184f119": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-0b674742c5e81427c85c283e": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-06fcb0a1938487d751f17312": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-61996b2c45ff052cd02f8434": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-a9645cb98f3d81ea99d4382f": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-a10a830865ccbdf03bb2fd13": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-dc4ed95d853d05c86b4ec53c": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-f9fc5491ccd02847334a3e2d": {
+      "clusterId": "45",
+      "label": "SC 2025 · The situation in Afghanistan"
+    },
+    "appearance-d6e024524b48096446d30e46": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-e4046216bb8213571be6cde6": {
+      "clusterId": "27",
+      "label": "SC 2025 · Briefing by the President of the International Court of Justice"
+    },
+    "appearance-ae2ae752fafc7f2f545619cd": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-e9d06ffce8239ac7908622ae": {
+      "clusterId": "18",
+      "label": "SC 2025 · Election of a member of the International Court of Justice"
+    },
+    "appearance-b0002e5073ffeabac610bbeb": {
+      "clusterId": "18",
+      "label": "SC 2025 · Election of a member of the International Court of Justice"
+    },
+    "appearance-134127137f982b564e507138": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-6b4f6b5b09701f5edcb2215f": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-3557ce73e9fb86644e1e5e96": {
+      "clusterId": "42",
+      "label": "SC 2025 · Peacebuilding and sustaining peace"
+    },
+    "appearance-4e516239c0171313388529c4": {
+      "clusterId": "45",
+      "label": "SC 2025 · The situation in Afghanistan"
+    },
+    "appearance-93a032bb22653036aa271eeb": {
+      "clusterId": "41",
+      "label": "SC 2025 · International Residual Mechanism for Criminal Tribunals"
+    },
+    "appearance-cb00af1acb3a75b996d3c602": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    },
+    "appearance-dba3665b197901a63df1e5fa": {
+      "clusterId": "46",
+      "label": "SC 2025 · The situation in the Middle East"
+    }
+  }
+}

@@ -1,0 +1,139 @@
+import { Card } from '@/components/ui/card'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+import { Skeleton } from '@/components/ui/skeleton'
+import { cn } from '@/lib/utils'
+import { LucideIcon } from 'lucide-react'
+import { ReactNode } from 'react'
+
+interface PreviewItem {
+  name: string
+  count: number
+}
+
+interface DataCardProps {
+  title: string
+  value: string | number
+  icon: LucideIcon
+  description: string
+  isLoading?: boolean
+  isOpen?: boolean
+  onOpenChange?: (open: boolean) => void
+  previewItems?: PreviewItem[]
+  customPreview?: ReactNode
+  totalItems?: number
+  children?: ReactNode
+  popoverClassName?: string
+}
+
+// Abbreviations applied only to the card-face preview labels (not the popover,
+// which renders the full names via `children`) to keep the mini-bar rows on one line.
+const PREVIEW_LABEL_ABBREVIATIONS: Record<string, string> = {
+  'Ministerial Declarations': 'Min. Decl.',
+}
+
+function MiniBar({ item, maxCount }: { item: PreviewItem; maxCount: number }) {
+  const barWidth = maxCount > 0 ? (item.count / maxCount) * 100 : 0
+  const label = PREVIEW_LABEL_ABBREVIATIONS[item.name] ?? item.name
+
+  return (
+    <>
+      <div className="self-center text-right text-sm whitespace-nowrap text-foreground">
+        {label}
+      </div>
+      <div className="relative h-1.5 self-center rounded-full bg-accent">
+        <div
+          className="h-1.5 rounded-full bg-un-blue/50"
+          style={{ width: `${Math.max(barWidth, 4)}%` }}
+        />
+      </div>
+      <div className="self-center text-right text-sm tabular-nums text-foreground">
+        {item.count.toLocaleString()}
+      </div>
+    </>
+  )
+}
+
+function formatValue(value: string | number, isLoading: boolean) {
+  if (isLoading) return <Skeleton className="h-8 w-20" />
+  if (typeof value === 'number' && value > 0) return value.toLocaleString()
+  return value
+}
+
+export function DataCard({
+  title,
+  value,
+  icon: Icon,
+  description,
+  isLoading = false,
+  isOpen = false,
+  onOpenChange,
+  previewItems,
+  customPreview,
+  totalItems,
+  children,
+  popoverClassName,
+}: DataCardProps) {
+  const previewSlice = previewItems?.slice(0, 4)
+  const maxCount = previewSlice
+    ? Math.max(...previewSlice.map((d) => d.count))
+    : 0
+  const remaining =
+    totalItems !== undefined && previewSlice
+      ? totalItems - previewSlice.length
+      : 0
+
+  return (
+    <Popover open={isOpen} onOpenChange={onOpenChange}>
+      <PopoverTrigger asChild>
+        <Card
+          className={cn(
+            'relative h-full cursor-pointer border-0 bg-accent px-4 py-3 shadow-none transition-all hover:scale-[1.02]'
+          )}
+        >
+          <div className="flex items-center gap-2">
+            <Icon className="size-4 shrink-0 text-un-blue-text" />
+            <span className="text-base leading-tight font-medium text-un-blue-text">
+              {title}
+            </span>
+            <span className="ml-auto text-2xl leading-tight font-bold tabular-nums text-foreground">
+              {formatValue(value, isLoading)}
+            </span>
+          </div>
+          {previewSlice && previewSlice.length > 0 && (
+            <div className="mt-2 grid grid-cols-[auto_1fr_auto] gap-x-1.5 gap-y-0.5">
+              {previewSlice.map((item, i) => (
+                <MiniBar key={i} item={item} maxCount={maxCount} />
+              ))}
+              {remaining > 0 && (
+                <div className="text-right text-sm whitespace-nowrap text-foreground">
+                  +{remaining} more
+                </div>
+              )}
+            </div>
+          )}
+          {customPreview}
+        </Card>
+      </PopoverTrigger>
+      <PopoverContent
+        className={cn(
+          'max-h-[60vh] overflow-y-auto',
+          popoverClassName || 'w-[calc(100vw-2rem)] sm:w-96'
+        )}
+        side="bottom"
+        align="start"
+      >
+        <div className="space-y-3">
+          <div>
+            <p className="text-sm font-medium">{title}</p>
+            <p className="text-xs text-muted-foreground">{description}</p>
+          </div>
+          {children}
+        </div>
+      </PopoverContent>
+    </Popover>
+  )
+}
