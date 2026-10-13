@@ -149,13 +149,13 @@ export function EntitiesProgrammesTable({
             <TableRow>
               <TableHead className="h-8 px-2">{text.location}</TableHead>
               <TableHead
-                className="h-8 w-24 px-1 text-left sm:w-37 sm:px-2"
+                className="h-8 w-24 px-1 text-right sm:w-37 sm:px-2"
                 title={text.coverage}
               >
                 {text.documents}
               </TableHead>
               <TableHead
-                className="h-8 w-28 pr-1 pl-3 text-left sm:w-43 sm:pr-2 sm:pl-4"
+                className="h-8 w-28 pr-1 pl-3 text-right sm:w-43 sm:pr-2 sm:pl-4"
                 title={text.moneyNote}
               >
                 {text.expenditure}

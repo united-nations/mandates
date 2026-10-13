@@ -7,8 +7,8 @@ export const explainerTexts = {
   secretariatNavigation: {
     label: 'Secretariat navigation',
     mandateSources: 'Mandate sources',
-    entitiesAndPrograms: 'Entities and programmes',
-    agendaItems: 'Agenda items',
+    entitiesAndPrograms: 'UN entities and programmes',
+    agendaItems: 'Intergovernmental agendas',
     reports: 'Reports',
   },
   secretariatReports: {

@@ -13,12 +13,11 @@ import { useFilters } from '@/contexts/FilterContext'
 const text = explainerTexts.secretariatNavigation
 const items = [
   { href: '/secretariat', label: text.mandateSources },
+  { href: '/secretariat/agenda-items', label: text.agendaItems },
   {
     href: '/secretariat/entities-and-programs',
     label: text.entitiesAndPrograms,
   },
-  { href: '/secretariat/agenda-items', label: text.agendaItems },
-  { href: '/secretariat/reports', label: text.reports },
 ]
 
 export function SecretariatNavigation() {
