@@ -172,6 +172,8 @@ function CompactPath({ location }: { location: BudgetLocation }) {
 }
 
 function FullPath({ location }: { location: BudgetLocation }) {
+  const directlyCitesProgramme =
+    !location.subprogramme || location.subprogramme === 'All Subprogrammes'
   const sameTitle =
     location.programme_title !== null &&
     location.section_title !== null &&
@@ -193,10 +195,10 @@ function FullPath({ location }: { location: BudgetLocation }) {
           {location.section && (
             <div>
               Section {location.section}
-              {location.programme !== null &&
+              {directlyCitesProgramme && location.programme !== null &&
                 ` · Programme ${location.programme}`}
               {location.section_title && ` · ${location.section_title}`}
-              {location.programme_title &&
+              {directlyCitesProgramme && location.programme_title &&
                 !sameTitle &&
                 ` / ${location.programme_title}`}
             </div>

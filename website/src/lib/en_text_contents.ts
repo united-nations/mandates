@@ -238,7 +238,9 @@ export const explainerTexts = {
   entityExpenditure: {
     heading: 'Entity expenditure',
     loading: 'Loading expenditure…',
-    note: 'Historical expenditure covers the entity or named subprogramme, not this mandate. Financial reporting periods appear in the tooltips and may differ from the citation budget cycle.',
+    note:
+      'Historical expenditure covers the complete programme or subprogramme, not this mandate.',
+    overview: 'For an overview of all UN entities and programmes, see',
     period: 'Reporting period',
     source: 'Source data',
     detailHeading: 'Historical expenditure (USD)',
@@ -286,6 +288,7 @@ export const explainerTexts = {
         'Paragraph content is machine-extracted from UN documents. For authoritative content, please refer to the official UN document.',
     },
     citationCounts: {
+      programmeTitle: 'Title',
       title: 'Who cites this mandate in the budget?',
       location: 'Entity',
       programme: '(Sub-)Programme',

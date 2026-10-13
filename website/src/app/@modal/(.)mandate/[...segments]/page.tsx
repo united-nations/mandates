@@ -65,14 +65,26 @@ export default async function ModalMandatePage({
             series={series}
           />
         )}
-        <Suspense fallback={<CitationCounts mandate={mandate} entities={entities} budgetVersion={ppbVersion} />}>
-          <CitationCountsWithExpenditure mandate={mandate} entities={entities} budgetVersion={ppbVersion} />
+        <Suspense
+          fallback={
+            <CitationCounts
+              mandate={mandate}
+              entities={entities}
+              budgetVersion={ppbVersion}
+            />
+          }
+        >
+          <CitationCountsWithExpenditure
+            mandate={mandate}
+            entities={entities}
+            budgetVersion={ppbVersion}
+          />
         </Suspense>
+        {sgReports && <MandatedSgReportsBlock block={sgReports} />}
         <MandateTopics
           subjects={mandate.subject_headings ?? []}
           related={related}
         />
-        {sgReports && <MandatedSgReportsBlock block={sgReports} />}
         {/* The document's own text is the expensive part and the last thing
             read, so it must not hold up the four answers above it. Streaming
             it lets everything else paint immediately; the section renders its

@@ -1,9 +1,16 @@
 'use client'
 
 import { Fragment, useMemo, useState } from 'react'
+import Link from 'next/link'
 import { ChevronDown, ChevronUp, CircleArrowRight } from 'lucide-react'
 import { ExpenditureAmount } from '@/components/ExpenditureAmount'
 import { EntityBadge } from '@/components/EntityBadge'
+import {
+  MandateDetailTableColumns,
+  mandateDetailTableClassName,
+  mandateDetailTableHeaderClassName,
+  mandateDetailTableCellClassName,
+} from '@/components/MandateDetailTable'
 import {
   DetailFootnote,
   DetailSectionHeading,
@@ -84,8 +91,10 @@ export function CitationCounts({
     const expenditure = expenditures[id]
     return (
       <>
-        <TableCell className="px-1 py-1 text-xs leading-5 tabular-nums sm:px-2 sm:text-sm">
-          <span className="grid grid-cols-[1rem_minmax(0,1fr)_1rem] items-center gap-1 sm:grid-cols-[3rem_minmax(0,1fr)_1rem]">
+        <TableCell
+          className={`${mandateDetailTableCellClassName} text-right leading-5 tabular-nums`}
+        >
+          <span className="grid grid-cols-[1.5rem_minmax(0,1fr)_1rem] items-center gap-1 @min-[52rem]:grid-cols-[3rem_minmax(0,1fr)_1rem] @min-[52rem]:gap-1.5">
             {count !== null ? (
               <>
                 <MetricBar value={count} maximum={maximumCount} />
@@ -109,10 +118,10 @@ export function CitationCounts({
             </a>
           </span>
         </TableCell>
-        <TableCell className="py-1 pr-1 pl-2 text-xs leading-5 tabular-nums sm:pr-2 sm:pl-4 sm:text-sm">
+        <TableCell className="py-1 pr-0 pl-3 text-right align-baseline leading-5 tabular-nums">
           {financial &&
             (expenditure?.status === 'matched' ? (
-              <span className="grid grid-cols-[1rem_minmax(0,1fr)] items-center gap-1 whitespace-nowrap sm:grid-cols-[3rem_minmax(0,1fr)]">
+              <span className="grid grid-cols-[3rem_4rem] items-center justify-end gap-1.5 whitespace-nowrap">
                 <MetricBar
                   value={expenditure.amount}
                   maximum={maximumExpenditure}
@@ -142,7 +151,7 @@ export function CitationCounts({
     )
   }
   return (
-    <section className="space-y-3">
+    <section className="@container space-y-3">
       <DetailSectionHeading
         hint={`${tree.length} ${tree.length === 1 ? text.entity : text.entities}`}
         howTo={text.howTo}
@@ -150,30 +159,37 @@ export function CitationCounts({
       >
         {text.title}
       </DetailSectionHeading>
-      <Table className="table-fixed">
-        <TableHeader>
+      <Table className={`${mandateDetailTableClassName} min-w-[30rem]`}>
+        <MandateDetailTableColumns budget />
+        <TableHeader className={mandateDetailTableHeaderClassName}>
           <TableRow>
             <TableHead
               style={HEADER_TEXT_STYLE}
-              className="h-8 w-20 px-1 text-left sm:w-28 sm:px-2"
+              className="h-auto px-0 py-1 pr-3 text-left align-top"
             >
               {text.location}
             </TableHead>
             <TableHead
               style={HEADER_TEXT_STYLE}
-              className="h-8 px-1 text-left sm:px-2"
+              className="h-auto px-0 py-1 pr-3 text-left align-top"
             >
               {text.programme}
             </TableHead>
             <TableHead
               style={HEADER_TEXT_STYLE}
-              className="h-8 w-20 px-1 text-left sm:w-32 sm:px-2"
+              className="h-auto px-0 py-1 pr-3 text-left align-top"
+            >
+              {text.programmeTitle}
+            </TableHead>
+            <TableHead
+              style={HEADER_TEXT_STYLE}
+              className="h-auto px-0 py-1 pr-3 text-right align-top"
             >
               {text.mandates}
             </TableHead>
             <TableHead
               style={HEADER_TEXT_STYLE}
-              className="h-8 w-24 pr-1 pl-2 text-left sm:w-36 sm:pr-2 sm:pl-4"
+              className="h-auto px-0 py-1 text-right align-top"
             >
               {text.expenditure}
             </TableHead>
@@ -181,43 +197,66 @@ export function CitationCounts({
         </TableHeader>
         <TableBody>
           {shown.map((entity) => {
+            const showEntityRow =
+              entity.children.length === 0 ||
+              entity.children.some(
+                (child) => citationScope(child.location).subprogramme === null
+              )
             const marked =
               MARK_FOUNDATIONAL_CHIPS_ON_DETAIL_PAGE &&
               isFoundational(entity.entity, mandate.foundational_entities ?? [])
             return (
               <Fragment key={entity.id}>
-                <TableRow>
-                  <TableCell
-                    className="overflow-hidden px-1 py-1 leading-5 sm:px-2"
-                    title={entity.entityLong ?? entity.entity}
-                  >
-                    <div className="flex min-w-0 items-center gap-1.5 whitespace-nowrap">
-                      <EntityBadge
-                        entity={entity.entity}
-                        entityLong={entity.entityLong}
-                        className="font-normal"
-                        truncate
-                      />
-                      {marked && <ChipDot />}
-                    </div>
-                  </TableCell>
-                  <TableCell className="overflow-hidden px-1 py-1 leading-5 sm:px-2">
-                    {entity.programmeLabels.length > 0 && (
-                      <span
-                        className="block truncate font-normal text-black dark:text-white"
-                        title={entity.programmeLabels.join(' · ')}
-                      >
-                        {entity.programmeLabels.join(' · ')}
-                      </span>
+                {showEntityRow && (
+                  <TableRow>
+                    <TableCell
+                      className={`${mandateDetailTableCellClassName} overflow-hidden leading-5`}
+                      title={entity.entityLong ?? entity.entity}
+                    >
+                      <div className="flex min-w-0 items-center gap-1.5 whitespace-nowrap">
+                        <EntityBadge
+                          entity={entity.entity}
+                          entityLong={entity.entityLong}
+                          className="font-normal"
+                          truncate
+                        />
+                        {marked && <ChipDot />}
+                      </div>
+                    </TableCell>
+                    <TableCell
+                      className={`${mandateDetailTableCellClassName} overflow-hidden leading-5`}
+                    >
+                      {entity.programmeEntries.map((entry, index) => (
+                        <span
+                          key={index}
+                          className="block break-words @min-[52rem]:truncate"
+                          title={entry.identifier}
+                        >
+                          {entry.identifier}
+                        </span>
+                      ))}
+                    </TableCell>
+                    <TableCell
+                      className={`${mandateDetailTableCellClassName} overflow-hidden leading-5`}
+                    >
+                      {entity.programmeEntries.map((entry, index) => (
+                        <span
+                          key={index}
+                          className="block truncate"
+                          title={entry.title}
+                        >
+                          {entry.title || '—'}
+                        </span>
+                      ))}
+                    </TableCell>
+                    {metrics(
+                      entity.id,
+                      entity.entityLong ?? entity.entity,
+                      entity.count,
+                      true
                     )}
-                  </TableCell>
-                  {metrics(
-                    entity.id,
-                    entity.entityLong ?? entity.entity,
-                    entity.count,
-                    true
-                  )}
-                </TableRow>
+                  </TableRow>
+                )}
                 {entity.children
                   .filter(
                     (child) =>
@@ -225,13 +264,35 @@ export function CitationCounts({
                   )
                   .map((child) => (
                     <TableRow key={child.id}>
-                      <TableCell className="px-1 py-1 sm:px-2" />
                       <TableCell
-                        className="overflow-hidden px-1 py-1 leading-5 sm:px-2"
-                        title={child.label}
+                        className={`${mandateDetailTableCellClassName} overflow-hidden leading-5`}
                       >
-                        <span className="line-clamp-2 break-words sm:block sm:truncate">
-                          {child.label}
+                        {!showEntityRow && (
+                          <div className="flex min-w-0 items-center gap-1.5 whitespace-nowrap">
+                            <EntityBadge
+                              entity={entity.entity}
+                              entityLong={entity.entityLong}
+                              className="font-normal"
+                              truncate
+                            />
+                            {marked && <ChipDot />}
+                          </div>
+                        )}
+                      </TableCell>
+                      <TableCell
+                        className={`${mandateDetailTableCellClassName} overflow-hidden leading-5`}
+                        title={child.identifier}
+                      >
+                        <span className="block break-words @min-[52rem]:truncate">
+                          {child.identifier}
+                        </span>
+                      </TableCell>
+                      <TableCell
+                        className={`${mandateDetailTableCellClassName} overflow-hidden leading-5`}
+                        title={child.title}
+                      >
+                        <span className="block break-words @min-[52rem]:truncate">
+                          {child.title || '—'}
                         </span>
                       </TableCell>
                       {metrics(
@@ -263,7 +324,15 @@ export function CitationCounts({
         </button>
       )}
       <p className="text-sm text-muted-foreground">
-        {explainerTexts.entityExpenditure.note}
+        {explainerTexts.entityExpenditure.note}{' '}
+        {explainerTexts.entityExpenditure.overview}{' '}
+        <Link
+          href="/secretariat/entities-and-programs"
+          className="text-un-blue-text underline underline-offset-2 hover:text-foreground"
+        >
+          {explainerTexts.secretariatNavigation.entitiesAndPrograms}
+        </Link>
+        .
       </p>
       {MARK_FOUNDATIONAL_CHIPS_ON_DETAIL_PAGE &&
         tree.some((e) =>

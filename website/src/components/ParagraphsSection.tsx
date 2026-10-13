@@ -62,6 +62,8 @@ interface ParagraphsSectionProps {
   error: string | null
   compact?: boolean
   entities?: Entity[]
+  /** Standalone pages scroll beneath the global header; sheets scroll locally. */
+  standalone?: boolean
 }
 
 type ParagraphMandate = NonNullable<Paragraph['mandates']>[number]
@@ -751,6 +753,7 @@ export function ParagraphsSection({
   error,
   compact = false,
   entities,
+  standalone = false,
 }: ParagraphsSectionProps) {
   const footnoteScope = useId()
   const allParagraphs = useMemo(
@@ -3049,7 +3052,14 @@ export function ParagraphsSection({
         {/* Desktop TOC Sidebar - Right side, only for paragraphs section */}
         {!isMobile && !compact && (
           <div className="w-[30%] shrink-0">
-            <div className="sticky top-4 mb-8 rounded-lg bg-white p-4">
+            <div
+              className={cn(
+                'sticky mb-8 rounded-lg bg-white p-4',
+                standalone
+                  ? 'top-[calc(var(--site-header-height,65px)+1rem)] min-[1408px]:top-[calc(var(--site-header-height,48.83px)+1rem)]'
+                  : 'top-4'
+              )}
+            >
               <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold text-foreground">
                 <FileText className="h-4 w-4" />
                 Table of contents

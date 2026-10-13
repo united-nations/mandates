@@ -74,15 +74,28 @@ export default async function MandatePage({
             series={series}
           />
         )}
-        <Suspense fallback={<CitationCounts mandate={mandate} entities={entities} budgetVersion={ppbVersion} />}>
-          <CitationCountsWithExpenditure mandate={mandate} entities={entities} budgetVersion={ppbVersion} />
+        <Suspense
+          fallback={
+            <CitationCounts
+              mandate={mandate}
+              entities={entities}
+              budgetVersion={ppbVersion}
+            />
+          }
+        >
+          <CitationCountsWithExpenditure
+            mandate={mandate}
+            entities={entities}
+            budgetVersion={ppbVersion}
+          />
         </Suspense>
+        {sgReports && <MandatedSgReportsBlock block={sgReports} />}
         <MandateTopics
           subjects={mandate.subject_headings ?? []}
           related={related}
         />
-        {sgReports && <MandatedSgReportsBlock block={sgReports} />}
         <ParagraphsSection
+          standalone
           paragraphs={paragraphs}
           sourceUrl={mandate.link}
           documentSymbol={documentSymbol}
