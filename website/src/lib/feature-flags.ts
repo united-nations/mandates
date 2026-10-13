@@ -47,14 +47,16 @@ export const SHOW_MANDATED_SG_REPORTS: boolean = true
  *   resolution (lib/data/sg-report-links.ts, MandateSgReports);
  * - 'page_one': reports that state on their own first pages that they were
  *   submitted under it, from the accepted page-one run
- *   (lib/data/sg-report-page-one-links.ts, MandatePageOneSgReports).
+ *   (lib/data/sg-report-page-one-links.ts, MandatePageOneSgReports);
+ * - 'union': both, one row per report with the source(s) that found it
+ *   (lib/sg-report-union.ts, MandateUnionSgReports). The union is for
+ *   display only; each source is still read by its own function.
  *
- * One source at a time. Read only by
- * getMandatedSgReports (lib/data/mandated-sg-reports.ts); switching back is
- * this one value, and both paths stay compiled.
+ * Read only by getMandatedSgReports (lib/data/mandated-sg-reports.ts);
+ * changing source is this one value, and every path stays compiled.
  */
-export const MANDATED_SG_REPORTS_SOURCE: 'catalogue_notes' | 'page_one' =
-  'page_one'
+export const MANDATED_SG_REPORTS_SOURCE:
+  'catalogue_notes' | 'page_one' | 'union' = 'union'
 
 /** Group the focal point directory by the entity classification from its source. */
 export const SHOW_ENTITY_CLASSIFICATION: boolean = true

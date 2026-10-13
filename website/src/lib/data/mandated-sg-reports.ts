@@ -6,6 +6,7 @@
  */
 
 import { MANDATED_SG_REPORTS_SOURCE } from '../feature-flags'
+import { unionSgReports, type UnionSgReports } from '../sg-report-union'
 import {
   getSgReportsMandatedByResolution,
   type MandatedSgReport,
@@ -18,6 +19,7 @@ import {
 export type MandatedSgReports =
   | { source: 'catalogue_notes'; reports: MandatedSgReport[] }
   | { source: 'page_one'; data: PageOneSgReports }
+  | { source: 'union'; data: UnionSgReports }
 
 export async function getMandatedSgReports(
   pageSymbol: string
@@ -33,5 +35,12 @@ export async function getMandatedSgReports(
         source: 'page_one',
         data: await getSgReportsStatingResolution(pageSymbol),
       }
+    case 'union': {
+      const [pageOne, catalogue] = await Promise.all([
+        getSgReportsStatingResolution(pageSymbol),
+        getSgReportsMandatedByResolution(pageSymbol),
+      ])
+      return { source: 'union', data: unionSgReports(pageOne, catalogue) }
+    }
   }
 }
