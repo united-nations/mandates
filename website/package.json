@@ -48,7 +48,7 @@
     "@sentry/nextjs": "^10.73.0",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/pg": "^8.23.1",
-    "@un-eosg/ui": "github:UN-EOSG-Analytics/ui#26cd9c918b66f3d6b0d20f8ce35e0a77a2bb6ba7",
+    "@un-eosg/ui": "github:UN-EOSG-Analytics/ui#b8b5463aefcb46fd5f3f544e91cc8c1b476ee7d9",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",

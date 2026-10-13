@@ -122,6 +122,7 @@ export function EntitiesProgrammesTable({
             searchPlaceholder={text.searchClusters}
             clearSearchLabel={text.clearClusterSearch}
             noResultsLabel={text.noClusterOptions}
+            footer={<p>{text.clusterDisclaimer}</p>}
           />
         )}
         <div className="w-64 max-w-full">

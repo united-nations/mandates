@@ -13,6 +13,7 @@ import {
   AgendaCountSkeleton,
 } from '@/components/AgendaCountLoading'
 import { RelatedItemsCell } from '@/components/RelatedItemsCell'
+import { DisclosurePopover } from '@/components/ui/disclosure-popover'
 import { SegmentedControl } from '@un-eosg/ui/components/segmented-control'
 import { YearSlider } from '@un-eosg/ui/components/year-slider'
 import { SearchInput } from '@un-eosg/ui/components/search-input'
@@ -269,7 +270,15 @@ export function AgendaItemsView({ data, mainCounts, relatedCounts }: Props) {
           {isSc && data.status === 'ready' && (
             <p className="text-sm text-muted-foreground">
               {text.scExplanation.replace('{year}', data.session)}
-              {data.dataCutoff && <> {' '}{(data.coverage === 'partial' ? text.scCoveragePartial : text.scCoverageComplete).replace('{date}', data.dataCutoff)}</>}
+              {data.dataCutoff && (
+                <>
+                  {' '}
+                  {(data.coverage === 'partial'
+                    ? text.scCoveragePartial
+                    : text.scCoverageComplete
+                  ).replace('{date}', data.dataCutoff)}
+                </>
+              )}
             </p>
           )}
           <Table className="table-fixed">
@@ -285,7 +294,14 @@ export function AgendaItemsView({ data, mainCounts, relatedCounts }: Props) {
                   className="h-8 w-40 ps-2 pe-1"
                   style={{ fontSize: '12px', fontWeight: 500 }}
                 >
-                  {text.relatedItems}
+                  <DisclosurePopover
+                    label={text.relatedItems}
+                    trigger={text.relatedItems}
+                    triggerClassName="cursor-help rounded-sm text-left underline decoration-dotted underline-offset-4 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                    contentClassName="max-w-sm"
+                  >
+                    <p>{text.clusterDisclaimer}</p>
+                  </DisclosurePopover>
                 </TableHead>
                 {isSc && data.status === 'ready' && (
                   <TableHead
