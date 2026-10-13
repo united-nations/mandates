@@ -1,14 +1,18 @@
 import { DetailSectionHeading } from '@/components/MandateDetailUi'
-import { SgReportAnnexChip, SgReportList } from '@/components/SgReportList'
+import {
+  SgReportAnnexChip,
+  SgReportList,
+  SgReportResolutionSymbol,
+} from '@/components/SgReportList'
 import { explainerTexts } from '@/lib/en_text_contents'
 import { annexPositionNote, observedYearSpan } from '@/lib/sg-report-summary'
-import type { SgReportProvenance, UnionSgReports } from '@/lib/sg-report-union'
+import type { UnionSgReports } from '@/lib/sg-report-union'
 
 /**
  * Secretary-General reports submitted under the mandate on view, from both
  * sources at once (lib/sg-report-union.ts): what each report states on its
- * first pages, and the Digital Library catalogue notes. Each row says which
- * source found it, on a quiet line under the title.
+ * first pages, and the Digital Library catalogue notes. Provenance stays in
+ * the data; rows omit repeated source labels to keep the list compact.
  *
  * Same shape as the single-source blocks: heading with the count and the
  * observed year span over the union, the annex note, then the shared report
@@ -16,8 +20,8 @@ import type { SgReportProvenance, UnionSgReports } from '@/lib/sg-report-union'
  * so; they appear on every row the catalogue notes mark, including rows page
  * one also found.
  *
- * With no accepted page-one run the catalogue-notes rows are listed, each
- * labelled, under a line saying the report-stated links are not yet
+ * With no accepted page-one run the catalogue-notes rows are listed under
+ * a line saying the report-stated links are not yet
  * approved. With an accepted run and no row from either source, nothing
  * renders.
  */
@@ -31,12 +35,6 @@ export function MandateUnionSgReports({ data }: { data: UnionSgReports }) {
   const span = observedYearSpan(reports.map((r) => r.date_published))
   const annexCount = reports.filter((r) => r.catalogueAnnexOnly).length
   const annexNote = annexPositionNote(annexCount, n)
-
-  const provenanceLabel: Record<SgReportProvenance, string> = {
-    page_one: text.statedInReport,
-    catalogue_notes: text.perCatalogueNotes,
-    both: `${text.statedInReport} · ${text.perCatalogueNotes}`,
-  }
 
   return (
     <section className="space-y-3">
@@ -70,10 +68,20 @@ export function MandateUnionSgReports({ data }: { data: UnionSgReports }) {
             symbols: report.symbols,
             title: report.title,
             date_published: report.date_published,
+            resolutions: (report.resolutionLinks ?? []).map((link) => (
+              <span
+                key={link.symbol}
+                className="inline-flex items-baseline gap-1.5"
+              >
+                <SgReportResolutionSymbol symbol={link.symbol} />
+                {link.catalogueAnnexOnly && (
+                  <SgReportAnnexChip title={text.annexChipTitle} />
+                )}
+              </span>
+            )),
             marker: report.catalogueAnnexOnly && (
               <SgReportAnnexChip title={text.annexChipTitle} />
             ),
-            note: provenanceLabel[report.provenance],
           }))}
         />
       )}

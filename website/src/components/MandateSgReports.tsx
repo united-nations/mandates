@@ -1,7 +1,11 @@
 'use client'
 
 import { DetailSectionHeading } from '@/components/MandateDetailUi'
-import { SgReportAnnexChip, SgReportList } from '@/components/SgReportList'
+import {
+  SgReportAnnexChip,
+  SgReportList,
+  SgReportResolutionSymbol,
+} from '@/components/SgReportList'
 import { explainerTexts } from '@/lib/en_text_contents'
 import type { MandatedSgReport } from '@/lib/data/sg-report-links'
 import {
@@ -74,6 +78,17 @@ export function MandateSgReports({ reports }: { reports: MandatedSgReport[] }) {
           symbols: [report.report_symbol],
           title: report.title,
           date_published: report.date_published,
+          resolutions: (report.resolution_symbols ?? []).map((symbol) => (
+            <span
+              key={symbol}
+              className="inline-flex items-baseline gap-1.5"
+            >
+              <SgReportResolutionSymbol symbol={symbol} />
+              {report.annex_resolution_symbols?.includes(symbol) && (
+                <SgReportAnnexChip title={ANNEX_POSITION_NOTE} />
+              )}
+            </span>
+          )),
           marker: report.annex_position_only && (
             <SgReportAnnexChip title={ANNEX_POSITION_NOTE} />
           ),

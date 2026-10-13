@@ -306,6 +306,10 @@ export const explainerTexts = {
         'Extracted automatically from each entity’s budget submission.',
     },
     sgReports: {
+      title: 'Title',
+      symbol: 'Symbol',
+      year: 'Year',
+      resolution: 'Mandate resolution',
       disclaimer:
         'Identified automatically from the metadata in each report’s UN Digital Library catalogue record. This can be an incomplete picture of which reports were submitted under this mandate.',
     },
@@ -319,7 +323,7 @@ export const explainerTexts = {
     sgReportsUnion: {
       title: 'Which reports were submitted under this mandate?',
       disclaimer:
-        'Identified automatically from two sources: what each report states in its opening pages it was submitted under (“Stated in the report”), and the metadata in each report’s UN Digital Library catalogue record (“Per catalogue notes”). A report found through both carries both labels.',
+        'Identified automatically from two sources: what each report states in its opening pages, and the metadata in each report’s UN Digital Library catalogue record. Reports cover the recorded versions of this mandate; each row lists the specific mandate documents linked by those sources.',
       statedInReport: 'Stated in the report',
       perCatalogueNotes: 'Per catalogue notes',
       notAccepted:

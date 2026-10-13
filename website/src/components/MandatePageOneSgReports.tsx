@@ -1,5 +1,5 @@
 import { DetailSectionHeading } from '@/components/MandateDetailUi'
-import { SgReportList } from '@/components/SgReportList'
+import { SgReportList, SgReportResolutionSymbol } from '@/components/SgReportList'
 import { explainerTexts } from '@/lib/en_text_contents'
 import type { PageOneSgReports } from '@/lib/data/sg-report-page-one-links'
 import { observedYearSpan } from '@/lib/sg-report-summary'
@@ -60,6 +60,9 @@ export function MandatePageOneSgReports({ data }: { data: PageOneSgReports }) {
           symbols: report.report_symbols,
           title: report.title,
           date_published: report.date_published,
+          resolutions: (report.resolution_symbols ?? []).map((symbol) => (
+            <SgReportResolutionSymbol key={symbol} symbol={symbol} />
+          )),
         }))}
       />
     </section>

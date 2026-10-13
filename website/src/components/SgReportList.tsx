@@ -5,6 +5,15 @@ import { ChevronDown, ChevronUp } from 'lucide-react'
 import { DocumentSymbol } from '@/components/DocumentSymbol'
 import { Chip } from '@/components/ui/chip'
 import { cn } from '@/lib/utils'
+import { explainerTexts } from '@/lib/en_text_contents'
+import { getMandateUrl } from '@/components/table/MandateColumns'
+import { useSearchParams } from 'next/navigation'
+import {
+  MandateDetailTableColumns,
+  mandateDetailTableClassName,
+  mandateDetailTableHeaderClassName,
+  mandateDetailTableCellClassName,
+} from '@/components/MandateDetailTable'
 
 /**
  * The list of Secretary-General reports on a mandate detail view: one row per
@@ -39,6 +48,8 @@ export interface SgReportListRow {
    * Without one the row is a single line, as before.
    */
   note?: ReactNode
+  /** One column containing every specifically linked mandate version. */
+  resolutions?: ReactNode
 }
 
 /** The report's UNDL record page — language versions and files are chosen there. */
@@ -51,65 +62,110 @@ export function SgReportList({ rows }: { rows: SgReportListRow[] }) {
 
   const shown = showAll ? rows : rows.slice(0, DEFAULT_SHOWN)
   const hidden = rows.length - shown.length
+  const showResolutions = rows.some((row) => row.resolutions !== undefined)
 
   return (
     <>
-      <ul className="divide-y divide-gray-100 border-y border-border">
-        {shown.map((row) => (
-          <li key={row.report_recid} className="min-h-8 py-1 text-sm">
-            <div className="flex items-baseline gap-3">
-              <span className="w-10 shrink-0 text-sm text-foreground tabular-nums">
-                {row.date_published?.slice(0, 4) ?? '—'}
-              </span>
-              {/* Wraps only for a dual-symbol report, so two chips stack in the
+      <div className="overflow-x-auto">
+        <table className={mandateDetailTableClassName}>
+          <MandateDetailTableColumns />
+          <thead className={mandateDetailTableHeaderClassName}>
+            <tr className="border-b border-border">
+              <th scope="col" className="py-1 pr-3 align-top font-medium">
+                {explainerTexts.mandateDetail.sgReports.year}
+              </th>
+              <th scope="col" className="py-1 pr-3 align-top font-medium">
+                {explainerTexts.mandateDetail.sgReports.symbol}
+              </th>
+              <th
+                scope="col"
+                colSpan={showResolutions ? 2 : 3}
+                className="py-1 pr-3 align-top font-medium"
+              >
+                {explainerTexts.mandateDetail.sgReports.title}
+              </th>
+              {showResolutions && (
+                <th
+                  scope="col"
+                  className="py-1 text-right align-top font-medium"
+                >
+                  {explainerTexts.mandateDetail.sgReports.resolution}
+                </th>
+              )}
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100">
+            {shown.map((row) => (
+              <tr key={row.report_recid} className="h-8 text-sm">
+                <td
+                  className={`${mandateDetailTableCellClassName} tabular-nums`}
+                >
+                  {row.date_published?.slice(0, 4) ?? '—'}
+                </td>
+                {/* Wraps only for a dual-symbol report, so two chips stack in the
                   column. With one symbol the row lays out as before: a long
                   symbol truncates and keeps the annex chip beside it. */}
-              <span
-                className={cn(
-                  'flex w-36 shrink-0 items-baseline gap-1.5',
-                  row.symbols.length > 1 && 'flex-wrap'
-                )}
-              >
-                {row.symbols.map((symbol) => (
-                  <a
-                    key={symbol}
-                    href={undlRecordUrl(row.report_recid)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    title={`Open ${symbol} in the UN Digital Library`}
-                    className="inline-flex min-w-0 items-baseline rounded hover:underline focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:outline-none"
-                  >
-                    <DocumentSymbol className="inline-flex max-w-full min-w-0 items-baseline">
-                      <span className="min-w-0 truncate">{symbol}</span>
-                    </DocumentSymbol>
-                  </a>
-                ))}
-                {row.marker}
-              </span>
-              {row.note ? (
-                <span className="min-w-0 flex-1">
+                <td className={mandateDetailTableCellClassName}>
                   <span
-                    className="block truncate text-sm text-foreground"
-                    title={row.title ?? undefined}
+                    className={cn(
+                      'flex min-w-0 items-baseline gap-1.5',
+                      row.symbols.length > 1 && 'flex-wrap'
+                    )}
                   >
-                    {row.title}
+                    {row.symbols.map((symbol) => (
+                      <a
+                        key={symbol}
+                        href={undlRecordUrl(row.report_recid)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title={`Open ${symbol} in the UN Digital Library`}
+                        className="inline-flex min-w-0 items-baseline rounded hover:underline focus-visible:ring-2 focus-visible:ring-un-blue focus-visible:outline-none"
+                      >
+                        <DocumentSymbol className="inline-flex max-w-full min-w-0 items-baseline">
+                          <span className="min-w-0 truncate">{symbol}</span>
+                        </DocumentSymbol>
+                      </a>
+                    ))}
+                    {row.marker}
                   </span>
-                  <span className="block text-xs text-muted-foreground">
-                    {row.note}
-                  </span>
-                </span>
-              ) : (
-                <span
-                  className="min-w-0 flex-1 truncate text-sm text-foreground"
-                  title={row.title ?? undefined}
+                </td>
+                <td
+                  colSpan={showResolutions ? 2 : 3}
+                  className={mandateDetailTableCellClassName}
                 >
-                  {row.title}
-                </span>
-              )}
-            </div>
-          </li>
-        ))}
-      </ul>
+                  {row.note ? (
+                    <span className="block min-w-0">
+                      <span
+                        className="block truncate text-sm text-foreground"
+                        title={row.title ?? undefined}
+                      >
+                        {row.title}
+                      </span>
+                      <span className="block text-xs text-muted-foreground">
+                        {row.note}
+                      </span>
+                    </span>
+                  ) : (
+                    <span
+                      className="block min-w-0 truncate text-sm text-foreground"
+                      title={row.title ?? undefined}
+                    >
+                      {row.title}
+                    </span>
+                  )}
+                </td>
+                {showResolutions && (
+                  <td className="py-1 text-right align-baseline">
+                    <span className="flex min-w-0 flex-wrap items-baseline justify-end gap-1.5">
+                      {row.resolutions ?? '—'}
+                    </span>
+                  </td>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       {hidden > 0 && (
         <button
@@ -132,6 +188,26 @@ export function SgReportList({ rows }: { rows: SgReportListRow[] }) {
         </button>
       )}
     </>
+  )
+}
+
+/** Secondary identifiers link to their exact mandate version. */
+export function SgReportResolutionSymbol({
+  symbol,
+  title,
+}: {
+  symbol: string
+  title?: string
+}) {
+  const searchParams = useSearchParams()
+  return (
+    <DocumentSymbol
+      href={getMandateUrl(symbol, undefined, searchParams)}
+      title={title}
+      className="border-border bg-muted text-muted-foreground hover:bg-secondary hover:text-foreground"
+    >
+      {symbol}
+    </DocumentSymbol>
   )
 }
 
