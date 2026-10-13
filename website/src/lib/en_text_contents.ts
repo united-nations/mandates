@@ -313,6 +313,18 @@ export const explainerTexts = {
       notAccepted:
         'No reports are listed here yet: links read from the reports themselves have not been approved for display.',
     },
+    sgReportsUnion: {
+      title: 'Which reports were submitted under this mandate?',
+      disclaimer:
+        'Identified automatically from two sources: what each report states in its opening pages it was submitted under (“Stated in the report”), and the metadata in each report’s UN Digital Library catalogue record (“Per catalogue notes”). A report found through both carries both labels.',
+      statedInReport: 'Stated in the report',
+      perCatalogueNotes: 'Per catalogue notes',
+      notAccepted:
+        'Links read from the reports themselves have not been approved for display yet, so only reports found through the catalogue notes are listed.',
+      annexChipTitle:
+        'Per the catalogue notes, an annex to this report, rather than the report itself, was submitted pursuant to this resolution.',
+      annexNotePrefix: 'Per the catalogue notes:',
+    },
     versionHistory: {
       collectionDisclaimer:
         'Grouped automatically by matching titles within the same mandating body.',

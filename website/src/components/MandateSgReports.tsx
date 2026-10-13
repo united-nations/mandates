@@ -1,8 +1,7 @@
 'use client'
 
 import { DetailSectionHeading } from '@/components/MandateDetailUi'
-import { SgReportList } from '@/components/SgReportList'
-import { Chip } from '@/components/ui/chip'
+import { SgReportAnnexChip, SgReportList } from '@/components/SgReportList'
 import { explainerTexts } from '@/lib/en_text_contents'
 import type { MandatedSgReport } from '@/lib/data/sg-report-links'
 import {
@@ -76,14 +75,7 @@ export function MandateSgReports({ reports }: { reports: MandatedSgReport[] }) {
           title: report.title,
           date_published: report.date_published,
           marker: report.annex_position_only && (
-            <Chip
-              tone="ghost"
-              density="dense"
-              title={ANNEX_POSITION_NOTE}
-              className="shrink-0 cursor-help self-center"
-            >
-              annex
-            </Chip>
+            <SgReportAnnexChip title={ANNEX_POSITION_NOTE} />
           ),
         }))}
       />

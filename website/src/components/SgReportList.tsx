@@ -3,15 +3,16 @@
 import { useState, type ReactNode } from 'react'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import { DocumentSymbol } from '@/components/DocumentSymbol'
+import { Chip } from '@/components/ui/chip'
 import { cn } from '@/lib/utils'
 
 /**
  * The list of Secretary-General reports on a mandate detail view: one row per
  * report, year · symbol · title, the first few shown and the rest behind
- * "Show all". Shared by the two sources of report links
- * (MandateSgReports, from catalogue notes; MandatePageOneSgReports, from the
- * reports' own first pages) so they read the same; each source keeps its own
- * heading and notes.
+ * "Show all". Shared by the report-link blocks (MandateSgReports, from
+ * catalogue notes; MandatePageOneSgReports, from the reports' own first
+ * pages; MandateUnionSgReports, both) so they read the same; each block keeps
+ * its own heading and notes.
  *
  * The row presentation follows the version-history list — year, symbol,
  * title — because both answer "which other document should I open next".
@@ -33,6 +34,11 @@ export interface SgReportListRow {
   date_published: string | null
   /** Rendered after the symbol, inside its column (the annex chip). */
   marker?: ReactNode
+  /**
+   * A quiet second line under the title (the union block's provenance).
+   * Without one the row is a single line, as before.
+   */
+  note?: ReactNode
 }
 
 /** The report's UNDL record page — language versions and files are chosen there. */
@@ -80,12 +86,26 @@ export function SgReportList({ rows }: { rows: SgReportListRow[] }) {
                 ))}
                 {row.marker}
               </span>
-              <span
-                className="min-w-0 flex-1 truncate text-sm text-foreground"
-                title={row.title ?? undefined}
-              >
-                {row.title}
-              </span>
+              {row.note ? (
+                <span className="min-w-0 flex-1">
+                  <span
+                    className="block truncate text-sm text-foreground"
+                    title={row.title ?? undefined}
+                  >
+                    {row.title}
+                  </span>
+                  <span className="block text-xs text-muted-foreground">
+                    {row.note}
+                  </span>
+                </span>
+              ) : (
+                <span
+                  className="min-w-0 flex-1 truncate text-sm text-foreground"
+                  title={row.title ?? undefined}
+                >
+                  {row.title}
+                </span>
+              )}
             </div>
           </li>
         ))}
@@ -112,5 +132,24 @@ export function SgReportList({ rows }: { rows: SgReportListRow[] }) {
         </button>
       )}
     </>
+  )
+}
+
+/**
+ * The "annex" chip on a row the catalogue notes mark as annex-only: an annex
+ * to the report, rather than the report itself, was submitted under the
+ * resolution. Its tooltip is the caller's, since the blocks word it
+ * differently.
+ */
+export function SgReportAnnexChip({ title }: { title: string }) {
+  return (
+    <Chip
+      tone="ghost"
+      density="dense"
+      title={title}
+      className="shrink-0 cursor-help self-center"
+    >
+      annex
+    </Chip>
   )
 }
