@@ -122,7 +122,7 @@ async def run(args):
     await client.close()
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('command',choices=['prepare','run']);p.add_argument('--repo',type=Path,default=Path('/home/agent/un80-docs-processing'));p.add_argument('--out',type=Path,required=True);p.add_argument('--env-file',type=Path);p.add_argument('--endpoint');p.add_argument('--deployment',default='gpt-6-luna');p.add_argument('--reasoning',default='none');p.add_argument('--concurrency',type=int,default=4)
+    p=argparse.ArgumentParser();p.add_argument('command',choices=['prepare','run']);p.add_argument('--repo',type=Path,required=True);p.add_argument('--out',type=Path,required=True);p.add_argument('--env-file',type=Path);p.add_argument('--endpoint');p.add_argument('--deployment',default='gpt-6-luna');p.add_argument('--reasoning',default='none');p.add_argument('--concurrency',type=int,default=4)
     a=p.parse_args()
     if a.command=='prepare':prepare(a)
     else:asyncio.run(run(a))

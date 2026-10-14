@@ -3,6 +3,8 @@
 /* Shared EOSG/UN80 design tokens. Same mechanism as tw-animate-css above —
    a versioned CSS package from node_modules. Pinned in package.json. */
 @import '@un-eosg/ui/theme.css';
+/* Include shared utilities when the package is linked to the sibling checkout. */
+@source '../../node_modules/@un-eosg/ui/components';
 
 /* https://tailwindcss.com/docs/colors#customizing-your-colors */
 @theme {
@@ -32,41 +34,6 @@
 
 html {
   scrollbar-gutter: stable;
-}
-
-/* Keep the shared header's 40px emblem and 36px menu hit area without
-   letting either dictate the lockup's line height. Only the text lockup
-   (including its two-line mobile arrangement) determines the bar height. */
-.mandates-site-header > div > a.inline-flex {
-  position: relative;
-  padding-left: calc(var(--spacing-emblem-w) + var(--spacing-emblem-gap));
-}
-
-.mandates-site-header > div > a.inline-flex > img {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  transform: translateY(-50%);
-}
-
-@media (min-width: 1408px) {
-  .mandates-site-header > div > a.inline-flex {
-    padding-left: 0;
-  }
-}
-
-@media (width < 1024px) {
-  .mandates-site-header > div > div:last-child {
-    position: relative;
-    min-width: 2.25rem;
-  }
-
-  .mandates-site-header > div > div:last-child > button {
-    position: absolute;
-    top: 50%;
-    right: 0;
-    transform: translateY(-50%);
-  }
 }
 
 /* react-remove-scroll-bar injects a runtime <style> adding margin-right to body[data-scroll-locked]

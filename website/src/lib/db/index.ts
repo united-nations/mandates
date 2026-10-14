@@ -6,6 +6,7 @@
  */
 
 import { Pool } from 'pg'
+import { verifiedDatabaseUrl } from '#lib/db/connection-options'
 
 // Persist pool across Next.js HMR reloads in development
 const globalForDb = globalThis as unknown as { _pgPool?: Pool }
@@ -13,7 +14,7 @@ const globalForDb = globalThis as unknown as { _pgPool?: Pool }
 export const getPool = (): Pool => {
   if (!globalForDb._pgPool) {
     globalForDb._pgPool = new Pool({
-      connectionString: process.env.DATABASE_URL,
+      connectionString: verifiedDatabaseUrl(process.env.DATABASE_URL),
       // Each explorer load fires ~16 queries concurrently; with max:5 the
       // fast ones starved for seconds behind the slow ones. Overridable via
       // env so total connections (instances × max) can be tuned to the

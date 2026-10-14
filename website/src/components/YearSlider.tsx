@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useMemo } from 'react'
 import { Slider } from '@/components/ui/slider'
 import { Bar, BarChart, ResponsiveContainer, XAxis } from 'recharts'
 
@@ -53,10 +53,11 @@ export function YearSlider({
   originalYearDistribution,
 }: YearSliderProps) {
   const [localValue, setLocalValue] = useState(value)
-
-  useEffect(() => {
+  const [previousValue, setPreviousValue] = useState(value)
+  if (previousValue[0] !== value[0] || previousValue[1] !== value[1]) {
+    setPreviousValue(value)
     setLocalValue(value)
-  }, [value])
+  }
 
   const data = useMemo(() => {
     if (!yearRange) return []

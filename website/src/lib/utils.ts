@@ -1,5 +1,5 @@
 import type { Mandate } from '@/types'
-import { findMarkRanges, type SearchMarker } from '@/lib/paragraph-search'
+import { findMarkRanges, type SearchMarker } from '#lib/paragraph-search'
 import { clsx, type ClassValue } from 'clsx'
 import { extendTailwindMerge } from 'tailwind-merge'
 import { titleCase } from 'title-case'
@@ -59,8 +59,26 @@ export function formatUrlForDisplay(url: string, maxLength?: number): string {
  * @param searchTerm The search term to highlight
  * @returns Text with highlighted search terms
  */
-export function highlightSearchTerms(text: string, marker: SearchMarker): string {
-  if (!text || marker.patterns.length === 0) return text
+export function highlightSearchTerms(
+  text: string,
+  marker: SearchMarker
+): string {
+  const escape = (value: string) =>
+    value.replace(/[&<>"']/g, (character) => {
+      switch (character) {
+        case '&':
+          return '&amp;'
+        case '<':
+          return '&lt;'
+        case '>':
+          return '&gt;'
+        case '"':
+          return '&quot;'
+        default:
+          return '&#39;'
+      }
+    })
+  if (!text || marker.patterns.length === 0) return escape(text)
 
   // The ranges come from the paragraph search's marker over the parsed
   // query, so the marks follow the query grammar: each positive term marks
@@ -71,13 +89,13 @@ export function highlightSearchTerms(text: string, marker: SearchMarker): string
   let at = 0
   for (const { start, end } of findMarkRanges(text, marker)) {
     out +=
-      text.slice(at, start) +
+      escape(text.slice(at, start)) +
       '<mark class="bg-accent text-un-blue-text underline decoration-un-blue/50 underline-offset-2 px-0.5 rounded">' +
-      text.slice(start, end) +
+      escape(text.slice(start, end)) +
       '</mark>'
     at = end
   }
-  return out + text.slice(at)
+  return out + escape(text.slice(at))
 }
 
 /**
@@ -91,6 +109,8 @@ export function safeHighlightSearchTerms(
   marker: SearchMarker
 ): string | undefined {
   if (!text) return text || undefined
+  // Unmatched fields use React's ordinary text rendering, not the HTML sink.
+  if (findMarkRanges(text, marker).length === 0) return undefined
   return highlightSearchTerms(text, marker)
 }
 

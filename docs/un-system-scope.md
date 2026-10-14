@@ -44,7 +44,7 @@ round.
 
 ## Leg 3 in detail: what counts as "reporting to CEB"
 
-The dataset (`/Users/david/UN/transparency/data/ceb/raw`, 9 CSVs, calendar
+The dataset (`transparency/data/ceb/raw`, 9 CSVs, calendar
 years 2011–2024) contains **75 distinct entity codes**, but they are not
 equivalent:
 

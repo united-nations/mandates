@@ -1,5 +1,5 @@
 {
-  "version": "sha256:cd538440201f446c584c23c9fc9a0c9dc80f28b1942bd9c86dd08e072d86f287",
+  "version": "sha256:f488d2a79dbf4e29b4c56c5b9a03fdf33c1c99c79c807c92856421d0f504a636",
   "source": {
     "owner": "ahwg-analysis",
     "budgetCycle": "2027",
@@ -7,27 +7,27 @@
     "files": [
       {
         "id": "canonical-workbook",
-        "path": "/Users/david/Library/CloudStorage/OneDrive-UnitedNations/UN81 - 500 AHWG/10 AHWG/01 Para.17,18_Collective, clustered review/06 Pilot/AHWG Clustering Analysis/03 Programmes/outputs/PPB 2027 Programme Similarities and Resolution Counts - 2026-10-07.xlsx",
+        "path": "source://local/df73d75361158248/PPB 2027 Programme Similarities and Resolution Counts - 2026-10-07.xlsx",
         "sha256": "a266a629c6e5282dc6aa08c926e236b4c76081008255130d6abca0f13dc8dc9a"
       },
       {
         "id": "source-readme",
-        "path": "/Users/david/Library/CloudStorage/OneDrive-UnitedNations/UN81 - 500 AHWG/10 AHWG/01 Para.17,18_Collective, clustered review/06 Pilot/AHWG Clustering Analysis/03 Programmes/README.md",
+        "path": "source://local/08866940ac463143/README.md",
         "sha256": "d8642a94826208499f88e2542996d17526056d5070dc7295f229736c9a352fbc"
       },
       {
         "id": "derived-analysis",
-        "path": "/Users/david/UN/ahwg-analysis/work/ppb2027-similarity/analysis.json",
+        "path": "source://local/f1e7bb1c1161fe82/analysis.json",
         "sha256": "391fd085d0f0a16af279829463393ab2aa13a0746d32258a470a55893a3b4305"
       },
       {
         "id": "local-row-builder",
-        "path": "/Users/david/UN/mandates/website/src/lib/entities-programmes-tree.ts",
+        "path": "website/src/lib/entities-programmes-tree.ts",
         "sha256": "39a4b7d203e15c958261042d9ac284462896898abd3083c79c3ca557ec920e4c"
       },
       {
         "id": "local-page",
-        "path": "/Users/david/UN/mandates/website/src/app/secretariat/entities-and-programs/page.tsx",
+        "path": "website/src/app/secretariat/entities-and-programs/page.tsx",
         "sha256": "bc0594a501b180c76c83538d96cfa1186c99ef4b547e076093f272544bda5963"
       },
       {
@@ -42,17 +42,17 @@
       },
       {
         "id": "current-data-provider",
-        "path": "/Users/david/UN/mandates/website/src/lib/data/mandates.ts",
+        "path": "website/src/lib/data/mandates.ts",
         "sha256": "c36a0cf22a6a9a9dd1bf545b54c3fa24d98240c8cf86060293543d332828ad26"
       },
       {
         "id": "current-citation-sql",
-        "path": "/Users/david/UN/mandates/website/src/lib/data/budget-citation-sql.ts",
+        "path": "website/src/lib/data/budget-citation-sql.ts",
         "sha256": "37c7009acd72df3708d18471fb994e6098f907e33854517a8a962dc34ef58034"
       },
       {
         "id": "current-types",
-        "path": "/Users/david/UN/mandates/website/src/types/index.ts",
+        "path": "website/src/types/index.ts",
         "sha256": "da081801e77682d30dcf95398dc3763c8c481a2b808258a642b5eb36266546c1"
       }
     ],

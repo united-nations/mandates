@@ -4,7 +4,9 @@ import path from 'node:path'
 
 const installedUi = path.join(__dirname, 'node_modules/@un-eosg/ui')
 const localUi = path.resolve(__dirname, '../../ui')
-const linkedUi = existsSync(installedUi) && realpathSync(installedUi) === localUi
+const linkedUi =
+  existsSync(installedUi) && realpathSync(installedUi) === localUi
+const workspaceRoot = path.resolve(__dirname, '../..')
 
 const nextConfig: NextConfig = {
   // Standalone is what the Docker image copies and runs; omitted on Vercel,
@@ -14,9 +16,53 @@ const nextConfig: NextConfig = {
 
   transpilePackages: ['@un-eosg/ui'],
   // A live sibling package must be inside Turbopack's watched filesystem root.
-  turbopack: { root: linkedUi ? path.resolve(__dirname, '../..') : __dirname },
+  turbopack: {
+    root: linkedUi ? workspaceRoot : __dirname,
+    // Linked UI and the app must share React, including when their installs
+    // resolve different peer versions.
+    resolveAlias: linkedUi
+      ? {
+          react:
+            './' +
+            path.relative(
+              workspaceRoot,
+              path.join(__dirname, 'node_modules/react')
+            ),
+          'react-dom':
+            './' +
+            path.relative(
+              workspaceRoot,
+              path.join(__dirname, 'node_modules/react-dom')
+            ),
+        }
+      : undefined,
+  },
 
   serverExternalPackages: ['undifferent'],
+
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'X-Frame-Options', value: 'DENY' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=()',
+          },
+          // These directives do not interfere with Next's inline bootstrap or
+          // the analytics/feedback integrations. A strict script policy needs
+          // request nonces and separate browser validation before enforcement.
+          {
+            key: 'Content-Security-Policy',
+            value: "frame-ancestors 'none'; base-uri 'self'; object-src 'none'",
+          },
+        ],
+      },
+    ]
+  },
 
   async redirects() {
     return [

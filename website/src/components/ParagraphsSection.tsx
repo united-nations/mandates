@@ -777,7 +777,7 @@ export function ParagraphsSection({
   const [actionVerbFilter, setActionVerbFilter] = useState<string>('all')
   const [isActionVerbDropdownOpen, setIsActionVerbDropdownOpen] =
     useState(false)
-  const [activeHeadingId, setActiveHeadingId] = useState<string | null>(null)
+  const [observedHeadingId, setActiveHeadingId] = useState<string | null>(null)
   const [isMobileTOCOpen, setIsMobileTOCOpen] = useState(false)
   const [showFloatingTOC, setShowFloatingTOC] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
@@ -1649,6 +1649,13 @@ export function ParagraphsSection({
     return items
   }, [paragraphs])
 
+  const firstHeadingIndex = paragraphs.findIndex(
+    (paragraph) => paragraph.type === 'heading'
+  )
+  const activeHeadingId =
+    observedHeadingId ??
+    (firstHeadingIndex >= 0 ? `heading-${firstHeadingIndex}` : null)
+
   // Helper function to check if a section should be expanded based on active heading
   const isInActivePath = useCallback(
     (item: TOCItem): boolean => {
@@ -1800,19 +1807,6 @@ export function ParagraphsSection({
     // tocItems.length only guards the early return; tocItems itself is derived
     // from `paragraphs`, so depending on the whole array would re-run for free.
   }, [paragraphs, tocItems.length])
-
-  // Set initial active heading when paragraphs first load
-  useEffect(() => {
-    if (!paragraphs || paragraphs.length === 0 || activeHeadingId !== null)
-      return
-
-    // Find the first heading and set it as active
-    const firstHeading = paragraphs.find((p: Paragraph) => p.type === 'heading')
-    if (firstHeading) {
-      const firstHeadingIndex = paragraphs.indexOf(firstHeading)
-      setActiveHeadingId(`heading-${firstHeadingIndex}`)
-    }
-  }, [paragraphs, activeHeadingId])
 
   // Intersection Observer for paragraphs title visibility
   useEffect(() => {

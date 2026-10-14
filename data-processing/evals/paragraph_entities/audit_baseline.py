@@ -49,4 +49,4 @@ def run(args):
     write_json(args.out/'baseline-audit.json',report);write_json(args.out/'baseline-text-changes.json',bad)
     print(json.dumps({k:v for k,v in report.items() if k!='per_document'},indent=2))
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--repo',type=Path,default=Path('/home/agent/un80-docs-processing'));p.add_argument('--out',type=Path,required=True);run(p.parse_args())
+    p=argparse.ArgumentParser();p.add_argument('--repo',type=Path,required=True);p.add_argument('--out',type=Path,required=True);run(p.parse_args())

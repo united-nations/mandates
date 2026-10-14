@@ -41,7 +41,6 @@ export function SiteHeader() {
   return (
     <div ref={headerContainer} className="contents">
       <SharedSiteHeader
-        className="mandates-site-header"
         brand="United Nations"
         descriptor="Mandate Registry"
         href="/secretariat"

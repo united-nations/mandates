@@ -7,7 +7,7 @@ intercepted-route close/back behavior. Opening the full page remains a native
 anchor and preserves the complete query string.
 
 The UI contribution lives in the companion Codebox worktree
-/home/agent/.worktrees/ui-mandates-integration, branch agent/mandates-shared-ui.
+the shared UI integration worktree, branch agent/mandates-shared-ui.
 It adds header metadata/body slots, native-link panel actions, footer navigation
 labels/donation override, and canonical standalone DocumentSymbol with Storybook
 variants and a registry item. Existing concepts imports reexport the same symbol.
@@ -22,7 +22,7 @@ resolves the shared components. The earlier publication gate is resolved.
 
 For local verification, the UI commit was packed with pnpm pack and its package
 contents unpacked into this worktree's generated node_modules/@un-eosg/ui.
-The tarball is /home/agent/.worktrees/shared-ui-verification/un-eosg-ui-0.1.5.tgz.
+The tarball is the locally built un-eosg-ui-0.1.5.tgz.
 This replaces only the generated dependency installation; it changes no tracked
 manifest or lockfile, and resolves React peers from the consumer.
 

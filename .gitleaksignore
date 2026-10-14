@@ -1,0 +1,5 @@
+# Reviewed false positives: SQL match-key comparisons and public Power BI URLs.
+0ec3295e233f9ca4ca2c88a5600da5eac0c5d0fb:website/src/lib/data/sc-agenda-years.json:grafana-api-key:138230
+a71c398611ecebf6b0490f84ab25cd6a1bdb4b1d:website/src/lib/data/sc-agenda-snapshot.json:grafana-api-key:33
+e1ff305ad9a1587f8ed23421f473d45aaccb28f0:sql/migrations/043_sg_report_page_one_links.sql:generic-api-key:368
+e1ff305ad9a1587f8ed23421f473d45aaccb28f0:sql/schema/mandates.sql:generic-api-key:565
