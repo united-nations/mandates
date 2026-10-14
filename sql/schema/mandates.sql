@@ -275,7 +275,8 @@ COMMENT ON COLUMN mandates.sg_report_to_mandate_link_runs.wider_marker_retained 
 -- ===========================================================================
 -- Page-one report-to-mandate links: runs, acceptances, outcomes, links, and
 -- the two views comparing page-one runs with Stage 1. Design notes are in
--- sql/migrations/043_sg_report_page_one_links.sql.
+-- sql/migrations/043_sg_report_page_one_links.sql, and for legacy Word
+-- (.DOC) renditions in sql/migrations/044_sg_report_page_one_doc_renditions.sql.
 --
 -- Rows are kept per run and never replaced. Dropped with the schema on
 -- rebuild, and not restored by re-running an extractor: a rebuild loses run
@@ -320,9 +321,14 @@ CREATE TABLE mandates.sg_report_page_one_runs (
     output_rows_sha256 TEXT NOT NULL,
     docx_structure_unmodelled_recids INTEGER[] NOT NULL,
     runtime_versions JSONB NOT NULL,
+    converter_identity TEXT,
+    rendition_unmodelled_recids INTEGER[],
     -- Every report in the population has exactly one outcome, linked or refused.
     CONSTRAINT sg_report_page_one_runs_population_reconciles
-        CHECK (reports_in_population = reports_linked + reports_refused)
+        CHECK (reports_in_population = reports_linked + reports_refused),
+    -- Both fields arrive with extractor 2.0.0; a run before it has neither.
+    CONSTRAINT sg_report_page_one_runs_v2_fields_together
+        CHECK ((converter_identity IS NULL) = (rendition_unmodelled_recids IS NULL))
 );
 
 -- ===========================================================================
@@ -354,7 +360,7 @@ CREATE TABLE mandates.sg_report_page_one_outcomes (
     rendition_source_system TEXT
         CHECK (rendition_source_system IN ('ods')),
     rendition_format TEXT
-        CHECK (rendition_format IN ('docx')),
+        CHECK (rendition_format IN ('docx', 'doc')),
     issued_pdf_check TEXT
         CHECK (issued_pdf_check IN ('statement_found', 'statement_not_found', 'no_pdf_held')),
     statements_found INTEGER NOT NULL,
@@ -368,8 +374,11 @@ CREATE TABLE mandates.sg_report_page_one_outcomes (
     CONSTRAINT sg_report_page_one_outcomes_refusal_vocabulary
         CHECK (refusal_reason IS NULL OR (refusal_stage, refusal_reason) IN (
             ('rendition',  'no_rendition_held'),
-            ('rendition',  'no_docx_rendition_held'),
+            ('rendition',  'no_docx_rendition_held'),   -- runs before 2.0.0 only
+            ('rendition',  'no_word_rendition_held'),
+            ('rendition',  'rendition_unmodelled'),
             ('document',   'corrigendum_document'),
+            ('document',   'doc_conversion_failed'),
             ('document',   'docx_structure_unmodelled'),
             ('statement',  'no_statement_in_front_matter'),
             ('statement',  'title_names_resolution_without_statement'),
@@ -383,14 +392,26 @@ CREATE TABLE mandates.sg_report_page_one_outcomes (
             ('citation',   'citation_token_unrecognised'),
             ('citation',   'prose_and_link_disagree'),
             ('issued_pdf', 'statement_not_in_issued_pdf'))),
-    -- A report refused at the rendition stage has no DOCX, so no rendition
-    -- columns, and carries its acquisition dispositions instead; every other
-    -- report has a DOCX and no dispositions.
+    -- The rendition columns are NULL exactly when the report is refused at the
+    -- rendition stage.
     CONSTRAINT sg_report_page_one_outcomes_rendition_when_held
         CHECK ((refusal_stage IS NOT DISTINCT FROM 'rendition') = (rendition_sha256 IS NULL)
                AND (refusal_stage IS NOT DISTINCT FROM 'rendition') = (rendition_source_system IS NULL)
-               AND (refusal_stage IS NOT DISTINCT FROM 'rendition') = (rendition_format IS NULL)
-               AND (refusal_stage IS NOT DISTINCT FROM 'rendition') = (acquisition_docx_dispositions IS NOT NULL)),
+               AND (refusal_stage IS NOT DISTINCT FROM 'rendition') = (rendition_format IS NULL)),
+    -- The acquisition dispositions are present exactly when the report holds no
+    -- DOCX: a report read from its DOCX has none; one read from its .DOC, or
+    -- refused for holding no Word file, has them. A report refused as
+    -- rendition_unmodelled has them if, and only if, it holds no DOCX, which
+    -- the outcome row does not record, so that one reason is left
+    -- unconstrained.
+    CONSTRAINT sg_report_page_one_outcomes_dispositions_when_no_docx
+        CHECK (CASE
+                   WHEN rendition_format = 'docx' THEN acquisition_docx_dispositions IS NULL
+                   WHEN rendition_format = 'doc' THEN acquisition_docx_dispositions IS NOT NULL
+                   WHEN refusal_reason IN ('no_rendition_held', 'no_docx_rendition_held', 'no_word_rendition_held')
+                       THEN acquisition_docx_dispositions IS NOT NULL
+                   ELSE true
+               END),
     -- The issued-PDF check has a value exactly when there was a statement to check.
     CONSTRAINT sg_report_page_one_outcomes_pdf_check_when_statements
         CHECK ((issued_pdf_check IS NULL) = (statements_found = 0))
@@ -595,8 +616,8 @@ COMMENT ON COLUMN mandates.sg_report_page_one_runs.finished_at IS
   'When the extractor finished the run, before its output was written.';
 COMMENT ON COLUMN mandates.sg_report_page_one_runs.extractor_version IS
   'The extractor''s version string. It changes with any change that can change output (code, '
-  'vocabulary or grammar), and one version string should always come with the same '
-  'extractor_tree_hash and cue_vocabulary_sha256.';
+  'vocabulary, grammar, or a pinned dependency), and one version string should always come '
+  'with the same extractor_tree_hash, cue_vocabulary_sha256 and converter_identity.';
 COMMENT ON COLUMN mandates.sg_report_page_one_runs.extractor_tree_hash IS
   'The git tree hash of the extractor''s package directory as it was when it ran. Always a '
   'committed tree here (see tree_dirty), so the exact code can be checked out again.';
@@ -651,10 +672,28 @@ COMMENT ON COLUMN mandates.sg_report_page_one_runs.output_rows_sha256 IS
   'value; a difference means the extractor is not deterministic.';
 COMMENT ON COLUMN mandates.sg_report_page_one_runs.docx_structure_unmodelled_recids IS
   'Reports whose DOCX the reader could not model (refusal reason docx_structure_unmodelled), '
-  'listed so a never-seen file shape is visible from the run row. Usually empty.';
+  'listed so a never-seen file shape is visible from the run row. From extractor 2.0.0 this '
+  'includes a legacy Word (.DOC) file after conversion, and a text shape the statement '
+  'grammar does not model. Usually empty.';
 COMMENT ON COLUMN mandates.sg_report_page_one_runs.runtime_versions IS
-  'Versions of the interpreter and libraries the output depends on (for example python, '
-  'pymupdf), as a JSON object.';
+  'Versions of the interpreter and libraries the output depends on (python, pymupdf and '
+  'the MuPDF library it wraps), as a JSON object. From extractor 2.0.0 each is pinned in the '
+  'package and checked before the run reads anything, and the object also records the '
+  'platform the run ran on.';
+COMMENT ON COLUMN mandates.sg_report_page_one_runs.converter_identity IS
+  'The version line of the program the run used to convert legacy Word (.DOC) files to DOCX, '
+  'exactly as the program printed it (for example LibreOffice 26.8.1.1 followed by its source '
+  'commit). The extractor stops before reading anything unless this equals the line pinned in '
+  'its package, so the line is fixed by extractor_tree_hash; it is recorded so that the runs '
+  'table itself shows what converted, and two hosts can be compared. It does not name the '
+  'platform, fonts or libraries (runtime_versions records the platform). NULL for runs of '
+  'extractor versions before 2.0.0, which used no converter.';
+COMMENT ON COLUMN mandates.sg_report_page_one_runs.rendition_unmodelled_recids IS
+  'Reports refused because what the run holds for them is outside the model (refusal reason '
+  'rendition_unmodelled: a file format the extractor neither reads nor refuses by name, or '
+  'an unexpected combination of files), listed so a never-seen holding is visible from the '
+  'run row, as docx_structure_unmodelled_recids is for files. Usually empty. NULL for runs '
+  'of extractor versions before 2.0.0, which stopped instead.';
 
 COMMENT ON TABLE mandates.sg_report_page_one_run_acceptances IS
   'Which page-one run the display reads. Each row accepts one run, after its output has been '
@@ -692,35 +731,44 @@ COMMENT ON COLUMN mandates.sg_report_page_one_outcomes.report_symbols IS
 COMMENT ON COLUMN mandates.sg_report_page_one_outcomes.outcome IS
   'linked or refused.';
 COMMENT ON COLUMN mandates.sg_report_page_one_outcomes.refusal_stage IS
-  'Where the refusal happened: rendition (no DOCX held), document (the DOCX is a corrigendum '
-  'or could not be read), statement (no usable statement), citation (the statement''s '
-  'instruments failed their checks) or issued_pdf (the statement is not in the issued PDF). '
-  'NULL exactly when linked. Fixed by refusal_reason (CHECK).';
+  'Where the refusal happened: rendition (no Word file the extractor reads is held), document '
+  '(the report is a corrigendum, or its file could not be converted or read), statement (no '
+  'usable statement), citation (the statement''s instruments failed their checks) or '
+  'issued_pdf (the statement is not in the issued PDF). NULL exactly when linked. Fixed by '
+  'refusal_reason (CHECK).';
 COMMENT ON COLUMN mandates.sg_report_page_one_outcomes.refusal_reason IS
   'Why the report is not linked, from a closed list enforced by CHECK: adding a reason is a '
   'migration. NULL exactly when linked. statement_cites_no_instrument is a correct answer (the '
-  'mandate is not a resolution or decision), not a gap.';
+  'mandate is not a resolution or decision), not a gap. From extractor 2.0.0, '
+  'no_word_rendition_held (the report holds neither a DOCX nor a .DOC) replaces '
+  'no_docx_rendition_held, which only earlier runs carry; rendition_unmodelled means the '
+  'files held are outside the model, and doc_conversion_failed that the .DOC did not convert.';
 COMMENT ON COLUMN mandates.sg_report_page_one_outcomes.refusal_evidence IS
   'What the extractor read in reaching the refusal (the sentence, the title, the token, the '
-  'exception text, or the acquisition record), as a JSON object. NULL exactly when linked.';
+  'exception text, the converter''s message, or the acquisition record), as a JSON object. '
+  'NULL exactly when linked.';
 COMMENT ON COLUMN mandates.sg_report_page_one_outcomes.partial_refusals IS
   'Statements and citations refused inside the report, besides the outcome''s own reason, one '
   'text entry each ("stage/reason: evidence"). On a linked report these are the parts that did '
   'not link, so a partial refusal is never silent. {} when there are none.';
 COMMENT ON COLUMN mandates.sg_report_page_one_outcomes.acquisition_docx_dispositions IS
   'For a report with no DOCX held, the acquisition export''s disposition for each candidate '
-  'Word file (for example ods_word_absent, ods_word_deferred_at_presence), so "the file does '
-  'not exist" and "acquisition has not fetched it yet" are told apart by a WHERE clause. NULL '
-  'exactly when a DOCX is held (CHECK); {} when none is listed.';
+  'Word file (for example ods_word_absent, ods_word_present_downloaded_as_doc), so "the file '
+  'does not exist", "acquisition has not fetched it yet" and "it was fetched as a .DOC" are told '
+  'apart by a WHERE clause. NULL exactly when a DOCX is held; present on a report read from '
+  'its .DOC (CHECK); {} when none is listed.';
 COMMENT ON COLUMN mandates.sg_report_page_one_outcomes.rendition_sha256 IS
-  'sha256 of the DOCX the report was read from. NULL exactly when refused at the rendition '
-  'stage.';
+  'sha256 of the Word file the report was read from: the DOCX, or the .DOC itself, never the '
+  'bytes of its conversion, which differ from one conversion to the next. NULL exactly when '
+  'refused at the rendition stage.';
 COMMENT ON COLUMN mandates.sg_report_page_one_outcomes.rendition_source_system IS
-  'Where the DOCX came from: ods (the UN Official Document System), the only source the '
-  'extractor reads DOCX from. NULL exactly when refused at the rendition stage.';
+  'Where the Word file came from: ods (the UN Official Document System), the only source the '
+  'extractor reads Word files from. NULL exactly when refused at the rendition stage.';
 COMMENT ON COLUMN mandates.sg_report_page_one_outcomes.rendition_format IS
-  'The rendition''s format as sniffed from its bytes: docx. NULL exactly when refused at the '
-  'rendition stage.';
+  'The format of the Word rendition the report was read from, as sniffed from its bytes: docx, '
+  'or doc (legacy binary Word, the 1997-2003 format, converted to DOCX inside the run by the '
+  'converter named in the run''s converter_identity; the converted file is never stored). '
+  'NULL exactly when refused at the rendition stage.';
 COMMENT ON COLUMN mandates.sg_report_page_one_outcomes.issued_pdf_check IS
   'Whether each statement found was also found in the issued PDF''s text: statement_found '
   '(all were), statement_not_found (at least one was not, which can still be a linked report), '
