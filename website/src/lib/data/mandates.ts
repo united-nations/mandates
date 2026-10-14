@@ -7,6 +7,7 @@ import { mandateMembershipSql, versionPredicateSql } from '@/lib/mandate-members
  */
 
 import { cache } from 'react'
+import { normalizePagination } from '#lib/pagination'
 import { getDocumentTextMetrics } from './text-metrics'
 import { getDocumentPdfUrl } from './source-links'
 import { getHistoricalDocument } from './historical-document'
@@ -713,8 +714,7 @@ export async function getMandates(
   filters: FilterOptions = {},
   options: { page?: number; limit?: number; includeMetrics?: boolean } = {}
 ): Promise<{ mandates: Mandate[]; totalCount: number }> {
-  const page = options.page ?? 1
-  const limit = options.limit ?? 15
+  const { page, limit } = normalizePagination(options.page, options.limit)
   const offset = (page - 1) * limit
 
   const { cte, params } = buildFilteredDocsCTE(filters, {
@@ -3376,8 +3376,7 @@ const getMandateList = cache(
  */
 export const getMandatePageData = cache(
   async (filters: FilterOptions): Promise<ApiResponse> => {
-    const page = parseInt(filters.page || '1', 10)
-    const limit = parseInt(filters.limit || '15', 10)
+    const { page, limit } = normalizePagination(filters.page, filters.limit)
 
     const [shared, list, organMap] = await Promise.all([
       getSharedPageData(stripListKeys(filters)),

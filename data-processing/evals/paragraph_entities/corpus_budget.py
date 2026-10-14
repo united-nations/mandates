@@ -29,7 +29,12 @@ def main(args):
     contract=read_json(args.out/'contract.json')
     fixed=contract['prompt_tokens']+contract['schema_tokens_estimate']+16
     totals={};docstats=[];before=time.monotonic()
-    conn=psycopg2.connect(dotenv_values(args.env_file)['DATABASE_URL'], sslrootcert='/etc/ssl/certs/ca-certificates.crt');conn.set_session(readonly=True)
+    # This entry point is run from the evaluation directory, so add the pipeline
+    # root before importing its shared connection validation.
+    import sys
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+    from utils.database import verified_database_url
+    conn=psycopg2.connect(verified_database_url(dotenv_values(args.env_file)['DATABASE_URL']));conn.set_session(readonly=True)
     with conn.cursor(name='entity_budget') as cur:
         cur.itersize=3000;cur.execute(SQL)
         for symbol,rows in itertools.groupby(cur,lambda r:r[0]):

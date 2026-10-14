@@ -7,7 +7,7 @@ import { validateScAgendaSnapshot, type ScAgendaSnapshot } from '#lib/sc-agenda'
 import { scAgendaYears, type SecurityCouncilAgendaDataset } from '#lib/sc-agenda-years'
 
 /** Independent source audit: 649 checks, 3,744 inputs, zero unexplained source failures. */
-export const SC_AGENDA_SOURCE_SHA256 = '743fdb304acb5b4ae05820689daefbfff94b11ca634b0ee13fbb750bf7c1b120'
+export const SC_AGENDA_SOURCE_SHA256 = '2b109ae00a2e413aabf2087a74ea92b05ed66f97e65fd65aeb9eedfe9767e8e3'
 const audited2025 = validateScAgendaSnapshot(legacy as ScAgendaSnapshot)
 export const scAgendaSnapshots = scAgendaYears(source as SecurityCouncilAgendaDataset, audited2025)
 export const scAgendaSessions = scAgendaSnapshots.map(row => row.year)

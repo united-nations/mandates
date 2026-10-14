@@ -1,0 +1,24 @@
+# Builds use the repository root as their context (website/Dockerfile).
+**/node_modules
+**/.next
+**/.git
+**/.env
+**/.env.*
+!**/.env.example
+**/.cache
+**/.venv
+**/__pycache__
+**/.vscode
+**/.idea
+**/*.log
+**/*.tsbuildinfo
+**/*.pem
+**/*.key
+**/*.pfx
+**/*.publishsettings
+**/.azure
+**/.aws
+**/.ssh
+**/.npmrc
+**/.netrc
+**/.pypirc

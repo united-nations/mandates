@@ -4,11 +4,13 @@
 -- Re-runnable: safe to execute multiple times.
 -- =============================================================================
 
--- 1. Create role (idempotent)
+-- 1. Provision the login and its credentials separately through the database
+-- administrator's secure process. This file only grants access; it never
+-- creates a working login with an example password.
 DO $$
 BEGIN
     IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'mandates_readonly') THEN
-        CREATE ROLE mandates_readonly WITH LOGIN PASSWORD 'changeme';
+        RAISE EXCEPTION 'Provision mandates_readonly securely before running this script';
     END IF;
 END
 $$;

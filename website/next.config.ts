@@ -40,6 +40,30 @@ const nextConfig: NextConfig = {
 
   serverExternalPackages: ['undifferent'],
 
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'X-Frame-Options', value: 'DENY' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=()',
+          },
+          // These directives do not interfere with Next's inline bootstrap or
+          // the analytics/feedback integrations. A strict script policy needs
+          // request nonces and separate browser validation before enforcement.
+          {
+            key: 'Content-Security-Policy',
+            value: "frame-ancestors 'none'; base-uri 'self'; object-src 'none'",
+          },
+        ],
+      },
+    ]
+  },
+
   async redirects() {
     return [
       // Temporary while the / landing page is undecided: the Secretariat

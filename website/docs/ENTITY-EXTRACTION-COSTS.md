@@ -17,7 +17,7 @@ deployment configuration is required. No other model was silently substituted.
 
 Reproduction scripts: `data-processing/evals/paragraph_entities/`.
 Local frozen prompts, schema, inputs, manifest, error and audit results:
-`/home/agent/mandates/.cache/paragraph-entity-pilot-20260924/`.
+`.cache/paragraph-entity-pilot-20260924/`.
 
 ## What the actual extractor does
 

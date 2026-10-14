@@ -11,7 +11,7 @@
           {
             "id": "official-library-embedded-table",
             "url": "https://research.un.org/en/docs/sc/quick/meetings/2022",
-            "path": "/Users/david/UN/ahwg-analysis/work/sc_meetings_2022.html",
+            "path": "source://local/418fb238813f2133/sc_meetings_2022.html",
             "sha256": "5428ad6c6c6b47596d012764ba05dd0a17a66ebc6a186e3a81f9bd8c282d7ac5"
           },
           {
@@ -42932,7 +42932,7 @@
           {
             "id": "official-library-embedded-table",
             "url": "https://research.un.org/en/docs/sc/quick/meetings/2023",
-            "path": "/Users/david/UN/ahwg-analysis/work/sc_meetings_2023.html",
+            "path": "source://local/3a5c054f4f0fdf4a/sc_meetings_2023.html",
             "sha256": "a0742098b7c5aed2ecdb602cfecf7990ce8d451efadba83fb3be8fa1ecb9f0d7"
           },
           {
@@ -57861,8 +57861,8 @@
           "agendaSymbol": "S/Agenda/9471",
           "agendaItem": "2",
           "page": 1,
-          "agendaPath": "/Users/david/UN/ahwg-analysis/work/pdfs/S_Agenda_9471.pdf",
-          "agendaTextPath": "/Users/david/UN/ahwg-analysis/work/text/S_Agenda_9471.txt",
+          "agendaPath": "source://local/b66cf2a2ef156ca3/S_Agenda_9471.pdf",
+          "agendaTextPath": "source://local/c20536bb164a3330/S_Agenda_9471.txt",
           "agendaPdfSha256": "515c7af0b9f750586771fe1ef6fa3e167315752f1a879a19d7a987b69f5becfc",
           "printedItemTitle": "Election of five members of the International Court of Justice (S/2023/445, S/2023/446 and S/2023/447)",
           "pvSymbol": "S/PV.9471",
@@ -59300,7 +59300,7 @@
               }
             ],
             "exactAlphanumericHeadingAgreement": true,
-            "localPdf": "/Users/david/UN/ahwg-analysis/work/pdfs/S_PV.9509__Resumption_1_.pdf",
+            "localPdf": "source://local/4e8a99864f293607/S_PV.9509__Resumption_1_.pdf",
             "sourceEvidenceStatus": "official-table-and-DL991-exact-agreement",
             "exceptionReasons": [],
             "canonicalHeading": "Small arms.",
@@ -60665,7 +60665,7 @@
               }
             ],
             "exactAlphanumericHeadingAgreement": true,
-            "localPdf": "/Users/david/UN/ahwg-analysis/work/pdfs/S_PV.9497__Resumption_1_.pdf",
+            "localPdf": "source://local/8aba8afe8774f3b2/S_PV.9497__Resumption_1_.pdf",
             "sourceEvidenceStatus": "official-table-and-DL991-exact-agreement",
             "exceptionReasons": [],
             "canonicalHeading": "Threats to international peace and security.",
@@ -62098,7 +62098,7 @@
               }
             ],
             "exactAlphanumericHeadingAgreement": true,
-            "localPdf": "/Users/david/UN/ahwg-analysis/work/pdfs/S_PV.9482__Resumption_1_.pdf",
+            "localPdf": "source://local/fd517eec8d00d828/S_PV.9482__Resumption_1_.pdf",
             "sourceEvidenceStatus": "official-table-and-DL991-exact-agreement",
             "exceptionReasons": [],
             "canonicalHeading": "Maintenance of international peace and security.",
@@ -64852,7 +64852,7 @@
               }
             ],
             "exactAlphanumericHeadingAgreement": true,
-            "localPdf": "/Users/david/UN/ahwg-analysis/work/pdfs/S_PV.9452__Resumption_2_.pdf",
+            "localPdf": "source://local/63a101d2c8fff780/S_PV.9452__Resumption_2_.pdf",
             "sourceEvidenceStatus": "official-table-and-DL991-exact-agreement",
             "exceptionReasons": [],
             "canonicalHeading": "Women and peace and security.",
@@ -64940,7 +64940,7 @@
               }
             ],
             "exactAlphanumericHeadingAgreement": true,
-            "localPdf": "/Users/david/UN/ahwg-analysis/work/pdfs/S_PV.9452__Resumption_1_.pdf",
+            "localPdf": "source://local/ee372a81967c2395/S_PV.9452__Resumption_1_.pdf",
             "sourceEvidenceStatus": "official-table-and-DL991-exact-agreement",
             "exceptionReasons": [],
             "canonicalHeading": "Women and peace and security.",
@@ -65116,7 +65116,7 @@
               }
             ],
             "exactAlphanumericHeadingAgreement": true,
-            "localPdf": "/Users/david/UN/ahwg-analysis/work/pdfs/S_PV.9451__Resumption_1_.pdf",
+            "localPdf": "source://local/1fd9889f405a78eb/S_PV.9451__Resumption_1_.pdf",
             "sourceEvidenceStatus": "official-table-and-DL991-exact-agreement",
             "exceptionReasons": [],
             "canonicalHeading": "The situation in the Middle East, including the Palestinian question.",
@@ -65471,7 +65471,7 @@
               }
             ],
             "exactAlphanumericHeadingAgreement": true,
-            "localPdf": "/Users/david/UN/ahwg-analysis/work/pdfs/S_PV.9448__Resumption_1_.pdf",
+            "localPdf": "source://local/4430ac0758d0afb9/S_PV.9448__Resumption_1_.pdf",
             "sourceEvidenceStatus": "official-table-and-DL991-exact-agreement",
             "exceptionReasons": [],
             "canonicalHeading": "Maintenance of international peace and security.",
@@ -67875,7 +67875,7 @@
               }
             ],
             "exactAlphanumericHeadingAgreement": true,
-            "localPdf": "/Users/david/UN/ahwg-analysis/work/pdfs/S_PV.9421__Resumption_2_.pdf",
+            "localPdf": "source://local/658c89d15d550f29/S_PV.9421__Resumption_2_.pdf",
             "sourceEvidenceStatus": "official-table-and-DL991-exact-agreement",
             "exceptionReasons": [],
             "canonicalHeading": "Maintenance of international peace and security.",
@@ -67965,7 +67965,7 @@
               }
             ],
             "exactAlphanumericHeadingAgreement": true,
-            "localPdf": "/Users/david/UN/ahwg-analysis/work/pdfs/S_PV.9421__Resumption_1_.pdf",
+            "localPdf": "source://local/281cfad98b045dd4/S_PV.9421__Resumption_1_.pdf",
             "sourceEvidenceStatus": "official-table-and-DL991-exact-agreement",
             "exceptionReasons": [],
             "canonicalHeading": "Maintenance of international peace and security.",
@@ -68293,7 +68293,7 @@
               }
             ],
             "exactAlphanumericHeadingAgreement": true,
-            "localPdf": "/Users/david/UN/ahwg-analysis/work/pdfs/S_PV.9418__Resumption_1_.pdf",
+            "localPdf": "source://local/34ce818c7336e053/S_PV.9418__Resumption_1_.pdf",
             "sourceEvidenceStatus": "official-table-and-DL991-exact-agreement",
             "exceptionReasons": [],
             "canonicalHeading": "Maintenance of international peace and security.",
@@ -68988,7 +68988,7 @@
               }
             ],
             "exactAlphanumericHeadingAgreement": true,
-            "localPdf": "/Users/david/UN/ahwg-analysis/work/pdfs/S_PV.9410__Resumption_1_.pdf",
+            "localPdf": "source://local/53b90f7fcdb27d04/S_PV.9410__Resumption_1_.pdf",
             "sourceEvidenceStatus": "official-table-and-DL991-exact-agreement",
             "exceptionReasons": [],
             "canonicalHeading": "Implementation of the note by the President of the Security Council (S/2017/507).",
@@ -70647,7 +70647,7 @@
               }
             ],
             "exactAlphanumericHeadingAgreement": true,
-            "localPdf": "/Users/david/UN/ahwg-analysis/work/pdfs/S_PV.9392__Resumption_1_.pdf",
+            "localPdf": "source://local/12dfb97076eb14ec/S_PV.9392__Resumption_1_.pdf",
             "sourceEvidenceStatus": "official-table-and-DL991-exact-agreement",
             "exceptionReasons": [],
             "canonicalHeading": "Maintenance of international peace and security.",
@@ -71200,7 +71200,7 @@
               }
             ],
             "exactAlphanumericHeadingAgreement": true,
-            "localPdf": "/Users/david/UN/ahwg-analysis/work/pdfs/S_PV.9387__Resumption_1_.pdf",
+            "localPdf": "source://local/f3e2ab79d0aa99e4/S_PV.9387__Resumption_1_.pdf",
             "sourceEvidenceStatus": "official-table-and-DL991-exact-agreement",
             "exceptionReasons": [],
             "canonicalHeading": "The situation in the Middle East, including the Palestinian question.",
@@ -72062,7 +72062,7 @@
               }
             ],
             "exactAlphanumericHeadingAgreement": true,
-            "localPdf": "/Users/david/UN/ahwg-analysis/work/pdfs/S_PV.9378__Resumption_1_.pdf",
+            "localPdf": "source://local/309983885abb4e0a/S_PV.9378__Resumption_1_.pdf",
             "sourceEvidenceStatus": "official-table-and-DL991-exact-agreement",
             "exceptionReasons": [],
             "canonicalHeading": "Women and peace and security.",
@@ -73174,7 +73174,7 @@
               }
             ],
             "exactAlphanumericHeadingAgreement": true,
-            "localPdf": "/Users/david/UN/ahwg-analysis/work/pdfs/S_PV.9366__Resumption_1_.pdf",
+            "localPdf": "source://local/f2b18028dc71ede2/S_PV.9366__Resumption_1_.pdf",
             "sourceEvidenceStatus": "official-table-and-DL991-exact-agreement",
             "exceptionReasons": [],
             "canonicalHeading": "Children and armed conflict.",
@@ -75012,7 +75012,7 @@
               }
             ],
             "exactAlphanumericHeadingAgreement": true,
-            "localPdf": "/Users/david/UN/ahwg-analysis/work/pdfs/S_PV.9345__Resumption_1_.pdf",
+            "localPdf": "source://local/18179e6da25be4d8/S_PV.9345__Resumption_1_.pdf",
             "sourceEvidenceStatus": "official-table-and-DL991-exact-agreement",
             "exceptionReasons": [],
             "canonicalHeading": "Threats to international peace and security.",
@@ -76660,7 +76660,7 @@
               }
             ],
             "exactAlphanumericHeadingAgreement": true,
-            "localPdf": "/Users/david/UN/ahwg-analysis/work/pdfs/S_PV.9327__Resumption_1_.pdf",
+            "localPdf": "source://local/4c2d6d09bb2e5cb1/S_PV.9327__Resumption_1_.pdf",
             "sourceEvidenceStatus": "official-table-and-DL991-exact-agreement",
             "exceptionReasons": [],
             "canonicalHeading": "Protection of civilians in armed conflict.",
@@ -77759,7 +77759,7 @@
               }
             ],
             "exactAlphanumericHeadingAgreement": true,
-            "localPdf": "/Users/david/UN/ahwg-analysis/work/pdfs/S_PV.9315__Resumption_1_.pdf",
+            "localPdf": "source://local/137b994a2194ff26/S_PV.9315__Resumption_1_.pdf",
             "sourceEvidenceStatus": "official-table-and-DL991-exact-agreement",
             "exceptionReasons": [],
             "canonicalHeading": "Peacebuilding and sustaining peace.",
@@ -78410,7 +78410,7 @@
               }
             ],
             "exactAlphanumericHeadingAgreement": true,
-            "localPdf": "/Users/david/UN/ahwg-analysis/work/pdfs/S_PV.9309__Resumption_1_.pdf",
+            "localPdf": "source://local/08ffb3f70872134c/S_PV.9309__Resumption_1_.pdf",
             "sourceEvidenceStatus": "official-table-and-DL991-exact-agreement",
             "exceptionReasons": [],
             "canonicalHeading": "The situation in the Middle East, including the Palestinian question.",
@@ -78621,7 +78621,7 @@
               }
             ],
             "exactAlphanumericHeadingAgreement": true,
-            "localPdf": "/Users/david/UN/ahwg-analysis/work/pdfs/S_PV.9308__Resumption_1_.pdf",
+            "localPdf": "source://local/0018b188946a147c/S_PV.9308__Resumption_1_.pdf",
             "sourceEvidenceStatus": "official-table-and-DL991-exact-agreement",
             "exceptionReasons": [],
             "canonicalHeading": "Maintenance of international peace and security.",
@@ -79427,7 +79427,7 @@
               }
             ],
             "exactAlphanumericHeadingAgreement": true,
-            "localPdf": "/Users/david/UN/ahwg-analysis/work/pdfs/S_PV.9299__Resumption_1_.pdf",
+            "localPdf": "source://local/777114c4564e2c53/S_PV.9299__Resumption_1_.pdf",
             "sourceEvidenceStatus": "official-table-and-DL991-exact-agreement",
             "exceptionReasons": [],
             "canonicalHeading": "Peace and security in Africa.",
@@ -81501,7 +81501,7 @@
               }
             ],
             "exactAlphanumericHeadingAgreement": true,
-            "localPdf": "/Users/david/UN/ahwg-analysis/work/pdfs/S_PV.9276__Resumption_1_.pdf",
+            "localPdf": "source://local/d5fd84e5d39121cd/S_PV.9276__Resumption_1_.pdf",
             "sourceEvidenceStatus": "official-table-and-DL991-exact-agreement",
             "exceptionReasons": [],
             "canonicalHeading": "Women and peace and security.",
@@ -82967,7 +82967,7 @@
               }
             ],
             "exactAlphanumericHeadingAgreement": true,
-            "localPdf": "/Users/david/UN/ahwg-analysis/work/pdfs/S_PV.9260__Resumption_1_.pdf",
+            "localPdf": "source://local/46549f62c6bc967f/S_PV.9260__Resumption_1_.pdf",
             "sourceEvidenceStatus": "official-table-and-DL991-exact-agreement",
             "exceptionReasons": [],
             "canonicalHeading": "Threats to international peace and security.",
@@ -83869,7 +83869,7 @@
               }
             ],
             "exactAlphanumericHeadingAgreement": true,
-            "localPdf": "/Users/david/UN/ahwg-analysis/work/pdfs/S_PV.9250__Resumption_1_.pdf",
+            "localPdf": "source://local/085cd6117c09e145/S_PV.9250__Resumption_1_.pdf",
             "sourceEvidenceStatus": "official-table-and-DL991-exact-agreement",
             "exceptionReasons": [],
             "canonicalHeading": "Peacebuilding and sustaining peace.",
@@ -84328,7 +84328,7 @@
               }
             ],
             "exactAlphanumericHeadingAgreement": true,
-            "localPdf": "/Users/david/UN/ahwg-analysis/work/pdfs/S_PV.9246__Resumption_1_.pdf",
+            "localPdf": "source://local/ab18eb06714ce471/S_PV.9246__Resumption_1_.pdf",
             "sourceEvidenceStatus": "official-table-and-DL991-exact-agreement",
             "exceptionReasons": [],
             "canonicalHeading": "The situation in the Middle East, including the Palestinian question.",
@@ -84873,7 +84873,7 @@
               }
             ],
             "exactAlphanumericHeadingAgreement": true,
-            "localPdf": "/Users/david/UN/ahwg-analysis/work/pdfs/S_PV.9241__Resumption_1_.pdf",
+            "localPdf": "source://local/11b8048f03d7f647/S_PV.9241__Resumption_1_.pdf",
             "sourceEvidenceStatus": "official-table-and-DL991-exact-agreement",
             "exceptionReasons": [],
             "canonicalHeading": "The promotion and strengthening of the rule of law in the maintenance of  international peace and security.",
@@ -94254,7 +94254,7 @@
           {
             "id": "official-library-embedded-table",
             "url": "https://research.un.org/en/docs/sc/quick/meetings/2024",
-            "path": "/Users/david/UN/ahwg-analysis/work/sc_meetings_2024.html",
+            "path": "source://local/d03f79c74fab1082/sc_meetings_2024.html",
             "sha256": "910e2ff9dd61302585e2ccb1a1dd724b4c19de71837aaecbf20b88c39899a41f"
           },
           {
@@ -109295,8 +109295,8 @@
           "agendaSymbol": "S/Agenda/9597",
           "agendaItem": "2",
           "page": 1,
-          "agendaPath": "/Users/david/UN/ahwg-analysis/work/pdfs/S_Agenda_9597.pdf",
-          "agendaTextPath": "/Users/david/UN/ahwg-analysis/work/text/S_Agenda_9597.txt",
+          "agendaPath": "source://local/97df17cbe59d005a/S_Agenda_9597.pdf",
+          "agendaTextPath": "source://local/b593b286e253f9c7/S_Agenda_9597.txt",
           "agendaPdfSha256": "2aeab6003beb8802831bdd9e95baf63cec7836ce520130c382c6f8bf0971de45",
           "printedItemTitle": "Admission of new members",
           "pvSymbol": "S/PV.9597",
@@ -109311,8 +109311,8 @@
           "agendaSymbol": "S/Agenda/9609",
           "agendaItem": "2",
           "page": 1,
-          "agendaPath": "/Users/david/UN/ahwg-analysis/work/pdfs/S_Agenda_9609.pdf",
-          "agendaTextPath": "/Users/david/UN/ahwg-analysis/work/text/S_Agenda_9609.txt",
+          "agendaPath": "source://local/9af71523561ef034/S_Agenda_9609.pdf",
+          "agendaTextPath": "source://local/99f63ec3eaaaa79b/S_Agenda_9609.txt",
           "agendaPdfSha256": "b969e35565cf9a0176993d17e1e022afe57150d0692bdf4ff2aeb6ee6918cd66",
           "printedItemTitle": "Admission of new members",
           "pvSymbol": "S/PV.9609",
@@ -113625,7 +113625,7 @@
             "tableDLHeadingAgreement": true,
             "private": false,
             "exceptionReasons": [],
-            "localPDF": "/Users/david/UN/ahwg-analysis/work/pdfs/S_PV.9765.pdf",
+            "localPDF": "source://local/27788483fc6e450b/S_PV.9765.pdf",
             "englishPDFURL": "https://digitallibrary.un.org/record/4065898/files/S_PV.9765-EN.pdf",
             "considerationStatus": "considered",
             "evidenceBasis": "Official Library embedded table + canonical DL MARC991 agreement; no direct PV text claim.",
@@ -124820,7 +124820,7 @@
             "exceptionReasons": [
               "known_nonadopted_provisional_agenda"
             ],
-            "localPDF": "/Users/david/UN/ahwg-analysis/work/pdfs/S_PV.9592.pdf",
+            "localPDF": "source://local/23ea668ce28140f9/S_PV.9592.pdf",
             "englishPDFURL": "https://digitallibrary.un.org/record/4043895/files/S_PV.9592-EN.pdf",
             "considerationStatus": "agenda_not_adopted",
             "evidenceBasis": "Actual local official PV text",
@@ -125108,7 +125108,7 @@
             "exceptionReasons": [
               "known_nonadopted_provisional_agenda"
             ],
-            "localPDF": "/Users/david/UN/ahwg-analysis/work/pdfs/S_PV.9587.pdf",
+            "localPDF": "source://local/43ba881d19b1fc35/S_PV.9587.pdf",
             "englishPDFURL": "https://digitallibrary.un.org/record/4043593/files/S_PV.9587-EN.pdf",
             "considerationStatus": "agenda_not_adopted",
             "evidenceBasis": "Actual local official PV text",
@@ -160107,7 +160107,7 @@
           {
             "id": "official-library-embedded-table",
             "url": "https://research.un.org/en/docs/sc/quick/meetings/2026",
-            "path": "/Users/david/UN/ahwg-analysis/work/sc_meetings_2026.html",
+            "path": "source://local/ffcd2facea7ce1fd/sc_meetings_2026.html",
             "sha256": "8d78ba7cee1794085039bd8d9e28fdba1749f064f2a9a87ea6e7226a298266a7"
           },
           {
@@ -171547,5 +171547,5 @@
       }
     }
   ],
-  "version": "sc-agenda-4702d28c0ec72b6035e56233"
+  "version": "sc-agenda-9d76a8acd13589d22daa493c"
 }

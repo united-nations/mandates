@@ -10,9 +10,9 @@ Connection: PIPELINE_DATABASE_URL, loaded from the environment (a repo-root
 .env is picked up via python-dotenv). See .env.example for the format. Two
 requirements are enforced here rather than defaulted around:
 
-  * The URL must state sslmode explicitly. Without one, libpq falls back to
-    sslmode=prefer, which can negotiate down to an unencrypted connection —
-    a silent downgrade. A URL that omits it is refused; nothing is appended.
+  * The URL must explicitly state sslmode=verify-full. Weaker modes and
+    missing modes are refused. The shared validator uses the system CA bundle
+    unless the operator supplies sslrootcert explicitly.
   * Port 5432 (direct), not the PgBouncer 6432 the website uses: a batch
     writer wants a direct connection, PgBouncer has shown startup-packet
     incompatibilities with some clients, and every measurement behind this
@@ -33,6 +33,7 @@ from pathlib import Path
 
 import psycopg2
 from dotenv import load_dotenv
+from utils.database import verified_database_url
 
 from report_mandate_links.a_extract import run_stage1
 
@@ -48,12 +49,7 @@ def _database_url() -> str:
     url = os.getenv(_ENV_VAR)
     if not url:
         raise RuntimeError(f"Missing required environment variable: {_ENV_VAR}")
-    if "sslmode=" not in url:
-        raise RuntimeError(
-            f"{_ENV_VAR} must state sslmode explicitly (see .env.example); "
-            "refusing to fall back to libpq's sslmode=prefer"
-        )
-    return url
+    return verified_database_url(url)
 
 
 def main() -> None:

@@ -6,6 +6,8 @@ import {
   BUDGET_LOCATION_KEYS,
   parseBudgetLocation,
 } from '#lib/budget-location-scope'
+import { normalizePagination } from '#lib/pagination'
+import { parseSearchQuery } from '#lib/search-query'
 
 // Friendly labels for the top-level budget streams (the values the
 // `budget_document` filter now carries: a doc_type). Version-agnostic, so used
@@ -129,8 +131,25 @@ export function parseSearchParams(
 ): import('@/types').FilterOptions {
   const getString = (key: string): string | undefined => {
     const value = searchParams[key]
-    if (Array.isArray(value)) return value[0]
-    return value || undefined
+    const scalar = Array.isArray(value) ? value[0] : value
+    const maxLength = [
+      'agenda_scope',
+      'related_scope',
+      'budget_location',
+    ].includes(key)
+      ? 16_384
+      : key === 'keyword'
+        ? 512
+        : 256
+    return scalar && scalar.length <= maxLength ? scalar : undefined
+  }
+  const pagination = normalizePagination(getString('page'), getString('limit'))
+  const keyword = getString('keyword')
+  const integerFilter = (key: string, maximum: number) => {
+    const value = getString(key)
+    return value && /^\d+$/.test(value) && Number(value) <= maximum
+      ? String(Number(value))
+      : undefined
   }
 
   // The page ALWAYS shows the whole document catalogue (~43,000 documents)
@@ -157,7 +176,8 @@ export function parseSearchParams(
     entity: getString('entity'),
     organ: getString('organ'),
     crossCitingEntity: getString('crossCitingEntity'),
-    keyword: getString('keyword'),
+    keyword:
+      keyword && parseSearchQuery(keyword).length <= 32 ? keyword : undefined,
     budget_part: getString('budget_part'),
     section: getString('section'),
     subprogramme: getString('subprogramme'),
@@ -165,8 +185,8 @@ export function parseSearchParams(
     programme: getString('programme'),
     subject: getString('subject'),
     subject_domain: getString('subject_domain'),
-    start_year: getString('start_year'),
-    end_year: getString('end_year'),
+    start_year: integerFilter('start_year', 9999),
+    end_year: integerFilter('end_year', 9999),
     budget_document: getString('budget_document'),
     budget_group: getString('budget_group'),
     document_type: getString('document_type'),
@@ -174,11 +194,11 @@ export function parseSearchParams(
     agenda_scope: getString('agenda_scope'),
     related_scope: getString('related_scope'),
     full_document_symbol: getString('full_document_symbol'),
-    min_citations: getString('min_citations'),
-    max_citations: getString('max_citations'),
+    min_citations: integerFilter('min_citations', 1_000_000),
+    max_citations: integerFilter('max_citations', 1_000_000),
     sort_by: getString('sort_by') || undefined,
-    page: getString('page') || '1',
-    limit: getString('limit') || '15',
+    page: String(pagination.page),
+    limit: String(pagination.limit),
   }
   const location = getString('budget_location')
   if (filters.related_scope) {

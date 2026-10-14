@@ -21,7 +21,7 @@ The repository has no locale catalogs; its English copy is inline. Existing shar
 ## Checks
 
 - `node --test src/lib/text-analytics.test.ts src/lib/paragraph-presentation.test.ts`
-- `node --env-file=/home/agent/mandates/.env --test src/lib/data/text-metrics.integration.test.ts` on Codebox: 14 independently constructed CTE-only cases, within a read-only transaction; no fixture tables or production writes. Without `DATABASE_URL`, this one integration test explicitly skips.
+- `node --env-file=../.env --test src/lib/data/text-metrics.integration.test.ts` on Codebox: 14 independently constructed CTE-only cases, within a read-only transaction; no fixture tables or production writes. Without `DATABASE_URL`, this one integration test explicitly skips.
 - `tsc --noEmit`; focused ESLint on touched files.
 
 The SQL scenarios cover valid and zero values, failed status, stale timestamp, parser mismatch, each stale content hash, the wrong predecessor, changed dates, tied dates, an undated member, collections, missing predecessor text and a pending score. Only the latest symbol is requested from each three-member series, so computing a predecessor from filtered rows cannot pass.
