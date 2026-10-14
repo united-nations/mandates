@@ -48,6 +48,7 @@ CREATE TEMP TABLE _ppb2027_s1_staging (
     file TEXT,
     addendum TEXT,
     part TEXT,
+    part_title TEXT,
     section TEXT,
     section_title TEXT,
     entity_long TEXT,
@@ -60,11 +61,12 @@ CREATE TEMP TABLE _ppb2027_s1_staging (
     link TEXT,
     symbol TEXT,
     full_document_symbol TEXT,
-    source TEXT
+    source TEXT,
+    organ TEXT
 );
 
 -- 3. Load the full CSV, then narrow to Section 1 so nothing else is affected.
-\copy _ppb2027_s1_staging FROM 'data/processed/ppb2027/all_mandates.csv' WITH (FORMAT csv, HEADER true);
+\copy _ppb2027_s1_staging FROM 'data/processed/ppb2027/all_mandates_resolved.csv' WITH (FORMAT csv, HEADER true);
 
 DELETE FROM _ppb2027_s1_staging
 WHERE origin_document <> 'PPB 2027' OR section IS DISTINCT FROM '1';
@@ -73,10 +75,17 @@ WHERE origin_document <> 'PPB 2027' OR section IS DISTINCT FROM '1';
 --    Section 1 rows currently need this, but keep it so the two importers agree.
 UPDATE _ppb2027_s1_staging SET entity = 'UN Women' WHERE entity = 'UN-Women';
 
--- 5. Fall back to the citation symbol when full_document_symbol is empty.
-UPDATE _ppb2027_s1_staging
-SET full_document_symbol = symbol
-WHERE full_document_symbol IS NULL OR full_document_symbol = '';
+-- 5. Refuse unresolved exports rather than promoting a short reference to a
+--    global document key. Resolve identities before importing (issue #29).
+DO $identity_guard$
+BEGIN
+    IF EXISTS (SELECT 1 FROM _ppb2027_s1_staging
+               WHERE nullif(full_document_symbol, '') IS NULL
+                  OR full_document_symbol ~ '^[0-9]+/[0-9]+$') THEN
+        RAISE EXCEPTION 'Unresolved document identities: run utils.mandate_identity_csv first';
+    END IF;
+END
+$identity_guard$;
 
 -- 6. SCOPE: remove any existing PPB 2027 Section 1 citations before re-inserting.
 DELETE FROM ppb2026.source_document_citations
@@ -88,14 +97,22 @@ INSERT INTO ppb2026.source_documents (
     ppb_document_source,
     ppb_description,
     ppb_symbol,
-    ppb_link
+    ppb_link,
+    ppb_body,
+    ppb_not_ods,
+    ppb_full_doc_symbol_available
 )
 SELECT DISTINCT
     s.full_document_symbol,
     s.source,
     s.description,
     s.symbol,
-    s.link
+    s.link,
+    nullif(s.organ, ''),
+    CASE WHEN s.full_document_symbol ~ '^(A|S|E|ST|UNEP|HSP|WT|ECE|CAC|CTOC|CD|TD|ESCAP)/[^[:space:]]+$'
+         THEN 'false' ELSE 'true' END,
+    CASE WHEN s.full_document_symbol ~ '^(A|S|E|ST|UNEP|HSP|WT|ECE|CAC|CTOC|CD|TD|ESCAP)/[^[:space:]]+$'
+         THEN 'TRUE' ELSE 'IN REPORT' END
 FROM _ppb2027_s1_staging s
 WHERE s.full_document_symbol IS NOT NULL
   AND s.full_document_symbol != ''

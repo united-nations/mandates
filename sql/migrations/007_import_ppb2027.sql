@@ -26,6 +26,7 @@ CREATE TEMP TABLE _ppb2027_staging (
     file TEXT,
     addendum TEXT,
     part TEXT,
+    part_title TEXT,
     section TEXT,
     section_title TEXT,
     entity_long TEXT,
@@ -38,19 +39,27 @@ CREATE TEMP TABLE _ppb2027_staging (
     link TEXT,
     symbol TEXT,
     full_document_symbol TEXT,
-    source TEXT
+    source TEXT,
+    organ TEXT
 );
 
 -- 3. Load CSV (run \copy in psql or use COPY with superuser)
-\copy _ppb2027_staging FROM 'data/processed/ppb2027/all_mandates.csv' WITH (FORMAT csv, HEADER true);
+\copy _ppb2027_staging FROM 'data/processed/ppb2027/all_mandates_resolved.csv' WITH (FORMAT csv, HEADER true);
 
 -- 4. Normalize entity name: UN-Women → UN Women
 UPDATE _ppb2027_staging SET entity = 'UN Women' WHERE entity = 'UN-Women';
 
--- 5. Use symbol as full_document_symbol when full_document_symbol is empty
-UPDATE _ppb2027_staging
-SET full_document_symbol = symbol
-WHERE full_document_symbol IS NULL OR full_document_symbol = '';
+-- 5. Refuse unresolved exports rather than promoting a short reference to a
+--    global document key. Resolve identities before importing (issue #29).
+DO $identity_guard$
+BEGIN
+    IF EXISTS (SELECT 1 FROM _ppb2027_staging
+               WHERE nullif(full_document_symbol, '') IS NULL
+                  OR full_document_symbol ~ '^[0-9]+/[0-9]+$') THEN
+        RAISE EXCEPTION 'Unresolved document identities: run utils.mandate_identity_csv first';
+    END IF;
+END
+$identity_guard$;
 
 -- 6. Insert new source_documents (skip existing)
 INSERT INTO ppb2026.source_documents (
@@ -58,14 +67,22 @@ INSERT INTO ppb2026.source_documents (
     ppb_document_source,
     ppb_description,
     ppb_symbol,
-    ppb_link
+    ppb_link,
+    ppb_body,
+    ppb_not_ods,
+    ppb_full_doc_symbol_available
 )
 SELECT DISTINCT
     s.full_document_symbol,
     s.source,
     s.description,
     s.symbol,
-    s.link
+    s.link,
+    nullif(s.organ, ''),
+    CASE WHEN s.full_document_symbol ~ '^(A|S|E|ST|UNEP|HSP|WT|ECE|CAC|CTOC|CD|TD|ESCAP)/[^[:space:]]+$'
+         THEN 'false' ELSE 'true' END,
+    CASE WHEN s.full_document_symbol ~ '^(A|S|E|ST|UNEP|HSP|WT|ECE|CAC|CTOC|CD|TD|ESCAP)/[^[:space:]]+$'
+         THEN 'TRUE' ELSE 'IN REPORT' END
 FROM _ppb2027_staging s
 WHERE s.full_document_symbol IS NOT NULL
   AND s.full_document_symbol != ''

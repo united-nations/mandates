@@ -64,10 +64,17 @@ CREATE TEMP TABLE _pkm2627_staging (
 -- 4. Load CSV (header columns are Title Cased in the file)
 \copy _pkm2627_staging FROM 'data/processed/pkm2026/all_mandates.csv' WITH (FORMAT csv, HEADER true);
 
--- 5. Safety: use symbol as full_document_symbol when the latter is empty
-UPDATE _pkm2627_staging
-SET full_document_symbol = symbol
-WHERE full_document_symbol IS NULL OR full_document_symbol = '';
+-- 5. Refuse unresolved exports rather than promoting a short reference to a
+--    global document key. Resolve identities before importing (issue #29).
+DO $identity_guard$
+BEGIN
+    IF EXISTS (SELECT 1 FROM _pkm2627_staging
+               WHERE nullif(full_document_symbol, '') IS NULL
+                  OR full_document_symbol ~ '^[0-9]+/[0-9]+$') THEN
+        RAISE EXCEPTION 'Unresolved document identities: run utils.mandate_identity_csv first';
+    END IF;
+END
+$identity_guard$;
 
 -- 6. Insert new source_documents (skip existing)
 INSERT INTO ppb2026.source_documents (

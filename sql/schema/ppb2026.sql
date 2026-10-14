@@ -37,6 +37,8 @@ create table ppb2026.organs (
 );
 create table ppb2026.source_documents (
     ppb_full_document_symbol text not null primary key,
+    constraint source_documents_no_bare_numeric_key
+        check (ppb_full_document_symbol !~ '^[0-9]+/[0-9]+$'),
     ppb_document_source text,
     ppb_description text,
     ppb_symbol text,

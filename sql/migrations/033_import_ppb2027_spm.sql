@@ -56,11 +56,7 @@ VALUES ('ppb2027', 'Proposed Programme Budget for 2027', '^PPB 2027$', 'ppb', 0)
 ON CONFLICT (slug) DO NOTHING;
 
 -- 2. Staging table mirroring all_mandates.csv, in CSV column order.
---    NOTE: this is wider than the staging tables in migrations 007 and 022 --
---    the pipeline has since added `part_title` (after `part`) and a trailing
---    `organ` column, so those two importers can no longer \copy the current CSV
---    without erroring ("extra data after last expected column"). They need the
---    same two columns added before they can be re-run as their headers promise.
+--    All PPB importers consume the same 20-column resolved export.
 CREATE TEMP TABLE _ppb2027_spm_staging (
     origin_document TEXT,
     part_in_document TEXT,
@@ -86,7 +82,7 @@ CREATE TEMP TABLE _ppb2027_spm_staging (
 
 -- 3. Load the full CSV, then narrow to the PPB 2027 Section 3 addendum rows so
 --    nothing else is affected.
-\copy _ppb2027_spm_staging FROM 'data/processed/ppb2027/all_mandates.csv' WITH (FORMAT csv, HEADER true);
+\copy _ppb2027_spm_staging FROM 'data/processed/ppb2027/all_mandates_resolved.csv' WITH (FORMAT csv, HEADER true);
 
 DELETE FROM _ppb2027_spm_staging
 WHERE origin_document IS DISTINCT FROM 'PPB 2027'
@@ -98,12 +94,17 @@ WHERE origin_document IS DISTINCT FROM 'PPB 2027'
 UPDATE _ppb2027_spm_staging
 SET section = section || ' (Add.' || addendum || ')';
 
--- 5. Fall back to the citation symbol when full_document_symbol is empty. This
---    matters more here than elsewhere: mandates recovered from the prose of the
---    unhyperlinked preliminary addenda have no link to derive a symbol from.
-UPDATE _ppb2027_spm_staging
-SET full_document_symbol = symbol
-WHERE full_document_symbol IS NULL OR full_document_symbol = '';
+-- 5. Refuse unresolved exports rather than promoting a short reference to a
+--    global document key. Resolve identities before importing (issue #29).
+DO $identity_guard$
+BEGIN
+    IF EXISTS (SELECT 1 FROM _ppb2027_spm_staging
+               WHERE nullif(full_document_symbol, '') IS NULL
+                  OR full_document_symbol ~ '^[0-9]+/[0-9]+$') THEN
+        RAISE EXCEPTION 'Unresolved document identities: run utils.mandate_identity_csv first';
+    END IF;
+END
+$identity_guard$;
 
 -- 6. SCOPE: remove any existing PPB 2027 SPM citations before re-inserting.
 DELETE FROM ppb2026.source_document_citations
@@ -115,14 +116,22 @@ INSERT INTO ppb2026.source_documents (
     ppb_document_source,
     ppb_description,
     ppb_symbol,
-    ppb_link
+    ppb_link,
+    ppb_body,
+    ppb_not_ods,
+    ppb_full_doc_symbol_available
 )
 SELECT DISTINCT
     s.full_document_symbol,
     s.source,
     s.description,
     s.symbol,
-    s.link
+    s.link,
+    nullif(s.organ, ''),
+    CASE WHEN s.full_document_symbol ~ '^(A|S|E|ST|UNEP|HSP|WT|ECE|CAC|CTOC|CD|TD|ESCAP)/[^[:space:]]+$'
+         THEN 'false' ELSE 'true' END,
+    CASE WHEN s.full_document_symbol ~ '^(A|S|E|ST|UNEP|HSP|WT|ECE|CAC|CTOC|CD|TD|ESCAP)/[^[:space:]]+$'
+         THEN 'TRUE' ELSE 'IN REPORT' END
 FROM _ppb2027_spm_staging s
 WHERE s.full_document_symbol IS NOT NULL
   AND s.full_document_symbol != ''
