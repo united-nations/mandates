@@ -5,7 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "joblib>=1.5.3",
+    "joblib>=1.6.0",
     "natsort>=8.4.0",
     "openai>=2.36.0",
     "openpyxl>=3.1.5",
