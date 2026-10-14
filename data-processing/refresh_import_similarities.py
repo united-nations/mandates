@@ -10,6 +10,7 @@ import psycopg2
 from psycopg2 import sql
 from psycopg2.extras import execute_batch
 from dotenv import load_dotenv
+from utils.database import verified_database_url
 WORKER=Path(__file__).with_name('series_metrics.py')
 spec=importlib.util.spec_from_file_location('series_metrics',WORKER);m=importlib.util.module_from_spec(spec);sys.modules[spec.name]=m;spec.loader.exec_module(m)
 def read(package, name):
@@ -25,7 +26,7 @@ def main():
  assert len(touched)==25790 and len(expected)==25640 and set(expected)<=touched, 'Incomplete import package'
  load_dotenv(a.env_file,override=True)
  url=os.getenv('PIPELINE_DATABASE_URL') or os.getenv('DATABASE_URL');assert url
- conn=psycopg2.connect(url);conn.set_session(isolation_level='SERIALIZABLE',readonly=not a.apply)
+ conn=psycopg2.connect(verified_database_url(url));conn.set_session(isolation_level='SERIALIZABLE',readonly=not a.apply)
  with conn,conn.cursor() as c:
   if a.apply:
    # Freeze source generations and metadata while computing/writing.

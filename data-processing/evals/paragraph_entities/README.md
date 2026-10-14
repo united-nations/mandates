@@ -10,7 +10,7 @@ allocated across six source-length strata. This is a diagnostic sample; it is
 not a self-weighting sample of the whole current registry.
 
 The current saved run is at
-`/home/agent/mandates/.cache/paragraph-entity-pilot-20260924`.
+`.cache/paragraph-entity-pilot-20260924`.
 It contains 1,783 prepared paragraph requests. GPT-6 Luna preflight failed with
 Azure `DeploymentNotFound`; **no target-model document responses were produced**.
 The available Azure deployment names were gpt-5.4-mini, gpt-5.4, and
@@ -24,9 +24,9 @@ Dependencies: openai, python-dotenv, tiktoken, pyyaml, pydantic,
 psycopg2-binary and httpx. Installed in `/tmp/mandate-entity-pilot-venv` for this run.
 
 ```bash
-python pilot.py prepare --repo /home/agent/un80-docs-processing --out OUTPUT
-python corpus_budget.py --out OUTPUT --env-file /home/agent/mandates/.env
-python audit_baseline.py --repo /home/agent/un80-docs-processing --out OUTPUT
+python pilot.py prepare --repo SOURCE_REPOSITORY --out OUTPUT
+python corpus_budget.py --out OUTPUT --env-file ENV_FILE
+python audit_baseline.py --repo SOURCE_REPOSITORY --out OUTPUT
 # Paid API execution: requires the correct Azure endpoint/key configuration
 # and a deployed GPT-6 Luna deployment, under the user's pilot authorization.
 python pilot.py run --out OUTPUT --env-file AZURE_ENV_FILE --deployment DEPLOYMENT
