@@ -19,11 +19,11 @@ export const explainerTexts = {
     reports: 'Reports',
     explainers: {
       sources:
-        'Find resolutions and other documents that establish mandates. Explore their versions, see where they are cited in the budget, and find reports submitted under them.',
+        'Find resolutions and other documents that establish mandates. Explore their versions, see which entities are implementing them, and find reports submitted under them.',
       agendas:
-        'Explore the agenda items under which intergovernmental bodies consider their work. Select an item to find related mandate documents.',
+        'Explore the agenda items under which intergovernmental bodies consider their work. Select an item to find related mandate source documents.',
       entities:
-        'Explore UN entities and their programmes. See which mandate documents they cite and compare historical expenditure.',
+        'Explore UN entities and their programmes. See which mandate documents they cite and compare historical programme expenditure.',
     },
   },
   secretariatReports: {
