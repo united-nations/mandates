@@ -62,9 +62,9 @@
     "next": "~16.3.8",
     "next-themes": "^0.4.6",
     "pg": "^8.23.0",
-    "react": "19.2.4",
+    "react": "19.3.0",
     "react-day-picker": "^9.14.0",
-    "react-dom": "19.2.4",
+    "react-dom": "19.3.0",
     "react-hook-form": "^7.87.0",
     "recharts": "^3.10.1",
     "sonner": "^2.0.8",
@@ -81,8 +81,8 @@
     "@types/fast-levenshtein": "^0.0.4",
     "@types/node": "^25.9.5",
     "@types/pdf-parse": "^1.1.5",
-    "@types/react": "19.2.14",
-    "@types/react-dom": "19.2.3",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
     "@types/word-extractor": "^1.0.6",
     "eslint": "^9.39.5",
     "eslint-config-next": "~16.3.8",
@@ -97,7 +97,7 @@
     "typescript": "^5.9.3"
   },
   "overrides": {
-    "@types/react": "19.2.14",
-    "@types/react-dom": "19.2.3"
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0"
   }
 }
