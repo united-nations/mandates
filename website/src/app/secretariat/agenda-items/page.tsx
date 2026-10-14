@@ -3,7 +3,7 @@ import { AgendaItemsView } from '@/components/AgendaItemsView'
 import { getProgressiveAgendaPageData } from '@/lib/data/agenda-items'
 
 export const metadata = {
-  title: explainerTexts.secretariatNavigation.agendaItems,
+  title: explainerTexts.pageTitles.agendas,
 }
 
 export default async function AgendaItemsPage({

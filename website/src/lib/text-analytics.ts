@@ -29,5 +29,5 @@ export function comparisonUrl(
     symbol1: metrics.previous_document_symbol,
     symbol2: symbol,
   })
-  return `https://diff.un-two-zero.dev/?${params}`
+  return `https://diff.un-two-zero.org/?${params}`
 }

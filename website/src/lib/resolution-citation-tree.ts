@@ -7,6 +7,8 @@ import { BUDGET_STREAM_LABELS } from '#lib/filter-constants'
 export interface ResolutionCitationRow {
   id: string
   label: string
+  identifier: string
+  title: string
   count: number | null
   location: DetailBudgetLocation
   financialId?: string
@@ -16,7 +18,7 @@ export interface ResolutionCitationEntity {
   id: string
   entity: string
   entityLong?: string
-  programmeLabels: string[]
+  programmeEntries: { identifier: string; title: string }[]
   count: number | null
   expandable: boolean
   children: ResolutionCitationRow[]
@@ -135,6 +137,7 @@ export function buildResolutionCitationTree(
         return {
           id,
           label,
+          ...splitCitationLocation(location, sections.size > 1),
           count: location.total_citations_at_location ?? null,
           location,
           financialId,
@@ -144,37 +147,17 @@ export function buildResolutionCitationTree(
       return {
         id: JSON.stringify(['entity', entity]),
         entity,
-        programmeLabels: [
-          ...new Set(
-            locations.flatMap((location) => {
-              if (location.programme === null && !location.programme_title) {
-                if (!location.section && !location.section_title) return []
-                return [
-                  [
-                    [
-                      explainerTexts.entitiesAndProgrammes.section,
-                      location.section,
-                    ]
-                      .filter(Boolean)
-                      .join(' '),
-                    location.section_title,
-                  ]
-                    .filter(Boolean)
-                    .join(': '),
-                ]
-              }
-              return [
-                [
-                  location.programme === null
-                    ? explainerTexts.entitiesAndProgrammes.programme
-                    : `${explainerTexts.entitiesAndProgrammes.programme} ${location.programme}`,
-                  location.programme_title,
-                ]
-                  .filter(Boolean)
-                  .join(': '),
-              ]
-            })
-          ),
+        programmeEntries: [
+          ...new Map(
+            locations
+              .filter(
+                (location) => citationScope(location).subprogramme === null
+              )
+              .map((location) => {
+                const entry = splitCitationLocation(location, sections.size > 1)
+                return [JSON.stringify(entry), entry] as const
+              })
+          ).values(),
         ],
         entityLong:
           names.get(entity) ??
@@ -194,6 +177,57 @@ export function buildResolutionCitationTree(
   if (actual.length !== expected.size || actual.some((id) => !expected.has(id)))
     throw new Error('Resolution citation locations were lost or duplicated')
   return { tree, financialRows: [...financialRows.values()] }
+}
+
+/** Split only known identifiers; retain unrecognised wording as title text. */
+function splitCitationLocation(
+  location: DetailBudgetLocation,
+  includeSection: boolean
+): { identifier: string; title: string } {
+  const scope = citationScope(location)
+  const text = explainerTexts.entitiesAndProgrammes
+  const section = scope.section ? `${text.section} ${scope.section}` : ''
+  if (scope.subprogramme) {
+    const prefix = scope.subprogramme.match(
+      /^Sub-?programme\s+(\d+)(?:\s*[.:–—-]\s*|\s+|$)/i
+    )
+    const number = prefix?.[1] ?? scope.number
+    return {
+      identifier: [text.subprogramme, number]
+        .filter((n) => n !== null && n !== undefined)
+        .join(' '),
+      title: [
+        prefix
+          ? scope.subprogramme.slice(prefix[0].length)
+          : scope.subprogramme,
+        includeSection ? section : '',
+      ]
+        .filter(Boolean)
+        .join(' · '),
+    }
+  }
+  if (location.programme !== null || location.programme_title) {
+    return {
+      identifier: [text.programme, location.programme]
+        .filter((n) => n !== null)
+        .join(' '),
+      title: [location.programme_title, includeSection ? section : '']
+        .filter(Boolean)
+        .join(' · '),
+    }
+  }
+  return {
+    identifier:
+      section ||
+      (scope.stream
+        ? BUDGET_STREAM_LABELS[scope.stream]
+        : explainerTexts.mandateDetail.citationCounts.noLocation),
+    title:
+      location.section_title ??
+      (scope.stream === 'ppb'
+        ? explainerTexts.mandateDetail.citationCounts.general
+        : ''),
+  }
 }
 
 export function resolutionCitationHref(id: string, version?: string) {

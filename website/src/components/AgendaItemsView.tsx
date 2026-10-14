@@ -13,6 +13,7 @@ import {
   AgendaCountSkeleton,
 } from '@/components/AgendaCountLoading'
 import { RelatedItemsCell } from '@/components/RelatedItemsCell'
+import { DisclosurePopover } from '@/components/ui/disclosure-popover'
 import { SegmentedControl } from '@un-eosg/ui/components/segmented-control'
 import { YearSlider } from '@un-eosg/ui/components/year-slider'
 import { SearchInput } from '@un-eosg/ui/components/search-input'
@@ -28,6 +29,11 @@ import { explainerTexts } from '@/lib/en_text_contents'
 import { ParagraphNumberBadge } from '@/components/ui/paragraph-number-badge'
 import { groupAgendaNodes, visibleAgendaEntries } from '@/lib/agenda-tree'
 import { searchTableRows } from '@/lib/table-search'
+import {
+  agendaAllocations,
+  filterAgendaCommittee,
+} from '@/lib/agenda-committee-filter'
+import { HierarchicalSingleSelect } from '@un-eosg/ui/components/hierarchical-single-select'
 import { agendaSessionLabel } from '@/lib/agenda-session-label'
 import { scHeadingDisplayTitle } from '@/lib/sc-agenda'
 import {
@@ -97,13 +103,25 @@ export function AgendaItemsView({ data, mainCounts, relatedCounts }: Props) {
     () => new Set(children)
   )
   const [query, setQuery] = useState('')
-  const searching = Boolean(query.trim())
+  const [committee, setCommittee] = useState('')
+  const searching = Boolean(query.trim()) || Boolean(committee)
   const allEntries = groupAgendaNodes(ready?.nodes ?? [])
+  const availableCommittees = agendaAllocations(
+    ready?.nodes.flatMap((node) => node.allocations) ?? []
+  )
+  const committeeOptions = [
+    ...new Set([
+      'GA Plenary',
+      ...Object.keys(committeeLabels),
+      ...availableCommittees.sort(),
+    ]),
+  ].filter((value) => availableCommittees.includes(value))
+  const filteredEntries = filterAgendaCommittee(allEntries, committee)
   const hasExpanders =
     children.size > 0 || allEntries.some((entry) => entry.kind === 'group')
   const entries = searching
     ? searchTableRows(
-        allEntries.map((entry) => ({
+        filteredEntries.map((entry) => ({
           ...entry,
           parentId:
             entry.kind === 'item'
@@ -207,24 +225,60 @@ export function AgendaItemsView({ data, mainCounts, relatedCounts }: Props) {
           </button>
         </p>
       )}
-      <div className="w-64 max-w-full">
-        <SearchInput
-          variant="border-bottom"
-          aria-label={searchLabel}
-          placeholder={searchLabel}
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          showClear
-          onClear={() => setQuery('')}
-          disabled={!ready}
-        />
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="w-64 max-w-full">
+          <SearchInput
+            variant="border-bottom"
+            aria-label={searchLabel}
+            placeholder={searchLabel}
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            showClear
+            onClear={() => setQuery('')}
+            disabled={!ready}
+          />
+        </div>
+        {data.body === 'GA' && ready && (
+          <HierarchicalSingleSelect
+            label={text.committee}
+            selected={committee || 'all'}
+            onChange={(value) => setCommittee(value === 'all' ? '' : value)}
+            getLabel={(value) =>
+              value === 'all'
+                ? text.committee
+                : value === 'untagged'
+                  ? text.noCommitteeTag
+                  : value
+            }
+            groups={[
+              { id: 'all', label: text.allCommittees, children: [] },
+              ...committeeOptions.map((value) => ({
+                id: value,
+                label: value,
+                children: [],
+              })),
+              { id: 'untagged', label: text.noCommitteeTag, children: [] },
+            ]}
+            searchPlaceholder={text.searchCommittees}
+            clearSearchLabel={text.clearCommitteeSearch}
+            noResultsLabel={text.noCommitteeOptions}
+          />
+        )}
       </div>
       {ready ? (
         <>
           {isSc && data.status === 'ready' && (
             <p className="text-sm text-muted-foreground">
               {text.scExplanation.replace('{year}', data.session)}
-              {data.dataCutoff && <> {' '}{(data.coverage === 'partial' ? text.scCoveragePartial : text.scCoverageComplete).replace('{date}', data.dataCutoff)}</>}
+              {data.dataCutoff && (
+                <>
+                  {' '}
+                  {(data.coverage === 'partial'
+                    ? text.scCoveragePartial
+                    : text.scCoverageComplete
+                  ).replace('{date}', data.dataCutoff)}
+                </>
+              )}
             </p>
           )}
           <Table className="table-fixed">
@@ -240,7 +294,14 @@ export function AgendaItemsView({ data, mainCounts, relatedCounts }: Props) {
                   className="h-8 w-40 ps-2 pe-1"
                   style={{ fontSize: '12px', fontWeight: 500 }}
                 >
-                  {text.relatedItems}
+                  <DisclosurePopover
+                    label={text.relatedItems}
+                    trigger={text.relatedItems}
+                    triggerClassName="cursor-help rounded-sm text-left underline decoration-dotted underline-offset-4 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                    contentClassName="max-w-sm"
+                  >
+                    <p>{text.clusterDisclaimer}</p>
+                  </DisclosurePopover>
                 </TableHead>
                 {isSc && data.status === 'ready' && (
                   <TableHead

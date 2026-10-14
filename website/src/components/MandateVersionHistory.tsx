@@ -9,6 +9,12 @@ import { WordCount, TextSimilarity } from '@/components/DocumentTextMetrics'
 import { DocumentSymbol } from '@/components/DocumentSymbol'
 import { getMandateUrl } from '@/components/table/MandateColumns'
 import {
+  MandateDetailTableColumns,
+  mandateDetailTableClassName,
+  mandateDetailTableHeaderClassName,
+  mandateDetailTableCellClassName,
+} from '@/components/MandateDetailTable'
+import {
   DetailFootnote,
   DetailSectionHeading,
 } from '@/components/MandateDetailUi'
@@ -112,22 +118,26 @@ export function MandateVersionHistory({
       )}
 
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[640px] table-fixed border-y border-border text-left text-sm text-muted-foreground">
-          <thead className="h-10 text-xs text-muted-foreground">
+        <table className={mandateDetailTableClassName}>
+          <MandateDetailTableColumns />
+          <thead className={mandateDetailTableHeaderClassName}>
             <tr className="border-b border-border">
-              <th scope="col" className="w-12 py-1 align-top font-medium">
+              <th scope="col" className="py-1 pr-3 align-top font-medium">
                 Year
               </th>
-              <th scope="col" className="w-36 py-1 pr-2 align-top font-medium">
+              <th scope="col" className="py-1 pr-3 align-top font-medium">
                 Symbol
               </th>
-              <th scope="col" className="py-1 pr-2 align-top font-medium">
+              <th scope="col" className="py-1 pr-3 align-top font-medium">
                 Title
               </th>
-              <th scope="col" className="w-24 py-1 pr-2 text-right align-top font-medium">
+              <th
+                scope="col"
+                className="py-1 pr-3 text-right align-top font-medium"
+              >
                 Word length
               </th>
-              <th scope="col" className="w-40 py-1 text-right align-top font-medium">
+              <th scope="col" className="py-1 text-right align-top font-medium">
                 Text similarity
               </th>
             </tr>
@@ -140,24 +150,37 @@ export function MandateVersionHistory({
                   key={m.document_symbol}
                   className={isCurrent ? 'h-8 bg-accent/60' : 'h-8'}
                 >
-                  <td className="py-1 align-baseline text-sm text-foreground tabular-nums">
+                  <td
+                    className={`${mandateDetailTableCellClassName} tabular-nums`}
+                  >
                     {m.year ?? '—'}
                   </td>
-                  <td className="min-w-0 py-1 pr-2 align-baseline">
+                  <td className={mandateDetailTableCellClassName}>
                     <div className="flex min-w-0 items-baseline gap-1.5">
                       {isCurrent ? (
-                        <DocumentSymbol subdued className="max-w-full" title={m.document_symbol}>
-                          <span className="block truncate">{m.document_symbol}</span>
+                        <DocumentSymbol
+                          subdued
+                          className="max-w-full"
+                          title={m.document_symbol}
+                        >
+                          <span className="block truncate">
+                            {m.document_symbol}
+                          </span>
                         </DocumentSymbol>
                       ) : (
-                        <DocumentSymbol href={getMandateUrl(m.document_symbol)} className="max-w-full" title={m.document_symbol}>
-                          <span className="block truncate">{m.document_symbol}</span>
+                        <DocumentSymbol
+                          href={getMandateUrl(m.document_symbol)}
+                          className="max-w-full"
+                          title={m.document_symbol}
+                        >
+                          <span className="block truncate">
+                            {m.document_symbol}
+                          </span>
                         </DocumentSymbol>
                       )}
-
                     </div>
                   </td>
-                  <td className="min-w-0 py-1 pr-2 align-baseline">
+                  <td className={mandateDetailTableCellClassName}>
                     <p
                       className="truncate text-foreground"
                       title={m.title ?? undefined}
@@ -165,7 +188,9 @@ export function MandateVersionHistory({
                       {m.title}
                     </p>
                   </td>
-                  <td className="py-1 pr-2 text-right align-baseline text-foreground">
+                  <td
+                    className={`${mandateDetailTableCellClassName} text-right`}
+                  >
                     <WordCount metrics={m.text_metrics} />
                   </td>
                   <td className="py-1 text-right align-baseline text-foreground">

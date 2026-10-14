@@ -36,7 +36,8 @@ export type RelatedItemsCellText = Record<
   | 'viewClusterResolutions'
   | 'viewResolutions'
   | 'unavailable'
-  | 'countsLoading',
+  | 'countsLoading'
+  | 'clusterDisclaimer',
   string
 >
 
@@ -187,6 +188,9 @@ export function RelatedItemsCell({
             )}
           </section>
         ))}
+        <p className="border-t border-border pt-3 text-xs text-muted-foreground">
+          {text.clusterDisclaimer}
+        </p>
       </div>
     </DisclosurePopover>
   )

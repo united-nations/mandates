@@ -4,12 +4,27 @@
  */
 
 export const explainerTexts = {
+  pageTitles: {
+    sources: 'Mandate Registry — Mandate sources',
+    agendas: 'Mandate Registry — Intergovernmental agendas',
+    entities: 'Mandate Registry — UN entities and programmes',
+    mandate: '{symbol} — Mandate Registry',
+    about: 'About the Mandate Registry',
+  },
   secretariatNavigation: {
     label: 'Secretariat navigation',
     mandateSources: 'Mandate sources',
-    entitiesAndPrograms: 'Entities and programmes',
-    agendaItems: 'Agenda items',
+    entitiesAndPrograms: 'UN entities and programmes',
+    agendaItems: 'Intergovernmental agendas',
     reports: 'Reports',
+    explainers: {
+      sources:
+        'Find resolutions and other documents that establish mandates. Explore their versions, see where they are cited in the budget, and find reports submitted under them.',
+      agendas:
+        'Explore the agenda items under which intergovernmental bodies consider their work. Select an item to find related mandate documents.',
+      entities:
+        'Explore UN entities and their programmes. See which mandate documents they cite and compare historical expenditure.',
+    },
   },
   secretariatReports: {
     heading: 'Reports',
@@ -20,6 +35,8 @@ export const explainerTexts = {
     link: 'Explore Secretary-General’s reports',
   },
   entitiesAndProgrammes: {
+    clusterDisclaimer:
+      'These clusters group entities and programmes to help you explore. They do not represent official UN structures or reporting relationships.',
     search: 'Search entities and programmes',
     cluster: 'Filter by cross-cutting topics',
     allClusters: 'No filters',
@@ -238,7 +255,9 @@ export const explainerTexts = {
   entityExpenditure: {
     heading: 'Entity expenditure',
     loading: 'Loading expenditure…',
-    note: 'Historical expenditure covers the entity or named subprogramme, not this mandate. Financial reporting periods appear in the tooltips and may differ from the citation budget cycle.',
+    note:
+      'Historical expenditure covers the complete programme or subprogramme, not this mandate.',
+    overview: 'For an overview of all UN entities and programmes, see',
     period: 'Reporting period',
     source: 'Source data',
     detailHeading: 'Historical expenditure (USD)',
@@ -286,6 +305,7 @@ export const explainerTexts = {
         'Paragraph content is machine-extracted from UN documents. For authoritative content, please refer to the official UN document.',
     },
     citationCounts: {
+      programmeTitle: 'Title',
       title: 'Who cites this mandate in the budget?',
       location: 'Entity',
       programme: '(Sub-)Programme',
@@ -303,8 +323,31 @@ export const explainerTexts = {
         'Extracted automatically from each entity’s budget submission.',
     },
     sgReports: {
+      title: 'Title',
+      symbol: 'Symbol',
+      year: 'Year',
+      resolution: 'Mandate resolution',
       disclaimer:
         'Identified automatically from the metadata in each report’s UN Digital Library catalogue record. This can be an incomplete picture of which reports were submitted under this mandate.',
+    },
+    sgReportsPageOne: {
+      title: 'Which reports state they were submitted under this mandate?',
+      disclaimer:
+        'Read automatically from what each report states, in its opening pages, it was submitted under. Only reports that have been read are included, and a report that does not state this in its opening pages is not listed.',
+      notAccepted:
+        'No reports are listed here yet: links read from the reports themselves have not been approved for display.',
+    },
+    sgReportsUnion: {
+      title: 'Which reports were submitted under this mandate?',
+      disclaimer:
+        'Identified automatically from two sources: what each report states in its opening pages, and the metadata in each report’s UN Digital Library catalogue record. Reports cover the recorded versions of this mandate; each row lists the specific mandate documents linked by those sources.',
+      statedInReport: 'Stated in the report',
+      perCatalogueNotes: 'Per catalogue notes',
+      notAccepted:
+        'Links read from the reports themselves have not been approved for display yet, so only reports found through the catalogue notes are listed.',
+      annexChipTitle:
+        'Per the catalogue notes, an annex to this report, rather than the report itself, was submitted pursuant to this resolution.',
+      annexNotePrefix: 'Per the catalogue notes:',
     },
     versionHistory: {
       collectionDisclaimer:
@@ -316,9 +359,17 @@ export const explainerTexts = {
     },
   },
   agendaItems: {
+    clusterDisclaimer:
+      'These clusters group related agenda items to help you explore. They are not official classifications of intergovernmental work.',
     sessionWithYears: '{session} {years}',
     body: 'Agenda body',
     search: 'Search agenda items',
+    committee: 'Committee',
+    allCommittees: 'All committees',
+    noCommitteeTag: 'No committee tag',
+    searchCommittees: 'Search committees',
+    clearCommitteeSearch: 'Clear committee search',
+    noCommitteeOptions: 'No matching committees.',
     noResults: 'No matching agenda items.',
     ga: 'General Assembly',
     ecosoc: 'Economic and Social Council',

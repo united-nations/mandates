@@ -1,11 +1,13 @@
 import { Suspense } from 'react'
+import type { Metadata } from 'next'
+import { explainerTexts } from '@/lib/en_text_contents'
 import { notFound } from 'next/navigation'
 import { decodeUrlSegments } from '@/lib/utils'
 
 import { getMandateBySymbol, getResolutionSeries } from '@/lib/data/mandates'
 import { getAllEntities } from '@/lib/data/entities'
 import { getRelatedMandates } from '@/lib/data/related'
-import { getSgReportsMandatedByResolution } from '@/lib/data/sg-report-links'
+import { getMandatedSgReports } from '@/lib/data/mandated-sg-reports'
 import {
   SHOW_MANDATED_SG_REPORTS,
   SHOW_RELATED_MANDATES,
@@ -17,13 +19,25 @@ import { CitationCounts } from '@/components/CitationCounts'
 import { CitationCountsWithExpenditure } from '@/components/CitationCountsWithExpenditure'
 import { detailSectionListClassName } from '@/components/MandateDetailUi'
 import { MandateMetadata } from '@/components/MandateMetadata'
-import { MandateSgReports } from '@/components/MandateSgReports'
+import { MandatedSgReportsBlock } from '@/components/MandatedSgReportsBlock'
 import { MandateTopics } from '@/components/MandateTopics'
 import { MandateVersionHistory } from '@/components/MandateVersionHistory'
 
 interface ModalMandatePageProps {
   params: Promise<{ segments: string[] }>
   searchParams: Promise<Record<string, string | string[] | undefined>>
+}
+
+export async function generateMetadata({
+  params,
+}: Pick<ModalMandatePageProps, 'params'>): Promise<Metadata> {
+  const { segments } = await params
+  return {
+    title: explainerTexts.pageTitles.mandate.replace(
+      '{symbol}',
+      decodeUrlSegments(segments)
+    ),
+  }
 }
 
 export default async function ModalMandatePage({
@@ -45,9 +59,7 @@ export default async function ModalMandatePage({
       // Flagged-off sections are skipped entirely, so the detail page does not
       // pay for their queries.
       SHOW_RELATED_MANDATES ? getRelatedMandates(documentSymbol) : [],
-      SHOW_MANDATED_SG_REPORTS
-        ? getSgReportsMandatedByResolution(documentSymbol)
-        : [],
+      SHOW_MANDATED_SG_REPORTS ? getMandatedSgReports(documentSymbol) : null,
     ])
 
   if (!mandate) notFound()
@@ -67,14 +79,26 @@ export default async function ModalMandatePage({
             series={series}
           />
         )}
-        <Suspense fallback={<CitationCounts mandate={mandate} entities={entities} budgetVersion={ppbVersion} />}>
-          <CitationCountsWithExpenditure mandate={mandate} entities={entities} budgetVersion={ppbVersion} />
+        <Suspense
+          fallback={
+            <CitationCounts
+              mandate={mandate}
+              entities={entities}
+              budgetVersion={ppbVersion}
+            />
+          }
+        >
+          <CitationCountsWithExpenditure
+            mandate={mandate}
+            entities={entities}
+            budgetVersion={ppbVersion}
+          />
         </Suspense>
+        {sgReports && <MandatedSgReportsBlock block={sgReports} />}
         <MandateTopics
           subjects={mandate.subject_headings ?? []}
           related={related}
         />
-        {SHOW_MANDATED_SG_REPORTS && <MandateSgReports reports={sgReports} />}
         {/* The document's own text is the expensive part and the last thing
             read, so it must not hold up the four answers above it. Streaming
             it lets everything else paint immediately; the section renders its

@@ -33,7 +33,7 @@ const resources = [
     title: 'UN Document Diff Viewer',
     description:
       'Compare versions of UN documents side by side and track the changes.',
-    href: 'https://diff.un-two-zero.dev/',
+    href: 'https://diff.un-two-zero.org/',
     icon: GitCompare,
   },
   {
