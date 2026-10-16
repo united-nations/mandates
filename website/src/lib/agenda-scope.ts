@@ -83,10 +83,14 @@ export const agendaResolutionReferenceCte = () => `
     WHERE dl.deleted_at IS NULL
   )`
 
-/** Uses only official item tokens supplied by the mirrored hierarchy. */
+/** Uses only official item tokens supplied by the mirrored hierarchy.
+ * GA, ECOSOC and HRC scopes take their symbols pre-resolved (agendaScopeSymbols):
+ * embedding the reference scans here re-ran them in every filtered query on the
+ * page, and the page's concurrent queries ran past the database timeout. */
 export function agendaResolutionPredicate(
   scope: AgendaScope | null,
-  start: number
+  start: number,
+  symbols: string[] | undefined
 ) {
   if (!scope) return { predicate: 'FALSE', params: [] as (string | string[])[] }
   if (scope.body === 'SC') {
@@ -103,19 +107,12 @@ export function agendaResolutionPredicate(
       params: [symbols],
     }
   }
+  if (!symbols)
+    throw new Error(
+      `Agenda scope ${scope.body} ${scope.session} ${scope.item} reached the filter without resolved symbols`
+    )
   return {
-    predicate: `d.ppb_full_document_symbol IN (
-      WITH ${agendaResolutionReferenceCte()}
-      SELECT symbol FROM agenda_resolution_refs a
-      WHERE ${normalizedDocumentSql("a.reference->>'doc'")} ${scope.body === 'HRC' ? `= ANY($${start}::text[])` : `= $${start}`}
-      ${scope.body === 'HRC' ? `AND ${normalizedDocumentSql('a.symbol')} ~ '^A/HRC/'` : ''}
-      AND ${normalizedAgendaItemSql("a.reference->>'item'")} = ANY($${start + 1}::text[])
-    )`,
-    params: [
-      scope.body === 'HRC'
-        ? agendaDocumentSymbols(scope.body, scope.session)
-        : agendaDocumentSymbol(scope.body, scope.session),
-      scope.items,
-    ],
+    predicate: `d.ppb_full_document_symbol = ANY($${start}::text[])`,
+    params: [symbols],
   }
 }

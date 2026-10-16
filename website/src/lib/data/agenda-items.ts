@@ -5,7 +5,8 @@ import { createHash } from 'node:crypto'
 import { queryMany } from '../db/query'
 import { withRequestQueryCache } from '../db/request-query-cache'
 import { buildAgendaTree, validAgendaRow, type MirroredAgendaRow, type AgendaReference } from '#lib/agenda-tree'
-import { agendaDocumentSymbols, agendaResolutionReferenceCte, normalizedDocumentSql, type AgendaBody } from '#lib/agenda-scope'
+import { agendaDocumentSymbols, agendaResolutionReferenceCte, normalizeAgendaItem, normalizedDocumentSql, parseAgendaScope, type AgendaBody } from '#lib/agenda-scope'
+import type { FilterOptions } from '@/types'
 import { buildHrcAgenda, hrcAgendaSessions } from '#lib/hrc-agenda'
 import { buildScAgenda, type ScRegistryResolution } from '#lib/sc-agenda'
 import { scAgendaSnapshot, scAgendaSessions, getScAgendaSnapshot } from '#lib/sc-agenda-snapshot'
@@ -44,6 +45,21 @@ const readReferences = unstable_cache(
 const loadReferences = cache((body: AgendaBody, session: string) =>
   readReferences(body, agendaDocumentSymbols(body, session))
 )
+
+/** Symbols an agenda-scope link opens, read from the same cached references the
+ * list page counts, so the arrow's count and the filtered catalogue cannot
+ * disagree. SC scopes keep their own snapshot-driven predicate (undefined here),
+ * as does an absent or invalid scope. */
+export async function agendaScopeSymbols(filters: FilterOptions): Promise<string[] | undefined> {
+  if (filters.related_scope || !filters.agenda_scope) return undefined
+  const scope = parseAgendaScope(filters.agenda_scope)
+  if (!scope || scope.body === 'SC') return undefined
+  const references = await loadReferences(scope.body, scope.session)
+  return [...new Set(references.filter(ref => {
+    const token = ref.item === null ? null : normalizeAgendaItem(ref.item)
+    return token !== null && scope.items.includes(token)
+  }).map(ref => ref.symbol))].sort()
+}
 const readScRegistry = unstable_cache(
   (year: string, symbols: string[]) => queryMany<ScRegistryResolution>(scRegistryResolutionSql(1), [symbols]),
   ['agenda-sc-registry-v2', createHash('sha256').update(scRegistryResolutionSql(1)).digest('hex')],

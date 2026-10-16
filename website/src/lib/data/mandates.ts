@@ -45,6 +45,7 @@ import { SUBJECT_DOMAIN_LABELS } from '@/lib/filter-constants'
 import { citationScope, citationScopeKey, parseCitationScope, citationScopePredicates } from '@/lib/citation-budget-location'
 import type { DetailBudgetLocation } from '@/types'
 import { agendaResolutionPredicate, parseAgendaScope } from '@/lib/agenda-scope'
+import { agendaScopeSymbols } from './agenda-items'
 import { relatedResolutionPredicate } from '@/lib/related-agenda'
 import {
   pairKey,
@@ -253,8 +254,11 @@ const KEYWORD_SEARCH_FIELDS: SearchField[] = [
   { expr: 'd.subjects', fold: 'case', array: true },
 ]
 
+// agendaSymbols is agendaScopeSymbols(filters), resolved by the async caller;
+// required so that a new caller cannot silently skip it.
 function buildFilterClauses(
   filters: FilterOptions,
+  agendaSymbols: string[] | undefined,
   paramOffset = 0
 ): FilterClauses {
   const clauses: string[] = []
@@ -554,7 +558,7 @@ function buildFilterClauses(
     params.push(...related.params)
     paramIndex += related.params.length
   } else if (filters.agenda_scope) {
-    const agenda = agendaResolutionPredicate(parseAgendaScope(filters.agenda_scope),paramIndex)
+    const agenda = agendaResolutionPredicate(parseAgendaScope(filters.agenda_scope),paramIndex,agendaSymbols)
     clauses.push(agenda.predicate)
     params.push(...agenda.params)
     paramIndex+=agenda.params.length
@@ -633,7 +637,7 @@ function buildFilterClauses(
  */
 function buildFilteredDocsCTE(
   filters: FilterOptions,
-  opts: { selectCols: string; groupCols: string; name?: string }
+  opts: { selectCols: string; groupCols: string; name?: string; agendaSymbols: string[] | undefined }
 ): {
   cte: string
   params: SqlParam[]
@@ -641,7 +645,7 @@ function buildFilteredDocsCTE(
   versionParam: string
 } {
   const { clauses, params, havingClauses, versionClause, versionParam } =
-    buildFilterClauses(filters)
+    buildFilterClauses(filters, opts.agendaSymbols)
   const whereClause = clauses.length > 0 ? `WHERE ${clauses.join(' AND ')}` : ''
   const havingClause =
     havingClauses.length > 0 ? `HAVING ${havingClauses.join(' AND ')}` : ''
@@ -718,6 +722,7 @@ export async function getMandates(
   const offset = (page - 1) * limit
 
   const { cte, params } = buildFilteredDocsCTE(filters, {
+    agendaSymbols: await agendaScopeSymbols(filters),
     selectCols: `
         d.ppb_full_document_symbol,
         d.ppb_link,
@@ -1419,6 +1424,7 @@ const getFilteredAggregates = cache((filters: FilterOptions = {}) =>
     async () => {
       const { cte, params, versionClause, versionParam } =
         buildFilteredDocsCTE(filters, {
+          agendaSymbols: await agendaScopeSymbols(filters),
           selectCols: `d.ppb_full_document_symbol, d.ppb_body, d.ppb_type,
             d.ppb_year, d.subjects, d.agenda_items,
             COUNT(c.id) AS citation_count`,
@@ -1604,6 +1610,7 @@ export const getFilteredDocumentCount = cache((filters: FilterOptions = {}) =>
       // bundle, and making each of those compute every facet would cost far
       // more than the two small counts it saves.
       const { cte, params } = buildFilteredDocsCTE(filters, {
+        agendaSymbols: await agendaScopeSymbols(filters),
         selectCols: 'd.ppb_full_document_symbol',
         groupCols: 'd.ppb_full_document_symbol',
       })
@@ -1851,7 +1858,7 @@ export async function getEntityCounts(filters: FilterOptions = {}): Promise<Enti
  * Get organ counts for the sidebar
  */
 export async function getOrganCounts(filters: FilterOptions = {}): Promise<OrganWithCount[]> {
-  const { clauses, params, havingClauses, versionClause } = buildFilterClauses(filters)
+  const { clauses, params, havingClauses, versionClause } = buildFilterClauses(filters, await agendaScopeSymbols(filters))
   const whereClause = clauses.length > 0 ? `WHERE ${clauses.join(' AND ')}` : ''
   const allHaving = ['d.ppb_body IS NOT NULL', "d.ppb_body != ''", ...havingClauses]
   const havingClause = `HAVING ${allHaving.join(' AND ')}`
@@ -1909,6 +1916,7 @@ async function _getOrganHierarchyInner(
   filters: FilterOptions
 ): Promise<OrganGroup[]> {
   const { cte, params } = buildFilteredDocsCTE(filters, {
+    agendaSymbols: await agendaScopeSymbols(filters),
     selectCols: 'd.ppb_full_document_symbol, d.ppb_body',
     groupCols: 'd.ppb_full_document_symbol, d.ppb_body',
   })
@@ -2008,6 +2016,7 @@ async function _getDocumentTypeCatalogueInner(
   filters: FilterOptions
 ): Promise<DocumentTypeCatalogue> {
   const { cte, params } = buildFilteredDocsCTE(filters, {
+    agendaSymbols: await agendaScopeSymbols(filters),
     selectCols: 'd.ppb_full_document_symbol, d.ppb_type',
     groupCols: 'd.ppb_full_document_symbol, d.ppb_type',
   })
@@ -2454,7 +2463,7 @@ async function _getBudgetHierarchyInner(
   // as well. Selecting a node therefore narrows the tree to that node's branch
   // rather than keeping its siblings on display, so the active-filter chip is
   // the way back out.
-  const built = buildFilterClauses(filters)
+  const built = buildFilterClauses(filters, await agendaScopeSymbols(filters))
   const whereClause = built.clauses.length
     ? `WHERE ${built.clauses.join(' AND ')}`
     : ''
@@ -2467,6 +2476,7 @@ async function _getBudgetHierarchyInner(
   })
   if (built.havingClauses.length) {
     const filtered = buildFilteredDocsCTE(filters, {
+      agendaSymbols: await agendaScopeSymbols(filters),
       selectCols: 'd.ppb_full_document_symbol',
       groupCols: 'd.ppb_full_document_symbol',
     })
@@ -2808,6 +2818,7 @@ export async function getSubjectHierarchy(
   // Conjunctive: the tree's own levels (subject, subject_domain) constrain it
   // too, like every other count on the page.
   const { cte, params } = buildFilteredDocsCTE(filters, {
+    agendaSymbols: await agendaScopeSymbols(filters),
     selectCols: 'd.ppb_full_document_symbol, d.subjects',
     groupCols: 'd.ppb_full_document_symbol, d.subjects',
   })
