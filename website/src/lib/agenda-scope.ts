@@ -61,15 +61,18 @@ export const adoptedResolutionSql = (value: string) =>
 export const normalizedAgendaItemSql = (value: string) =>
   `REGEXP_REPLACE(REGEXP_REPLACE(LOWER(REGEXP_REPLACE(REGEXP_REPLACE(NORMALIZE(${value}, NFKC), '^[[:space:]]+|[[:space:]]+$', '', 'g'), '(\\[[0-9]+\\])+$', '')), '[[:space:]()]', '', 'g'), '^0+([0-9])', '\\1')`
 
-/** Read-only reconciliation of every registered mandate type and its DL agenda tags. */
-export const agendaResolutionReferenceCte = () => `
+/** One representative symbol per registered document identity. */
+export const agendaResolutionRegistryCte = () => `
   agenda_resolution_registry AS MATERIALIZED (
     SELECT MIN(d.ppb_full_document_symbol) AS symbol,
       ${normalizedDocumentSql('d.ppb_full_document_symbol')} AS identity
     FROM public.unified_documents d
     WHERE ${mandateMembershipSql('d')}
     GROUP BY ${normalizedDocumentSql('d.ppb_full_document_symbol')}
-  ),
+  )`
+
+/** Read-only reconciliation of every registered mandate type and its DL agenda tags. */
+export const agendaResolutionReferenceCte = () => `${agendaResolutionRegistryCte()},
   agenda_resolution_refs AS MATERIALIZED (
     SELECT r.symbol, a AS reference, 'registry' AS provenance
     FROM public.unified_documents d

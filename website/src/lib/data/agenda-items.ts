@@ -5,7 +5,7 @@ import { createHash } from 'node:crypto'
 import { queryMany } from '../db/query'
 import { withRequestQueryCache } from '../db/request-query-cache'
 import { buildAgendaTree, validAgendaRow, type MirroredAgendaRow, type AgendaReference } from '#lib/agenda-tree'
-import { agendaDocumentSymbols, agendaResolutionReferenceCte, normalizeAgendaItem, normalizedDocumentSql, parseAgendaScope, type AgendaBody } from '#lib/agenda-scope'
+import { agendaDocumentSymbols, agendaResolutionRegistryCte, normalizeAgendaItem, normalizedDocumentSql, parseAgendaScope, type AgendaBody } from '#lib/agenda-scope'
 import type { FilterOptions } from '@/types'
 import { buildHrcAgenda, hrcAgendaSessions } from '#lib/hrc-agenda'
 import { buildScAgenda, type ScRegistryResolution } from '#lib/sc-agenda'
@@ -18,13 +18,37 @@ export const AGENDA_MIRROR_SQL = `
   FROM un_daily_mirror.igov_agenda_items
   WHERE igov_body IN ('GA', 'ECOSOC') ORDER BY row_id`
 
-export const agendaReferencesSql = (body: AgendaBody = 'GA') => `
-  WITH ${agendaResolutionReferenceCte()}
+// The agenda-document filter runs inside each branch, before any document symbol
+// is normalised or joined to the registry: filtering after the join normalised
+// and sorted every Digital Library symbol (~780k) to keep about a thousand refs.
+// MATERIALIZED keeps the planner from joining the registry ahead of the filter.
+// Same rows as filtering agendaResolutionReferenceCte's refs by document.
+export const agendaReferencesSql = (body: AgendaBody = 'GA') => {
+  const agendaDocument = `${normalizedDocumentSql("a.reference->>'doc'")} ${body === 'HRC' ? '= ANY($1::text[])' : '= $1'}`
+  return `
+  WITH ${agendaResolutionRegistryCte()},
+  agenda_document_refs AS MATERIALIZED (
+    SELECT d.ppb_full_document_symbol AS document_symbol, a.reference, 'registry' AS provenance
+    FROM public.unified_documents d
+    CROSS JOIN LATERAL jsonb_array_elements(COALESCE(d.agenda_items, '[]'::jsonb)) AS a(reference)
+    WHERE ${agendaDocument}
+    UNION ALL
+    SELECT dl.document_symbol, a.reference, 'digital_library' AS provenance
+    FROM digitallibrary.documents dl
+    CROSS JOIN LATERAL jsonb_array_elements(COALESCE(dl.agenda_items, '[]'::jsonb)) AS a(reference)
+    WHERE dl.deleted_at IS NULL
+      AND ${agendaDocument}
+  ),
+  agenda_resolution_refs AS MATERIALIZED (
+    SELECT r.symbol, m.reference, m.provenance
+    FROM agenda_document_refs m
+    JOIN agenda_resolution_registry r ON r.identity = ${normalizedDocumentSql('m.document_symbol')}
+  )
   SELECT DISTINCT symbol, reference->>'item' AS item,
     reference->>'desc' AS description, reference->>'topic' AS topic, provenance
   FROM agenda_resolution_refs a
-  WHERE ${normalizedDocumentSql("a.reference->>'doc'")} ${body === 'HRC' ? '= ANY($1::text[])' : '= $1'}
-  ${body === 'HRC' ? `AND ${normalizedDocumentSql('a.symbol')} ~ '^A/HRC/'` : ''}`
+  ${body === 'HRC' ? `WHERE ${normalizedDocumentSql('a.symbol')} ~ '^A/HRC/'` : ''}`
+}
 
 // Successful JSON rows refresh every five minutes; query changes invalidate the key.
 const loadMirror = cache(unstable_cache(
