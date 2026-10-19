@@ -1,23 +1,34 @@
 /**
- * One bounded lookup per page/history, never per row. Series order is rebuilt
- * from the complete series, independently of table filters and pagination.
+ * Shared eligibility for page/history display and full-result metric sorting.
+ * Series order uses the complete series, independently of filters/pagination.
+ * Window functions avoid self-joining the unindexed chronology CTE at catalogue
+ * scale. Project only scalar metrics: token_text must never be materialized.
  * Conservative freshness: unchanged reparses need metrics revalidation too.
  */
-export const textMetricsSql = `
-WITH requested AS (SELECT unnest($1::text[]) AS symbol),
-selected_groups AS (
+export function buildTextMetricsSql(
+  requestedSql = 'SELECT unnest($1::text[]) AS symbol'
+): string {
+  return `
+WITH requested AS (${requestedSql}),
+series_symbols AS (
+  SELECT rs.document_symbol, rs.recid, rs.series_key, rs.un_body, rs.doc_type,
+    rs.is_collection,
+    count(*) OVER (PARTITION BY rs.document_symbol) AS symbol_occurrences
+  FROM digitallibrary.resolution_series rs
+), selected_groups AS (
   SELECT DISTINCT rs.series_key, rs.un_body, rs.doc_type
   FROM digitallibrary.resolution_series rs
   JOIN requested r ON r.symbol = rs.document_symbol
 ), relevant AS (
   SELECT DISTINCT ON (rs.document_symbol) rs.document_symbol, rs.recid,
     rs.series_key, rs.un_body, rs.doc_type, rs.is_collection, d.date_publication,
-    (SELECT count(*) FROM digitallibrary.resolution_series duplicates
-      WHERE duplicates.document_symbol = rs.document_symbol) AS symbol_occurrences
-  FROM digitallibrary.resolution_series rs
-  JOIN selected_groups g ON g.series_key = rs.series_key
-    AND g.un_body = rs.un_body AND g.doc_type = rs.doc_type
+    rs.symbol_occurrences
+  FROM series_symbols rs
   LEFT JOIN digitallibrary.documents d ON d.recid = rs.recid
+  WHERE EXISTS (
+    SELECT 1 FROM selected_groups g WHERE g.series_key = rs.series_key
+      AND g.un_body = rs.un_body AND g.doc_type = rs.doc_type
+  )
   ORDER BY rs.document_symbol, rs.recid
 ), ordered AS (
   SELECT r.*,
@@ -32,19 +43,24 @@ selected_groups AS (
 ), pairs AS (
   SELECT o.*,
     NOT o.is_collection AND NOT o.uncertain_series AND o.date_count = 1
-      AND prev.date_count = 1 AND o.predecessor IS NOT NULL AS valid_pair
+      AND lag(o.date_count) OVER (PARTITION BY series_key, un_body, doc_type
+        ORDER BY date_publication NULLS LAST, document_symbol) = 1
+      AND o.predecessor IS NOT NULL AS valid_pair
   FROM ordered o
-  LEFT JOIN ordered prev ON prev.document_symbol = o.predecessor
-), eligible AS (
-  SELECT tm.* FROM digitallibrary.document_text_metrics tm
+), needed_symbols AS (
+  SELECT symbol FROM requested
+  UNION
+  SELECT p.predecessor FROM pairs p JOIN requested r ON r.symbol = p.document_symbol
+  WHERE p.predecessor IS NOT NULL
+), eligible AS NOT MATERIALIZED (
+  SELECT tm.symbol_normalized, tm.word_count, tm.content_sha256
+  FROM digitallibrary.document_text_metrics tm
+  JOIN needed_symbols n ON n.symbol = tm.symbol_normalized
   JOIN digitallibrary.document_files f USING (symbol_normalized, lang)
   JOIN digitallibrary.document_parses p USING (symbol_normalized, lang)
   WHERE tm.lang = 'en' AND tm.text_profile_version = 'substantive-v1'
     AND tm.metric_version = 'unicode-word-v1' AND f.status = 'parsed'
     AND tm.parser_version = p.parser_version AND tm.source_parsed_at = p.parsed_at
-    AND (tm.symbol_normalized IN (SELECT symbol FROM requested)
-      OR tm.symbol_normalized IN (SELECT predecessor FROM pairs JOIN requested
-        ON requested.symbol = pairs.document_symbol))
 )
 SELECT r.symbol,
   CASE WHEN pair.document_symbol IS NULL THEN 'not_in_series'
@@ -72,3 +88,6 @@ LEFT JOIN digitallibrary.resolution_series_comparisons sc
   ON sc.symbol_normalized = r.symbol AND sc.lang = 'en'
   AND sc.text_profile_version = 'substantive-v1' AND sc.method_version = 'token-levenshtein-v1'
 `
+}
+
+export const textMetricsSql = buildTextMetricsSql()

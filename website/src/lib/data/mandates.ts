@@ -9,6 +9,7 @@ import { mandateMembershipSql, versionPredicateSql } from '@/lib/mandate-members
 import { cache } from 'react'
 import { normalizePagination } from '#lib/pagination'
 import { getDocumentTextMetrics } from './text-metrics'
+import { buildTextMetricsSql } from './text-metrics-sql'
 import { getDocumentPdfUrl } from './source-links'
 import { getHistoricalDocument } from './historical-document'
 import type { DocumentTextMetrics } from '../text-analytics'
@@ -701,6 +702,14 @@ function buildOrderByClause(sortBy?: string): string {
       return 'ORDER BY num_citations DESC, num_entities DESC'
     case 'citations_asc':
       return 'ORDER BY CASE WHEN num_entities = 0 THEN 0 ELSE num_citations END ASC'
+    case 'similarity_desc':
+      return 'ORDER BY c.similarity_to_previous DESC NULLS LAST, c.ppb_full_document_symbol ASC'
+    case 'similarity_asc':
+      return 'ORDER BY c.similarity_to_previous ASC NULLS LAST, c.ppb_full_document_symbol ASC'
+    case 'word_count_desc':
+      return 'ORDER BY c.word_count DESC NULLS LAST, c.ppb_full_document_symbol ASC'
+    case 'word_count_asc':
+      return 'ORDER BY c.word_count ASC NULLS LAST, c.ppb_full_document_symbol ASC'
     case 'year_desc':
       return 'ORDER BY c.ppb_year DESC NULLS LAST'
     case 'year_asc':
@@ -721,8 +730,15 @@ export async function getMandates(
   const { page, limit } = normalizePagination(options.page, options.limit)
   const offset = (page - 1) * limit
 
-  const { cte, params } = buildFilteredDocsCTE(filters, {
+  const metricSort = [
+    'similarity_asc',
+    'similarity_desc',
+    'word_count_asc',
+    'word_count_desc',
+  ].includes(filters.sort_by ?? '')
+  const { cte: baseCte, params } = buildFilteredDocsCTE(filters, {
     agendaSymbols: await agendaScopeSymbols(filters),
+    name: metricSort ? 'base_filtered_docs' : 'filtered_docs',
     selectCols: `
         d.ppb_full_document_symbol,
         d.ppb_link,
@@ -763,6 +779,18 @@ export async function getMandates(
     groupCols:
       'd.ppb_full_document_symbol, d.ppb_link, d.ppb_year, d.ppb_body, d.ppb_description, d.display_title, d.ppb_type, d.subjects, d.agenda_items',
   })
+
+  // Reuse display eligibility so stale or ambiguous scores sort as missing.
+  // Only metric sorting needs this lookup across the full filtered set.
+  const cte = metricSort
+    ? `${baseCte}, sort_metrics AS (
+        ${buildTextMetricsSql('SELECT ppb_full_document_symbol AS symbol FROM base_filtered_docs')}
+      ), filtered_docs AS (
+        SELECT d.*, tm.word_count, tm.similarity_to_previous
+        FROM base_filtered_docs d
+        LEFT JOIN sort_metrics tm ON tm.symbol = d.ppb_full_document_symbol
+      )`
+    : baseCte
 
   // Bind a value and return its 1-based placeholder index. Using the index
   // returned by the push itself (instead of params.length + N arithmetic)
@@ -3332,7 +3360,7 @@ async function _getMandateListInner(
 // older deploy are never served to newer client code (the cache key is only
 // the filters, and entries persist for `revalidate`). This is the
 // data-version guard the refactor plan called for.
-const PAGE_DATA_CACHE_VERSION = 'v8-exact-budget-location-live-metrics'
+const PAGE_DATA_CACHE_VERSION = 'v10-set-based-metric-sorts'
 
 /**
  * The shared slice is invariant to grouping and pagination, so its cache key
