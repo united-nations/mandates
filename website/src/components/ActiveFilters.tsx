@@ -5,11 +5,16 @@ import { Button } from '@/components/ui/button'
 import { useFilters } from '@/contexts/FilterContext'
 import {
   BUDGET_STREAM_LABELS,
+  NO_CITING_ENTITY,
+  NO_CITING_ENTITY_LABEL,
   SUBJECT_DOMAIN_LABELS,
 } from '@/lib/filter-constants'
 import { FOUNDATIONAL_LABEL } from '@/lib/foundational'
 import { explainerTexts } from '@/lib/en_text_contents'
-import { parseAgendaScope, agendaScopeItemLabel } from '@/lib/agenda-scope-client'
+import {
+  parseAgendaScope,
+  agendaScopeItemLabel,
+} from '@/lib/agenda-scope-client'
 import { relatedScopeLabel } from '@/lib/related-agenda-label'
 import {
   BUDGET_LOCATION_KEYS,
@@ -115,17 +120,21 @@ export function ActiveFilters({
           {displayFilters.entity && displayFilters.entity !== 'all' && (
             <FilterBadge
               label={
-                <>
-                  Entity:&nbsp;
-                  <EntityName
-                    entityName={displayFilters.entity}
-                    entityLong={
-                      entitiesData.find(
-                        (e) => e.entity === displayFilters.entity
-                      )?.entity_long
-                    }
-                  />
-                </>
+                displayFilters.entity === NO_CITING_ENTITY ? (
+                  NO_CITING_ENTITY_LABEL
+                ) : (
+                  <>
+                    Entity:&nbsp;
+                    <EntityName
+                      entityName={displayFilters.entity}
+                      entityLong={
+                        entitiesData.find(
+                          (e) => e.entity === displayFilters.entity
+                        )?.entity_long
+                      }
+                    />
+                  </>
+                )
               }
               onClear={() => clearFilter('entity')}
             />

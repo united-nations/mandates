@@ -42,7 +42,7 @@ import {
   buildDirectBudgetCitations,
   buildQualifiedBudgetCitations,
 } from './budget-citation-sql'
-import { SUBJECT_DOMAIN_LABELS } from '@/lib/filter-constants'
+import { NO_CITING_ENTITY, SUBJECT_DOMAIN_LABELS } from '@/lib/filter-constants'
 import { citationScope, citationScopeKey, parseCitationScope, citationScopePredicates } from '@/lib/citation-budget-location'
 import type { DetailBudgetLocation } from '@/types'
 import { agendaResolutionPredicate, parseAgendaScope } from '@/lib/agenda-scope'
@@ -262,6 +262,8 @@ function buildFilterClauses(
   agendaSymbols: string[] | undefined,
   paramOffset = 0
 ): FilterClauses {
+  const selectedEntity =
+    filters.entity === NO_CITING_ENTITY ? undefined : filters.entity
   const clauses: string[] = []
   const params: SqlParam[] = []
   let paramIndex = paramOffset + 1
@@ -321,7 +323,7 @@ function buildFilterClauses(
   const hasBudgetLocation = Boolean(exactCitationScope || filters.budget_document || filters.budget_group || filters.budget_part || filters.section || filters.subprogramme)
   // Standalone entity selection is catalogue-wide. A location plus entity
   // must match one citation, handled together below.
-  if (filters.entity && !hasBudgetLocation) {
+  if (selectedEntity && !hasBudgetLocation) {
     clauses.push(`
       EXISTS (
         SELECT 1 FROM ppb2026.source_document_citations c2
@@ -330,8 +332,17 @@ function buildFilterClauses(
         AND ${versionClause('c2')}
       )
     `)
-    params.push(filters.entity)
+    params.push(selectedEntity)
     paramIndex++
+  }
+
+  if (filters.entity === NO_CITING_ENTITY) {
+    clauses.push(`NOT EXISTS (
+      SELECT 1 FROM ppb2026.source_document_citations ce
+      WHERE ce.ppb_full_document_symbol = d.ppb_full_document_symbol
+        AND NULLIF(TRIM(ce.entity), '') IS NOT NULL
+        AND ${versionClause('ce')}
+    )`)
   }
 
   // Cross-citing entity filter
@@ -440,9 +451,9 @@ function buildFilterClauses(
       locationPredicates.push(filters.budget_group ? "bdh.doc_type = 'pko'" : "bdh.doc_type = 'ppb'")
     }
     if (hierarchyLevels.some(level => level.value)) locationPredicates.push("bdh.doc_type = 'ppb'")
-    if (filters.entity) {
+    if (selectedEntity) {
       locationPredicates.push(`ch.entity = $${paramIndex}`)
-      params.push(filters.entity)
+      params.push(selectedEntity)
       paramIndex++
     }
     if (filters.budget_group) {
@@ -472,7 +483,7 @@ function buildFilterClauses(
   // DESA, foundationally" — rather than the weaker "foundational for somebody
   // and, separately, cited by DESA".
   if (filters.foundational === 'true') {
-    const entityPredicate = filters.entity
+    const entityPredicate = selectedEntity
       ? `AND cf.entity = $${paramIndex + 1}`
       : ''
     clauses.push(`
@@ -486,8 +497,8 @@ function buildFilterClauses(
     `)
     params.push(FOUNDATIONAL_PART_IN_DOCUMENT)
     paramIndex++
-    if (filters.entity) {
-      params.push(filters.entity)
+    if (selectedEntity) {
+      params.push(selectedEntity)
       paramIndex++
     }
   }
@@ -3314,7 +3325,7 @@ async function _getSharedPageDataInner(filters: FilterOptions) {
   ])
 
   let crossCitations: ApiResponse['sidebar']['crossCitations'] = []
-  if (filters.entity) {
+  if (filters.entity && filters.entity !== NO_CITING_ENTITY) {
     crossCitations = await getCrossCitations(filters.entity, filters.ppb_version)
   }
 

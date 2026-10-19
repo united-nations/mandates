@@ -13,6 +13,10 @@ import {
 } from '@/lib/data/mandates'
 import { getAllOrgans } from '@/lib/data/organs'
 import { resolveExploreCardStates } from '@/lib/explore-card-state'
+import {
+  NO_CITING_ENTITY,
+  NO_CITING_ENTITY_LABEL,
+} from '@/lib/filter-constants'
 import type { FilterOptions } from '@/types'
 
 type Entities = Awaited<ReturnType<typeof getAllEntities>>
@@ -30,7 +34,10 @@ const organLabel = (filters: FilterOptions, organs: Organs) =>
 const entityLabel = (filters: FilterOptions, entities: Entities) =>
   filters.entity
     ? {
-        code: filters.entity,
+        code:
+          filters.entity === NO_CITING_ENTITY
+            ? NO_CITING_ENTITY_LABEL
+            : filters.entity,
         longName:
           entities.find((entity) => entity.entity === filters.entity)
             ?.entity_long ?? null,
