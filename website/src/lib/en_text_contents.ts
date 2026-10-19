@@ -19,7 +19,7 @@ export const explainerTexts = {
     reports: 'Reports',
     explainers: {
       sources:
-        'Find resolutions and other documents that establish mandates. Explore their versions, see which entities are implementing them, and find reports submitted under them.',
+        'Find resolutions and other documents that establish mandates. Explore their versions, see which entities are implementing them, and find reports submitted under them. Click on a document in the table to see its details.',
       agendas:
         'Explore the agenda items under which intergovernmental bodies consider their work. Select an item to find related mandate source documents.',
       entities:
