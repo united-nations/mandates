@@ -34,7 +34,8 @@ export const dynamic = 'force-dynamic'
  * `lib/data/focal-points.ts`.
  */
 export default async function FocalPointDirectoryPage() {
-  const designations = await getFocalPointDirectorySummary()
+  const { designations, searchVocabulary } =
+    await getFocalPointDirectorySummary()
 
   return (
     <div className="text-foreground">
@@ -71,7 +72,10 @@ export default async function FocalPointDirectoryPage() {
         .
       </p>
 
-      <DirectorySummaryTable designations={designations} />
+      <DirectorySummaryTable
+        designations={designations}
+        searchVocabulary={searchVocabulary}
+      />
     </div>
   )
 }

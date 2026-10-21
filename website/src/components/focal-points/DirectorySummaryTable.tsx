@@ -18,12 +18,18 @@ import { typography } from '@/lib/typography'
 import {
   contactTelephone,
   COVERAGE_KINDS,
-  coverageClaimLabel,
   coverageKindCount,
-  entityClassLabel,
   entityClassGroupLabel,
   type DirectorySummaryDesignation,
+  type SearchVocabularyTerm,
 } from '@/lib/focal-point-constants'
+import {
+  designationSearchIndex,
+  matchSearch,
+  normaliseSearchText,
+  queryVariantForms,
+  type SearchMatch,
+} from '@/lib/focal-point-search'
 import {
   directorySummaryLayout,
   visibleSummaryColumns,
@@ -57,8 +63,11 @@ const ALIGN_CLASS: Record<string, string> = {
 
 export function DirectorySummaryTable({
   designations,
+  searchVocabulary,
 }: {
   designations: DirectorySummaryDesignation[]
+  /** Every live EOSG search term. Read to widen a query; never rendered. */
+  searchVocabulary: SearchVocabularyTerm[]
 }) {
   // Two pieces of state, not one. `open` drives the sheet; `shown` is the
   // record it is displaying and is NOT cleared on close, because Radix animates
@@ -112,21 +121,34 @@ export function DirectorySummaryTable({
     () =>
       designations.map((designation) => ({
         designation,
-        haystack: searchableText(designation, showsEntityClass),
+        index: designationSearchIndex(designation, showsEntityClass),
       })),
     [designations, showsEntityClass]
   )
 
-  const needle = query.trim().toLowerCase()
-  const visible = useMemo(
-    () =>
-      needle === ''
-        ? rows.map((row) => row.designation)
-        : rows
-            .filter((row) => row.haystack.includes(needle))
-            .map((row) => row.designation),
-    [rows, needle]
-  )
+  // What matched and why, in `lib/focal-point-search.ts`. An empty query lists
+  // every row and explains none; otherwise a row is in when it matches, in
+  // directory order, and `matches` carries the reason for the line under its
+  // entity. No ranking: the order is the directory's.
+  const needle = normaliseSearchText(query)
+  const { visible, matches } = useMemo(() => {
+    if (needle === '') {
+      return {
+        visible: rows.map((row) => row.designation),
+        matches: new Map<number, SearchMatch>(),
+      }
+    }
+    const variantForms = queryVariantForms(needle, searchVocabulary)
+    const matched = new Map<number, SearchMatch>()
+    const shown: DirectorySummaryDesignation[] = []
+    for (const row of rows) {
+      const match = matchSearch(row.index, needle, variantForms)
+      if (match === null) continue
+      matched.set(row.designation.id, match)
+      shown.push(row.designation)
+    }
+    return { visible: shown, matches: matched }
+  }, [rows, needle, searchVocabulary])
 
   const groups = useMemo(() => {
     if (!showsEntityClass) return [{ label: null, designations: visible }]
@@ -175,7 +197,8 @@ export function DirectorySummaryTable({
             iconClassName="left-4 h-5 w-5 group-focus-within/search:text-un-blue-text"
             // Exact wording, and it names only keywords on purpose. The search
             // also matches bodies, agenda items and document symbols — see
-            // searchableText — but the page does not offer them. A delegation
+            // designationSearchIndex in lib/focal-point-search.ts — but the
+            // page does not offer them. A delegation
             // that searched a document symbol and got one entity back would
             // read the result as a register of which entity owns that document.
             // It is not: it is what entities say they cover, and three of them
@@ -291,6 +314,7 @@ export function DirectorySummaryTable({
                       <DirectorySummaryCell
                         columnId={column.id}
                         designation={designation}
+                        match={matches.get(designation.id) ?? null}
                       />
                     </TableCell>
                   ))}
@@ -318,9 +342,12 @@ export function DirectorySummaryTable({
 function DirectorySummaryCell({
   columnId,
   designation,
+  match,
 }: {
   columnId: string
   designation: DirectorySummaryDesignation
+  /** Why the row matched the active search; null with no search active. */
+  match: SearchMatch | null
 }) {
   switch (columnId) {
     case 'entity': {
@@ -352,6 +379,27 @@ function DirectorySummaryCell({
           {designation.subUnit && (
             <div className="mt-1 text-sm text-foreground">
               {designation.subUnit}
+            </div>
+          )}
+          {/* Why this row is in the results, under the entity because that is
+              where the eye lands on a result, and in the widest column, so the
+              line rarely adds height to a row the contacts already make tall.
+              Quiet: the muted tier for the label, the matched words in the
+              body colour, which is what a reader is checking. Only for the two
+              matches the page explains; a match on a name or a symbol shows
+              nothing. */}
+          {match?.on === 'keyword' && (
+            <div className="mt-2 text-sm text-muted-foreground">
+              Matched on subject area:{' '}
+              <span className="font-medium text-foreground">
+                {match.keyword}
+              </span>
+            </div>
+          )}
+          {match?.on === 'term' && (
+            <div className="mt-2 text-sm text-muted-foreground">
+              Relevant to:{' '}
+              <span className="font-medium text-foreground">{match.term}</span>
             </div>
           )}
         </div>
@@ -476,65 +524,4 @@ function DirectorySummaryCell({
  */
 function stopRowClick(event: React.MouseEvent<HTMLAnchorElement>) {
   event.stopPropagation()
-}
-
-/**
- * Everything a row carries, as one lower-cased string to match substrings in.
- *
- * All of it, not only what the placeholder names: the entity's display name and
- * its code, its class label while the class column is shown — which now means
- * switched on by the reader, not merely permitted by the feature flag — the
- * sub-unit, every contact's name, title, address, telephone number and
- * working languages, the
- * functional mailbox, and every coverage claim of every kind — bodies, agenda
- * items, document symbols and keywords alike. A reader who pastes an address
- * or a document symbol finds the row; the interface simply does not advertise
- * the last three (see the placeholder's note). The class label is searched only
- * while it is rendered, so a search cannot match on a column the page does not
- * show.
- *
- * Case-insensitive substring matching and nothing else. No fuzzy distance, no
- * ranking, no stemming: this is a filter over a few dozen rows, and anything
- * cleverer would start deciding that a near-miss counts as coverage when the
- * entity never claimed it.
- *
- * `filter(Boolean)` drops the absent fields rather than defaulting them — a
- * designation with no functional mailbox contributes no text for one, which is
- * the truth about it.
- */
-function searchableText(
-  designation: DirectorySummaryDesignation,
-  showsEntityClass: boolean
-): string {
-  return [
-    designation.entity.name,
-    designation.entity.code,
-    showsEntityClass && designation.entity.entityClass !== null
-      ? [entityClassLabel(designation.entity.entityClass), entityClassGroupLabel(designation.entity.entityClass)].join(" ")
-      : null,
-    designation.subUnit,
-    designation.functionalMailbox,
-    ...designation.contacts.flatMap((contact) => [
-      contact.name,
-      contact.title,
-      contact.email,
-      // The number and the extension as two entries rather than the joined
-      // string, so that either matches on its own. Matching is a plain
-      // substring test over text stored exactly as it was typed, so a reader
-      // who pastes a number in a different spacing from the one the entity
-      // wrote will not find it. That is the cost of not normalising and it is
-      // the right side to err on: the alternative is this page deciding what
-      // two numbers are the same number.
-      contact.telephone,
-      contact.telephoneExtension,
-      ...(contact.workingLanguages ?? []),
-    ]),
-    // The claim as it renders, so a reader searching for the body an
-    // entity named itself finds the row. `claim.value` is the word
-    // "Other" there, which matches nothing anybody would type.
-    ...designation.coverage.map(coverageClaimLabel),
-  ]
-    .filter(Boolean)
-    .join(' ')
-    .toLowerCase()
 }
