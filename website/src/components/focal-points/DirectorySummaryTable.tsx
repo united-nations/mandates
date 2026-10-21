@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { ChevronRight } from 'lucide-react'
+import { ChevronRight, Phone } from 'lucide-react'
 import { Chip } from '@/components/ui/chip'
 import { SearchInput } from '@/components/SearchInput'
 import {
@@ -153,18 +153,26 @@ export function DirectorySummaryTable({
           column control on the right, hard against the table's right edge where
           the popover opens without overhanging the page margin. They wrap onto
           two rows on a narrow viewport rather than the search shrinking. */}
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        {/* The magnifier-and-underline treatment, not a box: `border-bottom` is
-            what every other search field in this app uses (the sidebars, the
-            column filter popovers, the budget tree), and it is the same
-            treatment the focal points application itself uses. */}
-        {/* Grows into the free space and stops at the old max-w-sm, so the
-            search keeps the width it had and the picker stays hard right. Not
-            w-full: in a wrapping flex row that is a 100% basis, and it would
-            push the picker onto a second row at every viewport. */}
-        <div className="max-w-sm min-w-0 flex-1 basis-64">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+        {/* The page's main control, so not the magnifier-and-underline the
+            sidebars and filter popovers use: those are secondary filters
+            beside a list, and here the underline read as a rule above the
+            table rather than somewhere to type. A filled field instead — the
+            neutral surface says "type here" without a border competing with
+            the table's, and on focus it turns white with a UN Blue edge and
+            icon, so where the cursor is never needs looking for. */}
+        {/* Grows to the table's full width, so the field and the table share
+            both edges and read as one unit. The 24px below it keeps it the
+            page's control rather than a row of the table; the 32px above it
+            (the signpost's margin) stays the larger, so it still groups with
+            the table and not the intro. Not w-full: in a
+            wrapping flex row that is a 100% basis, and it would push the
+            picker onto a second row at every viewport. */}
+        <div className="group/search min-w-0 flex-1 basis-72">
           <SearchInput
-            variant="border-bottom"
+            variant="bordered"
+            className="h-12 rounded-lg border-transparent bg-muted pl-12 text-base text-foreground transition-colors hover:border-border focus-visible:border-un-blue focus-visible:bg-background focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0 md:text-base"
+            iconClassName="left-4 h-5 w-5 group-focus-within/search:text-un-blue-text"
             // Exact wording, and it names only keywords on purpose. The search
             // also matches bodies, agenda items and document symbols — see
             // searchableText — but the page does not offer them. A delegation
@@ -199,7 +207,14 @@ export function DirectorySummaryTable({
             scrolls rather than compressing columns past their floors. */}
         <Table className="table-fixed" style={{ minWidth: layout.total }}>
           <TableHeader>
-            <TableRow className="border-b bg-muted hover:bg-muted">
+            {/* The lightest UN Blue wash, black labels and a UN Blue rule —
+                not the grey band the mandate table's header uses. Here the
+                group separators are that grey band, and a header in the same
+                band read as one more separator. The rule is the site header's
+                active-tab border, so the blue already means "this labels what
+                is below". It sits on the cells, not the row: a sticky cell
+                drops a collapsed row border. */}
+            <TableRow className="bg-un-blue-tint-50 hover:bg-un-blue-tint-50">
               {columns.map((column, index) => (
                 <TableHead
                   key={column.id}
@@ -212,9 +227,9 @@ export function DirectorySummaryTable({
                      which is the failure worth having. */
                   className={`${ALIGN_CLASS[column.align ?? 'left']} ${
                     column.id === 'detail'
-                      ? 'sticky right-0 z-10 bg-muted'
+                      ? 'sticky right-0 z-10 bg-un-blue-tint-50'
                       : ''
-                  } h-10 px-3 whitespace-nowrap ${typography.tableHeader}`}
+                  } h-10 border-b-2 border-un-blue px-3 whitespace-nowrap ${typography.tableHeader} text-foreground`}
                 >
                   {/* The detail rail's header is empty on purpose: it labels a
                       row affordance, not a column of data. */}
@@ -343,8 +358,14 @@ function DirectorySummaryCell({
       )
     }
 
-    case 'people':
-      if (designation.contacts.length === 0 && !designation.functionalMailbox) {
+    case 'people': {
+      // Primary contacts only. The alternate is who to try when the primary
+      // does not answer, which is a second step a reader takes from the panel,
+      // not something the table needs to put in front of them on every row.
+      const primaries = designation.contacts.filter(
+        (contact) => contact.role === 'primary'
+      )
+      if (primaries.length === 0 && !designation.functionalMailbox) {
         return <span className="text-muted-foreground">—</span>
       }
       return (
@@ -361,46 +382,53 @@ function DirectorySummaryCell({
               />
             </li>
           )}
-          {designation.contacts.map((contact) => (
-            <li key={contact.email + contact.name} className="min-w-0">
-              <div className="truncate font-medium text-foreground">
-                {contact.name}
-                {contact.role === 'alternate' && (
-                  <span className="ml-1.5 text-sm font-normal text-muted-foreground">
-                    (alternate)
-                  </span>
+          {primaries.map((contact) => {
+            const telephone = contactTelephone(contact)
+            const languages = contact.workingLanguages ?? []
+            return (
+              <li key={contact.email + contact.name} className="min-w-0">
+                <div className="truncate font-medium text-foreground">
+                  {contact.name}
+                </div>
+                {contact.title && (
+                  <div className="truncate text-sm text-foreground">
+                    {contact.title}
+                  </div>
                 )}
-              </div>
-              {contact.title && (
-                <div className="truncate text-sm text-foreground">
-                  {contact.title}
-                </div>
-              )}
-              <EmailLink
-                address={contact.email}
-                className="text-sm"
-                onClick={stopRowClick}
-              />
-              {contact.telephone && (
-                <a
-                  href={`tel:${contact.telephone}`}
+                <EmailLink
+                  address={contact.email}
+                  className="text-sm"
                   onClick={stopRowClick}
-                  className="block text-sm text-un-blue-text hover:underline"
-                >
-                  {contactTelephone(contact)}
-                </a>
-              )}
-              {contact.workingLanguages && contact.workingLanguages.length > 0 && (
-                <div className="mt-1 flex flex-wrap gap-1">
-                  {contact.workingLanguages.map((language) => (
-                    <Chip key={language} density="dense">{language}</Chip>
-                  ))}
-                </div>
-              )}
-            </li>
-          ))}
+                />
+                {/* The number and the languages share one line: both are how to
+                    reach this person, and stacked they cost every contact a
+                    line it did not need. The number is shown as the
+                    entity typed it and dialled the same way — no reformatting,
+                    no country code inferred. With no number, the chips take the
+                    line alone; at a narrow column they wrap under it. */}
+                {(telephone !== null || languages.length > 0) && (
+                  <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
+                    {telephone !== null && (
+                      <a
+                        href={`tel:${contact.telephone}`}
+                        onClick={stopRowClick}
+                        className="inline-flex min-w-0 items-center gap-1.5 text-sm text-un-blue-text hover:underline"
+                      >
+                        <Phone aria-hidden className="h-3.5 w-3.5 shrink-0" />
+                        <span>{telephone}</span>
+                      </a>
+                    )}
+                    {languages.map((language) => (
+                      <Chip key={language} density="dense">{language}</Chip>
+                    ))}
+                  </div>
+                )}
+              </li>
+            )
+          })}
         </ul>
       )
+    }
 
     case 'coverage': {
       const counts = COVERAGE_KINDS.map((kind) => ({
