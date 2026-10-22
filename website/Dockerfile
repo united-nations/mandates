@@ -1,7 +1,7 @@
 # Dockerfile for Next.js
 
 # 1. Base image
-FROM node:22-alpine@sha256:0a7108bf6c7bf5de370ffb1a3ed6be93d405b43ff159f681a8d18c0e2bc2e402 AS base
+FROM node:22.23.4-alpine@sha256:ebc216c22db53dbde85719a874978d5aec04e6e405ad26a3804c6f9abc4ca1a9 AS base
 WORKDIR /app
 RUN corepack enable && corepack prepare pnpm@10.28.1 --activate
 
