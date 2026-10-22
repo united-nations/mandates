@@ -3,11 +3,16 @@
  *
  * Reads the `mandate_focal_points` schema, which is written by a separate
  * internal application. This site only ever reads it, and the credential it
- * reads with (`mandates_readonly`) holds SELECT on exactly three tables:
+ * reads with (`mandates_readonly`) holds SELECT on exactly five tables:
  *
  *   focal_point_designations      the portfolio
  *   designation_contacts          the people on it
  *   designation_coverage_claims   what it says it covers
+ *   search_vocabulary_terms       EOSG's search terms, with their variants
+ *   search_vocabulary_assignments which entities each term finds
+ *
+ * The last two are EOSG's, not the entities': search input that is never shown
+ * as coverage. See `lib/focal-point-search.ts`.
  *
  * plus one view:
  *
@@ -98,8 +103,25 @@ import {
   type DirectorySummaryContact,
   type DirectorySummaryDesignation,
   type DirectorySummaryEntity,
+  type SearchVocabularyTerm,
 } from '../focal-point-constants'
+import {
+  assembleSearchVocabulary,
+  type SearchVocabularyAssignmentRow,
+  type SearchVocabularyTermRow,
+} from '../focal-point-search'
 import { queryMany } from '../db/query'
+
+/** The page's data: the designations, and every live term for the search. */
+export interface FocalPointDirectorySummary {
+  designations: DirectorySummaryDesignation[]
+  /**
+   * Every live search term, assigned or not. The search reads their variant
+   * groups to widen a query before matching the entities' own keywords; it is
+   * never rendered.
+   */
+  searchVocabulary: SearchVocabularyTerm[]
+}
 
 interface DesignationRow {
   id: number
@@ -130,10 +152,11 @@ interface ClaimRow {
 }
 
 /**
- * The designations this page lists, with their current people and their
- * coverage claims.
+ * The designations this page lists, with their current people, their
+ * coverage claims and their entities' search terms; and the live search
+ * vocabulary.
  *
- * Three queries rather than one with aggregated JSON. The page holds a handful
+ * Separate queries rather than one with aggregated JSON. The page holds a handful
  * of rows, the pool already fans out far more than this per render, and the
  * alternative needs a COALESCE around each `json_agg` to turn "no rows" into an
  * empty array — a default standing in for an absence that is not one. Here an
@@ -147,9 +170,7 @@ interface ClaimRow {
  * named nothing. `superseded_at` and `listing_removed_at` are the two
  * conditions that govern listing, and now the only two.
  */
-async function loadFocalPointDirectorySummary(): Promise<
-  DirectorySummaryDesignation[]
-> {
+async function loadFocalPointDirectorySummary(): Promise<FocalPointDirectorySummary> {
   const designations = await queryMany<DesignationRow>(
     // A LEFT JOIN, not an inner one: an entity whose code the view does not
     // name must still appear, with the gap visible. An inner join would drop
@@ -207,11 +228,20 @@ async function loadFocalPointDirectorySummary(): Promise<
     []
   )
 
-  if (designations.length === 0) return []
+  if (designations.length === 0) {
+    return { designations: [], searchVocabulary: [] }
+  }
 
   const ids = designations.map((d) => d.id)
+  const entityCodes = Array.from(
+    new Set(
+      designations
+        .map((d) => d.entity_code)
+        .filter((code): code is string => code !== null)
+    )
+  )
 
-  const [contacts, claims] = await Promise.all([
+  const [contacts, claims, termRows, assignmentRows] = await Promise.all([
     // Current people only. `valid_to` is set when someone leaves rather than
     // the row being deleted, so the departed are still here; a directory of who
     // to contact must not offer them.
@@ -249,7 +279,41 @@ async function loadFocalPointDirectorySummary(): Promise<
         ORDER BY designation_id, coverage_kind, coverage_value`,
       [ids]
     ),
+    // Every live term, not only the assigned ones. Its variant group is what
+    // lets "children" find an entity's own keyword "child protection", and
+    // that is a fact about the words, not about which entity EOSG gave the term
+    // to. A retired term finds nothing; it is kept upstream so what the search
+    // once matched on stays answerable.
+    queryMany<SearchVocabularyTermRow>(
+      `/* trace:focalPoints.searchTerms */
+       SELECT id,
+              term_text,
+              term_text_normalised,
+              term_variants_normalised
+         FROM mandate_focal_points.search_vocabulary_terms
+        WHERE retired_at IS NULL
+        ORDER BY term_text_normalised`,
+      []
+    ),
+    // Terms attach to the ENTITY, not the designation: two designations from
+    // one entity share them. Live assignments to live terms only - a live
+    // assignment of a retired term is retired with it.
+    queryMany<SearchVocabularyAssignmentRow>(
+      `/* trace:focalPoints.searchAssignments */
+       SELECT a.entity_code,
+              a.search_vocabulary_term_id
+         FROM mandate_focal_points.search_vocabulary_assignments a
+         JOIN mandate_focal_points.search_vocabulary_terms t
+           ON t.id = a.search_vocabulary_term_id
+        WHERE a.entity_code = ANY($1::text[])
+          AND a.retired_at IS NULL
+          AND t.retired_at IS NULL
+        ORDER BY a.entity_code, t.term_text_normalised`,
+      [entityCodes]
+    ),
   ])
+
+  const vocabulary = assembleSearchVocabulary(termRows, assignmentRows)
 
   const contactsByDesignation = new Map<number, DirectorySummaryContact[]>()
   for (const row of contacts) {
@@ -285,14 +349,17 @@ async function loadFocalPointDirectorySummary(): Promise<
     claimsByDesignation.set(row.designation_id, list)
   }
 
-  return designations.map((row) => ({
-    id: row.id,
-    entity: entityOf(row),
-    subUnit: row.sub_unit,
-    functionalMailbox: row.functional_mailbox,
-    contacts: contactsByDesignation.get(row.id) ?? [],
-    coverage: claimsByDesignation.get(row.id) ?? [],
-  }))
+  return {
+    designations: designations.map((row) => ({
+      id: row.id,
+      entity: entityOf(row, vocabulary.termsByEntity),
+      subUnit: row.sub_unit,
+      functionalMailbox: row.functional_mailbox,
+      contacts: contactsByDesignation.get(row.id) ?? [],
+      coverage: claimsByDesignation.get(row.id) ?? [],
+    })),
+    searchVocabulary: vocabulary.terms,
+  }
 }
 
 export const getFocalPointDirectorySummary = cache(
@@ -320,19 +387,31 @@ export const getFocalPointDirectorySummary = cache(
  * schema cannot produce, and the cell labels what it knows and shows the rest
  * as stored.
  */
-function entityOf(row: DesignationRow): DirectorySummaryEntity {
+function entityOf(
+  row: DesignationRow,
+  termsByEntity: Map<string, SearchVocabularyTerm[]>
+): DirectorySummaryEntity {
   if (row.entity_code !== null) {
     return {
       code: row.entity_code,
       name: row.entity_display_name,
       entityClass: row.entity_class,
+      // An entity EOSG has assigned no term has no assignment rows, so its
+      // list is empty because nothing was put in it.
+      searchTerms: termsByEntity.get(row.entity_code) ?? [],
     }
   }
   if (row.unmatched_entity_text !== null) {
     // Not on the roster, so there is no code and nothing for the view to name
     // or classify. The typed text is not a stand-in for a lookup that failed;
-    // it is the only name this entity has.
-    return { code: null, name: row.unmatched_entity_text, entityClass: null }
+    // it is the only name this entity has. No assignment can name it either:
+    // `search_vocabulary_assignments.entity_code` is NOT NULL.
+    return {
+      code: null,
+      name: row.unmatched_entity_text,
+      entityClass: null,
+      searchTerms: [],
+    }
   }
   throw new Error(
     `focal_point_designations id=${row.id} has neither entity_code nor unmatched_entity_text`

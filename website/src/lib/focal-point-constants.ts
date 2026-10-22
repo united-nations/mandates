@@ -246,6 +246,28 @@ export interface DirectorySummaryEntity {
   name: string | null
   /** The stored class as the view carries it; labelled at render time by entityClassLabel. */
   entityClass: string | null
+  /**
+   * The live EOSG search terms assigned to this entity, in term order. Search
+   * input only: a term is EOSG's word for what the entity covers, not the
+   * entity's own, so it is never rendered as coverage - not in the table, not
+   * in the panel, not in a count. The one place one is shown is the line
+   * saying why a row matched a search. Empty on an entity with no code, which
+   * no assignment can name.
+   */
+  searchTerms: SearchVocabularyTerm[]
+}
+
+/**
+ * One live row of `search_vocabulary_terms`, in the shape the search reads.
+ *
+ * `text` is `term_text`, the term as a reader would type it and the only form
+ * ever shown. `forms` is every form that finds the term: `term_text_normalised`
+ * first, then `term_variants_normalised` in stored order. Together they are the
+ * term's variant group - child and children are one term.
+ */
+export interface SearchVocabularyTerm {
+  text: string
+  forms: string[]
 }
 
 export interface DirectorySummaryDesignation {
