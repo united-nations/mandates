@@ -14,9 +14,23 @@ export const explainerTexts = {
   secretariatNavigation: {
     label: 'Secretariat navigation',
     mandateSources: 'Mandate sources',
-    entitiesAndPrograms: 'UN entities and programmes',
-    agendaItems: 'Intergovernmental agendas',
-    reports: 'Reports',
+    entitiesAndPrograms: 'Implementing entities',
+    agendaItems: 'Mandating bodies',
+    reports: 'Implementation reports',
+    cards: {
+      cited: 'Documents cited as mandates in 2026',
+      outOf: 'out of {total}',
+      sourcesAction: 'Search and explore',
+      bodiesAction: 'Explore their agendas',
+      entitiesAction: 'View their mandates',
+      reportsAction: 'See them in context',
+      comingSoon: 'Soon',
+      loading: 'Loading registry totals',
+    },
+    scope: {
+      budget: 'Citation budget',
+      citedOnly: 'Cited as mandates only',
+    },
     explainers: {
       sources:
         'Find resolutions and other documents that establish mandates. Explore their versions, see which entities are implementing them, and find reports submitted under them. Click on a document in the table to see its details.',
@@ -255,8 +269,7 @@ export const explainerTexts = {
   entityExpenditure: {
     heading: 'Entity expenditure',
     loading: 'Loading expenditure…',
-    note:
-      'Historical expenditure covers the complete programme or subprogramme, not this mandate.',
+    note: 'Historical expenditure covers the complete programme or subprogramme, not this mandate.',
     overview: 'For an overview of all UN entities and programmes, see',
     period: 'Reporting period',
     source: 'Source data',
@@ -380,8 +393,10 @@ export const explainerTexts = {
     meetings: 'Meetings',
     scExplanation:
       'These are matters considered at formal Security Council meetings in {year}, rather than a single annual numbered agenda.',
-    scCoverageComplete: 'Complete annual coverage; latest sourced meeting: {date}.',
-    scCoveragePartial: 'Partial coverage through {date}; unresolved source gaps remain.',
+    scCoverageComplete:
+      'Complete annual coverage; latest sourced meeting: {date}.',
+    scCoveragePartial:
+      'Partial coverage through {date}; unresolved source gaps remain.',
     scSearch: 'Search matters considered',
     noMatters: 'No matching matters considered.',
     scError: 'Matters considered could not be loaded. Please try again later.',
@@ -394,7 +409,8 @@ export const explainerTexts = {
     resolutions: 'Mandate documents',
     openResolutions: 'Open mandate documents',
     countsLoading: 'Loading mandate document counts',
-    countsUnavailable: 'Some mandate document counts are temporarily unavailable.',
+    countsUnavailable:
+      'Some mandate document counts are temporarily unavailable.',
     retryCounts: 'Try again',
     relatedItems: 'Related items',
     currentItem: 'Current item',

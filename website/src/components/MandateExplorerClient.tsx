@@ -70,9 +70,8 @@ export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
 
   return (
     <div>
-      {/* Summary counts and the organ / entity / topic directories now live in
-          the DirectoryExplorer buttons above this explorer (each opens a modal);
-          the charts moved to /secretariat/analytics.
+      {/* Registry totals and view navigation live in the shared card tabs;
+          charts are available at /secretariat/analytics.
 
           Years card still hidden — keep code for potential re-enable:
           {filterOptions.yearRange && (
@@ -83,9 +82,7 @@ export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
       */}
 
       <div>
-        {/* The active-filter bar moved above the four explore cards (see
-            app/secretariat/page.tsx): those cards' numbers are computed against
-            it, so it has to be readable before them.
+        {/* Active filters and citation scope sit above the explorer.
 
             Table band: the table and everything that operates on it — search,
             the group/scope/column toggles, and pagination — share one width so

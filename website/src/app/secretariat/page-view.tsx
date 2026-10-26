@@ -2,8 +2,8 @@ import { Suspense } from 'react'
 
 import { MandateExplorerServer } from '@/app/_mandateExplorerServer'
 import { ActiveFilters } from '@/components/ActiveFilters'
-import { DirectoryExplorer } from '@/components/DirectoryExplorer'
 import { LoadingSkeleton } from '@/components/LoadingSkeleton'
+import { MandateScopeControls } from '@/components/MandateScopeControls'
 
 import { FurtherResources } from './FurtherResources'
 import type { loadSecretariatPageData } from './page-data'
@@ -12,6 +12,10 @@ type PageData = Awaited<ReturnType<typeof loadSecretariatPageData>>
 
 const Summary = ({ data }: { data: PageData }) => (
   <section className="mx-auto max-w-6xl px-6 pt-6 md:px-12 lg:px-16">
+    <MandateScopeControls
+      versions={data.versions}
+      activeVersionSlug={data.active.slug}
+    />
     <ActiveFilters
       entitiesData={data.entities}
       allOrgans={data.organs}
@@ -20,14 +24,7 @@ const Summary = ({ data }: { data: PageData }) => (
           ? `UN Programme Budget ${data.active.version.ppb_year}`
           : undefined
       }
-      className="mb-4"
-    />
-    <DirectoryExplorer
-      cardStates={data.cardStates}
-      allDocumentsCount={data.cards.documentsCount}
-      citedDocumentCount={data.cards.citedDocumentCount}
-      versions={data.versions}
-      activeVersionSlug={data.active.slug}
+      className="mt-4"
     />
   </section>
 )
