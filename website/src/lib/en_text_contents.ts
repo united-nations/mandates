@@ -27,8 +27,8 @@ export const explainerTexts = {
       reports: 'Reports',
       reportsDescription: 'on mandate implementation',
       outOf: 'out of {total}',
-      sourcesAction: 'Search and explore',
-      bodiesAction: 'Explore their agendas',
+      sourcesAction: 'Search documents',
+      bodiesAction: 'Browse agendas',
       entitiesAction: 'View their mandates',
       reportsAction: 'See them in context',
       loading: 'Loading registry totals',
@@ -132,7 +132,7 @@ export const explainerTexts = {
   focalPoints: {
     heading: 'Find the right person to talk to.',
     introduction:
-      'To support Member States during the design of mandates, UN entities have designated focal points. Search by keyword to find relevant contact points across entities, and click on an entry for more details.',
+      'To support Member States during the design of mandates, UN entities have designated focal points.\nSearch by keyword to find relevant contact points across entities, and click on an entry for more details.',
     designationIntroduction: 'UN entities can designate their focal points',
     designationLink: 'here',
   },

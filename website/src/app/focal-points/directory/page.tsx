@@ -48,7 +48,7 @@ export default async function FocalPointDirectoryPage() {
       {/* The table's width, not a reading measure: capped narrower, the
           paragraph broke after three short lines beside a table that ran on
           past them, and the ragged edge read as a layout fault. */}
-      <p className="mb-3 text-base leading-relaxed md:text-lg">
+      <p className="mb-3 text-base leading-relaxed whitespace-pre-line md:text-lg">
         {text.introduction}
       </p>
 
