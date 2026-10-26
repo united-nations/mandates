@@ -35,16 +35,20 @@ selected_groups AS (
       AND prev.date_count = 1 AND o.predecessor IS NOT NULL AS valid_pair
   FROM ordered o
   LEFT JOIN ordered prev ON prev.document_symbol = o.predecessor
+), wanted AS (
+  SELECT symbol FROM requested
+  UNION
+  SELECT predecessor FROM pairs JOIN requested
+    ON requested.symbol = pairs.document_symbol
+  WHERE predecessor IS NOT NULL
 ), eligible AS (
   SELECT tm.* FROM digitallibrary.document_text_metrics tm
+  JOIN wanted ON wanted.symbol = tm.symbol_normalized
   JOIN digitallibrary.document_files f USING (symbol_normalized, lang)
   JOIN digitallibrary.document_parses p USING (symbol_normalized, lang)
   WHERE tm.lang = 'en' AND tm.text_profile_version = 'substantive-v1'
     AND tm.metric_version = 'unicode-word-v1' AND f.status = 'parsed'
     AND tm.parser_version = p.parser_version AND tm.source_parsed_at = p.parsed_at
-    AND (tm.symbol_normalized IN (SELECT symbol FROM requested)
-      OR tm.symbol_normalized IN (SELECT predecessor FROM pairs JOIN requested
-        ON requested.symbol = pairs.document_symbol))
 )
 SELECT r.symbol,
   CASE WHEN pair.document_symbol IS NULL THEN 'not_in_series'

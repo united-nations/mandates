@@ -27,7 +27,7 @@ test(
       document_parses:
         'symbol_normalized text, lang text, parser_version text, parsed_at timestamptz',
       document_text_metrics:
-        'symbol_normalized text, lang text, text_profile_version text, metric_version text, parser_version text, computed_at timestamptz, word_count integer, content_sha256 text',
+        'symbol_normalized text, lang text, text_profile_version text, metric_version text, parser_version text, source_parsed_at timestamptz, word_count integer, content_sha256 text',
       resolution_series_comparisons:
         'symbol_normalized text, lang text, text_profile_version text, method_version text, comparison_status text, previous_symbol_normalized text, series_key text, un_body text, doc_type text, publication_date date, previous_publication_date date, current_content_sha256 text, previous_content_sha256 text, similarity double precision',
     }
@@ -87,10 +87,10 @@ test(
             metric_version: 'unicode-word-v1',
             parser_version:
               scenario === 'parser' && i === 2 ? 'sem-v4' : 'sem-v5',
-            computed_at:
+            source_parsed_at:
               scenario === 'stale' && i === 2
                 ? '2026-07-01T00:00:00Z'
-                : '2026-08-02T00:00:00Z',
+                : '2026-08-01T00:00:00Z',
             word_count: scenario === 'zero' ? 0 : 100 + i,
             content_sha256: hash,
           })
@@ -164,6 +164,13 @@ test(
         assert.equal(byCase.get(scenario).can_compare, false, scenario)
       assert.equal(byCase.get('score_pending').can_compare, true)
       assert.equal(byCase.get('hash').can_compare, true)
+      assert.deepEqual((await client.query(sql, [[], JSON.stringify(fixtures)])).rows, [])
+      const duplicates = (await client.query(sql, [
+        ['ready/2', 'ready/2'], JSON.stringify(fixtures),
+      ])).rows
+      assert.equal(duplicates.length, 2)
+      assert.deepEqual(duplicates[0], duplicates[1])
+      assert.equal(duplicates[0].similarity_to_previous, 0.91)
     } finally {
       await client.query('ROLLBACK')
       client.release()
