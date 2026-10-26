@@ -5,18 +5,40 @@
  * `source` tag on the result rather than reading the flag again.
  */
 
+import { unstable_cache } from 'next/cache'
 import { MANDATED_SG_REPORTS_SOURCE } from '../feature-flags'
 import { queryMany } from '../db/query'
 import { unionSgReports, type UnionSgReports } from '../sg-report-union'
 import {
   getSgReportsMandatedByResolution,
+  getCatalogueLinkedReportIds,
   type MandatedSgReport,
   type SgReportResolutionTarget,
 } from './sg-report-links'
 import {
   getSgReportsStatingResolution,
+  getPageOneLinkedReportIds,
   type PageOneSgReports,
 } from './sg-report-page-one-links'
+
+/**
+ * Unique SG reports linked directly to registry mandate pages, using the same
+ * source selection and display rules as the detail blocks. One report counts
+ * once across citations, document symbols and the two evidence sources.
+ * This is the linked inventory, not a count of all SG reports in the catalogue.
+ */
+export const getMandatedSgReportCount = unstable_cache(
+  async (): Promise<number> => {
+    const source = MANDATED_SG_REPORTS_SOURCE
+    const [catalogue, pageOne] = await Promise.all([
+      source === 'page_one' ? [] : getCatalogueLinkedReportIds(),
+      source === 'catalogue_notes' ? [] : getPageOneLinkedReportIds(),
+    ])
+    return new Set([...catalogue, ...pageOne]).size
+  },
+  ['sg-reports.registry-linked-count-v1', MANDATED_SG_REPORTS_SOURCE],
+  { revalidate: 3600 }
+)
 
 export type MandatedSgReports =
   | { source: 'catalogue_notes'; reports: MandatedSgReport[] }

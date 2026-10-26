@@ -1,6 +1,10 @@
 'use client'
 
 import { FilterControls } from '@/components/FilterControls'
+import {
+  CitationBudgetSelect,
+  CitedMandatesToggle,
+} from '@/components/MandateScopeControls'
 import { PaginationControls } from '@/components/PaginationControls'
 import { Switch } from '@/components/ui/switch'
 import {
@@ -10,6 +14,7 @@ import {
 } from '@/components/ui/tooltip'
 import { useFilters } from '@/contexts/FilterContext'
 import { explainerTexts } from '@/lib/en_text_contents'
+import type { BudgetVersion } from '@/lib/data/budget-documents'
 import type { ApiResponse } from '@/types'
 import { useSearchParams } from 'next/navigation'
 import { ColumnPicker } from './table/ColumnPicker'
@@ -20,9 +25,15 @@ import { useColumnVisibility } from './table/useColumnVisibility'
 
 interface MandateExplorerClientProps {
   data: ApiResponse
+  versions: BudgetVersion[]
+  activeVersionSlug: string
 }
 
-export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
+export function MandateExplorerClient({
+  data,
+  versions,
+  activeVersionSlug,
+}: MandateExplorerClientProps) {
   const { filters, setFilter } = useFilters()
   const searchParams = useSearchParams()
 
@@ -37,11 +48,6 @@ export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
   // Organ/entity citation counts drive the table's column filters.
   const organs = sidebar?.organs || []
   const entities = sidebar?.entities || []
-
-  // The scope switch (all documents vs. a budget version) and the budget-version
-  // picker used to live here as a segmented toggle with a dropdown buried in one
-  // of its segments. Both now sit in the "documents cited as mandates" card at
-  // the top of the page, next to the number each choice produces.
 
   const groupToggle = (
     <Tooltip>
@@ -82,7 +88,7 @@ export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
       */}
 
       <div>
-        {/* Active filters and citation scope sit above the explorer.
+        {/* Active filters sit above the explorer; citation scope is in its toolbar.
 
             Table band: the table and everything that operates on it — search,
             the group/scope/column toggles, and pagination — share one width so
@@ -98,7 +104,12 @@ export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
               allOrgans={allOrgans}
               toolbarSlot={
                 <div className="flex flex-wrap items-center gap-3">
+                  <CitedMandatesToggle />
                   {groupToggle}
+                  <CitationBudgetSelect
+                    versions={versions}
+                    activeVersionSlug={activeVersionSlug}
+                  />
                   {/* Only meaningful for the desktop table; the mobile compact
                       list has no columns to toggle. */}
                   <div className="hidden lg:block">

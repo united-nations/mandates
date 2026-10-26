@@ -45,7 +45,7 @@ interface ActiveFiltersProps {
 
 /**
  * The "Active filters" chip bar for the mandate explorer. Renders below the
- * citation controls (app/secretariat/page.tsx). Renders nothing when none are active.
+ * card navigation, above the search toolbar. Renders nothing when none are active.
  *
  * No leading icons on the chips: eleven filter kinds needed eleven glyphs, none
  * of which said anything the label next to it did not already say in words.

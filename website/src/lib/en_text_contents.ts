@@ -18,17 +18,23 @@ export const explainerTexts = {
     agendaItems: 'Mandating bodies',
     reports: 'Implementation reports',
     cards: {
-      cited: 'Documents cited as mandates in 2026',
+      documents: 'Documents',
+      cited: 'cited as mandates for 2027',
+      bodiesDescription: 'issuing the documents',
+      entities: 'Entities',
+      entitiesDescription: 'implementing the mandates',
+      reports: 'Reports',
+      reportsDescription: 'on mandate implementation',
       outOf: 'out of {total}',
       sourcesAction: 'Search and explore',
       bodiesAction: 'Explore their agendas',
       entitiesAction: 'View their mandates',
       reportsAction: 'See them in context',
-      comingSoon: 'Soon',
       loading: 'Loading registry totals',
     },
     scope: {
       budget: 'Citation budget',
+      budgetShort: 'Budget {year}',
       citedOnly: 'Cited as mandates only',
     },
     explainers: {
@@ -42,11 +48,9 @@ export const explainerTexts = {
   },
   secretariatReports: {
     heading: 'Reports',
-    workInProgress:
-      'Work is in progress to integrate reports into the Mandate Registry.',
-    interim:
-      'In the meantime, explore information on Secretary-General’s reports:',
-    link: 'Explore Secretary-General’s reports',
+    workInProgress: 'A dedicated reports overview is coming soon.',
+    interim: 'In the meantime, explore reports through their',
+    link: 'mandate documents',
   },
   entitiesAndProgrammes: {
     clusterDisclaimer:

@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 import { explainerTexts } from '@/lib/en_text_contents'
 
 const text = explainerTexts.secretariatReports
@@ -8,16 +10,18 @@ export const metadata = {
 
 export default function ReportsPage() {
   return (
-    <section className="mx-auto max-w-6xl px-2 pt-4 pb-10 sm:px-6 md:px-12 lg:px-16">
-      <h2 className="mb-3 text-xl font-semibold">{text.heading}</h2>
+    <section className="mx-auto max-w-6xl px-6 pb-10 md:px-12 lg:px-16">
       <p className="mb-4 text-muted-foreground">{text.workInProgress}</p>
-      <p className="mb-2">{text.interim}</p>
-      <a
-        href="https://sg-reports.un-two-zero.org/"
-        className="text-primary underline underline-offset-4"
-      >
-        {text.link}
-      </a>
+      <p>
+        {text.interim}{' '}
+        <Link
+          href="/secretariat"
+          className="text-primary underline underline-offset-4"
+        >
+          {text.link}
+        </Link>
+        .
+      </p>
     </section>
   )
 }

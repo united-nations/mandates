@@ -13,10 +13,14 @@ const text = explainerTexts.secretariatNavigation
 
 interface SecretariatNavigationProps {
   counts?: ExploreCardFigures
+  reportsCount?: number
 }
 
 /** Registry totals stay stable while filters narrow the explorer below. */
-export function SecretariatNavigation({ counts }: SecretariatNavigationProps) {
+export function SecretariatNavigation({
+  counts,
+  reportsCount,
+}: SecretariatNavigationProps) {
   const pathname = usePathname().replace(/\/$/, '')
   const { filters } = useFilters()
   const activeHref = pathname.startsWith('/mandate/')
@@ -25,7 +29,8 @@ export function SecretariatNavigation({ counts }: SecretariatNavigationProps) {
   const items = [
     {
       href: '/secretariat',
-      label: text.cards.cited,
+      label: text.cards.documents,
+      description: text.cards.cited,
       count: counts?.citedDocumentCount,
       total: counts?.documentsCount,
       action: text.cards.sourcesAction,
@@ -33,14 +38,23 @@ export function SecretariatNavigation({ counts }: SecretariatNavigationProps) {
     {
       href: '/secretariat/agenda-items',
       label: text.agendaItems,
+      description: text.cards.bodiesDescription,
       count: counts?.organCount,
       action: text.cards.bodiesAction,
     },
     {
       href: '/secretariat/entities-and-programs',
-      label: text.entitiesAndPrograms,
+      label: text.cards.entities,
+      description: text.cards.entitiesDescription,
       count: counts?.entityCount,
       action: text.cards.entitiesAction,
+    },
+    {
+      href: '/secretariat/reports',
+      label: text.cards.reports,
+      description: text.cards.reportsDescription,
+      count: reportsCount,
+      action: text.cards.reportsAction,
     },
   ]
   const explainer =
@@ -49,8 +63,9 @@ export function SecretariatNavigation({ counts }: SecretariatNavigationProps) {
       : pathname === '/secretariat/entities-and-programs'
         ? text.explainers.entities
         : pathname === '/secretariat/reports'
-          ? explainerTexts.secretariatReports.workInProgress
+          ? null
           : text.explainers.sources
+  const heading = items.find((item) => item.href === activeHref)?.label
 
   return (
     <div className="mx-auto w-full max-w-6xl px-6 md:px-12 lg:px-16">
@@ -69,7 +84,7 @@ export function SecretariatNavigation({ counts }: SecretariatNavigationProps) {
               href={href}
               aria-current={active ? 'page' : undefined}
               className={cn(
-                'relative flex min-w-0 flex-col gap-3 rounded-lg border p-4 text-left transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none',
+                'relative flex min-w-0 flex-col gap-2 rounded-lg border px-4 py-3 text-left transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none',
                 active
                   ? 'border-primary bg-accent lg:after:absolute lg:after:top-full lg:after:left-1/2 lg:after:h-[calc(--spacing(3)+1px)] lg:after:w-px lg:after:-translate-x-1/2 lg:after:bg-primary'
                   : 'border-border bg-background hover:border-primary hover:bg-accent'
@@ -99,35 +114,30 @@ export function SecretariatNavigation({ counts }: SecretariatNavigationProps) {
               </span>
               <span className="text-base font-medium text-foreground">
                 {item.label}
+                <span className="mt-0.5 block text-sm font-normal text-muted-foreground">
+                  {item.description}
+                </span>
               </span>
-              <span className="mt-auto flex items-center gap-1.5 pt-1 text-sm text-un-blue-text">
+              <span className="mt-auto flex items-center gap-1.5 text-sm text-un-blue-text">
                 {item.action}
                 <ArrowRight aria-hidden className="size-4 shrink-0" />
               </span>
             </Link>
           )
         })}
-        <div
-          aria-disabled="true"
-          className="flex min-w-0 flex-col gap-3 rounded-lg border border-border bg-background p-4 text-left"
-        >
-          <span className="text-3xl leading-none font-medium text-foreground">
-            —
-          </span>
-          <span className="text-base font-medium text-foreground">
-            {text.reports}
-          </span>
-          <span className="mt-auto flex items-center gap-1.5 pt-1 text-sm text-muted-foreground">
-            <span>
-              {text.cards.reportsAction} ({text.cards.comingSoon})
-            </span>
-            <ArrowRight aria-hidden className="size-4 shrink-0" />
-          </span>
-        </div>
       </nav>
-      <div className="pt-4">
-        <p className="max-w-3xl text-sm text-foreground">{explainer}</p>
-      </div>
+      {(heading || explainer) && (
+        <div className="pt-6">
+          {heading && (
+            <h2 className="mb-3 text-xl font-semibold text-foreground">
+              {heading}
+            </h2>
+          )}
+          {explainer && (
+            <p className="max-w-3xl text-sm text-foreground">{explainer}</p>
+          )}
+        </div>
+      )}
     </div>
   )
 }

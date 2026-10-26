@@ -79,6 +79,21 @@ const DISPLAY_EXCLUDED_REPORT_RECIDS = [
   4096508, // "(S/2025/389)" / S/RES/2467 (2019) + S/RES/2467(2019) / sibling 4086814 (S/2025/389)
 ]
 
+/** Distinct reports with a display-eligible link directly to a registry page. */
+export const getCatalogueLinkedReportIds = cache(async (): Promise<number[]> => {
+  const rows = await queryMany<{ report_recid: number }>(
+    `/* trace:sg-reports.catalogue.registry-report-ids */
+     SELECT DISTINCT l.report_recid
+     FROM mandates.sg_report_to_mandate_links l
+     JOIN digitallibrary.documents d ON d.recid = l.report_recid
+     WHERE l.citation_sense = ANY ($1)
+       AND l.report_recid <> ALL ($2)
+       AND cardinality(l.resolution_display_candidates) > 0`,
+    [DISPLAY_ELIGIBLE_SENSES, DISPLAY_EXCLUDED_REPORT_RECIDS]
+  )
+  return rows.map((row) => row.report_recid)
+})
+
 export interface MandatedSgReport {
   report_recid: number
   report_symbol: string
