@@ -156,9 +156,22 @@ export function SecretariatNavigation({
                 className="relative z-10 col-start-2 mx-auto mt-2 -mb-1.5 size-3 rotate-45 border-t border-l border-border bg-accent"
               />
               <div className="col-span-full rounded-lg border border-border bg-accent p-4">
-                <p className="max-w-3xl text-sm leading-relaxed text-foreground">
-                  {explainer}
-                </p>
+                <div className="max-w-3xl space-y-3 text-sm leading-relaxed text-foreground">
+                  <p>{explainer.overview}</p>
+                  {explainer.guidance.length > 0 && (
+                    <ul role="list" className="space-y-2">
+                      {explainer.guidance.map((guidance) => (
+                        <li key={guidance} className="flex items-start gap-2">
+                          <ArrowRight
+                            aria-hidden
+                            className="mt-0.5 size-4 shrink-0"
+                          />
+                          <span>{guidance}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
               </div>
             </CollapsibleContent>
           )}

@@ -39,12 +39,27 @@ export const explainerTexts = {
       citedOnly: 'Cited as mandates only',
     },
     explainers: {
-      sources:
-        'This table provides an overview of all mandate documents that have been adopted by the General Assembly, Security Council, Economic and Social Council and Human Rights Council from 1946 to today, which ones are under implementation, and which entities implement them. Click on a document to read it, explore its versions and how they have changed over time, learn about the entities and programmes that implement them, and find reports about their implementation. Add additional columns and filters to systematically explore the universe of mandates.',
-      agendas:
-        'This page provides an overview of the four largest mandating bodies and their agendas. It lists agenda items of their sessions and links to the mandates that have been adopted under them. It also connects similar agenda items that are considered by multiple bodies.',
-      entities:
-        'This page provides an overview of the structure of the budget documents (Programme Budget and Budget of Peacekeeping Operations) where entities cite what mandates their work is based on. You can zoom into the parts, sections and programmes of the budget, the entities and subprogrammes that sit in them, and their mandate citations and historical expenditure. Use search and filters to see related programmes at one glance.',
+      sources: {
+        overview:
+          'This table provides an overview of all mandate documents that have been adopted by the General Assembly, Security Council, Economic and Social Council and Human Rights Council from 1946 to today. You can see which ones are under implementation, and which entities implement them.',
+        guidance: [
+          'Click on a document to read it, explore its versions and how they have changed over time, learn about the entities and programmes that implement them, and find reports about their implementation.',
+          'Add additional columns and filters to systematically explore the universe of mandates.',
+        ],
+      },
+      agendas: {
+        overview:
+          'This page provides an overview of the four largest mandating bodies and their agendas. It lists agenda items of their sessions and links to the mandates that have been adopted under them. It also connects similar agenda items that are considered by multiple bodies.',
+        guidance: [],
+      },
+      entities: {
+        overview:
+          'This page provides an overview of the structure of the budget documents (Programme Budget and Budget of Peacekeeping Operations) where entities cite what mandates their work is based on.',
+        guidance: [
+          'You can zoom into the parts, sections and programmes of the budget, the entities and subprogrammes that sit in them, and their mandate citations and historical expenditure.',
+          'Use search and filters to see related programmes at one glance.',
+        ],
+      },
     },
   },
   secretariatReports: {
