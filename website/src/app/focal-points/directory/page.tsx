@@ -3,11 +3,13 @@ import type { Metadata } from 'next'
 import { ExternalLink } from '@/components/external-link'
 import { DirectorySummaryTable } from '@/components/focal-points/DirectorySummaryTable'
 import { getFocalPointDirectorySummary } from '@/lib/data/focal-points'
+import { explainerTexts } from '@/lib/en_text_contents'
+
+const text = explainerTexts.focalPoints
 
 export const metadata: Metadata = {
   title: 'Mandate focal points',
-  description:
-    'Which UN entity is the focal point for mandate design, who to contact there, and what subjects they cover.',
+  description: text.introduction,
 }
 
 /**
@@ -38,19 +40,16 @@ export default async function FocalPointDirectoryPage() {
     await getFocalPointDirectorySummary()
 
   return (
-    <div className="text-foreground">
-      <h1 className="mb-3 text-3xl font-bold tracking-tight text-foreground">
-        Mandate focal points
+    <div className="mx-auto max-w-6xl px-6 pt-8 pb-10 text-foreground md:px-12 lg:px-16">
+      <h1 className="mb-4 text-4xl font-bold tracking-tight text-foreground">
+        {text.heading}
       </h1>
 
       {/* The table's width, not a reading measure: capped narrower, the
           paragraph broke after three short lines beside a table that ran on
           past them, and the ragged edge read as a layout fault. */}
-      <p className="mb-2 text-base leading-relaxed text-muted-foreground">
-        The UN entity designated as the focal point for mandate design, who to
-        contact there, and the subjects each designation says it covers.
-        Coverage is as claimed by the entity; two designations may cover the
-        same subject. Select a row for the full list of subjects covered.
+      <p className="mb-3 text-base leading-relaxed whitespace-pre-line md:text-lg">
+        {text.introduction}
       </p>
 
       {/* For the entity officer who arrives here meaning to submit rather than
@@ -61,13 +60,13 @@ export default async function FocalPointDirectoryPage() {
           quietest on the page — a signpost for a minority of readers, not what
           the page is for — so not a banner or a callout, and not in
           SiteFooter, which is every page's and not this one's. */}
-      <p className="mb-8 text-sm text-muted-foreground">
-        UN entities designate their focal points at{' '}
+      <p className="mb-6 text-sm text-muted-foreground">
+        {text.designationIntroduction}{' '}
         <ExternalLink
           href="https://mandate-focal-points.un-two-zero.org"
           className="text-un-blue-text hover:underline"
         >
-          mandate-focal-points.un-two-zero.org
+          {text.designationLink}
         </ExternalLink>
         .
       </p>

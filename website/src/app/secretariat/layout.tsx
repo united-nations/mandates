@@ -1,6 +1,9 @@
+import { Suspense } from 'react'
+
 import { ExplainerText } from '@/components/ExplainerText'
 import { SecretariatNavigation } from '@/components/SecretariatNavigation'
 import { explainerTexts } from '@/lib/en_text_contents'
+import { SecretariatNavigationServer } from './navigation'
 
 export default function SecretariatLayout({
   children,
@@ -15,7 +18,9 @@ export default function SecretariatLayout({
         </h1>
         <ExplainerText />
       </section>
-      <SecretariatNavigation />
+      <Suspense fallback={<SecretariatNavigation />}>
+        <SecretariatNavigationServer />
+      </Suspense>
       {children}
     </>
   )

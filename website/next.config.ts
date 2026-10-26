@@ -84,10 +84,7 @@ const nextConfig: NextConfig = {
         destination: '/system',
         permanent: false,
       },
-      // The organs / entities / subjects / about pages are now sections of the
-      // single /secretariat page. The hash targets the matching section; if the
-      // fragment is dropped, the ExpandableCard hash listener still auto-opens
-      // Methodology once on the page.
+      // Legacy directory routes point to the matching Secretariat sections.
       {
         source: '/organs',
         destination: '/secretariat#organs',
@@ -104,8 +101,8 @@ const nextConfig: NextConfig = {
         permanent: false,
       },
       {
-        source: '/about',
-        destination: '/methodology',
+        source: '/methodology',
+        destination: '/about',
         permanent: false,
       },
       {

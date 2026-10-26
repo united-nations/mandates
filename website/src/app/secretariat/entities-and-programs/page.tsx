@@ -52,7 +52,7 @@ export default async function EntitiesAndProgramsPage() {
       names
     )
     return (
-      <section className="mx-auto max-w-6xl px-2 pt-4 pb-10 sm:px-6 md:px-12 lg:px-16">
+      <section className="mx-auto max-w-6xl px-2 pt-3 pb-10 sm:px-6 md:px-12 lg:px-16">
         <EntitiesProgrammesTable
           key={activeVersion}
           rows={rows}

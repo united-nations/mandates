@@ -44,9 +44,8 @@ interface ActiveFiltersProps {
 }
 
 /**
- * The "Active filters" chip bar for the mandate explorer. Renders above the four
- * explore cards (app/secretariat/page.tsx), because those cards' numbers are
- * computed against exactly these filters. Renders nothing when none are active.
+ * The "Active filters" chip bar for the mandate explorer. Renders below the
+ * card navigation, above the search toolbar. Renders nothing when none are active.
  *
  * No leading icons on the chips: eleven filter kinds needed eleven glyphs, none
  * of which said anything the label next to it did not already say in words.
@@ -64,8 +63,7 @@ export function ActiveFilters({
   delete displayFilters.limit
   delete displayFilters.sort_by
   delete displayFilters.keyword
-  // The version lens is a control, not a filter: it has its own switch in the
-  // "documents cited as mandates" card and there is no "off" state to clear to.
+  // The version lens has its own selector and no "off" state to clear to.
   delete displayFilters.ppb_version
   delete displayFilters.group
   if (filters.budget_location) {
