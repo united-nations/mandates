@@ -13,6 +13,7 @@ export const explainerTexts = {
   },
   secretariatNavigation: {
     label: 'Secretariat navigation',
+    aboutView: 'About {view}',
     mandateSources: 'Mandate sources',
     entitiesAndPrograms: 'Implementing entities',
     agendaItems: 'Mandating bodies',
@@ -39,11 +40,11 @@ export const explainerTexts = {
     },
     explainers: {
       sources:
-        'Find resolutions and other documents that establish mandates. Explore their versions, see which entities are implementing them, and find reports submitted under them. Click on a document in the table to see its details.',
+        'This table provides an overview of all mandate documents that have been adopted by the General Assembly, Security Council, Economic and Social Council and Human Rights Council from 1946 to today, which ones are under implementation, and which entities implement them. Click on a document to read it, explore its versions and how they have changed over time, learn about the entities and programmes that implement them, and find reports about their implementation. Add additional columns and filters to systematically explore the universe of mandates.',
       agendas:
-        'Explore the agenda items under which intergovernmental bodies consider their work. Select an item to find related mandate source documents.',
+        'This page provides an overview of the four largest mandating bodies and their agendas. It lists agenda items of their sessions and links to the mandates that have been adopted under them. It also connects similar agenda items that are considered by multiple bodies.',
       entities:
-        'Explore UN entities and their programmes. See which mandate documents they cite and compare historical programme expenditure.',
+        'This page provides an overview of the structure of the budget documents (Programme Budget and Budget of Peacekeeping Operations) where entities cite what mandates their work is based on. You can zoom into the parts, sections and programmes of the budget, the entities and subprogrammes that sit in them, and their mandate citations and historical expenditure. Use search and filters to see related programmes at one glance.',
     },
   },
   secretariatReports: {
@@ -94,9 +95,10 @@ export const explainerTexts = {
     headline: 'See what the UN is asked to do.',
     versionTag: 'Beta Version',
     shortDescription:
-      'Developed as part of the UN80 Initiative, this registry serves as a transparency tool for understanding UN mandates and programmes.',
+      'Member States establish mandates for UN entities by adopting resolutions and other documents.\nExplore these mandates, see who implements them, and find reports on their implementation.',
     shortDescriptionPlain:
-      'Developed as part of the UN80 Initiative, this registry serves as a transparency tool for understanding UN mandates and programmes.',
+      'Member States establish mandates for UN entities by adopting resolutions and other documents. Explore these mandates, see who implements them, and find reports on their implementation.',
+    learnMore: 'Learn more',
     un80Link: 'https://www.un.org/un80-initiative/en',
     mandateImplementationLink:
       'https://www.un.org/un80-initiative/en/report-mandate-implementation-review',
@@ -105,6 +107,34 @@ export const explainerTexts = {
     ],
     disclaimer:
       'As the list of UN Entities in this registry is derived from the budget submissions to the General Assembly, it includes Entities that are independent of the Secretariat and the Secretary-General. The inclusion of these Entities here is for reference only and is not intended to indicate that they are within the scope of the UN80 Initiative.',
+  },
+
+  about: {
+    heading: 'About the mandate registry',
+    introduction:
+      'The mandate registry has been developed to support the work of the UN80 reform, workstream 2: mandate implementation review. It gives detailed insights into the mandates of the UN Secretariat and an overview of governing bodies across the UN System, as well as focal points for Member States to contact about mandate design.',
+    methodologyHeading: 'Methodology and scope',
+    scope:
+      'The mandate registry includes more than 40,000 resolutions and other mandate documents from 1946 to today. These cover all resolutions, decisions, and presidential statements of the four largest mandating bodies: General Assembly, Security Council, Economic and Social Council, and Human Rights Council. Nineteen other mandating bodies and other sources are also included, to the extent that their documents are cited by entities as mandates.',
+    sourcesIntroduction: 'The specific data sources are:',
+    sources: [
+      'The metadata for these documents is retrieved from the Dag Hammarskjöld Library, along with full texts from the Official Document System.',
+      'Information about which entities are implementing mandates is extracted from budget documents, specifically the Programme Budget of the UN Secretariat, and the Budget of Peacekeeping Operations, and is complemented by resolutions relating to the UN Secretariat’s priority areas in its Plan Outline. The Programme Budget includes both sections about “Mandates and background” that explain why programmes exist, and about “Legislative mandates” that explain why specific programmes and subprogrammes require resources (see infographic below). The programme budget includes entities that are independent of the Secretariat and the Secretary-General. The inclusion of these entities here is for reference only and is not intended to indicate that they are within the scope of the UN80 Initiative.',
+      'Links to reports are established via library metadata and via extraction of references from the full texts.',
+      'Agendas of intergovernmental bodies are integrated via iGov for the General Assembly and the Economic and Social Council, and via its agenda and annotations for the Human Rights Council; for the Security Council, its matters considered are integrated.',
+      'Focal point contacts are designated by their entities via the Mandate Focal Points data entry portal.',
+    ],
+    preliminaryCitations:
+      'Some citations in the 2027 proposed UN programme budget are preliminary, drawn from advance versions of the underlying documents, and may change in the final budget: Section 1 (Overall policymaking, direction and coordination), from A/81/6 (Sect. 1); and the special political missions, from A/81/6 (Sect. 3)/Add.1–4.',
+    infographicAlt: 'How mandate source documents are identified',
+  },
+
+  focalPoints: {
+    heading: 'Find the right person to talk to.',
+    introduction:
+      'To support Member States during the design of mandates, UN entities have designated focal points. Search by keyword to find relevant contact points across entities, and click on an entry for more details.',
+    designationIntroduction: 'UN entities can designate their focal points',
+    designationLink: 'here',
   },
 
   // /system page hero

@@ -12,7 +12,7 @@ type PageData = Awaited<ReturnType<typeof loadSecretariatPageData>>
 const Summary = ({ data }: { data: PageData }) => (
   <section className="mx-auto max-w-6xl px-6 md:px-12 lg:px-16">
     <ActiveFilters
-      className="mt-6"
+      className="mt-3"
       entitiesData={data.entities}
       allOrgans={data.organs}
       citedVersionLabel={
@@ -29,7 +29,7 @@ const Explorer = ({
   versions,
   active,
 }: Pick<PageData, 'dataPromise' | 'versions' | 'active'>) => (
-  <section id="mandates" className="scroll-mt-20 pt-8 pb-10">
+  <section id="mandates" className="scroll-mt-20 pt-3 pb-10">
     <Suspense
       fallback={
         <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-16">

@@ -1,10 +1,15 @@
 'use client'
 
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, CircleHelp } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 import { useFilters } from '@/contexts/FilterContext'
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible'
 import { explainerTexts } from '@/lib/en_text_contents'
 import type { ExploreCardFigures } from '@/lib/explore-card-state'
 import { cn } from '@/lib/utils'
@@ -126,17 +131,38 @@ export function SecretariatNavigation({
           )
         })}
       </nav>
-      {(heading || explainer) && (
-        <div className="pt-6">
-          {heading && (
-            <h2 className="mb-3 text-xl font-semibold text-foreground">
-              {heading}
-            </h2>
+      {heading && (
+        <Collapsible
+          key={activeHref}
+          defaultOpen={false}
+          className="grid grid-cols-[max-content_2rem_minmax(0,1fr)] items-center gap-x-2 pt-6"
+        >
+          <h2 className="text-xl font-semibold text-foreground">{heading}</h2>
+          {explainer && (
+            <CollapsibleTrigger asChild>
+              <button
+                type="button"
+                aria-label={text.aboutView.replace('{view}', heading)}
+                className="inline-flex size-8 shrink-0 items-center justify-center rounded-md bg-secondary text-muted-foreground transition-colors hover:ring-1 hover:ring-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none data-[state=open]:ring-1 data-[state=open]:ring-muted-foreground"
+              >
+                <CircleHelp aria-hidden className="size-5" />
+              </button>
+            </CollapsibleTrigger>
           )}
           {explainer && (
-            <p className="max-w-3xl text-sm text-foreground">{explainer}</p>
+            <CollapsibleContent className="col-span-full grid grid-cols-subgrid">
+              <span
+                aria-hidden
+                className="relative z-10 col-start-2 mx-auto mt-2 -mb-1.5 size-3 rotate-45 border-t border-l border-border bg-accent"
+              />
+              <div className="col-span-full rounded-lg border border-border bg-accent p-4">
+                <p className="max-w-3xl text-sm leading-relaxed text-foreground">
+                  {explainer}
+                </p>
+              </div>
+            </CollapsibleContent>
           )}
-        </div>
+        </Collapsible>
       )}
     </div>
   )

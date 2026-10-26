@@ -65,12 +65,12 @@ export function SiteHeader() {
                 The development of the mandate registry is still ongoing. Go to
                 the{' '}
                 <Link
-                  href="/methodology"
+                  href="/about"
                   className="font-medium text-un-blue-text underline hover:text-shuttle-gray"
                 >
-                  methodology
+                  About page
                 </Link>{' '}
-                section for information on the current scope.
+                for information on the current scope.
               </p>
             </TooltipContent>
           </Tooltip>

@@ -10,7 +10,7 @@ export const metadata = {
 
 export default function ReportsPage() {
   return (
-    <section className="mx-auto max-w-6xl px-6 pb-10 md:px-12 lg:px-16">
+    <section className="mx-auto max-w-6xl px-6 pt-3 pb-10 md:px-12 lg:px-16">
       <p className="mb-4 text-muted-foreground">{text.workInProgress}</p>
       <p>
         {text.interim}{' '}
