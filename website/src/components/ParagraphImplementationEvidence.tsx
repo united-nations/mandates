@@ -7,6 +7,7 @@ import {
   evidenceAnchor,
   implementationAnchor,
   summarizeEvidence,
+  evidenceBadgeItems,
   type EvidenceKind,
   type EvidencePassage,
   type ParagraphEvidence,
@@ -14,13 +15,15 @@ import {
 
 export function EvidenceBadges({
   passages,
+  inline = false,
 }: {
-  passages: readonly EvidencePassage[]
+  passages: readonly Pick<EvidencePassage, 'id' | 'kind'>[]
+  inline?: boolean
 }) {
   const { counts } = summarizeEvidence(passages)
   return (
     <span
-      className="flex flex-wrap gap-1.5"
+      className={`${inline ? 'inline-flex align-baseline' : 'flex'} flex-wrap gap-1.5`}
       aria-label="Available evidence types"
     >
       {(Object.keys(EVIDENCE_KINDS) as EvidenceKind[])
@@ -51,7 +54,7 @@ export function ParagraphImplementationEvidence({
       >
         Implementation evidence
       </a>
-      <EvidenceBadges passages={paragraph.passages} />
+      <EvidenceBadges passages={evidenceBadgeItems(paragraph.passages)} />
     </div>
   )
 }

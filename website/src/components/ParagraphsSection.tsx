@@ -2523,14 +2523,8 @@ export function ParagraphsSection({
                 )}
               </div>
               {renderFootnotes(paragraph)}
-              {implementationEvidence && evidence ? (
+              {evidence && evidence.passages.length > 0 ? (
                 <ParagraphImplementationEvidence paragraph={evidence} />
-              ) : implementationEvidence &&
-                label &&
-                /^\d+\.?$/.test(paragraph.prefix ?? '') ? (
-                <p className="mt-3 border-t border-border pt-2 text-xs text-muted-foreground">
-                  Implementation evidence: not reviewed in this pilot.
-                </p>
               ) : null}
             </div>
           </div>
