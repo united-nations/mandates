@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import { getPool, closePool } from '#lib/db/index'
-import { textMetricsSql } from '#lib/data/text-metrics-sql'
+import { buildTextMetricsSql } from '#lib/data/text-metrics-sql'
 
 // All fixture relations are CTEs in one SELECT. This test cannot write data,
 // create tables, or rely on the production corpus. Opt in with DATABASE_URL.
@@ -27,7 +27,7 @@ test(
       document_parses:
         'symbol_normalized text, lang text, parser_version text, parsed_at timestamptz',
       document_text_metrics:
-        'symbol_normalized text, lang text, text_profile_version text, metric_version text, parser_version text, computed_at timestamptz, word_count integer, content_sha256 text',
+        'symbol_normalized text, lang text, text_profile_version text, metric_version text, parser_version text, computed_at timestamptz, source_parsed_at timestamptz, word_count integer, content_sha256 text',
       resolution_series_comparisons:
         'symbol_normalized text, lang text, text_profile_version text, method_version text, comparison_status text, previous_symbol_normalized text, series_key text, un_body text, doc_type text, publication_date date, previous_publication_date date, current_content_sha256 text, previous_content_sha256 text, similarity double precision',
     }
@@ -46,6 +46,7 @@ test(
       'missing_previous',
       'score_pending',
       'zero',
+      'duplicate',
     ]
     const symbols: string[] = []
     let recid = 0
@@ -91,6 +92,10 @@ test(
               scenario === 'stale' && i === 2
                 ? '2026-07-01T00:00:00Z'
                 : '2026-08-02T00:00:00Z',
+            source_parsed_at:
+              scenario === 'stale' && i === 2
+                ? '2026-07-01T00:00:00Z'
+                : '2026-08-01T00:00:00Z',
             word_count: scenario === 'zero' ? 0 : 100 + i,
             content_sha256: hash,
           })
@@ -116,7 +121,20 @@ test(
         similarity: scenario === 'zero' ? 0 : 0.91,
       })
     }
-    let sql = textMetricsSql
+    // A duplicate symbol in a different series must still make its original
+    // series ambiguous; count occurrences before selecting relevant groups.
+    fixtures.resolution_series.push({
+      document_symbol: 'duplicate/0',
+      recid: ++recid,
+      series_key: 'different-series',
+      un_body: 'GA',
+      doc_type: 'resolution',
+      is_collection: false,
+    })
+    fixtures.documents.push({ recid, date_publication: '2020-01-01' })
+    let sql = buildTextMetricsSql(
+      'SELECT symbol FROM unnest($1::text[]) symbols(symbol)'
+    )
     for (const table of Object.keys(fixtures))
       sql = sql.replaceAll(`digitallibrary.${table}`, `fixture_${table}`)
     sql = sql.replace(
@@ -153,6 +171,7 @@ test(
       for (const scenario of ['failed', 'stale', 'parser'])
         assert.equal(byCase.get(scenario).word_count, null, scenario)
       for (const scenario of [
+        'duplicate',
         'tied',
         'undated',
         'collection',
@@ -164,6 +183,31 @@ test(
         assert.equal(byCase.get(scenario).can_compare, false, scenario)
       assert.equal(byCase.get('score_pending').can_compare, true)
       assert.equal(byCase.get('hash').can_compare, true)
+
+      // Sorting uses the same eligibility checks across all matching rows,
+      // before pagination. Zero is a score; unavailable/stale scores go last.
+      for (const [direction, expected] of [
+        ['ASC', ['zero/2', 'ready/2']],
+        ['DESC', ['ready/2', 'zero/2']],
+      ] as const) {
+        const sorted = await client.query(
+          `SELECT * FROM (${sql}) metrics
+           ORDER BY similarity_to_previous ${direction} NULLS LAST, symbol
+           LIMIT 2`,
+          [symbols, JSON.stringify(fixtures)]
+        )
+        assert.deepEqual(
+          sorted.rows.map((row) => row.symbol),
+          expected
+        )
+        const nextPage = await client.query(
+          `SELECT * FROM (${sql}) metrics
+           ORDER BY similarity_to_previous ${direction} NULLS LAST, symbol
+           LIMIT 1 OFFSET 2`,
+          [symbols, JSON.stringify(fixtures)]
+        )
+        assert.equal(nextPage.rows[0].similarity_to_previous, null)
+      }
     } finally {
       await client.query('ROLLBACK')
       client.release()

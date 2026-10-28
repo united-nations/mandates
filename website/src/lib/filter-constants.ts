@@ -9,6 +9,9 @@ import {
 import { normalizePagination } from '#lib/pagination'
 import { parseSearchQuery } from '#lib/search-query'
 
+export const NO_CITING_ENTITY = '__none__'
+export const NO_CITING_ENTITY_LABEL = 'No citing entity'
+
 // Friendly labels for the top-level budget streams (the values the
 // `budget_document` filter now carries: a doc_type). Version-agnostic, so used
 // for filter chips where the version-specific document name would be noise.

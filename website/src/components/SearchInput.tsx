@@ -31,6 +31,9 @@ interface SearchInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
    * Additional CSS classes
    */
   className?: string
+
+  /** Additional CSS classes for the magnifier, merged over its defaults. */
+  iconClassName?: string
 }
 
 export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
@@ -41,6 +44,7 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
       onClear,
       helpControl,
       className,
+      iconClassName,
       value,
       ...props
     },
@@ -64,7 +68,12 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
 
     return (
       <div className="relative">
-        <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
+        <Search
+          className={cn(
+            'absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-muted-foreground',
+            iconClassName
+          )}
+        />
         <Input
           ref={ref}
           value={value}

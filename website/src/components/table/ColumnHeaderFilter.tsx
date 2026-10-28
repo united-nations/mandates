@@ -90,6 +90,7 @@ export function ColumnHeaderFilter({
       {column.sortKeys && (
         <button
           onClick={handleSort}
+          aria-label={`Sort ${column.label} ${sortDirection === 'desc' ? 'ascending' : 'descending'}`}
           className="transition-colors hover:text-muted-foreground"
         >
           {sortDirection === 'asc' ? (
@@ -369,7 +370,9 @@ function PillFilter({
             </div>
           ))}
           {grouped.length === 0 && (
-            <p className="py-2 text-sm text-muted-foreground">No options found</p>
+            <p className="py-2 text-sm text-muted-foreground">
+              No options found
+            </p>
           )}
         </div>
       ) : (
@@ -377,7 +380,9 @@ function PillFilter({
           <div className="flex max-h-64 flex-wrap gap-1.5 overflow-y-auto">
             {displayed.map(renderPill)}
             {displayed.length === 0 && (
-              <p className="py-2 text-sm text-muted-foreground">No options found</p>
+              <p className="py-2 text-sm text-muted-foreground">
+                No options found
+              </p>
             )}
           </div>
 

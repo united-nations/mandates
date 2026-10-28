@@ -93,6 +93,25 @@ const getAcceptedPageOneRunId = cache(async (): Promise<string | null> => {
   return row ? row.run_id : null
 })
 
+/** Distinct reports linked directly to registry pages by the accepted run. */
+export const getPageOneLinkedReportIds = cache(async (): Promise<number[]> => {
+  const runId = await getAcceptedPageOneRunId()
+  if (runId === null) return []
+  const rows = await queryMany<{ report_recid: number }>(
+    `/* trace:sg-reports.page-one.registry-report-ids */
+     SELECT DISTINCT l.report_recid
+     FROM mandates.sg_report_page_one_links l
+     JOIN mandates.sg_report_page_one_outcomes o
+       ON o.run_id = l.run_id AND o.report_recid = l.report_recid
+     WHERE l.run_id = $1
+       AND l.citation_role = ANY ($2)
+       AND cardinality(l.cited_display_candidates) > 0
+       AND cardinality(o.report_symbols) > 0`,
+    [runId, PAGE_ONE_DISPLAYED_CITATION_ROLES]
+  )
+  return rows.map((row) => row.report_recid)
+})
+
 /**
  * Secretary-General reports whose first pages state they were submitted
  * under any requested family member (or just `pageSymbol` by default), with

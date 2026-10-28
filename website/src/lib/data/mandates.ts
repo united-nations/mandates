@@ -9,6 +9,7 @@ import { mandateMembershipSql, versionPredicateSql } from '@/lib/mandate-members
 import { cache } from 'react'
 import { normalizePagination } from '#lib/pagination'
 import { getDocumentTextMetrics } from './text-metrics'
+import { buildTextMetricsSql } from './text-metrics-sql'
 import { getDocumentPdfUrl } from './source-links'
 import { getHistoricalDocument } from './historical-document'
 import type { DocumentTextMetrics } from '../text-analytics'
@@ -41,10 +42,11 @@ import {
   buildDirectBudgetCitations,
   buildQualifiedBudgetCitations,
 } from './budget-citation-sql'
-import { SUBJECT_DOMAIN_LABELS } from '@/lib/filter-constants'
+import { NO_CITING_ENTITY, SUBJECT_DOMAIN_LABELS } from '@/lib/filter-constants'
 import { citationScope, citationScopeKey, parseCitationScope, citationScopePredicates } from '@/lib/citation-budget-location'
 import type { DetailBudgetLocation } from '@/types'
 import { agendaResolutionPredicate, parseAgendaScope } from '@/lib/agenda-scope'
+import { agendaScopeSymbols } from './agenda-items'
 import { relatedResolutionPredicate } from '@/lib/related-agenda'
 import {
   pairKey,
@@ -253,10 +255,15 @@ const KEYWORD_SEARCH_FIELDS: SearchField[] = [
   { expr: 'd.subjects', fold: 'case', array: true },
 ]
 
+// agendaSymbols is agendaScopeSymbols(filters), resolved by the async caller;
+// required so that a new caller cannot silently skip it.
 function buildFilterClauses(
   filters: FilterOptions,
+  agendaSymbols: string[] | undefined,
   paramOffset = 0
 ): FilterClauses {
+  const selectedEntity =
+    filters.entity === NO_CITING_ENTITY ? undefined : filters.entity
   const clauses: string[] = []
   const params: SqlParam[] = []
   let paramIndex = paramOffset + 1
@@ -316,7 +323,7 @@ function buildFilterClauses(
   const hasBudgetLocation = Boolean(exactCitationScope || filters.budget_document || filters.budget_group || filters.budget_part || filters.section || filters.subprogramme)
   // Standalone entity selection is catalogue-wide. A location plus entity
   // must match one citation, handled together below.
-  if (filters.entity && !hasBudgetLocation) {
+  if (selectedEntity && !hasBudgetLocation) {
     clauses.push(`
       EXISTS (
         SELECT 1 FROM ppb2026.source_document_citations c2
@@ -325,8 +332,17 @@ function buildFilterClauses(
         AND ${versionClause('c2')}
       )
     `)
-    params.push(filters.entity)
+    params.push(selectedEntity)
     paramIndex++
+  }
+
+  if (filters.entity === NO_CITING_ENTITY) {
+    clauses.push(`NOT EXISTS (
+      SELECT 1 FROM ppb2026.source_document_citations ce
+      WHERE ce.ppb_full_document_symbol = d.ppb_full_document_symbol
+        AND NULLIF(TRIM(ce.entity), '') IS NOT NULL
+        AND ${versionClause('ce')}
+    )`)
   }
 
   // Cross-citing entity filter
@@ -435,9 +451,9 @@ function buildFilterClauses(
       locationPredicates.push(filters.budget_group ? "bdh.doc_type = 'pko'" : "bdh.doc_type = 'ppb'")
     }
     if (hierarchyLevels.some(level => level.value)) locationPredicates.push("bdh.doc_type = 'ppb'")
-    if (filters.entity) {
+    if (selectedEntity) {
       locationPredicates.push(`ch.entity = $${paramIndex}`)
-      params.push(filters.entity)
+      params.push(selectedEntity)
       paramIndex++
     }
     if (filters.budget_group) {
@@ -467,7 +483,7 @@ function buildFilterClauses(
   // DESA, foundationally" — rather than the weaker "foundational for somebody
   // and, separately, cited by DESA".
   if (filters.foundational === 'true') {
-    const entityPredicate = filters.entity
+    const entityPredicate = selectedEntity
       ? `AND cf.entity = $${paramIndex + 1}`
       : ''
     clauses.push(`
@@ -481,8 +497,8 @@ function buildFilterClauses(
     `)
     params.push(FOUNDATIONAL_PART_IN_DOCUMENT)
     paramIndex++
-    if (filters.entity) {
-      params.push(filters.entity)
+    if (selectedEntity) {
+      params.push(selectedEntity)
       paramIndex++
     }
   }
@@ -554,7 +570,7 @@ function buildFilterClauses(
     params.push(...related.params)
     paramIndex += related.params.length
   } else if (filters.agenda_scope) {
-    const agenda = agendaResolutionPredicate(parseAgendaScope(filters.agenda_scope),paramIndex)
+    const agenda = agendaResolutionPredicate(parseAgendaScope(filters.agenda_scope),paramIndex,agendaSymbols)
     clauses.push(agenda.predicate)
     params.push(...agenda.params)
     paramIndex+=agenda.params.length
@@ -633,7 +649,7 @@ function buildFilterClauses(
  */
 function buildFilteredDocsCTE(
   filters: FilterOptions,
-  opts: { selectCols: string; groupCols: string; name?: string }
+  opts: { selectCols: string; groupCols: string; name?: string; agendaSymbols: string[] | undefined }
 ): {
   cte: string
   params: SqlParam[]
@@ -641,7 +657,7 @@ function buildFilteredDocsCTE(
   versionParam: string
 } {
   const { clauses, params, havingClauses, versionClause, versionParam } =
-    buildFilterClauses(filters)
+    buildFilterClauses(filters, opts.agendaSymbols)
   const whereClause = clauses.length > 0 ? `WHERE ${clauses.join(' AND ')}` : ''
   const havingClause =
     havingClauses.length > 0 ? `HAVING ${havingClauses.join(' AND ')}` : ''
@@ -697,6 +713,14 @@ function buildOrderByClause(sortBy?: string): string {
       return 'ORDER BY num_citations DESC, num_entities DESC'
     case 'citations_asc':
       return 'ORDER BY CASE WHEN num_entities = 0 THEN 0 ELSE num_citations END ASC'
+    case 'similarity_desc':
+      return 'ORDER BY c.similarity_to_previous DESC NULLS LAST, c.ppb_full_document_symbol ASC'
+    case 'similarity_asc':
+      return 'ORDER BY c.similarity_to_previous ASC NULLS LAST, c.ppb_full_document_symbol ASC'
+    case 'word_count_desc':
+      return 'ORDER BY c.word_count DESC NULLS LAST, c.ppb_full_document_symbol ASC'
+    case 'word_count_asc':
+      return 'ORDER BY c.word_count ASC NULLS LAST, c.ppb_full_document_symbol ASC'
     case 'year_desc':
       return 'ORDER BY c.ppb_year DESC NULLS LAST'
     case 'year_asc':
@@ -717,7 +741,15 @@ export async function getMandates(
   const { page, limit } = normalizePagination(options.page, options.limit)
   const offset = (page - 1) * limit
 
-  const { cte, params } = buildFilteredDocsCTE(filters, {
+  const metricSort = [
+    'similarity_asc',
+    'similarity_desc',
+    'word_count_asc',
+    'word_count_desc',
+  ].includes(filters.sort_by ?? '')
+  const { cte: baseCte, params } = buildFilteredDocsCTE(filters, {
+    agendaSymbols: await agendaScopeSymbols(filters),
+    name: metricSort ? 'base_filtered_docs' : 'filtered_docs',
     selectCols: `
         d.ppb_full_document_symbol,
         d.ppb_link,
@@ -758,6 +790,18 @@ export async function getMandates(
     groupCols:
       'd.ppb_full_document_symbol, d.ppb_link, d.ppb_year, d.ppb_body, d.ppb_description, d.display_title, d.ppb_type, d.subjects, d.agenda_items',
   })
+
+  // Reuse display eligibility so stale or ambiguous scores sort as missing.
+  // Only metric sorting needs this lookup across the full filtered set.
+  const cte = metricSort
+    ? `${baseCte}, sort_metrics AS (
+        ${buildTextMetricsSql('SELECT ppb_full_document_symbol AS symbol FROM base_filtered_docs')}
+      ), filtered_docs AS (
+        SELECT d.*, tm.word_count, tm.similarity_to_previous
+        FROM base_filtered_docs d
+        LEFT JOIN sort_metrics tm ON tm.symbol = d.ppb_full_document_symbol
+      )`
+    : baseCte
 
   // Bind a value and return its 1-based placeholder index. Using the index
   // returned by the push itself (instead of params.length + N arithmetic)
@@ -1419,6 +1463,7 @@ const getFilteredAggregates = cache((filters: FilterOptions = {}) =>
     async () => {
       const { cte, params, versionClause, versionParam } =
         buildFilteredDocsCTE(filters, {
+          agendaSymbols: await agendaScopeSymbols(filters),
           selectCols: `d.ppb_full_document_symbol, d.ppb_body, d.ppb_type,
             d.ppb_year, d.subjects, d.agenda_items,
             COUNT(c.id) AS citation_count`,
@@ -1604,6 +1649,7 @@ export const getFilteredDocumentCount = cache((filters: FilterOptions = {}) =>
       // bundle, and making each of those compute every facet would cost far
       // more than the two small counts it saves.
       const { cte, params } = buildFilteredDocsCTE(filters, {
+        agendaSymbols: await agendaScopeSymbols(filters),
         selectCols: 'd.ppb_full_document_symbol',
         groupCols: 'd.ppb_full_document_symbol',
       })
@@ -1851,7 +1897,7 @@ export async function getEntityCounts(filters: FilterOptions = {}): Promise<Enti
  * Get organ counts for the sidebar
  */
 export async function getOrganCounts(filters: FilterOptions = {}): Promise<OrganWithCount[]> {
-  const { clauses, params, havingClauses, versionClause } = buildFilterClauses(filters)
+  const { clauses, params, havingClauses, versionClause } = buildFilterClauses(filters, await agendaScopeSymbols(filters))
   const whereClause = clauses.length > 0 ? `WHERE ${clauses.join(' AND ')}` : ''
   const allHaving = ['d.ppb_body IS NOT NULL', "d.ppb_body != ''", ...havingClauses]
   const havingClause = `HAVING ${allHaving.join(' AND ')}`
@@ -1909,6 +1955,7 @@ async function _getOrganHierarchyInner(
   filters: FilterOptions
 ): Promise<OrganGroup[]> {
   const { cte, params } = buildFilteredDocsCTE(filters, {
+    agendaSymbols: await agendaScopeSymbols(filters),
     selectCols: 'd.ppb_full_document_symbol, d.ppb_body',
     groupCols: 'd.ppb_full_document_symbol, d.ppb_body',
   })
@@ -2008,6 +2055,7 @@ async function _getDocumentTypeCatalogueInner(
   filters: FilterOptions
 ): Promise<DocumentTypeCatalogue> {
   const { cte, params } = buildFilteredDocsCTE(filters, {
+    agendaSymbols: await agendaScopeSymbols(filters),
     selectCols: 'd.ppb_full_document_symbol, d.ppb_type',
     groupCols: 'd.ppb_full_document_symbol, d.ppb_type',
   })
@@ -2454,7 +2502,7 @@ async function _getBudgetHierarchyInner(
   // as well. Selecting a node therefore narrows the tree to that node's branch
   // rather than keeping its siblings on display, so the active-filter chip is
   // the way back out.
-  const built = buildFilterClauses(filters)
+  const built = buildFilterClauses(filters, await agendaScopeSymbols(filters))
   const whereClause = built.clauses.length
     ? `WHERE ${built.clauses.join(' AND ')}`
     : ''
@@ -2467,6 +2515,7 @@ async function _getBudgetHierarchyInner(
   })
   if (built.havingClauses.length) {
     const filtered = buildFilteredDocsCTE(filters, {
+      agendaSymbols: await agendaScopeSymbols(filters),
       selectCols: 'd.ppb_full_document_symbol',
       groupCols: 'd.ppb_full_document_symbol',
     })
@@ -2808,6 +2857,7 @@ export async function getSubjectHierarchy(
   // Conjunctive: the tree's own levels (subject, subject_domain) constrain it
   // too, like every other count on the page.
   const { cte, params } = buildFilteredDocsCTE(filters, {
+    agendaSymbols: await agendaScopeSymbols(filters),
     selectCols: 'd.ppb_full_document_symbol, d.subjects',
     groupCols: 'd.ppb_full_document_symbol, d.subjects',
   })
@@ -3275,7 +3325,7 @@ async function _getSharedPageDataInner(filters: FilterOptions) {
   ])
 
   let crossCitations: ApiResponse['sidebar']['crossCitations'] = []
-  if (filters.entity) {
+  if (filters.entity && filters.entity !== NO_CITING_ENTITY) {
     crossCitations = await getCrossCitations(filters.entity, filters.ppb_version)
   }
 
@@ -3321,7 +3371,7 @@ async function _getMandateListInner(
 // older deploy are never served to newer client code (the cache key is only
 // the filters, and entries persist for `revalidate`). This is the
 // data-version guard the refactor plan called for.
-const PAGE_DATA_CACHE_VERSION = 'v8-exact-budget-location-live-metrics'
+const PAGE_DATA_CACHE_VERSION = 'v10-set-based-metric-sorts'
 
 /**
  * The shared slice is invariant to grouping and pagination, so its cache key

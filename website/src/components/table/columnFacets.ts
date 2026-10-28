@@ -1,3 +1,7 @@
+import {
+  NO_CITING_ENTITY,
+  NO_CITING_ENTITY_LABEL,
+} from '@/lib/filter-constants'
 import { ORGAN_CATEGORIES } from '@/lib/organ-groups'
 import type { BudgetStream, EntityWithCount, OrganWithCount } from '@/types'
 import type { FilterGroup, FilterOption } from './ColumnHeaderFilter'
@@ -48,7 +52,10 @@ export function getColumnFilterOptions(
       }))
     case 'entity_list':
     case 'entity_count':
-      return entityCounts.map((e) => ({ value: e.entity, count: e.count }))
+      return [
+        { value: NO_CITING_ENTITY, label: NO_CITING_ENTITY_LABEL },
+        ...entityCounts.map((e) => ({ value: e.entity, count: e.count })),
+      ]
     case 'subjects':
       return filterOptions.subjects
     case 'document_type':

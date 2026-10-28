@@ -7,6 +7,7 @@
 // (see `beforeSend` below) so this new Sentry project stays a clean feedback
 // inbox. Flip `beforeSend` off to also capture client errors later.
 import * as Sentry from '@sentry/nextjs'
+import { connectFeedbackToModals } from '@/lib/feedback-modal'
 
 // Only initialise when a DSN is configured (set NEXT_PUBLIC_SENTRY_DSN in the
 // Azure app env). With no DSN — local dev, contributor builds — the widget
@@ -75,15 +76,20 @@ if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
     shadow.appendChild(style)
   }
   const existing = document.getElementById('sentry-feedback')
-  if (existing) hideIcon(existing)
+  if (existing) {
+    hideIcon(existing)
+    connectFeedbackToModals(existing)
+  }
   const observer = new MutationObserver(() => {
     const host = document.getElementById('sentry-feedback')
     if (host) {
-      hideIcon(host)
       observer.disconnect()
+      hideIcon(host)
+      connectFeedbackToModals(host)
     }
   })
-  observer.observe(document.body, { childList: true, subtree: true })
+  if (!existing)
+    observer.observe(document.body, { childList: true, subtree: true })
 }
 
 // Required by Next 15+ for client-side router instrumentation.
