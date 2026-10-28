@@ -25,6 +25,12 @@ export interface ParagraphEvidence {
   label: string
   requestedText: string
   passages: EvidencePassage[]
+  components?: {
+    key: string
+    title: string
+    summary: string
+    quote: string
+  }[]
 }
 
 export interface ImplementationEvidenceCase {
@@ -75,6 +81,62 @@ export function summarizeEvidence(passages: readonly EvidencePassage[]) {
 
 export function evidenceAnchor(paragraph: ParagraphEvidence): string {
   return `evidence-${paragraph.locator.section}-${paragraph.locator.annexIndex ?? 0}-${paragraph.locator.prefix.replace(/\W/g, '')}`
+}
+
+export function implementationAnchor(paragraph: ParagraphEvidence): string {
+  return `implementation-${evidenceAnchor(paragraph)}`
+}
+
+/** Group by the reviewed action/component, keeping each source passage once per group. */
+export function groupParagraphEvidence(paragraph: ParagraphEvidence) {
+  const keys = [
+    ...new Set([
+      ...(paragraph.components ?? []).map((component) => component.key),
+      ...paragraph.passages.flatMap((passage) =>
+        passage.mappings.map((mapping) => mapping.component)
+      ),
+    ]),
+  ]
+  return keys.flatMap((key) => {
+    const passages = [
+      ...new Map(
+        paragraph.passages
+          .filter((passage) =>
+            passage.mappings.some((mapping) => mapping.component === key)
+          )
+          .map((passage) => [passage.id, passage])
+      ).values(),
+    ]
+    if (passages.length === 0) return []
+    const component = paragraph.components?.find((item) => item.key === key)
+    const mapping = passages[0].mappings.find((item) => item.component === key)!
+    return [
+      {
+        key,
+        title:
+          component?.title ??
+          (key.includes(':')
+            ? key.slice(key.indexOf(':') + 1).trim()
+            : 'What the report says'),
+        summary: component?.summary ?? mapping.interpretation,
+        quote: component?.quote,
+        passages,
+      },
+    ]
+  })
+}
+
+/** An exact, unambiguous source span; never highlight a guessed or partial match. */
+export function splitEvidenceQuote(text: string, quote?: string) {
+  const start = quote ? text.indexOf(quote) : -1
+  if (!quote || start < 0 || text.indexOf(quote, start + 1) >= 0) {
+    return [{ text, highlighted: false }]
+  }
+  return [
+    { text: text.slice(0, start), highlighted: false },
+    { text: quote, highlighted: true },
+    { text: text.slice(start + quote.length), highlighted: false },
+  ]
 }
 
 export function reportEvidencePdfUrl(symbol: string, page: number): string {

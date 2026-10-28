@@ -394,6 +394,50 @@
               }
             ]
           }
+        ],
+        "components": [
+          {
+            "key": "annex paragraph 52: feasibility and requested report",
+            "title": "Feasibility work and report preparation",
+            "summary": "A desk review, consultations and an expert meeting informed the report. This is preparatory work, rather than an operating university.",
+            "quote": "undertaking feasibility studies to explore the possibility of establishing an online university or other equivalent platforms"
+          },
+          {
+            "key": "annex paragraph 52: mapping existing initiatives",
+            "title": "Mapping existing initiatives",
+            "summary": "Existing initiatives are mapped, but fully accredited online STEM programmes remain limited in least developed countries.",
+            "quote": "the mapping of existing initiatives"
+          },
+          {
+            "key": "annex paragraph 52: possible new modalities",
+            "title": "Delivery options",
+            "summary": "Four delivery options are compared; a hybrid model combining local universities and a university network is favoured.",
+            "quote": "possible new modalities"
+          },
+          {
+            "key": "annex paragraph 52: resource requirements",
+            "title": "Resource requirements",
+            "summary": "Infrastructure, teaching and access needs are identified, without a fully costed institutional proposal.",
+            "quote": "resource requirements"
+          },
+          {
+            "key": "annex paragraph 52: accreditation",
+            "title": "Quality assurance and accreditation",
+            "summary": "Recognition barriers and accreditation approaches are assessed; accreditation for the proposed platform is not established.",
+            "quote": "accreditation"
+          },
+          {
+            "key": "annex paragraph 52: sustainable funding sources",
+            "title": "Funding and partnerships",
+            "summary": "Funding sources and partnerships are proposed; committed financing for the platform is not evidenced.",
+            "quote": "sustainable funding sources"
+          },
+          {
+            "key": "annex paragraph 52: prospective operationalization",
+            "title": "Next steps towards an online university",
+            "summary": "Further design work, a task force and a possible 2027 launch are recommended. These are proposals, rather than completed implementation.",
+            "quote": "establishing an online university or other equivalent platforms"
+          }
         ]
       }
     ]

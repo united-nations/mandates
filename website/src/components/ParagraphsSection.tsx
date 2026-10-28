@@ -24,10 +24,7 @@ import { Chip } from '@/components/ui/chip'
 import { ParagraphNumberBadge } from '@/components/ui/paragraph-number-badge'
 import { ChartSearchInput } from '@/components/ui/chart-search-input'
 import { DetailSectionHeading } from '@/components/MandateDetailUi'
-import {
-  ImplementationEvidenceIntro,
-  ParagraphImplementationEvidence,
-} from '@/components/ParagraphImplementationEvidence'
+import { ParagraphImplementationEvidence } from '@/components/ParagraphImplementationEvidence'
 import {
   matchParagraphEvidence,
   type ImplementationEvidenceCase,
@@ -2527,11 +2524,7 @@ export function ParagraphsSection({
               </div>
               {renderFootnotes(paragraph)}
               {implementationEvidence && evidence ? (
-                <ParagraphImplementationEvidence
-                  evidence={implementationEvidence}
-                  paragraph={evidence}
-                  requestedText={paragraph.text}
-                />
+                <ParagraphImplementationEvidence paragraph={evidence} />
               ) : implementationEvidence &&
                 label &&
                 /^\d+\.?$/.test(paragraph.prefix ?? '') ? (
@@ -2640,17 +2633,6 @@ export function ParagraphsSection({
         >
           What&rsquo;s in this document?
         </DetailSectionHeading>
-
-        {implementationEvidence && !isLoading && (
-          <ImplementationEvidenceIntro
-            evidence={implementationEvidence}
-            matchedCount={
-              allParagraphs.filter((paragraph) =>
-                matchParagraphEvidence(implementationEvidence, paragraph)
-              ).length
-            }
-          />
-        )}
 
         {allParagraphs?.[0]?.source_symbol && (
           <p className="text-sm text-muted-foreground">

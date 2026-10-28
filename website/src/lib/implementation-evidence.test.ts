@@ -8,6 +8,8 @@ import {
   normalizeEvidenceSymbol,
   reportEvidencePdfUrl,
   summarizeEvidence,
+  groupParagraphEvidence,
+  splitEvidenceQuote,
   type ImplementationEvidenceCase,
 } from '#lib/implementation-evidence'
 
@@ -86,6 +88,64 @@ describe('implementation evidence source matching', () => {
       Object.values(summary.counts).reduce((a, b) => a + b, 0),
       summary.total
     )
+  })
+})
+
+describe('action-level evidence groups', () => {
+  const doha = cases.find((item) => item.symbol === 'A/RES/76/258')!
+    .paragraphs[0]
+
+  it('splits Doha into seven reviewed components without losing any of its 25 passages', () => {
+    const groups = groupParagraphEvidence(doha)
+    assert.equal(groups.length, 7)
+    assert.equal(
+      new Set(groups.flatMap((group) => group.passages.map((p) => p.id))).size,
+      25
+    )
+    const resources = groups.find(
+      (group) => group.quote === 'resource requirements'
+    )!
+    assert.deepEqual(
+      resources.passages.map((p) => p.number),
+      [53, 54]
+    )
+    assert.equal(summarizeEvidence(resources.passages).counts.results, 0)
+  })
+
+  it('highlights an exact clause while preserving the complete source text', () => {
+    for (const component of doha.components ?? []) {
+      const parts = splitEvidenceQuote(doha.requestedText, component.quote)
+      assert.equal(parts.map((part) => part.text).join(''), doha.requestedText)
+      assert.deepEqual(
+        parts.filter((part) => part.highlighted).map((part) => part.text),
+        [component.quote]
+      )
+    }
+    assert.ok(
+      splitEvidenceQuote('Other text', 'not present').every(
+        (part) => !part.highlighted
+      )
+    )
+    assert.ok(
+      splitEvidenceQuote('same same', 'same').every((part) => !part.highlighted)
+    )
+  })
+
+  it('groups every other case using its existing reviewed mappings', () => {
+    for (const item of cases)
+      for (const paragraph of item.paragraphs) {
+        const groups = groupParagraphEvidence(paragraph)
+        assert.deepEqual(
+          new Set(groups.flatMap((group) => group.passages.map((p) => p.id))),
+          new Set(paragraph.passages.map((p) => p.id))
+        )
+        for (const group of groups) {
+          assert.equal(
+            new Set(group.passages.map((p) => p.id)).size,
+            group.passages.length
+          )
+        }
+      }
   })
 })
 
