@@ -14,6 +14,7 @@ import {
 } from '@/lib/feature-flags'
 import { getAllOrgans } from '@/lib/data/organs'
 import { getParagraphsBySymbol } from '@/lib/data/paragraphs'
+import { getImplementationEvidenceCase } from '@/lib/data/implementation-evidence'
 import { ParagraphsSection } from '@/components/ParagraphsSection'
 import { CitationCounts } from '@/components/CitationCounts'
 import { CitationCountsWithExpenditure } from '@/components/CitationCountsWithExpenditure'
@@ -144,6 +145,7 @@ async function MandateParagraphs({
   const paragraphs = await getParagraphsBySymbol(documentSymbol)
   return (
     <ParagraphsSection
+      implementationEvidence={getImplementationEvidenceCase(documentSymbol)}
       paragraphs={paragraphs}
       sourceUrl={sourceUrl}
       documentSymbol={documentSymbol}

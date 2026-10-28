@@ -14,6 +14,7 @@ import {
 } from '@/lib/feature-flags'
 import { getAllOrgans } from '@/lib/data/organs'
 import { getParagraphsBySymbol } from '@/lib/data/paragraphs'
+import { getImplementationEvidenceCase } from '@/lib/data/implementation-evidence'
 import { ParagraphsSection } from '@/components/ParagraphsSection'
 import { CitationCounts } from '@/components/CitationCounts'
 import { CitationCountsWithExpenditure } from '@/components/CitationCountsWithExpenditure'
@@ -109,6 +110,7 @@ export default async function MandatePage({
           related={related}
         />
         <ParagraphsSection
+          implementationEvidence={getImplementationEvidenceCase(documentSymbol)}
           standalone
           paragraphs={paragraphs}
           sourceUrl={mandate.link}

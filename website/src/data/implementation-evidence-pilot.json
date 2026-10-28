@@ -1,0 +1,1919 @@
+[
+  {
+    "symbol": "A/RES/76/258",
+    "title": "Doha Programme of Action for the Least Developed Countries",
+    "reviewedAt": "2026-10-15",
+    "report": {
+      "symbol": "A/80/426",
+      "title": "Online university or other equivalent platform to support university-level science, technology, engineering and mathematics education in the least developed countries report of the Secretary-General",
+      "issuedDate": "2025-09-30",
+      "sha256": "a3b22393e7cc66bb248a56e9cb91b9812ab44dbb3a3dd3bdd028a09359f5cf23"
+    },
+    "paragraphs": [
+      {
+        "locator": {
+          "section": "annex",
+          "annexIndex": 1,
+          "prefix": "52."
+        },
+        "label": "Annex paragraph 52",
+        "requestedText": "We commit to undertaking feasibility studies to explore the possibility of establishing an online university or other equivalent platforms to support online graduate and post-graduate university-level science, technology, engineering and mathematics education in least developed countries and recently graduated countries with a view to, inter alia, providing policy support to promote distance education and open learning for graduate and post-graduate studies in science, technology, engineering and mathematics, ensuring a 50/50 gender balance at all levels while guaranteeing special access for the poorest and people in vulnerable situations; creating a virtual network of educational institutions within and beyond least developed countries; assisting in course design and curriculum development; and leading to scale and sustainability of the education system, taking into account all pre-existing initiatives developed by the relevant partners in a comprehensive manner. In this regard, we request the Secretary-General to submit a report, outlining, inter alia, the mapping of existing initiatives, possible new modalities, resource requirements, accreditation and sustainable funding sources, to the General Assembly at its seventy-eighth session for its consideration.",
+        "passages": [
+          {
+            "id": "A/80/426:1",
+            "number": 1,
+            "text": "In the Doha Programme of Action for the Least Developed Countries, which the General Assembly endorsed by its resolution 76/258, Member States committed to undertaking feasibility studies to explore the possibility of establishing an online university or other equivalent platforms to support online graduate and postgraduate university-level science, technology, engineering and mathematics education in least developed countries and recently graduated countries with a view to, inter alia, providing policy support to promote distance education and open learning for graduate and postgraduate studies in science, technology, engineering and mathematics, ensuring a 50/50 gender balance at all levels while guaranteeing special access for the poorest and people in vulnerable situations; creating a virtual network of educational institutions within and beyond least developed countries; assist ing in course design and curriculum development; and leading to scale and sustainability of the education system, taking into account all pre-existing initiatives developed by the relevant partners in a comprehensive manner.",
+            "pdfPage": 2,
+            "kind": "reporting",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 52: feasibility and requested report",
+                "basis": "close restatement of a distinctive request",
+                "interpretation": "Report prepared from a desk review, consultations and a June 2025 expert meeting. Evidence of study/report production, not operation of a university."
+              }
+            ]
+          },
+          {
+            "id": "A/80/426:2",
+            "number": 2,
+            "text": "In addition, Member States requested the Secretary-General to submit a report, outlining, inter alia, the mapping of existing initiatives, possible new modalities, resource requirements, accreditation and sustainable funding sources for an online university or other equivalent platforms, to the General Assembly for its consideration.",
+            "pdfPage": 2,
+            "kind": "reporting",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 52: feasibility and requested report",
+                "basis": "close restatement of a distinctive request",
+                "interpretation": "Report prepared from a desk review, consultations and a June 2025 expert meeting. Evidence of study/report production, not operation of a university."
+              }
+            ]
+          },
+          {
+            "id": "A/80/426:3",
+            "number": 3,
+            "text": "With a view to fulfilling that mandate, in 2024, the Office of the High Representative for the Least Developed Countries, Landlocked Developing Countries and Small Island Developing States conducted a desk review of the broader higher education landscape. Following the desk review, the Office of the High Representative organized a high-level expert group meeting on the feasibility of establishing an online university for the least developed countries from 3 to 4 June 2025.1 The present report was prepared on the basis of the findings of the desk review, the consultations that the Office held with relevant agencies and entities within the United Nations system and the outcomes of the high-level expert group meeting. In the present report, it is emphasized that establishing an online university for least developed countries is feasible and that such a university is needed in order to enhance access to quality higher education opportunities for the rapidly growing youth populations of such countries.",
+            "pdfPage": 2,
+            "kind": "activity",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 52: feasibility and requested report",
+                "basis": "close restatement of a distinctive request",
+                "interpretation": "Report prepared from a desk review, consultations and a June 2025 expert meeting. Evidence of study/report production, not operation of a university."
+              }
+            ]
+          },
+          {
+            "id": "A/80/426:41",
+            "number": 41,
+            "text": "Pursuant to the mandate set out in the Doha Programme of Action, the meeting was held in order to guide the development of feasibility studies for the establishment of an online university or equivalent platform. The programme of the meeting was structured around five core thematic areas identified as essential to the effective conceptualization of the proposed initiative: (a) mapping of existing initiatives; (b) possible new modalities; (c) resource requirements; (d) quality assurance and accreditation; and (e) sustainable funding sources. One of the cross-cutting themes of the meeting was ensuring gender balance at all levels while guaranteeing access for the poorest and people in vulnerable situations and avoiding duplication of efforts.",
+            "pdfPage": 12,
+            "kind": "activity",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 52: feasibility and requested report",
+                "basis": "close restatement of a distinctive request",
+                "interpretation": "Report prepared from a desk review, consultations and a June 2025 expert meeting. Evidence of study/report production, not operation of a university."
+              }
+            ]
+          },
+          {
+            "id": "A/80/426:42",
+            "number": 42,
+            "text": "In recent years, a growing number of initiatives have emerged to support the advancement of distance and online learning in higher education institutions in developing countries. More than 20 relevant initiatives were identified during the preparation of the present report, reflecting an expanding landscape of innovation that is aimed at improving access to tertiary education. Mapping efforts reveal a modest but growing number of open and online universities operating in least developed countries. Many of those institutions have adopted blended learning models, combining elements of both open and online universities. They are pioneering new approaches to distance education across a range of disciplines, in particular in teacher training, public policy and information technology. Only a limited number of those institutions, however, currently offer fully accredited online science, technology, engineering and mathematics degree programmes. Those that do often rely on a mix of instructional methods, rather than using virtual platforms specifically built to deliver the entire course structure online, thus highlighting a persistent gap in the provision of science, technology, engineering and mathematics education at scale in least developed countries.",
+            "pdfPage": 12,
+            "kind": "analysis",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 52: mapping existing initiatives",
+                "basis": "distinctive content and matching section structure",
+                "interpretation": "Directly addresses the requested mapping; identifies existing institutions and initiatives."
+              }
+            ]
+          },
+          {
+            "id": "A/80/426:43",
+            "number": 43,
+            "text": "The two largest initiatives reviewed in terms of number of students were the Bangladesh Open University, with has more than 1 million students, including some outside the country, and the University of the People, which is based in the United States of America. The latter is a fully online university with 153,000 students from 209 countries, including 35,000 students in the least developed countries. Both institutions emphasize flexibility, affordability and accessibility, in particular for underserved populations.",
+            "pdfPage": 12,
+            "kind": "analysis",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 52: mapping existing initiatives",
+                "basis": "distinctive content and matching section structure",
+                "interpretation": "Directly addresses the requested mapping; identifies existing institutions and initiatives."
+              }
+            ]
+          },
+          {
+            "id": "A/80/426:44",
+            "number": 44,
+            "text": "The African Virtual University, a pan-African intergovernmental institution, is helping African countries to implement online learning. The African Virtual University was established by African Governments with a mandate to significantly increase access to quality higher education and training through the innovative use of information and communications technology (ICT). Other areas in which the University has been involved include designing and implementing e -learning projects, training instructors for e-learning platforms and providing resources for managing a digital library. It has trained 43,000 graduates and has 31 learning centres in 17 countries, of which 14 are in least developed countries.",
+            "pdfPage": 12,
+            "kind": "analysis",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 52: mapping existing initiatives",
+                "basis": "distinctive content and matching section structure",
+                "interpretation": "Directly addresses the requested mapping; identifies existing institutions and initiatives."
+              }
+            ]
+          },
+          {
+            "id": "A/80/426:45",
+            "number": 45,
+            "text": "The Université numérique Cheikh Hamidou Kane, based in Senegal, offers public online university degree courses accredited at the national and African levels in science, technology, engineering and mathematics using an innovative model. Accredited by the national quality assurance authority for higher education of Senegal and recognized at the regional level by the African and Malagasy Council for Higher Education, the Université numérique Cheikh Hamidou Kane offers a strategic model for scalable digital higher education that can be replicated in the resource-constrained contexts of least developed countries. In 2025, the university had an enrolment exceeding 74,000 students, with approximately 44 per cent of its academic offerings concentrated in science, technology, engineering and digital innovation. The university’s master’s degree programmes include such specialized fields as big data analysis, ICT security, artificial intelligence, robotics and advanced mathematics, demonstrating a commitment to developing students with future-ready skills and contributing to national and regional knowledge economies. 25",
+            "pdfPage": 13,
+            "kind": "analysis",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 52: mapping existing initiatives",
+                "basis": "distinctive content and matching section structure",
+                "interpretation": "Directly addresses the requested mapping; identifies existing institutions and initiatives."
+              }
+            ]
+          },
+          {
+            "id": "A/80/426:46",
+            "number": 46,
+            "text": "A few least developed countries have open universities, such as the Open University of Liberia and the Open University of the Sudan. Both use a blended model to deliver academic programmes in which students access digital materials, use print materials and take part in face-to-face sessions. The reach and impact of online tertiary education in least developed countries remain difficult to quantify owing to limited data. Moreover, standardized indicators for online education, such as enrolment, outcomes and completion rates, are largely unavailable for least developed countries, hindering global comparisons and making benchmarking difficult.",
+            "pdfPage": 13,
+            "kind": "analysis",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 52: mapping existing initiatives",
+                "basis": "distinctive content and matching section structure",
+                "interpretation": "Directly addresses the requested mapping; identifies existing institutions and initiatives."
+              }
+            ]
+          },
+          {
+            "id": "A/80/426:47",
+            "number": 47,
+            "text": "The United Nations has a number of relevant initiatives. UNU, while primarily mandated to promote research, offers master’s and doctoral programmes directed at the nationals of developing countries, including least developed countries. In 2024, UNU had 321 postgraduate students enrolled across its 13 institutes in 12 countries. Of that number, 54 per cent from developing countries and 64 per cent were women. 26 UNU also provides online and blended courses that have the potential to reach remote learners. Its academic focus spans biotechnology, environment, frontier technologies, sustainability, global health and natural resource management in Africa, among other fields. While UNU grants postgraduate degrees in the public policy domains, none of its partner institutions are from the least developed countries. In addition, the UNESCO Institute for Information Technologies in Education promotes the innovative use of ICT and serves as a facilitator and enabler for achieving Sustainable Development Goal 4 (quality education) through ICT-enabled solutions and best practices. UNESCO also promotes the Global Convention on the Recognition of Qualifications concerning Higher Education to help countries develop their own quality assurance agencies.",
+            "pdfPage": 13,
+            "kind": "analysis",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 52: mapping existing initiatives",
+                "basis": "distinctive content and matching section structure",
+                "interpretation": "Directly addresses the requested mapping; identifies existing institutions and initiatives."
+              }
+            ]
+          },
+          {
+            "id": "A/80/426:48",
+            "number": 48,
+            "text": "The Commonwealth of Learning is helping its constituent States, including 14 least developed countries, and institutions to use distance learning and technologies for expanding access to education and training. It works with ministries and higher education institutions to increase equitable access to quality tertiary education, promotes the rapid design, development and delivery of quality gender-responsive open educational resources and assists in the development and implementation of employability frameworks.",
+            "pdfPage": 13,
+            "kind": "analysis",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 52: mapping existing initiatives",
+                "basis": "distinctive content and matching section structure",
+                "interpretation": "Directly addresses the requested mapping; identifies existing institutions and initiatives."
+              }
+            ]
+          },
+          {
+            "id": "A/80/426:49",
+            "number": 49,
+            "text": "Several international higher education networks, such as the Pan African University, the International Network of Higher Education in Africa, the Asian Association of Open Universities and the International Association of Universities, among others, support distance and online learning and promote collaboration to enhance the quality of distance learning, including by occasionally sharing open educational resources. None of these entities, however, provide degrees in science, technology, engineering and mathematics. There are also a number of civil society organizations and education entrepreneurs that could provide valuable support, such as Maktab93, a free online school for Afghan students, especially girls who have been deprived of formal education, and BAG Innovation, a for-profit organization that has developed, in collaboration with universities and employers in East Africa, an online system to complement theoretical learning with practical experience before students graduate.",
+            "pdfPage": 13,
+            "kind": "analysis",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 52: mapping existing initiatives",
+                "basis": "distinctive content and matching section structure",
+                "interpretation": "Directly addresses the requested mapping; identifies existing institutions and initiatives."
+              }
+            ]
+          },
+          {
+            "id": "A/80/426:50",
+            "number": 50,
+            "text": "Those initiatives help to expand online education in developing countries, in particular in Africa and the least developed countries, and offer valuable experience and expertise. Partnering with them would help facilitate the delivery of online science, technology, engineering and mathematics degrees and courses in least developed countries.",
+            "pdfPage": 14,
+            "kind": "analysis",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 52: mapping existing initiatives",
+                "basis": "distinctive content and matching section structure",
+                "interpretation": "Directly addresses the requested mapping; identifies existing institutions and initiatives."
+              }
+            ]
+          },
+          {
+            "id": "A/80/426:51",
+            "number": 51,
+            "text": "In examining modalities for the establishment of an online university or equivalent platform to bridge the higher education gap in least developed countries, four strategic models were considered. There are distinct advantages and operational considerations associated with each model (see table).",
+            "pdfPage": 14,
+            "kind": "analysis",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 52: possible new modalities",
+                "basis": "distinctive content and matching section structure",
+                "interpretation": "Compares four options and favours a hybrid model."
+              }
+            ]
+          },
+          {
+            "id": "A/80/426:52",
+            "number": 52,
+            "text": "Each option involves trade-offs related to scalability, contextual relevance and institutional capacity-building in the least developed countries. Among the options considered, a hybrid model combining options B and C emerged as the most balanced and cost-effective pathway for the proposed online university or equivalent platform to deliver online science, technology, engineering and mathematics education. Under this model, local universities in least developed countries would form an interconnected network supported by the United Nations and strengthened by partnerships with existing regional and global networks and global academic institutions. By anchoring delivery in the local context, this approach promotes both relevance and resilience. It would also help foster regional cooperation and capacity- building by offering a scalable and sustainable solution to meet the growing demand for science, technology, engineering and mathematics education across least developed countries.",
+            "pdfPage": 15,
+            "kind": "analysis",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 52: possible new modalities",
+                "basis": "distinctive content and matching section structure",
+                "interpretation": "Compares four options and favours a hybrid model."
+              }
+            ]
+          },
+          {
+            "id": "A/80/426:53",
+            "number": 53,
+            "text": "Establishing a United Nations online university or equivalent platform will require the deployment of financial and technical resources in order to find solutions for existing gaps in digital infrastructure and address access barriers faced by least developed countries. The entity would need funding not only to cover its administrative costs, but also to facilitate and support the development of digital platforms, instructional design, virtual laboratories and offline -compatible systems; partner with global academic experts to facilitate capacity-building of faculty in least developed countries, blended preparatory programmes for digital literacy and study skills; and develop multilingual course materials that are contextually relevant and responsive to local labour markets. Artificial intelligence-powered platforms have significant potential to deliver high-quality science, technology, engineering and mathematics content to remote areas, bypassing infrastructure limitations. Artificial intelligence tools can also generate major cost-savings in content adaptation, customize learning materials and automate updates, making content accessible to a wide range of end users. A strong focus on developing and expanding digital literacy, especially among women, marginalized groups, instructors and policymakers, will be essential to ensure inclusion and long-term impact in relation to science, technology, engineering and mathematics education.",
+            "pdfPage": 15,
+            "kind": "analysis",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 52: resource requirements",
+                "basis": "distinctive content and matching section structure",
+                "interpretation": "Identifies resource categories and connectivity constraints; does not provide a fully costed institutional proposal."
+              }
+            ]
+          },
+          {
+            "id": "A/80/426:54",
+            "number": 54,
+            "text": "Lack of digital connectivity is a fundamental challenge to any online learning initiative for least developed countries. Internet access is essential not only for educational purposes but also for economic development. This barrier can only be removed through coordinated action by least developed country Governments, international agencies and telecommunications companies. Reliable and seamless access to the Internet is a necessary prerequisite for the execution of online learning.",
+            "pdfPage": 15,
+            "kind": "analysis",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 52: resource requirements",
+                "basis": "distinctive content and matching section structure",
+                "interpretation": "Identifies resource categories and connectivity constraints; does not provide a fully costed institutional proposal."
+              }
+            ]
+          },
+          {
+            "id": "A/80/426:55",
+            "number": 55,
+            "text": "Currently, there is a significant variation in qualifications and accreditation mechanisms across least developed countries. As a result, it is difficult to have academic credentials transferred to and recognized in other countries. Online degrees, in particular those offered across borders, are often met with considerable scepticism by employers and local academic institutions and are not recognized at all, in many cases. This is largely because there are no national policy frameworks in place that make it possible to formally recognize or accredit foreign or online qualifications. In addition, many universities in least developed countries lack the administrative and pedagogical infrastructure necessary to support blended or online partnerships with international education providers.",
+            "pdfPage": 15,
+            "kind": "analysis",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 52: accreditation",
+                "basis": "distinctive content and matching section structure",
+                "interpretation": "Identifies recognition barriers and proposes approaches; does not establish that accreditation has been secured."
+              }
+            ]
+          },
+          {
+            "id": "A/80/426:56",
+            "number": 56,
+            "text": "Moreover, the recognition of online degrees in certain science, technology, engineering and mathematics disciplines by regulatory authorities remains a significant challenge. Even when students complete online programmes, their credentials are often not widely accepted by employers or government bodies. Without formal recognition from national accreditation bodies, these qualifications often carry limited value in local job markets. Accreditation should be viewed as a continuum, rather than a binary process, with microcredentials serving as building blocks leading to formal recognition.",
+            "pdfPage": 16,
+            "kind": "analysis",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 52: accreditation",
+                "basis": "distinctive content and matching section structure",
+                "interpretation": "Identifies recognition barriers and proposes approaches; does not establish that accreditation has been secured."
+              }
+            ]
+          },
+          {
+            "id": "A/80/426:57",
+            "number": 57,
+            "text": "To address those challenges, strategies must be developed to navigate multi-country accreditation processes, including the adoption of global, regional and national accreditation frameworks. An online university or equivalent platform can play a key role in supporting efforts towards building capacity to harmonize quality assurance checks, adhering to international standards and advancing the ratification of Global Convention on the Recognition of Qualifications concerning Higher Education. In collaboration with UNESCO, the online university or equivalent platform should adopt and implement a rigorous quality assessment for all least developed country science, technology, engineering and mathematics programmes that receive funding or support through an online university or equivalent platform.",
+            "pdfPage": 16,
+            "kind": "analysis",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 52: accreditation",
+                "basis": "distinctive content and matching section structure",
+                "interpretation": "Identifies recognition barriers and proposes approaches; does not establish that accreditation has been secured."
+              }
+            ]
+          },
+          {
+            "id": "A/80/426:58",
+            "number": 58,
+            "text": "To ensure financial resilience and sustainability, the online university or equivalent platform should seek to diversify its funding sources to include grants and donations. It should establish knowledge partnerships with academic institutions for pedagogical innovation, curriculum development and quality assurance, public - private partnerships for infrastructure, connectivity and technology solutions. Strengthening government engagement will be critical, as national authorities must play a central role in supporting and scaling such initiatives. To ensure equitable access, especially for those left furthest behind, scholarship schemes and targeted financial support should also be considered.",
+            "pdfPage": 16,
+            "kind": "analysis",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 52: sustainable funding sources",
+                "basis": "distinctive content and matching section structure",
+                "interpretation": "Discusses funding and partnerships; does not establish committed funding."
+              }
+            ]
+          },
+          {
+            "id": "A/80/426:59",
+            "number": 59,
+            "text": "A deeper review of successful models, such as the Université numérique Cheikh Hamidou Kane, the University of the People and Smart Education Platform of China, reveals that they offer practical lessons in scaling access, leveraging blended delivery and ensuring employability. Education Above All offers a comprehensive package of support, including free access to education, digital tools, financial assistance and tailored programmes through innovative partnerships and funding models. Those approaches should be further explored to inform the design of online university or equivalent platform.",
+            "pdfPage": 16,
+            "kind": "analysis",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 52: sustainable funding sources",
+                "basis": "distinctive content and matching section structure",
+                "interpretation": "Discusses funding and partnerships; does not establish committed funding."
+              }
+            ]
+          },
+          {
+            "id": "A/80/426:60",
+            "number": 60,
+            "text": "Broad-based collaboration with United Nations entities will also be required to leverage and build on existing capacities. Key entities, including ITU, UNESCO, the United Nations Technology Bank for the Least Developed Countries and UNU, are well positioned to contribute to science, technology, engineering and mathematics advancement in least developed countries and support the online university or equivalent platform.",
+            "pdfPage": 16,
+            "kind": "analysis",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 52: sustainable funding sources",
+                "basis": "distinctive content and matching section structure",
+                "interpretation": "Discusses funding and partnerships; does not establish committed funding."
+              }
+            ]
+          },
+          {
+            "id": "A/80/426:73",
+            "number": 73,
+            "text": "Further deliberation is needed to define the precise scope and modalities of the online university, including its governance structure, partnership frameworks, funding requirements and sustainability models. A deeper mapping of regional and country-specific needs through in-country assessments will also be essential. To guide that process, a dedicated task force should be established to inform the next steps towards full operationalization of the online university by 2027.",
+            "pdfPage": 18,
+            "kind": "recommendation",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 52: prospective operationalization",
+                "basis": "same initiative; prospective language",
+                "interpretation": "Calls for further work, a task force and a possible 2027 launch. Retain as recommendation, not adopted mandate or completed implementation."
+              }
+            ]
+          },
+          {
+            "id": "A/80/426:74",
+            "number": 74,
+            "text": "The General Assembly, taking into account the findings and conclusions set out in the present report, may wish to consider the following recommendations: (a) Support efforts to further elaborate the structure and governance mechanisms of and address other institutional matters related to the online university and conduct a sample mapping of in-country assessments in collaboration with relevant United Nations entities, including UNESCO, the United Nations Technology Bank for the Least Developed Countries and UNU, in order to evaluate national readiness for implementing or expanding online and blended education. These assessments should focus on such key areas as digital infrastructure, curriculum development and accreditation, digital literacy among faculty and students and availability of online laboratory facilities. The goal is to identify strengths, weaknesses, opportunities and challenges within each country’s education and digital ecosystem. Furthermore, the mapping should evaluate instructional design requirements, including offline access and multilingual content delivery, integration of open education resources and artificial intelligence-enabled solutions, in order to uphold the principle of universality and rapidly scale up the delivery of inclusive and quality science, technology, engineering and mathematics education in least developed countries; (b) Establish a task force, to be supported by the Office of the High Representative, that would provide strategic direction leading towards full operationalization of the online university. The membership of the task force should include relevant representatives from the United Nations system, government representatives and experts. Representatives of other relevant stakeholders and organizations may be invited to participate in the work of the task force, in order to promote an exchange of views and enable them to provide inputs, as required; (c) Commit to advancing the modalities of the proposed online university by strategically leveraging existing facilities and resources in the United Nations system, including the academic and research infrastructure provided by such entities as ITU, UNESCO, the United Nations Technology Bank for the Least Developed Countries and UNU, as well as other relevant institutions, and also through external partnerships; (d) Endorse the above steps towards the establishment of an online university or equivalent platform for least developed countries in accordance with the Doha Programme of Action, with a view to formally launching the online university at the mid-term review of the Programme of Action in 2027.",
+            "pdfPage": 18,
+            "kind": "recommendation",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 52: prospective operationalization",
+                "basis": "same initiative; prospective language",
+                "interpretation": "Calls for further work, a task force and a possible 2027 launch. Retain as recommendation, not adopted mandate or completed implementation."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "symbol": "A/RES/80/129",
+    "title": "Follow-up to and implementation of the outcomes of the International Conferences on Financing for Development",
+    "reviewedAt": "2026-10-15",
+    "report": {
+      "symbol": "A/81/336",
+      "title": "Follow-up to and implementation of the outcomes of the International Conferences on Financing for Development report of the Secretary-General",
+      "issuedDate": "2026-08-20",
+      "sha256": "13a1d6411454a574d01823a698cb4006a67fb3c2602cc5da57a2b31bf1841f54"
+    },
+    "paragraphs": [
+      {
+        "locator": {
+          "section": "main",
+          "annexIndex": null,
+          "prefix": "14."
+        },
+        "label": "OP 14",
+        "requestedText": "Requests the Secretary-General to submit a report to the General Assembly at its eighty-first session on the follow-up to and implementation of the Sevilla Commitment, including on progress made and continuing challenges faced, and on the implementation of the present resolution;",
+        "passages": [
+          {
+            "id": "A/81/336:1",
+            "number": 1,
+            "text": "In its resolution 80/129, the General Assembly requested the Secretary-General to submit a report to the Assembly at its eighty-first session on the follow-up to and the implementation of the Financing for Development outcomes and the Sevilla Commitment, including on progress made and continuing challenges faced.",
+            "pdfPage": 2,
+            "kind": "reporting",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "OP14",
+                "basis": "resolution explicitly identified",
+                "interpretation": "Report submitted to the requested session; this is the reporting edge."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "locator": {
+          "section": "main",
+          "annexIndex": null,
+          "prefix": "11."
+        },
+        "label": "OP 11",
+        "requestedText": "Recalls paragraph 65 (d) of the Sevilla Commitment, which encourages Member States to appoint national focal points for financing for development in finance and other relevant ministries, and invites the Department of Economic and Social Affairs of the Secretariat, within existing resources, to facilitate the establishment of a network of voluntary national focal points for financing for development to strengthen national follow-up;",
+        "passages": [
+          {
+            "id": "A/81/336:57",
+            "number": 57,
+            "text": "The Sevilla Commitment encourages the appointment of national focal points for financing for development in finance and other relevant ministries, while General Assembly resolution 80/129 invited the Secretariat to facilitate the establishment of a network of voluntary national focal points for financing for development. After a call for nominations, the Network of National Focal Points on Financing for Development was officially launched at a high-level event in April. National focal points convened for three dedicated sessions to operationalize the network, defining possible working modalities and translating its core objectives – peer-to-peer learning and bridging national action with global financing for development commitments – into practical implementation plans. As of June 2026, the Secretariat had received nominations of 169 individuals from 87 Member States to serve as national focal points. Almost 100 of the individuals are from finance ministries. A survey of focal points conducted in May and June will inform plans for engagements and briefings during the eighty-first session of the General Assembly. National focal points will reconvene in a hybrid format at the 2027 financing for development forum.",
+            "pdfPage": 15,
+            "kind": "results",
+            "resultLevel": "output",
+            "mappings": [
+              {
+                "component": "OP11",
+                "basis": "explicitly names resolution and restates the network request; OP number resolved by reading resolution",
+                "interpretation": "Reports launch of the network and nominations of 169 individuals from 87 Member States as of June 2026. Strong substantive match; activity and participation evidence, not proof of longer-term impact."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "locator": {
+          "section": "main",
+          "annexIndex": null,
+          "prefix": "7."
+        },
+        "label": "OP 7",
+        "requestedText": "Reaffirms paragraph 65 (b) of the Sevilla Commitment to deepen substantive discussions at the Economic and Social Council forum on financing for development follow-up through an in-depth review of and reporting on national and global commitments in the action areas of the financing for development outcomes in a biennial cycle, to allow for deeper reporting by the Inter-Agency Task Force on Financing for Development, more emphasis on the negotiations on the outcome document of the forum, and more in-depth and meaningful discussion at the forum;",
+        "passages": [
+          {
+            "id": "A/81/336:58",
+            "number": 58,
+            "text": "The 2026 ECOSOC forum on financing for development follow -up, held from 20 to 24 April 2026, marked the first major intergovernmental stocktaking of progress in implementing the Sevilla Commitment. It reviewed advances and gaps across all seven action areas and highlighted priorities for implementation. The Forum also helped operationalize the strengthened follow-up architecture agreed in Sevilla, with in-depth reviews of domestic and international private business and finance; international trade as an engine for development; international financial architecture and systemic issues; and data, monitoring and follow-up and separate special high- level meetings with the Bretton Woods institutions and with the World Trade Organization and UNCTAD. The Forum’s intergovernmentally agreed outcome (E/FFDF/2026/3), adopted by consensus, sent a positive signal for multilateral cooperation at a challenging moment, recorded actions already under way and provided guidance on areas where near-term action should be concentrated.",
+            "pdfPage": 15,
+            "kind": "results",
+            "resultLevel": "output",
+            "mappings": [
+              {
+                "component": "OP7 and OP8",
+                "basis": "matching forum, review cycle and high-level meetings",
+                "interpretation": "Describes the 2026 forum, in-depth reviews and meetings with the Bretton Woods institutions and WTO/UNCTAD. One passage serves multiple provisions; not evidence that all continuing duties are complete."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "locator": {
+          "section": "main",
+          "annexIndex": null,
+          "prefix": "8."
+        },
+        "label": "OP 8",
+        "requestedText": "Also looks forward to continuing to hold the annual special high-level meeting with the Bretton Woods institutions and a special high-level meeting that engages with the World Trade Organization and the United Nations Conference on Trade and Development, in the year that trade is under in-depth review;",
+        "passages": [
+          {
+            "id": "A/81/336:58",
+            "number": 58,
+            "text": "The 2026 ECOSOC forum on financing for development follow -up, held from 20 to 24 April 2026, marked the first major intergovernmental stocktaking of progress in implementing the Sevilla Commitment. It reviewed advances and gaps across all seven action areas and highlighted priorities for implementation. The Forum also helped operationalize the strengthened follow-up architecture agreed in Sevilla, with in-depth reviews of domestic and international private business and finance; international trade as an engine for development; international financial architecture and systemic issues; and data, monitoring and follow-up and separate special high- level meetings with the Bretton Woods institutions and with the World Trade Organization and UNCTAD. The Forum’s intergovernmentally agreed outcome (E/FFDF/2026/3), adopted by consensus, sent a positive signal for multilateral cooperation at a challenging moment, recorded actions already under way and provided guidance on areas where near-term action should be concentrated.",
+            "pdfPage": 15,
+            "kind": "results",
+            "resultLevel": "output",
+            "mappings": [
+              {
+                "component": "OP7 and OP8",
+                "basis": "matching forum, review cycle and high-level meetings",
+                "interpretation": "Describes the 2026 forum, in-depth reviews and meetings with the Bretton Woods institutions and WTO/UNCTAD. One passage serves multiple provisions; not evidence that all continuing duties are complete."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "locator": {
+          "section": "main",
+          "annexIndex": null,
+          "prefix": "9."
+        },
+        "label": "OP 9",
+        "requestedText": "Reaffirms that the deliberations of the special meeting of the Economic and Social Council on international cooperation in tax matters, the Development Cooperation Forum, a special meeting of the Economic and Social Council on financial integrity, the multi-stakeholder forum on science, technology and innovation for the Sustainable Development Goals and a high-level special meeting of the Economic and Social Council with credit rating agencies, among others, as well as ongoing engagements with the private sector through mechanisms such as the Financing for Development Business Sector Steering Committee and the Global Investors for Sustainable Development Alliance, will be taken into account by the forum on financing for development follow-up on an appropriate cycle;",
+        "passages": [
+          {
+            "id": "A/81/336:13",
+            "number": 13,
+            "text": "There has been some concrete progress in the areas of international tax cooperation and combating of illicit financial flows. Member States have engaged constructively in negotiations on the United Nations framework convention on international tax cooperation, working on zero drafts ahead of the fifth session in August 2026. The Economic and Social Council convened its first -ever special meeting on financial integrity at United Nations Headquarters in New York on 4 February 2026, with a focus on two linked themes: (i) strengthening global coordination on policy and norm-setting for exchange of information and data; and (ii) enhancing enforcement capacities and innovation on the use of information and data. The meeting fostered dialogue among Member States and a broad range of intergovernmental bodies and stakeholders working across tax cooperation, anti-money-laundering and anti-corruption frameworks. Participants called for addressing structural asymmetries in access to information, prioritizing enhancing interoperability of data systems, promoting whole-of-government approaches at the national level and supporting integrated capacity development.",
+            "pdfPage": 4,
+            "kind": "results",
+            "resultLevel": "output",
+            "mappings": [
+              {
+                "component": "OP9: special meetings, selected components",
+                "basis": "specific meetings match parts of a multi-part provision",
+                "interpretation": "Financial-integrity and credit-ratings meetings are reported. Other elements of OP9 require separate evidence."
+              }
+            ]
+          },
+          {
+            "id": "A/81/336:41",
+            "number": 41,
+            "text": "There has also been some progress on credit ratings. ECOSOC convened the inaugural special high-level meeting on credit ratings on 30 March 2026, addressing the cost of capital, credit assessment methodologies and engagement between developing countries and credit rating agencies. Investors called for ratings to provide greater insight into the longer-term strategic intent of debt issuers- and major rating agencies confirmed they produce (or are working on producing) scenario and what -if analysis as a complement to base-case ratings, as called for in the Sevilla Commitment. Participants in the special meeting also affirmed that the ongoing review of the Low-Income Country Debt Sustainability Framework could provide a useful benchmark for credit rating agencies to review their own methodologies. Participants also heard an update on efforts by African countries to create an Africa Credit Rating Agency.",
+            "pdfPage": 11,
+            "kind": "results",
+            "resultLevel": "output",
+            "mappings": [
+              {
+                "component": "OP9: special meetings, selected components",
+                "basis": "specific meetings match parts of a multi-part provision",
+                "interpretation": "Financial-integrity and credit-ratings meetings are reported. Other elements of OP9 require separate evidence."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "symbol": "A/RES/80/137",
+    "title": "Disaster risk reduction",
+    "reviewedAt": "2026-10-15",
+    "report": {
+      "symbol": "A/81/307",
+      "title": "Implementation of the Sendai Framework for Disaster Risk Reduction 2015-2030 report of the Secretary-General",
+      "issuedDate": "2026-07-31",
+      "sha256": "23169f9c8176387f3935e83955a0332a41364ee7f5e3908fb2335bd5b4958f4b"
+    },
+    "paragraphs": [
+      {
+        "locator": {
+          "section": "main",
+          "annexIndex": null,
+          "prefix": "83."
+        },
+        "label": "OP 83",
+        "requestedText": "Requests the Secretary-General to submit to the General Assembly at its eighty-first session a report on the implementation of the present resolution, the effective global response to address the impacts of the El Niño phenomenon and the implementation of the United Nations action plan to ensure that every person on Earth is protected by early warning systems by 2027;",
+        "passages": [
+          {
+            "id": "A/81/307:58",
+            "number": 58,
+            "text": "The Early Warnings for All initiative, co-led by the United Nations Office for Disaster Risk Reduction and WMO, in collaboration with the International Telecommunication Union and the International Federation of Red Cross and Red Crescent Societies, continues to catalyse political commitment, expand technical capabilities and drive unified global action to scale up investment in multi -hazard early warning systems. Progress is evident across all four pillars of the initiative: risk knowledge is expanding; observation and forecasting capabilities are improving; digital infrastructure is making it possible for warnings to reach more people; and momentum is growing for anticipatory action and planned responses that save lives.",
+            "pdfPage": 18,
+            "kind": "activity",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "OP83",
+                "basis": "report names the resolution; requested subjects match headings",
+                "interpretation": "Responds on the resolution, Early Warnings for All and El Niño; reporting scope is a bundle."
+              }
+            ]
+          },
+          {
+            "id": "A/81/307:66",
+            "number": 66,
+            "text": "As the dominant driver of year‑to‑year climate variability, the El Niño/Southern Oscillation continued to shape global weather patterns throughout 2025 –2026. After several months of neutral conditions, the system briefly shifted towards its cooler phase, with borderline La Niña patterns emerging late in 2025 and persisting into early 2026. A strong El Niño event is developing and is expected to strengthen in the period from August to October 2026. This will increase the likelihood of above - normal temperatures across much of the world and drive significant shifts in rainfall patterns that are likely to exacerbate droughts, floods and heatwaves, underscoring the importance of preparedness measures.77",
+            "pdfPage": 20,
+            "kind": "context",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "OP83",
+                "basis": "report names the resolution; requested subjects match headings",
+                "interpretation": "Responds on the resolution, Early Warnings for All and El Niño; reporting scope is a bundle."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "locator": {
+          "section": "main",
+          "annexIndex": null,
+          "prefix": "20."
+        },
+        "label": "OP 20",
+        "requestedText": "Recognizes the importance of monitoring the Sendai Framework, urges States to use the online monitor to report on progress against the Sendai Framework global targets by referring to the report of the open-ended intergovernmental expert working group on indicators and terminology relating to disaster risk reduction, also encourages States, while implementing the Sendai Framework, to systematically evaluate, record, share and publicly account for disaster losses and understand the economic, social, health, educational, agricultural, environmental and cultural heritage impacts, as appropriate, in the context of event-specific hazard exposure and vulnerability information, and enhance the development and dissemination of science-based methodologies and tools to record and share disaster losses and relevant disaggregated data and statistics, as well as to strengthen disaster risk modelling, assessment, mapping, monitoring and multi-hazard early warning systems, and in this regard encourages efforts to create or enhance systems for data collection and to support the capacity of national statistical offices to integrate data from the Sendai Framework monitor into official national statistics to enhance and institutionalize its use in decision-making processes and investments across sectors and all relevant ministries and institutions, and to prioritize the collection and analysis of data on disaster loss and the establishment and strengthening of national disaster loss databases, and to develop baselines on current losses, working towards the collection of information on historical disaster losses going back, at least, to 2005, if feasible;",
+        "passages": [
+          {
+            "id": "A/81/307:10",
+            "number": 10,
+            "text": "While there have been advancements in disaster risk data collection and reporting, further efforts are needed in the final years of the Sendai Framework. The Sendai Framework monitor is nearing global coverage, with 176 countries reporting on at least one target, 145 on at least five targets and 118 across all Sendai Framework targets linked to Sustainable Development Goal indicators (targets A to E) since 2015. At the regional level, measurable improvements are being observed. In Africa, 73 per cent of countries now report through the Sendai Framework monitor, while 83 per cent report in the Americas and the Caribbean, strengthening accountability. Progress has also been made in data disaggregation, with 77 countries reporting sex-disaggregated data, 61 age-disaggregated data and 31 disability-disaggregated data. Despite these advances, gaps remain; few submissions cover all seven targets across all years and 19 countries have yet to report. Countries continue to face structural constraints, including limited institutional mandates, technical capacity and financial resources, that affect the completeness and quality of reporting.",
+            "pdfPage": 5,
+            "kind": "results",
+            "resultLevel": "indicator",
+            "mappings": [
+              {
+                "component": "OP20",
+                "basis": "same monitoring and disaster-data work",
+                "interpretation": "Reports monitor coverage, data disaggregation and capacity constraints. Assess country coverage and data quality separately from implementation outcomes."
+              }
+            ]
+          },
+          {
+            "id": "A/81/307:11",
+            "number": 11,
+            "text": "Important strides have been made to close data gaps and strengthen the availability, quality and comparability of disaster-related data. The Disaster and Hazardous Events, Losses and Damages Tracking Analysis (DELTA) Resilience 10 system, developed by the United Nations Office for Disaster Risk Reduction, the United Nations Development Programme (UNDP) and the World Meteorological Organization (WMO) is helping governments to capture data on hazardous events and disaster impacts, while strengthening nationally owned data systems. Since its launch in 2025, 20 countries have begun using the system, while 39 others are receiving support for uptake, including through technical sessions and training. In addition, targeted capacity-building for Sendai Framework monitor reporting has been provided across all regions and a live repository of good practices 11 from Cambodia, Mongolia, Nepal, the Philippines, Sierra Leone and Sri Lanka is helping other countries to strengthen national data ecosystems. This support has strengthened national capacities to generate, analyse and use disaster risk information for ris k- informed planning and decision-making.",
+            "pdfPage": 5,
+            "kind": "results",
+            "resultLevel": "output",
+            "mappings": [
+              {
+                "component": "OP20",
+                "basis": "same monitoring and disaster-data work",
+                "interpretation": "Reports monitor coverage, data disaggregation and capacity constraints. Assess country coverage and data quality separately from implementation outcomes."
+              }
+            ]
+          },
+          {
+            "id": "A/81/307:12",
+            "number": 12,
+            "text": "In Africa, Côte d’Ivoire has used flood risk profiling and cost-benefit analyses to guide resilient infrastructure and land-use planning, while updates to the national risk and vulnerability atlases of Ethiopia and Rwanda are enhancing multi-hazard risk analysis at the local level. In Latin America and the Caribbean, Costa Rica carried out systemic and multidimensional risk assessments to prioritize critical infrastructure and develop risk transfer instruments, while Guatemala strengthened impact -based forecasting through probabilistic volcanic risk assessments. In Asia and the Pacific, Bangladesh, Cambodia, Kiribati, the Lao People’s Democratic Republic and Maldives, among others, strengthened disaster loss data systems and methodologies in order to better quantify disaster impacts and integrate risk information into resilience strategies and fiscal planning. These efforts reflect a trend towards integrated and nationally owned risk information systems.",
+            "pdfPage": 5,
+            "kind": "activity",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "OP20",
+                "basis": "same monitoring and disaster-data work",
+                "interpretation": "Reports monitor coverage, data disaggregation and capacity constraints. Assess country coverage and data quality separately from implementation outcomes."
+              }
+            ]
+          },
+          {
+            "id": "A/81/307:13",
+            "number": 13,
+            "text": "Coherence between the targets and indicators of the Sendai Framework and other global frameworks has been strengthened. This includes the adoption of the Belém Adaptation Indicators,12 several of which correspond to Sendai Framework targets, under the global goal on adaptation, and the incorporation of relevant Sendai indicators into the monitoring frameworks of the Antigua and Barbuda Agenda for Small Island Developing States13 and the Awaza Programme of Action for Landlocked Developing Countries for the Decade 2024–2034. At its fifty-seventh session, the Statistical Commission endorsed the Global Framework for Disaster-related Statistics14 developed by the Inter-Agency and Expert Group on Disaster-related Statistics. The Global Framework represents a major step towards a common global statistical architecture, strengthening national data governance and improving the consistency, comparability and integration of disaster-related statistics across sectors.",
+            "pdfPage": 5,
+            "kind": "results",
+            "resultLevel": "output",
+            "mappings": [
+              {
+                "component": "OP20",
+                "basis": "same monitoring and disaster-data work",
+                "interpretation": "Reports monitor coverage, data disaggregation and capacity constraints. Assess country coverage and data quality separately from implementation outcomes."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "locator": {
+          "section": "main",
+          "annexIndex": null,
+          "prefix": "41."
+        },
+        "label": "OP 41",
+        "requestedText": "Welcomes the call by the Secretary-General for a United Nations action plan to ensure that every person on Earth is protected by early warning systems within five years as an accelerator towards the achievement of target (g) of the Sendai Framework, and also welcomes the invitation from States to development partners, international financial institutions and the operating entities of the Financial Mechanism to provide support for implementation of the Early Warnings for All initiative, and recognizes the importance of the CREWS initiative in achieving that goal and takes note with appreciation of the findings of the Global Status of Multi‑Hazard Early Warning Systems: Target (g) report, and calls upon all relevant entities of the United Nations system to ensure a coordinated and integrated approach in the implementation of the early warning action plan presented at the twenty-seventh session of the Conference of the Parties to the United Nations Framework Convention on Climate Change;",
+        "passages": [
+          {
+            "id": "A/81/307:58",
+            "number": 58,
+            "text": "The Early Warnings for All initiative, co-led by the United Nations Office for Disaster Risk Reduction and WMO, in collaboration with the International Telecommunication Union and the International Federation of Red Cross and Red Crescent Societies, continues to catalyse political commitment, expand technical capabilities and drive unified global action to scale up investment in multi -hazard early warning systems. Progress is evident across all four pillars of the initiative: risk knowledge is expanding; observation and forecasting capabilities are improving; digital infrastructure is making it possible for warnings to reach more people; and momentum is growing for anticipatory action and planned responses that save lives.",
+            "pdfPage": 18,
+            "kind": "activity",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "OP41",
+                "basis": "same named initiative and coordinated early-warning work",
+                "interpretation": "Reports road maps, coordination and remaining last-mile and financing gaps. Paragraph 74 reports systems in 128 Member/observer States; this is reported coverage, not independent attribution of lives saved."
+              }
+            ]
+          },
+          {
+            "id": "A/81/307:59",
+            "number": 59,
+            "text": "A robust monitoring and evaluation system underpins the initiative, combining continuous tracking through a publicly accessible dashboard 74 and periodic stocktaking through annual global status reports.75 The dashboard was further updated through the addition of country snapshots, which offer country-specific overviews of global indicators and pillar-specific metrics to support national investment planning.",
+            "pdfPage": 18,
+            "kind": "activity",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "OP41",
+                "basis": "same named initiative and coordinated early-warning work",
+                "interpretation": "Reports road maps, coordination and remaining last-mile and financing gaps. Paragraph 74 reports systems in 128 Member/observer States; this is reported coverage, not independent attribution of lives saved."
+              }
+            ]
+          },
+          {
+            "id": "A/81/307:60",
+            "number": 60,
+            "text": "Gaps persist across the full early warning value chain: hazard monitoring and forecasting capacity have improved, they but remain uneven across regions, particularly for emerging hazards; last-mile communication remains weak in many least developed country contexts; institutional arrangements for translating warnings into pre-emptive action are often absent or untested; and the financial sustainability of early warning infrastructure remains a recurring challenge. As the initiative approaches its 2027 milestone, the scale and depth of the remaining gaps, particularly in the least developed countries, small island developing States and crisis and conflict -affected settings, indicate that universal coverage, while having galvanized transformative action, will require national ownership, sustained commitment by the international community, long-term investment and inclusive governance beyond 2027.",
+            "pdfPage": 18,
+            "kind": "context",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "OP41",
+                "basis": "same named initiative and coordinated early-warning work",
+                "interpretation": "Reports road maps, coordination and remaining last-mile and financing gaps. Paragraph 74 reports systems in 128 Member/observer States; this is reported coverage, not independent attribution of lives saved."
+              }
+            ]
+          },
+          {
+            "id": "A/81/307:61",
+            "number": 61,
+            "text": "Progress has been made in strengthening countries’ ability to generate, access and use hazard, exposure, vulnerability and impact data to inform multi -hazard early warning systems. In the Horn of Africa, impact-based forecasting has been integrated into the East Africa Hazards Watch and support has been provided to the Climate Prediction and Application Centre of the Intergovernmental Authority on Development. In Central Africa, a multi-hazard situation room now produces regular bulletins and hazards maps to guide early action across the subregion.",
+            "pdfPage": 19,
+            "kind": "results",
+            "resultLevel": "output",
+            "mappings": [
+              {
+                "component": "OP41",
+                "basis": "same named initiative and coordinated early-warning work",
+                "interpretation": "Reports road maps, coordination and remaining last-mile and financing gaps. Paragraph 74 reports systems in 128 Member/observer States; this is reported coverage, not independent attribution of lives saved."
+              }
+            ]
+          },
+          {
+            "id": "A/81/307:62",
+            "number": 62,
+            "text": "Across Africa, eight more countries launched Early Warnings for All road maps and 20 countries integrated multi-hazard risk information into national disaster risk management strategies. Standard operating procedures for early warnings were developed in Ethiopia, the Niger, Senegal and the United Republic of Tanzania, strengthening coordination and improving the timeliness and accessibility of early warnings. In the Americas and the Caribbean, Antigua and Barbuda, Barbados, Ecuador, Guatemala, Guyana and Haiti approved national road maps, while the initiative was launched in Colombia in May 2026. In Asia and the Pacific, Bangladesh and Cambodia launched road maps, while Fiji, Kiribati, Nepal, Samoa, Solomon Islands and Tonga have processes under way. In the Arab region, the Comoros, Djibouti, Iraq and Morocco launched road maps, with the Comoros and Djibouti also developing standard operating procedures with an emphasis on inclusion. In addition, Djibouti and the Sudan issued guidance to integrate the needs of people in vulnerable situations into early warning and early action messaging. In Europe and Central Asia, Armenia completed a national self-assessment, a technical training session on risk knowledge was conducted in Tajikistan and discussions on strengthening national early warning systems were held with Albania, North Macedonia and Serbia, advancing national capacities for risk analysis, preparedness and risk-informed planning.",
+            "pdfPage": 19,
+            "kind": "results",
+            "resultLevel": "output",
+            "mappings": [
+              {
+                "component": "OP41",
+                "basis": "same named initiative and coordinated early-warning work",
+                "interpretation": "Reports road maps, coordination and remaining last-mile and financing gaps. Paragraph 74 reports systems in 128 Member/observer States; this is reported coverage, not independent attribution of lives saved."
+              }
+            ]
+          },
+          {
+            "id": "A/81/307:63",
+            "number": 63,
+            "text": "At regional level, the League of Arab States and the United Nations convened the first Arab Forum on Early Warning Systems and Disaster Preparedness, bringing together 18 countries to develop a shared regional framework on governance, financing and coverage gaps. The Regional Technical Working Group on Multi- Hazard Early Warning Systems and Risk Information was established under the Pacific Resilience Partnership, with a view to strengthening regional cooperation, improving data-sharing and supporting more coherent and locally tailored early warning and anticipatory action systems across Pacific island countries.",
+            "pdfPage": 19,
+            "kind": "results",
+            "resultLevel": "output",
+            "mappings": [
+              {
+                "component": "OP41",
+                "basis": "same named initiative and coordinated early-warning work",
+                "interpretation": "Reports road maps, coordination and remaining last-mile and financing gaps. Paragraph 74 reports systems in 128 Member/observer States; this is reported coverage, not independent attribution of lives saved."
+              }
+            ]
+          },
+          {
+            "id": "A/81/307:64",
+            "number": 64,
+            "text": "Complementary financing mechanisms are scaling support for national early warning systems. The Green Climate Fund has expanded its portfolio with new projects in Belize, Maldives, Togo and Trinidad and Tobago under its Climate Risk and Early Warning Systems Scaling-up Framework. Under its strategy for 2025–2030, the Climate Risk and Early Warning Systems initiative will strive to ensure that all least developed countries and small island developing States have access to essential early warning and climate services, mobilizing an additional $1 billion through de-risking of approximately $400 million and leveraging up to $600 million in co-financing to reach an estimated 200 million underserved people. The Systematic Observations Financing Facility 76 is also raising $200 million through a climate impact bond to enable 30 least developed countries and small island developing States to meet Global Basic Observing Network requirements.",
+            "pdfPage": 19,
+            "kind": "activity",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "OP41",
+                "basis": "same named initiative and coordinated early-warning work",
+                "interpretation": "Reports road maps, coordination and remaining last-mile and financing gaps. Paragraph 74 reports systems in 128 Member/observer States; this is reported coverage, not independent attribution of lives saved."
+              }
+            ]
+          },
+          {
+            "id": "A/81/307:65",
+            "number": 65,
+            "text": "The achievements under the Early Warnings for All initiative demonstrate that effective early warning systems are vital for sustainable development, protecting development gains, reducing humanitarian needs and supporting climate adaptation and resilience. Continued international cooperation, long-term financing and national ownership will be essential to sustain and strengthen capacities beyond 2027, particularly in countries in special situations and in crisis and conflict -affected settings.",
+            "pdfPage": 20,
+            "kind": "recommendation",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "OP41",
+                "basis": "same named initiative and coordinated early-warning work",
+                "interpretation": "Reports road maps, coordination and remaining last-mile and financing gaps. Paragraph 74 reports systems in 128 Member/observer States; this is reported coverage, not independent attribution of lives saved."
+              }
+            ]
+          },
+          {
+            "id": "A/81/307:74",
+            "number": 74,
+            "text": "There has been measurable progress in the implementation of the Early Warnings for All initiative, with approximately 66 per cent of Member States and observer States (128 in total) reporting that they have multi-hazard early warning systems in place. Improvements in the comprehensiveness of systems and growing evidence of their contribution to reduced disaster mortality demonstrate the effectiveness of early warning in protecting lives and livelihoods. Important gaps remain, particularly in countries in special situations; continued support is therefore required to build local capacities and maintain fit-for-purpose systems in a rapidly changing risk landscape.",
+            "pdfPage": 22,
+            "kind": "results",
+            "resultLevel": "indicator",
+            "mappings": [
+              {
+                "component": "OP41",
+                "basis": "same named initiative and coordinated early-warning work",
+                "interpretation": "Reports road maps, coordination and remaining last-mile and financing gaps. Paragraph 74 reports systems in 128 Member/observer States; this is reported coverage, not independent attribution of lives saved."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "locator": {
+          "section": "main",
+          "annexIndex": null,
+          "prefix": "13."
+        },
+        "label": "OP 13",
+        "requestedText": "Reaffirms the importance of developing multi-hazard strategies at the local, national, subregional, regional and international levels, in line with the Sendai Framework, that aim to prevent, mitigate and repair the adverse economic, social and environmental impacts of natural climate cycles, such as the El Niño Southern Oscillation phenomenon, while recognizing ongoing national initiatives by affected countries to strengthen their capacities;",
+        "passages": [
+          {
+            "id": "A/81/307:66",
+            "number": 66,
+            "text": "As the dominant driver of year‑to‑year climate variability, the El Niño/Southern Oscillation continued to shape global weather patterns throughout 2025 –2026. After several months of neutral conditions, the system briefly shifted towards its cooler phase, with borderline La Niña patterns emerging late in 2025 and persisting into early 2026. A strong El Niño event is developing and is expected to strengthen in the period from August to October 2026. This will increase the likelihood of above - normal temperatures across much of the world and drive significant shifts in rainfall patterns that are likely to exacerbate droughts, floods and heatwaves, underscoring the importance of preparedness measures.77",
+            "pdfPage": 20,
+            "kind": "context",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "OP13 and OP14",
+                "basis": "same ENSO preparedness and support topics",
+                "interpretation": "Contains forecasting context plus preparedness and coordination activity. Weather descriptions alone are not implementation evidence."
+              }
+            ]
+          },
+          {
+            "id": "A/81/307:67",
+            "number": 67,
+            "text": "Despite the brief emergence of weak La Niña conditions, January 2026 was the fifth warmest January on record,78 underscoring that the temporary cooling effect of La Niña occurred against an elevated global temperature baseline. This short-lived La Niña phase was associated with above-average rainfall across parts of the Maritime Continent and northern Australia, drier-than-average conditions in parts of East Africa and subtropical South America and more intense tropical cyclone activity in the western North Pacific and Australia regions. Member States are strengthening preparedness for impacts related to the El Niño/Southern Oscillation through enhanced early warning, scenario planning and anticipatory measures in flood and drought‑prone regions. Consideration of El Niño and La Niña hazards is increasingly embedded within multi‑hazard early warning road maps, includi ng in Burundi, Ecuador and Kenya, and incorporated into nationally led anticipatory action frameworks in Palau and Tonga. Regional centres and multilateral initiatives, including the International Research Centre on El Niño, 79 continue to support national efforts to reduce risks and limit potential losses.",
+            "pdfPage": 20,
+            "kind": "activity",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "OP13 and OP14",
+                "basis": "same ENSO preparedness and support topics",
+                "interpretation": "Contains forecasting context plus preparedness and coordination activity. Weather descriptions alone are not implementation evidence."
+              }
+            ]
+          },
+          {
+            "id": "A/81/307:68",
+            "number": 68,
+            "text": "Seasonal forecasts of the El Niño/Southern Oscillation remain central for anticipating climate variability and guiding preparedness across sectors. When integrated into national decision‑making systems, these forecasts protect lives and livelihoods by enabling earlier and more targeted action. Regular global and regional hydrometeorological scans and seasonal outlooks produced through the coordination mechanism of WMO80 continue to support Member States, United Nations entities and humanitarian partners. In 2025, early indications of worsening drought in parts of East Africa, especially Somalia, partially associated with La Niña informed timely preparedness and contingency planning. As the likelihood for El Niño conditions in 2026 increases, WMO has been issuing regular forecasts and United Nations entities are collaborating to support Member States with coordinated, multisectoral preparedness mechanisms.",
+            "pdfPage": 20,
+            "kind": "activity",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "OP13 and OP14",
+                "basis": "same ENSO preparedness and support topics",
+                "interpretation": "Contains forecasting context plus preparedness and coordination activity. Weather descriptions alone are not implementation evidence."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "locator": {
+          "section": "main",
+          "annexIndex": null,
+          "prefix": "14."
+        },
+        "label": "OP 14",
+        "requestedText": "Stresses that, during neutral El Niño Southern Oscillation phenomenon years, it is critical to prepare for, build resilience to and reduce the risks of the next event, particularly in the context of existing climate-related impacts, including through integrated plans, and calls upon the international community to provide financial, technical and capacity-building support to countries affected by the El Niño Southern Oscillation phenomenon, prioritizing resources to developing countries;",
+        "passages": [
+          {
+            "id": "A/81/307:66",
+            "number": 66,
+            "text": "As the dominant driver of year‑to‑year climate variability, the El Niño/Southern Oscillation continued to shape global weather patterns throughout 2025 –2026. After several months of neutral conditions, the system briefly shifted towards its cooler phase, with borderline La Niña patterns emerging late in 2025 and persisting into early 2026. A strong El Niño event is developing and is expected to strengthen in the period from August to October 2026. This will increase the likelihood of above - normal temperatures across much of the world and drive significant shifts in rainfall patterns that are likely to exacerbate droughts, floods and heatwaves, underscoring the importance of preparedness measures.77",
+            "pdfPage": 20,
+            "kind": "context",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "OP13 and OP14",
+                "basis": "same ENSO preparedness and support topics",
+                "interpretation": "Contains forecasting context plus preparedness and coordination activity. Weather descriptions alone are not implementation evidence."
+              }
+            ]
+          },
+          {
+            "id": "A/81/307:67",
+            "number": 67,
+            "text": "Despite the brief emergence of weak La Niña conditions, January 2026 was the fifth warmest January on record,78 underscoring that the temporary cooling effect of La Niña occurred against an elevated global temperature baseline. This short-lived La Niña phase was associated with above-average rainfall across parts of the Maritime Continent and northern Australia, drier-than-average conditions in parts of East Africa and subtropical South America and more intense tropical cyclone activity in the western North Pacific and Australia regions. Member States are strengthening preparedness for impacts related to the El Niño/Southern Oscillation through enhanced early warning, scenario planning and anticipatory measures in flood and drought‑prone regions. Consideration of El Niño and La Niña hazards is increasingly embedded within multi‑hazard early warning road maps, includi ng in Burundi, Ecuador and Kenya, and incorporated into nationally led anticipatory action frameworks in Palau and Tonga. Regional centres and multilateral initiatives, including the International Research Centre on El Niño, 79 continue to support national efforts to reduce risks and limit potential losses.",
+            "pdfPage": 20,
+            "kind": "activity",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "OP13 and OP14",
+                "basis": "same ENSO preparedness and support topics",
+                "interpretation": "Contains forecasting context plus preparedness and coordination activity. Weather descriptions alone are not implementation evidence."
+              }
+            ]
+          },
+          {
+            "id": "A/81/307:68",
+            "number": 68,
+            "text": "Seasonal forecasts of the El Niño/Southern Oscillation remain central for anticipating climate variability and guiding preparedness across sectors. When integrated into national decision‑making systems, these forecasts protect lives and livelihoods by enabling earlier and more targeted action. Regular global and regional hydrometeorological scans and seasonal outlooks produced through the coordination mechanism of WMO80 continue to support Member States, United Nations entities and humanitarian partners. In 2025, early indications of worsening drought in parts of East Africa, especially Somalia, partially associated with La Niña informed timely preparedness and contingency planning. As the likelihood for El Niño conditions in 2026 increases, WMO has been issuing regular forecasts and United Nations entities are collaborating to support Member States with coordinated, multisectoral preparedness mechanisms.",
+            "pdfPage": 20,
+            "kind": "activity",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "OP13 and OP14",
+                "basis": "same ENSO preparedness and support topics",
+                "interpretation": "Contains forecasting context plus preparedness and coordination activity. Weather descriptions alone are not implementation evidence."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "locator": {
+          "section": "main",
+          "annexIndex": null,
+          "prefix": "70."
+        },
+        "label": "OP 70",
+        "requestedText": "Acknowledges the continuous work of the entities of the United Nations system, in accordance with their respective mandates, in supporting the efforts of developing countries in the area of disaster risk reduction, including through the inclusion, where appropriate, of disaster risk reduction in the United Nations Sustainable Development Cooperation Framework as part of the common country assessment’s multidimensional analysis, and requests the relevant United Nations entities and United Nations country teams, and urges other relevant stakeholders, to continue to integrate disaster risk reduction and the implementation of the Sendai Framework into their work and to align their work with the United Nations Plan of Action on Disaster Risk Reduction for Resilience: Towards a Risk-informed and Integrated Approach to Sustainable Development, including the supplementary recommendations issued in 2023, guided by the Senior Leadership Group on Disaster Risk Reduction for Resilience convened by the Special Representative of the Secretary-General for Disaster Risk Reduction;",
+        "passages": [
+          {
+            "id": "A/81/307:53",
+            "number": 53,
+            "text": "The United Nations system continues to strengthen coherence through implementation of the United Nations Plan of Action on Disaster Risk Reduction for Resilience: Towards a Risk-informed and Integrated Approach to Sustainable Development. 62 Across the plan’s three commitments, 9 of the 11 targets for the period 2019–2025 period were achieved through the engagement of more than 40 United Nations entities. Achievements include the integration of disaster risk reduction into system‑wide planning instruments, improved use of shared risk analysis, strengthened inter‑agency coordination and more consistent risk‑informed policy advice to countries. Significant progress was made on the remaining two targets. In that regard, 67 per cent of United Nations entities indicate that they include disaster risk reduction in their monitoring and evaluation systems, and 140 United Nations programme countries have received support to develop or update their national disaster risk.63 Highlights in 2025 include strengthening gender- and child- responsive disaster risk reduction, mobilizing climate finance to support multi -hazard early warning systems and advancing joint support to anticipatory action and financing. At its meeting in July 2026, the Senior Leadership Group on Disaster Risk Reduction for Resilience adopted updated 2030 targets for the Plan of Action and the priority actions for 2026–2027, with a view to guiding joint United Nations works at the country level.64",
+            "pdfPage": 16,
+            "kind": "results",
+            "resultLevel": "output",
+            "mappings": [
+              {
+                "component": "OP70",
+                "basis": "same UN Plan of Action, country teams and cooperation frameworks",
+                "interpretation": "Reports system-wide plan progress, country examples and resource constraints; does not establish implementation by every relevant UN entity."
+              }
+            ]
+          },
+          {
+            "id": "A/81/307:54",
+            "number": 54,
+            "text": "In response to the 2024 quadrennial comprehensive policy review, 65 support to country-level disaster risk reduction was strengthened through coordinated, risk- informed approaches across United Nations country teams. In Viet Nam, following Typhoon Yagi, entities mobilized the Disaster Risk Reduction Partnership and the United Nations in Viet Nam pooled fund in order to invest in disaster risk reduction knowledge and more resilient infrastructure. In Iraq, Jordan and Lebanon, a joint programme under the United Nations multi-partner trust fund to support the Global Compact for Safe, Orderly and Regular Migration facilitated more integrated, migrant-inclusive and gender-responsive resilience planning by strengthening local climate and health assessments and national disaster risk reduction planning, including health system preparedness. In Mozambique, the United Nations country team prioritized community empowerment through anticipatory financing, protecting nearly 300,000 people when Cyclone Jude struck in 2025 and enabling more effective response and recovery. Central to these efforts is the mainstreaming of disaster risk reduction in United Nations Sustainable Development Cooperation Frameworks. This includes applying a risk lens across outcomes, outputs and indicators, as well as continuous risk monitoring,66 as demonstrated by the new Sustainable Development Cooperation Framework for Timor-Leste for the period 2026–2030.",
+            "pdfPage": 17,
+            "kind": "results",
+            "resultLevel": "output",
+            "mappings": [
+              {
+                "component": "OP70",
+                "basis": "same UN Plan of Action, country teams and cooperation frameworks",
+                "interpretation": "Reports system-wide plan progress, country examples and resource constraints; does not establish implementation by every relevant UN entity."
+              }
+            ]
+          },
+          {
+            "id": "A/81/307:55",
+            "number": 55,
+            "text": "A growing number of initiatives bring together United Nations entities, regional organizations and development partners. The Aqinile Partnership for Urban Resilience, 67 led by the African Union, UNDP, the United Nations Environment Programme and UN-Habitat, is advancing climate-resilient urban development across Africa. UNDP and the United Nations Office for Disaster Risk Reduction are supporting a four-year initiative to strengthen country systems and recovery preparedness in Caribbean countries through the European Union Caribbean Resilient Programme. 68 The Sahel Resilience Partnership, 69 jointly implemented by the German Agency for International Cooperation, UNICEF and the World Food Programme, is strengthening community resilience across the Sahel. The joint climate and health programme of the World Health Organization and WMO, in partnership with the United Nations Office for Disaster Risk Reduction, is leading efforts to strengthen governance and investment for extreme heat risk as part of the United Nations system’s response to the Secretary General’s Call to Action on Extreme Heat. These efforts are reinforced by analytical collaborations across the United Nations system, which include a new methodology to assess urban food system resilience, 70 a framework to monitor biodiversity and ecosystem losses,71 and the Innovation Digital Hub for Disaster Risk Reduction and Climate Change Adaptation, which encompasses more than 1,200 tools, methodologies and technological solutions. 72",
+            "pdfPage": 17,
+            "kind": "activity",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "OP70",
+                "basis": "same UN Plan of Action, country teams and cooperation frameworks",
+                "interpretation": "Reports system-wide plan progress, country examples and resource constraints; does not establish implementation by every relevant UN entity."
+              }
+            ]
+          },
+          {
+            "id": "A/81/307:56",
+            "number": 56,
+            "text": "System-wide coordination was strengthened through regional mechanisms. In Africa, the opportunity and issues-based coalition on fostering climate action, resilience and food systems facilitated coordinated regional support to Member States on multi-hazard early warning systems and disaster loss and damage. In Latin America and the Caribbean, the issue-based coalitions on climate change and resilience and on equitable growth and financing for development collaborated on regional financing dialogues, joint analytical work and civil society consultations. In Europe and Central Asia, the issue-based coalition on environment and climate change trained country teams on the use and deployment of early warning systems and the impacts of extreme heat. In the Asia-Pacific region, the issue-based coalition on resilience supported countries in strengthening the evidence base on loss and damage and the understanding of disaster displacement risk.",
+            "pdfPage": 18,
+            "kind": "activity",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "OP70",
+                "basis": "same UN Plan of Action, country teams and cooperation frameworks",
+                "interpretation": "Reports system-wide plan progress, country examples and resource constraints; does not establish implementation by every relevant UN entity."
+              }
+            ]
+          },
+          {
+            "id": "A/81/307:57",
+            "number": 57,
+            "text": "Continued progress in disaster risk reduction across the United Nations development system depends on more systematic, data-driven multidimensional risk analysis, stronger joint programming and pooling of capacities and resources and continuous risk monitoring. 73 These needs are becoming more acute as resource constraints reduce the capacity of entities to support cross-cutting mandates, such as disaster risk reduction, while overall funding declines. This risks reversing progress in the uptake of prevention, preparedness and disaster resilience priorities across United Nations planning and programming. At the same time, discussions under the UN80 Initiative underscore renewed urgency for concerted, integrated syst em-wide action, including pooled analytical capacity, strengthened engagement on cross - cutting issues and enhanced cross-pillar collaboration, each of which are critical for effective support to countries on disaster risk reduction.",
+            "pdfPage": 18,
+            "kind": "context",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "OP70",
+                "basis": "same UN Plan of Action, country teams and cooperation frameworks",
+                "interpretation": "Reports system-wide plan progress, country examples and resource constraints; does not establish implementation by every relevant UN entity."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "symbol": "A/RES/60/184",
+    "title": "International trade and development",
+    "reviewedAt": "2026-10-15",
+    "report": {
+      "symbol": "A/61/272",
+      "title": "International trade and development report of the Secretary-General",
+      "issuedDate": "2006-08-18",
+      "sha256": "75ca4d37b72458510f05a4eba6bc01e66762ddbb3bbadaf15a6d3ff2c8c97655"
+    },
+    "paragraphs": [
+      {
+        "locator": {
+          "section": "main",
+          "annexIndex": null,
+          "prefix": "23."
+        },
+        "label": "OP 23",
+        "requestedText": "Requests the Secretary-General, in collaboration with the secretariat of the United Nations Conference on Trade and Development, to submit to the General Assembly at its sixty-first session a report on the implementation of the present resolution and on developments in the multilateral trading system, under the sub-item entitled “International trade and development” of the item entitled “Macroeconomic policy questions.”",
+        "passages": [
+          {
+            "id": "A/61/272:1",
+            "number": 1,
+            "text": "The present report has been prepared pursuant to General Assembly resolution 60/184 of 22 December 2005, in which the Secretary-General, in collaboration with the secretariat of the United Nations Conference on Trade and Development (UNCTAD), is requested to report to the Assembly at its sixty-first session on the implementation of that resolution and on developments in the multilateral trading system.",
+            "pdfPage": 2,
+            "kind": "reporting",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "OP23",
+                "basis": "explicit resolution and request in introduction",
+                "interpretation": "2006 report answers this exact historical resolution. Age does not make it an overdue contemporary report."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "locator": {
+          "section": "main",
+          "annexIndex": null,
+          "prefix": "13."
+        },
+        "label": "OP 13",
+        "requestedText": "Reaffirms the commitments made at the Fourth Ministerial Conference of the World Trade OrganizationError: Reference source not found and at the Third United Nations Conference on the Least Developed Countries, held in Brussels from 14 to 20 May 2001, calls, in this regard upon developed countries that have not already done so to provide immediate bound duty-free, quota-free market access to all products originating from all least developed countries, calls upon developing countries that are in a position to do so to extend duty-free and quota-free market access to exports of these countries, andin this context reaffirms the need to consider additional measures for progressive improvement in market access for least developed countries;",
+        "passages": [
+          {
+            "id": "A/61/272:52",
+            "number": 52,
+            "text": "As regards duty-free quota-free market access for least developed countries, those countries are seeking effective implementation of the commitment in the form of 97 per cent tariff line coverage by 2008, with the fast-track inclusion, in a commercially meaningful manner, of the products of their export interest, and moving expeditiously towards 100 per cent coverage. Least developed countries have thus called for duty-free quota-free treatment to be provided in those tariff lines in which positive duties are still applied to their exports and for follow-up discussions on the list of products excluded from the coverage, the time frame and implementation plans. The explicit mention of timing is significant, as some countries consider that duty-free quota-free market access is conditional upon the conclusion of the overall Doha Round. Product coverage remains important, as the remaining 3 per cent of tariff lines could exclude some 330 tariff lines, whereas, for example, an exclusion of 20 to 25 tariff lines would account for some two thirds of the total exports of Bangladesh. A study by the WTO secretariat finds that several countries have yet to achieve the target of 97 per cent coverage, including Japan (85.5 per cent), Norway (96.4 per cent), Switzerland (86.2 per cent) and the United States (81.8 per cent). As regards the commitment to ensure that applicable rules of origin are “transparent and simple”, least developed countries have proposed common and simple rules of origin applicable to their exports.",
+            "pdfPage": 15,
+            "kind": "results",
+            "resultLevel": "indicator",
+            "mappings": [
+              {
+                "component": "OP13",
+                "basis": "distinctive duty-free/quota-free market-access subject",
+                "interpretation": "Reports coverage gaps and negotiation issues. Substantive link, although the report does not label it as a response to OP13."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "locator": {
+          "section": "main",
+          "annexIndex": null,
+          "prefix": "10."
+        },
+        "label": "OP 10",
+        "requestedText": "Calls for accelerating the negotiations on the development-related mandate concerning the Agreement on Trade-related Aspects of Intellectual Property Rights in the Doha Ministerial Declaration, especially the amendments of the Agreement, in order for intellectual property rules fully to support the objectives of the Convention on Biological Diversity as well as for trade-related aspects of intellectual property rights and public health to address the problems afflicting many developing countries, including the least developed countries, especially those resulting from HIV/AIDS, tuberculosis, malaria and other epidemics;",
+        "passages": [
+          {
+            "id": "A/61/272:55",
+            "number": 55,
+            "text": "On 29 November 2005, a decision was taken to grant least developed countries an additional seven and a half years for the implementation of the Agreement on Trade-Related Aspects of Intellectual Property Rights (TRIPS). A General Council decision taken in August 2003 had temporarily waived two obligations under the Agreement related to public health (article 31 (f) and (h)) to facilitate access to essential medicines for countries with no or limited manufacturing capacities. Subsequently, WTO members agreed on 6 December 2005 on an amendment of the Agreement that will enter into force once accepted by two thirds of the members, with a target date of 1 December 2007. Until then, the waiver will remain in force. To date, no use has been made of the waiver.",
+            "pdfPage": 16,
+            "kind": "results",
+            "resultLevel": "output",
+            "mappings": [
+              {
+                "component": "OP10",
+                "basis": "TRIPS, public health and biodiversity issues match",
+                "interpretation": "Reports decisions and unresolved negotiations. Distinguish WTO/member action from Secretariat implementation."
+              }
+            ]
+          },
+          {
+            "id": "A/61/272:56",
+            "number": 56,
+            "text": "Two issues related to traditional knowledge — access and benefit-sharing for genetic resources, and the protection of traditional knowledge and folklore — have been stressed by developing countries. They have expressed concern that the current intellectual property protection system, including the Agreement on Trade-Related Aspects of Intellectual Property Rights, fails to adequately safeguard traditional knowledge and genetic resources. Consequently, countries rich in biological diversity and holders of traditional knowledge argue that the illegitimate commercialization of their resources, knowledge and traditions is happening without their prior informed consent and without the fair sharing of any resulting benefits. Solutions are being pursued at various levels. At the national level, access and benefit-sharing regimes, recognition of customary laws and practices and the creation of traditional knowledge databases could help to preserve traditional knowledge as a living body of knowledge in diverse communities. At the international level, a key proposal is to require the disclosure of the origin of genetic resources and associated traditional knowledge in relevant patent applications. Such a requirement could also include evidence of prior informed consent and benefit- sharing. These issues are being discussed in various international forums, including negotiations on an amendment to the Agreement, and through dedicated working groups and committees under the Convention on Biological Diversity and the World Intellectual Property Organization.",
+            "pdfPage": 16,
+            "kind": "analysis",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "OP10",
+                "basis": "TRIPS, public health and biodiversity issues match",
+                "interpretation": "Reports decisions and unresolved negotiations. Distinguish WTO/member action from Secretariat implementation."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "locator": {
+          "section": "main",
+          "annexIndex": null,
+          "prefix": "16."
+        },
+        "label": "OP 16",
+        "requestedText": "Takes note with satisfaction of the launch of the third round of negotiations on the Global System of Trade Preferences among Developing Countries and the progress achieved so far in these negotiations with the aim of concluding the third round by November 2006;",
+        "passages": [
+          {
+            "id": "A/61/272:64",
+            "number": 64,
+            "text": "South-South trade cooperation and integration is deepening. Existing agreements are being expanded to partners within and outside the region, as in the Mercosur-Andean Community free trade agreement, the Bangladesh-India- Myanmar-Sri Lanka-Thailand Economic Cooperation Initiative and the South Asian Free Trade Area. Ten ASEAN countries have bilateral free trade agreements among themselves, and individual bilateral agreements with China, the Republic of Korea and India. The third round of the Global System of Trade Preferences negotiations, under way since 2004, aims at expanding South-South cooperation through the exchange of concessions. Work has been undertaken on guidelines, including the possibility of sectoral negotiations and deeper tariff cuts, as appropriate, on a line- by-line basis, techniques and modalities in negotiations, strengthening rules of origin, lists of priority exports, and special and differential treatment for least developed countries.",
+            "pdfPage": 18,
+            "kind": "activity",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "OP16",
+                "basis": "same third round of Global System of Trade Preferences negotiations",
+                "interpretation": "Reports work under way. OP16 welcomes progress; do not turn recognition language into a new assigned duty."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "locator": {
+          "section": "main",
+          "annexIndex": null,
+          "prefix": "18."
+        },
+        "label": "OP 18",
+        "requestedText": "Stresses the importance of facilitating the accession of all developing countries, in particular the least developed countries, as well as countries with economies in transition, that apply for membership in the World Trade Organization, consistent with its criteria, bearing in mind paragraph 21 of resolution 55/182 and subsequent developments, and calls for the effective and faithful application of the World Trade Organization guidelines on accession by the least developed countries;",
+        "passages": [
+          {
+            "id": "A/61/272:62",
+            "number": 62,
+            "text": "The Hong Kong Ministerial Declaration welcomed the accession of Saudi Arabia and noted the completion of accession negotiations of Tonga which was granted a one-year extension to ratify its accession. Recent accessions have resulted in major liberalization commitments. Some 30 countries are in the queue for WTO accession. Acceding developing countries continue to face requests for deeper and more stringent commitments, including “WTO-plus” commitments, with their access to special and differential treatment provisions subjected to negotiations on a case-by-case basis.",
+            "pdfPage": 17,
+            "kind": "analysis",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "OP18",
+                "basis": "same WTO accession subject",
+                "interpretation": "Reports accession progress and constraints. Evidence concerns members and the international trading system, not solely UN activity."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "symbol": "A/RES/69/313",
+    "title": "Addis Ababa Action Agenda of the 3rd International Conference on Financing for Development (Addis Ababa Action Agenda)",
+    "reviewedAt": "2026-10-15",
+    "report": {
+      "symbol": "E/2025/8",
+      "title": "Trends and progress in international development cooperation report of the Secretary-General",
+      "issuedDate": "2025-01-03",
+      "sha256": "0caeb83d480d25f46883f4a12209f4e954f3970d5f9de0fa01de519a8c17348b"
+    },
+    "paragraphs": [
+      {
+        "locator": {
+          "section": "annex",
+          "annexIndex": 1,
+          "prefix": "51."
+        },
+        "label": "Annex paragraph 51",
+        "requestedText": "We welcome the increase in volume of ODA since Monterrey. Nonetheless, we express our concern that many countries still fall short of their ODA commitments and we reiterate that the fulfilment of all ODA commitments remains crucial. ODA providers reaffirm their respective ODA commitments, including the commitment by many developed countries to achieve the target of 0.7 per cent of gross national income for official development assistance (ODA/GNI) and 0.15 to 0.20 per cent of ODA/GNI to least developed countries. We are encouraged by those few countries that have met or surpassed their commitment to 0.7 per cent of ODA/GNI and the target of 0.15 to 0.20 per cent of ODA/GNI to least developed countries. We urge all others to step up efforts to increase their ODA and to make additional concrete efforts towards the ODA targets. We welcome the decision by the European Union which reaffirms its collective commitment to achieve the 0.7 per cent of ODA/GNI target within the time frame of the post-2015 agenda and undertakes to meet collectively the target of 0.15 to 0.20 per cent of ODA/GNI to least developed countries in the short term and to reach 0.20 per cent of ODA/GNI to least developed countries within the time frame of the post-2015 agenda. We encourage ODA providers to consider setting a target to provide at least 0.20 per cent of ODA/GNI to least developed countries.",
+        "passages": [
+          {
+            "id": "E/2025/8:16",
+            "number": 16,
+            "text": "Despite reaching a record high of $223.7 billion in 2023, having more than doubled in real terms as compared with the start of the new millennium, ODA has failed to keep pace with escalating needs. ODA represents only 0.37 per cent of donor- country gross national income, well below the half-century-old United Nations target of 0.7 per cent. Only five members of the Development Assistance Committee of the Organisation for Economic Co-operation and Development (OECD) – Denmark, Germany, Luxembourg, Norway and Sweden – met or exceeded this target in 2023.17 ODA to the least developed countries remains below the target of 0.15 per cent –0.20 per cent of gross national income, amounting to only 0.08 per cent of gross national income in 2022, down from an average of 0.09 per cent between 2012 and 2021. 18 ODA to small island developing States also remains low, at 2 per cent of total ODA, having increased by only 0.7 per cent since 2015 despite rising vulnerabilities. There is a need for renewed momentum towards meeting ODA commitments on quantity and quality, including time-bound ODA increases towards 0.7 per cent of the gross national income of developed countries and at least 0.2 per cent of gross national income to the least developed countries.",
+            "pdfPage": 5,
+            "kind": "results",
+            "resultLevel": "indicator",
+            "mappings": [
+              {
+                "component": "annex paragraph 51",
+                "basis": "same quantified ODA commitments",
+                "interpretation": "Compares ODA with GNI targets and recommends increases. Indicator-based evidence is stronger than topic overlap; separate donor commitments from Secretariat deliverables."
+              }
+            ]
+          },
+          {
+            "id": "E/2025/8:20",
+            "number": 20,
+            "text": "Policy recommendations: • Timebound increases towards ODA targets, including 0.7 per cent gross national income and 0.15 per cent–0.20 per cent for the least developed countries, building on a renewed global partnership. • Increased funding through country-programmable aid with clear targets to reverse the trend of declining funds reaching developing countries; increase budget support where appropriate to country circumstances (see sect. V). • Increased grant financing and capacity support for vulnerable countries, including the least developed countries, land-locked developing countries and small island developing States. • Concerted and inclusive support to middle-income countries, given their specific challenges and diverse needs. • Increased focus on capacity development support for domestic resource mobilization to help countries reduce reliance on ODA in the long term.",
+            "pdfPage": 6,
+            "kind": "recommendation",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 51",
+                "basis": "same quantified ODA commitments",
+                "interpretation": "Compares ODA with GNI targets and recommends increases. Indicator-based evidence is stronger than topic overlap; separate donor commitments from Secretariat deliverables."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "locator": {
+          "section": "annex",
+          "annexIndex": 1,
+          "prefix": "52."
+        },
+        "label": "Annex paragraph 52",
+        "requestedText": "We recognize the importance of focusing the most concessional resources on those with the greatest needs and least ability to mobilize other resources. In this regard, we note with great concern the decline in the share of ODA to least developed countries and commit to reversing this decline. We are encouraged by those who are allocating at least 50 per cent of their ODA to least developed countries.",
+        "passages": [
+          {
+            "id": "E/2025/8:19",
+            "number": 19,
+            "text": "Against a backdrop of limited development cooperation budgets in donor countries, these trends have shifted ODA allocations away from country needs and priorities. ODA to the least developed countries, for example, has declined since 2020. The least developed countries have received less aid per person in extreme poverty than upper middle-income countries since 2013, pointing to a reduced focus of ODA on poverty and inequalities. In land-locked developing countries, ODA for the transport and storage sector has steadily declined since 2009, despite acute logistical and infrastructure challenges faced by these countries. Only 0.5 per cent of ODA is currently spent on disaster prevention and preparedness, while close to 11 per cent goes to emergency response and reconstruction – notwithstanding projections of a 40 per cent rise in the number of disasters from 2015 to 2030 and recognition of the importance of investing in prevention.",
+            "pdfPage": 6,
+            "kind": "results",
+            "resultLevel": "indicator",
+            "mappings": [
+              {
+                "component": "annex paragraph 52",
+                "basis": "same allocation to least developed countries",
+                "interpretation": "Reports a decline in ODA to LDCs since 2020, relevant to the commitment to reverse declining share."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "locator": {
+          "section": "annex",
+          "annexIndex": 1,
+          "prefix": "55."
+        },
+        "label": "Annex paragraph 55",
+        "requestedText": "We will hold open, inclusive and transparent discussions on the modernization of the ODA measurement and on the proposed measure of “total official support for sustainable development” and we affirm that any such measure will not dilute commitments already made.",
+        "passages": [
+          {
+            "id": "E/2025/8:38",
+            "number": 38,
+            "text": "In 2012, the OECD Development Assistance Committee began a process to modernize ODA measurement to better reflect how it saw the changing development cooperation landscape and to increase incentives for resource mobilization. This included: clarifying eligibility rules for peace and security (in 2016), in-donor refugee costs (in 2017) and migration-related activities (in 2022); introducing the grant equivalent system for measuring ODA (in 2014); reaching a consensus on the treatment of debt relief, which introduced a ceiling equal to the nominal value of the original loan for debt relief of ODA claims (in 2020); and, most recently, agreeing on revised methods for treating private sector instruments in ODA, which became effective in 2024.",
+            "pdfPage": 10,
+            "kind": "analysis",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 55",
+                "basis": "same ODA modernization and measurement subject",
+                "interpretation": "Discusses changes and measurement gaps; no single formal OP-response table."
+              }
+            ]
+          },
+          {
+            "id": "E/2025/8:39",
+            "number": 39,
+            "text": "However, some current OECD Development Assistance Committee donor practices risk undermining the credibility of ODA as a benchmark for accountability and sustainable development impact. For example, in-donor refugee costs rose from 4.6 per cent of ODA in 2021 to more than 14.4 per cent in 2023, despite rules limiting the counting of such costs. Under the 2014 grant equivalent system, high discount rates can inflate total ODA numbers, even for near-market loans. The way in which private sector instruments are included in ODA measurement has raised questions about counting non-concessional private sector investments as ODA.",
+            "pdfPage": 10,
+            "kind": "analysis",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 55",
+                "basis": "same ODA modernization and measurement subject",
+                "interpretation": "Discusses changes and measurement gaps; no single formal OP-response table."
+              }
+            ]
+          },
+          {
+            "id": "E/2025/8:40",
+            "number": 40,
+            "text": "ODA measurement also reveals important gaps. In gender-responsive measurement, the lack of sex-disaggregated ODA significantly constrains policymakers. Only half of ODA-funded data projects allocate more than 0.05 per cent to gender-related initiatives. A review across 74 countries showed that, while approximately two thirds mention gender statistics in their strategies, fewer than one third provide dedicated funding for such data collection, highlighting a major disconnect between stated priorities and resource allocation.",
+            "pdfPage": 11,
+            "kind": "analysis",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 55",
+                "basis": "same ODA modernization and measurement subject",
+                "interpretation": "Discusses changes and measurement gaps; no single formal OP-response table."
+              }
+            ]
+          },
+          {
+            "id": "E/2025/8:41",
+            "number": 41,
+            "text": "On South-South Cooperation, variations in approaches, modalities and instruments across countries have made it challenging to develop a common definition and quantify trends. The development of a United Nations conceptual framework to measure South-South Cooperation marked a breakthrough in the measurement of South-South Cooperation, allowing for the quantification of both financial and non-financial dimensions. The framework, which was developed by a subgroup on South-South Cooperation of the Working Group on Measurement of Development Support of the Inter-agency and Expert Group on Sustainable Development Goal Indicators, informs Goal indicator 17.3.1 on additional financial resources mobilized for developing countries from multiple sources. 35 UNCTAD, in collaboration with United Nations regional commissions and other United Nations agencies, launched a capacity development project in 2023 to test the framework in eight pilot countries in Africa, Asia and Latin America.",
+            "pdfPage": 11,
+            "kind": "analysis",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 55",
+                "basis": "same ODA modernization and measurement subject",
+                "interpretation": "Discusses changes and measurement gaps; no single formal OP-response table."
+              }
+            ]
+          },
+          {
+            "id": "E/2025/8:42",
+            "number": 42,
+            "text": "Sustainable Development Goal indicator 17.3.1 reflects and builds on efforts to improve measurement frameworks for different financial flows for development. It follows the recipient perspective and includes gross receipts of official grants, official concessional and non-concessional loans, foreign direct investment, private finance mobilized on an experimental basis and private grants. The International Forum on Total Official Support for Sustainable Development, whose secretariat is hosted by OECD, and UNCTAD are responsible for global monitoring on this indicator. Data sources include existing databases established at the International Forum, OECD and UNCTAD.",
+            "pdfPage": 11,
+            "kind": "analysis",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 55",
+                "basis": "same ODA modernization and measurement subject",
+                "interpretation": "Discusses changes and measurement gaps; no single formal OP-response table."
+              }
+            ]
+          },
+          {
+            "id": "E/2025/8:43",
+            "number": 43,
+            "text": "Improving the measurement of international public finance requires recognizing that different funding purposes serve distinct goals and should be assessed against their own merits. This approach suggests the consideration of three broad categories, each with specific measurement frameworks. First, the primary focus of ODA on poverty reduction and economic growth demands metrics aligned with long -term development outcomes. Second, humanitarian support and crisis response – including for pandemics, conflict and natural disasters – require separate targets to ensure predictable resources for immediate needs. Third, financing of global public goods – including as related to climate – calls for distinct frameworks that can assess both public financing instruments and their ability to mobilize private finance.",
+            "pdfPage": 11,
+            "kind": "analysis",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 55",
+                "basis": "same ODA modernization and measurement subject",
+                "interpretation": "Discusses changes and measurement gaps; no single formal OP-response table."
+              }
+            ]
+          },
+          {
+            "id": "E/2025/8:44",
+            "number": 44,
+            "text": "The new climate finance goal, to mobilize at least $300 billion per year, includes both public and private funding sources. However, the measurement of climate finance from diverse sources faces challenges that affect tracking and allocation of resources. Key issues include inconsistent definitions and data collection methods, which increases double-counting between development and climate-related finance and undermines the ability to verify whether climate finance is “new and additional” (see General Assembly resolution 79/195, para. 10). Moreover, limited reporting from private sector actors leaves gaps in understanding of their contributions to climate initiatives. These measurement challenges particularly affect vulnerable countries such as the least developed countries, land-locked developing countries and small island developing States. Enhancing consistency and transparency in both ODA and climate finance reporting, improving impact measurement and developing complementary targets could better support resource mobilization across both the climate and development agendas.",
+            "pdfPage": 11,
+            "kind": "analysis",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 55",
+                "basis": "same ODA modernization and measurement subject",
+                "interpretation": "Discusses changes and measurement gaps; no single formal OP-response table."
+              }
+            ]
+          },
+          {
+            "id": "E/2025/8:45",
+            "number": 45,
+            "text": "Policy recommendations: • Developing complementary approaches to measuring different forms of development cooperation in line with their distinct purposes and principles. • Enhancing data quality and availability and addressing gaps in development cooperation measurement, such as of sex-disaggregated ODA while reducing unnecessary reporting burdens. • Strengthening data collection for Sustainable Development Goal indicator 17.3.1.",
+            "pdfPage": 12,
+            "kind": "recommendation",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 55",
+                "basis": "same ODA modernization and measurement subject",
+                "interpretation": "Discusses changes and measurement gaps; no single formal OP-response table."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "locator": {
+          "section": "annex",
+          "annexIndex": 1,
+          "prefix": "58."
+        },
+        "label": "Annex paragraph 58",
+        "requestedText": "We welcome continued efforts to improve the quality, impact and effectiveness of development cooperation and other international efforts in public finance, including adherence to agreed development cooperation effectiveness principles. We will align activities with national priorities, including by reducing fragmentation, accelerating the untying of aid, particularly for least developed countries and countries most in need. We will promote country ownership and results orientation and strengthen country systems, use programme-based approaches where appropriate, strengthen partnerships for development, reduce transaction costs and increase transparency and mutual accountability. We will make development more effective and predictable by providing developing countries with regular and timely indicative information on planned support in the medium term. We will pursue these efforts in the Development Cooperation Forum of the Economic and Social Council and, in this regard, we also take account of efforts in other relevant forums, such as the Global Partnership for Effective Development Cooperation, in a complementary manner. We will also consider not requesting tax exemptions on goods and services delivered as government-to-government aid, beginning with renouncing repayments of value-added taxes and import levies.",
+        "passages": [
+          {
+            "id": "E/2025/8:60",
+            "number": 60,
+            "text": "Various principles have been developed over the past decades in different forums to guide the effective use of ODA and other forms of international development cooperation by different actors. These include general principles enshrined in the Addis Ababa Action Agenda, those set out within the OECD Development Assistance Committee definition of ODA and the Global Partnership for Effective Development Cooperation, those guiding South -South Cooperation, climate finance principles and various sets of principle s specific to blended finance.",
+            "pdfPage": 15,
+            "kind": "analysis",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 58",
+                "basis": "same ownership, alignment and effectiveness principles",
+                "interpretation": "Analyses continuing relevance and application of principles, including country leadership. Mixes observed evidence and recommendations."
+              }
+            ]
+          },
+          {
+            "id": "E/2025/8:61",
+            "number": 61,
+            "text": "Nonetheless, trends in international development cooperation show that adherence to these principles has decreased since 2015. This highlights the need to ensure effective development cooperation as a strategic approach and shared commitment that resonates across the broader range of actors involved in development cooperation interventions today, including traditional donors, Southern partners, multilateral development banks and the broader system of public development banks that operate cross-border, private sector actors and other non-State actors such as philanthropies. Given broad recognition of the continued relevance of existing principles, it also calls for reassessing their interpretation and application in today’s context and for reforming the development cooperation architecture to strengthen monitoring and accountability.",
+            "pdfPage": 15,
+            "kind": "analysis",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 58",
+                "basis": "same ownership, alignment and effectiveness principles",
+                "interpretation": "Analyses continuing relevance and application of principles, including country leadership. Mixes observed evidence and recommendations."
+              }
+            ]
+          },
+          {
+            "id": "E/2025/8:62",
+            "number": 62,
+            "text": "Most of the development cooperation principles have common threads, emphasizing the importance of country ownership and development partners’ alignment and coherence. For example, they are reflected in the Global Partnership for Effective Development Cooperation principles, along with a focus on results, transparency and mutual accountability. The evolution of the development cooperation landscape since the Addis Ababa Action Agenda, particularly with the growing prominence of South-South cooperation, has brought forward new dimensions. The 2019 Buenos Aires outcome document of the second High -level United Nations Conference on South-South Cooperation reaffirmed the principles of South-South cooperation of respect for national sovereignty, national owner ship and independence and equality, non-conditionality, non-interference in domestic affairs and mutual benefit.",
+            "pdfPage": 15,
+            "kind": "analysis",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 58",
+                "basis": "same ownership, alignment and effectiveness principles",
+                "interpretation": "Analyses continuing relevance and application of principles, including country leadership. Mixes observed evidence and recommendations."
+              }
+            ]
+          },
+          {
+            "id": "E/2025/8:63",
+            "number": 63,
+            "text": "Data from the Development Cooperation Forum survey shows that, in 2024, 83 per cent of developing countries identified strong country ownership as a key factor driving positive changes in development cooperation in their countries. However, traditional conceptions of country ownership, while foundational, have proved insufficient in achieving genuinely demand-driven development outcomes. Experience demonstrates that current efforts at ownership do not guarantee alignment with country needs and priorities, as funding allocations often continue to reflect donor preferences rather than developing countries’ strategic development objectives. This misalignment is particularly evident, for instance, in climate finance, where vulnerable countries might prioritize adaptation measures over mitigation efforts yet find themselves constrained by donor-driven funding priorities.",
+            "pdfPage": 15,
+            "kind": "results",
+            "resultLevel": "indicator",
+            "mappings": [
+              {
+                "component": "annex paragraph 58",
+                "basis": "same ownership, alignment and effectiveness principles",
+                "interpretation": "Analyses continuing relevance and application of principles, including country leadership. Mixes observed evidence and recommendations."
+              }
+            ]
+          },
+          {
+            "id": "E/2025/8:64",
+            "number": 64,
+            "text": "Country leadership extends beyond traditional ownership by emphasizing the role of developing countries in directly shaping development initiatives. This evolution requires a fundamental shift in power dynamics, with developing countries taking the lead in identifying priorities, designing interventions and determining approaches to implementation. Such leadership becomes particularly crucial in addressing complex challenges such as climate change, pandemic preparedness and digital transformation, where local context and priorities are essential for effective responses.40 Recent experiences with global crises have underscored the importance of country leadership in development cooperation. Countries that demonstrated strong leadership in coordinating international support and aligning it with national priorities achieved better outcomes in crisis response and recovery.41",
+            "pdfPage": 15,
+            "kind": "analysis",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 58",
+                "basis": "same ownership, alignment and effectiveness principles",
+                "interpretation": "Analyses continuing relevance and application of principles, including country leadership. Mixes observed evidence and recommendations."
+              }
+            ]
+          },
+          {
+            "id": "E/2025/8:65",
+            "number": 65,
+            "text": "Policy coherence emerges as another critical principle reinforcing country leadership. The interconnected nature of global challenges requires development cooperation to move beyond isolated project-based approaches towards more integrated, systemic solutions. Development cooperation partners must ensure that their policies across trade, finance technology and environmental protection actively support – rather than undermine – their development cooperation objectives. This requires proactively identifying and addressing cases where domestic or international policies may harm development outcomes in developing countries.",
+            "pdfPage": 16,
+            "kind": "analysis",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 58",
+                "basis": "same ownership, alignment and effectiveness principles",
+                "interpretation": "Analyses continuing relevance and application of principles, including country leadership. Mixes observed evidence and recommendations."
+              }
+            ]
+          },
+          {
+            "id": "E/2025/8:66",
+            "number": 66,
+            "text": "The adoption of the Sustainable Development Goals, as well as changes in the global context, including increasing systemic risks, may call for reformulating principles in a way that recognizes the implications of such changes in development cooperation approaches. For example, rising systemic risks have underlined the need to mainstream resilience and to consider all dimensions of sustainability (economic, environmental, social) in development cooperation interventions – taking into account the potential trade-offs that policy choices in one domain may have in other domains, as well as on the ability of countries’ financing systems to withstand future shocks. Integrated national financing frameworks are being used to mainstream such an approach to financing policymaking at the national level, and there is scope to further enhance their use.42",
+            "pdfPage": 16,
+            "kind": "analysis",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 58",
+                "basis": "same ownership, alignment and effectiveness principles",
+                "interpretation": "Analyses continuing relevance and application of principles, including country leadership. Mixes observed evidence and recommendations."
+              }
+            ]
+          },
+          {
+            "id": "E/2025/8:67",
+            "number": 67,
+            "text": "Policy recommendations: • Revitalized, streamlined and inclusive principles of effective development cooperation. • Elevated country leadership to extend beyond traditional ownership, including through potential consolidation or stronger alignment of sustainable development strategies, nationally determined contributions and integrated national financing frameworks, which should be the basis of development cooperation country-level allocation decisions. • Promotion of policy coherence as a critical principle reinforcing country leadership.",
+            "pdfPage": 16,
+            "kind": "recommendation",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "annex paragraph 58",
+                "basis": "same ownership, alignment and effectiveness principles",
+                "interpretation": "Analyses continuing relevance and application of principles, including country leadership. Mixes observed evidence and recommendations."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "symbol": "S/RES/2220(2015)",
+    "title": "Resolution 2220 (2015)",
+    "reviewedAt": "2026-10-15",
+    "report": {
+      "symbol": "S/2025/670",
+      "title": "Small arms and light weapons report of the Secretary-General",
+      "issuedDate": "2025-10-23",
+      "sha256": "0ef4afaabf8647911df9e1c2af2238e046952754f8e5294e82dc9c3c24726590"
+    },
+    "paragraphs": [
+      {
+        "locator": {
+          "section": "main",
+          "annexIndex": null,
+          "prefix": "32."
+        },
+        "label": "OP 32",
+        "requestedText": "Requests the Secretary-General to continue to submit to the Council on a biennial basis a report on small arms and light weapons, including on the implementation of this resolution, and affirms its intention to consider the report in a timely manner;",
+        "passages": [
+          {
+            "id": "S/2025/670:1",
+            "number": 1,
+            "text": "The present report is submitted pursuant to Security Council resolution 2220 (2015), by which the Council requested the Secretary-General to continue to submit to it, on a biennial basis, a report on small arms and light weapons, including on the implementation of the resolution, as well as resolution 2616 (2021), by which the Council requested the Secretary-General to include further information on general trends of illicit trafficking and diversion in contravention of Council -mandated arms embargoes.",
+            "pdfPage": 2,
+            "kind": "reporting",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "OP32",
+                "basis": "resolution explicitly identified",
+                "interpretation": "Biennial reporting mandate; report also answers resolution 2616 (2021)."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "locator": {
+          "section": "main",
+          "annexIndex": null,
+          "prefix": "5."
+        },
+        "label": "OP 5",
+        "requestedText": "Emphasizes that Member States, United Nations peacekeeping operations and other Council-mandated entities, where appropriate and mandated, and intergovernmental, regional and subregional organizations, may be in a position to assist in capacity-building of governments upon request to ensure the safe and effective management, storage, security, marking, record-keeping and tracing of stockpiles of small arms and light weapons, and collection and/or destruction of surplus, seized, unmarked, or illicitly held weapons and ammunition and encourages Member States and intergovernmental, regional and subregional organizations in a position to do so to render assistance upon request in implementing these tasks, including through examining technologies that would improve the tracing and detection of illicit transfer in small arms and light weapons, as well as measures to facilitate the transfer of such technologies;",
+        "passages": [
+          {
+            "id": "S/2025/670:37",
+            "number": 37,
+            "text": "In operational settings, the Mine Action Service provided tailored support for weapons and ammunition management, ranging from technical training to policy support, marking and destruction. In Somalia, a central monitoring department was established under the Office of National Security, serving as an example of how early measures can support the easing of the transition period ahead of changes to arms embargoes. In Abyei, the Mine Action Service component of the United Nations Interim Security Force for Abyei facilitated the destruction of illicit small arms and light weapons and ammunition. In South Sudan, technical assistance to troop - and police-contributing countries enabled the safe disposal of close to 1 million rounds of unserviceable small arms ammunition. In the Central African Republic, the Mine Action Service component of the United Nations Multidimensional Integrated Stabilization Mission in the Central African Republic (MINUSCA) delivered training sessions for the Armed Forces of the Central African Republic, the Internal Security Forces and MINUSCA, reaching 396 personnel, including the first -ever weapons and ammunition management training of trainers. In the Democratic Republic of the Congo, where the progressive withdrawal of United Nations Organization Stabilization Mission in the Democratic Republic of the Congo forces required measures to prevent the diversion of surplus weapons and ammunition, the Mine Action Service component of the Mission supported the safe destruction of almost 1.4 million rounds of small arms ammunition. Furthermore, in the aftermath of the fall of Goma in January 2025, more than 2,000 weapons, nearly 7,000 weapons components and over 54,000 rounds of small arms ammunition were surrendered to the Mission and destroyed. The Secretary-General encourages the Security Council, when establishing the mandates of United Nations peacekeeping operations and special political missions, to include arms expertise within their structures and enhance cooperation with other relevant United Nations entities to strengthen the collection, analysis and use of arms flow data.",
+            "pdfPage": 10,
+            "kind": "results",
+            "resultLevel": "output",
+            "mappings": [
+              {
+                "component": "OP5",
+                "basis": "same capacity support, stockpile management, marking and destruction tasks",
+                "interpretation": "Reports named UN/regional support, training and weapons/ammunition destruction; concrete output evidence, not proof of reduced diversion."
+              }
+            ]
+          },
+          {
+            "id": "S/2025/670:38",
+            "number": 38,
+            "text": "United Nations entities and regional partners, in cooperation with the United Nations Institute for Disarmament Research (UNIDIR), continued to use the Institute’s reference methodology to conduct assessments at the request of States, including in countries and situations under the purview of the Security Council such as the Central African Republic, the Democratic Republic of the Congo and Somalia, as well as West African States not under the purview of the Council. 41 Furthermore, UNIDIR and the Office for Disarmament Affairs developed the Modular Small-arms- control Implementation Compendium assessment tool to support Member States in assessing their national small arms control systems in operational areas. Assessments were conducted by the United Nations Regional Centre for Peace and Disarmament in Asia and the Pacific and the United Nations Regional Centre for Peace and Disarmament in Africa, in Burundi, Cambodia, the Gambia, Fiji and Nepal.",
+            "pdfPage": 11,
+            "kind": "activity",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "OP5",
+                "basis": "same capacity support, stockpile management, marking and destruction tasks",
+                "interpretation": "Reports named UN/regional support, training and weapons/ammunition destruction; concrete output evidence, not proof of reduced diversion."
+              }
+            ]
+          },
+          {
+            "id": "S/2025/670:39",
+            "number": 39,
+            "text": "In the Caribbean, the United Nations Regional Centre for Peace, Disarmament and Development in Latin America and the Caribbean assisted national authorities with weapons marking, physical security and stockpile management and the disposal of weapons in Barbados, the Dominican Republic, Grenada, Jamaica and Saint Kitts and Nevis. Over 360 firearms and 12,500 rounds of ammunition were destroyed. The Regional Centre published a policy framework on the sustainable disposal of destroyed firearms and ammunition components, developed with the CARICOM Implementation Agency for Crime and Security and the Mines Advisory Group. 42 In South-East Europe, the South Eastern and Eastern Europe Clearinghouse for the Control of Small Arms and Light Weapons made advances in the physical security and stockpile management of small arms and light weapons and ammunition, which included the destruction of more than 2,000 weapons. In 2024, national reports on the implementation of the Programme of Action on Small Arms indicated th at national authorities in 67 of 100 reporting countries had collected 860,598 weapons, of which 65 per cent were destroyed.",
+            "pdfPage": 11,
+            "kind": "results",
+            "resultLevel": "output",
+            "mappings": [
+              {
+                "component": "OP5",
+                "basis": "same capacity support, stockpile management, marking and destruction tasks",
+                "interpretation": "Reports named UN/regional support, training and weapons/ammunition destruction; concrete output evidence, not proof of reduced diversion."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "locator": {
+          "section": "main",
+          "annexIndex": null,
+          "prefix": "18."
+        },
+        "label": "OP 18",
+        "requestedText": "Urges Member States, United Nations entities, intergovernmental, regional and subregional organizations, to take further measures to facilitate women’s full and meaningful participation in all policymaking, planning and implementation processes to combat and eradicate the illicit transfer, destabilizing accumulation and misuse of small arms and light weapons in all its aspects, and in that regard, encourages empowering women, including through capacity building efforts, as appropriate, to participate in the design and implementation of efforts related to the illicit transfer, destabilizing accumulation and misuse of small arms and light weapons, and calls upon all those involved in the planning for disarmament, demobilization and reintegration and justice and security sector reform efforts to take into account the particular needs of women and children associated with armed forces and armed groups, with the participation of women, and to provide for their full access to these programmes inter alia, through consultation with civil society, including women’s organizations, as appropriate;",
+        "passages": [
+          {
+            "id": "S/2025/670:21",
+            "number": 21,
+            "text": "Across the United Nations system, entities have advanced gender-responsive arms control. The United Nations Regional Centre for Peace and Disarmament in Africa convened strategic workshops with the African Union and regional organizations to support gender mainstreaming in small arms and light weapons control, while the United Nations Regional Centre for Peace and Disarmament in Asia and the Pacific facilitated regional dialogue in Asia on integrating the women and peace and security agenda into arms control. The United Nations Regional Centre for Peace, Disarmament and Development in Latin America and the Caribbean supported national authorities in Latin America in integrating gender perspectives into firearms investigations. The United Nations Office on Drugs and Crime (UNODC) developed a global study and training module on gender dimensions of criminal justice responses to firearms-related crime, while the South Eastern and Eastern Europe Clearinghouse for the Control of Small Arms and Light Weapons of UNDP launched guidelines on assessing firearms risks in domestic violence and gender-responsive firearms licensing. In the area of technical ammunition management, the Women Managing Ammunition Network, now comprising 60 women experts from 43 countries, and the WoMA+ initiative have strengthened women’s participation. States are encouraged to provide targeted programmes to advance women’s equal participation in arms control and weapons and ammunition management, including in technical roles.",
+            "pdfPage": 6,
+            "kind": "results",
+            "resultLevel": "output",
+            "mappings": [
+              {
+                "component": "OP18",
+                "basis": "same women’s participation and capacity-building objective",
+                "interpretation": "Reports activities and a network of women ammunition experts. Supports selected aspects of the OP, not universal achievement of equal participation."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "locator": {
+          "section": "main",
+          "annexIndex": null,
+          "prefix": "13."
+        },
+        "label": "OP 13",
+        "requestedText": "Reiterates that Council-mandated arms embargoes should have clearly established objectives and provisions for regular review of the measures with a view to lifting them when the objectives are met, in accordance with the terms of the applicable Council resolutions, acknowledges that when considering a partial or complete termination, suspension or adjustment of an arms embargo the Council should, where applicable, take into account the capacities by the Member State subject to an arms embargo to, inter alia, apply physical security and stockpile management practices, implement marking, record keeping and tracing, develop national export and import control systems, enhance border security, and strengthen judicial institutions and law enforcement capacity and welcomes the conduct of assessment missions to evaluate progress by Member States subject to a Council-mandated arms embargoes towards meeting the conditions set by the Council for their termination or adjustment and to provide options and recommendations regarding United Nations and other technical assistance to these Member States or their regions;",
+        "passages": [
+          {
+            "id": "S/2025/670:52",
+            "number": 52,
+            "text": "The lifting of the arms embargoes on the Central African Republic 56 and Somalia57 and adjustments to the arms embargo provisions on South Sudan 58 by the Security Council reflect steps taken by those States to strengthen their effective arms and ammunition management. Where embargo regimes have been partially or fully lifted, greater responsibility is placed on the Government for continued attention to weapons and ammunition. Following the lifting of the arms embargo in the Central African Republic, MINUSCA, through the Mine Action Service and in collaboration with the National Commission for the Fight against the Proliferation of Small Arms and Light Weapons, supported efforts to improve weapons and ammunition management for strengthening national resilience in support of Security Council priorities.",
+            "pdfPage": 14,
+            "kind": "results",
+            "resultLevel": "output",
+            "mappings": [
+              {
+                "component": "OP13",
+                "basis": "same embargo review and capacity benchmarks",
+                "interpretation": "Reports reviews and assessments. Sanctions-specific mandates and resolution 2616 also matter; attribution is shared."
+              }
+            ]
+          },
+          {
+            "id": "S/2025/670:53",
+            "number": 53,
+            "text": "To support reviews of arms embargoes, the Security Council established benchmarks related to weapons and ammunition management, which have proven to be valuable tools for assessing progress under relevant sanctions regimes. Such assessments were conducted in the context of the Central African Republic,59 Haiti,60 Somalia61 and South Sudan.62 Regarding Somalia, in October 2024, the Secretary- General presented a progress update to the Council on the implementation of benchmarks as set out in his letter dated 15 September 2022 addressed to the President of the Security Council. 63 An additional benchmark on the safe management of chemical precursors associated with improvised explosive devices was added to existing benchmarks on weapons and ammunition management, including on legal frameworks, coordination mechanisms, marking and record-keeping, stockpiles, verification processes, traceability of recovered weapons, combating sexual violence and implementation of the road map on children in armed conflict. 64 Member States and relevant international and regional organizations are encouraged to provide capacity-building for national authorities to exert effective arms and ammunition management.",
+            "pdfPage": 14,
+            "kind": "results",
+            "resultLevel": "output",
+            "mappings": [
+              {
+                "component": "OP13",
+                "basis": "same embargo review and capacity benchmarks",
+                "interpretation": "Reports reviews and assessments. Sanctions-specific mandates and resolution 2616 also matter; attribution is shared."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "symbol": "S/RES/2349(2017)",
+    "title": "Resolution 2349 (2017)",
+    "reviewedAt": "2026-10-15",
+    "report": {
+      "symbol": "S/2026/445",
+      "title": "The situation in Central Africa and the activities of the United Nations Regional Office for Central Africa report of the Secretary-General",
+      "issuedDate": "2026-05-29",
+      "sha256": "b7c0b990182adbc22fde7be5ee3be57faefe38702b6bea2087f6532638c178ba"
+    },
+    "paragraphs": [
+      {
+        "locator": {
+          "section": "main",
+          "annexIndex": null,
+          "prefix": "34."
+        },
+        "label": "OP 34",
+        "requestedText": "Requests the Secretary-General to produce a written report within five months on the United Nations’ assessment of the situation in the Lake Chad Basin Region as it relates to elements of this resolution, particularly regarding the progress made and remaining challenges, and possible measures for consideration, including with respect to achieving greater coherence of efforts in the context of overlapping regional strategies, and thereafter to include these elements in regular reporting by UNOCA and UNOWAS.",
+        "passages": [
+          {
+            "id": "S/2026/445:1",
+            "number": 1,
+            "text": "The present report is submitted pursuant to the statement of the President of the Security Council dated 1 November 2024 (S/PRST/2024/7), in which the Council requested the Secretary-General to keep it informed about the activities of the United Nations Regional Office for Central Africa (UNOCA) every six months. It provides an assessment of the major political and security trends in Cent ral Africa since the report dated 28 November 2025 (S/2025/772). It also provides an update on the situation in the Lake Chad basin region, pursuant to Council resolution 2349 (2017).",
+            "pdfPage": 1,
+            "kind": "reporting",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "OP34",
+                "basis": "resolution explicitly identified; OP34 integrates follow-up into UNOCA/UNOWAS reports",
+                "interpretation": "No expectation of a standalone report every time: regular regional reporting is the specified vehicle."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "locator": {
+          "section": "main",
+          "annexIndex": null,
+          "prefix": "8."
+        },
+        "label": "OP 8",
+        "requestedText": "Calls upon relevant United Nations entities, including UNOCA, UNOWAS, and the United Nations Office to the African Union (UNOAU) to redouble their support for Governments in the Region, as well as sub-regional and regional organizations, to address the impact of Boko Haram and ISIL violence on the peace and stability of the Region, including by addressing the conditions conducive to the spread of terrorism, and violent extremism that can be conducive to terrorism, in line with the United Nations Global Counter-Terrorism Strategy, and to conduct and gather gender-sensitive research and data collection on the drivers of radicalization for women, and the impacts of counter-terrorism strategies on women’s human rights and women’s organizations, in order to develop targeted and evidence-based policy and programming responses;",
+        "passages": [
+          {
+            "id": "S/2026/445:59",
+            "number": 59,
+            "text": "From 12 to 15 February, UNOCA participated in the technical validation workshop for the territorial action plans and the results framework of the Regional Stabilization, Recovery and Resilience Strategy for Areas Affected by Boko Haram in the Lake Chad Basin Region, convened by the Lake Chad Basin Commission in Abuja. On 27 March, UNOCA participated in the seventh meeting of the steering committee of the Strategy, held in N’Djamena. Participants approved key operational documents and recommendations to address the escalating security crisis in the Lake Chad basin.",
+            "pdfPage": 12,
+            "kind": "activity",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "OP8",
+                "basis": "named UNOCA support for the Lake Chad regional response",
+                "interpretation": "Reports UNOCA participation in validation and steering processes. Does not demonstrate every element of OP8, including its specific research/data request."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "locator": {
+          "section": "main",
+          "annexIndex": null,
+          "prefix": "2."
+        },
+        "label": "OP 2",
+        "requestedText": "Recalls the Communiqués of the AUPSC on Boko Haram, including from the 484th meeting, recognises the continued support of the AU to the MNJTF, and calls for the Member States of the Lake Chad Basin Commission (LCBC) and Benin to continue their efforts in the fight against Boko Haram and implementation of the Communiqués; further acknowledging the need for an effective and strategic relationship between the AUPSC and the Security Council, to enable both institutions to support stability and development in the Lake Chad Basin;",
+        "passages": [
+          {
+            "id": "S/2026/445:27",
+            "number": 27,
+            "text": "On 2 and 3 April, the President of Chad visited Abuja, where he and the President of Nigeria, Bola Ahmed Tinubu, pledged strengthened security cooperation and joint action against terrorism and reiterated their commitment to the Multinational Joint Task Force.",
+            "pdfPage": 6,
+            "kind": "activity",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "OP2–OP4: regional security cooperation",
+                "basis": "same regional cooperation and Multinational Joint Task Force",
+                "interpretation": "Contains reported cooperation and remaining support needs. Paragraph 76 includes recommendations; do not store its entire contents as completed action."
+              }
+            ]
+          },
+          {
+            "id": "S/2026/445:76",
+            "number": 76,
+            "text": "The Lake Chad Basin Commission and its Multinational Joint Task Force are unique cross-regional initiatives that bring a multidimensional response to the scourge of terrorism and support sustainable development for communities living in isolated border areas. I am encouraged by the renewed commitment of Chad and Nigeria to the Task Force and the continued support of international partners for the Force. As the tactics of violent extremist groups become increasingly sophisticated, enhanced technical assistance will be required. The renewed attacks underscore the continued capacity of extremist groups to stage opportunistic strikes and reinforce the need for sustained regional cooperation through mechanisms such as the Task Force. I call upon regional and multilateral development banks to partner with the Commission and fund the cross-border programmes envisioned by its updated regional strategy.",
+            "pdfPage": 15,
+            "kind": "recommendation",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "OP2–OP4: regional security cooperation",
+                "basis": "same regional cooperation and Multinational Joint Task Force",
+                "interpretation": "Contains reported cooperation and remaining support needs. Paragraph 76 includes recommendations; do not store its entire contents as completed action."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "locator": {
+          "section": "main",
+          "annexIndex": null,
+          "prefix": "3."
+        },
+        "label": "OP 3",
+        "requestedText": "Encourages Governments in the Region to sustain momentum, further enhance regional military cooperation and coordination, comply with obligations under international humanitarian and human rights law, secure the conditions to enable safe, timely and unhindered humanitarian access, facilitate the restoration of civilian security and the rule of law in areas restored to Government control, and guarantee free movement of goods and persons; and further encourages regional collaboration on the implementation of the 2016 Abuja Regional Security Summit conclusions and strengthened cooperation under the auspices of a third Regional Security Summit in 2018, including with respect to post-conflict stabilisation and recovery;",
+        "passages": [
+          {
+            "id": "S/2026/445:27",
+            "number": 27,
+            "text": "On 2 and 3 April, the President of Chad visited Abuja, where he and the President of Nigeria, Bola Ahmed Tinubu, pledged strengthened security cooperation and joint action against terrorism and reiterated their commitment to the Multinational Joint Task Force.",
+            "pdfPage": 6,
+            "kind": "activity",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "OP2–OP4: regional security cooperation",
+                "basis": "same regional cooperation and Multinational Joint Task Force",
+                "interpretation": "Contains reported cooperation and remaining support needs. Paragraph 76 includes recommendations; do not store its entire contents as completed action."
+              }
+            ]
+          },
+          {
+            "id": "S/2026/445:76",
+            "number": 76,
+            "text": "The Lake Chad Basin Commission and its Multinational Joint Task Force are unique cross-regional initiatives that bring a multidimensional response to the scourge of terrorism and support sustainable development for communities living in isolated border areas. I am encouraged by the renewed commitment of Chad and Nigeria to the Task Force and the continued support of international partners for the Force. As the tactics of violent extremist groups become increasingly sophisticated, enhanced technical assistance will be required. The renewed attacks underscore the continued capacity of extremist groups to stage opportunistic strikes and reinforce the need for sustained regional cooperation through mechanisms such as the Task Force. I call upon regional and multilateral development banks to partner with the Commission and fund the cross-border programmes envisioned by its updated regional strategy.",
+            "pdfPage": 15,
+            "kind": "recommendation",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "OP2–OP4: regional security cooperation",
+                "basis": "same regional cooperation and Multinational Joint Task Force",
+                "interpretation": "Contains reported cooperation and remaining support needs. Paragraph 76 includes recommendations; do not store its entire contents as completed action."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "locator": {
+          "section": "main",
+          "annexIndex": null,
+          "prefix": "4."
+        },
+        "label": "OP 4",
+        "requestedText": "Welcomes the multilateral and bilateral support provided to the military efforts in the Region and encourages greater support to strengthen the operational capability of the MNJTF to further the Region’s efforts to combat Boko Haram and ISIL, which may include appropriate, logistical, mobility and communications assistance, equipment, as well as modalities to increase effective information sharing as appropriate, given the complex environment in which they operate and the evolving tactics of Boko Haram and ISIL, as well as training, including on sexual and gender-based violence, gender and child protection;",
+        "passages": [
+          {
+            "id": "S/2026/445:27",
+            "number": 27,
+            "text": "On 2 and 3 April, the President of Chad visited Abuja, where he and the President of Nigeria, Bola Ahmed Tinubu, pledged strengthened security cooperation and joint action against terrorism and reiterated their commitment to the Multinational Joint Task Force.",
+            "pdfPage": 6,
+            "kind": "activity",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "OP2–OP4: regional security cooperation",
+                "basis": "same regional cooperation and Multinational Joint Task Force",
+                "interpretation": "Contains reported cooperation and remaining support needs. Paragraph 76 includes recommendations; do not store its entire contents as completed action."
+              }
+            ]
+          },
+          {
+            "id": "S/2026/445:76",
+            "number": 76,
+            "text": "The Lake Chad Basin Commission and its Multinational Joint Task Force are unique cross-regional initiatives that bring a multidimensional response to the scourge of terrorism and support sustainable development for communities living in isolated border areas. I am encouraged by the renewed commitment of Chad and Nigeria to the Task Force and the continued support of international partners for the Force. As the tactics of violent extremist groups become increasingly sophisticated, enhanced technical assistance will be required. The renewed attacks underscore the continued capacity of extremist groups to stage opportunistic strikes and reinforce the need for sustained regional cooperation through mechanisms such as the Task Force. I call upon regional and multilateral development banks to partner with the Commission and fund the cross-border programmes envisioned by its updated regional strategy.",
+            "pdfPage": 15,
+            "kind": "recommendation",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "OP2–OP4: regional security cooperation",
+                "basis": "same regional cooperation and Multinational Joint Task Force",
+                "interpretation": "Contains reported cooperation and remaining support needs. Paragraph 76 includes recommendations; do not store its entire contents as completed action."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "locator": {
+          "section": "main",
+          "annexIndex": null,
+          "prefix": "15."
+        },
+        "label": "OP 15",
+        "requestedText": "Welcomes the efforts of Governments in the Region and of regional and sub-regional organisations, as well as the hospitality provided by host communities for the millions of displaced people, the majority of whom are women and children, who are uniquely impacted, and urges Governments in the Region, donors and relevant international non-governmental organisations to urgently redouble their efforts and ensure close coordination, including between development and humanitarian actors, in particular to enhance early recovery, food security, improve living conditions, and increase livelihood opportunities;",
+        "passages": [
+          {
+            "id": "S/2026/445:38",
+            "number": 38,
+            "text": "In the Far North Region of Cameroon, 1.3 million people were projected to need humanitarian assistance in 2026. The region hosted some 510,850 internally displaced persons and over 125,190 Nigerian refugees as at 30 April. Around 20 per cent of the region’s population was expected to face severe acute food insecurity in the lean season, from June to August.",
+            "pdfPage": 8,
+            "kind": "context",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "OP15: humanitarian needs and response",
+                "basis": "matching Lake Chad geography and humanitarian subject",
+                "interpretation": "Displacement and need counts demonstrate conditions and scale, not delivery of the assistance urged by the OP. Useful negative example for automatic matching."
+              }
+            ]
+          },
+          {
+            "id": "S/2026/445:39",
+            "number": 39,
+            "text": "In the Lac Province of Chad, ongoing violence by armed groups left more than 219,595 people internally displaced as at 30 April and exposed civilians, especially women who head most of the displaced households, to serious protection risks. The province hosted some 22,025 refugees as at 30 April.",
+            "pdfPage": 8,
+            "kind": "context",
+            "resultLevel": null,
+            "mappings": [
+              {
+                "component": "OP15: humanitarian needs and response",
+                "basis": "matching Lake Chad geography and humanitarian subject",
+                "interpretation": "Displacement and need counts demonstrate conditions and scale, not delivery of the assistance urged by the OP. Useful negative example for automatic matching."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

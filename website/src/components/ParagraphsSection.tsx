@@ -24,6 +24,14 @@ import { Chip } from '@/components/ui/chip'
 import { ParagraphNumberBadge } from '@/components/ui/paragraph-number-badge'
 import { ChartSearchInput } from '@/components/ui/chart-search-input'
 import { DetailSectionHeading } from '@/components/MandateDetailUi'
+import {
+  ImplementationEvidenceIntro,
+  ParagraphImplementationEvidence,
+} from '@/components/ParagraphImplementationEvidence'
+import {
+  matchParagraphEvidence,
+  type ImplementationEvidenceCase,
+} from '@/lib/implementation-evidence'
 import { SearchSyntaxHelp } from '@/components/SearchSyntaxHelp'
 
 import { cn } from '@/lib/utils'
@@ -55,6 +63,7 @@ import {
 } from '@/components/ui/tooltip'
 
 interface ParagraphsSectionProps {
+  implementationEvidence?: ImplementationEvidenceCase | null
   sourceUrl?: string | null
   paragraphs: Paragraph[]
   documentSymbol: string
@@ -746,6 +755,7 @@ function markSearchHits(
 }
 
 export function ParagraphsSection({
+  implementationEvidence,
   paragraphs: sourceParagraphs,
   sourceUrl,
   documentSymbol,
@@ -2497,14 +2507,13 @@ export function ParagraphsSection({
     // Body card — operative (numbered badge) or neutral (no badge when the
     // element carries no prefix).
     const label = paragraph.prefix ? cleanPrefix(paragraph.prefix) : null
+    const evidence = matchParagraphEvidence(implementationEvidence, paragraph)
 
     return (
       <div key={`${documentSymbol}-${index}`} className={`${indentClass}`}>
         <div className="rounded-lg bg-muted p-3">
           <div className="flex items-start gap-2">
-            {label && (
-              <ParagraphNumberBadge>{label}</ParagraphNumberBadge>
-            )}
+            {label && <ParagraphNumberBadge>{label}</ParagraphNumberBadge>}
             <div className="max-w-4xl flex-1">
               <div className="text-sm leading-relaxed">
                 {renderProcessedText(
@@ -2517,6 +2526,19 @@ export function ParagraphsSection({
                 )}
               </div>
               {renderFootnotes(paragraph)}
+              {implementationEvidence && evidence ? (
+                <ParagraphImplementationEvidence
+                  evidence={implementationEvidence}
+                  paragraph={evidence}
+                  requestedText={paragraph.text}
+                />
+              ) : implementationEvidence &&
+                label &&
+                /^\d+\.?$/.test(paragraph.prefix ?? '') ? (
+                <p className="mt-3 border-t border-border pt-2 text-xs text-muted-foreground">
+                  Implementation evidence: not reviewed in this pilot.
+                </p>
+              ) : null}
             </div>
           </div>
         </div>
@@ -2618,6 +2640,17 @@ export function ParagraphsSection({
         >
           What&rsquo;s in this document?
         </DetailSectionHeading>
+
+        {implementationEvidence && !isLoading && (
+          <ImplementationEvidenceIntro
+            evidence={implementationEvidence}
+            matchedCount={
+              allParagraphs.filter((paragraph) =>
+                matchParagraphEvidence(implementationEvidence, paragraph)
+              ).length
+            }
+          />
+        )}
 
         {allParagraphs?.[0]?.source_symbol && (
           <p className="text-sm text-muted-foreground">
@@ -2938,7 +2971,9 @@ export function ParagraphsSection({
                                   <div className="rounded-lg bg-muted p-3">
                                     <div className="flex items-start gap-2">
                                       {label && (
-                                        <ParagraphNumberBadge>{label}</ParagraphNumberBadge>
+                                        <ParagraphNumberBadge>
+                                          {label}
+                                        </ParagraphNumberBadge>
                                       )}
                                       <div className="flex-1 text-sm leading-relaxed text-foreground">
                                         {renderProcessedText(
