@@ -14,7 +14,9 @@ import {
 } from '@/lib/feature-flags'
 import { getAllOrgans } from '@/lib/data/organs'
 import { getParagraphsBySymbol } from '@/lib/data/paragraphs'
+import { getImplementationEvidenceCase } from '@/lib/data/implementation-evidence'
 import { ParagraphsSection } from '@/components/ParagraphsSection'
+import { MandateImplementationEvidence } from '@/components/MandateImplementationEvidence'
 import { CitationCounts } from '@/components/CitationCounts'
 import { CitationCountsWithExpenditure } from '@/components/CitationCountsWithExpenditure'
 import {
@@ -68,6 +70,7 @@ export default async function MandatePage({
     ])
 
   if (!mandate) notFound()
+  const implementationEvidence = getImplementationEvidenceCase(documentSymbol)
 
   return (
     <div className="pb-12">
@@ -108,7 +111,12 @@ export default async function MandatePage({
           subjects={mandate.subject_headings ?? []}
           related={related}
         />
+        <MandateImplementationEvidence
+          evidence={implementationEvidence}
+          paragraphs={paragraphs}
+        />
         <ParagraphsSection
+          implementationEvidence={implementationEvidence}
           standalone
           paragraphs={paragraphs}
           sourceUrl={mandate.link}

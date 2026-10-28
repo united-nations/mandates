@@ -14,7 +14,9 @@ import {
 } from '@/lib/feature-flags'
 import { getAllOrgans } from '@/lib/data/organs'
 import { getParagraphsBySymbol } from '@/lib/data/paragraphs'
+import { getImplementationEvidenceCase } from '@/lib/data/implementation-evidence'
 import { ParagraphsSection } from '@/components/ParagraphsSection'
+import { MandateImplementationEvidence } from '@/components/MandateImplementationEvidence'
 import { CitationCounts } from '@/components/CitationCounts'
 import { CitationCountsWithExpenditure } from '@/components/CitationCountsWithExpenditure'
 import { detailSectionListClassName } from '@/components/MandateDetailUi'
@@ -142,15 +144,23 @@ async function MandateParagraphs({
   entities: Awaited<ReturnType<typeof getAllEntities>>
 }) {
   const paragraphs = await getParagraphsBySymbol(documentSymbol)
+  const implementationEvidence = getImplementationEvidenceCase(documentSymbol)
   return (
-    <ParagraphsSection
-      paragraphs={paragraphs}
-      sourceUrl={sourceUrl}
-      documentSymbol={documentSymbol}
-      isLoading={false}
-      error={null}
-      compact
-      entities={entities}
-    />
+    <>
+      <MandateImplementationEvidence
+        evidence={implementationEvidence}
+        paragraphs={paragraphs}
+      />
+      <ParagraphsSection
+        implementationEvidence={implementationEvidence}
+        paragraphs={paragraphs}
+        sourceUrl={sourceUrl}
+        documentSymbol={documentSymbol}
+        isLoading={false}
+        error={null}
+        compact
+        entities={entities}
+      />
+    </>
   )
 }

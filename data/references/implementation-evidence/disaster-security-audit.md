@@ -1,0 +1,26 @@
+# Complete disaster and security report matching review
+
+Reviewed 2026-10-28. All 151 numbered operative paragraphs in these three sample resolutions were read against all numbered narrative paragraphs of the complete paired reports (78, 85 and 79 respectively), with original report text/PDF page structure checked. The review includes the DRR report’s cover summary, Sendai indicator figure/table context and concluding recommendations; it is not limited to the initial pilot excerpts. External works cited in footnotes were not treated as additional implementation reports.
+
+| Resolution | Report | OPs reviewed | With a substantive report link | No matching passage identified |
+| --- | --- | ---: | ---: | ---: |
+| A/RES/80/137 | A/81/307 | 84 | 67 | 17 |
+| S/RES/2220(2015) | S/2025/670 | 33 | 24 | 9 |
+| S/RES/2349(2017) | S/2026/445 | 34 | 15 | 19 |
+
+Every OP appears in the output, with exact registry text, locator and a `review` decision. “No match” means no substantively corresponding passage was identified in this specific complete report; it is not a finding of non-implementation. An acknowledgement or procedural decision is not converted into a new implementation duty. A matched OP may have only selected clauses supported and may have only context, analysis or recommendations rather than delivered action.
+
+## Decisions and safeguards
+
+- DRR matches now cover legal and institutional measures, risk data/DELTA, national/local strategies, adaptation coherence, disability/gender/child inclusion, Santiago technical assistance, preparedness/recovery tools, anticipatory financing, municipal resilience, private-sector investment, and regional cooperation. Budget allocations, plans and fundraising are distinguished from executed spending and measured risk reduction. Specific omissions such as search-and-rescue/INSARAG, working animals, disaster misinformation, Indigenous knowledge, and trust-fund contributions are recorded explicitly rather than inferred from broad risk-reduction activity.
+- DRR OPs 72 and 82 link only to the report’s recommendation on adequate resources by 2027; the report does not establish a completed Secretary-General allocation. Earthquake awareness and a specific Bangladesh model do not imply all requested building codes or seismic governance are implemented. Disaster mortality and early-warning coverage figures remain reported indicators without causal attribution to the resolution.
+- SALW matches include regional/customs road maps, specific peace-mission mandate changes, technical training, destruction/seizure outputs, tracing/information-sharing systems, treaty accessions and implementation guidance, CTED assessments, and expert-panel embargo monitoring. Sources explicitly stating future action or remaining constraints retain those qualifiers. The report’s call to cooperate with panels is a recommendation, not proof all agencies cooperated.
+- Reporting obligations with another named reporting vehicle are not assumed fulfilled by this thematic report. OP29 has a qualified reporting link because it explicitly references the latest children-and-armed-conflict reports; OPs 26/27 lack evidence of the prescribed country-specific/POC reporting format. OP30 threat information is context and does not establish delivery of the Monitoring Team’s requested next report.
+- Lake Chad matching is deliberately geographically constrained. Boko Haram violence/displacement counts are context, not protection or humanitarian delivery. UNOCA–UNOWAS desk coordination and LCBC strategy validation are activity. Development-bank financing calls remain next steps. Historical 2015/2017 pledges, Rann accountability, Nigeria’s 2017 budgets, associated-child handover, DDR/defections/vetting, and the proposed Secretary-General visit have explicit no-match assessments.
+- Broader Congo, LRA, Sudan-refugee and Burundi-return actions were not borrowed to fulfil Lake Chad requests. The eastern Chad climate study was removed because it concerns a different security/geographic context. The wider Central African climate strategy is transparently qualified as a regional framework rather than a Lake Chad impact result. Wider ECCAS/Mano River women/youth dialogues were not used to claim Lake Chad civil-society or Women, Peace and Security plan implementation.
+
+## Inspectable artifacts
+
+The three `{resolution_symbol_with_slashes_replaced_by_underscores}.json` files in this output directory preserve the paired full report paragraph text and physical PDF starting page. Every mapping contains one or more exact, uniquely located report excerpts with its own information type and, for results only, output/indicator level. Full paragraphs remain available for context. Existing reviewed mappings were preserved; the initial Lake Chad shared-cooperation links remain qualified as partial matches.
+
+The authoring script `build-disaster-security.py` documents the manually selected paragraph/subject correspondences and explicit exclusions. The script validates source clause uniqueness, excerpt uniqueness, categories, complete OP coverage and duplicate report IDs. Root integration should also verify the full report paragraph text/page against the supplied complete report corpus.

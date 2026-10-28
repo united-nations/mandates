@@ -4,6 +4,7 @@ import { MandateExplorerServer } from '@/app/_mandateExplorerServer'
 import { ActiveFilters } from '@/components/ActiveFilters'
 import { DirectoryExplorer } from '@/components/DirectoryExplorer'
 import { LoadingSkeleton } from '@/components/LoadingSkeleton'
+import { IMPLEMENTATION_EXAMPLES_ONLY } from '@/lib/feature-flags'
 
 import { FurtherResources } from './FurtherResources'
 import type { loadSecretariatPageData } from './page-data'
@@ -34,6 +35,11 @@ const Summary = ({ data }: { data: PageData }) => (
 
 const Explorer = ({ dataPromise }: Pick<PageData, 'dataPromise'>) => (
   <section id="mandates" className="scroll-mt-20 pt-8 pb-10">
+    {IMPLEMENTATION_EXAMPLES_ONLY && (
+      <p className="mx-auto mb-3 max-w-6xl px-6 text-sm text-muted-foreground md:px-12 lg:px-16">
+        Showing only resolutions with example report implementation evidence.
+      </p>
+    )}
     <Suspense
       fallback={
         <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-16">
