@@ -8,6 +8,15 @@ export const EVIDENCE_KINDS = {
   reporting: 'Reporting mandate',
 } as const
 
+export const EVIDENCE_BADGE_LABELS: Record<EvidenceKind, string> = {
+  activity: 'Activity',
+  results: 'Results',
+  analysis: 'Analysis',
+  context: 'Context / gaps',
+  recommendation: 'Next steps',
+  reporting: 'Reporting',
+}
+
 export type EvidenceKind = keyof typeof EVIDENCE_KINDS
 
 export interface EvidencePassage {
@@ -128,15 +137,40 @@ export function groupParagraphEvidence(paragraph: ParagraphEvidence) {
 
 /** An exact, unambiguous source span; never highlight a guessed or partial match. */
 export function splitEvidenceQuote(text: string, quote?: string) {
-  const start = quote ? text.indexOf(quote) : -1
-  if (!quote || start < 0 || text.indexOf(quote, start + 1) >= 0) {
-    return [{ text, highlighted: false }]
+  return splitEvidenceQuotes(text, quote ? [quote] : [])
+}
+
+/** Merge overlapping reviewed spans so highlighting never repeats source text. */
+export function splitEvidenceQuotes(text: string, quotes: readonly string[]) {
+  const ranges = [...new Set(quotes)]
+    .flatMap((quote) => {
+      const start = quote ? text.indexOf(quote) : -1
+      return start < 0 || text.indexOf(quote, start + 1) >= 0
+        ? []
+        : [{ start, end: start + quote.length }]
+    })
+    .sort((a, b) => a.start - b.start)
+  const merged: { start: number; end: number }[] = []
+  for (const range of ranges) {
+    const previous = merged[merged.length - 1]
+    if (previous && range.start <= previous.end)
+      previous.end = Math.max(previous.end, range.end)
+    else merged.push({ ...range })
   }
-  return [
-    { text: text.slice(0, start), highlighted: false },
-    { text: quote, highlighted: true },
-    { text: text.slice(start + quote.length), highlighted: false },
-  ]
+  const parts: { text: string; highlighted: boolean }[] = []
+  let position = 0
+  for (const range of merged) {
+    if (position < range.start)
+      parts.push({
+        text: text.slice(position, range.start),
+        highlighted: false,
+      })
+    parts.push({ text: text.slice(range.start, range.end), highlighted: true })
+    position = range.end
+  }
+  if (position < text.length)
+    parts.push({ text: text.slice(position), highlighted: false })
+  return parts
 }
 
 export function reportEvidencePdfUrl(symbol: string, page: number): string {

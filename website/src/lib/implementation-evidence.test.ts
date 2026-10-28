@@ -10,6 +10,7 @@ import {
   summarizeEvidence,
   groupParagraphEvidence,
   splitEvidenceQuote,
+  splitEvidenceQuotes,
   type ImplementationEvidenceCase,
 } from '#lib/implementation-evidence'
 
@@ -146,6 +147,24 @@ describe('action-level evidence groups', () => {
           )
         }
       }
+  })
+
+  it('highlights all Doha clauses together, merging overlapping matches without duplicating words', () => {
+    const quotes = (doha.components ?? []).map((component) => component.quote)
+    const parts = splitEvidenceQuotes(doha.requestedText, quotes)
+    assert.equal(parts.map((part) => part.text).join(''), doha.requestedText)
+    for (const quote of quotes) {
+      assert.ok(
+        parts.some((part) => part.highlighted && part.text.includes(quote)),
+        quote
+      )
+    }
+    assert.equal(parts.filter((part) => part.highlighted).length, 6)
+    assert.deepEqual(splitEvidenceQuotes('abcdefg', ['bcd', 'def']), [
+      { text: 'a', highlighted: false },
+      { text: 'bcdef', highlighted: true },
+      { text: 'g', highlighted: false },
+    ])
   })
 })
 

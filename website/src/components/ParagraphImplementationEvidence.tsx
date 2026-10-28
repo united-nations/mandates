@@ -1,31 +1,34 @@
 'use client'
 
+import { Chip } from '@/components/ui/chip'
 import {
   EVIDENCE_KINDS,
+  EVIDENCE_BADGE_LABELS,
   evidenceAnchor,
   implementationAnchor,
   summarizeEvidence,
+  type EvidenceKind,
   type EvidencePassage,
   type ParagraphEvidence,
 } from '@/lib/implementation-evidence'
 
-export function EvidenceBreakdown({
+export function EvidenceBadges({
   passages,
 }: {
   passages: readonly EvidencePassage[]
 }) {
   const { counts } = summarizeEvidence(passages)
   return (
-    <span className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground">
-      {(Object.keys(EVIDENCE_KINDS) as (keyof typeof EVIDENCE_KINDS)[])
-        .filter(
-          (kind) =>
-            kind === 'activity' || kind === 'results' || counts[kind] > 0
-        )
+    <span
+      className="flex flex-wrap gap-1.5"
+      aria-label="Available evidence types"
+    >
+      {(Object.keys(EVIDENCE_KINDS) as EvidenceKind[])
+        .filter((kind) => counts[kind] > 0)
         .map((kind) => (
-          <span key={kind}>
-            {EVIDENCE_KINDS[kind]}: {counts[kind]}
-          </span>
+          <Chip key={kind} density="dense" title={EVIDENCE_KINDS[kind]}>
+            {EVIDENCE_BADGE_LABELS[kind]}
+          </Chip>
         ))}
     </span>
   )
@@ -37,19 +40,18 @@ export function ParagraphImplementationEvidence({
 }: {
   paragraph: ParagraphEvidence
 }) {
-  const { total } = summarizeEvidence(paragraph.passages)
   return (
     <div
       id={evidenceAnchor(paragraph)}
-      className="mt-3 scroll-mt-28 space-y-1 border-t border-border pt-3"
+      className="mt-3 scroll-mt-28 space-y-2 border-t border-border pt-3"
     >
       <a
         href={`#${implementationAnchor(paragraph)}`}
         className="text-sm font-medium text-un-blue-text hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
       >
-        {total} matching report passage{total === 1 ? '' : 's'} — view breakdown
+        Implementation evidence
       </a>
-      <EvidenceBreakdown passages={paragraph.passages} />
+      <EvidenceBadges passages={paragraph.passages} />
     </div>
   )
 }
