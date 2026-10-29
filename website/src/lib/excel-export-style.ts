@@ -3,6 +3,57 @@ import type ExcelJS from 'exceljs'
 // Matches the UN blue header and light alternating rows in sg-reports survey exports.
 const BLUE = 'FF009EDB'
 const LIGHT_BLUE = 'FFE6F4FA'
+const MAX_SHEET_ROWS = 1_048_576
+const MAX_SHEET_HYPERLINKS = 65_530
+const isWebLink = (value: unknown): value is string =>
+  typeof value === 'string' && /^https?:\/\//.test(value)
+
+/** Split at Excel's worksheet limits, retaining every record and clickable URL. */
+export function createExportTable(
+  book: ExcelJS.stream.xlsx.WorkbookWriter,
+  name: string,
+  headings: string[]
+) {
+  let part = 1
+  let count = 1
+  let hyperlinks = 0
+  const createSheet = (title: string) => {
+    const worksheet = book.addWorksheet(title, {
+      views: [{ state: 'frozen', ySplit: 1 }],
+      properties: { tabColor: { argb: BLUE } },
+    })
+    styleExportSheet(worksheet, headings)
+    return worksheet
+  }
+  let sheet = createSheet(name)
+  const closeSheet = () => {
+    sheet.autoFilter = {
+      from: { row: 1, column: 1 },
+      to: { row: count, column: headings.length },
+    }
+    sheet.commit()
+  }
+  return {
+    row(values: unknown[]) {
+      const rowLinks = values.filter(isWebLink).length
+      if (
+        count === MAX_SHEET_ROWS ||
+        hyperlinks + rowLinks > MAX_SHEET_HYPERLINKS
+      ) {
+        closeSheet()
+        sheet = createSheet(`${name} ${++part}`)
+        count = 1
+        hyperlinks = 0
+      }
+      const row = sheet.addRow(values)
+      styleExportRow(row, headings, count % 2 === 0)
+      row.commit()
+      count++
+      hyperlinks += rowLinks
+    },
+    close: closeSheet,
+  }
+}
 
 export function exportColumnWidth(heading: string) {
   if (heading === 'Value') return 100
@@ -64,7 +115,7 @@ export function styleExportRow(
             Math.ceil(line.length / exportColumnWidth(headings[column - 1]))
           )
       )
-      if (/^https?:\/\//.test(text)) {
+      if (isWebLink(text)) {
         cell.value = { text, hyperlink: text }
         cell.font = {
           name: 'Calibri',

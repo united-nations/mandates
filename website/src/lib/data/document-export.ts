@@ -1,5 +1,5 @@
 import { publicSeries } from '../public-series'
-import { styleExportSheet, styleExportRow } from '../excel-export-style'
+import { createExportTable } from '../excel-export-style'
 import { Readable, PassThrough } from 'node:stream'
 import { once } from 'node:events'
 import ExcelJS from 'exceljs'
@@ -194,43 +194,8 @@ function excelStream(
   output.once('close', () => {
     if (!output.writableFinished) abortArchive()
   })
-  // Excel's file-format row ceiling is handled by adding sheets, never dropping rows.
-  const table = (name: string, headings: string[]) => {
-    let part = 1
-    let count = 1
-    const createSheet = (title: string) => {
-      const worksheet = book.addWorksheet(title, {
-        views: [{ state: 'frozen', ySplit: 1 }],
-        properties: { tabColor: { argb: 'FF009EDB' } },
-      })
-      styleExportSheet(worksheet, headings)
-      return worksheet
-    }
-    const closeSheet = () => {
-      sheet.autoFilter = {
-        from: { row: 1, column: 1 },
-        to: { row: count, column: headings.length },
-      }
-      sheet.commit()
-    }
-    let sheet = createSheet(name)
-    return {
-      row(values: unknown[]) {
-        if (count === 1_048_576) {
-          closeSheet()
-          sheet = createSheet(`${name} ${++part}`)
-          count = 1
-        }
-        const row = sheet.addRow(values)
-        styleExportRow(row, headings, count % 2 === 0)
-        row.commit()
-        count++
-      },
-      close() {
-        closeSheet()
-      },
-    }
-  }
+  const table = (name: string, headings: string[]) =>
+    createExportTable(book, name, headings)
   const about = table('About this export', ['Field', 'Value'])
   about.row(['Source', 'UN Mandate Registry'])
   about.row(['Generated (UTC)', metadata.generatedAt])
@@ -251,6 +216,10 @@ function excelStream(
   about.row(['Data consistency', metadata.consistency])
   about.row(['Registry', SITE_URL])
   about.row(['API documentation', metadata.documentation])
+  about.row([
+    'Worksheet continuation',
+    'Large tables continue on numbered sheets when Excel worksheet row or hyperlink limits are reached. All matching records and links are retained.',
+  ])
   about.row([
     'Matching fields',
     'Document summary counts follow filters; Budget citations includes all citations for each document in the selected cycle.',
@@ -339,7 +308,6 @@ function excelStream(
         'Last year',
         'Collection (not ordered versions)',
         'Latest in series',
-        'Has newer',
         'Latest version',
       ])
       for await (const batch of publicExportBatches(
@@ -364,7 +332,6 @@ function excelStream(
               series.last_year,
               series.is_collection,
               series.is_latest,
-              series.has_newer,
               publicSeries(series, document.symbol)?.latest_version,
             ])
         }
