@@ -8,8 +8,8 @@ import { publicExportBatches, resolvePublicVersion, type PublicDocument } from '
 import { getMandates, getMandateCitationsMany, getResolutionSeriesMany } from './mandates'
 import { SITE_URL } from '../seo'
 
-const columns = ['Symbol', 'Title', 'Issuing body', 'Year', 'Document type', 'Subjects', 'Matching entities', 'Matching citation count', 'Matching entity count', 'Source URL', 'Registry URL', 'JSON URL']
-const documentValues = (document: PublicDocument) => [document.symbol, document.title, document.issuingBody, document.year, document.documentType, document.subjects.join('; '), document.matchingEntities.join('; '), document.matchingCitationCount, document.matchingEntityCount, document.sourceUrl, document.pageUrl, document.jsonUrl]
+const columns = ['Symbol', 'Title', 'Issuing body', 'Year', 'Document type', 'Subjects', 'Matching entities', 'Matching citation count', 'Matching entity count', 'Series size', 'Latest in series', 'Collection (related documents)', 'Superseded by', 'Source URL', 'Registry URL', 'JSON URL']
+const documentValues = (document: PublicDocument) => [document.symbol, document.title, document.issuingBody, document.year, document.documentType, document.subjects.join('; '), document.matchingEntities.join('; '), document.matchingCitationCount, document.matchingEntityCount, document.series?.series_count ?? null, document.series?.is_latest ?? null, document.series?.is_collection ?? null, document.series?.superseded_by ?? null, document.sourceUrl, document.pageUrl, document.jsonUrl]
 
 export async function documentExport(filters: FilterOptions, format: 'csv' | 'xlsx' | 'json', details: boolean, signal: AbortSignal) {
   const version = await resolvePublicVersion(filters)
