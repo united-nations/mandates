@@ -1,3 +1,4 @@
+import { OpenSharedMandate } from '@/components/OpenSharedMandate'
 import { Suspense } from 'react'
 
 import { MandateExplorerServer } from '@/app/_mandateExplorerServer'
@@ -49,6 +50,7 @@ const Explorer = ({ dataPromise }: Pick<PageData, 'dataPromise'>) => (
 /** Composes the streamed Secretariat page from its initial data model. */
 export const SecretariatPageView = ({ data }: { data: PageData }) => (
   <div>
+    <OpenSharedMandate />
     <Summary data={data} />
     <Explorer dataPromise={data.dataPromise} />
     <FurtherResources />

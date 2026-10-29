@@ -1,10 +1,15 @@
 'use client'
 
+import { sidebarHref } from '@/lib/sidebar-link'
+import { toast } from 'sonner'
+
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import {
   ExternalLink as ExternalLinkIcon,
   FileText,
   Maximize2,
+  Share2,
+  Check,
   X,
 } from 'lucide-react'
 import {
@@ -16,7 +21,7 @@ import {
 import { DocumentSymbol } from '@/components/DocumentSymbol'
 import { DetailPanel } from '@un-eosg/ui/components/detail-panel'
 import { DetailPanelControls } from '@un-eosg/ui/components/detail-panel-controls'
-import { useEffect, type ReactNode } from 'react'
+import { useEffect, useState, useRef, type ReactNode } from 'react'
 
 interface MandateDetailSheetProps {
   /** The record's name. Visible in the header, and it stays there. */
@@ -59,6 +64,16 @@ export function MandateDetailSheet({
   link,
   children,
 }: MandateDetailSheetProps) {
+  const [copied, setCopied] = useState(false)
+  const mounted = useRef(false)
+  const copiedTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  useEffect(() => {
+    mounted.current = true
+    return () => {
+      mounted.current = false
+      if (copiedTimer.current) clearTimeout(copiedTimer.current)
+    }
+  }, [])
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -76,6 +91,23 @@ export function MandateDetailSheet({
 
   const qs = searchParams.toString()
   const fullPageHref = qs ? `${pathname}?${qs}` : pathname
+
+  async function copyLink() {
+    if (!symbol) return
+    try {
+      await navigator.clipboard.writeText(
+        `${window.location.origin}${sidebarHref(symbol, qs)}`
+      )
+      if (!mounted.current) return
+      setCopied(true)
+      toast.success('Link copied')
+      if (copiedTimer.current) clearTimeout(copiedTimer.current)
+      copiedTimer.current = setTimeout(() => setCopied(false), 2000)
+    } catch {
+      if (mounted.current)
+        toast.error('Could not copy the link. Please try again.')
+    }
+  }
 
   return (
     <Sheet open onOpenChange={(open) => !open && router.back()}>
@@ -100,7 +132,11 @@ export function MandateDetailSheet({
           headerMetadata={
             (symbol || link) && (
               <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                {symbol && <DocumentSymbol className="inline-flex items-baseline">{symbol}</DocumentSymbol>}
+                {symbol && (
+                  <DocumentSymbol className="inline-flex items-baseline">
+                    {symbol}
+                  </DocumentSymbol>
+                )}
                 {link && (
                   <a
                     href={link}
@@ -110,7 +146,10 @@ export function MandateDetailSheet({
                   >
                     <FileText aria-hidden className="h-3.5 w-3.5 self-center" />
                     <span>View PDF</span>
-                    <ExternalLinkIcon aria-hidden className="h-3 w-3 self-center" />
+                    <ExternalLinkIcon
+                      aria-hidden
+                      className="h-3 w-3 self-center"
+                    />
                   </a>
                 )}
               </div>
@@ -118,6 +157,21 @@ export function MandateDetailSheet({
           }
           controls={
             <DetailPanelControls
+              share={
+                symbol
+                  ? {
+                      label: copied
+                        ? 'Link copied'
+                        : 'Copy link to this sidebar',
+                      onClick: copyLink,
+                      icon: copied ? (
+                        <Check aria-hidden className="size-4" />
+                      ) : (
+                        <Share2 aria-hidden className="size-4" />
+                      ),
+                    }
+                  : undefined
+              }
               // A real anchor leaves the intercepted route and preserves query scope.
               expand={{
                 label: 'Open full page',
