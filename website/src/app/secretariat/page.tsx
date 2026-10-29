@@ -2,14 +2,32 @@ import type { Metadata } from 'next'
 
 import { withRequestQueryCache } from '@/lib/db/request-query-cache'
 import { explainerTexts } from '@/lib/en_text_contents'
-import { parseSearchParams } from '@/lib/filter-constants'
+import { FILTER_PARAMS, parseSearchParams } from '@/lib/filter-constants'
 
 import { loadSecretariatPageData } from './page-data'
 import { SecretariatPageView } from './page-view'
 
-export const metadata: Metadata = {
+const baseMetadata: Metadata = {
   title: explainerTexts.pageTitles.sources,
   description: explainerTexts.mainHeader.shortDescriptionPlain,
+}
+
+export async function generateMetadata({
+  searchParams,
+}: PageProps): Promise<Metadata> {
+  const params = await searchParams
+  const hasQuery = Object.entries(params).some(
+    ([key, value]) =>
+      (key === 'mode' || FILTER_PARAMS.some((parameter) => parameter === key)) &&
+      value !== undefined &&
+      value !== ''
+  )
+  return {
+    ...baseMetadata,
+    ...(hasQuery
+      ? { robots: { index: false, follow: true } }
+      : { alternates: { canonical: '/secretariat' } }),
+  }
 }
 
 interface PageProps {

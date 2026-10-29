@@ -1,6 +1,7 @@
+import { getDocumentDiscovery } from '@/lib/data/document-discovery'
+import { documentSeo } from '@/lib/seo'
 import { Suspense } from 'react'
 import type { Metadata } from 'next'
-import { explainerTexts } from '@/lib/en_text_contents'
 import { notFound } from 'next/navigation'
 import { decodeUrlSegments } from '@/lib/utils'
 
@@ -32,12 +33,11 @@ export async function generateMetadata({
   params,
 }: Pick<ModalMandatePageProps, 'params'>): Promise<Metadata> {
   const { segments } = await params
-  return {
-    title: explainerTexts.pageTitles.mandate.replace(
-      '{symbol}',
-      decodeUrlSegments(segments)
-    ),
-  }
+  const symbol = decodeUrlSegments(segments)
+  const record = await getDocumentDiscovery(symbol)
+  return record
+    ? documentSeo(record)
+    : { title: 'Document not found', robots: { index: false } }
 }
 
 export default async function ModalMandatePage({
