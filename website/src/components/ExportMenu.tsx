@@ -14,14 +14,13 @@ import { FILTER_PARAMS } from '@/lib/filter-constants'
 
 export function ExportMenu() {
   const params = useSearchParams()
-  const href = (format: string, details = false) => {
+  const href = (format: string) => {
     const query = new URLSearchParams()
     for (const key of FILTER_PARAMS)
       if (!['page', 'limit'].includes(key) && params.has(key))
         query.set(key, params.get(key)!)
     if (params.has('mode')) query.set('mode', params.get('mode')!)
     query.set('format', format)
-    if (details) query.set('include', 'details')
     return `/api/v1/exports?${query}`
   }
   return (
@@ -45,17 +44,12 @@ export function ExportMenu() {
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <a href={href('xlsx')} download>
-            Excel — documents and relationships
+            Excel
           </a>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <a href={href('json')} download>
-            JSON — document summaries
-          </a>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <a href={href('json', true)} download>
-            JSON — include document details
+            JSON
           </a>
         </DropdownMenuItem>
       </DropdownMenuContent>
