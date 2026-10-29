@@ -14,8 +14,8 @@ import {
 
 export const FILTER_DESCRIPTIONS: Record<string, string> = {
   entity:
-    'Citing entity code, for example DESA. __none__ selects documents with no citing entity.',
-  organ: 'Issuing body code from /api/v1/reference.',
+    'Citing entity code, for example `DESA`. `__none__` selects documents with no citing entity.',
+  organ: 'Issuing body code from `/api/v1/reference`.',
   crossCitingEntity: 'Second citing entity; intersects entity scope.',
   keyword:
     'Search document titles, symbols and subjects using the website search grammar. Up to 500 characters and 32 whitespace-separated terms.',
@@ -23,36 +23,36 @@ export const FILTER_DESCRIPTIONS: Record<string, string> = {
   section: 'Budget section identifier.',
   subprogramme: 'Subprogramme label.',
   foundational:
-    'Set to true to select foundational/mandates-and-background citations. Applies to the selected document/entity pair.',
+    'Set to `true` to select foundational/mandates-and-background citations. Applies to the selected document/entity pair.',
   programme: 'Programme identifier.',
   subject: 'UNBIS subject heading.',
   subject_domain: 'Two-digit UNBIS domain code.',
   start_year: 'Inclusive earliest document year, 0–9999.',
   end_year: 'Inclusive latest document year, 0–9999.',
-  budget_document: 'Budget stream: ppb, pko or plan_outline.',
-  budget_group: 'Peacekeeping budget group: missions or support.',
+  budget_document: 'Budget stream: `ppb`, `pko` or `plan_outline`.',
+  budget_group: 'Peacekeeping budget group: `missions` or `support`.',
   budget_location:
     'Structured budget-location scope serialized by website links. Copy this parameter from a filtered website URL.',
   document_type: 'Document type label as used in the website.',
   agenda_item: 'Agenda item filter.',
   agenda_scope:
-    'Structured agenda scope serialized by website links; takes precedence over agenda_item.',
+    'Structured agenda scope serialized by website links; takes precedence over `agenda_item`.',
   related_scope:
-    'Related agenda cluster scope; takes precedence over agenda_scope and agenda_item.',
+    'Related agenda cluster scope; takes precedence over `agenda_scope` and `agenda_item`.',
   full_document_symbol: 'Exact document symbol.',
   min_citations: 'Minimum matching citation count, 0–1000000.',
   max_citations: 'Maximum matching citation count, 0–1000000.',
   cited:
-    'Set to 1 to select only documents cited in the selected budget cycle.',
+    'Set to `1` to select only documents cited in the selected budget cycle.',
   ppb_version:
-    'Budget-cycle slug from /api/v1/reference. Defaults to the database default; responses identify the resolved cycle.',
+    'Budget-cycle slug from `/api/v1/reference`. Defaults to the database default; responses identify the resolved cycle.',
   group:
-    'Set to 1 to group matching versions in list responses. Exports always expand all matching documents.',
+    'Set to `1` to group matching versions in list responses. Exports always expand all matching documents.',
   sort_by:
-    'citing_entities_desc (default), citing_entities_asc, citations_desc, citations_asc, year_desc, year_asc, similarity_desc, similarity_asc, word_count_desc or word_count_asc. Keyword matches rank first; symbol breaks ties.',
+    '`citing_entities_desc` (default), `citing_entities_asc`, `citations_desc`, `citations_asc`, `year_desc`, `year_asc`, `similarity_desc`, `similarity_asc`, `word_count_desc` or `word_count_asc`. Keyword matches rank first; symbol breaks ties.',
   page: '1-based page. No overall traversal limit.',
   limit:
-    'Page size, default 15, maximum 100; larger values are normalized to 100. Exports ignore page and limit.',
+    'Page size, default 15, maximum 100; larger values are normalized to 100. Exports ignore `page` and `limit`.',
 }
 const ref = (name: string) => ({ $ref: `#/components/schemas/${name}` })
 const json = (schema: object) => ({
@@ -171,7 +171,7 @@ export function buildPublicOpenApi() {
           operationId: 'exportDocuments',
           summary: 'Download every matching document',
           description:
-            'Streamed download with no total result cap. Ignores page/limit and expands grouped versions. JSON supports include=details. Excel contains Documents, Budget citations, Version relationships and About this export sheets. Live batches are not a frozen database snapshot. A failed stream is an incomplete download and must be retried.',
+            'Streamed download with no total result cap. CSV has a standard column header without repeated file-level metadata; metadata is included in Excel/JSON. JSON downloads use indented regular JSON. Ignores page/limit and expands grouped versions. JSON supports include=details. Excel contains Documents, Budget citations, Version relationships and About this export sheets. Live batches are not a frozen database snapshot. A failed stream is an incomplete download and must be retried.',
           parameters: [
             ...parameters.filter(
               (parameter) => !['page', 'limit'].includes(parameter.name)

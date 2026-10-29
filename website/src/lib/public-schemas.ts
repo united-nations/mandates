@@ -50,7 +50,9 @@ export const citationSchema = z.object({
   part_in_document: z.string(),
 })
 export const seriesSummarySchema = z.object({
-  superseded_by: nullableString,
+  latest_version: nullableString.describe(
+    'Latest version symbol when a unique ordered version is known; null for collections or ambiguous series.'
+  ),
   is_collection: z.boolean(),
   has_newer: z.boolean(),
   is_latest: z.boolean(),
@@ -218,6 +220,8 @@ export const publicDocumentSchema = z.object({
   matchingCitationCount: z.number(),
   matchingEntityCount: z.number(),
   matchingEntities: z.array(z.string()),
+  matchingFoundationalEntities: z.array(z.string()),
+  matchingProgrammes: z.array(z.string()),
   matchingBudgetLocations: z.array(locationSchema),
   series: seriesSummarySchema.nullable(),
   group: groupSchema,

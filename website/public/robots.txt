@@ -1,6 +1,5 @@
 # Public data and agent documentation:
 # https://mandates.un.org/llms.txt
-# https://mandates.un.org/llms-full.txt
 # https://mandates.un.org/openapi.json
 User-agent: *
 Allow: /

@@ -14,7 +14,7 @@ test('published OpenAPI matches its schema source', () => {
     assert.ok(FILTER_DESCRIPTIONS[parameter], parameter)
 })
 test('agent guide carries retrieval and interpretation requirements', () => {
-  const guide = agentGuide(true)
+  const guide = agentGuide()
   for (const concept of [
     'jsonUrl',
     'hasMore',
@@ -26,4 +26,6 @@ test('agent guide carries retrieval and interpretation requirements', () => {
   ])
     assert.ok(guide.includes(concept), concept)
   assert.ok(!guide.includes('.txt?'))
+  assert.ok(!guide.includes('llms-full.txt'))
+  assert.ok(!guide.includes('superseded'))
 })

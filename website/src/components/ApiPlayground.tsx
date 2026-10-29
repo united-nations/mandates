@@ -2,9 +2,16 @@
 import { useState, useRef, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 
+type Endpoint = 'search' | 'document' | 'reference'
+
 export function ApiPlayground() {
-  const [endpoint, setEndpoint] = useState('search')
-  const [query, setQuery] = useState('keyword=climate&limit=2')
+  const [endpoint, setEndpoint] = useState<Endpoint>('search')
+  const [queries, setQueries] = useState<Record<Endpoint, string>>({
+    search: 'keyword=climate&limit=2',
+    document: '',
+    reference: '',
+  })
+  const query = queries[endpoint]
   const [symbol, setSymbol] = useState('A/RES/79/1')
   const [result, setResult] = useState('')
   const [busy, setBusy] = useState(false)
@@ -16,7 +23,21 @@ export function ApiPlayground() {
       : endpoint === 'reference'
         ? '/api/v1/reference'
         : '/api/v1/documents'
-  const url = query ? `${path}?${new URLSearchParams(query)}` : path
+  const params =
+    endpoint === 'search'
+      ? new URLSearchParams(query)
+      : new URLSearchParams(
+          query.trim() ? { ppb_version: query.trim() } : undefined
+        )
+  const url = params.size ? `${path}?${params}` : path
+  function changeEndpoint(value: string) {
+    if (value !== 'search' && value !== 'document' && value !== 'reference')
+      return
+    controller.current?.abort()
+    setBusy(false)
+    setResult('')
+    setEndpoint(value)
+  }
   async function run() {
     controller.current?.abort()
     const request = new AbortController()
@@ -25,6 +46,7 @@ export function ApiPlayground() {
     try {
       const response = await fetch(url, { signal: request.signal })
       const body: unknown = await response.json()
+      if (request.signal.aborted) return
       setResult(
         `${response.status} ${response.statusText}\n${JSON.stringify(body, null, 2)}`
       )
@@ -42,7 +64,7 @@ export function ApiPlayground() {
         <select
           className="mt-1 block w-full rounded-md border bg-background p-2"
           value={endpoint}
-          onChange={(event) => setEndpoint(event.target.value)}
+          onChange={(event) => changeEndpoint(event.target.value)}
         >
           <option value="search">Search documents</option>
           <option value="document">Read a document</option>
@@ -60,15 +82,26 @@ export function ApiPlayground() {
         </label>
       )}
       <label className="block text-sm font-medium">
-        Query parameters
+        {endpoint === 'search' ? 'Query parameters' : 'Budget cycle (optional)'}
         <input
           className="mt-1 block w-full rounded-md border p-2 font-mono"
           value={query}
-          onChange={(event) => setQuery(event.target.value)}
+          placeholder={
+            endpoint === 'search' ? undefined : 'Default budget cycle'
+          }
+          onChange={(event) =>
+            setQueries((current) => ({
+              ...current,
+              [endpoint]: event.target.value,
+            }))
+          }
         />
       </label>
       <code className="block text-sm break-all">GET {url}</code>
-      <Button onClick={run} disabled={busy}>
+      <Button
+        onClick={run}
+        disabled={busy || (endpoint === 'document' && !symbol.trim())}
+      >
         {busy ? 'Loading…' : 'Send request'}
       </Button>
       <div role="status" aria-live="polite" className="sr-only">
@@ -80,7 +113,7 @@ export function ApiPlayground() {
           aria-label="API response"
           className="max-h-96 overflow-auto rounded bg-muted p-3 text-xs"
         >
-          {result}
+          <code>{result}</code>
         </pre>
       )}
     </div>

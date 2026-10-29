@@ -104,7 +104,6 @@ export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
               toolbarSlot={
                 <div className="flex flex-wrap items-center gap-3">
                   {groupToggle}
-                  <ExportMenu />
                   {/* Only meaningful for the desktop table; the mobile compact
                       list has no columns to toggle. */}
                   <div className="hidden lg:block">
@@ -152,6 +151,7 @@ export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
               totalPages={pagination.totalPages}
               pageSize={pageSize}
               totalItems={pagination.totalItems}
+              trailingAction={<ExportMenu />}
             />
           </div>
         </div>

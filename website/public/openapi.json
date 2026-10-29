@@ -20,7 +20,7 @@
             "name": "entity",
             "in": "query",
             "required": false,
-            "description": "Citing entity code, for example DESA. __none__ selects documents with no citing entity.",
+            "description": "Citing entity code, for example `DESA`. `__none__` selects documents with no citing entity.",
             "schema": {
               "type": "string"
             }
@@ -29,7 +29,7 @@
             "name": "organ",
             "in": "query",
             "required": false,
-            "description": "Issuing body code from /api/v1/reference.",
+            "description": "Issuing body code from `/api/v1/reference`.",
             "schema": {
               "type": "string"
             }
@@ -83,7 +83,7 @@
             "name": "foundational",
             "in": "query",
             "required": false,
-            "description": "Set to true to select foundational/mandates-and-background citations. Applies to the selected document/entity pair.",
+            "description": "Set to `true` to select foundational/mandates-and-background citations. Applies to the selected document/entity pair.",
             "schema": {
               "type": "string"
             }
@@ -139,7 +139,7 @@
             "name": "budget_document",
             "in": "query",
             "required": false,
-            "description": "Budget stream: ppb, pko or plan_outline.",
+            "description": "Budget stream: `ppb`, `pko` or `plan_outline`.",
             "schema": {
               "type": "string"
             }
@@ -148,7 +148,7 @@
             "name": "budget_group",
             "in": "query",
             "required": false,
-            "description": "Peacekeeping budget group: missions or support.",
+            "description": "Peacekeeping budget group: `missions` or `support`.",
             "schema": {
               "type": "string"
             }
@@ -184,7 +184,7 @@
             "name": "agenda_scope",
             "in": "query",
             "required": false,
-            "description": "Structured agenda scope serialized by website links; takes precedence over agenda_item.",
+            "description": "Structured agenda scope serialized by website links; takes precedence over `agenda_item`.",
             "schema": {
               "type": "string"
             }
@@ -193,7 +193,7 @@
             "name": "related_scope",
             "in": "query",
             "required": false,
-            "description": "Related agenda cluster scope; takes precedence over agenda_scope and agenda_item.",
+            "description": "Related agenda cluster scope; takes precedence over `agenda_scope` and `agenda_item`.",
             "schema": {
               "type": "string"
             }
@@ -231,7 +231,7 @@
             "name": "cited",
             "in": "query",
             "required": false,
-            "description": "Set to 1 to select only documents cited in the selected budget cycle.",
+            "description": "Set to `1` to select only documents cited in the selected budget cycle.",
             "schema": {
               "type": "string"
             }
@@ -240,7 +240,7 @@
             "name": "ppb_version",
             "in": "query",
             "required": false,
-            "description": "Budget-cycle slug from /api/v1/reference. Defaults to the database default; responses identify the resolved cycle.",
+            "description": "Budget-cycle slug from `/api/v1/reference`. Defaults to the database default; responses identify the resolved cycle.",
             "schema": {
               "type": "string"
             }
@@ -249,7 +249,7 @@
             "name": "group",
             "in": "query",
             "required": false,
-            "description": "Set to 1 to group matching versions in list responses. Exports always expand all matching documents.",
+            "description": "Set to `1` to group matching versions in list responses. Exports always expand all matching documents.",
             "schema": {
               "type": "string"
             }
@@ -258,7 +258,7 @@
             "name": "sort_by",
             "in": "query",
             "required": false,
-            "description": "citing_entities_desc (default), citing_entities_asc, citations_desc, citations_asc, year_desc, year_asc, similarity_desc, similarity_asc, word_count_desc or word_count_asc. Keyword matches rank first; symbol breaks ties.",
+            "description": "`citing_entities_desc` (default), `citing_entities_asc`, `citations_desc`, `citations_asc`, `year_desc`, `year_asc`, `similarity_desc`, `similarity_asc`, `word_count_desc` or `word_count_asc`. Keyword matches rank first; symbol breaks ties.",
             "schema": {
               "type": "string"
             }
@@ -277,7 +277,7 @@
             "name": "limit",
             "in": "query",
             "required": false,
-            "description": "Page size, default 15, maximum 100; larger values are normalized to 100. Exports ignore page and limit.",
+            "description": "Page size, default 15, maximum 100; larger values are normalized to 100. Exports ignore `page` and `limit`.",
             "schema": {
               "type": "integer",
               "minimum": 1
@@ -349,7 +349,7 @@
             "name": "ppb_version",
             "in": "query",
             "required": false,
-            "description": "Budget-cycle slug from /api/v1/reference. Defaults to the database default; responses identify the resolved cycle.",
+            "description": "Budget-cycle slug from `/api/v1/reference`. Defaults to the database default; responses identify the resolved cycle.",
             "schema": {
               "type": "string"
             }
@@ -408,7 +408,7 @@
             "name": "ppb_version",
             "in": "query",
             "required": false,
-            "description": "Budget-cycle slug from /api/v1/reference. Defaults to the database default; responses identify the resolved cycle.",
+            "description": "Budget-cycle slug from `/api/v1/reference`. Defaults to the database default; responses identify the resolved cycle.",
             "schema": {
               "type": "string"
             }
@@ -452,13 +452,13 @@
       "get": {
         "operationId": "exportDocuments",
         "summary": "Download every matching document",
-        "description": "Streamed download with no total result cap. Ignores page/limit and expands grouped versions. JSON supports include=details. Excel contains Documents, Budget citations, Version relationships and About this export sheets. Live batches are not a frozen database snapshot. A failed stream is an incomplete download and must be retried.",
+        "description": "Streamed download with no total result cap. CSV has a standard column header without repeated file-level metadata; metadata is included in Excel/JSON. JSON downloads use indented regular JSON. Ignores page/limit and expands grouped versions. JSON supports include=details. Excel contains Documents, Budget citations, Version relationships and About this export sheets. Live batches are not a frozen database snapshot. A failed stream is an incomplete download and must be retried.",
         "parameters": [
           {
             "name": "entity",
             "in": "query",
             "required": false,
-            "description": "Citing entity code, for example DESA. __none__ selects documents with no citing entity.",
+            "description": "Citing entity code, for example `DESA`. `__none__` selects documents with no citing entity.",
             "schema": {
               "type": "string"
             }
@@ -467,7 +467,7 @@
             "name": "organ",
             "in": "query",
             "required": false,
-            "description": "Issuing body code from /api/v1/reference.",
+            "description": "Issuing body code from `/api/v1/reference`.",
             "schema": {
               "type": "string"
             }
@@ -521,7 +521,7 @@
             "name": "foundational",
             "in": "query",
             "required": false,
-            "description": "Set to true to select foundational/mandates-and-background citations. Applies to the selected document/entity pair.",
+            "description": "Set to `true` to select foundational/mandates-and-background citations. Applies to the selected document/entity pair.",
             "schema": {
               "type": "string"
             }
@@ -577,7 +577,7 @@
             "name": "budget_document",
             "in": "query",
             "required": false,
-            "description": "Budget stream: ppb, pko or plan_outline.",
+            "description": "Budget stream: `ppb`, `pko` or `plan_outline`.",
             "schema": {
               "type": "string"
             }
@@ -586,7 +586,7 @@
             "name": "budget_group",
             "in": "query",
             "required": false,
-            "description": "Peacekeeping budget group: missions or support.",
+            "description": "Peacekeeping budget group: `missions` or `support`.",
             "schema": {
               "type": "string"
             }
@@ -622,7 +622,7 @@
             "name": "agenda_scope",
             "in": "query",
             "required": false,
-            "description": "Structured agenda scope serialized by website links; takes precedence over agenda_item.",
+            "description": "Structured agenda scope serialized by website links; takes precedence over `agenda_item`.",
             "schema": {
               "type": "string"
             }
@@ -631,7 +631,7 @@
             "name": "related_scope",
             "in": "query",
             "required": false,
-            "description": "Related agenda cluster scope; takes precedence over agenda_scope and agenda_item.",
+            "description": "Related agenda cluster scope; takes precedence over `agenda_scope` and `agenda_item`.",
             "schema": {
               "type": "string"
             }
@@ -669,7 +669,7 @@
             "name": "cited",
             "in": "query",
             "required": false,
-            "description": "Set to 1 to select only documents cited in the selected budget cycle.",
+            "description": "Set to `1` to select only documents cited in the selected budget cycle.",
             "schema": {
               "type": "string"
             }
@@ -678,7 +678,7 @@
             "name": "ppb_version",
             "in": "query",
             "required": false,
-            "description": "Budget-cycle slug from /api/v1/reference. Defaults to the database default; responses identify the resolved cycle.",
+            "description": "Budget-cycle slug from `/api/v1/reference`. Defaults to the database default; responses identify the resolved cycle.",
             "schema": {
               "type": "string"
             }
@@ -687,7 +687,7 @@
             "name": "group",
             "in": "query",
             "required": false,
-            "description": "Set to 1 to group matching versions in list responses. Exports always expand all matching documents.",
+            "description": "Set to `1` to group matching versions in list responses. Exports always expand all matching documents.",
             "schema": {
               "type": "string"
             }
@@ -696,7 +696,7 @@
             "name": "sort_by",
             "in": "query",
             "required": false,
-            "description": "citing_entities_desc (default), citing_entities_asc, citations_desc, citations_asc, year_desc, year_asc, similarity_desc, similarity_asc, word_count_desc or word_count_asc. Keyword matches rank first; symbol breaks ties.",
+            "description": "`citing_entities_desc` (default), `citing_entities_asc`, `citations_desc`, `citations_asc`, `year_desc`, `year_asc`, `similarity_desc`, `similarity_asc`, `word_count_desc` or `word_count_asc`. Keyword matches rank first; symbol breaks ties.",
             "schema": {
               "type": "string"
             }
@@ -894,6 +894,18 @@
               "type": "string"
             }
           },
+          "matchingFoundationalEntities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "matchingProgrammes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "matchingBudgetLocations": {
             "type": "array",
             "items": {
@@ -980,7 +992,8 @@
               {
                 "type": "object",
                 "properties": {
-                  "superseded_by": {
+                  "latest_version": {
+                    "description": "Latest version symbol when a unique ordered version is known; null for collections or ambiguous series.",
                     "type": [
                       "string",
                       "null"
@@ -1000,7 +1013,7 @@
                   }
                 },
                 "required": [
-                  "superseded_by",
+                  "latest_version",
                   "is_collection",
                   "has_newer",
                   "is_latest",
@@ -1658,7 +1671,8 @@
                       {
                         "type": "object",
                         "properties": {
-                          "superseded_by": {
+                          "latest_version": {
+                            "description": "Latest version symbol when a unique ordered version is known; null for collections or ambiguous series.",
                             "type": [
                               "string",
                               "null"
@@ -1730,7 +1744,7 @@
                           }
                         },
                         "required": [
-                          "superseded_by",
+                          "latest_version",
                           "is_collection",
                           "has_newer",
                           "is_latest",
@@ -2115,6 +2129,8 @@
           "matchingCitationCount",
           "matchingEntityCount",
           "matchingEntities",
+          "matchingFoundationalEntities",
+          "matchingProgrammes",
           "matchingBudgetLocations",
           "series",
           "group",
@@ -2245,6 +2261,18 @@
                   "type": "string"
                 }
               },
+              "matchingFoundationalEntities": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "matchingProgrammes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
               "matchingBudgetLocations": {
                 "type": "array",
                 "items": {
@@ -2331,7 +2359,8 @@
                   {
                     "type": "object",
                     "properties": {
-                      "superseded_by": {
+                      "latest_version": {
+                        "description": "Latest version symbol when a unique ordered version is known; null for collections or ambiguous series.",
                         "type": [
                           "string",
                           "null"
@@ -2351,7 +2380,7 @@
                       }
                     },
                     "required": [
-                      "superseded_by",
+                      "latest_version",
                       "is_collection",
                       "has_newer",
                       "is_latest",
@@ -3009,7 +3038,8 @@
                           {
                             "type": "object",
                             "properties": {
-                              "superseded_by": {
+                              "latest_version": {
+                                "description": "Latest version symbol when a unique ordered version is known; null for collections or ambiguous series.",
                                 "type": [
                                   "string",
                                   "null"
@@ -3081,7 +3111,7 @@
                               }
                             },
                             "required": [
-                              "superseded_by",
+                              "latest_version",
                               "is_collection",
                               "has_newer",
                               "is_latest",
@@ -3466,6 +3496,8 @@
               "matchingCitationCount",
               "matchingEntityCount",
               "matchingEntities",
+              "matchingFoundationalEntities",
+              "matchingProgrammes",
               "matchingBudgetLocations",
               "series",
               "group",
@@ -3607,6 +3639,18 @@
                     "type": "string"
                   }
                 },
+                "matchingFoundationalEntities": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "matchingProgrammes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
                 "matchingBudgetLocations": {
                   "type": "array",
                   "items": {
@@ -3693,7 +3737,8 @@
                     {
                       "type": "object",
                       "properties": {
-                        "superseded_by": {
+                        "latest_version": {
+                          "description": "Latest version symbol when a unique ordered version is known; null for collections or ambiguous series.",
                           "type": [
                             "string",
                             "null"
@@ -3713,7 +3758,7 @@
                         }
                       },
                       "required": [
-                        "superseded_by",
+                        "latest_version",
                         "is_collection",
                         "has_newer",
                         "is_latest",
@@ -4371,7 +4416,8 @@
                             {
                               "type": "object",
                               "properties": {
-                                "superseded_by": {
+                                "latest_version": {
+                                  "description": "Latest version symbol when a unique ordered version is known; null for collections or ambiguous series.",
                                   "type": [
                                     "string",
                                     "null"
@@ -4443,7 +4489,7 @@
                                 }
                               },
                               "required": [
-                                "superseded_by",
+                                "latest_version",
                                 "is_collection",
                                 "has_newer",
                                 "is_latest",
@@ -4828,6 +4874,8 @@
                 "matchingCitationCount",
                 "matchingEntityCount",
                 "matchingEntities",
+                "matchingFoundationalEntities",
+                "matchingProgrammes",
                 "matchingBudgetLocations",
                 "series",
                 "group",
@@ -5438,7 +5486,8 @@
               {
                 "type": "object",
                 "properties": {
-                  "superseded_by": {
+                  "latest_version": {
+                    "description": "Latest version symbol when a unique ordered version is known; null for collections or ambiguous series.",
                     "type": [
                       "string",
                       "null"
@@ -5510,7 +5559,7 @@
                   }
                 },
                 "required": [
-                  "superseded_by",
+                  "latest_version",
                   "is_collection",
                   "has_newer",
                   "is_latest",
@@ -6022,7 +6071,8 @@
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
-          "superseded_by": {
+          "latest_version": {
+            "description": "Latest version symbol when a unique ordered version is known; null for collections or ambiguous series.",
             "type": [
               "string",
               "null"
@@ -6094,7 +6144,7 @@
           }
         },
         "required": [
-          "superseded_by",
+          "latest_version",
           "is_collection",
           "has_newer",
           "is_latest",
