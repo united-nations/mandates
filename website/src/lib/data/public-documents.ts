@@ -119,7 +119,7 @@ export async function getPublicPage(filters: FilterOptions, page: number, limit:
 export async function* publicExportBatches(filters: FilterOptions, version: string, details: boolean, signal?: AbortSignal) {
   let offset = 0
   while (!signal?.aborted) {
-    const batch = await getMandates({ ...filters, ppb_version: version, group: undefined }, { limit: 100, batchOffset: offset, includeMetrics: false })
+    const batch = await getMandates({ ...filters, ppb_version: version, group: undefined }, { batchSize: details ? 100 : 1000, batchOffset: offset, includeMetrics: false })
     if (!batch.mandates.length) return
     yield details ? await getPublicDetails(batch.mandates, version) : batch.mandates.map(record => ({ ...publicDocument(record, version), details: { status: 'not_included' as const } }))
     offset += batch.mandates.length

@@ -736,9 +736,12 @@ function buildOrderByClause(sortBy?: string): string {
  */
 export async function getMandates(
   filters: FilterOptions = {},
-  options: { page?: number; limit?: number; includeMetrics?: boolean; batchOffset?: number } = {}
+  options: { page?: number; limit?: number; includeMetrics?: boolean; batchOffset?: number; batchSize?: number } = {}
 ): Promise<{ mandates: Mandate[]; totalCount: number }> {
-  const { page, limit } = normalizePagination(options.page, options.limit)
+  const pagination = normalizePagination(options.page, options.limit)
+  const page = pagination.page
+  const limit = options.batchSize ?? pagination.limit
+  if (!Number.isSafeInteger(limit) || limit < 1 || limit > 1000) throw new Error('Invalid internal batch size')
   // Internal export/API batching bypasses UI offset clamping, never a result cap.
   const offset = options.batchOffset ?? (page - 1) * limit
   if (!Number.isSafeInteger(offset) || offset < 0) throw new Error('Invalid batch offset')
@@ -1149,7 +1152,7 @@ export type CitationDetails = {
 }
 
 export async function getMandateCitationsMany(
-  symbols: string[], version?: string | null
+  symbols: string[], version?: string | null, options: { includeTotals?: boolean } = {}
 ): Promise<Map<string, CitationDetails>> {
   const query = `
     /* trace:mandates.detail-citations */
@@ -1186,10 +1189,9 @@ export async function getMandateCitationsMany(
   const citingEntities = [
     ...new Set(rows.map((row) => row.entity).filter((e): e is string => !!e)),
   ]
-  const locationCitationCounts = await getLocationCitationCounts(
-    citingEntities,
-    version
-  )
+  const locationCitationCounts = options.includeTotals === false
+    ? { locations: new Map<string, number>(), entities: {} as Record<string, number> }
+    : await getLocationCitationCounts(citingEntities, version)
 
   return new Map(symbols.map(symbol => [symbol, mapCitationDetails(
     rows.filter(row => row.requested_symbol === symbol), locationCitationCounts
@@ -1379,7 +1381,7 @@ interface SeriesRow {
 }
 
 export async function getResolutionSeriesMany(
-  symbols: string[]
+  symbols: string[], options: { includeMetrics?: boolean } = {}
 ): Promise<Map<string, ResolutionSeriesInfo | null>> {
   const query = `
     /* trace:mandates.resolution-series */
@@ -1414,7 +1416,8 @@ export async function getResolutionSeriesMany(
     ORDER BY d.date_publication DESC NULLS LAST, rs.document_symbol DESC
   `
   const rows = await queryMany<SeriesRow & { requested_symbol: string }>(query, [symbols])
-  const metrics = await getDocumentTextMetrics([...new Set(rows.map(row => row.document_symbol))])
+  const metrics = options.includeMetrics === false ? new Map<string, DocumentTextMetrics>()
+    : await getDocumentTextMetrics([...new Set(rows.map(row => row.document_symbol))])
   return new Map(symbols.map(symbol => [symbol, mapResolutionSeries(rows.filter(row => row.requested_symbol === symbol), metrics)]))
 }
 function mapResolutionSeries(rows: SeriesRow[], metrics: Map<string, DocumentTextMetrics>): ResolutionSeriesInfo | null {
