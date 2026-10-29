@@ -24,12 +24,25 @@ export type MandatedSgReports =
 
 export async function getMandatedSgReportsMany(symbols: string[]): Promise<Map<string, MandatedSgReports>> {
   const family = await queryMany<{ page_symbol: string; symbol: string; canonical: string | null }>(
-    `WITH me AS (
-       SELECT DISTINCT requested.page_symbol, rs.series_key, rs.un_body, rs.doc_type, rs.is_collection
-       FROM unnest($1::text[]) requested(page_symbol)
+    `WITH requested AS MATERIALIZED (
+       SELECT page_symbol, upper(regexp_replace(page_symbol, '[[:space:]]', '', 'g')) AS canonical
+       FROM unnest($1::text[]) input(page_symbol)
+     ), matched_series AS (
+       -- Keep raw-symbol and catalogue-identity lookup as separate equijoins.
+       -- An OR with a correlated recid subquery scans the catalogue repeatedly
+       -- for each series row and makes a 100-document export hit the DB timeout.
+       SELECT requested.page_symbol, rs.series_key, rs.un_body, rs.doc_type, rs.is_collection
+       FROM requested
        JOIN digitallibrary.resolution_series rs ON rs.document_symbol = requested.page_symbol
-         OR rs.recid IN (SELECT recid FROM digitallibrary.documents WHERE symbol_normalized = upper(regexp_replace(requested.page_symbol, '[[:space:]]', '', 'g')))
        JOIN digitallibrary.documents d ON d.recid = rs.recid
+       UNION
+       SELECT requested.page_symbol, rs.series_key, rs.un_body, rs.doc_type, rs.is_collection
+       FROM requested
+       JOIN digitallibrary.documents d ON d.symbol_normalized = requested.canonical
+       JOIN digitallibrary.resolution_series rs ON rs.recid = d.recid
+     ), me AS (
+       SELECT DISTINCT page_symbol, series_key, un_body, doc_type, is_collection
+       FROM matched_series
      ), unique_me AS (
        SELECT * FROM me WHERE page_symbol IN (SELECT page_symbol FROM me GROUP BY page_symbol HAVING count(*) = 1)
      )
