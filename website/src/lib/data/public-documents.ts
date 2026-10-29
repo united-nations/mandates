@@ -69,9 +69,14 @@ export async function getPublicDetails(records: Mandate[], version: string) {
     const symbol = record.full_document_symbol
     const text = paragraphs.get(symbol) ?? []
     const citation = citations.get(symbol)!
+    const history = series.get(symbol) ?? null
+    const seriesSummary = record.series ?? (history ? {
+      superseded_by: history.superseded_by, is_collection: history.is_collection,
+      has_newer: history.has_newer, is_latest: history.is_latest, series_count: history.series_count,
+    } : null)
     const { tree, financialRows } = buildResolutionCitationTree({ ...record, citation_info: citation.citations ?? [], detail_budget_locations: citation.detailBudgetLocations }, entities)
     const locationExpenditures = matchBudgetLocationExpenditures(financialRows, datasets, names)
-    return { ...publicDocument(record, version), details: {
+    return { ...publicDocument({ ...record, series: seriesSummary }, version), details: {
       status: 'included' as const,
       citations: citation.citations ?? [],
       budgetLocations: citation.detailBudgetLocations,
@@ -83,7 +88,7 @@ export async function getPublicDetails(records: Mandate[], version: string) {
       entityCitationTotals: citation.entityCitationTotals,
       entityExpenditures: Object.fromEntries(Object.keys(citation.entityCitationTotals).filter(entity => expenditures[entity]).map(entity => [entity, expenditures[entity]])),
       paragraphs: { status: text.length ? 'available' as const : 'unavailable' as const, language: 'en', items: text },
-      versionHistory: series.get(symbol) ?? null,
+      versionHistory: history,
       reports: reports ? { status: 'included' as const, data: reports.get(symbol) } : { status: 'not_included' as const },
       relatedDocuments: related.has(symbol) ? { status: 'included' as const, items: related.get(symbol) } : { status: 'not_included' as const },
     } }

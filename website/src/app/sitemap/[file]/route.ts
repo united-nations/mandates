@@ -21,6 +21,7 @@ export async function GET(
           '/secretariat/agenda-items',
           '/secretariat/entities-and-programs',
           '/methodology',
+          '/developers',
           '/system',
         ]
       : []

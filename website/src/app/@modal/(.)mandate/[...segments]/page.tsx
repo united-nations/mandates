@@ -31,12 +31,16 @@ interface ModalMandatePageProps {
 
 export async function generateMetadata({
   params,
-}: Pick<ModalMandatePageProps, 'params'>): Promise<Metadata> {
+  searchParams,
+}: ModalMandatePageProps): Promise<Metadata> {
   const { segments } = await params
   const symbol = decodeUrlSegments(segments)
   const record = await getDocumentDiscovery(symbol)
+  const query = await searchParams
+  const version =
+    typeof query.ppb_version === 'string' ? query.ppb_version : undefined
   return record
-    ? documentSeo(record)
+    ? documentSeo(record, version)
     : { title: 'Document not found', robots: { index: false } }
 }
 

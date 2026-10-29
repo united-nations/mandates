@@ -23,6 +23,7 @@ jobs:
       - run: corepack enable
       - run: pnpm install --frozen-lockfile --ignore-scripts
       - run: pnpm typecheck
+      - run: pnpm check-openapi
       - run: pnpm lint
       - run: pnpm test
       # Dev-tool advisories remain visible in the full audit report; the release

@@ -4,12 +4,15 @@ export const SITE_NAME = 'UN Mandate Registry'
 export function mandatePath(symbol: string) {
   return `/mandate/${symbol.split('/').map(encodeURIComponent).join('/')}`
 }
-export function documentSeo(record: {
-  symbol: string
-  title: string
-  body?: string | null
-  year?: string | number | null
-}) {
+export function documentSeo(
+  record: {
+    symbol: string
+    title: string
+    body?: string | null
+    year?: string | number | null
+  },
+  budgetVersion?: string
+) {
   const { symbol, title, body, year } = record
   const path = mandatePath(symbol)
   const description = `${title} (${symbol})${body ? `, issued by ${body}` : ''}${year ? ` in ${year}` : ''}. Explore its text, resolution history and citations in UN programme budgets.`
@@ -19,7 +22,9 @@ export function documentSeo(record: {
     description,
     alternates: {
       canonical: path,
-      types: { 'application/json': `${path}.json` },
+      types: {
+        'application/json': `${path}.json${budgetVersion ? `?ppb_version=${encodeURIComponent(budgetVersion)}` : ''}`,
+      },
     },
     openGraph: {
       type: 'article',

@@ -16,3 +16,15 @@ test('JSON-LD cannot terminate its script element', () => {
   assert.ok(!serialized.includes('<'))
   assert.deepEqual(JSON.parse(serialized), input)
 })
+
+test('JSON discovery preserves the selected cycle while canonical stays clean', () => {
+  const metadata = documentSeo(
+    { symbol: 'A/RES/79/1', title: 'Pact' },
+    'ppb2026'
+  )
+  assert.equal(metadata.alternates.canonical, '/mandate/A/RES/79/1')
+  assert.equal(
+    metadata.alternates.types['application/json'],
+    '/mandate/A/RES/79/1.json?ppb_version=ppb2026'
+  )
+})

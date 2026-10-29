@@ -30,6 +30,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={roboto.className}>
+      <head>
+        <link
+          rel="service-desc"
+          type="application/vnd.oai.openapi+json"
+          href="/openapi.json"
+          title="OpenAPI specification"
+        />
+        <link
+          rel="help"
+          type="text/plain"
+          href="/llms.txt"
+          title="For AI agents"
+        />
+      </head>
       <GoogleAnalytics gaId="G-HYTYJM0JGC" />
       <body className="flex min-h-screen flex-col bg-background text-foreground">
         <RootLayoutClient>
