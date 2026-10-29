@@ -24,12 +24,12 @@ export const SHOW_RELATED_MANDATES: boolean = false
  * traced, on /system: the per-organization dots and the legend explaining
  * them.
  *
- * Held back because the scoring is a judgement call we are not ready to
- * publish. With it off, the column keeps the organizations' own registry and
- * portal links and is headed "Related resources" instead of "Mandate
- * Registry", and the rating vocabulary is suppressed with it.
+ * Enabled on the Vercel preview branch for review. With it off, the column
+ * keeps the organizations' own registry and portal links and is headed
+ * "Related resources" instead of "Mandate Registry", and the rating
+ * vocabulary is suppressed with it.
  */
-export const SHOW_MANDATE_REGISTRY_RATING: boolean = false
+export const SHOW_MANDATE_REGISTRY_RATING: boolean = true
 
 /**
  * The "reports submitted under this mandate" list on the mandate detail view:
