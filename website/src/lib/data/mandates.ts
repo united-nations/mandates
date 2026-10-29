@@ -736,10 +736,12 @@ function buildOrderByClause(sortBy?: string): string {
  */
 export async function getMandates(
   filters: FilterOptions = {},
-  options: { page?: number; limit?: number; includeMetrics?: boolean } = {}
+  options: { page?: number; limit?: number; includeMetrics?: boolean; batchOffset?: number } = {}
 ): Promise<{ mandates: Mandate[]; totalCount: number }> {
   const { page, limit } = normalizePagination(options.page, options.limit)
-  const offset = (page - 1) * limit
+  // Internal export/API batching bypasses UI offset clamping, never a result cap.
+  const offset = options.batchOffset ?? (page - 1) * limit
+  if (!Number.isSafeInteger(offset) || offset < 0) throw new Error('Invalid batch offset')
 
   const metricSort = [
     'similarity_asc',
@@ -860,11 +862,13 @@ export async function getMandates(
 
   // When keyword is active with no explicit sort, rank by relevance only.
   // When an explicit sort_by is chosen, use relevance as primary then the chosen sort.
-  const orderBy = keywordRankExpr
+  const primaryOrderBy = keywordRankExpr
     ? filters.sort_by
       ? `ORDER BY keyword_rank ASC, ${buildOrderByClause(filters.sort_by).replace('ORDER BY ', '')}`
       : 'ORDER BY keyword_rank ASC'
     : buildOrderByClause(effectiveSortBy)
+
+  const orderBy = `${primaryOrderBy}, c.ppb_full_document_symbol ASC`
 
   // Series facts joined by symbol. The matview has 14 known duplicate
   // symbols (distinct recids), so dedupe to keep the join 1:1.
@@ -956,7 +960,7 @@ export async function getMandates(
         WHERE e2.grp_key = po.grp_key
           AND e2.ppb_full_document_symbol <> po.ppb_full_document_symbol
         ORDER BY e2.ppb_year DESC NULLS LAST, e2.ppb_full_document_symbol DESC
-        LIMIT 100
+        ${options.batchOffset === undefined ? 'LIMIT 100' : ''}
       ) x
     ) gm ON true
     ORDER BY po.page_ord
@@ -1136,19 +1140,21 @@ function normalizeSubprogramme(subprogramme: string | null): string | null {
  * PKO, Plan Outline and sites outside the named subprogramme structure.
  * Entity totals and exact location totals count distinct documents separately.
  */
-export async function getMandateCitations(
-  symbol: string,
-  version?: string | null
-): Promise<{
+export type CitationDetails = {
   citations: Mandate['citation_info']
   budgetLocations: BudgetLocation[]
   foundationalEntities: string[]
   detailBudgetLocations: DetailBudgetLocation[]
   entityCitationTotals: Record<string, number>
-}> {
+}
+
+export async function getMandateCitationsMany(
+  symbols: string[], version?: string | null
+): Promise<Map<string, CitationDetails>> {
   const query = `
     /* trace:mandates.detail-citations */
     SELECT
+      c.ppb_full_document_symbol AS requested_symbol,
       c.origin_document,
       bd.doc_type AS stream,
       (c.section_title LIKE 'Administrative and budgetary aspects%') AS is_support,
@@ -1170,12 +1176,12 @@ export async function getMandateCitations(
     LEFT JOIN systemchart.entities e ON c.entity = e.entity
     LEFT JOIN ppb2026.budget_documents bd ON c.origin_document ~ bd.match_pattern
     LEFT JOIN ppb2026.budget_parts bp ON bp.part_number = c.budget_part_number
-    WHERE c.ppb_full_document_symbol = $1
+    WHERE c.ppb_full_document_symbol = ANY($1::text[])
       AND ${versionPredicateSql('c', '$2')}
-    ORDER BY c.entity, c.programme
+    ORDER BY c.ppb_full_document_symbol, c.entity, c.programme, c.id
   `
 
-  const rows = await queryMany<CitationQueryRow>(query, [symbol, version ?? null])
+  const rows = await queryMany<CitationQueryRow & { requested_symbol: string }>(query, [symbols, version ?? null])
 
   const citingEntities = [
     ...new Set(rows.map((row) => row.entity).filter((e): e is string => !!e)),
@@ -1185,6 +1191,15 @@ export async function getMandateCitations(
     version
   )
 
+  return new Map(symbols.map(symbol => [symbol, mapCitationDetails(
+    rows.filter(row => row.requested_symbol === symbol), locationCitationCounts
+  )]))
+}
+
+function mapCitationDetails(
+  rows: CitationQueryRow[],
+  locationCitationCounts: { locations: Map<string, number>; entities: Record<string, number> }
+): CitationDetails {
   const citations = rows.map((row) => ({
     origin_document: row.origin_document || '',
     budget_part: row.budget_part || '',
@@ -1241,9 +1256,13 @@ export async function getMandateCitations(
     citations,
     budgetLocations: sortBudgetLocations(detailBudgetLocations.filter((location): location is BudgetLocation => location.stream !== null)),
     detailBudgetLocations,
-    entityCitationTotals: locationCitationCounts.entities,
+    entityCitationTotals: Object.fromEntries([...new Set(rows.flatMap(row => row.entity ? [row.entity] : []))].map(entity => [entity, locationCitationCounts.entities[entity]])),
     foundationalEntities,
   }
+}
+
+export async function getMandateCitations(symbol: string, version?: string | null): Promise<CitationDetails> {
+  return (await getMandateCitationsMany([symbol], version)).get(symbol)!
 }
 
 /**
@@ -1359,19 +1378,20 @@ interface SeriesRow {
   superseded_by: string | null
 }
 
-export async function getResolutionSeries(
-  symbol: string
-): Promise<ResolutionSeriesInfo | null> {
+export async function getResolutionSeriesMany(
+  symbols: string[]
+): Promise<Map<string, ResolutionSeriesInfo | null>> {
   const query = `
     /* trace:mandates.resolution-series */
     WITH me AS (
-      SELECT series_key, un_body, doc_type, is_collection, has_newer,
+      SELECT DISTINCT ON (document_symbol) document_symbol AS requested_symbol, series_key, un_body, doc_type, is_collection, has_newer,
              is_latest, superseded_by
       FROM digitallibrary.resolution_series
-      WHERE document_symbol = $1
-      LIMIT 1
+      WHERE document_symbol = ANY($1::text[])
+      ORDER BY document_symbol, recid
     )
     SELECT
+      me.requested_symbol,
       rs.document_symbol,
       -- SC resolutions have a number-only plain title ("Resolution 2825
       -- (2026)"); display_title carries the descriptive one.
@@ -1393,11 +1413,13 @@ export async function getResolutionSeries(
     LEFT JOIN digitallibrary.documents d ON d.recid = rs.recid
     ORDER BY d.date_publication DESC NULLS LAST, rs.document_symbol DESC
   `
-  const rows = await queryMany<SeriesRow>(query, [symbol])
+  const rows = await queryMany<SeriesRow & { requested_symbol: string }>(query, [symbols])
+  const metrics = await getDocumentTextMetrics([...new Set(rows.map(row => row.document_symbol))])
+  return new Map(symbols.map(symbol => [symbol, mapResolutionSeries(rows.filter(row => row.requested_symbol === symbol), metrics)]))
+}
+function mapResolutionSeries(rows: SeriesRow[], metrics: Map<string, DocumentTextMetrics>): ResolutionSeriesInfo | null {
   if (rows.length <= 1) return null
-
   const head = rows[0]
-  const metrics = await getDocumentTextMetrics(rows.map((row) => row.document_symbol))
   return {
     series_count: head.series_count,
     first_year: head.series_first_year || null,
@@ -1414,6 +1436,10 @@ export async function getResolutionSeries(
       is_latest: r.member_is_latest,
     })),
   }
+}
+
+export async function getResolutionSeries(symbol: string): Promise<ResolutionSeriesInfo | null> {
+  return (await getResolutionSeriesMany([symbol])).get(symbol) ?? null
 }
 
 // ============================================================================

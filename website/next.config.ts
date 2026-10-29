@@ -64,6 +64,17 @@ const nextConfig: NextConfig = {
     ]
   },
 
+  async rewrites() {
+    return {
+      beforeFiles: [
+        {
+          source: '/mandate/:symbol*.json',
+          destination: '/api/v1/documents/:symbol*',
+        },
+      ],
+    }
+  },
+
   async redirects() {
     return [
       // Temporary while the / landing page is undecided: the Secretariat

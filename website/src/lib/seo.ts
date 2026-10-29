@@ -17,7 +17,10 @@ export function documentSeo(record: {
   return {
     title: `${title} — ${symbol} | ${SITE_NAME}`,
     description,
-    alternates: { canonical: path },
+    alternates: {
+      canonical: path,
+      types: { 'application/json': `${path}.json` },
+    },
     openGraph: {
       type: 'article',
       title,
