@@ -101,7 +101,7 @@ function parseRichText(raw: string): React.ReactNode[] {
           href={href}
           target={looksLikeEmail ? undefined : '_blank'}
           rel={looksLikeEmail ? undefined : 'noopener noreferrer'}
-          className="text-un-blue underline decoration-un-blue/30 underline-offset-2 transition-colors hover:text-un-blue/80 hover:decoration-un-blue"
+          className="text-un-blue-text underline decoration-un-blue/30 underline-offset-2 transition-colors hover:text-un-blue-text-aaa hover:decoration-un-blue"
         >
           {displayLabel}
           {looksLikeEmail ? (
@@ -133,7 +133,7 @@ function parseRichText(raw: string): React.ReactNode[] {
             <a
               key={`em-${i}`}
               href={`mailto:${emailMatch[1]}`}
-              className="text-un-blue underline decoration-un-blue/30 underline-offset-2 transition-colors hover:text-un-blue/80 hover:decoration-un-blue"
+              className="text-un-blue-text underline decoration-un-blue/30 underline-offset-2 transition-colors hover:text-un-blue-text-aaa hover:decoration-un-blue"
             >
               {emailMatch[1]}
               <Mail className="mb-0.5 ml-0.5 inline h-3 w-3" />
