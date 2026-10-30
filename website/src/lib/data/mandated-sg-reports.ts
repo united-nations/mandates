@@ -39,6 +39,15 @@ export const getMandatedSgReportCount = unstable_cache(
   { revalidate: 3600 }
 )
 
+export async function getScopedMandatedSgReportCount(symbols: string[]) {
+  const source = MANDATED_SG_REPORTS_SOURCE
+  const [catalogue, pageOne] = await Promise.all([
+    source === 'page_one' ? [] : getCatalogueLinkedReportIds(symbols),
+    source === 'catalogue_notes' ? [] : getPageOneLinkedReportIds(symbols),
+  ])
+  return new Set([...catalogue, ...pageOne]).size
+}
+
 export type MandatedSgReports =
   | { source: 'catalogue_notes'; reports: MandatedSgReport[] }
   | { source: 'page_one'; data: PageOneSgReports }

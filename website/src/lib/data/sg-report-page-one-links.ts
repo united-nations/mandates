@@ -94,7 +94,8 @@ const getAcceptedPageOneRunId = cache(async (): Promise<string | null> => {
 })
 
 /** Distinct reports linked directly to registry pages by the accepted run. */
-export const getPageOneLinkedReportIds = cache(async (): Promise<number[]> => {
+export const getPageOneLinkedReportIds = cache(async (symbols?: string[]): Promise<number[]> => {
+  if (symbols?.length === 0) return []
   const runId = await getAcceptedPageOneRunId()
   if (runId === null) return []
   const rows = await queryMany<{ report_recid: number }>(
@@ -106,8 +107,9 @@ export const getPageOneLinkedReportIds = cache(async (): Promise<number[]> => {
      WHERE l.run_id = $1
        AND l.citation_role = ANY ($2)
        AND cardinality(l.cited_display_candidates) > 0
-       AND cardinality(o.report_symbols) > 0`,
-    [runId, PAGE_ONE_DISPLAYED_CITATION_ROLES]
+       AND cardinality(o.report_symbols) > 0
+       ${symbols ? "AND (l.cited_display_candidates && $3::text[] OR l.cited_canonical = ANY($4::text[]))" : ""}`,
+    [runId, PAGE_ONE_DISPLAYED_CITATION_ROLES, ...(symbols ? [symbols, symbols.map(symbol => symbol.replace(/\s/g, "").toUpperCase())] : [])]
   )
   return rows.map((row) => row.report_recid)
 })

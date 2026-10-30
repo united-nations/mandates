@@ -1790,6 +1790,20 @@ export async function getMandateCounts(filters: FilterOptions = {}): Promise<{
   }
 }
 
+/** Matching document identities for scope-aware report counts, without pagination. */
+export async function getFilteredDocumentSymbols(filters: FilterOptions) {
+  const { cte, params } = buildFilteredDocsCTE(filters, {
+    agendaSymbols: await agendaScopeSymbols(filters),
+    selectCols: 'd.ppb_full_document_symbol',
+    groupCols: 'd.ppb_full_document_symbol',
+  })
+  const rows = await queryMany<{ symbol: string }>(
+    `/* trace:mandates.filtered-symbols */ WITH ${cte}
+     SELECT ppb_full_document_symbol AS symbol FROM filtered_docs`, params
+  )
+  return rows.map(row => row.symbol)
+}
+
 /**
  * How many documents match `filters` — the single number behind the two
  * document tiles on /secretariat.

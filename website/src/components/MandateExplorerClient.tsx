@@ -1,6 +1,9 @@
 'use client'
 
 import { ExportMenu } from '@/components/ExportMenu'
+import type { ReactNode } from 'react'
+import { ActiveFilters } from '@/components/ActiveFilters'
+import { hasDocumentScope } from '@/lib/document-filter-scope'
 
 import { FilterControls } from '@/components/FilterControls'
 import {
@@ -26,12 +29,14 @@ import { useColumnVisibility } from './table/useColumnVisibility'
 // import { YearBarCard } from './YearBarCard' // Years card hidden — see summary cards section
 
 interface MandateExplorerClientProps {
+  filteredSummary?: ReactNode
   data: ApiResponse
   versions: BudgetVersion[]
   activeVersionSlug: string
 }
 
 export function MandateExplorerClient({
+  filteredSummary,
   data,
   versions,
   activeVersionSlug,
@@ -130,6 +135,20 @@ export function MandateExplorerClient({
               }
             />
           </div>
+
+          {hasDocumentScope(filters) && (
+            <div className="mb-4">
+              <ActiveFilters
+                entitiesData={allEntities}
+                allOrgans={allOrgans}
+                citedVersionLabel={
+                  versions.find((version) => version.slug === activeVersionSlug)
+                    ?.display_name
+                }
+              />
+              {filteredSummary}
+            </div>
+          )}
 
           {/* Data table (desktop) */}
           <div className="hidden lg:block">

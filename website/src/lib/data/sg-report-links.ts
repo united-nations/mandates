@@ -80,7 +80,8 @@ const DISPLAY_EXCLUDED_REPORT_RECIDS = [
 ]
 
 /** Distinct reports with a display-eligible link directly to a registry page. */
-export const getCatalogueLinkedReportIds = cache(async (): Promise<number[]> => {
+export const getCatalogueLinkedReportIds = cache(async (symbols?: string[]): Promise<number[]> => {
+  if (symbols?.length === 0) return []
   const rows = await queryMany<{ report_recid: number }>(
     `/* trace:sg-reports.catalogue.registry-report-ids */
      SELECT DISTINCT l.report_recid
@@ -88,8 +89,9 @@ export const getCatalogueLinkedReportIds = cache(async (): Promise<number[]> => 
      JOIN digitallibrary.documents d ON d.recid = l.report_recid
      WHERE l.citation_sense = ANY ($1)
        AND l.report_recid <> ALL ($2)
-       AND cardinality(l.resolution_display_candidates) > 0`,
-    [DISPLAY_ELIGIBLE_SENSES, DISPLAY_EXCLUDED_REPORT_RECIDS]
+       AND cardinality(l.resolution_display_candidates) > 0
+       ${symbols ? "AND (l.resolution_display_candidates && $3::text[] OR l.resolution_canonical = ANY($4::text[]))" : ""}`,
+    [DISPLAY_ELIGIBLE_SENSES, DISPLAY_EXCLUDED_REPORT_RECIDS, ...(symbols ? [symbols, symbols.map(symbol => symbol.replace(/\s/g, "").toUpperCase())] : [])]
   )
   return rows.map((row) => row.report_recid)
 })
