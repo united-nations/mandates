@@ -107,18 +107,19 @@ function mapDlRow(row: ParagraphRow): Paragraph {
  * Only successful parses are readable. Failed or unfinished processing must
  * not expose old semantic rows from a previous parse.
  */
-const getDirectParagraphsBySymbol = cache(
-  async (documentSymbol: string): Promise<Paragraph[]> => {
-    const normalizedSymbol = documentSymbol.replace(/\s/g, '').toUpperCase()
+const getDirectParagraphsBySymbols = cache(
+  async (documentSymbols: string[]): Promise<Map<string, Paragraph[]>> => {
+    const normalizedSymbols = documentSymbols.map(symbol => symbol.replace(/\s/g, '').toUpperCase())
     // digitallibrary.document_paragraphs (semantic fulltext).
     // Indexed on (symbol_normalized, lang). Match the app-wide normalized symbol
     // join (upper + strip whitespace). Masthead frontmatter is dropped as pure
     // document boilerplate; every other DL `type` is carried through verbatim
     // so neutral adopted-instrument and annex body content remains visible.
-    const dlRows = await queryMany<ParagraphRow>(
+    const dlRows = await queryMany<ParagraphRow & { symbol_normalized: string }>(
       `
       /* trace:paragraphs.digital-library */
       SELECT
+        dp.symbol_normalized,
         dp.id,
         dp.position,
         dp.note_ids,
@@ -166,10 +167,10 @@ const getDirectParagraphsBySymbol = cache(
         AND NOT (dp.type = 'frontmatter' AND dp.subtype IS NOT DISTINCT FROM 'masthead')
       ORDER BY dp.position
       `,
-      [[normalizedSymbol]]
+      [normalizedSymbols]
     )
 
-    return dlRows.map(mapDlRow)
+    return new Map(documentSymbols.map(symbol => [symbol, dlRows.filter(row => row.symbol_normalized === symbol.replace(/\s/g, '').toUpperCase()).map(mapDlRow)]))
   }
 )
 
@@ -177,17 +178,21 @@ const getDirectParagraphsBySymbol = cache(
  * Complex bracket expressions deliberately remain unavailable: whole-parent text
  * must not silently stand in for the requested part. No legacy corpus fallback.
  */
-export const getParagraphsBySymbol = cache(
-  async (documentSymbol: string): Promise<Paragraph[]> => {
-    const direct = await getDirectParagraphsBySymbol(documentSymbol)
-    if (direct.length > 0) return direct
-    const part = parseBracketPart(documentSymbol)
-    if (!part) return []
-    const parent = await getDirectParagraphsBySymbol(part.parentSymbol)
-    return isolateBracketPart(parent, part.letter).map((paragraph) => ({
-      ...paragraph,
-      source_symbol: part.parentSymbol,
-      part_letter: part.letter,
-    }))
-  }
+export async function getParagraphsBySymbols(symbols: string[]): Promise<Map<string, Paragraph[]>> {
+  const requested = [...new Set([...symbols, ...symbols.flatMap(symbol => {
+    const part = parseBracketPart(symbol)
+    return part ? [part.parentSymbol] : []
+  })])]
+  const direct = await getDirectParagraphsBySymbols(requested)
+  return new Map(symbols.map(symbol => {
+    const rows = direct.get(symbol) ?? []
+    if (rows.length) return [symbol, rows]
+    const part = parseBracketPart(symbol)
+    return [symbol, part ? isolateBracketPart(direct.get(part.parentSymbol) ?? [], part.letter).map(paragraph => ({
+      ...paragraph, source_symbol: part.parentSymbol, part_letter: part.letter,
+    })) : []]
+  }))
+}
+export const getParagraphsBySymbol = cache(async (symbol: string): Promise<Paragraph[]> =>
+  (await getParagraphsBySymbols([symbol])).get(symbol) ?? []
 )

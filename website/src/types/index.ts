@@ -89,6 +89,8 @@ export interface Mandate {
   citation_info: {
     origin_document: string
     budget_part: string
+    budget_part_number?: string | null
+    budget_part_title?: string | null
     section: string
     section_title: string
     entity_long: string
@@ -96,6 +98,8 @@ export interface Mandate {
     programme: number | null
     programme_title: string
     'sub-programme': string | null
+    sub_programme_number?: number | null
+    sub_programme_title?: string | null
     component: string | number | null
     description: string
     part_in_document: string

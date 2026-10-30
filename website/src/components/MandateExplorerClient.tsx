@@ -1,5 +1,7 @@
 'use client'
 
+import { ExportMenu } from '@/components/ExportMenu'
+
 import { FilterControls } from '@/components/FilterControls'
 import {
   CitationBudgetSelect,
@@ -157,6 +159,13 @@ export function MandateExplorerClient({
               totalPages={pagination.totalPages}
               pageSize={pageSize}
               totalItems={pagination.totalItems}
+              trailingAction={
+                <ExportMenu
+                  totalDocuments={
+                    filters.group === '1' ? undefined : pagination.totalItems
+                  }
+                />
+              }
             />
           </div>
         </div>

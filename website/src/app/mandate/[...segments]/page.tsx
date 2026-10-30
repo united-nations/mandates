@@ -1,6 +1,7 @@
+import { getDocumentDiscovery } from '@/lib/data/document-discovery'
+import { documentSeo, mandatePath, SITE_URL, serializeJsonLd } from '@/lib/seo'
 import { Suspense } from 'react'
 import type { Metadata } from 'next'
-import { explainerTexts } from '@/lib/en_text_contents'
 import { notFound } from 'next/navigation'
 import { getMandateDisplayTitle, decodeUrlSegments } from '@/lib/utils'
 
@@ -34,14 +35,17 @@ interface MandatePageProps {
 
 export async function generateMetadata({
   params,
-}: Pick<MandatePageProps, 'params'>): Promise<Metadata> {
+  searchParams,
+}: MandatePageProps): Promise<Metadata> {
   const { segments } = await params
-  return {
-    title: explainerTexts.pageTitles.mandate.replace(
-      '{symbol}',
-      decodeUrlSegments(segments)
-    ),
-  }
+  const symbol = decodeUrlSegments(segments)
+  const record = await getDocumentDiscovery(symbol)
+  const query = await searchParams
+  const version =
+    typeof query.ppb_version === 'string' ? query.ppb_version : undefined
+  return record
+    ? documentSeo(record, version)
+    : { title: 'Document not found', robots: { index: false } }
 }
 
 export default async function MandatePage({
@@ -71,6 +75,25 @@ export default async function MandatePage({
 
   return (
     <div className="pb-12">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: serializeJsonLd({
+            '@context': 'https://schema.org',
+            '@type': 'DigitalDocument',
+            name: getMandateDisplayTitle(mandate),
+            identifier: documentSymbol,
+            url: `${SITE_URL}${mandatePath(documentSymbol)}`,
+            sameAs: mandate.link,
+            inLanguage: 'en',
+            publisher: {
+              '@type': 'Organization',
+              name: 'United Nations',
+              url: 'https://www.un.org',
+            },
+          }),
+        }}
+      />
       <MandateDetailHeader
         title={getMandateDisplayTitle(mandate)}
         symbol={mandate.full_document_symbol}

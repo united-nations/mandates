@@ -128,25 +128,23 @@ export interface SgReportResolutionTarget {
  * scope. Report title and date come from digitallibrary.documents via
  * report_recid — the same join getResolutionSeries uses.
  */
-export const getSgReportsMandatedByResolution = cache(
-  async (
-    pageSymbol: string,
-    familyTargets: SgReportResolutionTarget[] = [{ symbol: pageSymbol, canonical: null }]
-  ): Promise<MandatedSgReport[]> => {
-    const reports = await queryMany<MandatedSgReport>(
+export async function getCatalogueReportsMany(
+  targets: { page_symbol: string; symbol: string; canonical: string | null }[]
+): Promise<Map<string, MandatedSgReport[]>> {
+    const reports = await queryMany<MandatedSgReport & { page_symbol: string }>(
       `/* trace:sg-reports.by-mandate */
        WITH matched_links AS (
-         SELECT l.report_recid, l.report_symbol, matched.symbol,
+         SELECT matched.page_symbol, l.report_recid, l.report_symbol, matched.symbol,
                 bool_and(l.citation_position = 'annex_title') AS annex_only
          FROM mandates.sg_report_to_mandate_links l
-         JOIN jsonb_to_recordset($1::jsonb) matched(symbol text, canonical text)
+         JOIN jsonb_to_recordset($1::jsonb) matched(page_symbol text, symbol text, canonical text)
            ON matched.symbol = ANY (l.resolution_display_candidates)
            OR matched.canonical = l.resolution_canonical
          WHERE l.citation_sense = ANY ($2)
            AND l.report_recid <> ALL ($3)
-         GROUP BY l.report_recid, l.report_symbol, matched.symbol
+         GROUP BY matched.page_symbol, l.report_recid, l.report_symbol, matched.symbol
        )
-       SELECT l.report_recid,
+       SELECT l.page_symbol, l.report_recid,
               l.report_symbol,
               d.title,
               d.date_publication::text AS date_published,
@@ -156,9 +154,9 @@ export const getSgReportsMandatedByResolution = cache(
                 FILTER (WHERE l.annex_only), ARRAY[]::text[]) AS annex_resolution_symbols
        FROM matched_links l
        JOIN digitallibrary.documents d ON d.recid = l.report_recid
-       GROUP BY l.report_recid, l.report_symbol, d.title, d.date_publication
+       GROUP BY l.page_symbol, l.report_recid, l.report_symbol, d.title, d.date_publication
        ORDER BY d.date_publication DESC NULLS LAST, l.report_symbol`,
-      [JSON.stringify(familyTargets), DISPLAY_ELIGIBLE_SENSES, DISPLAY_EXCLUDED_REPORT_RECIDS]
+      [JSON.stringify(targets), DISPLAY_ELIGIBLE_SENSES, DISPLAY_EXCLUDED_REPORT_RECIDS]
     )
     for (const report of reports) {
       if (!report.resolution_symbols?.length ||
@@ -166,6 +164,11 @@ export const getSgReportsMandatedByResolution = cache(
         throw new Error(`SG report ${report.report_recid}: missing resolution linkage data`)
       }
     }
-    return reports
-  }
-)
+    return new Map([...new Set(targets.map(target => target.page_symbol))].map(symbol => [symbol,
+      reports.filter(report => report.page_symbol === symbol).map(row => { const report = { ...row }; Reflect.deleteProperty(report, 'page_symbol'); return report })
+    ]))
+}
+export const getSgReportsMandatedByResolution = cache(async (
+  pageSymbol: string,
+  familyTargets: SgReportResolutionTarget[] = [{ symbol: pageSymbol, canonical: null }]
+): Promise<MandatedSgReport[]> => (await getCatalogueReportsMany(familyTargets.map(target => ({ ...target, page_symbol: pageSymbol })))).get(pageSymbol) ?? [])

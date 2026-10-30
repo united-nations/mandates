@@ -1,5 +1,6 @@
 'use client'
 
+import type { ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
 import {
   Select,
@@ -22,6 +23,7 @@ interface PaginationControlsProps {
   totalItems: number
   pageSize: number
   className?: string
+  trailingAction?: ReactNode
 }
 
 export function PaginationControls({
@@ -30,6 +32,7 @@ export function PaginationControls({
   totalItems,
   pageSize,
   className = '',
+  trailingAction,
 }: PaginationControlsProps) {
   const { setFilter, setMultipleFilters } = useFilters()
 
@@ -44,15 +47,15 @@ export function PaginationControls({
     })
   }
 
-  if (totalPages <= 1) {
+  if (totalPages <= 1 && !trailingAction) {
     return null
   }
 
   return (
     <div
-      className={`flex flex-col items-center space-y-4 md:flex-row md:justify-between md:space-y-0 ${className}`}
+      className={`grid grid-cols-1 items-center gap-3 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] ${className}`}
     >
-      <div className="flex items-center space-x-2">
+      <div className="flex items-center space-x-2 justify-self-start">
         <span className="text-sm text-muted-foreground">Show</span>
         <Select
           value={pageSize.toString()}
@@ -72,15 +75,16 @@ export function PaginationControls({
         <span className="text-sm text-muted-foreground">per page</span>
       </div>
 
-      <div className="flex flex-col items-center space-y-2 md:flex-row md:space-y-0 md:space-x-4">
+      <div className="flex flex-col items-center gap-2 justify-self-center md:flex-row md:gap-4">
         <div className="text-center text-sm text-muted-foreground">
-          Page {currentPage} of {totalPages} ({totalItems.toLocaleString()}{' '}
-          items)
+          Page {currentPage} of {Math.max(1, totalPages)} (
+          {totalItems.toLocaleString()} items)
         </div>
         <div className="flex items-center space-x-1">
           <Button
             variant="outline"
             size="sm"
+            aria-label="First page"
             onClick={() => handlePageChange(1)}
             disabled={currentPage === 1}
             className="h-8 w-8 p-0"
@@ -90,6 +94,7 @@ export function PaginationControls({
           <Button
             variant="outline"
             size="sm"
+            aria-label="Previous page"
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
             className="h-8 w-8 p-0"
@@ -99,8 +104,9 @@ export function PaginationControls({
           <Button
             variant="outline"
             size="sm"
+            aria-label="Next page"
             onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
+            disabled={currentPage >= totalPages}
             className="h-8 w-8 p-0"
           >
             <ChevronRight className="h-3 w-3" />
@@ -108,14 +114,16 @@ export function PaginationControls({
           <Button
             variant="outline"
             size="sm"
+            aria-label="Last page"
             onClick={() => handlePageChange(totalPages)}
-            disabled={currentPage === totalPages}
+            disabled={currentPage >= totalPages}
             className="h-8 w-8 p-0"
           >
             <ChevronsRight className="h-3 w-3" />
           </Button>
         </div>
       </div>
+      <div className="justify-self-end">{trailingAction}</div>
     </div>
   )
 }

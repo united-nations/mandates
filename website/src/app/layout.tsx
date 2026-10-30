@@ -1,8 +1,15 @@
+import type { Metadata } from 'next'
+import { SITE_URL, SITE_NAME } from '@/lib/seo'
 import { RootLayoutClient } from '@/components/RootLayoutClient'
 import { GoogleAnalytics } from '@next/third-parties/google'
 import { Roboto } from 'next/font/google'
 import Script from 'next/script'
 import './globals.css'
+
+export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+  applicationName: SITE_NAME,
+}
 
 // https://fonts.google.com/specimen/Roboto
 // https://nextjs.org/docs/app/getting-started/fonts
@@ -23,6 +30,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={roboto.className}>
+      <head>
+        <link
+          rel="service-desc"
+          type="application/vnd.oai.openapi+json"
+          href="/openapi.json"
+          title="OpenAPI specification"
+        />
+        <link
+          rel="help"
+          type="text/plain"
+          href="/llms.txt"
+          title="For AI agents"
+        />
+      </head>
       <GoogleAnalytics gaId="G-HYTYJM0JGC" />
       <body className="flex min-h-screen flex-col bg-background text-foreground">
         <RootLayoutClient>

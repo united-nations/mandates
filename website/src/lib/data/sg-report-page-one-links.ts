@@ -123,22 +123,21 @@ export const getPageOneLinkedReportIds = cache(async (): Promise<number[]> => {
  * a report the run links is listed even if its catalogue row cannot supply a
  * title or date, and those then render as absent.
  */
-export const getSgReportsStatingResolution = cache(
-  async (
-    pageSymbol: string,
-    familyTargets: SgReportResolutionTarget[] = [{ symbol: pageSymbol, canonical: null }]
-  ): Promise<PageOneSgReports> => {
+export async function getPageOneReportsMany(
+  targets: { page_symbol: string; symbol: string; canonical: string | null }[]
+): Promise<Map<string, PageOneSgReports>> {
+  const symbols = [...new Set(targets.map(target => target.page_symbol))]
     const acceptedRunId = await getAcceptedPageOneRunId()
     if (acceptedRunId === null) {
       console.warn(
         'Page-one SG report links: no accepted run in mandates.sg_report_page_one_run_acceptances; mandate pages show the not-accepted state'
       )
-      return { acceptedRunId: null }
+      return new Map(symbols.map(symbol => [symbol, { acceptedRunId: null }]))
     }
 
-    const reports = await queryMany<PageOneSgReport>(
+    const reports = await queryMany<PageOneSgReport & { page_symbol: string }>(
       `/* trace:sg-reports.page-one.by-mandate */
-       SELECT o.report_recid,
+       SELECT matched.page_symbol, o.report_recid,
               o.report_symbols,
               d.title,
               d.date_publication::text AS date_published,
@@ -147,14 +146,14 @@ export const getSgReportsStatingResolution = cache(
        JOIN mandates.sg_report_page_one_outcomes o
          ON o.run_id = l.run_id AND o.report_recid = l.report_recid
        LEFT JOIN digitallibrary.documents d ON d.recid = l.report_recid
-       JOIN jsonb_to_recordset($2::jsonb) matched(symbol text, canonical text)
+       JOIN jsonb_to_recordset($2::jsonb) matched(page_symbol text, symbol text, canonical text)
          ON matched.symbol = ANY (l.cited_display_candidates)
          OR matched.canonical = l.cited_canonical
        WHERE l.run_id = $1
          AND l.citation_role = ANY ($3)
-       GROUP BY o.report_recid, o.report_symbols, d.title, d.date_publication
+       GROUP BY matched.page_symbol, o.report_recid, o.report_symbols, d.title, d.date_publication
        ORDER BY d.date_publication DESC NULLS LAST, o.report_symbols, o.report_recid`,
-      [acceptedRunId, JSON.stringify(familyTargets), PAGE_ONE_DISPLAYED_CITATION_ROLES]
+      [acceptedRunId, JSON.stringify(targets), PAGE_ONE_DISPLAYED_CITATION_ROLES]
     )
 
     // The schema allows {} (a catalogue record with no symbol), and the
@@ -166,11 +165,16 @@ export const getSgReportsStatingResolution = cache(
       }
       if (report.report_symbols.length === 0) {
         throw new Error(
-          `Page-one SG report links: report ${report.report_recid} in run ${acceptedRunId} is linked to ${pageSymbol} but has no document symbol`
+          `Page-one SG report links: report ${report.report_recid} in run ${acceptedRunId} is linked to ${report.page_symbol} but has no document symbol`
         )
       }
     }
 
-    return { acceptedRunId, reports }
-  }
-)
+    return new Map(symbols.map(symbol => [symbol, { acceptedRunId,
+      reports: reports.filter(report => report.page_symbol === symbol).map(row => { const report = { ...row }; Reflect.deleteProperty(report, 'page_symbol'); return report })
+    }]))
+}
+export const getSgReportsStatingResolution = cache(async (
+  pageSymbol: string,
+  familyTargets: SgReportResolutionTarget[] = [{ symbol: pageSymbol, canonical: null }]
+): Promise<PageOneSgReports> => (await getPageOneReportsMany(familyTargets.map(target => ({ ...target, page_symbol: pageSymbol })))).get(pageSymbol) ?? { acceptedRunId: null })
