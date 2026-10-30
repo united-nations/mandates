@@ -125,7 +125,13 @@ export function SecretariatNavigation({
               </span>
               <span className="mt-auto flex items-center gap-1.5 text-sm text-un-blue-text">
                 {item.action}
-                <ArrowRight aria-hidden className="size-4 shrink-0" />
+                <ArrowRight
+                  aria-hidden
+                  className={cn(
+                    'size-4 shrink-0 transition-transform duration-200 motion-reduce:transition-none',
+                    active ? 'rotate-90' : 'rotate-0'
+                  )}
+                />
               </span>
             </Link>
           )
