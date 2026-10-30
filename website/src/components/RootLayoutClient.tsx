@@ -39,7 +39,8 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
   ].includes(pathname)
   // Top-level nav destinations don't get a back button — it's reserved for
   // detail pages reached from within the app.
-  const isMainPage = isModalOpen || isSectionPage
+  const isMainPage =
+    isModalOpen || isSectionPage || pathname === '/focal-points/directory'
   const isDiffPage = pathname === '/diff'
   // Secretariat and both System views manage their own content widths.
   const isFullBleed = isModalOpen || isSectionPage
