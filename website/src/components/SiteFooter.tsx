@@ -26,10 +26,7 @@ export function SiteFooter() {
     <SharedSiteFooter
       locale="en"
       labels={labels}
-      extraLinks={[
-        { label: 'API and data', href: '/developers' },
-        { label: 'For AI agents', href: '/llms.txt' },
-      ]}
+      extraLinks={[{ label: 'For AI agents', href: '/llms.txt' }]}
       donateHref="https://www.un.org/en/about-us/how-to-donate-to-the-un-system"
       containerClassName="max-w-4xl px-8 sm:px-12 lg:max-w-6xl lg:px-16"
     />

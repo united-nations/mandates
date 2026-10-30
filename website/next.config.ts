@@ -139,8 +139,13 @@ const nextConfig: NextConfig = {
         permanent: false,
       },
       {
-        source: '/about',
-        destination: '/methodology',
+        source: '/methodology',
+        destination: '/about',
+        permanent: false,
+      },
+      {
+        source: '/developers',
+        destination: '/about#programmatic-access',
         permanent: false,
       },
       {

@@ -1,6 +1,47 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { publicQuery, ApiInputError } from '#lib/public-api'
+import {
+  publicQuery,
+  publicAgendaQuery,
+  publicProgrammeQuery,
+  ApiInputError,
+} from '#lib/public-api'
+
+test('browse endpoints default cleanly and reject ambiguous selectors', () => {
+  assert.deepEqual(publicAgendaQuery(new URLSearchParams()), {
+    body: 'GA',
+    session: undefined,
+  })
+  assert.deepEqual(
+    publicAgendaQuery(new URLSearchParams('body=SC&session=2025')),
+    {
+      body: 'SC',
+      session: '2025',
+    }
+  )
+  for (const query of [
+    'body=other',
+    'body=GA&body=SC',
+    'session=80&session=81',
+    'session=80.5',
+    'session=abcdef',
+    'session=12345',
+  ])
+    assert.throws(
+      () => publicAgendaQuery(new URLSearchParams(query)),
+      ApiInputError
+    )
+  assert.doesNotThrow(() => publicProgrammeQuery(new URLSearchParams()))
+  for (const query of [
+    'ppb_version=ppb2026',
+    'ppb_version=ppb2027',
+    'ppb_version=a&ppb_version=b',
+  ])
+    assert.throws(
+      () => publicProgrammeQuery(new URLSearchParams(query)),
+      ApiInputError
+    )
+})
 
 test('API pagination reaches past the UI offset boundary', () => {
   const query = publicQuery(

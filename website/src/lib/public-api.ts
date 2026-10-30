@@ -8,6 +8,29 @@ export const PUBLIC_HEADERS = {
 }
 export class ApiInputError extends Error {}
 
+function singleParameter(params: URLSearchParams, key: string) {
+  if (params.getAll(key).length > 1)
+    throw new ApiInputError(`Repeat parameters are not supported: ${key}`)
+  return params.get(key)?.trim() || undefined
+}
+
+export function publicAgendaQuery(params: URLSearchParams) {
+  const body = singleParameter(params, 'body') ?? 'GA'
+  if (body !== 'GA' && body !== 'SC' && body !== 'ECOSOC' && body !== 'HRC')
+    throw new ApiInputError('Unknown body; use GA, SC, ECOSOC or HRC')
+  const session = singleParameter(params, 'session')
+  if (session && !/^\d{1,4}$/.test(session))
+    throw new ApiInputError('Invalid session')
+  return { body, session } as const
+}
+
+export function publicProgrammeQuery(params: URLSearchParams) {
+  if (params.has('ppb_version'))
+    throw new ApiInputError(
+      'This endpoint serves the latest budget cycle only; omit ppb_version.'
+    )
+}
+
 export function publicQuery(params: URLSearchParams) {
   for (const key of FILTER_PARAMS) {
     if (params.getAll(key).length > 1)

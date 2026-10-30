@@ -7,7 +7,12 @@
   },
   "servers": [
     {
-      "url": "https://mandates.un.org"
+      "url": "/",
+      "description": "Current host"
+    },
+    {
+      "url": "https://mandates.un.org",
+      "description": "Production"
     }
   ],
   "paths": {
@@ -308,7 +313,7 @@
             }
           },
           "400": {
-            "description": "Malformed or repeated known query parameter, unsupported include/format or unknown budget cycle.",
+            "description": "Malformed or repeated known query parameter, unsupported selector/include/format, or unknown body, session or budget cycle.",
             "content": {
               "application/json": {
                 "schema": {
@@ -367,7 +372,7 @@
             }
           },
           "400": {
-            "description": "Malformed or repeated known query parameter, unsupported include/format or unknown budget cycle.",
+            "description": "Malformed or repeated known query parameter, unsupported selector/include/format, or unknown body, session or budget cycle.",
             "content": {
               "application/json": {
                 "schema": {
@@ -378,6 +383,112 @@
           },
           "404": {
             "description": "Document not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Data temporarily unavailable; retry after 30 seconds.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/agendas": {
+      "get": {
+        "operationId": "getAgendas",
+        "summary": "Browse intergovernmental agendas",
+        "description": "The hierarchy shown in the Intergovernmental Agendas tab, including allocations, available meeting counts, subtree resolution counts and related agenda clusters. Defaults to GA and the website’s preferred available session. SC uses a year as its session. Null counts and unavailable status mean missing data, not zero. No pagination or result cap. Serialize a node’s scope as agenda_scope in document search to retrieve its documents.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "GA",
+                "SC",
+                "ECOSOC",
+                "HRC"
+              ],
+              "default": "GA"
+            },
+            "description": "Intergovernmental body."
+          },
+          {
+            "name": "session",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d{1,4}$"
+            },
+            "description": "Session from the returned sessions array; for SC this is a year. Omit to use the same default as the website. Unknown sessions return 400."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Complete agenda tree, sessions, counts and related items. An empty status means no agenda is available for the body.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgendaResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed or repeated known query parameter, unsupported selector/include/format, or unknown body, session or budget cycle.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Data temporarily unavailable; retry after 30 seconds.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/programmes": {
+      "get": {
+        "operationId": "getProgrammes",
+        "summary": "Browse entities, programmes and budget locations",
+        "description": "The complete Entities and Programmes tab data: a flat tree keyed by id/parentId, document counts, expenditure matches keyed by row ID, and programme clusters. Includes official locations without citations. Serves only the latest available budget cycle, matching this tab; the response identifies that cycle. Historical cycles are not supported and ppb_version selectors return 400. No pagination or result cap. Expenditure amounts are budget-location figures, not allocations to documents.",
+        "responses": {
+          "200": {
+            "description": "Complete entity/programme tree, latest-cycle metadata, expenditure matches and cluster membership.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgrammeResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed or repeated known query parameter, unsupported selector/include/format, or unknown body, session or budget cycle.",
             "content": {
               "application/json": {
                 "schema": {
@@ -426,7 +537,7 @@
             }
           },
           "400": {
-            "description": "Malformed or repeated known query parameter, unsupported include/format or unknown budget cycle.",
+            "description": "Malformed or repeated known query parameter, unsupported selector/include/format, or unknown body, session or budget cycle.",
             "content": {
               "application/json": {
                 "schema": {
@@ -757,7 +868,7 @@
             }
           },
           "400": {
-            "description": "Malformed or repeated known query parameter, unsupported include/format or unknown budget cycle.",
+            "description": "Malformed or repeated known query parameter, unsupported selector/include/format, or unknown body, session or budget cycle.",
             "content": {
               "application/json": {
                 "schema": {
@@ -6152,6 +6263,528 @@
           "first_year",
           "last_year",
           "members"
+        ],
+        "additionalProperties": false
+      },
+      "AgendaResponse": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "apiVersion": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ready",
+              "empty"
+            ]
+          },
+          "body": {
+            "type": "string",
+            "enum": [
+              "GA",
+              "SC",
+              "ECOSOC",
+              "HRC"
+            ]
+          },
+          "sessions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "session": {
+            "type": "string"
+          },
+          "coverage": {
+            "type": "string",
+            "enum": [
+              "complete",
+              "partial"
+            ]
+          },
+          "dataCutoff": {
+            "type": "string"
+          },
+          "resolutionCountsStatus": {
+            "type": "string",
+            "enum": [
+              "ready",
+              "unavailable"
+            ]
+          },
+          "relatedCountsStatus": {
+            "type": "string",
+            "enum": [
+              "ready",
+              "unavailable"
+            ]
+          },
+          "nodes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "item": {
+                  "type": "string"
+                },
+                "titles": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "allocations": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "heading": {
+                  "type": "string"
+                },
+                "parentId": {
+                  "type": "string"
+                },
+                "depth": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "scope": {
+                  "type": "object",
+                  "properties": {
+                    "body": {
+                      "type": "string",
+                      "enum": [
+                        "GA",
+                        "SC",
+                        "ECOSOC",
+                        "HRC"
+                      ]
+                    },
+                    "session": {
+                      "type": "string"
+                    },
+                    "item": {
+                      "type": "string"
+                    },
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "body",
+                    "session",
+                    "item",
+                    "items"
+                  ],
+                  "additionalProperties": false,
+                  "description": "Serialize this object as the agenda_scope document-search parameter."
+                },
+                "meetingCount": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "resolutionCount": {
+                  "anyOf": [
+                    {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "description": "Null means the count is unavailable; zero is a known empty result. Counts include the item subtree."
+                },
+                "titleDifferences": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "relatedItems": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "title": {
+                        "type": "string"
+                      },
+                      "href": {
+                        "type": "string"
+                      },
+                      "members": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "body": {
+                              "type": "string",
+                              "enum": [
+                                "GA",
+                                "SC",
+                                "ECOSOC",
+                                "HRC"
+                              ]
+                            },
+                            "title": {
+                              "type": "string"
+                            },
+                            "current": {
+                              "type": "boolean"
+                            },
+                            "occurrences": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "session": {
+                                    "type": "string"
+                                  },
+                                  "item": {
+                                    "type": "string"
+                                  },
+                                  "resolutionCount": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 9007199254740991
+                                  },
+                                  "status": {
+                                    "type": "string",
+                                    "enum": [
+                                      "verified",
+                                      "unsupported"
+                                    ]
+                                  },
+                                  "reason": {
+                                    "type": "string"
+                                  },
+                                  "href": {
+                                    "type": "string"
+                                  },
+                                  "referenceNote": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "session",
+                                  "item",
+                                  "status"
+                                ],
+                                "additionalProperties": false
+                              }
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "body",
+                            "title",
+                            "current",
+                            "occurrences"
+                          ],
+                          "additionalProperties": false
+                        }
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "title",
+                      "members"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": [
+                "id",
+                "item",
+                "titles",
+                "allocations",
+                "heading",
+                "depth",
+                "scope",
+                "resolutionCount",
+                "titleDifferences",
+                "relatedItems"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "apiVersion",
+          "status",
+          "body",
+          "sessions",
+          "nodes"
+        ],
+        "additionalProperties": false
+      },
+      "ProgrammeResponse": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "apiVersion": {
+            "type": "string"
+          },
+          "budgetVersion": {
+            "type": "object",
+            "properties": {
+              "slug": {
+                "type": "string"
+              },
+              "display_name": {
+                "type": "string"
+              },
+              "ppb_year": {
+                "type": "number"
+              },
+              "is_default": {
+                "type": "boolean"
+              },
+              "sort_order": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "slug",
+              "display_name",
+              "ppb_year",
+              "is_default",
+              "sort_order"
+            ],
+            "additionalProperties": false
+          },
+          "rows": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "parentId": {
+                  "type": "string"
+                },
+                "depth": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "stream",
+                    "part",
+                    "section",
+                    "group",
+                    "entity",
+                    "subprogramme",
+                    "programme",
+                    "component"
+                  ]
+                },
+                "label": {
+                  "type": "string"
+                },
+                "detail": {
+                  "type": "string"
+                },
+                "count": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991,
+                  "description": "Document count for this location, including its subtree."
+                },
+                "entityCode": {
+                  "type": "string"
+                },
+                "hasChildren": {
+                  "type": "boolean"
+                },
+                "citationAvailable": {
+                  "description": "False for official locations without a citation-backed document scope.",
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "id",
+                "depth",
+                "kind",
+                "label",
+                "count",
+                "hasChildren"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "expenditures": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "const": "matched"
+                    },
+                    "amount": {
+                      "type": "number",
+                      "description": "USD expenditure for the entity/location, not allocation to this resolution."
+                    },
+                    "period": {
+                      "type": "string"
+                    },
+                    "funding": {
+                      "type": "object",
+                      "properties": {
+                        "regular_budget": {
+                          "type": "number"
+                        },
+                        "other_assessed": {
+                          "type": "number"
+                        },
+                        "extrabudgetary": {
+                          "type": "number"
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "nodeIds": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "sources": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "symbol": {
+                            "type": "string"
+                          },
+                          "url": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": false
+                      }
+                    },
+                    "datasetUrl": {
+                      "type": "string"
+                    },
+                    "openUrl": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "amount",
+                    "period",
+                    "funding",
+                    "nodeIds",
+                    "sources",
+                    "datasetUrl",
+                    "openUrl"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "const": "unavailable"
+                    },
+                    "reason": {
+                      "type": "string",
+                      "enum": [
+                        "dco_scope",
+                        "unsoh_period",
+                        "not_matched",
+                        "ambiguous",
+                        "source_unavailable"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "reason"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            },
+            "description": "Expenditure matches keyed by row ID. Amounts describe budget locations, not individual documents. Preserve period, status and provenance."
+          },
+          "clusters": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "nodeIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "unsupportedCount": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "reason": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "title",
+                "nodeIds"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "apiVersion",
+          "budgetVersion",
+          "rows",
+          "expenditures",
+          "clusters"
         ],
         "additionalProperties": false
       },

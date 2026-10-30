@@ -10,6 +10,8 @@ import {
   paragraphSchema,
   citationSchema,
   seriesSchema,
+  agendaResponseSchema,
+  programmeResponseSchema,
 } from '#lib/public-schemas'
 
 export const FILTER_DESCRIPTIONS: Record<string, string> = {
@@ -61,7 +63,7 @@ const json = (schema: object) => ({
 const errors = {
   '400': {
     description:
-      'Malformed or repeated known query parameter, unsupported include/format or unknown budget cycle.',
+      'Malformed or repeated known query parameter, unsupported selector/include/format, or unknown body, session or budget cycle.',
     ...json(ref('Error')),
   },
   '503': {
@@ -101,7 +103,10 @@ export function buildPublicOpenApi() {
       version: API_VERSION,
       description: `Public, read-only access to documents, extracted paragraphs, budget citations and resolution relationships. No authentication required. ${COVERAGE_NOTES.join(' ')}\nUse returned pageUrl/jsonUrl links verbatim. This API does not determine legal in-force status.`,
     },
-    servers: [{ url: 'https://mandates.un.org' }],
+    servers: [
+      { url: '/', description: 'Current host' },
+      { url: 'https://mandates.un.org', description: 'Production' },
+    ],
     paths: {
       '/api/v1/documents': {
         get: {
@@ -143,6 +148,59 @@ export function buildPublicOpenApi() {
             '404': {
               description: 'Document not found.',
               ...json(ref('Error')),
+            },
+            ...errors,
+          },
+        },
+      },
+      '/api/v1/agendas': {
+        get: {
+          operationId: 'getAgendas',
+          summary: 'Browse intergovernmental agendas',
+          description:
+            'The hierarchy shown in the Intergovernmental Agendas tab, including allocations, available meeting counts, subtree resolution counts and related agenda clusters. Defaults to GA and the website’s preferred available session. SC uses a year as its session. Null counts and unavailable status mean missing data, not zero. No pagination or result cap. Serialize a node’s scope as agenda_scope in document search to retrieve its documents.',
+          parameters: [
+            {
+              name: 'body',
+              in: 'query',
+              required: false,
+              schema: {
+                type: 'string',
+                enum: ['GA', 'SC', 'ECOSOC', 'HRC'],
+                default: 'GA',
+              },
+              description: 'Intergovernmental body.',
+            },
+            {
+              name: 'session',
+              in: 'query',
+              required: false,
+              schema: { type: 'string', pattern: '^\\d{1,4}$' },
+              description:
+                'Session from the returned sessions array; for SC this is a year. Omit to use the same default as the website. Unknown sessions return 400.',
+            },
+          ],
+          responses: {
+            '200': {
+              description:
+                'Complete agenda tree, sessions, counts and related items. An empty status means no agenda is available for the body.',
+              ...json(ref('AgendaResponse')),
+            },
+            ...errors,
+          },
+        },
+      },
+      '/api/v1/programmes': {
+        get: {
+          operationId: 'getProgrammes',
+          summary: 'Browse entities, programmes and budget locations',
+          description:
+            'The complete Entities and Programmes tab data: a flat tree keyed by id/parentId, document counts, expenditure matches keyed by row ID, and programme clusters. Includes official locations without citations. Serves only the latest available budget cycle, matching this tab; the response identifies that cycle. Historical cycles are not supported and ppb_version selectors return 400. No pagination or result cap. Expenditure amounts are budget-location figures, not allocations to documents.',
+          responses: {
+            '200': {
+              description:
+                'Complete entity/programme tree, latest-cycle metadata, expenditure matches and cluster membership.',
+              ...json(ref('ProgrammeResponse')),
             },
             ...errors,
           },
@@ -216,6 +274,8 @@ export function buildPublicOpenApi() {
         Paragraph: z.toJSONSchema(paragraphSchema),
         BudgetCitation: z.toJSONSchema(citationSchema),
         VersionHistory: z.toJSONSchema(seriesSchema),
+        AgendaResponse: z.toJSONSchema(agendaResponseSchema),
+        ProgrammeResponse: z.toJSONSchema(programmeResponseSchema),
         Reference: {
           type: 'object',
           required: [

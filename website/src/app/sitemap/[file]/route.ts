@@ -20,8 +20,8 @@ export async function GET(
           '/secretariat',
           '/secretariat/agenda-items',
           '/secretariat/entities-and-programs',
-          '/methodology',
-          '/developers',
+          '/about',
+          '/openapi',
           '/system',
         ]
       : []

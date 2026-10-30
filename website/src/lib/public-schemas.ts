@@ -117,6 +117,127 @@ export const expenditureSchema = z.union([
     ]),
   }),
 ])
+
+const agendaBodySchema = z.enum(['GA', 'SC', 'ECOSOC', 'HRC'])
+const relatedAgendaItemSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  href: z.string().optional(),
+  members: z.array(
+    z.object({
+      id: z.string(),
+      body: agendaBodySchema,
+      title: z.string(),
+      current: z.boolean(),
+      occurrences: z.array(
+        z.object({
+          id: z.string(),
+          session: z.string(),
+          item: z.string(),
+          resolutionCount: z.number().int().nonnegative().optional(),
+          status: z.enum(['verified', 'unsupported']),
+          reason: z.string().optional(),
+          href: z.string().optional(),
+          referenceNote: z.string().optional(),
+        })
+      ),
+    })
+  ),
+})
+export const agendaResponseSchema = z.object({
+  apiVersion: z.string(),
+  status: z.enum(['ready', 'empty']),
+  body: agendaBodySchema,
+  sessions: z.array(z.string()),
+  session: z.string().optional(),
+  coverage: z.enum(['complete', 'partial']).optional(),
+  dataCutoff: z.string().optional(),
+  resolutionCountsStatus: z.enum(['ready', 'unavailable']).optional(),
+  relatedCountsStatus: z.enum(['ready', 'unavailable']).optional(),
+  nodes: z.array(
+    z.object({
+      id: z.string(),
+      item: z.string(),
+      titles: z.array(z.string()),
+      allocations: z.array(z.string()),
+      heading: z.string(),
+      parentId: z.string().optional(),
+      depth: z.number().int().nonnegative(),
+      scope: z
+        .object({
+          body: agendaBodySchema,
+          session: z.string(),
+          item: z.string(),
+          items: z.array(z.string()),
+        })
+        .describe(
+          'Serialize this object as the agenda_scope document-search parameter.'
+        ),
+      meetingCount: z.number().int().nonnegative().optional(),
+      resolutionCount: z
+        .number()
+        .int()
+        .nonnegative()
+        .nullable()
+        .describe(
+          'Null means the count is unavailable; zero is a known empty result. Counts include the item subtree.'
+        ),
+      titleDifferences: z.array(z.string()),
+      relatedItems: z.array(relatedAgendaItemSchema),
+    })
+  ),
+})
+
+export const programmeResponseSchema = z.object({
+  apiVersion: z.string(),
+  budgetVersion: budgetVersionSchema,
+  rows: z.array(
+    z.object({
+      id: z.string(),
+      parentId: z.string().optional(),
+      depth: z.number().int().nonnegative(),
+      kind: z.enum([
+        'stream',
+        'part',
+        'section',
+        'group',
+        'entity',
+        'subprogramme',
+        'programme',
+        'component',
+      ]),
+      label: z.string(),
+      detail: z.string().optional(),
+      count: z
+        .number()
+        .int()
+        .nonnegative()
+        .describe('Document count for this location, including its subtree.'),
+      entityCode: z.string().optional(),
+      hasChildren: z.boolean(),
+      citationAvailable: z
+        .boolean()
+        .optional()
+        .describe(
+          'False for official locations without a citation-backed document scope.'
+        ),
+    })
+  ),
+  expenditures: z
+    .record(z.string(), expenditureSchema)
+    .describe(
+      'Expenditure matches keyed by row ID. Amounts describe budget locations, not individual documents. Preserve period, status and provenance.'
+    ),
+  clusters: z.array(
+    z.object({
+      id: z.string(),
+      title: z.string(),
+      nodeIds: z.array(z.string()),
+      unsupportedCount: z.number().int().nonnegative().optional(),
+      reason: z.string().optional(),
+    })
+  ),
+})
 const reportBase = z.object({
   report_recid: z.number(),
   title: nullableString,

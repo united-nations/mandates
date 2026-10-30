@@ -94,7 +94,7 @@ export async function documentExport(
     coverage: COVERAGE_NOTES,
     details: details ? 'included' : 'not_included',
     source: SITE_URL,
-    documentation: `${SITE_URL}/developers`,
+    documentation: `${SITE_URL}/about#programmatic-access`,
     consistency:
       'Live data, read in batches; source updates during a download may affect results.',
   }

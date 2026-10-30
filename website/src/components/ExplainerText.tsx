@@ -22,7 +22,7 @@ export function ExplainerText() {
             one. The hover treatment differs from the UN80 link above — that
             is the two links as they were written, not a normalisation
             anyone has ruled on. */}
-        <Link href="/methodology" className="text-un-blue-text hover:underline">
+        <Link href="/about" className="text-un-blue-text hover:underline">
           Learn more
         </Link>
         .
