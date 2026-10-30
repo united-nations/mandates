@@ -4,7 +4,7 @@ import { PassThrough, Readable } from 'node:stream'
 import ExcelJS from 'exceljs'
 import { createExportTable } from '#lib/excel-export-style'
 
-test('large Excel exports split before the hyperlink ceiling without losing rows or links', async () => {
+test('large Excel exports stay on one sheet and retain excess URLs as text', async () => {
   const stream = new PassThrough()
   const chunks: Buffer[] = []
   stream.on('data', (chunk: Buffer) => chunks.push(chunk))
@@ -27,9 +27,10 @@ test('large Excel exports split before the hyperlink ceiling without losing rows
 
   const workbook = new ExcelJS.Workbook()
   await workbook.xlsx.read(Readable.from([Buffer.concat(chunks)]))
-  assert.equal(workbook.worksheets.length, 2)
+  assert.equal(workbook.worksheets.length, 1)
   let records = 0
   let links = 0
+  let plainUrls = 0
   for (const sheet of workbook.worksheets) {
     assert.deepEqual(
       headings.map((_, index) => sheet.getRow(1).getCell(index + 1).value),
@@ -42,11 +43,17 @@ test('large Excel exports split before the hyperlink ceiling without losing rows
       assert.equal(row.getCell(1).value, `A/${records++}`)
       row.eachCell((cell) => {
         if (cell.type === ExcelJS.ValueType.Hyperlink) sheetLinks++
+        else if (
+          typeof cell.value === 'string' &&
+          cell.value.startsWith('https://')
+        )
+          plainUrls++
       })
     })
     assert.ok(sheetLinks <= 65_530)
     links += sheetLinks
   }
   assert.equal(records, total)
-  assert.equal(links, total * 3)
+  assert.equal(links, 65_530)
+  assert.equal(links + plainUrls, total * 3)
 })

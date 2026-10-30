@@ -1,3 +1,4 @@
+import { splitSubprogrammeLabel } from '../budget-labels'
 import { publicSeries } from '../public-series'
 import { createExportTable } from '../excel-export-style'
 import { Readable, PassThrough } from 'node:stream'
@@ -13,8 +14,8 @@ import {
 } from './public-documents'
 import {
   getMandates,
-  getMandateCitationsMany,
-  getResolutionSeriesMany,
+  getExcelCitationBatches,
+  getExcelVersionBatches,
 } from './mandates'
 import { SITE_URL } from '../seo'
 
@@ -99,7 +100,7 @@ export async function documentExport(
       'Live data, read in batches; source updates during a download may affect results.',
   }
   const batches = () =>
-    publicExportBatches(effectiveFilters, version.slug, details, signal)
+    publicExportBatches(effectiveFilters, version.slug, details, signal, true)
   const headers = {
     'Content-Disposition': `attachment; filename="${downloadName(format, generatedAt)}"`,
     'Cache-Control': 'no-store',
@@ -218,7 +219,7 @@ function excelStream(
   about.row(['API documentation', metadata.documentation])
   about.row([
     'Worksheet continuation',
-    'Large tables continue on numbered sheets when Excel worksheet row or hyperlink limits are reached. All matching records and links are retained.',
+    'All matching records and URLs are retained. Beyond Excel’s clickable-link limit, URLs remain as text on the same sheet. Tables continue on numbered sheets only at Excel’s row limit.',
   ])
   about.row([
     'Matching fields',
@@ -248,58 +249,65 @@ function excelStream(
         filters,
         metadata.budgetVersion.slug,
         false,
-        signal
+        signal,
+        true
       )) {
         await check()
         for (const document of batch) documents.row(documentValues(document))
       }
       documents.close()
-      const citations = table('Budget citations', [
+      const citationHeadings = [
         'Symbol',
         'Budget cycle',
         'Source budget document',
         'Entity',
         'Entity name',
         'Part',
+        'Part title',
         'Section',
         'Section title',
         'Programme',
         'Programme title',
         'Subprogramme',
-        'Component',
-        'Part in document',
-      ])
-      for await (const batch of publicExportBatches(
-        filters,
-        metadata.budgetVersion.slug,
-        false,
-        signal
-      )) {
+        'Subprogramme title',
+      ]
+      let citations: ReturnType<typeof table> | undefined
+      let includeComponents = false
+      for await (const batch of getExcelCitationBatches(filters, signal)) {
         await check()
-        const citationMap = await getMandateCitationsMany(
-          batch.map((document) => document.symbol),
-          metadata.budgetVersion.slug,
-          { includeTotals: false }
-        )
-        for (const document of batch)
-          for (const row of citationMap.get(document.symbol)?.citations ?? [])
-            citations.row([
-              document.symbol,
-              metadata.budgetVersion.slug,
-              row.origin_document,
-              row.entity,
-              row.entity_long,
-              row.budget_part,
-              row.section,
-              row.section_title,
-              row.programme,
-              row.programme_title,
-              row['sub-programme'],
-              row.component,
-              row.part_in_document,
-            ])
+        if (!citations) {
+          includeComponents = batch[0]?.has_components ?? false
+          citations = table('Budget citations', [
+            ...citationHeadings,
+            ...(includeComponents ? ['Component'] : []),
+            'Part in document',
+          ])
+        }
+        for (const row of batch)
+          citations.row([
+            row.symbol,
+            metadata.budgetVersion.slug,
+            row.origin_document || '',
+            row.entity || '',
+            row.entity_long || row.entity || '',
+            row.budget_part_number || '',
+            row.part_title || row.budget_part || '',
+            row.section || '',
+            row.section_title || '',
+            row.programme,
+            row.programme_title || '',
+            splitSubprogrammeLabel(row.sub_programme, row.sub_programme_number)
+              .number,
+            splitSubprogrammeLabel(row.sub_programme, row.sub_programme_number)
+              .title,
+            ...(includeComponents ? [row.component || null] : []),
+            row.part_in_document || '',
+          ])
       }
-      citations.close()
+      ;(
+        citations ??
+        table('Budget citations', [...citationHeadings, 'Part in document'])
+      ).close()
       const versions = table('Version relationships', [
         'Symbol',
         'Series anchor symbol (this export)',
@@ -310,31 +318,19 @@ function excelStream(
         'Latest in series',
         'Latest version',
       ])
-      for await (const batch of publicExportBatches(
-        filters,
-        metadata.budgetVersion.slug,
-        false,
-        signal
-      )) {
+      for await (const batch of getExcelVersionBatches(filters, signal)) {
         await check()
-        const seriesMap = await getResolutionSeriesMany(
-          batch.map((document) => document.symbol),
-          { includeMetrics: false }
-        )
-        for (const document of batch) {
-          const series = seriesMap.get(document.symbol)
-          if (series)
-            versions.row([
-              document.symbol,
-              series.members.at(-1)?.document_symbol ?? null,
-              series.series_count,
-              series.first_year,
-              series.last_year,
-              series.is_collection,
-              series.is_latest,
-              publicSeries(series, document.symbol)?.latest_version,
-            ])
-        }
+        for (const row of batch)
+          versions.row([
+            row.symbol,
+            row.anchor,
+            row.series_count,
+            row.first_year || null,
+            row.last_year || null,
+            row.is_collection,
+            row.is_latest,
+            publicSeries(row, row.symbol)?.latest_version,
+          ])
       }
       versions.close()
       await check()

@@ -8,7 +8,7 @@ const MAX_SHEET_HYPERLINKS = 65_530
 const isWebLink = (value: unknown): value is string =>
   typeof value === 'string' && /^https?:\/\//.test(value)
 
-/** Split at Excel's worksheet limits, retaining every record and clickable URL. */
+/** Retain all records; excess hyperlinks stay as text on the same worksheet. */
 export function createExportTable(
   book: ExcelJS.stream.xlsx.WorkbookWriter,
   name: string,
@@ -35,21 +35,21 @@ export function createExportTable(
   }
   return {
     row(values: unknown[]) {
-      const rowLinks = values.filter(isWebLink).length
-      if (
-        count === MAX_SHEET_ROWS ||
-        hyperlinks + rowLinks > MAX_SHEET_HYPERLINKS
-      ) {
+      if (count === MAX_SHEET_ROWS) {
         closeSheet()
         sheet = createSheet(`${name} ${++part}`)
         count = 1
         hyperlinks = 0
       }
       const row = sheet.addRow(values)
-      styleExportRow(row, headings, count % 2 === 0)
+      hyperlinks += styleExportRow(
+        row,
+        headings,
+        count % 2 === 0,
+        MAX_SHEET_HYPERLINKS - hyperlinks
+      )
       row.commit()
       count++
-      hyperlinks += rowLinks
     },
     close: closeSheet,
   }
@@ -92,8 +92,10 @@ export function styleExportSheet(sheet: ExcelJS.Worksheet, headings: string[]) {
 export function styleExportRow(
   row: ExcelJS.Row,
   headings: string[],
-  even: boolean
+  even: boolean,
+  remainingHyperlinks = MAX_SHEET_HYPERLINKS
 ) {
+  let hyperlinks = 0
   row.font = { name: 'Calibri', size: 10 }
   row.alignment = { horizontal: 'left', vertical: 'top', wrapText: true }
   if (even)
@@ -115,7 +117,8 @@ export function styleExportRow(
             Math.ceil(line.length / exportColumnWidth(headings[column - 1]))
           )
       )
-      if (isWebLink(text)) {
+      if (isWebLink(text) && hyperlinks < remainingHyperlinks) {
+        hyperlinks++
         cell.value = { text, hyperlink: text }
         cell.font = {
           name: 'Calibri',
@@ -129,4 +132,5 @@ export function styleExportRow(
       cell.numFmt = /year/i.test(headings[column - 1]) ? '0' : '#,##0'
   })
   row.height = Math.min(90, Math.max(22, lines * 15))
+  return hyperlinks
 }

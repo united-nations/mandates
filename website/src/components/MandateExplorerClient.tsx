@@ -151,7 +151,13 @@ export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
               totalPages={pagination.totalPages}
               pageSize={pageSize}
               totalItems={pagination.totalItems}
-              trailingAction={<ExportMenu />}
+              trailingAction={
+                <ExportMenu
+                  totalDocuments={
+                    filters.group === '1' ? undefined : pagination.totalItems
+                  }
+                />
+              }
             />
           </div>
         </div>

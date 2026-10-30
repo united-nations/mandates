@@ -1,3 +1,4 @@
+import { splitSubprogrammeLabel } from '#lib/budget-labels'
 import { mandateMembershipSql, versionPredicateSql } from '@/lib/mandate-membership'
 /**
  * Mandate Database Queries
@@ -14,7 +15,7 @@ import { getDocumentPdfUrl } from './source-links'
 import { getHistoricalDocument } from './historical-document'
 import type { DocumentTextMetrics } from '../text-analytics'
 import { unstable_cache } from 'next/cache'
-import { queryMany, queryOne } from '../db/query'
+import { queryMany, queryOne, queryBatches } from '../db/query'
 import { titleCase } from 'title-case'
 import { getMandateDisplayTitle, safeHighlightSearchTerms } from '@/lib/utils'
 import { compileSearchMarker } from '@/lib/paragraph-search'
@@ -734,10 +735,19 @@ function buildOrderByClause(sortBy?: string): string {
  * Fetch mandates with filters, sorting, and pagination
  * Returns mandates with aggregated citation counts and entity arrays
  */
-export async function getMandates(
-  filters: FilterOptions = {},
-  options: { page?: number; limit?: number; includeMetrics?: boolean; batchOffset?: number; batchSize?: number } = {}
-): Promise<{ mandates: Mandate[]; totalCount: number }> {
+interface MandateReadOptions {
+  page?: number
+  limit?: number
+  includeMetrics?: boolean
+  batchOffset?: number
+  batchSize?: number
+  unpaginated?: boolean
+}
+
+async function buildMandatesQuery(
+  filters: FilterOptions,
+  options: MandateReadOptions
+) {
   const pagination = normalizePagination(options.page, options.limit)
   const page = pagination.page
   const limit = options.batchSize ?? pagination.limit
@@ -972,13 +982,22 @@ export async function getMandates(
     query = buildUngroupedListSql({
       filteredCte: cte,
       keywordRank: keywordRankExpr,
-      limitParam: `$${bind(limit)}`,
-      offsetParam: `$${bind(offset)}`,
+      limitParam: options.unpaginated ? '' : `$${bind(limit)}`,
+      offsetParam: options.unpaginated ? '' : `$${bind(offset)}`,
       orderBy,
       seriesColumns: seriesCols,
+      unpaginated: options.unpaginated,
     })
   }
 
+  return { query, params, grouped, orderBy: orderBy.replace(/\bc\./g, '') }
+}
+
+export async function getMandates(
+  filters: FilterOptions = {},
+  options: Omit<MandateReadOptions, 'unpaginated'> = {}
+): Promise<{ mandates: Mandate[]; totalCount: number }> {
+  const { query, params, grouped } = await buildMandatesQuery(filters, options)
   const rows = await queryMany<MandateListRow>(query, params)
 
   if (rows.length === 0) {
@@ -987,8 +1006,126 @@ export async function getMandates(
 
   const totalCount = parseInt(rows[0]?.total_count ?? '0')
 
+  const mandates = mapMandateRows(rows, grouped)
+
+  if (options.includeMetrics !== false) {
+    return { mandates: await enrichTextMetrics(mandates), totalCount }
+  }
+  return { mandates, totalCount }
+}
+
+/** Export summaries use one query/cursor, preserving the list's filters and order. */
+export async function* getMandateExportBatches(
+  filters: FilterOptions,
+  signal?: AbortSignal
+) {
+  const { query, params } = await buildMandatesQuery(
+    { ...filters, group: undefined },
+    { unpaginated: true, includeMetrics: false }
+  )
+  for await (const rows of queryBatches<MandateListRow>(query, params, 5000, signal))
+    yield mapMandateRows(rows, false)
+}
+
+/** Same selected documents and order as the document sheet, without paginated re-reads. */
+async function excelExportSelection(filters: FilterOptions) {
+  const { query, params, orderBy } = await buildMandatesQuery(
+    { ...filters, group: undefined },
+    { unpaginated: true, includeMetrics: false }
+  )
+  return {
+    cte: `export_selection AS MATERIALIZED (
+      SELECT selected.ppb_full_document_symbol,
+             ROW_NUMBER() OVER (${orderBy}) AS export_order
+      FROM (${query}) selected
+    )`,
+    params,
+  }
+}
+
+interface ExportCitationRow {
+  symbol: string
+  origin_document: string | null
+  entity: string | null
+  entity_long: string | null
+  budget_part: string | null
+  budget_part_number: string | null
+  part_title: string | null
+  sub_programme_number: number | null
+  has_components: boolean
+  section: string | null
+  section_title: string | null
+  programme: number | null
+  programme_title: string | null
+  sub_programme: string | null
+  component: string | null
+  part_in_document: string | null
+}
+
+export async function* getExcelCitationBatches(filters: FilterOptions, signal: AbortSignal) {
+  const { cte, params } = await excelExportSelection(filters)
+  const versionParam = `$${params.push(filters.ppb_version ?? null)}`
+  const sql = `/* trace:exports.budget-citations */
+    WITH ${cte}
+    SELECT c.ppb_full_document_symbol AS symbol,
+      c.origin_document, c.entity, e.entity_long, c.budget_part, c.budget_part_number, bp.part_title,
+      c.sub_programme_number, BOOL_OR(NULLIF(TRIM(c.component), '') IS NOT NULL) OVER () AS has_components,
+      c.section, c.section_title, c.programme, c.programme_title,
+      c.sub_programme, c.component, c.part_in_document
+    FROM export_selection selected
+    JOIN ppb2026.source_document_citations c
+      ON c.ppb_full_document_symbol = selected.ppb_full_document_symbol
+    LEFT JOIN systemchart.entities e ON e.entity = c.entity
+    LEFT JOIN ppb2026.budget_documents bd ON c.origin_document ~ bd.match_pattern
+    LEFT JOIN ppb2026.budget_parts bp ON bp.part_number = c.budget_part_number
+    WHERE ${versionPredicateSql('c', versionParam)}
+    ORDER BY selected.export_order, c.entity, c.programme, c.id`
+  yield* queryBatches<ExportCitationRow>(sql, params, 5000, signal)
+}
+
+interface ExportVersionRow {
+  symbol: string
+  anchor: string
+  series_count: number
+  first_year: number | null
+  last_year: number | null
+  is_collection: boolean
+  is_latest: boolean
+  superseded_by: string | null
+}
+
+export async function* getExcelVersionBatches(filters: FilterOptions, signal: AbortSignal) {
+  const { cte, params } = await excelExportSelection(filters)
+  const sql = `/* trace:exports.version-summaries */
+    WITH ${cte}, me AS MATERIALIZED (
+      SELECT DISTINCT ON (rs.document_symbol) rs.*, selected.export_order
+      FROM digitallibrary.resolution_series rs
+      JOIN export_selection selected ON selected.ppb_full_document_symbol = rs.document_symbol
+      ORDER BY rs.document_symbol, rs.recid
+    ), families AS (
+      SELECT DISTINCT series_key, un_body, doc_type FROM me
+    ), anchors AS (
+      SELECT rs.series_key, rs.un_body, rs.doc_type,
+        (ARRAY_AGG(rs.document_symbol ORDER BY d.date_publication ASC NULLS FIRST, rs.document_symbol ASC))[1] AS anchor
+      FROM families f
+      JOIN digitallibrary.resolution_series rs
+        ON rs.series_key = f.series_key AND rs.un_body = f.un_body AND rs.doc_type = f.doc_type
+      LEFT JOIN digitallibrary.documents d ON d.recid = rs.recid
+      GROUP BY rs.series_key, rs.un_body, rs.doc_type
+      HAVING COUNT(*) > 1
+    )
+    SELECT me.document_symbol AS symbol, a.anchor, me.series_count,
+      me.series_first_year AS first_year, me.series_last_year AS last_year,
+      me.is_collection, me.is_latest, me.superseded_by
+    FROM me JOIN anchors a
+      ON a.series_key = me.series_key AND a.un_body = me.un_body AND a.doc_type = me.doc_type
+    ORDER BY me.export_order`
+  yield* queryBatches<ExportVersionRow>(sql, params, 5000, signal)
+}
+
+function mapMandateRows(rows: MandateListRow[], grouped: boolean): Mandate[] {
   // Transform DB rows to Mandate type
-  const mandates: Mandate[] = rows.map((row) => ({
+  return rows.map((row) => ({
     series:
       row.series_count != null
         ? {
@@ -1045,11 +1182,6 @@ export async function getMandates(
       part_in_document: '',
     })),
   }))
-
-  if (options.includeMetrics !== false) {
-    return { mandates: await enrichTextMetrics(mandates), totalCount }
-  }
-  return { mandates, totalCount }
 }
 
 /** Revalidate content fingerprints after the hour-long document-list cache. */
@@ -1205,6 +1337,8 @@ function mapCitationDetails(
   const citations = rows.map((row) => ({
     origin_document: row.origin_document || '',
     budget_part: row.budget_part || '',
+    budget_part_number: row.budget_part_number || null,
+    budget_part_title: row.part_title || row.budget_part || null,
     section: row.section || '',
     section_title: row.section_title || '',
     entity_long: row.entity_long || row.entity || '',
@@ -1212,6 +1346,8 @@ function mapCitationDetails(
     programme: row.programme,
     programme_title: row.programme_title || '',
     'sub-programme': row.sub_programme || null,
+    sub_programme_number: splitSubprogrammeLabel(row.sub_programme, row.sub_programme_number).number,
+    sub_programme_title: splitSubprogrammeLabel(row.sub_programme, row.sub_programme_number).title,
     component: row.component || null,
     description: '', // Not stored in citations table
     part_in_document: row.part_in_document || '',

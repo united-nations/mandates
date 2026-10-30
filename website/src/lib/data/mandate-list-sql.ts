@@ -13,6 +13,7 @@ interface ListSqlOptions {
   offsetParam: string
   orderBy: string
   seriesColumns: string
+  unpaginated?: boolean
 }
 
 const pageCte = (options: ListSqlOptions): string => `
@@ -23,7 +24,7 @@ const pageCte = (options: ListSqlOptions): string => `
     SELECT c.*${options.keywordRank}
     FROM counted c
     ${options.orderBy}
-    LIMIT ${options.limitParam} OFFSET ${options.offsetParam}
+    ${options.unpaginated ? '' : `LIMIT ${options.limitParam} OFFSET ${options.offsetParam}`}
   )`
 
 const seriesJoin = `LEFT JOIN LATERAL (

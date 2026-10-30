@@ -5,6 +5,7 @@ import {
   getMandateBySymbol,
   getMandateCitationsMany,
   getResolutionSeriesMany,
+  getMandateExportBatches,
 } from './mandates'
 import { getParagraphsBySymbols } from './paragraphs'
 import { getMandatedSgReportsMany } from './mandated-sg-reports'
@@ -240,8 +241,22 @@ export async function* publicExportBatches(
   filters: FilterOptions,
   version: string,
   details: boolean,
-  signal?: AbortSignal
+  signal?: AbortSignal,
+  streamRows = false
 ) {
+  // Rich exports and Excel relationship sheets perform additional pooled reads
+  // per batch. Do not hold a cursor connection while waiting for those reads.
+  if (streamRows && !details) {
+    for await (const batch of getMandateExportBatches(
+      { ...filters, ppb_version: version },
+      signal
+    ))
+      yield batch.map((record) => ({
+        ...publicDocument(record, version),
+        details: { status: 'not_included' as const },
+      }))
+    return
+  }
   let offset = 0
   while (!signal?.aborted) {
     const batch = await getMandates(

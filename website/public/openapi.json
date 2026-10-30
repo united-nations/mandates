@@ -1239,6 +1239,18 @@
                         "budget_part": {
                           "type": "string"
                         },
+                        "budget_part_number": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "budget_part_title": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
                         "section": {
                           "type": "string"
                         },
@@ -1255,6 +1267,19 @@
                           "type": "string"
                         },
                         "sub-programme": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "sub_programme_number": {
+                          "type": [
+                            "number",
+                            "null"
+                          ]
+                        },
+                        "sub_programme_title": {
+                          "description": "Title or an unnumbered source label, such as All Subprogrammes. The original combined label is retained in sub-programme.",
                           "type": [
                             "string",
                             "null"
@@ -1278,11 +1303,15 @@
                         "entity",
                         "entity_long",
                         "budget_part",
+                        "budget_part_number",
+                        "budget_part_title",
                         "section",
                         "section_title",
                         "programme",
                         "programme_title",
                         "sub-programme",
+                        "sub_programme_number",
+                        "sub_programme_title",
                         "component",
                         "description",
                         "part_in_document"
@@ -2606,6 +2635,18 @@
                             "budget_part": {
                               "type": "string"
                             },
+                            "budget_part_number": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "budget_part_title": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
                             "section": {
                               "type": "string"
                             },
@@ -2622,6 +2663,19 @@
                               "type": "string"
                             },
                             "sub-programme": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "sub_programme_number": {
+                              "type": [
+                                "number",
+                                "null"
+                              ]
+                            },
+                            "sub_programme_title": {
+                              "description": "Title or an unnumbered source label, such as All Subprogrammes. The original combined label is retained in sub-programme.",
                               "type": [
                                 "string",
                                 "null"
@@ -2645,11 +2699,15 @@
                             "entity",
                             "entity_long",
                             "budget_part",
+                            "budget_part_number",
+                            "budget_part_title",
                             "section",
                             "section_title",
                             "programme",
                             "programme_title",
                             "sub-programme",
+                            "sub_programme_number",
+                            "sub_programme_title",
                             "component",
                             "description",
                             "part_in_document"
@@ -3984,6 +4042,18 @@
                               "budget_part": {
                                 "type": "string"
                               },
+                              "budget_part_number": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "budget_part_title": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
                               "section": {
                                 "type": "string"
                               },
@@ -4000,6 +4070,19 @@
                                 "type": "string"
                               },
                               "sub-programme": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "sub_programme_number": {
+                                "type": [
+                                  "number",
+                                  "null"
+                                ]
+                              },
+                              "sub_programme_title": {
+                                "description": "Title or an unnumbered source label, such as All Subprogrammes. The original combined label is retained in sub-programme.",
                                 "type": [
                                   "string",
                                   "null"
@@ -4023,11 +4106,15 @@
                               "entity",
                               "entity_long",
                               "budget_part",
+                              "budget_part_number",
+                              "budget_part_title",
                               "section",
                               "section_title",
                               "programme",
                               "programme_title",
                               "sub-programme",
+                              "sub_programme_number",
+                              "sub_programme_title",
                               "component",
                               "description",
                               "part_in_document"
@@ -5054,6 +5141,18 @@
                 "budget_part": {
                   "type": "string"
                 },
+                "budget_part_number": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "budget_part_title": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
                 "section": {
                   "type": "string"
                 },
@@ -5070,6 +5169,19 @@
                   "type": "string"
                 },
                 "sub-programme": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "sub_programme_number": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "sub_programme_title": {
+                  "description": "Title or an unnumbered source label, such as All Subprogrammes. The original combined label is retained in sub-programme.",
                   "type": [
                     "string",
                     "null"
@@ -5093,11 +5205,15 @@
                 "entity",
                 "entity_long",
                 "budget_part",
+                "budget_part_number",
+                "budget_part_title",
                 "section",
                 "section_title",
                 "programme",
                 "programme_title",
                 "sub-programme",
+                "sub_programme_number",
+                "sub_programme_title",
                 "component",
                 "description",
                 "part_in_document"
@@ -6128,6 +6244,18 @@
           "budget_part": {
             "type": "string"
           },
+          "budget_part_number": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "budget_part_title": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "section": {
             "type": "string"
           },
@@ -6144,6 +6272,19 @@
             "type": "string"
           },
           "sub-programme": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "sub_programme_number": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "sub_programme_title": {
+            "description": "Title or an unnumbered source label, such as All Subprogrammes. The original combined label is retained in sub-programme.",
             "type": [
               "string",
               "null"
@@ -6167,11 +6308,15 @@
           "entity",
           "entity_long",
           "budget_part",
+          "budget_part_number",
+          "budget_part_title",
           "section",
           "section_title",
           "programme",
           "programme_title",
           "sub-programme",
+          "sub_programme_number",
+          "sub_programme_title",
           "component",
           "description",
           "part_in_document"

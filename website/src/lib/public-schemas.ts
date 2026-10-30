@@ -40,11 +40,17 @@ export const citationSchema = z.object({
   entity: z.string(),
   entity_long: z.string(),
   budget_part: z.string(),
+  budget_part_number: nullableString,
+  budget_part_title: nullableString,
   section: z.string(),
   section_title: z.string(),
   programme: z.number().nullable(),
   programme_title: z.string(),
   'sub-programme': nullableString,
+  sub_programme_number: z.number().nullable(),
+  sub_programme_title: nullableString.describe(
+    'Title or an unnumbered source label, such as All Subprogrammes. The original combined label is retained in sub-programme.'
+  ),
   component: nullableString,
   description: z.string(),
   part_in_document: z.string(),
