@@ -126,8 +126,41 @@ export const explainerTexts = {
 
   about: {
     heading: 'About the mandate registry',
+    links: [
+      { label: 'UN80 reform', href: 'https://www.un.org/un80-initiative/en' },
+      {
+        label: 'Dag Hammarskjöld Library',
+        href: 'https://digitallibrary.un.org/',
+      },
+      { label: 'Official Document System', href: 'https://documents.un.org/' },
+      {
+        label: 'Programme Budget of the UN Secretariat',
+        href: 'https://www.un.org/en/ga/fifth/81/ppb2027.shtml',
+      },
+      {
+        label: 'Budget of Peacekeeping Operations',
+        href: 'https://digitallibrary.un.org/search?ln=en&p=A/80/604/Add.*&f=&action_search=Search&c=Resource+Type&c=UN+Bodies&sf=year&so=d&rg=50&fti=0',
+      },
+      {
+        label: 'Plan Outline',
+        href: 'https://digitallibrary.un.org/record/4081209?ln=en&v=pdf',
+      },
+      { label: 'iGov', href: 'https://igov.un.org/home-page' },
+      {
+        label: 'agenda and annotations',
+        href: 'https://docs.un.org/en/A/HRC/63/1',
+      },
+      {
+        label: 'matters considered',
+        href: 'https://main.un.org/securitycouncil/en/content/highlights-2025',
+      },
+      {
+        label: 'Mandate Focal Points',
+        href: 'https://mandate-focal-points.un-two-zero.org/',
+      },
+    ],
     introduction:
-      'The mandate registry has been developed to support the work of the UN80 reform, workstream 2: mandate implementation review. It gives detailed insights into the mandates of the UN Secretariat and an overview of governing bodies across the UN System, as well as focal points for Member States to contact about mandate design.',
+      'The mandate registry has been developed to support the work of the UN80 reform, workstream 2: mandate implementation review. It gives detailed insights into the mandates of the UN Secretariat and an overview of governing bodies across the UN System, as well as focal points for Member States to contact about mandate design.',
     methodologyHeading: 'Methodology and scope',
     scope:
       'The mandate registry includes more than 40,000 resolutions and other mandate documents from 1946 to today. These cover all resolutions, decisions, and presidential statements of the four largest mandating bodies: General Assembly, Security Council, Economic and Social Council, and Human Rights Council. Nineteen other mandating bodies and other sources are also included, to the extent that their documents are cited by entities as mandates.',

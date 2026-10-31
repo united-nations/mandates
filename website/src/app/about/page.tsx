@@ -5,6 +5,25 @@ import { explainerTexts } from '@/lib/en_text_contents'
 
 const text = explainerTexts.about
 
+const linkPattern = new RegExp(
+  `(${text.links.map(({ label }) => label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})`,
+  'g'
+)
+
+/** Adds the source links while keeping the shared plain-text copy intact. */
+function AboutText({ children }: { children: string }) {
+  return children.split(linkPattern).map((part, index) => {
+    const link = text.links.find(({ label }) => label === part)
+    return link ? (
+      <a key={index} href={link.href} className="text-un-blue-text underline">
+        {part}
+      </a>
+    ) : (
+      part
+    )
+  })
+}
+
 export const metadata: Metadata = {
   title: explainerTexts.pageTitles.about,
   description: text.introduction,
@@ -18,7 +37,9 @@ export default function AboutPage() {
         {text.heading}
       </h1>
       <section aria-labelledby="methodology" className="space-y-4">
-        <p className="max-w-2xl">{text.introduction}</p>
+        <p className="max-w-2xl">
+          <AboutText>{text.introduction}</AboutText>
+        </p>
         <h2 id="methodology" className="pt-4 text-2xl font-semibold">
           {text.methodologyHeading}
         </h2>
@@ -26,7 +47,9 @@ export default function AboutPage() {
         <p className="max-w-2xl">{text.sourcesIntroduction}</p>
         <ul className="max-w-2xl list-disc space-y-3 pl-6">
           {text.sources.map((source) => (
-            <li key={source}>{source}</li>
+            <li key={source}>
+              <AboutText>{source}</AboutText>
+            </li>
           ))}
         </ul>
         <Image
