@@ -89,6 +89,66 @@ export const explainerTexts = {
       'As the list of UN Entities in this registry is derived from the budget submissions to the General Assembly, it includes Entities that are independent of the Secretariat and the Secretary-General. The inclusion of these Entities here is for reference only and is not intended to indicate that they are within the scope of the UN80 Initiative.',
   },
 
+  about: {
+    heading: 'About the mandate registry',
+    links: [
+      {
+        label: 'UN80 Initiative',
+        href: 'https://www.un.org/un80-initiative/en',
+      },
+      {
+        label: 'General Assembly resolution 80/251',
+        href: 'https://docs.un.org/en/A/RES/80/251',
+      },
+      {
+        label: 'Dag Hammarskjöld Library',
+        href: 'https://digitallibrary.un.org/',
+      },
+      { label: 'Official Document System', href: 'https://documents.un.org/' },
+      {
+        label: 'Programme Budget of the UN Secretariat',
+        href: 'https://www.un.org/en/ga/fifth/81/ppb2027.shtml',
+      },
+      {
+        label: 'Budget of Peacekeeping Operations',
+        href: 'https://digitallibrary.un.org/search?ln=en&p=A/80/604/Add.*&f=&action_search=Search&c=Resource+Type&c=UN+Bodies&sf=year&so=d&rg=50&fti=0',
+      },
+      {
+        label: 'Plan Outline',
+        href: 'https://digitallibrary.un.org/record/4081209?ln=en&v=pdf',
+      },
+      { label: 'iGov', href: 'https://igov.un.org/home-page' },
+      {
+        label: 'agenda and annotations',
+        href: 'https://docs.un.org/en/A/HRC/63/1',
+      },
+      {
+        label: 'matters considered',
+        href: 'https://main.un.org/securitycouncil/en/content/highlights-2025',
+      },
+      {
+        label: 'Mandate Focal Points',
+        href: 'https://mandate-focal-points.un-two-zero.org/',
+      },
+    ],
+    introduction:
+      'The mandate registry has been developed to support the work of the UN80 Initiative, workstream 2: mandate implementation review, and in response to paragraphs 4, 29 and 30 of General Assembly resolution 80/251 of 31 March 2026. It gives detailed insights into the mandates of the UN Secretariat and an overview of governing bodies across the UN System, as well as focal points for Member States to contact about mandate design.',
+    methodologyHeading: 'Methodology and scope',
+    scope:
+      'The mandate registry includes more than 40,000 resolutions and other mandate source documents from 1946 to today. These cover all resolutions, decisions, and presidential statements of the four largest mandating bodies: General Assembly, Security Council, Economic and Social Council, and Human Rights Council. Nineteen other mandating bodies and other sources are also included, to the extent that their documents are cited by entities as mandates.',
+    sourcesIntroduction: 'The specific data sources are:',
+    sources: [
+      'The metadata for these documents is retrieved from the Dag Hammarskjöld Library, along with full texts from the Official Document System.',
+      'Information about which entities are implementing mandates is extracted from budget documents, specifically the Programme Budget of the UN Secretariat, and the Budget of Peacekeeping Operations, and is complemented by resolutions relating to the UN Secretariat’s priority areas in its Plan Outline. The Programme Budget includes both sections about “Mandates and background” that explain why programmes exist, and about “Legislative mandates” that explain why specific programmes and subprogrammes require resources (see infographic below). Some entities covered by the programme budget are independent of the Secretariat and the Secretary-General. They appear in the registry because they are included in those budget documents; their inclusion does not imply that they fall within the scope of the UN80 Initiative.',
+      'Links to reports are established using metadata from the Dag Hammarskjöld Library and references extracted from the full texts.',
+      'Agendas of intergovernmental bodies are integrated via iGov for the General Assembly and the Economic and Social Council, and via its agenda and annotations for the Human Rights Council; for the Security Council, its matters considered are integrated.',
+      'Focal point contacts are designated by their entities via the Mandate Focal Points data entry portal.',
+    ],
+    preliminaryCitations:
+      'Some citations in the 2027 proposed UN programme budget are preliminary, drawn from advance versions of the underlying documents, and may change in the final budget: Section 1 (Overall policymaking, direction and coordination), from A/81/6 (Sect. 1); and the special political missions, from A/81/6 (Sect. 3)/Add.1–4.',
+    infographicAlt: 'How mandate source documents are identified',
+  },
+
   // /system page hero
   systemHeader: {
     headline: 'Trace mandates across the UN System.',

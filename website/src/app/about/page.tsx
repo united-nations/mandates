@@ -1,12 +1,32 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
-
 import { explainerTexts } from '@/lib/en_text_contents'
+
+const text = explainerTexts.about
+
+const linkPattern = new RegExp(
+  `(${text.links.map(({ label }) => label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})`,
+  'g'
+)
+
+/** Adds the source links while keeping the shared plain-text copy intact. */
+function AboutText({ children }: { children: string }) {
+  return children.split(linkPattern).map((part, index) => {
+    const link = text.links.find(({ label }) => label === part)
+    return link ? (
+      <a key={index} href={link.href} className="text-un-blue-text underline">
+        {part}
+      </a>
+    ) : (
+      part
+    )
+  })
+}
 
 export const metadata: Metadata = {
   title: explainerTexts.pageTitles.about,
-  description: explainerTexts.mainHeader.shortDescriptionPlain,
+  description: text.introduction,
   alternates: { canonical: '/about' },
 }
 
@@ -14,40 +34,33 @@ export default function AboutPage() {
   return (
     <article className="text-base leading-relaxed text-foreground">
       <h1 className="mb-6 text-3xl font-bold tracking-tight text-foreground">
-        About the Mandate Registry
+        {text.heading}
       </h1>
-
       <section aria-labelledby="methodology" className="space-y-4">
-        <h2 id="methodology" className="text-xl font-semibold">
-          Methodology and scope
+        <p className="max-w-2xl">
+          <AboutText>{text.introduction}</AboutText>
+        </p>
+        <h2 id="methodology" className="pt-4 text-2xl font-semibold">
+          {text.methodologyHeading}
         </h2>
-        {explainerTexts.mainHeader.fullDescription.map((paragraph, index) => (
-          <p key={index} className="max-w-2xl">
-            {paragraph}
-          </p>
-        ))}
-
+        <p className="max-w-2xl">{text.scope}</p>
+        <p className="max-w-2xl">{text.sourcesIntroduction}</p>
+        <ul className="max-w-2xl list-disc space-y-3 pl-6">
+          {text.sources.map((source) => (
+            <li key={source}>
+              <AboutText>{source}</AboutText>
+            </li>
+          ))}
+        </ul>
         <Image
           src="/images/methodology.svg"
-          alt="How mandate source documents are identified"
+          alt={text.infographicAlt}
           width={248}
           height={135}
           unoptimized
           className="h-auto w-full"
         />
-
-        <p className="max-w-2xl">
-          Some citations in the 2027 proposed UN programme budget are
-          preliminary, drawn from advance versions of the underlying documents,
-          and may change in the final budget: Section&nbsp;1 (Overall
-          policymaking, direction and coordination), from
-          A/81/6&nbsp;(Sect.&nbsp;1); and the special political missions, from
-          A/81/6&nbsp;(Sect.&nbsp;3)/Add.1–4.
-        </p>
-
-        <p className="max-w-2xl text-muted-foreground italic">
-          {explainerTexts.mainHeader.disclaimer}
-        </p>
+        <p className="max-w-2xl">{text.preliminaryCitations}</p>
       </section>
 
       <section
@@ -55,7 +68,7 @@ export default function AboutPage() {
         className="mt-10 max-w-2xl space-y-4"
       >
         <h2 id="programmatic-access" className="text-xl font-semibold">
-          Using this programmatically
+          Technical access via the API
         </h2>
         <p>
           The public read-only API lets you search documents, retrieve available

@@ -68,9 +68,9 @@ export function SiteHeader() {
                   href="/about"
                   className="font-medium text-un-blue-text underline hover:text-shuttle-gray"
                 >
-                  methodology
+                  About page
                 </Link>{' '}
-                section for information on the current scope.
+                for information on the current scope.
               </p>
             </TooltipContent>
           </Tooltip>
