@@ -17,6 +17,7 @@ const navItems = [
   // entry by exact string equality against `activeHref` (the pathname), so a
   // shorter href would never match and the entry would never light.
   { href: '/focal-points/directory', label: 'Focal points' },
+  { href: '/about', label: 'About' },
 ]
 
 export function SiteHeader() {
