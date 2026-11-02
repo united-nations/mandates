@@ -110,7 +110,7 @@ export const explainerTexts = {
         href: 'https://www.un.org/en/ga/fifth/81/ppb2027.shtml',
       },
       {
-        label: 'ACABQ reports on proposed peacekeeping budgets',
+        label: 'proposed peacekeeping budgets',
         href: 'https://digitallibrary.un.org/search?ln=en&p=A/80/604/Add.*&f=&action_search=Search&c=Resource+Type&c=UN+Bodies&sf=year&so=d&rg=50&fti=0',
       },
       {
@@ -139,8 +139,7 @@ export const explainerTexts = {
     sourcesIntroduction: 'The specific data sources are:',
     sources: [
       'The metadata for these documents is retrieved from the Dag Hammarskjöld Library, along with full texts from the Official Document System.',
-      'Information about which entities are implementing mandates is extracted from budget documents, specifically the Proposed Programme Budget of the UN Secretariat, and is complemented by resolutions relating to the UN Secretariat’s priority areas in its Plan Outline. These citations are taken from budget proposals and do not represent the final budget adopted by the General Assembly. The proposed programme budget includes both sections about “Mandates and background” that explain why programmes exist, and about “Legislative mandates” that explain why specific programmes and subprogrammes require resources (see infographic below). Some entities covered by the proposed programme budget are independent of the Secretariat and the Secretary-General. They appear in the registry because they are included in those budget proposals; their inclusion does not imply that they fall within the scope of the UN80 Initiative.',
-      'For peacekeeping operations, mandate citations are extracted primarily from ACABQ reports on proposed peacekeeping budgets (the A/79/724 and A/80/604 series), issued by the Advisory Committee on Administrative and Budgetary Questions. Where needed, these are supplemented by mandate references in the Secretary-General’s budget reports. These sources do not represent the final budgets adopted by the General Assembly.',
+      'Information about which entities are implementing mandates is based on the Proposed Programme Budget of the UN Secretariat and proposed peacekeeping budgets, complemented by resolutions relating to the UN Secretariat’s priority areas in its Plan Outline. These citations are taken from budget proposals and do not represent the final budget adopted by the General Assembly. The proposed programme budget includes both sections about “Mandates and background” that explain why programmes exist, and about “Legislative mandates” that explain why specific programmes and subprogrammes require resources (see infographic below). Some entities covered by the proposed programme budget are independent of the Secretariat and the Secretary-General. They appear in the registry because they are included in those budget proposals; their inclusion does not imply that they fall within the scope of the UN80 Initiative.',
       'Links to reports are established using metadata from the Dag Hammarskjöld Library and references extracted from the full texts.',
       'Agendas of intergovernmental bodies are integrated via iGov for the General Assembly and the Economic and Social Council, and via its agenda and annotations for the Human Rights Council; for the Security Council, its matters considered are integrated.',
       'Focal point contacts are designated by their entities via the Mandate Focal Points data entry portal.',
