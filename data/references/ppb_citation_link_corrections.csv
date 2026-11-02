@@ -1,0 +1,3 @@
+year,file,original_link,corrected_link,corrected_source,expected_rows,reason
+2027,A_81_6 (SECT. 3)_ADD.2.json,https://docs.un.org/en/A/HRC/RES/77/318,https://docs.un.org/en/A/RES/77/318,General Assembly resolutions,1,The surrounding text explicitly identifies 77/318 as a General Assembly resolution.
+2027,A_81_6 (SECT. 1).json,https://docs.un.org/en/A/74/73-/E/2019/14,https://docs.un.org/en/A/74/73,,1,Use the General Assembly identifier of the jointly issued report consistently with the other joint reports in this passage.

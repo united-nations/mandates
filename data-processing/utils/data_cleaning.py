@@ -1,7 +1,27 @@
 import re
 from functools import lru_cache
+from pathlib import Path
 
 import pandas as pd
+
+
+def apply_reviewed_link_corrections(df, file_name, year):
+    """Correct documented source-link errors without modifying downloaded files."""
+    path = Path("../data/references/ppb_citation_link_corrections.csv")
+    if not path.exists():
+        return df
+    corrections = pd.read_csv(path, dtype=str).fillna("")
+    corrections = corrections[
+        (corrections["year"] == str(year)) & (corrections["file"] == file_name)
+    ]
+    for correction in corrections.to_dict("records"):
+        matched = df["link"] == correction["original_link"]
+        if matched.sum() != int(correction["expected_rows"]):
+            raise ValueError(f"Reviewed link correction no longer matches {file_name}")
+        df.loc[matched, "link"] = correction["corrected_link"]
+        if correction["corrected_source"]:
+            df.loc[matched, "mandate_source"] = correction["corrected_source"]
+    return df
 
 
 def normalize_title(title: str):

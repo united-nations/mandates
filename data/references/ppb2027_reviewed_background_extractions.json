@@ -1,0 +1,746 @@
+{
+  "reviewed_on": "2026-11-02",
+  "scope": "Manual review of the 49 background sections in the five final replacement fascicles; preserve prior supplemental results for 45 unchanged background sections. Empty reviewed results are explicit. Hyperlinked references remain handled by the normal deterministic extractor.",
+  "entries": [
+    {
+      "input_sha256": "bf21ee5d78df8d5800f62059c99c138677850580ca9f8247e727d7dd17db763d",
+      "file": "A_81_6 (SECT. 1).json",
+      "entity": "Office of the Special Representative of the Secretary-General for Children and Armed Conflict",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "8e32656b797c7ebe046e771c5d89661c77d41b3ce8b172f6a5a707778356d931",
+      "file": "A_81_6 (SECT. 1).json",
+      "entity": "Office of the Special Representative of the Secretary-General on Sexual Violence in Conflict",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "7233e592daa4960740465d9f164683867e593c701c9325fd293ffa006651d107",
+      "file": "A_81_6 (SECT. 1).json",
+      "entity": "Office of the Special Representative of the Secretary-General on Violence against Children",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "fac8da4b3a7e0748e2e232a022af921ed54aa41845fa1747f085e50f9884e13f",
+      "file": "A_81_6 (SECT. 1).json",
+      "entity": "Office of the United Nations Special Coordinator on Improving the United Nations Response to Sexual Exploitation and Abuse",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "89ef6a8a0ccfed0044af041963cf0fb5996ca398af2a7ff3a5721d1f421edf29",
+      "file": "A_81_6 (SECT. 1).json",
+      "entity": "Office of the United Nations Ombudsman and Mediation Services",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "df951b5c23ca6d31ea6612a608641599dd2a521b3f09c6631e2d82070ff76d57",
+      "file": "A_81_6 (SECT. 1).json",
+      "entity": "Office of Administration of Justice",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "2c0d96ab2f00538a2df8eb18394176c7b6c2e6a9c010f556d5cd7a9b9bd7879b",
+      "file": "A_81_6 (SECT. 1).json",
+      "entity": "Ethics Office",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "5a0bc760bb651d4bca1a7faadb47f7d844eafe2946ae85347a9ce27cd1e2d67e",
+      "file": "A_81_6 (SECT. 1).json",
+      "entity": "Resident coordinator system",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "7bc7393b67d8c5629ffa62f4535e134fe412c6f909bb026ed1c4738a34796263",
+      "file": "A_81_6 (SECT. 1).json",
+      "entity": "United Nations Youth Office",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "a5267e0c9c943235441d649069d00c7bbfcc0bdd72e21b5b326702339bc98872",
+      "file": "A_81_6 (SECT. 1).json",
+      "entity": "Office of Data Protection and Privacy",
+      "review": "Reviewed article 12 of the Universal Declaration of Human Rights and article 17 of the International Covenant on Civil and Political Rights. These are internal provisions of the named instruments, excluded under the existing extraction rule against sub-article references; no additional standalone document-symbol reference remains unlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "d919a36e93f36a7908096e023089c543a837cb99a2bd206f011d465833ee852b",
+      "file": "A_81_6 (SECT. 1).json",
+      "entity": "Office for Digital and Emerging Technologies",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "1a88bf9cf94a8b0ffea551fbeac427b55beb32d88bbaed21950d3758ba848619",
+      "file": "A_81_6 (SECT. 1).json",
+      "entity": "United Nations Alliance of Civilizations",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "26107b262beff4547094d1b4b0d443f254ce6b1dd4a1b8a6eb39cd91965da629",
+      "file": "A_81_6 (SECT. 1).json",
+      "entity": "United Nations Sustainable Development Group System-wide Evaluation Office",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "1c7734a3f468d77ae24ebe4b1c01b9a4b6c0ad3ac68837fc03fe5f695d51ab29",
+      "file": "A_81_6 (SECT. 10).json",
+      "entity": null,
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "150cd740a5ef4356522a5eb46c657d79faf27ca851c2967a23cf5a1c8a4ead8c",
+      "file": "A_81_6 (SECT. 11).json",
+      "entity": null,
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": [
+        {
+          "mandate_symbol": "32/197",
+          "mandate_context": "The mandates of the Office, ECA and the Department derive from the priorities established in relevant resolutions and decisions, including General Assembly resolutions 32/197, 57/7, 57/300, 61/296, 66/293 and 76/236 and Economic and Social Council resolutions 671 (XXV) A and 1998/46.",
+          "mandate_source": "General Assembly"
+        },
+        {
+          "mandate_symbol": "671 (XXV) A",
+          "mandate_context": "The mandates of the Office, ECA and the Department derive from the priorities established in relevant resolutions and decisions, including General Assembly resolutions 32/197, 57/7, 57/300, 61/296, 66/293 and 76/236 and Economic and Social Council resolutions 671 (XXV) A and 1998/46.",
+          "mandate_source": "Economic and Social Council"
+        },
+        {
+          "mandate_symbol": "1998/46",
+          "mandate_context": "The mandates of the Office, ECA and the Department derive from the priorities established in relevant resolutions and decisions, including General Assembly resolutions 32/197, 57/7, 57/300, 61/296, 66/293 and 76/236 and Economic and Social Council resolutions 671 (XXV) A and 1998/46.",
+          "mandate_source": "Economic and Social Council"
+        }
+      ]
+    },
+    {
+      "input_sha256": "92c29838e70a8f6f72ee803191d41d50b0554fd2dba77e83c4db4420891c16e3",
+      "file": "A_81_6 (SECT. 12).json",
+      "entity": null,
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "59a53d6a7011939bf00ae29029876d69b2e5bf00997b0a2dc2cc299d4e6dd01c",
+      "file": "A_81_6 (SECT. 13).json",
+      "entity": null,
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "eff0fe75432b8a2c706f10760587bd5ea8244144091d662b1b6cc396f89384b8",
+      "file": "A_81_6 (SECT. 14).json",
+      "entity": null,
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": [
+        {
+          "mandate_symbol": "19/1",
+          "mandate_context": "The mandate derives primarily from the priorities established in General Assembly resolution 2997 (XXVII), decision 19/1 of the Governing Council of UNEP and the Nairobi Declaration on the Role and Mandate of the United Nations Environment Programme, which the Assembly endorsed in 1997 in the annex to its resolution S-19/2 and further reaffirmed in its resolutions 53/242, in 1999, and 66/288 and 67/213, in 2012.",
+          "mandate_source": "Governing Council of UNEP"
+        }
+      ]
+    },
+    {
+      "input_sha256": "cdce00ed2c59e051baba92701d4a3e9ddd0b853c658af623fd160dce9a4a5130",
+      "file": "A_81_6 (SECT. 15).json",
+      "entity": null,
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "00f5dd78f252de004e17487d043be5277c906f115de642b65f71b08d6e1cb863",
+      "file": "A_81_6 (SECT. 16).json",
+      "entity": null,
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": [
+        {
+          "mandate_symbol": "United Nations Convention against Transnational Organized Crime",
+          "mandate_context": "They include the three international drug control conventions, the United Nations Convention against Transnational Organized Crime and the Protocols thereto, the United Nations Convention against Corruption, the 19 international conventions and protocols against terrorism, the United Nations standards and norms in crime prevention and criminal justice, and the United Nations Convention against Cybercrime; Strengthening International Cooperation for Combating Certain Crimes Committed by Means of Information and Communications Technology Systems and for the Sharing of Evidence in Electronic Form of Serious Crimes.",
+          "mandate_source": "United Nations"
+        },
+        {
+          "mandate_symbol": "United Nations Convention against Corruption",
+          "mandate_context": "They include the three international drug control conventions, the United Nations Convention against Transnational Organized Crime and the Protocols thereto, the United Nations Convention against Corruption, the 19 international conventions and protocols against terrorism, the United Nations standards and norms in crime prevention and criminal justice, and the United Nations Convention against Cybercrime; Strengthening International Cooperation for Combating Certain Crimes Committed by Means of Information and Communications Technology Systems and for the Sharing of Evidence in Electronic Form of Serious Crimes.",
+          "mandate_source": "United Nations"
+        },
+        {
+          "mandate_symbol": "United Nations Convention against Cybercrime",
+          "mandate_context": "They include the three international drug control conventions, the United Nations Convention against Transnational Organized Crime and the Protocols thereto, the United Nations Convention against Corruption, the 19 international conventions and protocols against terrorism, the United Nations standards and norms in crime prevention and criminal justice, and the United Nations Convention against Cybercrime; Strengthening International Cooperation for Combating Certain Crimes Committed by Means of Information and Communications Technology Systems and for the Sharing of Evidence in Electronic Form of Serious Crimes.",
+          "mandate_source": "United Nations"
+        }
+      ]
+    },
+    {
+      "input_sha256": "809d52bac6a12d4e6c252dc48fe74dfdb21b3489ebc1fe5a068f252c87696ffe",
+      "file": "A_81_6 (SECT. 17).json",
+      "entity": null,
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "bc7534d67138459876274da6f80cc389e6d2f8ae5dff14c78a2c74fa7cffb920",
+      "file": "A_81_6 (SECT. 18).json",
+      "entity": "Economic Commission for Africa",
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "6ac1ebfee77d354dc9d2a65e5df619084536fd8f34c7287d3b0b984de82f67b7",
+      "file": "A_81_6 (SECT. 19).json",
+      "entity": null,
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": [
+        {
+          "mandate_symbol": "73/9",
+          "mandate_context": "The work of ESCAP is further guided by General Assembly resolutions, global development frameworks and the regional road map for implementing the 2030 Agenda for Sustainable Development in Asia and the Pacific, endorsed by the Commission in its resolution 73/9, which serve as reference frameworks.",
+          "mandate_source": "ESCAP"
+        }
+      ]
+    },
+    {
+      "input_sha256": "903aca168750d2a6f8ca018c89323efff95e5230c958f547acfde117068c7e05",
+      "file": "A_81_6 (SECT. 2).json",
+      "entity": null,
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "d09fd875547192c3e695e4672d1feb806bd48656df33d272f08d275693d1b3aa",
+      "file": "A_81_6 (SECT. 20).json",
+      "entity": null,
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "908a58f337cb4192af1a9476f9303660a4f3c8cf66b6c503434794154dbfa54f",
+      "file": "A_81_6 (SECT. 21).json",
+      "entity": null,
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": [
+        {
+          "mandate_symbol": "553 (XXVI)",
+          "mandate_context": "In 1996, pursuant to ECLAC resolution 553 (XXVI), the Commission decided, inter alia, to collaborate with member States in the comprehensive analysis of development processes geared towards the design, monitoring and evaluation of public policies and the resulting provision of operational services in the fields of specialized information, advisory services, training and support for regional and international cooperation and coordination.",
+          "mandate_source": "ECLAC"
+        }
+      ]
+    },
+    {
+      "input_sha256": "756144ec7d30321d5786eaf42334f73b317d4f500ae531924137ecbd8bf08347",
+      "file": "A_81_6 (SECT. 22).json",
+      "entity": null,
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "db374baa9a6952b6b218c59ee52446e35309cd95ace6b9f5e8bfb40b793d960c",
+      "file": "A_81_6 (SECT. 24).json",
+      "entity": "Office of the United Nations High Commissioner for Human Rights",
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "6a16a798cecb65ed28e7fdef689b57ebcbc1048e34100682cc994696b7bc2214",
+      "file": "A_81_6 (SECT. 25).json",
+      "entity": null,
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "f1683d1eb2568b3bd4bba8e89d570578c8f4b296565dff3edc76654384ea9de4",
+      "file": "A_81_6 (SECT. 26).json",
+      "entity": null,
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "8826cf70d60c42023d66cfd733b67e5e7ef1bc39bc5f7f201159137f488af300",
+      "file": "A_81_6 (SECT. 27).json",
+      "entity": "Office for the Coordination of Humanitarian Affairs",
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "fcf54dc951ebb3dd047abe8116bebc95f1a99946a34796ab1dfbe9dea32bc3d5",
+      "file": "A_81_6 (SECT. 27).json",
+      "entity": "United Nations Office for Disaster Risk Reduction",
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "77d9f9009642be768032062fc4a8b77dc09bfe4aeb0f6146406a84bd091e9aa6",
+      "file": "A_81_6 (SECT. 28).json",
+      "entity": null,
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "0067302837a39a748d7c2c2749ff978d8ff0e0985b901438437c38163e4dec17",
+      "file": "A_81_6 (SECT. 29A).json",
+      "entity": null,
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "03bbff2b2eee842c1d2c4c8d551ef166d25c7321e87062280f44287108127576",
+      "file": "A_81_6 (SECT. 29B).json",
+      "entity": null,
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "301d84d17b4e0f99c06b7a503560bb5128fcdbdf1f30cebe63d21f22b33ebcac",
+      "file": "A_81_6 (SECT. 29C).json",
+      "entity": null,
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "e98365158ddba330dc5d6596c80263caea1a0fda91c7ad25b08b8c11708f517a",
+      "file": "A_81_6 (SECT. 29D).json",
+      "entity": null,
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "a31738a2210772de2e1ae7322a9460d16078fecf8b0345ade9f6606905edfa99",
+      "file": "A_81_6 (SECT. 29E).json",
+      "entity": null,
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "935bc4621266c6db93d75469deca0027cd7cfe1ee6b8fbcbb57e015d3edee430",
+      "file": "A_81_6 (SECT. 29F).json",
+      "entity": null,
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "1d851673e7964224bb2a2297b5c5c2f5037bf7b14fa3e7e05ad66bcd86924774",
+      "file": "A_81_6 (SECT. 3).json",
+      "entity": "Department of Political and Peacebuilding Affairs",
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "9c390c91e9313a2c866b5d47dd713aaa690dd46e55ba6fb995de957273ae4cd1",
+      "file": "A_81_6 (SECT. 3).json",
+      "entity": "Office of the United Nations Special Coordinator for the Middle East Peace Process",
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "b3d6ad53a3bca290c4d5c42402373ff89f8bcb10b4ba446d3e0d310a5aa3ed04",
+      "file": "A_81_6 (SECT. 3).json",
+      "entity": "United Nations Register of Damage Caused by the Construction of the Wall in the Occupied Palestinian Territory",
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "a3d96918319dd39e3a189dce2bb0cd1828f83f26f25efb17292869e197fb547a",
+      "file": "A_81_6 (SECT. 3).json",
+      "entity": "United Nations Office to the African Union",
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "d35dab1cebd9cc7b4ce37259795266745482d8c9d639490ae3d648e8e3d5b9be",
+      "file": "A_81_6 (SECT. 3).json",
+      "entity": "Office of Counter-Terrorism",
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "b2923ae76faa3ecbbfbe422820fa44c7c8bc48f9ad3492a46e0994cee67cee75",
+      "file": "A_81_6 (SECT. 3)_ADD.2.json",
+      "entity": "Mission of the Secretary-General’s Good Offices in Cyprus",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "daec2ebc3698f36237ac94f94a78554ecef91ddd84ef0f0a37d89c691fb46d56",
+      "file": "A_81_6 (SECT. 3)_ADD.2.json",
+      "entity": "Office of the Special Adviser to the Secretary-General on the Prevention of Genocide",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "f0e97e76692f888965243275deaa6831973d7c8926a0efef07b7fbbc9f462e62",
+      "file": "A_81_6 (SECT. 3)_ADD.2.json",
+      "entity": "Personal Envoy of the Secretary-General for Western Sahara",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "3521df467c4c4a20808f18279c2969f028e6d51fc138d3754b0043b8a7cea9d9",
+      "file": "A_81_6 (SECT. 3)_ADD.2.json",
+      "entity": "Support for the implementation of Security Council resolution 1559 (2004)",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "465d3b0059bcc7ff8b682c2ed3d42049e622f963b828c031906aaff2ffed4d22",
+      "file": "A_81_6 (SECT. 3)_ADD.2.json",
+      "entity": "Office of the United Nations Representative to the Geneva International Discussions",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "eb45174d76001a95f6f79f92d475bed0a79aa343293044c98daf0f2b6914a644",
+      "file": "A_81_6 (SECT. 3)_ADD.2.json",
+      "entity": "Office of the Special Envoy of the Secretary-General for Syria",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "6cf35a0897f1fc6b0bf76bc58be48325311734b8445ac418b141f921a30f74e4",
+      "file": "A_81_6 (SECT. 3)_ADD.2.json",
+      "entity": "Office of the Special Envoy of the Secretary-General for the Horn of Africa",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "d98f14c64d9b452d8ddb372e84a63b9665910d6ebc8edcda7aa94d812e0c959e",
+      "file": "A_81_6 (SECT. 3)_ADD.2.json",
+      "entity": "Office of the Special Envoy of the Secretary-General for the Great Lakes Region",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "dd7b4bc003270b403febaa518addb1feb888ecff711331b29024c2c838932996",
+      "file": "A_81_6 (SECT. 3)_ADD.2.json",
+      "entity": "Office of the Special Envoy of the Secretary-General for Yemen",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "076ed1ba05a1b18e0236fe8bd21d8fb33b2d481845fdebc1653d24f9cf1d69af",
+      "file": "A_81_6 (SECT. 3)_ADD.2.json",
+      "entity": "Office of the Special Envoy of the Secretary-General on Myanmar",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "581b44ae0599129b126641161bb7e5da6289dbc3b186d2e88a3f11a387cd217f",
+      "file": "A_81_6 (SECT. 3)_ADD.2.json",
+      "entity": "Office of the Personal Envoy of the Secretary-General for the Sudan",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "49ac9cae42937f95e05786f144f06e47955ffa46435c11a064af83cdfd0e2569",
+      "file": "A_81_6 (SECT. 3)_ADD.2.json",
+      "entity": "Senior Representative for the implementation of Security Council resolution 2792 (2025)",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "42dd9588bd99a2b8b9f0359fce286fbadc636852639c58af1b7a300a525a1b1f",
+      "file": "A_81_6 (SECT. 3)_ADD.3.json",
+      "entity": "Group of Experts on the Democratic Republic of the Congo",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "b8420318e22cfb553ac25e22828b2ffbae065bb3327df8db6194f32d705e3236",
+      "file": "A_81_6 (SECT. 3)_ADD.3.json",
+      "entity": "Panel of Experts on the Sudan",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "78c743007d83ca9669550f398c3b9961015400c416e39c9a7351b009efc49482",
+      "file": "A_81_6 (SECT. 3)_ADD.3.json",
+      "entity": "Support to the Security Council Committee established pursuant to resolution 1718 (2006)",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "360964f959c7b62c8fd18663943756131981ccac881628c57ec474768b767ff3",
+      "file": "A_81_6 (SECT. 3)_ADD.3.json",
+      "entity": "Panel of Experts on Libya",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "e5b9593030346e48b49a1622e9f593b49db60c0fc94d99d07b4946e14e0b20ea",
+      "file": "A_81_6 (SECT. 3)_ADD.3.json",
+      "entity": "Panel of Experts pursuant to resolution 2745 (2024)",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "999bb4d810543e8bed70a971b181a4c1182688db91e045478afb6b1651416f1e",
+      "file": "A_81_6 (SECT. 3)_ADD.3.json",
+      "entity": "Panel of Experts on Yemen",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "abcade8b37caac856198658f39ca36ad8a6fef628276a1bd788ce9f46b5d0e4e",
+      "file": "A_81_6 (SECT. 3)_ADD.3.json",
+      "entity": "Panel of Experts on South Sudan",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "6cd55bd10dfaede65d839e3d2896f05fe3433024f47c989063cbea109fdb8601",
+      "file": "A_81_6 (SECT. 3)_ADD.3.json",
+      "entity": "Analytical Support and Sanctions Monitoring Team pursuant to resolutions 1526 (2004) and 2253 (2015) concerning Islamic State in Iraq and the Levant (Da’esh), Al-Qaida and the Taliban and associated individuals and entities",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "4d98ef278ca1fa7665ac7e221d1010a9acfbb5a644986332853408b807ca9ea3",
+      "file": "A_81_6 (SECT. 3)_ADD.3.json",
+      "entity": "Office of the Ombudsperson established pursuant to Security Council resolution 1904 (2009)",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "b2b14dfcbca2345097c814f6d6b12550803681f8fd85db63c0588b2b996833e0",
+      "file": "A_81_6 (SECT. 3)_ADD.3.json",
+      "entity": "Panel of Experts pursuant to resolution 2713 (2023)",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "82dbcc2c1ec01cecae6877fcfec7886bc43841d3164b627c57cdb4aa1a133a8c",
+      "file": "A_81_6 (SECT. 3)_ADD.3.json",
+      "entity": "Panel of Experts on Haiti",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "17ed7938a963c8c3fd159c6f3e616aaf6b3a98547b3423c9cb2f8d5897dfcab6",
+      "file": "A_81_6 (SECT. 3)_ADD.3.json",
+      "entity": "Office of the Focal Point for Delisting",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "f24adc413064c915221d770db81d588d6449cce5e387f155710debc1f60908d8",
+      "file": "A_81_6 (SECT. 3)_ADD.3.json",
+      "entity": "Panel of Experts on the Islamic Republic of Iran",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "b5ba854723b3e5a3af4dba2b8582f01b608073dbfa3351fb64b7fbf192793d26",
+      "file": "A_81_6 (SECT. 3)_ADD.3.json",
+      "entity": "Support to the Security Council Committee established pursuant to resolution 1540 (2004) on the non-proliferation of all weapons of mass destruction",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "4d0f3e4e2567907eb8564c4d926f7910be2b2f60a42b98c14a7746c6bd511d36",
+      "file": "A_81_6 (SECT. 3)_ADD.3.json",
+      "entity": "Counter-Terrorism Committee Executive Directorate",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "290b12ecdd0acbfec9d291e64612b723481f031fa68d5306b6fc9f56852d05ee",
+      "file": "A_81_6 (SECT. 3)_ADD.4.json",
+      "entity": "United Nations Office for West Africa and the Sahel",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "3c644fce830427bb1faad12514eb17ab0cc195ae9a8133257d49ccaee65fee66",
+      "file": "A_81_6 (SECT. 3)_ADD.4.json",
+      "entity": "United Nations Regional Centre for Preventive Diplomacy for Central Asia",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "eda24ab7be5c00ca13295e897ed0891ab4e3481ecfbe89c8fbf082d864c974fd",
+      "file": "A_81_6 (SECT. 3)_ADD.4.json",
+      "entity": "United Nations support for the Cameroon-Nigeria Mixed Commission",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "5691ee7b49f3ccf71fb8629e2a77505b43427322c409be47b4e9a7e0be02fff9",
+      "file": "A_81_6 (SECT. 3)_ADD.4.json",
+      "entity": "Office of the United Nations Special Coordinator for Lebanon",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "c705ae95e8dcb97a825b1aec5571338dc6ba54cb939790c43a5c0b4a7e7aa391",
+      "file": "A_81_6 (SECT. 3)_ADD.4.json",
+      "entity": "United Nations Regional Office for Central Africa",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "6250bc8dab75037933b86f46887708e5e5fcc77b39a3b8c908669140c950e911",
+      "file": "A_81_6 (SECT. 3)_ADD.4.json",
+      "entity": "United Nations Support Mission in Libya",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "60536f20838a031bdff5ed2766b2caa453047d5232993c775ee3b4b25aaebe50",
+      "file": "A_81_6 (SECT. 3)_ADD.4.json",
+      "entity": "United Nations Verification Mission in Colombia",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "5f4bbebd872d26173b8b1b32d7bbb4fe245f6436456ace0a874806d3d235864e",
+      "file": "A_81_6 (SECT. 3)_ADD.4.json",
+      "entity": "United Nations Integrated Office in Haiti",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "eb8eda3163137d155bab69558ced931c4ec3ac238d8dac7d3a2469444b646920",
+      "file": "A_81_6 (SECT. 3)_ADD.4.json",
+      "entity": "United Nations Assistance Mission in Afghanistan",
+      "review": "Final source reviewed for unlinked document references; document-symbol references are already hyperlinked.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "f8aef8d15a031b74286b4abf3829638896f2e6e6ffbe1709ca2e93d859499d5b",
+      "file": "A_81_6 (SECT. 30).json",
+      "entity": null,
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "1bcd02b72918a749c4e15bb0893b5cfd1020899fef851066b4d73352d637c68b",
+      "file": "A_81_6 (SECT. 31).json",
+      "entity": "International Civil Service Commission",
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "5d8e980caa554779a76664563a784a69fd8aaa5cf3674f7591f0d36537b29710",
+      "file": "A_81_6 (SECT. 31).json",
+      "entity": "Joint Inspection Unit",
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "5c8b8e090295223646c113820a1840fa259ee9b144cf4c001bb64e8c383f2ae1",
+      "file": "A_81_6 (SECT. 31).json",
+      "entity": "United Nations System Chief Executives Board for Coordination",
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": [
+        {
+          "mandate_symbol": "2001/321",
+          "mandate_context": "The mandate of CEB derives from the priorities established in relevant General Assembly and Economic and Social Council resolutions and decisions, including Council resolution 13 (III) and decision 2001/321.",
+          "mandate_source": "Economic and Social Council"
+        }
+      ]
+    },
+    {
+      "input_sha256": "3486fd000142b61e71ac2f29d9b5864ebb2c913af729bf8d866f988df6910ca1",
+      "file": "A_81_6 (SECT. 34).json",
+      "entity": null,
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "23ead944510d38fa50ebdfc2a1309497a0794a837f0ff4958fcfd26d50ee6b4a",
+      "file": "A_81_6 (SECT. 4).json",
+      "entity": null,
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "27f927085f2d0053e97b6dca341c164d4c6f1564bfe63cadfd41d2b3c0c97ea5",
+      "file": "A_81_6 (SECT. 5).json",
+      "entity": "Department of Peace Operations",
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "a41744cdcc0e41f8d34853f0cd3d929e9077df81dbb078e490c5e1eaabe3df2b",
+      "file": "A_81_6 (SECT. 5).json",
+      "entity": "United Nations Truce Supervision Organization",
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "1b27866b7a8a7ac3218ecfbfff652783dc5c17aa9b9ae80617268ee04aa4448b",
+      "file": "A_81_6 (SECT. 5).json",
+      "entity": "United Nations Military Observer Group in India and Pakistan",
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "a8aae8a775e77d98218d20eab8199d82a51a8e895493eb3f40f81f0712fb9479",
+      "file": "A_81_6 (SECT. 6).json",
+      "entity": null,
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "62b5b6fadcb4f859629f4088ff866e1442610708faf43bde95d0c00609e349de",
+      "file": "A_81_6 (SECT. 8).json",
+      "entity": "Office of Legal Affairs",
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": [
+        {
+          "mandate_symbol": "Article 13",
+          "mandate_context": "8.I.2\tThe mandate derives from Articles 13, 98, 102, 104, 105 and other relevant provisions of the Charter of the United Nations, as well as the priorities established in relevant General Assembly resolutions, including resolution 13 (I) of 13 February 1946, as the central legal service for the Organization (including funds and programmes and treaty bodies institutionally linked to the Organization).",
+          "mandate_source": "Charter of the United Nations"
+        },
+        {
+          "mandate_symbol": "Article 98",
+          "mandate_context": "8.I.2\tThe mandate derives from Articles 13, 98, 102, 104, 105 and other relevant provisions of the Charter of the United Nations, as well as the priorities established in relevant General Assembly resolutions, including resolution 13 (I) of 13 February 1946, as the central legal service for the Organization (including funds and programmes and treaty bodies institutionally linked to the Organization).",
+          "mandate_source": "Charter of the United Nations"
+        },
+        {
+          "mandate_symbol": "Article 102",
+          "mandate_context": "8.I.2\tThe mandate derives from Articles 13, 98, 102, 104, 105 and other relevant provisions of the Charter of the United Nations, as well as the priorities established in relevant General Assembly resolutions, including resolution 13 (I) of 13 February 1946, as the central legal service for the Organization (including funds and programmes and treaty bodies institutionally linked to the Organization).",
+          "mandate_source": "Charter of the United Nations"
+        },
+        {
+          "mandate_symbol": "Article 104",
+          "mandate_context": "8.I.2\tThe mandate derives from Articles 13, 98, 102, 104, 105 and other relevant provisions of the Charter of the United Nations, as well as the priorities established in relevant General Assembly resolutions, including resolution 13 (I) of 13 February 1946, as the central legal service for the Organization (including funds and programmes and treaty bodies institutionally linked to the Organization).",
+          "mandate_source": "Charter of the United Nations"
+        },
+        {
+          "mandate_symbol": "Article 105",
+          "mandate_context": "8.I.2\tThe mandate derives from Articles 13, 98, 102, 104, 105 and other relevant provisions of the Charter of the United Nations, as well as the priorities established in relevant General Assembly resolutions, including resolution 13 (I) of 13 February 1946, as the central legal service for the Organization (including funds and programmes and treaty bodies institutionally linked to the Organization).",
+          "mandate_source": "Charter of the United Nations"
+        }
+      ]
+    },
+    {
+      "input_sha256": "62eed4b7e8675db8ccaff1fd87d3b1e20714c0980d9fd28f58abaf079f35c056",
+      "file": "A_81_6 (SECT. 8).json",
+      "entity": "Independent Investigative Mechanism for Myanmar",
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "b31e496d5a23c0f8ac51e696acb04fc22aab509ff409efc48d86d3f003169b4d",
+      "file": "A_81_6 (SECT. 8).json",
+      "entity": "International, Impartial and Independent Mechanism to Assist in the Investigation and Prosecution of Persons Responsible for the Most Serious Crimes under International Law Committed in the Syrian Arab Republic since March 2011",
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": []
+    },
+    {
+      "input_sha256": "6dce8973ac0cdbbe250cd99c764f761ee9f752e599de8a923153bfb100ac9882",
+      "file": "A_81_6 (SECT. 9).json",
+      "entity": null,
+      "review": "Unchanged source input; preserve existing supplemental extraction, including an explicitly empty result where applicable.",
+      "mandates": []
+    }
+  ]
+}

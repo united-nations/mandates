@@ -9,12 +9,12 @@ from rich import print
 from tqdm import tqdm
 
 from utils.data_cleaning import (
+    apply_reviewed_link_corrections,
     link_to_symbol,
     map_body_source_to_organ,
     normalize_title,
     normalize_symbol,
 )
-from utils.llm_extract_mandates import llm_extract_mandates
 from utils.mandate_identity import resolve_rows
 
 
@@ -413,7 +413,7 @@ def get_text_mandates(section: dict):
     return mandates
 
 
-def extract_mandates_for_file(data: dict, file_name: str):
+def extract_mandates_for_file(data: dict, file_name: str, background_extractor=None):
     # extract mandates
     mandates = []
     if EXTRACT_POLICYMAKING_ORGANS:
@@ -424,6 +424,10 @@ def extract_mandates_for_file(data: dict, file_name: str):
         _mandates = [(*d, "Legislative mandates") for d in _mandates]
         mandates.extend(_mandates)
     background_sections = find_section_with_heading(data, "Mandates and background")
+    if background_sections and background_extractor is None:
+        from utils.llm_extract_mandates import llm_extract_mandates
+
+        background_extractor = llm_extract_mandates
     for section in background_sections:
         _mandates = get_mandates(section, file_name=file_name)
         if not _mandates:
@@ -431,7 +435,7 @@ def extract_mandates_for_file(data: dict, file_name: str):
         _mandates = [(*d, "Mandates and background") for d in _mandates]
         mandates.extend(_mandates)
         section_text, entity, hyperlinks = get_section_text(section)
-        _llm_mandates = llm_extract_mandates(section_text, hyperlinks)
+        _llm_mandates = background_extractor(section_text, hyperlinks)
         _llm_mandates = [
             (
                 d["mandate_symbol"],
@@ -488,7 +492,7 @@ def reconstruct_mandate_source(symbol: str):
     return None
 
 
-def extract_mandates(year: int):
+def extract_mandates(year: int, background_extractor=None):
     df_sections_and_entities = pd.read_csv(
         "../data/references/ppb_sections_and_entities.tsv", sep="\t"
     )
@@ -504,8 +508,9 @@ def extract_mandates(year: int):
         try:
             with open(file, "r") as f:
                 data = json.load(f)
-            df = extract_mandates_for_file(data, file.name)
+            df = extract_mandates_for_file(data, file.name, background_extractor)
             if df is not None:
+                df = apply_reviewed_link_corrections(df, file.name, year)
                 df["file"] = file.name
                 # Match the addendum number wherever the filename puts it. The
                 # old pattern required a "." or "_" right after the digits,
@@ -586,9 +591,9 @@ def extract_mandates(year: int):
     return df
 
 
-def extract(year):
+def extract(year, background_extractor=None):
     print("Processing documents to extract mandates…")
-    df = extract_mandates(year)
+    df = extract_mandates(year, background_extractor)
     _df = df.copy()
     for col in _df.columns:
         _df = _df.rename(columns={col: col.replace("_", " ").title()})

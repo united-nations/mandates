@@ -193,7 +193,8 @@ def annotate_elements(doc: docx.Document):
             id_path=[],
         )
     ]
-    for i, element in enumerate(doc.iter_inner_content()):
+    content = list(doc.iter_inner_content())
+    for i, element in enumerate(content):
         if isinstance(element, Table):
             block_type_ = "table-content"
             text = None
@@ -221,6 +222,29 @@ def annotate_elements(doc: docx.Document):
         else:
             block_type_ = block_type(element)
             text = element.text.strip()
+            # Final SPM fascicles sometimes lose the heading style on numbered
+            # mission names. The following programme-plan heading identifies
+            # the entity boundary without treating numbered prose as a heading.
+            if block_type_ == "paragraph-1" and re.match(r"^\d+\.\s+", text):
+                following = next(
+                    (
+                        item
+                        for item in content[i + 1 :]
+                        if isinstance(item, Table)
+                        or (
+                            item.text.strip()
+                            and not re.fullmatch(
+                                r"\(\$[\d, .]+\)", item.text.strip()
+                            )
+                        )
+                    ),
+                    None,
+                )
+                if following is not None and not isinstance(following, Table):
+                    if re.match(
+                        r"^A\.\s+Proposed programme plan\b", following.text.strip()
+                    ):
+                        block_type_ = "entity"
             # include style info -- very useful for debugging!
             # if text:
             #     text = element.style.style_id + " // " + text
