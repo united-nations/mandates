@@ -145,8 +145,6 @@ export const explainerTexts = {
       'Agendas of intergovernmental bodies are integrated via iGov for the General Assembly and the Economic and Social Council, and via its agenda and annotations for the Human Rights Council; for the Security Council, its matters considered are integrated.',
       'Focal point contacts are designated by their entities via the Mandate Focal Points data entry portal.',
     ],
-    preliminaryCitations:
-      'Some citations in the 2027 proposed UN programme budget are preliminary, drawn from advance versions of the underlying documents, and may change in the final versions of those documents: Section 1 (Overall policymaking, direction and coordination), from A/81/6 (Sect. 1); and the special political missions, from A/81/6 (Sect. 3)/Add.1–4.',
     infographicAlt: 'How mandate source documents are identified',
   },
 

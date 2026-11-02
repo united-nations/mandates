@@ -60,7 +60,6 @@ export default function AboutPage() {
           unoptimized
           className="h-auto w-full"
         />
-        <p className="max-w-2xl">{text.preliminaryCitations}</p>
       </section>
 
       <section
