@@ -68,7 +68,7 @@ export default function AboutPage() {
         className="mt-10 max-w-2xl space-y-4"
       >
         <h2 id="programmatic-access" className="text-xl font-semibold">
-          Using this programmatically
+          Technical access via the API
         </h2>
         <p>
           The public read-only API lets you search documents, retrieve available
