@@ -11,10 +11,16 @@ const linkPattern = new RegExp(
 )
 
 /** Adds the source links while keeping the shared plain-text copy intact. */
-function AboutText({ children }: { children: string }) {
+function AboutText({
+  children,
+  excludeLinks = [],
+}: {
+  children: string
+  excludeLinks?: readonly string[]
+}) {
   return children.split(linkPattern).map((part, index) => {
     const link = text.links.find(({ label }) => label === part)
-    return link ? (
+    return link && !excludeLinks.includes(link.label) ? (
       <a key={index} href={link.href} className="text-un-blue-text underline">
         {part}
       </a>
@@ -48,7 +54,7 @@ export default function AboutPage() {
         <ul className="max-w-2xl list-disc space-y-3 pl-6">
           {text.sources.map((source) => (
             <li key={source}>
-              <AboutText>{source}</AboutText>
+              <AboutText excludeLinks={['UN80 Initiative']}>{source}</AboutText>
             </li>
           ))}
         </ul>
