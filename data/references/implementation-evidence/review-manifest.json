@@ -1,0 +1,4903 @@
+[
+  {
+    "symbol": "A/RES/76/258",
+    "reportSymbol": "A/80/426",
+    "reportPdfSha256": "a3b22393e7cc66bb248a56e9cb91b9812ab44dbb3a3dd3bdd028a09359f5cf23",
+    "reportPages": 19,
+    "provisions": [
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "1.",
+        "textSha256": "8782dd615ec6a960226a514cc71fefe2dc1154baaa295c6982872522a2f91abe"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "2.",
+        "textSha256": "9cea28f82182b3f67ce1e232cbc8230832191817a991304e53be6e3622acdef5"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "1.",
+        "textSha256": "8af36dd6ea87f050437f434a6ef8af0ebcfa8f56fd85f6ec5f3c42c130132efa"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "2.",
+        "textSha256": "5c7ea4b6995af923e37819b279b259d7f5208e299b49dbd7ffef920b4edc01c0"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "3.",
+        "textSha256": "f116ef51b428d6c10043f64de7982d367ece73205f0d4f08e054ab05150a85a0"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "4.",
+        "textSha256": "8c406928fb74bf00f92c9a6595fe2a67ac2a223a136c54eba839de00bf010acc"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "5.",
+        "textSha256": "a0da0a053992de9bb1c751df1644385b87d5ac332268c58ec96bf827831b4442"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "6.",
+        "textSha256": "4659e00866140c1cf8f95c7bf106a2de229c5aeaeabb45de5d39cc487eea6544"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "7.",
+        "textSha256": "178a180a3bb8d552fd6ac0b62e7a2e362a15c97376be83080e2941cd188b4c3f"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "8.",
+        "textSha256": "eb29619084f58c82295ce98d1821dce38e5e7fad8dbea9af4fe9e65ad80c1140"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "9.",
+        "textSha256": "bb3f268a91ed5219760fcae4e5f3115ecb3bf40b00246d48d15fa1c720a57772"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "10.",
+        "textSha256": "e15041bfcf148ca8b3439dc1dbbf8f6f64104184abf07753c2805eb360047453"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "11.",
+        "textSha256": "0c804c8d1e2329fcc7487337619bd64449701d4d6240e48dafcdc6cad90de535"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "12.",
+        "textSha256": "3de1313818a4128317ac329fc0ad6cd3c1f0fe9b83556372b5657933b9107df9"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "13.",
+        "textSha256": "81277e7f6e5d1f043b4eb1545be1e5f42dba5a00740b6cfe683d3b83e610d555"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "14.",
+        "textSha256": "0cda02628c636c549a8f41bd0bc32921eeb45bb953770d0ddb09b1c20b33499c"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "15.",
+        "textSha256": "38d7280f81e79e1af4486603df786f64c458c76d420600dbd7d6058c6dda175d"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "16.",
+        "textSha256": "39990c3c7ecefc7cfa18c9071f7b4c9ee84299f0ad87fa6467adf62012a8cceb"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "17.",
+        "textSha256": "08f606c7d4a7597c2b62bdeedd075db64ca9e3eb10a215d0920d7c4257f1e28e"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "18.",
+        "textSha256": "1b7dec3a94ff97fd4bc506d710f20fd99ac13cfcd9165dc4756aa8d8c894ef9a"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "19.",
+        "textSha256": "a502b7b117fa36af7f683c99ceb99738fd8b5b3275817cc794ce94c68e784e21"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "20.",
+        "textSha256": "2e6034dd4a881243c385efef2203da34548c7883197c8403c2948073e8e4ef38"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "21.",
+        "textSha256": "be8da3ffe4cd461e1ca9fdbef841227d9eee41da6a2f7b9bb701bb57465407e9"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "22.",
+        "textSha256": "08aad573d7ef7b70ea3f0a7af79413499e61de6399e0c17f17129ffa7f105030"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "23.",
+        "textSha256": "a5cfc88dd0615a64d36cc95568278911e1079105b6634e4b8e8c0107b8ffd2a7"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "24.",
+        "textSha256": "9c215ef9ebe507fee62596c10715f54db1d792cef194e734fbea25957e7ec934"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "25.",
+        "textSha256": "5be45368d21edc085148a0de5bfb3867620866174b221eaf776617f9c4cc1fc9"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "26.",
+        "textSha256": "0d3b19618a00b901a4e832d99f97a086915ec700e2b7bb46b0f6e8949ec6f25c"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "27.",
+        "textSha256": "43c6b791cb5cf59787a3974808ab4fd471f6eb64022893f1ee8b29216b1c34fe"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "28.",
+        "textSha256": "7680531220391c63e4e818dce67c43f077c17313509e0c751ac5fb34dd624e6e"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "29.",
+        "textSha256": "d8cbfce3a375600cb2b4c1f9f79eb5071b8d8175fb8a15c5afb7962e168b985e"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "30.",
+        "textSha256": "043bb64dae815a501759f2318a219bcd1f232cd01c3ab3ed98bcbc6b44eaffea"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "31.",
+        "textSha256": "479ee6e18c0cdfe0bb4e90220b27d0b6b0146e126dbb0953d6d3fd94742739fa"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "(a)",
+        "textSha256": "9ffbf1aec51ff5ce3fb4b60ddb160b58f5627de0f81fbf0bf88223b3873b8736",
+        "position": 46
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "(b)",
+        "textSha256": "4acdaf08ea64482d150f131138b395f8f3e105ce37edc20b8fe9dd2bf2a6dd3c",
+        "position": 47
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "(c)",
+        "textSha256": "94250525ff7187b3424fdd931a4e5d409146e0b657c2448485b0ed60c697c4c7",
+        "position": 48
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "(d)",
+        "textSha256": "9a1347709c50acc4d4feeb822d0936658e6f7bc39d23fd84dae9b67d1e33f7b0",
+        "position": 49
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "(e)",
+        "textSha256": "b1562481417df58ddd54afb967e9ad970e8e3e8e63656aa80917bd078e2e9133",
+        "position": 50
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "(f)",
+        "textSha256": "3f786d7743180e5066bb02dd2c55fbff2337880109cd27a054e161a04ab966c9",
+        "position": 51
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "32.",
+        "textSha256": "9a8e188506e4f1165f45e1169272e0b815bb197042b43c0bb8896962eddc258a"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "33.",
+        "textSha256": "649c61d817ccaafbd0d8b4f5c985620b226c22bc7bebf91a853669dc5aea9697"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "34.",
+        "textSha256": "ffccc37f32d0122e794a51b8f0e47482559f14f2619d5125aa9eea339ff07eb0"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "35.",
+        "textSha256": "9c62c9b1a656dc75110ada24d1a286bc5495c6395064ede4ab36714a467e676b"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "36.",
+        "textSha256": "a75531903c877927c0642354fc8b67afdb3ae214544304951b53e4f16c265801"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "37.",
+        "textSha256": "5bd8f651ea5a41104d4d41796c82335cfa2b38adb2bc78bcfd63ae5efe0e9f8d"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "38.",
+        "textSha256": "d5cb9cc9825284ef8049c9de51e5a89f268242f511a3ccb6c127c3c44cdec44f"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "ab09b4e349c86ef6e9f95e763bd41efcc89f5e6fc2f683c9d6aa9af23f53115c",
+        "position": 62
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "b7e2841232163d74aea27cb2c978a3e0f2e16b0fc355b0812a53007c0c34521c",
+        "position": 63
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "68482c40e11af7624cd7bf9e0279c22f1b1129209104d70023994acd4fca6ca8",
+        "position": 64
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "39.",
+        "textSha256": "23a4b6c78d8dd17efb9226ca1ca50171da3125a8b481cd403b26e9ae791274cc"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "40.",
+        "textSha256": "56a52b67325337fa5e3ff04bbfc80872107c31d5a335f01182f1f491b3a11183"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "41.",
+        "textSha256": "110a578409c259a6e4dcd2468146e436a95d8c8e176760ef9475a0027aa67011"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "42.",
+        "textSha256": "8df99ec4e35e8dc48c1ba6906a300993397046098fd10f3f873c4b94f40d6e50"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "43.",
+        "textSha256": "724366d2302baff45dfde82ee956f7598c1edabd6246c66ecb7a5ec7cd8b3f94"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "44.",
+        "textSha256": "8b9246b295b967938bb150dc0bf6d168dbd510436cb5ffa8adf4174477bdf85f"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "45.",
+        "textSha256": "2c616d49335668e163b883122a344cf58d457932f547721bbda4628d9e749497"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "f9d6481324d5f5ad8c40dff6b1f016354613598763704c9e1a4da1d66b1eab40",
+        "position": 75
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "78f51787ccb7e968288718b23ae8d1fbbb1f69418e5e7da5a2a555560ecdd0c1",
+        "position": 76
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "483d5d6d73280fb0db5c779308cc0fd87defbc5b6e2c63174ded68ac0f5bea33",
+        "position": 77
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "4a1192739f4007b8ddac991f266addb65319def0aafdee8c0462b665190293b7",
+        "position": 78
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "978c75e2bac3a4e1ca0184e93bd905920e17247bdd401c96794776b39a92e5ac",
+        "position": 79
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "550b948b8d69a1f592cf5abaf9d187124d0fcb754a0380af803cff6bc7191ab6",
+        "position": 80
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "ba5e0fbcab5898fbc5ec66b37ebd766c2b62f86e33f09144d88a430ffda202c8",
+        "position": 81
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "937c4bafc44f10c59723141630a2b42e3f1c8b0b98dca76fc90139c037b78aed",
+        "position": 82
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "46.",
+        "textSha256": "8d27ee7c1ba1d21e6a9e81d8e82a66e99b6f5a3ff15e342cb484ac03ee8a9686"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "47.",
+        "textSha256": "3a2b8c569324c0f9fb35d9440956815548c86cab91b21d9672ca635d54e5e8f8"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "48.",
+        "textSha256": "f14fe5825af8f085aeeb1b18ab267ca4aead42e7403364b378f1ce0c4af965a0"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "49.",
+        "textSha256": "2a703639c4bcb66a9a5110130afee87f76ef1c580c4b933caadc52da8a7b599a"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "50.",
+        "textSha256": "17f3715e5eb7b980eb66e5e7f02b64acf891eab52ccca5321bf98f9953701671"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "51.",
+        "textSha256": "7aac6d9fca9a029480a4a81b1d27e2c611e96c4b9ec50d3d5f7a0136dab40f72"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "52.",
+        "textSha256": "d6a3ca2b9f6b7ae7c6fa6cafadb34b43e59deb0b6e53df10c2cc93a28518e7be"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "53.",
+        "textSha256": "6f37593620e10acb8c5b4c96ce43d081ce8c368f7ee4843c5959b9fc02331bb1"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "49c8446441b89a1cca73efac8eee34602b590a8e48b210d310a5e552cd96f0d0",
+        "position": 94
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "10cf48d814eb900bc1c63e2f512cfc5446527b8de27396e96c15c19e29c0c2be",
+        "position": 95
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "7decc5a1b65969d0ecbdebe48c7056f99376f5307f4f8a9fe5cbe2a851eacb0a",
+        "position": 96
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "583723a48f6799a399857271bc6c5cad99e3b33796052501d769b2f39f97a8fd",
+        "position": 97
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "efcb7502eb071e5e6fbb14cbc3709bc14573daf8dadebbdd4424b9c4034c2a70",
+        "position": 98
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "9712d078c0ec8f0c2a0e87e81bae67400db6b06141231171e8e9db0419029827",
+        "position": 99
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "8ddbae5f1dd42a077aa56d0eb82cc65371c6580f76ed564f091a91235094b572",
+        "position": 100
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "f8a3317aaa433b497643ab427f02e1115b147ed0e30caabcfec64fc6c07b5d77",
+        "position": 101
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "54.",
+        "textSha256": "d94c4c7395dc9e3280890737420dd8f790f4c50e69c7d2dd0b899ee5ed75ddeb"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "55.",
+        "textSha256": "8f0e6a7c33f67b51194df9628df8443257ecd8f6958d33c576bb09ab12262e11"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "56.",
+        "textSha256": "51df6bf5812143d06cdc5a5186c17404de850c91d2efc769c658678a528e08d0"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "57.",
+        "textSha256": "8a256289a49c93b55205209c5cfa9cb4eafced279403cba4aad9402614ecb420"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "58.",
+        "textSha256": "f3799464e4f15daa60c690a5bc83031d6127bbed9dad12e9249ed176cbe0b7d0"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "59.",
+        "textSha256": "ad1fc2c165e16ea9467b792b2cae10af02e370287d366d2d863dab75fb29f85d"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "60.",
+        "textSha256": "2aa7426c964744951289d7a3ec98477357cb93ae9cf5dbbe6db68c6acb7ee98b"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "f942bd35fdaf6a2b665d5bdf1641ed4e3fdeedc215ced0c084df039032dd7b75",
+        "position": 112
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "4c7d552dad829f57394aaa1b5e8990b1f380a9e3fb1dbe7fe3a11cae3f32495e",
+        "position": 113
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "d09f742606012c8fb6167613af8957f7059958e0e271350334efbf4bb05fe607",
+        "position": 114
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "61.",
+        "textSha256": "4941ceb7a127fee61f86f4cf80abb41d52e06b2eab22b08bb69f0da4f991ab86"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "62.",
+        "textSha256": "c76ba12cfd657ff28b7f544400220ee0fb566cbd55d478ed0626e7cc39f6494c"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "63.",
+        "textSha256": "2362d799a6e627a9a7bda5a97131ae3b1f7e6cc2d6923676c72fbb28047f531f"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "64.",
+        "textSha256": "2a18716712d75748fa17f684daa86bc3dd1d298127688936086b51e644a6061a"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "65.",
+        "textSha256": "06d4d80a65b4ce77c869437a947d58b64771637780ac1aabc1bfa715bf1a8ec6"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "66.",
+        "textSha256": "13944b3e7b4e40efa051e37db3b927c2619975a82d49f3c8731aeb4dc6758bbf"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "dbad174517b9d32d7446a8bfcd77292283b3dda4a2f4f0f332e7bbe3571481a0",
+        "position": 124
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "511bd219b4618eec8162fb5defb5757264803ad02791f3fcc7e733c1b5fcc1c5",
+        "position": 125
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "8ca0cbb6cfb310299e5499e5e2307c02513f0ce53e52f5de2f05cf8880764d4f",
+        "position": 126
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "9a7cd3a434661bc176fb3aad0b57e414450c9df899083388fb19454a8cd4bca4",
+        "position": 127
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "b661e284421e881fe6a25b392eda39791b4ccd2711174f10e28a68e529bad678",
+        "position": 128
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "67.",
+        "textSha256": "65f177001ddbfa99ee150dc280a2c252117650711f456f7159622447db2af68c"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "68.",
+        "textSha256": "e06b137d760b81ccb937b3ee5d18b24546a17d5a50d894f960335c94f6c46840"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "69.",
+        "textSha256": "2c2b2b3ea6207b867aa5e870722b7e5294f0e6165175294728caf3e6b77f3bdd"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "bff09d2371be8273994e255f25419c923135a8aa900c87980f85a7dc04abae83",
+        "position": 135
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "70.",
+        "textSha256": "e42fb02c6418897ed267bdc8b4ccd7ab2207ff34cd4eee3dd9d3ee22e840c7f0"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "71.",
+        "textSha256": "8f7c0afcfc6d00dc2a8af71884e26e95c3bed89ed5c77f781c18592b643cfec5"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "49c2ed57d23e75db1b983c491a8d5531488a3b85cf39db049d6a0a7ba91296f6",
+        "position": 141
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "e1130de577e847c9788404af51766267a90fb55ccee34c7433a3cf21a09614fc",
+        "position": 142
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "72.",
+        "textSha256": "d2a6d56eee66d77569a57ef4c8f1c311526d92af18ac425ceb399f3b2da5b09d"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "73.",
+        "textSha256": "c524fa461892c71630889f8d9a248ecd5f677d2fc2f0adb681fb43433876482f"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "74.",
+        "textSha256": "845ce811466cd1a6b9040e6d70796d3737b47b38d77761a73117a5ff7a2ecdd4"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "2a74d1647f4b14eab2fbd46422e04a7a2204a7e726eb6be0f81a3f786f6d15a4",
+        "position": 149
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "6e43585bde15cbfb5d33fe60cb1998606ad715b47ae89df7c8670cfd8605e89e",
+        "position": 150
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "b7037c906169c279cd71886de18c84c210731cc2f2e9cf8fca4934dda52a9711",
+        "position": 151
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "32e055b1443830252e424be47be0ef6c7f1fa9a443a6677dad1366af9e091624",
+        "position": 152
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "75.",
+        "textSha256": "8ad0b7bb5460c9a601b4ab5d7b3879caa5d2df9765e2bb351fda39957b9b04dd"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "76.",
+        "textSha256": "d28112bb9e6e5d9e5ad54b31da0133a2a11710aaa27e95e28b63b9a3e9d3b0a4"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "77.",
+        "textSha256": "5fc50815a11180cdca6c6b909fdee1018c0e586748ff00676fd05c8a6a05a3a4"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "78.",
+        "textSha256": "b12cebae7eb08baafdb2564a6d95a3bb99f6f7a16b293b5432b89687d7bfd10b"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "79.",
+        "textSha256": "f4f04fd164c337ba90c0733fce06998077ff3ef9e5974a69e06ed3dee8132bdf"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "80.",
+        "textSha256": "d6b7d85a5b1c1cd09ed7e9248891c54ee9d99399701a75636a4a8dc0689b2cee"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "81.",
+        "textSha256": "92d40ed448a234f4ef5fe95228ca35a969671b0a375f646a69879b7d39e28043"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "82.",
+        "textSha256": "4bce52c4d6ebd8a550599b6254052c72d762ce759687bb34d4e7c5e84ed57505"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "83.",
+        "textSha256": "ee78c463635321c4a070a06ee714aa5d3c8e33ae8c6096cb6a2cdd387b5b64e1"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "84.",
+        "textSha256": "f6d8620176a82b5631b54a4548d4a70dbf26ada87a1c020ce7244384b54c8edf"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "2e381e1a009d2dbbcbd9543300ff26aebfffcf3a6bc81e34b250eee12c5a3b83",
+        "position": 166
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "271d19ffc7dc288b86ea369a70b06788839019ec6d3d54934d85a17b48871d7e",
+        "position": 167
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "9a66adb86b4e318bee40a97646a3e67eba115cd848643b0a29d8dd0e494bb4e6",
+        "position": 168
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "b3fa29e6e6c30fd361ab1cb7fdf08d7e5d0acb2e84c70361b8d733a148a221bb",
+        "position": 169
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "7891978f965913132047341c890ce32b98d17dcc1aa48d7f4d77ec267fcc5e45",
+        "position": 170
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "85.",
+        "textSha256": "6122c13ea058c8db167968572ed323a320322a46b6b7fdc6919304baeea79afe"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "86.",
+        "textSha256": "54675ff165c7e6e86a6dd206fa224837881e7f26a1f1623a6aba3946de45f0c9"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "87.",
+        "textSha256": "9bfcdbe039d5895c4f7866e098bdc5fbebf9bbdfff5ed6c1db5957ef84bf44b6"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "88.",
+        "textSha256": "539415827fb0ac4e4e244e6b433894543c5584337ab4548ea4e8ddd99a92baff"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "89.",
+        "textSha256": "cc032f91df8e9c9bf35e24a7aabed3c32c5ee10d8384168162658e6fbcb42343"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "54a5256794b0b995f53b34afa20dcf33d41e6edb326e02bcc9c7257d542567ee",
+        "position": 179
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "5dfd8e99241a7de02fea99da52fd65b24b15bbebfbbb5b1185680656ddf28b64",
+        "position": 180
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "2305db60fd71b400e716fc4fad50752f48e69524bf792f145ca42e105765eea5",
+        "position": 181
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "07585dabea98e4e4933e50e752fab6bbc45dd2bb043edb992a18339aae2f5575",
+        "position": 182
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "90.",
+        "textSha256": "3b2e174b0d0b711be6df181fa72cbb7c0a1d1f360ababb46ac551703f02f91b7"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "91.",
+        "textSha256": "a37dc3373b32b6b7f2a8c80b239b82441ad22fadcd1f83365bf33bad5fb33828"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "92.",
+        "textSha256": "192249c8a6701194b17f8791d4fa662b1b2fad1736576fc99130795861a9087f"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "93.",
+        "textSha256": "dd99ded4c106de903ec2a2f628b205eff8cba65c4be711f2fd9efe766bf4c286"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "94.",
+        "textSha256": "83c9f343575d24e97d68c6e2a80bfd83252012baf61e2ddd4e5df7ba35987d1e"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "95.",
+        "textSha256": "fdfdc8267af914b5edccbc4125f5f63559683bc8fbebbe3ce1bd8a9b05396469"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "96.",
+        "textSha256": "817c1290752283e35cd4830945eba89274737f78a0488600a84fb00d6fb09884"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "97.",
+        "textSha256": "d412bd66ae943a68e8cca197a906a1f13e0934cf94237ab655b39d6ff981074d"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "98.",
+        "textSha256": "368f3ede68c653a07cda2682f047d3cb919746310745158a41d70cf9e98401de"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "0812e25c2485abd0bb0f8557d7cd3851d807fcda2b6278db9edd9c2dab3c6120",
+        "position": 197
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "2226e5795280056d95862d2901af267b390b80ea71f2df64acaa9b487add01b0",
+        "position": 198
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "e3688200de50f3706f8ace2a59fb70c8ccefd72ae8bcdec0ad7c213d94ef066b",
+        "position": 199
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "b1854554148d8de86151a315398e09061e2993642b014bda810d33b7af865e85",
+        "position": 200
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "8d9a0d2e165938d5805454ace0b9a4b2baef81f68cc6edeeeab57dad6a9c8c8f",
+        "position": 201
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "7fbefdce9aad041154ca3d893e96d10d367ff7834598d39f17c268c4807fadac",
+        "position": 202
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "7d0e1eef3fa0772ec8c87aaae7630fac2b9c2871c5d1ea75180686804f09ecbf",
+        "position": 203
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "599ddf6c69efdad7ff607bafd8457b5bfe44bd5248fdcb3f03b8c89b9de5ddc4",
+        "position": 204
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "99.",
+        "textSha256": "716f2dcc52668852bace9b55ac012995c7f55c41acece742c9765bc937cebcbc"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "100.",
+        "textSha256": "1cb723787a3102ba1bf2662f5b872af0507dc7150f1b7b25ac0e8e9be6e93e22"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "101.",
+        "textSha256": "43a2a697f34fc0dbe62f5f399407dbee390ebc699654262b2cf29422a647ee7b"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "102.",
+        "textSha256": "9738b9bff39102c0f61a046da51600e27ef83ebcedaf04506ee6dc3d1bfdb9fc"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "103.",
+        "textSha256": "4a9b6d973bf9afbee278406788478a3fdfe64b76b6e00ae6d4f4435ed75a1ea1"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "104.",
+        "textSha256": "aa794aa727e4426fa08aa24e951d3a51aab278f4a880d5da6419c172caf55e00"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "105.",
+        "textSha256": "ac750b0f2f488a1dbd96755a5e232eebfd9646451e8fdbc94b9b038475cbd4bc"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "106.",
+        "textSha256": "71b51788e560a8e08ad1bfd67a9810d2f62295fa45bbfbc99f0d4457f1c86b23"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "107.",
+        "textSha256": "bdee0048fd87f2981587c816073cc39ebc09c6647cec9dddc9ba47cb2ef66967"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "108.",
+        "textSha256": "3bd77d956cf33b37e97e0dfe9325f88f5b1fc2f575dbc00aac907579c68f7e86"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "109.",
+        "textSha256": "46a8a1550a4ee905a7bf46e1518a1fd87381e8eaabf7311477608781f8ee3206"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "8d34508aeb7bf1f02efdce74d015d0656e7025655c7fabb69e799468a0d25e98",
+        "position": 219
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "39a3527f43f20d035a606dfa225b632aaa40c9aa9a2da9761f0cf6db4ee84f62",
+        "position": 220
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "97ab634d6eedc3ba28f85036e4188be4205d4b239b839ad47a41652bb50c1ade",
+        "position": 221
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "7687fe961b88a8721a184a4443865c17c0de68cd52e4f05cc45f16601ecd8e7d",
+        "position": 222
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "a9cb7f8bddc77cc0740e7a0cbda89834560d3f7916a4c52a19ae8e4f5ed0c143",
+        "position": 223
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "a94ceb6c1c86e84e0f4c21b4687c9a542ad4edcd28c439dd6b9fed6cb38e9dfe",
+        "position": 224
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "110.",
+        "textSha256": "53956f751c4a24cc67e1c4aec7c98b971fd6f333b7a928d4a3df2d40448266ac"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "111.",
+        "textSha256": "d94d4907b81757a371473ace07cc31bc9e52edc50deb442812120c95a34b97c2"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "112.",
+        "textSha256": "29b53dd716ed30a12d32481684285b0e79a531d0c81bc7d929f2d02b68b5951e"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "113.",
+        "textSha256": "c97f310571489e4267d08556dce92a77ee07dbc943fe1a4853afcb9852ed40fd"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "114.",
+        "textSha256": "ded33a32d7677dd046042b4a3d6875b54d7868aafddb2c68612ea6c02d87e5db"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "115.",
+        "textSha256": "8deba54ed6e24708c24a0607e0ca408a3470013ff73ffbeeeff77e9dca90a1b2"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "b1af2717b0264fad5794e89a211808a1bbf3e6a201f10201986f6f71960dc620",
+        "position": 234
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "592ff4ee4abed6a394405dc3fd62e4bf99f2ecfcd818af84e6efcbcdb4c11100",
+        "position": 235
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "a82bfc7bc9175692794c127529b725a030d8f2781e97377bf671aabd56f796cd",
+        "position": 236
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "ff451a5771c56ec2e543870081897a4d657c1695ec609aa618541f894bc84f2d",
+        "position": 237
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "116.",
+        "textSha256": "e86996cbad4e85353d4c9dd407828cfd370285f886c152b4a671ca33c07b7485"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "117.",
+        "textSha256": "54569dba175f29471b606ad09f179f54e96ef099f02ca859531d6e39dff660b8"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "118.",
+        "textSha256": "1c84bc3d7c75fc42c17474a00cf24339000e34dedfe2cc095b5d5b46aa6c8709"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "119.",
+        "textSha256": "6c3bcd8bea2b464a92d8b26f7d8901a816edc0e4c0243062991d33999abb78f6"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "120.",
+        "textSha256": "4bb0d5bb0c6e1307c494bd2e4f9067a3adac2e77864dbd39a03268538c5552cf"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "121.",
+        "textSha256": "baf65890ed7a720b6aebaf217433b3eeb67eedf47c24564d30850cb0b9c97293"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "122.",
+        "textSha256": "22a6fa1cb4fdf998e3a2dda16519ab1bd72cd96dc4e8cd9ded9766bce37ff90f"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "123.",
+        "textSha256": "271ee54588b3450cc0a2e705a10b48ff0647ba6dd878ca16f46b86c1f2f884ef"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "1535f7f7fe94502b72a06d416ae057a43bea605c21089e0bfa377352062851ba",
+        "position": 251
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "934576e2ea81599888b2832c44a7e755f6847ca262cd3e82905bdabe1d671714",
+        "position": 252
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "e74bfb8b73008b3ea73eaf96bb66117ba279ece77e0265090ade9541e4442ce0",
+        "position": 253
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "124.",
+        "textSha256": "1a871f91fa3984854c037c1ef36614cdd1e08b8583cbdf935dd2efb726912016"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "125.",
+        "textSha256": "b75587aa764ba49b453da5447415f8bc334a70f6fe95cdb873cc105b6ba9d103"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "126.",
+        "textSha256": "d23a27acc0def6d5b7d5e40a0d3c139a6a13d3dac766603aab06d7048b22c0cd"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "127.",
+        "textSha256": "2a0bc3f06e94178e281e584cbdae2eafb3560d0b17692930f0e7a493a05c5e0a"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "128.",
+        "textSha256": "3b374c0a1b47d05062e2be28e87b95ca143997e325e7367bd6f6134a471bc820"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "129.",
+        "textSha256": "737ce0a6d4fd202831a48c972fbe0330344d1ae73078b966ff7779ba70755184"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "130.",
+        "textSha256": "3ce0c37a1baf271f884a3ac95f859b4c16ee37a507b2253e5f81f824269285c4"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "131.",
+        "textSha256": "b324abcf218eb562ae306013c135f3f1adf439631062ca99f1887d78612ddef2"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "132.",
+        "textSha256": "a33bc6acd0e24a14f43fea656c4a6ae662a95bbc3b1379d0775de3a331c05278"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "(a)",
+        "textSha256": "aaead4abf5d0fd5ecc08d1dcb7effadfc4b65034aa0f3f80edb8bb3932411637",
+        "position": 265
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "133.",
+        "textSha256": "4278611fd38d4e344ca4c344eff6a6db30aac8e6f0c5561e7adbfa23d327235d"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "f6b55328e91e098b03bb20ac916e894346577a2def8c99fff185e8caeab1336c",
+        "position": 268
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "134.",
+        "textSha256": "08f2759d608279e0b0542aaa52b0ae6ecbafcb0135a71d88ef17db6b39c25c58"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "135.",
+        "textSha256": "0ea7f63683d9c009a04f8dd37405baffc668542b0f29167d20b9f021a82dc3bb"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "(b)",
+        "textSha256": "f2fcd3f7dccadd194c4c5a54a5102c9559487743ac236a6236301e4418d0dd7c",
+        "position": 272
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "136.",
+        "textSha256": "a18d10430976f15a61e2d4ff86f9983e6fd6c90af08fc7f2a384a3e38f9601fc"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "137.",
+        "textSha256": "7f4b94efa6f9d37cda0fa9f476a9786a6bc2c33bd3b916cde78460ecb4642eaa"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "138.",
+        "textSha256": "e0e852459534e07c4da7fd997096801e1474143da9bfc3def5bdec5b1f5d10ca"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "139.",
+        "textSha256": "2551f3af380287a7ce099bfcc2ff4b95aee5ce7475bf35ddc98b615fc812e755"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "0f907a5236f0daeef59cad92d3ec3e3b2e2af4a66f76b6a9a1ab44af33f46faf",
+        "position": 278
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "d7c9348234cc06b86e260698e41ec1390a495ad49253320ceab788c54b73fe97",
+        "position": 279
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "7176690a01d2d3fa521b7ff25651ba93d883eafb61072697b8e07242b30bdce1",
+        "position": 280
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "fca60792a0c9d4c6b81b4e6e20b2c733596149353d596ad7e237bc24d61d8551",
+        "position": 281
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "b4bc8eb54e2c365dbae1ad33abcf96ebe186a8b4e19aa9288c66bac09538e8a3",
+        "position": 282
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "afb575e9f541b589d72a8bae8d2dde00092429ce03c0074ecfc9a1264a499e1d",
+        "position": 283
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "612934bc1c105caa9f720f101c206ba6973f13767c496839591017ebc97510cc",
+        "position": 284
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "fce6783f2ca46e54b9aaee5f86cf38a0a6298813a028d12831c88e1544526227",
+        "position": 285
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "140.",
+        "textSha256": "9d7438d6c95247adbec66de50c4e61fe05954395cde2c3b6f1b9c08904b448f3"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "141.",
+        "textSha256": "13120541e50eb7465bea349ab547295b5b56673e303c48d62a61b4fcc40045be"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "142.",
+        "textSha256": "2a780aa12009d72a4ff2bc04f7dace4d2586b01baaab4b4435f452a826fa0dc5"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "143.",
+        "textSha256": "6a2ee1cf8cb7188e4715b0d2a84882bdd333c3ddcecfa1d33acda496f1cd73d0"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "144.",
+        "textSha256": "115c674f0cae3628ff8ba3b8ceb7dfa7438bd3589d9ddeaff8877f43e0f9b831"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "145.",
+        "textSha256": "d28f886252af1cc90ab0e03012a9e5c44cca893752ffe74c54ada97be728040a"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "146.",
+        "textSha256": "ff35c3b7b5d019aea563b05ebf6c9e4c49a2d114cf126bf599064b703233fa76"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "147.",
+        "textSha256": "13468c3236c96bebd614f01f749b6bf87457ba909189238adda1d2e9b80b0575"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "148.",
+        "textSha256": "253c30c690bd484e4a760b5710b123c89f889a3f1e2625df825e38e25e557fce"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "149.",
+        "textSha256": "e31ab5f88bba52531446337417d03fe14e884a0e12d33b5a85ba032f86f8076e"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "16105cb74cdd18f0d3a2f091bc33d1b7aaf28883ecc5c8d05b76e18b4e44a802",
+        "position": 299
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "150.",
+        "textSha256": "15d6d56e9649ff95be7ba852addf9f1ed98dd5c33484df995005f2b42c6b60aa"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "151.",
+        "textSha256": "188ff01aef5a64a8c5a89f35e112e29a6f6bfa239080ee7148c5f295968b5bbe"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "152.",
+        "textSha256": "00e5beaf7c4b0a9bfe8a43849e7d9342255c8ab28f5e09313e37a2043225c8c8"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "86dd6e80a5558d03bc1aaba95c0b8fc337e3a6b6380ccb544ee82457a535dd52",
+        "position": 306
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "40d9fdd7b7eab3bfdfd9cf675318c389ea65abadbff47ef2cece8743d16e4402",
+        "position": 307
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "153.",
+        "textSha256": "fe5aefb14cf1bd5e777dcc9e7fc24d79685c80f6fc012261d64836539f3d0883"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "154.",
+        "textSha256": "aa77be201d9c70df4d1684dfc4ea5bde9cbfacb59b4158ecc042c47640f414da"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "155.",
+        "textSha256": "99982320ef51cc9c000455fc251ae7dce32fddd56c2d793760e2db8446d97230"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "156.",
+        "textSha256": "5b683be9a326c85a17606ea5301d74bfa6ee82b7725c50841c61454726a69254"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "157.",
+        "textSha256": "ff980edbd98d50df26e6eaae5f1d8a66706f1ade9bbadb94b0e1cb4a9979d239"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "158.",
+        "textSha256": "1387d17b20018264068de302cdf721392415e0661b3c5c8fa7c80528f20fe9ff"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "159.",
+        "textSha256": "2cab234844d11e846220d40e42bf182241649b273902099e98a9879730865cc1"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "160.",
+        "textSha256": "e21a7c57ef0d629fb339a5bb2295a5fd6a93c576b887522becb5f9d31be93d3b"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "161.",
+        "textSha256": "49ce971fb4f60c8e1391763136f15a9610807fb94c6c35695b0d344d5ff03f18"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "162.",
+        "textSha256": "45ca2f1502d1371f29e4b39c0cf819b413339cc84adccae1b7b67e6aa365069e"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "163.",
+        "textSha256": "fe68d7201bc3d51f955dab45c0aa56a9c6e1ad54af459cc425c63d5813e540cd"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "99ec43e17463ef788b149af2a74ce9e137a7e841d8edb606c4112047ff0a6149",
+        "position": 324
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "039edee973923363ecb132b0a1746a30d29760259cea546b85eb1fc10d011b65",
+        "position": 325
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "164.",
+        "textSha256": "0e604fb23d571bd7d2d9f07dcd05d8cf9d46825586975482d7c4a29e36af78a4"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "165.",
+        "textSha256": "0e3b2ea80bf5c3c1413d96e67558d9738c981f5dfc3ffb5aa69e5324db4fb6fa"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "166.",
+        "textSha256": "60644581fdbed199009d5dc6a1551d465cf82f1b82aa32a9548e581d4c05d2df"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "167.",
+        "textSha256": "00b15979bc84e50177c4e306ecb5603d9e3c15edb6207638831a95dfe0411362"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "69dc4a2065f8238e95868072476317a3519ec7feccf7720d0e31136ae9e70043",
+        "position": 333
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "168.",
+        "textSha256": "daacddab92e2cceb136436734fe77c9861d0e35290f4053a3bb1b6473dbd62a1"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "169.",
+        "textSha256": "faa99f8dd0aaa0490908a833065b91abeda9ecafb6dfdc6d4d631dca74c33fae"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "170.",
+        "textSha256": "221a913ece613cdc821abaf8f811c161482c775949921dcc60ab3235fb45b18f"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "6b455b796f4c31cd370c585924f0b1f5fb2e99a24355858eb5242ac20fa7e00c",
+        "position": 340
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "171.",
+        "textSha256": "5e045abe641b85f50ee9e13cba52114e196ba65d362cbc8073651535103ca128"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "172.",
+        "textSha256": "ef260803d34edcfeba7860c380db58d5fa5dc1ac865383c6dba5b5ad90feab53"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "883f6344052d673bbe63299c1f72208f1f37d31df62d23ee632b4927e48fe22d",
+        "position": 346
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "173.",
+        "textSha256": "687605d14f016edbc65c1dd8eb7909826946d5a9cb666a1076bb17f8476f0aa7"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "174.",
+        "textSha256": "4431e70ff4e0a79e28c1e226b95e2f7ae9df9b0826d7a33fb1fc16349d54d7df"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "175.",
+        "textSha256": "d79ae981e971124be988563c5dac9f089bad2be50485411b2b6e1de64abf5925"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "e0e258e021fac2084329ae2fd08f37acb93e36240d437c62d8fa477f7c807d37",
+        "position": 352
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "176.",
+        "textSha256": "7cb9bcf3161a897782576ba47bc6d869c034555ae4b63de42935872ad206954d"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "177.",
+        "textSha256": "3935b64b9179f91a412afed59996378ff9e529acd2d51a080bb6fa652d1bded6"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "178.",
+        "textSha256": "58017b6b44a14ce3f200695a774790755071ff1e40a982f753cbe56357fdd3f0"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "6a6ada661d00525c913ce458bec97748d2db2508fe8d2a0c027eb7ce739ff081",
+        "position": 359
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "179.",
+        "textSha256": "20ebca48c1b25404f88a114e22fabbb24d3996f4353ad7927cb05f6747697df7"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "180.",
+        "textSha256": "e93ebf576526e22a996aa5805b86862a5f3ff6d2eb11ec82a32e4c1a7a14e27a"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "181.",
+        "textSha256": "0d3980eb80c86bb428459652195b03f413a15c4dffa67a7ab81f886b0c9c7c41"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "0922cffeadc9073cba091eaf0188879684de714e0236af9d2ccb3bf364b29265",
+        "position": 366
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "182.",
+        "textSha256": "2a485b42e196e482f9ed76fa75b0749c3fad3c25dfce399dfb0e98d11417448f"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "183.",
+        "textSha256": "96ce31a0799d5157b2523d766feb6bc46bc6b0917cfff9f3325b05a8b3fa4442"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "6d2ec0e3233ebef4c6b245269d01d61a3e90531ed7ead13ee818a730c3052fe4",
+        "position": 372
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "184.",
+        "textSha256": "7af919ad493b681d32407843fa57cc8879fe4eb021731b7beb6c123b582caf45"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "185.",
+        "textSha256": "20a3ee8b5ebb1f0782f105edaad508d8ba7fcf9893b810b2ca2dfd583dabad88"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "186.",
+        "textSha256": "71b7e74952c020d7d27d3c1b694a4ebf098550d5a021068923ad8372393e9f35"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "53c4049d31fb6ece5410ca2b2af89e50b2bbcd71c30bf1c30c3c2fb40eec41e8",
+        "position": 379
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "187.",
+        "textSha256": "c2c65eaa52de8bdf996359279cdd5f1fe6fc0304bf16dcd4339e7a6425836493"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "188.",
+        "textSha256": "40f23ef82e17b66fb1ddcfd06c83391699bce72b01922ba6e64efd4e6fdd2f07"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "189.",
+        "textSha256": "5cdd4bd28bf58eff25fcda6026666e67ffe7196774f5aab5998d62238f5b7343"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "190.",
+        "textSha256": "6d90182b0879389558edf8fccf789df054ace6d660f7eb9b8ba09bb9e894d4bc"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "191.",
+        "textSha256": "9a5fee4a0e3473569e194c48aa55323cfdee641c1439ac75cda252dc3cf9577a"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "192.",
+        "textSha256": "8cea767496d4ccc8a8a983409f45030f8944498f62838a1ba8b24e7d372ee87b"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "193.",
+        "textSha256": "7bdb9d498d6e728a766c87757377de44479154f090d1f380685f03350b10e699"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "194.",
+        "textSha256": "3db6f340d83ba209cbe43ea6a08111a72d2ab4314daadd32a2aca57e925a7837"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "195.",
+        "textSha256": "253583beb971a0785bac731c9dce113989889ab7196d739e1ec13624a4204cb8"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "196.",
+        "textSha256": "3d3e74626e11e7d6176c8600d481a8e5cdbd934b7b43a3021b25df143b0f2152"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "197.",
+        "textSha256": "2dcc04afbca9d3c256b9e9eee2140c85338db45966e2419425bf0ff1ed394455"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "198.",
+        "textSha256": "751667401ee836d198555e833a66bd80515871e704203b8a9baac0f0c44362e6"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "199.",
+        "textSha256": "c2cafcb1a5c3bf3170f15234b9b066981c9d277e105c7789c5f2391fbcde4f78"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "200.",
+        "textSha256": "4b0a75df9f59aa2064fb2e4932b4f23d4faef58e96d3729365fa2b57e86fd71a"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "201.",
+        "textSha256": "36cf6f6d933284161319a381a7cd8c4886378603b166f551df6234e9b6de1270"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "202.",
+        "textSha256": "57a1104f4920640f7d05a63e9cf1d273a71db13cf24cea2439f37213efb6eef9"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "478692b1efbfa69dafda01087f1d3e9bbd611fffb8dea122530c4bf12df627ce",
+        "position": 404
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "d71cef72b31070507da5095fb6b4d16cbf71627ea5af920c8da12fb4b4e5307a",
+        "position": 405
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "1440d5f079f9f828b17a1e092cfe75031b6f836a56de73e08a29e927d281009c",
+        "position": 406
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "e7bfd44e45b407724ea4252de5a767a30c8abd82fafd106127c0ea941b9dfed1",
+        "position": 407
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "f441526138469e4ec98f30678e4d4779bcb99b456cf62b51327ed25c6ea0e214",
+        "position": 408
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "53827e543bba918376f8d70dc6634ea4423aefd5242c438f2c8ee3bbe072e160",
+        "position": 409
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "14a80d087ee99d9ecffee563614e4d62dd568e0e8fce70c94a543bb501f12d2e",
+        "position": 410
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "b534dcfb0a07af2f46bf5e95eff0ef4776bcb599026abe0cc3e62a91910845d7",
+        "position": 411
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "6799bf3267098925f62a9412211e64b8ef118019d3c17089dcdc0b089c16f219",
+        "position": 412
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "203.",
+        "textSha256": "03bc650f09d67c4e0ad2eee1f949a825e8675c1ddda8310d238971703916413d"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "204.",
+        "textSha256": "34c53314df61b0cedc1ee0c89174d28e0419698c6437df583a6f960b54b6843d"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "205.",
+        "textSha256": "9209fbee199418a13187f18c0f6dac06f08add6b4be42cda91d1572db0de8136"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "206.",
+        "textSha256": "90ffb0a8c8bf3db13bbae787baee70020e63a25f94b69c187075b1afa12ef949"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "207.",
+        "textSha256": "2ab7d0d4f096e99f3ec91e8a9036047bff9f599887489dac1e15844193b6f3b0"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "208.",
+        "textSha256": "f8a9a40553eb93a12e4ed3c51cb7cf41fdecc3b29e12f51a94ae823e6734b177"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "209.",
+        "textSha256": "98f1f085f669ddd1170e0c8cf83ca293eac3e13329c7835157ebbaee9f1f34fe"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "210.",
+        "textSha256": "71469cb69218be0b40c66f11edf2d8b3dffe1039d4eefb04bcf282281adf7745"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "211.",
+        "textSha256": "999e4794a5f9bc8019d340a9a094f2fc2185726663206af48002df07c260539e"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "212.",
+        "textSha256": "38d5500182ee9ca4ee4e78203679091504f9b6310e773518f1e7d2f6dcc87248"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "0866e8194108f2c8257fda98aaf939386bd4595a37be17c2b62897f0560bcfb5",
+        "position": 426
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "f05851ee299bcddaef94a2d30e8ae02ec28b16a90d9cc2252a827f271ac27aea",
+        "position": 427
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "6d556d922c4338f541c5cf717a091a2441fb1e1049faec33315e0f2e5d70c356",
+        "position": 428
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "1237a0b7dad249a7607835248a54da8a3a38170a73a68343ba8abe638134042a",
+        "position": 429
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "213.",
+        "textSha256": "7726437b36915e8f8e8739237be15a0313ced0f805b52721ce44166ccc58992a"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "214.",
+        "textSha256": "9274b4223b8e34875c9a9ad28f9af9f6ed603774dc64671e8dfe69152387ea47"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "215.",
+        "textSha256": "bd186403e7cadd8e3281cb864fcfd51af296e8f9d0e175a4476c2424464dd5dc"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "216.",
+        "textSha256": "f82ca8eac5bfe5440f631602bd785cf5ea22ecd85970b5ac9e724181e6922f19"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "217.",
+        "textSha256": "aaf28744a1523535282a28722b5edfa7ae2b08cc30d439c42f3b69e55295f66c"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "218.",
+        "textSha256": "433dadddbc5ecefa22deb5af36023dad0f9830a9fe97d6bf941b1feb7ee2cd8a"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "219.",
+        "textSha256": "d0179e02da0d7f12fa14e0847622d1bd30dd5d99a37e71d33d3eea498208e972"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "220.",
+        "textSha256": "9743d2a6311024df8411834bf8ee0663f572489fa3a42957ca6bc3d34b0e9ad3"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "1d02669912a60d84f2b20f07a71299bf23469053b6bed944991b5f3f1e6f5006",
+        "position": 441
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "fb900b7acdde5e6f0a7f2687455c0ad15559201d138f6497963d5ff2458c8a84",
+        "position": 442
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "31d3eac6bc0a0a411c791a1a8634c703c966f9a6548a9767c718512636049948",
+        "position": 443
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "7281e0e1dc997408399a046604dd544838a0bd7b44a9dd0f7bd7da0b0603eeaf",
+        "position": 444
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "0cac609c5ee8f048f4bd4815316ed4c5b7920cf793ab0cc443a422b7debab105",
+        "position": 445
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "221.",
+        "textSha256": "52e9cdf9dcc2ad3b64f7436c946151e941327dedfc8b3951334beb340e52bf19"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "222.",
+        "textSha256": "e65a03806f3d71cf1c2ba62ab225d5659d1136a881f3e7cc8741a4e64c2a794b"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "223.",
+        "textSha256": "c677339ebf9438caaeb399dfe296959301462da0c00b433599596bff20684103"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "224.",
+        "textSha256": "689bc2c9a7efab8a44a5c34ef9012c8d0a06f1e9955197f4abfa443f40389b5e"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "225.",
+        "textSha256": "8f920be99a5a7ff36fee1fe5ff158f16b3c0cef2215bee292f2300dc4baf2bd1"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "226.",
+        "textSha256": "8df567c675c3d650b83d4b2bb99b2b1c534b096bf706bae4596749e6118d3bd5"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "227.",
+        "textSha256": "a36564c6cab84358c88a3d23f92b8e51e56986943604ee36f05a164e0831b221"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "228.",
+        "textSha256": "32a3c6b9f3f29cc5d455cb52ef69e60d1ec72b8db68487fe888d8ae2e0c43c4f"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "229.",
+        "textSha256": "e21e0b9e0dd9d184187f223785dcda1cd1f3973007c4dd8a0b69b97dd5c85d3f"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "230.",
+        "textSha256": "72a8cf21efc9b9e32d9e92bb49a53ddfe944de9af99fe6718ec3c28af25fb8d5"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "231.",
+        "textSha256": "7a3b46afd5a98d71a198e8c64e3d80b69ed685d7a25b51af73591f96c2474bfe"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "232.",
+        "textSha256": "3575fa18a4194fa82424aab5bd4db55d103b915c17e6d3dfd939d4c8a11cc6c1"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "233.",
+        "textSha256": "a830ba02a95bdf7d71b371663e7bfff8a6fe4246d6166de687a0f02a02166d99"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "234.",
+        "textSha256": "a493b48c6446f35d7015b679a1e6932b8b62d33d3802462f186aa1843074267f"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "235.",
+        "textSha256": "4ee526874bba1413840abb983abf8f63e2ac421b7d563c5965bd0d3a77d2d4bc"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "236.",
+        "textSha256": "a0be9ffc99dedeec2456c62b435b9cf2eb054c8340aa2747b91cc9d962557390"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "237.",
+        "textSha256": "999d79c59da7cc24330a1a7cc44ec3dd65200df37a704887caca0acb4a9bf2c4"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "238.",
+        "textSha256": "e81ae5fad40ace2cdcb9bca10baef40b82c060766754f0b560844bf1834d5fc8"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "d755c355ea4f5ba704db06744fd7b83dc1a51b0a5df1c5bc49e26546fd6f8756",
+        "position": 469
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "16004e1778458b6aaf77c7d9bd49baa33caed57c21e68cecbbe51bddf5bb11b1",
+        "position": 470
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "8182f60223fedda233ee606efc2c5a506746f54f5064e5d5554fc6b7b05b08a4",
+        "position": 471
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "239.",
+        "textSha256": "1e719f0a59a0c278fa61cdc649ce61e8a754a66604a30ca5fa02eb51d48dad69"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "240.",
+        "textSha256": "9172ddb58e2a0961b528434e2e60356c967c5c89ab870e058230d0714348dffc"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "241.",
+        "textSha256": "de049929ab9d62fb489a6fa1e26971bda900b1fb5ffdf629628ca0025dece4d9"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "242.",
+        "textSha256": "88bc396286aef878984b8c7b224cbf6d07e9016b3504e6547ceb859cd845c4d0"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "243.",
+        "textSha256": "36eeca1daace324097f0e172b690174f30e420dec4b93723a71c3bb4f24daa7f"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "244.",
+        "textSha256": "b2473f3713f5ec5e7432f5a3837a9a6b3f9b814ac7a5f8cdd393a496d3fa1655"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "245.",
+        "textSha256": "ce8dc7569d411966bdae9d7b68a26e69ca21eff9e1006cc4a64440219d430528"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "246.",
+        "textSha256": "014fa8ba469f279a5c4446ed209fce15e66ecb3d074fbfed8d09eaa3ea78369c"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "247.",
+        "textSha256": "31390522830dc09a494248216ee7e6008db1fed2e574c99e5703104740b2d791"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "248.",
+        "textSha256": "e98aaf627144d7f95016b261f7c6bf2c25acf29464d3ecb89dc74db001770c2b"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "249.",
+        "textSha256": "355c84dab6cd0b718d92a9f95bfb7ca827adc9681672aeddbe5869bdcd828193"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "bac1606d60ea9b3b9167a9eed93e10d408f804dc19e064496470e914b442a119",
+        "position": 486
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "250.",
+        "textSha256": "38015c643f6c7a6372b8f90949c41682eec5ed11c97fb00ce48aefa817010493"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "251.",
+        "textSha256": "01b90f4e70c17c951c3d434b96e1515d45d1a9a1f2e48b67d90c166e8b24085c"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "252.",
+        "textSha256": "28048abfd4075f47aed7a216aa95f15bdf061a361c850d2ff40b78a2a241c34a"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "253.",
+        "textSha256": "36137f1b13b1f973e802d7864f313ce2eab7837bd7b08e0e81aaa2a226825dab"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "254.",
+        "textSha256": "3692b8d9be1f88daef1cc9fb733e7ea78a8c99f210ccf9d12e5cd112418c7bde"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "255.",
+        "textSha256": "5626f2caf242e59d487c0640fd6ce7dae9628dbfa895394636768289e0d31e4d"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "256.",
+        "textSha256": "3cba04e17b357bb24c164b02fde8a738460aa146486351db86c298f5cc4cd225"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "257.",
+        "textSha256": "867ec3666025488acf51947c00233abe889819b4d7136d26c1b7c492191f5fd3"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "258.",
+        "textSha256": "e3eaf4a98f50fa559e04afbbd38feae64d1c5cdf2c755662ab0d57ff59244c08"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "259.",
+        "textSha256": "1a66f386b4ad57d30332dad2ea73ca4a4220e8f696529b949478a74bd262a56c"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "260.",
+        "textSha256": "5a93b63cdd5a071333f2df6ee3f6804df93c4f8db1cbebd663bf7d997f08bb61"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "ab779b5f2849d3cb1e3c8c832e2084100d5d7e8f5d9dc72a43508e7f5038aa74",
+        "position": 501
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "261.",
+        "textSha256": "0547e77d297ec5ff35e7ebd4f1605f74bf5f8b611c4765020dacc518c4253288"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "262.",
+        "textSha256": "0b6b4ed96a174fc65ec537f57788e6d32a3cccbb8818d9b2941b068808f94b3d"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "263.",
+        "textSha256": "2db6752521b00c88a2984c44125830780859d3dc7f42d7b9ce7b56f25a029cdb"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "8fa7f8707ae081b323946b960780d08f2c355ab861b19adafe88e36b987f3cd1",
+        "position": 508
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "264.",
+        "textSha256": "f97b066a14104e859a30b6acab522d3a80d1c7af86b334886f8ad84f954285eb"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "265.",
+        "textSha256": "064b952de65a0a47e7042137175cbbcab962c359ae97553be42812a51fe51b91"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "266.",
+        "textSha256": "3267f7f0425f30e26aed964214c19ff72e88a44636edd80163639dfca523354b"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "267.",
+        "textSha256": "79e36093fcb9f02fdcbd310e40c8a0c8ae93132a7afac24d53172b71f465f666"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "268.",
+        "textSha256": "c12b9abfa40a210881cc00f669c2a032d19528ba2dceb4191c0e297072470825"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "269.",
+        "textSha256": "ca8e456913335f3a2d8df886813e051f519d8991ce76a3d4b85a3ab7db459537"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "591435def24b501ba90bde0394e1959583cf769c791eafe43c815827c6519fa4",
+        "position": 518
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "738802e2e825015b29ba8a2b394c0b5f050b7c173253cf35efa75eb598113bb6",
+        "position": 519
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "270.",
+        "textSha256": "4898fd4f72e3a23d341ed439382ac229e8d4c88bb62d109c42fd354406c6c041"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "271.",
+        "textSha256": "a933e271004ad1feb1a176732effa443fbf971fe530b3f70f2f202730f76b099"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "272.",
+        "textSha256": "6f45b34df40fa52697b9754c32a4bef51f7d8deb9d3127ab8970f1767f88ded1"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "273.",
+        "textSha256": "2f4701702975b204125e7ae335decc8682def52fc9bcf2de9b84a294e0e56eea"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "274.",
+        "textSha256": "c9a8e641440411329d545d42ec9f77efa003d53d35d087313bcbb940911715cc"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "275.",
+        "textSha256": "5915446226af2bc5e8ee980251578aca4c5e39ea71ac15fe5551046705d7afb2"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "276.",
+        "textSha256": "a23857d3cc399a1718a5e5897e4d969674fc5c72cef4fae88dec8ad26ea0b0ee"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "89c435d844e4556853283bc7bc60acac98a8ef8a1334dc13570af1d4c0a7c20e",
+        "position": 530
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "87c59a1dabddcfd24f24b60e1006054bdd8a813d124f0ce2730e80aae43f3cc8",
+        "position": 531
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "014ed933dde7500fb32b9474f6098d64730f86d8f0d90d7e6e857edd48757f6e",
+        "position": 532
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "277.",
+        "textSha256": "260e9ab9cd2708086de6fc7ce62739ad107613a5d784a65f0111decc941fe995"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "278.",
+        "textSha256": "291e946e6c78d6c5f861cdc8f8a9f44d6043289c9208f60b4b791f7bcdda76c0"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "279.",
+        "textSha256": "c622eac4c37e8eae953a96e087b926b25430014064e593e5edbb98a78578c072"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "280.",
+        "textSha256": "81d1bf82746737d5e54520f66ea494d5ea183c9215c99f1798a9f2b956578851"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "281.",
+        "textSha256": "53cd86e6918bc4cdfa1c2356bfecfc60650050d4447715c91c96893bde5ea217"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "(a)",
+        "textSha256": "e9c5c800e8db5786d0a13a7008b250b5c8ae2dd13b86313fa1bbbb98260ebd6d",
+        "position": 539
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "(b)",
+        "textSha256": "c7f21ebf7c8ac96f0406491099ee5897bf72929f98d40bfd922a18b85e9a180c",
+        "position": 540
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "(c)",
+        "textSha256": "03947dedef4fd854556aaa694276a152a3b6477f4fa84b3c581e8490c2d70281",
+        "position": 541
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "(d)",
+        "textSha256": "b5010724d3fe15db3b3b39d4edfd9756a2ece10bab1783dfd89efaaa510052be",
+        "position": 542
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "(e)",
+        "textSha256": "8970384123d1c7396e69a43747bc6f837d40b9f56adb385d380d79e101d1bcad",
+        "position": 543
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "(f)",
+        "textSha256": "156e5867b75b565453be47285193c57d02146f9ee211846052a030e9de2b4f0b",
+        "position": 544
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "282.",
+        "textSha256": "827fc990cb3dd6767c53554fc8ffc1d57ca28b68adec1df886d41b4636289ff9"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "283.",
+        "textSha256": "b46b864cab3c6ab5c25df2382a4523e84207e2844329a5137a2a6f6d05159ff4"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "284.",
+        "textSha256": "c1f8948663b67a5429dbf8dc4576e58af58533263956ec5acf9b77d1e04ddc3b"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "(a)",
+        "textSha256": "30349abceef3c624660ebe1daa7a261e1acf460e61cb72ad44d056f31c70aabd",
+        "position": 548
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "(b)",
+        "textSha256": "3713faea422ca2b9463dcd1ff75d0634fae4d7387ff63c24d24f614fab774511",
+        "position": 549
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "(c)",
+        "textSha256": "30fb8a04ea97aeeefba632eab94452b81f6b77147ad660960f85c3a99f87f903",
+        "position": 550
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "285.",
+        "textSha256": "39b2073696b1be375a1877079bddab86d51c3457803d88d7edf06c8989e84b5a"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "286.",
+        "textSha256": "9d23220d32714b7be1c265e5def7c4f62d1d1006d73298d0c1522817c0dfb135"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "2ce6c6af3aca9128ef526d74e5b3a07bb5474852e7fcd73150e8eeb3908299ae",
+        "position": 555
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "287.",
+        "textSha256": "b071e07ee00be57f543ad9540f9af6746ed66f762c0ae19361c4ece965cd2255"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "288.",
+        "textSha256": "095b655f9b02c5a0d44797c18437ddb6d20347856f6b05cc7208859eeaf8b585"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "289.",
+        "textSha256": "817195e35fb9b2c8aafc3fef44de404c270f2836b0e40df18dc0f6084968429c"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "290.",
+        "textSha256": "19703ed94846c4e3639efbeb38b1a0010bfc9b6d1e0e1260c19b61150f35dfde"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "291.",
+        "textSha256": "838fb22996dd08e481f7dbe16e75889036e278b96c7f56e844484ac32b26adb3"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "292.",
+        "textSha256": "c5de4ae8fb2043616a7a740fc039ed8f05542eec9fc58980abda24d1001f036d"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "293.",
+        "textSha256": "2346dd6589a688561b8f8b0fcf7a0b7bed575aa06c83a7ce630d6f3635d44325"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "294.",
+        "textSha256": "c46bea0fbff3c9cb602ba912ada8b0fec457e1832710766f395f89ce741c9ffc"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "295.",
+        "textSha256": "0f0d2cf05af58a216af5ce1a12ff437dd76ad780a1d3bedf3abe4ff7e59b7133"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "296.",
+        "textSha256": "a1c51274b0412246ac692559347f6512c72d727951cadacfa2c9c564c3f0cf91"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "297.",
+        "textSha256": "fe275aab2ef55cc6ae29294fe4a5194bfcf351c468d48ba37561749f6f80127d"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "298.",
+        "textSha256": "56f2456b985b08d886842745a2ce1ff652503f1e181ab363daa75228a0357df7"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "299.",
+        "textSha256": "84e1daa0079fe92bb2058f5d6a8a14ca687f7c3063612d6b2404595afd03f1a1"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "300.",
+        "textSha256": "57c381ebb8bf85a772b501a92c05896849a0caf42643d9f72a0d6a083bf5ea04"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "301.",
+        "textSha256": "ca3650abbfb9114b59e7dbd2ac3da3d00ccf6ae44ae8c8b85d616e0044d4254a"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "302.",
+        "textSha256": "cd2b93c1fd2465c8b8c9f221a54dcc3fab5d1a042a0460ff5c2f4efa79723eba"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "303.",
+        "textSha256": "3cc14b1facb61c552aae217cd78795dbf98d8fe0b0d08d172b8f90738f54a013"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "(a)",
+        "textSha256": "ddb6d5a139c46d8abe19c247879c828db4bd3b6f8d5e1af39a0b582ac5e50574",
+        "position": 575
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "(b)",
+        "textSha256": "0447c78436ca26f394e339d347d0261d43d76d56fcd106bfbf0930f5749898ed",
+        "position": 576
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "(c)",
+        "textSha256": "91e6cb398cb35730809ad94bff566ffda218acd3f361ca3b60cf1640cf8651ce",
+        "position": 577
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "(d)",
+        "textSha256": "8d8c145474464d1651bd00e9677f7fc8d2da51bc306ab9915c59cede7f5fff1d",
+        "position": 578
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "304.",
+        "textSha256": "b32c3adec71ad7c9d887fc24385f4fc84109abec2ab21d7f579a13f99cf71fa6"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "(a)",
+        "textSha256": "1bc4061c7890d2a20ca2654b4a94ebe6bfb497d1c1b84027316f0c368213930e",
+        "position": 580
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "(b)",
+        "textSha256": "bdae01f8ff711c1c3c92f1d0be79b1c800eb027e47887dbad07bbed945066613",
+        "position": 581
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "(c)",
+        "textSha256": "5ab95492a5911e22cba6a42fa1106551c3abe32ffc869525c033c444556c42dd",
+        "position": 582
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "(d)",
+        "textSha256": "e6a60d34f654ce5815e2450ca9b0aad3808b245d3ee01b328c3f2b2f32492164",
+        "position": 583
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "(e)",
+        "textSha256": "b45908c33c909f5447a74352f217deaf06c12aef8a26fc5c4a43aaa41799d39f",
+        "position": 584
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "305.",
+        "textSha256": "e39b2fcd7c6bc3262b1e69edbfcededdb787421192f9440f7d4e8ec41eeaa5ee"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "306.",
+        "textSha256": "0747ea7a2778d2dc5527c98258885bc5d05e67360f0d5a00460cd6bf6055643b"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "307.",
+        "textSha256": "65b0f4cc3230d01eff8097c414031a34651cafd294098fb33e6a136694e8d144"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "308.",
+        "textSha256": "7697c4d20014fea721d0162cb87d1c6212d3b7b198888e9b94b067d6ddfd4164"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "309.",
+        "textSha256": "ac5001a55108846ec40955d5e6c5e619e8246cf9b562afbc99dbc673e806c28d"
+      }
+    ]
+  },
+  {
+    "symbol": "A/RES/80/129",
+    "reportSymbol": "A/81/336",
+    "reportPdfSha256": "13a1d6411454a574d01823a698cb4006a67fb3c2602cc5da57a2b31bf1841f54",
+    "reportPages": 16,
+    "provisions": [
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "1.",
+        "textSha256": "a0ccd523bb89f43e9cefc6bb4ea0692605390123544df92f66d9d29704a1903a"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "2.",
+        "textSha256": "5948a06c98f78eb1a98556cbfb71a215e78e8b157301da4273e1bf27a318dd5d"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "3.",
+        "textSha256": "825e6e04b1ca034132a70780a039e4d3f15ef24ba506647c14b3fe009fa1d382"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "4.",
+        "textSha256": "4112dcd2a02d9aa4cdd79e9ca0be79d0faef87a353e1254a31800883926370d7"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "5.",
+        "textSha256": "b28843b40a5dc8f8ca446bb18836e0fb1d13a30488ec993bdddb7c051cd82005"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "6.",
+        "textSha256": "ff8ba6e4343c9378aec75d700cb25f569b13c64971682ebc144c3205dd4b32aa"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "7.",
+        "textSha256": "2fbae9d9db6d24a1981e2ffe8727f1660c8b48cfa5e437d108d0b2cb8504cc6b"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "8.",
+        "textSha256": "03c8fdf19885fcc1e46cafa2cfadce677af440eb5c3652b2e7d13f9fe3cba649"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "9.",
+        "textSha256": "b86d22111052f4542d4062c7fa82b542d97df815a38ba95c9256298cfd79af5d"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "10.",
+        "textSha256": "04850c720800c73ca92a018001e8ac761818f58baea2832014896ee084078f09"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "11.",
+        "textSha256": "64ceab318dc94908b00a260e6fcaa0977960aaf91ae6e9925a3bba4b29733033"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "12.",
+        "textSha256": "ab18dfddc13d69b38c340bd4659b41910cea1861d7f4f4791b0da0b7246e4008"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "13.",
+        "textSha256": "a9e19dabe8c88041b7b00ed9bd15210aef834770e73538889a58ced31bb93ad3"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "14.",
+        "textSha256": "96015293e410f0ecda87ee677166a39c40b2540a4e4b576a01bea68cf63f9559"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "15.",
+        "textSha256": "0ac3fb83c58053f547cedd16c4235627e8a62ad9bfff0afe93e19f331289a9ca"
+      }
+    ]
+  },
+  {
+    "symbol": "A/RES/80/137",
+    "reportSymbol": "A/81/307",
+    "reportPdfSha256": "23169f9c8176387f3935e83955a0332a41364ee7f5e3908fb2335bd5b4958f4b",
+    "reportPages": 23,
+    "provisions": [
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "1.",
+        "textSha256": "c5a35b887da97e35b8cc71eda332dc697d05dc3c0b73d644942043672fac8dce"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "2.",
+        "textSha256": "26dd5d04e5045ad7a31ccee17a82d3c67d1bdbf0a5e9fa31e22415de54b344e3"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "3.",
+        "textSha256": "14879f0b4da83b21cea3432adadc8c6d25d5dbb5f1bbd9064ba5c822d339f0f8"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "4.",
+        "textSha256": "ca2b9b993c7271dcdc8d1c0bd3a91c3b4bdc755d31cc58362c4975b7c4edfbe6"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "5.",
+        "textSha256": "01468b0664505b35761680b888b3091065a11b3a5c8e02f8eb473a76b0ad7c21"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "6.",
+        "textSha256": "389e95affd5a3891e63a8bb8f203acc1c7f6fc3847c84765634d8536316065c5"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "7.",
+        "textSha256": "2f3e1526c3ad8affc64c9df330bf9a5b499366773b060fe09abaab99eec1669a"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "8.",
+        "textSha256": "c66bad7c787b069a85db1e144f671969747158b49b3a6bd5b131286eaaa712d2"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "9.",
+        "textSha256": "0c471549daaba31e523a42bc1e6a18f023454b3f46a1679946b1c5563f8c5a95"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "10.",
+        "textSha256": "d3a0de6e75c6ca20afb35fc874456b7663fba9761bad8664bf84b1c1aefb04f7"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "11.",
+        "textSha256": "f36a155fb59071722251197686175bc24ba583bb498f4c3c90e9bcf0f5040774"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "12.",
+        "textSha256": "ad82730f5f9cd8f456eaa05f81685c4f5c0257b18254b0a4f7332eae26711b3e"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "13.",
+        "textSha256": "76159005550712a738dbdb311dd9e53e4a8350e6eb5cc82977b4beeeffaf3c73"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "14.",
+        "textSha256": "a21614e6637a2dba8db5daa79cf6162e0c92b0db0c1cc2477868e2eadc1ee5fd"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "15.",
+        "textSha256": "f9c38017bedf98940ca5be65b029cef016d415fdc1377ff5ce327653e3f0a1d7"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "16.",
+        "textSha256": "6b6c477231bbff0b16c1306bf723fcfbfdad9a850e4d70d211d9c80c551a4811"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "17.",
+        "textSha256": "29d02422572eb2da7edd5ef541e3d686a13aca44082ab330cdfe7036c472f27d"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "18.",
+        "textSha256": "cd7d13a44d731632a49f74160215f9ddb0740c0babed68c151f7b18598baa85d"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "19.",
+        "textSha256": "d7bac7fc0805a66ceadd51a58ba6be8960d04deec3c0f7c3e6aaf0eeb2dde993"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "20.",
+        "textSha256": "23aa5b3cc21eb09a0654d52c244c2d4acf9761aaa7dc5287948f1e304cec567d"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "21.",
+        "textSha256": "232dc5ee67b784051810b94609f116b50bcb158c977c0d32af8efc6445e629bc"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "22.",
+        "textSha256": "42d81e60fdb4eccd0042d8a127202caf99110148f5148ade6929d52f1bb7eda9"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "23.",
+        "textSha256": "ff59b02aafd585daf32d90f0a8e88177cfd791516df7c496e58286ef6de11652"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "24.",
+        "textSha256": "ac3b64df7b1e235e2b8e4a6e0d5f3575c7f5f57b101efb4f77f7f4f1dd3bdd3e"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "25.",
+        "textSha256": "657f05a9cea44d0d91c79d987fd888422c9ff82b08d4560955a14a328c5818e6"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "26.",
+        "textSha256": "20337f96720b3ccdeaf480e448e4cafd9dfca8acbe9e3e2a6a606ed86fa90da9"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "27.",
+        "textSha256": "56aa05c41a3b22663d178127fbd6c2d7f72515a5e258d11b37d84c05827c5dd8"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "28.",
+        "textSha256": "ac9fc893b5eca9d68815b7cfbeef450675ca4ae6e522c94e5278eaad74099f8b"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "29.",
+        "textSha256": "03d56dbc7812072c5ee62ff889debcaca0ff50233678cfbc0533e22979888b0b"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "30.",
+        "textSha256": "3133614118751ad2cafe0fd57f0a01ae7b3930efce4e1a78c24e72d0b0c1cc68"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "31.",
+        "textSha256": "a8053231c1defd98615bdd9f743bac13c2e9a418639231593dc01a8c1867288c"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "32.",
+        "textSha256": "6e6b6042c92ff4f716045ef2a4100559e3ccbabe503ba1ec5eb6c2b4730702e2"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "33.",
+        "textSha256": "834ff7ce740734eafaa33f2f9babcc4881d77a2fd5b363a7615d754087937d60"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "34.",
+        "textSha256": "2379e6d6159d4220f08d3b60f874d952dbe38b3a05a9075ff5cdb99335b19496"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "35.",
+        "textSha256": "3bbfc830ce3c7e4b4a76351449d25442e68dd5b2438648b0792a8fd41d8da320"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "36.",
+        "textSha256": "60d4753ed60e001f58c06ffc0c65ede725f05edf5ccf64428d7ca6dfd91e8fec"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "37.",
+        "textSha256": "8bd05674053576010a764d1eb41f99d0dfe6143f61e055ce6db950688aff176a"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "38.",
+        "textSha256": "732eb7ec9cc54e1fc7de105a1d584d01d22a6fc8a521548ad6254c530366d176"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "39.",
+        "textSha256": "760efbafc8298b995adaa8db2cc5a4f8807247a88370034e698aecd08de6e6db"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "40.",
+        "textSha256": "3d888f57b448d4ce08fd79f544b973591ea60d00d1245c55afbc0b71997e3b8f"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "41.",
+        "textSha256": "2142898f7b365a4e85151c8fa9c85ce0a5cc89ccd98f4a7afa73e6a405e88e24"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "42.",
+        "textSha256": "01185247bd8eba8122ca28291a27d7c517621515d5185b3e5ee1a5550f5296c9"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "43.",
+        "textSha256": "8abf189ec35d8d45bb879a32062552c0dc2e14fbbdbf4aaf2ecfefb6eceda844"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "44.",
+        "textSha256": "aac233ee67718bd875e4514a3df30ac5da7059b387434ffbc5216b2184bfe781"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "45.",
+        "textSha256": "be53f0a4ad39e382a3ab7f6df3ae9b174b55c060671b7420db00df3f36ee62e5"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "46.",
+        "textSha256": "119bb3f77d15d759f6e90a9d99845b70e75955851b25637ce8ba6db18febeb64"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "47.",
+        "textSha256": "ff08b2c5f6efa4438fa7921a7b5239ec8e1b5f2f2f2363a5a113c097a7ee6ee9"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "48.",
+        "textSha256": "14241297d9bb4a694b1903af3f361d18f8d0724e481ae0547b99d49de6e55ced"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "49.",
+        "textSha256": "7599f3a3d252d7e72439e5ed85ca2235e67a8c04cabc2e050b317a282c95247c"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "50.",
+        "textSha256": "e16742e4f633c8ec998b892ab7dc831cb6638a16ec073184b128d85b668f507f"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "51.",
+        "textSha256": "6a177bee767c0c347d25905f96471f512a7bd0cd4ae4e74da94704846dfd7d3f"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "52.",
+        "textSha256": "cd629043d2ea1c4680f1756301feece6da46472166a5a6c844a34e8c980dd753"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "53.",
+        "textSha256": "5059ca7df09a1a2d5fb8c7f93bfbfb9fbe7bb7aa4f9db0c9f0f9d66890150153"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "54.",
+        "textSha256": "91ca8c771cf4f3f003dbfd494caf843dc9f680738a38af6519ef4efaec79f6a9"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "55.",
+        "textSha256": "251c3a7a92c46ec12dfcc5a696e904a52e39259c09ff45a463fba8915635e601"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "56.",
+        "textSha256": "8ab414f98ffcb1437432a53f3dd6ce05dbfdf8a7bffd7bf323ba9796be64bff2"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "57.",
+        "textSha256": "50656171f37b5bcfe7576fd868bc3e18410ca0fee1914407875fb947485f2569"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "58.",
+        "textSha256": "e8bc35f675d38728c640db927b8a9f64de0c4f8f62b7ec8ef3f855a39817219f"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "59.",
+        "textSha256": "097d58b257cd9ebe0af7545f07a1c0affadefeaa5e926e8fd01dcf65650f5574"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "60.",
+        "textSha256": "621dfad16fb112c52317c7658536e07c1e4f46ce2fec0316d8b7fcf9b02d5e9a"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "61.",
+        "textSha256": "ea07620b4d26de6ec4615cc399d3617d667eb60f7326322f6e04c67e9c806084"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "62.",
+        "textSha256": "453bc65f7163cc8458a14cfbd4a1ab57b4f9b52895bf1237ff485d59115d2cd7"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "63.",
+        "textSha256": "517a8f91d841adbd6dfe6c2b1d0f863cfa481498952e8c4f3cbc3f45cb9d32ae"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "64.",
+        "textSha256": "6c7b303937cc8da8e85cb710ec3395a0e04433ccec20f8b4defad03996b00d0e"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "65.",
+        "textSha256": "1e0bffe77b6f495279e3125997c470e6e14925c413871541ecec24f455ccca52"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "66.",
+        "textSha256": "82de18ab40e01802e0fc442a4b761bbea9dbb3596d8c482cef52f12bcaed6c1a"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "67.",
+        "textSha256": "0424964cd11092ccb6135413e36fb4cc1f0528f10a7cd3f3bbe99bd4fd69ac3b"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "68.",
+        "textSha256": "5905279cf53c175196f936a395c7dfc8227609c10c08a3c91d92d44c09ec60f9"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "69.",
+        "textSha256": "6e96e593e98b604df8d24c9caaa2a1647618ba4daab33c2d5566ec05f2dc61ec"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "70.",
+        "textSha256": "fea11517e67fc14be43fa53b7fe8e45089d4dd903b6d0d38ac2bffbd0d7cbfd5"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "71.",
+        "textSha256": "b2b7acce80045b45db2b82eb4a1e7dab8a44380c8be23b9a8f677fde87b6dd19"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "72.",
+        "textSha256": "bf585960a378868c013a3ba4e0dbaf0951406342b471044e3f56a2b0da362082"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "73.",
+        "textSha256": "c1315cd624497b04aecdbb1cb7f0d61034fb2596a59f9a37fe916992607ccc14"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "74.",
+        "textSha256": "de47dd486421155d39de400c9fd85623ec9dd41b35d96d90c61f9967b0f0e6db"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "75.",
+        "textSha256": "11e5d37c2a8be999f4cd48c133d3f3d13b5f5f6cc133487b43312e0e8c039464"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "76.",
+        "textSha256": "2c45cc747b72080c99326df9036b91c002745d571b9b46d250142462f0c14947"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "77.",
+        "textSha256": "3a45e5aa11c08a1acdc7d874d40d8da8b7d99bd094af8ed80deb1aed9ae7addb"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "78.",
+        "textSha256": "c353f4fbf528f9892fb45b707c2a499996fe7b27326d98c690233462240061be"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "79.",
+        "textSha256": "25bc0234c167c70cb0801ec33c7795a206b65e6ad94cc40d8d48f3e91147e508"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "80.",
+        "textSha256": "a3c1aa2c06850375252a8ebc946c60051187cdd3b9b50f72fa133d441bf7f88e"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "81.",
+        "textSha256": "e8b079f3765fa535cbda8121f2590ca02550ff94cd19858177132a3a39fb441c"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "82.",
+        "textSha256": "313aa7df6a5358e8fadc709498fc44d705ae6a5d2bf4d27542743947bfd5a5ed"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "83.",
+        "textSha256": "f76324dd385b451e3b23e0513ae066da5d2073c771329712056f030e07838f86"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "84.",
+        "textSha256": "bf52686de945cd5af1d8c484c0dc17c08a6ecaa1fceb5cb09b9fdb8fcc7200a0"
+      }
+    ]
+  },
+  {
+    "symbol": "A/RES/60/184",
+    "reportSymbol": "A/61/272",
+    "reportPdfSha256": "75ca4d37b72458510f05a4eba6bc01e66762ddbb3bbadaf15a6d3ff2c8c97655",
+    "reportPages": 19,
+    "provisions": [
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "1.",
+        "textSha256": "b9c45d91599310362c3afeac1ea83f9ee5cfbe871bad0aa0fbba87c2ae3caa05"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "2.",
+        "textSha256": "23bb5313695ff99c4a73ac4bad63b94bae4695b3be32614f95b395c81b6cbb8a"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "3.",
+        "textSha256": "6e8f9c97a85c38ed4f95a28c7924b1f513b141c5b1babd026b08a66dd51650b7"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "4.",
+        "textSha256": "ad358caa57bb5a126cd2cf6291ed47201924464752860b616074c7fd37fe03d0"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "5.",
+        "textSha256": "339bb59b3f878eed85d02ef0ca39b6243712c46dd142d5f59cb5f7cefab605cb"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "6.",
+        "textSha256": "6286c1bdc34f39d7d6f831f968dad5ebd37cfdb93b843d3fe69abea776f020df"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "7.",
+        "textSha256": "9af309e33c8bceb54b081fa9f53ddfaf4cabae1049a24f7cd70e9e5231c28194"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "8.",
+        "textSha256": "4f0c8c93efe23c7602aab868b47dd51ea319f191c0b39d2939733e1e6244bf35"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "9.",
+        "textSha256": "48e0f8d151ee2d50c3dde258c81595bf8b6e41dd35bf036496401b34ecac3ba4"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "10.",
+        "textSha256": "11562243d652d77514d90cd1a14c5a130a6ca0aef900ef66d2fd4faeb51a11ae"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "11.",
+        "textSha256": "f9e273d5b52776d3e4c0a4ba52e8818b913afcf52d1da63af489b67471d030c3"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "12.",
+        "textSha256": "31d625bffa9f1d99223f39f8ff05cd6c85f15a70eb817d0a00b08ac703aba136"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "13.",
+        "textSha256": "c05f9f5c257ce9b1c4f8a94cff82b8f74b167e5e68e76d0dfd8571da69ac7ef3"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "14.",
+        "textSha256": "ab055d7959f12ffe16f765601a23fcaa9da1cdd477ecf8d78722279f9edf3cb4"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "15.",
+        "textSha256": "0ec6bd967d2ead9082b90413a11851f7a5f4b9b11fbcc785e0e54113f574d65e"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "16.",
+        "textSha256": "c46a36da6dcd03cbc38659dc8d0a1644bec5594a96a795ea7dffb250e78529e9"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "17.",
+        "textSha256": "3c2a53bb37dbd5157b0772bc913f7f3fae331a0eea5fa8576373d2cf9e7979c7"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "18.",
+        "textSha256": "d84d1aa615ea83f42d7893e6ddc4ed95204d5fdc700bad2dabfcbdbe790fa167"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "19.",
+        "textSha256": "f57e9adc0d729331ea853b0fd107e2ae963134eb9cba407569c43d5eb876fd01"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "20.",
+        "textSha256": "2c679917c3242a990d3798bc7a670f934ae35fc5c68976fe5e5d718d377631cc"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "21.",
+        "textSha256": "08957744ce1e1962f7e66fdcdde6d03ace0eae0ba0c7fa73c30b0a1983b06e85"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "22.",
+        "textSha256": "0d6698da6b156df2f1a6cbc125e659edff54351f7fd2f2b065b4e1617ca797b5"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "23.",
+        "textSha256": "3df6edbdc3c5e9faeba6924130a23c93a5e72617eb6f2d4477af366136eaa1a4"
+      }
+    ]
+  },
+  {
+    "symbol": "A/RES/69/313",
+    "reportSymbol": "E/2025/8",
+    "reportPdfSha256": "0caeb83d480d25f46883f4a12209f4e954f3970d5f9de0fa01de519a8c17348b",
+    "reportPages": 20,
+    "provisions": [
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "1.",
+        "textSha256": "1dc2e94c8f932a2182ebf7280e1201cf9eba0ffe7ae43be7adf57f9bfc2f9331"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "2.",
+        "textSha256": "1891fac06c700a5cbacaadbe9de06d7206ef6e2c931cd395f54909062193855d"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "1.",
+        "textSha256": "c2211d4113f0dce500c2a4119eb87a0946cae8bcfca5fd420f4ff7ce53d6d147"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "2.",
+        "textSha256": "573f5d3e1317d5568931dc5080ccd435c1db896c75616b5e667bfc27a51e45a3"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "3.",
+        "textSha256": "78f8c61d63664d8e681dbdcde49e93aab4e8e1292a8de24e87604381936bb699"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "4.",
+        "textSha256": "b05009b1e9825707f364009dbf6945bcd07bdc0bc06a1cf10c92e14d5e6fccf5"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "5.",
+        "textSha256": "09bb5bfea90d08cfb80f02ece21007a2a2657693990e73edba279bbf2c503ca0"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "6.",
+        "textSha256": "41b83ae3e2c825d508d37f77638acf75db98cfeb5750276c815219fd13a1195a"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "7.",
+        "textSha256": "f2fdb9d46098e2ad618162469c9f2467fc782f863a1d76ca05bfc0764386d85b"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "8.",
+        "textSha256": "7c6050aece36b01e96759f89484fc3335629ce7497a4f4e9aac6ab462cbe387d"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "9.",
+        "textSha256": "a59d3a596fc3a78d80b1a83d4f903b1762e593f1d447e7ad1adbbc4851cb8e8e"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "10.",
+        "textSha256": "3ad2bce2267897dc80598b253e552fb9156fe7b13d6d878d098f6c25ae405a17"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "11.",
+        "textSha256": "0233c2c2ad9dd9150b94fcb5895a2ee6244fc4f4c47c06fb4a75f38aca5cf1e8"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "12.",
+        "textSha256": "7e6d15c5283f9136f51cef4b17646e63fbc82706b642fa7d614846a161ce31f4"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "13.",
+        "textSha256": "c4fdf9467192043ad5d89d1156e796cb88d08554856faa33e5198db48d92f8cc"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "14.",
+        "textSha256": "7715fd210fd8ffc28372e5a3fefc710bbd2e7bd6bda9cff17d2a5c25fde84182"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "15.",
+        "textSha256": "2b64b650fd3da77a32c7c1dc66ab165cc698e932b5a4308da8dc7e61a8f03fa0"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "16.",
+        "textSha256": "61acac6b463c236f5924b37646819bbdaf72c85f13dd7e4e9ee6b13e2b4fb991"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "17.",
+        "textSha256": "633158223108ce3edb0426df06ec8696845b5c88e2c0d0c778c8aa83f011477e"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "18.",
+        "textSha256": "f8bfc7a3f8abcc3ea2900b6d26da367d16b241eb292fb98e380ea7982e7963ef"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "19.",
+        "textSha256": "76032290fd57b4b8417695f821947952a9c644da5c4b04927c0731c6e82e0f43"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "20.",
+        "textSha256": "665d24e2ccf5387e1024009f7f8f870a284bfb1304f7b6ea56c54c1f8e680a76"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "21.",
+        "textSha256": "49a200fe560acd0417ae7f27a5917c10b8b2da1759809064d463c475f266781a"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "22.",
+        "textSha256": "25b9270614e810008d9e4a63a7cba2948501d252fbb8f884f1e2a33f3f1219bc"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "23.",
+        "textSha256": "889a3f8c795074a99fb63f7fb0734582195eccd022bb5eb2a4b5fc639b298254"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "24.",
+        "textSha256": "10a65b82d999a7c50680c85b50556e6770127336aa2c527ca7fd091bd55f3cbf"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "25.",
+        "textSha256": "1776a2b601406d0a856db62a9c7111b431418c7e8ed70c7ce37b57826e0907fe"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "26.",
+        "textSha256": "ce0524bd0129b837ad223b0e0f0cbd09ec92bb1ac3b1aa393239d2f241e19845"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "27.",
+        "textSha256": "5d8073a3fb7631834e5a2c2d00552589731f15add23ceabe4c96b03d8049931e"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "28.",
+        "textSha256": "acb4da97746765063ff619b0e2e30f0a401ce3d482c4513b9017450cb457b01b"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "29.",
+        "textSha256": "bd2be806b89dfa45d10d7ad74483d36941df584364bb702f6333072a0469ffd3"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "30.",
+        "textSha256": "78b5cca743641aa3b0edf03f9aef9199dc00a9f52d887ff19aae2aa363df4ea5"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "31.",
+        "textSha256": "75d313a2ff330462a368f6598a4728f3518542a2373002b7bc4a12c51fc1b07f"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "32.",
+        "textSha256": "b26f70d9ee70405f9335a4b79d7185149a4e6a5b71b947b1a8ed045f2fe637ee"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "33.",
+        "textSha256": "81518a276197ccc52685618ecc6e8e74496d65f8afb633068a19280719b34e97"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "34.",
+        "textSha256": "08a36036665f46e954a14e36ffccb326e9d2204f6902e69978c1cef74cdd9122"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "35.",
+        "textSha256": "4f685866966783dbe166873fd18d54eae856a86a5ef198d5151ffee46c2102b4"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "36.",
+        "textSha256": "990c7113ec8ed008342157f39d54420132555a1bc2dfc730ae9adacd5c9f72c3"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "37.",
+        "textSha256": "4e066b251a7a3b0c3aa5a7879c92f4b9d0da2a6bedaab1be1471e9b04f2beac6"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "38.",
+        "textSha256": "a15cf1d01910ac481b867eebcc7f46c2e91836dd59b88cad47a74eccb2bb194d"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "39.",
+        "textSha256": "a19d5ac9a2a49bee08eb7a23b137cad519992c93fa84a9124b90e3fdd27e1314"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "40.",
+        "textSha256": "8af4692ba67dea101ff25532ca88fd8286bcc9401b7a9417433bd98719852813"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "41.",
+        "textSha256": "a85e26ffef76af4ad45dd7a5a0eaa140dc494e4a118c9199a672c9be41e5178d"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "42.",
+        "textSha256": "f3bdaf9027056980cf238cfdc82ab696affbe8226c8a3f7f8299500af73724dc"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "43.",
+        "textSha256": "d0ed370e013c8375d0a0db7397436cc1381027de8b7ccc29bebca3cd14fde497"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "44.",
+        "textSha256": "f60818260b52eb7a226b21d25fa79daecd27a81a4d708ec094be8ddf291b190a"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "45.",
+        "textSha256": "6c0323f66351e87208f763001d5d89e3a4ec8b2da5b5bc03541caffdd4961fd2"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "46.",
+        "textSha256": "0e7a535fec55d0971aa8b3c1c6d678f23e028c5cc5b454b55f4ff330cf241e91"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "47.",
+        "textSha256": "925b2eb41481ed0504e515af107824bee086e9ac1060bb896fb4dcb6f362a668"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "48.",
+        "textSha256": "ff1b83e58c0cedf595ba859891712a637f4b7230a7540d474154c0d6d3892c87"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "49.",
+        "textSha256": "e44cc9abcb5aa055cf03a3b3277332ebdb630d3289363fae73761b9922636f3a"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "50.",
+        "textSha256": "31112bce4fcb07c12a4243476c8cb64e539d24113dc538c555200402300f0764"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "51.",
+        "textSha256": "2c0f87b27321eeb63835b9b400a7f20b9fd78380f84a96e74845f7a7c52e8054"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "52.",
+        "textSha256": "1c48557ae1677504738f86aaa4dbf001d6c113d5eecc407b068829a1c7cea6ee"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "53.",
+        "textSha256": "c27db2b034f3c267ef52417bc5c64898105f23b03a8d46d09d76538eeb67105e"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "54.",
+        "textSha256": "275418dbfde91d902be96feeaf1744dd4f31769149295ffdaf0b5eabd3fca4a2"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "55.",
+        "textSha256": "9af5a611da5d6aa3a8bfbc2b6c948a76ace27039d2155bf611c476e2b39a7579"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "56.",
+        "textSha256": "99095d9ba01c4050a219228e6b53a3b25db5b7cf89615a99fdf16175f2e93374"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "57.",
+        "textSha256": "c7a3120bd43f392e314f019b0f7798baf89f9cf0f45b5e05d7d8e7f93ab1904e"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "58.",
+        "textSha256": "6ef8e4a4191dba65f146d47c5a6974aab6372d37a434664af87a49f8c46c4cd6"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "59.",
+        "textSha256": "e50873921a6dfb21f7bf294081deb8b731a164568a8132509054ac6401ac2b52"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "60.",
+        "textSha256": "8e35a1855a94df7ca43808059b5ca3f862f7fabbae7e7fcda1279b82305e25e2"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "61.",
+        "textSha256": "8fd8b7baaacb2c8d099473123346c1df662dbf79c1d6088a07137db045ad593c"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "62.",
+        "textSha256": "7c8fb162e9349fb152725999adcc286acac445d697351f92c8ee3ffbea2a7f41"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "63.",
+        "textSha256": "f839d23db7aa2b7e8b8647f4ecbb5c22693295c70be5b51083e903c855b831f4"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "64.",
+        "textSha256": "e3cf922e5efa4586afc34b16cda5835d1f50a07d0f54dc06dc54eb2cd301fa49"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "65.",
+        "textSha256": "27e4b81fe7c162f9b56f2ff432247bf0a57443fd51df0e1b8e9173273ae41fc6"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "66.",
+        "textSha256": "ae46b32248ca87189c1b66ff85cef612c933adf51a1a97f75707d9090b3e8d64"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "67.",
+        "textSha256": "bdfe3787e355b8bb113c05e0d2227acffc913dae8ecd3b4f7bce0c70185c6670"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "68.",
+        "textSha256": "f7cbc5377f3db546f9c621d1724fd32c45ff88928c70053805f97cbbb5c621c2"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "69.",
+        "textSha256": "5f9e11af102dfa8f5c497b809a22184f00d05d7e3fb1c2331c088a0a79252021"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "70.",
+        "textSha256": "536566f99ee89bf68338526c2eb60695bedd7d32318e6c1dbe3c1cc49345a566"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "71.",
+        "textSha256": "56ef68a11806d707b77bfb669d81b57f8f2552466f68ba28d182afc7d823e1d5"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "72.",
+        "textSha256": "bc3358f3cdcc5c2383d0a2d8a45b007df9d5377c3d24b27151bf85e3830ea424"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "73.",
+        "textSha256": "3d6f6c506c5506abbd77afaead14c03d8de09cfd85cd2eac2dc48b3dd3c7e0d6"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "74.",
+        "textSha256": "3fc2d0961457b19ddeb9443eb25c644a6922d254e174dbee6408d223c5e457ff"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "75.",
+        "textSha256": "ea5d6b2d358800b74f6d27703c5b9dc03f6a1528d32f50d8b48e1d1bd2fa0b73"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "76.",
+        "textSha256": "08e334ebcdf0f3e3b0dd40f89034966b1cbcb78a0ab764e903bb99fa348706c5"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "77.",
+        "textSha256": "27c6563f3b00c2db66992d0f93129a1c91195b34a63e9031aea48168a3ae2611"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "78.",
+        "textSha256": "db613f8de853d8bef8e663ffc6e832b51e3bb008623235ff6aeabcf602aebcb1"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "79.",
+        "textSha256": "d45de6c693aa079c1084a613b04400970de6a28af9577fc57ab0b99af1ecea16"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "80.",
+        "textSha256": "5ca571d2ebe6d54ceda14c776c73671f21d71f56ea0f623114e3880b0f6d9e6a"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "81.",
+        "textSha256": "c285ab603c363b20104e16c5b4d7a95581d348eabdae785dfa20586ca6980172"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "82.",
+        "textSha256": "7f504203fac0059f73474d8394180882ee31688605ae87050721c89a92f16ddb"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "83.",
+        "textSha256": "d3d3089625e55edbe4caa0f24c987ffabbea1fe829820e87fc38ceab3ac37492"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "84.",
+        "textSha256": "9554e1713b8bb1b2fd5058aaf10b562b94790ae7ad8827c41cfaf280e3cc9e43"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "85.",
+        "textSha256": "b53ae775c76177ae86acb5b656d57958609e4ece8066b639dc2851dbab177ed9"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "86.",
+        "textSha256": "cdea192558933bf280635b48090b1a639c2cb8ccf2012eed5406135489213d9d"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "87.",
+        "textSha256": "d635e25e5913acfa00788ca478c0139d2be36823ddac945508ce00a0056a679b"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "88.",
+        "textSha256": "c72b38094903c205b497b90ebda246c5acbe48dedb63b40bfb39927fda243d64"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "89.",
+        "textSha256": "b4aaf5e13ad1ca303c4a8e4effa325e2ac715de450dc27b83c49b4a0db99932b"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "90.",
+        "textSha256": "9228f719e44dc2a63d094bb1874f170b2e77c7dd2eaccdd1b51cdb75b3e07311"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "91.",
+        "textSha256": "2d1cb1414521fcaac4c1dba1a53c33d21ffd227ebbfd7c944ff89699562ed03f"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "92.",
+        "textSha256": "9f4d4b24c39ef40ce4ab90f733c67a7760e3d7b5067c9fc0a000c2a2f724e450"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "93.",
+        "textSha256": "3fa596d822ec3692a3b9669138dcf7f5da4b7da98bebd7b0a9da1bd5abea7855"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "94.",
+        "textSha256": "34cd8502a5f69485df96a124549db1fe927554915857bf0c2db844f955be1fe1"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "95.",
+        "textSha256": "fe8c61b0b9e79f8d4921aa6954d443dde3e9b7d77fc8aa412bf514ab9182f67e"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "96.",
+        "textSha256": "7a9cc952fbe82bc278b2b8bc73f78631994e6e28cf7367c715b274f98fddc347"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "97.",
+        "textSha256": "a16303661f84ca0aba67fc9c373d48b03fc4824069ffcbfcaa6bde4fd7fec78a"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "98.",
+        "textSha256": "65e78fdf461eb901d9a9bb691829e48bd1ea20dd2ffd0ee5cedb8875651b5efb"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "99.",
+        "textSha256": "a716d29a938f011fc715d67fa0639d15a299d42137f37dd4118867ed75178a32"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "100.",
+        "textSha256": "23188c87ed5d46564f0a456c5b943174ce8512d485c5dc38ba04bbfc693b60e0"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "101.",
+        "textSha256": "99464d6ac558a116aa75a7e8d1094ad15179b62b1a38164d23ad311a883cfc3e"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "102.",
+        "textSha256": "2c767961df58b14190f8933a96dd2458bf69ec3f845d8bd5cf5d75feb215893e"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "103.",
+        "textSha256": "078de01f478ed766b012a8af70910473fbf03b9375190c09c13d5501885bda44"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "104.",
+        "textSha256": "2a43d144feffce583cebbaf38960f4d7d330c7773a442f2cf25ba2bf9d64bb55"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "105.",
+        "textSha256": "9022d410e091202c03e4403b1428f38de635f34baf9ce87ed5dd5a2324a5e5d2"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "106.",
+        "textSha256": "88ce931f0f172d34ef096b7be7af447a39aa47057d656318059b6e313a3e7c65"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "107.",
+        "textSha256": "8c1cae409e8b1f8e59978757b0493a43f7ee18f954f1ba953b78e579c2976fd5"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "108.",
+        "textSha256": "c52f27c6dc10674506c743098a94b28563ea11ba16b5691497dcddf23554468d"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "109.",
+        "textSha256": "540be704ebbb4ae8bcafa93668ed7fe356e73f496fb34d3af38b75b1bb67336f"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "110.",
+        "textSha256": "9fc56ba07b3c554a3ae32a7c73933b9a554a5fc880c841a9dcf8b560cb6bbf03"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "111.",
+        "textSha256": "8abc1ff66851cdb92c890adff5b486dfa2e53b8e34b51fad64692ff3396d4a4f"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "112.",
+        "textSha256": "8177d293a5c19b64ea27901c4bfc8fc6b8e2dfc059c3538d1fb4bf36c57ee8ee"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "113.",
+        "textSha256": "1d51576a2377e09aed6532cd35518942049aa49e550cff467927614485c9bbc0"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "114.",
+        "textSha256": "b013ec1eb3b895359f38f5bb2760b0ac8f7b9662ad642da95c479c6aefb6e544"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "115.",
+        "textSha256": "8976c39a14a5bf7f8b9c1737b69b68e93a115d6b60694721fa858818d6af7b75"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "116.",
+        "textSha256": "540f5dea72f06d969abc4994a68bee5ac50522abd1472f086b94eae991f4bdf1"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "117.",
+        "textSha256": "d8ccb0877a59d8c5d52f4cc251adc2bc7ce1c081bbfc6576d8c010d08c62d322"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "118.",
+        "textSha256": "7267afbd770c59524d8d58e03e1519a0f8da6977ac39159ba6e2e201c78ef772"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "119.",
+        "textSha256": "0879f07ceeb84cacc8cf20dde8b790589964f38b37a9f7d1351848f9777c792e"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "120.",
+        "textSha256": "65e2b882a6966a7bb90d69064a28cdce53dd84e1605141282622790e99e874dd"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "121.",
+        "textSha256": "497b970879268a8a2863e7f056b432bd3b3bfa1c1ab684563e37f11f9609f0c0"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "122.",
+        "textSha256": "a7dee7910aa42a146911059dc89ead069445b9c11839433abc647b6da8df659a"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "123.",
+        "textSha256": "b137b0c50dd4399ae62390b9fe4090e271f1d0450a28f64d204c02e5868c43a8"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "6e871132553b3de6c520acfc64302d32c1cf66d3976358007079aa45e377136a",
+        "position": 141
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "80b32f0ea866e696ad06919900991c062f0c612ef844c4d35f041710891bb3d1",
+        "position": 142
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "fe674eccf608899d0c929e019fc94886eff1678a3d1268443f6761194176074e",
+        "position": 143
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "093d351cad5fa576219cf96fb9e5ff7ceaa81a81fbc4d7cd7bc6b9962079c751",
+        "position": 144
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "",
+        "textSha256": "d67723ef4a8e5c5ab295b9e2a20a7e6680240c763efe6dc4862869cf34dee821",
+        "position": 145
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "124.",
+        "textSha256": "e2501990c1002a15f425e89f58a0b611cab4af419a77b8ac945e2873ff1a7c4c"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "125.",
+        "textSha256": "f5c601f589dde4ed3f11023f76eb7da9a36116784ef13e1aa8f48a191e70d089"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "126.",
+        "textSha256": "a73b1f1eff16a4e616368f406571395c3a008b53a7783a9ac6129bf74a898b71"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "127.",
+        "textSha256": "23b724c902e2a7484c63a5ba4fa63564ff6c9e99ab61fb696de1cdbf3727b1eb"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "128.",
+        "textSha256": "d02f46dff870e3f9b0f7d1ddaa27657ef078355222713095a3bc4e830e973f60"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "129.",
+        "textSha256": "4d2a7c4b5619e4c2d6e3ac41a2e8617d19888387e158035663ceb5fa18951bb7"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "130.",
+        "textSha256": "ed79bacdadbbacef0cc3853408f2429f4a3abdc61517f085d2493fb92bf11579"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "131.",
+        "textSha256": "3953bd6cef108a404850d82aecdfdae2a3ea534db12615cee4af4e557c3bac9c"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "132.",
+        "textSha256": "2a6edcf7374dd1ba2f1f620a799a2ad9e0f5e1140e0d4a78e4efef2f9e57e951"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "133.",
+        "textSha256": "78693f1d195c45493d0b214cd12b1ca65bdf480db459a493838aecdbe34edf6b"
+      },
+      {
+        "section": "annex",
+        "annexIndex": 1,
+        "prefix": "134.",
+        "textSha256": "1ec2e3947ca45e62ed3b552926305d0b580db45ceff3ba5388b2f885b8ade244"
+      }
+    ]
+  },
+  {
+    "symbol": "S/RES/2220(2015)",
+    "reportSymbol": "S/2025/670",
+    "reportPdfSha256": "0ef4afaabf8647911df9e1c2af2238e046952754f8e5294e82dc9c3c24726590",
+    "reportPages": 22,
+    "provisions": [
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "1.",
+        "textSha256": "54191a2b0dfefa7f86e71e12d08637e22a7340ed85c70c6c48a26005d9490dbc"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "2.",
+        "textSha256": "64ff5ba02a7ffa0c1eabfd3f73ec097940845a5172801701254971a10414e613"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "3.",
+        "textSha256": "db3ea62927eb9d0d8db558528ec45058512d6d886a2921dd0a998d5a05ffee03"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "4.",
+        "textSha256": "c7336b53b2c61ce93313a1ccad698867891cd131b8cbc8f43cc84de4ac11e60d"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "5.",
+        "textSha256": "5d05c48eaf30a6d0ec40cec59ba51b205c8159557d7f1a6bb110f3d623386eb3"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "6.",
+        "textSha256": "42cff6e624fb58983dc7356c90c05fa1e914eba62f4ad4a29d03da38a705239a"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "7.",
+        "textSha256": "d01353be6e85b9c77040c9540f5d4be1ed3180ee82fa6092f145ccfed0dfb753"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "8.",
+        "textSha256": "311c6285a86e2a00cb4b77cb355344a1e674d3f0d4cb6a43e4ee1fb350f17fd0"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "9.",
+        "textSha256": "068eabab3d704f982a26ec016d016c4bf722a1b4f0e990dab9167274cb6985ff"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "10.",
+        "textSha256": "609a46e1a267362025d7dada28e7e39ebefdd567c06c7ab7401ffde4e385422d"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "11.",
+        "textSha256": "44f34f2d95152d3f17686408623dc76c5ed7ff52d76a0a33cf807b20536f7126"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "12.",
+        "textSha256": "03e0b3643ffed52141946bb834825dc4ae92d33b197c5922cda1d020f89b7f87"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "13.",
+        "textSha256": "079395b3230eedabdaacfdee16a85d56c075a291bfbf53272cc9a2c6c32904e4"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "14.",
+        "textSha256": "0378b2ea155cfe37634d6a6cfb062c25530fb553523e91670b1ad1a6e6912354"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "15.",
+        "textSha256": "32499bf3e33cc664d543383e463481b96310f49702c3e38d40fda35a3ae2cade"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "16.",
+        "textSha256": "920774a0b866f5a079d88a003dded119397cd0f0860503486ef7a06832b21803"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "17.",
+        "textSha256": "8e5550597e398c8cbca1c7335f6b3021853ae6f8e35eb1e15bd76efc02e6f8e8"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "18.",
+        "textSha256": "f6cd5939e7fe9e6800a918e9306e9e7c0b3ba79a4a8a416b2df6fd511e49aef5"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "19.",
+        "textSha256": "90887db31f92ed9a062f68e2d5e3f2f0dcc5ca9185d85da8308e1f8f2ffdcfcb"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "20.",
+        "textSha256": "750bcc063c8df68016b341fe99ba31b2bb33ac3e6ffa37211dfc5eb340521f9e"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "21.",
+        "textSha256": "18a14eda9f0687e5e554254f45c8ccd6ee49f2b38c70a1809d7d06856948ad19"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "22.",
+        "textSha256": "8774af0b7189fd0dc42899da8a8291ad3956ef0355236904a8f304f53f6fcefe"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "23.",
+        "textSha256": "6563d9c3978093353a2f131ab14eefc61cc5d9723d5af6be1a0222e26f5d3506"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "24.",
+        "textSha256": "4d4fc794b21e942046b8c15733424c67808c3e51b82836f0ce23f4d558f5920f"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "25.",
+        "textSha256": "0d5e9cc335a2eb409b99becd2b32e1d2eef00c0666664697d4725f86de031fe0"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "26.",
+        "textSha256": "d753b30e87a0bfce87edb17c4754bb8a4c161cbe002a47f2cc93b2bf4b477de3"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "27.",
+        "textSha256": "344f91f3051630f0906ccdbf5347b1e25e5b275af06971ae8b1bfafbf2c761ff"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "28.",
+        "textSha256": "1135ce3a7d847130c8d4ef7300affaf2fbc20e7de6c78adc04fe28532ba5585e"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "29.",
+        "textSha256": "14ce6a884ac863d94e1b01cba13c988e65cda9fdb306e3dcf35f398ac4e7a30d"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "30.",
+        "textSha256": "14f663c981774288a7db624cf633244b1bc4875258974726503909d510e12172"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "31.",
+        "textSha256": "c2b7e827ea5b44951429453cee8840d438219fbcaeee29c5793b8cc06ef89a14"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "32.",
+        "textSha256": "6f2e42c40879871cb68913954013a8ac711dc38621f41a15331c7b4bc83f72ff"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "33.",
+        "textSha256": "651e303aa127148b386ed3678231211ee150d1d606a4de4f6f7a01ae57f00d14"
+      }
+    ]
+  },
+  {
+    "symbol": "S/RES/2349(2017)",
+    "reportSymbol": "S/2026/445",
+    "reportPdfSha256": "b7c0b990182adbc22fde7be5ee3be57faefe38702b6bea2087f6532638c178ba",
+    "reportPages": 15,
+    "provisions": [
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "1.",
+        "textSha256": "862911a233aba0a4a45974358ad7539ad3fb6baaa8b0b24d8fedc376aa12c7c5"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "2.",
+        "textSha256": "714d8367a5874997f2d3f2d0dbd494509040c82eabeb8e12878957b17e231156"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "3.",
+        "textSha256": "18050076951e921b026b296fd03cc7e30ba02cdf3dad5e202c61a119fe9ec5a1"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "4.",
+        "textSha256": "542025bb0edd71e4a1f5f3a671e317216c9d7fc04dee87ed4458fcc2375ef468"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "5.",
+        "textSha256": "a201ef89de196b668008e1edf5383db9b85f9851a9d65e213ce7c5786d640f5b"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "6.",
+        "textSha256": "6180557175616c298ef4f5dacc6ad34c0f2833ea2c0c3766bc19ff44707539d5"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "7.",
+        "textSha256": "d2e06f4e3ca6bc824790045e5a6f4e109472c0a11ee0b46fa1e490820a60ffea"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "8.",
+        "textSha256": "3679847ddf20777869363a35c8ffb28eadb50fd6ca890358697d412a857a434b"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "9.",
+        "textSha256": "1b1d5514acee8e4160f79d0efa6ea6fb39781dca8570b1d96e2069d39d9e0f20"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "10.",
+        "textSha256": "3c0d1f32743ea258742a014e661f228ba144d4358bf67b90f09e1b0fd166be7d"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "11.",
+        "textSha256": "89455b0d27427982a8e41f8488c75cef95029b4b1edc8b057182fcd0afda620c"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "12.",
+        "textSha256": "07dfc0702f8c3fedc78d1ff9ce0b9602fa40d71473215a10f2fe04925e676175"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "13.",
+        "textSha256": "621d6d6704d8a51929251206f25120503edfece5a200137aaddc604e480c0ef3"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "14.",
+        "textSha256": "b22e53e714cd048759a9260ffd323971d9421eea4a8676a07abfbae8dcc7bece"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "15.",
+        "textSha256": "6d456356012dfbfd42e95c4a0b9ce9e445c0331b532a51221f852deb7d12a34f"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "16.",
+        "textSha256": "d4fec60cd6cecaef2825c46a281ab38c5306aae907f6e124c560b87ee9078fb6"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "17.",
+        "textSha256": "90ed6b236b702ec8df5e11b179d7743e0ac6c4ae8ae920e150d6cd0637241fd2"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "18.",
+        "textSha256": "aff12626c6d452a5dc578c097d1e2c0fe6d720bff86d9f8e9e133558b218ae7f"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "19.",
+        "textSha256": "0504c2d2c20a831ab51f8efbbffeaab6014aa9838bff89dbed0801c1317482a9"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "20.",
+        "textSha256": "de826c1a33fe642943e997ccf0460bce8c0cab0a236d455c444f36a5a073f983"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "21.",
+        "textSha256": "6cf92d0454a86fa49d1ef94d8443a27dd527acb2571e024f0533e92de48a13b5"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "22.",
+        "textSha256": "e5f3c96b9e798f0b62dbb28d0ce34b2d3614ea8c5436c2f988b46dbbcf42896f"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "23.",
+        "textSha256": "048149efce161880b9cb9cbbec5f79a5cf767207af9e0d88b6cc8673334e30c7"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "24.",
+        "textSha256": "6f579e1ea513a64c86b614f5cf69c4050817811d4fcc24f5098aa39155a588e6"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "25.",
+        "textSha256": "621af0a0a0d7c36ba0dee9688426c79ea51d779934afdd438ccbe0e9ec137486"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "26.",
+        "textSha256": "f8cb07cf8a773e31555dc609610c3d4e7b295227027442b169d78352ceac2620"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "27.",
+        "textSha256": "0ac871a9c2a83c65db07e51346dd4766d78c749068392b95b6ba5b4ce9cc7e9c"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "28.",
+        "textSha256": "39dc119b384b61a9444a2930f69fe6059428c635c81ce791092def0596e31902"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "29.",
+        "textSha256": "abfd34c4418611426a5b750c8af0fb6701bfd9e5033a6df3f9d8970f84ecaf3e"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "30.",
+        "textSha256": "780e4ce2af09a50e4e1ee63febd6310c2f933a5e2e90c475727dc99d56929c12"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "31.",
+        "textSha256": "74583bccb7e9f33b49ae3dea78778444856dfd09c7213246967a4a169aef021b"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "32.",
+        "textSha256": "a7245efcbf60540169acfe0fcbf1335a59b8b69f06ab6a697e87ba2dbade9088"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "33.",
+        "textSha256": "07e162e66f674829f4459ccd0d13b18a0975d40fcc6dc9b05e86ef2e992c670b"
+      },
+      {
+        "section": "main",
+        "annexIndex": null,
+        "prefix": "34.",
+        "textSha256": "5915cfb74d029bf42370645819f19bfe795ba9acd1b274eacd9eafcd12832ed7"
+      }
+    ]
+  }
+]

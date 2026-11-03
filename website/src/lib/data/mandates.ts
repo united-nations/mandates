@@ -37,6 +37,8 @@ import {
 import { FOUNDATIONAL_PART_IN_DOCUMENT } from '@/lib/foundational'
 import { ORGAN_CATEGORIES } from '@/lib/organ-groups'
 import { readDynamicCache } from '@/lib/perf/dynamic-cache'
+import { IMPLEMENTATION_EXAMPLES_ONLY } from '@/lib/feature-flags'
+import { IMPLEMENTATION_EXAMPLE_SYMBOLS } from './implementation-evidence'
 import { subjectCountSql } from './subject-count-sql'
 import { buildUngroupedListSql } from './mandate-list-sql'
 import {
@@ -650,7 +652,7 @@ function buildFilterClauses(
  */
 function buildFilteredDocsCTE(
   filters: FilterOptions,
-  opts: { selectCols: string; groupCols: string; name?: string; agendaSymbols: string[] | undefined }
+  opts: { selectCols: string; groupCols: string; name?: string; agendaSymbols: string[] | undefined; implementationExamplesOnly?: boolean }
 ): {
   cte: string
   params: SqlParam[]
@@ -659,6 +661,11 @@ function buildFilteredDocsCTE(
 } {
   const { clauses, params, havingClauses, versionClause, versionParam } =
     buildFilterClauses(filters, opts.agendaSymbols)
+  if (opts.implementationExamplesOnly) {
+    params.push(IMPLEMENTATION_EXAMPLE_SYMBOLS)
+    // Exact reviewed registry identities exclude duplicate whitespace aliases.
+    clauses.push(`d.ppb_full_document_symbol = ANY ($${params.length}::text[])`)
+  }
   const whereClause = clauses.length > 0 ? `WHERE ${clauses.join(' AND ')}` : ''
   const havingClause =
     havingClauses.length > 0 ? `HAVING ${havingClauses.join(' AND ')}` : ''
@@ -763,6 +770,7 @@ async function buildMandatesQuery(
     'word_count_desc',
   ].includes(filters.sort_by ?? '')
   const { cte: baseCte, params } = buildFilteredDocsCTE(filters, {
+    implementationExamplesOnly: IMPLEMENTATION_EXAMPLES_ONLY,
     agendaSymbols: await agendaScopeSymbols(filters),
     name: metricSort ? 'base_filtered_docs' : 'filtered_docs',
     selectCols: `
@@ -3566,7 +3574,7 @@ const getMandateList = cache(
   async (filters: FilterOptions, page: number, limit: number) => {
     const list = await readDynamicCache(
       () => _getMandateListInner(filters, page, limit),
-      [PAGE_DATA_CACHE_VERSION, 'list', JSON.stringify(filters), String(page), String(limit)],
+      [PAGE_DATA_CACHE_VERSION, 'list', IMPLEMENTATION_EXAMPLES_ONLY ? `implementation-examples-exact:${IMPLEMENTATION_EXAMPLE_SYMBOLS.join('|')}` : 'all', JSON.stringify(filters), String(page), String(limit)],
       { revalidate: 3600 }
     )
     // Counts/scores and content fingerprints are deliberately never hour-cached.
