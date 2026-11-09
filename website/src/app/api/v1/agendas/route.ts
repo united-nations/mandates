@@ -9,6 +9,6 @@ export async function GET(request: Request) {
     )
     return publicJson(await getPublicAgendas(body, session))
   } catch (error) {
-    return publicError(error)
+    return publicError(error, request)
   }
 }

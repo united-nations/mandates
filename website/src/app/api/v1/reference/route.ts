@@ -14,6 +14,6 @@ export async function GET(request: Request) {
       ...(await getPublicReference(version.slug)),
     })
   } catch (error) {
-    return publicError(error)
+    return publicError(error, request)
   }
 }

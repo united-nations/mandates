@@ -40,31 +40,14 @@ const nextConfig: NextConfig = {
 
   serverExternalPackages: ['undifferent'],
 
+  // Used by src/proxy.ts.
+  skipProxyUrlNormalize: true,
+
   async headers() {
     return [
       {
-        source: '/api/v1/:path*',
-        headers: [
-          { key: 'Access-Control-Allow-Origin', value: '*' },
-          { key: 'Access-Control-Allow-Methods', value: 'GET, HEAD, OPTIONS' },
-        ],
-      },
-      {
         source: '/openapi.json',
-        headers: [
-          { key: 'Access-Control-Allow-Origin', value: '*' },
-          { key: 'Cache-Control', value: 'public, max-age=300' },
-        ],
-      },
-      {
-        source: '/mandate/:symbol*',
-        headers: [
-          {
-            key: 'Link',
-            value:
-              '</llms.txt>; rel="help"; type="text/plain", </openapi.json>; rel="service-desc"; type="application/vnd.oai.openapi+json"',
-          },
-        ],
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=300' }],
       },
       {
         source: '/:path*',
@@ -145,7 +128,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: '/developers',
-        destination: '/about#programmatic-access',
+        destination: '/llms.txt',
         permanent: false,
       },
       {
