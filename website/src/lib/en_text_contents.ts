@@ -21,6 +21,7 @@ export const explainerTexts = {
     mandateSources: 'Mandate sources',
     entitiesAndPrograms: 'UN entities and programmes',
     agendaItems: 'Intergovernmental agendas',
+    analytics: 'Analytics',
     reports: 'Reports',
     explainers: {
       sources:
@@ -29,7 +30,14 @@ export const explainerTexts = {
         'Explore the agenda items under which intergovernmental bodies consider their work. Select an item to find related mandate source documents.',
       entities:
         'Explore UN entities and their programmes. See which mandate documents they cite and compare historical programme expenditure.',
+      analytics:
+        'Charts drawn from the mandate registry: how citations and resolutions move over time, and how mandating bodies, entities, and topics relate to one another. Click any item to open the main table filtered to it.',
     },
+  },
+  analyticsTabs: {
+    overTime: 'Breakdown',
+    relationships: 'Relationships',
+    topics: 'Topics',
   },
   secretariatReports: {
     heading: 'Reports',

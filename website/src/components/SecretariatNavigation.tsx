@@ -18,6 +18,7 @@ const items = [
     href: '/secretariat/entities-and-programs',
     label: text.entitiesAndPrograms,
   },
+  { href: '/secretariat/analytics', label: text.analytics },
 ]
 
 export function SecretariatNavigation() {
@@ -27,7 +28,9 @@ export function SecretariatNavigation() {
       ? text.explainers.agendas
       : pathname === '/secretariat/entities-and-programs'
         ? text.explainers.entities
-        : text.explainers.sources
+        : pathname === '/secretariat/analytics'
+          ? text.explainers.analytics
+          : text.explainers.sources
   const { filters } = useFilters()
   const renderLink = ({ href, ...props }: SecondaryHeaderLinkProps) => (
     <Link
