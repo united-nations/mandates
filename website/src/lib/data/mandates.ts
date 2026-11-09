@@ -34,7 +34,11 @@ import {
   exploreCardBaselineFilters,
   type ExploreCardFigures,
 } from '@/lib/explore-card-state'
-import { FOUNDATIONAL_PART_IN_DOCUMENT } from '@/lib/foundational'
+import {
+  FOUNDATIONAL_PART_IN_DOCUMENT,
+  LEGISLATIVE_PART_IN_DOCUMENT,
+} from '@/lib/foundational'
+import type { ReviewScopeGroup } from '@/lib/review-scope'
 import { ORGAN_CATEGORIES } from '@/lib/organ-groups'
 import { readDynamicCache } from '@/lib/perf/dynamic-cache'
 import { subjectCountSql } from './subject-count-sql'
@@ -2438,6 +2442,10 @@ export interface ResolutionCitationTrendYear {
   resolutions: number
   /** Of those, how many are cited as mandates in the selected budget version. */
   citedMandates: number
+  foundationalMandates: number
+  legislativeMandates: number
+  /** Citations exclusively in other sections, such as Plan Outline or PKM. */
+  otherCitedMandates: number
 }
 
 /**
@@ -2454,14 +2462,45 @@ export interface ResolutionCitationTrendYear {
  * citedMandates ⊆ resolutions by construction. This is a global overview — it
  * ignores any active entity/organ/subject filter, but NOT the version lens:
  * both series are read through the version passed in.
+ *
+ * Citation sections are deduplicated by document within that same version.
+ * Mandates and background takes precedence over Legislative mandates; a
+ * document cited exclusively elsewhere remains in an explicit other category.
  */
 const _getResolutionCitationTrendInner = async (
   version: string | null
 ): Promise<ResolutionCitationTrendYear[]> => {
-  const [all, cited] = await Promise.all([
+  const [all, cited, categoryRows] = await Promise.all([
     getYearStats({ ppb_version: version ?? undefined }),
     getYearStats({ ppb_version: version ?? undefined, cited: '1' }),
+    queryMany<{
+      year: number
+      foundational: number
+      legislative: number
+      other: number
+    }>(
+      `WITH citation_sections AS (
+         SELECT c.ppb_full_document_symbol,
+                BOOL_OR(c.part_in_document = $2) AS foundational,
+                BOOL_OR(c.part_in_document = $3) AS legislative
+         FROM ppb2026.source_document_citations c
+         WHERE ${versionPredicateSql('c', '$1')}
+         GROUP BY c.ppb_full_document_symbol
+       )
+       SELECT d.ppb_year AS year,
+              COUNT(*) FILTER (WHERE s.foundational IS TRUE)::int AS foundational,
+              COUNT(*) FILTER (WHERE s.foundational IS NOT TRUE
+                                 AND s.legislative IS TRUE)::int AS legislative,
+              COUNT(*) FILTER (WHERE s.foundational IS NOT TRUE
+                                 AND s.legislative IS NOT TRUE)::int AS other
+       FROM citation_sections s
+       JOIN public.unified_documents d USING (ppb_full_document_symbol)
+       WHERE d.ppb_year IS NOT NULL
+       GROUP BY d.ppb_year`,
+      [version, FOUNDATIONAL_PART_IN_DOCUMENT, LEGISLATIVE_PART_IN_DOCUMENT]
+    ),
   ])
+  const categories = new Map(categoryRows.map((row) => [Number(row.year), row]))
 
   const years = new Set<number>()
   for (const y of Object.keys(all.yearDistribution)) years.add(Number(y))
@@ -2474,6 +2513,9 @@ const _getResolutionCitationTrendInner = async (
       year,
       resolutions: all.yearDistribution[String(year)] ?? 0,
       citedMandates: cited.yearDistribution[String(year)] ?? 0,
+      foundationalMandates: Number(categories.get(year)?.foundational ?? 0),
+      legislativeMandates: Number(categories.get(year)?.legislative ?? 0),
+      otherCitedMandates: Number(categories.get(year)?.other ?? 0),
     }))
 }
 
@@ -2485,7 +2527,169 @@ export const getResolutionCitationTrend = cache(
   (version?: string | null): Promise<ResolutionCitationTrendYear[]> =>
     unstable_cache(
       () => _getResolutionCitationTrendInner(version ?? null),
-      ['resolution-citation-trend-v1', version ?? 'default'],
+      ['resolution-citation-trend-v2', version ?? 'default'],
+      { revalidate: 3600 }
+    )()
+)
+
+/** One document belongs to exactly one (year, citation category, SC) cell.
+ * Aggregate citations before joining, then deduplicate document identities;
+ * marginals alone cannot answer review-scope intersection questions.
+ */
+const _getReviewScopeGroupsInner = async (
+  version: string | null
+): Promise<ReviewScopeGroup[]> => {
+  const rows = await queryMany<{
+    year: number
+    citation_category: ReviewScopeGroup['citationCategory']
+    security_council: boolean
+    documents: number
+  }>(
+    `WITH citation_sections AS (
+       SELECT c.ppb_full_document_symbol,
+              BOOL_OR(c.part_in_document = $2) AS foundational,
+              BOOL_OR(c.part_in_document = $3) AS legislative
+       FROM ppb2026.source_document_citations c
+       WHERE ${versionPredicateSql('c', '$1')}
+       GROUP BY c.ppb_full_document_symbol
+     ), document_facts AS (
+       SELECT DISTINCT d.ppb_full_document_symbol, d.ppb_year AS year,
+              CASE WHEN c.foundational IS TRUE THEN 'foundational'
+                   WHEN c.legislative IS TRUE THEN 'legislative'
+                   WHEN c.ppb_full_document_symbol IS NOT NULL THEN 'other'
+                   ELSE 'uncited' END AS citation_category,
+              COALESCE(d.ppb_body = 'SC' AND d.ppb_type = 'Resolutions', FALSE) AS security_council
+       FROM public.unified_documents d
+       LEFT JOIN citation_sections c USING (ppb_full_document_symbol)
+       WHERE d.ppb_year IS NOT NULL AND ${mandateMembershipSql('d', '$1')}
+     )
+     SELECT year, citation_category, security_council, COUNT(*)::int AS documents
+     FROM document_facts
+     GROUP BY year, citation_category, security_council
+     ORDER BY year, citation_category, security_council`,
+    [version, FOUNDATIONAL_PART_IN_DOCUMENT, LEGISLATIVE_PART_IN_DOCUMENT]
+  )
+  return rows.map((row) => ({
+    year: Number(row.year),
+    citationCategory: row.citation_category,
+    securityCouncil: row.security_council,
+    count: Number(row.documents),
+  }))
+}
+
+export const getReviewScopeGroups = cache(
+  (version?: string | null): Promise<ReviewScopeGroup[]> =>
+    unstable_cache(
+      () => _getReviewScopeGroupsInner(version ?? null),
+      ['review-scope-groups-v1', version ?? 'default'],
+      { revalidate: 3600 }
+    )()
+)
+
+export interface LatestRecordedTrendYear {
+  year: number
+  documents: number
+  latest: number
+}
+
+/** Rank full recorded series before applying the registry/version lens.
+ * The existing symbol lookup uses the lowest recid for duplicate DL symbols.
+ * Collections and uninformative recurring groups are not version chains.
+ */
+const _getLatestRecordedTrendInner = async (
+  version: string | null
+): Promise<LatestRecordedTrendYear[]> => {
+  const rows = await queryMany<{ year: number; documents: number; latest: number }>(
+    `WITH canonical_series AS (
+       SELECT DISTINCT ON (rs.document_symbol)
+              rs.*, dl.date_publication
+       FROM digitallibrary.resolution_series rs
+       JOIN digitallibrary.documents dl USING (recid)
+       ORDER BY rs.document_symbol, rs.recid
+     ), ranked_chains AS (
+       SELECT document_symbol,
+              ROW_NUMBER() OVER (
+                PARTITION BY series_key, un_body, doc_type
+                ORDER BY date_publication DESC NULLS LAST,
+                         document_symbol COLLATE "C" DESC, recid ASC
+              ) AS position,
+              BOOL_AND(date_publication IS NOT NULL) OVER (
+                PARTITION BY series_key, un_body, doc_type
+              ) AS complete_dates
+       FROM canonical_series
+       WHERE is_recurring AND is_informative AND NOT is_collection
+     ), latest_symbols AS (
+       SELECT document_symbol FROM ranked_chains WHERE position = 1 AND complete_dates
+       UNION
+       SELECT document_symbol FROM canonical_series WHERE NOT is_recurring
+     )
+     SELECT d.ppb_year AS year,
+            COUNT(DISTINCT d.ppb_full_document_symbol)::int AS documents,
+            COUNT(DISTINCT d.ppb_full_document_symbol) FILTER (
+              WHERE latest.document_symbol IS NOT NULL
+            )::int AS latest
+     FROM public.unified_documents d
+     LEFT JOIN latest_symbols latest ON latest.document_symbol = d.ppb_full_document_symbol
+     WHERE d.ppb_year IS NOT NULL AND ${mandateMembershipSql('d', '$1')}
+     GROUP BY d.ppb_year
+     ORDER BY d.ppb_year`,
+    [version]
+  )
+  return rows.map((row) => ({
+    year: Number(row.year),
+    documents: Number(row.documents),
+    latest: Number(row.latest),
+  }))
+}
+
+export const getLatestRecordedTrend = cache(
+  (version?: string | null): Promise<LatestRecordedTrendYear[]> =>
+    unstable_cache(
+      () => _getLatestRecordedTrendInner(version ?? null),
+      ['latest-recorded-trend-v1', version ?? 'default'],
+      { revalidate: 3600 }
+    )()
+)
+
+export interface SecurityCouncilResolutionTrendYear {
+  year: number
+  documents: number
+  securityCouncilResolutions: number
+}
+
+/** Same version-scoped catalogue denominator as the other historical trends.
+ * Use the registry's issuing body and instrument type, never document titles.
+ */
+const _getSecurityCouncilResolutionTrendInner = async (
+  version: string | null
+): Promise<SecurityCouncilResolutionTrendYear[]> => {
+  const rows = await queryMany<{
+    year: number
+    documents: number
+    security_council: number
+  }>(
+    `SELECT d.ppb_year AS year,
+            COUNT(*)::int AS documents,
+            COUNT(*) FILTER (WHERE d.ppb_body = 'SC'
+                              AND d.ppb_type = 'Resolutions')::int AS security_council
+     FROM public.unified_documents d
+     WHERE d.ppb_year IS NOT NULL AND ${mandateMembershipSql('d', '$1')}
+     GROUP BY d.ppb_year
+     ORDER BY d.ppb_year`,
+    [version]
+  )
+  return rows.map((row) => ({
+    year: Number(row.year),
+    documents: Number(row.documents),
+    securityCouncilResolutions: Number(row.security_council),
+  }))
+}
+
+export const getSecurityCouncilResolutionTrend = cache(
+  (version?: string | null): Promise<SecurityCouncilResolutionTrendYear[]> =>
+    unstable_cache(
+      () => _getSecurityCouncilResolutionTrendInner(version ?? null),
+      ['security-council-resolution-trend-v1', version ?? 'default'],
       { revalidate: 3600 }
     )()
 )

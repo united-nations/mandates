@@ -39,6 +39,83 @@ export const explainerTexts = {
     relationships: 'Relationships',
     topics: 'Topics',
   },
+  citationTrend: {
+    foundational: 'Foundational mandates',
+    legislative: 'Legislative mandates',
+    other: 'Other cited sections',
+    note: 'Foundational mandates are cited in “Mandates and background”; legislative mandates are cited in “Legislative mandates”. Documents cited in both count only as foundational. Other cited sections covers documents cited only in Plan Outline or peacekeeping mandate sections. Each document counts once within the selected budget version.',
+  },
+  latestRecordedTrend: {
+    heading: 'Latest recorded version per series',
+    label: 'Latest recorded versions and singletons',
+    complement: 'Earlier or unclassified documents',
+    hover: 'latest recorded',
+    note: 'One latest member per version chain, using publication dates across its full recorded history and a deterministic tie-break for equal dates. Recorded singletons also count. Collections, uninformative recurring groups, missing series data and chains with missing dates remain grey. Latest recorded does not mean legally active.',
+  },
+  reviewScope: {
+    heading: 'Experimental review scope',
+    universe:
+      'Uses the same dated document population as the charts above, including resolutions and other mandate source documents. Citation membership is based on {version}, regardless of adoption year.',
+    allCited: 'All cited',
+    mixed: 'Mixed',
+    details: 'Show scope details',
+    versionLens: 'Citation lens: {version}',
+    versionLabel: 'PPB {year}',
+    include: 'Include',
+    neutral: 'Neutral',
+    exclude: 'Exclude',
+    excludeSecurityCouncil: 'Exclude Security Council resolutions',
+    precedence: 'Exclusions take precedence.',
+    remaining: 'Unique documents remaining in scope',
+    share: '{percent}% of {total} documents',
+    previewStart: 'Start with documents adopted in {start}–{end}.',
+    previewInclude:
+      'Also include {categories} cited in {version}, from any year.',
+    previewNoInclude: 'No citation categories add older documents.',
+    previewExclude: 'Exclude {categories} cited in {version}.',
+    previewSecurityCouncil: 'Exclude Security Council resolutions.',
+    previewNoExclude: 'No exclusions are applied.',
+    overlapHeading: 'Recent and cited overlap',
+    group: 'Document group',
+    total: 'All documents',
+    selected: 'Remaining in scope',
+    recentOnly: 'Recent only (uncited)',
+    citedOnly: 'Cited only (outside the recent range)',
+    both: 'Both recent and cited',
+    neither: 'Neither recent nor cited',
+    securityCouncilMembership:
+      'Security Council resolutions: {total} total; {remaining} remaining. These overlap the groups above.',
+    trendHeading: 'All documents and remaining scope over time',
+    trendHover: 'remaining in scope',
+    defaultVersion: 'the default budget version',
+  },
+  documentTrend: {
+    heading: 'Mandate source documents over time',
+    windowLabel: 'Last X calendar years',
+    range: 'Selected range: {start}–{end}',
+    partialYear:
+      '{year} is a partial calendar year; counts use available documents only.',
+    recent: 'Documents in {start}–{end}',
+    earlier: 'Documents before {start}',
+    total: 'Documents adopted',
+    recentHover: 'in selected range',
+  },
+  securityCouncilTrend: {
+    heading: 'Security Council resolutions',
+    label: 'Security Council resolutions',
+    complement: 'Other documents',
+    hover: 'Security Council resolutions',
+    note: 'Documents with issuing body SC (Security Council) and document type Resolutions. Presidential statements and other Security Council document types remain in the grey complement. Counts use the same catalogue and selected budget version as the other charts.',
+  },
+  trendComposition: {
+    recurrenceHeading: 'Genuinely new resolutions',
+
+    empty: 'No documents in this period.',
+    notCited: 'Not cited as mandates',
+    recurring: 'Recurring resolutions',
+    recurrenceNote:
+      'Genuinely new includes first appearances, standalone documents and documents without recurrence data.',
+  },
   secretariatReports: {
     heading: 'Reports',
     workInProgress:
@@ -341,8 +418,7 @@ export const explainerTexts = {
   entityExpenditure: {
     heading: 'Entity expenditure',
     loading: 'Loading expenditure…',
-    note:
-      'Historical expenditure covers the complete programme or subprogramme, not this mandate.',
+    note: 'Historical expenditure covers the complete programme or subprogramme, not this mandate.',
     overview: 'For an overview of all UN entities and programmes, see',
     period: 'Reporting period',
     source: 'Source data',
@@ -466,8 +542,10 @@ export const explainerTexts = {
     meetings: 'Meetings',
     scExplanation:
       'These are matters considered at formal Security Council meetings in {year}, rather than a single annual numbered agenda.',
-    scCoverageComplete: 'Complete annual coverage; latest sourced meeting: {date}.',
-    scCoveragePartial: 'Partial coverage through {date}; unresolved source gaps remain.',
+    scCoverageComplete:
+      'Complete annual coverage; latest sourced meeting: {date}.',
+    scCoveragePartial:
+      'Partial coverage through {date}; unresolved source gaps remain.',
     scSearch: 'Search matters considered',
     noMatters: 'No matching matters considered.',
     scError: 'Matters considered could not be loaded. Please try again later.',
@@ -480,7 +558,8 @@ export const explainerTexts = {
     resolutions: 'Mandate documents',
     openResolutions: 'Open mandate documents',
     countsLoading: 'Loading mandate document counts',
-    countsUnavailable: 'Some mandate document counts are temporarily unavailable.',
+    countsUnavailable:
+      'Some mandate document counts are temporarily unavailable.',
     retryCounts: 'Try again',
     relatedItems: 'Related items',
     currentItem: 'Current item',

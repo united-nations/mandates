@@ -3,6 +3,11 @@ import type { Metadata } from 'next'
 import { AnalyticsTabs } from '@/components/AnalyticsTabs'
 import { CoCitationHeatmap } from '@/components/CoCitationHeatmap'
 import { MandatingBodyEntityHeatmap } from '@/components/MandatingBodyEntityHeatmap'
+import { LatestRecordedTrend } from '@/components/LatestRecordedTrend'
+import { ReviewScopeExplorer } from '@/components/ReviewScopeExplorer'
+import { getBudgetVersions } from '@/lib/data/budget-documents'
+import { HistoricalDocumentTrend } from '@/components/HistoricalDocumentTrend'
+import { SecurityCouncilResolutionTrend } from '@/components/SecurityCouncilResolutionTrend'
 import { ResolutionCitationTrend } from '@/components/ResolutionCitationTrend'
 import { ResolutionRecurrenceTrend } from '@/components/ResolutionRecurrenceTrend'
 import { TopicTrends } from '@/components/TopicTrends'
@@ -11,9 +16,13 @@ import {
   getOrganEntityMatrix,
   getResolutionCitationTrend,
   getResolutionRecurrenceTrend,
+  getSecurityCouncilResolutionTrend,
+  getReviewScopeGroups,
+  getLatestRecordedTrend,
   getTopicTrends,
 } from '@/lib/data/mandates'
 import { parseSearchParams } from '@/lib/filter-constants'
+import { explainerTexts } from '@/lib/en_text_contents'
 
 export const metadata: Metadata = {
   title: 'Mandate Analytics',
@@ -31,15 +40,21 @@ function Chart({
   children,
 }: {
   title: string
-  description: string
+  description?: string
   children: React.ReactNode
 }) {
   return (
     <div className="rounded-xl border border-border bg-white p-4 md:p-6">
-      <h2 className="text-base font-semibold text-foreground">{title}</h2>
-      <p className="mt-1 mb-4 max-w-3xl text-sm text-muted-foreground">
-        {description}
-      </p>
+      <h2
+        className={`text-base font-semibold text-foreground ${description ? '' : 'mb-4'}`}
+      >
+        {title}
+      </h2>
+      {description && (
+        <p className="mt-1 mb-4 max-w-3xl text-sm text-muted-foreground">
+          {description}
+        </p>
+      )}
       {children}
     </div>
   )
@@ -51,30 +66,69 @@ export default async function AnalyticsPage({ searchParams }: PageProps) {
   const [
     resolutionTrend,
     recurrenceTrend,
+    latestRecordedTrend,
+    securityCouncilTrend,
+    reviewScopeGroups,
+    budgetVersions,
     topicTrends,
     coCitationMatrix,
     organEntityMatrix,
   ] = await Promise.all([
     getResolutionCitationTrend(filters.ppb_version),
     getResolutionRecurrenceTrend(filters.ppb_version),
+    getLatestRecordedTrend(filters.ppb_version),
+    getSecurityCouncilResolutionTrend(filters.ppb_version),
+    getReviewScopeGroups(filters.ppb_version),
+    getBudgetVersions(),
     getTopicTrends(),
     getEntityCoCitationMatrix(filters.ppb_version),
     getOrganEntityMatrix(filters.ppb_version),
   ])
 
+  const selectedVersion = budgetVersions.find((version) =>
+    filters.ppb_version
+      ? version.slug === filters.ppb_version
+      : version.is_default
+  )
+
   const overTime = (
     <>
+      <Chart title={explainerTexts.documentTrend.heading}>
+        <HistoricalDocumentTrend
+          data={resolutionTrend}
+          currentYear={new Date().getUTCFullYear()}
+        />
+      </Chart>
+      <Chart title={explainerTexts.trendComposition.recurrenceHeading}>
+        <ResolutionRecurrenceTrend data={recurrenceTrend} />
+      </Chart>
+      <Chart title={explainerTexts.latestRecordedTrend.heading}>
+        <LatestRecordedTrend data={latestRecordedTrend} />
+      </Chart>
       <Chart
         title="Resolutions and cited mandates"
         description="Resolutions adopted each year against the subset cited as mandate sources in the proposed UN programme budget."
       >
         <ResolutionCitationTrend data={resolutionTrend} />
       </Chart>
-      <Chart
-        title="Genuinely new resolutions"
-        description="Resolutions each year that start a new series, rather than recurring versions of an earlier text."
-      >
-        <ResolutionRecurrenceTrend data={recurrenceTrend} />
+      <Chart title={explainerTexts.securityCouncilTrend.heading}>
+        <SecurityCouncilResolutionTrend data={securityCouncilTrend} />
+      </Chart>
+      <Chart title={explainerTexts.reviewScope.heading}>
+        <ReviewScopeExplorer
+          groups={reviewScopeGroups}
+          currentYear={new Date().getUTCFullYear()}
+          versionLabel={
+            (selectedVersion
+              ? explainerTexts.reviewScope.versionLabel.replace(
+                  '{year}',
+                  String(selectedVersion.ppb_year)
+                )
+              : undefined) ??
+            filters.ppb_version ??
+            explainerTexts.reviewScope.defaultVersion
+          }
+        />
       </Chart>
     </>
   )

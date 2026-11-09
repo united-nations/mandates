@@ -2,6 +2,7 @@
 
 import { YearOverlayTrend } from '@/components/YearOverlayTrend'
 import type { ResolutionRecurrenceTrendYear } from '@/lib/data/mandates'
+import { explainerTexts } from '@/lib/en_text_contents'
 
 /**
  * "Genuinely new vs. re-adopted" — of the resolutions adopted each year, how
@@ -21,9 +22,11 @@ export function ResolutionRecurrenceTrend({
         total: d.resolutions,
         highlight: d.genuinelyNew,
       }))}
-      description="Resolutions and decisions adopted each year (grey), and how many are genuinely new (blue) rather than a re-adoption of one the same body already passed in an earlier year. The gap between the bars is recurrence. Click a year to filter the mandates below to it."
+      boundaryYear={2021}
       totalLabel="Resolutions & decisions adopted"
       highlightLabel="Genuinely new"
+      complementLabel={explainerTexts.trendComposition.recurring}
+      compositionNote={explainerTexts.trendComposition.recurrenceNote}
       totalHoverLabel="adopted"
       highlightHoverLabel="genuinely new"
     />
