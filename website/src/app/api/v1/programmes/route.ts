@@ -10,6 +10,6 @@ export async function GET(request: Request) {
       ...(await getEntitiesProgrammesData()),
     })
   } catch (error) {
-    return publicError(error)
+    return publicError(error, request)
   }
 }

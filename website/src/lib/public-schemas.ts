@@ -21,61 +21,14 @@ export const locationSchema = z
     subprogramme_number: z.number().nullable(),
   })
   .passthrough()
-export const paragraphSchema = z
-  .object({
-    id: z.string(),
-    position: z.number(),
-    text: z.string(),
-    type: z.string(),
-    source: z.literal('digitallibrary'),
-    heading_level: z.number().nullable(),
-    paragraph_type: nullableString,
-    paragraph_level: z.number().nullable(),
-    prefix: nullableString,
-    links: z.array(z.tuple([z.string(), z.string()])),
-  })
-  .passthrough()
-export const citationSchema = z.object({
-  origin_document: z.string(),
-  entity: z.string(),
-  entity_long: z.string(),
-  budget_part: z.string(),
-  budget_part_number: nullableString,
-  budget_part_title: nullableString,
-  section: z.string(),
-  section_title: z.string(),
-  programme: z.number().nullable(),
-  programme_title: z.string(),
-  'sub-programme': nullableString,
-  sub_programme_number: z.number().nullable(),
-  sub_programme_title: nullableString.describe(
-    'Title or an unnumbered source label, such as All Subprogrammes. The original combined label is retained in sub-programme.'
-  ),
-  component: nullableString,
-  description: z.string(),
-  part_in_document: z.string(),
-})
 export const seriesSummarySchema = z.object({
   latest_version: nullableString.describe(
-    'Latest version symbol when a unique ordered version is known; null for collections or ambiguous series.'
+    'Symbol of the latest document in the series when it is known; null for collections or ambiguous series.'
   ),
   is_collection: z.boolean(),
   has_newer: z.boolean(),
   is_latest: z.boolean(),
   series_count: z.number(),
-})
-export const seriesSchema = seriesSummarySchema.extend({
-  first_year: z.number().nullable(),
-  last_year: z.number().nullable(),
-  members: z.array(
-    z.object({
-      document_symbol: z.string(),
-      title: nullableString,
-      year: z.number().nullable(),
-      is_latest: z.boolean(),
-      text_metrics: z.record(z.string(), z.unknown()).optional(),
-    })
-  ),
 })
 const groupSchema = z
   .object({
@@ -244,90 +197,6 @@ export const programmeResponseSchema = z.object({
     })
   ),
 })
-const reportBase = z.object({
-  report_recid: z.number(),
-  title: nullableString,
-  date_published: nullableString,
-})
-const catalogueReportSchema = reportBase.extend({
-  report_symbol: z.string(),
-  annex_position_only: z.boolean(),
-  resolution_symbols: z.array(z.string()).optional(),
-  annex_resolution_symbols: z.array(z.string()).optional(),
-})
-const pageOneReportSchema = reportBase.extend({
-  report_symbols: z.array(z.string()),
-  resolution_symbols: z.array(z.string()).optional(),
-})
-const provenanceSchema = z.enum(['page_one', 'catalogue_notes', 'both'])
-export const unionReportSchema = reportBase.extend({
-  symbols: z.array(z.string()),
-  provenance: provenanceSchema,
-  catalogueAnnexOnly: z.boolean().nullable(),
-  resolutionLinks: z
-    .array(
-      z.object({
-        symbol: z.string(),
-        provenance: provenanceSchema,
-        catalogueAnnexOnly: z.boolean().nullable(),
-      })
-    )
-    .optional(),
-})
-const reportsSchema = z.union([
-  z.object({
-    source: z.literal('catalogue_notes'),
-    reports: z.array(catalogueReportSchema),
-  }),
-  z.object({
-    source: z.literal('page_one'),
-    data: z.union([
-      z.object({ acceptedRunId: z.null() }),
-      z.object({
-        acceptedRunId: z.string(),
-        reports: z.array(pageOneReportSchema),
-      }),
-    ]),
-  }),
-  z.object({
-    source: z.literal('union'),
-    data: z.object({
-      pageOneAccepted: z.boolean(),
-      reports: z.array(unionReportSchema),
-    }),
-  }),
-])
-export const detailsSchema = z.object({
-  status: z.literal('included'),
-  citations: z.array(citationSchema),
-  budgetLocations: z.array(locationSchema),
-  foundationalEntities: z.array(z.string()),
-  entityCitationTotals: z.record(z.string(), z.number()),
-  entityExpenditures: z.record(z.string(), expenditureSchema),
-  budgetLocationExpenditures: z.array(
-    z.object({ location: locationSchema, expenditure: expenditureSchema })
-  ),
-  paragraphs: z.object({
-    status: z.enum(['available', 'unavailable']),
-    language: z.literal('en'),
-    items: z.array(paragraphSchema),
-  }),
-  versionHistory: seriesSchema.nullable(),
-  reports: z.union([
-    z.object({ status: z.literal('not_included') }),
-    z.object({
-      status: z.literal('included'),
-      data: reportsSchema,
-    }),
-  ]),
-  relatedDocuments: z.union([
-    z.object({ status: z.literal('not_included') }),
-    z.object({
-      status: z.literal('included'),
-      items: z.array(z.record(z.string(), z.unknown())),
-    }),
-  ]),
-})
 export const publicDocumentSchema = z.object({
   symbol: z.string(),
   title: z.string(),
@@ -352,10 +221,6 @@ export const publicDocumentSchema = z.object({
   matchingBudgetLocations: z.array(locationSchema),
   series: seriesSummarySchema.nullable(),
   group: groupSchema,
-  details: z.union([
-    z.object({ status: z.literal('not_included') }),
-    detailsSchema,
-  ]),
 })
 export const documentResponseSchema = z.object({
   apiVersion: z.string(),

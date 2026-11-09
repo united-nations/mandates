@@ -77,6 +77,7 @@ export function MandatingBodiesDirectory({
       <div className="space-y-6">
         <ChartSearchInput
           placeholder="Search mandating bodies by acronym or name..."
+          className="sm:w-full"
           value={search}
           onChange={setSearch}
         />

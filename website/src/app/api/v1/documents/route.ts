@@ -1,17 +1,28 @@
 import { getPublicPage } from '@/lib/data/public-documents'
-import { ApiInputError, publicQuery } from '@/lib/public-api'
+import { budgetError, publicPageQuery } from '@/lib/public-api'
 import { publicJson, publicError } from '@/lib/api-response'
+import { apiClient } from '@/lib/api-client'
+import { apiDailyBudget } from '@/lib/api-row-budget'
 export async function GET(request: Request) {
   try {
-    const params = new URL(request.url).searchParams
-    const { filters, page, limit } = publicQuery(params)
-    const include = params.get('include')
-    if (include && include !== 'details')
-      throw new ApiInputError('Unknown include value')
-    return publicJson(
-      await getPublicPage(filters, page, limit, include === 'details')
+    const { filters, page, limit } = publicPageQuery(
+      new URL(request.url).searchParams
     )
+    const reservation = apiDailyBudget().reserveRows(
+      apiClient(request.headers.get('x-forwarded-for')).bucket,
+      limit,
+      Date.now()
+    )
+    if (!reservation.allowed)
+      throw budgetError(reservation, { kind: 'search', rows: limit })
+    try {
+      const result = await getPublicPage(filters, page, limit)
+      reservation.settle(result.items.length)
+      return publicJson(result)
+    } finally {
+      reservation.settle(0)
+    }
   } catch (error) {
-    return publicError(error)
+    return publicError(error, request)
   }
 }

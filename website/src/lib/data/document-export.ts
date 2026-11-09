@@ -1,22 +1,22 @@
 import { splitSubprogrammeLabel } from '../budget-labels'
-import { publicSeries } from '../public-series'
 import { createExportTable } from '../excel-export-style'
 import { Readable, PassThrough } from 'node:stream'
 import { once } from 'node:events'
 import ExcelJS from 'exceljs'
 import type { FilterOptions } from '@/types'
-import { API_VERSION, COVERAGE_NOTES } from '../public-api'
+import {
+  API_VERSION,
+  assertExportWithinCap,
+  COVERAGE_NOTES,
+  type ExportFormat,
+} from '../public-api'
 import { csvRow, downloadName } from '../export-format'
 import {
   publicExportBatches,
   resolvePublicVersion,
   type PublicDocument,
 } from './public-documents'
-import {
-  getMandates,
-  getExcelCitationBatches,
-  getExcelVersionBatches,
-} from './mandates'
+import { getMandates, getExcelCitationBatches } from './mandates'
 import { SITE_URL } from '../seo'
 
 const columns = [
@@ -64,11 +64,38 @@ const documentValues = (document: PublicDocument) => [
   document.jsonUrl,
 ]
 
+/**
+ * Stream an export of at most EXPORT_ROW_CAP documents.
+ *
+ * `release` frees the caller's export slot. It is called when the stream
+ * finishes or fails, when the client disconnects, or straight away if the
+ * export is refused or fails before streaming starts.
+ *
+ * `allowance.charge` receives the export's total once it is known and within
+ * the cap, before anything is sent; it throws to refuse the export.
+ */
 export async function documentExport(
   filters: FilterOptions,
-  format: 'csv' | 'xlsx' | 'json',
-  details: boolean,
-  signal: AbortSignal
+  format: ExportFormat,
+  signal: AbortSignal,
+  release: () => void,
+  allowance: { charge: (total: number) => void }
+) {
+  signal.addEventListener('abort', release, { once: true })
+  try {
+    return await startExport(filters, format, signal, release, allowance)
+  } catch (error) {
+    release()
+    throw error
+  }
+}
+
+async function startExport(
+  filters: FilterOptions,
+  format: ExportFormat,
+  signal: AbortSignal,
+  release: () => void,
+  allowance: { charge: (total: number) => void }
 ) {
   const version = await resolvePublicVersion(filters)
   const effectiveFilters = {
@@ -83,6 +110,8 @@ export async function documentExport(
     batchOffset: 0,
     includeMetrics: false,
   })
+  assertExportWithinCap(first.totalCount)
+  allowance.charge(first.totalCount)
   const generatedAt = new Date().toISOString()
   const metadata = {
     apiVersion: API_VERSION,
@@ -90,26 +119,23 @@ export async function documentExport(
     totalDocuments: first.totalCount,
     filters: effectiveFilters,
     requestedGrouping: filters.group === '1',
-    grouping: 'All matching documents; versions expanded',
+    grouping: 'All matching documents, listed individually',
     budgetVersion: version,
     coverage: COVERAGE_NOTES,
-    details: details ? 'included' : 'not_included',
     source: SITE_URL,
-    documentation: `${SITE_URL}/about#programmatic-access`,
+    documentation: `${SITE_URL}/llms.txt`,
     consistency:
       'Live data, read in batches; source updates during a download may affect results.',
   }
   const batches = () =>
-    publicExportBatches(effectiveFilters, version.slug, details, signal, true)
+    publicExportBatches(effectiveFilters, version.slug, signal)
   const headers = {
     'Content-Disposition': `attachment; filename="${downloadName(format, generatedAt)}"`,
     'Cache-Control': 'no-store',
     'X-Content-Type-Options': 'nosniff',
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Expose-Headers': 'Content-Disposition',
   }
   if (format === 'xlsx')
-    return new Response(excelStream(effectiveFilters, metadata, signal), {
+    return new Response(excelStream(effectiveFilters, metadata, signal, release), {
       headers: {
         ...headers,
         'Content-Type':
@@ -117,6 +143,13 @@ export async function documentExport(
       },
     })
   async function* chunks() {
+    try {
+      yield* formatChunks()
+    } finally {
+      release()
+    }
+  }
+  async function* formatChunks() {
     if (format === 'csv') {
       yield '\uFEFF' + csvRow(columns)
       for await (const batch of batches())
@@ -163,7 +196,8 @@ function excelStream(
     budgetVersion: { slug: string; display_name: string }
     [key: string]: unknown
   },
-  signal: AbortSignal
+  signal: AbortSignal,
+  release: () => void
 ) {
   const output = new PassThrough({ highWaterMark: 64 * 1024 })
   const stop = () => output.destroy(new Error('Export cancelled'))
@@ -203,9 +237,9 @@ function excelStream(
   about.row(['Budget cycle', metadata.budgetVersion.display_name])
   about.row(['Budget cycle identifier', metadata.budgetVersion.slug])
   about.row(['Matching documents', metadata.totalDocuments])
-  about.row(['Version grouping', metadata.grouping])
+  about.row(['Grouping', metadata.grouping])
   about.row([
-    'Website had versions grouped',
+    'Website list was grouped',
     metadata.requestedGrouping ? 'Yes' : 'No',
   ])
   const selectedFilters = metadata.filters as FilterOptions
@@ -226,10 +260,6 @@ function excelStream(
     'Document summary counts follow filters; Budget citations includes all citations for each document in the selected cycle.',
   ])
   about.row([
-    'Version relationships',
-    'One row per selected document in a series. The series anchor groups members within this export; Latest version is a registry annotation, not legal status. Full member lists are available in detailed JSON.',
-  ])
-  about.row([
     'Dates',
     'Year is the recorded publication/adoption year; exact adoption dates are not available for every record.',
   ])
@@ -248,9 +278,7 @@ function excelStream(
       for await (const batch of publicExportBatches(
         filters,
         metadata.budgetVersion.slug,
-        false,
-        signal,
-        true
+        signal
       )) {
         await check()
         for (const document of batch) documents.row(documentValues(document))
@@ -308,31 +336,6 @@ function excelStream(
         citations ??
         table('Budget citations', [...citationHeadings, 'Part in document'])
       ).close()
-      const versions = table('Version relationships', [
-        'Symbol',
-        'Series anchor symbol (this export)',
-        'Series size',
-        'First year',
-        'Last year',
-        'Collection (not ordered versions)',
-        'Latest in series',
-        'Latest version',
-      ])
-      for await (const batch of getExcelVersionBatches(filters, signal)) {
-        await check()
-        for (const row of batch)
-          versions.row([
-            row.symbol,
-            row.anchor,
-            row.series_count,
-            row.first_year || null,
-            row.last_year || null,
-            row.is_collection,
-            row.is_latest,
-            publicSeries(row, row.symbol)?.latest_version,
-          ])
-      }
-      versions.close()
       await check()
       await book.commit()
     } catch (error) {
@@ -340,6 +343,8 @@ function excelStream(
       output.destroy(
         error instanceof Error ? error : new Error('Export failed')
       )
+    } finally {
+      release()
     }
   }
   void run()

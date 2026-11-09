@@ -11,6 +11,11 @@ export const explainerTexts = {
     mandate: '{symbol} — Mandate Registry',
     about: 'About the Mandate Registry',
   },
+  siteMenu: {
+    label: 'Menu',
+    about: 'About',
+    technicalBriefing: 'Technical briefing',
+  },
   secretariatNavigation: {
     label: 'Secretariat navigation',
     aboutView: 'About {view}',
@@ -141,11 +146,11 @@ export const explainerTexts = {
       },
       { label: 'Official Document System', href: 'https://documents.un.org/' },
       {
-        label: 'Programme Budget of the UN Secretariat',
+        label: 'Proposed Programme Budget of the UN Secretariat',
         href: 'https://www.un.org/en/ga/fifth/81/ppb2027.shtml',
       },
       {
-        label: 'Budget of Peacekeeping Operations',
+        label: 'proposed peacekeeping budgets',
         href: 'https://digitallibrary.un.org/search?ln=en&p=A/80/604/Add.*&f=&action_search=Search&c=Resource+Type&c=UN+Bodies&sf=year&so=d&rg=50&fti=0',
       },
       {
@@ -174,13 +179,11 @@ export const explainerTexts = {
     sourcesIntroduction: 'The specific data sources are:',
     sources: [
       'The metadata for these documents is retrieved from the Dag Hammarskjöld Library, along with full texts from the Official Document System.',
-      'Information about which entities are implementing mandates is extracted from budget documents, specifically the Programme Budget of the UN Secretariat, and the Budget of Peacekeeping Operations, and is complemented by resolutions relating to the UN Secretariat’s priority areas in its Plan Outline. The Programme Budget includes both sections about “Mandates and background” that explain why programmes exist, and about “Legislative mandates” that explain why specific programmes and subprogrammes require resources (see infographic below). Some entities covered by the programme budget are independent of the Secretariat and the Secretary-General. They appear in the registry because they are included in those budget documents; their inclusion does not imply that they fall within the scope of the UN80 Initiative.',
+      'Information about which entities are implementing mandates is based on the Proposed Programme Budget of the UN Secretariat and proposed peacekeeping budgets, complemented by resolutions relating to the UN Secretariat’s priority areas in its Plan Outline. The proposed programme budget includes both sections about “Mandates and background” that explain why programmes exist, and about “Legislative mandates” that explain why specific programmes and subprogrammes require resources (see infographic below). Some entities covered by the proposed programme budget are independent of the Secretariat and the Secretary-General. They appear in the registry because they are included in those budget proposals; their inclusion does not imply that they fall within the scope of the UN80 Initiative.',
       'Links to reports are established using metadata from the Dag Hammarskjöld Library and references extracted from the full texts.',
       'Agendas of intergovernmental bodies are integrated via iGov for the General Assembly and the Economic and Social Council, and via its agenda and annotations for the Human Rights Council; for the Security Council, its matters considered are integrated.',
       'Focal point contacts are designated by their entities via the Mandate Focal Points data entry portal.',
     ],
-    preliminaryCitations:
-      'Some citations in the 2027 proposed UN programme budget are preliminary, drawn from advance versions of the underlying documents, and may change in the final budget: Section 1 (Overall policymaking, direction and coordination), from A/81/6 (Sect. 1); and the special political missions, from A/81/6 (Sect. 3)/Add.1–4.',
     infographicAlt: 'How mandate source documents are identified',
   },
 
@@ -190,6 +193,14 @@ export const explainerTexts = {
       'To support Member States during the design of mandates, UN entities have designated focal points.\nSearch by keyword to find relevant contact points across entities, and click on an entry for more details.',
     designationIntroduction: 'UN entities can designate their focal points',
     designationLink: 'here',
+  },
+
+  technicalBriefing: {
+    // Page heading, metadata title and the player's accessible title.
+    title: 'Technical Briefing on the Mandate Registry 2026',
+    introduction:
+      'A recorded briefing on how to use the Mandate Registry, prepared as part of the UN80 Initiative. It walks through specific examples of what the registry can be used for and how to get the most from it.',
+    watchOnYouTube: 'Watch on YouTube',
   },
 
   // /system page hero
@@ -336,6 +347,13 @@ export const explainerTexts = {
     },
   },
 
+  // Download menu under the document table
+  exportMenu: {
+    // {limit} is replaced with the export limit, e.g. 1,000.
+    overLimit:
+      'Downloads are limited to {limit} documents. Narrow the filters to download this list.',
+  },
+
   // Mandate List
   mandateList: {
     sectionTitle: 'Document List',
@@ -442,7 +460,7 @@ export const explainerTexts = {
     sgReportsUnion: {
       title: 'Which reports were submitted under this mandate?',
       disclaimer:
-        'Identified automatically from two sources: what each report states in its opening pages, and the metadata in each report’s UN Digital Library catalogue record. Reports cover the recorded versions of this mandate; each row lists the specific mandate documents linked by those sources.',
+        'Identified automatically from each report and its UN Digital Library record. Each row shows the mandate documents it was linked to.',
       statedInReport: 'Stated in the report',
       perCatalogueNotes: 'Per catalogue notes',
       notAccepted:

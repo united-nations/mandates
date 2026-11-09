@@ -1,0 +1,351 @@
+{
+  "run_date": "2026-11-02",
+  "status": "complete_with_reviewed_background_extractions",
+  "baseline": "Original exports at git commit 321b6307; local originals preserved at /home/agent/mandates-ppb2027-refresh-20261102/data",
+  "downloads": [
+    {
+      "symbol": "A/81/6(Sect.1)",
+      "format": "pdf",
+      "url": "https://documents.un.org/doc/undoc/gen/n26/129/93/pdf/n2612993.pdf",
+      "bytes": 5221618,
+      "sha256": "2bc60e0cb8b7f1f66525e5bbec66c4fdad1382e441698c567293982fd5f16d23",
+      "file": "data/downloads/ppb2027/A_81_6 (Sect. 1).pdf"
+    },
+    {
+      "symbol": "A/81/6(Sect.1)",
+      "format": "docx",
+      "url": "https://documents.un.org/doc/undoc/gen/n26/129/93/doc/n2612993.docx",
+      "bytes": 2506592,
+      "sha256": "919e09c9749ce1d4d7c28b6429c6ab28ea88b08b413879b61ee4604e75ae2a47",
+      "file": "data/downloads/ppb2027/A_81_6 (Sect. 1).docx"
+    },
+    {
+      "symbol": "A/81/6(Sect.3)/Add.1",
+      "format": "pdf",
+      "url": "https://documents.un.org/doc/undoc/gen/n26/131/33/pdf/n2613133.pdf",
+      "bytes": 1636729,
+      "sha256": "c8fb6e5546f22195c7d2cdca14b5a64e5c29417a2c42c3157eb756dc4e766ff0",
+      "file": "data/downloads/ppb2027/A_81_6 (Sect. 3)_Add.1.pdf"
+    },
+    {
+      "symbol": "A/81/6(Sect.3)/Add.1",
+      "format": "docx",
+      "url": "https://documents.un.org/doc/undoc/gen/n26/131/33/doc/n2613133.docx",
+      "bytes": 394182,
+      "sha256": "74deb368facbba20b7b34fd33b7d562e2ebc7d06c0c1f3d9e7d5148cef9b1427",
+      "file": "data/downloads/ppb2027/A_81_6 (Sect. 3)_Add.1.docx"
+    },
+    {
+      "symbol": "A/81/6(Sect.3)/Add.2",
+      "format": "pdf",
+      "url": "https://documents.un.org/doc/undoc/gen/n26/122/51/pdf/n2612251.pdf",
+      "bytes": 2460557,
+      "sha256": "9d4d87fd7febb69c9c42633e8b616c5cd8989ea1602f5dc078d4763bdde0a2f4",
+      "file": "data/downloads/ppb2027/A_81_6 (Sect. 3)_Add.2.pdf"
+    },
+    {
+      "symbol": "A/81/6(Sect.3)/Add.2",
+      "format": "docx",
+      "url": "https://documents.un.org/doc/undoc/gen/n26/122/51/doc/n2612251.docx",
+      "bytes": 715206,
+      "sha256": "158419b5a354114336db83fc917a3c263fcd9e696812931f20a0cf1de52ae2cc",
+      "file": "data/downloads/ppb2027/A_81_6 (Sect. 3)_Add.2.docx"
+    },
+    {
+      "symbol": "A/81/6(Sect.3)/Add.3",
+      "format": "pdf",
+      "url": "https://documents.un.org/doc/undoc/gen/n26/121/62/pdf/n2612162.pdf",
+      "bytes": 1747170,
+      "sha256": "83134fd93e8cbedca19f04dc6c3659540682d65c773d5aaa2ae68657b88bb2cc",
+      "file": "data/downloads/ppb2027/A_81_6 (Sect. 3)_Add.3.pdf"
+    },
+    {
+      "symbol": "A/81/6(Sect.3)/Add.3",
+      "format": "docx",
+      "url": "https://documents.un.org/doc/undoc/gen/n26/121/62/doc/n2612162.docx",
+      "bytes": 594775,
+      "sha256": "7b94d93ec49b53ab63213bc6c504b66e86143a5b16c480bd1cf3e98ad9a6e175",
+      "file": "data/downloads/ppb2027/A_81_6 (Sect. 3)_Add.3.docx"
+    },
+    {
+      "symbol": "A/81/6(Sect.3)/Add.4",
+      "format": "pdf",
+      "url": "https://documents.un.org/doc/undoc/gen/n26/129/99/pdf/n2612999.pdf",
+      "bytes": 5408959,
+      "sha256": "5e645dc21f004047fde7aa68287b6df6247be5f1c2cb00c44fb3b474fc0b83ff",
+      "file": "data/downloads/ppb2027/A_81_6 (Sect. 3)_Add.4.pdf"
+    },
+    {
+      "symbol": "A/81/6(Sect.3)/Add.4",
+      "format": "docx",
+      "url": "https://documents.un.org/doc/undoc/gen/n26/129/99/doc/n2612999.docx",
+      "bytes": 970244,
+      "sha256": "90a9541ee2798dd56d7dd104b48e7ca3bc0c7b98c123ab42ee448a4e06d7cbb5",
+      "file": "data/downloads/ppb2027/A_81_6 (Sect. 3)_Add.4.docx"
+    }
+  ],
+  "comparison_scope": "Original all_mandates_resolved.csv compared with the completed pipeline export. Distinct citation keys use logical source file, case-folded entity name, part in document, subprogramme, and normalized full document symbol.",
+  "comparison": [
+    {
+      "document": "Section 1",
+      "preliminary_rows": 232,
+      "final_rows": 241,
+      "preliminary_distinct_citations": 221,
+      "final_distinct_citations": 230,
+      "added_distinct_citations": 10,
+      "removed_distinct_citations": 1,
+      "preliminary_background_sections": 13,
+      "final_background_sections": 13
+    },
+    {
+      "document": "Add.1",
+      "preliminary_rows": 0,
+      "final_rows": 0,
+      "preliminary_distinct_citations": 0,
+      "final_distinct_citations": 0,
+      "added_distinct_citations": 0,
+      "removed_distinct_citations": 0,
+      "preliminary_background_sections": 0,
+      "final_background_sections": 0
+    },
+    {
+      "document": "Add.2",
+      "preliminary_rows": 87,
+      "final_rows": 99,
+      "preliminary_distinct_citations": 74,
+      "final_distinct_citations": 78,
+      "added_distinct_citations": 5,
+      "removed_distinct_citations": 1,
+      "preliminary_background_sections": 12,
+      "final_background_sections": 12
+    },
+    {
+      "document": "Add.3",
+      "preliminary_rows": 69,
+      "final_rows": 75,
+      "preliminary_distinct_citations": 63,
+      "final_distinct_citations": 65,
+      "added_distinct_citations": 3,
+      "removed_distinct_citations": 1,
+      "preliminary_background_sections": 15,
+      "final_background_sections": 15
+    },
+    {
+      "document": "Add.4",
+      "preliminary_rows": 39,
+      "final_rows": 51,
+      "preliminary_distinct_citations": 38,
+      "final_distinct_citations": 43,
+      "added_distinct_citations": 5,
+      "removed_distinct_citations": 0,
+      "preliminary_background_sections": 9,
+      "final_background_sections": 9
+    }
+  ],
+  "checks": [
+    "Validated PDF signatures and DOCX contents",
+    "36 distinct SPM entity contexts (12/15/9)",
+    "All 94 reviewed input fingerprints match current text and hyperlinks",
+    "Complete pipeline exited successfully, including validation and both Excel exports",
+    "3571 unchanged-source citation rows match the previous resolved export exactly",
+    "25 focused Python tests passed"
+  ],
+  "published_data_updated": false,
+  "aggregate_exports_regenerated": true,
+  "notes": [
+    "Final Add.3 corrects Security Council resolution 2816 year from 2025 to 2026.",
+    "Preliminary Add.2 cites 2797 (2025) in prose but links it to 2756 (2024); the final hyperlink matches the prose.",
+    "Citation rows in replaced documents decreased from 510 to 466, largely as final hyperlinks replace overlapping supplemental/fallback extractions. Counts include repeated citations and do not count unique mandates.",
+    "The live database still uses the earlier input corpus; the website disclaimer has not been removed.",
+    "The existing full-file CSV now includes resolved identities, matching the existing resolved-export stage; no citation changes were found outside the replaced documents.",
+    "Two reviewed source-link corrections are applied after extraction; downloaded documents and parsed source links remain unchanged.",
+    "Migration 044 maps SWEO to the existing UNSDG-SWEO identifier for PPB 2027 Section 1.",
+    "The configured database role is read-only. The user will execute migration 044; the Azure database has not been modified."
+  ],
+  "rerun_command": "cd data-processing && uv run python main.py --skip-download --reviewed-background-extractions ../data/references/ppb2027_reviewed_background_extractions.json",
+  "reviewed_background_inputs": 94,
+  "final_document_background_sections_reviewed": 49,
+  "retained_supplemental_rows_from_unchanged_inputs": 15,
+  "new_supplemental_rows_required": 0,
+  "full_pipeline_comparison": {
+    "before_rows": 4081,
+    "after_rows": 4037,
+    "per_document": [
+      {
+        "document": "A_81_6 (SECT. 1).JSON",
+        "before_rows": 240,
+        "after_rows": 241,
+        "before_distinct_citation_keys": 229,
+        "after_distinct_citation_keys": 230,
+        "added_keys": 3,
+        "removed_keys": 2
+      },
+      {
+        "document": "A_81_6 (SECT. 3) ADD.1.JSON",
+        "before_rows": 0,
+        "after_rows": 0,
+        "before_distinct_citation_keys": 0,
+        "after_distinct_citation_keys": 0,
+        "added_keys": 0,
+        "removed_keys": 0
+      },
+      {
+        "document": "A_81_6 (SECT. 3) ADD.2.JSON",
+        "before_rows": 136,
+        "after_rows": 99,
+        "before_distinct_citation_keys": 79,
+        "after_distinct_citation_keys": 77,
+        "added_keys": 1,
+        "removed_keys": 3
+      },
+      {
+        "document": "A_81_6 (SECT. 3) ADD.3.JSON",
+        "before_rows": 71,
+        "after_rows": 75,
+        "before_distinct_citation_keys": 65,
+        "after_distinct_citation_keys": 65,
+        "added_keys": 1,
+        "removed_keys": 1
+      },
+      {
+        "document": "A_81_6 (SECT. 3) ADD.4.JSON",
+        "before_rows": 63,
+        "after_rows": 51,
+        "before_distinct_citation_keys": 43,
+        "after_distinct_citation_keys": 43,
+        "added_keys": 0,
+        "removed_keys": 0
+      }
+    ],
+    "unchanged_source_rows": 3571,
+    "changes": [
+      {
+        "change": "added",
+        "document": "A_81_6 (SECT. 1).JSON",
+        "entity": "office of the special representative of the secretary-general for children and armed conflict",
+        "part": "Mandates and background",
+        "subprogramme": "",
+        "symbol": "A/79/878"
+      },
+      {
+        "change": "added",
+        "document": "A_81_6 (SECT. 1).JSON",
+        "entity": "united nations sustainable development group system-wide evaluation office",
+        "part": "Mandates and background",
+        "subprogramme": "",
+        "symbol": "A/78/72"
+      },
+      {
+        "change": "added",
+        "document": "A_81_6 (SECT. 1).JSON",
+        "entity": "united nations sustainable development group system-wide evaluation office",
+        "part": "Mandates and background",
+        "subprogramme": "",
+        "symbol": "A/80/74"
+      },
+      {
+        "change": "added",
+        "document": "A_81_6 (SECT. 3) ADD.2.JSON",
+        "entity": "personal envoy of the secretary-general for western sahara",
+        "part": "Mandates and background",
+        "subprogramme": "",
+        "symbol": "S/RES/2797(2025)"
+      },
+      {
+        "change": "added",
+        "document": "A_81_6 (SECT. 3) ADD.3.JSON",
+        "entity": "analytical support and sanctions monitoring team pursuant to resolutions 1526 (2004) and 2253 (2015) concerning islamic state in iraq and the levant (da’esh), al-qaida and the taliban and associated individuals and entities",
+        "part": "Mandates and background",
+        "subprogramme": "",
+        "symbol": "S/RES/2816(2026)"
+      },
+      {
+        "change": "removed",
+        "document": "A_81_6 (SECT. 1).JSON",
+        "entity": "office of the special representative of the secretary-general for children and armed conflict",
+        "part": "Mandates and background",
+        "subprogramme": "",
+        "symbol": "A/79/878-S/2025/247"
+      },
+      {
+        "change": "removed",
+        "document": "A_81_6 (SECT. 1).JSON",
+        "entity": "united nations sustainable development group system-wide evaluation office",
+        "part": "Mandates and background",
+        "subprogramme": "",
+        "symbol": "A/80/74-E/2025/53"
+      },
+      {
+        "change": "removed",
+        "document": "A_81_6 (SECT. 3) ADD.2.JSON",
+        "entity": "office of the special envoy of the secretary-general for syria",
+        "part": "Mandates and background",
+        "subprogramme": "",
+        "symbol": "GA OUTCOME 66/253"
+      },
+      {
+        "change": "removed",
+        "document": "A_81_6 (SECT. 3) ADD.2.JSON",
+        "entity": "office of the special envoy of the secretary-general on myanmar",
+        "part": "Mandates and background",
+        "subprogramme": "",
+        "symbol": "GA OUTCOME 72/248"
+      },
+      {
+        "change": "removed",
+        "document": "A_81_6 (SECT. 3) ADD.2.JSON",
+        "entity": "personal envoy of the secretary-general for western sahara",
+        "part": "Mandates and background",
+        "subprogramme": "",
+        "symbol": "S/RES/2756(2024)"
+      },
+      {
+        "change": "removed",
+        "document": "A_81_6 (SECT. 3) ADD.3.JSON",
+        "entity": "analytical support and sanctions monitoring team pursuant to resolutions 1526 (2004) and 2253 (2015) concerning islamic state in iraq and the levant (da’esh), al-qaida and the taliban and associated individuals and entities",
+        "part": "Mandates and background",
+        "subprogramme": "",
+        "symbol": "S/RES/2816(2025)"
+      }
+    ],
+    "replaced_documents_distinct_citation_keys_before": 416,
+    "replaced_documents_distinct_citation_keys_after": 415
+  },
+  "link_corrections_applied": [
+    {
+      "year": 2027,
+      "file": "A_81_6 (SECT. 3)_ADD.2.json",
+      "original_link": "https://docs.un.org/en/A/HRC/RES/77/318",
+      "corrected_link": "https://docs.un.org/en/A/RES/77/318",
+      "corrected_source": "General Assembly resolutions",
+      "expected_rows": 1,
+      "reason": "The surrounding text explicitly identifies 77/318 as a General Assembly resolution."
+    },
+    {
+      "year": 2027,
+      "file": "A_81_6 (SECT. 1).json",
+      "original_link": "https://docs.un.org/en/A/74/73-/E/2019/14",
+      "corrected_link": "https://docs.un.org/en/A/74/73",
+      "corrected_source": NaN,
+      "expected_rows": 1,
+      "reason": "Use the General Assembly identifier of the jointly issued report consistently with the other joint reports in this passage."
+    }
+  ],
+  "database_migration": {
+    "path": "sql/migrations/044_refresh_ppb2027_final_documents.sql",
+    "expected_citations_by_section": {
+      "1": 230,
+      "3 (Add.2)": 77,
+      "3 (Add.3)": 65,
+      "3 (Add.4)": 43
+    },
+    "csv_sha256": "67cbabd0d17fec6dc958a74a2e09dff599d69e0a981c7b881d51cca7fde03f6e",
+    "verification": [
+      "Executed on a temporary PostgreSQL 18 database seeded with existing affected citation rows",
+      "Rerun produced the same 415 citation keys",
+      "Unrelated-budget sentinel and existing source metadata were preserved",
+      "Forced result-guard failure rolled back replacements and preserved existing IDs"
+    ],
+    "applied_to_azure": false
+  }
+}
