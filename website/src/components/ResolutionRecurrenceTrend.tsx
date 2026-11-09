@@ -22,7 +22,6 @@ export function ResolutionRecurrenceTrend({
         total: d.resolutions,
         highlight: d.genuinelyNew,
       }))}
-      boundaryYear={2021}
       totalLabel="Resolutions & decisions adopted"
       highlightLabel="Genuinely new"
       complementLabel={explainerTexts.trendComposition.recurring}

@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 
 import { AnalyticsTabs } from '@/components/AnalyticsTabs'
+import { MandateLandscape } from '@/components/MandateLandscape'
+import { getMandateLandscape } from '@/lib/data/mandate-landscape'
 import { CoCitationHeatmap } from '@/components/CoCitationHeatmap'
 import { MandatingBodyEntityHeatmap } from '@/components/MandatingBodyEntityHeatmap'
 import { LatestRecordedTrend } from '@/components/LatestRecordedTrend'
@@ -69,6 +71,7 @@ export default async function AnalyticsPage({ searchParams }: PageProps) {
     latestRecordedTrend,
     securityCouncilTrend,
     reviewScopeGroups,
+    landscapeGroups,
     budgetVersions,
     topicTrends,
     coCitationMatrix,
@@ -79,6 +82,7 @@ export default async function AnalyticsPage({ searchParams }: PageProps) {
     getLatestRecordedTrend(filters.ppb_version),
     getSecurityCouncilResolutionTrend(filters.ppb_version),
     getReviewScopeGroups(filters.ppb_version),
+    getMandateLandscape(filters.ppb_version),
     getBudgetVersions(),
     getTopicTrends(),
     getEntityCoCitationMatrix(filters.ppb_version),
@@ -125,6 +129,17 @@ export default async function AnalyticsPage({ searchParams }: PageProps) {
                   String(selectedVersion.ppb_year)
                 )
               : undefined) ??
+            filters.ppb_version ??
+            explainerTexts.reviewScope.defaultVersion
+          }
+        />
+      </Chart>
+      <Chart title={explainerTexts.mandateLandscape.heading}>
+        <MandateLandscape
+          groups={landscapeGroups}
+          currentYear={new Date().getUTCFullYear()}
+          versionLabel={
+            selectedVersion?.slug ??
             filters.ppb_version ??
             explainerTexts.reviewScope.defaultVersion
           }
