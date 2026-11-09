@@ -11,12 +11,12 @@ export function HistoricalDocumentTrend({
   data,
   currentYear,
 }: {
-  data: { year: number; resolutions: number }[]
+  data: { year: number | null; resolutions: number }[]
   currentYear: number
 }) {
   const [windowYears, setWindowYears] = useState(5)
   const inputId = useId()
-  const years = data.filter((row) => row.year <= currentYear)
+  const years = data
   const { startYear, endYear, maxWindow } = calendarYearWindow(
     data.map((row) => row.year),
     currentYear,
@@ -57,7 +57,10 @@ export function HistoricalDocumentTrend({
         data={years.map((row) => ({
           year: row.year,
           total: row.resolutions,
-          highlight: row.year >= startYear ? row.resolutions : 0,
+          highlight:
+            row.year !== null && row.year >= startYear && row.year <= endYear
+              ? row.resolutions
+              : 0,
         }))}
         boundaryYear={startYear}
         totalLabel={texts.total}

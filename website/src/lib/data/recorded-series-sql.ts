@@ -7,5 +7,5 @@
 export const recordedSeriesCtes = `earlier_symbols AS (
        SELECT DISTINCT document_symbol
        FROM digitallibrary.resolution_series
-       WHERE is_recurring AND is_informative AND year < series_last_year
+       WHERE is_recurring AND is_informative AND year > 0 AND year < series_last_year
      )`

@@ -8,7 +8,7 @@ import { explainerTexts } from '@/lib/en_text_contents'
 const AXIS_MIN = 1946
 
 export interface YearOverlayPoint {
-  year: number
+  year: number | null
   /** Background (grey) series — always the larger, enclosing quantity. */
   total: number
   /** Foreground (un-blue) series — a subset of `total`. */
@@ -21,6 +21,7 @@ interface HighlightSeries {
   key: string
   label: string
   color: string
+  totalMembership?: number
 }
 
 function partCount(point: YearOverlayPoint, key: string): number {
@@ -73,23 +74,27 @@ export function YearOverlayTrend({
   // Dense full-range axis: fill any gap years so the time axis stays linear
   // even where a year has no documents.
   const years = useMemo(() => {
-    if (data.length === 0) return [] as YearOverlayPoint[]
-    const byYear = new Map(data.map((d) => [d.year, d]))
-    const min = Math.min(AXIS_MIN, data[0].year)
-    const max = data[data.length - 1].year
-    const out: YearOverlayPoint[] = []
-    for (let y = min; y <= max; y++) {
-      out.push(byYear.get(y) ?? { year: y, total: 0, highlight: 0 })
+    const dated = data.filter(
+      (row): row is YearOverlayPoint & { year: number } => row.year !== null
+    )
+    if (dated.length === 0) return [] as (YearOverlayPoint & { year: number })[]
+    const byYear = new Map(dated.map((row) => [row.year, row]))
+    const min = Math.min(AXIS_MIN, ...dated.map((row) => row.year))
+    const max = Math.max(...dated.map((row) => row.year))
+    const out: (YearOverlayPoint & { year: number })[] = []
+    for (let year = min; year <= max; year++) {
+      out.push(byYear.get(year) ?? { year, total: 0, highlight: 0 })
     }
     return out
   }, [data])
+  const undated = data.find((row) => row.year === null) ?? {
+    year: null,
+    total: 0,
+    highlight: 0,
+  }
+  const maxCount = Math.max(1, ...data.map((row) => row.total))
 
-  const maxCount = useMemo(
-    () => Math.max(1, ...years.map((y) => y.total)),
-    [years]
-  )
-
-  const series = useMemo(
+  const series = useMemo<HighlightSeries[]>(
     () =>
       highlightSeries ?? [
         { key: 'highlight', label: highlightLabel, color: 'bg-un-blue' },
@@ -100,10 +105,10 @@ export function YearOverlayTrend({
   const axisMax = years.length ? years[years.length - 1].year : AXIS_MIN
 
   const composition = useMemo(() => {
-    const total = years.reduce((sum, year) => sum + year.total, 0)
-    const highlight = years.reduce((sum, year) => sum + year.highlight, 0)
+    const total = data.reduce((sum, year) => sum + year.total, 0)
+    const highlight = data.reduce((sum, year) => sum + year.highlight, 0)
     const counts = series.map((part) =>
-      years.reduce((sum, year) => sum + partCount(year, part.key), 0)
+      data.reduce((sum, year) => sum + partCount(year, part.key), 0)
     )
     // Allocate tenths by largest remainder so rounded shares total 100%,
     // including when the uncited complement is zero.
@@ -132,7 +137,7 @@ export function YearOverlayTrend({
       parts,
       complementPercent: tenths[series.length] / 10,
     }
-  }, [years, series])
+  }, [data, series])
 
   // The single selected year (start_year === end_year), if any.
   const selectedYear =
@@ -166,6 +171,83 @@ export function YearOverlayTrend({
   const span = Math.max(1, axisMax - axisMin)
   const pct = (year: number) => ((year - axisMin) / span) * 100
 
+  const timelineColumns = Math.max(1, years.length)
+  // All marks use 1fr. The empty half-slot separates Undated without widening it.
+  const columnTemplate = `repeat(${timelineColumns}, minmax(0, 1fr)) minmax(0, 0.5fr) minmax(0, 1fr)`
+
+  const renderBar = (d: YearOverlayPoint) => {
+    const totalH = d.total > 0 ? (d.total / maxCount) * 100 : 0
+    const highlightH = d.highlight > 0 ? (d.highlight / maxCount) * 100 : 0
+    const isSelected = d.year !== null && selectedYear === d.year
+    const dim = selectedYear !== null && !isSelected
+    return (
+      <div
+        key={d.year ?? 'undated'}
+        className={`relative flex h-full flex-1 items-end ${d.year === null ? '' : 'cursor-pointer'}`}
+        role="group"
+        aria-label={
+          d.year === null
+            ? explainerTexts.trendComposition.undated
+            : String(d.year)
+        }
+        onMouseEnter={() => setHover(d)}
+        onMouseLeave={() => setHover(null)}
+        onClick={
+          d.year === null
+            ? undefined
+            : () => {
+                if (d.year !== null) selectYear(d.year)
+              }
+        }
+        title={`${d.year ?? explainerTexts.trendComposition.undated}: ${d.total} ${totalHoverLabel}, ${d.highlight} ${highlightHoverLabel}${highlightSeries ? series.map((part) => `, ${partCount(d, part.key)} ${part.label}`).join('') + `, ${d.total - d.highlight} ${complementLabel}` : ''}`}
+      >
+        {boundaryYear !== undefined &&
+          d.year === boundaryYear &&
+          axisMin < boundaryYear && (
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute top-0 bottom-0 -left-px border-l border-dashed border-muted-foreground/40"
+            />
+          )}
+        {d.total > 0 ? (
+          <>
+            <div
+              className="absolute bottom-0 w-full rounded-[1px] bg-gray-300 transition-opacity"
+              style={{
+                height: `${totalH}%`,
+                opacity: dim ? 0.4 : 1,
+              }}
+            />
+            {highlightH > 0 && (
+              <div
+                className="absolute bottom-0 flex w-full flex-col-reverse overflow-hidden rounded-[1px] transition-opacity"
+                style={{
+                  height: `${highlightH}%`,
+                  opacity: dim ? 0.4 : 1,
+                }}
+              >
+                {series.map((part) => (
+                  <div
+                    key={part.key}
+                    className={`w-full shrink-0 ${part.color}`}
+                    style={{
+                      height: `${(partCount(d, part.key) / d.highlight) * 100}%`,
+                    }}
+                  />
+                ))}
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="h-px w-full bg-muted-foreground/20" />
+        )}
+        {isSelected && (
+          <div className="pointer-events-none absolute inset-0 rounded-[1px] ring-1 ring-un-blue" />
+        )}
+      </div>
+    )
+  }
+
   return (
     <div role="group" aria-label={totalLabel}>
       <div
@@ -182,7 +264,7 @@ export function YearOverlayTrend({
               {hover ? (
                 <span>
                   <span className="font-medium text-foreground">
-                    {hover.year}
+                    {hover.year ?? explainerTexts.trendComposition.undated}
                   </span>
                   {` — ${hover.total.toLocaleString()} ${totalHoverLabel} · `}
                   <span className="font-medium text-un-blue-text">
@@ -204,86 +286,44 @@ export function YearOverlayTrend({
             </span>
           </div>
 
-          {/* Bars */}
-          <div className="flex h-44 items-end gap-px">
-            {years.map((d) => {
-              const totalH =
-                d.total > 0 ? Math.max(2, (d.total / maxCount) * 100) : 0
-              const highlightH =
-                d.highlight > 0
-                  ? Math.max(2, (d.highlight / maxCount) * 100)
-                  : 0
-              const isSelected = selectedYear === d.year
-              const dim = selectedYear !== null && !isSelected
-              return (
-                <div
-                  key={d.year}
-                  className="relative flex h-full flex-1 cursor-pointer items-end"
-                  onMouseEnter={() => setHover(d)}
-                  onMouseLeave={() => setHover(null)}
-                  onClick={() => selectYear(d.year)}
-                  title={`${d.year}: ${d.total} ${totalHoverLabel}, ${d.highlight} ${highlightHoverLabel}${highlightSeries ? series.map((part) => `, ${partCount(d, part.key)} ${part.label}`).join('') + `, ${d.total - d.highlight} ${complementLabel}` : ''}`}
-                >
-                  {boundaryYear !== undefined &&
-                    d.year === boundaryYear &&
-                    axisMin < boundaryYear && (
-                      <div
-                        aria-hidden="true"
-                        className="pointer-events-none absolute top-0 bottom-0 -left-px border-l border-dashed border-muted-foreground/40"
-                      />
-                    )}
-                  {d.total > 0 ? (
-                    <>
-                      <div
-                        className="absolute bottom-0 w-full rounded-[1px] bg-gray-300 transition-opacity"
-                        style={{
-                          height: `${totalH}%`,
-                          opacity: dim ? 0.4 : 1,
-                        }}
-                      />
-                      {highlightH > 0 && (
-                        <div
-                          className="absolute bottom-0 flex w-full flex-col-reverse overflow-hidden rounded-[1px] transition-opacity"
-                          style={{
-                            height: `${highlightH}%`,
-                            opacity: dim ? 0.4 : 1,
-                          }}
-                        >
-                          {series.map((part) => (
-                            <div
-                              key={part.key}
-                              className={`w-full shrink-0 ${part.color}`}
-                              style={{
-                                height: `${(partCount(d, part.key) / d.highlight) * 100}%`,
-                              }}
-                            />
-                          ))}
-                        </div>
-                      )}
-                    </>
-                  ) : (
-                    <div className="h-px w-full bg-muted-foreground/20" />
-                  )}
-                  {isSelected && (
-                    <div className="pointer-events-none absolute inset-0 rounded-[1px] ring-1 ring-un-blue" />
-                  )}
-                </div>
-              )
-            })}
+          <div
+            className="grid h-44 items-end gap-px"
+            style={{ gridTemplateColumns: columnTemplate }}
+          >
+            {years.length ? years.map(renderBar) : <div />}
+            <div aria-hidden="true" />
+            {renderBar(undated)}
           </div>
-
-          {/* Decade axis */}
-          <div className="relative mt-1 h-4 text-xs text-muted-foreground">
-            {decades.map((y) => (
+          <div
+            className="mt-1 grid h-9 gap-px text-xs text-muted-foreground"
+            style={{ gridTemplateColumns: columnTemplate }}
+          >
+            <div
+              className="relative h-4"
+              style={{ gridColumn: `1 / span ${timelineColumns}` }}
+            >
+              {decades.map((y) => (
+                <span
+                  key={y}
+                  className="absolute -translate-x-1/2 tabular-nums"
+                  style={{ left: `${pct(y)}%` }}
+                >
+                  {y}
+                </span>
+              ))}
+              {years.length > 0 && (
+                <span className="absolute right-0 tabular-nums">{axisMax}</span>
+              )}
+            </div>
+            <div aria-hidden="true" />
+            <div className="relative">
               <span
-                key={y}
-                className="absolute -translate-x-1/2 tabular-nums"
-                style={{ left: `${pct(y)}%` }}
+                className="absolute top-5 right-0 whitespace-nowrap"
+                title={explainerTexts.trendComposition.undatedExplanation}
               >
-                {y}
+                {explainerTexts.trendComposition.undated}
               </span>
-            ))}
-            <span className="absolute right-0 tabular-nums">{axisMax}</span>
+            </div>
           </div>
           {compositionNote && (
             <p className="mt-3 max-w-3xl text-sm text-muted-foreground">
@@ -322,6 +362,7 @@ export function YearOverlayTrend({
                       count: composition.complement,
                       percent: composition.complementPercent,
                       color: 'bg-gray-300',
+                      totalMembership: undefined,
                     },
                   ].map((part) => (
                     <div key={part.label}>
@@ -338,6 +379,14 @@ export function YearOverlayTrend({
                           ? `${part.percent.toFixed(1)}%`
                           : '—'}
                       </dd>
+                      {part.totalMembership !== undefined && (
+                        <dd className="mt-0.5 text-xs text-muted-foreground tabular-nums">
+                          {explainerTexts.citationTrend.totalMembership.replace(
+                            '{count}',
+                            part.totalMembership.toLocaleString()
+                          )}
+                        </dd>
+                      )}
                     </div>
                   ))}
                 </dl>

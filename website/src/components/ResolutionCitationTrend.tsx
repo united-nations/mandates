@@ -6,27 +6,31 @@ import { explainerTexts } from '@/lib/en_text_contents'
 
 const citationSeries = [
   {
+    key: 'peacekeeping',
+    label: explainerTexts.citationTrend.peacekeeping,
+    color: 'bg-un-blue-muted',
+    membership: 'peacekeepingMembership',
+  },
+  {
     key: 'foundational',
     label: explainerTexts.citationTrend.foundational,
     color: 'bg-un-blue-shade',
+    membership: 'foundationalMembership',
   },
   {
     key: 'legislative',
     label: explainerTexts.citationTrend.legislative,
     color: 'bg-un-blue',
+    membership: 'legislativeMembership',
   },
   {
-    key: 'other',
-    label: explainerTexts.citationTrend.other,
+    key: 'planOutline',
+    label: explainerTexts.citationTrend.planOutline,
     color: 'bg-un-blue-tint',
+    membership: 'planOutlineMembership',
   },
-]
+] as const
 
-/**
- * "Resolutions vs. cited mandates" — how many resolutions/decisions are adopted
- * each year, and how many of them the programme budget cites as mandates.
- * Rendering and year-click filtering live in {@link YearOverlayTrend}.
- */
 export function ResolutionCitationTrend({
   data,
 }: {
@@ -34,18 +38,25 @@ export function ResolutionCitationTrend({
 }) {
   return (
     <YearOverlayTrend
-      data={data.map((d) => ({
-        year: d.year,
-        total: d.resolutions,
-        highlight: d.citedMandates,
+      data={data.map((row) => ({
+        year: row.year,
+        total: row.resolutions,
+        highlight: row.citedMandates,
         parts: {
-          foundational: d.foundationalMandates,
-          legislative: d.legislativeMandates,
-          other: d.otherCitedMandates,
+          peacekeeping: row.peacekeepingMandates,
+          foundational: row.foundationalMandates,
+          legislative: row.legislativeMandates,
+          planOutline: row.planOutlineMandates,
         },
       }))}
+      highlightSeries={citationSeries.map((part) => ({
+        ...part,
+        totalMembership: data.reduce(
+          (sum, row) => sum + row[part.membership],
+          0
+        ),
+      }))}
       compositionNote={explainerTexts.citationTrend.note}
-      highlightSeries={citationSeries}
       totalLabel="Resolutions & decisions adopted"
       highlightLabel="Cited as mandates"
       complementLabel={explainerTexts.trendComposition.notCited}

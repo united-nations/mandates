@@ -40,10 +40,12 @@ export const explainerTexts = {
     topics: 'Topics',
   },
   citationTrend: {
-    foundational: 'Foundational mandates',
-    legislative: 'Legislative mandates',
-    other: 'Other cited sections',
-    note: 'Foundational mandates are cited in “Mandates and background”; legislative mandates are cited in “Legislative mandates”. Documents cited in both count only as foundational. Other cited sections covers documents cited only in Plan Outline or peacekeeping mandate sections. Each document counts once within the selected budget version.',
+    foundational: 'PPB foundational',
+    legislative: 'PPB legislative',
+    peacekeeping: 'Peacekeeping Budget',
+    planOutline: 'Plan Outline',
+    totalMembership: 'Total citation membership: {count}',
+    note: 'Primary counts assign each cited document once, in this order: Peacekeeping Budget, PPB foundational, PPB legislative, then Plan Outline. Smaller totals show full citation memberships before this priority; they overlap and must not be added. Source families match the website’s budget filters. Foundational and legislative refer to the PPB’s “Mandates and background” and “Legislative mandates” sections.',
   },
   latestRecordedTrend: {
     heading: 'Latest recorded version per series',
@@ -55,11 +57,13 @@ export const explainerTexts = {
   reviewScope: {
     heading: 'Experimental review scope',
     universe:
-      'Uses the same dated document population as the charts above, including resolutions and other mandate source documents. Citation membership is based on {version}, regardless of adoption year.',
+      'Uses the same full document population, including documents without a known chart year, as the charts above, including resolutions and other mandate source documents. Citation membership is based on {version}, regardless of adoption year. Simulator controls use full overlapping memberships, not the chart’s exclusive primary assignments.',
     excludeEarlierVersions: 'Exclude earlier recorded group members',
     earlierPolicy:
-      'Earlier means before the last recorded publication year in an informative title-based recurrence group, including collections. All members of the endpoint year are retained. Standalone and missing or uninformative recurrence data are retained; this rule does not establish legal supersession.',
-    excludeOlder: 'Exclude documents older than X calendar years',
+      'Earlier means before the last recorded publication year in an informative title-based recurrence group, including collections. All members of the endpoint year are retained. Standalone and missing or uninformative recurrence data are retained; this rule does not establish legal supersession. A missing chart year does not override any known series ordering.',
+    excludeOlder: 'Exclude documents older than {years} calendar years',
+    excludeOlderBefore: 'Exclude documents older than',
+    excludeOlderAfter: 'calendar years',
     windowRange: 'Calendar window: {start}–{end}',
     membershipNote:
       'Window membership describes adoption in {start}–{end}, even when the age rule is off. These counts describe overlap, not additional selection rules.',
@@ -73,10 +77,10 @@ export const explainerTexts = {
     exclude: 'Exclude',
     excludeSecurityCouncil: 'Exclude Security Council resolutions',
     precedence:
-      'Citation inclusions override age and recurrence rules. Citation exclusions and Security Council exclusion take precedence.',
+      'Citation inclusions override age and recurrence rules. Exclusions win across overlapping citation memberships; Security Council exclusion also takes precedence.',
     remaining: 'Unique documents remaining in scope',
     share: '{percent}% of {total} documents',
-    previewStart: 'Start with all {total} dated documents.',
+    previewStart: 'Start with all {total} registry documents.',
     previewEarlierVersions:
       'Exclude earlier recorded members of title-based recurrence groups, including collections.',
     previewAge: 'Exclude documents adopted before {start}.',
@@ -90,7 +94,7 @@ export const explainerTexts = {
     total: 'All documents',
     selected: 'Remaining in scope',
     recentOnly: 'In window only (uncited)',
-    citedOnly: 'Cited only (outside the window)',
+    citedOnly: 'Cited only (outside window or undated)',
     both: 'Both in window and cited',
     neither: 'Neither in window nor cited',
     securityCouncilMembership:
@@ -106,7 +110,7 @@ export const explainerTexts = {
     partialYear:
       '{year} is a partial calendar year; counts use available documents only.',
     recent: 'Documents in {start}–{end}',
-    earlier: 'Documents before {start}',
+    earlier: 'Outside {start}–{end}, including undated',
     total: 'Documents adopted',
     recentHover: 'in selected range',
   },
@@ -118,6 +122,10 @@ export const explainerTexts = {
     note: 'Documents with issuing body SC (Security Council) and document type Resolutions. Presidential statements and other Security Council document types remain in the grey complement. Counts use the same catalogue and selected budget version as the other charts.',
   },
   trendComposition: {
+    undated: 'Undated',
+    undatedExplanation:
+      'The registry has no chart year available; the original document may have a date.',
+
     recurrenceHeading: 'Genuinely new resolutions',
 
     empty: 'No documents in this period.',

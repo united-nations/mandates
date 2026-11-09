@@ -1,9 +1,10 @@
 import { calendarYearWindow } from '#lib/year-window'
 
 export const REVIEW_CITATION_CATEGORIES = [
+  'peacekeeping',
   'foundational',
   'legislative',
-  'other',
+  'planOutline',
 ] as const
 export type ReviewCitationCategory = (typeof REVIEW_CITATION_CATEGORIES)[number]
 export type ReviewCitationMode = 'include' | 'neutral' | 'exclude'
@@ -12,10 +13,18 @@ export type ReviewCitationModes = Record<
   ReviewCitationMode
 >
 
+export function reviewCitationModes(
+  mode: ReviewCitationMode
+): ReviewCitationModes {
+  return Object.fromEntries(
+    REVIEW_CITATION_CATEGORIES.map((category) => [category, mode])
+  ) as ReviewCitationModes
+}
+
 /** Disjoint groups of distinct documents, sufficient for exact intersections. */
 export interface ReviewScopeGroup {
-  year: number
-  citationCategory: ReviewCitationCategory | 'uncited'
+  year: number | null
+  citationCategories: ReviewCitationCategory[]
   securityCouncil: boolean
   /** Informative recurrence group member before its last recorded year, including collections. */
   earlierVersion: boolean
@@ -47,28 +56,32 @@ export function calculateReviewScope(
   ) as Record<ReviewCitationCategory, number>
   const securityCouncil = { total: 0, remaining: 0 }
   const byYear = new Map<
-    number,
-    { year: number; total: number; highlight: number }
+    number | null,
+    { year: number | null; total: number; highlight: number }
   >()
   let total = 0
   let remaining = 0
 
   for (const group of groups) {
     const recent =
-      group.year >= window.startYear && group.year <= window.endYear
-    const cited = group.citationCategory !== 'uncited'
-    const mode =
-      group.citationCategory === 'uncited'
-        ? 'neutral'
-        : citationModes[group.citationCategory]
+      group.year !== null &&
+      group.year >= window.startYear &&
+      group.year <= window.endYear
+    const cited = group.citationCategories.length > 0
+    const included = group.citationCategories.some(
+      (category) => citationModes[category] === 'include'
+    )
+    const excluded = group.citationCategories.some(
+      (category) => citationModes[category] === 'exclude'
+    )
     // Citation inclusion restores documents removed by age or series rules.
     // Citation exclusion and the explicit SC exclusion are applied last.
     const retainedByGlobalRules =
-      !(excludeOlder && group.year < window.startYear) &&
+      !(excludeOlder && group.year !== null && group.year < window.startYear) &&
       !(excludeEarlierVersions && group.earlierVersion)
     const selected =
-      (retainedByGlobalRules || mode === 'include') &&
-      mode !== 'exclude' &&
+      (retainedByGlobalRules || included) &&
+      !excluded &&
       !(excludeSecurityCouncil && group.securityCouncil)
     const overlap =
       overlaps[
@@ -84,8 +97,8 @@ export function calculateReviewScope(
     if (selected) overlap.remaining += group.count
     total += group.count
     if (selected) remaining += group.count
-    if (group.citationCategory !== 'uncited')
-      citations[group.citationCategory] += group.count
+    for (const category of group.citationCategories)
+      citations[category] += group.count
     if (group.securityCouncil) {
       securityCouncil.total += group.count
       if (selected) securityCouncil.remaining += group.count
@@ -107,6 +120,8 @@ export function calculateReviewScope(
     overlaps,
     citations,
     securityCouncil,
-    years: [...byYear.values()].sort((a, b) => a.year - b.year),
+    years: [...byYear.values()].sort((a, b) =>
+      a.year === null ? 1 : b.year === null ? -1 : a.year - b.year
+    ),
   }
 }

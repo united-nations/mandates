@@ -40,6 +40,7 @@ import {
 } from '@/lib/foundational'
 import type { ReviewScopeGroup } from '@/lib/review-scope'
 import { recordedSeriesCtes } from './recorded-series-sql'
+import { citationCategoryCtes } from './citation-category-sql'
 import { ORGAN_CATEGORIES } from '@/lib/organ-groups'
 import { readDynamicCache } from '@/lib/perf/dynamic-cache'
 import { subjectCountSql } from './subject-count-sql'
@@ -2438,86 +2439,77 @@ export const getOrganEntityMatrix = cache(
 )
 
 export interface ResolutionCitationTrendYear {
-  year: number
+  year: number | null
   /** All resolutions/decisions/etc. adopted that year (the "all resolutions" catalog). */
   resolutions: number
   /** Of those, how many are cited as mandates in the selected budget version. */
   citedMandates: number
   foundationalMandates: number
   legislativeMandates: number
-  /** Citations exclusively in other sections, such as Plan Outline or PKM. */
-  otherCitedMandates: number
+  peacekeepingMandates: number
+  planOutlineMandates: number
+  foundationalMembership: number
+  legislativeMembership: number
+  peacekeepingMembership: number
+  planOutlineMembership: number
 }
 
-/**
- * Per-year "resolutions vs. cited mandates" trend for the /secretariat "Trends
- * over time" expander.
- *
- * Both series are per-year counts on `unified_documents.ppb_year` — the same
- * column the year filter (start_year/end_year) keys on — so each bar's height
- * equals what clicking that year shows in the explorer. They differ only by the
- * `cited` filter, reusing getYearStats so the counts can never drift from the
- * explorer:
- *   - resolutions   = the catalogue ∪ what this version cites
- *   - citedMandates = the subset this version cites
- * citedMandates ⊆ resolutions by construction. This is a global overview — it
- * ignores any active entity/organ/subject filter, but NOT the version lens:
- * both series are read through the version passed in.
- *
- * Citation sections are deduplicated by document within that same version.
- * Mandates and background takes precedence over Legislative mandates; a
- * document cited exclusively elsewhere remains in an explicit other category.
+/** Registry totals and unique cited union by chart year, including a null-year
+ * bucket. The membership predicate matches the explorer. Primary categories follow the requested Peacekeeping, foundational,
+ * legislative, Plan Outline priority. Full source/role memberships remain
+ * independent and can overlap for filtering and secondary counts.
  */
 const _getResolutionCitationTrendInner = async (
   version: string | null
 ): Promise<ResolutionCitationTrendYear[]> => {
-  const [all, cited, categoryRows] = await Promise.all([
-    getYearStats({ ppb_version: version ?? undefined }),
-    getYearStats({ ppb_version: version ?? undefined, cited: '1' }),
-    queryMany<{
-      year: number
-      foundational: number
-      legislative: number
-      other: number
-    }>(
-      `WITH citation_sections AS (
-         SELECT c.ppb_full_document_symbol,
-                BOOL_OR(c.part_in_document = $2) AS foundational,
-                BOOL_OR(c.part_in_document = $3) AS legislative
-         FROM ppb2026.source_document_citations c
-         WHERE ${versionPredicateSql('c', '$1')}
-         GROUP BY c.ppb_full_document_symbol
-       )
-       SELECT d.ppb_year AS year,
-              COUNT(*) FILTER (WHERE s.foundational IS TRUE)::int AS foundational,
-              COUNT(*) FILTER (WHERE s.foundational IS NOT TRUE
-                                 AND s.legislative IS TRUE)::int AS legislative,
-              COUNT(*) FILTER (WHERE s.foundational IS NOT TRUE
-                                 AND s.legislative IS NOT TRUE)::int AS other
-       FROM citation_sections s
-       JOIN public.unified_documents d USING (ppb_full_document_symbol)
-       WHERE d.ppb_year IS NOT NULL
-       GROUP BY d.ppb_year`,
-      [version, FOUNDATIONAL_PART_IN_DOCUMENT, LEGISLATIVE_PART_IN_DOCUMENT]
-    ),
-  ])
-  const categories = new Map(categoryRows.map((row) => [Number(row.year), row]))
-
-  const years = new Set<number>()
-  for (const y of Object.keys(all.yearDistribution)) years.add(Number(y))
-  for (const y of Object.keys(cited.yearDistribution)) years.add(Number(y))
-
-  return [...years]
-    .filter((y) => Number.isFinite(y))
-    .sort((a, b) => a - b)
-    .map((year) => ({
-      year,
-      resolutions: all.yearDistribution[String(year)] ?? 0,
-      citedMandates: cited.yearDistribution[String(year)] ?? 0,
-      foundationalMandates: Number(categories.get(year)?.foundational ?? 0),
-      legislativeMandates: Number(categories.get(year)?.legislative ?? 0),
-      otherCitedMandates: Number(categories.get(year)?.other ?? 0),
-    }))
+  const rows = await queryMany<{
+    year: number | null
+    resolutions: number
+    cited: number
+    foundational: number
+    legislative: number
+    peacekeeping: number
+    plan_outline: number
+    foundational_membership: number
+    legislative_membership: number
+    peacekeeping_membership: number
+    plan_outline_membership: number
+    invalid: number
+  }>(
+    `WITH ${citationCategoryCtes}
+     SELECT d.ppb_year AS year, COUNT(DISTINCT d.ppb_full_document_symbol)::int AS resolutions,
+            COUNT(DISTINCT d.ppb_full_document_symbol) FILTER (WHERE c.ppb_full_document_symbol IS NOT NULL)::int AS cited,
+            COUNT(DISTINCT d.ppb_full_document_symbol) FILTER (WHERE c.primary_category = 'foundational')::int AS foundational,
+            COUNT(DISTINCT d.ppb_full_document_symbol) FILTER (WHERE c.primary_category = 'legislative')::int AS legislative,
+            COUNT(DISTINCT d.ppb_full_document_symbol) FILTER (WHERE c.primary_category = 'peacekeeping')::int AS peacekeeping,
+            COUNT(DISTINCT d.ppb_full_document_symbol) FILTER (WHERE c.primary_category = 'planOutline')::int AS plan_outline,
+            COUNT(DISTINCT d.ppb_full_document_symbol) FILTER (WHERE 'foundational' = ANY(c.categories))::int AS foundational_membership,
+            COUNT(DISTINCT d.ppb_full_document_symbol) FILTER (WHERE 'legislative' = ANY(c.categories))::int AS legislative_membership,
+            COUNT(DISTINCT d.ppb_full_document_symbol) FILTER (WHERE 'peacekeeping' = ANY(c.categories))::int AS peacekeeping_membership,
+            COUNT(DISTINCT d.ppb_full_document_symbol) FILTER (WHERE 'planOutline' = ANY(c.categories))::int AS plan_outline_membership,
+            COUNT(DISTINCT d.ppb_full_document_symbol) FILTER (WHERE c.ppb_full_document_symbol IS NOT NULL AND cardinality(c.categories) = 0)::int AS invalid
+     FROM public.unified_documents d
+     LEFT JOIN classified_citations c USING (ppb_full_document_symbol)
+     WHERE ${mandateMembershipSql('d', '$1')}
+     GROUP BY d.ppb_year ORDER BY d.ppb_year NULLS LAST`,
+    [version, FOUNDATIONAL_PART_IN_DOCUMENT, LEGISLATIVE_PART_IN_DOCUMENT]
+  )
+  if (rows.some((row) => Number(row.invalid) > 0)) {
+    throw new Error('Unclassified citation source or programme-budget section')
+  }
+  return rows.map((row) => ({
+    year: row.year === null ? null : Number(row.year),
+    resolutions: Number(row.resolutions),
+    citedMandates: Number(row.cited),
+    foundationalMandates: Number(row.foundational),
+    legislativeMandates: Number(row.legislative),
+    peacekeepingMandates: Number(row.peacekeeping),
+    planOutlineMandates: Number(row.plan_outline),
+    foundationalMembership: Number(row.foundational_membership),
+    legislativeMembership: Number(row.legislative_membership),
+    peacekeepingMembership: Number(row.peacekeeping_membership),
+    planOutlineMembership: Number(row.plan_outline_membership),
+  }))
 }
 
 /**
@@ -2528,12 +2520,12 @@ export const getResolutionCitationTrend = cache(
   (version?: string | null): Promise<ResolutionCitationTrendYear[]> =>
     unstable_cache(
       () => _getResolutionCitationTrendInner(version ?? null),
-      ['resolution-citation-trend-v2', version ?? 'default'],
+      ['resolution-citation-trend-v5', version ?? 'default'],
       { revalidate: 3600 }
     )()
 )
 
-/** One document belongs to exactly one (year, citation category, SC, earlier-version) cell.
+/** Each document belongs to one (nullable year, citation membership set, SC, earlier-version) cell.
  * Aggregate citations before joining, then deduplicate document identities;
  * marginals alone cannot answer review-scope intersection questions.
  */
@@ -2541,41 +2533,31 @@ const _getReviewScopeGroupsInner = async (
   version: string | null
 ): Promise<ReviewScopeGroup[]> => {
   const rows = await queryMany<{
-    year: number
-    citation_category: ReviewScopeGroup['citationCategory']
+    year: number | null
+    citation_categories: ReviewScopeGroup['citationCategories']
     security_council: boolean
     earlier_version: boolean
     documents: number
   }>(
-    `WITH ${recordedSeriesCtes}, citation_sections AS (
-       SELECT c.ppb_full_document_symbol,
-              BOOL_OR(c.part_in_document = $2) AS foundational,
-              BOOL_OR(c.part_in_document = $3) AS legislative
-       FROM ppb2026.source_document_citations c
-       WHERE ${versionPredicateSql('c', '$1')}
-       GROUP BY c.ppb_full_document_symbol
-     ), document_facts AS (
+    `WITH ${recordedSeriesCtes}, ${citationCategoryCtes}, document_facts AS (
        SELECT DISTINCT d.ppb_full_document_symbol, d.ppb_year AS year,
-              CASE WHEN c.foundational IS TRUE THEN 'foundational'
-                   WHEN c.legislative IS TRUE THEN 'legislative'
-                   WHEN c.ppb_full_document_symbol IS NOT NULL THEN 'other'
-                   ELSE 'uncited' END AS citation_category,
+              COALESCE(c.categories, ARRAY[]::text[]) AS citation_categories,
               COALESCE(d.ppb_body = 'SC' AND d.ppb_type = 'Resolutions', FALSE) AS security_council,
               (earlier.document_symbol IS NOT NULL) AS earlier_version
        FROM public.unified_documents d
-       LEFT JOIN citation_sections c USING (ppb_full_document_symbol)
+       LEFT JOIN classified_citations c USING (ppb_full_document_symbol)
        LEFT JOIN earlier_symbols earlier ON earlier.document_symbol = d.ppb_full_document_symbol
-       WHERE d.ppb_year IS NOT NULL AND ${mandateMembershipSql('d', '$1')}
+       WHERE ${mandateMembershipSql('d', '$1')}
      )
-     SELECT year, citation_category, security_council, earlier_version, COUNT(*)::int AS documents
+     SELECT year, citation_categories, security_council, earlier_version, COUNT(*)::int AS documents
      FROM document_facts
-     GROUP BY year, citation_category, security_council, earlier_version
-     ORDER BY year, citation_category, security_council, earlier_version`,
+     GROUP BY year, citation_categories, security_council, earlier_version
+     ORDER BY year, citation_categories, security_council, earlier_version`,
     [version, FOUNDATIONAL_PART_IN_DOCUMENT, LEGISLATIVE_PART_IN_DOCUMENT]
   )
   return rows.map((row) => ({
-    year: Number(row.year),
-    citationCategory: row.citation_category,
+    year: row.year === null ? null : Number(row.year),
+    citationCategories: row.citation_categories,
     securityCouncil: row.security_council,
     earlierVersion: row.earlier_version,
     count: Number(row.documents),
@@ -2586,13 +2568,13 @@ export const getReviewScopeGroups = cache(
   (version?: string | null): Promise<ReviewScopeGroup[]> =>
     unstable_cache(
       () => _getReviewScopeGroupsInner(version ?? null),
-      ['review-scope-groups-v4', version ?? 'default'],
+      ['review-scope-groups-v7', version ?? 'default'],
       { revalidate: 3600 }
     )()
 )
 
 export interface LatestRecordedTrendYear {
-  year: number
+  year: number | null
   documents: number
   /** Last-year members and the same standalone/unknown fallback as the first-year chart. */
   latest: number
@@ -2604,7 +2586,7 @@ export interface LatestRecordedTrendYear {
 const _getLatestRecordedTrendInner = async (
   version: string | null
 ): Promise<LatestRecordedTrendYear[]> => {
-  const rows = await queryMany<{ year: number; documents: number; latest: number }>(
+  const rows = await queryMany<{ year: number | null; documents: number; latest: number }>(
     `WITH ${recordedSeriesCtes}
      SELECT d.ppb_year AS year,
             COUNT(DISTINCT d.ppb_full_document_symbol)::int AS documents,
@@ -2613,13 +2595,13 @@ const _getLatestRecordedTrendInner = async (
             )::int AS latest
      FROM public.unified_documents d
      LEFT JOIN earlier_symbols earlier ON earlier.document_symbol = d.ppb_full_document_symbol
-     WHERE d.ppb_year IS NOT NULL AND ${mandateMembershipSql('d', '$1')}
+     WHERE ${mandateMembershipSql('d', '$1')}
      GROUP BY d.ppb_year
      ORDER BY d.ppb_year`,
     [version]
   )
   return rows.map((row) => ({
-    year: Number(row.year),
+    year: row.year === null ? null : Number(row.year),
     documents: Number(row.documents),
     latest: Number(row.latest),
   }))
@@ -2629,13 +2611,13 @@ export const getLatestRecordedTrend = cache(
   (version?: string | null): Promise<LatestRecordedTrendYear[]> =>
     unstable_cache(
       () => _getLatestRecordedTrendInner(version ?? null),
-      ['latest-recorded-trend-v3', version ?? 'default'],
+      ['latest-recorded-trend-v4', version ?? 'default'],
       { revalidate: 3600 }
     )()
 )
 
 export interface SecurityCouncilResolutionTrendYear {
-  year: number
+  year: number | null
   documents: number
   securityCouncilResolutions: number
 }
@@ -2647,7 +2629,7 @@ const _getSecurityCouncilResolutionTrendInner = async (
   version: string | null
 ): Promise<SecurityCouncilResolutionTrendYear[]> => {
   const rows = await queryMany<{
-    year: number
+    year: number | null
     documents: number
     security_council: number
   }>(
@@ -2656,13 +2638,13 @@ const _getSecurityCouncilResolutionTrendInner = async (
             COUNT(*) FILTER (WHERE d.ppb_body = 'SC'
                               AND d.ppb_type = 'Resolutions')::int AS security_council
      FROM public.unified_documents d
-     WHERE d.ppb_year IS NOT NULL AND ${mandateMembershipSql('d', '$1')}
+     WHERE ${mandateMembershipSql('d', '$1')}
      GROUP BY d.ppb_year
      ORDER BY d.ppb_year`,
     [version]
   )
   return rows.map((row) => ({
-    year: Number(row.year),
+    year: row.year === null ? null : Number(row.year),
     documents: Number(row.documents),
     securityCouncilResolutions: Number(row.security_council),
   }))
@@ -2672,13 +2654,13 @@ export const getSecurityCouncilResolutionTrend = cache(
   (version?: string | null): Promise<SecurityCouncilResolutionTrendYear[]> =>
     unstable_cache(
       () => _getSecurityCouncilResolutionTrendInner(version ?? null),
-      ['security-council-resolution-trend-v1', version ?? 'default'],
+      ['security-council-resolution-trend-v2', version ?? 'default'],
       { revalidate: 3600 }
     )()
 )
 
 export interface ResolutionRecurrenceTrendYear {
-  year: number
+  year: number | null
   /** All resolutions/decisions/etc. adopted that year — same universe as the citation trend's grey. */
   resolutions: number
   /** Of those, how many are a first appearance rather than a re-adoption. */
@@ -2714,7 +2696,7 @@ const _getResolutionRecurrenceTrendInner = async (
   version: string | null
 ): Promise<ResolutionRecurrenceTrendYear[]> => {
   const rows = await queryMany<{
-    year: number
+    year: number | null
     resolutions: number
     repetitions: number
   }>(
@@ -2728,8 +2710,7 @@ const _getResolutionRecurrenceTrendInner = async (
      FROM public.unified_documents d
      LEFT JOIN digitallibrary.resolution_series rs
        ON rs.document_symbol = d.ppb_full_document_symbol
-     WHERE d.ppb_year IS NOT NULL
-       AND (
+     WHERE (
          d.is_catalog_pattern
          OR EXISTS (
            SELECT 1 FROM ppb2026.source_document_citations c_cat
@@ -2746,7 +2727,7 @@ const _getResolutionRecurrenceTrendInner = async (
     const resolutions = Number(r.resolutions)
     const repetitions = Number(r.repetitions)
     return {
-      year: Number(r.year),
+      year: r.year === null ? null : Number(r.year),
       resolutions,
       genuinelyNew: Math.max(0, resolutions - repetitions),
     }
@@ -2759,7 +2740,7 @@ export const getResolutionRecurrenceTrend = cache(
   (version?: string | null): Promise<ResolutionRecurrenceTrendYear[]> =>
     unstable_cache(
       () => _getResolutionRecurrenceTrendInner(version ?? null),
-      ['resolution-recurrence-trend-v2', version ?? 'default'],
+      ['resolution-recurrence-trend-v3', version ?? 'default'],
       { revalidate: 3600 }
     )()
 )

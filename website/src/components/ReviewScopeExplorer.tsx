@@ -15,6 +15,7 @@ import {
 import { explainerTexts } from '@/lib/en_text_contents'
 import {
   calculateReviewScope,
+  reviewCitationModes,
   REVIEW_CITATION_CATEGORIES,
   type ReviewCitationMode,
   type ReviewCitationModes,
@@ -36,11 +37,9 @@ export function ReviewScopeExplorer({
   const [windowYears, setWindowYears] = useState(5)
   const [excludeOlder, setExcludeOlder] = useState(false)
   const [excludeEarlierVersions, setExcludeEarlierVersions] = useState(false)
-  const [citationModes, setCitationModes] = useState<ReviewCitationModes>({
-    foundational: 'neutral',
-    legislative: 'neutral',
-    other: 'neutral',
-  })
+  const [citationModes, setCitationModes] = useState<ReviewCitationModes>(() =>
+    reviewCitationModes('neutral')
+  )
   const [excludeSecurityCouncil, setExcludeSecurityCouncil] = useState(false)
   const result = useMemo(
     () =>
@@ -121,36 +120,38 @@ export function ReviewScopeExplorer({
             </label>
           </div>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
-            <div className="flex items-center gap-2">
+            <div className="inline-flex flex-wrap items-center gap-2">
               <Checkbox
                 id={`${id}-age`}
+                aria-label={format(texts.excludeOlder, { years: windowYears })}
                 checked={excludeOlder}
                 onCheckedChange={(checked) => setExcludeOlder(checked === true)}
               />
-              <label htmlFor={`${id}-age`}>{texts.excludeOlder}</label>
+              <label htmlFor={`${id}-age`}>{texts.excludeOlderBefore}</label>
+              <label htmlFor={`${id}-years`} className="sr-only">
+                {explainerTexts.documentTrend.windowLabel}
+              </label>
+              <Input
+                id={`${id}-years`}
+                className="h-8 w-20 text-xs"
+                type="number"
+                min={1}
+                max={result.maxWindow}
+                step={1}
+                value={windowYears}
+                disabled={!excludeOlder}
+                onChange={(event) => {
+                  const value = event.target.valueAsNumber
+                  if (
+                    Number.isInteger(value) &&
+                    value >= 1 &&
+                    value <= result.maxWindow
+                  )
+                    setWindowYears(value)
+                }}
+              />
+              <span>{texts.excludeOlderAfter}</span>
             </div>
-            <label htmlFor={`${id}-years`} className="sr-only">
-              {explainerTexts.documentTrend.windowLabel}
-            </label>
-            <Input
-              id={`${id}-years`}
-              className="h-8 w-20 text-xs"
-              type="number"
-              min={1}
-              max={result.maxWindow}
-              step={1}
-              value={windowYears}
-              disabled={!excludeOlder}
-              onChange={(event) => {
-                const value = event.target.valueAsNumber
-                if (
-                  Number.isInteger(value) &&
-                  value >= 1 &&
-                  value <= result.maxWindow
-                )
-                  setWindowYears(value)
-              }}
-            />
             <span className="text-muted-foreground">
               {format(texts.windowRange, {
                 start: result.startYear,
@@ -165,7 +166,7 @@ export function ReviewScopeExplorer({
               </span>
             )}
           </div>
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5">
             <div className="space-y-1.5">
               <label
                 htmlFor={`${id}-all-cited`}
@@ -188,11 +189,7 @@ export function ReviewScopeExplorer({
                     value === 'neutral' ||
                     value === 'exclude'
                   )
-                    setCitationModes({
-                      foundational: value,
-                      legislative: value,
-                      other: value,
-                    })
+                    setCitationModes(reviewCitationModes(value))
                 }}
               >
                 <SelectTrigger id={`${id}-all-cited`} className="h-8 text-xs">
@@ -323,7 +320,7 @@ export function ReviewScopeExplorer({
             remaining: result.securityCouncil.remaining.toLocaleString(),
           })}
         </p>
-        <dl className="mt-3 grid gap-2 sm:grid-cols-3">
+        <dl className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
           {REVIEW_CITATION_CATEGORIES.map((category) => (
             <div key={category}>
               <dt className="text-xs text-muted-foreground">
