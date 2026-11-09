@@ -34,6 +34,8 @@ export function ReviewScopeExplorer({
 }) {
   const id = useId()
   const [windowYears, setWindowYears] = useState(5)
+  const [excludeOlder, setExcludeOlder] = useState(false)
+  const [excludeEarlierVersions, setExcludeEarlierVersions] = useState(false)
   const [citationModes, setCitationModes] = useState<ReviewCitationModes>({
     foundational: 'neutral',
     legislative: 'neutral',
@@ -47,9 +49,19 @@ export function ReviewScopeExplorer({
         currentYear,
         windowYears,
         citationModes,
-        excludeSecurityCouncil
+        excludeSecurityCouncil,
+        excludeOlder,
+        excludeEarlierVersions
       ),
-    [groups, currentYear, windowYears, citationModes, excludeSecurityCouncil]
+    [
+      groups,
+      currentYear,
+      windowYears,
+      citationModes,
+      excludeSecurityCouncil,
+      excludeOlder,
+      excludeEarlierVersions,
+    ]
   )
   const texts = explainerTexts.reviewScope
   const categoryLabels = explainerTexts.citationTrend
@@ -66,16 +78,15 @@ export function ReviewScopeExplorer({
   const included = list('include')
   const excluded = list('exclude')
   const preview = [
-    format(texts.previewStart, {
-      start: result.startYear,
-      end: result.endYear,
-    }),
+    format(texts.previewStart, { total: result.total.toLocaleString() }),
+    excludeEarlierVersions ? texts.previewEarlierVersions : '',
+    excludeOlder ? format(texts.previewAge, { start: result.startYear }) : '',
     included
       ? format(texts.previewInclude, {
           categories: included,
           version: versionLabel,
         })
-      : texts.previewNoInclude,
+      : '',
     excluded
       ? format(texts.previewExclude, {
           categories: excluded,
@@ -83,7 +94,12 @@ export function ReviewScopeExplorer({
         })
       : '',
     excludeSecurityCouncil ? texts.previewSecurityCouncil : '',
-    !excluded && !excludeSecurityCouncil ? texts.previewNoExclude : '',
+    !excluded &&
+    !excludeSecurityCouncil &&
+    !excludeOlder &&
+    !excludeEarlierVersions
+      ? texts.previewNoExclude
+      : '',
   ]
     .filter(Boolean)
     .join(' ')
@@ -92,8 +108,28 @@ export function ReviewScopeExplorer({
     <div className="space-y-4">
       <div>
         <div className="space-y-3">
+          <div className="flex items-center gap-2 text-sm">
+            <Checkbox
+              id={`${id}-earlier`}
+              checked={excludeEarlierVersions}
+              onCheckedChange={(checked) =>
+                setExcludeEarlierVersions(checked === true)
+              }
+            />
+            <label htmlFor={`${id}-earlier`}>
+              {texts.excludeEarlierVersions}
+            </label>
+          </div>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
-            <label htmlFor={`${id}-years`}>
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id={`${id}-age`}
+                checked={excludeOlder}
+                onCheckedChange={(checked) => setExcludeOlder(checked === true)}
+              />
+              <label htmlFor={`${id}-age`}>{texts.excludeOlder}</label>
+            </div>
+            <label htmlFor={`${id}-years`} className="sr-only">
               {explainerTexts.documentTrend.windowLabel}
             </label>
             <Input
@@ -104,6 +140,7 @@ export function ReviewScopeExplorer({
               max={result.maxWindow}
               step={1}
               value={windowYears}
+              disabled={!excludeOlder}
               onChange={(event) => {
                 const value = event.target.valueAsNumber
                 if (
@@ -115,12 +152,12 @@ export function ReviewScopeExplorer({
               }}
             />
             <span className="text-muted-foreground">
-              {format(explainerTexts.documentTrend.range, {
+              {format(texts.windowRange, {
                 start: result.startYear,
                 end: result.endYear,
               })}
             </span>
-            {result.endYear === currentYear && (
+            {excludeOlder && result.endYear === currentYear && (
               <span className="text-xs text-muted-foreground">
                 {format(explainerTexts.documentTrend.partialYear, {
                   year: result.endYear,
@@ -238,7 +275,16 @@ export function ReviewScopeExplorer({
         <p className="mt-3 mb-3 max-w-3xl text-xs text-muted-foreground">
           {format(texts.universe, { version: versionLabel })}
         </p>
+        <p className="mb-3 text-xs text-muted-foreground">
+          {texts.earlierPolicy}
+        </p>
         <h3 className="mb-2 text-sm font-medium">{texts.overlapHeading}</h3>
+        <p className="mb-2 text-xs text-muted-foreground">
+          {format(texts.membershipNote, {
+            start: result.startYear,
+            end: result.endYear,
+          })}
+        </p>
         <table className="w-full text-left text-sm">
           <thead>
             <tr className="border-b border-border">
@@ -312,7 +358,7 @@ export function ReviewScopeExplorer({
             </div>
             <YearOverlayTrend
               data={result.years}
-              boundaryYear={result.startYear}
+              boundaryYear={excludeOlder ? result.startYear : undefined}
               showComposition={false}
               totalLabel={texts.total}
               highlightLabel={texts.selected}

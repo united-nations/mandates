@@ -39,6 +39,7 @@ import {
   LEGISLATIVE_PART_IN_DOCUMENT,
 } from '@/lib/foundational'
 import type { ReviewScopeGroup } from '@/lib/review-scope'
+import { recordedSeriesCtes } from './recorded-series-sql'
 import { ORGAN_CATEGORIES } from '@/lib/organ-groups'
 import { readDynamicCache } from '@/lib/perf/dynamic-cache'
 import { subjectCountSql } from './subject-count-sql'
@@ -2532,7 +2533,7 @@ export const getResolutionCitationTrend = cache(
     )()
 )
 
-/** One document belongs to exactly one (year, citation category, SC) cell.
+/** One document belongs to exactly one (year, citation category, SC, earlier-version) cell.
  * Aggregate citations before joining, then deduplicate document identities;
  * marginals alone cannot answer review-scope intersection questions.
  */
@@ -2543,9 +2544,10 @@ const _getReviewScopeGroupsInner = async (
     year: number
     citation_category: ReviewScopeGroup['citationCategory']
     security_council: boolean
+    earlier_version: boolean
     documents: number
   }>(
-    `WITH citation_sections AS (
+    `WITH ${recordedSeriesCtes}, citation_sections AS (
        SELECT c.ppb_full_document_symbol,
               BOOL_OR(c.part_in_document = $2) AS foundational,
               BOOL_OR(c.part_in_document = $3) AS legislative
@@ -2558,21 +2560,24 @@ const _getReviewScopeGroupsInner = async (
                    WHEN c.legislative IS TRUE THEN 'legislative'
                    WHEN c.ppb_full_document_symbol IS NOT NULL THEN 'other'
                    ELSE 'uncited' END AS citation_category,
-              COALESCE(d.ppb_body = 'SC' AND d.ppb_type = 'Resolutions', FALSE) AS security_council
+              COALESCE(d.ppb_body = 'SC' AND d.ppb_type = 'Resolutions', FALSE) AS security_council,
+              (earlier.document_symbol IS NOT NULL) AS earlier_version
        FROM public.unified_documents d
        LEFT JOIN citation_sections c USING (ppb_full_document_symbol)
+       LEFT JOIN earlier_symbols earlier ON earlier.document_symbol = d.ppb_full_document_symbol
        WHERE d.ppb_year IS NOT NULL AND ${mandateMembershipSql('d', '$1')}
      )
-     SELECT year, citation_category, security_council, COUNT(*)::int AS documents
+     SELECT year, citation_category, security_council, earlier_version, COUNT(*)::int AS documents
      FROM document_facts
-     GROUP BY year, citation_category, security_council
-     ORDER BY year, citation_category, security_council`,
+     GROUP BY year, citation_category, security_council, earlier_version
+     ORDER BY year, citation_category, security_council, earlier_version`,
     [version, FOUNDATIONAL_PART_IN_DOCUMENT, LEGISLATIVE_PART_IN_DOCUMENT]
   )
   return rows.map((row) => ({
     year: Number(row.year),
     citationCategory: row.citation_category,
     securityCouncil: row.security_council,
+    earlierVersion: row.earlier_version,
     count: Number(row.documents),
   }))
 }
@@ -2581,7 +2586,7 @@ export const getReviewScopeGroups = cache(
   (version?: string | null): Promise<ReviewScopeGroup[]> =>
     unstable_cache(
       () => _getReviewScopeGroupsInner(version ?? null),
-      ['review-scope-groups-v1', version ?? 'default'],
+      ['review-scope-groups-v4', version ?? 'default'],
       { revalidate: 3600 }
     )()
 )
@@ -2589,47 +2594,25 @@ export const getReviewScopeGroups = cache(
 export interface LatestRecordedTrendYear {
   year: number
   documents: number
+  /** Last-year members and the same standalone/unknown fallback as the first-year chart. */
   latest: number
 }
 
-/** Rank full recorded series before applying the registry/version lens.
- * The existing symbol lookup uses the lowest recid for duplicate DL symbols.
- * Collections and uninformative recurring groups are not version chains.
+/** Mirror the genuinely-new first-year rule using full-history last-year
+ * membership, including collections, with identical informative/unknown gates.
  */
 const _getLatestRecordedTrendInner = async (
   version: string | null
 ): Promise<LatestRecordedTrendYear[]> => {
   const rows = await queryMany<{ year: number; documents: number; latest: number }>(
-    `WITH canonical_series AS (
-       SELECT DISTINCT ON (rs.document_symbol)
-              rs.*, dl.date_publication
-       FROM digitallibrary.resolution_series rs
-       JOIN digitallibrary.documents dl USING (recid)
-       ORDER BY rs.document_symbol, rs.recid
-     ), ranked_chains AS (
-       SELECT document_symbol,
-              ROW_NUMBER() OVER (
-                PARTITION BY series_key, un_body, doc_type
-                ORDER BY date_publication DESC NULLS LAST,
-                         document_symbol COLLATE "C" DESC, recid ASC
-              ) AS position,
-              BOOL_AND(date_publication IS NOT NULL) OVER (
-                PARTITION BY series_key, un_body, doc_type
-              ) AS complete_dates
-       FROM canonical_series
-       WHERE is_recurring AND is_informative AND NOT is_collection
-     ), latest_symbols AS (
-       SELECT document_symbol FROM ranked_chains WHERE position = 1 AND complete_dates
-       UNION
-       SELECT document_symbol FROM canonical_series WHERE NOT is_recurring
-     )
+    `WITH ${recordedSeriesCtes}
      SELECT d.ppb_year AS year,
             COUNT(DISTINCT d.ppb_full_document_symbol)::int AS documents,
             COUNT(DISTINCT d.ppb_full_document_symbol) FILTER (
-              WHERE latest.document_symbol IS NOT NULL
+              WHERE earlier.document_symbol IS NULL
             )::int AS latest
      FROM public.unified_documents d
-     LEFT JOIN latest_symbols latest ON latest.document_symbol = d.ppb_full_document_symbol
+     LEFT JOIN earlier_symbols earlier ON earlier.document_symbol = d.ppb_full_document_symbol
      WHERE d.ppb_year IS NOT NULL AND ${mandateMembershipSql('d', '$1')}
      GROUP BY d.ppb_year
      ORDER BY d.ppb_year`,
@@ -2646,7 +2629,7 @@ export const getLatestRecordedTrend = cache(
   (version?: string | null): Promise<LatestRecordedTrendYear[]> =>
     unstable_cache(
       () => _getLatestRecordedTrendInner(version ?? null),
-      ['latest-recorded-trend-v1', version ?? 'default'],
+      ['latest-recorded-trend-v3', version ?? 'default'],
       { revalidate: 3600 }
     )()
 )

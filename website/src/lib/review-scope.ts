@@ -17,6 +17,8 @@ export interface ReviewScopeGroup {
   year: number
   citationCategory: ReviewCitationCategory | 'uncited'
   securityCouncil: boolean
+  /** Informative recurrence group member before its last recorded year, including collections. */
+  earlierVersion: boolean
   count: number
 }
 
@@ -25,7 +27,9 @@ export function calculateReviewScope(
   currentYear: number,
   windowYears: number,
   citationModes: ReviewCitationModes,
-  excludeSecurityCouncil: boolean
+  excludeSecurityCouncil: boolean,
+  excludeOlder: boolean,
+  excludeEarlierVersions: boolean
 ) {
   const window = calendarYearWindow(
     groups.map((group) => group.year),
@@ -57,9 +61,13 @@ export function calculateReviewScope(
       group.citationCategory === 'uncited'
         ? 'neutral'
         : citationModes[group.citationCategory]
-    // Exclusions are evaluated after the union of the recent and included sets.
+    // Citation inclusion restores documents removed by age or series rules.
+    // Citation exclusion and the explicit SC exclusion are applied last.
+    const retainedByGlobalRules =
+      !(excludeOlder && group.year < window.startYear) &&
+      !(excludeEarlierVersions && group.earlierVersion)
     const selected =
-      (recent || mode === 'include') &&
+      (retainedByGlobalRules || mode === 'include') &&
       mode !== 'exclude' &&
       !(excludeSecurityCouncil && group.securityCouncil)
     const overlap =

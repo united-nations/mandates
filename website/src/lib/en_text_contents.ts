@@ -47,15 +47,22 @@ export const explainerTexts = {
   },
   latestRecordedTrend: {
     heading: 'Latest recorded version per series',
-    label: 'Latest recorded versions and singletons',
-    complement: 'Earlier or unclassified documents',
-    hover: 'latest recorded',
-    note: 'One latest member per version chain, using publication dates across its full recorded history and a deterministic tie-break for equal dates. Recorded singletons also count. Collections, uninformative recurring groups, missing series data and chains with missing dates remain grey. Latest recorded does not mean legally active.',
+    label: 'Latest recorded group-year and standalone documents',
+    complement: 'Earlier recorded group members',
+    hover: 'latest recorded group-year or standalone',
+    note: 'Uses the same broad title-based recurrence groups as the genuinely-new chart, including collections. All members of the last recorded publication year are retained, along with standalone documents and records without informative recurrence data. Endpoints use full series history before budget or age filtering. This is an analytical grouping, not proof that earlier mandates expired.',
   },
   reviewScope: {
     heading: 'Experimental review scope',
     universe:
       'Uses the same dated document population as the charts above, including resolutions and other mandate source documents. Citation membership is based on {version}, regardless of adoption year.',
+    excludeEarlierVersions: 'Exclude earlier recorded group members',
+    earlierPolicy:
+      'Earlier means before the last recorded publication year in an informative title-based recurrence group, including collections. All members of the endpoint year are retained. Standalone and missing or uninformative recurrence data are retained; this rule does not establish legal supersession.',
+    excludeOlder: 'Exclude documents older than X calendar years',
+    windowRange: 'Calendar window: {start}–{end}',
+    membershipNote:
+      'Window membership describes adoption in {start}–{end}, even when the age rule is off. These counts describe overlap, not additional selection rules.',
     allCited: 'All cited',
     mixed: 'Mixed',
     details: 'Show scope details',
@@ -65,24 +72,27 @@ export const explainerTexts = {
     neutral: 'Neutral',
     exclude: 'Exclude',
     excludeSecurityCouncil: 'Exclude Security Council resolutions',
-    precedence: 'Exclusions take precedence.',
+    precedence:
+      'Citation inclusions override age and recurrence rules. Citation exclusions and Security Council exclusion take precedence.',
     remaining: 'Unique documents remaining in scope',
     share: '{percent}% of {total} documents',
-    previewStart: 'Start with documents adopted in {start}–{end}.',
+    previewStart: 'Start with all {total} dated documents.',
+    previewEarlierVersions:
+      'Exclude earlier recorded members of title-based recurrence groups, including collections.',
+    previewAge: 'Exclude documents adopted before {start}.',
     previewInclude:
-      'Also include {categories} cited in {version}, from any year.',
-    previewNoInclude: 'No citation categories add older documents.',
+      'Retain {categories} cited in {version}, regardless of age or recorded recurrence.',
     previewExclude: 'Exclude {categories} cited in {version}.',
     previewSecurityCouncil: 'Exclude Security Council resolutions.',
     previewNoExclude: 'No exclusions are applied.',
-    overlapHeading: 'Recent and cited overlap',
+    overlapHeading: 'Calendar-window and cited membership',
     group: 'Document group',
     total: 'All documents',
     selected: 'Remaining in scope',
-    recentOnly: 'Recent only (uncited)',
-    citedOnly: 'Cited only (outside the recent range)',
-    both: 'Both recent and cited',
-    neither: 'Neither recent nor cited',
+    recentOnly: 'In window only (uncited)',
+    citedOnly: 'Cited only (outside the window)',
+    both: 'Both in window and cited',
+    neither: 'Neither in window nor cited',
     securityCouncilMembership:
       'Security Council resolutions: {total} total; {remaining} remaining. These overlap the groups above.',
     trendHeading: 'All documents and remaining scope over time',
@@ -114,7 +124,7 @@ export const explainerTexts = {
     notCited: 'Not cited as mandates',
     recurring: 'Recurring resolutions',
     recurrenceNote:
-      'Genuinely new includes first appearances, standalone documents and documents without recurrence data.',
+      'Genuinely new includes every member of the first recorded publication year in an informative title-based recurrence group, including collections. Standalone documents and missing or uninformative recurrence data are also included. This describes recorded recurrence, not legal validity.',
   },
   secretariatReports: {
     heading: 'Reports',
