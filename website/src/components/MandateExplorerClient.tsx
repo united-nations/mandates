@@ -156,6 +156,9 @@ export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
                   totalDocuments={
                     filters.group === '1' ? undefined : pagination.totalItems
                   }
+                  minimumDocuments={
+                    filters.group === '1' ? pagination.totalItems : undefined
+                  }
                 />
               }
             />

@@ -2,6 +2,8 @@
 
 import { Search, X } from 'lucide-react'
 
+import { cn } from '@/lib/utils'
+
 interface ChartSearchInputProps {
   value: string
   onChange: (value: string) => void
@@ -15,13 +17,15 @@ export function ChartSearchInput({
   value,
   onChange,
   placeholder = 'Search...',
-  className = '',
+  className,
   clearLabel = 'Clear search',
 }: ChartSearchInputProps) {
   const hasValue = value.trim() !== ''
 
   return (
-    <div className={`relative w-full sm:w-80 ${className}`}>
+    // Merged rather than appended, so a caller's width replaces the default
+    // sm:w-80 instead of competing with it on stylesheet order.
+    <div className={cn('relative w-full sm:w-80', className)}>
       <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2.5">
         <Search className="h-3.5 w-3.5 text-muted-foreground" />
       </div>

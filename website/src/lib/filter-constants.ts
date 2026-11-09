@@ -126,6 +126,15 @@ export type FilterParamKey = (typeof FILTER_PARAMS)[number]
 export type FilterOnlyParamKey = (typeof FILTER_ONLY_PARAMS)[number]
 export type ControlParamKey = (typeof CONTROL_PARAMS)[number]
 
+/** Longest value parseSearchParams accepts for a key; longer values are ignored. */
+export function filterValueMaxLength(key: string): number {
+  return ['agenda_scope', 'related_scope', 'budget_location'].includes(key)
+    ? 16_384
+    : key === 'keyword'
+      ? 512
+      : 256
+}
+
 /**
  * Parse Next.js searchParams into a FilterOptions object.
  */
@@ -135,16 +144,9 @@ export function parseSearchParams(
   const getString = (key: string): string | undefined => {
     const value = searchParams[key]
     const scalar = Array.isArray(value) ? value[0] : value
-    const maxLength = [
-      'agenda_scope',
-      'related_scope',
-      'budget_location',
-    ].includes(key)
-      ? 16_384
-      : key === 'keyword'
-        ? 512
-        : 256
-    return scalar && scalar.length <= maxLength ? scalar : undefined
+    return scalar && scalar.length <= filterValueMaxLength(key)
+      ? scalar
+      : undefined
   }
   const pagination = normalizePagination(getString('page'), getString('limit'))
   const keyword = getString('keyword')

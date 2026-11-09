@@ -1,10 +1,21 @@
-# Public data and agent documentation:
-# https://mandates.un.org/llms.txt
-# https://mandates.un.org/openapi.json
+# Guide for AI assistants: https://mandates.un.org/llms.txt
+# Document texts: https://digitallibrary.un.org
+
 User-agent: *
 Allow: /
-Allow: /api/v1/
+Allow: /llms.txt
+Allow: /api/v1/documents
 Disallow: /api/
-Disallow: /api/v1/exports
+Disallow: /mandate/*.json$
+
+User-agent: GPTBot
+User-agent: ClaudeBot
+User-agent: CCBot
+User-agent: Google-Extended
+User-agent: Bytespider
+User-agent: Applebot-Extended
+User-agent: meta-externalagent
+Disallow: /mandate/
+Disallow: /api/
 
 Sitemap: https://mandates.un.org/sitemap.xml

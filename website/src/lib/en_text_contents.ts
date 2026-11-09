@@ -11,6 +11,11 @@ export const explainerTexts = {
     mandate: '{symbol} — Mandate Registry',
     about: 'About the Mandate Registry',
   },
+  siteMenu: {
+    label: 'Menu',
+    about: 'About',
+    technicalBriefing: 'Technical briefing',
+  },
   secretariatNavigation: {
     label: 'Secretariat navigation',
     mandateSources: 'Mandate sources',
@@ -145,6 +150,14 @@ export const explainerTexts = {
       'Focal point contacts are designated by their entities via the Mandate Focal Points data entry portal.',
     ],
     infographicAlt: 'How mandate source documents are identified',
+  },
+
+  technicalBriefing: {
+    // Page heading, metadata title and the player's accessible title.
+    title: 'Technical Briefing on the Mandate Registry 2026',
+    introduction:
+      'A recorded briefing on how to use the Mandate Registry, prepared as part of the UN80 Initiative. It walks through specific examples of what the registry can be used for and how to get the most from it.',
+    watchOnYouTube: 'Watch on YouTube',
   },
 
   // /system page hero
@@ -291,6 +304,13 @@ export const explainerTexts = {
     },
   },
 
+  // Download menu under the document table
+  exportMenu: {
+    // {limit} is replaced with the export limit, e.g. 1,000.
+    overLimit:
+      'Downloads are limited to {limit} documents. Narrow the filters to download this list.',
+  },
+
   // Mandate List
   mandateList: {
     sectionTitle: 'Document List',
@@ -398,7 +418,7 @@ export const explainerTexts = {
     sgReportsUnion: {
       title: 'Which reports were submitted under this mandate?',
       disclaimer:
-        'Identified automatically from two sources: what each report states in its opening pages, and the metadata in each report’s UN Digital Library catalogue record. Reports cover the recorded versions of this mandate; each row lists the specific mandate documents linked by those sources.',
+        'Identified automatically from each report and its UN Digital Library record. Each row shows the mandate documents it was linked to.',
       statedInReport: 'Stated in the report',
       perCatalogueNotes: 'Per catalogue notes',
       notAccepted:
