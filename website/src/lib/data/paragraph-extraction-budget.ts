@@ -26,6 +26,14 @@ export interface ExtractionBudgetElement {
   text: string
 }
 
+/** Freeze existing recurrence metadata when separating extraction evaluation sets. */
+export function getExtractionExperimentSeries() {
+  return queryMany<{ symbol: string; metadata: Record<string, unknown> }>(
+    `SELECT document_symbol AS symbol, to_jsonb(rs) AS metadata
+     FROM digitallibrary.resolution_series rs`
+  )
+}
+
 export const extractionBudgetDocumentsSql = `
 WITH registry AS (
   SELECT upper(regexp_replace(d.ppb_full_document_symbol, '\\s', '', 'g')) AS symbol,

@@ -1,0 +1,8 @@
+{
+  "cases_sha256": "2cee09c097b1509ba50986e7b49b43c11829c57e10c0e4cd816b77bd0f76ed49",
+  "count": 53,
+  "selection": "two seeded eligible operative paragraphs per document, 12\u2013250 words; exclude >0.7 prior-pilot word-5gram Jaccard",
+  "seed": "source-cases-v1",
+  "with_development_cases_sha256": "d4688a867b301e4d7f075dc192b23f88e70136ed2d44132e6dfdaadb13fa8953",
+  "development_cases": 8
+}

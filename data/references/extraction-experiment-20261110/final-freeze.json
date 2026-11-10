@@ -1,0 +1,12 @@
+{
+  "frozen_at": "2026-11-10T19:35:40.547607+00:00",
+  "versions": {
+    "baseline": "31c9a1d6f18dfcaf15a599b62612cb0bc514595693b6327a8249721698318d4d",
+    "v4": "8d3b43a20f3cdec5b6ee64694154d54784d092fe30cf29c0ea89bafdd6718efe"
+  },
+  "cases_sha256": "d4688a867b301e4d7f075dc192b23f88e70136ed2d44132e6dfdaadb13fa8953",
+  "final_test_predictions_opened": false,
+  "policy": "No further prompt/schema revisions after opening final-test sources or predictions; all test models use same source and frozen candidate.",
+  "test_gold_sha256": "f9ff1dbaa1c28ed8675781a3f421f05ab2df3e00008d0bca6d79592153586612",
+  "test_gold_frozen_at": "2026-11-10T19:36:16.212460+00:00"
+}

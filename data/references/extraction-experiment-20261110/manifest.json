@@ -1,0 +1,54 @@
+{
+  "created_at": "2026-11-10T19:42:12.261884+00:00",
+  "scope": {
+    "registryOnly": true,
+    "ppbVersion": "ppb2027",
+    "citedOrigin": "programme budget only (doc_type=ppb)",
+    "rollingStart": "2021-11-09",
+    "asOf": "2026-11-09",
+    "population": "readable English registry fulltexts: recent documents of all types OR PPB2027-cited resolutions of any age",
+    "resolutionDefinition": "public.unified_documents.ppb_type = 'Resolutions'",
+    "paragraphType": "operative",
+    "targetRule": "type='paragraph' AND paragraph_type='operative'"
+  },
+  "calls": 372,
+  "models": {
+    "gpt-6-luna": 253,
+    "gpt-6.1-sol": 119
+  },
+  "max_usd": 25,
+  "uncached_list_estimate_usd": 1.654772,
+  "conservative_charge_bound_usd": 2.0684649999999998,
+  "pending_requests": 0,
+  "cases_by_split": {
+    "validation": 24,
+    "test": 29,
+    "development": 8
+  },
+  "documents_by_split": {
+    "development": 8,
+    "validation": 12,
+    "test": 15
+  },
+  "source_pool_documents": 28,
+  "excluded_prior_documents": 488,
+  "excluded_series": 380,
+  "final_outputs": 203,
+  "reference_policy": "Single source-only annotation, candidate frozen before test sources/labels opened; 4 policy-ambiguous cases predefined; primary scores unchanged after test outputs.",
+  "not_representative": "Seeded two short/medium operative paragraphs per disjoint resolution series; all selected recent/cited registry resolutions, not full documents, no non-resolution or long-paragraph coverage.",
+  "hashes": {
+    "results-final.jsonl": "d86ba895d003ecfc3db943428534f3a4281e641b8e0e0a9aa7b79fb72ef527f5",
+    "gold-validation-original.json": "af100209efb2afbce350547f2145385ce57aee91ab0ecd44aaed3d16469143a5",
+    "baseline-developer.txt": "77f93556e02b99b54a8b49767664ee1fbbc5d7ad76cd28a6265614d9605cd1c0",
+    "ledger.json": "84310e40cb860a29fa65136c99e19be8e65009ada1f04614e1160f730c5bc16b",
+    "cases.json": "d4688a867b301e4d7f075dc192b23f88e70136ed2d44132e6dfdaadb13fa8953",
+    "baseline-schema.json": "a2bcc1230e7ad5cb161db70cecdc22f99e6bd4a9d690ef5b3d7af471fbbfd25b",
+    "gold-test.json": "f9ff1dbaa1c28ed8675781a3f421f05ab2df3e00008d0bca6d79592153586612",
+    "scores.json": "159d4f77070358307d16193900e6c44416f2a31e0da3d5b20ba2d5d7fca92861",
+    "results-development.jsonl": "814989f44fd75c24a528aa54b0a2c245ad60688adcbd297cb1948a594d8deb52",
+    "source-freeze.json": "af136071ce946fe4364c9d637ae32400574e657317856c0ca2f33fd382e542a4",
+    "pool.json": "3664b753c5513722472ee86fb12145a1232f5532e67a66d6e465a4ca91d72d51",
+    "gold-validation.json": "399a4af31825e19f72d23c8b048f0b2f3c2988b8eea5cc8750062289d293229c",
+    "final-freeze.json": "732f789ff6405e8c80477a3aaa7c2283f1f57b411b3013de5ee109e2dcb567a7"
+  }
+}

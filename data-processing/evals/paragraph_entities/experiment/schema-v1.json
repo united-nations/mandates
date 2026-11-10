@@ -1,0 +1,259 @@
+{
+  "$defs": {
+    "Actor": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "entity_type": {
+          "enum": [
+            "un_organs",
+            "un_secretariat",
+            "un_system",
+            "member_states",
+            "other"
+          ],
+          "title": "Entity Type",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "implementer",
+            "decision_maker"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "basis": {
+          "enum": [
+            "explicit",
+            "inherited",
+            "issuing_body"
+          ],
+          "title": "Basis",
+          "type": "string"
+        },
+        "evidence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Evidence"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "entity_type",
+        "role",
+        "basis",
+        "evidence"
+      ],
+      "title": "Actor",
+      "type": "object"
+    },
+    "Evidence": {
+      "additionalProperties": false,
+      "properties": {
+        "paragraph_ref": {
+          "title": "Paragraph Ref",
+          "type": "string"
+        },
+        "quote": {
+          "title": "Quote",
+          "type": "string"
+        },
+        "occurrence": {
+          "minimum": 0,
+          "title": "Occurrence",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "paragraph_ref",
+        "quote",
+        "occurrence"
+      ],
+      "title": "Evidence",
+      "type": "object"
+    },
+    "Omission": {
+      "additionalProperties": false,
+      "properties": {
+        "reason": {
+          "enum": [
+            "historical_reference",
+            "acknowledgment",
+            "general_intent",
+            "insufficient_source"
+          ],
+          "title": "Reason",
+          "type": "string"
+        },
+        "evidence": {
+          "$ref": "#/$defs/Evidence"
+        }
+      },
+      "required": [
+        "reason",
+        "evidence"
+      ],
+      "title": "Omission",
+      "type": "object"
+    },
+    "Qualification": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "condition",
+            "deadline",
+            "frequency",
+            "duration",
+            "scope"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "evidence": {
+          "$ref": "#/$defs/Evidence"
+        }
+      },
+      "required": [
+        "kind",
+        "evidence"
+      ],
+      "title": "Qualification",
+      "type": "object"
+    },
+    "Task": {
+      "additionalProperties": false,
+      "properties": {
+        "summary": {
+          "title": "Summary",
+          "type": "string"
+        },
+        "family": {
+          "enum": [
+            "substantive",
+            "reporting",
+            "deliberation",
+            "institutional",
+            "resources",
+            "mandate_review"
+          ],
+          "title": "Family",
+          "type": "string"
+        },
+        "subtype": {
+          "enum": [
+            "policy_normative_action",
+            "technical_assistance",
+            "capacity_building",
+            "operational_delivery",
+            "humanitarian_delivery",
+            "information_knowledge_work",
+            "written_report",
+            "oral_briefing",
+            "update",
+            "assessment",
+            "recommendations",
+            "meeting",
+            "dialogue_consultation",
+            "conference",
+            "agenda_consideration",
+            "participation",
+            "establishment",
+            "renewal_extension",
+            "amendment",
+            "termination",
+            "appointment_membership",
+            "funding",
+            "personnel",
+            "facilities_infrastructure",
+            "mandate_review",
+            "evaluation",
+            "consolidation"
+          ],
+          "title": "Subtype",
+          "type": "string"
+        },
+        "statement_kind": {
+          "enum": [
+            "assignment",
+            "adopted_decision"
+          ],
+          "title": "Statement Kind",
+          "type": "string"
+        },
+        "evidence": {
+          "$ref": "#/$defs/Evidence"
+        },
+        "highlight": {
+          "$ref": "#/$defs/Evidence"
+        },
+        "actors": {
+          "items": {
+            "$ref": "#/$defs/Actor"
+          },
+          "title": "Actors",
+          "type": "array"
+        },
+        "qualifications": {
+          "items": {
+            "$ref": "#/$defs/Qualification"
+          },
+          "title": "Qualifications",
+          "type": "array"
+        }
+      },
+      "required": [
+        "summary",
+        "family",
+        "subtype",
+        "statement_kind",
+        "evidence",
+        "highlight",
+        "actors",
+        "qualifications"
+      ],
+      "title": "Task",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "tasks": {
+      "items": {
+        "$ref": "#/$defs/Task"
+      },
+      "title": "Tasks",
+      "type": "array"
+    },
+    "omissions": {
+      "items": {
+        "$ref": "#/$defs/Omission"
+      },
+      "title": "Omissions",
+      "type": "array"
+    },
+    "uncertainties": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Uncertainties",
+      "type": "array"
+    }
+  },
+  "required": [
+    "tasks",
+    "omissions",
+    "uncertainties"
+  ],
+  "title": "Extraction",
+  "type": "object"
+}

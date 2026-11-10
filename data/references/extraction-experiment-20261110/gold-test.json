@@ -1,0 +1,402 @@
+{
+  "t07": {
+    "required_families": [],
+    "optional_families": [],
+    "implementer_groups": [],
+    "min_tasks": 0,
+    "max_tasks": 0,
+    "note": "Reaffirms HRC historical request, no fresh GA assignment under the frozen new-task policy; this is a genuine scope-policy boundary.",
+    "policy_ambiguous": true
+  },
+  "t08": {
+    "required_families": [
+      "deliberation"
+    ],
+    "optional_families": [],
+    "implementer_groups": [
+      "un_organs"
+    ],
+    "min_tasks": 1,
+    "max_tasks": 1,
+    "note": "HRC invited to follow up panel discussion; 2015 panel historical, not new task."
+  },
+  "t09": {
+    "required_families": [],
+    "optional_families": [],
+    "implementer_groups": [],
+    "min_tasks": 0,
+    "max_tasks": 0,
+    "note": "Welcomes Japans existing initiative; no new assignment."
+  },
+  "t10": {
+    "required_families": [
+      "substantive",
+      "reporting"
+    ],
+    "optional_families": [],
+    "implementer_groups": [
+      "member_states",
+      "un_secretariat"
+    ],
+    "min_tasks": 2,
+    "max_tasks": 2,
+    "note": "States supply suggestions; SG includes them in forthcoming report; Commission recipient not assignee."
+  },
+  "t11": {
+    "required_families": [],
+    "optional_families": [],
+    "implementer_groups": [],
+    "min_tasks": 0,
+    "max_tasks": 0,
+    "note": "Stresses importance of Constitution and governance, no concrete assignment."
+  },
+  "t12": {
+    "required_families": [
+      "reporting"
+    ],
+    "optional_families": [
+      "substantive",
+      "deliberation"
+    ],
+    "implementer_groups": [
+      "un_organs"
+    ],
+    "min_tasks": 1,
+    "max_tasks": 2,
+    "note": "Special Committee examine and report on Saint Helena; examination may standalone or report preparatory work."
+  },
+  "t13": {
+    "required_families": [],
+    "optional_families": [],
+    "implementer_groups": [],
+    "min_tasks": 0,
+    "max_tasks": 0,
+    "note": "General call for lasting peace without specific implementer/result is general intent; current vs renewed statement boundary recorded.",
+    "policy_ambiguous": true
+  },
+  "t14": {
+    "required_families": [
+      "substantive"
+    ],
+    "optional_families": [],
+    "implementer_groups": [],
+    "min_tasks": 1,
+    "max_tasks": 3,
+    "note": "Concrete exchange/release/return demanded anew; parties implied but not explicitly assigned in available source. Do not invent implementing entity; task count1\u20133 allowed.",
+    "optional_implementer_groups": [
+      "member_states",
+      "other"
+    ]
+  },
+  "t21": {
+    "required_families": [
+      "reporting"
+    ],
+    "optional_families": [
+      "substantive"
+    ],
+    "implementer_groups": [
+      "un_secretariat"
+    ],
+    "min_tasks": 1,
+    "max_tasks": 1,
+    "note": "OHCHR child is required overview inside parent comprehensive report, not state implementation assignment; preserve reporting relationship. information_knowledge_work allowed as alternative.",
+    "alternative_family_sets": [
+      [
+        "reporting"
+      ],
+      [
+        "substantive"
+      ]
+    ]
+  },
+  "t22": {
+    "required_families": [
+      "substantive"
+    ],
+    "optional_families": [],
+    "implementer_groups": [
+      "member_states"
+    ],
+    "min_tasks": 1,
+    "max_tasks": 2,
+    "note": "States prevent discrimination and strengthen disability-inclusive responses; service types are methods."
+  },
+  "t23": {
+    "required_families": [
+      "resources",
+      "substantive"
+    ],
+    "optional_families": [],
+    "implementer_groups": [
+      "member_states"
+    ],
+    "min_tasks": 1,
+    "max_tasks": 2,
+    "note": "States ensure judiciary resources/capacity and continuity/due process. Single operational-delivery task may merge means with continuity.",
+    "alternative_family_sets": [
+      [
+        "substantive"
+      ],
+      [
+        "resources"
+      ]
+    ]
+  },
+  "t24": {
+    "required_families": [
+      "substantive"
+    ],
+    "optional_families": [],
+    "implementer_groups": [
+      "member_states"
+    ],
+    "min_tasks": 1,
+    "max_tasks": 2,
+    "note": "State investigations and accountability; lawyers beneficiaries, no task in expression of concern."
+  },
+  "t25": {
+    "required_families": [
+      "reporting"
+    ],
+    "optional_families": [],
+    "implementer_groups": [
+      "un_secretariat"
+    ],
+    "min_tasks": 1,
+    "max_tasks": 1,
+    "note": "High Commissioner report to HRC60; voluntary submissions source/input not separate assignee."
+  },
+  "t26": {
+    "required_families": [
+      "substantive"
+    ],
+    "optional_families": [],
+    "implementer_groups": [
+      "member_states",
+      "other"
+    ],
+    "min_tasks": 1,
+    "max_tasks": 1,
+    "note": "States and other stakeholders explicitly encouraged to advance implementation; not pure general-intent absence because directed assignment."
+  },
+  "t27": {
+    "required_families": [
+      "substantive"
+    ],
+    "optional_families": [],
+    "implementer_groups": [
+      "un_secretariat"
+    ],
+    "min_tasks": 1,
+    "max_tasks": 1,
+    "note": "OHCHR support States2030 efforts; cooperation stakeholders not separately assigned."
+  },
+  "t34": {
+    "required_families": [],
+    "optional_families": [],
+    "implementer_groups": [],
+    "min_tasks": 0,
+    "max_tasks": 0,
+    "note": "Acknowledges data availability only."
+  },
+  "t35": {
+    "required_families": [
+      "institutional"
+    ],
+    "optional_families": [],
+    "implementer_groups": [],
+    "min_tasks": 1,
+    "max_tasks": 2,
+    "note": "ECOSOC increases commission membership. Existing election arrangement qualifies new membership; issuer deciding, not implicit implementing. Election implementation may separately extracted ECOSOC if explicit.",
+    "optional_implementer_groups": [
+      "un_organs"
+    ]
+  },
+  "t36": {
+    "required_families": [
+      "substantive"
+    ],
+    "optional_families": [
+      "resources"
+    ],
+    "implementer_groups": [
+      "member_states",
+      "un_organs",
+      "other"
+    ],
+    "min_tasks": 1,
+    "max_tasks": 1,
+    "note": "Continued humanitarian/economic assistance urged to existing donor list; UN bodies broad includes UN-system allowed. Funding alone not specified.",
+    "optional_implementer_groups": [
+      "un_system"
+    ],
+    "alternative_implementer_group_sets": [
+      [
+        "member_states",
+        "un_system",
+        "other"
+      ],
+      [
+        "member_states",
+        "un_organs",
+        "un_system",
+        "other"
+      ]
+    ]
+  },
+  "t37": {
+    "required_families": [
+      "substantive"
+    ],
+    "optional_families": [],
+    "implementer_groups": [
+      "other"
+    ],
+    "min_tasks": 1,
+    "max_tasks": 2,
+    "note": "All parties (potential state and nonstate) respect IHL/refrain violence; other collective undifferentiated."
+  },
+  "t38": {
+    "required_families": [
+      "substantive"
+    ],
+    "optional_families": [
+      "reporting",
+      "deliberation"
+    ],
+    "implementer_groups": [
+      "un_organs"
+    ],
+    "min_tasks": 1,
+    "max_tasks": 3,
+    "note": "Forum platform regional progress review and peer learning, not review of a mandate; relative explicit parent identifies Forum."
+  },
+  "t39": {
+    "required_families": [],
+    "optional_families": [],
+    "implementer_groups": [],
+    "min_tasks": 0,
+    "max_tasks": 0,
+    "note": "Could receive inputs is procedural permission/possibility, not current task or obligation; genuine scope-policy ambiguity.",
+    "policy_ambiguous": true
+  },
+  "t40": {
+    "required_families": [
+      "substantive"
+    ],
+    "optional_families": [],
+    "implementer_groups": [
+      "member_states"
+    ],
+    "min_tasks": 1,
+    "max_tasks": 2,
+    "note": "States not yet integrated crime/children into rule of law tasked integrate and develop policy; actor eligibility is qualification."
+  },
+  "t41": {
+    "required_families": [
+      "substantive"
+    ],
+    "optional_families": [],
+    "implementer_groups": [
+      "member_states"
+    ],
+    "min_tasks": 1,
+    "max_tasks": 2,
+    "note": "State information sharing and tool use; Interpol platform, not implementer."
+  },
+  "t48": {
+    "required_families": [
+      "resources"
+    ],
+    "optional_families": [
+      "substantive"
+    ],
+    "implementer_groups": [
+      "un_secretariat"
+    ],
+    "min_tasks": 1,
+    "max_tasks": 1,
+    "note": "Secretariat provides/maintains expertise for1540 Committee, recipient not assignee; operational support alternative acceptable.",
+    "alternative_family_sets": [
+      [
+        "resources"
+      ],
+      [
+        "substantive"
+      ]
+    ]
+  },
+  "t49": {
+    "required_families": [],
+    "optional_families": [],
+    "implementer_groups": [],
+    "min_tasks": 0,
+    "max_tasks": 0,
+    "note": "Supports existing Committee efforts, no new request. Concrete continued-activity endorsement is genuine scope ambiguity.",
+    "policy_ambiguous": true
+  },
+  "t50": {
+    "required_families": [
+      "substantive"
+    ],
+    "optional_families": [
+      "reporting"
+    ],
+    "implementer_groups": [
+      "un_organs"
+    ],
+    "min_tasks": 1,
+    "max_tasks": 3,
+    "note": "Panel shall carry out credible assessments/analysis/recommendations. Express shall assignment remains operative despite underscores and historical mandate reference.",
+    "alternative_family_sets": [
+      [
+        "substantive"
+      ],
+      [
+        "reporting"
+      ],
+      [
+        "substantive",
+        "reporting"
+      ]
+    ]
+  },
+  "t51": {
+    "required_families": [
+      "reporting",
+      "deliberation"
+    ],
+    "optional_families": [],
+    "implementer_groups": [
+      "un_organs"
+    ],
+    "min_tasks": 2,
+    "max_tasks": 3,
+    "note": "Panel work programme and updates; Committee regular discussions independent deliberation; one or two reporting tasks acceptable."
+  },
+  "t52": {
+    "required_families": [
+      "reporting"
+    ],
+    "optional_families": [],
+    "implementer_groups": [
+      "member_states"
+    ],
+    "min_tasks": 1,
+    "max_tasks": 2,
+    "note": "States report interdictions/proceedings; current calls even historical obligations restated."
+  },
+  "t53": {
+    "required_families": [
+      "reporting"
+    ],
+    "optional_families": [],
+    "implementer_groups": [
+      "un_organs"
+    ],
+    "min_tasks": 1,
+    "max_tasks": 1,
+    "note": "MonitoringTeam quarterly oral briefing; Committee recipient, MemberStates mentioned only."
+  }
+}

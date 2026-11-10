@@ -1,0 +1,6893 @@
+[
+  {
+    "metrics": {
+      "valid": 24,
+      "task_presence": 24,
+      "families": 24,
+      "implementer_groups": 24,
+      "task_count": 24,
+      "all_core": 24,
+      "unambiguous_cases": 24,
+      "unambiguous_all_core": 24,
+      "version": "baseline",
+      "condition": "luna-medium",
+      "split": "validation",
+      "cases": 24,
+      "total_cost_usd": 0.0248471,
+      "display_words_median": 21
+    },
+    "cases": [
+      {
+        "id": "v01",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          79
+        ],
+        "cost_usd": 0.0012168
+      },
+      {
+        "id": "v02",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "deliberation"
+        ],
+        "implementer_groups_actual": [],
+        "display_words": [
+          22
+        ],
+        "cost_usd": 0.0007666
+      },
+      {
+        "id": "v03",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          22
+        ],
+        "cost_usd": 0.0008859000000000001
+      },
+      {
+        "id": "v04",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "resources"
+        ],
+        "implementer_groups_actual": [],
+        "display_words": [
+          61
+        ],
+        "cost_usd": 0.0010945999999999998
+      },
+      {
+        "id": "v05",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states",
+          "other",
+          "un_system"
+        ],
+        "display_words": [
+          109
+        ],
+        "cost_usd": 0.0014162
+      },
+      {
+        "id": "v06",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          39
+        ],
+        "cost_usd": 0.0010444
+      },
+      {
+        "id": "v15",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "deliberation"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          15
+        ],
+        "cost_usd": 0.0008676000000000001
+      },
+      {
+        "id": "v16",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "institutional",
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          17,
+          14
+        ],
+        "cost_usd": 0.0015157
+      },
+      {
+        "id": "v17",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "deliberation",
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          27,
+          7
+        ],
+        "cost_usd": 0.0012655
+      },
+      {
+        "id": "v18",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          13
+        ],
+        "cost_usd": 0.0008138
+      },
+      {
+        "id": "v19",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.0007667
+      },
+      {
+        "id": "v20",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "institutional",
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          21,
+          36
+        ],
+        "cost_usd": 0.0010494
+      },
+      {
+        "id": "v28",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.0008052000000000001
+      },
+      {
+        "id": "v29",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.0007205
+      },
+      {
+        "id": "v30",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.0009092000000000001
+      },
+      {
+        "id": "v31",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          62
+        ],
+        "cost_usd": 0.0008314
+      },
+      {
+        "id": "v32",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          17
+        ],
+        "cost_usd": 0.0008524000000000001
+      },
+      {
+        "id": "v33",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          90
+        ],
+        "cost_usd": 0.0010108
+      },
+      {
+        "id": "v42",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [],
+        "display_words": [
+          43
+        ],
+        "cost_usd": 0.0013154
+      },
+      {
+        "id": "v43",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          14,
+          12
+        ],
+        "cost_usd": 0.0009563000000000001
+      },
+      {
+        "id": "v44",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          6,
+          56
+        ],
+        "cost_usd": 0.0012045
+      },
+      {
+        "id": "v45",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          36,
+          17
+        ],
+        "cost_usd": 0.001074
+      },
+      {
+        "id": "v46",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          14,
+          15
+        ],
+        "cost_usd": 0.0009105
+      },
+      {
+        "id": "v47",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          17,
+          25,
+          14,
+          16
+        ],
+        "cost_usd": 0.0015537
+      }
+    ]
+  },
+  {
+    "metrics": {
+      "valid": 29,
+      "task_presence": 27,
+      "families": 27,
+      "implementer_groups": 24,
+      "task_count": 26,
+      "all_core": 23,
+      "unambiguous_cases": 25,
+      "unambiguous_all_core": 21,
+      "version": "baseline",
+      "condition": "luna-medium",
+      "split": "test",
+      "cases": 29,
+      "total_cost_usd": 0.030548600000000002,
+      "display_words_median": 27
+    },
+    "cases": [
+      {
+        "id": "t07",
+        "valid": true,
+        "task_presence": false,
+        "families": false,
+        "implementer_groups": false,
+        "task_count": false,
+        "all_core": false,
+        "task_count_actual": 1,
+        "families_actual": [
+          "deliberation"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          23
+        ],
+        "cost_usd": 0.0008901
+      },
+      {
+        "id": "t08",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "deliberation"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          16
+        ],
+        "cost_usd": 0.0010044000000000001
+      },
+      {
+        "id": "t09",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.0009243000000000001
+      },
+      {
+        "id": "t10",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "reporting",
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states",
+          "un_secretariat"
+        ],
+        "display_words": [
+          26,
+          39
+        ],
+        "cost_usd": 0.0011835
+      },
+      {
+        "id": "t11",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.0006673000000000001
+      },
+      {
+        "id": "t12",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "deliberation",
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          13,
+          19
+        ],
+        "cost_usd": 0.0011425
+      },
+      {
+        "id": "t13",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.0006843000000000001
+      },
+      {
+        "id": "t14",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [],
+        "display_words": [
+          39
+        ],
+        "cost_usd": 0.0010249
+      },
+      {
+        "id": "t21",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          32,
+          17
+        ],
+        "cost_usd": 0.0010502
+      },
+      {
+        "id": "t22",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          27,
+          38
+        ],
+        "cost_usd": 0.0009236
+      },
+      {
+        "id": "t23",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "resources"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          62
+        ],
+        "cost_usd": 0.0011933000000000002
+      },
+      {
+        "id": "t24",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          27
+        ],
+        "cost_usd": 0.0008232000000000001
+      },
+      {
+        "id": "t25",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          64
+        ],
+        "cost_usd": 0.0010214
+      },
+      {
+        "id": "t26",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": false,
+        "task_count": true,
+        "all_core": false,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "None",
+          "member_states"
+        ],
+        "display_words": [
+          27
+        ],
+        "cost_usd": 0.0008905
+      },
+      {
+        "id": "t27",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          21
+        ],
+        "cost_usd": 0.000921
+      },
+      {
+        "id": "t34",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.0006452000000000001
+      },
+      {
+        "id": "t35",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "institutional"
+        ],
+        "implementer_groups_actual": [],
+        "display_words": [
+          16
+        ],
+        "cost_usd": 0.0008859000000000001
+      },
+      {
+        "id": "t36",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": false,
+        "task_count": true,
+        "all_core": false,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [],
+        "display_words": [
+          28
+        ],
+        "cost_usd": 0.0013509000000000001
+      },
+      {
+        "id": "t37",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": false,
+        "task_count": true,
+        "all_core": false,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "None"
+        ],
+        "display_words": [
+          42
+        ],
+        "cost_usd": 0.0008999000000000001
+      },
+      {
+        "id": "t38",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": false,
+        "all_core": false,
+        "task_count_actual": 4,
+        "families_actual": [
+          "deliberation",
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          2,
+          20,
+          7,
+          22
+        ],
+        "cost_usd": 0.0016802
+      },
+      {
+        "id": "t39",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.0010843000000000003
+      },
+      {
+        "id": "t40",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          23,
+          89
+        ],
+        "cost_usd": 0.0011032000000000001
+      },
+      {
+        "id": "t41",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          28,
+          31
+        ],
+        "cost_usd": 0.0011525
+      },
+      {
+        "id": "t48",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "resources"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          10
+        ],
+        "cost_usd": 0.0007817000000000001
+      },
+      {
+        "id": "t49",
+        "valid": true,
+        "task_presence": false,
+        "families": false,
+        "implementer_groups": false,
+        "task_count": false,
+        "all_core": false,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          35
+        ],
+        "cost_usd": 0.0012613000000000001
+      },
+      {
+        "id": "t50",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          40
+        ],
+        "cost_usd": 0.0011909000000000002
+      },
+      {
+        "id": "t51",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 3,
+        "families_actual": [
+          "deliberation",
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          24,
+          13,
+          10,
+          19
+        ],
+        "cost_usd": 0.0019736
+      },
+      {
+        "id": "t52",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          47,
+          30
+        ],
+        "cost_usd": 0.0011625
+      },
+      {
+        "id": "t53",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          60
+        ],
+        "cost_usd": 0.001032
+      }
+    ]
+  },
+  {
+    "metrics": {
+      "valid": 23,
+      "task_presence": 23,
+      "families": 23,
+      "implementer_groups": 22,
+      "task_count": 23,
+      "all_core": 22,
+      "unambiguous_cases": 24,
+      "unambiguous_all_core": 22,
+      "version": "v1",
+      "condition": "luna-medium",
+      "split": "validation",
+      "cases": 24,
+      "total_cost_usd": 0.01414,
+      "display_words_median": 8
+    },
+    "cases": [
+      {
+        "id": "v01",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          13
+        ],
+        "cost_usd": 0.0005534
+      },
+      {
+        "id": "v02",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "deliberation"
+        ],
+        "implementer_groups_actual": [],
+        "display_words": [
+          10
+        ],
+        "cost_usd": 0.00037720000000000006
+      },
+      {
+        "id": "v03",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          3
+        ],
+        "cost_usd": 0.0004585
+      },
+      {
+        "id": "v04",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "resources"
+        ],
+        "implementer_groups_actual": [],
+        "display_words": [
+          9
+        ],
+        "cost_usd": 0.00044670000000000007
+      },
+      {
+        "id": "v05",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states",
+          "other",
+          "un_system"
+        ],
+        "display_words": [
+          4
+        ],
+        "cost_usd": 0.0008862999999999999
+      },
+      {
+        "id": "v06",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          11
+        ],
+        "cost_usd": 0.0004785
+      },
+      {
+        "id": "v15",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "deliberation"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          3
+        ],
+        "cost_usd": 0.00035970000000000007
+      },
+      {
+        "id": "v16",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "institutional",
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          3,
+          10
+        ],
+        "cost_usd": 0.0010352999999999998
+      },
+      {
+        "id": "v17",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "deliberation",
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          8,
+          3
+        ],
+        "cost_usd": 0.0005881
+      },
+      {
+        "id": "v18",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          13
+        ],
+        "cost_usd": 0.0006319
+      },
+      {
+        "id": "v19",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.0002403
+      },
+      {
+        "id": "v20",
+        "valid": false,
+        "task_presence": false,
+        "families": false,
+        "implementer_groups": false,
+        "task_count": false,
+        "all_core": false,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.0009515
+      },
+      {
+        "id": "v28",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.00028230000000000003
+      },
+      {
+        "id": "v29",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.00024960000000000005
+      },
+      {
+        "id": "v30",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.0003423
+      },
+      {
+        "id": "v31",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          12
+        ],
+        "cost_usd": 0.0004495
+      },
+      {
+        "id": "v32",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          6
+        ],
+        "cost_usd": 0.0003445
+      },
+      {
+        "id": "v33",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          8
+        ],
+        "cost_usd": 0.0008694
+      },
+      {
+        "id": "v42",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [],
+        "display_words": [
+          9
+        ],
+        "cost_usd": 0.0007475
+      },
+      {
+        "id": "v43",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          8
+        ],
+        "cost_usd": 0.0006339
+      },
+      {
+        "id": "v44",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": false,
+        "task_count": true,
+        "all_core": false,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "other"
+        ],
+        "display_words": [
+          3
+        ],
+        "cost_usd": 0.0008846
+      },
+      {
+        "id": "v45",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          9,
+          6
+        ],
+        "cost_usd": 0.0009881
+      },
+      {
+        "id": "v46",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          5
+        ],
+        "cost_usd": 0.00044560000000000004
+      },
+      {
+        "id": "v47",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          12
+        ],
+        "cost_usd": 0.0008952999999999999
+      }
+    ]
+  },
+  {
+    "metrics": {
+      "valid": 23,
+      "task_presence": 23,
+      "families": 23,
+      "implementer_groups": 21,
+      "task_count": 23,
+      "all_core": 21,
+      "unambiguous_cases": 24,
+      "unambiguous_all_core": 21,
+      "version": "v2",
+      "condition": "luna-medium",
+      "split": "validation",
+      "cases": 24,
+      "total_cost_usd": 0.0152897,
+      "display_words_median": 9
+    },
+    "cases": [
+      {
+        "id": "v01",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          13
+        ],
+        "cost_usd": 0.0006732
+      },
+      {
+        "id": "v02",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "deliberation"
+        ],
+        "implementer_groups_actual": [],
+        "display_words": [
+          6
+        ],
+        "cost_usd": 0.0004375
+      },
+      {
+        "id": "v03",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": false,
+        "task_count": true,
+        "all_core": false,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "other"
+        ],
+        "display_words": [
+          7
+        ],
+        "cost_usd": 0.0004863
+      },
+      {
+        "id": "v04",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "resources"
+        ],
+        "implementer_groups_actual": [],
+        "display_words": [
+          12
+        ],
+        "cost_usd": 0.000565
+      },
+      {
+        "id": "v05",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states",
+          "other",
+          "un_system"
+        ],
+        "display_words": [
+          4
+        ],
+        "cost_usd": 0.0007586
+      },
+      {
+        "id": "v06",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          7
+        ],
+        "cost_usd": 0.0006493
+      },
+      {
+        "id": "v15",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "deliberation"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          3
+        ],
+        "cost_usd": 0.00046
+      },
+      {
+        "id": "v16",
+        "valid": false,
+        "task_presence": false,
+        "families": false,
+        "implementer_groups": false,
+        "task_count": false,
+        "all_core": false,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.0009876
+      },
+      {
+        "id": "v17",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "deliberation",
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          8,
+          3
+        ],
+        "cost_usd": 0.0006709
+      },
+      {
+        "id": "v18",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          10
+        ],
+        "cost_usd": 0.0005247
+      },
+      {
+        "id": "v19",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.00041010000000000005
+      },
+      {
+        "id": "v20",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 3,
+        "families_actual": [
+          "institutional",
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          13,
+          14,
+          10
+        ],
+        "cost_usd": 0.0011137999999999999
+      },
+      {
+        "id": "v28",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.0003501
+      },
+      {
+        "id": "v29",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.0003299
+      },
+      {
+        "id": "v30",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.0003971
+      },
+      {
+        "id": "v31",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          12
+        ],
+        "cost_usd": 0.0005668
+      },
+      {
+        "id": "v32",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          11
+        ],
+        "cost_usd": 0.0005227999999999999
+      },
+      {
+        "id": "v33",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          20
+        ],
+        "cost_usd": 0.0006752
+      },
+      {
+        "id": "v42",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [],
+        "display_words": [
+          9
+        ],
+        "cost_usd": 0.0006133
+      },
+      {
+        "id": "v43",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          8
+        ],
+        "cost_usd": 0.0005747
+      },
+      {
+        "id": "v44",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": false,
+        "task_count": true,
+        "all_core": false,
+        "task_count_actual": 2,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "other"
+        ],
+        "display_words": [
+          6,
+          3
+        ],
+        "cost_usd": 0.0010969
+      },
+      {
+        "id": "v45",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          10,
+          13
+        ],
+        "cost_usd": 0.0009498999999999999
+      },
+      {
+        "id": "v46",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          5
+        ],
+        "cost_usd": 0.0005429
+      },
+      {
+        "id": "v47",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          9
+        ],
+        "cost_usd": 0.0009331000000000001
+      }
+    ]
+  },
+  {
+    "metrics": {
+      "valid": 23,
+      "task_presence": 23,
+      "families": 23,
+      "implementer_groups": 21,
+      "task_count": 23,
+      "all_core": 21,
+      "unambiguous_cases": 24,
+      "unambiguous_all_core": 21,
+      "version": "v3",
+      "condition": "luna-medium",
+      "split": "validation",
+      "cases": 24,
+      "total_cost_usd": 0.0157367,
+      "display_words_median": 9
+    },
+    "cases": [
+      {
+        "id": "v01",
+        "valid": false,
+        "task_presence": false,
+        "families": false,
+        "implementer_groups": false,
+        "task_count": false,
+        "all_core": false,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.0005357000000000001
+      },
+      {
+        "id": "v02",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "deliberation"
+        ],
+        "implementer_groups_actual": [],
+        "display_words": [
+          6
+        ],
+        "cost_usd": 0.000445
+      },
+      {
+        "id": "v03",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": false,
+        "task_count": true,
+        "all_core": false,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "other"
+        ],
+        "display_words": [
+          7
+        ],
+        "cost_usd": 0.0005308
+      },
+      {
+        "id": "v04",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "resources"
+        ],
+        "implementer_groups_actual": [],
+        "display_words": [
+          12
+        ],
+        "cost_usd": 0.0005675
+      },
+      {
+        "id": "v05",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states",
+          "other",
+          "un_system"
+        ],
+        "display_words": [
+          4
+        ],
+        "cost_usd": 0.0009831
+      },
+      {
+        "id": "v06",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          11
+        ],
+        "cost_usd": 0.0005118
+      },
+      {
+        "id": "v15",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "deliberation"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          3
+        ],
+        "cost_usd": 0.000468
+      },
+      {
+        "id": "v16",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "institutional",
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          9,
+          10
+        ],
+        "cost_usd": 0.0011511
+      },
+      {
+        "id": "v17",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "deliberation",
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          9,
+          7
+        ],
+        "cost_usd": 0.0008054
+      },
+      {
+        "id": "v18",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          13
+        ],
+        "cost_usd": 0.0005727000000000001
+      },
+      {
+        "id": "v19",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.00036760000000000004
+      },
+      {
+        "id": "v20",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 3,
+        "families_actual": [
+          "institutional",
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          13,
+          14,
+          9
+        ],
+        "cost_usd": 0.0009973
+      },
+      {
+        "id": "v28",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.00037410000000000004
+      },
+      {
+        "id": "v29",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.00035539999999999997
+      },
+      {
+        "id": "v30",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.0004536
+      },
+      {
+        "id": "v31",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          12
+        ],
+        "cost_usd": 0.0004928
+      },
+      {
+        "id": "v32",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          12
+        ],
+        "cost_usd": 0.0004388
+      },
+      {
+        "id": "v33",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          20
+        ],
+        "cost_usd": 0.0008112000000000001
+      },
+      {
+        "id": "v42",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [],
+        "display_words": [
+          9
+        ],
+        "cost_usd": 0.0007693
+      },
+      {
+        "id": "v43",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          8
+        ],
+        "cost_usd": 0.0007232
+      },
+      {
+        "id": "v44",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": false,
+        "task_count": true,
+        "all_core": false,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "other"
+        ],
+        "display_words": [
+          3
+        ],
+        "cost_usd": 0.0009174000000000001
+      },
+      {
+        "id": "v45",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          13,
+          13
+        ],
+        "cost_usd": 0.0009839
+      },
+      {
+        "id": "v46",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          5
+        ],
+        "cost_usd": 0.0005309
+      },
+      {
+        "id": "v47",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          9
+        ],
+        "cost_usd": 0.0009501000000000001
+      }
+    ]
+  },
+  {
+    "metrics": {
+      "valid": 29,
+      "task_presence": 25,
+      "families": 24,
+      "implementer_groups": 26,
+      "task_count": 24,
+      "all_core": 23,
+      "unambiguous_cases": 25,
+      "unambiguous_all_core": 20,
+      "version": "v4",
+      "condition": "luna-none",
+      "split": "test",
+      "cases": 29,
+      "total_cost_usd": 0.0122186,
+      "display_words_median": 9
+    },
+    "cases": [
+      {
+        "id": "t07",
+        "valid": true,
+        "task_presence": false,
+        "families": false,
+        "implementer_groups": false,
+        "task_count": false,
+        "all_core": false,
+        "task_count_actual": 1,
+        "families_actual": [
+          "deliberation"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          6
+        ],
+        "cost_usd": 0.0004286
+      },
+      {
+        "id": "t08",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "deliberation"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          5
+        ],
+        "cost_usd": 0.00040540000000000004
+      },
+      {
+        "id": "t09",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.0003083
+      },
+      {
+        "id": "t10",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "reporting",
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states",
+          "un_secretariat"
+        ],
+        "display_words": [
+          3,
+          6
+        ],
+        "cost_usd": 0.0005085
+      },
+      {
+        "id": "t11",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.0002998
+      },
+      {
+        "id": "t12",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "reporting",
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          8,
+          6
+        ],
+        "cost_usd": 0.000505
+      },
+      {
+        "id": "t13",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.0002828
+      },
+      {
+        "id": "t14",
+        "valid": true,
+        "task_presence": false,
+        "families": false,
+        "implementer_groups": true,
+        "task_count": false,
+        "all_core": false,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.00029989999999999997
+      },
+      {
+        "id": "t21",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          5
+        ],
+        "cost_usd": 0.00040669999999999997
+      },
+      {
+        "id": "t22",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          17,
+          9
+        ],
+        "cost_usd": 0.0005736000000000001
+      },
+      {
+        "id": "t23",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          9
+        ],
+        "cost_usd": 0.0004083
+      },
+      {
+        "id": "t24",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          14
+        ],
+        "cost_usd": 0.00041569999999999997
+      },
+      {
+        "id": "t25",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          15
+        ],
+        "cost_usd": 0.00046639999999999995
+      },
+      {
+        "id": "t26",
+        "valid": true,
+        "task_presence": false,
+        "families": false,
+        "implementer_groups": false,
+        "task_count": false,
+        "all_core": false,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.000293
+      },
+      {
+        "id": "t27",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          10
+        ],
+        "cost_usd": 0.0003945
+      },
+      {
+        "id": "t34",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.00028270000000000004
+      },
+      {
+        "id": "t35",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "institutional"
+        ],
+        "implementer_groups_actual": [],
+        "display_words": [
+          14
+        ],
+        "cost_usd": 0.00037989999999999996
+      },
+      {
+        "id": "t36",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states",
+          "other",
+          "un_system"
+        ],
+        "display_words": [
+          4
+        ],
+        "cost_usd": 0.0005324
+      },
+      {
+        "id": "t37",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "other"
+        ],
+        "display_words": [
+          16
+        ],
+        "cost_usd": 0.0003934
+      },
+      {
+        "id": "t38",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          6
+        ],
+        "cost_usd": 0.0004212
+      },
+      {
+        "id": "t39",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.00028680000000000003
+      },
+      {
+        "id": "t40",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          13,
+          11
+        ],
+        "cost_usd": 0.0005937000000000001
+      },
+      {
+        "id": "t41",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          8,
+          9
+        ],
+        "cost_usd": 0.0005555
+      },
+      {
+        "id": "t48",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "resources"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          5
+        ],
+        "cost_usd": 0.00034320000000000005
+      },
+      {
+        "id": "t49",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.0003038
+      },
+      {
+        "id": "t50",
+        "valid": true,
+        "task_presence": false,
+        "families": false,
+        "implementer_groups": false,
+        "task_count": false,
+        "all_core": false,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.00031840000000000004
+      },
+      {
+        "id": "t51",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": false,
+        "all_core": false,
+        "task_count_actual": 4,
+        "families_actual": [
+          "deliberation",
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          9,
+          9,
+          8,
+          11
+        ],
+        "cost_usd": 0.0006621
+      },
+      {
+        "id": "t52",
+        "valid": true,
+        "task_presence": true,
+        "families": false,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": false,
+        "task_count_actual": 2,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          8,
+          6
+        ],
+        "cost_usd": 0.0006555
+      },
+      {
+        "id": "t53",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          19
+        ],
+        "cost_usd": 0.0004935
+      }
+    ]
+  },
+  {
+    "metrics": {
+      "valid": 24,
+      "task_presence": 24,
+      "families": 24,
+      "implementer_groups": 24,
+      "task_count": 24,
+      "all_core": 24,
+      "unambiguous_cases": 24,
+      "unambiguous_all_core": 24,
+      "version": "v4",
+      "condition": "luna-medium",
+      "split": "validation",
+      "cases": 24,
+      "total_cost_usd": 0.0160176,
+      "display_words_median": 10
+    },
+    "cases": [
+      {
+        "id": "v01",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          13
+        ],
+        "cost_usd": 0.0005757999999999999
+      },
+      {
+        "id": "v02",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "deliberation"
+        ],
+        "implementer_groups_actual": [],
+        "display_words": [
+          6
+        ],
+        "cost_usd": 0.0004336
+      },
+      {
+        "id": "v03",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          7
+        ],
+        "cost_usd": 0.0005274
+      },
+      {
+        "id": "v04",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "resources"
+        ],
+        "implementer_groups_actual": [],
+        "display_words": [
+          12
+        ],
+        "cost_usd": 0.0005806
+      },
+      {
+        "id": "v05",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states",
+          "other",
+          "un_system"
+        ],
+        "display_words": [
+          4
+        ],
+        "cost_usd": 0.0009857
+      },
+      {
+        "id": "v06",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          11
+        ],
+        "cost_usd": 0.0005769000000000001
+      },
+      {
+        "id": "v15",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "deliberation"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          3
+        ],
+        "cost_usd": 0.0005846
+      },
+      {
+        "id": "v16",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "institutional",
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          9,
+          10
+        ],
+        "cost_usd": 0.0011557
+      },
+      {
+        "id": "v17",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "deliberation",
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          8,
+          2
+        ],
+        "cost_usd": 0.0007735
+      },
+      {
+        "id": "v18",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          10
+        ],
+        "cost_usd": 0.0004603
+      },
+      {
+        "id": "v19",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.00031870000000000005
+      },
+      {
+        "id": "v20",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 3,
+        "families_actual": [
+          "institutional",
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          19,
+          10,
+          10
+        ],
+        "cost_usd": 0.0012929
+      },
+      {
+        "id": "v28",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.00044669999999999996
+      },
+      {
+        "id": "v29",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.0003935
+      },
+      {
+        "id": "v30",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.0004387
+      },
+      {
+        "id": "v31",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          12
+        ],
+        "cost_usd": 0.0004899
+      },
+      {
+        "id": "v32",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          12
+        ],
+        "cost_usd": 0.0004634
+      },
+      {
+        "id": "v33",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          20
+        ],
+        "cost_usd": 0.0009293
+      },
+      {
+        "id": "v42",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "resources"
+        ],
+        "implementer_groups_actual": [],
+        "display_words": [
+          9
+        ],
+        "cost_usd": 0.0007549000000000001
+      },
+      {
+        "id": "v43",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          8
+        ],
+        "cost_usd": 0.0007013
+      },
+      {
+        "id": "v44",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          3
+        ],
+        "cost_usd": 0.000803
+      },
+      {
+        "id": "v45",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          13,
+          13
+        ],
+        "cost_usd": 0.000727
+      },
+      {
+        "id": "v46",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          14
+        ],
+        "cost_usd": 0.0006145
+      },
+      {
+        "id": "v47",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          9
+        ],
+        "cost_usd": 0.0009897
+      }
+    ]
+  },
+  {
+    "metrics": {
+      "valid": 28,
+      "task_presence": 26,
+      "families": 24,
+      "implementer_groups": 25,
+      "task_count": 25,
+      "all_core": 23,
+      "unambiguous_cases": 25,
+      "unambiguous_all_core": 21,
+      "version": "v4",
+      "condition": "luna-medium",
+      "split": "test",
+      "cases": 29,
+      "total_cost_usd": 0.0210031,
+      "display_words_median": 10
+    },
+    "cases": [
+      {
+        "id": "t07",
+        "valid": true,
+        "task_presence": false,
+        "families": false,
+        "implementer_groups": false,
+        "task_count": false,
+        "all_core": false,
+        "task_count_actual": 1,
+        "families_actual": [
+          "deliberation"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          13
+        ],
+        "cost_usd": 0.0006236
+      },
+      {
+        "id": "t08",
+        "valid": true,
+        "task_presence": true,
+        "families": false,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": false,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          10
+        ],
+        "cost_usd": 0.0008644000000000001
+      },
+      {
+        "id": "t09",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.0003613
+      },
+      {
+        "id": "t10",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "reporting",
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states",
+          "un_secretariat"
+        ],
+        "display_words": [
+          18,
+          19
+        ],
+        "cost_usd": 0.000988
+      },
+      {
+        "id": "t11",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.0003433
+      },
+      {
+        "id": "t12",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          12
+        ],
+        "cost_usd": 0.000647
+      },
+      {
+        "id": "t13",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.00032230000000000003
+      },
+      {
+        "id": "t14",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 3,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [],
+        "display_words": [
+          6,
+          6,
+          13
+        ],
+        "cost_usd": 0.0014334
+      },
+      {
+        "id": "t21",
+        "valid": false,
+        "task_presence": false,
+        "families": false,
+        "implementer_groups": false,
+        "task_count": false,
+        "all_core": false,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.0007682
+      },
+      {
+        "id": "t22",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          17,
+          9
+        ],
+        "cost_usd": 0.0008046
+      },
+      {
+        "id": "t23",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          9
+        ],
+        "cost_usd": 0.0007237999999999999
+      },
+      {
+        "id": "t24",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          17
+        ],
+        "cost_usd": 0.0006342
+      },
+      {
+        "id": "t25",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          15
+        ],
+        "cost_usd": 0.0006213999999999999
+      },
+      {
+        "id": "t26",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states",
+          "other"
+        ],
+        "display_words": [
+          17
+        ],
+        "cost_usd": 0.000545
+      },
+      {
+        "id": "t27",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          10
+        ],
+        "cost_usd": 0.000642
+      },
+      {
+        "id": "t34",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.00030570000000000006
+      },
+      {
+        "id": "t35",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "institutional"
+        ],
+        "implementer_groups_actual": [],
+        "display_words": [
+          14
+        ],
+        "cost_usd": 0.0009554
+      },
+      {
+        "id": "t36",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": false,
+        "task_count": true,
+        "all_core": false,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [],
+        "display_words": [
+          6
+        ],
+        "cost_usd": 0.0007624000000000001
+      },
+      {
+        "id": "t37",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "other"
+        ],
+        "display_words": [
+          16
+        ],
+        "cost_usd": 0.0005489000000000001
+      },
+      {
+        "id": "t38",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          15
+        ],
+        "cost_usd": 0.0010157
+      },
+      {
+        "id": "t39",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.0003253
+      },
+      {
+        "id": "t40",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          11
+        ],
+        "cost_usd": 0.0005827
+      },
+      {
+        "id": "t41",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          8,
+          9
+        ],
+        "cost_usd": 0.0008915
+      },
+      {
+        "id": "t48",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "resources"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          5
+        ],
+        "cost_usd": 0.00048020000000000007
+      },
+      {
+        "id": "t49",
+        "valid": true,
+        "task_presence": false,
+        "families": false,
+        "implementer_groups": false,
+        "task_count": false,
+        "all_core": false,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          7
+        ],
+        "cost_usd": 0.0007673
+      },
+      {
+        "id": "t50",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          9
+        ],
+        "cost_usd": 0.0009039000000000001
+      },
+      {
+        "id": "t51",
+        "valid": true,
+        "task_presence": true,
+        "families": false,
+        "implementer_groups": true,
+        "task_count": false,
+        "all_core": false,
+        "task_count_actual": 4,
+        "families_actual": [
+          "deliberation",
+          "reporting",
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          9,
+          9,
+          8,
+          11
+        ],
+        "cost_usd": 0.0011251
+      },
+      {
+        "id": "t52",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          8,
+          6
+        ],
+        "cost_usd": 0.001341
+      },
+      {
+        "id": "t53",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          18
+        ],
+        "cost_usd": 0.0006755
+      }
+    ]
+  },
+  {
+    "metrics": {
+      "valid": 29,
+      "task_presence": 27,
+      "families": 26,
+      "implementer_groups": 27,
+      "task_count": 25,
+      "all_core": 24,
+      "unambiguous_cases": 25,
+      "unambiguous_all_core": 22,
+      "version": "v4",
+      "condition": "luna-high",
+      "split": "test",
+      "cases": 29,
+      "total_cost_usd": 0.0290521,
+      "display_words_median": 9
+    },
+    "cases": [
+      {
+        "id": "t07",
+        "valid": true,
+        "task_presence": false,
+        "families": false,
+        "implementer_groups": false,
+        "task_count": false,
+        "all_core": false,
+        "task_count_actual": 1,
+        "families_actual": [
+          "deliberation"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          13
+        ],
+        "cost_usd": 0.0008141
+      },
+      {
+        "id": "t08",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "deliberation"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          14
+        ],
+        "cost_usd": 0.0009849000000000001
+      },
+      {
+        "id": "t09",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.0003733
+      },
+      {
+        "id": "t10",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "reporting",
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states",
+          "un_secretariat"
+        ],
+        "display_words": [
+          3,
+          6
+        ],
+        "cost_usd": 0.001303
+      },
+      {
+        "id": "t11",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.0003878
+      },
+      {
+        "id": "t12",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          12
+        ],
+        "cost_usd": 0.0008505
+      },
+      {
+        "id": "t13",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.0003728
+      },
+      {
+        "id": "t14",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 3,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [],
+        "display_words": [
+          6,
+          6,
+          13
+        ],
+        "cost_usd": 0.0011614000000000001
+      },
+      {
+        "id": "t21",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          9
+        ],
+        "cost_usd": 0.0014562
+      },
+      {
+        "id": "t22",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          17,
+          9
+        ],
+        "cost_usd": 0.0011646
+      },
+      {
+        "id": "t23",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          9
+        ],
+        "cost_usd": 0.0007132999999999999
+      },
+      {
+        "id": "t24",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          21
+        ],
+        "cost_usd": 0.0008407
+      },
+      {
+        "id": "t25",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          15
+        ],
+        "cost_usd": 0.0006129
+      },
+      {
+        "id": "t26",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states",
+          "other"
+        ],
+        "display_words": [
+          17
+        ],
+        "cost_usd": 0.000668
+      },
+      {
+        "id": "t27",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          10
+        ],
+        "cost_usd": 0.0007955
+      },
+      {
+        "id": "t34",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.00030520000000000005
+      },
+      {
+        "id": "t35",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "institutional"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          14
+        ],
+        "cost_usd": 0.0010029
+      },
+      {
+        "id": "t36",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": false,
+        "task_count": true,
+        "all_core": false,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [],
+        "display_words": [
+          6
+        ],
+        "cost_usd": 0.0009944
+      },
+      {
+        "id": "t37",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "other"
+        ],
+        "display_words": [
+          17
+        ],
+        "cost_usd": 0.0005459000000000001
+      },
+      {
+        "id": "t38",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          10
+        ],
+        "cost_usd": 0.0016987
+      },
+      {
+        "id": "t39",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.0003958
+      },
+      {
+        "id": "t40",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          3,
+          11
+        ],
+        "cost_usd": 0.0016227000000000001
+      },
+      {
+        "id": "t41",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          8,
+          9
+        ],
+        "cost_usd": 0.001581
+      },
+      {
+        "id": "t48",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "resources"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          5
+        ],
+        "cost_usd": 0.0004957000000000001
+      },
+      {
+        "id": "t49",
+        "valid": true,
+        "task_presence": false,
+        "families": false,
+        "implementer_groups": true,
+        "task_count": false,
+        "all_core": false,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [],
+        "display_words": [
+          16
+        ],
+        "cost_usd": 0.0019978
+      },
+      {
+        "id": "t50",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          9
+        ],
+        "cost_usd": 0.0009789
+      },
+      {
+        "id": "t51",
+        "valid": true,
+        "task_presence": true,
+        "families": false,
+        "implementer_groups": true,
+        "task_count": false,
+        "all_core": false,
+        "task_count_actual": 4,
+        "families_actual": [
+          "deliberation",
+          "reporting",
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          9,
+          9,
+          8,
+          11
+        ],
+        "cost_usd": 0.0022191
+      },
+      {
+        "id": "t52",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": false,
+        "all_core": false,
+        "task_count_actual": 3,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          8,
+          6,
+          25
+        ],
+        "cost_usd": 0.002056
+      },
+      {
+        "id": "t53",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          18
+        ],
+        "cost_usd": 0.000659
+      }
+    ]
+  },
+  {
+    "metrics": {
+      "valid": 29,
+      "task_presence": 28,
+      "families": 27,
+      "implementer_groups": 27,
+      "task_count": 27,
+      "all_core": 26,
+      "unambiguous_cases": 25,
+      "unambiguous_all_core": 23,
+      "version": "v4",
+      "condition": "sol-low",
+      "split": "test",
+      "cases": 29,
+      "total_cost_usd": 0.290982,
+      "display_words_median": 9
+    },
+    "cases": [
+      {
+        "id": "t07",
+        "valid": true,
+        "task_presence": false,
+        "families": false,
+        "implementer_groups": false,
+        "task_count": false,
+        "all_core": false,
+        "task_count_actual": 1,
+        "families_actual": [
+          "deliberation"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          3
+        ],
+        "cost_usd": 0.010552
+      },
+      {
+        "id": "t08",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "deliberation"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          10
+        ],
+        "cost_usd": 0.008108
+      },
+      {
+        "id": "t09",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.006166
+      },
+      {
+        "id": "t10",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "reporting",
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states",
+          "un_secretariat"
+        ],
+        "display_words": [
+          3,
+          6
+        ],
+        "cost_usd": 0.01378
+      },
+      {
+        "id": "t11",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.005996
+      },
+      {
+        "id": "t12",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "deliberation",
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          8,
+          6
+        ],
+        "cost_usd": 0.0099
+      },
+      {
+        "id": "t13",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.005816
+      },
+      {
+        "id": "t14",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 3,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [],
+        "display_words": [
+          7,
+          7,
+          12
+        ],
+        "cost_usd": 0.013998
+      },
+      {
+        "id": "t21",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          9
+        ],
+        "cost_usd": 0.012504
+      },
+      {
+        "id": "t22",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          17,
+          9
+        ],
+        "cost_usd": 0.010922
+      },
+      {
+        "id": "t23",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "resources"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          9
+        ],
+        "cost_usd": 0.009106
+      },
+      {
+        "id": "t24",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          17
+        ],
+        "cost_usd": 0.008384
+      },
+      {
+        "id": "t25",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          15
+        ],
+        "cost_usd": 0.009358
+      },
+      {
+        "id": "t26",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states",
+          "other"
+        ],
+        "display_words": [
+          17
+        ],
+        "cost_usd": 0.00803
+      },
+      {
+        "id": "t27",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          10
+        ],
+        "cost_usd": 0.00862
+      },
+      {
+        "id": "t34",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.005654
+      },
+      {
+        "id": "t35",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "institutional"
+        ],
+        "implementer_groups_actual": [],
+        "display_words": [
+          14
+        ],
+        "cost_usd": 0.007768
+      },
+      {
+        "id": "t36",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states",
+          "other",
+          "un_system"
+        ],
+        "display_words": [
+          4
+        ],
+        "cost_usd": 0.010988
+      },
+      {
+        "id": "t37",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "other"
+        ],
+        "display_words": [
+          16
+        ],
+        "cost_usd": 0.007868
+      },
+      {
+        "id": "t38",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          15
+        ],
+        "cost_usd": 0.012114
+      },
+      {
+        "id": "t39",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.005736
+      },
+      {
+        "id": "t40",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          13,
+          11
+        ],
+        "cost_usd": 0.015334
+      },
+      {
+        "id": "t41",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          8
+        ],
+        "cost_usd": 0.01079
+      },
+      {
+        "id": "t48",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "resources"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          5
+        ],
+        "cost_usd": 0.007214
+      },
+      {
+        "id": "t49",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.006086
+      },
+      {
+        "id": "t50",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          9
+        ],
+        "cost_usd": 0.010808
+      },
+      {
+        "id": "t51",
+        "valid": true,
+        "task_presence": true,
+        "families": false,
+        "implementer_groups": true,
+        "task_count": false,
+        "all_core": false,
+        "task_count_actual": 4,
+        "families_actual": [
+          "deliberation",
+          "reporting",
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          9,
+          9,
+          8,
+          11
+        ],
+        "cost_usd": 0.019482
+      },
+      {
+        "id": "t52",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          18,
+          13
+        ],
+        "cost_usd": 0.01818
+      },
+      {
+        "id": "t53",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": false,
+        "task_count": true,
+        "all_core": false,
+        "task_count_actual": 1,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          18
+        ],
+        "cost_usd": 0.01172
+      }
+    ]
+  },
+  {
+    "metrics": {
+      "valid": 24,
+      "task_presence": 24,
+      "families": 24,
+      "implementer_groups": 24,
+      "task_count": 24,
+      "all_core": 24,
+      "unambiguous_cases": 24,
+      "unambiguous_all_core": 24,
+      "version": "v4",
+      "condition": "sol-medium",
+      "split": "validation",
+      "cases": 24,
+      "total_cost_usd": 0.268132,
+      "display_words_median": 9
+    },
+    "cases": [
+      {
+        "id": "v01",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          13
+        ],
+        "cost_usd": 0.012006
+      },
+      {
+        "id": "v02",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "deliberation"
+        ],
+        "implementer_groups_actual": [],
+        "display_words": [
+          6
+        ],
+        "cost_usd": 0.008872
+      },
+      {
+        "id": "v03",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          7
+        ],
+        "cost_usd": 0.009958
+      },
+      {
+        "id": "v04",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "resources"
+        ],
+        "implementer_groups_actual": [],
+        "display_words": [
+          6
+        ],
+        "cost_usd": 0.009662
+      },
+      {
+        "id": "v05",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states",
+          "other",
+          "un_system"
+        ],
+        "display_words": [
+          4
+        ],
+        "cost_usd": 0.015404
+      },
+      {
+        "id": "v06",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          11
+        ],
+        "cost_usd": 0.011848
+      },
+      {
+        "id": "v15",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "deliberation"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          3
+        ],
+        "cost_usd": 0.007472
+      },
+      {
+        "id": "v16",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "institutional"
+        ],
+        "implementer_groups_actual": [],
+        "display_words": [
+          9
+        ],
+        "cost_usd": 0.012624
+      },
+      {
+        "id": "v17",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "deliberation",
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          8,
+          7
+        ],
+        "cost_usd": 0.01515
+      },
+      {
+        "id": "v18",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          7
+        ],
+        "cost_usd": 0.009686
+      },
+      {
+        "id": "v19",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.006124
+      },
+      {
+        "id": "v20",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 3,
+        "families_actual": [
+          "institutional",
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          13,
+          14,
+          9
+        ],
+        "cost_usd": 0.017068
+      },
+      {
+        "id": "v28",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.006834
+      },
+      {
+        "id": "v29",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.0063
+      },
+      {
+        "id": "v30",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.006804
+      },
+      {
+        "id": "v31",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          12
+        ],
+        "cost_usd": 0.010388
+      },
+      {
+        "id": "v32",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          11
+        ],
+        "cost_usd": 0.008038
+      },
+      {
+        "id": "v33",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          15
+        ],
+        "cost_usd": 0.014176
+      },
+      {
+        "id": "v42",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [],
+        "display_words": [
+          9
+        ],
+        "cost_usd": 0.013958
+      },
+      {
+        "id": "v43",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          8
+        ],
+        "cost_usd": 0.008906
+      },
+      {
+        "id": "v44",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          3
+        ],
+        "cost_usd": 0.01377
+      },
+      {
+        "id": "v45",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          15,
+          13
+        ],
+        "cost_usd": 0.01609
+      },
+      {
+        "id": "v46",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          5
+        ],
+        "cost_usd": 0.01131
+      },
+      {
+        "id": "v47",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          5
+        ],
+        "cost_usd": 0.015684
+      }
+    ]
+  },
+  {
+    "metrics": {
+      "valid": 29,
+      "task_presence": 28,
+      "families": 27,
+      "implementer_groups": 28,
+      "task_count": 27,
+      "all_core": 27,
+      "unambiguous_cases": 25,
+      "unambiguous_all_core": 24,
+      "version": "v4",
+      "condition": "sol-medium",
+      "split": "test",
+      "cases": 29,
+      "total_cost_usd": 0.342152,
+      "display_words_median": 9
+    },
+    "cases": [
+      {
+        "id": "t07",
+        "valid": true,
+        "task_presence": false,
+        "families": false,
+        "implementer_groups": false,
+        "task_count": false,
+        "all_core": false,
+        "task_count_actual": 1,
+        "families_actual": [
+          "deliberation"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          19
+        ],
+        "cost_usd": 0.011362
+      },
+      {
+        "id": "t08",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "deliberation"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          5
+        ],
+        "cost_usd": 0.012168
+      },
+      {
+        "id": "t09",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.006166
+      },
+      {
+        "id": "t10",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "reporting",
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states",
+          "un_secretariat"
+        ],
+        "display_words": [
+          3,
+          6
+        ],
+        "cost_usd": 0.01181
+      },
+      {
+        "id": "t11",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.005996
+      },
+      {
+        "id": "t12",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "deliberation",
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          8,
+          6
+        ],
+        "cost_usd": 0.01394
+      },
+      {
+        "id": "t13",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.005886
+      },
+      {
+        "id": "t14",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 3,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [],
+        "display_words": [
+          7,
+          7,
+          12
+        ],
+        "cost_usd": 0.014438
+      },
+      {
+        "id": "t21",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          9
+        ],
+        "cost_usd": 0.011884
+      },
+      {
+        "id": "t22",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          17,
+          9
+        ],
+        "cost_usd": 0.014092
+      },
+      {
+        "id": "t23",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          9
+        ],
+        "cost_usd": 0.011206
+      },
+      {
+        "id": "t24",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          17,
+          4
+        ],
+        "cost_usd": 0.013864
+      },
+      {
+        "id": "t25",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          15
+        ],
+        "cost_usd": 0.012788
+      },
+      {
+        "id": "t26",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states",
+          "other"
+        ],
+        "display_words": [
+          17
+        ],
+        "cost_usd": 0.00803
+      },
+      {
+        "id": "t27",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          10
+        ],
+        "cost_usd": 0.01072
+      },
+      {
+        "id": "t34",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.005654
+      },
+      {
+        "id": "t35",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "institutional"
+        ],
+        "implementer_groups_actual": [],
+        "display_words": [
+          14
+        ],
+        "cost_usd": 0.010838
+      },
+      {
+        "id": "t36",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states",
+          "other",
+          "un_system"
+        ],
+        "display_words": [
+          4
+        ],
+        "cost_usd": 0.016688
+      },
+      {
+        "id": "t37",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "other"
+        ],
+        "display_words": [
+          16
+        ],
+        "cost_usd": 0.008348
+      },
+      {
+        "id": "t38",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          15
+        ],
+        "cost_usd": 0.014614
+      },
+      {
+        "id": "t39",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.006046
+      },
+      {
+        "id": "t40",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          13,
+          11
+        ],
+        "cost_usd": 0.017754
+      },
+      {
+        "id": "t41",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          8,
+          9
+        ],
+        "cost_usd": 0.01706
+      },
+      {
+        "id": "t48",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "resources"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          5
+        ],
+        "cost_usd": 0.009134
+      },
+      {
+        "id": "t49",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.006516
+      },
+      {
+        "id": "t50",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          9
+        ],
+        "cost_usd": 0.014138
+      },
+      {
+        "id": "t51",
+        "valid": true,
+        "task_presence": true,
+        "families": false,
+        "implementer_groups": true,
+        "task_count": false,
+        "all_core": false,
+        "task_count_actual": 4,
+        "families_actual": [
+          "deliberation",
+          "reporting",
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          9,
+          9,
+          8,
+          11
+        ],
+        "cost_usd": 0.020402
+      },
+      {
+        "id": "t52",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          5,
+          6
+        ],
+        "cost_usd": 0.01878
+      },
+      {
+        "id": "t53",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          18
+        ],
+        "cost_usd": 0.01183
+      }
+    ]
+  },
+  {
+    "metrics": {
+      "valid": 29,
+      "task_presence": 28,
+      "families": 26,
+      "implementer_groups": 28,
+      "task_count": 26,
+      "all_core": 25,
+      "unambiguous_cases": 25,
+      "unambiguous_all_core": 22,
+      "version": "v4",
+      "condition": "sol-high",
+      "split": "test",
+      "cases": 29,
+      "total_cost_usd": 0.469052,
+      "display_words_median": 9
+    },
+    "cases": [
+      {
+        "id": "t07",
+        "valid": true,
+        "task_presence": false,
+        "families": false,
+        "implementer_groups": false,
+        "task_count": false,
+        "all_core": false,
+        "task_count_actual": 1,
+        "families_actual": [
+          "deliberation"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          13
+        ],
+        "cost_usd": 0.015202
+      },
+      {
+        "id": "t08",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "deliberation"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          10
+        ],
+        "cost_usd": 0.014158
+      },
+      {
+        "id": "t09",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.006616
+      },
+      {
+        "id": "t10",
+        "valid": true,
+        "task_presence": true,
+        "families": false,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": false,
+        "task_count_actual": 2,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "member_states",
+          "un_secretariat"
+        ],
+        "display_words": [
+          3,
+          6
+        ],
+        "cost_usd": 0.01847
+      },
+      {
+        "id": "t11",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.006316
+      },
+      {
+        "id": "t12",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "deliberation",
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          8,
+          6
+        ],
+        "cost_usd": 0.02056
+      },
+      {
+        "id": "t13",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.006646
+      },
+      {
+        "id": "t14",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 3,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [],
+        "display_words": [
+          7,
+          7,
+          14
+        ],
+        "cost_usd": 0.016748
+      },
+      {
+        "id": "t21",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          9
+        ],
+        "cost_usd": 0.020604
+      },
+      {
+        "id": "t22",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          17,
+          9
+        ],
+        "cost_usd": 0.016332
+      },
+      {
+        "id": "t23",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "resources"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          9
+        ],
+        "cost_usd": 0.019756
+      },
+      {
+        "id": "t24",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          17,
+          4
+        ],
+        "cost_usd": 0.020534
+      },
+      {
+        "id": "t25",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          15
+        ],
+        "cost_usd": 0.014198
+      },
+      {
+        "id": "t26",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states",
+          "other"
+        ],
+        "display_words": [
+          17
+        ],
+        "cost_usd": 0.012
+      },
+      {
+        "id": "t27",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          10
+        ],
+        "cost_usd": 0.01302
+      },
+      {
+        "id": "t34",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.006034
+      },
+      {
+        "id": "t35",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "institutional"
+        ],
+        "implementer_groups_actual": [],
+        "display_words": [
+          14
+        ],
+        "cost_usd": 0.013128
+      },
+      {
+        "id": "t36",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states",
+          "other",
+          "un_system"
+        ],
+        "display_words": [
+          5
+        ],
+        "cost_usd": 0.022148
+      },
+      {
+        "id": "t37",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "other"
+        ],
+        "display_words": [
+          16
+        ],
+        "cost_usd": 0.011148
+      },
+      {
+        "id": "t38",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          15
+        ],
+        "cost_usd": 0.020554
+      },
+      {
+        "id": "t39",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.006496
+      },
+      {
+        "id": "t40",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": false,
+        "all_core": false,
+        "task_count_actual": 3,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          3,
+          11,
+          10
+        ],
+        "cost_usd": 0.033804
+      },
+      {
+        "id": "t41",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          8,
+          9
+        ],
+        "cost_usd": 0.02096
+      },
+      {
+        "id": "t48",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "resources"
+        ],
+        "implementer_groups_actual": [
+          "un_secretariat"
+        ],
+        "display_words": [
+          5
+        ],
+        "cost_usd": 0.009234
+      },
+      {
+        "id": "t49",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 0,
+        "families_actual": [],
+        "implementer_groups_actual": [],
+        "display_words": [],
+        "cost_usd": 0.006926
+      },
+      {
+        "id": "t50",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          9
+        ],
+        "cost_usd": 0.020978
+      },
+      {
+        "id": "t51",
+        "valid": true,
+        "task_presence": true,
+        "families": false,
+        "implementer_groups": true,
+        "task_count": false,
+        "all_core": false,
+        "task_count_actual": 4,
+        "families_actual": [
+          "deliberation",
+          "reporting",
+          "substantive"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          9,
+          9,
+          8,
+          11
+        ],
+        "cost_usd": 0.033052
+      },
+      {
+        "id": "t52",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 2,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "member_states"
+        ],
+        "display_words": [
+          18,
+          13
+        ],
+        "cost_usd": 0.02758
+      },
+      {
+        "id": "t53",
+        "valid": true,
+        "task_presence": true,
+        "families": true,
+        "implementer_groups": true,
+        "task_count": true,
+        "all_core": true,
+        "task_count_actual": 1,
+        "families_actual": [
+          "reporting"
+        ],
+        "implementer_groups_actual": [
+          "un_organs"
+        ],
+        "display_words": [
+          18
+        ],
+        "cost_usd": 0.01585
+      }
+    ]
+  }
+]

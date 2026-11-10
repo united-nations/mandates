@@ -1,0 +1,300 @@
+{
+  "v01": {
+    "required_families": [
+      "reporting"
+    ],
+    "optional_families": [],
+    "implementer_groups": [
+      "un_secretariat"
+    ],
+    "min_tasks": 1,
+    "max_tasks": 1,
+    "note": "SG prepares report; OHCHR consulted, GA recipient, States reported on; not extra assignees."
+  },
+  "v02": {
+    "required_families": [
+      "deliberation"
+    ],
+    "optional_families": [],
+    "implementer_groups": [],
+    "min_tasks": 1,
+    "max_tasks": 1,
+    "note": "GA adopts agenda continuation; decision maker not implementer."
+  },
+  "v03": {
+    "required_families": [
+      "substantive"
+    ],
+    "optional_families": [],
+    "implementer_groups": [
+      "un_organs"
+    ],
+    "min_tasks": 1,
+    "max_tasks": 1,
+    "note": "Pension Board budgeting improvement; historical recall not a task."
+  },
+  "v04": {
+    "required_families": [
+      "resources"
+    ],
+    "optional_families": [],
+    "implementer_groups": [],
+    "min_tasks": 1,
+    "max_tasks": 1,
+    "note": "Adopts cost approval; pension fund and recipients not automatically implementing assignees."
+  },
+  "v05": {
+    "required_families": [
+      "substantive"
+    ],
+    "optional_families": [
+      "deliberation"
+    ],
+    "implementer_groups": [
+      "member_states",
+      "un_system",
+      "other"
+    ],
+    "min_tasks": 1,
+    "max_tasks": 2,
+    "note": "Observe day and awareness methods; do not split each illustrative method. UN system umbrella may alternatively be UN-organs plus UN-system; member states and others essential."
+  },
+  "v06": {
+    "required_families": [
+      "substantive"
+    ],
+    "optional_families": [],
+    "implementer_groups": [
+      "un_secretariat"
+    ],
+    "min_tasks": 1,
+    "max_tasks": 1,
+    "note": "SG circulates resolution, recipients not implementers; no automatic borrowing voluntary-funding condition from independent prior paragraph."
+  },
+  "v15": {
+    "required_families": [
+      "deliberation"
+    ],
+    "optional_families": [],
+    "implementer_groups": [
+      "un_organs"
+    ],
+    "min_tasks": 1,
+    "max_tasks": 1,
+    "note": "Working group intersessional consultations."
+  },
+  "v16": {
+    "required_families": [
+      "institutional"
+    ],
+    "optional_families": [
+      "substantive"
+    ],
+    "implementer_groups": [],
+    "min_tasks": 1,
+    "max_tasks": 2,
+    "note": "HRC renews WG three years; regulatory elaboration is renewed mandate content, optional separately tasked WG; renewal alone no WG implementer.",
+    "optional_implementer_groups": [
+      "un_organs"
+    ]
+  },
+  "v17": {
+    "required_families": [
+      "reporting",
+      "deliberation"
+    ],
+    "optional_families": [],
+    "implementer_groups": [
+      "un_secretariat"
+    ],
+    "min_tasks": 2,
+    "max_tasks": 2,
+    "note": "HC reports followed by interactive dialogue; HRC organizes/decides dialogue, do not make HC implementer of dialogue without support."
+  },
+  "v18": {
+    "required_families": [
+      "substantive"
+    ],
+    "optional_families": [],
+    "implementer_groups": [
+      "member_states"
+    ],
+    "min_tasks": 1,
+    "max_tasks": 1,
+    "note": "Israel to end occupation; background stresses principles not separate task."
+  },
+  "v19": {
+    "required_families": [],
+    "optional_families": [],
+    "implementer_groups": [],
+    "min_tasks": 0,
+    "max_tasks": 0,
+    "note": "Welcomes work and notes historical recommendations, no new request."
+  },
+  "v20": {
+    "required_families": [
+      "institutional",
+      "substantive"
+    ],
+    "optional_families": [],
+    "implementer_groups": [
+      "un_organs"
+    ],
+    "min_tasks": 2,
+    "max_tasks": 3,
+    "note": "HRC extends WG mandate; WG implements mainstreaming and study. Age/disability and girls study may split."
+  },
+  "v28": {
+    "required_families": [],
+    "optional_families": [],
+    "implementer_groups": [],
+    "min_tasks": 0,
+    "max_tasks": 0,
+    "note": "Historical GA annual forum call reaffirmed, no fresh assignment under current scope."
+  },
+  "v29": {
+    "required_families": [],
+    "optional_families": [],
+    "implementer_groups": [],
+    "min_tasks": 0,
+    "max_tasks": 0,
+    "note": "UNCTAD completed work recognized, no new task."
+  },
+  "v30": {
+    "required_families": [],
+    "optional_families": [],
+    "implementer_groups": [],
+    "min_tasks": 0,
+    "max_tasks": 0,
+    "note": "Welcomes, reaffirms core principle, notes recommendations; no concrete assignment."
+  },
+  "v31": {
+    "required_families": [
+      "substantive"
+    ],
+    "optional_families": [],
+    "implementer_groups": [
+      "member_states"
+    ],
+    "min_tasks": 1,
+    "max_tasks": 1,
+    "note": "Government budget integration; monitoring/reporting are methods, not standalone reporting mandate."
+  },
+  "v32": {
+    "required_families": [
+      "reporting"
+    ],
+    "optional_families": [],
+    "implementer_groups": [
+      "un_secretariat"
+    ],
+    "min_tasks": 1,
+    "max_tasks": 1,
+    "note": "SG regular report, unspecified format accepts written_report or update, not oral without evidence."
+  },
+  "v33": {
+    "required_families": [
+      "substantive"
+    ],
+    "optional_families": [],
+    "implementer_groups": [
+      "member_states"
+    ],
+    "min_tasks": 1,
+    "max_tasks": 1,
+    "note": "State census/statistics; planning and dissemination are parts of one census result."
+  },
+  "v42": {
+    "required_families": [
+      "resources"
+    ],
+    "optional_families": [
+      "institutional",
+      "substantive"
+    ],
+    "implementer_groups": [],
+    "min_tasks": 1,
+    "max_tasks": 1,
+    "note": "SC continuation of provision, historical SG role not in input. No fabricated implementation actor; HRDDP and until15Aug2024 apply. Resource support vs operational delivery genuinely overlaps: accept either family.",
+    "alternative_family_sets": [
+      [
+        "resources"
+      ],
+      [
+        "substantive"
+      ]
+    ]
+  },
+  "v43": {
+    "required_families": [
+      "resources"
+    ],
+    "optional_families": [
+      "substantive"
+    ],
+    "implementer_groups": [
+      "un_secretariat"
+    ],
+    "min_tasks": 1,
+    "max_tasks": 1,
+    "note": "Parent asks SG logistical support via UNSOS; UNSOM is recipient; cost-recovery qualification. Resource support vs operational delivery genuinely overlaps: accept either family.",
+    "alternative_family_sets": [
+      [
+        "resources"
+      ],
+      [
+        "substantive"
+      ]
+    ]
+  },
+  "v44": {
+    "required_families": [
+      "substantive"
+    ],
+    "optional_families": [],
+    "implementer_groups": [
+      "member_states"
+    ],
+    "min_tasks": 1,
+    "max_tasks": 2,
+    "note": "Libyan institutions confidence-building; generic encouragement of further progress ambiguous optional additional task; AU not assignee."
+  },
+  "v45": {
+    "required_families": [
+      "substantive"
+    ],
+    "optional_families": [],
+    "implementer_groups": [
+      "member_states"
+    ],
+    "min_tasks": 1,
+    "max_tasks": 2,
+    "note": "States comply arms embargo and nonintervention; withdrawals means/compliance can be one or two independent results; historical sanction recall not new."
+  },
+  "v46": {
+    "required_families": [
+      "substantive"
+    ],
+    "optional_families": [],
+    "implementer_groups": [
+      "un_secretariat"
+    ],
+    "min_tasks": 1,
+    "max_tasks": 1,
+    "note": "Parent asks SG implement youth-peace-security requirements within mandate/area/guidelines; nominal child is meaningful with explicit parent."
+  },
+  "v47": {
+    "required_families": [
+      "substantive"
+    ],
+    "optional_families": [
+      "resources"
+    ],
+    "implementer_groups": [
+      "un_secretariat"
+    ],
+    "min_tasks": 1,
+    "max_tasks": 2,
+    "note": "Parent SG implementation of women-peace-security requirements; troop gender composition could separate personnel task but target no specific new recruitment numbers."
+  }
+}

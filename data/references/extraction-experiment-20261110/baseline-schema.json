@@ -1,0 +1,635 @@
+{
+  "$defs": {
+    "Assignee": {
+      "additionalProperties": false,
+      "properties": {
+        "normalized_name": {
+          "title": "Normalized Name",
+          "type": "string"
+        },
+        "entity_type": {
+          "anyOf": [
+            {
+              "enum": [
+                "un_organs",
+                "un_secretariat",
+                "un_system",
+                "member_states",
+                "other"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Entity Type"
+        },
+        "basis": {
+          "enum": [
+            "explicit",
+            "inherited",
+            "implicit"
+          ],
+          "title": "Basis",
+          "type": "string"
+        },
+        "evidence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Evidence"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "normalized_name",
+        "entity_type",
+        "basis",
+        "evidence"
+      ],
+      "title": "Assignee",
+      "type": "object"
+    },
+    "DeliberationActivity": {
+      "additionalProperties": false,
+      "properties": {
+        "activity_type": {
+          "const": "deliberation",
+          "title": "Activity Type",
+          "type": "string"
+        },
+        "activity_subtype": {
+          "enum": [
+            "meeting",
+            "dialogue_consultation",
+            "conference",
+            "agenda_consideration",
+            "participation"
+          ],
+          "title": "Activity Subtype",
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        },
+        "assignees": {
+          "items": {
+            "$ref": "#/$defs/Assignee"
+          },
+          "title": "Assignees",
+          "type": "array"
+        },
+        "deliverables": {
+          "items": {
+            "$ref": "#/$defs/Deliverable"
+          },
+          "title": "Deliverables",
+          "type": "array"
+        },
+        "institutional_target": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/InstitutionalTarget"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "activity_type",
+        "activity_subtype",
+        "evidence",
+        "assignees",
+        "deliverables",
+        "institutional_target"
+      ],
+      "title": "DeliberationActivity",
+      "type": "object"
+    },
+    "Deliverable": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "report",
+            "briefing",
+            "update",
+            "information_sharing",
+            "analysis",
+            "recommendations",
+            "meeting",
+            "review",
+            "legislation",
+            "policy",
+            "strategy",
+            "standards",
+            "financial_resources",
+            "capacity_building",
+            "technical_assistance",
+            "humanitarian_assistance",
+            "infrastructure"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "evidence": {
+          "$ref": "#/$defs/Evidence"
+        }
+      },
+      "required": [
+        "kind",
+        "description",
+        "evidence"
+      ],
+      "title": "Deliverable",
+      "type": "object"
+    },
+    "Evidence": {
+      "additionalProperties": false,
+      "properties": {
+        "paragraph_ref": {
+          "title": "Paragraph Ref",
+          "type": "string"
+        },
+        "quote": {
+          "title": "Quote",
+          "type": "string"
+        },
+        "occurrence": {
+          "minimum": 0,
+          "title": "Occurrence",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "paragraph_ref",
+        "quote",
+        "occurrence"
+      ],
+      "title": "Evidence",
+      "type": "object"
+    },
+    "InstitutionalActivity": {
+      "additionalProperties": false,
+      "properties": {
+        "activity_type": {
+          "const": "institutional",
+          "title": "Activity Type",
+          "type": "string"
+        },
+        "activity_subtype": {
+          "enum": [
+            "establishment",
+            "renewal_extension",
+            "amendment",
+            "termination",
+            "appointment_membership"
+          ],
+          "title": "Activity Subtype",
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        },
+        "assignees": {
+          "items": {
+            "$ref": "#/$defs/Assignee"
+          },
+          "title": "Assignees",
+          "type": "array"
+        },
+        "deliverables": {
+          "items": {
+            "$ref": "#/$defs/Deliverable"
+          },
+          "title": "Deliverables",
+          "type": "array"
+        },
+        "institutional_target": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/InstitutionalTarget"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "activity_type",
+        "activity_subtype",
+        "evidence",
+        "assignees",
+        "deliverables",
+        "institutional_target"
+      ],
+      "title": "InstitutionalActivity",
+      "type": "object"
+    },
+    "InstitutionalTarget": {
+      "additionalProperties": false,
+      "properties": {
+        "normalized_name": {
+          "title": "Normalized Name",
+          "type": "string"
+        },
+        "target_kind": {
+          "enum": [
+            "entity",
+            "mission",
+            "mechanism",
+            "mandate"
+          ],
+          "title": "Target Kind",
+          "type": "string"
+        },
+        "evidence": {
+          "$ref": "#/$defs/Evidence"
+        }
+      },
+      "required": [
+        "normalized_name",
+        "target_kind",
+        "evidence"
+      ],
+      "title": "InstitutionalTarget",
+      "type": "object"
+    },
+    "MandateReviewActivity": {
+      "additionalProperties": false,
+      "properties": {
+        "activity_type": {
+          "const": "mandate_review",
+          "title": "Activity Type",
+          "type": "string"
+        },
+        "activity_subtype": {
+          "enum": [
+            "mandate_review",
+            "evaluation",
+            "consolidation"
+          ],
+          "title": "Activity Subtype",
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        },
+        "assignees": {
+          "items": {
+            "$ref": "#/$defs/Assignee"
+          },
+          "title": "Assignees",
+          "type": "array"
+        },
+        "deliverables": {
+          "items": {
+            "$ref": "#/$defs/Deliverable"
+          },
+          "title": "Deliverables",
+          "type": "array"
+        },
+        "institutional_target": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/InstitutionalTarget"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "activity_type",
+        "activity_subtype",
+        "evidence",
+        "assignees",
+        "deliverables",
+        "institutional_target"
+      ],
+      "title": "MandateReviewActivity",
+      "type": "object"
+    },
+    "MentionedEntity": {
+      "additionalProperties": false,
+      "properties": {
+        "normalized_name": {
+          "title": "Normalized Name",
+          "type": "string"
+        },
+        "entity_type": {
+          "anyOf": [
+            {
+              "enum": [
+                "un_organs",
+                "un_secretariat",
+                "un_system",
+                "member_states",
+                "other"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Entity Type"
+        },
+        "evidence": {
+          "$ref": "#/$defs/Evidence"
+        }
+      },
+      "required": [
+        "normalized_name",
+        "entity_type",
+        "evidence"
+      ],
+      "title": "MentionedEntity",
+      "type": "object"
+    },
+    "ReportingActivity": {
+      "additionalProperties": false,
+      "properties": {
+        "activity_type": {
+          "const": "reporting",
+          "title": "Activity Type",
+          "type": "string"
+        },
+        "activity_subtype": {
+          "enum": [
+            "written_report",
+            "oral_briefing",
+            "update",
+            "assessment",
+            "recommendations"
+          ],
+          "title": "Activity Subtype",
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        },
+        "assignees": {
+          "items": {
+            "$ref": "#/$defs/Assignee"
+          },
+          "title": "Assignees",
+          "type": "array"
+        },
+        "deliverables": {
+          "items": {
+            "$ref": "#/$defs/Deliverable"
+          },
+          "title": "Deliverables",
+          "type": "array"
+        },
+        "institutional_target": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/InstitutionalTarget"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "activity_type",
+        "activity_subtype",
+        "evidence",
+        "assignees",
+        "deliverables",
+        "institutional_target"
+      ],
+      "title": "ReportingActivity",
+      "type": "object"
+    },
+    "ResourcesActivity": {
+      "additionalProperties": false,
+      "properties": {
+        "activity_type": {
+          "const": "resources",
+          "title": "Activity Type",
+          "type": "string"
+        },
+        "activity_subtype": {
+          "enum": [
+            "funding",
+            "personnel",
+            "facilities_infrastructure"
+          ],
+          "title": "Activity Subtype",
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        },
+        "assignees": {
+          "items": {
+            "$ref": "#/$defs/Assignee"
+          },
+          "title": "Assignees",
+          "type": "array"
+        },
+        "deliverables": {
+          "items": {
+            "$ref": "#/$defs/Deliverable"
+          },
+          "title": "Deliverables",
+          "type": "array"
+        },
+        "institutional_target": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/InstitutionalTarget"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "activity_type",
+        "activity_subtype",
+        "evidence",
+        "assignees",
+        "deliverables",
+        "institutional_target"
+      ],
+      "title": "ResourcesActivity",
+      "type": "object"
+    },
+    "SubstantiveActivity": {
+      "additionalProperties": false,
+      "properties": {
+        "activity_type": {
+          "const": "substantive",
+          "title": "Activity Type",
+          "type": "string"
+        },
+        "activity_subtype": {
+          "enum": [
+            "policy_normative_action",
+            "technical_assistance",
+            "capacity_building",
+            "operational_delivery",
+            "humanitarian_delivery",
+            "information_knowledge_work"
+          ],
+          "title": "Activity Subtype",
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        },
+        "assignees": {
+          "items": {
+            "$ref": "#/$defs/Assignee"
+          },
+          "title": "Assignees",
+          "type": "array"
+        },
+        "deliverables": {
+          "items": {
+            "$ref": "#/$defs/Deliverable"
+          },
+          "title": "Deliverables",
+          "type": "array"
+        },
+        "institutional_target": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/InstitutionalTarget"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "activity_type",
+        "activity_subtype",
+        "evidence",
+        "assignees",
+        "deliverables",
+        "institutional_target"
+      ],
+      "title": "SubstantiveActivity",
+      "type": "object"
+    },
+    "Uncertainty": {
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "title": "Field",
+          "type": "string"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "field",
+        "reason"
+      ],
+      "title": "Uncertainty",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "activities": {
+      "items": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/SubstantiveActivity"
+          },
+          {
+            "$ref": "#/$defs/ReportingActivity"
+          },
+          {
+            "$ref": "#/$defs/DeliberationActivity"
+          },
+          {
+            "$ref": "#/$defs/InstitutionalActivity"
+          },
+          {
+            "$ref": "#/$defs/ResourcesActivity"
+          },
+          {
+            "$ref": "#/$defs/MandateReviewActivity"
+          }
+        ]
+      },
+      "title": "Activities",
+      "type": "array"
+    },
+    "mentioned_entities": {
+      "items": {
+        "$ref": "#/$defs/MentionedEntity"
+      },
+      "title": "Mentioned Entities",
+      "type": "array"
+    },
+    "uncertainties": {
+      "items": {
+        "$ref": "#/$defs/Uncertainty"
+      },
+      "title": "Uncertainties",
+      "type": "array"
+    }
+  },
+  "required": [
+    "activities",
+    "mentioned_entities",
+    "uncertainties"
+  ],
+  "title": "ParagraphActivities",
+  "type": "object"
+}
