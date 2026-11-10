@@ -8,6 +8,7 @@ export interface PilotSpan {
   label: string
 }
 export interface ParagraphPilot {
+  reasoning?: 'none' | 'medium'
   status: 'validated' | 'rejected' | 'stale'
   activities: { type: string; subtype: string; actor_types?: string[] }[]
   spans: PilotSpan[]

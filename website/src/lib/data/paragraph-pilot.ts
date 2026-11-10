@@ -1,6 +1,6 @@
 import 'server-only'
 import { createHash } from 'node:crypto'
-import { readFileSync } from 'node:fs'
+import { readFileSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 import type { Paragraph } from '@/types'
 import type { PilotRecord } from '../paragraph-pilot'
@@ -8,13 +8,21 @@ import { SHOW_PARAGRAPH_PILOT } from '../feature-flags'
 
 /** Export v2 retains activity-level implementer types. */
 let records: Record<string, PilotRecord> | undefined
+let artifactModified = 0
 
 /** Frozen branch pilot; attach only to unchanged source IDs, text and parser. */
 export function withParagraphPilot(p: Paragraph): Paragraph {
   if (!SHOW_PARAGRAPH_PILOT) return p
-  records ??= JSON.parse(
-    readFileSync(join(process.cwd(), 'src/data/paragraph-pilot.json'), 'utf8')
-  ) as Record<string, PilotRecord>
+  const artifact = join(process.cwd(), 'src/data/paragraph-pilot.json')
+  const modified =
+    process.env.NODE_ENV === 'development' ? statSync(artifact).mtimeMs : 0
+  if (!records || modified !== artifactModified) {
+    records = JSON.parse(readFileSync(artifact, 'utf8')) as Record<
+      string,
+      PilotRecord
+    >
+    artifactModified = modified
+  }
   const record = p.id ? records[p.id] : undefined
   if (!record) return p
   const current =
@@ -40,6 +48,7 @@ export function withParagraphPilot(p: Paragraph): Paragraph {
     paragraph_type: 'operative',
     textWithHighlights: markup,
     pilot: {
+      reasoning: record.reasoning,
       status: record.status,
       activities: record.activities,
       spans: record.spans,

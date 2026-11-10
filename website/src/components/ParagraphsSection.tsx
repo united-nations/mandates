@@ -1860,7 +1860,9 @@ export function ParagraphsSection({
             `text-${sourceStart}-${from}`
           )
         )
-      return <>{parts}</>
+      return (
+        <React.Fragment key={`inline-${sourceStart}`}>{parts}</React.Fragment>
+      )
     }
 
     // Check if any assignee/deliverable/action verb filters are active for enhanced highlighting
@@ -2436,8 +2438,12 @@ export function ParagraphsSection({
 
         {allParagraphs.some((p) => p.pilot) && (
           <p className="text-xs text-muted-foreground">
-            Exploratory pilot · tasks in blue, assignees in green, outputs in
-            yellow. Hover or focus a highlight for its classification.
+            Exploratory pilot
+            {allParagraphs.some((p) => p.pilot?.reasoning === 'medium')
+              ? ' · medium reasoning'
+              : ''}{' '}
+            · tasks in blue, assignees in green, outputs in yellow. Hover or
+            focus a highlight for its classification.
             {allParagraphs.some(
               (p) =>
                 p.pilot?.status === 'rejected' || p.pilot?.status === 'stale'
