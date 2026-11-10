@@ -1,6 +1,119 @@
+## Executed pilot update — 9 November 2026
+
+The GPT-6 Luna Azure deployment now works with reasoning disabled. The current
+registry-only random sample contains 374 documents and 8,299 reviewed operative
+targets (8,131 stored-operative plus 168 recovered through boundary review).
+The revised 100-response diagnostic check used 534,156 input tokens, including
+493,822 cached, and 23,372 output tokens; reported reasoning tokens were zero.
+At OpenAI reference standard rates ($0.10/M input, $0.01/M cached input,
+$0.50/M output), that is about **$0.021**, or **$1.71** extrapolated to this
+sample with the observed cache rate. Without cache discounts the same token
+profile would be about **$5.40** for the sample. These are reference-price
+calculations, not an Azure invoice; actual sample usage will supersede this
+100-response projection.
+
+Azure rejected Batch because this deployment uses GlobalStandard. The sample
+is proceeding with standard Responses requests under the user's authorization.
+Results remain exploratory: schema/source evidence validated 100/100 in the
+revised check, but semantic review found misses and classification errors.
+Model quality equivalence has not been demonstrated. See
+`docs/paragraph-extraction/pilot-run-20261109.md` and its source-linked review.
+
 # Paragraph extraction assessment — 24 September 2026
 
-## Status
+## Updated scope — 9 November 2026
+
+Reused the existing 4.5 GB checkout of `un80-docs-processing`; no second clone
+or repository download. The original classifier remains at
+`src/mandates/classification/classify_paragraphs.py`, commit
+`a6c56cb6b8ddeebf64b93faa3392c145e3da9592`.
+
+All estimates are restricted to the **Mandate Registry**, using the website’s
+shared `mandateMembershipSql` rule for the selected PPB version. The requested
+scope is the union of readable English fulltexts of registry documents published from **9 November 2021 through 9 November 2026 inclusive**
+and readable fulltexts cited by **PPB 2027**, regardless of their publication date.
+Recent documents must have an eligible entry in the registry; having fulltext
+in Digital Library alone does not establish membership.
+The corrected registry restriction excludes one previously included fulltext
+(`A/RES/81/8`) that has no eligible registry entry in the current snapshot.
+Normalize symbols and count each document once; do not infer publication dates
+from symbols. Retain only successfully parsed English semantic fulltext, with
+both file and parse records, matching the reader's eligibility rules.
+
+For the main estimate, “PPB 2027” means citation origins matching the mapped
+programme-budget source (`doc_type = ppb`), currently `PPB 2027`. The broader
+website version also includes Peacekeeping 2026/27 and Plan Outline 2026–2028;
+its result is shown separately below. Citations are read from
+`ppb2026.source_document_citations`; the schema name does not identify the cycle.
+
+| Readable-fulltext cohort | Distinct documents |
+|---|---:|
+| Recent, rolling five years | 2,994 |
+| Cited in PPB2027, any age | 1,648 |
+| In both groups | 797 |
+| Older/undated PPB2027 additions | 851 |
+| **Deduplicated union** | **3,845** |
+
+There are 2,637 normalized programme-budget citation symbols; **989 lack eligible
+English fulltext** and are excluded from this “fulltexts we have” estimate.
+Availability counts refer to successfully parsed content, not every downloaded
+PDF or unprocessed extraction. Publication dates have no conflicting non-null
+values among inspected available/cited symbols. Undated uncited fulltexts are
+excluded from the recent cohort; undated cited documents remain eligible.
+
+The union has 180,933 content elements and **166,627 paragraph requests** under
+the original pipeline layout, with an estimated **1.348 billion input tokens**
+and **38.88 million visible output tokens**. Input counts use locally tokenized
+current source text plus the frozen original prompt/schema/context, including
+its all-earlier-parent behavior. Output remains the historical 233.31-token
+mean per request, not a new model measurement. Adjusting just the echoed-text
+component for this scope gives a similar sensitivity estimate of 37.46M output
+tokens. Component token addition approximates API framing/token-boundary merges. The
+longest estimated request is 43,206 tokens, below the long-context price threshold.
+
+| Model | Standard, no cache | Batch, no cache |
+|---|---:|---:|
+| GPT-6 Luna | **$154** | **$77** |
+| GPT-5.6 Luna | $316 | $158 |
+
+Prices verified against official OpenAI model/pricing pages on 9 November 2026:
+GPT-6 Luna $0.10/M input and $0.50/M output; GPT-5.6 Luna $0.20/M input and
+$1.20/M output. Batch is 50% of standard. These are direct-OpenAI reference
+prices; Azure deployment tariff, region premiums and Batch availability have
+not been verified. Reasoning disabled, no paid model calls made for this update.
+
+For GPT-6 Luna, plan around **$100 Batch or $200 standard** with a 25–30% margin.
+Near-total cache hits on the repeated prompt/schema would lower standard cost
+to about $47, but cache hits have not been measured and this is not the planning
+baseline. An additional 1,000 reasoning tokens per paragraph adds about $83
+standard / $42 Batch. Quality equivalence at reasoning=none remains untested.
+Correcting only the parent-context loop would lower uncached standard cost to
+about $147; any prompt/context change needs separate quality evaluation.
+
+Scope sensitivities:
+
+- Website PPB2027 version (also peacekeeping and plan outline): **3,882** documents,
+  **168,702** requests, about **$156 standard / $78 Batch** on GPT-6 Luna.
+- Calendar years 2022–2026 through today, plus PPB2027 only: **3,701** documents,
+  **160,363** requests, about **$149 standard / $74 Batch**.
+- Recent rolling five-year fulltexts alone: **2,994** documents,
+  **119,415** requests, about **$109 standard / $55 Batch**.
+
+Reproduction:
+
+- `website/src/lib/data/paragraph-extraction-budget.ts`: exact source queries,
+  using the shared database helpers and current version mappings.
+- `website/scripts/export-paragraph-extraction-budget.ts`: read-only scoped
+  export; verifies streamed elements reconcile to selected document metadata.
+- `data-processing/evals/paragraph_entities/scoped_budget.py`: tokenizer,
+  original/corrected context calculation, costs and union reconciliation checks.
+- `.cache/paragraph-entity-budget-registry-20261109/{selection.json,queries.sql,summary.json,document-budgets.json}`:
+  executed scope, source snapshot, measurements and calculation outputs.
+
+The following sections preserve the earlier September assessment and broader
+corpus estimate; the scope above is the current requested estimate.
+
+## Status (September assessment)
 
 `SHOW_PARAGRAPH_ENTITIES = false` remains in `src/lib/feature-flags.ts`.
 The original LLM implementation has now been located in

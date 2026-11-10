@@ -20,6 +20,7 @@ import {
 } from '#lib/public-schemas'
 
 export const FILTER_DESCRIPTIONS: Record<string, string> = {
+  pilot_sample: 'Set to `1` to select resolutions in the frozen exploratory extraction sample, when the branch pilot feature is enabled.',
   entity:
     'Citing entity code, for example `DESA`. `__none__` selects documents with no citing entity.',
   organ: 'Issuing body code from `/api/v1/reference`.',

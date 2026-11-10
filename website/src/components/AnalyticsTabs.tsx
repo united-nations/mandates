@@ -12,6 +12,7 @@ interface AnalyticsTabsProps {
   overTime: ReactNode
   relationships: ReactNode
   topics: ReactNode
+  llmAnalysis: ReactNode
 }
 
 /**
@@ -24,20 +25,25 @@ export function AnalyticsTabs({
   overTime,
   relationships,
   topics,
+  llmAnalysis,
 }: AnalyticsTabsProps) {
   return (
     <FilterTargetContext.Provider value="/secretariat">
       <Tabs defaultValue="over-time" className="w-full">
-        <TabsList>
+        <TabsList className="h-auto flex-wrap justify-start">
           <TabsTrigger value="over-time">{text.overTime}</TabsTrigger>
           <TabsTrigger value="relationships">{text.relationships}</TabsTrigger>
           <TabsTrigger value="topics">{text.topics}</TabsTrigger>
+          <TabsTrigger value="llm-analysis">Mandate tasks</TabsTrigger>
         </TabsList>
         <TabsContent value="over-time" className="mt-6 space-y-4">
           {overTime}
         </TabsContent>
         <TabsContent value="relationships" className="mt-6 space-y-4">
           {relationships}
+        </TabsContent>
+        <TabsContent value="llm-analysis" className="mt-6 space-y-4">
+          {llmAnalysis}
         </TabsContent>
         <TabsContent value="topics" className="mt-6 space-y-4">
           {topics}

@@ -63,3 +63,6 @@ export const SHOW_ENTITY_CLASSIFICATION: boolean = true
 
 /** Paragraph assignee/entity highlights and filter; held back pending better extraction. */
 export const SHOW_PARAGRAPH_ENTITIES: boolean = false
+
+/** Display the exploratory, source-validated branch pilot. */
+export const SHOW_PARAGRAPH_PILOT: boolean = true

@@ -22,6 +22,15 @@
         "summary": "Search and browse mandate documents",
         "parameters": [
           {
+            "name": "pilot_sample",
+            "in": "query",
+            "required": false,
+            "description": "Set to `1` to select resolutions in the frozen exploratory extraction sample, when the branch pilot feature is enabled.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "entity",
             "in": "query",
             "required": false,
@@ -640,6 +649,15 @@
         "summary": "Download up to 1,000 matching documents",
         "description": "Document summaries for a filtered selection of at most 1,000 documents; a larger selection returns 400 with the total, never a shortened file. The include parameter is not accepted (400). CSV has a standard column header without repeated file-level metadata; metadata is included in Excel/JSON. JSON downloads use indented regular JSON. Ignores page/limit and lists grouped documents individually. Excel contains Documents, Budget citations and About this export sheets. Live batches are not a frozen database snapshot. A failed stream is an incomplete download and must be retried.",
         "parameters": [
+          {
+            "name": "pilot_sample",
+            "in": "query",
+            "required": false,
+            "description": "Set to `1` to select resolutions in the frozen exploratory extraction sample, when the branch pilot feature is enabled.",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "entity",
             "in": "query",

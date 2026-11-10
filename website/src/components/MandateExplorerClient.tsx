@@ -1,5 +1,6 @@
 'use client'
 
+import { SHOW_PARAGRAPH_PILOT } from '@/lib/feature-flags'
 import { ExportMenu } from '@/components/ExportMenu'
 
 import { FilterControls } from '@/components/FilterControls'
@@ -97,6 +98,20 @@ export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
             column set outgrows it the table scrolls sideways rather than the
             band widening. */}
         <div className="mx-auto max-w-6xl px-6 md:px-12 lg:px-16">
+          {SHOW_PARAGRAPH_PILOT && (
+            <label className="mb-3 flex w-fit cursor-pointer items-center gap-2 text-sm">
+              <Switch
+                checked={filters.pilot_sample === '1'}
+                onCheckedChange={(checked) =>
+                  setFilter('pilot_sample', checked ? '1' : undefined)
+                }
+              />
+              Sampled resolutions only
+              <span className="text-muted-foreground">
+                Exploratory extraction pilot
+              </span>
+            </label>
+          )}
           <div className="mb-4">
             <FilterControls
               entitiesData={allEntities}

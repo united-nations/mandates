@@ -1,3 +1,5 @@
+import pilotSample from '@/data/paragraph-pilot-sample.json'
+import { SHOW_PARAGRAPH_PILOT } from '../feature-flags'
 import { splitSubprogrammeLabel } from '#lib/budget-labels'
 import { mandateMembershipSql, versionPredicateSql } from '@/lib/mandate-membership'
 /**
@@ -274,6 +276,11 @@ function buildFilterClauses(
   const clauses: string[] = []
   const params: SqlParam[] = []
   let paramIndex = paramOffset + 1
+
+  if (SHOW_PARAGRAPH_PILOT && filters.pilot_sample === '1') {
+    clauses.push(`d.ppb_full_document_symbol = ANY($${paramIndex++}::text[])`)
+    params.push(pilotSample)
+  }
 
   // Version scoping. The selected budget version is a LENS, not a scope tab:
   // the page always shows the whole document catalogue, and the version decides

@@ -110,6 +110,12 @@ export function ActiveFilters({
             />
           )}
 
+          {displayFilters.pilot_sample === '1' && (
+            <FilterBadge
+              label="Sampled resolutions"
+              onClear={() => clearFilter('pilot_sample')}
+            />
+          )}
           {displayFilters.cited === '1' && (
             <FilterBadge
               label={`Cited in ${citedVersionLabel ?? 'the budget'}`}

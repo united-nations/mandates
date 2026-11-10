@@ -57,3 +57,34 @@ reference paragraphs and saved GPT-5 predictions have incompatible historical
 entity taxonomies. Raw exact-match entity scores in the audit are diagnostic
 only and must not be reported as current-schema extraction accuracy. Mentioned
 entities are not labelled by that reference set.
+
+## Current operative-only activity pilot (9 November 2026)
+
+Use `activity_pilot.py`, `activity_schema.py` and `activity_prompt.txt` for the
+current pilot. The legacy scripts above retain the original experiment.
+The sample is the frozen 374 registry documents, with 8,299 reviewed operative
+logical targets. Verb extraction is omitted. Activity families and subtypes
+are encoded together as schema alternatives; exact quotes are validated against
+frozen target/context text. No production data is written.
+
+Dependencies: Python 3.13, openai, pydantic, python-dotenv and tiktoken. The executed
+runtime is `/tmp/mandate-budget-20261109/bin/python` (openai 3.48.0,
+pydantic 2.14.3); tokenizer cache `/tmp/mandate-budget-tiktoken`.
+
+From the repository root:
+
+```bash
+python data-processing/evals/paragraph_entities/activity_pilot.py prepare --out OUTPUT
+python data-processing/evals/paragraph_entities/activity_pilot.py smoke --out OUTPUT --env-file AZURE_ENV
+# After source-linked diagnostic review is recorded in OUTPUT/smoke-review.json:
+python data-processing/evals/paragraph_entities/activity_pilot.py run --out OUTPUT --env-file AZURE_ENV --concurrency 12
+python -m unittest discover -s data-processing/evals/paragraph_entities -p test_activity_schema.py
+```
+
+The API uses model `gpt-6-luna`, reasoning `none`. `run` resumes successful
+local outputs and reuses successful smoke responses. Invalid outputs are saved
+separately, not imported. There are no automatic paid retries. Inspect errors
+before deliberately resuming because failed tasks can be sent again.
+The request batch transport (`submit`, `collect`) requires an Azure Batch SKU;
+the tested GlobalStandard deployment rejected it. `submit --probe` attempts only
+one request. Do not infer model quality from schema/evidence validity.

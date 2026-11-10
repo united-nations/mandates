@@ -18,6 +18,7 @@
  */
 
 import { cache } from 'react'
+import { withParagraphPilot } from './paragraph-pilot'
 import { synthesizeDlAnnotations } from '../fulltext-annotations'
 import { hasFulltextQualityWarning } from '../fulltext-quality'
 import { queryMany } from '../db/query'
@@ -94,7 +95,7 @@ function mapRow(row: ParagraphRow): Paragraph {
 function mapDlRow(row: ParagraphRow): Paragraph {
   const base = mapRow(row)
   const annotations = synthesizeDlAnnotations(row)
-  return annotations ? { ...base, ...annotations } : base
+  return withParagraphPilot(annotations ? { ...base, ...annotations } : base)
 }
 
 // ============================================================================

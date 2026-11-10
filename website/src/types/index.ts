@@ -2,6 +2,7 @@ import type { DocumentTextMetrics } from '@/lib/text-analytics'
 
 // Core data types based on the DB schema (mandates.paragraphs)
 export interface Paragraph {
+  pilot?: import('@/lib/paragraph-pilot').ParagraphPilot
   /** Source footnote boundaries measured in UTF-16 code units into text. */
   note_references?: { note_id: number; offset: number }[]
   note_ids?: number[]
@@ -365,6 +366,8 @@ export interface MandateGroupInfo {
 }
 
 export interface FilterOptions {
+  /** Branch pilot: restrict to resolutions in the frozen random sample. */
+  pilot_sample?: string
   entity?: string
   organ?: string
   crossCitingEntity?: string

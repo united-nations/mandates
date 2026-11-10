@@ -38,6 +38,13 @@ const nextConfig: NextConfig = {
       : undefined,
   },
 
+  outputFileTracingIncludes: {
+    '/*': [
+      './src/data/paragraph-pilot.json',
+      './src/data/paragraph-pilot-analytics*.json',
+    ],
+  },
+
   serverExternalPackages: ['undifferent'],
 
   // Used by src/proxy.ts.

@@ -48,6 +48,7 @@ export const SUBJECT_DOMAIN_LABELS: Record<string, string> = {
 
 // All filter parameters that can be passed to the API
 export const FILTER_PARAMS = [
+  'pilot_sample',
   'entity',
   'organ',
   'crossCitingEntity',
@@ -81,6 +82,7 @@ export const FILTER_PARAMS = [
 
 // Filter parameters that represent actual filters (exclude pagination and sorting)
 export const FILTER_ONLY_PARAMS = [
+  'pilot_sample',
   'entity',
   'organ',
   'crossCitingEntity',
@@ -174,6 +176,7 @@ export function parseSearchParams(
 
   const filters: import('@/types').FilterOptions = {
     cited,
+    pilot_sample: getString('pilot_sample'),
     // No hardcoded default: when absent, the data layer's versionClause
     // COALESCEs to ppb2026.budget_versions.is_default (single source of truth).
     ppb_version: getString('ppb_version'),

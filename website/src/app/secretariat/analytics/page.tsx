@@ -1,3 +1,5 @@
+import { PilotDocumentAnalytics } from '@/components/PilotDocumentAnalytics'
+import { getPilotAnalyticsRuns } from '@/lib/data/pilot-analytics'
 import type { Metadata } from 'next'
 
 import { AnalyticsTabs } from '@/components/AnalyticsTabs'
@@ -180,6 +182,9 @@ export default async function AnalyticsPage({ searchParams }: PageProps) {
         overTime={overTime}
         relationships={relationships}
         topics={topics}
+        llmAnalysis={
+          <PilotDocumentAnalytics runs={getPilotAnalyticsRuns()} />
+        }
       />
     </section>
   )

@@ -1,0 +1,2685 @@
+{
+  "document_sample_sha256": "bbd598082506ed586498b600ff6512e4fc2b07bcb1c54743526d21d0668d723b",
+  "reviewed_documents": [
+    "S/PRST/2025/2",
+    "A/DEC/79/569",
+    "A/DEC/79/567",
+    "A/DEC/79/525",
+    "A/DEC/79/521",
+    "E/DEC/2024/216",
+    "A/DEC/77/522",
+    "E/DEC/2023/342",
+    "A/DEC/76/558",
+    "A/DEC/78/401",
+    "A/DEC/78/511",
+    "A/RES/48/104",
+    "S/PRST/2024/6",
+    "A/DEC/77/504",
+    "A/DEC/76/569",
+    "E/DEC/2024/337",
+    "A/DEC/76/556",
+    "E/DEC/2024/340",
+    "A/DEC/77/501",
+    "E/DEC/2022/320",
+    "E/DEC/2023/219",
+    "S/PRST/2022/5",
+    "A/DEC/79/419",
+    "E/DEC/2023/344",
+    "A/DEC/77/511",
+    "A/DEC/77/519",
+    "E/DEC/2024/322",
+    "S/PRST/2026/2",
+    "E/DEC/2025/332",
+    "A/DEC/79/509",
+    "E/DEC/2022/211",
+    "A/DEC/79/563",
+    "A/DEC/79/561",
+    "A/DEC/77/414",
+    "A/DEC/76/575",
+    "E/DEC/2025/311",
+    "E/DEC/2023/306",
+    "A/DEC/79/402",
+    "S/PRST/2025/3",
+    "A/DEC/79/556",
+    "S/PRST/2024/5",
+    "E/DEC/2024/311",
+    "E/DEC/2025/339",
+    "A/DEC/78/509",
+    "E/DEC/2022/344"
+  ],
+  "overrides": [
+    {
+      "symbol": "A/DEC/76/556",
+      "primary_position": 1,
+      "source_paragraph_ids": [
+        "199f5916-daac-56c2-b97f-92a19baaf4ea"
+      ],
+      "source_text_sha256": [
+        "829649538c6013aaede4d86a358fb5902968e1c879f0995e250af547ec2a24ef"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/DEC/76/558",
+      "primary_position": 2,
+      "source_paragraph_ids": [
+        "1a7d0803-7bbb-5c53-9693-8124e096f114",
+        "9bb51e6f-fd24-5ca2-baff-1a92d22f62d7"
+      ],
+      "source_text_sha256": [
+        "c87bbf9041698e5035bbde824b7c1798cb61a1fb2484cef39aa0ccff467ba658",
+        "4edbe34ec17ca79abd124f0f9781573a2567b9f438c902473fceea7ad09acd2a"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/DEC/76/569",
+      "primary_position": 1,
+      "source_paragraph_ids": [
+        "84e12f3a-cdb2-50d8-8988-b4c33d4b9dbf"
+      ],
+      "source_text_sha256": [
+        "4a0b7582b373994003a97a552dd2171e6b5ce3e6ee4f96fa3f919881cb8a4e92"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/DEC/76/575",
+      "primary_position": 1,
+      "source_paragraph_ids": [
+        "00176279-a3d2-5fa2-a085-e2c9a80ebc62"
+      ],
+      "source_text_sha256": [
+        "d43a4489bbd5e511753ef51c36890e3c5a0dfe9c3473db3f300e08d685f4e9d8"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/DEC/77/414",
+      "primary_position": 1,
+      "source_paragraph_ids": [
+        "8a587998-db05-5a7a-9942-1c0ed90ab6b9"
+      ],
+      "source_text_sha256": [
+        "cef742759f9340e69d7739c4840c04c2fa7ebb2e24f059c8446584d7e9ea00e9"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/DEC/77/414",
+      "primary_position": 2,
+      "source_paragraph_ids": [
+        "91614fe6-3b93-5a3e-820a-eec66434f452"
+      ],
+      "source_text_sha256": [
+        "78609fa515b072b7e33f2c6c49226549a9b75ab768633f6622047bc1d1ae907b"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/DEC/77/501",
+      "primary_position": 1,
+      "source_paragraph_ids": [
+        "7b6ed20a-994f-5b4a-a7f3-5f59c66ff272"
+      ],
+      "source_text_sha256": [
+        "91825b1e95ed82f514c50ff7cc544f5c93808c7ce71e69bb829a9523e0a1c6fa"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/DEC/77/504",
+      "primary_position": 1,
+      "source_paragraph_ids": [
+        "9d0d441f-2293-5f5f-a277-ab297a1a85df"
+      ],
+      "source_text_sha256": [
+        "277a49da26bbd3eb770fa84b4d103f4fbf5945821713568195d8a946e139a1b3"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/DEC/77/504",
+      "primary_position": 2,
+      "source_paragraph_ids": [
+        "a869edcc-f230-5187-8040-c280d1eb77a1"
+      ],
+      "source_text_sha256": [
+        "15d73ecf8df3bf6f68ebb9a2cb66f7f23dcde3bd9f836a1efc9d94fa607ca5fb"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/DEC/77/504",
+      "primary_position": 3,
+      "source_paragraph_ids": [
+        "9cc68b14-cf85-52f6-9ef7-b0999b1ca16a"
+      ],
+      "source_text_sha256": [
+        "900eed2595210f2cb3be261569373fd31758d3316a3ce61d2ac283f2b3213e12"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/DEC/77/511",
+      "primary_position": 1,
+      "source_paragraph_ids": [
+        "5d67b5b7-f2a2-5460-917d-63258bc74308"
+      ],
+      "source_text_sha256": [
+        "9fc18a9a1f285b00e0f192bfedebdb039b641ac3be186234111adb0e8942caf0"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/DEC/77/519",
+      "primary_position": 1,
+      "source_paragraph_ids": [
+        "6fe34a68-83dd-5519-aa63-8b0f0e49df0e"
+      ],
+      "source_text_sha256": [
+        "dba0a2c2b14505a15a8a017eaa3d32b6df6502251a0b827cfe463b258009959d"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/DEC/77/522",
+      "primary_position": 1,
+      "source_paragraph_ids": [
+        "d78dea87-ef7d-512e-b8cb-dae270135480"
+      ],
+      "source_text_sha256": [
+        "ed05d478f7e429fec8803f368a6125792b8663c101ac942d158b5904f9669aaf"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/DEC/78/401",
+      "primary_position": 1,
+      "source_paragraph_ids": [
+        "42b96ee9-cec8-597f-8f83-a1a3370aaf29"
+      ],
+      "source_text_sha256": [
+        "ebc7732672d8df432082e89bfee5c3d6c0f8032727ebfda635e8e3b912dc115f"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/DEC/78/509",
+      "primary_position": 1,
+      "source_paragraph_ids": [
+        "8a1d9bc2-e381-5d02-abd0-a718234b70a1"
+      ],
+      "source_text_sha256": [
+        "98dca470ae651dbad62cc420698ca4cdc8f252ea28040f21a353f467a8edd4de"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/DEC/78/511",
+      "primary_position": 1,
+      "source_paragraph_ids": [
+        "76092070-9c0e-51b2-b58d-205f31f4ca07"
+      ],
+      "source_text_sha256": [
+        "73b1d9c4ed3b4f95fff6e48684ff960992308fa263b5077baa15bbee341dd3a5"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/DEC/79/402",
+      "primary_position": 1,
+      "source_paragraph_ids": [
+        "e9e6c235-2b19-5786-b952-3c35e054c5e3",
+        "2430a782-f3eb-5afa-8f84-170361a59b4b"
+      ],
+      "source_text_sha256": [
+        "cfb43deab8a70b511988a577f58c68f90ef4c984b48161ad2565fd92e30c44c1",
+        "8e997ddb8140ce41f43efb212cdae4a3ef442204360d09304b54657af4d8a112"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/DEC/79/419",
+      "primary_position": 1,
+      "source_paragraph_ids": [
+        "1c7f77be-acfc-568f-9864-92125b67ef09"
+      ],
+      "source_text_sha256": [
+        "165801ebc5faa177e8340db82b88766b17ff9fc6ec9c81f7d1e2bb2b8dfc821b"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/DEC/79/509",
+      "primary_position": 1,
+      "source_paragraph_ids": [
+        "0a6d7d69-857f-557c-9be7-a9fc410cf330"
+      ],
+      "source_text_sha256": [
+        "701ada8928a6a67c3f4d7a75af2562d99daef2532b2b639eaef409ac1e8e88e8"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/DEC/79/521",
+      "primary_position": 2,
+      "source_paragraph_ids": [
+        "dba83888-4eb9-556e-839a-dfc50cb62a6b"
+      ],
+      "source_text_sha256": [
+        "77c1baa4e0aefc7df4e98a3abc50f18a02a93713d04837da985598455a961cbf"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true,
+      "parent_positions": [
+        1
+      ]
+    },
+    {
+      "symbol": "A/DEC/79/521",
+      "primary_position": 3,
+      "source_paragraph_ids": [
+        "f532c036-e109-5807-bc2a-fbb01f826785"
+      ],
+      "source_text_sha256": [
+        "be37bd2c2827f03327aa61acc56e0df3be56f643d923d6e30cce9b550ea8b674"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true,
+      "parent_positions": [
+        1
+      ]
+    },
+    {
+      "symbol": "A/DEC/79/521",
+      "primary_position": 4,
+      "source_paragraph_ids": [
+        "96a0a6ee-1787-5ce2-8e0c-5662804293fc"
+      ],
+      "source_text_sha256": [
+        "7c313187c33336d72499a98e5459f638e3c67ae3bedcc90b47be335093928b41"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true,
+      "parent_positions": [
+        1
+      ]
+    },
+    {
+      "symbol": "A/DEC/79/521",
+      "primary_position": 5,
+      "source_paragraph_ids": [
+        "16afbd45-fad6-50b1-a235-2540e08a031e"
+      ],
+      "source_text_sha256": [
+        "1d896f5673249eaaba6bd95bf0a0be9a95bfaef4e2edd370182be223974ea5fe"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true,
+      "parent_positions": [
+        1
+      ]
+    },
+    {
+      "symbol": "A/DEC/79/525",
+      "primary_position": 1,
+      "source_paragraph_ids": [
+        "ec9896b8-f9a4-503c-814d-3be895f91a57"
+      ],
+      "source_text_sha256": [
+        "ada7b1ff9e34369f778dbec8b56ce65ba6a644b0e5f4f1143e23cb0192e1573a"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/DEC/79/556",
+      "primary_position": 1,
+      "source_paragraph_ids": [
+        "17f474e0-68be-52b9-a44f-9bb6f1fda09c"
+      ],
+      "source_text_sha256": [
+        "72d4bd90259493276b925a8b6e7af3dd0f7ed12d43928f022a0db1a7a4af5f2f"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/DEC/79/561",
+      "primary_position": 1,
+      "source_paragraph_ids": [
+        "82a8c661-1635-55f0-88b2-d978bb93edbb"
+      ],
+      "source_text_sha256": [
+        "a5718cb10dcc5eb19dcce5e8a75395358924b609bc2fbeca13535b303bd8954d"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/DEC/79/563",
+      "primary_position": 1,
+      "source_paragraph_ids": [
+        "7d5eee79-5305-59ea-89cf-76e44a769166",
+        "99c58e88-82a6-5916-b503-b8298b4ccced",
+        "0f5cfd89-9e2a-5921-9091-6080cb9b6daf",
+        "51d7cabd-4963-5629-822b-89889506db2d",
+        "b243a0e2-ff70-5b2b-8607-1c9e848c53aa",
+        "09019f14-3b8e-5dfc-a47c-caaf2a3a7c51",
+        "343a7718-7038-5d2a-8705-fe17ffd662ba"
+      ],
+      "source_text_sha256": [
+        "a1f3ced38fb0d56a10b0ddf1bf51e3309383a0f29fb5e1b6f95cccd3dc9069b6",
+        "1f7296745a1964168b61d768c316aba7eeea6b4f4541630eaec1e2059370dfb0",
+        "66bea257c53ffea35a9dd42725947dfdab477b92939ee13f0941296696837c40",
+        "a856c981e3ab108822f93aa125bfc079f10a8883e3e4a3ed70e5307b7c832253",
+        "f9833c622a300317b3618c2d84d7091091b32fca2ec2f149156f19fa7eded9a2",
+        "0d33c9bdfad9d51467121efec7f215e8bb2afae156468f0387422d88331d757c",
+        "aab06f9444514f55990305e5c4770bab0b1f730c28852ee01a4c890c099aef03"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/DEC/79/567",
+      "primary_position": 1,
+      "source_paragraph_ids": [
+        "a3e442f8-9665-5991-bbdb-9e3f5e66dfea"
+      ],
+      "source_text_sha256": [
+        "509c976d62963a4c569a3ca173da698d93528e9ea98e64a9ae3fc63ad9f69d03"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/DEC/79/569",
+      "primary_position": 1,
+      "source_paragraph_ids": [
+        "f330cf94-5915-59a0-b476-7e841556216f"
+      ],
+      "source_text_sha256": [
+        "5379bc422e4c5c6815fa6fdd85a467eaf30e6cd5342c064e253f764037ca3935"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 31,
+      "source_paragraph_ids": [
+        "c96d4929-3590-5217-97b2-02903249d634"
+      ],
+      "source_text_sha256": [
+        "84e22df6a2e847edc769c83151b6a4c91084e63b096f8f98d03a75367c2482c9"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 33,
+      "source_paragraph_ids": [
+        "fb9ab43f-431b-54d6-99ae-d431c01ca920"
+      ],
+      "source_text_sha256": [
+        "ee16724ad7d164131ac2781d7d1419a56d0058c75f3b12985419a11ae821c00e"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 35,
+      "source_paragraph_ids": [
+        "3834ca31-5d2c-5089-869f-4b63b85265d8"
+      ],
+      "source_text_sha256": [
+        "6cbca81237e351a1ee7b1a61d4d8b2773d842f161e33efd321bc53e4b0750064"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 36,
+      "source_paragraph_ids": [
+        "dcce492e-772c-510d-9caa-b261dc248cc1"
+      ],
+      "source_text_sha256": [
+        "6320034dbb7fad2f418e30df702972215fcbe1bd82f0fe566bc60f18cd5c763c"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 37,
+      "source_paragraph_ids": [
+        "27f053cf-f757-529b-90ee-682625ba5ea1"
+      ],
+      "source_text_sha256": [
+        "d3690605311f0009187898ba9d6b1d61d6bd6e8d680ef49c285c854eefdbf1a5"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 38,
+      "source_paragraph_ids": [
+        "1795a403-8978-5d41-bef5-369ce6b61a83"
+      ],
+      "source_text_sha256": [
+        "3a97d8cdeacf7723662808887634bd9c5c631b237fbf928c9efc0d5f71bdd98a"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 40,
+      "source_paragraph_ids": [
+        "ec59d6d9-ee20-5ea7-9002-03a59471997b"
+      ],
+      "source_text_sha256": [
+        "3565605c451c59cb9f955a8fc1fd0b6443eaad6a8fa9d61018f20a79c44f4797"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 41,
+      "source_paragraph_ids": [
+        "4262a8cc-a521-5367-a2d7-b2c7eddd1c18"
+      ],
+      "source_text_sha256": [
+        "9e17ab676ad4f71604d23f0b9616634bf664481dad8dbd9234c1c2014299581d"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 42,
+      "source_paragraph_ids": [
+        "af332ff9-c964-5c9e-8ef0-65a6b9fcc71d"
+      ],
+      "source_text_sha256": [
+        "612ef7cbe47d8b939be8ec8285da533f6ffa0d7076d25fed99e497fabd9bb9dc"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 46,
+      "source_paragraph_ids": [
+        "c33c4e96-0ecd-5376-82b3-15ed0d16b924"
+      ],
+      "source_text_sha256": [
+        "f187b5c3752fe0b038048e758eb87ff9abc750145bc2f4bf4d816a98785e5efd"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 47,
+      "source_paragraph_ids": [
+        "2cddf459-4d3a-59e8-a7cf-453a3e726df8"
+      ],
+      "source_text_sha256": [
+        "af8a5b1ffa6f85cce3727248bc0efc309be3d6c484cc175f31d4ba561cc4db7d"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 48,
+      "source_paragraph_ids": [
+        "0c04cc56-1355-5b5a-b9b0-b3fd0eecaf52"
+      ],
+      "source_text_sha256": [
+        "58bb9c6552618a053190aa0a1b4a026901826b31cc1976f9ae3d6d9346f100cd"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 49,
+      "source_paragraph_ids": [
+        "f8a37cca-a836-5b25-93cd-1cf223485186"
+      ],
+      "source_text_sha256": [
+        "db4c7ef68d02c4db46110420473a604d17c87c8580060dfa9cde4b77246ccb93"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 50,
+      "source_paragraph_ids": [
+        "b83b87b2-bd80-52cd-ba6d-3d8ebe3ad68d"
+      ],
+      "source_text_sha256": [
+        "7000c61e19692f84140d128600a0d97ee3978656fd61b937ecb21ca07b7a8126"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 51,
+      "source_paragraph_ids": [
+        "9d6651ef-14cb-5b66-ad31-227da05b9b93"
+      ],
+      "source_text_sha256": [
+        "5c375e0fa10960016acbb52700d9715962a26b765d74cb938bf199954415a99d"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 53,
+      "source_paragraph_ids": [
+        "44e9931b-61af-52ac-8543-89ff53621036"
+      ],
+      "source_text_sha256": [
+        "710368f950661bc675136977182ac58b54bbc7ffc4dbc6a55c4f167c22e64834"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 54,
+      "source_paragraph_ids": [
+        "fd58723a-bf21-5de5-b885-bd10ba101c4d"
+      ],
+      "source_text_sha256": [
+        "1ba6a87e5d7802891674bbb5a6f492c7081a17224d69c728cbde3be261e03704"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true,
+      "parent_positions": [
+        53
+      ]
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 55,
+      "source_paragraph_ids": [
+        "06b17bfd-493f-5c31-b0cc-6390261126a7"
+      ],
+      "source_text_sha256": [
+        "4a7ec5930084d62992f6e5893aca96ceb1d358518b83ea64fb5124e87dac0601"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true,
+      "parent_positions": [
+        53
+      ]
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 56,
+      "source_paragraph_ids": [
+        "420f7f90-694a-5388-bcdd-cfc371264b64"
+      ],
+      "source_text_sha256": [
+        "4eaa5ed14ab8a0a0eb5b3d195f0b4ea73b7e2d810cf0972d1e69be69c447fee1"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true,
+      "parent_positions": [
+        53
+      ]
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 62,
+      "source_paragraph_ids": [
+        "b205b7d3-5fac-5aaf-8e8e-e752d6493ec0"
+      ],
+      "source_text_sha256": [
+        "6d01fb7dba7a4dd46c35cc1a6c83e379d8a48d54dc36c32193dd44e3644f25da"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true,
+      "parent_positions": [
+        53
+      ]
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 63,
+      "source_paragraph_ids": [
+        "e801867e-2ae8-5015-aae7-165c8d7af716"
+      ],
+      "source_text_sha256": [
+        "b065755cf0ecd4f4c803fc4875747b3bd24c294fa320fa574eb0f16266a57a6a"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true,
+      "parent_positions": [
+        53
+      ]
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 64,
+      "source_paragraph_ids": [
+        "d496651d-1b70-5a93-bd68-35cafc13ad74"
+      ],
+      "source_text_sha256": [
+        "3b055994052796153d8169129a0a95b2eca708d34cb6b12bcce8c367cafada19"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true,
+      "parent_positions": [
+        53
+      ]
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 65,
+      "source_paragraph_ids": [
+        "8308baea-b17d-5491-af83-49fea9fb0e1a"
+      ],
+      "source_text_sha256": [
+        "6a859c372fc61c0a8084151165c5836ba39225dde0619cd557d469bcb22edba8"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true,
+      "parent_positions": [
+        53
+      ]
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 66,
+      "source_paragraph_ids": [
+        "8e9e06e0-18b4-591d-b9b1-44f296360da0"
+      ],
+      "source_text_sha256": [
+        "7be34e044cd22c790d268d2fbf97d6203fc3d92ab756851cf67a7c6bf771e435"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true,
+      "parent_positions": [
+        53
+      ]
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 67,
+      "source_paragraph_ids": [
+        "3bbaa32d-8f13-50fb-b995-678590f87128"
+      ],
+      "source_text_sha256": [
+        "5fb52477efb72ca5e8cc673d566d58924f3b728876d76b084528f9e33e9cd9b8"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true,
+      "parent_positions": [
+        53
+      ]
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 68,
+      "source_paragraph_ids": [
+        "4752eafa-0700-5233-8d6c-fd534e7e3056"
+      ],
+      "source_text_sha256": [
+        "005c65e6a334dd9faf8c3326ebed58c81b78b6ba3830ecd4471ed0e7f0a25e54"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true,
+      "parent_positions": [
+        53
+      ]
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 69,
+      "source_paragraph_ids": [
+        "5f46d6e3-0ce8-577b-9cd2-bb8027f2e063"
+      ],
+      "source_text_sha256": [
+        "b4fafe5f14d3b0dba01e50684ee74334b739011cb4f6dfe70f2d5965b8b19c95"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true,
+      "parent_positions": [
+        53
+      ]
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 70,
+      "source_paragraph_ids": [
+        "3cd74622-1a69-5af0-b303-270f1f47ed21"
+      ],
+      "source_text_sha256": [
+        "506c56d9d41757fae899fed935cbed72eb8186bf07b5d5932ddcd48bbf572f0a"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true,
+      "parent_positions": [
+        53
+      ]
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 71,
+      "source_paragraph_ids": [
+        "faa7de04-1a42-5ac4-8249-09bcd75cfad1"
+      ],
+      "source_text_sha256": [
+        "a4c9deab82121439f2bdf9cf4dd907333b702021a45d32edb449d7ebd1b39efe"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true,
+      "parent_positions": [
+        53
+      ]
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 72,
+      "source_paragraph_ids": [
+        "b023edfa-83e8-529f-96b4-5daba8988967"
+      ],
+      "source_text_sha256": [
+        "d6fa8a999a73683451e9de0ab9bd8f7f5f1e536d20cc53b7e15c9261b76c0df3"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true,
+      "parent_positions": [
+        53
+      ]
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 73,
+      "source_paragraph_ids": [
+        "e1fb1ccc-9997-561e-b11d-28e98722f31d"
+      ],
+      "source_text_sha256": [
+        "bb8583a18d3f7f4f4e4bb0f8eb73ee9c71d4cf68f8c831da464d133471fce28a"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true,
+      "parent_positions": [
+        53
+      ]
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 74,
+      "source_paragraph_ids": [
+        "307cc6b5-ce89-5b4b-94f5-9757df9c05d0"
+      ],
+      "source_text_sha256": [
+        "3572d5bc7771b1f9424441bef7428ec20592d95f7d4ac621c9463f46ab75b0d6"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true,
+      "parent_positions": [
+        53
+      ]
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 75,
+      "source_paragraph_ids": [
+        "f07dd1ba-e371-5255-9b3a-b31ca70d5910"
+      ],
+      "source_text_sha256": [
+        "00926077c62f7acc1303253c3669b16de022e6ba0e00ba31c7b4d9b922238313"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true,
+      "parent_positions": [
+        53
+      ]
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 77,
+      "source_paragraph_ids": [
+        "9fcb55a8-dcfa-5794-a69a-98850e7237af"
+      ],
+      "source_text_sha256": [
+        "68fd5f600fe44029b1a0cf7f979c8bed21e835c0f5b0088f20eb6cb35b7d9d5d"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 78,
+      "source_paragraph_ids": [
+        "27dfb068-1110-57a1-a570-c3cb669ace52"
+      ],
+      "source_text_sha256": [
+        "c9b533ec2e6c5107191f6214adf371d27dae089dddfa275bda54569b0f9c81ae"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true,
+      "parent_positions": [
+        77
+      ]
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 79,
+      "source_paragraph_ids": [
+        "d2b5f58a-03ea-5f18-8cb3-9d0ae365189f"
+      ],
+      "source_text_sha256": [
+        "5fa1cb3f5696df2d1246d16a657686adc019ae65f1e8fc9abe5e955dd9ca5fb9"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true,
+      "parent_positions": [
+        77
+      ]
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 80,
+      "source_paragraph_ids": [
+        "0e0f9ebe-982b-57bc-a7fb-b45668a57121"
+      ],
+      "source_text_sha256": [
+        "b01548f3f07724988eca5e1b2e37b48ac643bdcda8f02d74e4f741670796c1eb"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true,
+      "parent_positions": [
+        77
+      ]
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 81,
+      "source_paragraph_ids": [
+        "0210df41-c076-52e9-bf57-69ea9bcd36a2"
+      ],
+      "source_text_sha256": [
+        "fe9f69e986f306cfcf6211ee9d4bc039e5a5fce4d71992b606627b4a01ce5f51"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true,
+      "parent_positions": [
+        77
+      ]
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 82,
+      "source_paragraph_ids": [
+        "0fd2af0a-a7b3-5525-bd41-14c7e4155b2b"
+      ],
+      "source_text_sha256": [
+        "f6ad741a48ace1245495d7d4b31c34c4a1d51b598d8bd884fce497dbae2be46e"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true,
+      "parent_positions": [
+        77
+      ]
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 83,
+      "source_paragraph_ids": [
+        "34cf5ecd-4196-54df-831c-af66949fc20a"
+      ],
+      "source_text_sha256": [
+        "90f08b0cb19b78e5a34bc926e0c765330a631d9a96df424cc69378bf0a837aff"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true,
+      "parent_positions": [
+        77
+      ]
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 84,
+      "source_paragraph_ids": [
+        "fb071f99-18ea-5fcb-9087-30b38bd36651"
+      ],
+      "source_text_sha256": [
+        "99dc94509e61dc181428b1d06c0478c4f8e588e88014b1e8123828d9bbdf4738"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true,
+      "parent_positions": [
+        77
+      ]
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 85,
+      "source_paragraph_ids": [
+        "a96b472b-1d1c-5d44-9926-deb927a2dace"
+      ],
+      "source_text_sha256": [
+        "41621f66af10ad08bdecd0885e07478ebb907876d98f30bf7515ef047fead9e9"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true,
+      "parent_positions": [
+        77
+      ]
+    },
+    {
+      "symbol": "A/RES/48/104",
+      "primary_position": 87,
+      "source_paragraph_ids": [
+        "02c9d0a9-54b1-5723-a555-bd6cece766b4"
+      ],
+      "source_text_sha256": [
+        "a4b527e70762baac8a14bb572b9c36f9b7c5b689a400f38a51b34db7548843f6"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative proclamation and adopted declaration body; exclude actual preamble and article headings.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "E/DEC/2022/211",
+      "primary_position": 1,
+      "source_paragraph_ids": [
+        "156a9a28-ce23-5a80-b4e9-e8b8c84ec321",
+        "712a8e2a-9520-5c3f-b9ad-9e3f72af6b77"
+      ],
+      "source_text_sha256": [
+        "cb5e5b8f72afd8654f3598cd7467a5f1544d7306b787864a7e173f52ea90984e",
+        "b74cd3962315ca8fbcaf3a1db8f09104594a7ea710bb155d5e1beba5be35df2c"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "E/DEC/2022/211",
+      "primary_position": 3,
+      "source_paragraph_ids": [
+        "b4b706eb-c020-5239-9555-8fe17982e0ca"
+      ],
+      "source_text_sha256": [
+        "6dedce637e10ea5cabdfb258b4c1141d63382d96c5a6a4d5347a33cd92f45a48"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "E/DEC/2022/320",
+      "primary_position": 1,
+      "source_paragraph_ids": [
+        "25c8b742-98c7-5581-a09a-49ffe6b02acb",
+        "84b8f10e-2ed2-5d0c-8e4b-b4b6895f0c47"
+      ],
+      "source_text_sha256": [
+        "ce75e95fb75ae7e1d8de458bf1e7c9bf652fc7b881f543d49a691f50384a994c",
+        "8440d85e7c6b9f87371d738544efb1d9dfad0695097ac9731a4a54317b160a7d"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "E/DEC/2022/344",
+      "primary_position": 1,
+      "source_paragraph_ids": [
+        "8dbba662-a4b2-531d-ae88-e43c0cd7d5a3"
+      ],
+      "source_text_sha256": [
+        "152a7e749f2133b50c5f8a34e3e16ec9187c4eba8b234eb34aacfa3000fbc1cf"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "E/DEC/2023/219",
+      "primary_position": 1,
+      "source_paragraph_ids": [
+        "30acbaea-406b-5c59-b62e-aa0fdd33ce68"
+      ],
+      "source_text_sha256": [
+        "3c02878ec8b6cf59bbab48e18928d45db527ad7042bd34a8cf0c8a5e5e0f551d"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "E/DEC/2023/306",
+      "primary_position": 1,
+      "source_paragraph_ids": [
+        "f613a20c-3746-5f07-9feb-71fe791e4ddd"
+      ],
+      "source_text_sha256": [
+        "a13d50929c244a785ea877e2d19176eba77bc42605f497aeef111d6d2ff4816a"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "E/DEC/2023/342",
+      "primary_position": 1,
+      "source_paragraph_ids": [
+        "bca54f13-e755-5dd7-aa3d-75181f690a95"
+      ],
+      "source_text_sha256": [
+        "01db7597f0b73e22a4aac2f7947055f31a0063134f462fbd974a220548307422"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "E/DEC/2023/344",
+      "primary_position": 1,
+      "source_paragraph_ids": [
+        "3329917f-15a1-5bda-85ca-b784e64d25df"
+      ],
+      "source_text_sha256": [
+        "87933b6154d1a4f35f484738832f441155bbd1fe6651803af631e0f346799650"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "E/DEC/2024/216",
+      "primary_position": 1,
+      "source_paragraph_ids": [
+        "66b2a4f6-5897-51e4-8c19-9d2c532dd40f"
+      ],
+      "source_text_sha256": [
+        "3f874c4f5749d603ef013587eeedb4f597eb3af306c72770e202e64325ece7e8"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "E/DEC/2024/311",
+      "primary_position": 1,
+      "source_paragraph_ids": [
+        "0d9407ac-b0c5-52e7-a05a-ec0c7759bb4c"
+      ],
+      "source_text_sha256": [
+        "db054bf707eb140dcae38658780cea26e21f6441541e647a58639f881a038f83"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "E/DEC/2024/322",
+      "primary_position": 1,
+      "source_paragraph_ids": [
+        "12e142a5-e336-5dcf-9f8d-28404d2eeed3"
+      ],
+      "source_text_sha256": [
+        "cbd625b7f437240e179fefd4449357a9418767a702cee82822e5ed00129867f2"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "E/DEC/2024/337",
+      "primary_position": 1,
+      "source_paragraph_ids": [
+        "22532006-0838-5026-ba6d-6fcfbbfb7a2d"
+      ],
+      "source_text_sha256": [
+        "844e4487fbe4cbc2a9ec3ec4077d6ef584b9a78b569bb02e7e61de6bd8926eea"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "E/DEC/2024/340",
+      "primary_position": 1,
+      "source_paragraph_ids": [
+        "1223fb59-3561-5c41-aa2b-beffc5164225"
+      ],
+      "source_text_sha256": [
+        "c79c9f0049887683031a5cc28abc4ff87f577b85631c0f04d43b0debd7fe5b95"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "E/DEC/2025/311",
+      "primary_position": 2,
+      "source_paragraph_ids": [
+        "e42e8b2b-7758-5ba6-9944-5c9fd5acb627"
+      ],
+      "source_text_sha256": [
+        "5c7598080ac2cdcb6f00ea4f9929ccc95b0bf3f70ce98a24adc90426ffacf2cd"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true,
+      "parent_positions": [
+        1
+      ]
+    },
+    {
+      "symbol": "E/DEC/2025/311",
+      "primary_position": 3,
+      "source_paragraph_ids": [
+        "915ef5e3-67f5-5353-8a46-33583f1b4ad4"
+      ],
+      "source_text_sha256": [
+        "b3709e1ae320a4583d3b9de4bc68d9cb00661368abaa4c8d9ae62cf1ab5189b5"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true,
+      "parent_positions": [
+        1
+      ]
+    },
+    {
+      "symbol": "E/DEC/2025/332",
+      "primary_position": 1,
+      "source_paragraph_ids": [
+        "50b7f8e7-9467-5026-9e0e-beebed351150"
+      ],
+      "source_text_sha256": [
+        "476bbb8eda322df604c69d487b0651a5dc21326fb69367344d5ab770add08741"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "E/DEC/2025/339",
+      "primary_position": 1,
+      "source_paragraph_ids": [
+        "7f12730f-320b-5c00-9304-33521cd240f6"
+      ],
+      "source_text_sha256": [
+        "a273e56fbf05ae6a806f41e2f7986c3fd189f75c69ff3d2884988124602f34c6"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed operative decision clause(s); exclude rosters, compositions, footnotes and context-only prefaces.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2022/5",
+      "primary_position": 2,
+      "source_paragraph_ids": [
+        "9ef3281b-dc55-5a4b-8178-756cc4390f19"
+      ],
+      "source_text_sha256": [
+        "1c27f3387921dd1c9ca92cac2680c3c5d5064d1ac593b29cb153403f289b5c3f"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2022/5",
+      "primary_position": 3,
+      "source_paragraph_ids": [
+        "cc421d02-7d2a-53f3-92ba-9920a0a2c78e"
+      ],
+      "source_text_sha256": [
+        "b694329df411a18634947fc8d0e8995b6751659d52fdcc7c48e88c7bfc4d57af"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2022/5",
+      "primary_position": 4,
+      "source_paragraph_ids": [
+        "5cc02755-cdbc-5567-b5f5-8b8a93ada8a3"
+      ],
+      "source_text_sha256": [
+        "1e77ef82ade6f04cd10c80643f0d207622eb6fa4f47673dbd36c9b487b1a197d"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2022/5",
+      "primary_position": 5,
+      "source_paragraph_ids": [
+        "a68008f7-1b1e-56f9-a5e1-1c4958e39640"
+      ],
+      "source_text_sha256": [
+        "be0165736d2d393b74f005f9bb27dcf5ca84661a6e2ad5032eaa74550c3f1bb9"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2022/5",
+      "primary_position": 6,
+      "source_paragraph_ids": [
+        "ca46f09b-9190-578e-bce4-a0e45f64174b"
+      ],
+      "source_text_sha256": [
+        "508153dedd8e45043df97850daa68d3e4581f76e8c04791ab8d845fce15aaa4b"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2022/5",
+      "primary_position": 7,
+      "source_paragraph_ids": [
+        "e57b2747-2eb6-5a7f-93ec-3978dcd01f58"
+      ],
+      "source_text_sha256": [
+        "2c07063804edd127b7ad5f7522008f8e8bd3fe012a3ca4fcdf8279d34decd26a"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2022/5",
+      "primary_position": 8,
+      "source_paragraph_ids": [
+        "fe91745f-215a-5eee-9bc7-58bc987fdeac"
+      ],
+      "source_text_sha256": [
+        "a215b1ba9fc92b9ffb792665372f035a1dddbd5a6801b24df64e76c3dd85efd7"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2022/5",
+      "primary_position": 9,
+      "source_paragraph_ids": [
+        "673abd17-539a-5b64-9ab5-e40dba55be80"
+      ],
+      "source_text_sha256": [
+        "ab286a2eb386a64a7e995a4cf5af5505a8276771159dcc881852c387d456d106"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2022/5",
+      "primary_position": 10,
+      "source_paragraph_ids": [
+        "4d832ec6-383f-5edb-825e-ef18565e364d"
+      ],
+      "source_text_sha256": [
+        "e8ad8f90079fc9520293839d68f6081fdfc57b58e0b5b23dfbec490fd29bc7a1"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2022/5",
+      "primary_position": 11,
+      "source_paragraph_ids": [
+        "18b7c63c-4ca8-51db-b5da-b992aa371a45"
+      ],
+      "source_text_sha256": [
+        "da3de5a6db4d13d7d158b1f418771da7a2f7c864eb7dec83b255bfbf801a5bb0"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2022/5",
+      "primary_position": 12,
+      "source_paragraph_ids": [
+        "515d2840-3293-5b56-b3ef-d92d38c04c6c"
+      ],
+      "source_text_sha256": [
+        "018597a566da5ae521e91fc69e9e7ab2df925e073245d9d6d046f37943548de9"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2022/5",
+      "primary_position": 13,
+      "source_paragraph_ids": [
+        "95783d40-0751-5e03-a226-fedde373ddf9"
+      ],
+      "source_text_sha256": [
+        "144bb0b2a5448e6a521004e5d4ce06a13d61428e593a95edcefeff9ead8fd99a"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2022/5",
+      "primary_position": 14,
+      "source_paragraph_ids": [
+        "bb8c21e7-ea3f-5be1-83a2-8c4d23aa01cc"
+      ],
+      "source_text_sha256": [
+        "2ee895ec6a9556316b09d64c4ae909f716a1e96dfd197c7d2ea9e67e10083114"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2022/5",
+      "primary_position": 15,
+      "source_paragraph_ids": [
+        "8dbc705e-a261-5556-bc26-a280a2feba2f"
+      ],
+      "source_text_sha256": [
+        "85784c64dcdde65edc6dead35dce827c4326792d8843de1d3b46b14887b28603"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2022/5",
+      "primary_position": 16,
+      "source_paragraph_ids": [
+        "0747a7c2-68c9-57ee-8580-672d63c654c0"
+      ],
+      "source_text_sha256": [
+        "de7919d98f73b29001014a10796119286066145f1e74b5c4545d61cfdab0929c"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2022/5",
+      "primary_position": 17,
+      "source_paragraph_ids": [
+        "098622c1-20f0-59d9-9790-795c92496085"
+      ],
+      "source_text_sha256": [
+        "2d0ac435b6c0ba498e2f7b7007f77702c7b862a41ba3676bc6757b179a1c29f5"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2022/5",
+      "primary_position": 18,
+      "source_paragraph_ids": [
+        "ccf0987c-df14-57c5-975d-0681c87fe08a"
+      ],
+      "source_text_sha256": [
+        "a94a0fc7773a1a0114199f5d722f72fcba1af95af14a7c9d36c5bdf67ad93f8d"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2024/5",
+      "primary_position": 2,
+      "source_paragraph_ids": [
+        "1db6361a-4120-59cc-aea7-f24dd6b9290f"
+      ],
+      "source_text_sha256": [
+        "83d1f2045175177d23e08e3c1974df3d484d3b175d9efedfec4a7629e62c4697"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2024/5",
+      "primary_position": 3,
+      "source_paragraph_ids": [
+        "693d200a-328c-52fb-9764-dd59f4de1e95"
+      ],
+      "source_text_sha256": [
+        "31e9ff0dc495d76456f4fd9e285cff272edb9083df80ebfcebc1b4b9955cfb84"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2024/5",
+      "primary_position": 4,
+      "source_paragraph_ids": [
+        "94198743-5578-5462-bd75-e7e037a34c3d"
+      ],
+      "source_text_sha256": [
+        "6d0918f9ba8d314e17b9fddd02d741ce2b9ff97252cfccbcc667dd16a3be08a9"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2024/5",
+      "primary_position": 5,
+      "source_paragraph_ids": [
+        "d268004f-8dc9-59c5-a512-e5921916e150"
+      ],
+      "source_text_sha256": [
+        "9ab88e7412a4a6cc2a082a4db504f0df0e11bebea443634abd529c1842a6dc7d"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2024/5",
+      "primary_position": 6,
+      "source_paragraph_ids": [
+        "c52e21cb-b5d1-5d51-b190-29891cb9a6f5"
+      ],
+      "source_text_sha256": [
+        "b09dbd67e4241f2e7cc80a604446a4396417ea3c802b5f676bd650a9873e04d8"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2024/5",
+      "primary_position": 7,
+      "source_paragraph_ids": [
+        "2c36cc42-82da-5cc9-ae27-ac229cba533f"
+      ],
+      "source_text_sha256": [
+        "f21fc8b7727212dd0a9d066924a4c89d1111121458e6cdf47eac30e3beb98ef3"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2024/6",
+      "primary_position": 2,
+      "source_paragraph_ids": [
+        "cd37a7e0-7956-59c7-a513-3ef226656d4e"
+      ],
+      "source_text_sha256": [
+        "f6a25834377405fe312747e6e58571bd2e2e6430375b05f7bebd320a85247a5b"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2024/6",
+      "primary_position": 3,
+      "source_paragraph_ids": [
+        "85f38806-2f1b-5e94-b1df-c760ebd602b0"
+      ],
+      "source_text_sha256": [
+        "1b8408b9020ed2066d3f962fdd249dc9b08b2b46550d410607e6c61ca0bbceb3"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2024/6",
+      "primary_position": 4,
+      "source_paragraph_ids": [
+        "49589362-083d-5007-a8b2-e370ce485001"
+      ],
+      "source_text_sha256": [
+        "f0643e1b89d5c365f92c0bdda1688f8d8a0543f289c9b7e24703a6b285b24e2a"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2024/6",
+      "primary_position": 5,
+      "source_paragraph_ids": [
+        "8fc455f4-f6a9-57d9-8226-82d7384593c8"
+      ],
+      "source_text_sha256": [
+        "ec5bf42d8f67a8bc9d9c86a85ffae23e257c6fce88413302ee32639a6f6736d1"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2024/6",
+      "primary_position": 6,
+      "source_paragraph_ids": [
+        "8c38a26f-819e-5179-9e9c-072200316542"
+      ],
+      "source_text_sha256": [
+        "e24939d5f025f51ea0a9639b5c96a16a46792049765fddcd0448ce016c38441d"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2024/6",
+      "primary_position": 7,
+      "source_paragraph_ids": [
+        "20275ae7-446a-5147-aaae-ea5640e844f8"
+      ],
+      "source_text_sha256": [
+        "79bae5231fc77c1ca7442478d30fe4f3c2c85038a317c32914aa941acba68a6b"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2024/6",
+      "primary_position": 8,
+      "source_paragraph_ids": [
+        "c2d4da63-c35a-5efa-9705-092080e95ef4"
+      ],
+      "source_text_sha256": [
+        "86e0ef06d135f8a8afd77bc0f8f62e4fcd0c7650c9dbec0e0818d82cf97fcbca"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2024/6",
+      "primary_position": 9,
+      "source_paragraph_ids": [
+        "39c374e6-7f04-575a-9c78-d772a556f160"
+      ],
+      "source_text_sha256": [
+        "5adb6dc44651cc026c85a5dc1aded85e15c00605bba44062390220347eecca8e"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2024/6",
+      "primary_position": 10,
+      "source_paragraph_ids": [
+        "2a6c1662-bb0f-5c0f-aa02-fdba99eaf4ee"
+      ],
+      "source_text_sha256": [
+        "f07efa85d5c607079f37c056abe5059b2d4e4704a21d310f42d8bc576be2fec7"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2024/6",
+      "primary_position": 11,
+      "source_paragraph_ids": [
+        "fbbf2326-4a6c-5d88-b281-a0372ddb5333"
+      ],
+      "source_text_sha256": [
+        "0d57e604e85b80ce83db097e40501517382a8a4ff8b2bcf1a91111e28f6b55da"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2025/2",
+      "primary_position": 2,
+      "source_paragraph_ids": [
+        "7a0ee98d-3ef4-57c6-87b4-965c57b545e8"
+      ],
+      "source_text_sha256": [
+        "de58d7a8c30c01925c83bb8594f26a59c3c5dc00e6ba3ab897d30dd571c98a3c"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2025/2",
+      "primary_position": 3,
+      "source_paragraph_ids": [
+        "613466af-2c40-5e25-a8e0-079c4e8f518d"
+      ],
+      "source_text_sha256": [
+        "289350a383bdf1ca949245a8f28052fca7f06f439450af51d6e47241203d96f6"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2025/2",
+      "primary_position": 4,
+      "source_paragraph_ids": [
+        "87675ba2-e1a4-550d-928c-880b112ab16c"
+      ],
+      "source_text_sha256": [
+        "da6727ae9b5095017edd1658a21ded9e04dc3c30156ae2b4e44c18c6d220ed25"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2025/2",
+      "primary_position": 5,
+      "source_paragraph_ids": [
+        "2badf228-fc34-5de8-a695-d9dff2eb5b20"
+      ],
+      "source_text_sha256": [
+        "33a915e67f70c4dca594a0a303e985417f45e00a0697b9206c91ced1e9aea010"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2025/2",
+      "primary_position": 6,
+      "source_paragraph_ids": [
+        "47b9af53-2a97-5b9a-b9c3-62a88e9f6237"
+      ],
+      "source_text_sha256": [
+        "d0e1b83174a2e123f319eaf6d6c3e8ade492cb10224408d27d3c667fb7645565"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2025/2",
+      "primary_position": 7,
+      "source_paragraph_ids": [
+        "a5597024-7958-5e8b-8f95-b3b266a92245"
+      ],
+      "source_text_sha256": [
+        "66d99c95552c613123f55dcaf895dafb1e4804314be5b670266ee58c677a2f66"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2025/2",
+      "primary_position": 8,
+      "source_paragraph_ids": [
+        "0bb6c070-b8ae-523c-98f3-91660c7fd2c5"
+      ],
+      "source_text_sha256": [
+        "4a18ab172f8dcd0cd4a901a1e482b2b343b66093f42b38894de2ad958e3dfd63"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2025/2",
+      "primary_position": 9,
+      "source_paragraph_ids": [
+        "d09e0dbd-8108-5d80-846a-9d8abce1e70d"
+      ],
+      "source_text_sha256": [
+        "0630f73909526523374705e81d494a8e5cb5eba3e9b70681825fd5c03b0d3254"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2025/2",
+      "primary_position": 10,
+      "source_paragraph_ids": [
+        "8542a3ac-e053-5bf2-a3c7-23f829a1ee24"
+      ],
+      "source_text_sha256": [
+        "6befb5ff43898ec272d124304990e73629b08fd3bc27b6b9396bb14792377c1b"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2025/2",
+      "primary_position": 11,
+      "source_paragraph_ids": [
+        "59997c20-1434-5fb7-8fe9-906b12da47ee"
+      ],
+      "source_text_sha256": [
+        "e6a939b889aadbfa9e7c56fb987b840434cf14cf6176ce22edae7769ad247d45"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2025/2",
+      "primary_position": 12,
+      "source_paragraph_ids": [
+        "3ec02385-13b7-57d9-8974-c2bbe69f6847"
+      ],
+      "source_text_sha256": [
+        "1a3a1243de2823375b9575614c808e92950617d8f9c2512c2871b56a94302f47"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2025/2",
+      "primary_position": 13,
+      "source_paragraph_ids": [
+        "23906637-3d81-5d11-b4f8-e15be1ba6116"
+      ],
+      "source_text_sha256": [
+        "ec19e5415ab2be5d21b586bc9cc51ebd6c1fe261edf02b507e05137a74b14886"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2025/2",
+      "primary_position": 14,
+      "source_paragraph_ids": [
+        "23da8470-2fe3-5ed3-901b-84d05328cf1e"
+      ],
+      "source_text_sha256": [
+        "da2e7a7536a93a66dc0a5521351a7ff9025315d61de01fc5ea0c61443004981f"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2025/2",
+      "primary_position": 15,
+      "source_paragraph_ids": [
+        "045d779f-6791-5cee-9466-78ca351a8e03"
+      ],
+      "source_text_sha256": [
+        "a76f4058d13ade8abab0616d544daaec81f59b9f0bb89dc291af0bc371b319fd"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2025/2",
+      "primary_position": 16,
+      "source_paragraph_ids": [
+        "a0339302-3e5f-5fcf-bc8d-c56933c4fa41"
+      ],
+      "source_text_sha256": [
+        "2d4af30123f51bfc45540dab4720e29c21269218e12b6c856daff7b6e277b399"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2025/2",
+      "primary_position": 17,
+      "source_paragraph_ids": [
+        "67e4809c-cd99-52bc-88cd-27f19fd5a8b7"
+      ],
+      "source_text_sha256": [
+        "91ef41c5b2e86fccec613c9091ddcb021ab591c71be422c9ad86e62c36316ca7"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2025/2",
+      "primary_position": 18,
+      "source_paragraph_ids": [
+        "9de61c05-17da-51e8-9633-8d7c3ad30d47"
+      ],
+      "source_text_sha256": [
+        "948f5a6d6208772d615b72a8fe0efd5ff4eb72db6f50d2ad234c537d3718e6a4"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2025/2",
+      "primary_position": 19,
+      "source_paragraph_ids": [
+        "5b8b915a-da00-588a-8f66-9baf92122044"
+      ],
+      "source_text_sha256": [
+        "0646518fcc0cc496b852c49e66e53058c6db7028dba09aec79f47db42c38fb82"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2025/2",
+      "primary_position": 20,
+      "source_paragraph_ids": [
+        "39a46dd2-a8ae-58d9-b1e0-f9a68dd8d861"
+      ],
+      "source_text_sha256": [
+        "8d2247e6672021f6c93c4d28062f6d1a412cd95cc275995cf1baf1b5ddc142b1"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2025/2",
+      "primary_position": 21,
+      "source_paragraph_ids": [
+        "acfc515d-e512-5013-8be6-b70802b6632f"
+      ],
+      "source_text_sha256": [
+        "bee7d65f37a67640463ea1b23184f3ae5efad66a722d98f9a9e34df477275faa"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2025/2",
+      "primary_position": 22,
+      "source_paragraph_ids": [
+        "4e66508b-744b-5c7e-8e9a-cd995faa79fb"
+      ],
+      "source_text_sha256": [
+        "64388192cfca7ee6271efc2eab5ecbef6c81d54886856d7238f25fb53141c702"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2025/2",
+      "primary_position": 23,
+      "source_paragraph_ids": [
+        "99cc6501-a8be-5314-a881-81b2a2f01ecc"
+      ],
+      "source_text_sha256": [
+        "e1075dfabefc881190e9e26ff6002f92f515fa5a18b766473c9115a443914ab5"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2025/2",
+      "primary_position": 24,
+      "source_paragraph_ids": [
+        "9555b850-b080-5b12-9b1e-d43339ad7e69"
+      ],
+      "source_text_sha256": [
+        "2bd66da0200c2e0ad0449bf67901bac26a6bf2fcd448919e5e5fd5fb7c7f6344"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2025/2",
+      "primary_position": 25,
+      "source_paragraph_ids": [
+        "3f1da258-07cc-567f-b3cf-7a0ae5307f62"
+      ],
+      "source_text_sha256": [
+        "30f36470eecf0c23f000f9b1dd0940061032c55607b280af5a65ca94beb297be"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2025/2",
+      "primary_position": 26,
+      "source_paragraph_ids": [
+        "c4b9282f-aa74-5571-9248-54dde757edbf"
+      ],
+      "source_text_sha256": [
+        "31e7e0518e8032f391868ff176bce321ed217d2aeb75461cd788f38dc80362d7"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2025/3",
+      "primary_position": 2,
+      "source_paragraph_ids": [
+        "391cab1f-f3e8-5623-8fe4-f8fd8b503ec5"
+      ],
+      "source_text_sha256": [
+        "4c6d7229942966d2592b48dc83e99e3fa2fcc2350568b13fa04a9502db4ab170"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2025/3",
+      "primary_position": 3,
+      "source_paragraph_ids": [
+        "bdce743e-4789-5301-9bce-c55ff84ff699"
+      ],
+      "source_text_sha256": [
+        "b5153c3d33fba28e8bb50ea76606092c35b0a1e21209829e636c9d1909db02c4"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2025/3",
+      "primary_position": 4,
+      "source_paragraph_ids": [
+        "c6a3d7ed-cd2e-5ff2-b45b-6e749522367a"
+      ],
+      "source_text_sha256": [
+        "1aca3e60fb6cb3238c0d662d51babbbf5f5ccaf97a4157da7922b84b610ab1be"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2025/3",
+      "primary_position": 5,
+      "source_paragraph_ids": [
+        "db3d1bab-4e88-5172-96fe-fd2942f07fad"
+      ],
+      "source_text_sha256": [
+        "bef7980db95108d218c54163b7ea375c28781df298fb6991d97dfe97c14bca7d"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2025/3",
+      "primary_position": 6,
+      "source_paragraph_ids": [
+        "cad4f591-a017-5346-ad9a-c10ed9a81688"
+      ],
+      "source_text_sha256": [
+        "eb92c9799bbeb6f0df7d3aadb0ad91683b0f3073c75a20bbdc52dec3ab202731"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2026/2",
+      "primary_position": 3,
+      "source_paragraph_ids": [
+        "065789a6-a31e-5b74-8212-cb9a2d043daf"
+      ],
+      "source_text_sha256": [
+        "c7db92268ac08f1804d8438c9534b29b285f6dd295a9665c6e05e71a56122328"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2026/2",
+      "primary_position": 4,
+      "source_paragraph_ids": [
+        "0890d4b5-1d8b-509f-95e0-f3d51bc26413"
+      ],
+      "source_text_sha256": [
+        "3a4f94e443a89ee9c62d0302bdd31a4e3c3115f34148dab500595a8e83ed7357"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2026/2",
+      "primary_position": 5,
+      "source_paragraph_ids": [
+        "84d25ae0-a11d-52aa-94d6-0f6ee4dc1bbb"
+      ],
+      "source_text_sha256": [
+        "0b866376e26d649b4f2cc34fed62e67e515dce4da235dfa527561bc64e8538cf"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2026/2",
+      "primary_position": 6,
+      "source_paragraph_ids": [
+        "5521fc80-93e1-5a24-8819-42168a3cbea4"
+      ],
+      "source_text_sha256": [
+        "886ec7afd4f0f98bd4536c2b1d50ca856d69e2d97cb793010ff3384132786978"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2026/2",
+      "primary_position": 7,
+      "source_paragraph_ids": [
+        "4b8ac41d-e181-5f69-ad81-ffa2aaa77ae8"
+      ],
+      "source_text_sha256": [
+        "4a0a7425897647a92ddceb526a3191cfb431a18022cb67d4e1272bab8430d626"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2026/2",
+      "primary_position": 8,
+      "source_paragraph_ids": [
+        "10191491-5dbc-58d6-943d-70649f7d19a2"
+      ],
+      "source_text_sha256": [
+        "b8c4d31c5401ffa93a834990f65da413a4dad4f21a1629232ece9c514b68e60b"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2026/2",
+      "primary_position": 9,
+      "source_paragraph_ids": [
+        "b38be2c1-fb5a-509d-a536-914032a0e263"
+      ],
+      "source_text_sha256": [
+        "4de8827d6d6fe25ad8fc50bcb2eb021b35dfa6fdeee2299fa2bc6cb7ea93d2e8"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2026/2",
+      "primary_position": 10,
+      "source_paragraph_ids": [
+        "6a2f4abb-8555-543c-8179-ebea8b9ef0c3"
+      ],
+      "source_text_sha256": [
+        "5b8d240befa937c3d7a8a0e7ed14ab37edcca5550b39e78bf05b091cb70d855c"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2026/2",
+      "primary_position": 11,
+      "source_paragraph_ids": [
+        "5386e61b-01df-5360-9e61-3e7f2a111362"
+      ],
+      "source_text_sha256": [
+        "75ae3f20f318ccfea9fda94ab168c40542d12c61e96351d8fc2e2784f5d92d4f"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2026/2",
+      "primary_position": 12,
+      "source_paragraph_ids": [
+        "b8fb6b9a-6168-59ba-98cd-51f44fe02114"
+      ],
+      "source_text_sha256": [
+        "a4c5cda521c4caeef05c5a145c6d629f1c849c2635a30291273bfc2327727e22"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2026/2",
+      "primary_position": 13,
+      "source_paragraph_ids": [
+        "41b6873a-d5d3-549a-ae9d-cd4d654ea07e"
+      ],
+      "source_text_sha256": [
+        "8a776e7fba6dcd73778c11eaed88e1a970aa091e921b5552cff076409d0cf9eb"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2026/2",
+      "primary_position": 14,
+      "source_paragraph_ids": [
+        "3a97ff13-f57e-5641-bb94-23c8f9ef0558"
+      ],
+      "source_text_sha256": [
+        "8e49fa3ad758d97febc14cfb0fb5bc2828a825b414e16fa31c94dd0d816bc8a8"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2026/2",
+      "primary_position": 15,
+      "source_paragraph_ids": [
+        "7c8a70f9-e94c-597a-902f-094c92c2ea73"
+      ],
+      "source_text_sha256": [
+        "81519e5ae221edeba46cfd701075c0493267cfe3015d3594c9bbf5369853ca9c"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2026/2",
+      "primary_position": 16,
+      "source_paragraph_ids": [
+        "7a44d09f-f1b4-5635-a485-dbc276d83ccd"
+      ],
+      "source_text_sha256": [
+        "410ddd67a847acefd0364600eab84dda4f78d7305770b3b8dc3afe6c63cdf4c2"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2026/2",
+      "primary_position": 17,
+      "source_paragraph_ids": [
+        "032046dc-a77f-5ede-b0c2-3d90e745bbd1"
+      ],
+      "source_text_sha256": [
+        "0448d4e3d72aadd61197ec5a6f44becca2d1ef94685db5adde272b1b03f94ac9"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    },
+    {
+      "symbol": "S/PRST/2026/2",
+      "primary_position": 18,
+      "source_paragraph_ids": [
+        "ac11c985-0700-55f7-81b1-b57452bb58b1"
+      ],
+      "source_text_sha256": [
+        "67f990552b2cdc159057ff7580f9c1a35609f5407f36c0458ba6f2b242e879a3"
+      ],
+      "effective_type": "operative",
+      "reason": "Reviewed substantive Council statement body after the adoption preface; preface/reissue notice excluded.",
+      "reviewer": "Codex source-text boundary review",
+      "review_version": "2026-11-09-v1",
+      "excluded_other_rows": true
+    }
+  ]
+}
