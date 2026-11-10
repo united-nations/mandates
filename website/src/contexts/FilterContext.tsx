@@ -15,6 +15,7 @@ import {
   CONTROL_PARAMS,
   type FilterParamKey,
 } from '@/lib/filter-constants'
+import { SHOW_PARAGRAPH_PILOT } from '@/lib/feature-flags'
 import type { FilterOptions } from '@/types'
 import { LoadingFallback } from '@/components/LoadingFallback'
 import {
@@ -48,7 +49,11 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
   const [isPending, startTransition] = useTransition()
 
   const filters = useMemo(
-    () => parseSearchParams(Object.fromEntries(searchParams.entries())),
+    () =>
+      parseSearchParams(
+        Object.fromEntries(searchParams.entries()),
+        SHOW_PARAGRAPH_PILOT
+      ),
     [searchParams]
   )
 
@@ -126,6 +131,8 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
   const setOnlyFilter = useCallback(
     (key: FilterParamKey, value: string | undefined) => {
       const newParams = new URLSearchParams()
+      if (SHOW_PARAGRAPH_PILOT && searchParams.get('pilot_sample') === '0')
+        newParams.set('pilot_sample', '0')
       const PRESERVED = CONTROL_PARAMS.filter(
         (p) => p !== 'sort_by' && p !== 'page'
       )
@@ -141,13 +148,17 @@ function FilterProviderInner({ children }: { children: ReactNode }) {
 
   const clearFilter = useCallback(
     (key: FilterParamKey) => {
-      setFilter(key, undefined)
+      setFilter(
+        key,
+        key === 'pilot_sample' && SHOW_PARAGRAPH_PILOT ? '0' : undefined
+      )
     },
     [setFilter]
   )
 
   const clearAllFilters = useCallback(() => {
     const newParams = new URLSearchParams()
+    if (SHOW_PARAGRAPH_PILOT) newParams.set('pilot_sample', '0')
 
     // "Clear all" drops every filter but preserves the control params (view
     // mode, budget version, pagination) — i.e. CONTROL_PARAMS except sort_by,

@@ -141,7 +141,8 @@ export function filterValueMaxLength(key: string): number {
  * Parse Next.js searchParams into a FilterOptions object.
  */
 export function parseSearchParams(
-  searchParams: Record<string, string | string[] | undefined>
+  searchParams: Record<string, string | string[] | undefined>,
+  defaultPilotSample = false
 ): import('@/types').FilterOptions {
   const getString = (key: string): string | undefined => {
     const value = searchParams[key]
@@ -176,7 +177,8 @@ export function parseSearchParams(
 
   const filters: import('@/types').FilterOptions = {
     cited,
-    pilot_sample: getString('pilot_sample'),
+    pilot_sample:
+      getString('pilot_sample') ?? (defaultPilotSample ? '1' : undefined),
     // No hardcoded default: when absent, the data layer's versionClause
     // COALESCEs to ppb2026.budget_versions.is_default (single source of truth).
     ppb_version: getString('ppb_version'),

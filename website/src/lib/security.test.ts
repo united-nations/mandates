@@ -71,3 +71,10 @@ test('database URL validation fails closed without leaking credential values', (
     base + '?sslmode=verify-full'
   )
 })
+
+test('website sample default allows an explicit opt-out and leaves API defaults unchanged', () => {
+  assert.equal(parseSearchParams({}, true).pilot_sample, '1')
+  assert.equal(parseSearchParams({ pilot_sample: '0' }, true).pilot_sample, '0')
+  assert.equal(parseSearchParams({ pilot_sample: '1' }, true).pilot_sample, '1')
+  assert.equal(parseSearchParams({}).pilot_sample, undefined)
+})

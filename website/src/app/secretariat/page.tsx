@@ -1,3 +1,4 @@
+import { SHOW_PARAGRAPH_PILOT } from '@/lib/feature-flags'
 import type { Metadata } from 'next'
 
 import { withRequestQueryCache } from '@/lib/db/request-query-cache'
@@ -18,7 +19,8 @@ export async function generateMetadata({
   const params = await searchParams
   const hasQuery = Object.entries(params).some(
     ([key, value]) =>
-      (key === 'mode' || FILTER_PARAMS.some((parameter) => parameter === key)) &&
+      (key === 'mode' ||
+        FILTER_PARAMS.some((parameter) => parameter === key)) &&
       value !== undefined &&
       value !== ''
   )
@@ -38,7 +40,9 @@ interface PageProps {
 export default async function Page({ searchParams }: PageProps) {
   const params = await searchParams
   return withRequestQueryCache(async () => {
-    const data = await loadSecretariatPageData(parseSearchParams(params))
+    const data = await loadSecretariatPageData(
+      parseSearchParams(params, SHOW_PARAGRAPH_PILOT)
+    )
     return <SecretariatPageView data={data} />
   })
 }

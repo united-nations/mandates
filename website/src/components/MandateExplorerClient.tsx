@@ -59,7 +59,7 @@ export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
           <Switch
             checked={filters.group === '1'}
             onCheckedChange={(checked) =>
-              setFilter('group', checked ? '1' : undefined)
+              setFilter('group', checked ? '1' : '0')
             }
           />
           Group versions
@@ -103,7 +103,7 @@ export function MandateExplorerClient({ data }: MandateExplorerClientProps) {
               <Switch
                 checked={filters.pilot_sample === '1'}
                 onCheckedChange={(checked) =>
-                  setFilter('pilot_sample', checked ? '1' : undefined)
+                  setFilter('pilot_sample', checked ? '1' : '0')
                 }
               />
               Sampled resolutions only

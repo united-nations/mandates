@@ -68,6 +68,7 @@ export function ActiveFilters({
   // "documents cited as mandates" card and there is no "off" state to clear to.
   delete displayFilters.ppb_version
   delete displayFilters.group
+  if (displayFilters.pilot_sample !== '1') delete displayFilters.pilot_sample
   if (filters.budget_location) {
     for (const key of BUDGET_LOCATION_KEYS)
       if (key !== 'budget_location') delete displayFilters[key]
