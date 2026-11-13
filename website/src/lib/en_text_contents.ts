@@ -157,7 +157,24 @@ export const explainerTexts = {
     title: 'Technical Briefing on the Mandate Registry 2026',
     introduction:
       'A recorded briefing on how to use the Mandate Registry, prepared as part of the UN80 Initiative. It walks through specific examples of what the registry can be used for and how to get the most from it.',
-    watchOnYouTube: 'Watch on YouTube',
+    chaptersHeading: 'Chapters',
+    chapters: [
+      { seconds: 0, title: 'Introduction' },
+      { seconds: 361, title: 'Demonstration' },
+      {
+        seconds: 414,
+        title: 'Filtering by mandating bodies and implementing entities',
+      },
+      { seconds: 462, title: 'Searching resolutions and their evolution' },
+      { seconds: 556, title: 'Finding programmes citing the resolution' },
+      { seconds: 661, title: 'Finding reports related to the resolution' },
+      { seconds: 690, title: 'Searching the full text of the resolution' },
+      { seconds: 738, title: 'Other features' },
+      { seconds: 791, title: 'Comparing text of successive resolutions' },
+      { seconds: 886, title: 'Finding Focal Points' },
+      { seconds: 962, title: 'Filtering by programmes and agenda' },
+      { seconds: 1119, title: 'Other tools' },
+    ],
   },
 
   // /system page hero
