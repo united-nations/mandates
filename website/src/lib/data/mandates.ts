@@ -15,6 +15,7 @@ import { getDocumentPdfUrl } from './source-links'
 import { getHistoricalDocument } from './historical-document'
 import type { DocumentTextMetrics } from '../text-analytics'
 import { unstable_cache } from 'next/cache'
+import { sharePublicRead } from '#lib/db/share-public-read'
 import { queryMany, queryOne, queryBatches } from '../db/query'
 import { titleCase } from 'title-case'
 import { getMandateDisplayTitle, safeHighlightSearchTerms } from '@/lib/utils'
@@ -1602,6 +1603,9 @@ interface AggregateBundleRow {
   citation_bins: Array<[string, number, number, number]> | null
 }
 
+const readPublicAggregate = sharePublicRead(queryOne<AggregateBundleRow>)
+const readPublicCount = sharePublicRead(queryOne<{ count: string }>)
+
 /**
  * EVERY document-grained aggregate the explorer needs, in ONE query.
  *
@@ -1749,7 +1753,7 @@ const getFilteredAggregates = cache((filters: FilterOptions = {}) =>
              ) x) AS citation_bins
       `
 
-      const row = await queryOne<AggregateBundleRow>(query, params)
+      const row = await readPublicAggregate(query, params)
       return row
     },
     // -v2: total_organs now joins the organ vocabulary, so v1 entries hold a
@@ -1818,7 +1822,7 @@ export const getFilteredDocumentCount = cache((filters: FilterOptions = {}) =>
         selectCols: 'd.ppb_full_document_symbol',
         groupCols: 'd.ppb_full_document_symbol',
       })
-      const row = await queryOne<{ count: string }>(
+      const row = await readPublicCount(
         `/* trace:mandates.filtered-document-count */
          WITH ${cte} SELECT COUNT(*) AS count FROM filtered_docs`,
         params

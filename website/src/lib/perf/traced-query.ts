@@ -115,10 +115,13 @@ export async function tracedPoolQuery<T extends QueryResultRow>(
   return trackPerformanceQuery(async () => {
     const timing = startTiming(pool, text, params)
     const client = await connect(pool, timing)
+    let reusable = false
     try {
-      return await execute<T>(client, timing)
+      const result = await execute<T>(client, timing)
+      reusable = true
+      return result
     } finally {
-      client.release()
+      client.release(reusable ? undefined : true)
     }
   })
 }
