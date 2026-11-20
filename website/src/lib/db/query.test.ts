@@ -24,7 +24,10 @@ class CursorClient {
 async function usingClient(client: CursorClient, run: () => Promise<void>) {
   const shared = globalThis as unknown as { _pgPool?: Pool }
   const previous = shared._pgPool
-  shared._pgPool = { connect: async () => client } as unknown as Pool
+  shared._pgPool = {
+    waitingCount: 0,
+    connect: async () => client,
+  } as unknown as Pool
   try {
     await run()
   } finally {

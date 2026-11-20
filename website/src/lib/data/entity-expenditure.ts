@@ -1,7 +1,7 @@
 import 'server-only'
 import { unstable_cache } from 'next/cache'
 import { cache } from 'react'
-import { OPEN_UN_BASE, parseExpenditureDataset, matchEntityExpenditure } from '../entity-expenditure'
+import { OPEN_UN_BASE, parseExpenditureDataset, createEntityExpenditureMatcher } from '../entity-expenditure'
 import type { ExpenditureDataset, ExpenditureMap } from '../entity-expenditure'
 
 const loadDataset = (stream: 'ppb' | 'pko') => unstable_cache(async () => {
@@ -38,6 +38,7 @@ export async function getEntityExpenditures(
 ): Promise<ExpenditureMap> {
   if (!entities.length) return {}
   const datasets = await load()
+  const match = createEntityExpenditureMatcher(datasets)
   return Object.fromEntries(entities.map(e =>
-    [e.entity, matchEntityExpenditure(e.entity, e.entity_long, datasets)]))
+    [e.entity, match(e.entity, e.entity_long)]))
 }

@@ -4,6 +4,7 @@
 
 import type { QueryResult, QueryResultRow } from 'pg'
 import { getPool } from '#lib/db/index'
+import { assertQueryCapacity } from '#lib/db/query-admission'
 import {
   readRequestQueryCache,
   requestQueryKey,
@@ -17,6 +18,7 @@ export async function query<T extends QueryResultRow = QueryResultRow>(
 ): Promise<QueryResult<T>> {
   return readRequestQueryCache(requestQueryKey(text, params), () => {
     const pool = getPool()
+    assertQueryCapacity(pool)
     if (isPerformanceTracing()) return tracedPoolQuery<T>(pool, text, params)
     return pool.query<T>(text, params)
   })
@@ -51,7 +53,9 @@ export async function* queryBatches<T extends QueryResultRow = QueryResultRow>(
   if (!Number.isSafeInteger(batchSize) || batchSize < 1 || batchSize > 10_000)
     throw new Error('Invalid query batch size')
   signal?.throwIfAborted()
-  const client = await getPool().connect()
+  const pool = getPool()
+  assertQueryCapacity(pool)
+  const client = await pool.connect()
   let released = false
   let committed = false
   const release = (destroy: boolean) => {

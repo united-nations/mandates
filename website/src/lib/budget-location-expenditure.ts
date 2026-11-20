@@ -1,8 +1,8 @@
+import { createExpenditureScopes } from '#lib/expenditure-scopes'
 import {
   FUNDING_SOURCES,
   ENTITY_EXPENDITURE_ALIASES,
   OPEN_UN_BASE,
-  matchEntityExpenditure,
   normalizeEntityName,
   type EntityExpenditure,
   type ExpenditureDataset,
@@ -53,18 +53,7 @@ export function matchBudgetLocationExpenditures(
   }
   const exactlyOne = (nodes: Node[], dataset: ExpenditureDataset) =>
     nodes.length === 1 ? amount(nodes[0], dataset) : unavailable()
-  const descendants = (dataset: ExpenditureDataset, roots: string[]) => {
-    const byId = new Map(dataset.nodes.map((node) => [node.id, node]))
-    return dataset.nodes.filter((node) => {
-      let current: Node | undefined = node
-      while (current) {
-        if (roots.includes(current.id)) return true
-        current =
-          current.parentId === null ? undefined : byId.get(current.parentId)
-      }
-      return false
-    })
-  }
+  const { descendants, scope } = createExpenditureScopes(datasets)
   const subprogrammeAmount = (
     nodes: Node[],
     dataset: ExpenditureDataset
@@ -134,12 +123,11 @@ export function matchBudgetLocationExpenditures(
       if (row.kind === 'part') value = exactlyOne(parts, ppb)
       if (row.kind === 'section') value = exactlyOne(sections, ppb)
       if (row.kind === 'entity' && sections.length === 1) {
-        const scoped = { ...ppb, nodes: descendants(ppb, [sections[0].id]) }
-        value = matchEntityExpenditure(
+        const { dataset: scoped, match } = scope(ppb, sections[0].id)
+        value = match(
           path[7],
           names.get(path[7]) ??
-            (row.citationAvailable === false ? row.detail : undefined),
-          [scoped]
+            (row.citationAvailable === false ? row.detail : undefined)
         )
         // Same entity matcher as resolution details, but constrained to this
         // section. Preserve source provenance even where older metadata lacks metricSources.

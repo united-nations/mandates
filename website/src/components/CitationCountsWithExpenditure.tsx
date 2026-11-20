@@ -1,6 +1,6 @@
 import { CitationCounts } from './CitationCounts'
 import { getExpenditureDatasets } from '@/lib/data/entity-expenditure'
-import { matchEntityExpenditure } from '@/lib/entity-expenditure'
+import { createEntityExpenditureMatcher } from '@/lib/entity-expenditure'
 import { matchBudgetLocationExpenditures } from '@/lib/budget-location-expenditure'
 import { buildResolutionCitationTree } from '@/lib/resolution-citation-tree'
 import type { Entity, Mandate } from '@/types'
@@ -17,11 +17,9 @@ export async function CitationCountsWithExpenditure({
   const { tree, financialRows } = buildResolutionCitationTree(mandate, entities)
   const datasets = tree.length ? await getExpenditureDatasets() : []
   const names = new Map(tree.map((e) => [e.entity, e.entityLong ?? e.entity]))
+  const match = createEntityExpenditureMatcher(datasets)
   const expenditures = Object.fromEntries(
-    tree.map((e) => [
-      e.id,
-      matchEntityExpenditure(e.entity, e.entityLong, datasets),
-    ])
+    tree.map((e) => [e.id, match(e.entity, e.entityLong)])
   )
   const locations = matchBudgetLocationExpenditures(
     financialRows,
