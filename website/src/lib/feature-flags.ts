@@ -41,6 +41,9 @@ export const SHOW_MANDATE_REGISTRY_RATING: boolean = false
  */
 export const SHOW_MANDATED_SG_REPORTS: boolean = true
 
+/** Prototype table scope: only the seven resolutions with reviewed implementation evidence. */
+export const IMPLEMENTATION_EXAMPLES_ONLY: boolean = true
+
 /**
  * Which source fills that block:
  * - 'catalogue_notes': reports whose Digital Library catalogue notes cite the
