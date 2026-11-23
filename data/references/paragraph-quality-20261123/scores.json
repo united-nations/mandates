@@ -1,0 +1,676 @@
+[
+  {
+    "variant": "baseline",
+    "model": "gpt-6-luna",
+    "cases": 14,
+    "valid": 14,
+    "all_checks": 13,
+    "display_words_median": 20.5,
+    "records": [
+      {
+        "id": "t01",
+        "checks": {
+          "valid": true,
+          "families": true,
+          "implementers": true,
+          "task_count": true
+        },
+        "passed": true,
+        "families": [
+          "substantive"
+        ],
+        "implementer_types": [
+          "un_secretariat"
+        ]
+      },
+      {
+        "id": "t02",
+        "checks": {
+          "valid": true,
+          "families": true,
+          "implementers": true,
+          "task_count": true
+        },
+        "passed": true,
+        "families": [
+          "resources"
+        ],
+        "implementer_types": []
+      },
+      {
+        "id": "t03",
+        "checks": {
+          "valid": true,
+          "families": true,
+          "implementers": true,
+          "task_count": true
+        },
+        "passed": true,
+        "families": [
+          "resources"
+        ],
+        "implementer_types": [
+          "un_secretariat"
+        ]
+      },
+      {
+        "id": "t04",
+        "checks": {
+          "valid": true,
+          "families": true,
+          "implementers": true,
+          "task_count": true
+        },
+        "passed": true,
+        "families": [
+          "deliberation"
+        ],
+        "implementer_types": []
+      },
+      {
+        "id": "t05",
+        "checks": {
+          "valid": true,
+          "families": true,
+          "implementers": true,
+          "task_count": true
+        },
+        "passed": true,
+        "families": [
+          "deliberation",
+          "institutional",
+          "reporting"
+        ],
+        "implementer_types": [
+          "un_secretariat"
+        ]
+      },
+      {
+        "id": "t06",
+        "checks": {
+          "valid": true,
+          "families": true,
+          "implementers": true,
+          "task_count": true
+        },
+        "passed": true,
+        "families": [],
+        "implementer_types": []
+      },
+      {
+        "id": "t07",
+        "checks": {
+          "valid": true,
+          "families": true,
+          "implementers": true,
+          "task_count": true
+        },
+        "passed": true,
+        "families": [
+          "substantive"
+        ],
+        "implementer_types": [
+          "member_states"
+        ]
+      },
+      {
+        "id": "t08",
+        "checks": {
+          "valid": true,
+          "families": true,
+          "implementers": true,
+          "task_count": true
+        },
+        "passed": true,
+        "families": [
+          "substantive"
+        ],
+        "implementer_types": [
+          "member_states"
+        ]
+      },
+      {
+        "id": "t09",
+        "checks": {
+          "valid": true,
+          "families": true,
+          "implementers": true,
+          "task_count": true
+        },
+        "passed": true,
+        "families": [
+          "substantive"
+        ],
+        "implementer_types": []
+      },
+      {
+        "id": "t10",
+        "checks": {
+          "valid": true,
+          "families": true,
+          "implementers": true,
+          "task_count": true
+        },
+        "passed": true,
+        "families": [
+          "substantive"
+        ],
+        "implementer_types": [
+          null
+        ]
+      },
+      {
+        "id": "t11",
+        "checks": {
+          "valid": true,
+          "families": true,
+          "implementers": true,
+          "task_count": true
+        },
+        "passed": true,
+        "families": [
+          "institutional",
+          "reporting"
+        ],
+        "implementer_types": [
+          "un_secretariat"
+        ]
+      },
+      {
+        "id": "t12",
+        "checks": {
+          "valid": true,
+          "families": true,
+          "implementers": true,
+          "task_count": true
+        },
+        "passed": true,
+        "families": [
+          "reporting"
+        ],
+        "implementer_types": [
+          "un_secretariat"
+        ]
+      },
+      {
+        "id": "t13",
+        "checks": {
+          "valid": true,
+          "families": true,
+          "implementers": true,
+          "task_count": true
+        },
+        "passed": true,
+        "families": [],
+        "implementer_types": []
+      },
+      {
+        "id": "t14",
+        "checks": {
+          "valid": true,
+          "families": false,
+          "implementers": true,
+          "task_count": false
+        },
+        "passed": false,
+        "families": [
+          "institutional",
+          "mandate_review"
+        ],
+        "implementer_types": [
+          "un_secretariat"
+        ]
+      }
+    ]
+  },
+  {
+    "variant": "v6",
+    "model": "gpt-6-luna",
+    "cases": 14,
+    "valid": 14,
+    "all_checks": 12,
+    "display_words_median": 8,
+    "records": [
+      {
+        "id": "t01",
+        "checks": {
+          "valid": true,
+          "families": true,
+          "implementers": true,
+          "task_count": true
+        },
+        "passed": true,
+        "families": [
+          "substantive"
+        ],
+        "implementer_types": [
+          "un_secretariat"
+        ]
+      },
+      {
+        "id": "t02",
+        "checks": {
+          "valid": true,
+          "families": true,
+          "implementers": true,
+          "task_count": true
+        },
+        "passed": true,
+        "families": [
+          "resources"
+        ],
+        "implementer_types": []
+      },
+      {
+        "id": "t03",
+        "checks": {
+          "valid": true,
+          "families": true,
+          "implementers": true,
+          "task_count": true
+        },
+        "passed": true,
+        "families": [
+          "resources"
+        ],
+        "implementer_types": [
+          "un_secretariat"
+        ]
+      },
+      {
+        "id": "t04",
+        "checks": {
+          "valid": true,
+          "families": true,
+          "implementers": true,
+          "task_count": true
+        },
+        "passed": true,
+        "families": [
+          "deliberation"
+        ],
+        "implementer_types": []
+      },
+      {
+        "id": "t05",
+        "checks": {
+          "valid": true,
+          "families": true,
+          "implementers": false,
+          "task_count": true
+        },
+        "passed": false,
+        "families": [
+          "deliberation",
+          "institutional",
+          "reporting"
+        ],
+        "implementer_types": [
+          "un_organs",
+          "un_secretariat"
+        ]
+      },
+      {
+        "id": "t06",
+        "checks": {
+          "valid": true,
+          "families": true,
+          "implementers": true,
+          "task_count": true
+        },
+        "passed": true,
+        "families": [],
+        "implementer_types": []
+      },
+      {
+        "id": "t07",
+        "checks": {
+          "valid": true,
+          "families": true,
+          "implementers": true,
+          "task_count": true
+        },
+        "passed": true,
+        "families": [
+          "substantive"
+        ],
+        "implementer_types": [
+          "member_states"
+        ]
+      },
+      {
+        "id": "t08",
+        "checks": {
+          "valid": true,
+          "families": true,
+          "implementers": true,
+          "task_count": true
+        },
+        "passed": true,
+        "families": [
+          "substantive"
+        ],
+        "implementer_types": [
+          "member_states"
+        ]
+      },
+      {
+        "id": "t09",
+        "checks": {
+          "valid": true,
+          "families": true,
+          "implementers": true,
+          "task_count": true
+        },
+        "passed": true,
+        "families": [
+          "substantive"
+        ],
+        "implementer_types": []
+      },
+      {
+        "id": "t10",
+        "checks": {
+          "valid": true,
+          "families": true,
+          "implementers": true,
+          "task_count": true
+        },
+        "passed": true,
+        "families": [
+          "substantive"
+        ],
+        "implementer_types": [
+          null
+        ]
+      },
+      {
+        "id": "t11",
+        "checks": {
+          "valid": true,
+          "families": true,
+          "implementers": true,
+          "task_count": true
+        },
+        "passed": true,
+        "families": [
+          "institutional",
+          "reporting"
+        ],
+        "implementer_types": [
+          "un_secretariat"
+        ]
+      },
+      {
+        "id": "t12",
+        "checks": {
+          "valid": true,
+          "families": true,
+          "implementers": true,
+          "task_count": true
+        },
+        "passed": true,
+        "families": [
+          "reporting"
+        ],
+        "implementer_types": [
+          "un_secretariat"
+        ]
+      },
+      {
+        "id": "t13",
+        "checks": {
+          "valid": true,
+          "families": true,
+          "implementers": true,
+          "task_count": true
+        },
+        "passed": true,
+        "families": [],
+        "implementer_types": []
+      },
+      {
+        "id": "t14",
+        "checks": {
+          "valid": true,
+          "families": false,
+          "implementers": true,
+          "task_count": false
+        },
+        "passed": false,
+        "families": [
+          "institutional",
+          "mandate_review"
+        ],
+        "implementer_types": [
+          "un_secretariat"
+        ]
+      }
+    ]
+  },
+  {
+    "variant": "v6",
+    "model": "gpt-6.1-sol",
+    "cases": 14,
+    "valid": 14,
+    "all_checks": 11,
+    "display_words_median": 8.0,
+    "records": [
+      {
+        "id": "t01",
+        "checks": {
+          "valid": true,
+          "families": true,
+          "implementers": true,
+          "task_count": true
+        },
+        "passed": true,
+        "families": [
+          "substantive"
+        ],
+        "implementer_types": [
+          "un_secretariat"
+        ]
+      },
+      {
+        "id": "t02",
+        "checks": {
+          "valid": true,
+          "families": true,
+          "implementers": true,
+          "task_count": true
+        },
+        "passed": true,
+        "families": [
+          "resources"
+        ],
+        "implementer_types": []
+      },
+      {
+        "id": "t03",
+        "checks": {
+          "valid": true,
+          "families": false,
+          "implementers": true,
+          "task_count": true
+        },
+        "passed": false,
+        "families": [
+          "substantive"
+        ],
+        "implementer_types": [
+          "un_secretariat"
+        ]
+      },
+      {
+        "id": "t04",
+        "checks": {
+          "valid": true,
+          "families": true,
+          "implementers": true,
+          "task_count": true
+        },
+        "passed": true,
+        "families": [
+          "deliberation"
+        ],
+        "implementer_types": []
+      },
+      {
+        "id": "t05",
+        "checks": {
+          "valid": true,
+          "families": true,
+          "implementers": true,
+          "task_count": true
+        },
+        "passed": true,
+        "families": [
+          "deliberation",
+          "institutional",
+          "reporting"
+        ],
+        "implementer_types": [
+          "un_secretariat"
+        ]
+      },
+      {
+        "id": "t06",
+        "checks": {
+          "valid": true,
+          "families": true,
+          "implementers": true,
+          "task_count": true
+        },
+        "passed": true,
+        "families": [],
+        "implementer_types": []
+      },
+      {
+        "id": "t07",
+        "checks": {
+          "valid": true,
+          "families": true,
+          "implementers": true,
+          "task_count": true
+        },
+        "passed": true,
+        "families": [
+          "substantive"
+        ],
+        "implementer_types": [
+          "member_states"
+        ]
+      },
+      {
+        "id": "t08",
+        "checks": {
+          "valid": true,
+          "families": true,
+          "implementers": true,
+          "task_count": true
+        },
+        "passed": true,
+        "families": [
+          "substantive"
+        ],
+        "implementer_types": [
+          "member_states"
+        ]
+      },
+      {
+        "id": "t09",
+        "checks": {
+          "valid": true,
+          "families": true,
+          "implementers": true,
+          "task_count": true
+        },
+        "passed": true,
+        "families": [
+          "substantive"
+        ],
+        "implementer_types": []
+      },
+      {
+        "id": "t10",
+        "checks": {
+          "valid": true,
+          "families": true,
+          "implementers": true,
+          "task_count": true
+        },
+        "passed": true,
+        "families": [
+          "substantive"
+        ],
+        "implementer_types": [
+          null
+        ]
+      },
+      {
+        "id": "t11",
+        "checks": {
+          "valid": true,
+          "families": true,
+          "implementers": true,
+          "task_count": true
+        },
+        "passed": true,
+        "families": [
+          "institutional",
+          "reporting"
+        ],
+        "implementer_types": [
+          "un_secretariat"
+        ]
+      },
+      {
+        "id": "t12",
+        "checks": {
+          "valid": true,
+          "families": true,
+          "implementers": true,
+          "task_count": true
+        },
+        "passed": true,
+        "families": [
+          "reporting"
+        ],
+        "implementer_types": [
+          "un_secretariat"
+        ]
+      },
+      {
+        "id": "t13",
+        "checks": {
+          "valid": true,
+          "families": false,
+          "implementers": true,
+          "task_count": true
+        },
+        "passed": false,
+        "families": [
+          "substantive"
+        ],
+        "implementer_types": []
+      },
+      {
+        "id": "t14",
+        "checks": {
+          "valid": true,
+          "families": false,
+          "implementers": true,
+          "task_count": true
+        },
+        "passed": false,
+        "families": [
+          "institutional"
+        ],
+        "implementer_types": [
+          "un_secretariat"
+        ]
+      }
+    ]
+  }
+]

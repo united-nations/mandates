@@ -6,6 +6,8 @@ export interface PilotSpan {
   kind:
     'activity' | 'assignee' | 'mention' | 'deliverable' | 'institutional_target'
   label: string
+  /** Short source-supported task description supplied by newer extractors. */
+  summary?: string
 }
 export interface ParagraphPilot {
   reasoning?: 'none' | 'medium'
@@ -202,6 +204,7 @@ export function pilotTooltip(span: PilotSpan): {
       title: 'Task',
       detail: pilotActivityLabel(key),
       explanation:
+        span.summary ??
         (
           {
             policy_normative_action:

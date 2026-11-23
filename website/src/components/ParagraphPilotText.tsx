@@ -3,46 +3,35 @@
 import type { ReactNode } from 'react'
 import { pilotTooltip, type PilotSpan } from '@/lib/paragraph-pilot'
 import {
+  pilotDisplaySegments,
+  type PilotHighlightLayer,
+} from '@/lib/paragraph-pilot-display'
+import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 
-/** Split at every evidence boundary so overlapping activities never swallow actors. */
+/** Display one semantic layer at a time; evidence roles never compete for a colour. */
 export function ParagraphPilotText({
   text,
   start,
   spans,
   render,
+  layer = 'activity',
 }: {
   text: string
   start: number
   spans: PilotSpan[]
+  layer?: PilotHighlightLayer
   render: (text: string) => ReactNode
 }) {
-  const end = start + text.length
-  const relevant = spans.filter((s) => s.start < end && s.end > start)
-  const boundaries = [
-    ...new Set([
-      start,
-      end,
-      ...relevant.flatMap((s) => [
-        Math.max(start, s.start),
-        Math.min(end, s.end),
-      ]),
-    ]),
-  ].sort((a, b) => a - b)
-  return boundaries.slice(0, -1).map((from, i) => {
-    const to = boundaries[i + 1]
-    const active = relevant.filter((s) => s.start <= from && s.end >= to)
-    const value = render(text.slice(from - start, to - start))
+  return pilotDisplaySegments(text, start, spans, layer).map((segment) => {
+    const from = segment.start
+    const active = segment.spans
+    const value = render(segment.text)
     if (!active.length) return <span key={from}>{value}</span>
-    const kind =
-      active.find((s) => s.kind === 'assignee')?.kind ??
-      active.find((s) => s.kind === 'deliverable')?.kind ??
-      active.find((s) => s.kind === 'institutional_target')?.kind ??
-      active.find((s) => s.kind === 'mention')?.kind ??
-      'activity'
+    const kind = active[0].kind
     const style =
       kind === 'assignee'
         ? 'bg-emerald-100 font-medium text-emerald-950 underline decoration-emerald-600 underline-offset-2'

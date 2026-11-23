@@ -1,0 +1,24 @@
+{
+  "created_at": "2026-11-23T20:05:52.865497+00:00",
+  "manual_passages": 20,
+  "development_reruns": 28,
+  "heldout_passages": 14,
+  "heldout_documents": 7,
+  "heldout_responses": 42,
+  "selection": "one seeded and one longest eligible operative passage per new series; exclude prior families and >0.7 prior source word-five-gram Jaccard",
+  "source_rule": "frozen registry recent/PPB2027-cited-resolution cohort, operative only",
+  "annotation": "single source-only agent rubric; frozen before final inference; imperfect labels preserved",
+  "limits": "Not an accuracy estimate; no full-sample rerun or production import",
+  "files": {
+    "configurations.json": "9d3830264bd747746650ab25504c01698090527d1fde2658ccf8b4504400c850",
+    "scores.json": "54a2a1eb21bbc0923ccaa7b0020c4bf76ab51a3e862aa16f271e87c6ecc73c83",
+    "cost-ledger.json": "cb7378c0f06990e3b928fc54883a062bbbcbb696994b1d2613886044060974f3",
+    "reviewed-original.jsonl": "95e867814518f14b45b16f23a5d5d59e056d08eb6c7944e0f33c8bcf862f9551",
+    "results-development.jsonl": "63c817b643455543547162b6e67efd1a009d10f298374c6dcc8ecfd92fa24547",
+    "results-final.jsonl": "a6088f9377f83c5ed8b0762dfe3402a3488259a845aed6f315efe2676368ac4c",
+    "gold-test.json": "43420718836c7925a0bac0ab8d56750554dd879de5a4eaf134ab7693d7a9891d",
+    "freeze.json": "ea30ceceec194a1ad8eb7438c892e9c09b2281f3ee8f2686b5ce7b3fdebee8a5",
+    "pool.json": "224a3442ee25781f423a7ed1c92fc3d8ea8cf2d1918c48ad471e5e23169c6d72",
+    "cases.json": "71f386eae66e304e7fecde530b37842f2a1ba4e68e1947e869c5341170dae09c"
+  }
+}

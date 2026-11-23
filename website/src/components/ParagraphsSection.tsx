@@ -33,6 +33,8 @@ import {
 } from '@/lib/paragraph-action-filters'
 import { ParagraphFacetFilter } from '@/components/ParagraphFacetFilter'
 import { ParagraphPilotText } from '@/components/ParagraphPilotText'
+import { Button } from '@/components/ui/button'
+import type { PilotHighlightLayer } from '@/lib/paragraph-pilot-display'
 import {
   matchesPilotActivity,
   assignedEntitiesOnly,
@@ -484,6 +486,8 @@ export function ParagraphsSection({
   const [paragraphFilter] = useState<'all' | 'operative'>('operative')
   const [showPreamble, setShowPreamble] = useState(false)
   const [activityFilter, setActivityFilter] = useState('all')
+  const [highlightLayer, setHighlightLayer] =
+    useState<PilotHighlightLayer>('activity')
   const [isActivityDropdownOpen, setIsActivityDropdownOpen] = useState(false)
   const showPilotEntities =
     allParagraphs.some((p) => p.pilot) || SHOW_PARAGRAPH_ENTITIES
@@ -1794,6 +1798,7 @@ export function ParagraphsSection({
           text={value}
           start={plainStart}
           spans={paragraph.pilot.spans}
+          layer={highlightLayer}
           render={(part) => markSearchHits(part, marker)}
         />
       )
@@ -1978,6 +1983,12 @@ export function ParagraphsSection({
                 </div>
               </TooltipContent>
             </Tooltip>
+          )
+        } else if (paragraph?.pilot) {
+          // Pilot evidence owns all entity/output presentation. Legacy markup
+          // still supplies offsets, but must not bypass the selected layer.
+          component = (
+            <React.Fragment key={segmentKey++}>{matchLabel}</React.Fragment>
           )
         } else if (
           !SHOW_PARAGRAPH_ENTITIES &&
@@ -2437,19 +2448,53 @@ export function ParagraphsSection({
         )}
 
         {allParagraphs.some((p) => p.pilot) && (
-          <p className="text-xs text-muted-foreground">
-            Exploratory pilot
-            {allParagraphs.some((p) => p.pilot?.reasoning === 'medium')
-              ? ' · medium reasoning'
-              : ''}{' '}
-            · tasks in blue, assignees in green, outputs in yellow. Hover or
-            focus a highlight for its classification.
-            {allParagraphs.some(
-              (p) =>
-                p.pilot?.status === 'rejected' || p.pilot?.status === 'stale'
-            ) &&
-              ' Some annotations are unavailable because validation failed or the source changed.'}
-          </p>
+          <div className="space-y-2">
+            <div
+              role="group"
+              aria-label="Paragraph highlight layer"
+              className="flex flex-wrap items-center gap-1"
+            >
+              <span className="mr-1 text-xs text-muted-foreground">
+                Highlight
+              </span>
+              {(
+                [
+                  ['activity', 'Tasks', 'bg-sky-100 text-sky-950'],
+                  ['assignee', 'Assignees', 'bg-emerald-100 text-emerald-950'],
+                  ['deliverable', 'Outputs', 'bg-amber-100 text-amber-950'],
+                  ['none', 'None', ''],
+                ] as const
+              ).map(([value, label, colour]) => (
+                <Button
+                  key={value}
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  aria-pressed={highlightLayer === value}
+                  onClick={() => setHighlightLayer(value)}
+                  className={cn(
+                    'h-7 px-2 text-xs',
+                    highlightLayer === value && (colour || 'bg-accent')
+                  )}
+                >
+                  {label}
+                </Button>
+              ))}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              One highlight layer is shown at a time. Blue text marks action
+              verbs. Hover or focus a highlight for its classification.
+              Exploratory pilot
+              {allParagraphs.some((p) => p.pilot?.reasoning === 'medium')
+                ? ' · medium reasoning.'
+                : '.'}
+              {allParagraphs.some(
+                (p) =>
+                  p.pilot?.status === 'rejected' || p.pilot?.status === 'stale'
+              ) &&
+                ' Some annotations are unavailable because validation failed or the source changed.'}
+            </p>
+          </div>
         )}
 
         {/* Search — its own line between the heading and the filter row, so

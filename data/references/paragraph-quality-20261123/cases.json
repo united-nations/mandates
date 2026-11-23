@@ -1,0 +1,1301 @@
+[
+  {
+    "id": "d01",
+    "split": "development",
+    "symbol": "A/RES/79/223",
+    "position": 75,
+    "source_sha256": "8693528026a8f1b0541b2d74d6c337b730d435a83f9473863b5e590ea74f5457",
+    "input": {
+      "document": {
+        "symbol": "A/RES/79/223",
+        "title": "Women in development",
+        "issuer": {
+          "normalized_name": "GA",
+          "aliases": [
+            "General Assembly"
+          ]
+        }
+      },
+      "target": [
+        {
+          "ref": "p75",
+          "text": "Stresses the importance of mobilizing and allocating resources to develop and implement policies and programmes, to support women’s entrepreneurship and to support opportunities for new women entrepreneurs, which will lead to business expansion for existing women-owned microenterprises and small and medium-sized enterprises, and encourages Governments to create a climate that is conducive to increasing the number of women entrepreneurs and the size of their businesses by providing them with training and advisory services in business, administration and information and communications technologies, facilitating networking and information-sharing and increasing their participation on advisory boards and in other forums so as to enable them to contribute to the formulation and review of policies and programmes being developed, especially by financial institutions;"
+        }
+      ],
+      "context": [
+        {
+          "ref": "p3",
+          "text": "Women in development"
+        },
+        {
+          "ref": "p73",
+          "text": "Encourages Member States to pursue, by effective means, policies of preventing and eliminating sexual harassment in the workplace, including in digital contexts, with an emphasis on effective legal, preventive and protective measures, including raising awareness regarding the rights of women who are victims or at risk of sexual harassment in the workplace;"
+        },
+        {
+          "ref": "p74",
+          "text": "Urges Governments to take measures to facilitate women’s access to land and property rights by providing training designed to make the judicial, legislative and administrative system gender-responsive, to provide legal aid for women seeking to claim their rights, to support the efforts of women’s groups and networks and to carry out awareness campaigns in order to draw attention to the need for women’s equal rights to land and property;"
+        }
+      ]
+    }
+  },
+  {
+    "id": "d02",
+    "split": "development",
+    "symbol": "A/RES/79/223",
+    "position": 76,
+    "source_sha256": "74c8ec00466d68e16f4729b084db69eada11e130eb01952f7f225a5e995df303",
+    "input": {
+      "document": {
+        "symbol": "A/RES/79/223",
+        "title": "Women in development",
+        "issuer": {
+          "normalized_name": "GA",
+          "aliases": [
+            "General Assembly"
+          ]
+        }
+      },
+      "target": [
+        {
+          "ref": "p76",
+          "text": "Encourages the international community, including Governments, and all relevant stakeholders, including the entities of the United Nations system, international financial institutions, other intergovernmental bodies, regional and national development banks, domestic financial institutions, credit unions, multi-stakeholder partnerships and relevant non-governmental organizations, as appropriate, to further develop financial literacy and financial education programmes for women and girls that include an emphasis on the impact of finance on sustainable development, as appropriate, in order to ensure that all learners acquire the knowledge and skills needed to access financial services and financial products, in particular women farmers and those working in micro-, small and medium-sized enterprises;"
+        }
+      ],
+      "context": [
+        {
+          "ref": "p3",
+          "text": "Women in development"
+        },
+        {
+          "ref": "p74",
+          "text": "Urges Governments to take measures to facilitate women’s access to land and property rights by providing training designed to make the judicial, legislative and administrative system gender-responsive, to provide legal aid for women seeking to claim their rights, to support the efforts of women’s groups and networks and to carry out awareness campaigns in order to draw attention to the need for women’s equal rights to land and property;"
+        },
+        {
+          "ref": "p75",
+          "text": "Stresses the importance of mobilizing and allocating resources to develop and implement policies and programmes, to support women’s entrepreneurship and to support opportunities for new women entrepreneurs, which will lead to business expansion for existing women-owned microenterprises and small and medium-sized enterprises, and encourages Governments to create a climate that is conducive to increasing the number of women entrepreneurs and the size of their businesses by providing them with training and advisory services in business, administration and information and communications technologies, facilitating networking and information-sharing and increasing their participation on advisory boards and in other forums so as to enable them to contribute to the formulation and review of policies and programmes being developed, especially by financial institutions;"
+        }
+      ]
+    }
+  },
+  {
+    "id": "d03",
+    "split": "development",
+    "symbol": "A/RES/79/223",
+    "position": 77,
+    "source_sha256": "a4e0f913df417fbe8380c326d102d5d7c490e268a49b6cb2b3b181cb921d965e",
+    "input": {
+      "document": {
+        "symbol": "A/RES/79/223",
+        "title": "Women in development",
+        "issuer": {
+          "normalized_name": "GA",
+          "aliases": [
+            "General Assembly"
+          ]
+        }
+      },
+      "target": [
+        {
+          "ref": "p77",
+          "text": "Encourages all Governments to work towards full and equal access to formal financial services, financial resources and financial products for all women, to adopt or review their financial inclusion strategies, in consultation with relevant stakeholders, and to consider including financial inclusion as a policy objective in financial regulation, in accordance with national priorities and legislation, encourages commercial banking systems to serve all, including those who currently face barriers to accessing financial services and information, and to support microfinance institutions, development banks, agricultural banks, mobile network operators, agent networks, cooperatives, postal banks and savings banks, as appropriate, also encourages the use of innovative tools, including mobile banking, payment platforms and digitalized payments, and the expansion of peer learning and experience-sharing among countries, regions and regional organizations, commits itself to strengthening capacity development for developing countries, including through the United Nations development system, and encourages mutual cooperation and collaboration between financial inclusion initiatives;"
+        }
+      ],
+      "context": [
+        {
+          "ref": "p3",
+          "text": "Women in development"
+        },
+        {
+          "ref": "p75",
+          "text": "Stresses the importance of mobilizing and allocating resources to develop and implement policies and programmes, to support women’s entrepreneurship and to support opportunities for new women entrepreneurs, which will lead to business expansion for existing women-owned microenterprises and small and medium-sized enterprises, and encourages Governments to create a climate that is conducive to increasing the number of women entrepreneurs and the size of their businesses by providing them with training and advisory services in business, administration and information and communications technologies, facilitating networking and information-sharing and increasing their participation on advisory boards and in other forums so as to enable them to contribute to the formulation and review of policies and programmes being developed, especially by financial institutions;"
+        },
+        {
+          "ref": "p76",
+          "text": "Encourages the international community, including Governments, and all relevant stakeholders, including the entities of the United Nations system, international financial institutions, other intergovernmental bodies, regional and national development banks, domestic financial institutions, credit unions, multi-stakeholder partnerships and relevant non-governmental organizations, as appropriate, to further develop financial literacy and financial education programmes for women and girls that include an emphasis on the impact of finance on sustainable development, as appropriate, in order to ensure that all learners acquire the knowledge and skills needed to access financial services and financial products, in particular women farmers and those working in micro-, small and medium-sized enterprises;"
+        }
+      ]
+    }
+  },
+  {
+    "id": "d04",
+    "split": "development",
+    "symbol": "A/RES/79/223",
+    "position": 78,
+    "source_sha256": "1c30af89357f3d3346a8a6c3c680f2ae89025411b791868343341ace74bac4da",
+    "input": {
+      "document": {
+        "symbol": "A/RES/79/223",
+        "title": "Women in development",
+        "issuer": {
+          "normalized_name": "GA",
+          "aliases": [
+            "General Assembly"
+          ]
+        }
+      },
+      "target": [
+        {
+          "ref": "p78",
+          "text": "Urges Governments and all relevant stakeholders to take all appropriate measures to eliminate discrimination against women with regard to their access to all types of financial services and products, including bank loans, bank accounts, mortgages and other forms of financial credit, regardless of their economic and social status, to support women’s access to legal assistance and to encourage entities in the financial sector to mainstream gender perspectives in their policies and programmes, recognizes the role of microfinance, including microcredit, in the eradication of poverty, the empowerment of women and the generation of employment, notes in this regard the importance of sound national financial systems, encourages the strengthening of existing and emerging microcredit institutions and their capacities, including through the support of international financial institutions, and urges Governments to ensure that microfinance programmes focus on the development of savings products that are safe, convenient and accessible to women and that support women’s efforts to retain control over their savings;"
+        }
+      ],
+      "context": [
+        {
+          "ref": "p3",
+          "text": "Women in development"
+        },
+        {
+          "ref": "p76",
+          "text": "Encourages the international community, including Governments, and all relevant stakeholders, including the entities of the United Nations system, international financial institutions, other intergovernmental bodies, regional and national development banks, domestic financial institutions, credit unions, multi-stakeholder partnerships and relevant non-governmental organizations, as appropriate, to further develop financial literacy and financial education programmes for women and girls that include an emphasis on the impact of finance on sustainable development, as appropriate, in order to ensure that all learners acquire the knowledge and skills needed to access financial services and financial products, in particular women farmers and those working in micro-, small and medium-sized enterprises;"
+        },
+        {
+          "ref": "p77",
+          "text": "Encourages all Governments to work towards full and equal access to formal financial services, financial resources and financial products for all women, to adopt or review their financial inclusion strategies, in consultation with relevant stakeholders, and to consider including financial inclusion as a policy objective in financial regulation, in accordance with national priorities and legislation, encourages commercial banking systems to serve all, including those who currently face barriers to accessing financial services and information, and to support microfinance institutions, development banks, agricultural banks, mobile network operators, agent networks, cooperatives, postal banks and savings banks, as appropriate, also encourages the use of innovative tools, including mobile banking, payment platforms and digitalized payments, and the expansion of peer learning and experience-sharing among countries, regions and regional organizations, commits itself to strengthening capacity development for developing countries, including through the United Nations development system, and encourages mutual cooperation and collaboration between financial inclusion initiatives;"
+        }
+      ]
+    }
+  },
+  {
+    "id": "d05",
+    "split": "development",
+    "symbol": "A/HRC/RES/62/12",
+    "position": 58,
+    "source_sha256": "5f05712f353f636e58345c5571116b1f713801b972bef428c699f31b4f24d85a",
+    "input": {
+      "document": {
+        "symbol": "A/HRC/RES/62/12",
+        "title": "Independence and impartiality of the judiciary, jurors and assessors, and the independence of lawyers: mandate of Special Rapporteur on the independence of judges and lawyers",
+        "issuer": {
+          "normalized_name": "HRC",
+          "aliases": [
+            "Human Rights Council"
+          ]
+        }
+      },
+      "target": [
+        {
+          "ref": "p58",
+          "text": "Encourages Governments that face difficulties in guaranteeing the independence of judges and lawyers, the objectivity and impartiality of prosecutors and their ability to perform their functions accordingly, or that are determined to take measures to implement these principles further, to consult with and to consider the services of the Special Rapporteur, for instance, by inviting the mandate holder to visit their countries;"
+        }
+      ],
+      "context": [
+        {
+          "ref": "p7",
+          "text": "Independence and impartiality of the judiciary, jurors and assessors, and the independence of lawyers: mandate of Special Rapporteur on the independence of judges and lawyers"
+        },
+        {
+          "ref": "p56",
+          "text": "Invites the Special Rapporteur to collaborate with relevant stakeholders within the United Nations system in the areas pertaining to the mandate;"
+        },
+        {
+          "ref": "p57",
+          "text": "Encourages the Special Rapporteur to facilitate the provision of technical assistance and capacity-building and the dissemination of guidelines and best practices, including through engagement with relevant stakeholders and in consultation with the Office of the United Nations High Commissioner for Human Rights, when requested by the State concerned, with a view to establishing and strengthening the rule of law, paying particular attention to the administration of justice and the role of an independent and competent judiciary and legal profession;"
+        }
+      ]
+    }
+  },
+  {
+    "id": "d06",
+    "split": "development",
+    "symbol": "A/RES/80/105",
+    "position": 42,
+    "source_sha256": "a1e500d28cae513ac5ea7c9ca733492fb75f094a6a8eb0e8613645d881c2a95c",
+    "input": {
+      "document": {
+        "symbol": "A/RES/80/105",
+        "title": "Implementation of the Declaration on the Granting of Independence to Colonial Countries and Peoples",
+        "issuer": {
+          "normalized_name": "GA",
+          "aliases": [
+            "General Assembly"
+          ]
+        }
+      },
+      "target": [
+        {
+          "ref": "p42",
+          "text": "Requests the Secretary-General, President pro tempore of the Special Committee, to meet informally at least once a year with the Chair and the Bureau of the Committee during the intersessional period, in order to explore innovative ways of using his good offices to help to advance the decolonization agenda on a case-by-case basis;"
+        }
+      ],
+      "context": [
+        {
+          "ref": "p5",
+          "text": "Implementation of the Declaration on the Granting of Independence to Colonial Countries and Peoples"
+        },
+        {
+          "ref": "p40",
+          "text": "Urges all States, directly and through their action in the specialized agencies and other organizations of the United Nations system, to provide moral and material assistance, as needed, to the peoples of the Non-Self-Governing Territories, and requests the administering Powers to take steps to enlist and make effective use of all possible assistance, on both a bilateral and a multilateral basis, in the strengthening of the economies of those Territories;"
+        },
+        {
+          "ref": "p41",
+          "text": "Requests the Secretary-General, the specialized agencies and other organizations of the United Nations system to provide economic, social and other assistance to the Non-Self-Governing Territories and to continue to do so, as appropriate, after they exercise their right to self-determination, including independence;"
+        }
+      ]
+    }
+  },
+  {
+    "id": "d07",
+    "split": "development",
+    "symbol": "A/RES/64/289",
+    "position": 51,
+    "source_sha256": "140e50eed2a9d750707515bcae832ccbb6764643b7ec6c60184dfd20c4d34a47",
+    "input": {
+      "document": {
+        "symbol": "A/RES/64/289",
+        "title": "System-wide coherence",
+        "issuer": {
+          "normalized_name": "GA",
+          "aliases": [
+            "General Assembly"
+          ]
+        }
+      },
+      "target": [
+        {
+          "ref": "p51",
+          "text": "Emphasizes the importance of taking measures to broaden the donor base and increase the number of donor countries and other partners making financial contributions to the United Nations development system in order to reduce the reliance of the system on a limited number of donors;"
+        }
+      ],
+      "context": [
+        {
+          "ref": "p48",
+          "text": "Affirms, in this context, the importance of accountability, transparency and improved results-based management and further harmonized results-based reporting on the work of the United Nations funds, programmes and specialized agencies for increased quantity and quality of funding for operational activities;"
+        },
+        {
+          "ref": "p49",
+          "text": "Ensuring adequate funding"
+        },
+        {
+          "ref": "p50",
+          "text": "Stresses that funding for operational activities should be aligned with the national priorities and plans of the programme countries as well as the strategic plans, mandates, resource frameworks and priorities of the United Nations funds, programmes and specialized agencies, and underscores, in that regard, the need to further strengthen the results-based frameworks of funds, programmes and agencies of the United Nations development system and for the agencies, funds and programmes to improve their reporting on outputs and nationally owned outcomes;"
+        }
+      ]
+    }
+  },
+  {
+    "id": "d08",
+    "split": "development",
+    "symbol": "A/RES/60/1",
+    "position": 297,
+    "source_sha256": "d8722db69d6a7d8b66d9192b1485fee4388dbdac8154f337c6508658d6718b9e",
+    "input": {
+      "document": {
+        "symbol": "A/RES/60/1",
+        "title": "2005 World Summit Outcome",
+        "issuer": {
+          "normalized_name": "GA",
+          "aliases": [
+            "General Assembly"
+          ]
+        }
+      },
+      "target": [
+        {
+          "ref": "p297",
+          "text": "We emphasize the need to provide the United Nations with adequate and timely resources with a view to enabling it to carry out its mandates. A reformed United Nations must be responsive to the entire membership, faithful to its founding principles and adapted to carrying out its mandate."
+        }
+      ],
+      "context": [
+        {
+          "ref": "p294",
+          "text": "Strengthening the United Nations"
+        },
+        {
+          "ref": "p295",
+          "text": "We reaffirm our commitment to strengthen the United Nations with a view to enhancing its authority and efficiency, as well as its capacity to address effectively, and in accordance with the purposes and principles of the Charter, the full range of challenges of our time. We are determined to reinvigorate the intergovernmental organs of the United Nations and to adapt them to the needs of the twenty-first century."
+        },
+        {
+          "ref": "p296",
+          "text": "We stress that, in order to efficiently perform their respective mandates as provided under the Charter, United Nations bodies should develop good cooperation and coordination in the common endeavour of building a more effective United Nations."
+        }
+      ]
+    }
+  },
+  {
+    "id": "d09",
+    "split": "development",
+    "symbol": "S/RES/2349(2017)",
+    "position": 33,
+    "source_sha256": "f3d32dea65447facd25efd20e8351e4aacc99e382e95e0a2c316514190aa91e1",
+    "input": {
+      "document": {
+        "symbol": "S/RES/2349(2017)",
+        "title": "Resolution 2349 (2017)",
+        "issuer": {
+          "normalized_name": "SC",
+          "aliases": [
+            "Security Council"
+          ]
+        }
+      },
+      "target": [
+        {
+          "ref": "p33",
+          "text": "Urges all parties to the conflict to ensure respect for and protection of humanitarian personnel, facilities, and their means of transport and equipment, and to facilitate safe, timely and unhindered access for humanitarian organisations to deliver lifesaving aid to affected people, and in particular in the case of Governments, where applicable, through facilitating bureaucratic and administrative procedures such as the expediting of outstanding registrations, and importation of humanitarian supplies, and further calls upon Governments in the Region to increase collaboration with United Nations partners including through more effective civilian-military coordination mechanisms;"
+        }
+      ],
+      "context": [
+        {
+          "ref": "p30",
+          "text": "Urges Governments in the Region to ensure women’s full and equal participation in national institutions and mechanisms for the prevention and resolution of conflicts, including in the development of strategies to counter Boko Haram and ISIL, welcomes initial efforts in the Region to address women’s representation such as the 25% quota for elected offices in Niger, and strongly encourages the further development, implementation and funding of National Action Plans on Women, Peace and Security by Cameroon, Chad, Niger and Nigeria; and encourages all regional organizations engaged in peace and security efforts in the Region to ensure that gender analysis and women’s participation are integrated into their assessments, planning, and operations;"
+        },
+        {
+          "ref": "p31",
+          "text": "Humanitarian"
+        },
+        {
+          "ref": "p32",
+          "text": "Welcomes the efforts of Governments in the Region and of regional and sub-regional organisations, as well as the hospitality provided by host communities for the millions of displaced people, the majority of whom are women and children, who are uniquely impacted, and urges Governments in the Region, donors and relevant international non-governmental organisations to urgently redouble their efforts and ensure close coordination, including between development and humanitarian actors, in particular to enhance early recovery, food security, improve living conditions, and increase livelihood opportunities;"
+        }
+      ]
+    }
+  },
+  {
+    "id": "d10",
+    "split": "development",
+    "symbol": "A/HRC/RES/45/2",
+    "position": 45,
+    "source_sha256": "577615abf713625ba0e6b27848afc7cb8b5a5c21ada27f0bd7dfc8a3e536c86f",
+    "input": {
+      "document": {
+        "symbol": "A/HRC/RES/45/2",
+        "title": "Strengthening cooperation and technical assistance in the field of human rights in the Bolivarian Republic of Venezuela",
+        "issuer": {
+          "normalized_name": "HRC",
+          "aliases": [
+            "Human Rights Council"
+          ]
+        }
+      },
+      "target": [
+        {
+          "ref": "p45",
+          "text": "Also requests the High Commissioner to continue to engage with the Bolivarian Republic of Venezuela in addressing the situation of human rights in the country and providing substantive capacity-building and technical assistance, and to present to the Human Rights Council, at its forty-sixth session, an oral update on the situation of human rights in the country, especially on the implementation of the recommendations included in her report, and a comprehensive written report on the situation of human rights in the Bolivarian Republic of Venezuela, to be presented at the Council at its forty-eighth session;"
+        }
+      ],
+      "context": [
+        {
+          "ref": "p7",
+          "text": "Strengthening cooperation and technical assistance in the field of human rights in the Bolivarian Republic of Venezuela"
+        },
+        {
+          "ref": "p43",
+          "text": "Encourages both the Government of the Bolivarian Republic of Venezuela and the opposition to make progress down the path of genuine political dialogue with the aim of reaching a peaceful, democratic and constitutional solution that will lead to full respect for and the protection and fulfilment of human rights in the country;"
+        },
+        {
+          "ref": "p44",
+          "text": "Requests the High Commissioner to continue to provide the technical cooperation and support necessary to the Bolivarian Republic of Venezuela to fulfil its human rights obligations and commitments, including by strengthening the justice system and the national protection mechanisms;"
+        }
+      ]
+    }
+  },
+  {
+    "id": "d11",
+    "split": "development",
+    "symbol": "E/RES/2026/15",
+    "position": 45,
+    "source_sha256": "8ef38b7baea72cb56859e5455f2a68c1e748de2976983f9800dfacea773b0eca",
+    "input": {
+      "document": {
+        "symbol": "E/RES/2026/15",
+        "title": "Strengthening crime prevention and criminal justice responses to prevent and combat fraud",
+        "issuer": {
+          "normalized_name": "ECOSOC",
+          "aliases": [
+            "Economic and Social Council"
+          ]
+        }
+      },
+      "target": [
+        {
+          "ref": "p45",
+          "text": "Collect information from States, on a voluntary basis, regarding emerging crime trends, typologies, good practices, capacity gaps and challenges in preventing and combating fraud, and to make that information available every two years to the Commission on Crime Prevention and Criminal Justice;"
+        }
+      ],
+      "context": [
+        {
+          "ref": "p43",
+          "text": "Further encourages Member States to strengthen the provision of impactful and effective technical assistance, including through the United Nations Office on Drugs and Crime, taking into consideration the needs and priorities identified by requesting States, to support achievable results in preventing and combating fraud;"
+        },
+        {
+          "ref": "p44",
+          "text": "Requests the United Nations Office on Drugs and Crime, within its mandate and subject to the availability of extrabudgetary resources and subject to review by the Commission on Crime Prevention and Criminal Justice, after three years, to:"
+        }
+      ]
+    }
+  },
+  {
+    "id": "d12",
+    "split": "development",
+    "symbol": "A/RES/48/104",
+    "position": 66,
+    "source_sha256": "97cc02c2e23a52807d7192d97aa4b9984ad90b8a6c2d33f0a0ada970f9ccbac2",
+    "input": {
+      "document": {
+        "symbol": "A/RES/48/104",
+        "title": "Declaration on the Elimination of Violence against Women",
+        "issuer": {
+          "normalized_name": "GA",
+          "aliases": [
+            "General Assembly"
+          ]
+        }
+      },
+      "target": [
+        {
+          "ref": "p66",
+          "text": "Include in government budgets adequate resources for their activities related to the elimination of violence against women;"
+        }
+      ],
+      "context": [
+        {
+          "ref": "p10",
+          "text": "Declaration on the Elimination of Violence against Women"
+        },
+        {
+          "ref": "p53",
+          "text": "States should condemn violence against women and should not invoke any custom, tradition or religious consideration to avoid their obligations with respect to its elimination. States should pursue by all appropriate means and without delay a policy of eliminating violence against women and, to this end, should:"
+        },
+        {
+          "ref": "p64",
+          "text": "Develop, in a comprehensive way, preventive approaches and all those measures of a legal, political, administrative and cultural nature that promote the protection of women against any form of violence, and ensure that the re-victimization of women does not occur because of laws insensitive to gender considerations, enforcement practices or other interventions;"
+        },
+        {
+          "ref": "p65",
+          "text": "Work to ensure, to the maximum extent feasible in the light of their available resources and, where needed, within the framework of international cooperation, that women subjected to violence and, where appropriate, their children have specialized assistance, such as rehabilitation, assistance in child care and maintenance, treatment, counselling, and health and social services, facilities and programmes, as well as support structures, and should take all other appropriate measures to promote their safety and physical and psychological rehabilitation;"
+        }
+      ]
+    }
+  },
+  {
+    "id": "d13",
+    "split": "development",
+    "symbol": "A/RES/78/245",
+    "position": 132,
+    "source_sha256": "ddf1ea1aa4689df05d13007ed7dec54f2fe7a4ec42264ee8d01a63b85e998185",
+    "input": {
+      "document": {
+        "symbol": "A/RES/78/245",
+        "title": "Pattern of conferences",
+        "issuer": {
+          "normalized_name": "GA",
+          "aliases": [
+            "General Assembly"
+          ]
+        }
+      },
+      "target": [
+        {
+          "ref": "p132",
+          "text": "Requests the Secretary-General to apply common standards for the quality control of documents processed by external translators in all four duty stations in order to ensure high-quality translations in the six official languages of the United Nations, and to report thereon to the General Assembly at its future sessions;"
+        }
+      ],
+      "context": [
+        {
+          "ref": "p109",
+          "text": "Matters related to language services"
+        },
+        {
+          "ref": "p130",
+          "text": "Stresses the need to fully ensure the highest possible quality of contractual and in-house translation, and freelance and in-house interpretation, and requests the Secretary-General to report on measures taken in this regard;"
+        },
+        {
+          "ref": "p131",
+          "text": "Reiterates its request that the Secretary-General provide, at all duty stations, adequate staff at the appropriate level, with a view to ensuring appropriate quality control for external translation and freelance interpretation;"
+        }
+      ]
+    }
+  },
+  {
+    "id": "d14",
+    "split": "development",
+    "symbol": "A/RES/78/245",
+    "position": 40,
+    "source_sha256": "ac798db2b92bf43bef43bb3547aec12855f25e13558ecd54fc11ca177c7e857d",
+    "input": {
+      "document": {
+        "symbol": "A/RES/78/245",
+        "title": "Pattern of conferences",
+        "issuer": {
+          "normalized_name": "GA",
+          "aliases": [
+            "General Assembly"
+          ]
+        }
+      },
+      "target": [
+        {
+          "ref": "p40",
+          "text": "Requests the Secretary-General to consult Member States on initiatives that affect the utilization of conference services and conference facilities;"
+        }
+      ],
+      "context": [
+        {
+          "ref": "p27",
+          "text": "Utilization of conference-servicing resources"
+        },
+        {
+          "ref": "p38",
+          "text": "Requests the Committee on Conferences to consult those bodies that have consistently utilized less than the applicable benchmark of their allocated resources for the past six years, with a view to making appropriate recommendations in order to achieve the optimum utilization of conference-servicing resources;"
+        },
+        {
+          "ref": "p39",
+          "text": "Welcomes the efforts undertaken by the Secretary-General to increase the utilization of conference-servicing resources, and in this regard encourages the Secretary-General to enhance the efficiency of conference servicing and to report thereon to the General Assembly at its seventy-ninth session;"
+        }
+      ]
+    }
+  },
+  {
+    "id": "d15",
+    "split": "development",
+    "symbol": "A/RES/72/266B",
+    "position": 21,
+    "source_sha256": "ae32917802cb73e04a112bb7a948d78ea3b803c47ee6aef89bd1e8621a27de33",
+    "input": {
+      "document": {
+        "symbol": "A/RES/72/266B",
+        "title": "Shifting the management paradigm in the United Nations",
+        "issuer": {
+          "normalized_name": "GA",
+          "aliases": [
+            "General Assembly"
+          ]
+        }
+      },
+      "target": [
+        {
+          "ref": "p21",
+          "text": "Decides to approve the reorganization of the current Department of Management and Department of Field Support into the proposed new Department of Management Strategy, Policy and Compliance and Department of Operational Support;"
+        }
+      ],
+      "context": [
+        {
+          "ref": "p5",
+          "text": "B"
+        },
+        {
+          "ref": "p19",
+          "text": "Requests the Secretary-General to continue to develop a clear, simple and transparent system for delegating authority, to ensure that responsibilities and accountability are aligned;"
+        },
+        {
+          "ref": "p20",
+          "text": "Underlines the crucial role of oversight bodies, including the Office of Internal Oversight Services, the Board of Auditors and the Joint Inspection Unit, and calls upon the Secretary-General to make use of the expertise of these bodies in the reform process, as appropriate, by implementing their relevant recommendations;"
+        }
+      ]
+    }
+  },
+  {
+    "id": "d16",
+    "split": "development",
+    "symbol": "A/RES/60/1",
+    "position": 372,
+    "source_sha256": "be62b718092ab5acfffb3085491a1da9dca6e9394cc6e62dcbb0083aea567187",
+    "input": {
+      "document": {
+        "symbol": "A/RES/60/1",
+        "title": "2005 World Summit Outcome",
+        "issuer": {
+          "normalized_name": "GA",
+          "aliases": [
+            "General Assembly"
+          ]
+        }
+      },
+      "target": [
+        {
+          "ref": "p372",
+          "text": "We request the Security Council to consider the composition, mandate and working methods of the Military Staff Committee."
+        }
+      ],
+      "context": [
+        {
+          "ref": "p369",
+          "text": "Charter of the United Nations"
+        },
+        {
+          "ref": "p370",
+          "text": "Considering that the Trusteeship Council no longer meets and has no remaining functions, we should delete Chapter XIII of the Charter and references to the Council in Chapter XII."
+        },
+        {
+          "ref": "p371",
+          "text": "Taking into account General Assembly resolution 50/52 of 11 December 1995 and recalling the related discussions conducted in the General Assembly, bearing in mind the profound cause for the founding of the United Nations and looking to our common future, we resolve to delete references to “enemy States” in Articles 53, 77 and 107 of the Charter."
+        }
+      ]
+    }
+  },
+  {
+    "id": "d17",
+    "split": "development",
+    "symbol": "A/RES/80/245",
+    "position": 13,
+    "source_sha256": "468a58b136d57da2bdb202ce723b6e06f8600abe92f5faf01dcb3d343317ba48",
+    "input": {
+      "document": {
+        "symbol": "A/RES/80/245",
+        "title": "Unforeseen and extraordinary expenses for 2026",
+        "issuer": {
+          "normalized_name": "GA",
+          "aliases": [
+            "General Assembly"
+          ]
+        }
+      },
+      "target": [
+        {
+          "ref": "p13",
+          "text": "The payment of pensions and travel and removal expenses of retiring judges and travel and removal expenses and installation grants of members of the Court (Statute, Article 32, paragraph 7), not exceeding a total of 205,000 dollars;"
+        }
+      ],
+      "context": [
+        {
+          "ref": "p5",
+          "text": "Unforeseen and extraordinary expenses for 2026"
+        },
+        {
+          "ref": "p9",
+          "text": "Such commitments as the President of the International Court of Justice certifies relate to expenses occasioned by:"
+        },
+        {
+          "ref": "p11",
+          "text": "The calling of witnesses and the appointment of experts (Statute, Article 50) and the appointment of assessors (Statute, Article 30), not exceeding a total of 25,000 dollars;"
+        },
+        {
+          "ref": "p12",
+          "text": "The maintenance in office for the completion of cases of judges who have not been re-elected (Statute, Article 13, paragraph 3), not exceeding a total of 20,000 dollars;"
+        }
+      ]
+    }
+  },
+  {
+    "id": "d18",
+    "split": "development",
+    "symbol": "A/RES/78/184",
+    "position": 31,
+    "source_sha256": "9f4b93429dc85eefe1b44a12f15d13d05c84418288d306351b4ecba95ddaf539",
+    "input": {
+      "document": {
+        "symbol": "A/RES/78/184",
+        "title": "Office of the United Nations High Commissioner for Refugees",
+        "issuer": {
+          "normalized_name": "GA",
+          "aliases": [
+            "General Assembly"
+          ]
+        }
+      },
+      "target": [
+        {
+          "ref": "p31",
+          "text": "Notes the significant global and regional initiatives, conferences and summits undertaken to strengthen international solidarity with and cooperation for refugees and other persons of concern, and encourages those who participated to implement their commitments made therein;"
+        }
+      ],
+      "context": [
+        {
+          "ref": "p3",
+          "text": "Office of the United Nations High Commissioner for Refugees"
+        },
+        {
+          "ref": "p29",
+          "text": "Also encourages the Office of the High Commissioner to work in partnership and full cooperation with relevant national authorities, United Nations offices and agencies, international and intergovernmental organizations, regional organizations, the private sector and non-governmental organizations to continue to contribute to the development of humanitarian response capacities at all levels;"
+        },
+        {
+          "ref": "p30",
+          "text": "Welcomes the efforts by the Office of the High Commissioner to ensure an inclusive, transparent, predictable and well-coordinated response to refugees, as well as internally displaced persons and other persons of concern, consistent with its mandate, and in this regard takes note of the refugee coordination model;"
+        }
+      ]
+    }
+  },
+  {
+    "id": "d19",
+    "split": "development",
+    "symbol": "A/RES/79/281",
+    "position": 26,
+    "source_sha256": "0094944869812322a2b20e3f374b3b5205bc2c2d016aaaad95b9caea00772b95",
+    "input": {
+      "document": {
+        "symbol": "A/RES/79/281",
+        "title": "Joint Inspection Unit",
+        "issuer": {
+          "normalized_name": "GA",
+          "aliases": [
+            "General Assembly"
+          ]
+        }
+      },
+      "target": [
+        {
+          "ref": "p26",
+          "text": "Also invites the Unit to keep under review the long-term effectiveness of its implemented recommendations;"
+        }
+      ],
+      "context": [
+        {
+          "ref": "p7",
+          "text": "Report of the Joint Inspection Unit"
+        },
+        {
+          "ref": "p24",
+          "text": "Recalls paragraph 14 of its resolution 78/276 and invites participating organizations within the United Nations system to regularly review the status of acceptance and implementation of the recommendations of the Unit, especially those related to system-wide coordination and coherence, and invites participating organizations to report non-acceptance and non-implementation to the Unit;"
+        },
+        {
+          "ref": "p25",
+          "text": "Invites the Unit, in the course of its work, to continue its efforts for oversight and review of the efficiency and effectiveness of the United Nations;"
+        }
+      ]
+    }
+  },
+  {
+    "id": "d20",
+    "split": "development",
+    "symbol": "A/RES/60/1",
+    "position": 331,
+    "source_sha256": "ffb154e8ea43879d9df49448d2e00419fe33b38b256256bae5f94c7ec47e24d6",
+    "input": {
+      "document": {
+        "symbol": "A/RES/60/1",
+        "title": "2005 World Summit Outcome",
+        "issuer": {
+          "normalized_name": "GA",
+          "aliases": [
+            "General Assembly"
+          ]
+        }
+      },
+      "target": [
+        {
+          "ref": "p331",
+          "text": "A detailed proposal on the framework for a one-time staff buyout to improve personnel structure and quality, including an indication of costs involved and mechanisms to ensure that it achieves its intended purpose."
+        }
+      ],
+      "context": [
+        {
+          "ref": "p319",
+          "text": "Secretariat and management reform"
+        },
+        {
+          "ref": "p328",
+          "text": "We commend the Secretary-General’s previous and ongoing efforts to enhance the effective management of the United Nations and his commitment to update the Organization. Bearing in mind our responsibility as Member States, we emphasize the need to decide on additional reforms in order to make more efficient use of the financial and human resources available to the Organization and thus better comply with its principles, objectives and mandates. We call on the Secretary-General to submit proposals for implementing management reforms to the General Assembly for consideration and decision in the first quarter of 2006, which will include the following elements:"
+        },
+        {
+          "ref": "p329",
+          "text": "We will ensure that the United Nations budgetary, financial and human resource policies, regulations and rules respond to the current needs of the Organization and enable the efficient and effective conduct of its work, and request the Secretary-General to provide an assessment and recommendations to the General Assembly for decision during the first quarter of 2006. The assessment and recommendations of the Secretary-General should take account of the measures already under way for the reform of human resources management and the budget process;"
+        },
+        {
+          "ref": "p330",
+          "text": "We resolve to strengthen and update the programme of work of the United Nations so that it responds to the contemporary requirements of Member States. To this end, the General Assembly and other relevant organs will review all mandates older than five years originating from resolutions of the General Assembly and other organs, which would be complementary to the existing periodic reviews of activities. The General Assembly and the other organs should complete and take the necessary decisions arising from this review during 2006. We request the Secretary-General to facilitate this review with analysis and recommendations, including on the opportunities for programmatic shifts that could be considered for early General Assembly consideration;"
+        }
+      ]
+    }
+  },
+  {
+    "id": "t01",
+    "split": "test",
+    "symbol": "A/RES/77/291B",
+    "family": "A/RES/77/291B",
+    "position": 19,
+    "prefix": "9.",
+    "source_sha256": "807b98e6ed75afb5eeaee1f77d15154e791027a256dc99cc9297713f7797cc91",
+    "prior_5gram_jaccard": 0.3333333333333333,
+    "input": {
+      "document": {
+        "symbol": "A/RES/77/291B",
+        "title": "Financing of the United Nations Disengagement Observer Force",
+        "issuer": {
+          "normalized_name": "GA",
+          "aliases": [
+            "General Assembly"
+          ]
+        }
+      },
+      "target": [
+        {
+          "ref": "p19",
+          "text": "Requests the Secretary-General to ensure the full implementation of the relevant provisions of its resolutions 59/296, 60/266, 61/276, 64/269, 65/289, 66/264, 69/307, 70/286 and 76/274;"
+        }
+      ],
+      "context": [
+        {
+          "ref": "p17",
+          "text": "Requests the Secretary-General to ensure that proposed peacekeeping budgets are based on the relevant legislative mandates;"
+        },
+        {
+          "ref": "p18",
+          "text": "Endorses the conclusions and recommendations contained in the report of the Advisory Committee on Administrative and Budgetary Questions, subject to the provisions of the present resolution, and requests the Secretary-General to ensure their full implementation;"
+        }
+      ]
+    }
+  },
+  {
+    "id": "t02",
+    "split": "test",
+    "symbol": "A/RES/77/291B",
+    "family": "A/RES/77/291B",
+    "position": 27,
+    "prefix": "14.",
+    "source_sha256": "886fb097b5c6076e6dc69a84bbd6e07aec79ab99410891d75609248197809bc0",
+    "prior_5gram_jaccard": 0.3611111111111111,
+    "input": {
+      "document": {
+        "symbol": "A/RES/77/291B",
+        "title": "Financing of the United Nations Disengagement Observer Force",
+        "issuer": {
+          "normalized_name": "GA",
+          "aliases": [
+            "General Assembly"
+          ]
+        }
+      },
+      "target": [
+        {
+          "ref": "p27",
+          "text": "Also decides that, in accordance with the provisions of its resolution 973 (X) of 15 December 1955, there shall be set off against the apportionment among Member States, as provided for in paragraph 13 above, their respective share in the Tax Equalization Fund of 1,115,500 dollars, comprising the estimated staff assessment income of 860,900 dollars approved for the Force, the prorated share of 209,500 dollars of the estimated staff assessment income approved for the support account and the prorated share of 45,100 dollars of the estimated staff assessment income approved for the United Nations Logistics Base;"
+        }
+      ],
+      "context": [
+        {
+          "ref": "p24",
+          "text": "Decides to appropriate to the special account for the United Nations Disengagement Observer Force the amount of 75,579,600 dollars for the period from 1 July 2023 to 30 June 2024, inclusive of 69,314,200 dollars for the maintenance of the Force, 5,347,900 dollars for the support account for peacekeeping operations and 917,500 dollars for the United Nations Logistics Base at Brindisi, Italy;"
+        },
+        {
+          "ref": "p26",
+          "text": "Decides to apportion among Member States the amount of 37,789,800 dollars for the period from 1 July to 31 December 2023, in accordance with the levels updated in its resolution 76/239 of 24 December 2021, taking into account the scale of assessments for 2023, as set out in its resolution 76/238 of 24 December 2021;"
+        }
+      ]
+    }
+  },
+  {
+    "id": "t03",
+    "split": "test",
+    "symbol": "A/HRC/RES/51/30",
+    "family": "strengthening the voluntary funds for the universal periodic review mechanism of the human rights council",
+    "position": 22,
+    "prefix": "6.",
+    "source_sha256": "6b7c520410c0900024279628098337f2068d03d0e3f767dc92b8472963b010fd",
+    "prior_5gram_jaccard": 0.05555555555555555,
+    "input": {
+      "document": {
+        "symbol": "A/HRC/RES/51/30",
+        "title": "Strengthening the voluntary funds for the universal periodic review mechanism of the Human Rights Council",
+        "issuer": {
+          "normalized_name": "HRC",
+          "aliases": [
+            "Human Rights Council"
+          ]
+        }
+      },
+      "target": [
+        {
+          "ref": "p22",
+          "text": "Requests the Secretary-General to further strengthen the regular budget-funded dedicated capacity of the Office of the High Commissioner to implement the mandates of the two voluntary funds, including by scaling up the dedicated capacity of the Universal Periodic Review Branch in each regional office during the fourth cycle of the universal periodic review;"
+        }
+      ],
+      "context": [
+        {
+          "ref": "p20",
+          "text": "Decides to convene, at its fifty-second session, a high-level panel discussion, fully accessible to persons with disabilities, focusing on the achievements, good practices and lessons learned by the two voluntary funds during the implementation of their mandates over the past 15 years, and reflecting on further optimization of the use of these funds to facilitate the participation of developing States, particularly least developed countries and small island developing States, in the fourth cycle of the universal periodic review, and to support them in the implementation of recommendations emanating from the fourth cycle;"
+        },
+        {
+          "ref": "p21",
+          "text": "Requests the Office of the United Nations High Commissioner for Human Rights to prepare a summary report on the high-level panel discussion on the universal periodic review, and to submit the report to the Human Rights Council at its fifty-third session;"
+        }
+      ]
+    }
+  },
+  {
+    "id": "t04",
+    "split": "test",
+    "symbol": "A/HRC/RES/51/30",
+    "family": "strengthening the voluntary funds for the universal periodic review mechanism of the human rights council",
+    "position": 20,
+    "prefix": "4.",
+    "source_sha256": "596cdad51cec784aab05842d49dbc10e582e414212a4893de978c7fc22c3d389",
+    "prior_5gram_jaccard": 0.05042016806722689,
+    "input": {
+      "document": {
+        "symbol": "A/HRC/RES/51/30",
+        "title": "Strengthening the voluntary funds for the universal periodic review mechanism of the Human Rights Council",
+        "issuer": {
+          "normalized_name": "HRC",
+          "aliases": [
+            "Human Rights Council"
+          ]
+        }
+      },
+      "target": [
+        {
+          "ref": "p20",
+          "text": "Decides to convene, at its fifty-second session, a high-level panel discussion, fully accessible to persons with disabilities, focusing on the achievements, good practices and lessons learned by the two voluntary funds during the implementation of their mandates over the past 15 years, and reflecting on further optimization of the use of these funds to facilitate the participation of developing States, particularly least developed countries and small island developing States, in the fourth cycle of the universal periodic review, and to support them in the implementation of recommendations emanating from the fourth cycle;"
+        }
+      ],
+      "context": [
+        {
+          "ref": "p18",
+          "text": "Welcomes the fifteenth anniversary of the establishment of the Voluntary Fund for Participation in the Universal Periodic Review and the Voluntary Fund for Financial and Technical Assistance in the Implementation of the Universal Periodic Review;"
+        },
+        {
+          "ref": "p19",
+          "text": "Recognizes that the fifteenth anniversary of the two voluntary funds and the upcoming fourth cycle of the universal periodic review offer an important opportunity to reaffirm and take action in ensuring universal participation of all State Members of the United Nations in the universal periodic review and in providing financial and technical support to developing countries, particularly least developed countries and small island developing States, in the implementation of recommendations emanating from the universal periodic review in consultation with and with consent of the country concerned;"
+        }
+      ]
+    }
+  },
+  {
+    "id": "t05",
+    "split": "test",
+    "symbol": "A/HRC/RES/57/1",
+    "family": "promoting reconciliation accountability and human rights in sri lanka",
+    "position": 12,
+    "prefix": "2.",
+    "source_sha256": "8c7dbb7403e76e3459309b0426d12902c6b9d0c1b5cf68c36fcd53729fea5220",
+    "prior_5gram_jaccard": 0.061224489795918366,
+    "input": {
+      "document": {
+        "symbol": "A/HRC/RES/57/1",
+        "title": "Promoting reconciliation, accountability and human rights in Sri Lanka",
+        "issuer": {
+          "normalized_name": "HRC",
+          "aliases": [
+            "Human Rights Council"
+          ]
+        }
+      },
+      "target": [
+        {
+          "ref": "p12",
+          "text": "Decides to extend the mandate of the Office of the High Commissioner and all work requested of it by the Human Rights Council in its resolution 51/1, and requests the Office to present an oral update to the Council at its fifty-eighth session and a comprehensive report on progress in reconciliation, accountability and human rights in Sri Lanka at its sixtieth session, to be discussed in an interactive dialogue."
+        }
+      ],
+      "context": [
+        {
+          "ref": "p11",
+          "text": "Welcomes the report of Office of the United Nations High Commissioner for Human Rights on the situation of human rights in Sri Lanka, presented to the Human Rights Council at its present session;"
+        }
+      ]
+    }
+  },
+  {
+    "id": "t06",
+    "split": "test",
+    "symbol": "A/HRC/RES/57/1",
+    "family": "promoting reconciliation accountability and human rights in sri lanka",
+    "position": 11,
+    "prefix": "1.",
+    "source_sha256": "97c13d834d05f594a26fae205619f6a354ecc8c1d4d14e270241f9bf67c64607",
+    "prior_5gram_jaccard": 0.2682926829268293,
+    "input": {
+      "document": {
+        "symbol": "A/HRC/RES/57/1",
+        "title": "Promoting reconciliation, accountability and human rights in Sri Lanka",
+        "issuer": {
+          "normalized_name": "HRC",
+          "aliases": [
+            "Human Rights Council"
+          ]
+        }
+      },
+      "target": [
+        {
+          "ref": "p11",
+          "text": "Welcomes the report of Office of the United Nations High Commissioner for Human Rights on the situation of human rights in Sri Lanka, presented to the Human Rights Council at its present session;"
+        }
+      ],
+      "context": []
+    }
+  },
+  {
+    "id": "t07",
+    "split": "test",
+    "symbol": "E/RES/2016/18",
+    "family": "mainstreaming holistic approaches in youth crime prevention",
+    "position": 25,
+    "prefix": "3.",
+    "source_sha256": "d9916f315293fa7307e719b53e2e8c453181fbd7b1a8e5ee8f4cfc48149c8a03",
+    "prior_5gram_jaccard": 0.023809523809523808,
+    "input": {
+      "document": {
+        "symbol": "E/RES/2016/18",
+        "title": "Mainstreaming holistic approaches in youth crime prevention",
+        "issuer": {
+          "normalized_name": "ECOSOC",
+          "aliases": [
+            "Economic and Social Council"
+          ]
+        }
+      },
+      "target": [
+        {
+          "ref": "p25",
+          "text": "Welcomes the deliberations of the Statistical Commission at its forty-sixth session, at which the Commission endorsed the International Classification of Crime for Statistical Purposes as an international statistical standard for the collection of data from both administrative records and statistical surveys and as an analytical tool to elicit specific information on factors driving crime, and invites Member States to continue to support the implementation of the International Classification, as appropriate, in order to improve the quality and availability of statistics on youth crime and the involvement of children in criminal activities;"
+        }
+      ],
+      "context": [
+        {
+          "ref": "p23",
+          "text": "Urges Member States to mainstream crime prevention strategies aimed at children and youth with a gender perspective into all relevant social and economic policies and programmes, including those addressing education, health, civic participation, socioeconomic opportunities, information and communications technology and public safety and security, in order to protect children and youth from social marginalization and exclusion and to reduce their risk of becoming victims or offenders;"
+        },
+        {
+          "ref": "p24",
+          "text": "Encourages Member States to conduct further research on the involvement of children and youth in gang-related crime and to exchange, among Member States and with relevant international and regional organizations, experiences and information on effective and relevant crime prevention programmes and policies, in order to address through innovative approaches the impact of urban crime and gang-related crime on children and youth, fostering social inclusion and employment opportunities and aiming at facilitating social reintegration of children and youth;"
+        }
+      ]
+    }
+  },
+  {
+    "id": "t08",
+    "split": "test",
+    "symbol": "E/RES/2016/18",
+    "family": "mainstreaming holistic approaches in youth crime prevention",
+    "position": 26,
+    "prefix": "4.",
+    "source_sha256": "b99cd31e1420aac4501db41693d8728543406f754f9489e3f70e26b786373079",
+    "prior_5gram_jaccard": 0.12048192771084337,
+    "input": {
+      "document": {
+        "symbol": "E/RES/2016/18",
+        "title": "Mainstreaming holistic approaches in youth crime prevention",
+        "issuer": {
+          "normalized_name": "ECOSOC",
+          "aliases": [
+            "Economic and Social Council"
+          ]
+        }
+      },
+      "target": [
+        {
+          "ref": "p26",
+          "text": "Calls upon Member States to develop and implement policies with a view to preventing the involvement of children in criminal activities, promoting the use of alternative measures to judicial proceedings and to detention, where appropriate, such as diversion and restorative justice, and to consider adopting reintegration strategies for children and youth in conflict with the law, consistent with the principle that deprivation of liberty of children should be used only as a measure of last resort and for the shortest appropriate period of time and that the use of pretrial detention for children, wherever possible, should be avoided, all of which can contribute to the prevention of recidivism;"
+        }
+      ],
+      "context": [
+        {
+          "ref": "p24",
+          "text": "Encourages Member States to conduct further research on the involvement of children and youth in gang-related crime and to exchange, among Member States and with relevant international and regional organizations, experiences and information on effective and relevant crime prevention programmes and policies, in order to address through innovative approaches the impact of urban crime and gang-related crime on children and youth, fostering social inclusion and employment opportunities and aiming at facilitating social reintegration of children and youth;"
+        },
+        {
+          "ref": "p25",
+          "text": "Welcomes the deliberations of the Statistical Commission at its forty-sixth session, at which the Commission endorsed the International Classification of Crime for Statistical Purposes as an international statistical standard for the collection of data from both administrative records and statistical surveys and as an analytical tool to elicit specific information on factors driving crime, and invites Member States to continue to support the implementation of the International Classification, as appropriate, in order to improve the quality and availability of statistics on youth crime and the involvement of children in criminal activities;"
+        }
+      ]
+    }
+  },
+  {
+    "id": "t09",
+    "split": "test",
+    "symbol": "E/RES/2025/34",
+    "family": "situation of and assistance to palestinian women",
+    "position": 27,
+    "prefix": "3.",
+    "source_sha256": "ca9344c97ba83cf0ae6360029671a3547179ae634b9c01ad298e635bada9909f",
+    "prior_5gram_jaccard": 0.06593406593406594,
+    "input": {
+      "document": {
+        "symbol": "E/RES/2025/34",
+        "title": "Situation of and assistance to Palestinian women",
+        "issuer": {
+          "normalized_name": "ECOSOC",
+          "aliases": [
+            "Economic and Social Council"
+          ]
+        }
+      },
+      "target": [
+        {
+          "ref": "p27",
+          "text": "Calls for urgent measures to ensure the safety and protection of the Palestinian civilian population in the Occupied Palestinian Territory, including East Jerusalem, in accordance with the relevant provisions of international humanitarian law and as called for by the Security Council in its resolution 904 (1994) of 18 March 1994;"
+        }
+      ],
+      "context": [
+        {
+          "ref": "p25",
+          "text": "Reaffirms that the Israeli occupation remains a major obstacle for Palestinian women and girls with regard to the fulfilment of their rights, and their advancement, self-reliance and integration in the development of their society;"
+        },
+        {
+          "ref": "p26",
+          "text": "Calls upon Israel, the occupying Power, to immediately cease all measures contrary to international law, as well as discriminatory legislation, policies and actions in the Occupied Palestinian Territory, including East Jerusalem, that violate the human rights of the Palestinian people, and stresses that Palestinian civilians, particularly women and children, account for the vast majority of those adversely affected by the conflict;"
+        }
+      ]
+    }
+  },
+  {
+    "id": "t10",
+    "split": "test",
+    "symbol": "E/RES/2025/34",
+    "family": "situation of and assistance to palestinian women",
+    "position": 31,
+    "prefix": "7.",
+    "source_sha256": "962cb4e7845f1dea2cb042b5e029e22ef162af2d62edffa5a02f053d81dc4135",
+    "prior_5gram_jaccard": 0.043478260869565216,
+    "input": {
+      "document": {
+        "symbol": "E/RES/2025/34",
+        "title": "Situation of and assistance to Palestinian women",
+        "issuer": {
+          "normalized_name": "ECOSOC",
+          "aliases": [
+            "Economic and Social Council"
+          ]
+        }
+      },
+      "target": [
+        {
+          "ref": "p31",
+          "text": "Urges the international community to continue to give special attention to the promotion and protection of the human rights of Palestinian women and girls and to intensify its measures to improve the difficult conditions being faced by Palestinian women and their families, including those living under Israeli occupation, and recognizes the importance of integrating gender considerations across humanitarian programming by seeking to ensure the provision of access to protection and the full range of medical, legal and livelihood and psychosocial services, including services for survivors of sexual and gender-based violence, without discrimination, and through ensuring that women and women’s groups can participate equally and meaningfully and are supported in being leaders in humanitarian action;"
+        }
+      ],
+      "context": [
+        {
+          "ref": "p29",
+          "text": "Acknowledges the contribution of national coalitions and committees in advancing women’s rights, including those pertaining to resolution 1325 (2000), the Convention and combating violence against women;"
+        },
+        {
+          "ref": "p30",
+          "text": "Welcomes the adoption by the Palestinian Government of a national action plan for the implementation of resolution 1325 (2000) as well as of initiatives at the legislative, administrative and security levels to advance women’s rights, notably in relation to family law and combating violence against women;"
+        }
+      ]
+    }
+  },
+  {
+    "id": "t11",
+    "split": "test",
+    "symbol": "S/RES/2642(2022)",
+    "family": "S/RES/2642(2022)",
+    "position": 12,
+    "prefix": "2.",
+    "source_sha256": "39a259e46bd5b1676f4d35a0f244825f173431fec8ad528ea2cdec9c5541ee76",
+    "prior_5gram_jaccard": 0.06363636363636363,
+    "input": {
+      "document": {
+        "symbol": "S/RES/2642(2022)",
+        "title": "Resolution 2642 (2022)",
+        "issuer": {
+          "normalized_name": "SC",
+          "aliases": [
+            "Security Council"
+          ]
+        }
+      },
+      "target": [
+        {
+          "ref": "p12",
+          "text": "Decides to extend the decisions in paragraphs 2 and 3 of Security Council resolution 2165 (2014), for a period of six months, that is, until 10 January 2023, only for the border crossing at Bab al-Hawa, with a further extension of an additional six months, that is, until 10 July 2023, which will require a separate resolution confirming this extension, and requests the Secretary-General to provide a special report on the humanitarian needs in Syria no later than 10 December 2022;"
+        }
+      ],
+      "context": [
+        {
+          "ref": "p11",
+          "text": "Demands the full and immediate implementation of all provisions of all relevant Security Council resolutions, including resolutions 2139 (2014), 2165 (2014), 2191 (2014), 2258 (2015), 2332 (2016), 2393 (2017), 2401 (2018), 2449 (2018) 2504 (2020), 2533 (2020) and 2585 (2021);"
+        }
+      ]
+    }
+  },
+  {
+    "id": "t12",
+    "split": "test",
+    "symbol": "S/RES/2642(2022)",
+    "family": "S/RES/2642(2022)",
+    "position": 15,
+    "prefix": "5.",
+    "source_sha256": "40311360f196bbcdedfcb51af693a159f5f6bd2283c03b699ec58fb08faf96c9",
+    "prior_5gram_jaccard": 0.02577319587628866,
+    "input": {
+      "document": {
+        "symbol": "S/RES/2642(2022)",
+        "title": "Resolution 2642 (2022)",
+        "issuer": {
+          "normalized_name": "SC",
+          "aliases": [
+            "Security Council"
+          ]
+        }
+      },
+      "target": [
+        {
+          "ref": "p15",
+          "text": "Requests the Secretary-General to brief the Council monthly and to provide a report on a regular basis, at least every 60 days, on the implementation of resolutions 2139 (2014), 2165 (2014), 2191 (2014), 2258 (2015), 2332 (2016), 2393 (2017), 2401 (2018), 2449 (2018), 2504 (2020), 2533 (2020), 2585 (2021) and this resolution and on compliance by all relevant parties in Syria and further requests the Secretary-General to include in his reports overall trends in unhindered and safe United Nations cross-line operations, in particular on their progress to all parts of Syria, on early recovery projects, and detailed information on the humanitarian assistance delivered through United Nations humanitarian cross-border operations, including their transparency, the distribution mechanism, the number of beneficiaries, operating partners, locations of aid deliveries at district-level and the volume and nature of items delivered;"
+        }
+      ],
+      "context": [
+        {
+          "ref": "p13",
+          "text": "Calls upon all Member States to respond with practical steps to address the urgent needs of the Syrian people in light of the profound socio-economic and humanitarian impact of the COVID-19 pandemic on Syria, as a country in situation of complex humanitarian emergency;"
+        },
+        {
+          "ref": "p14",
+          "text": "Welcomes ongoing efforts and urges to step up further initiatives to broaden the humanitarian activities in Syria, including water, sanitation, health, education, electricity where essential to restore access to basic services, and shelter early recovery projects, undertaken by humanitarian organisations, and calls upon other international humanitarian agencies and relevant parties to support them;"
+        }
+      ]
+    }
+  },
+  {
+    "id": "t13",
+    "split": "test",
+    "symbol": "S/RES/2783(2025)",
+    "family": "S/RES/2783(2025)",
+    "position": 16,
+    "prefix": "2.",
+    "source_sha256": "a4985f21e806966adefe1966d87f286dad0b6396540db57393493d46b4486ddf",
+    "prior_5gram_jaccard": 0.024390243902439025,
+    "input": {
+      "document": {
+        "symbol": "S/RES/2783(2025)",
+        "title": "Resolution 2783 (2025)",
+        "issuer": {
+          "normalized_name": "SC",
+          "aliases": [
+            "Security Council"
+          ]
+        }
+      },
+      "target": [
+        {
+          "ref": "p16",
+          "text": "Affirms that paragraph 1 of this resolution is consistent with paragraphs 1 and 2 of resolution 2667 (2022) and that the measures set forth in paragraph 1 of resolution 1807 (2008) continue to apply to all non-governmental entities and individuals operating in the territory of the DRC;"
+        }
+      ],
+      "context": [
+        {
+          "ref": "p15",
+          "text": "Decides to renew until 1 July 2026 the measures as set out in paragraphs 1 to 6 of resolution 2293 (2016), including its reaffirmations therein, with the exception of paragraph 5 of resolution 1807 (2008), including with respect to paragraph 3 (c) of resolution 2293 (2016) for which there is no longer a notification requirement;"
+        }
+      ]
+    }
+  },
+  {
+    "id": "t14",
+    "split": "test",
+    "symbol": "S/RES/2783(2025)",
+    "family": "S/RES/2783(2025)",
+    "position": 19,
+    "prefix": "5.",
+    "source_sha256": "53002b138c4d712bb9b10b89f5220f4c8f28eb06389ca61d50c6e893c7f95459",
+    "prior_5gram_jaccard": 0.24203821656050956,
+    "input": {
+      "document": {
+        "symbol": "S/RES/2783(2025)",
+        "title": "Resolution 2783 (2025)",
+        "issuer": {
+          "normalized_name": "SC",
+          "aliases": [
+            "Security Council"
+          ]
+        }
+      },
+      "target": [
+        {
+          "ref": "p19",
+          "text": "Decides to extend until 1 August 2026 the mandate of the Group of Experts, as set forth in paragraph 6 of resolution 2360, expresses its intention to review the mandate and take appropriate action regarding the further extension no later than 1 July 2026, requests the Secretary-General to take the necessary administrative measures as expeditiously as possible to re-establish the Group of Experts, in consultation with the Committee, drawing, as appropriate, on the expertise of the members of the Group established pursuant to previous resolutions and reaffirms the importance of ensuring the safety and security of the members of the Group of Experts;"
+        }
+      ],
+      "context": [
+        {
+          "ref": "p17",
+          "text": "Reaffirms that measures described in paragraph 5 of resolution 2293 (2016) shall apply to individuals and entities as designated by the Committee, as set forth in paragraph 7 of resolution 2293 (2016), paragraph 3 of resolution 2360 (2017), paragraph 3 of resolution 2582 (2021) and paragraph 3 of resolution 2641 (2022) and recalls paragraph 1 of resolution 2664 (2022);"
+        },
+        {
+          "ref": "p18",
+          "text": "Demands that States exercise enhanced vigilance to ensure the full implementation of the measures in this resolution, further demands that States ensure that all measures taken by them to implement this resolution comply with their obligations under international law, including international humanitarian law, international human rights law and international refugee law, as applicable;"
+        }
+      ]
+    }
+  }
+]

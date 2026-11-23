@@ -1,0 +1,1410 @@
+{
+  "cap_usd": 25,
+  "previous_bound_usd": 2.0684649999999998,
+  "new_requests": {
+    "quality-20261123/v5/gpt-6-luna/development/d01": {
+      "status": "completed",
+      "charged_bound_usd": 0.001992,
+      "reserved_usd": 0.010555875000000001,
+      "usage": {
+        "input_tokens": 3986,
+        "input_tokens_details": {
+          "cache_write_tokens": 376,
+          "cached_tokens": 3607,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 2390,
+        "output_tokens_details": {
+          "reasoning_tokens": 1788
+        },
+        "total_tokens": 6376
+      },
+      "uncached_list_cost_usd": 0.0015936,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v5/gpt-6-luna/development/d02": {
+      "status": "completed",
+      "charged_bound_usd": 0.00206725,
+      "reserved_usd": 0.010612,
+      "usage": {
+        "input_tokens": 4053,
+        "input_tokens_details": {
+          "cache_write_tokens": 443,
+          "cached_tokens": 3607,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 2497,
+        "output_tokens_details": {
+          "reasoning_tokens": 1580
+        },
+        "total_tokens": 6550
+      },
+      "uncached_list_cost_usd": 0.0016538,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v5/gpt-6-luna/development/d03": {
+      "status": "completed",
+      "charged_bound_usd": 0.003305125,
+      "reserved_usd": 0.010704625,
+      "usage": {
+        "input_tokens": 4156,
+        "input_tokens_details": {
+          "cache_write_tokens": 4153,
+          "cached_tokens": 0,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 4457,
+        "output_tokens_details": {
+          "reasoning_tokens": 2778
+        },
+        "total_tokens": 8613
+      },
+      "uncached_list_cost_usd": 0.0026441,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v5/gpt-6-luna/development/d04": {
+      "status": "completed",
+      "charged_bound_usd": 0.003458625,
+      "reserved_usd": 0.010735499999999999,
+      "usage": {
+        "input_tokens": 4204,
+        "input_tokens_details": {
+          "cache_write_tokens": 594,
+          "cached_tokens": 3607,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 4693,
+        "output_tokens_details": {
+          "reasoning_tokens": 3204
+        },
+        "total_tokens": 8897
+      },
+      "uncached_list_cost_usd": 0.0027669,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v5/gpt-6-luna/development/d05": {
+      "status": "completed",
+      "charged_bound_usd": 0.00108375,
+      "reserved_usd": 0.010526500000000001,
+      "usage": {
+        "input_tokens": 3965,
+        "input_tokens_details": {
+          "cache_write_tokens": 355,
+          "cached_tokens": 3607,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 941,
+        "output_tokens_details": {
+          "reasoning_tokens": 585
+        },
+        "total_tokens": 4906
+      },
+      "uncached_list_cost_usd": 0.000867,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v5/gpt-6-luna/development/d06": {
+      "status": "completed",
+      "charged_bound_usd": 0.0013575,
+      "reserved_usd": 0.010504375,
+      "usage": {
+        "input_tokens": 3945,
+        "input_tokens_details": {
+          "cache_write_tokens": 335,
+          "cached_tokens": 3607,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 1383,
+        "output_tokens_details": {
+          "reasoning_tokens": 756
+        },
+        "total_tokens": 5328
+      },
+      "uncached_list_cost_usd": 0.001086,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v5/gpt-6-luna/development/d07": {
+      "status": "completed",
+      "charged_bound_usd": 0.0006041250000000001,
+      "reserved_usd": 0.01049,
+      "usage": {
+        "input_tokens": 3903,
+        "input_tokens_details": {
+          "cache_write_tokens": 293,
+          "cached_tokens": 3607,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 186,
+        "output_tokens_details": {
+          "reasoning_tokens": 90
+        },
+        "total_tokens": 4089
+      },
+      "uncached_list_cost_usd": 0.00048330000000000004,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v5/gpt-6-luna/development/d08": {
+      "status": "completed",
+      "charged_bound_usd": 0.0006821250000000001,
+      "reserved_usd": 0.010467125,
+      "usage": {
+        "input_tokens": 3887,
+        "input_tokens_details": {
+          "cache_write_tokens": 277,
+          "cached_tokens": 3607,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 314,
+        "output_tokens_details": {
+          "reasoning_tokens": 192
+        },
+        "total_tokens": 4201
+      },
+      "uncached_list_cost_usd": 0.0005457000000000001,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v5/gpt-6-luna/development/d09": {
+      "status": "completed",
+      "charged_bound_usd": 0.0020357500000000002,
+      "reserved_usd": 0.010602249999999999,
+      "usage": {
+        "input_tokens": 4056,
+        "input_tokens_details": {
+          "cache_write_tokens": 446,
+          "cached_tokens": 3607,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 2446,
+        "output_tokens_details": {
+          "reasoning_tokens": 1642
+        },
+        "total_tokens": 6502
+      },
+      "uncached_list_cost_usd": 0.0016286,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v5/gpt-6-luna/development/d10": {
+      "status": "completed",
+      "charged_bound_usd": 0.0024173750000000003,
+      "reserved_usd": 0.010524625000000001,
+      "usage": {
+        "input_tokens": 3964,
+        "input_tokens_details": {
+          "cache_write_tokens": 354,
+          "cached_tokens": 3607,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 3075,
+        "output_tokens_details": {
+          "reasoning_tokens": 1846
+        },
+        "total_tokens": 7039
+      },
+      "uncached_list_cost_usd": 0.0019339000000000001,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v5/gpt-6-luna/development/d11": {
+      "status": "completed",
+      "charged_bound_usd": 0.001282,
+      "reserved_usd": 0.010456624999999999,
+      "usage": {
+        "input_tokens": 3856,
+        "input_tokens_details": {
+          "cache_write_tokens": 246,
+          "cached_tokens": 3607,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 1280,
+        "output_tokens_details": {
+          "reasoning_tokens": 682
+        },
+        "total_tokens": 5136
+      },
+      "uncached_list_cost_usd": 0.0010256,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v5/gpt-6-luna/development/d12": {
+      "status": "completed",
+      "charged_bound_usd": 0.0008658750000000001,
+      "reserved_usd": 0.010529125,
+      "usage": {
+        "input_tokens": 3962,
+        "input_tokens_details": {
+          "cache_write_tokens": 352,
+          "cached_tokens": 3607,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 593,
+        "output_tokens_details": {
+          "reasoning_tokens": 275
+        },
+        "total_tokens": 4555
+      },
+      "uncached_list_cost_usd": 0.0006927000000000001,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v5/gpt-6-luna/development/d13": {
+      "status": "completed",
+      "charged_bound_usd": 0.0012209999999999999,
+      "reserved_usd": 0.01044575,
+      "usage": {
+        "input_tokens": 3848,
+        "input_tokens_details": {
+          "cache_write_tokens": 238,
+          "cached_tokens": 3607,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 1184,
+        "output_tokens_details": {
+          "reasoning_tokens": 585
+        },
+        "total_tokens": 5032
+      },
+      "uncached_list_cost_usd": 0.0009767999999999999,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v5/gpt-6-luna/development/d14": {
+      "status": "completed",
+      "charged_bound_usd": 0.0007515000000000001,
+      "reserved_usd": 0.010444,
+      "usage": {
+        "input_tokens": 3837,
+        "input_tokens_details": {
+          "cache_write_tokens": 227,
+          "cached_tokens": 3607,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 435,
+        "output_tokens_details": {
+          "reasoning_tokens": 200
+        },
+        "total_tokens": 4272
+      },
+      "uncached_list_cost_usd": 0.0006012000000000001,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v5/gpt-6-luna/development/d15": {
+      "status": "completed",
+      "charged_bound_usd": 0.0008771250000000001,
+      "reserved_usd": 0.010439625000000001,
+      "usage": {
+        "input_tokens": 3842,
+        "input_tokens_details": {
+          "cache_write_tokens": 232,
+          "cached_tokens": 3607,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 635,
+        "output_tokens_details": {
+          "reasoning_tokens": 299
+        },
+        "total_tokens": 4477
+      },
+      "uncached_list_cost_usd": 0.0007017000000000001,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v5/gpt-6-luna/development/d16": {
+      "status": "completed",
+      "charged_bound_usd": 0.0007515000000000001,
+      "reserved_usd": 0.010429625000000001,
+      "usage": {
+        "input_tokens": 3842,
+        "input_tokens_details": {
+          "cache_write_tokens": 232,
+          "cached_tokens": 3607,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 434,
+        "output_tokens_details": {
+          "reasoning_tokens": 238
+        },
+        "total_tokens": 4276
+      },
+      "uncached_list_cost_usd": 0.0006012000000000001,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v5/gpt-6-luna/development/d17": {
+      "status": "completed",
+      "charged_bound_usd": 0.0016907499999999998,
+      "reserved_usd": 0.010443250000000001,
+      "usage": {
+        "input_tokens": 3891,
+        "input_tokens_details": {
+          "cache_write_tokens": 281,
+          "cached_tokens": 3607,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 1927,
+        "output_tokens_details": {
+          "reasoning_tokens": 1542
+        },
+        "total_tokens": 5818
+      },
+      "uncached_list_cost_usd": 0.0013525999999999998,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v5/gpt-6-luna/development/d18": {
+      "status": "completed",
+      "charged_bound_usd": 0.0008461250000000002,
+      "reserved_usd": 0.01047875,
+      "usage": {
+        "input_tokens": 3884,
+        "input_tokens_details": {
+          "cache_write_tokens": 274,
+          "cached_tokens": 3607,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 577,
+        "output_tokens_details": {
+          "reasoning_tokens": 307
+        },
+        "total_tokens": 4461
+      },
+      "uncached_list_cost_usd": 0.0006769000000000001,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v5/gpt-6-luna/development/d19": {
+      "status": "completed",
+      "charged_bound_usd": 0.0008105,
+      "reserved_usd": 0.01042875,
+      "usage": {
+        "input_tokens": 3829,
+        "input_tokens_details": {
+          "cache_write_tokens": 219,
+          "cached_tokens": 3607,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 531,
+        "output_tokens_details": {
+          "reasoning_tokens": 333
+        },
+        "total_tokens": 4360
+      },
+      "uncached_list_cost_usd": 0.0006484,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v5/gpt-6-luna/development/d20": {
+      "status": "completed",
+      "charged_bound_usd": 0.001227875,
+      "reserved_usd": 0.010626125,
+      "usage": {
+        "input_tokens": 4093,
+        "input_tokens_details": {
+          "cache_write_tokens": 483,
+          "cached_tokens": 3607,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 1146,
+        "output_tokens_details": {
+          "reasoning_tokens": 667
+        },
+        "total_tokens": 5239
+      },
+      "uncached_list_cost_usd": 0.0009823,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/baseline/gpt-6-luna/test/t01": {
+      "status": "completed",
+      "charged_bound_usd": 0.0009673750000000001,
+      "reserved_usd": 0.011843875,
+      "usage": {
+        "input_tokens": 6189,
+        "input_tokens_details": {
+          "cache_write_tokens": 6186,
+          "cached_tokens": 0,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 310,
+        "output_tokens_details": {
+          "reasoning_tokens": 136
+        },
+        "total_tokens": 6499
+      },
+      "uncached_list_cost_usd": 0.0007739000000000001,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/baseline/gpt-6-luna/test/t02": {
+      "status": "completed",
+      "charged_bound_usd": 0.00135125,
+      "reserved_usd": 0.011938375000000001,
+      "usage": {
+        "input_tokens": 6375,
+        "input_tokens_details": {
+          "cache_write_tokens": 406,
+          "cached_tokens": 5966,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 887,
+        "output_tokens_details": {
+          "reasoning_tokens": 403
+        },
+        "total_tokens": 7262
+      },
+      "uncached_list_cost_usd": 0.001081,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/baseline/gpt-6-luna/test/t03": {
+      "status": "completed",
+      "charged_bound_usd": 0.0012595,
+      "reserved_usd": 0.011934249999999999,
+      "usage": {
+        "input_tokens": 6286,
+        "input_tokens_details": {
+          "cache_write_tokens": 317,
+          "cached_tokens": 5966,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 758,
+        "output_tokens_details": {
+          "reasoning_tokens": 516
+        },
+        "total_tokens": 7044
+      },
+      "uncached_list_cost_usd": 0.0010076,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/baseline/gpt-6-luna/test/t04": {
+      "status": "completed",
+      "charged_bound_usd": 0.0012665000000000003,
+      "reserved_usd": 0.011963499999999998,
+      "usage": {
+        "input_tokens": 6317,
+        "input_tokens_details": {
+          "cache_write_tokens": 6314,
+          "cached_tokens": 0,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 763,
+        "output_tokens_details": {
+          "reasoning_tokens": 516
+        },
+        "total_tokens": 7080
+      },
+      "uncached_list_cost_usd": 0.0010132000000000001,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v6/gpt-6-luna/test/t01": {
+      "status": "completed",
+      "charged_bound_usd": 0.001005125,
+      "reserved_usd": 0.010585250000000001,
+      "usage": {
+        "input_tokens": 4081,
+        "input_tokens_details": {
+          "cache_write_tokens": 220,
+          "cached_tokens": 3858,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 792,
+        "output_tokens_details": {
+          "reasoning_tokens": 490
+        },
+        "total_tokens": 4873
+      },
+      "uncached_list_cost_usd": 0.0008041,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v6/gpt-6-luna/test/t02": {
+      "status": "completed",
+      "charged_bound_usd": 0.001148375,
+      "reserved_usd": 0.010679749999999998,
+      "usage": {
+        "input_tokens": 4267,
+        "input_tokens_details": {
+          "cache_write_tokens": 406,
+          "cached_tokens": 3858,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 984,
+        "output_tokens_details": {
+          "reasoning_tokens": 516
+        },
+        "total_tokens": 5251
+      },
+      "uncached_list_cost_usd": 0.0009187,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v6/gpt-6-luna/test/t03": {
+      "status": "completed",
+      "charged_bound_usd": 0.00142225,
+      "reserved_usd": 0.010675625,
+      "usage": {
+        "input_tokens": 4178,
+        "input_tokens_details": {
+          "cache_write_tokens": 4175,
+          "cached_tokens": 0,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 1440,
+        "output_tokens_details": {
+          "reasoning_tokens": 1034
+        },
+        "total_tokens": 5618
+      },
+      "uncached_list_cost_usd": 0.0011378,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v6/gpt-6-luna/test/t04": {
+      "status": "completed",
+      "charged_bound_usd": 0.0011536250000000001,
+      "reserved_usd": 0.010704874999999999,
+      "usage": {
+        "input_tokens": 4209,
+        "input_tokens_details": {
+          "cache_write_tokens": 348,
+          "cached_tokens": 3858,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 1004,
+        "output_tokens_details": {
+          "reasoning_tokens": 516
+        },
+        "total_tokens": 5213
+      },
+      "uncached_list_cost_usd": 0.0009229,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/baseline/gpt-6-luna/test/t05": {
+      "status": "completed",
+      "charged_bound_usd": 0.0021737500000000003,
+      "reserved_usd": 0.01184625,
+      "usage": {
+        "input_tokens": 6175,
+        "input_tokens_details": {
+          "cache_write_tokens": 206,
+          "cached_tokens": 5966,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 2243,
+        "output_tokens_details": {
+          "reasoning_tokens": 1251
+        },
+        "total_tokens": 8418
+      },
+      "uncached_list_cost_usd": 0.001739,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v6/gpt-6.1-sol/test/t01": {
+      "status": "completed",
+      "charged_bound_usd": 0.01449,
+      "reserved_usd": 0.2117075,
+      "usage": {
+        "input_tokens": 4081,
+        "input_tokens_details": {
+          "cache_write_tokens": 4078,
+          "cached_tokens": 0,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 343,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 4424
+      },
+      "uncached_list_cost_usd": 0.011592,
+      "response_model": "gpt-6.1-sol"
+    },
+    "quality-20261123/v6/gpt-6.1-sol/test/t02": {
+      "status": "completed",
+      "charged_bound_usd": 0.0206925,
+      "reserved_usd": 0.2135975,
+      "usage": {
+        "input_tokens": 4267,
+        "input_tokens_details": {
+          "cache_write_tokens": 4264,
+          "cached_tokens": 0,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 802,
+        "output_tokens_details": {
+          "reasoning_tokens": 232
+        },
+        "total_tokens": 5069
+      },
+      "uncached_list_cost_usd": 0.016554,
+      "response_model": "gpt-6.1-sol"
+    },
+    "quality-20261123/v6/gpt-6.1-sol/test/t03": {
+      "status": "completed",
+      "charged_bound_usd": 0.017632500000000002,
+      "reserved_usd": 0.21351499999999998,
+      "usage": {
+        "input_tokens": 4178,
+        "input_tokens_details": {
+          "cache_write_tokens": 317,
+          "cached_tokens": 3858,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 575,
+        "output_tokens_details": {
+          "reasoning_tokens": 187
+        },
+        "total_tokens": 4753
+      },
+      "uncached_list_cost_usd": 0.014106,
+      "response_model": "gpt-6.1-sol"
+    },
+    "quality-20261123/v6/gpt-6.1-sol/test/t04": {
+      "status": "completed",
+      "charged_bound_usd": 0.0174975,
+      "reserved_usd": 0.21409999999999998,
+      "usage": {
+        "input_tokens": 4209,
+        "input_tokens_details": {
+          "cache_write_tokens": 348,
+          "cached_tokens": 3858,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 558,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 4767
+      },
+      "uncached_list_cost_usd": 0.013998,
+      "response_model": "gpt-6.1-sol"
+    },
+    "quality-20261123/baseline/gpt-6-luna/test/t06": {
+      "status": "completed",
+      "charged_bound_usd": 0.001046625,
+      "reserved_usd": 0.01179025,
+      "usage": {
+        "input_tokens": 6083,
+        "input_tokens_details": {
+          "cache_write_tokens": 114,
+          "cached_tokens": 5966,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 458,
+        "output_tokens_details": {
+          "reasoning_tokens": 304
+        },
+        "total_tokens": 6541
+      },
+      "uncached_list_cost_usd": 0.0008373,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/baseline/gpt-6-luna/test/t07": {
+      "status": "completed",
+      "charged_bound_usd": 0.0011128750000000001,
+      "reserved_usd": 0.011985875,
+      "usage": {
+        "input_tokens": 6333,
+        "input_tokens_details": {
+          "cache_write_tokens": 364,
+          "cached_tokens": 5966,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 514,
+        "output_tokens_details": {
+          "reasoning_tokens": 328
+        },
+        "total_tokens": 6847
+      },
+      "uncached_list_cost_usd": 0.0008903000000000001,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v6/gpt-6.1-sol/test/t05": {
+      "status": "completed",
+      "charged_bound_usd": 0.025705,
+      "reserved_usd": 0.211755,
+      "usage": {
+        "input_tokens": 4067,
+        "input_tokens_details": {
+          "cache_write_tokens": 206,
+          "cached_tokens": 3858,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 1243,
+        "output_tokens_details": {
+          "reasoning_tokens": 204
+        },
+        "total_tokens": 5310
+      },
+      "uncached_list_cost_usd": 0.020564,
+      "response_model": "gpt-6.1-sol"
+    },
+    "quality-20261123/v6/gpt-6-luna/test/t05": {
+      "status": "completed",
+      "charged_bound_usd": 0.002352125,
+      "reserved_usd": 0.010587625,
+      "usage": {
+        "input_tokens": 4067,
+        "input_tokens_details": {
+          "cache_write_tokens": 206,
+          "cached_tokens": 3858,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 2950,
+        "output_tokens_details": {
+          "reasoning_tokens": 1848
+        },
+        "total_tokens": 7017
+      },
+      "uncached_list_cost_usd": 0.0018817,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/baseline/gpt-6-luna/test/t08": {
+      "status": "completed",
+      "charged_bound_usd": 0.001380625,
+      "reserved_usd": 0.01201225,
+      "usage": {
+        "input_tokens": 6380,
+        "input_tokens_details": {
+          "cache_write_tokens": 411,
+          "cached_tokens": 5966,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 933,
+        "output_tokens_details": {
+          "reasoning_tokens": 633
+        },
+        "total_tokens": 7313
+      },
+      "uncached_list_cost_usd": 0.0011045,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v6/gpt-6.1-sol/test/t06": {
+      "status": "completed",
+      "charged_bound_usd": 0.010974999999999999,
+      "reserved_usd": 0.210635,
+      "usage": {
+        "input_tokens": 3975,
+        "input_tokens_details": {
+          "cache_write_tokens": 114,
+          "cached_tokens": 3858,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 83,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 4058
+      },
+      "uncached_list_cost_usd": 0.00878,
+      "response_model": "gpt-6.1-sol"
+    },
+    "quality-20261123/baseline/gpt-6-luna/test/t09": {
+      "status": "completed",
+      "charged_bound_usd": 0.0011403750000000001,
+      "reserved_usd": 0.011897625,
+      "usage": {
+        "input_tokens": 6243,
+        "input_tokens_details": {
+          "cache_write_tokens": 274,
+          "cached_tokens": 5966,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 576,
+        "output_tokens_details": {
+          "reasoning_tokens": 376
+        },
+        "total_tokens": 6819
+      },
+      "uncached_list_cost_usd": 0.0009123000000000001,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v6/gpt-6.1-sol/test/t07": {
+      "status": "completed",
+      "charged_bound_usd": 0.016075,
+      "reserved_usd": 0.2145475,
+      "usage": {
+        "input_tokens": 4225,
+        "input_tokens_details": {
+          "cache_write_tokens": 364,
+          "cached_tokens": 3858,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 441,
+        "output_tokens_details": {
+          "reasoning_tokens": 105
+        },
+        "total_tokens": 4666
+      },
+      "uncached_list_cost_usd": 0.01286,
+      "response_model": "gpt-6.1-sol"
+    },
+    "quality-20261123/v6/gpt-6.1-sol/test/t08": {
+      "status": "completed",
+      "charged_bound_usd": 0.022504999999999997,
+      "reserved_usd": 0.215075,
+      "usage": {
+        "input_tokens": 4272,
+        "input_tokens_details": {
+          "cache_write_tokens": 411,
+          "cached_tokens": 3858,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 946,
+        "output_tokens_details": {
+          "reasoning_tokens": 77
+        },
+        "total_tokens": 5218
+      },
+      "uncached_list_cost_usd": 0.018004,
+      "response_model": "gpt-6.1-sol"
+    },
+    "quality-20261123/v6/gpt-6-luna/test/t06": {
+      "status": "completed",
+      "charged_bound_usd": 0.0005818749999999999,
+      "reserved_usd": 0.010531624999999998,
+      "usage": {
+        "input_tokens": 3975,
+        "input_tokens_details": {
+          "cache_write_tokens": 114,
+          "cached_tokens": 3858,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 136,
+        "output_tokens_details": {
+          "reasoning_tokens": 51
+        },
+        "total_tokens": 4111
+      },
+      "uncached_list_cost_usd": 0.0004655,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v6/gpt-6-luna/test/t07": {
+      "status": "completed",
+      "charged_bound_usd": 0.001121875,
+      "reserved_usd": 0.010727249999999999,
+      "usage": {
+        "input_tokens": 4225,
+        "input_tokens_details": {
+          "cache_write_tokens": 364,
+          "cached_tokens": 3858,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 950,
+        "output_tokens_details": {
+          "reasoning_tokens": 645
+        },
+        "total_tokens": 5175
+      },
+      "uncached_list_cost_usd": 0.0008975,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/baseline/gpt-6-luna/test/t10": {
+      "status": "completed",
+      "charged_bound_usd": 0.0016301249999999998,
+      "reserved_usd": 0.011937874999999999,
+      "usage": {
+        "input_tokens": 6286,
+        "input_tokens_details": {
+          "cache_write_tokens": 317,
+          "cached_tokens": 5966,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 1351,
+        "output_tokens_details": {
+          "reasoning_tokens": 943
+        },
+        "total_tokens": 7637
+      },
+      "uncached_list_cost_usd": 0.0013040999999999999,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v6/gpt-6.1-sol/test/t09": {
+      "status": "completed",
+      "charged_bound_usd": 0.016112500000000002,
+      "reserved_usd": 0.21278249999999999,
+      "usage": {
+        "input_tokens": 4135,
+        "input_tokens_details": {
+          "cache_write_tokens": 274,
+          "cached_tokens": 3858,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 462,
+        "output_tokens_details": {
+          "reasoning_tokens": 124
+        },
+        "total_tokens": 4597
+      },
+      "uncached_list_cost_usd": 0.01289,
+      "response_model": "gpt-6.1-sol"
+    },
+    "quality-20261123/v6/gpt-6-luna/test/t08": {
+      "status": "completed",
+      "charged_bound_usd": 0.001504,
+      "reserved_usd": 0.010753625,
+      "usage": {
+        "input_tokens": 4272,
+        "input_tokens_details": {
+          "cache_write_tokens": 411,
+          "cached_tokens": 3858,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 1552,
+        "output_tokens_details": {
+          "reasoning_tokens": 756
+        },
+        "total_tokens": 5824
+      },
+      "uncached_list_cost_usd": 0.0012032,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v6/gpt-6-luna/test/t09": {
+      "status": "completed",
+      "charged_bound_usd": 0.001004375,
+      "reserved_usd": 0.010639,
+      "usage": {
+        "input_tokens": 4135,
+        "input_tokens_details": {
+          "cache_write_tokens": 274,
+          "cached_tokens": 3858,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 780,
+        "output_tokens_details": {
+          "reasoning_tokens": 505
+        },
+        "total_tokens": 4915
+      },
+      "uncached_list_cost_usd": 0.0008035,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/baseline/gpt-6-luna/test/t11": {
+      "status": "completed",
+      "charged_bound_usd": 0.0018123750000000002,
+      "reserved_usd": 0.011858625,
+      "usage": {
+        "input_tokens": 6259,
+        "input_tokens_details": {
+          "cache_write_tokens": 290,
+          "cached_tokens": 5966,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 1648,
+        "output_tokens_details": {
+          "reasoning_tokens": 1232
+        },
+        "total_tokens": 7907
+      },
+      "uncached_list_cost_usd": 0.0014499,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v6/gpt-6.1-sol/test/t10": {
+      "status": "completed",
+      "charged_bound_usd": 0.018645000000000002,
+      "reserved_usd": 0.21358749999999999,
+      "usage": {
+        "input_tokens": 4178,
+        "input_tokens_details": {
+          "cache_write_tokens": 317,
+          "cached_tokens": 3858,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 656,
+        "output_tokens_details": {
+          "reasoning_tokens": 232
+        },
+        "total_tokens": 4834
+      },
+      "uncached_list_cost_usd": 0.014916,
+      "response_model": "gpt-6.1-sol"
+    },
+    "quality-20261123/baseline/gpt-6-luna/test/t12": {
+      "status": "completed",
+      "charged_bound_usd": 0.0015853750000000002,
+      "reserved_usd": 0.011968375,
+      "usage": {
+        "input_tokens": 6383,
+        "input_tokens_details": {
+          "cache_write_tokens": 414,
+          "cached_tokens": 5966,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 1260,
+        "output_tokens_details": {
+          "reasoning_tokens": 516
+        },
+        "total_tokens": 7643
+      },
+      "uncached_list_cost_usd": 0.0012683000000000002,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v6/gpt-6-luna/test/t10": {
+      "status": "completed",
+      "charged_bound_usd": 0.00201975,
+      "reserved_usd": 0.01067925,
+      "usage": {
+        "input_tokens": 4178,
+        "input_tokens_details": {
+          "cache_write_tokens": 317,
+          "cached_tokens": 3858,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 2396,
+        "output_tokens_details": {
+          "reasoning_tokens": 1637
+        },
+        "total_tokens": 6574
+      },
+      "uncached_list_cost_usd": 0.0016158,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v6/gpt-6.1-sol/test/t11": {
+      "status": "completed",
+      "charged_bound_usd": 0.022165,
+      "reserved_usd": 0.2120025,
+      "usage": {
+        "input_tokens": 4151,
+        "input_tokens_details": {
+          "cache_write_tokens": 290,
+          "cached_tokens": 3858,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 943,
+        "output_tokens_details": {
+          "reasoning_tokens": 184
+        },
+        "total_tokens": 5094
+      },
+      "uncached_list_cost_usd": 0.017732,
+      "response_model": "gpt-6.1-sol"
+    },
+    "quality-20261123/v6/gpt-6.1-sol/test/t12": {
+      "status": "completed",
+      "charged_bound_usd": 0.0274375,
+      "reserved_usd": 0.2141975,
+      "usage": {
+        "input_tokens": 4275,
+        "input_tokens_details": {
+          "cache_write_tokens": 414,
+          "cached_tokens": 3858,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 1340,
+        "output_tokens_details": {
+          "reasoning_tokens": 108
+        },
+        "total_tokens": 5615
+      },
+      "uncached_list_cost_usd": 0.02195,
+      "response_model": "gpt-6.1-sol"
+    },
+    "quality-20261123/v6/gpt-6.1-sol/test/t13": {
+      "status": "completed",
+      "charged_bound_usd": 0.0185075,
+      "reserved_usd": 0.211645,
+      "usage": {
+        "input_tokens": 4093,
+        "input_tokens_details": {
+          "cache_write_tokens": 232,
+          "cached_tokens": 3858,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 662,
+        "output_tokens_details": {
+          "reasoning_tokens": 280
+        },
+        "total_tokens": 4755
+      },
+      "uncached_list_cost_usd": 0.014806,
+      "response_model": "gpt-6.1-sol"
+    },
+    "quality-20261123/baseline/gpt-6-luna/test/t13": {
+      "status": "completed",
+      "charged_bound_usd": 0.000838875,
+      "reserved_usd": 0.01184075,
+      "usage": {
+        "input_tokens": 6201,
+        "input_tokens_details": {
+          "cache_write_tokens": 232,
+          "cached_tokens": 5966,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 102,
+        "output_tokens_details": {
+          "reasoning_tokens": 78
+        },
+        "total_tokens": 6303
+      },
+      "uncached_list_cost_usd": 0.0006711,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v6/gpt-6-luna/development/d01": {
+      "status": "completed",
+      "charged_bound_usd": 0.0016996250000000002,
+      "reserved_usd": 0.0107255,
+      "usage": {
+        "input_tokens": 4237,
+        "input_tokens_details": {
+          "cache_write_tokens": 376,
+          "cached_tokens": 3858,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 1872,
+        "output_tokens_details": {
+          "reasoning_tokens": 1303
+        },
+        "total_tokens": 6109
+      },
+      "uncached_list_cost_usd": 0.0013597000000000001,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v6/gpt-6-luna/development/d02": {
+      "status": "completed",
+      "charged_bound_usd": 0.001921125,
+      "reserved_usd": 0.010781625,
+      "usage": {
+        "input_tokens": 4304,
+        "input_tokens_details": {
+          "cache_write_tokens": 443,
+          "cached_tokens": 3858,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 2213,
+        "output_tokens_details": {
+          "reasoning_tokens": 1203
+        },
+        "total_tokens": 6517
+      },
+      "uncached_list_cost_usd": 0.0015369000000000001,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v6/gpt-6-luna/development/d03": {
+      "status": "completed",
+      "charged_bound_usd": 0.003635875,
+      "reserved_usd": 0.010874249999999999,
+      "usage": {
+        "input_tokens": 4407,
+        "input_tokens_details": {
+          "cache_write_tokens": 546,
+          "cached_tokens": 3858,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 4936,
+        "output_tokens_details": {
+          "reasoning_tokens": 3205
+        },
+        "total_tokens": 9343
+      },
+      "uncached_list_cost_usd": 0.0029086999999999997,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v6/gpt-6-luna/development/d04": {
+      "status": "completed",
+      "charged_bound_usd": 0.0027075,
+      "reserved_usd": 0.010905125,
+      "usage": {
+        "input_tokens": 4455,
+        "input_tokens_details": {
+          "cache_write_tokens": 594,
+          "cached_tokens": 3858,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 3441,
+        "output_tokens_details": {
+          "reasoning_tokens": 2003
+        },
+        "total_tokens": 7896
+      },
+      "uncached_list_cost_usd": 0.002166,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v6/gpt-6.1-sol/test/t14": {
+      "status": "completed",
+      "charged_bound_usd": 0.02334,
+      "reserved_usd": 0.2137275,
+      "usage": {
+        "input_tokens": 4241,
+        "input_tokens_details": {
+          "cache_write_tokens": 380,
+          "cached_tokens": 3858,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 1019,
+        "output_tokens_details": {
+          "reasoning_tokens": 263
+        },
+        "total_tokens": 5260
+      },
+      "uncached_list_cost_usd": 0.018672,
+      "response_model": "gpt-6.1-sol"
+    },
+    "quality-20261123/baseline/gpt-6-luna/test/t14": {
+      "status": "completed",
+      "charged_bound_usd": 0.00181175,
+      "reserved_usd": 0.011944874999999999,
+      "usage": {
+        "input_tokens": 6349,
+        "input_tokens_details": {
+          "cache_write_tokens": 380,
+          "cached_tokens": 5966,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 1629,
+        "output_tokens_details": {
+          "reasoning_tokens": 1163
+        },
+        "total_tokens": 7978
+      },
+      "uncached_list_cost_usd": 0.0014494,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v6/gpt-6-luna/test/t11": {
+      "status": "completed",
+      "charged_bound_usd": 0.0016032499999999999,
+      "reserved_usd": 0.0106,
+      "usage": {
+        "input_tokens": 4151,
+        "input_tokens_details": {
+          "cache_write_tokens": 290,
+          "cached_tokens": 3858,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 1735,
+        "output_tokens_details": {
+          "reasoning_tokens": 972
+        },
+        "total_tokens": 5886
+      },
+      "uncached_list_cost_usd": 0.0012825999999999998,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v6/gpt-6-luna/test/t12": {
+      "status": "completed",
+      "charged_bound_usd": 0.0019368750000000002,
+      "reserved_usd": 0.010709749999999999,
+      "usage": {
+        "input_tokens": 4275,
+        "input_tokens_details": {
+          "cache_write_tokens": 414,
+          "cached_tokens": 3858,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 2244,
+        "output_tokens_details": {
+          "reasoning_tokens": 1210
+        },
+        "total_tokens": 6519
+      },
+      "uncached_list_cost_usd": 0.0015495,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v6/gpt-6-luna/test/t13": {
+      "status": "completed",
+      "charged_bound_usd": 0.000696,
+      "reserved_usd": 0.010582125000000001,
+      "usage": {
+        "input_tokens": 4093,
+        "input_tokens_details": {
+          "cache_write_tokens": 232,
+          "cached_tokens": 3858,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 295,
+        "output_tokens_details": {
+          "reasoning_tokens": 180
+        },
+        "total_tokens": 4388
+      },
+      "uncached_list_cost_usd": 0.0005568,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v6/gpt-6-luna/test/t14": {
+      "status": "completed",
+      "charged_bound_usd": 0.001972,
+      "reserved_usd": 0.01068625,
+      "usage": {
+        "input_tokens": 4241,
+        "input_tokens_details": {
+          "cache_write_tokens": 380,
+          "cached_tokens": 3858,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 2307,
+        "output_tokens_details": {
+          "reasoning_tokens": 1450
+        },
+        "total_tokens": 6548
+      },
+      "uncached_list_cost_usd": 0.0015776,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v6/gpt-6-luna/development/d05": {
+      "status": "completed",
+      "charged_bound_usd": 0.001151375,
+      "reserved_usd": 0.010696124999999999,
+      "usage": {
+        "input_tokens": 4216,
+        "input_tokens_details": {
+          "cache_write_tokens": 355,
+          "cached_tokens": 3858,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 999,
+        "output_tokens_details": {
+          "reasoning_tokens": 640
+        },
+        "total_tokens": 5215
+      },
+      "uncached_list_cost_usd": 0.0009211,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v6/gpt-6-luna/development/d06": {
+      "status": "completed",
+      "charged_bound_usd": 0.001406375,
+      "reserved_usd": 0.010674,
+      "usage": {
+        "input_tokens": 4196,
+        "input_tokens_details": {
+          "cache_write_tokens": 335,
+          "cached_tokens": 3858,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 1411,
+        "output_tokens_details": {
+          "reasoning_tokens": 930
+        },
+        "total_tokens": 5607
+      },
+      "uncached_list_cost_usd": 0.0011251,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v6/gpt-6-luna/development/d11": {
+      "status": "completed",
+      "charged_bound_usd": 0.0014415,
+      "reserved_usd": 0.01062625,
+      "usage": {
+        "input_tokens": 4107,
+        "input_tokens_details": {
+          "cache_write_tokens": 246,
+          "cached_tokens": 3858,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 1485,
+        "output_tokens_details": {
+          "reasoning_tokens": 930
+        },
+        "total_tokens": 5592
+      },
+      "uncached_list_cost_usd": 0.0011532,
+      "response_model": "gpt-6-luna"
+    },
+    "quality-20261123/v6/gpt-6-luna/development/d12": {
+      "status": "completed",
+      "charged_bound_usd": 0.0010622499999999998,
+      "reserved_usd": 0.01069875,
+      "usage": {
+        "input_tokens": 4213,
+        "input_tokens_details": {
+          "cache_write_tokens": 352,
+          "cached_tokens": 3858,
+          "cache_write_tokens_details": null
+        },
+        "output_tokens": 857,
+        "output_tokens_details": {
+          "reasoning_tokens": 441
+        },
+        "total_tokens": 5070
+      },
+      "uncached_list_cost_usd": 0.0008498,
+      "response_model": "gpt-6-luna"
+    }
+  },
+  "new_uncached_list_estimate_usd": 0.2840259,
+  "new_bound_usd": 0.355032375,
+  "cumulative_bound_usd": 2.423497375,
+  "pending": 0
+}

@@ -1,0 +1,192 @@
+{
+  "t01": {
+    "required": [
+      "substantive"
+    ],
+    "allowed": [
+      "substantive"
+    ],
+    "actors": [
+      "un_secretariat"
+    ],
+    "min": 1,
+    "max": 1,
+    "note": "SG implement specified resolutions; no inherited new actor from preceding context."
+  },
+  "t02": {
+    "required": [
+      "resources"
+    ],
+    "allowed": [
+      "resources"
+    ],
+    "actors": [],
+    "min": 1,
+    "max": 1,
+    "note": "GA adopts tax set-off; MemberStates beneficiaries not implementers. Components are one financial result."
+  },
+  "t03": {
+    "required": [
+      "resources"
+    ],
+    "allowed": [
+      "resources",
+      "substantive"
+    ],
+    "actors": [
+      "un_secretariat"
+    ],
+    "min": 1,
+    "max": 1,
+    "note": "SG increases regular-budget dedicated OHCHR/UPR regional capacity; staffing/resources primary, not all fund programme work."
+  },
+  "t04": {
+    "required": [
+      "deliberation"
+    ],
+    "allowed": [
+      "deliberation"
+    ],
+    "actors": [],
+    "min": 1,
+    "max": 1,
+    "note": "HRC convenes accessible panel at52ndsession; review of funds is topic, not an additional mandate-review task."
+  },
+  "t05": {
+    "required": [
+      "institutional",
+      "reporting",
+      "deliberation"
+    ],
+    "allowed": [
+      "institutional",
+      "reporting",
+      "deliberation"
+    ],
+    "actors": [
+      "un_secretariat"
+    ],
+    "min": 4,
+    "max": 4,
+    "note": "Mandate extension, oral update58, written report60, interactive dialogue. OHCHR report actor; HRC issuing decision maker not implementer."
+  },
+  "t06": {
+    "required": [],
+    "allowed": [],
+    "actors": [],
+    "min": 0,
+    "max": 0,
+    "note": "Welcomes already-presented report, no task."
+  },
+  "t07": {
+    "required": [
+      "substantive"
+    ],
+    "allowed": [
+      "substantive"
+    ],
+    "actors": [
+      "member_states"
+    ],
+    "min": 1,
+    "max": 1,
+    "note": "States implement crime classification; no new task from historical Statistical Commission deliberations."
+  },
+  "t08": {
+    "required": [
+      "substantive"
+    ],
+    "allowed": [
+      "substantive"
+    ],
+    "actors": [
+      "member_states"
+    ],
+    "min": 1,
+    "max": 2,
+    "note": "Develop/implement policies and consider reintegration strategies, preserve consider and detention restrictions; purposes not separate tasks."
+  },
+  "t09": {
+    "required": [
+      "substantive"
+    ],
+    "allowed": [
+      "substantive"
+    ],
+    "actors": [],
+    "min": 1,
+    "max": 1,
+    "note": "Concrete urgent protective measures, unspecified addressee; prior Israel paragraph is unrelated context, not a governing parent."
+  },
+  "t10": {
+    "required": [
+      "substantive"
+    ],
+    "allowed": [
+      "substantive"
+    ],
+    "actors": [
+      null
+    ],
+    "min": 1,
+    "max": 2,
+    "note": "International community explicitly urged; mixed actor type unresolved. Later recognizes-importance segment not independent new tasks."
+  },
+  "t11": {
+    "required": [
+      "reporting"
+    ],
+    "allowed": [
+      "reporting",
+      "institutional",
+      "substantive"
+    ],
+    "actors": [
+      "un_secretariat"
+    ],
+    "min": 2,
+    "max": 2,
+    "note": "Extension of cross-border authorizations plus SG special report10Dec2022. Contingent extra extension requires separate resolution, not automatic renewal.",
+    "policy_ambiguous": true
+  },
+  "t12": {
+    "required": [
+      "reporting"
+    ],
+    "allowed": [
+      "reporting"
+    ],
+    "actors": [
+      "un_secretariat"
+    ],
+    "min": 2,
+    "max": 2,
+    "note": "SG monthly briefing and written report at least60days; detailed report topics not extra tasks."
+  },
+  "t13": {
+    "required": [],
+    "allowed": [],
+    "actors": [],
+    "min": 0,
+    "max": 1,
+    "note": "Interpretation/affirmation of sanctions applicability; scope boundary between legal affirmation and reaffirmed task; keep separately flagged.",
+    "policy_ambiguous": true
+  },
+  "t14": {
+    "required": [
+      "institutional",
+      "substantive"
+    ],
+    "allowed": [
+      "institutional",
+      "substantive",
+      "resources"
+    ],
+    "actors": [
+      "un_secretariat"
+    ],
+    "min": 2,
+    "max": 2,
+    "note": "Group mandate extension1Aug2026 plus SG administrative re-establishment. Review intention not an adopted review assignment; safety importance not task."
+  }
+}

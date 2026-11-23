@@ -147,3 +147,15 @@ test('evidence tooltips explain task classifications and assigned actors without
     explanation: 'UN Secretariat',
   })
 })
+
+test('new short task summaries explain reference-only highlight phrases', () => {
+  const tip = pilotTooltip({
+    start: 0,
+    end: 8,
+    kind: 'activity',
+    label: 'reporting: written report',
+    summary: 'Include an overview in the parent report.',
+  })
+  assert.equal(tip.detail, 'Reporting › Written reports')
+  assert.equal(tip.explanation, 'Include an overview in the parent report.')
+})
